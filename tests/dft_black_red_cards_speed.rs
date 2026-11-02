@@ -291,6 +291,7 @@ fn spikespitter_exiled_land_and_spell_have_normal_paid_plays_only_this_turn() {
         let mut expired = g.clone();
         expired.finish_cleanup();
         main_phase(&mut expired, p);
+        expired.state.players[p.index()].mana = [8; 6];
         reject(
             &mut expired,
             if land {

@@ -8,9 +8,9 @@
   "engine_status": "frozen reviewed checkpoint; authors do not mutate shared engine",
   "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "counts": {
-    "authored_candidates": 18,
-    "validated_by_integrator": 24,
-    "not_started": 33
+    "authored_candidates": 13,
+    "validated_by_integrator": 35,
+    "not_started": 27
   },
   "validation_owner": "root integrator; no Cargo run by card author",
   "validation_targets": [
@@ -29,14 +29,20 @@
     {
       "target": "dft_black_red_cards_speed",
       "cases": 14,
-      "status": "13/14 pass; test-only Hazoret selected-vs-committed attacker assertion corrected in c4f29685d; root cached rerun pending",
+      "status": "14/14 passed after c4f29685d;0.037s scenario time; final expiry contrast now also refills mana before asserting denial",
       "scope": "11 complete identities: paid entries/own speed designation, live keywords/controller/pumps, actual mana funding and sickness, owned GY source-grant cost, source-independent max-step triggers, ordinary temporary exile play, public mandatory hand choice, another-creature/Vehicle sacrifice, end-step token and speed draw/life, real lifelink damage and Hazoret combat/target/tap/EOT boundaries"
     },
     {
       "target": "dft_black_red_cards_discard_entries",
       "cases": 8,
-      "status": "pending root execution",
+      "status": "7/8 passed; mandatory EffectDiscard phase helper correction899235cca pending root cached rerun",
       "scope": "7 complete identities: actual0/2 simultaneous discard observers, cycling discard/draw/self-trigger versus battlefield observer, enemy discard authority and Crew2, artifact self-or-other entries without duplicate including token batch, opponent-only shrink plus paid tap/sacrifice Surveil2, all-other-creature EOT shrink and flying"
+    },
+    {
+      "target": "dft_black_red_cards_vehicles_mounts",
+      "cases": 8,
+      "status": "pending root execution",
+      "scope": "6 inherited whole identities: flash on opponent turn, controlled target/EOT buff, exact Crew1/3 and Saddle1/3 payments, Menace/animation cleanup, printed cycling independent of spell reductions, own GY union/count/floor/colored cost, saddled actual attack damage/Treasure including source departure, own upkeep paid exile play/source independence/expiry"
     }
   ],
   "shared_proofs": [
@@ -138,9 +144,63 @@
         "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)"
       ],
       "inherited_admitted": true,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [],
-      "outcome_tests": []
+      "outcome_tests": [
+        "burner_rocket_flashes_on_opponents_turn_buffs_only_own_target_and_crews_for_one"
+      ],
+      "test_target": "dft_black_red_cards_vehicles_mounts",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/b/BurnerRocket.java",
+        "java_sha256": "04ad3aac930cd5d4385f9c93a0f4720ce41608610a7325c990afec29b002fe1b",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/Ability.java",
+            "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+            "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+            "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+            "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+            "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+            "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+            "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+            "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+          }
+        ]
+      },
+      "definition_sha256": "ccb2b119e1bbe6c2d189c2783fc748022bd0c8957c32c8aa67b1a914599f7764"
     },
     {
       "name": "Burnout Bashtronaut",
@@ -155,7 +215,7 @@
         "Max speed \u2014 This creature has double strike."
       ],
       "inherited_admitted": false,
-      "status": "authored_candidate_pending_integrator_test",
+      "status": "validated_by_integrator",
       "required_engine_dependencies": [
         "speed-value"
       ],
@@ -220,7 +280,8 @@
           }
         ]
       },
-      "definition_sha256": "6ac6aa73b6e0b3223bff74f15e626cdde41d0111ee7c8f62684d98f42980d7a2"
+      "definition_sha256": "6ac6aa73b6e0b3223bff74f15e626cdde41d0111ee7c8f62684d98f42980d7a2",
+      "validation": "Root reports14/14 passed after attack-declaration fixture correction;0.037s scenarios. Expiry rejection now additionally refills enough mana before denial."
     },
     {
       "name": "Carrion Cruiser",
@@ -267,9 +328,75 @@
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
       "inherited_admitted": true,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [],
-      "outcome_tests": []
+      "outcome_tests": [
+        "chitin_and_ironclad_cycling_pay_the_printed_cost_and_ignore_spell_cost_reductions",
+        "chitin_counts_owned_artifact_or_creature_cards_once_and_not_lands_or_foreign_cards",
+        "chitin_generic_reduction_floors_at_zero_but_never_removes_the_black_symbol"
+      ],
+      "test_target": "dft_black_red_cards_vehicles_mounts",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/c/ChitinGravestalker.java",
+        "java_sha256": "15b1b39cce9c8b5fd4a6fe80658d993ab727adb07edbd2e201ea1b9874d9c404",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+            "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/common/CyclingDiscardCost.java",
+            "sha256": "1025f6bf0bc3fd16124d317b75d7de4bf3ea880e506a936ff44aa04f9c53c575"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+            "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+            "sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CardsInControllerGraveyardCount.java",
+            "sha256": "1681b71d7aeed7c96c0e4b1963a4ebec63874299ad681fd1bf7b9f1b539ba297"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/cost/CostModificationEffectImpl.java",
+            "sha256": "3f852024b0b2dc3df8a95e8b8ff78dbe5a84efa4b3349b4b2609f9e6c7eae6a4"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionForEachSourceEffect.java",
+            "sha256": "47265899e05cec6a04b65519e61353b4684a7c0c1bdf6abf04af79ae4c7708eb"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/hint/Hint.java",
+            "sha256": "5b3e37a154109935f244c02a79a0182695daad1bee2180f5f0b407bdf630509a"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/hint/ValueHint.java",
+            "sha256": "d0748934608e742b2bb47c3dab958c95246fc69ef40a54a5f4d95c64cb79e99a"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+            "sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+          }
+        ]
+      },
+      "definition_sha256": "9a09baa5d30ff275196ddf40f66f9128cebe9c2371192a21280d39cba254407d"
     },
     {
       "name": "Clamorous Ironclad",
@@ -283,9 +410,54 @@
         "Cycling {R} ({R}, Discard this card: Draw a card.)"
       ],
       "inherited_admitted": true,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [],
-      "outcome_tests": []
+      "outcome_tests": [
+        "clamorous_ironclad_needs_three_crew_power_and_keeps_menace_until_animation_expires",
+        "chitin_and_ironclad_cycling_pay_the_printed_cost_and_ignore_spell_cost_reductions"
+      ],
+      "test_target": "dft_black_red_cards_vehicles_mounts",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/c/ClamorousIronclad.java",
+        "java_sha256": "7e6ab820c3074477ed461e191621abe07d76f5c62a4087e753674851031df6d9",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/common/CyclingDiscardCost.java",
+            "sha256": "1025f6bf0bc3fd16124d317b75d7de4bf3ea880e506a936ff44aa04f9c53c575"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+            "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByOneEffect.java",
+            "sha256": "e0bd814caa3d5758863c4230d3ac88a4361337d3459b13d4f0b309559520434e"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+            "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+            "sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+            "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+          }
+        ]
+      },
+      "definition_sha256": "1a5dd3563ca28f745ad43514dda5947292c40b027917cc2c4f132121c3bbcc24"
     },
     {
       "name": "Count on Luck",
@@ -297,9 +469,43 @@
         "At the beginning of your upkeep, exile the top card of your library. You may play that card this turn."
       ],
       "inherited_admitted": true,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [],
-      "outcome_tests": []
+      "outcome_tests": [
+        "count_on_luck_triggers_only_on_own_upkeep_and_permits_a_paid_play_after_source_leaves"
+      ],
+      "test_target": "dft_black_red_cards_vehicles_mounts",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/c/CountOnLuck.java",
+        "java_sha256": "490fbf201af0635ef069ebb2ac0b95788f88e7f75594f2ceff0f6020b6692f55",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+            "sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+            "sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/triggers/AtStepTriggeredAbility.java",
+            "sha256": "acaebe5709a15b181c6f315684db3969eb622d6dcc45f2994bf54c05b00d22af"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfUpkeepTriggeredAbility.java",
+            "sha256": "19d54f1b78cb52ba734fba0b70e19280b8b342d8bfa9a8e49aaeb96edccd8732"
+          }
+        ]
+      },
+      "definition_sha256": "f8819a08afcdf7578ef4bd83dc97781b62b4a2845eaa41a1efe5f7b0b5a72000"
     },
     {
       "name": "Crash and Burn",
@@ -624,9 +830,68 @@
         "Saddle 3 (Tap any number of other creatures you control with total power 3 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
       ],
       "inherited_admitted": true,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [],
-      "outcome_tests": []
+      "outcome_tests": [
+        "dracosaur_auxiliary_has_flying_haste_and_deals_two_only_when_attacking_saddled"
+      ],
+      "test_target": "dft_black_red_cards_vehicles_mounts",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/d/DracosaurAuxiliary.java",
+        "java_sha256": "04b27920c7227dde2cf4a961149fe504b1cc9b807bed209c9e937f16562b3e74",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/Ability.java",
+            "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+            "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/AttacksWhileSaddledTriggeredAbility.java",
+            "sha256": "23e4eb0abffe4afaa712ebecc2442d6d20101beb32c15b826f0ef521d8c3c297"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+            "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+            "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+            "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/SaddleAbility.java",
+            "sha256": "ad652baf45e4662717bfe85771ddc22b35eacc9a7b7727bed1a07157ed473b3d"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/common/TargetAnyTarget.java",
+            "sha256": "94f28b8a4a9908ef9b7599805c0ac39faf0aae249231969cd51373db206ebf34"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/watchers/common/SaddledMountWatcher.java",
+            "sha256": "1e7a4825265003166190f9e86945471407e02c567312ff7d365d51db486809cc"
+          }
+        ]
+      },
+      "definition_sha256": "6d28444decd7c8450a2e017d5bd6cb40c68421937a3c375ca86854d73781f20a"
     },
     {
       "name": "Dynamite Diver",
@@ -715,7 +980,7 @@
         "Max speed \u2014 {T}: Add {R}{R}."
       ],
       "inherited_admitted": false,
-      "status": "authored_candidate_pending_integrator_test",
+      "status": "validated_by_integrator",
       "required_engine_dependencies": [
         "speed-value"
       ],
@@ -764,7 +1029,8 @@
           }
         ]
       },
-      "definition_sha256": "cb4712ff05cff12c7831b6361562bada5a04f0cde25997de54d3b3cc1977f62d"
+      "definition_sha256": "cb4712ff05cff12c7831b6361562bada5a04f0cde25997de54d3b3cc1977f62d",
+      "validation": "Root reports14/14 passed after attack-declaration fixture correction;0.037s scenarios. Expiry rejection now additionally refills enough mana before denial."
     },
     {
       "name": "Endrider Spikespitter",
@@ -778,7 +1044,7 @@
         "Max speed \u2014 At the beginning of your upkeep, exile the top card of your library. You may play that card this turn."
       ],
       "inherited_admitted": false,
-      "status": "authored_candidate_pending_integrator_test",
+      "status": "validated_by_integrator",
       "required_engine_dependencies": [
         "speed-value"
       ],
@@ -833,7 +1099,8 @@
           }
         ]
       },
-      "definition_sha256": "90643d919d838107e07a2c9b5f9c12be72ee085f62f6b4104c98e4dfc2666524"
+      "definition_sha256": "90643d919d838107e07a2c9b5f9c12be72ee085f62f6b4104c98e4dfc2666524",
+      "validation": "Root reports14/14 passed after attack-declaration fixture correction;0.037s scenarios. Expiry rejection now additionally refills enough mana before denial."
     },
     {
       "name": "Engine Rat",
@@ -966,7 +1233,7 @@
         "Max speed \u2014 {B}, Sacrifice another creature or Vehicle: Draw a card."
       ],
       "inherited_admitted": false,
-      "status": "authored_candidate_pending_integrator_test",
+      "status": "validated_by_integrator",
       "required_engine_dependencies": [
         "cost-union-kind-subtype",
         "speed-value"
@@ -1031,7 +1298,8 @@
           }
         ]
       },
-      "definition_sha256": "c5fe7da791b933cc0c2a2ff3df2a2ab79d99b7b3fa5ea68956396c1c679b026e"
+      "definition_sha256": "c5fe7da791b933cc0c2a2ff3df2a2ab79d99b7b3fa5ea68956396c1c679b026e",
+      "validation": "Root reports14/14 passed after attack-declaration fixture correction;0.037s scenarios. Expiry rejection now additionally refills enough mana before denial."
     },
     {
       "name": "Gastal Blockbuster",
@@ -1061,7 +1329,7 @@
         "Max speed \u2014 This creature gets +1/+1 and has menace."
       ],
       "inherited_admitted": false,
-      "status": "authored_candidate_pending_integrator_test",
+      "status": "validated_by_integrator",
       "required_engine_dependencies": [
         "speed-value",
         "positive-kind-public-hand-choice (accepted8657c4e6c)"
@@ -1142,7 +1410,8 @@
           }
         ]
       },
-      "definition_sha256": "92122de6b5d34c44d4fa9819bf398a645015e6dbd6f0563b2dbc8cf0e2773c1c"
+      "definition_sha256": "92122de6b5d34c44d4fa9819bf398a645015e6dbd6f0563b2dbc8cf0e2773c1c",
+      "validation": "Root reports14/14 passed after attack-declaration fixture correction;0.037s scenarios. Expiry rejection now additionally refills enough mana before denial."
     },
     {
       "name": "Gastal Thrillroller",
@@ -1172,9 +1441,63 @@
         "Saddle 1 (Tap any number of other creatures you control with total power 1 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
       ],
       "inherited_admitted": true,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [],
-      "outcome_tests": []
+      "outcome_tests": [
+        "gilded_ghoda_must_attack_while_saddled_and_creates_a_real_spendable_treasure"
+      ],
+      "test_target": "dft_black_red_cards_vehicles_mounts",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/g/GildedGhoda.java",
+        "java_sha256": "b56ae9e5ac52b5380aa3d5e12b88ca0fa97d8f33f0ef20dd0e61aa9abecdc43b",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+            "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/AttacksWhileSaddledTriggeredAbility.java",
+            "sha256": "23e4eb0abffe4afaa712ebecc2442d6d20101beb32c15b826f0ef521d8c3c297"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+            "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaOfAnyColorEffect.java",
+            "sha256": "1ab49b0ed403a80a0daed4883b432e65e47e38a72d5e4ebca87894284c4fa085"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/SaddleAbility.java",
+            "sha256": "ad652baf45e4662717bfe85771ddc22b35eacc9a7b7727bed1a07157ed473b3d"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/token/TreasureAbility.java",
+            "sha256": "d0b4701fc40514cb0d6efe11255d4644b28e4d6b9f5d5acf3c92093c571b5bae"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/game/permanent/token/TreasureToken.java",
+            "sha256": "76bcec2847fbc47566c41b561b5bf8890073a94cc1da9cda19b369ff69782d2e"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/watchers/common/SaddledMountWatcher.java",
+            "sha256": "1e7a4825265003166190f9e86945471407e02c567312ff7d365d51db486809cc"
+          }
+        ]
+      },
+      "definition_sha256": "c419f2c97c14db6434ddba0981f52357a1d02c5158c17b9007b657253ccebef6"
     },
     {
       "name": "Goblin Surveyor",
@@ -1188,7 +1511,7 @@
         "Max speed \u2014 {3}, Exile this card from your graveyard: Draw a card."
       ],
       "inherited_admitted": false,
-      "status": "authored_candidate_pending_integrator_test",
+      "status": "validated_by_integrator",
       "required_engine_dependencies": [
         "graveyard-max-speed",
         "speed-value"
@@ -1248,7 +1571,8 @@
           }
         ]
       },
-      "definition_sha256": "37e9bc60420a28a9199f8ba6b41718d2ce4738f9dd9947741bae72a10c190599"
+      "definition_sha256": "37e9bc60420a28a9199f8ba6b41718d2ce4738f9dd9947741bae72a10c190599",
+      "validation": "Root reports14/14 passed after attack-declaration fixture correction;0.037s scenarios. Expiry rejection now additionally refills enough mana before denial."
     },
     {
       "name": "Gonti, Night Minister",
@@ -1433,7 +1757,7 @@
         "Hazoret can't attack or block unless you have max speed."
       ],
       "inherited_admitted": false,
-      "status": "authored_candidate_pending_integrator_test",
+      "status": "validated_by_integrator",
       "required_engine_dependencies": [
         "speed-value"
       ],
@@ -1518,7 +1842,8 @@
           }
         ]
       },
-      "definition_sha256": "ad4bf0810bf7c66cf080a87c4f6bcbaf05aa17da3fa82fc8b4b4702958949e5f"
+      "definition_sha256": "ad4bf0810bf7c66cf080a87c4f6bcbaf05aa17da3fa82fc8b4b4702958949e5f",
+      "validation": "Root reports14/14 passed after attack-declaration fixture correction;0.037s scenarios. Expiry rejection now additionally refills enough mana before denial."
     },
     {
       "name": "Hellish Sideswipe",
@@ -1973,7 +2298,7 @@
         "Max speed \u2014 {3}, Exile this card from your graveyard: Draw a card."
       ],
       "inherited_admitted": false,
-      "status": "authored_candidate_pending_integrator_test",
+      "status": "validated_by_integrator",
       "required_engine_dependencies": [
         "speed-value",
         "graveyard-max-speed"
@@ -2034,7 +2359,8 @@
           }
         ]
       },
-      "definition_sha256": "f0156ebf3ee55758d0d4305cf1c19070b7b7c40c94dd4070d9d735d627672673"
+      "definition_sha256": "f0156ebf3ee55758d0d4305cf1c19070b7b7c40c94dd4070d9d735d627672673",
+      "validation": "Root reports14/14 passed after attack-declaration fixture correction;0.037s scenarios. Expiry rejection now additionally refills enough mana before denial."
     },
     {
       "name": "Outpace Oblivion",
@@ -2436,7 +2762,7 @@
         "Max speed \u2014 At the beginning of your end step, create a 2/2 black Zombie creature token."
       ],
       "inherited_admitted": false,
-      "status": "authored_candidate_pending_integrator_test",
+      "status": "validated_by_integrator",
       "required_engine_dependencies": [
         "speed-value"
       ],
@@ -2485,7 +2811,8 @@
           }
         ]
       },
-      "definition_sha256": "3182d9bf6105b04488ced7f26113045b4e30816a14fc543380b2fc7599b0e0bc"
+      "definition_sha256": "3182d9bf6105b04488ced7f26113045b4e30816a14fc543380b2fc7599b0e0bc",
+      "validation": "Root reports14/14 passed after attack-declaration fixture correction;0.037s scenarios. Expiry rejection now additionally refills enough mana before denial."
     },
     {
       "name": "Risky Shortcut",
@@ -2781,7 +3108,7 @@
         "Max speed \u2014 This creature has lifelink."
       ],
       "inherited_admitted": false,
-      "status": "authored_candidate_pending_integrator_test",
+      "status": "validated_by_integrator",
       "required_engine_dependencies": [
         "speed-value"
       ],
@@ -2831,7 +3158,8 @@
           }
         ]
       },
-      "definition_sha256": "8cd92f3e49651bac0e707e508e195a387fe323cc1550ef83e1e2430652576a82"
+      "definition_sha256": "8cd92f3e49651bac0e707e508e195a387fe323cc1550ef83e1e2430652576a82",
+      "validation": "Root reports14/14 passed after attack-declaration fixture correction;0.037s scenarios. Expiry rejection now additionally refills enough mana before denial."
     },
     {
       "name": "Syphon Fuel",
@@ -2906,7 +3234,7 @@
         "At the beginning of your end step, you draw X cards and lose X life, where X is your speed."
       ],
       "inherited_admitted": false,
-      "status": "authored_candidate_pending_integrator_test",
+      "status": "validated_by_integrator",
       "required_engine_dependencies": [
         "speed-value"
       ],
@@ -2970,7 +3298,8 @@
           }
         ]
       },
-      "definition_sha256": "a1999157fac43f46a2bc163b2d08678f8478f5b294d38e0beedb0c444a7b85a6"
+      "definition_sha256": "a1999157fac43f46a2bc163b2d08678f8478f5b294d38e0beedb0c444a7b85a6",
+      "validation": "Root reports14/14 passed after attack-declaration fixture correction;0.037s scenarios. Expiry rejection now additionally refills enough mana before denial."
     },
     {
       "name": "Thunderhead Gunner",
