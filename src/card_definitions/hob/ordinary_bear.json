@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "06a48eb43fcc2c537bf76bc146013bff18103f547003d7311cb25d0460da066a"
   },
-  "physical_metadata_sha256": "02dbf7de60b469caa499eb7e51551700ce922992d7cffa75ee0e9e457e03e9b6"
+  "physical_metadata_sha256": "02dbf7de60b469caa499eb7e51551700ce922992d7cffa75ee0e9e457e03e9b6",
+  "has_rules_abilities": false,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OrdinaryBear.java",
+  "java_sha256": "bc1344631ba76e9f0c942e172e3f564d573c7b1a6f61c96f266082944240c3b0"
 }

@@ -11,5 +11,6 @@
   "physical_metadata_sha256": "8f05078433cb326c91d10f4a309c5224a2d7cefa135d73b81af8b709cbc180a3",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/y/YargleGluttonOfUrborg.java",
-  "java_sha256": "92ba594b6a3479ca38df4dc483382dd49167323b65f000339076c3d4093bf8b9"
+  "java_sha256": "92ba594b6a3479ca38df4dc483382dd49167323b65f000339076c3d4093bf8b9",
+  "has_rules_abilities": false
 }

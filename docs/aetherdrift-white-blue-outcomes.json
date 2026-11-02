@@ -23,7 +23,7 @@
         "{2}, {T}: Draw a card.",
         "Max speed — Whenever you draw a card, each opponent mills two cards. (Each opponent puts the top two cards of their library into their graveyard.)"
       ],
-      "status": "verified: integrator reports all 10 speed-family scenarios pass including queued Pride trigger contrast",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "paid_speed_permanents_start_at_one_and_keep_their_printed_bodies",
@@ -47,7 +47,7 @@
         "Flying, vigilance",
         "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)"
       ],
-      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "air_response_hulldrifter_and_midnight_mangler_have_their_real_crew_bodies"
@@ -70,7 +70,7 @@
         "Creatures you control get +0/+1 and have vigilance.",
         "At the beginning of combat on your turn, choose up to one target Mount or Vehicle you control. Until end of turn, that permanent becomes saddled if it's a Mount and becomes an artifact creature if it's a Vehicle."
       ],
-      "status": "verified: integrator reports all 14 mount-family scenarios pass",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_mounts",
       "outcome_scenarios": [
         "armory_buffs_only_own_creatures_and_independently_saddles_mounts_or_animates_vehicles",
@@ -95,7 +95,7 @@
         "Cycling {2}{W} ({2}{W}, Discard this card: Draw a card.)",
         "When you cycle this card, Cats you control gain hexproof and indestructible until end of turn."
       ],
-      "status": "verified: integrator reports all 14 mount-family scenarios pass",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_mounts",
       "outcome_scenarios": [
         "basri_pays_white_tap_and_exert_for_one_lifelink_cat_and_cycles_for_own_cat_protection"
@@ -118,7 +118,7 @@
       "printed_obligations": [
         "Return target creature or Vehicle to its owner's hand."
       ],
-      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "bounce_gallant_and_parry_keep_their_distinct_targets_results_and_duration"
@@ -142,7 +142,7 @@
         "Whenever this creature attacks while saddled, it gets +1/+2 and gains flying until end of turn.",
         "Saddle 3 (Tap any number of other creatures you control with total power 3 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
       ],
-      "status": "verified: integrator reports all 14 mount-family scenarios pass",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_mounts",
       "outcome_scenarios": [
         "saddled_brightfield_attacks_have_distinct_growth_flying_untap_and_counter_results",
@@ -166,7 +166,7 @@
         "Whenever this creature attacks while saddled, untap it and put a +1/+1 counter on it.",
         "Saddle 1 (Tap any number of other creatures you control with total power 1 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
       ],
-      "status": "verified: integrator reports all 14 mount-family scenarios pass",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_mounts",
       "outcome_scenarios": [
         "saddled_brightfield_attacks_have_distinct_growth_flying_untap_and_counter_results",
@@ -190,7 +190,7 @@
         "When this Vehicle enters, create a 1/1 colorless Thopter artifact creature token with flying.",
         "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)"
       ],
-      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "broadcast_and_nimble_entries_create_one_real_colorless_flying_artifact_thopter"
@@ -214,7 +214,7 @@
         "Sacrifice this creature: Creatures you control with counters on them gain hexproof and indestructible until end of turn.",
         "Saddle 1 (Tap any number of other creatures you control with total power 1 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
       ],
-      "status": "verified: integrator reports all 14 mount-family scenarios pass",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_mounts",
       "outcome_scenarios": [
         "bulwark_attack_targets_any_creature_and_sacrifice_protects_only_own_counter_bearers"
@@ -236,7 +236,7 @@
       "printed_obligations": [
         "Printed header and no printed abilities"
       ],
-      "status": "verified: integrator reports all 10 speed-family scenarios pass including queued Pride trigger contrast",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "dft_vanillas_have_no_rules_abilities_and_pay_for_their_printed_bodies"
@@ -258,7 +258,7 @@
       "printed_obligations": [
         "Whenever this creature saddles a Mount or crews a Vehicle during your main phase, that Mount or Vehicle gains flying until end of turn."
       ],
-      "status": "verified: integrator reports all 14 mount-family scenarios pass",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_mounts",
       "outcome_scenarios": [
         "canyon_vaulter_grants_flying_for_main_phase_crew_and_saddle_only"
@@ -281,7 +281,7 @@
         "Mounts and Vehicles you control get +1/+1.",
         "This creature saddles Mounts and crews Vehicles as though its power were 2 greater."
       ],
-      "status": "verified: integrator reports all 14 mount-family scenarios pass",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_mounts",
       "outcome_scenarios": [
         "captain_boosts_the_union_once_and_its_two_extra_contribution_pays_saddle_four"
@@ -305,7 +305,7 @@
         "• Collision Course deals X damage to target creature, where X is the number of permanents you control that are creatures and/or Vehicles.",
         "• Destroy target artifact."
       ],
-      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "collision_course_counts_the_creature_vehicle_union_once_and_has_an_artifact_mode"
@@ -327,7 +327,7 @@
       "printed_obligations": [
         "{3}{W}: Put a +1/+1 counter on target Mount or Vehicle."
       ],
-      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "daring_mechanic_can_counter_opposing_mounts_and_uncrewed_vehicles_but_not_other_creatures"
@@ -352,7 +352,7 @@
         "Crew 3 (Tap any number of creatures you control with total power 3 or more: This Vehicle becomes an artifact creature until end of turn.)",
         "Cycling {W} ({W}, Discard this card: Draw a card.)"
       ],
-      "status": "verified: integrator reports all 11 activation-family scenarios pass after admitted-fixture/mana corrections",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_activations",
       "outcome_scenarios": [
         "detention_and_snare_exile_their_distinct_opposing_targets_until_the_source_leaves",
@@ -376,7 +376,7 @@
         "Flying",
         "{U}, Sacrifice this creature: Counter target instant or sorcery spell unless its controller pays {3}."
       ],
-      "status": "verified: integrator reports all 11 activation-family scenarios pass after admitted-fixture/mana corrections",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_activations",
       "outcome_scenarios": [
         "diversion_sacrifices_for_blue_and_counters_only_instant_or_sorcery_unless_three_is_paid"
@@ -400,7 +400,7 @@
         "When this Aura enters, tap enchanted permanent.",
         "Enchanted permanent loses all abilities and doesn't untap during its controller's untap step."
       ],
-      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "flood_the_engine_taps_blanks_and_locks_an_uncrewed_vehicle_until_the_aura_leaves"
@@ -423,7 +423,7 @@
         "Destroy target creature with toughness 4 or greater.",
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
-      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "bounce_gallant_and_parry_keep_their_distinct_targets_results_and_duration",
@@ -447,7 +447,7 @@
         "Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.)",
         "{5}{U}: This creature can't be blocked this turn."
       ],
-      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "artifact_affinity_pays_only_the_remaining_generic_and_required_blue"
@@ -471,7 +471,7 @@
         "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
         "Max speed — {3}, Exile this card from your graveyard: Draw a card."
       ],
-      "status": "verified: integrator reports all 10 speed-family scenarios pass including queued Pride trigger contrast",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "paid_speed_permanents_start_at_one_and_keep_their_printed_bodies",
@@ -496,7 +496,7 @@
         "Whenever this creature attacks while saddled, search your library for a basic Plains card, reveal it, put it into your hand, then shuffle.",
         "Saddle 2 (Tap any number of other creatures you control with total power 2 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
       ],
-      "status": "verified: integrator reports all 14 mount-family scenarios pass",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_mounts",
       "outcome_scenarios": [
         "lynx_saddled_attack_searches_only_a_basic_plains_and_keeps_lifelink"
@@ -520,7 +520,7 @@
         "Whenever this creature attacks while saddled, search your library for a nonland permanent card with mana value 3 or less, put it onto the battlefield, then shuffle.",
         "Saddle 4"
       ],
-      "status": "verified: integrator reports all 14 mount-family scenarios pass",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_mounts",
       "outcome_scenarios": [
         "sunmare_searches_a_small_nonland_permanent_onto_the_battlefield",
@@ -543,7 +543,7 @@
       "printed_obligations": [
         "{T}: Add {U}. Spend this mana only to cast an artifact spell or activate an ability."
       ],
-      "status": "verified: integrator reports all 10 speed-family scenarios pass including queued Pride trigger contrast",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "guidelight_optimizer_blue_pays_artifacts_and_activations_but_not_nonartifact_spells"
@@ -566,7 +566,7 @@
         "Flying",
         "This creature gets +1/+0 for each artifact you control."
       ],
-      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "guidelight_synergist_tracks_only_its_live_controllers_artifact_count"
@@ -589,7 +589,7 @@
         "Cycling {1}{U} ({1}{U}, Discard this card: Draw a card.)",
         "When you cycle this card, target creature or Vehicle an opponent controls gets -3/-0 until end of turn."
       ],
-      "status": "verified: integrator reports all 11 activation-family scenarios pass after admitted-fixture/mana corrections",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_activations",
       "outcome_scenarios": [
         "howlers_cycling_shrinks_an_opposing_uncrewed_vehicle_for_the_turn_and_draws_one"
@@ -613,7 +613,7 @@
         "When this Vehicle enters, draw two cards.",
         "Crew 3 (Tap any number of creatures you control with total power 3 or more: This Vehicle becomes an artifact creature until end of turn.)"
       ],
-      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "air_response_hulldrifter_and_midnight_mangler_have_their_real_crew_bodies"
@@ -636,7 +636,7 @@
         "This creature saddles Mounts and crews Vehicles using its toughness rather than its power.",
         "Whenever this creature becomes tapped during your turn, untap it. This ability triggers only once each turn."
       ],
-      "status": "verified: integrator reports all 14 mount-family scenarios pass",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_mounts",
       "outcome_scenarios": [
         "interface_ace_uses_toughness_and_untaps_only_for_the_first_own_turn_tap"
@@ -659,7 +659,7 @@
         "Vigilance",
         "Exhaust — {1}{U}: Draw a card, then discard a card. Put a +1/+1 counter on this creature. (Activate each exhaust ability only once.)"
       ],
-      "status": "verified: integrator reports all 11 activation-family scenarios pass after admitted-fixture/mana corrections",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_activations",
       "outcome_scenarios": [
         "keen_draws_then_discards_and_adds_one_counter_with_vigilance_and_exhaust_consumed"
@@ -683,7 +683,7 @@
         "During your turn, this creature has first strike.",
         "Max speed — {3}, Exile this card from your graveyard: Draw a card."
       ],
-      "status": "verified: integrator reports all 10 speed-family scenarios pass including queued Pride trigger contrast",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "paid_speed_permanents_start_at_one_and_keep_their_printed_bodies",
@@ -708,7 +708,7 @@
         "Target creature gets +2/+2 until end of turn.",
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
-      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "bounce_gallant_and_parry_keep_their_distinct_targets_results_and_duration",
@@ -734,7 +734,7 @@
         "Enchanted permanent gets +1/+1 and has vigilance.",
         "Max speed — You may cast this card from your graveyard."
       ],
-      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "lightwheel_starts_speed_enchants_a_vehicle_and_casts_normally_from_own_graveyard_at_four"
@@ -757,7 +757,7 @@
         "Flying",
         "When this creature enters, target creature or Vehicle gains lifelink and indestructible until end of turn."
       ],
-      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "lotusguard_entry_grants_both_keywords_to_an_uncrewed_vehicle_independent_of_source"
@@ -780,7 +780,7 @@
         "Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.)",
         "Flying"
       ],
-      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "artifact_affinity_pays_only_the_remaining_generic_and_required_blue"
@@ -803,7 +803,7 @@
         "During turns other than yours, this Vehicle is an artifact creature.",
         "Crew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)"
       ],
-      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "air_response_hulldrifter_and_midnight_mangler_have_their_real_crew_bodies"
@@ -825,7 +825,7 @@
       "printed_obligations": [
         "Exhaust — {X}{U}{U}, {T}: Draw X cards. Put a +1/+1 counter on each Merfolk creature you control. (Activate each exhaust ability only once.)"
       ],
-      "status": "verified: integrator reports all 11 activation-family scenarios pass after admitted-fixture/mana corrections",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_activations",
       "outcome_scenarios": [
         "mindspring_pays_chosen_x_and_tap_but_counters_each_own_merfolk_even_for_zero"
@@ -849,7 +849,7 @@
         "Vehicles you control have flying.",
         "Whenever one or more creatures you control with flying deal combat damage to a player, draw a card."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_final",
       "outcome_scenarios": [
         "mu_yanling_creates_the_real_vehicle_grants_own_vehicles_flying_and_draws_once_for_a_combat_batch"
@@ -873,7 +873,7 @@
         "When this creature dies, create a 1/1 colorless Servo artifact creature token.",
         "Max speed — This creature gets +1/+0."
       ],
-      "status": "verified: integrator reports all 10 speed-family scenarios pass including queued Pride trigger contrast",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "paid_speed_permanents_start_at_one_and_keep_their_printed_bodies",
@@ -896,7 +896,7 @@
       "printed_obligations": [
         "When this creature enters, create a 1/1 colorless Thopter artifact creature token with flying."
       ],
-      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "broadcast_and_nimble_entries_create_one_real_colorless_flying_artifact_thopter"
@@ -920,7 +920,7 @@
         "When this artifact enters, exile target nonland permanent an opponent controls until this artifact leaves the battlefield.",
         "Max speed — {T}: Put a +1/+1 counter on target creature or Vehicle you control. Activate only as a sorcery."
       ],
-      "status": "verified: integrator reports all 11 activation-family scenarios pass after admitted-fixture/mana corrections",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_activations",
       "outcome_scenarios": [
         "detention_and_snare_exile_their_distinct_opposing_targets_until_the_source_leaves",
@@ -944,7 +944,7 @@
         "When this Vehicle enters, gain control of target creature an opponent controls for as long as you control this Vehicle. That creature can't attack or block for as long as you control this Vehicle.",
         "Crew 3"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_final",
       "outcome_scenarios": [
         "possession_engine_control_and_combat_lock_end_irreversibly_when_the_vehicle_changes_controller"
@@ -968,7 +968,7 @@
         "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
         "Max speed — At the beginning of combat on your turn, target creature or Vehicle you control gains double strike until end of turn."
       ],
-      "status": "verified: integrator reports all 10 speed-family scenarios pass including queued Pride trigger contrast",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "paid_speed_permanents_start_at_one_and_keep_their_printed_bodies",
@@ -994,7 +994,7 @@
         "Exhaust — {4}: This Vehicle becomes an artifact creature. Put a +1/+1 counter on it. (Activate each exhaust ability only once.)",
         "Crew 2"
       ],
-      "status": "verified: integrator reports all 11 activation-family scenarios pass after admitted-fixture/mana corrections",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_activations",
       "outcome_scenarios": [
         "refueler_draws_for_own_exhaust_including_itself_and_its_animation_is_permanent"
@@ -1016,7 +1016,7 @@
       "printed_obligations": [
         "{2}, {T}, Sacrifice another artifact: Search your library for an artifact card with mana value equal to 1 plus the sacrificed artifact's mana value, put that card onto the battlefield, then shuffle. Activate only as a sorcery."
       ],
-      "status": "verified: integrator reports all 11 activation-family scenarios pass after admitted-fixture/mana corrections",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_activations",
       "outcome_scenarios": [
         "repurposing_bay_pays_another_artifact_and_searches_exactly_one_more_mana_value"
@@ -1039,7 +1039,7 @@
         "This spell costs {3} less to cast if it targets a tapped permanent.",
         "Exile target creature or Vehicle."
       ],
-      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "target_discounts_are_paid_for_tapped_permanents_and_mana_value_one_only"
@@ -1062,7 +1062,7 @@
         "{1}, {T}: Any number of target players each mill two cards. (Each of them puts the top two cards of their library into their graveyard.)",
         "Exhaust — {2}{U}{U}, {T}: Any number of target players each mill cards equal to the number of cards in their graveyard. (Activate each exhaust ability only once.)"
       ],
-      "status": "verified: integrator reports all 11 activation-family scenarios pass after admitted-fixture/mana corrections",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_activations",
       "outcome_scenarios": [
         "riverchurn_targets_each_player_and_uses_each_separate_current_graveyard_for_exhaust"
@@ -1086,7 +1086,7 @@
         "When this Aura enters, create a 1/1 colorless Pilot creature token with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\"",
         "Enchanted permanent gets +1/+1 and has lifelink."
       ],
-      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "roadside_assistance_grants_stats_lifelink_and_a_colorless_pilot_that_can_crew_three"
@@ -1110,7 +1110,7 @@
         "Return target creature or Vehicle an opponent controls to its owner's hand.",
         "Draw a card."
       ],
-      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "target_discounts_are_paid_for_tapped_permanents_and_mana_value_one_only"
@@ -1134,7 +1134,7 @@
         "Whenever one or more creatures attack you, those creatures get -1/-0 until end of turn.",
         "Exhaust — {5}{U}{U}: Put three +1/+1 counters on this creature. (Activate each exhaust ability only once.)"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_final",
       "outcome_scenarios": [
         "sabotage_strategist_shrinks_only_the_declaration_attacking_its_player_and_exhausts_for_three_counters"
@@ -1158,7 +1158,7 @@
         "Whenever this Vehicle attacks, return up to one target artifact card from your graveyard to the battlefield.",
         "Crew 6"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_final",
       "outcome_scenarios": [
         "salvation_engine_buffs_other_own_artifact_creatures_and_returns_an_artifact_on_attack"
@@ -1182,7 +1182,7 @@
         "Whenever you discard one or more cards, put that many +1/+1 counters on this creature.",
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
-      "status": "verified: integrator reports all 11 activation-family scenarios pass after admitted-fixture/mana corrections",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_activations",
       "outcome_scenarios": [
         "scrounging_skyray_counts_a_real_two_card_discard_batch_and_its_cycling_discard"
@@ -1207,7 +1207,7 @@
         "Activated abilities of sources with the chosen name cost {2} more to activate.",
         "Crew 2"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_final",
       "outcome_scenarios": [
         "skyseers_chariot_names_a_nonland_and_taxes_both_players_actual_named_activations"
@@ -1230,7 +1230,7 @@
         "Flying",
         "Exhaust — {4}{U}: Put two +1/+1 counters on this creature. (Activate each exhaust ability only once.)"
       ],
-      "status": "verified: integrator reports all 11 activation-family scenarios pass after admitted-fixture/mana corrections",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_activations",
       "outcome_scenarios": [
         "refueler_draws_for_own_exhaust_including_itself_and_its_animation_is_permanent"
@@ -1253,7 +1253,7 @@
         "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
         "Max speed — {1}, Sacrifice this creature: Copy target spell you control. You may choose new targets for the copy. (A copy of a permanent spell becomes a token.)"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_final",
       "outcome_scenarios": [
         "slick_imitator_requires_max_speed_sacrifices_and_can_retarget_a_copy_of_your_spell",
@@ -1277,7 +1277,7 @@
         "All creatures and Vehicles lose indestructible until end of turn, then destroy all creatures and Vehicles.",
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
-      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "spectacular_pileup_removes_indestructible_only_from_the_destroyed_union",
@@ -1300,7 +1300,7 @@
       "printed_obligations": [
         "Counter target artifact or creature spell unless its controller pays {4}."
       ],
-      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "spectral_interference_and_spell_pierce_offer_the_correct_payment_or_counter"
@@ -1322,7 +1322,7 @@
       "printed_obligations": [
         "Counter target noncreature spell unless its controller pays {2}."
       ],
-      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "spectral_interference_and_spell_pierce_offer_the_correct_payment_or_counter"
@@ -1344,7 +1344,7 @@
       "printed_obligations": [
         "When this creature enters, return target creature or Vehicle an opponent controls to its owner's hand. If that opponent's speed is greater than each other player's speed, reduce that opponent's speed by 1. This effect can't reduce their speed below 1."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_final",
       "outcome_scenarios": [
         "spikeshell_bounces_the_opposing_vehicle_and_reduces_only_a_strict_leader_above_one"
@@ -1367,7 +1367,7 @@
         "When this Vehicle enters, scry 2. (Look at the top two cards of your library, then put any number of them on the bottom and the rest on top in any order.)",
         "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)"
       ],
-      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "spotcycle_scouter_scries_exactly_two_privately_then_crews_as_a_three_two"
@@ -1390,7 +1390,7 @@
         "Tap target creature or Vehicle, then put three stun counters on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)",
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
-      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "stall_out_puts_three_real_stun_counters_on_a_vehicle",
@@ -1413,7 +1413,7 @@
       "printed_obligations": [
         "Look at the top five cards of your library. Put two of them into your hand and the rest on the bottom of your library in any order."
       ],
-      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "stock_up_keeps_the_look_private_selects_two_and_orders_the_other_three_with_restore"
@@ -1435,7 +1435,7 @@
       "printed_obligations": [
         "Printed header and no printed abilities"
       ],
-      "status": "verified: integrator reports all 10 speed-family scenarios pass including queued Pride trigger contrast",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "dft_vanillas_have_no_rules_abilities_and_pay_for_their_printed_bodies"
@@ -1459,7 +1459,7 @@
         "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
         "Max speed — This creature gets +0/+1 and has vigilance."
       ],
-      "status": "verified: integrator reports all 10 speed-family scenarios pass including queued Pride trigger contrast",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "paid_speed_permanents_start_at_one_and_keep_their_printed_bodies",
@@ -1484,7 +1484,7 @@
         "Whenever you draw your second card each turn, create a 1/1 colorless Thopter artifact creature token with flying.",
         "Crew 2"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_final",
       "outcome_scenarios": [
         "fabricator_creates_only_one_thopter_for_second_draw_and_resets_on_the_opponents_turn"
@@ -1507,7 +1507,7 @@
         "Exchange control of target artifact or creature you control and target artifact or creature an opponent controls.",
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
-      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "trade_the_helm_exchanges_both_objects_or_neither_when_one_incarnation_is_lost",
@@ -1530,7 +1530,7 @@
       "printed_obligations": [
         "When this creature enters, you may search your library for an artifact card with mana value 4 or 5, reveal it, put it into your hand, then shuffle."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_final",
       "outcome_scenarios": [
         "transit_mages_optional_search_accepts_only_four_or_five_mana_artifacts_and_decline_does_not_shuffle"
@@ -1553,7 +1553,7 @@
         "Target nonland permanent's owner puts it on their choice of the top or bottom of their library.",
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
-      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "trip_up_lets_the_owner_choose_top_or_bottom_even_under_foreign_control",
@@ -1576,7 +1576,7 @@
       "printed_obligations": [
         "Return target artifact card from your graveyard to the battlefield. If it's a Vehicle, it becomes an artifact creature."
       ],
-      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "tune_up_returns_the_owned_artifact_and_animates_only_its_exact_vehicle_entry"
@@ -1598,7 +1598,7 @@
       "printed_obligations": [
         "At the beginning of your end step, untap all nonland permanents you control."
       ],
-      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "unstoppable_plan_untaps_own_nonlands_only_at_its_controllers_end_step"
@@ -1621,7 +1621,7 @@
         "Whenever this creature attacks while saddled, it gains indestructible until end of turn. Untap all creatures you control.",
         "Saddle 4 (Tap any number of other creatures you control with total power 4 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
       ],
-      "status": "verified: integrator reports all 14 mount-family scenarios pass",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_mounts",
       "outcome_scenarios": [
         "sloth_saddled_attack_untaps_own_creatures_and_grants_temporary_indestructible"
@@ -1646,7 +1646,7 @@
         "Cycling {X}{2}{W} ({X}{2}{W}, Discard this card: Draw a card.)",
         "When you cycle this card, create X 1/1 colorless Pilot creature tokens with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\""
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_final",
       "outcome_scenarios": [
         "valors_flagship_cycles_for_chosen_x_colorless_pilots_and_exactly_one_draw",
@@ -1671,7 +1671,7 @@
         "You have no maximum hand size.",
         "Max speed — If you would draw a card, draw two cards instead."
       ],
-      "status": "verified: integrator reports all 10 speed-family scenarios pass including queued Pride trigger contrast",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "paid_speed_permanents_start_at_one_and_keep_their_printed_bodies",
@@ -1696,7 +1696,7 @@
         "Tap three other untapped creatures you control: Until end of turn, this Vehicle becomes an artifact creature and gains flying. Put a +1/+1 counter on it.",
         "Crew 1"
       ],
-      "status": "verified: integrator reports all 14 mount-family scenarios pass",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_mounts",
       "outcome_scenarios": [
         "voyager_glidecar_scries_one_then_taps_three_other_creatures_for_flying_and_a_counter"
@@ -1718,7 +1718,7 @@
       "printed_obligations": [
         "Artifact spells you cast cost {1} less to cast."
       ],
-      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "quickwelder_reduces_only_artifact_spells_of_its_controller"
@@ -1742,7 +1742,7 @@
         "You may have this creature enter as a copy of an artifact or creature you control.",
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
       "test_target": "dft_white_blue_cards_final",
       "outcome_scenarios": [
         "waxen_flash_entry_copies_only_own_artifacts_or_creatures_with_owned_copy_choices_and_etbs",
@@ -1754,9 +1754,59 @@
   "card_phase_summary": {
     "identities": 74,
     "outcome_mapping_complete": true,
-    "verified_before_final_family": 63,
-    "final_family_pending_execution": 11,
+    "focused_verified_identities": 74,
+    "focused_cases": 72,
+    "targets": [
+      {
+        "target": "dft_white_blue_cards_speed",
+        "executed_passed": 10
+      },
+      {
+        "target": "dft_white_blue_cards_tempo",
+        "executed_passed": 12
+      },
+      {
+        "target": "dft_white_blue_cards_permanents",
+        "executed_passed": 11
+      },
+      {
+        "target": "dft_white_blue_cards_mounts",
+        "executed_passed": 14
+      },
+      {
+        "target": "dft_white_blue_cards_activations",
+        "executed_passed": 11
+      },
+      {
+        "target": "dft_white_blue_cards_final",
+        "executed_passed": 14
+      }
+    ],
+    "gated_or_missing_obligations_in_this_partition": 0,
     "ordinary_card_definitions_with_missing_engine_dependencies": 0,
-    "acceptance": "Whole-set integration, independent reviews and broad/release validation remain root-owned and pending. No whole-set completion is claimed by this author ledger."
-  }
+    "validation_owner": "root; all positive pass counts reported from guarded shared-cache runs; author ran no Cargo or linker",
+    "acceptance": "Two independent nonauthor reviews, complete DFT interaction/whole-set acceptance, broad/release/Python checks and single completed-set PR remain root-owned. Focused partition verification is not full-set acceptance."
+  },
+  "measured_examples": [
+    {
+      "target": "dft_white_blue_cards_tempo",
+      "passed": 12,
+      "scenario_seconds": 0.033,
+      "command_seconds": 1.0,
+      "source": "root terminal report after f0761b18a card-only exchange repair"
+    },
+    {
+      "target": "dft_white_blue_cards_permanents",
+      "passed": 11,
+      "command_seconds": 0.84,
+      "source": "root terminal report card-white-blue-permanents-20261102-101000Z; engine reused"
+    },
+    {
+      "target": "dft_white_blue_cards_final",
+      "passed": 14,
+      "scenario_seconds": 0.035,
+      "command_seconds": 3.91,
+      "source": "root terminal final W/U report; engine reused"
+    }
+  ]
 }

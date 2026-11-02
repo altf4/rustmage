@@ -12,5 +12,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
     },
     entry: EntryTapped::Never,
     keywords: Keywords::NONE,
+    extras: &CardExtras {
+        has_rules_abilities: Some(false),
+        ..CardExtras::EMPTY
+    },
     ..CardRules::EMPTY
 };

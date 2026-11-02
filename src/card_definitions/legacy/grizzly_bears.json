@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8a4629aa64fe9b72dbff6ff5ec22ab6581c718cac939474ec03e36c801d42343"
   },
-  "physical_metadata_sha256": "be6f3d9f42d536a75547ecdf9133b07285f222e90fe52b3224036c446731b205"
+  "physical_metadata_sha256": "be6f3d9f42d536a75547ecdf9133b07285f222e90fe52b3224036c446731b205",
+  "has_rules_abilities": false,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GrizzlyBears.java",
+  "java_sha256": "fe99fc39c9c3d74e71e7f7d34c4697f8eb68f15f1278b36597d1dafc135c9d4a"
 }

@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e9cbc046572455fdfe6716d22aabc26bf76a7f3984f8b24503da7b1dd6bfd011"
   },
-  "physical_metadata_sha256": "f23dce5586a7f7d0656229d47aef67cf7c73e0d5ad91c365ff3f762336b0a825"
+  "physical_metadata_sha256": "f23dce5586a7f7d0656229d47aef67cf7c73e0d5ad91c365ff3f762336b0a825",
+  "has_rules_abilities": false,
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FireElemental.java",
+  "java_sha256": "a8cb853156fb342573d05daf9d2994ca5cf18eeab49663de59ca64499bfd04ed"
 }
