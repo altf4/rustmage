@@ -8,5 +8,30 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c6a9f51e9725e4a35f25f106a015a0dd07a4df819c2799c68e321e9b7cb45172"
   },
-  "physical_metadata_sha256": "e76a4afd0aaaa37e69a530a6a3cf17a6b3af3ec96c214508d5b2bb0b81c90fa6"
+  "physical_metadata_sha256": "e76a4afd0aaaa37e69a530a6a3cf17a6b3af3ec96c214508d5b2bb0b81c90fa6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FuelTheFlames.java",
+  "java_sha256": "e5d81250a19adb1cdf945946a2930235308c73ed28bb708c0650c49f6b1f3c1d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/CyclingDiscardCost.java",
+      "sha256": "1025f6bf0bc3fd16124d317b75d7de4bf3ea880e506a936ff44aa04f9c53c575"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageAllEffect.java",
+      "sha256": "0b4150468bb32f733a8cbc6485ae511b5141e87a1efc8b744911d62a7648c313"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+      "sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+    }
+  ]
 }

@@ -1,0 +1,1685 @@
+{
+  "schema": 1,
+  "set": "DFT",
+  "assignment": "exactly monoblack/monored Oracle identities including reprints and inherited admitted behavior",
+  "card_count": 75,
+  "base_revision": "819fa96ec",
+  "engine_revision": "3bb915ad0",
+  "engine_status": "frozen reviewed checkpoint; authors do not mutate shared engine",
+  "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "counts": {
+    "authored_candidates": 12,
+    "validated_by_integrator": 0,
+    "not_started": 63
+  },
+  "validation_owner": "root integrator; no Cargo run by card author",
+  "validation_targets": [
+    {
+      "target": "dft_black_red_cards_spells",
+      "cases": 14,
+      "status": "pending root execution",
+      "scope": "12 whole-card definitions; modal targets, both-controller damage, cycling payment/discard/draw, temporary/permanent buffs, X, postmill threshold, exact target incarnation, current Mount/Vehicle union, caster-relative draw/life and any-target damage"
+    }
+  ],
+  "shared_proofs": [
+    "Reviewed engine checkpoint provides ordinary keyword combat rules, target protection/ward and all-illegal resolution semantics, discard/cycling event processing, cost payment and snapshot ownership; card tests assert each assigned definition wires its own printed behavior."
+  ],
+  "cards": [
+    {
+      "name": "Adrenaline Jockey",
+      "oracle_id": "c3dc6b0e-8790-4bd3-b166-63b2dc77488f",
+      "facts_sha256": "e037a194a38a4fca14ee93a13b32e9110442771b67609c12d62d72190c442fb5",
+      "definition": "src/card_definitions/dft/adrenaline_jockey.rs",
+      "oracle_text": "Whenever a player casts a spell, if it's not their turn, this creature deals 4 damage to them.\nWhenever you activate an exhaust ability, put a +1/+1 counter on this creature.",
+      "printed_obligations": [
+        "Whenever a player casts a spell, if it's not their turn, this creature deals 4 damage to them.",
+        "Whenever you activate an exhaust ability, put a +1/+1 counter on this creature."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "caster-off-turn",
+        "exhaust-event"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Ancient Vendetta",
+      "oracle_id": "6f053f0d-c9c7-4fcd-b218-a29d1d080104",
+      "facts_sha256": "bb9387c72306ca93a33d346db93b1efbfc6b874f832177a25e90b79fc140ede4",
+      "definition": "src/card_definitions/dft/ancient_vendetta.rs",
+      "oracle_text": "Choose a card name. Search target opponent's graveyard, hand, and library for up to four cards with that name and exile them. Then that player shuffles.",
+      "printed_obligations": [
+        "Choose a card name. Search target opponent's graveyard, hand, and library for up to four cards with that name and exile them. Then that player shuffles."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "capped-name-exile-search"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Back on Track",
+      "oracle_id": "aaf46eaf-2e01-46ac-b79d-6b70739d11c2",
+      "facts_sha256": "de472fd0951461eaa74b675cbe78fd0a3cb8d34c528254a75b92e3c946ac9721",
+      "definition": "src/card_definitions/dft/back_on_track.rs",
+      "oracle_text": "Return target creature or Vehicle card from your graveyard to the battlefield. Create a 1/1 colorless Pilot creature token with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\"",
+      "printed_obligations": [
+        "Return target creature or Vehicle card from your graveyard to the battlefield. Create a 1/1 colorless Pilot creature token with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\""
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Bloodghast",
+      "oracle_id": "e97f9c2b-b41e-4f36-9245-77c0ac125647",
+      "facts_sha256": "188fa6c2954953856a19a60429bb94815153f655c3f1aecdad661bef95650eb1",
+      "definition": "src/card_definitions/soc/bloodghast.rs",
+      "oracle_text": "This creature can't block.\nThis creature has haste as long as an opponent has 10 or less life.\nLandfall \u2014 Whenever a land you control enters, you may return this card from your graveyard to the battlefield.",
+      "printed_obligations": [
+        "This creature can't block.",
+        "This creature has haste as long as an opponent has 10 or less life.",
+        "Landfall \u2014 Whenever a land you control enters, you may return this card from your graveyard to the battlefield."
+      ],
+      "inherited_admitted": true,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Boommobile",
+      "oracle_id": "cb3edb86-ddd5-461c-98b5-ffb4df437a39",
+      "facts_sha256": "0f532961506b5b62db96456fdafb0c2d9f36f7866dac9db9948e0fcf27b7cfcd",
+      "definition": "src/card_definitions/dft/boommobile.rs",
+      "oracle_text": "When this Vehicle enters, add four mana of any one color. Spend this mana only to activate abilities.\nExhaust \u2014 {X}{2}{R}: This Vehicle deals X damage to any target. Put a +1/+1 counter on this Vehicle. (Activate each exhaust ability only once.)\nCrew 2",
+      "printed_obligations": [
+        "When this Vehicle enters, add four mana of any one color. Spend this mana only to activate abilities.",
+        "Exhaust \u2014 {X}{2}{R}: This Vehicle deals X damage to any target. Put a +1/+1 counter on this Vehicle. (Activate each exhaust ability only once.)",
+        "Crew 2"
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Burner Rocket",
+      "oracle_id": "0d07eb9f-46f4-466d-acb6-609437c34f13",
+      "facts_sha256": "fd9ee71fba97705f476a146558350a2adab09127881efc4ef22df115e3da9067",
+      "definition": "src/card_definitions/dft/burner_rocket.rs",
+      "oracle_text": "Flash\nWhen this Vehicle enters, target creature you control gets +2/+0 and gains trample until end of turn.\nCrew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "printed_obligations": [
+        "Flash",
+        "When this Vehicle enters, target creature you control gets +2/+0 and gains trample until end of turn.",
+        "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)"
+      ],
+      "inherited_admitted": true,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Burnout Bashtronaut",
+      "oracle_id": "1b122fbb-c2e1-42d1-bfc5-fcacacdfa0bc",
+      "facts_sha256": "0bb3522d85dba617b8a09b3dddc0eb746e47d416e8f2f7301fb4eb1b3c0da5b8",
+      "definition": "src/card_definitions/dft/burnout_bashtronaut.rs",
+      "oracle_text": "Menace\nStart your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\n{2}: This creature gets +1/+0 until end of turn.\nMax speed \u2014 This creature has double strike.",
+      "printed_obligations": [
+        "Menace",
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "{2}: This creature gets +1/+0 until end of turn.",
+        "Max speed \u2014 This creature has double strike."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "speed-value"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Carrion Cruiser",
+      "oracle_id": "98a61659-9882-417c-9c16-16ebb26f9037",
+      "facts_sha256": "5b8909a0f0227419223071337d5d50fbbb623a3cf47528340e0d704f4322590d",
+      "definition": "src/card_definitions/dft/carrion_cruiser.rs",
+      "oracle_text": "When this Vehicle enters, mill two cards. Then return a creature or Vehicle card from your graveyard to your hand. (To mill two cards, put the top two cards of your library into your graveyard.)\nCrew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "printed_obligations": [
+        "When this Vehicle enters, mill two cards. Then return a creature or Vehicle card from your graveyard to your hand. (To mill two cards, put the top two cards of your library into your graveyard.)",
+        "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)"
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "untargeted-graveyard-kind-subtype"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Chandra, Spark Hunter",
+      "oracle_id": "30bb01c1-9253-4251-80e7-fb8236b3d858",
+      "facts_sha256": "c369f5fcb83d66171e877c3eb30040eba7611d698a169cf92e9500720a819c4c",
+      "definition": "src/card_definitions/dft/chandra_spark_hunter.rs",
+      "oracle_text": "At the beginning of combat on your turn, choose up to one target Vehicle you control. Until end of turn, it becomes an artifact creature and gains haste.\n+2: You may sacrifice an artifact or discard a card. If you do, draw a card.\n0: Create a 3/2 colorless Vehicle artifact token with crew 1.\n\u22127: You get an emblem with \"Whenever an artifact you control enters, this emblem deals 3 damage to any target.\"",
+      "printed_obligations": [
+        "At the beginning of combat on your turn, choose up to one target Vehicle you control. Until end of turn, it becomes an artifact creature and gains haste.",
+        "+2: You may sacrifice an artifact or discard a card. If you do, draw a card.",
+        "0: Create a 3/2 colorless Vehicle artifact token with crew 1.",
+        "\u22127: You get an emblem with \"Whenever an artifact you control enters, this emblem deals 3 damage to any target.\""
+      ],
+      "inherited_admitted": true,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Chitin Gravestalker",
+      "oracle_id": "acac15c8-877d-49d4-9b42-90181c05a684",
+      "facts_sha256": "9913e44c44a0e1b9cf66c02f236a634ba07862dfd2a175d2a48b94e7c7e3f378",
+      "definition": "src/card_definitions/dft/chitin_gravestalker.rs",
+      "oracle_text": "This spell costs {1} less to cast for each artifact and/or creature card in your graveyard.\nCycling {2} ({2}, Discard this card: Draw a card.)",
+      "printed_obligations": [
+        "This spell costs {1} less to cast for each artifact and/or creature card in your graveyard.",
+        "Cycling {2} ({2}, Discard this card: Draw a card.)"
+      ],
+      "inherited_admitted": true,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Clamorous Ironclad",
+      "oracle_id": "a08580da-e5aa-424b-86bf-d4535f3480d1",
+      "facts_sha256": "d0c5ba3d5bf207efaef4daeaf294c49a8008154ade58e378c03713a071c8e7ed",
+      "definition": "src/card_definitions/dft/clamorous_ironclad.rs",
+      "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)\nCrew 3 (Tap any number of creatures you control with total power 3 or more: This Vehicle becomes an artifact creature until end of turn.)\nCycling {R} ({R}, Discard this card: Draw a card.)",
+      "printed_obligations": [
+        "Menace (This creature can't be blocked except by two or more creatures.)",
+        "Crew 3 (Tap any number of creatures you control with total power 3 or more: This Vehicle becomes an artifact creature until end of turn.)",
+        "Cycling {R} ({R}, Discard this card: Draw a card.)"
+      ],
+      "inherited_admitted": true,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Count on Luck",
+      "oracle_id": "73ad7bcd-4ffc-442c-b6b5-d935b9ccaaaf",
+      "facts_sha256": "65e1ddc6f6e6cc4462d4c981941e18d888e64e81943825e97e9f1ab40e888d89",
+      "definition": "src/card_definitions/dft/count_on_luck.rs",
+      "oracle_text": "At the beginning of your upkeep, exile the top card of your library. You may play that card this turn.",
+      "printed_obligations": [
+        "At the beginning of your upkeep, exile the top card of your library. You may play that card this turn."
+      ],
+      "inherited_admitted": true,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Crash and Burn",
+      "oracle_id": "38405a37-921a-49ab-a95b-28eb8c26474a",
+      "facts_sha256": "a10eaa2d181529c70bb157a5b20d5e8383b1060530324e9815a09de9201a3e7f",
+      "definition": "src/card_definitions/dft/crash_and_burn.rs",
+      "oracle_text": "Choose one \u2014\n\u2022 Destroy target Vehicle.\n\u2022 Crash and Burn deals 6 damage to target creature or planeswalker.",
+      "printed_obligations": [
+        "Choose one \u2014",
+        "\u2022 Destroy target Vehicle.",
+        "\u2022 Crash and Burn deals 6 damage to target creature or planeswalker."
+      ],
+      "inherited_admitted": false,
+      "status": "authored_candidate_pending_integrator_test",
+      "required_engine_dependencies": [],
+      "outcome_tests": [
+        "crash_and_burn_has_distinct_vehicle_destruction_and_six_damage_modes"
+      ],
+      "test_target": "dft_black_red_cards_spells",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/c/CrashAndBurn.java",
+        "java_sha256": "f2a0eaf3a48b83d6943cd27cce7a2f505fc6467603a05bd739bd89b62193ba20",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/Mode.java",
+            "sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+            "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+            "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+            "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/common/TargetCreatureOrPlaneswalker.java",
+            "sha256": "74a515df49ac9de9bab546fb06aa877375286ce8bb4ea19113e77d811177d85f"
+          }
+        ]
+      },
+      "definition_sha256": "65ab3b0b2457c7154c9bd995ffbe1670757c744be578df53a87c02552a3d24cf"
+    },
+    {
+      "name": "Cryptcaller Chariot",
+      "oracle_id": "2bdd0bcb-6cfb-48e7-972e-355ff46621a4",
+      "facts_sha256": "7e73144418e6c37734dd7864caead918be56cf6188d6c26935d130d96bde8120",
+      "definition": "src/card_definitions/dft/cryptcaller_chariot.rs",
+      "oracle_text": "Menace\nWhenever you discard one or more cards, create that many tapped 2/2 black Zombie creature tokens.\nCrew 2",
+      "printed_obligations": [
+        "Menace",
+        "Whenever you discard one or more cards, create that many tapped 2/2 black Zombie creature tokens.",
+        "Crew 2"
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "discard-event-amount"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Cursecloth Wrappings",
+      "oracle_id": "d9c4996a-35eb-4d38-9680-57d9d039ed82",
+      "facts_sha256": "39965ad82e1200920ead12e06881e4660166c70697628fdc57454315ee6fef1f",
+      "definition": "src/card_definitions/dft/cursecloth_wrappings.rs",
+      "oracle_text": "Zombies you control get +1/+1.\n{T}: Target creature card in your graveyard gains embalm until end of turn. The embalm cost is equal to its mana cost. (Exile that card and pay its embalm cost: Create a token that's a copy of it, except it's a white Zombie in addition to its other types and has no mana cost. Embalm only as a sorcery.)",
+      "printed_obligations": [
+        "Zombies you control get +1/+1.",
+        "{T}: Target creature card in your graveyard gains embalm until end of turn. The embalm cost is equal to its mana cost. (Exile that card and pay its embalm cost: Create a token that's a copy of it, except it's a white Zombie in addition to its other types and has no mana cost. Embalm only as a sorcery.)"
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "embalm-grant"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Daretti, Rocketeer Engineer",
+      "oracle_id": "0eb1d539-6301-46b0-903e-487eda34253f",
+      "facts_sha256": "8152384e1b603428d1226ad4fb36a4edd47be33631c78648226f0cfe22b35149",
+      "definition": "src/card_definitions/dft/daretti_rocketeer_engineer.rs",
+      "oracle_text": "Daretti's power is equal to the greatest mana value among artifacts you control.\nWhenever Daretti enters or attacks, choose target artifact card in your graveyard. You may sacrifice an artifact. If you do, return the chosen card to the battlefield.",
+      "printed_obligations": [
+        "Daretti's power is equal to the greatest mana value among artifacts you control.",
+        "Whenever Daretti enters or attacks, choose target artifact card in your graveyard. You may sacrifice an artifact. If you do, return the chosen card to the battlefield."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Deathless Pilot",
+      "oracle_id": "31284a0b-9bd5-4186-bd27-6b16a3597e27",
+      "facts_sha256": "5838a13d0cedd09d87f1aafc74666f4a0eb4bbb0bade155dd686e45c9530a4fc",
+      "definition": "src/card_definitions/dft/deathless_pilot.rs",
+      "oracle_text": "This creature saddles Mounts and crews Vehicles as though its power were 2 greater.\n{3}{B}: Return this card from your graveyard to your hand.",
+      "printed_obligations": [
+        "This creature saddles Mounts and crews Vehicles as though its power were 2 greater.",
+        "{3}{B}: Return this card from your graveyard to your hand."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Demonic Junker",
+      "oracle_id": "88075828-a76e-412d-b738-182f50e3a133",
+      "facts_sha256": "fb5a2dd11c17e7337869c99c1d4fe064643509fab87561c683f241562133bbcb",
+      "definition": "src/card_definitions/dft/demonic_junker.rs",
+      "oracle_text": "Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.)\nWhen this Vehicle enters, for each player, destroy up to one target creature that player controls. If a creature you controlled was destroyed this way, put two +1/+1 counters on this Vehicle.\nCrew 2",
+      "printed_obligations": [
+        "Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.)",
+        "When this Vehicle enters, for each player, destroy up to one target creature that player controls. If a creature you controlled was destroyed this way, put two +1/+1 counters on this Vehicle.",
+        "Crew 2"
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "destruction-result"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Draconautics Engineer",
+      "oracle_id": "380d8d64-9aec-4656-b5b8-d336ebf803c8",
+      "facts_sha256": "7e5f9c3286dfaca50159b5292f751a7c31c5377e1bdfa0c2b2985732d8e7bddc",
+      "definition": "src/card_definitions/dft/draconautics_engineer.rs",
+      "oracle_text": "Exhaust \u2014 {R}: Other creatures you control gain haste until end of turn. Put a +1/+1 counter on this creature. (Activate each exhaust ability only once.)\nExhaust \u2014 {3}{R}: Create a 4/4 red Dinosaur Dragon creature token with flying.",
+      "printed_obligations": [
+        "Exhaust \u2014 {R}: Other creatures you control gain haste until end of turn. Put a +1/+1 counter on this creature. (Activate each exhaust ability only once.)",
+        "Exhaust \u2014 {3}{R}: Create a 4/4 red Dinosaur Dragon creature token with flying."
+      ],
+      "inherited_admitted": true,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Dracosaur Auxiliary",
+      "oracle_id": "457e3218-b2ef-4280-931a-5320987b9657",
+      "facts_sha256": "ac929d5f0e16ad4e730483ca54b4a1fff61c83f917303416ef689f4e0ae3b1aa",
+      "definition": "src/card_definitions/dft/dracosaur_auxiliary.rs",
+      "oracle_text": "Flying, haste\nWhenever this creature attacks while saddled, it deals 2 damage to any target.\nSaddle 3 (Tap any number of other creatures you control with total power 3 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)",
+      "printed_obligations": [
+        "Flying, haste",
+        "Whenever this creature attacks while saddled, it deals 2 damage to any target.",
+        "Saddle 3 (Tap any number of other creatures you control with total power 3 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
+      ],
+      "inherited_admitted": true,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Dynamite Diver",
+      "oracle_id": "5f9ef763-22aa-4d43-b084-ef02465b489c",
+      "facts_sha256": "35e0c8a782e5a1f1c8d3b95100fe5f3d2368f4dc88176ed1d5a44a1e8adf8c4e",
+      "definition": "src/card_definitions/dft/dynamite_diver.rs",
+      "oracle_text": "This creature saddles Mounts and crews Vehicles as though its power were 2 greater.\nWhen this creature dies, it deals 1 damage to any target.",
+      "printed_obligations": [
+        "This creature saddles Mounts and crews Vehicles as though its power were 2 greater.",
+        "When this creature dies, it deals 1 damage to any target."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Endrider Catalyzer",
+      "oracle_id": "b4d970ed-f332-440c-8c2f-8a8a0191410b",
+      "facts_sha256": "908b65e50c95229874db55be2d29e02fec5d8adaae7f7b0b7ce8ecedb36c0cc8",
+      "definition": "src/card_definitions/dft/endrider_catalyzer.rs",
+      "oracle_text": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\nMax speed \u2014 {T}: Add {R}{R}.",
+      "printed_obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "Max speed \u2014 {T}: Add {R}{R}."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "speed-value"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Endrider Spikespitter",
+      "oracle_id": "817f3b8b-4399-4c28-9453-7f57df4a7360",
+      "facts_sha256": "fde56e9b1dd6410f459e3d0c1bb51d9aa0d446b74caab6d2b2079df5af434f8c",
+      "definition": "src/card_definitions/dft/endrider_spikespitter.rs",
+      "oracle_text": "Reach\nStart your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\nMax speed \u2014 At the beginning of your upkeep, exile the top card of your library. You may play that card this turn.",
+      "printed_obligations": [
+        "Reach",
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "Max speed \u2014 At the beginning of your upkeep, exile the top card of your library. You may play that card this turn."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "speed-value"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Engine Rat",
+      "oracle_id": "7e29aae9-815a-4999-ace6-7bc860acde32",
+      "facts_sha256": "9bd3c406adb79682f697a677d3b841b14b40f9dc6ff078260617944ca1787761",
+      "definition": "src/card_definitions/dft/engine_rat.rs",
+      "oracle_text": "Deathtouch\n{5}{B}: Each opponent loses 2 life.",
+      "printed_obligations": [
+        "Deathtouch",
+        "{5}{B}: Each opponent loses 2 life."
+      ],
+      "inherited_admitted": true,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Fuel the Flames",
+      "oracle_id": "e7d4e952-d7b9-489d-a9a7-c61d08bf17cc",
+      "facts_sha256": "6d23fa9d99de61c3f7a380e06185bc129ce42a84e9a06e58b7627771c6a0a9fc",
+      "definition": "src/card_definitions/dft/fuel_the_flames.rs",
+      "oracle_text": "Fuel the Flames deals 2 damage to each creature.\nCycling {2} ({2}, Discard this card: Draw a card.)",
+      "printed_obligations": [
+        "Fuel the Flames deals 2 damage to each creature.",
+        "Cycling {2} ({2}, Discard this card: Draw a card.)"
+      ],
+      "inherited_admitted": true,
+      "status": "authored_candidate_pending_integrator_test",
+      "required_engine_dependencies": [],
+      "outcome_tests": [
+        "fuel_the_flames_damages_both_sides_creatures_but_not_uncrewed_vehicles_or_players",
+        "printed_cycling_costs_discard_before_drawing_and_keep_owner_authority"
+      ],
+      "test_target": "dft_black_red_cards_spells",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/f/FuelTheFlames.java",
+        "java_sha256": "e5d81250a19adb1cdf945946a2930235308c73ed28bb708c0650c49f6b1f3c1d",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/common/CyclingDiscardCost.java",
+            "sha256": "1025f6bf0bc3fd16124d317b75d7de4bf3ea880e506a936ff44aa04f9c53c575"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+            "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/DamageAllEffect.java",
+            "sha256": "0b4150468bb32f733a8cbc6485ae511b5141e87a1efc8b744911d62a7648c313"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+            "sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+          }
+        ]
+      },
+      "definition_sha256": "2295b24a9478de8edfe7daef952451f56c1db2c992754738fca336154dd971b0"
+    },
+    {
+      "name": "Full Throttle",
+      "oracle_id": "3c2f87eb-b0f4-4578-b143-6fba313a82ec",
+      "facts_sha256": "a280ba0d9106b7bce4b4a4dd0ffd500c3644c636a13f437b3164c2c036060d3d",
+      "definition": "src/card_definitions/dft/full_throttle.rs",
+      "oracle_text": "After this main phase, there are two additional combat phases.\nAt the beginning of each combat this turn, untap all creatures that attacked this turn.",
+      "printed_obligations": [
+        "After this main phase, there are two additional combat phases.",
+        "At the beginning of each combat this turn, untap all creatures that attacked this turn."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "after-main-combats"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Gas Guzzler",
+      "oracle_id": "7c98626b-ba97-4d1e-9be7-291480ae8d22",
+      "facts_sha256": "309247665a70593494395b7c87c9308cadd3437f241a2831bc2c3f67ca1ffafb",
+      "definition": "src/card_definitions/dft/gas_guzzler.rs",
+      "oracle_text": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\nThis creature enters tapped.\nMax speed \u2014 {B}, Sacrifice another creature or Vehicle: Draw a card.",
+      "printed_obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "This creature enters tapped.",
+        "Max speed \u2014 {B}, Sacrifice another creature or Vehicle: Draw a card."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "cost-union-kind-subtype",
+        "speed-value"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Gastal Blockbuster",
+      "oracle_id": "3b601721-90ca-45d3-9a3a-19c719799bfa",
+      "facts_sha256": "d4ac6b012e3368daf426888bb6b48a7906ab299421f9783a00e39679d73bcaee",
+      "definition": "src/card_definitions/dft/gastal_blockbuster.rs",
+      "oracle_text": "When this creature enters, you may sacrifice a creature or Vehicle. When you do, destroy target artifact an opponent controls.",
+      "printed_obligations": [
+        "When this creature enters, you may sacrifice a creature or Vehicle. When you do, destroy target artifact an opponent controls."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "cost-union-kind-subtype"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Gastal Raider",
+      "oracle_id": "26c09127-8225-4ba2-9f97-f5558b1c41b5",
+      "facts_sha256": "039cab49c48c6a8f3eb93273fa0e9c9dfa0eb119393309414024d7aa74138702",
+      "definition": "src/card_definitions/dft/gastal_raider.rs",
+      "oracle_text": "Start your engines!\nWhen this creature enters, target opponent reveals their hand. You choose an instant or sorcery card from it. That player discards that card.\nMax speed \u2014 This creature gets +1/+1 and has menace.",
+      "printed_obligations": [
+        "Start your engines!",
+        "When this creature enters, target opponent reveals their hand. You choose an instant or sorcery card from it. That player discards that card.",
+        "Max speed \u2014 This creature gets +1/+1 and has menace."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "speed-value"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Gastal Thrillroller",
+      "oracle_id": "86d67952-19b8-4bb8-b7d7-b2751e86591c",
+      "facts_sha256": "0d0891e7d13bd895a1b65cac550c55769fd7a9cf75443142a8d8076a752e7941",
+      "definition": "src/card_definitions/dft/gastal_thrillroller.rs",
+      "oracle_text": "Trample, haste\nWhen this Vehicle enters, it becomes an artifact creature until end of turn.\nCrew 2\n{2}{R}, Discard a card: Return this card from your graveyard to the battlefield with a finality counter on it. Activate only as a sorcery.",
+      "printed_obligations": [
+        "Trample, haste",
+        "When this Vehicle enters, it becomes an artifact creature until end of turn.",
+        "Crew 2",
+        "{2}{R}, Discard a card: Return this card from your graveyard to the battlefield with a finality counter on it. Activate only as a sorcery."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Gilded Ghoda",
+      "oracle_id": "5f4939dc-6e87-47fa-8287-9da60d4b5db2",
+      "facts_sha256": "d1b886abca157e5d4da1daf0185451cf48041d39b611ed97b77de5e81465bcc6",
+      "definition": "src/card_definitions/dft/gilded_ghoda.rs",
+      "oracle_text": "Whenever this creature attacks while saddled, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")\nSaddle 1 (Tap any number of other creatures you control with total power 1 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)",
+      "printed_obligations": [
+        "Whenever this creature attacks while saddled, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+        "Saddle 1 (Tap any number of other creatures you control with total power 1 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
+      ],
+      "inherited_admitted": true,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Goblin Surveyor",
+      "oracle_id": "237758f3-84b2-4e5b-a2c7-b28c893e2790",
+      "facts_sha256": "5696acd43c19a1a133efd1ab28fb7caa0b0ef9cf118ee146c0c741313ff98d32",
+      "definition": "src/card_definitions/dft/goblin_surveyor.rs",
+      "oracle_text": "Trample\nStart your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\nMax speed \u2014 {3}, Exile this card from your graveyard: Draw a card.",
+      "printed_obligations": [
+        "Trample",
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "Max speed \u2014 {3}, Exile this card from your graveyard: Draw a card."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "graveyard-max-speed",
+        "speed-value"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Gonti, Night Minister",
+      "oracle_id": "e16f79c1-ffbb-4893-b62a-d4e9d15e2b16",
+      "facts_sha256": "489c5f9cf15f46cf8f12f91a54a1ca86d1c15a0193e679a59ca34f9c735cdbc1",
+      "definition": "src/card_definitions/dft/gonti_night_minister.rs",
+      "oracle_text": "Whenever a player casts a spell they don't own, that player creates a Treasure token.\nWhenever a creature deals combat damage to one of your opponents, its controller looks at the top card of that opponent's library and exiles it face down. They may play that card for as long as it remains exiled. Mana of any type can be spent to cast a spell this way.",
+      "printed_obligations": [
+        "Whenever a player casts a spell they don't own, that player creates a Treasure token.",
+        "Whenever a creature deals combat damage to one of your opponents, its controller looks at the top card of that opponent's library and exiles it face down. They may play that card for as long as it remains exiled. Mana of any type can be spent to cast a spell this way."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "caster-foreign-owned",
+        "combat-foreign-face-down-play"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Greasewrench Goblin",
+      "oracle_id": "952300de-766e-4ceb-bd36-e0b721bebc17",
+      "facts_sha256": "95e40912ddaa2ca87e8a5fc7713e7741672040f7baf83d840135e5f7c39f7292",
+      "definition": "src/card_definitions/dft/greasewrench_goblin.rs",
+      "oracle_text": "Exhaust \u2014 {2}{R}: Discard up to two cards, then draw that many cards. Put a +1/+1 counter on this creature. (Activate each exhaust ability only once.)",
+      "printed_obligations": [
+        "Exhaust \u2014 {2}{R}: Discard up to two cards, then draw that many cards. Put a +1/+1 counter on this creature. (Activate each exhaust ability only once.)"
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "capped-rummage"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Grim Bauble",
+      "oracle_id": "431d6a2b-e22c-4921-a5f1-dd672f764f78",
+      "facts_sha256": "5ecab8c6907fa63f327a0394d09b1d48fa7de6843a3bdc02e2f80e88969cc4d1",
+      "definition": "src/card_definitions/dft/grim_bauble.rs",
+      "oracle_text": "When this artifact enters, target creature an opponent controls gets -2/-2 until end of turn.\n{2}{B}, {T}, Sacrifice this artifact: Surveil 2. (Look at the top two cards of your library, then put any number of them into your graveyard and the rest on top of your library in any order.)",
+      "printed_obligations": [
+        "When this artifact enters, target creature an opponent controls gets -2/-2 until end of turn.",
+        "{2}{B}, {T}, Sacrifice this artifact: Surveil 2. (Look at the top two cards of your library, then put any number of them into your graveyard and the rest on top of your library in any order.)"
+      ],
+      "inherited_admitted": true,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Grim Javelineer",
+      "oracle_id": "bd31487e-e95a-4d90-8c85-742aa83c3e90",
+      "facts_sha256": "3216d4f62def310acd9af84691a1b9bf459bc16b0bc1f2b826309782228d688a",
+      "definition": "src/card_definitions/dft/grim_javelineer.rs",
+      "oracle_text": "Whenever you attack, target attacking creature gets +1/+0 until end of turn. When that creature dies this turn, surveil 1. (Look at the top card of your library. You may put that card into your graveyard.)",
+      "printed_obligations": [
+        "Whenever you attack, target attacking creature gets +1/+0 until end of turn. When that creature dies this turn, surveil 1. (Look at the top card of your library. You may put that card into your graveyard.)"
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "delayed-target-dies"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Hazoret, Godseeker",
+      "oracle_id": "6c5d8599-75ca-4479-a02b-1b257b7aea57",
+      "facts_sha256": "51c8e5e75a98e8ffaa56e44d6b4e2f46627172a508ca83627449379a5b52ad91",
+      "definition": "src/card_definitions/dft/hazoret_godseeker.rs",
+      "oracle_text": "Indestructible, haste\nStart your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\n{1}, {T}: Target creature with power 2 or less can't be blocked this turn.\nHazoret can't attack or block unless you have max speed.",
+      "printed_obligations": [
+        "Indestructible, haste",
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "{1}, {T}: Target creature with power 2 or less can't be blocked this turn.",
+        "Hazoret can't attack or block unless you have max speed."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "speed-value"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Hellish Sideswipe",
+      "oracle_id": "d919d8e9-d1ba-42de-9884-12e38dca78ac",
+      "facts_sha256": "6f1f534230bbcbe77bd4bd498b1ee899e4305b2e9d5b5bc0356e77da20d4100c",
+      "definition": "src/card_definitions/dft/hellish_sideswipe.rs",
+      "oracle_text": "As an additional cost to cast this spell, sacrifice an artifact or creature.\nDestroy target creature or Vehicle. If the sacrificed permanent was a Vehicle, draw a card.",
+      "printed_obligations": [
+        "As an additional cost to cast this spell, sacrifice an artifact or creature.",
+        "Destroy target creature or Vehicle. If the sacrificed permanent was a Vehicle, draw a card."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "sacrifice-cost-facts"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Hour of Victory",
+      "oracle_id": "eb100b3b-bc3f-48f3-8f28-bb2d80225ea9",
+      "facts_sha256": "355c941b9656410b67a85c018a153d38739932a765aac8bc903b5755ac1694de",
+      "definition": "src/card_definitions/dft/hour_of_victory.rs",
+      "oracle_text": "Start your engines!\nWhen this enchantment enters, create a 2/2 black Zombie creature token.\nMax speed \u2014 {1}{B}, Sacrifice this enchantment: Search your library for a card, put it into your hand, then shuffle. Activate only as a sorcery.",
+      "printed_obligations": [
+        "Start your engines!",
+        "When this enchantment enters, create a 2/2 black Zombie creature token.",
+        "Max speed \u2014 {1}{B}, Sacrifice this enchantment: Search your library for a card, put it into your hand, then shuffle. Activate only as a sorcery."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "speed-value"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Howlsquad Heavy",
+      "oracle_id": "cd45a29f-73bc-435c-9d50-09a4ecaa77be",
+      "facts_sha256": "c4e69625adc2af904ce0fa05a685cbe1771c124c057f2022eeddad2af4772a86",
+      "definition": "src/card_definitions/dft/howlsquad_heavy.rs",
+      "oracle_text": "Start your engines!\nOther Goblins you control have haste.\nAt the beginning of combat on your turn, create a 1/1 red Goblin creature token. That token attacks this combat if able.\nMax speed \u2014 {T}: Add {R} for each Goblin you control.",
+      "printed_obligations": [
+        "Start your engines!",
+        "Other Goblins you control have haste.",
+        "At the beginning of combat on your turn, create a 1/1 red Goblin creature token. That token attacks this combat if able.",
+        "Max speed \u2014 {T}: Add {R} for each Goblin you control."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "speed-value",
+        "combat-only-token-requirement"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Intimidation Tactics",
+      "oracle_id": "121bd1af-da21-4937-a911-377c5b430796",
+      "facts_sha256": "aea6eb7617c1e6338cc881192be7d06e63c5e8008501e857a928daf2c3b39130",
+      "definition": "src/card_definitions/dft/intimidation_tactics.rs",
+      "oracle_text": "Target opponent reveals their hand. You choose an artifact or creature card from it. Exile that card.\nCycling {3} ({3}, Discard this card: Draw a card.)",
+      "printed_obligations": [
+        "Target opponent reveals their hand. You choose an artifact or creature card from it. Exile that card.",
+        "Cycling {3} ({3}, Discard this card: Draw a card.)"
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Kalakscion, Hunger Tyrant",
+      "oracle_id": "d85f5edb-60a8-4abd-82b0-f9a58f3d4185",
+      "facts_sha256": "abcdfcfcb773f3e4dbd659e73a44cb9ae852a02a7ba6a30c5ed818aabf684cf4",
+      "definition": "src/card_definitions/dft/kalakscion_hunger_tyrant.rs",
+      "oracle_text": "",
+      "printed_obligations": [
+        "Printed mana cost, types, colors, power/toughness and legendary supertype only"
+      ],
+      "inherited_admitted": true,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Kickoff Celebrations",
+      "oracle_id": "94868faf-9e88-4221-8db6-3ad10aa02da5",
+      "facts_sha256": "d11308278880857d882aae2cf532cde4653c4c8254c6cbb94a6250c49c64cf08",
+      "definition": "src/card_definitions/dft/kickoff_celebrations.rs",
+      "oracle_text": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\nWhen this enchantment enters, you may discard a card. If you do, draw two cards.\nMax speed \u2014 Sacrifice this enchantment: Creatures and Vehicles you control gain haste until end of turn.",
+      "printed_obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "When this enchantment enters, you may discard a card. If you do, draw two cards.",
+        "Max speed \u2014 Sacrifice this enchantment: Creatures and Vehicles you control gain haste until end of turn."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "speed-value"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Lightning Strike",
+      "oracle_id": "f34b9bc4-7bfe-47fd-ba23-4eeeb46026eb",
+      "facts_sha256": "0f71624f371316e9bf2b90c154f73cc9eb1c9ae61cd5b90b49c77bc97b7285a3",
+      "definition": "src/card_definitions/msh/lightning_strike.rs",
+      "oracle_text": "Lightning Strike deals 3 damage to any target.",
+      "printed_obligations": [
+        "Lightning Strike deals 3 damage to any target."
+      ],
+      "inherited_admitted": true,
+      "status": "authored_candidate_pending_integrator_test",
+      "required_engine_dependencies": [],
+      "outcome_tests": [
+        "lightning_strike_deals_three_to_a_player_and_planeswalker",
+        "maximum_overdrive_keeps_its_counter_after_temporary_keywords_expire"
+      ],
+      "test_target": "dft_black_red_cards_spells",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/l/LightningStrike.java",
+        "java_sha256": "a7f63ee848cb2838b01010b9b2abac717c49bce25a747dd38438fcf2fb43f427",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+            "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/filter/common/FilterAnyTarget.java",
+            "sha256": "39d309804844b705a2400ce7086858449831db75048e836f777b66d5d0af18e5"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/common/TargetAnyTarget.java",
+            "sha256": "94f28b8a4a9908ef9b7599805c0ac39faf0aae249231969cd51373db206ebf34"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/common/TargetPermanentOrPlayer.java",
+            "sha256": "f43a3bbef4f7d2f923cddf063aa48211aad59848ccefcdace9b08a40b5cd67ab"
+          }
+        ]
+      },
+      "definition_sha256": "4c3b4debfadad05eaa38381abdd010f1bc20fa5fdbf4ae8b9387c804aa4e94ca"
+    },
+    {
+      "name": "Locust Spray",
+      "oracle_id": "f9dce026-2653-4793-b949-357b08a936ea",
+      "facts_sha256": "918d1ac64f340df53298608849b1b71f52fa3e34c374a63d68c5befac9e39229",
+      "definition": "src/card_definitions/dft/locust_spray.rs",
+      "oracle_text": "Target creature gets -1/-1 until end of turn.\nCycling {B} ({B}, Discard this card: Draw a card.)",
+      "printed_obligations": [
+        "Target creature gets -1/-1 until end of turn.",
+        "Cycling {B} ({B}, Discard this card: Draw a card.)"
+      ],
+      "inherited_admitted": true,
+      "status": "authored_candidate_pending_integrator_test",
+      "required_engine_dependencies": [],
+      "outcome_tests": [
+        "locust_spray_reduces_both_stats_until_cleanup_and_can_kill_one_toughness",
+        "printed_cycling_costs_discard_before_drawing_and_keep_owner_authority"
+      ],
+      "test_target": "dft_black_red_cards_spells",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/l/LocustSpray.java",
+        "java_sha256": "f837c77531bb2800e410c99d711507b24db4043632b5da14ae7fdd03c9ab0fd6",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/common/CyclingDiscardCost.java",
+            "sha256": "1025f6bf0bc3fd16124d317b75d7de4bf3ea880e506a936ff44aa04f9c53c575"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+            "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+            "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+            "sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+            "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+          }
+        ]
+      },
+      "definition_sha256": "6795da7655fd0ef643fafc6b4b8baf68768b6a484e176a9a15bf627dd5b80463"
+    },
+    {
+      "name": "Magmakin Artillerist",
+      "oracle_id": "900b9409-9c16-414d-8674-2ea42c2415a1",
+      "facts_sha256": "8d8d4ec5ad05617cc4e4007f6010664ecccd6cb4d2b19bc7123e4981d1841c17",
+      "definition": "src/card_definitions/dft/magmakin_artillerist.rs",
+      "oracle_text": "Whenever you discard one or more cards, this creature deals that much damage to each opponent.\nCycling {1}{R} ({1}{R}, Discard this card: Draw a card.)\nWhen you cycle this card, it deals 1 damage to each opponent.",
+      "printed_obligations": [
+        "Whenever you discard one or more cards, this creature deals that much damage to each opponent.",
+        "Cycling {1}{R} ({1}{R}, Discard this card: Draw a card.)",
+        "When you cycle this card, it deals 1 damage to each opponent."
+      ],
+      "inherited_admitted": true,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Marauding Mako",
+      "oracle_id": "e349be42-5f14-44a9-9608-281985c10e2d",
+      "facts_sha256": "432bedcde1534e6ba2a41a61f414558d281a161ecb2c5f00364750607141b8fc",
+      "definition": "src/card_definitions/dft/marauding_mako.rs",
+      "oracle_text": "Whenever you discard one or more cards, put that many +1/+1 counters on this creature.\nCycling {2} ({2}, Discard this card: Draw a card.)",
+      "printed_obligations": [
+        "Whenever you discard one or more cards, put that many +1/+1 counters on this creature.",
+        "Cycling {2} ({2}, Discard this card: Draw a card.)"
+      ],
+      "inherited_admitted": true,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Maximum Overdrive",
+      "oracle_id": "f0e85b74-12fb-4d63-853e-7a3f41f731b4",
+      "facts_sha256": "57b671620508d13102a527a1535af38142e77ff1e631fd1747cbf2c2b0b4be24",
+      "definition": "src/card_definitions/dft/maximum_overdrive.rs",
+      "oracle_text": "Put a +1/+1 counter on target creature. It gains deathtouch and indestructible until end of turn.",
+      "printed_obligations": [
+        "Put a +1/+1 counter on target creature. It gains deathtouch and indestructible until end of turn."
+      ],
+      "inherited_admitted": true,
+      "status": "authored_candidate_pending_integrator_test",
+      "required_engine_dependencies": [],
+      "outcome_tests": [
+        "maximum_overdrive_keeps_its_counter_after_temporary_keywords_expire"
+      ],
+      "test_target": "dft_black_red_cards_spells",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/m/MaximumOverdrive.java",
+        "java_sha256": "c884aed757bd8ee480d7542fef793b3a1d73922241979fd9107845c2cb75e388",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+            "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+            "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+            "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+            "sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/counters/CounterType.java",
+            "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+            "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+          }
+        ]
+      },
+      "definition_sha256": "5afcb01211d56c9167c269fee5b1d6c372b22a157ad7d63245242bb41a2ffd71"
+    },
+    {
+      "name": "Momentum Breaker",
+      "oracle_id": "087d2e42-c69f-4cd2-b2e3-e0b64ac2893b",
+      "facts_sha256": "d4506c062cd1aed9f27e7a38924480d935754edfebbab1e5a234b02a27f544c5",
+      "definition": "src/card_definitions/dft/momentum_breaker.rs",
+      "oracle_text": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\nWhen this enchantment enters, each opponent sacrifices a creature or Vehicle of their choice. Each opponent who can't discards a card.\n{2}, Sacrifice this enchantment: You gain life equal to your speed.",
+      "printed_obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "When this enchantment enters, each opponent sacrifices a creature or Vehicle of their choice. Each opponent who can't discards a card.",
+        "{2}, Sacrifice this enchantment: You gain life equal to your speed."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "speed-value",
+        "cost-union-kind-subtype",
+        "sacrifice-or-discard-fallback"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Mutant Surveyor",
+      "oracle_id": "f35aace7-57b5-44b8-91d2-4710eb7d5548",
+      "facts_sha256": "1231c76d4ddc8f2610c6853dcdee3bc97395095ddb3b794c6329c1737e6e9eb1",
+      "definition": "src/card_definitions/dft/mutant_surveyor.rs",
+      "oracle_text": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\n{2}: This creature gets +1/+1 until end of turn.\nMax speed \u2014 {3}, Exile this card from your graveyard: Draw a card.",
+      "printed_obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "{2}: This creature gets +1/+1 until end of turn.",
+        "Max speed \u2014 {3}, Exile this card from your graveyard: Draw a card."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "speed-value",
+        "graveyard-max-speed"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Outpace Oblivion",
+      "oracle_id": "4d92f48d-c851-4b71-b7fa-916459928d59",
+      "facts_sha256": "463e9042a01f4c58afafed241003bbcb0c247eb5bc92c95d58f53f4e96929197",
+      "definition": "src/card_definitions/dft/outpace_oblivion.rs",
+      "oracle_text": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\nWhen this enchantment enters, it deals 5 damage to up to one target creature or planeswalker.\n{2}, Sacrifice this enchantment: It deals 2 damage to each player who doesn't have max speed.",
+      "printed_obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "When this enchantment enters, it deals 5 damage to up to one target creature or planeswalker.",
+        "{2}, Sacrifice this enchantment: It deals 2 damage to each player who doesn't have max speed."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "speed-value",
+        "speed-player-damage"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Pacesetter Paragon",
+      "oracle_id": "1acb289f-fb7f-4d83-aaef-4e7b9462c593",
+      "facts_sha256": "4875165362efe4eb0dcbbbbdb4e544d6bcfe98b2a0e01908f6b8557c155c9387",
+      "definition": "src/card_definitions/dft/pacesetter_paragon.rs",
+      "oracle_text": "Exhaust \u2014 {2}{R}: Put a +1/+1 counter on this creature. It gains double strike until end of turn. (Activate each exhaust ability only once.)",
+      "printed_obligations": [
+        "Exhaust \u2014 {2}{R}: Put a +1/+1 counter on this creature. It gains double strike until end of turn. (Activate each exhaust ability only once.)"
+      ],
+      "inherited_admitted": true,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Pactdoll Terror",
+      "oracle_id": "e02fff6b-9ee4-474f-97fc-d70d4bc8001b",
+      "facts_sha256": "4ac78e5e887647a879c6ca3af8e93ed8ee52844ea1105645d0fa7028676c1696",
+      "definition": "src/card_definitions/dft/pactdoll_terror.rs",
+      "oracle_text": "Whenever this creature or another artifact you control enters, each opponent loses 1 life and you gain 1 life.",
+      "printed_obligations": [
+        "Whenever this creature or another artifact you control enters, each opponent loses 1 life and you gain 1 life."
+      ],
+      "inherited_admitted": true,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Pedal to the Metal",
+      "oracle_id": "22196948-9f30-4fcd-b43b-c7f81a0f4f36",
+      "facts_sha256": "1f0211f7879c340efa0e9b2f7241e72532fc9cc3f95d888ca7ada902b1f84b5c",
+      "definition": "src/card_definitions/dft/pedal_to_the_metal.rs",
+      "oracle_text": "Target creature gets +X/+0 and gains first strike until end of turn.",
+      "printed_obligations": [
+        "Target creature gets +X/+0 and gains first strike until end of turn."
+      ],
+      "inherited_admitted": true,
+      "status": "authored_candidate_pending_integrator_test",
+      "required_engine_dependencies": [],
+      "outcome_tests": [
+        "pedal_to_the_metal_locks_paid_x_and_grants_first_strike_even_at_zero"
+      ],
+      "test_target": "dft_black_red_cards_spells",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/p/PedalToTheMetal.java",
+        "java_sha256": "04586754e43036a8a6e50bde7d32180297d2e0d9902938dbf2aadf5fc43022a6",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+            "sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+            "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+            "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+            "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/FirstStrikeAbility.java",
+            "sha256": "997831ae93b8f148ce96ac211e3e2a86e2df46403677fe1106d7c20554678235"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+            "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/util/CardUtil.java",
+            "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+          }
+        ]
+      },
+      "definition_sha256": "522dd482080eab11eb4bc00e62353b6e0abb5ee8e6cef7b7af90ecab67a214f0"
+    },
+    {
+      "name": "Prowcatcher Specialist",
+      "oracle_id": "594132ac-32a7-41d5-b7f0-3692bbed7f6f",
+      "facts_sha256": "4fb4a45406b07dfb7b960d9ebb58ac313413b30d380601f01f491728fce029e5",
+      "definition": "src/card_definitions/dft/prowcatcher_specialist.rs",
+      "oracle_text": "Haste\nExhaust \u2014 {3}{R}: Put two +1/+1 counters on this creature. (Activate each exhaust ability only once.)",
+      "printed_obligations": [
+        "Haste",
+        "Exhaust \u2014 {3}{R}: Put two +1/+1 counters on this creature. (Activate each exhaust ability only once.)"
+      ],
+      "inherited_admitted": true,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Push the Limit",
+      "oracle_id": "62e54c6d-d775-4597-bd4d-dc38460b33ec",
+      "facts_sha256": "ebc954e5bfcc6fffb38a9cfbd8c27ac46cb00b026228a4555cac08df613d762d",
+      "definition": "src/card_definitions/dft/push_the_limit.rs",
+      "oracle_text": "Return all Mount and Vehicle cards from your graveyard to the battlefield. Sacrifice them at the beginning of the next end step.\nVehicles you control become artifact creatures until end of turn. Creatures you control gain haste until end of turn.",
+      "printed_obligations": [
+        "Return all Mount and Vehicle cards from your graveyard to the battlefield. Sacrifice them at the beginning of the next end step.",
+        "Vehicles you control become artifact creatures until end of turn. Creatures you control gain haste until end of turn."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "filtered-mass-return-delayed-sacrifice"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Quag Feast",
+      "oracle_id": "78957246-4092-4f4a-80e3-142e24226962",
+      "facts_sha256": "64a63153b3b33bb38fd9072511bba078ebbd34321335ef70a81f510339155156",
+      "definition": "src/card_definitions/dft/quag_feast.rs",
+      "oracle_text": "Choose target creature, planeswalker, or Vehicle. Mill two cards, then destroy the chosen permanent if its mana value is less than or equal to the number of cards in your graveyard.",
+      "printed_obligations": [
+        "Choose target creature, planeswalker, or Vehicle. Mill two cards, then destroy the chosen permanent if its mana value is less than or equal to the number of cards in your graveyard."
+      ],
+      "inherited_admitted": false,
+      "status": "authored_candidate_pending_integrator_test",
+      "required_engine_dependencies": [
+        "post-mill-target-threshold"
+      ],
+      "outcome_tests": [
+        "quag_feast_uses_post_mill_graveyard_count_and_accepts_all_three_target_types",
+        "quag_feast_does_not_mill_when_its_only_target_is_a_new_incarnation"
+      ],
+      "test_target": "dft_black_red_cards_spells",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/q/QuagFeast.java",
+        "java_sha256": "b7ad53a42dc0ec067927b827320a47b13da538987e8f3c26413c28f46327a236",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/Ability.java",
+            "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+            "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+            "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+          }
+        ]
+      },
+      "definition_sha256": "393dc3fd8bbdedb508af2c25fe3f396992db9be7d0532f9ec1cb7b6dc4abdf24"
+    },
+    {
+      "name": "Reckless Velocitaur",
+      "oracle_id": "367420cb-e77b-4d0c-9a83-0deee28f6d36",
+      "facts_sha256": "2685a3ced05863d82344e2d492787dc8a7af730e9cf133e88b98d02e2e454374",
+      "definition": "src/card_definitions/dft/reckless_velocitaur.rs",
+      "oracle_text": "Whenever this creature saddles a Mount or crews a Vehicle during your main phase, that Mount or Vehicle gets +2/+0 and gains trample until end of turn.",
+      "printed_obligations": [
+        "Whenever this creature saddles a Mount or crews a Vehicle during your main phase, that Mount or Vehicle gets +2/+0 and gains trample until end of turn."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "crew-saddle-participant-event"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Ripclaw Wrangler",
+      "oracle_id": "6b2ffdb8-3681-4d64-ac03-8c860082e60e",
+      "facts_sha256": "e043aa9aff741fa01d29c7be9c2aa42f4fcea450540b56752e813ca266655f3c",
+      "definition": "src/card_definitions/dft/ripclaw_wrangler.rs",
+      "oracle_text": "When this Vehicle enters, each opponent discards a card.\nCrew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)",
+      "printed_obligations": [
+        "When this Vehicle enters, each opponent discards a card.",
+        "Crew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)"
+      ],
+      "inherited_admitted": true,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Risen Necroregent",
+      "oracle_id": "527cc22f-b471-4a84-93a8-be56193a9723",
+      "facts_sha256": "d5c54ca938d9e31ae37b1c6d6a97555c57f02f9eaf06ddea4d263c4edb4e59b5",
+      "definition": "src/card_definitions/dft/risen_necroregent.rs",
+      "oracle_text": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\nMax speed \u2014 At the beginning of your end step, create a 2/2 black Zombie creature token.",
+      "printed_obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "Max speed \u2014 At the beginning of your end step, create a 2/2 black Zombie creature token."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "speed-value"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Risky Shortcut",
+      "oracle_id": "a7c55495-6aca-4d17-b61a-cab8fa38b9f4",
+      "facts_sha256": "882939898e724e03b327bcc605fa6795d116c224e685c3965a628790ed2266db",
+      "definition": "src/card_definitions/dft/risky_shortcut.rs",
+      "oracle_text": "Draw two cards. Each player loses 2 life.",
+      "printed_obligations": [
+        "Draw two cards. Each player loses 2 life."
+      ],
+      "inherited_admitted": true,
+      "status": "authored_candidate_pending_integrator_test",
+      "required_engine_dependencies": [],
+      "outcome_tests": [
+        "risky_shortcut_draws_two_then_both_players_lose_two_life"
+      ],
+      "test_target": "dft_black_red_cards_spells",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/r/RiskyShortcut.java",
+        "java_sha256": "4d325aeb4d492803508d871fd6c281743bd410b12d5d0476f25d2c532e6956b8",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+            "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeAllPlayersEffect.java",
+            "sha256": "8a6c60097cf05e798d15af38c93d29d53044b9aa7accfa79da31f82e3e12e4e4"
+          }
+        ]
+      },
+      "definition_sha256": "e88691e6b812272d6bbcf5309d2aa256d51f399f501b6d3696702a0f627938fd"
+    },
+    {
+      "name": "Road Rage",
+      "oracle_id": "da052082-b440-4abb-9c69-05d4d13e5fd2",
+      "facts_sha256": "c0f3d6f895984ed1059e1a8f9954f6677ec802b1d595f9bc365677bd91506ade",
+      "definition": "src/card_definitions/dft/road_rage.rs",
+      "oracle_text": "Road Rage deals X damage to target creature or planeswalker, where X is 2 plus the number of Mounts and Vehicles you control.",
+      "printed_obligations": [
+        "Road Rage deals X damage to target creature or planeswalker, where X is 2 plus the number of Mounts and Vehicles you control."
+      ],
+      "inherited_admitted": false,
+      "status": "authored_candidate_pending_integrator_test",
+      "required_engine_dependencies": [],
+      "outcome_tests": [
+        "road_rage_counts_current_controlled_union_once_at_resolution"
+      ],
+      "test_target": "dft_black_red_cards_spells",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/r/RoadRage.java",
+        "java_sha256": "9ed7faf796ff65439745825a8333354b5e3bd19a71a2fd4be5b50d94bcfb943a",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/dynamicvalue/AdditiveDynamicValue.java",
+            "sha256": "156c42a7450af54725bc02366bbcba4763fdbf5c7b769ddded8d615bcaa94718"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+            "sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+            "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+            "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+            "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/hint/Hint.java",
+            "sha256": "5b3e37a154109935f244c02a79a0182695daad1bee2180f5f0b407bdf630509a"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/hint/ValueHint.java",
+            "sha256": "d0748934608e742b2bb47c3dab958c95246fc69ef40a54a5f4d95c64cb79e99a"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/common/TargetCreatureOrPlaneswalker.java",
+            "sha256": "74a515df49ac9de9bab546fb06aa877375286ce8bb4ea19113e77d811177d85f"
+          }
+        ]
+      },
+      "definition_sha256": "a9d31cb801dfe878ed87c3ea737ae5e1ba2c39995a3c1f74e4c83046b00075bc"
+    },
+    {
+      "name": "Shefet Archfiend",
+      "oracle_id": "06355d3f-a82d-4f12-a399-016a12824795",
+      "facts_sha256": "e257c6f02f2cd7f592040698400989d61b8485593d145ee6a4cb312b126681dc",
+      "definition": "src/card_definitions/dft/shefet_archfiend.rs",
+      "oracle_text": "Flying\nWhen this creature enters, all other creatures get -2/-2 until end of turn.\nCycling {2} ({2}, Discard this card: Draw a card.)",
+      "printed_obligations": [
+        "Flying",
+        "When this creature enters, all other creatures get -2/-2 until end of turn.",
+        "Cycling {2} ({2}, Discard this card: Draw a card.)"
+      ],
+      "inherited_admitted": true,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Skycrash",
+      "oracle_id": "2343ebff-edf4-4132-ad9e-7800f8014072",
+      "facts_sha256": "f072537d49b6e572b55fb13f5f4d06c443fb5412b6b5f98790c3004d4825fc9f",
+      "definition": "src/card_definitions/dft/skycrash.rs",
+      "oracle_text": "Destroy target artifact.\nCycling {R} ({R}, Discard this card: Draw a card.)",
+      "printed_obligations": [
+        "Destroy target artifact.",
+        "Cycling {R} ({R}, Discard this card: Draw a card.)"
+      ],
+      "inherited_admitted": true,
+      "status": "authored_candidate_pending_integrator_test",
+      "required_engine_dependencies": [],
+      "outcome_tests": [
+        "skycrash_and_spin_out_destroy_only_their_printed_target_classes",
+        "printed_cycling_costs_discard_before_drawing_and_keep_owner_authority"
+      ],
+      "test_target": "dft_black_red_cards_spells",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/s/Skycrash.java",
+        "java_sha256": "e5564499694a1794e242e30665035cc04067545da16b26f19a23fc3583d8232f",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/common/CyclingDiscardCost.java",
+            "sha256": "1025f6bf0bc3fd16124d317b75d7de4bf3ea880e506a936ff44aa04f9c53c575"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+            "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+            "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+            "sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/common/TargetArtifactPermanent.java",
+            "sha256": "7cbfb4763fc203a4f36b4b779bad8102d058066579a47e323b1ba1dc02153d53"
+          }
+        ]
+      },
+      "definition_sha256": "1f02b66b565f9f8de96b5a3714df17259b3f0ff91a6322e10b17a59db139977d"
+    },
+    {
+      "name": "Spin Out",
+      "oracle_id": "c1b6795a-1ac6-4edb-bcee-4db1f1fbe8ea",
+      "facts_sha256": "a1b7763f89ba9055d73200f4509f670e75411a58c898eb7b89795c21078dd2e6",
+      "definition": "src/card_definitions/dft/spin_out.rs",
+      "oracle_text": "Destroy target creature or Vehicle.",
+      "printed_obligations": [
+        "Destroy target creature or Vehicle."
+      ],
+      "inherited_admitted": true,
+      "status": "authored_candidate_pending_integrator_test",
+      "required_engine_dependencies": [],
+      "outcome_tests": [
+        "skycrash_and_spin_out_destroy_only_their_printed_target_classes"
+      ],
+      "test_target": "dft_black_red_cards_spells",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/s/SpinOut.java",
+        "java_sha256": "46b8cfa8eb8718bf3a83ca8599f690764128123da738c1e20ba1b4ea47a2d6fb",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+            "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+            "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+          }
+        ]
+      },
+      "definition_sha256": "f6c379191b609a61becca8bc6f7ec0c31f831ad5e6f95221d5213ca1d5a97941"
+    },
+    {
+      "name": "Spire Mechcycle",
+      "oracle_id": "7d347d59-0cd5-4207-86cb-5d6244c7c70a",
+      "facts_sha256": "181dcd6474a7760ef9f67799a5f34fd091b8f7265ade643b3593f2e7e3d858a9",
+      "definition": "src/card_definitions/dft/spire_mechcycle.rs",
+      "oracle_text": "Haste\nExhaust \u2014 Tap another untapped Mount or Vehicle you control: This Vehicle becomes an artifact creature. Put a +1/+1 counter on it for each Mount and/or Vehicle you control other than this Vehicle. (Activate each exhaust ability only once.)\nCrew 2",
+      "printed_obligations": [
+        "Haste",
+        "Exhaust \u2014 Tap another untapped Mount or Vehicle you control: This Vehicle becomes an artifact creature. Put a +1/+1 counter on it for each Mount and/or Vehicle you control other than this Vehicle. (Activate each exhaust ability only once.)",
+        "Crew 2"
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "cost-union-kind-subtype"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Streaking Oilgorger",
+      "oracle_id": "c163a95e-9414-4b8c-b5a2-1e7674530404",
+      "facts_sha256": "c538cf5bc166baa46dae8e241054458021329b443bb5a321cfc7e3d1f383815e",
+      "definition": "src/card_definitions/dft/streaking_oilgorger.rs",
+      "oracle_text": "Flying, haste\nStart your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\nMax speed \u2014 This creature has lifelink.",
+      "printed_obligations": [
+        "Flying, haste",
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "Max speed \u2014 This creature has lifelink."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "speed-value"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Syphon Fuel",
+      "oracle_id": "8696eae4-3dc9-4572-aab9-aa4f7e8f53af",
+      "facts_sha256": "8ca09c003cbdcddd2959c23a2899b2d93685c637124ded1e09414e089efbfda9",
+      "definition": "src/card_definitions/dft/syphon_fuel.rs",
+      "oracle_text": "Target creature gets -6/-6 until end of turn. You gain 2 life.",
+      "printed_obligations": [
+        "Target creature gets -6/-6 until end of turn. You gain 2 life."
+      ],
+      "inherited_admitted": true,
+      "status": "authored_candidate_pending_integrator_test",
+      "required_engine_dependencies": [],
+      "outcome_tests": [
+        "syphon_fuel_shrinks_six_and_gains_two_only_when_target_remains_legal",
+        "syphon_fuel_subtracts_exactly_six_from_a_surviving_creatures_two_stats"
+      ],
+      "test_target": "dft_black_red_cards_spells",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/s/SyphonFuel.java",
+        "java_sha256": "ed17eff8696f179e0e2abffae2fa04dd1f96a87dc4f377b66434bd23a9ed644e",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+            "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+            "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+            "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+          }
+        ]
+      },
+      "definition_sha256": "7cf203ac67be72d1fc45069f87fbee8fd048f7ff2af682a461a420454561e029"
+    },
+    {
+      "name": "The Last Ride",
+      "oracle_id": "3ef03540-b538-466d-aa3c-da6750117ba4",
+      "facts_sha256": "bad908abbfd9ca6706de9838f42ccf06d7dd26b2cacbf29e8b16acaf41762f93",
+      "definition": "src/card_definitions/dft/the_last_ride.rs",
+      "oracle_text": "The Last Ride gets -X/-X, where X is your life total.\n{2}{B}, Pay 2 life: Draw a card.\nCrew 2",
+      "printed_obligations": [
+        "The Last Ride gets -X/-X, where X is your life total.",
+        "{2}{B}, Pay 2 life: Draw a card.",
+        "Crew 2"
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "The Speed Demon",
+      "oracle_id": "c9fb22b4-dc22-4291-91f2-89c07cee7569",
+      "facts_sha256": "d432ad9a576ec403cd0e799df6bb34140d32fff7096b62765149f1409b090f97",
+      "definition": "src/card_definitions/dft/the_speed_demon.rs",
+      "oracle_text": "Flying, trample\nStart your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\nAt the beginning of your end step, you draw X cards and lose X life, where X is your speed.",
+      "printed_obligations": [
+        "Flying, trample",
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "At the beginning of your end step, you draw X cards and lose X life, where X is your speed."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "speed-value"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Thunderhead Gunner",
+      "oracle_id": "d9b6656d-d71f-4359-bf6f-b76089741e29",
+      "facts_sha256": "ee07f551a905f6972506bd75a925395c6b2b8c6bef74d17f0dfeb8d153e71cb4",
+      "definition": "src/card_definitions/dft/thunderhead_gunner.rs",
+      "oracle_text": "Reach\nDiscard a card: Draw a card. Activate only as a sorcery and only once each turn.",
+      "printed_obligations": [
+        "Reach",
+        "Discard a card: Draw a card. Activate only as a sorcery and only once each turn."
+      ],
+      "inherited_admitted": true,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Tyrox, Saurid Tyrant",
+      "oracle_id": "b24d95fa-3cf7-495e-9082-11f8db151906",
+      "facts_sha256": "517a691cd66ad9e4f2e717c54e0d2d27795346b76fc0d68ac25f39e4b2950779",
+      "definition": "src/card_definitions/dft/tyrox_saurid_tyrant.rs",
+      "oracle_text": "",
+      "printed_obligations": [
+        "Printed mana cost, types, colors, power/toughness and legendary supertype only"
+      ],
+      "inherited_admitted": true,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Wickerfolk Indomitable",
+      "oracle_id": "730d02c7-2f8a-47d3-99f0-e4ada7f6255c",
+      "facts_sha256": "188061ef295d6b72db0cc46522dfcdec2578e1d8196419409018cafdbe1174bf",
+      "definition": "src/card_definitions/dft/wickerfolk_indomitable.rs",
+      "oracle_text": "You may cast this card from your graveyard by paying 2 life and sacrificing an artifact or creature in addition to paying its other costs.",
+      "printed_obligations": [
+        "You may cast this card from your graveyard by paying 2 life and sacrificing an artifact or creature in addition to paying its other costs."
+      ],
+      "inherited_admitted": false,
+      "status": "not_started",
+      "required_engine_dependencies": [
+        "graveyard-self-cast-additional-cost"
+      ],
+      "outcome_tests": []
+    },
+    {
+      "name": "Wreckage Wickerfolk",
+      "oracle_id": "8ba5af76-2485-4fd6-bd2e-fe90d1f2691c",
+      "facts_sha256": "428cc54160ad50afff296de54eab441b80f1aa596a8b31fd9d4934f59213c34c",
+      "definition": "src/card_definitions/dft/wreckage_wickerfolk.rs",
+      "oracle_text": "Flying\nWhen this creature enters, surveil 2. (Look at the top two cards of your library, then put any number of them into your graveyard and the rest on top of your library in any order.)",
+      "printed_obligations": [
+        "Flying",
+        "When this creature enters, surveil 2. (Look at the top two cards of your library, then put any number of them into your graveyard and the rest on top of your library in any order.)"
+      ],
+      "inherited_admitted": true,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    },
+    {
+      "name": "Wretched Doll",
+      "oracle_id": "628cf9ab-8f8b-49b6-b761-2450088ad03b",
+      "facts_sha256": "fe9529a19571e261f6a0da113dcbeef180093ace1d92484da569a725d3f65e87",
+      "definition": "src/card_definitions/dft/wretched_doll.rs",
+      "oracle_text": "{B}, {T}: Surveil 1. (Look at the top card of your library. You may put that card into your graveyard.)",
+      "printed_obligations": [
+        "{B}, {T}: Surveil 1. (Look at the top card of your library. You may put that card into your graveyard.)"
+      ],
+      "inherited_admitted": true,
+      "status": "not_started",
+      "required_engine_dependencies": [],
+      "outcome_tests": []
+    }
+  ]
+}
