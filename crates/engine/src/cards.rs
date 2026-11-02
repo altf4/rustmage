@@ -2604,6 +2604,8 @@ pub enum Instruction {
     Destroy,
     Tap,
     GainControlTargetsUntilSourceLeaves,
+    /// Linked control plus combat prohibition, ending irreversibly when source control is lost.
+    GainControlAndPreventCombatWhileSourceControlled,
     RemoveTargetAbilitiesUntilSourceLeaves,
     RemoveTargetAbilitiesUntilEndOfTurn,
     GrantTargetHexproofUntilSourceLeaves,

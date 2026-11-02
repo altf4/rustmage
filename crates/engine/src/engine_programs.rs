@@ -8066,6 +8066,12 @@ impl Game {
                         .collect();
                     self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
+                Instruction::GainControlAndPreventCombatWhileSourceControlled => {
+                    self.resolve_source_linked_effect(
+                        &item,
+                        SourceLinkedEffectKind::ControlAndCombatLockWhileControlled,
+                    );
+                }
                 Instruction::GainControlTargetsUntilSourceLeaves => {
                     self.resolve_source_linked_effect(&item, SourceLinkedEffectKind::Control);
                 }

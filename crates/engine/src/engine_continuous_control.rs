@@ -30,6 +30,8 @@ struct AppliedControl {
     object: ObjectRef,
     controller: Player,
     source: Option<ObjectRef>,
+    /// Fixed control only while the captured player controls this exact source.
+    source_condition: Option<(ObjectRef, Player)>,
     timestamp: u64,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -71,6 +73,7 @@ pub(super) fn controllers<W: super::ability_world::CharacteristicWorld + ?Sized>
             object: row.object,
             controller: row.controller,
             source: None,
+            source_condition: None,
             timestamp: row.timestamp,
         })
         .collect();
@@ -80,13 +83,20 @@ pub(super) fn controllers<W: super::ability_world::CharacteristicWorld + ?Sized>
                 .source_linked_effects
                 .iter()
                 .filter(|row| {
-                    row.kind == SourceLinkedEffectKind::Control
-                        && source_linked_effects::active(world, row)
+                    matches!(
+                        row.kind,
+                        SourceLinkedEffectKind::Control
+                            | SourceLinkedEffectKind::ControlAndCombatLockWhileControlled
+                    ) && present(row.source)
+                        && present(row.recipient)
                 })
                 .map(|row| AppliedControl {
                     object: row.recipient,
                     controller: row.controller,
                     source: None,
+                    source_condition: (row.kind
+                        == SourceLinkedEffectKind::ControlAndCombatLockWhileControlled)
+                        .then_some((row.source, row.controller)),
                     timestamp: row.timestamp,
                 }),
         );
@@ -112,6 +122,7 @@ pub(super) fn controllers<W: super::ability_world::CharacteristicWorld + ?Sized>
             object: target,
             controller: aura.controller,
             source: Some(source),
+            source_condition: None,
             timestamp,
         });
     }
@@ -133,10 +144,16 @@ pub(super) fn controllers<W: super::ability_world::CharacteristicWorld + ?Sized>
         // Rebuild this relation after every effect, as required by CR613.8c.
         let depends = |index: usize, other: usize| {
             index != other
-                && effects[index].source.is_some_and(|source| {
+                && (effects[index].source.is_some_and(|source| {
                     effects[other].object == source
                         && produces(effects[other]) != controller_of(source)
-                })
+                }) || effects[index]
+                    .source_condition
+                    .is_some_and(|(source, expected)| {
+                        effects[other].object == source
+                            && (produces(effects[other]) == expected)
+                                != (controller_of(source) == expected)
+                    }))
         };
         let reaches = |start: usize, goal: usize| {
             let mut seen = vec![false; effects.len()];
@@ -163,7 +180,13 @@ pub(super) fn controllers<W: super::ability_world::CharacteristicWorld + ?Sized>
             })
             .unwrap_or(0);
         let controller = produces(effects[chosen]);
+        let applies = effects[chosen]
+            .source_condition
+            .is_none_or(|(source, expected)| controller_of(source) == expected);
         let effect = effects.remove(chosen);
+        if !applies {
+            continue;
+        }
         if let Some(row) = result.iter_mut().find(|row| row.object == effect.object) {
             row.controller = controller;
         }
@@ -258,8 +281,11 @@ impl Game {
             .into_iter()
             .flat_map(|r| &r.source_linked_effects)
             .filter(|row| {
-                row.kind == SourceLinkedEffectKind::Control
-                    && source_linked_effects::active(self, row)
+                matches!(
+                    row.kind,
+                    SourceLinkedEffectKind::Control
+                        | SourceLinkedEffectKind::ControlAndCombatLockWhileControlled
+                ) && source_linked_effects::active(self, row)
             })
             .map(|row| row.recipient)
             .collect();

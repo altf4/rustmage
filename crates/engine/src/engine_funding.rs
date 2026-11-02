@@ -2616,10 +2616,13 @@ impl<'g> FundingState<'g> {
         // for their object's incarnation throughout a mana payment. They do
         // not by themselves cause an opposing source to change controllers.
         if self.roles().is_some_and(|roles| {
-            roles
-                .source_linked_effects
-                .iter()
-                .any(|row| row.kind == SourceLinkedEffectKind::Control)
+            roles.source_linked_effects.iter().any(|row| {
+                matches!(
+                    row.kind,
+                    SourceLinkedEffectKind::Control
+                        | SourceLinkedEffectKind::ControlAndCombatLockWhileControlled
+                )
+            })
         }) || self
             .attachment_sources()
             .iter()

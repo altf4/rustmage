@@ -426,7 +426,13 @@ impl Game {
             })
     }
     pub(super) fn combat_restricted(&self, id: CardId, attack: bool) -> bool {
-        self.combat_restriction_from(id, id, attack)
+        self.state.roles.as_ref().is_some_and(|roles| {
+            roles.source_linked_effects.iter().any(|row| {
+                row.kind == SourceLinkedEffectKind::ControlAndCombatLockWhileControlled
+                    && row.recipient == self.object_ref(id)
+                    && source_linked_effects::active(self, row)
+            })
+        }) || self.combat_restriction_from(id, id, attack)
             || self
                 .state
                 .attachment_sources
