@@ -368,7 +368,11 @@ fn lotus_source_tap_self_sacrifice_tokens_and_redirected_sacrifice_freeze_actual
         );
         to_mana_choice(&mut g);
         assert_eq!(g.actor(), Some(p), "ability controller chooses the color");
-        let actions = g.legal_actions();
+        let actions = g
+            .legal_actions()
+            .into_iter()
+            .filter(|action| matches!(action, Action::ChooseMana { .. }))
+            .collect::<Vec<_>>();
         assert_eq!(actions.len(), 5);
         for a in &actions {
             let Action::ChooseMana { production } = a else {

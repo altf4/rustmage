@@ -276,6 +276,14 @@ fn gonti_rules() -> &'static CardRules {
         ..CardRules::EMPTY
     }))
 }
+fn cast_exiled(g: &mut Game, card: CardId, target: Target) {
+    act(g, Action::AnnounceExile { card });
+    act(g, Action::ChooseTarget { target });
+    if g.legal_actions().contains(&Action::FinishTargets) {
+        act(g, Action::FinishTargets);
+    }
+    pay(g);
+}
 fn treasures(g: &Game, p: Player) -> usize {
     g.state
         .objects
@@ -351,7 +359,7 @@ fn foreign_owned_spell_creates_treasure_for_caster_after_observer_leaves() {
                 let spell = put(&mut g, owner, "Shock", Zone::Exile);
                 let object = g.object_ref(spell);
                 g.grant_exile_play_permission(caster, object, false);
-                cast(&mut g, spell, Some(Target::Player(caster.other())));
+                cast_exiled(&mut g, spell, Target::Player(caster.other()));
                 g.move_object(source, Zone::Graveyard);
                 drain(&mut g);
                 assert_eq!(treasures(&g, caster), usize::from(foreign));
@@ -373,7 +381,7 @@ fn copying_a_foreign_spell_does_not_create_an_extra_cast_event() {
     let spell = put(&mut g, p.other(), "Shock", Zone::Exile);
     let object = g.object_ref(spell);
     g.grant_exile_play_permission(p, object, false);
-    cast(&mut g, spell, Some(Target::Player(p.other())));
+    cast_exiled(&mut g, spell, Target::Player(p.other()));
     direct(&mut g, copier, Some(Target::Spell(spell)));
     drain(&mut g);
     assert_eq!(treasures(&g, p), 1);
