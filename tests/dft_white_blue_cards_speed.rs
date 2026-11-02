@@ -1,6 +1,5 @@
 //! Real DFT speed permanents, graveyard activations and restricted blue mana.
 mod support;
-use rustmage::Card;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
 use support::*;

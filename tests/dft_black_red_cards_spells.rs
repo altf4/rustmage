@@ -1,6 +1,5 @@
 //! Complete printed obligations for the first black/red Aetherdrift spell family.
 mod support;
-use rustmage::Card;
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
 use support::*;

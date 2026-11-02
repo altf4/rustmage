@@ -75,7 +75,7 @@ fn drain(g: &mut Game) {
 #[test]
 fn controller_only_private_selection_can_decline_on_an_opponents_turn_without_second_player_phase()
 {
-    let _scope = fixture_rules::activate(&[(Card::Opt, &DEPLOY)]);
+    let _scope = fixture_rules::activate(&[(Card::from_name("Opt").unwrap(), &DEPLOY)]);
     let mut g = scenario(Player::P0);
     let own = put(&mut g, Player::P1, "Hill Giant", Zone::Hand);
     let other = put(&mut g, Player::P0, "Grizzly Bears", Zone::Hand);
@@ -100,7 +100,10 @@ fn controller_only_private_selection_can_decline_on_an_opponents_turn_without_se
 }
 #[test]
 fn simultaneous_selected_creatures_observe_each_other_and_partial_private_choices_do_not_move() {
-    let _scope = fixture_rules::activate(&[(Card::Opt, &DEPLOY), (Card::GrizzlyBears, &OBSERVER)]);
+    let _scope = fixture_rules::activate(&[
+        (Card::from_name("Opt").unwrap(), &DEPLOY),
+        (Card::GrizzlyBears, &OBSERVER),
+    ]);
     let mut g = scenario(Player::P0);
     let first = put(&mut g, Player::P0, "Grizzly Bears", Zone::Hand);
     let second = put(&mut g, Player::P0, "Grizzly Bears", Zone::Hand);
@@ -127,7 +130,7 @@ fn simultaneous_selected_creatures_observe_each_other_and_partial_private_choice
 }
 #[test]
 fn every_available_permanent_card_kind_enters_together_and_the_cards_were_not_cast() {
-    let _scope = fixture_rules::activate(&[(Card::Opt, &DEPLOY)]);
+    let _scope = fixture_rules::activate(&[(Card::from_name("Opt").unwrap(), &DEPLOY)]);
     let mut g = scenario(Player::P0);
     let names = [
         "Hill Giant",
@@ -170,7 +173,7 @@ fn every_available_permanent_card_kind_enters_together_and_the_cards_were_not_ca
 }
 #[test]
 fn aura_choices_use_existing_battlefield_objects_and_never_simultaneous_incoming_creatures() {
-    let _scope = fixture_rules::activate(&[(Card::Opt, &DEPLOY)]);
+    let _scope = fixture_rules::activate(&[(Card::from_name("Opt").unwrap(), &DEPLOY)]);
     for existing in [false, true] {
         let mut g = scenario(Player::P0);
         let recipient = existing.then(|| put(&mut g, Player::P1, "Hill Giant", Zone::Battlefield));
@@ -225,7 +228,10 @@ fn as_entry_copy_uses_existing_blueprints_and_never_other_incoming_selected_obje
         },
         ..CardRules::EMPTY
     };
-    let _scope = fixture_rules::activate(&[(Card::Opt, &DEPLOY), (Card::GrizzlyBears, &COPIER)]);
+    let _scope = fixture_rules::activate(&[
+        (Card::from_name("Opt").unwrap(), &DEPLOY),
+        (Card::GrizzlyBears, &COPIER),
+    ]);
     let mut g = scenario(Player::P0);
     let donor = put(&mut g, Player::P0, "Serra Angel", Zone::Battlefield);
     let first = put(&mut g, Player::P0, "Grizzly Bears", Zone::Hand);
@@ -248,10 +254,9 @@ fn as_entry_copy_uses_existing_blueprints_and_never_other_incoming_selected_obje
     drain(&mut g);
     for id in [first, second] {
         assert_eq!(stats(&g, id), (4, 4));
-        assert!(
-            g.keywords(id)
-                .contains(Keywords::FLYING.union(Keywords::VIGILANCE))
-        );
+        assert!(g
+            .keywords(id)
+            .contains(Keywords::FLYING.union(Keywords::VIGILANCE)));
         assert!(!g.state.objects[id as usize].is_token());
     }
 }
@@ -263,7 +268,7 @@ impl Drop for ResetPrevention {
 }
 #[test]
 fn a_prevented_entry_does_not_consume_other_selected_cards_or_rebind_a_stale_selection() {
-    let _scope = fixture_rules::activate(&[(Card::Opt, &DEPLOY)]);
+    let _scope = fixture_rules::activate(&[(Card::from_name("Opt").unwrap(), &DEPLOY)]);
     let _reset = ResetPrevention;
     let mut g = scenario(Player::P0);
     let prevented = put(&mut g, Player::P0, "Hill Giant", Zone::Hand);
@@ -288,7 +293,7 @@ fn a_prevented_entry_does_not_consume_other_selected_cards_or_rebind_a_stale_sel
 }
 #[test]
 fn owned_private_selection_can_finish_independently_after_parent_drop_raw_index_and_restore() {
-    let _scope = fixture_rules::activate(&[(Card::Opt, &DEPLOY)]);
+    let _scope = fixture_rules::activate(&[(Card::from_name("Opt").unwrap(), &DEPLOY)]);
     let mut parent = scenario(Player::P0);
     let first = put(&mut parent, Player::P0, "Grizzly Bears", Zone::Hand);
     let second = put(&mut parent, Player::P0, "Forest", Zone::Hand);
@@ -350,7 +355,7 @@ fn completed_deployment_metadata_does_not_intercept_a_following_positive_hand_se
         ),
         ..CardRules::EMPTY
     };
-    let _scope = fixture_rules::activate(&[(Card::Opt, &FOLLOW)]);
+    let _scope = fixture_rules::activate(&[(Card::from_name("Opt").unwrap(), &FOLLOW)]);
     let mut g = scenario(Player::P0);
     let own = put(&mut g, Player::P0, "Forest", Zone::Hand);
     let enemy = put(&mut g, Player::P1, "Hill Giant", Zone::Hand);
@@ -374,7 +379,7 @@ fn completed_deployment_metadata_does_not_intercept_a_following_positive_hand_se
 }
 #[test]
 fn inherited_each_player_creature_deployment_keeps_apnap_order_and_simultaneous_entries() {
-    let _scope = fixture_rules::activate(&[(Card::Opt, &EACH)]);
+    let _scope = fixture_rules::activate(&[(Card::from_name("Opt").unwrap(), &EACH)]);
     let mut g = scenario(Player::P0);
     let first = put(&mut g, Player::P0, "Grizzly Bears", Zone::Hand);
     let second = put(&mut g, Player::P1, "Hill Giant", Zone::Hand);
@@ -406,7 +411,7 @@ fn noncast_hand_entrants_do_not_inherit_a_resolving_parent_spells_chosen_x() {
         },
         ..DEPLOY
     };
-    let _scope = fixture_rules::activate(&[(Card::Opt, &VARIABLE)]);
+    let _scope = fixture_rules::activate(&[(Card::from_name("Opt").unwrap(), &VARIABLE)]);
     let mut g = scenario(Player::P0);
     let permanent = put(&mut g, Player::P0, "Pterafractyl", Zone::Hand);
     let spell = put(&mut g, Player::P0, "Opt", Zone::Hand);
