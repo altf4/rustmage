@@ -12,7 +12,7 @@ pub struct DeclaredAttackHistoryView {
     pub subtypes: Vec<&'static str>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct DeclaredAttackHistory {
     queried: Vec<&'static str>,
     pub rows: Vec<DeclaredAttackHistoryView>,
