@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "scope": "All 74 exactly white or exactly blue DFT Oracle identities, including inherited admitted cards; card authorship and independent outcome mapping, not set acceptance.",
-  "engine_checkpoint": "819fa96ec",
+  "engine_checkpoint": "fb878868ddbf3f4155b1a0c747129a9e713e4c04",
   "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "audit": "docs/aetherdrift-audit/white-blue.json",
   "validation_owner": "root; authors do not run Cargo or regenerate shared linkage",
@@ -21,9 +21,9 @@
       "printed_obligations": [
         "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
         "{2}, {T}: Draw a card.",
-        "Max speed \u2014 Whenever you draw a card, each opponent mills two cards. (Each opponent puts the top two cards of their library into their graveyard.)"
+        "Max speed — Whenever you draw a card, each opponent mills two cards. (Each opponent puts the top two cards of their library into their graveyard.)"
       ],
-      "status": "candidate; focused execution pending",
+      "status": "verified: integrator reports all nine speed-family scenarios pass on accepted engine freeze fb878868d",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "paid_speed_permanents_start_at_one_and_keep_their_printed_bodies",
@@ -110,10 +110,12 @@
       "printed_obligations": [
         "Return target creature or Vehicle to its owner's hand."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_tempo",
+      "outcome_scenarios": [
+        "bounce_gallant_and_parry_keep_their_distinct_targets_results_and_duration"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; shared keyword/target/zone semantics, with actual card wiring and printed outcomes in listed scenarios"
     },
     {
       "name": "Brightfield Glider",
@@ -216,7 +218,7 @@
       "printed_obligations": [
         "Printed header and no printed abilities"
       ],
-      "status": "candidate; focused execution pending",
+      "status": "verified: integrator reports all nine speed-family scenarios pass on accepted engine freeze fb878868d",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "dft_vanillas_have_no_rules_abilities_and_pay_for_their_printed_bodies"
@@ -277,14 +279,16 @@
         }
       ],
       "printed_obligations": [
-        "Choose one \u2014",
-        "\u2022 Collision Course deals X damage to target creature, where X is the number of permanents you control that are creatures and/or Vehicles.",
-        "\u2022 Destroy target artifact."
+        "Choose one —",
+        "• Collision Course deals X damage to target creature, where X is the number of permanents you control that are creatures and/or Vehicles.",
+        "• Destroy target artifact."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_tempo",
+      "outcome_scenarios": [
+        "collision_course_counts_the_creature_vehicle_union_once_and_has_an_artifact_mode"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; shared keyword/target/zone semantics, with actual card wiring and printed outcomes in listed scenarios"
     },
     {
       "name": "Daring Mechanic",
@@ -366,10 +370,12 @@
         "When this Aura enters, tap enchanted permanent.",
         "Enchanted permanent loses all abilities and doesn't untap during its controller's untap step."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_tempo",
+      "outcome_scenarios": [
+        "flood_the_engine_taps_blanks_and_locks_an_uncrewed_vehicle_until_the_aura_leaves"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; shared keyword/target/zone semantics, with actual card wiring and printed outcomes in listed scenarios"
     },
     {
       "name": "Gallant Strike",
@@ -387,10 +393,13 @@
         "Destroy target creature with toughness 4 or greater.",
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_tempo",
+      "outcome_scenarios": [
+        "bounce_gallant_and_parry_keep_their_distinct_targets_results_and_duration",
+        "tempo_family_cycling_pays_two_and_discards_before_exactly_one_draw"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; shared keyword/target/zone semantics, with actual card wiring and printed outcomes in listed scenarios"
     },
     {
       "name": "Gearseeker Serpent",
@@ -428,9 +437,9 @@
       "printed_obligations": [
         "Flying",
         "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
-        "Max speed \u2014 {3}, Exile this card from your graveyard: Draw a card."
+        "Max speed — {3}, Exile this card from your graveyard: Draw a card."
       ],
-      "status": "candidate; focused execution pending",
+      "status": "verified: integrator reports all nine speed-family scenarios pass on accepted engine freeze fb878868d",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "paid_speed_permanents_start_at_one_and_keep_their_printed_bodies",
@@ -497,7 +506,7 @@
       "printed_obligations": [
         "{T}: Add {U}. Spend this mana only to cast an artifact spell or activate an ability."
       ],
-      "status": "candidate; focused execution pending",
+      "status": "verified: integrator reports all nine speed-family scenarios pass on accepted engine freeze fb878868d",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "guidelight_optimizer_blue_pays_artifacts_and_activations_but_not_nonartifact_spells"
@@ -603,7 +612,7 @@
       ],
       "printed_obligations": [
         "Vigilance",
-        "Exhaust \u2014 {1}{U}: Draw a card, then discard a card. Put a +1/+1 counter on this creature. (Activate each exhaust ability only once.)"
+        "Exhaust — {1}{U}: Draw a card, then discard a card. Put a +1/+1 counter on this creature. (Activate each exhaust ability only once.)"
       ],
       "status": "pending card authorship and inherited behavior verification",
       "test_target": null,
@@ -625,9 +634,9 @@
       "printed_obligations": [
         "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
         "During your turn, this creature has first strike.",
-        "Max speed \u2014 {3}, Exile this card from your graveyard: Draw a card."
+        "Max speed — {3}, Exile this card from your graveyard: Draw a card."
       ],
-      "status": "candidate; focused execution pending",
+      "status": "verified: integrator reports all nine speed-family scenarios pass on accepted engine freeze fb878868d",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "paid_speed_permanents_start_at_one_and_keep_their_printed_bodies",
@@ -652,10 +661,13 @@
         "Target creature gets +2/+2 until end of turn.",
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_tempo",
+      "outcome_scenarios": [
+        "bounce_gallant_and_parry_keep_their_distinct_targets_results_and_duration",
+        "tempo_family_cycling_pays_two_and_discards_before_exactly_one_draw"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; shared keyword/target/zone semantics, with actual card wiring and printed outcomes in listed scenarios"
     },
     {
       "name": "Lightwheel Enhancements",
@@ -673,7 +685,7 @@
         "Enchant creature or Vehicle",
         "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
         "Enchanted permanent gets +1/+1 and has vigilance.",
-        "Max speed \u2014 You may cast this card from your graveyard."
+        "Max speed — You may cast this card from your graveyard."
       ],
       "status": "pending card authorship and inherited behavior verification",
       "test_target": null,
@@ -756,7 +768,7 @@
         }
       ],
       "printed_obligations": [
-        "Exhaust \u2014 {X}{U}{U}, {T}: Draw X cards. Put a +1/+1 counter on each Merfolk creature you control. (Activate each exhaust ability only once.)"
+        "Exhaust — {X}{U}{U}, {T}: Draw X cards. Put a +1/+1 counter on each Merfolk creature you control. (Activate each exhaust ability only once.)"
       ],
       "status": "pending card authorship and inherited behavior verification",
       "test_target": null,
@@ -800,9 +812,9 @@
       "printed_obligations": [
         "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
         "When this creature dies, create a 1/1 colorless Servo artifact creature token.",
-        "Max speed \u2014 This creature gets +1/+0."
+        "Max speed — This creature gets +1/+0."
       ],
-      "status": "candidate; focused execution pending",
+      "status": "verified: integrator reports all nine speed-family scenarios pass on accepted engine freeze fb878868d",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "paid_speed_permanents_start_at_one_and_keep_their_printed_bodies",
@@ -845,7 +857,7 @@
       "printed_obligations": [
         "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
         "When this artifact enters, exile target nonland permanent an opponent controls until this artifact leaves the battlefield.",
-        "Max speed \u2014 {T}: Put a +1/+1 counter on target creature or Vehicle you control. Activate only as a sorcery."
+        "Max speed — {T}: Put a +1/+1 counter on target creature or Vehicle you control. Activate only as a sorcery."
       ],
       "status": "pending card authorship and inherited behavior verification",
       "test_target": null,
@@ -888,9 +900,9 @@
       "printed_obligations": [
         "Vigilance",
         "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
-        "Max speed \u2014 At the beginning of combat on your turn, target creature or Vehicle you control gains double strike until end of turn."
+        "Max speed — At the beginning of combat on your turn, target creature or Vehicle you control gains double strike until end of turn."
       ],
-      "status": "candidate; focused execution pending",
+      "status": "verified: integrator reports all nine speed-family scenarios pass on accepted engine freeze fb878868d",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "paid_speed_permanents_start_at_one_and_keep_their_printed_bodies",
@@ -912,7 +924,7 @@
       ],
       "printed_obligations": [
         "Whenever you activate an exhaust ability, draw a card.",
-        "Exhaust \u2014 {4}: This Vehicle becomes an artifact creature. Put a +1/+1 counter on it. (Activate each exhaust ability only once.)",
+        "Exhaust — {4}: This Vehicle becomes an artifact creature. Put a +1/+1 counter on it. (Activate each exhaust ability only once.)",
         "Crew 2"
       ],
       "status": "pending card authorship and inherited behavior verification",
@@ -956,10 +968,12 @@
         "This spell costs {3} less to cast if it targets a tapped permanent.",
         "Exile target creature or Vehicle."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_tempo",
+      "outcome_scenarios": [
+        "target_discounts_are_paid_for_tapped_permanents_and_mana_value_one_only"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; shared keyword/target/zone semantics, with actual card wiring and printed outcomes in listed scenarios"
     },
     {
       "name": "Riverchurn Monument",
@@ -975,7 +989,7 @@
       ],
       "printed_obligations": [
         "{1}, {T}: Any number of target players each mill two cards. (Each of them puts the top two cards of their library into their graveyard.)",
-        "Exhaust \u2014 {2}{U}{U}, {T}: Any number of target players each mill cards equal to the number of cards in their graveyard. (Activate each exhaust ability only once.)"
+        "Exhaust — {2}{U}{U}, {T}: Any number of target players each mill cards equal to the number of cards in their graveyard. (Activate each exhaust ability only once.)"
       ],
       "status": "pending card authorship and inherited behavior verification",
       "test_target": null,
@@ -1021,10 +1035,12 @@
         "Return target creature or Vehicle an opponent controls to its owner's hand.",
         "Draw a card."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_tempo",
+      "outcome_scenarios": [
+        "target_discounts_are_paid_for_tapped_permanents_and_mana_value_one_only"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; shared keyword/target/zone semantics, with actual card wiring and printed outcomes in listed scenarios"
     },
     {
       "name": "Sabotage Strategist",
@@ -1041,7 +1057,7 @@
       "printed_obligations": [
         "Flying, vigilance",
         "Whenever one or more creatures attack you, those creatures get -1/-0 until end of turn.",
-        "Exhaust \u2014 {5}{U}{U}: Put three +1/+1 counters on this creature. (Activate each exhaust ability only once.)"
+        "Exhaust — {5}{U}{U}: Put three +1/+1 counters on this creature. (Activate each exhaust ability only once.)"
       ],
       "status": "pending card authorship and inherited behavior verification",
       "test_target": null,
@@ -1129,7 +1145,7 @@
       ],
       "printed_obligations": [
         "Flying",
-        "Exhaust \u2014 {4}{U}: Put two +1/+1 counters on this creature. (Activate each exhaust ability only once.)"
+        "Exhaust — {4}{U}: Put two +1/+1 counters on this creature. (Activate each exhaust ability only once.)"
       ],
       "status": "pending card authorship and inherited behavior verification",
       "test_target": null,
@@ -1150,7 +1166,7 @@
       ],
       "printed_obligations": [
         "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
-        "Max speed \u2014 {1}, Sacrifice this creature: Copy target spell you control. You may choose new targets for the copy. (A copy of a permanent spell becomes a token.)"
+        "Max speed — {1}, Sacrifice this creature: Copy target spell you control. You may choose new targets for the copy. (A copy of a permanent spell becomes a token.)"
       ],
       "status": "pending card authorship and inherited behavior verification",
       "test_target": null,
@@ -1173,10 +1189,13 @@
         "All creatures and Vehicles lose indestructible until end of turn, then destroy all creatures and Vehicles.",
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_tempo",
+      "outcome_scenarios": [
+        "spectacular_pileup_removes_indestructible_only_from_the_destroyed_union",
+        "tempo_family_cycling_pays_two_and_discards_before_exactly_one_draw"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; shared keyword/target/zone semantics, with actual card wiring and printed outcomes in listed scenarios"
     },
     {
       "name": "Spectral Interference",
@@ -1193,10 +1212,12 @@
       "printed_obligations": [
         "Counter target artifact or creature spell unless its controller pays {4}."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_tempo",
+      "outcome_scenarios": [
+        "spectral_interference_and_spell_pierce_offer_the_correct_payment_or_counter"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; shared keyword/target/zone semantics, with actual card wiring and printed outcomes in listed scenarios"
     },
     {
       "name": "Spell Pierce",
@@ -1213,10 +1234,12 @@
       "printed_obligations": [
         "Counter target noncreature spell unless its controller pays {2}."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_tempo",
+      "outcome_scenarios": [
+        "spectral_interference_and_spell_pierce_offer_the_correct_payment_or_counter"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; shared keyword/target/zone semantics, with actual card wiring and printed outcomes in listed scenarios"
     },
     {
       "name": "Spikeshell Harrier",
@@ -1275,10 +1298,13 @@
         "Tap target creature or Vehicle, then put three stun counters on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)",
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_tempo",
+      "outcome_scenarios": [
+        "stall_out_puts_three_real_stun_counters_on_a_vehicle",
+        "tempo_family_cycling_pays_two_and_discards_before_exactly_one_draw"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; shared keyword/target/zone semantics, with actual card wiring and printed outcomes in listed scenarios"
     },
     {
       "name": "Stock Up",
@@ -1295,10 +1321,12 @@
       "printed_obligations": [
         "Look at the top five cards of your library. Put two of them into your hand and the rest on the bottom of your library in any order."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_tempo",
+      "outcome_scenarios": [
+        "stock_up_keeps_the_look_private_selects_two_and_orders_the_other_three_with_restore"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; shared keyword/target/zone semantics, with actual card wiring and printed outcomes in listed scenarios"
     },
     {
       "name": "Sundial, Dawn Tyrant",
@@ -1315,7 +1343,7 @@
       "printed_obligations": [
         "Printed header and no printed abilities"
       ],
-      "status": "candidate; focused execution pending",
+      "status": "verified: integrator reports all nine speed-family scenarios pass on accepted engine freeze fb878868d",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "dft_vanillas_have_no_rules_abilities_and_pay_for_their_printed_bodies"
@@ -1337,9 +1365,9 @@
       "printed_obligations": [
         "Flying",
         "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
-        "Max speed \u2014 This creature gets +0/+1 and has vigilance."
+        "Max speed — This creature gets +0/+1 and has vigilance."
       ],
-      "status": "candidate; focused execution pending",
+      "status": "verified: integrator reports all nine speed-family scenarios pass on accepted engine freeze fb878868d",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "paid_speed_permanents_start_at_one_and_keep_their_printed_bodies",
@@ -1385,10 +1413,13 @@
         "Exchange control of target artifact or creature you control and target artifact or creature an opponent controls.",
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_tempo",
+      "outcome_scenarios": [
+        "trade_the_helm_exchanges_both_objects_or_neither_when_one_incarnation_is_lost",
+        "tempo_family_cycling_pays_two_and_discards_before_exactly_one_draw"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; shared keyword/target/zone semantics, with actual card wiring and printed outcomes in listed scenarios"
     },
     {
       "name": "Transit Mage",
@@ -1426,10 +1457,13 @@
         "Target nonland permanent's owner puts it on their choice of the top or bottom of their library.",
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_tempo",
+      "outcome_scenarios": [
+        "trip_up_lets_the_owner_choose_top_or_bottom_even_under_foreign_control",
+        "tempo_family_cycling_pays_two_and_discards_before_exactly_one_draw"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; shared keyword/target/zone semantics, with actual card wiring and printed outcomes in listed scenarios"
     },
     {
       "name": "Tune Up",
@@ -1446,10 +1480,12 @@
       "printed_obligations": [
         "Return target artifact card from your graveyard to the battlefield. If it's a Vehicle, it becomes an artifact creature."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_tempo",
+      "outcome_scenarios": [
+        "tune_up_returns_the_owned_artifact_and_animates_only_its_exact_vehicle_entry"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; shared keyword/target/zone semantics, with actual card wiring and printed outcomes in listed scenarios"
     },
     {
       "name": "Unstoppable Plan",
@@ -1530,9 +1566,9 @@
       "printed_obligations": [
         "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
         "You have no maximum hand size.",
-        "Max speed \u2014 If you would draw a card, draw two cards instead."
+        "Max speed — If you would draw a card, draw two cards instead."
       ],
-      "status": "candidate; focused execution pending",
+      "status": "verified: integrator reports all nine speed-family scenarios pass on accepted engine freeze fb878868d",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "paid_speed_permanents_start_at_one_and_keep_their_printed_bodies",
