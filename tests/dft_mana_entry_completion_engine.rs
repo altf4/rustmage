@@ -191,7 +191,7 @@ fn an_owned_entry_can_decline_copy_before_choosing_the_only_parent_funding_color
             let lot = &branch.state.mana_lots.as_ref().unwrap().pools[p.index()][0];
             assert_eq!(lot.amounts, [1, 0, 0, 0, 0, 0]);
             assert_eq!(lot.quality.retention, ManaRetention::Turn);
-            act(branch, Action::TapMana { card: druid });
+            act(branch, direct(druid, [0, 0, 0, 0, 1, 0]));
             pay(branch);
             settle(branch);
             assert_eq!(branch.object_view(spell).zone, Zone::Battlefield);
@@ -270,7 +270,7 @@ fn nonzero_previews_neither_admit_lost_quantity_nor_hide_new_quantity_during_ent
                     assert!(branch.has_subtype(object, "Elf"));
                     assert!(branch.object_view(object).summoning_sick);
                 }
-                act(branch, Action::TapMana { card: druid });
+                act(branch, direct(druid, [0, 0, 0, 0, 1, 0]));
                 pay(branch);
                 settle(branch);
                 assert_eq!(branch.counter_count(parent, CounterKind::PlusOne), 1);
@@ -317,8 +317,10 @@ fn a_departed_animated_mountain_receipt_adds_its_frozen_tap_bonus_exactly_once()
                 keywords: Keywords::NONE,
                 duration: AnimationDuration::EndOfTurn,
             },
-            characteristic_layers::AnimationTypeMode::PreserveCardTypes,
+            characteristic_layers::AnimationTypeMode::AddCreatureAndLand,
         );
+        assert_eq!(g.object_view(source).kinds & 3, 3);
+        assert_eq!(stats(&g, source), (1, 1));
         let parent = put(&mut g, p, "Hill Giant", Zone::Battlefield);
         returning_copy(&mut g, p, source);
         g.state.players[p.index()].mountain_mana_bonus = 1;
