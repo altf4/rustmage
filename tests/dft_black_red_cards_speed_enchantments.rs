@@ -342,8 +342,13 @@ fn last_ride_live_life_reduction_and_paid_life_draw_follow_controller_and_crew_t
         g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 0];
         cast(&mut g, source, None);
         drain(&mut g);
-        assert_eq!(stats(&g, source), (3, 3));
+        assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
         assert!(!g.is_creature(source));
+        // CR208.3: printed Vehicle stats and a live modifier do not give a
+        // noncreature permanent effective power/toughness. Crew below makes
+        // the 13/13 base and -10/-10 modifier apply, yielding the asserted 3/3.
+        assert_eq!(stats(&g, source), (0, 0));
         let crewer = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         act(&mut g, activation(source, 1));
         if matches!(g.state.pending, Pending::PayCosts { .. }) {
