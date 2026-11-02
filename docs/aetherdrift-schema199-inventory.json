@@ -359,11 +359,12 @@
     "Reject retained origins in every copy layer, including inactive lower layers, and copiable Zombie/embalm properties in retained original recipes.",
     "An active or suspended Announcement containing ManaOutput remains opaque even during the inherited EffectMana/ChooseMana public phase.",
     "No blanket false/present-field erasure is permitted; neutral new optional/bool properties are already omitted by their real serializers.",
-    "Reject present counter_payment only on AnnounceSelfGrantedAbility; its empty default is omitted. Existing native activation counter-payment fields are not a new wire family."
+    "Reject present counter_payment only on AnnounceSelfGrantedAbility; its empty default is omitted. Existing native activation counter-payment fields are not a new wire family.",
+    "Reject offered or selected zero sentinel only when its immutable fixed Choice/Combination domain is positive; never remove an offered action to force an inherited digest."
   ],
   "registry": {
     "module": "tests/legacy/assurance/schema199.rs",
-    "recording_hook": "tests/legacy/assurance/regressions.rs before prior198 projector",
+    "recording_hook": "tests/legacy/assurance/regressions.rs: owned state + final offered actions + selected journal actions before source changes, before prior198 projector",
     "central_marker_edited": false,
     "trace_corpus_edited": false,
     "existing_schema_version_assertion": "Keep198 in the candidate. Root changes the central marker and exact schema assertion to199 together during the final migration commit."
@@ -493,7 +494,7 @@
   "focused_tests": {
     "target": "legacy",
     "filter": "engine::assurance::schema199::",
-    "cases": 14,
+    "cases": 17,
     "coverage": [
       "byte-exact unchanged JSON and sole unsigned derived entry-count removal",
       "all new public field/action/phase families",
@@ -503,7 +504,10 @@
       "idle links, inactive copy-layer retained origins and original recipes",
       "active and suspended late mana receipt raw branch/restore",
       "new semantics nested in inherited target/program/scalar/cost/filter shapes",
-      "inherited null-cast linked acquisition Some remains eligible through owned branch/restore; newly public linked origins remain distinct"
+      "inherited null-cast linked acquisition Some remains eligible through owned branch/restore; newly public linked origins remain distinct",
+      "all41 new fixed-output action capabilities backed by immutable source ledger; concrete alternatives remain eligible",
+      "actual payment precedes late output, including owned restore and completed idle result",
+      "genuine SourcePower0 and fixed Choice amount0 preserved; borrowed templates resolved from donor"
     ]
   },
   "baseline_distinctions": [
@@ -513,5 +517,12 @@
       "population": "73092e3:crates/engine/src/engine_hand_choices.rs:334-348 ExileRevealedLinked captures resolving.item.source_ability_origin",
       "contract": "Inherited owned link binding remains prior198 eligible. New LinkedExileView.ability_origin JSON is a separate wire addition; no additional erasure is introduced."
     }
-  ]
+  ],
+  "offered_action_value_delta": {
+    "container": "Existing mana Action.production values",
+    "new_route": "Unselected [0,0,0,0,0,0] for an immutable positive fixed Choice/Combination recipe",
+    "guard": "Typed prior_schema199_actions_supported resolves native, exile/GY borrowed and attached-grant templates. It rejects this new route while preserving genuine dynamic zero-power and fixed amount0 output. Final offered actions and selected journal actions are checked before source departure/copy.",
+    "source_evidence": "docs/aetherdrift-prior198-trace-audit.json",
+    "scope": "41 new semantic route rows are unrepresentable; Territory Forge duplicate actions are a separate production bug to repair, not a schema exception."
+  }
 }

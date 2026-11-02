@@ -124,6 +124,80 @@ fn wire_supported(value: &impl Serialize) -> bool {
     serde_json::to_value(value).is_ok_and(|value| check(&value).is_ok())
 }
 
+// A zero vector can now mean "choose the fixed output after paying costs".
+// This is a new action route, not zero mana production. Resolve its immutable
+// template rather than rejecting old zero-power sources that really produce 0.
+pub(super) fn prior_schema199_actions_supported(game: &Game, actions: &[Action]) -> bool {
+    use rustmage_core::engine::ability_world::CharacteristicWorld;
+    fn new_fixed_choice(recipe: Option<ManaProduction>) -> bool {
+        matches!(recipe.map(ManaProduction::base),
+            Some(ManaProduction::Choice { amount, .. } | ManaProduction::Combination { amount, .. })
+            if amount != 0)
+    }
+    actions.iter().all(|action| {
+        if !wire_supported(action) {
+            return false;
+        }
+        let recipe = match *action {
+            Action::AnnounceMana {
+                card,
+                ability,
+                production,
+                ..
+            }
+            | Action::ActivateMana {
+                card,
+                ability,
+                production,
+                ..
+            } if production == [0; 6] => game.state.objects[card as usize]
+                .card
+                .activation(ability)
+                .mana_production(),
+            Action::AnnounceBorrowedMana {
+                exiled,
+                ability,
+                production,
+                ..
+            }
+            | Action::ActivateBorrowedMana {
+                exiled,
+                ability,
+                production,
+                ..
+            } if production == [0; 6] => game.state.objects[exiled.card as usize]
+                .card
+                .activation(ability)
+                .mana_production(),
+            Action::AnnounceGraveyardBorrowedMana {
+                graveyard,
+                ability,
+                production,
+                ..
+            }
+            | Action::ActivateGraveyardBorrowedMana {
+                graveyard,
+                ability,
+                production,
+                ..
+            } if production == [0; 6] => game.state.objects[graveyard.card as usize]
+                .card
+                .activation(ability)
+                .mana_production(),
+            Action::TapGrantedMana {
+                card,
+                grantor,
+                production,
+            } if production == [0; 6] => CharacteristicWorld::granted_mana(game, card)
+                .into_iter()
+                .find(|grant| grant.source == grantor)
+                .map(|grant| grant.production),
+            _ => None,
+        };
+        !new_fixed_choice(recipe)
+    })
+}
+
 /// Remove only a validated numeric metadata member, preserving every other byte
 /// and its struct-field order. Value reserialization would reorder old members.
 fn remove_entry_count(input: &str) -> String {
@@ -1222,4 +1296,243 @@ fn prior_198_rejects_only_new_nonempty_acquired_nonmana_counter_receipts() {
     };
     let native = serde_json::to_string(&native).unwrap();
     assert_eq!(project_prior_schema199(&native).unwrap(), native);
+}
+
+#[test]
+fn prior_198_source_ledger_proves_each_new_late_fixed_output_capability() {
+    let audit: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../docs/aetherdrift-prior198-trace-audit.json"
+    ))
+    .unwrap();
+    let rows = audit["cards"].as_array().unwrap();
+    assert_eq!(rows.len(), 42);
+    let mut late = 0;
+    let mut duplicate = 0;
+    for row in rows {
+        if row["classification"] == "duplicate_borrowed_mana_actions" {
+            assert_eq!(row["card"], "Territory Forge");
+            duplicate += 1;
+            continue;
+        }
+        let name = row["mana_definition"].as_str().unwrap();
+        let definition = Card::from_name(name).unwrap();
+        let ability = u16::try_from(row["ability"].as_u64().unwrap()).unwrap();
+        let recipe = definition
+            .activation(ability)
+            .mana_production()
+            .unwrap()
+            .base();
+        let (mask, amount) = match recipe {
+            ManaProduction::Choice { mask, amount }
+            | ManaProduction::Combination { mask, amount } => (mask, amount),
+            other => panic!("{} unexpected domain {other:?}", row["card"]),
+        };
+        assert_eq!(u64::from(mask), row["recipe"]["mask"].as_u64().unwrap());
+        assert_eq!(u64::from(amount), row["recipe"]["amount"].as_u64().unwrap());
+        assert!(amount > 0);
+        let mut game = scenario(Player::P0);
+        let card = if row["classification"] == "new_late_fixed_choice_route_from_created_treasure" {
+            let id = game.state.objects.len() as CardId;
+            game.create_tokens(Player::P0, definition, 1, false);
+            assert_eq!(game.state.objects[id as usize].card, definition);
+            id
+        } else {
+            put(&mut game, Player::P0, name, Zone::Battlefield)
+        };
+        let zero = Action::AnnounceMana {
+            card,
+            ability,
+            counter_payment: Counters::default(),
+            production: [0; 6],
+        };
+        let actions = game.legal_actions();
+        assert!(
+            actions.contains(&zero),
+            "{} must expose the new late route",
+            row["card"]
+        );
+        assert!(
+            !prior_schema199_actions_supported(&game, &[zero]),
+            "{}",
+            row["card"]
+        );
+        let mut concrete = None;
+        recipe.visit(|mana| {
+            concrete = Some(mana);
+            true
+        });
+        let concrete = Action::AnnounceMana {
+            card,
+            ability,
+            counter_payment: Counters::default(),
+            production: concrete.unwrap(),
+        };
+        assert!(
+            actions.contains(&concrete),
+            "{} retains concrete output",
+            row["card"]
+        );
+        assert!(
+            prior_schema199_actions_supported(&game, &[concrete]),
+            "{}",
+            row["card"]
+        );
+        late += 1;
+    }
+    assert_eq!((late, duplicate), (41, 1));
+}
+
+#[test]
+fn prior_198_rejects_a_real_late_output_start_after_its_costs_complete() {
+    let mut game = scenario(Player::P0);
+    let card = put(&mut game, Player::P0, "Prophetic Prism", Zone::Battlefield);
+    let start = Action::AnnounceMana {
+        card,
+        ability: 0,
+        counter_payment: Counters::default(),
+        production: [0; 6],
+    };
+    assert!(game.legal_actions().contains(&start));
+    assert!(!prior_schema199_actions_supported(
+        &game,
+        std::slice::from_ref(&start)
+    ));
+    assert!(prior_schema199_state_supported(&game.state));
+    act(&mut game, start.clone());
+    let payment = game
+        .legal_actions()
+        .into_iter()
+        .find_map(|a| match a {
+            Action::PayCosts { payment } => Some(payment),
+            _ => None,
+        })
+        .unwrap();
+    let before = game.state.players[0].mana;
+    act(&mut game, Action::PayCosts { payment });
+    assert!(game.state.objects[card as usize].tapped);
+    assert_eq!(
+        game.state.players[0].mana,
+        std::array::from_fn(|i| before[i] - payment[i])
+    );
+    assert!(matches!(game.state.pending, Pending::EffectMana { .. }));
+    assert!(!prior_schema199_state_supported(&game.state));
+    let late = game.snapshot();
+    let mut branch = game.clone();
+    drop(game);
+    let production = [0, 0, 0, 1, 0, 0];
+    act(&mut branch, Action::ChooseMana { production });
+    assert_eq!(
+        branch.state.players[0].mana,
+        std::array::from_fn(|i| before[i] - payment[i] + production[i])
+    );
+    assert!(branch.state.announcing.is_none());
+    assert!(prior_schema199_state_supported(&branch.state));
+    // An idle result alone cannot certify a journal which selected the new route.
+    assert!(!prior_schema199_actions_supported(&branch, &[start]));
+    branch.restore(&late).unwrap();
+    assert!(!prior_schema199_state_supported(&branch.state));
+}
+
+#[test]
+fn prior_198_preserves_real_zero_power_mana_and_resolves_borrowed_donor_templates() {
+    use card_rules::authored::CardRules;
+    const ZERO_POWER: CardRules = CardRules {
+        effect: Effect::Creature(0, 2),
+        activated: &[
+            ActivatedAbility {
+                exhaust: false,
+                guard: ActivationGuard::Always,
+                origin: ActivationOrigin::Battlefield,
+                cycling: false,
+                cost: ActivationCost::ZERO,
+                targets: TargetPlan::NONE,
+                program: &[Instruction::AddMana(ManaProduction::SourcePower {
+                    color: 4,
+                })],
+                sorcery: false,
+                once_per_turn: false,
+            },
+            ActivatedAbility {
+                exhaust: false,
+                guard: ActivationGuard::Always,
+                origin: ActivationOrigin::Battlefield,
+                cycling: false,
+                cost: ActivationCost::ZERO,
+                targets: TargetPlan::NONE,
+                program: &[Instruction::AddMana(ManaProduction::Choice {
+                    mask: 1,
+                    amount: 0,
+                })],
+                sorcery: false,
+                once_per_turn: false,
+            },
+        ],
+        ..CardRules::EMPTY
+    };
+    let _scope = card_rules::fixture_rules::activate(&[(Card::GrizzlyBears, &ZERO_POWER)]);
+    let mut game = scenario(Player::P0);
+    let zero_power = put(&mut game, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    let genuine = Action::AnnounceMana {
+        card: zero_power,
+        ability: 0,
+        counter_payment: Counters::default(),
+        production: [0; 6],
+    };
+    assert!(game.legal_actions().contains(&genuine));
+    assert!(prior_schema199_actions_supported(&game, &[genuine]));
+    let fixed_zero = Action::AnnounceMana {
+        card: zero_power,
+        ability: 1,
+        counter_payment: Counters::default(),
+        production: [0; 6],
+    };
+    assert!(game.legal_actions().contains(&fixed_zero));
+    assert!(prior_schema199_actions_supported(&game, &[fixed_zero]));
+    let source = put(&mut game, Player::P0, "Territory Forge", Zone::Battlefield);
+    let donor = put(&mut game, Player::P0, "Prophetic Prism", Zone::Exile);
+    let exiled = game.object_ref(donor);
+    let grave = put(&mut game, Player::P0, "Gravestone Strider", Zone::Graveyard);
+    let graveyard = game.object_ref(grave);
+    for action in [
+        Action::AnnounceBorrowedMana {
+            card: source,
+            exiled,
+            ability: 0,
+            counter_payment: Counters::default(),
+            production: [0; 6],
+        },
+        Action::ActivateBorrowedMana {
+            card: source,
+            exiled,
+            ability: 0,
+            counter_payment: Counters::default(),
+            payment: [1, 0, 0, 0, 0, 0],
+            production: [0; 6],
+        },
+        Action::AnnounceGraveyardBorrowedMana {
+            card: source,
+            graveyard,
+            ability: 0,
+            counter_payment: Counters::default(),
+            production: [0; 6],
+        },
+        Action::ActivateGraveyardBorrowedMana {
+            card: source,
+            graveyard,
+            ability: 0,
+            counter_payment: Counters::default(),
+            payment: [1, 0, 0, 0, 0, 0],
+            production: [0; 6],
+        },
+    ] {
+        assert!(!prior_schema199_actions_supported(&game, &[action]));
+    }
+    let inherited = Action::AnnounceBorrowedMana {
+        card: source,
+        exiled,
+        ability: 0,
+        counter_payment: Counters::default(),
+        production: [1, 0, 0, 0, 0, 0],
+    };
+    assert!(prior_schema199_actions_supported(&game, &[inherited]));
 }

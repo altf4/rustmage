@@ -1,0 +1,2409 @@
+{
+  "schema": 1,
+  "candidate_revision": "586895eee3d218e4cd427ec12ea158d269a3eec5",
+  "baseline_revision": "73092e3",
+  "observation_schema": 199,
+  "prior_schema": 198,
+  "scope": "Independent source classification of all42 remaining previous-schema cast/entry differences. No raw observation export or permission to refresh fingerprints.",
+  "source_report": "/home/altf4/.cache/rustmage-authoring/aetherdrift/engine-candidate-20261101-220700/traces/report.json",
+  "comparison": {
+    "total": 3007,
+    "byte_exact_prior198": 2965,
+    "changed_observation_digest_only": 42,
+    "own_fixed_choice_routes": 23,
+    "created_treasure_routes": 18,
+    "duplicate_borrowed_actions_bug": 1
+  },
+  "mechanism_sources": {
+    "old": "73092e3:engine_activations.rs uses production.in_world(...).visit for announcements and direct output enumeration.",
+    "new": "586895eee:engine_mana_output.rs148-196 appends zero sentinel for costly fixed domains; engine_ability_world.rs96-103 detects non-tap costs.",
+    "payment": "finish_mana_output retains EffectMana after costs; complete_mana_output adds the chosen concrete vector once.",
+    "duplicate": "586895eee:engine_borrowed_activations.rs532-564 and601-632 both emit the same borrowed choices."
+  },
+  "proof_limits": [
+    "Trace members and digests directly compared from exported JSON.",
+    "All42 typed card definitions and the shared Treasure definition byte-compared with baseline73092e3; no card edits explain the differences.",
+    "Per-card recipe/cost plus old/current visitors establish new action capabilities. Digest summaries cannot prove absence of every other observation byte difference.",
+    "Focused real legal-action witnesses cover all41 fixed domains and preserve inherited concrete alternatives.",
+    "After white duplicate repair, run once with the assembled batch: expect2966 exact previous-schema rows and41 explicitly unrepresentable late-route rows. Investigate any other difference; no automatic fingerprint acceptance."
+  ],
+  "guard_contract": [
+    "Resolve immutable native, borrowed or granted recipe for zero-production actions.",
+    "Reject positive fixed Choice/Combination sentinel; preserve genuine zero-power production.",
+    "Validate journal actions before sacrifice/copy can change their definition, and validate all final offered actions alongside owned state.",
+    "Never erase action values from observations, journals or current fingerprints."
+  ],
+  "cards": [
+    {
+      "card": "Abzan Devotee",
+      "definition": "src/card_definitions/tdm/abzan_devotee.rs",
+      "definition_sha256": "063043c908bdd2b6e4c375aaa0ccfdf5d00e46917e0afb7bea96b619a2db8e2f",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "a51e0425840dfca7",
+      "candidate_prior198_observations": "1cc14420717f3a25",
+      "classification": "new_late_fixed_choice_route_from_own_activation",
+      "mana_definition": "Abzan Devotee",
+      "mana_definition_path": "src/card_definitions/tdm/abzan_devotee.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 21,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 1,
+        "mana_component": true,
+        "tap": false,
+        "sacrifice": false,
+        "life": 0,
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "source_line": 6,
+      "source_proof": [
+        "Unchanged complete typed template has a positive fixed Choice/Combination domain.",
+        "Printed cost includes mana, life or sacrifice beyond pure tap.",
+        "Old visitor enumerates concrete outputs only; current visitor adds unselected zero."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Ancestors' Aid",
+      "definition": "src/card_definitions/lci/ancestors_aid.rs",
+      "definition_sha256": "7322628d94d6f86e24154068008734cb25ed70b567aebbd7ca7181957c196d04",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "99d8012f80f0ed39",
+      "candidate_prior198_observations": "b0901c42fd9bbf75",
+      "classification": "new_late_fixed_choice_route_from_created_treasure",
+      "mana_definition": "@token/b60f6cd3b44b22bd289fe4e2",
+      "mana_definition_path": "src/card_definitions/synthetic/token_b60f6cd3b44b22bd289fe4e2.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 0,
+        "tap": true,
+        "sacrifice": true,
+        "life": 0
+      },
+      "source_line": 16,
+      "source_proof": [
+        "Unchanged complete typed definition creates Card(5302), the canonical Treasure.",
+        "Treasure index0 has tap+sacrifice cost and positive Choice(mask31,amount1).",
+        "Old visit enumerates only concrete colors; current visitor adds zero sentinel because of sacrifice cost."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Barrels of Blasting Jelly",
+      "definition": "src/card_definitions/tla/barrels_of_blasting_jelly.rs",
+      "definition_sha256": "68ee3f3faeb12eb81a8798aaaa2e2fce4df96c60e21a3379a844777f0df25026",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "e9f6505ac3a808e6",
+      "candidate_prior198_observations": "8379f22f2d361e9e",
+      "classification": "new_late_fixed_choice_route_from_own_activation",
+      "mana_definition": "Barrels of Blasting Jelly",
+      "mana_definition_path": "src/card_definitions/tla/barrels_of_blasting_jelly.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 1,
+        "mana_component": true,
+        "tap": false,
+        "sacrifice": false,
+        "life": 0,
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "source_line": 6,
+      "source_proof": [
+        "Unchanged complete typed template has a positive fixed Choice/Combination domain.",
+        "Printed cost includes mana, life or sacrifice beyond pure tap.",
+        "Old visitor enumerates concrete outputs only; current visitor adds unselected zero."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Baxter Building",
+      "definition": "src/card_definitions/msh/baxter_building.rs",
+      "definition_sha256": "13d3e9876d9a465832284ec2140f4ab42625f4e8a4c75e18d76989bac62ce828",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "9442da50c9baf44c",
+      "candidate_prior198_observations": "f146c3377946db2b",
+      "classification": "new_late_fixed_choice_route_from_own_activation",
+      "mana_definition": "Baxter Building",
+      "mana_definition_path": "src/card_definitions/msh/baxter_building.rs",
+      "ability": 1,
+      "recipe": {
+        "kind": "Combination",
+        "mask": 31,
+        "amount": 4
+      },
+      "cost": {
+        "generic": 4,
+        "mana_component": true,
+        "tap": true,
+        "sacrifice": false,
+        "life": 0,
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "source_line": 31,
+      "source_proof": [
+        "Unchanged complete typed template has a positive fixed Choice/Combination domain.",
+        "Printed cost includes mana, life or sacrifice beyond pure tap.",
+        "Old visitor enumerates concrete outputs only; current visitor adds unselected zero."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Brass's Bounty",
+      "definition": "src/card_definitions/fdn/brass_s_bounty.rs",
+      "definition_sha256": "8b107635cc3ef0e482ce2eda512df73142a3e945b84ea8ed7de30aa8145716b5",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "70e9f88acaa6c2e9",
+      "candidate_prior198_observations": "6c039ffba5404c15",
+      "classification": "new_late_fixed_choice_route_from_created_treasure",
+      "mana_definition": "@token/b60f6cd3b44b22bd289fe4e2",
+      "mana_definition_path": "src/card_definitions/synthetic/token_b60f6cd3b44b22bd289fe4e2.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 0,
+        "tap": true,
+        "sacrifice": true,
+        "life": 0
+      },
+      "source_line": 6,
+      "source_proof": [
+        "Unchanged complete typed definition creates Card(5302), the canonical Treasure.",
+        "Treasure index0 has tap+sacrifice cost and positive Choice(mask31,amount1).",
+        "Old visit enumerates only concrete colors; current visitor adds zero sentinel because of sacrifice cost."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Capital City",
+      "definition": "src/card_definitions/fin/capital_city.rs",
+      "definition_sha256": "3b98b642aec3c911331ef2b3a6032202f928f43b17e4acfc5c40ff8873b970da",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "b3e2268a66bcd67b",
+      "candidate_prior198_observations": "12a304ae608ed950",
+      "classification": "new_late_fixed_choice_route_from_own_activation",
+      "mana_definition": "Capital City",
+      "mana_definition_path": "src/card_definitions/fin/capital_city.rs",
+      "ability": 1,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 1,
+        "mana_component": true,
+        "tap": true,
+        "sacrifice": false,
+        "life": 0,
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "source_line": 32,
+      "source_proof": [
+        "Unchanged complete typed template has a positive fixed Choice/Combination domain.",
+        "Printed cost includes mana, life or sacrifice beyond pure tap.",
+        "Old visitor enumerates concrete outputs only; current visitor adds unselected zero."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Captivating Cave",
+      "definition": "src/card_definitions/lci/captivating_cave.rs",
+      "definition_sha256": "51e961fa802f4de809ad985f51c17f0dbd04416ceaa0ebd6f11cf4794f03ab11",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "85e251b16601638a",
+      "candidate_prior198_observations": "33ea69f1a3fda945",
+      "classification": "new_late_fixed_choice_route_from_own_activation",
+      "mana_definition": "Captivating Cave",
+      "mana_definition_path": "src/card_definitions/lci/captivating_cave.rs",
+      "ability": 1,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 1,
+        "mana_component": true,
+        "tap": true,
+        "sacrifice": false,
+        "life": 0,
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "source_line": 32,
+      "source_proof": [
+        "Unchanged complete typed template has a positive fixed Choice/Combination domain.",
+        "Printed cost includes mana, life or sacrifice beyond pure tap.",
+        "Old visitor enumerates concrete outputs only; current visitor adds unselected zero."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Conduit Pylons",
+      "definition": "src/card_definitions/otj/conduit_pylons.rs",
+      "definition_sha256": "89b00c6c2531c6709abd3312be8bef8429ea537ac76745129910cf05819d9aea",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "8aeb5fefcc2585dd",
+      "candidate_prior198_observations": "ff5a0e1448d43f50",
+      "classification": "new_late_fixed_choice_route_from_own_activation",
+      "mana_definition": "Conduit Pylons",
+      "mana_definition_path": "src/card_definitions/otj/conduit_pylons.rs",
+      "ability": 1,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 1,
+        "mana_component": true,
+        "tap": true,
+        "sacrifice": false,
+        "life": 0,
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "source_line": 36,
+      "source_proof": [
+        "Unchanged complete typed template has a positive fixed Choice/Combination domain.",
+        "Printed cost includes mana, life or sacrifice beyond pure tap.",
+        "Old visitor enumerates concrete outputs only; current visitor adds unselected zero."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Corsair Captain",
+      "definition": "src/card_definitions/fdn/corsair_captain.rs",
+      "definition_sha256": "5e07458199b1a4c0fd047430cfae090b1348119c598ce67014c223c5f5903dcd",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "410f2f38f7048fb6",
+      "candidate_prior198_observations": "cdeb409c492bed92",
+      "classification": "new_late_fixed_choice_route_from_created_treasure",
+      "mana_definition": "@token/b60f6cd3b44b22bd289fe4e2",
+      "mana_definition_path": "src/card_definitions/synthetic/token_b60f6cd3b44b22bd289fe4e2.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 0,
+        "tap": true,
+        "sacrifice": true,
+        "life": 0
+      },
+      "source_line": 8,
+      "source_proof": [
+        "Unchanged complete typed definition creates Card(5302), the canonical Treasure.",
+        "Treasure index0 has tap+sacrifice cost and positive Choice(mask31,amount1).",
+        "Old visit enumerates only concrete colors; current visitor adds zero sentinel because of sacrifice cost."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Crystal Grotto",
+      "definition": "src/card_definitions/woe/crystal_grotto.rs",
+      "definition_sha256": "c1b48d5c2dce4571ebebe2a43ec3b736545487ecf0c1ab41908a87a49d1a6004",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "0c6468d7b5b087cd",
+      "candidate_prior198_observations": "04db0360d8a86230",
+      "classification": "new_late_fixed_choice_route_from_own_activation",
+      "mana_definition": "Crystal Grotto",
+      "mana_definition_path": "src/card_definitions/woe/crystal_grotto.rs",
+      "ability": 1,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 1,
+        "mana_component": true,
+        "tap": true,
+        "sacrifice": false,
+        "life": 0,
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "source_line": 36,
+      "source_proof": [
+        "Unchanged complete typed template has a positive fixed Choice/Combination domain.",
+        "Printed cost includes mana, life or sacrifice beyond pure tap.",
+        "Old visitor enumerates concrete outputs only; current visitor adds unselected zero."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Dori, Bearer of Friends",
+      "definition": "src/card_definitions/hob/dori_bearer_of_friends.rs",
+      "definition_sha256": "ffe5fcc01368a36e650871a90b4c0ebcdf5c638684919e99b0d9d2c7daee7604",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "bfd5545aaeb9b376",
+      "candidate_prior198_observations": "18962e41c5d41a22",
+      "classification": "new_late_fixed_choice_route_from_created_treasure",
+      "mana_definition": "@token/b60f6cd3b44b22bd289fe4e2",
+      "mana_definition_path": "src/card_definitions/synthetic/token_b60f6cd3b44b22bd289fe4e2.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 0,
+        "tap": true,
+        "sacrifice": true,
+        "life": 0
+      },
+      "source_line": 8,
+      "source_proof": [
+        "Unchanged complete typed definition creates Card(5302), the canonical Treasure.",
+        "Treasure index0 has tap+sacrifice cost and positive Choice(mask31,amount1).",
+        "Old visit enumerates only concrete colors; current visitor adds zero sentinel because of sacrifice cost."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Flamekin Gildweaver",
+      "definition": "src/card_definitions/ecl/flamekin_gildweaver.rs",
+      "definition_sha256": "77baf34be8bc53b2ee34373c3bac6ccbc1b7fd1db85f9ba5588011092e741048",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "a6e6f797d39cf448",
+      "candidate_prior198_observations": "64c81b9ee6934dd0",
+      "classification": "new_late_fixed_choice_route_from_created_treasure",
+      "mana_definition": "@token/b60f6cd3b44b22bd289fe4e2",
+      "mana_definition_path": "src/card_definitions/synthetic/token_b60f6cd3b44b22bd289fe4e2.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 0,
+        "tap": true,
+        "sacrifice": true,
+        "life": 0
+      },
+      "source_line": 8,
+      "source_proof": [
+        "Unchanged complete typed definition creates Card(5302), the canonical Treasure.",
+        "Treasure index0 has tap+sacrifice cost and positive Choice(mask31,amount1).",
+        "Old visit enumerates only concrete colors; current visitor adds zero sentinel because of sacrifice cost."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Giant's Boulder",
+      "definition": "src/card_definitions/hob/giant_s_boulder.rs",
+      "definition_sha256": "f17541544efb341e4ce2cadebefa0c9bfb815680a7bcfb2a37584ace3d21d276",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "cd40cb15f9a8c54c",
+      "candidate_prior198_observations": "1ec4a90d3e7e9786",
+      "classification": "new_late_fixed_choice_route_from_own_activation",
+      "mana_definition": "Giant's Boulder",
+      "mana_definition_path": "src/card_definitions/hob/giant_s_boulder.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 1,
+        "mana_component": true,
+        "tap": true,
+        "sacrifice": false,
+        "life": 0,
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "source_line": 10,
+      "source_proof": [
+        "Unchanged complete typed template has a positive fixed Choice/Combination domain.",
+        "Printed cost includes mana, life or sacrifice beyond pure tap.",
+        "Old visitor enumerates concrete outputs only; current visitor adds unselected zero."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Gold Pan",
+      "definition": "src/card_definitions/otj/gold_pan.rs",
+      "definition_sha256": "5c9dbda1ed0d4a53bbe11ee7b1e0ca218419914198d98ac1d1d15f45625a4f4c",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "76b312bf9e55b174",
+      "candidate_prior198_observations": "f6b67e5a117fd254",
+      "classification": "new_late_fixed_choice_route_from_created_treasure",
+      "mana_definition": "@token/b60f6cd3b44b22bd289fe4e2",
+      "mana_definition_path": "src/card_definitions/synthetic/token_b60f6cd3b44b22bd289fe4e2.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 0,
+        "tap": true,
+        "sacrifice": true,
+        "life": 0
+      },
+      "source_line": 8,
+      "source_proof": [
+        "Unchanged complete typed definition creates Card(5302), the canonical Treasure.",
+        "Treasure index0 has tap+sacrifice cost and positive Choice(mask31,amount1).",
+        "Old visit enumerates only concrete colors; current visitor adds zero sentinel because of sacrifice cost."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Gravestone Strider",
+      "definition": "src/card_definitions/mkm/gravestone_strider.rs",
+      "definition_sha256": "4231c1f09b09c1081f54e6c1c2eb539614cea457a45d51a1e879b8069a52212c",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "1f32fc834e8688a7",
+      "candidate_prior198_observations": "7ffc2c7f722d3dbd",
+      "classification": "new_late_fixed_choice_route_from_own_activation",
+      "mana_definition": "Gravestone Strider",
+      "mana_definition_path": "src/card_definitions/mkm/gravestone_strider.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 1,
+        "mana_component": true,
+        "tap": false,
+        "sacrifice": false,
+        "life": 0,
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "source_line": 6,
+      "source_proof": [
+        "Unchanged complete typed template has a positive fixed Choice/Combination domain.",
+        "Printed cost includes mana, life or sacrifice beyond pure tap.",
+        "Old visitor enumerates concrete outputs only; current visitor adds unselected zero."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Great Hall of the Biblioplex",
+      "definition": "src/card_definitions/sos/great_hall_of_the_biblioplex.rs",
+      "definition_sha256": "cfb0573396bba1f3d2fa9d148d7bb87cc610934924189e57507259e2250859ec",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "711ed1a2bebc692a",
+      "candidate_prior198_observations": "bef0815ba4a78532",
+      "classification": "new_late_fixed_choice_route_from_own_activation",
+      "mana_definition": "Great Hall of the Biblioplex",
+      "mana_definition_path": "src/card_definitions/sos/great_hall_of_the_biblioplex.rs",
+      "ability": 1,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 0,
+        "mana_component": false,
+        "tap": true,
+        "sacrifice": false,
+        "life": 1,
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "source_line": 31,
+      "source_proof": [
+        "Unchanged complete typed template has a positive fixed Choice/Combination domain.",
+        "Printed cost includes mana, life or sacrifice beyond pure tap.",
+        "Old visitor enumerates concrete outputs only; current visitor adds unselected zero."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Hidden Grotto",
+      "definition": "src/card_definitions/blb/hidden_grotto.rs",
+      "definition_sha256": "89b00c6c2531c6709abd3312be8bef8429ea537ac76745129910cf05819d9aea",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "84b1f8fb41f61e19",
+      "candidate_prior198_observations": "006ecd2a1df4ab10",
+      "classification": "new_late_fixed_choice_route_from_own_activation",
+      "mana_definition": "Hidden Grotto",
+      "mana_definition_path": "src/card_definitions/blb/hidden_grotto.rs",
+      "ability": 1,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 1,
+        "mana_component": true,
+        "tap": true,
+        "sacrifice": false,
+        "life": 0,
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "source_line": 36,
+      "source_proof": [
+        "Unchanged complete typed template has a positive fixed Choice/Combination domain.",
+        "Printed cost includes mana, life or sacrifice beyond pure tap.",
+        "Old visitor enumerates concrete outputs only; current visitor adds unselected zero."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Involuntary Employment",
+      "definition": "src/card_definitions/fdn/involuntary_employment.rs",
+      "definition_sha256": "f53c2894fc0199cc2b0af55dfb6f8785be612a20eaa41b1da076a246615ebf38",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "6a11cd2f5133953f",
+      "candidate_prior198_observations": "916c8ae33d5e429b",
+      "classification": "new_late_fixed_choice_route_from_created_treasure",
+      "mana_definition": "@token/b60f6cd3b44b22bd289fe4e2",
+      "mana_definition_path": "src/card_definitions/synthetic/token_b60f6cd3b44b22bd289fe4e2.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 0,
+        "tap": true,
+        "sacrifice": true,
+        "life": 0
+      },
+      "source_line": 13,
+      "source_proof": [
+        "Unchanged complete typed definition creates Card(5302), the canonical Treasure.",
+        "Treasure index0 has tap+sacrifice cost and positive Choice(mask31,amount1).",
+        "Old visit enumerates only concrete colors; current visitor adds zero sentinel because of sacrifice cost."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Jeskai Devotee",
+      "definition": "src/card_definitions/tdm/jeskai_devotee.rs",
+      "definition_sha256": "4a46c052cb258ac40219b5e41c04e29759cd6454f0eb0d04936f5f99bcb9b39d",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "6db0417ab7ef3523",
+      "candidate_prior198_observations": "a4fa1d176405ab67",
+      "classification": "new_late_fixed_choice_route_from_own_activation",
+      "mana_definition": "Jeskai Devotee",
+      "mana_definition_path": "src/card_definitions/tdm/jeskai_devotee.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 11,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 1,
+        "mana_component": true,
+        "tap": false,
+        "sacrifice": false,
+        "life": 0,
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "source_line": 17,
+      "source_proof": [
+        "Unchanged complete typed template has a positive fixed Choice/Combination domain.",
+        "Printed cost includes mana, life or sacrifice beyond pure tap.",
+        "Old visitor enumerates concrete outputs only; current visitor adds unselected zero."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Korvold and the Noble Thief",
+      "definition": "src/card_definitions/woe/korvold_and_the_noble_thief.rs",
+      "definition_sha256": "30437c60808b0a0e082be984cbc3700352912a5d717ae60a87770d852b2e5d97",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "87065272fefb70ad",
+      "candidate_prior198_observations": "fbf2998fcd3189a9",
+      "classification": "new_late_fixed_choice_route_from_created_treasure",
+      "mana_definition": "@token/b60f6cd3b44b22bd289fe4e2",
+      "mana_definition_path": "src/card_definitions/synthetic/token_b60f6cd3b44b22bd289fe4e2.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 0,
+        "tap": true,
+        "sacrifice": true,
+        "life": 0
+      },
+      "source_line": 9,
+      "source_proof": [
+        "Unchanged complete typed definition creates Card(5302), the canonical Treasure.",
+        "Treasure index0 has tap+sacrifice cost and positive Choice(mask31,amount1).",
+        "Old visit enumerates only concrete colors; current visitor adds zero sentinel because of sacrifice cost."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Loot, the Pathfinder",
+      "definition": "src/card_definitions/dft/loot_the_pathfinder.rs",
+      "definition_sha256": "e0629e6751f4ebc01430249e695c1d98349e2bca44ed723949117b655fe2225c",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "2c4b0d1587db6739",
+      "candidate_prior198_observations": "a326c59a2b9ed67e",
+      "classification": "new_late_fixed_choice_route_from_own_activation",
+      "mana_definition": "Loot, the Pathfinder",
+      "mana_definition_path": "src/card_definitions/dft/loot_the_pathfinder.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 3
+      },
+      "cost": {
+        "generic": 0,
+        "mana_component": true,
+        "tap": true,
+        "sacrifice": false,
+        "life": 0,
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ]
+      },
+      "source_line": 6,
+      "source_proof": [
+        "Unchanged complete typed template has a positive fixed Choice/Combination domain.",
+        "Printed cost includes mana, life or sacrifice beyond pure tap.",
+        "Old visitor enumerates concrete outputs only; current visitor adds unselected zero."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Mardu Devotee",
+      "definition": "src/card_definitions/tdm/mardu_devotee.rs",
+      "definition_sha256": "8ccbfb61efdd5a428e67eb02ea2aa019a2bdb0f2cfcf8d3be2bdbeb49bab3627",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "4e2983bc803af6c3",
+      "candidate_prior198_observations": "d50591871bad1fdb",
+      "classification": "new_late_fixed_choice_route_from_own_activation",
+      "mana_definition": "Mardu Devotee",
+      "mana_definition_path": "src/card_definitions/tdm/mardu_devotee.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 13,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 1,
+        "mana_component": true,
+        "tap": false,
+        "sacrifice": false,
+        "life": 0,
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "source_line": 9,
+      "source_proof": [
+        "Unchanged complete typed template has a positive fixed Choice/Combination domain.",
+        "Printed cost includes mana, life or sacrifice beyond pure tap.",
+        "Old visitor enumerates concrete outputs only; current visitor adds unselected zero."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Meticulous Artisan",
+      "definition": "src/card_definitions/tdm/meticulous_artisan.rs",
+      "definition_sha256": "1a10589f2affad743eb83b62d4046dc27f9cd5cf82e96f495606e6eb71843f77",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "9dcbef2c6d0914b4",
+      "candidate_prior198_observations": "ce0ee15db1a117ec",
+      "classification": "new_late_fixed_choice_route_from_created_treasure",
+      "mana_definition": "@token/b60f6cd3b44b22bd289fe4e2",
+      "mana_definition_path": "src/card_definitions/synthetic/token_b60f6cd3b44b22bd289fe4e2.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 0,
+        "tap": true,
+        "sacrifice": true,
+        "life": 0
+      },
+      "source_line": 22,
+      "source_proof": [
+        "Unchanged complete typed definition creates Card(5302), the canonical Treasure.",
+        "Treasure index0 has tap+sacrifice cost and positive Choice(mask31,amount1).",
+        "Old visit enumerates only concrete colors; current visitor adds zero sentinel because of sacrifice cost."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Namazu Trader",
+      "definition": "src/card_definitions/fin/namazu_trader.rs",
+      "definition_sha256": "3f9babdc65b4d8465aeed0585480d7e7b42bc6b2c51159322cd98cd4f68c9b1c",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "983600a890e1721c",
+      "candidate_prior198_observations": "5ff3c3c804df98a4",
+      "classification": "new_late_fixed_choice_route_from_created_treasure",
+      "mana_definition": "@token/b60f6cd3b44b22bd289fe4e2",
+      "mana_definition_path": "src/card_definitions/synthetic/token_b60f6cd3b44b22bd289fe4e2.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 0,
+        "tap": true,
+        "sacrifice": true,
+        "life": 0
+      },
+      "source_line": 11,
+      "source_proof": [
+        "Unchanged complete typed definition creates Card(5302), the canonical Treasure.",
+        "Treasure index0 has tap+sacrifice cost and positive Choice(mask31,amount1).",
+        "Old visit enumerates only concrete colors; current visitor adds zero sentinel because of sacrifice cost."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Noggle Robber",
+      "definition": "src/card_definitions/ecl/noggle_robber.rs",
+      "definition_sha256": "fa5f35998080d5f34037fa04077d3624e8e0e0d694afd77193c9f699d02dd0cf",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "5b8e62274ee246be",
+      "candidate_prior198_observations": "58060faa0027120e",
+      "classification": "new_late_fixed_choice_route_from_created_treasure",
+      "mana_definition": "@token/b60f6cd3b44b22bd289fe4e2",
+      "mana_definition_path": "src/card_definitions/synthetic/token_b60f6cd3b44b22bd289fe4e2.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 0,
+        "tap": true,
+        "sacrifice": true,
+        "life": 0
+      },
+      "source_line": 8,
+      "source_proof": [
+        "Unchanged complete typed definition creates Card(5302), the canonical Treasure.",
+        "Treasure index0 has tap+sacrifice cost and positive Choice(mask31,amount1).",
+        "Old visit enumerates only concrete colors; current visitor adds zero sentinel because of sacrifice cost."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Omni-Cheese Pizza",
+      "definition": "src/card_definitions/tmt/omni_cheese_pizza.rs",
+      "definition_sha256": "0e35fcf88732dd1503f61e354b478e3dfe9235bb971584d7e2de35a5f9887dd3",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "3621fcba22062de7",
+      "candidate_prior198_observations": "315f76328264c973",
+      "classification": "new_late_fixed_choice_route_from_own_activation",
+      "mana_definition": "Omni-Cheese Pizza",
+      "mana_definition_path": "src/card_definitions/tmt/omni_cheese_pizza.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 1,
+        "mana_component": true,
+        "tap": true,
+        "sacrifice": true,
+        "life": 0,
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "source_line": 10,
+      "source_proof": [
+        "Unchanged complete typed template has a positive fixed Choice/Combination domain.",
+        "Printed cost includes mana, life or sacrifice beyond pure tap.",
+        "Old visitor enumerates concrete outputs only; current visitor adds unselected zero."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Plundering Pirate",
+      "definition": "src/card_definitions/lci/plundering_pirate.rs",
+      "definition_sha256": "e0827b571369e544411ac690bc5151d07c439e1e26ac3b4c9ef3a115e12c0c54",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "6ece4288c0c96598",
+      "candidate_prior198_observations": "651c2895081d1898",
+      "classification": "new_late_fixed_choice_route_from_created_treasure",
+      "mana_definition": "@token/b60f6cd3b44b22bd289fe4e2",
+      "mana_definition_path": "src/card_definitions/synthetic/token_b60f6cd3b44b22bd289fe4e2.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 0,
+        "tap": true,
+        "sacrifice": true,
+        "life": 0
+      },
+      "source_line": 8,
+      "source_proof": [
+        "Unchanged complete typed definition creates Card(5302), the canonical Treasure.",
+        "Treasure index0 has tap+sacrifice cost and positive Choice(mask31,amount1).",
+        "Old visit enumerates only concrete colors; current visitor adds zero sentinel because of sacrifice cost."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Professional Wrestler",
+      "definition": "src/card_definitions/spm/professional_wrestler.rs",
+      "definition_sha256": "19d4364fedcff22ba148f4c962785b6308782cf2c6668b739badaff6d865d64f",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "d552a96023cdd106",
+      "candidate_prior198_observations": "34ada4abcf4e5a66",
+      "classification": "new_late_fixed_choice_route_from_created_treasure",
+      "mana_definition": "@token/b60f6cd3b44b22bd289fe4e2",
+      "mana_definition_path": "src/card_definitions/synthetic/token_b60f6cd3b44b22bd289fe4e2.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 0,
+        "tap": true,
+        "sacrifice": true,
+        "life": 0
+      },
+      "source_line": 8,
+      "source_proof": [
+        "Unchanged complete typed definition creates Card(5302), the canonical Treasure.",
+        "Treasure index0 has tap+sacrifice cost and positive Choice(mask31,amount1).",
+        "Old visit enumerates only concrete colors; current visitor adds zero sentinel because of sacrifice cost."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Prophetic Prism",
+      "definition": "src/card_definitions/woe/prophetic_prism.rs",
+      "definition_sha256": "8e9e2f2f5166dadc26a546d61a462fa643e911714548e1315c4a484a68c662cd",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "fa18e11b88b071ba",
+      "candidate_prior198_observations": "95d68e3877d774c6",
+      "classification": "new_late_fixed_choice_route_from_own_activation",
+      "mana_definition": "Prophetic Prism",
+      "mana_definition_path": "src/card_definitions/woe/prophetic_prism.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 1,
+        "mana_component": true,
+        "tap": true,
+        "sacrifice": false,
+        "life": 0,
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "source_line": 9,
+      "source_proof": [
+        "Unchanged complete typed template has a positive fixed Choice/Combination domain.",
+        "Printed cost includes mana, life or sacrifice beyond pure tap.",
+        "Old visitor enumerates concrete outputs only; current visitor adds unselected zero."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Rapacious Dragon",
+      "definition": "src/card_definitions/tdc/rapacious_dragon.rs",
+      "definition_sha256": "b0bc5b13281c59e2b473ca2725299e37a1dc4b4defedb5bbddee5535b8498238",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "b341e11d3359572a",
+      "candidate_prior198_observations": "687726d899c0d1d0",
+      "classification": "new_late_fixed_choice_route_from_created_treasure",
+      "mana_definition": "@token/b60f6cd3b44b22bd289fe4e2",
+      "mana_definition_path": "src/card_definitions/synthetic/token_b60f6cd3b44b22bd289fe4e2.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 0,
+        "tap": true,
+        "sacrifice": true,
+        "life": 0
+      },
+      "source_line": 8,
+      "source_proof": [
+        "Unchanged complete typed definition creates Card(5302), the canonical Treasure.",
+        "Treasure index0 has tap+sacrifice cost and positive Choice(mask31,amount1).",
+        "Old visit enumerates only concrete colors; current visitor adds zero sentinel because of sacrifice cost."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Reckless Ransacking",
+      "definition": "src/card_definitions/ecl/reckless_ransacking.rs",
+      "definition_sha256": "80c832d1668c1c17b1b86d753cfe2cf455eed03b9a29e04b287dd2def317107b",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "9e9254b26a90a9b9",
+      "candidate_prior198_observations": "c1e57c1810ae290d",
+      "classification": "new_late_fixed_choice_route_from_created_treasure",
+      "mana_definition": "@token/b60f6cd3b44b22bd289fe4e2",
+      "mana_definition_path": "src/card_definitions/synthetic/token_b60f6cd3b44b22bd289fe4e2.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 0,
+        "tap": true,
+        "sacrifice": true,
+        "life": 0
+      },
+      "source_line": 12,
+      "source_proof": [
+        "Unchanged complete typed definition creates Card(5302), the canonical Treasure.",
+        "Treasure index0 has tap+sacrifice cost and positive Choice(mask31,amount1).",
+        "Old visit enumerates only concrete colors; current visitor adds zero sentinel because of sacrifice cost."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Redcap Thief",
+      "definition": "src/card_definitions/woe/redcap_thief.rs",
+      "definition_sha256": "d9211bcf78f28e276a829f277e808fa6d86a019e6f152769effd8c8aa9bf3871",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "a9bbd70257f642bc",
+      "candidate_prior198_observations": "b2d988ee881384c4",
+      "classification": "new_late_fixed_choice_route_from_created_treasure",
+      "mana_definition": "@token/b60f6cd3b44b22bd289fe4e2",
+      "mana_definition_path": "src/card_definitions/synthetic/token_b60f6cd3b44b22bd289fe4e2.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 0,
+        "tap": true,
+        "sacrifice": true,
+        "life": 0
+      },
+      "source_line": 8,
+      "source_proof": [
+        "Unchanged complete typed definition creates Card(5302), the canonical Treasure.",
+        "Treasure index0 has tap+sacrifice cost and positive Choice(mask31,amount1).",
+        "Old visit enumerates only concrete colors; current visitor adds zero sentinel because of sacrifice cost."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Ronin, Shadow Stalker",
+      "definition": "src/card_definitions/msh/ronin_shadow_stalker.rs",
+      "definition_sha256": "91039b3890003aea2b2efb135376952f9a2c5d59e4ef90ed7bb295fe2d28b6c9",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "880d6d0358be9cfe",
+      "candidate_prior198_observations": "6388f822529df10a",
+      "classification": "new_late_fixed_choice_route_from_own_activation",
+      "mana_definition": "Ronin, Shadow Stalker",
+      "mana_definition_path": "src/card_definitions/msh/ronin_shadow_stalker.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 2
+      },
+      "cost": {
+        "generic": 0,
+        "mana_component": false,
+        "tap": false,
+        "sacrifice": false,
+        "life": 2,
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "source_line": 5,
+      "source_proof": [
+        "Unchanged complete typed template has a positive fixed Choice/Combination domain.",
+        "Printed cost includes mana, life or sacrifice beyond pure tap.",
+        "Old visitor enumerates concrete outputs only; current visitor adds unselected zero."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Rumble Arena",
+      "definition": "src/card_definitions/tla/rumble_arena.rs",
+      "definition_sha256": "98da2b9618e824c782229b0629c27c235680dd21587df30023d7effaddbf495e",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "d932ca5cc3ef02dd",
+      "candidate_prior198_observations": "eb74edc4899813c0",
+      "classification": "new_late_fixed_choice_route_from_own_activation",
+      "mana_definition": "Rumble Arena",
+      "mana_definition_path": "src/card_definitions/tla/rumble_arena.rs",
+      "ability": 1,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 1,
+        "mana_component": true,
+        "tap": true,
+        "sacrifice": false,
+        "life": 0,
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "source_line": 36,
+      "source_proof": [
+        "Unchanged complete typed template has a positive fixed Choice/Combination domain.",
+        "Printed cost includes mana, life or sacrifice beyond pure tap.",
+        "Old visitor enumerates concrete outputs only; current visitor adds unselected zero."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Scarecrow Guide",
+      "definition": "src/card_definitions/woe/scarecrow_guide.rs",
+      "definition_sha256": "400f61f57e6f5d0db662d0a7048678a8242df60d359f5fdaaa0d884ad4dca085",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "a70249ef42a3179d",
+      "candidate_prior198_observations": "8265f49cd59ab8a1",
+      "classification": "new_late_fixed_choice_route_from_own_activation",
+      "mana_definition": "Scarecrow Guide",
+      "mana_definition_path": "src/card_definitions/woe/scarecrow_guide.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 1,
+        "mana_component": true,
+        "tap": false,
+        "sacrifice": false,
+        "life": 0,
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "source_line": 5,
+      "source_proof": [
+        "Unchanged complete typed template has a positive fixed Choice/Combination domain.",
+        "Printed cost includes mana, life or sacrifice beyond pure tap.",
+        "Old visitor enumerates concrete outputs only; current visitor adds unselected zero."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Seize the Spoils",
+      "definition": "src/card_definitions/sos/seize_the_spoils.rs",
+      "definition_sha256": "666a3abad571ed2a13158d7de3a5806d3bd9125e86bb9e01dbce27903fa6fefd",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "8e702c312b837ab5",
+      "candidate_prior198_observations": "995ff66e68bd655d",
+      "classification": "new_late_fixed_choice_route_from_created_treasure",
+      "mana_definition": "@token/b60f6cd3b44b22bd289fe4e2",
+      "mana_definition_path": "src/card_definitions/synthetic/token_b60f6cd3b44b22bd289fe4e2.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 0,
+        "tap": true,
+        "sacrifice": true,
+        "life": 0
+      },
+      "source_line": 8,
+      "source_proof": [
+        "Unchanged complete typed definition creates Card(5302), the canonical Treasure.",
+        "Treasure index0 has tap+sacrifice cost and positive Choice(mask31,amount1).",
+        "Old visit enumerates only concrete colors; current visitor adds zero sentinel because of sacrifice cost."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Sultai Devotee",
+      "definition": "src/card_definitions/tdm/sultai_devotee.rs",
+      "definition_sha256": "0eb5ce3704e74be014322b7bb7c8894671d173389754cb074e4bb371d504606c",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "739861c877cf8931",
+      "candidate_prior198_observations": "356b52480b29ce43",
+      "classification": "new_late_fixed_choice_route_from_own_activation",
+      "mana_definition": "Sultai Devotee",
+      "mana_definition_path": "src/card_definitions/tdm/sultai_devotee.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 22,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 1,
+        "mana_component": true,
+        "tap": false,
+        "sacrifice": false,
+        "life": 0,
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "source_line": 5,
+      "source_proof": [
+        "Unchanged complete typed template has a positive fixed Choice/Combination domain.",
+        "Printed cost includes mana, life or sacrifice beyond pure tap.",
+        "Old visitor enumerates concrete outputs only; current visitor adds unselected zero."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Surveillance Room",
+      "definition": "src/card_definitions/msh/surveillance_room.rs",
+      "definition_sha256": "89b00c6c2531c6709abd3312be8bef8429ea537ac76745129910cf05819d9aea",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "3151b81e30483b25",
+      "candidate_prior198_observations": "e9349febc8eaa108",
+      "classification": "new_late_fixed_choice_route_from_own_activation",
+      "mana_definition": "Surveillance Room",
+      "mana_definition_path": "src/card_definitions/msh/surveillance_room.rs",
+      "ability": 1,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 1,
+        "mana_component": true,
+        "tap": true,
+        "sacrifice": false,
+        "life": 0,
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "source_line": 36,
+      "source_proof": [
+        "Unchanged complete typed template has a positive fixed Choice/Combination domain.",
+        "Printed cost includes mana, life or sacrifice beyond pure tap.",
+        "Old visitor enumerates concrete outputs only; current visitor adds unselected zero."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Temur Devotee",
+      "definition": "src/card_definitions/tdm/temur_devotee.rs",
+      "definition_sha256": "c6c005a95921f7f5e8a508fe62468252435acf97b40d8e3214b2ba1ef2514759",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "2e61440c5836dcf5",
+      "candidate_prior198_observations": "38b1da5b96e2c1df",
+      "classification": "new_late_fixed_choice_route_from_own_activation",
+      "mana_definition": "Temur Devotee",
+      "mana_definition_path": "src/card_definitions/tdm/temur_devotee.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 26,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 1,
+        "mana_component": true,
+        "tap": false,
+        "sacrifice": false,
+        "life": 0,
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "source_line": 5,
+      "source_proof": [
+        "Unchanged complete typed template has a positive fixed Choice/Combination domain.",
+        "Printed cost includes mana, life or sacrifice beyond pure tap.",
+        "Old visitor enumerates concrete outputs only; current visitor adds unselected zero."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Territory Forge",
+      "definition": "src/card_definitions/big/territory_forge.rs",
+      "definition_sha256": "21a21787c8cea6bddffb4e8d44def901b9ff55de0731f5eb4e55c3507f7ac71c",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "03054f0576f9d12b",
+      "candidate_prior198_observations": "a68939e621b3a073",
+      "classification": "duplicate_borrowed_mana_actions",
+      "mana_definition": "Gilded Lotus",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 3
+      },
+      "source_proof": [
+        "Fixture targets own Gilded Lotus, the first eligible artifact or land.",
+        "Gilded Lotus is tap-only; fixed_mana_choice_can_be_late is false.",
+        "New packet-aware branch and legacy branch both emit AnnounceBorrowedMana when collection continues.",
+        "Baseline has the legacy emission only."
+      ],
+      "old_action_route": "Five nonzero AnnounceBorrowedMana colors, each once.",
+      "new_action_delta": "Same five actions appear twice; no new late-zero route.",
+      "required_resolution": "White-owned return/fallthrough repair plus uniqueness and raw/index test."
+    },
+    {
+      "card": "The Misty Mountains Cold",
+      "definition": "src/card_definitions/hob/the_misty_mountains_cold.rs",
+      "definition_sha256": "87d8a3ed186ffc4054230337c69d0205915d023ed3ff62c8ef6aa56b8ddf3da0",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "35a6733e8e7651cb",
+      "candidate_prior198_observations": "fc9d83d4ba093cfb",
+      "classification": "new_late_fixed_choice_route_from_created_treasure",
+      "mana_definition": "@token/b60f6cd3b44b22bd289fe4e2",
+      "mana_definition_path": "src/card_definitions/synthetic/token_b60f6cd3b44b22bd289fe4e2.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 0,
+        "tap": true,
+        "sacrifice": true,
+        "life": 0
+      },
+      "source_line": 4,
+      "source_proof": [
+        "Unchanged complete typed definition creates Card(5302), the canonical Treasure.",
+        "Treasure index0 has tap+sacrifice cost and positive Choice(mask31,amount1).",
+        "Old visit enumerates only concrete colors; current visitor adds zero sentinel because of sacrifice cost."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    },
+    {
+      "card": "Three Tree Mascot",
+      "definition": "src/card_definitions/fdn/three_tree_mascot.rs",
+      "definition_sha256": "deaec38e78300894e9af37c6df1489d10fa5a44da97a65eab62f2b10b058ce02",
+      "definition_identical_at_73092e3": true,
+      "unchanged_trace_members": [
+        "root",
+        "status",
+        "decisions",
+        "zone",
+        "journal"
+      ],
+      "baseline_observations": "4e3b666868e77281",
+      "candidate_prior198_observations": "84fd7e07846dadf7",
+      "classification": "new_late_fixed_choice_route_from_own_activation",
+      "mana_definition": "Three Tree Mascot",
+      "mana_definition_path": "src/card_definitions/fdn/three_tree_mascot.rs",
+      "ability": 0,
+      "recipe": {
+        "kind": "Choice",
+        "mask": 31,
+        "amount": 1
+      },
+      "cost": {
+        "generic": 1,
+        "mana_component": true,
+        "tap": false,
+        "sacrifice": false,
+        "life": 0,
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "source_line": 5,
+      "source_proof": [
+        "Unchanged complete typed template has a positive fixed Choice/Combination domain.",
+        "Printed cost includes mana, life or sacrifice beyond pure tap.",
+        "Old visitor enumerates concrete outputs only; current visitor adds unselected zero."
+      ],
+      "old_action_route": "Concrete positive AnnounceMana and ActivateMana vectors in the fixed domain.",
+      "new_action_delta": {
+        "kind": [
+          "AnnounceMana",
+          "ActivateMana"
+        ],
+        "production": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "required_resolution": "Prior198-unrepresentable action capability; never strip or rewrite it."
+    }
+  ]
+}

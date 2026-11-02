@@ -7516,6 +7516,7 @@ fn trace_candidate_with_prepared_observation_audit(
     }
 
     let mut journal = Vec::new();
+    let mut prior199_journal_supported = true;
     let offered = g.legal_actions().contains(&opening);
     assert!(
         offered,
@@ -7523,6 +7524,12 @@ fn trace_candidate_with_prepared_observation_audit(
         card.identity()
     );
     let status = if offered {
+        if schema_projection.is_some_and(|schema| schema < 199) {
+            prior199_journal_supported &= super::schema199::prior_schema199_actions_supported(
+                &g,
+                std::slice::from_ref(&opening),
+            );
+        }
         act(&mut g, opening.clone());
         journal.push(opening);
         for _ in 0..63 {
@@ -7565,6 +7572,14 @@ fn trace_candidate_with_prepared_observation_audit(
                     })
                     .clone()
             };
+            if schema_projection.is_some_and(|schema| schema < 199) {
+                // Validate while the exact source/borrowed definition still
+                // exists, before a paid sacrifice or later copy can replace it.
+                prior199_journal_supported &= super::schema199::prior_schema199_actions_supported(
+                    &g,
+                    std::slice::from_ref(&action),
+                );
+            }
             act(&mut g, action.clone());
             journal.push(action);
         }
@@ -7605,9 +7620,14 @@ fn trace_candidate_with_prepared_observation_audit(
     let mut observation_bytes = serde_json::to_string(&views).unwrap();
     let mut projection_error = None;
     if schema_projection.is_some_and(|schema| schema < 199) {
-        if !super::schema199::prior_schema199_state_supported(&g.state) {
+        if !prior199_journal_supported
+            || !super::schema199::prior_schema199_state_supported(&g.state)
+            || views
+                .iter()
+                .any(|view| !super::schema199::prior_schema199_actions_supported(&g, &view.actions))
+        {
             projection_error = Some(
-                "new Aetherdrift state or opaque continuation cannot be projected to schema 198"
+                "new Aetherdrift state, offered action or opaque continuation cannot be projected to schema 198"
                     .to_owned(),
             );
         } else {
