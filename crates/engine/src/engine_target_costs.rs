@@ -281,12 +281,12 @@ impl Game {
             return self.announcement_activation_target_fundable(a, extra, finished);
         }
         if a.item.kind != StackKind::Spell
-            || a.item
+            || !a
+                .item
                 .source
                 .expect("cost announcement has object source")
                 .card
                 .has_target_cost_modifier()
-                == false
         {
             return true;
         }
