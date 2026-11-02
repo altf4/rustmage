@@ -1,9 +1,9 @@
 {
   "owner": "green-multi",
   "base": "fb878868ddbf3f4155b1a0c747129a9e713e4c04",
-  "engine_revision": "8657c4e6c",
+  "engine_revision": "9000f120b",
   "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-  "status": "79 of80 assigned identities have root-focused passing outcomes. Mendicant is authored but blocked by confirmed normal permanent-spell copy capture restriction; root owns the shared repair. No engine edits in this card batch.",
+  "status": "All80 assigned identities have complete typed behavior, paired pinned sources and passing per-obligation outcome/shared-contract evidence. Whole276 set acceptance remains open.",
   "cards": [
     {
       "name": "Aatchik, Emerald Radian",
@@ -22,7 +22,7 @@
         "Frozen speed/replacement/combat contracts: controlled-source damage bonus, controller-relative live keyword grants, all-counter parity including named counters and zero",
         "Frozen direct saddle/subject animation/filtered entry witnesses, historical Pirate-and-Vehicle attack declaration and creature/cost modifiers"
       ],
-      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "When Aatchik enters, create a 1/1 green Insect creature token for each artifact and/or creature card in your graveyard.",
@@ -53,7 +53,7 @@
       "shared_contracts": [
         "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
       ],
-      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Exhaust \u2014 {2}{G}{G}: Put two +1/+1 counters on this creature. (Activate each exhaust ability only once.)",
@@ -109,7 +109,7 @@
           ]
         }
       ],
-      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified."
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate."
     },
     {
       "name": "Alacrian Jaguar",
@@ -147,7 +147,7 @@
           ]
         }
       ],
-      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified."
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate."
     },
     {
       "name": "Apocalypse Runner",
@@ -167,7 +167,7 @@
         "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
         "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
       ],
-      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "{T}: Target creature you control with power 2 or less gains lifelink until end of turn and can't be blocked this turn.",
@@ -214,7 +214,7 @@
           ]
         }
       ],
-      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified."
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate."
     },
     {
       "name": "Beastrider Vanguard",
@@ -232,7 +232,7 @@
         "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
         "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
       ],
-      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "{4}{G}: Look at the top three cards of your library. You may reveal a permanent card from among them and put it into your hand. Put the rest on the bottom of your library in any order.",
@@ -258,7 +258,7 @@
         "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
         "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
       ],
-      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Target creature gets +4/+4 and gains trample until end of turn.",
@@ -283,7 +283,7 @@
       "shared_contracts": [
         "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
       ],
-      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Exhaust abilities of other permanents you control cost {2} less to activate.",
@@ -318,7 +318,7 @@
         "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
         "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
       ],
-      "validation": "Root artifacts11/11 and Gearhulks12/12 pass; reports card-green-artifacts-20261102-103000Z and card-green-gearhulks-20261102-103000Z, frozen core reused.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Menace",
@@ -360,7 +360,7 @@
         "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
         "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
       ],
-      "validation": "Root artifacts11/11 and Gearhulks12/12 pass; reports card-green-artifacts-20261102-103000Z and card-green-gearhulks-20261102-103000Z, frozen core reused.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "First strike, trample",
@@ -392,7 +392,7 @@
         "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
         "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
       ],
-      "validation": "Root artifacts11/11 and Gearhulks12/12 pass; reports card-green-artifacts-20261102-103000Z and card-green-gearhulks-20261102-103000Z, frozen core reused.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Broadside Barrage deals 5 damage to target creature or planeswalker. Draw a card, then discard a card.",
@@ -418,7 +418,7 @@
         "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
         "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
       ],
-      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Destroy target artifact, enchantment, or creature with flying.",
@@ -445,7 +445,7 @@
         "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
         "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
       ],
-      "validation": "Root artifacts11/11 and Gearhulks12/12 pass; reports card-green-artifacts-20261102-103000Z and card-green-gearhulks-20261102-103000Z, frozen core reused.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "At the beginning of your upkeep, surveil 1.",
@@ -480,7 +480,7 @@
         "Frozen dft_hand_permanent_deployment_engine: private partial selection, one simultaneous all-permanent EntryMove batch, Aura/copy continuations, owned raw/index/restore and prior198 guards",
         "Frozen dft_filtered_growth_engine + dft_quantities_engine + dft_mana_output: declared nonmana X, one signed frozen group, post-counter power sampling, reserved source and restricted-mana funding; native/independent granted Ward and conditional damage contracts"
       ],
-      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Ward\u2014{2}, Pay 2 life.",
@@ -515,7 +515,7 @@
         "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
         "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
       ],
-      "validation": "Root artifacts11/11 and Gearhulks12/12 pass; reports card-green-artifacts-20261102-103000Z and card-green-gearhulks-20261102-103000Z, frozen core reused.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "When Caradora enters, you may search your library for a Mount or Vehicle card, reveal it, put it into your hand, then shuffle.",
@@ -548,7 +548,7 @@
         "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
         "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
       ],
-      "validation": "Root artifacts11/11 and Gearhulks12/12 pass; reports card-green-artifacts-20261102-103000Z and card-green-gearhulks-20261102-103000Z, frozen core reused.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "When this creature enters, scry 2.",
@@ -583,7 +583,7 @@
         "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
         "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
       ],
-      "validation": "Root artifacts11/11 and Gearhulks12/12 pass; reports card-green-artifacts-20261102-103000Z and card-green-gearhulks-20261102-103000Z, frozen core reused.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Flying",
@@ -625,7 +625,7 @@
         "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
         "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
       ],
-      "validation": "Root artifacts11/11 and Gearhulks12/12 pass; reports card-green-artifacts-20261102-103000Z and card-green-gearhulks-20261102-103000Z, frozen core reused.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Menace, deathtouch",
@@ -661,7 +661,7 @@
         "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
         "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
       ],
-      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Trample",
@@ -704,7 +704,7 @@
         "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
         "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
       ],
-      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Choose one \u2014",
@@ -743,7 +743,7 @@
       "shared_contracts": [
         "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
       ],
-      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "This creature enters with a +1/+1 counter on it.",
@@ -788,7 +788,7 @@
         "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
         "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
       ],
-      "validation": "Root artifacts11/11 and Gearhulks12/12 pass; reports card-green-artifacts-20261102-103000Z and card-green-gearhulks-20261102-103000Z, frozen core reused.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Whenever one or more artifact and/or creature cards leave your graveyard, you gain 1 life.",
@@ -822,7 +822,7 @@
         "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
         "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
       ],
-      "validation": "Root artifacts11/11 and Gearhulks12/12 pass; reports card-green-artifacts-20261102-103000Z and card-green-gearhulks-20261102-103000Z, frozen core reused.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "When this Vehicle enters, return target artifact or creature card with mana value X or less from your graveyard to the battlefield.",
@@ -856,7 +856,7 @@
       "shared_contracts": [
         "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
       ],
-      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Vigilance, trample",
@@ -893,7 +893,7 @@
       "shared_contracts": [
         "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
       ],
-      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "During your turn, as long as you haven't activated an exhaust ability this turn, you may activate exhaust abilities as though they haven't been activated.",
@@ -927,7 +927,7 @@
         "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
         "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
       ],
-      "validation": "Root artifacts11/11 and Gearhulks12/12 pass; reports card-green-artifacts-20261102-103000Z and card-green-gearhulks-20261102-103000Z, frozen core reused.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
@@ -966,7 +966,7 @@
         "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
         "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
       ],
-      "validation": "Root artifacts11/11 and Gearhulks12/12 pass; reports card-green-artifacts-20261102-103000Z and card-green-gearhulks-20261102-103000Z, frozen core reused.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Exile up to one target artifact or creature. Return it to the battlefield under its owner's control at the beginning of the next end step.",
@@ -997,7 +997,7 @@
       "shared_contracts": [
         "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
       ],
-      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Flash",
@@ -1031,7 +1031,7 @@
         "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
         "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
       ],
-      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Reach",
@@ -1068,7 +1068,7 @@
         "Frozen speed/replacement/combat contracts: controlled-source damage bonus, controller-relative live keyword grants, all-counter parity including named counters and zero",
         "Frozen direct saddle/subject animation/filtered entry witnesses, historical Pirate-and-Vehicle attack declaration and creature/cost modifiers"
       ],
-      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
@@ -1111,7 +1111,7 @@
         "Frozen speed/replacement/combat contracts: controlled-source damage bonus, controller-relative live keyword grants, all-counter parity including named counters and zero",
         "Frozen direct saddle/subject animation/filtered entry witnesses, historical Pirate-and-Vehicle attack declaration and creature/cost modifiers"
       ],
-      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Haste",
@@ -1151,7 +1151,7 @@
         "Frozen speed/replacement/combat contracts: controlled-source damage bonus, controller-relative live keyword grants, all-counter parity including named counters and zero",
         "Frozen direct saddle/subject animation/filtered entry witnesses, historical Pirate-and-Vehicle attack declaration and creature/cost modifiers"
       ],
-      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
@@ -1189,7 +1189,7 @@
       "shared_contracts": [
         "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
       ],
-      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "{G}: Target creature gains trample until end of turn.",
@@ -1226,7 +1226,7 @@
         "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
         "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
       ],
-      "validation": "Root artifacts11/11 and Gearhulks12/12 pass; reports card-green-artifacts-20261102-103000Z and card-green-gearhulks-20261102-103000Z, frozen core reused.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Vigilance",
@@ -1267,7 +1267,7 @@
         "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
         "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
       ],
-      "validation": "Root artifacts11/11 and Gearhulks12/12 pass; reports card-green-artifacts-20261102-103000Z and card-green-gearhulks-20261102-103000Z, frozen core reused.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Choose target opponent. Create two 1/1 colorless Thopter artifact creature tokens with flying. Then the chosen player loses X life and you gain X life, where X is the number of artifacts you control.",
@@ -1296,7 +1296,7 @@
         "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
         "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
       ],
-      "validation": "Root artifacts11/11 and Gearhulks12/12 pass; reports card-green-artifacts-20261102-103000Z and card-green-gearhulks-20261102-103000Z, frozen core reused.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Whenever you attack, target creature you control gets +1/+0 and gains deathtouch until end of turn. Untap it.",
@@ -1331,7 +1331,7 @@
         "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
         "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
       ],
-      "validation": "Root artifacts11/11 and Gearhulks12/12 pass; reports card-green-artifacts-20261102-103000Z and card-green-gearhulks-20261102-103000Z, frozen core reused.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Reach, trample",
@@ -1369,7 +1369,7 @@
           ]
         }
       ],
-      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified."
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate."
     },
     {
       "name": "Ketramose, the New Dawn",
@@ -1392,7 +1392,7 @@
         "Frozen dft_hand_permanent_deployment_engine: private partial selection, one simultaneous all-permanent EntryMove batch, Aura/copy continuations, owned raw/index/restore and prior198 guards",
         "Frozen dft_filtered_growth_engine + dft_quantities_engine + dft_mana_output: declared nonmana X, one signed frozen group, post-counter power sampling, reserved source and restricted-mana funding; native/independent granted Ward and conditional damage contracts"
       ],
-      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Menace, lifelink, indestructible",
@@ -1438,7 +1438,7 @@
         "Frozen speed/replacement/combat contracts: controlled-source damage bonus, controller-relative live keyword grants, all-counter parity including named counters and zero",
         "Frozen direct saddle/subject animation/filtered entry witnesses, historical Pirate-and-Vehicle attack declaration and creature/cost modifiers"
       ],
-      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Mounts and Vehicles you control have haste.",
@@ -1479,7 +1479,7 @@
         "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
         "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
       ],
-      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Flying",
@@ -1521,7 +1521,7 @@
         "Frozen dft_hand_permanent_deployment_engine: private partial selection, one simultaneous all-permanent EntryMove batch, Aura/copy continuations, owned raw/index/restore and prior198 guards",
         "Frozen dft_filtered_growth_engine + dft_quantities_engine + dft_mana_output: declared nonmana X, one signed frozen group, post-counter power sampling, reserved source and restricted-mana funding; native/independent granted Ward and conditional damage contracts"
       ],
-      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Double strike, vigilance, haste",
@@ -1566,7 +1566,7 @@
         "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
         "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
       ],
-      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
@@ -1601,7 +1601,7 @@
         "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
         "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
       ],
-      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "This Vehicle's power is equal to the number of lands you control.",
@@ -1643,7 +1643,7 @@
         "Frozen speed/replacement/combat contracts: controlled-source damage bonus, controller-relative live keyword grants, all-counter parity including named counters and zero",
         "Frozen direct saddle/subject animation/filtered entry witnesses, historical Pirate-and-Vehicle attack declaration and creature/cost modifiers"
       ],
-      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Creatures you control have base power and toughness 6/6 and are Oozes in addition to their other types.",
@@ -1667,7 +1667,7 @@
         "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
         "Max speed \u2014 Whenever you cast an artifact spell, you may pay {1}. If you do, copy it. (The copy becomes a token.)"
       ],
-      "status": "blocked by shared dependency",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_final",
       "outcome_proofs": [
         "mendicant_power_counts_itself_and_artifacts_and_max_speed_copy_is_optional_and_becomes_a_token"
@@ -1678,7 +1678,7 @@
         "Frozen dft_hand_permanent_deployment_engine: private partial selection, one simultaneous all-permanent EntryMove batch, Aura/copy continuations, owned raw/index/restore and prior198 guards",
         "Frozen dft_filtered_growth_engine + dft_quantities_engine + dft_mana_output: declared nonmana X, one signed frozen group, post-counter power sampling, reserved source and restricted-mana funding; native/independent granted Ward and conditional damage contracts"
       ],
-      "validation": "Final target13/14 passed; optional artifact-copy scenario fails only when paying at max speed. capture_copy_cast_classified currently captures CopyCastSpell only for instant/sorcery casts. Root notified; no card-only semantic substitute.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Mendicant Core's power is equal to the number of artifacts you control.",
@@ -1698,9 +1698,6 @@
             "mendicant_power_counts_itself_and_artifacts_and_max_speed_copy_is_optional_and_becomes_a_token"
           ]
         }
-      ],
-      "remaining_blockers": [
-        "Generic capture of the artifact spell for the triggering copy instruction; permanent-copy allocator already exists."
       ]
     },
     {
@@ -1739,7 +1736,7 @@
           ]
         }
       ],
-      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified."
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate."
     },
     {
       "name": "Mimeoplasm, Revered One",
@@ -1760,7 +1757,7 @@
         "Frozen dft_hand_permanent_deployment_engine: private partial selection, one simultaneous all-permanent EntryMove batch, Aura/copy continuations, owned raw/index/restore and prior198 guards",
         "Frozen dft_filtered_growth_engine + dft_quantities_engine + dft_mana_output: declared nonmana X, one signed frozen group, post-counter power sampling, reserved source and restricted-mana funding; native/independent granted Ward and conditional damage contracts"
       ],
-      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "As Mimeoplasm enters, exile up to X creature cards from your graveyard. It enters with three +1/+1 counters on it for each creature card exiled this way.",
@@ -1796,7 +1793,7 @@
         "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
         "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
       ],
-      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "{T}: Mill a card. (Put the top card of your library into your graveyard.)",
@@ -1830,7 +1827,7 @@
         "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
         "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
       ],
-      "validation": "Root artifacts11/11 and Gearhulks12/12 pass; reports card-green-artifacts-20261102-103000Z and card-green-gearhulks-20261102-103000Z, frozen core reused.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Lifelink, ward {1}",
@@ -1862,7 +1859,7 @@
       "shared_contracts": [
         "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
       ],
-      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "When this creature enters, mill two cards, then put a +1/+1 counter on this creature for each artifact and/or creature card in your graveyard. (To mill two cards, put the top two cards of your library into your graveyard.)",
@@ -1890,7 +1887,7 @@
         "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
         "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
       ],
-      "validation": "Root artifacts11/11 and Gearhulks12/12 pass; reports card-green-artifacts-20261102-103000Z and card-green-gearhulks-20261102-103000Z, frozen core reused.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Each creature that's attacking one of your opponents has trample.",
@@ -1926,7 +1923,7 @@
         "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
         "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
       ],
-      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Choose one \u2014",
@@ -1965,7 +1962,7 @@
         "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
         "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
       ],
-      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
@@ -1997,7 +1994,7 @@
         "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
         "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
       ],
-      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "When this creature enters, mill three cards, then you may return a land card from your graveyard to your hand. (To mill three cards, put the top three cards of your library into your graveyard.)",
@@ -2024,7 +2021,7 @@
         "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
         "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
       ],
-      "validation": "Root artifacts11/11 and Gearhulks12/12 pass; reports card-green-artifacts-20261102-103000Z and card-green-gearhulks-20261102-103000Z, frozen core reused.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Vigilance, menace",
@@ -2056,7 +2053,7 @@
       "shared_contracts": [
         "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
       ],
-      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Vigilance",
@@ -2098,7 +2095,7 @@
         "Frozen dft_hand_permanent_deployment_engine: private partial selection, one simultaneous all-permanent EntryMove batch, Aura/copy continuations, owned raw/index/restore and prior198 guards",
         "Frozen dft_filtered_growth_engine + dft_quantities_engine + dft_mana_output: declared nonmana X, one signed frozen group, post-counter power sampling, reserved source and restricted-mana funding; native/independent granted Ward and conditional damage contracts"
       ],
-      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Vigilance",
@@ -2140,7 +2137,7 @@
         "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
         "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
       ],
-      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Other Dinosaurs you control get +1/+1.",
@@ -2168,7 +2165,7 @@
         "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
         "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
       ],
-      "validation": "Root artifacts11/11 and Gearhulks12/12 pass; reports card-green-artifacts-20261102-103000Z and card-green-gearhulks-20261102-103000Z, frozen core reused.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Double strike",
@@ -2206,7 +2203,7 @@
         "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
         "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
       ],
-      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Return up to one target creature card, up to one target Mount card, up to one target Vehicle card, and up to one target creature card with no abilities from your graveyard to your hand.",
@@ -2232,7 +2229,7 @@
       "shared_contracts": [
         "frozen actual exhaust event/history/discount; projected additional costs; permanent animation; exact counter payment and source-independent stack resolution"
       ],
-      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Whenever this Vehicle attacks, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
@@ -2271,7 +2268,7 @@
         "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
         "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
       ],
-      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "This spell costs {1} less to cast if it targets a Mount or Vehicle you control.",
@@ -2306,7 +2303,7 @@
         "Frozen speed/replacement/combat contracts: controlled-source damage bonus, controller-relative live keyword grants, all-counter parity including named counters and zero",
         "Frozen direct saddle/subject animation/filtered entry witnesses, historical Pirate-and-Vehicle attack declaration and creature/cost modifiers"
       ],
-      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Reach, trample, indestructible",
@@ -2350,7 +2347,7 @@
         "Frozen speed/replacement/combat contracts: controlled-source damage bonus, controller-relative live keyword grants, all-counter parity including named counters and zero",
         "Frozen direct saddle/subject animation/filtered entry witnesses, historical Pirate-and-Vehicle attack declaration and creature/cost modifiers"
       ],
-      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "First strike, vigilance, haste",
@@ -2398,7 +2395,7 @@
         "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
         "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
       ],
-      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Flash",
@@ -2443,7 +2440,7 @@
         "Frozen dft_hand_permanent_deployment_engine: private partial selection, one simultaneous all-permanent EntryMove batch, Aura/copy continuations, owned raw/index/restore and prior198 guards",
         "Frozen dft_filtered_growth_engine + dft_quantities_engine + dft_mana_output: declared nonmana X, one signed frozen group, post-counter power sampling, reserved source and restricted-mana funding; native/independent granted Ward and conditional damage contracts"
       ],
-      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Exhaust \u2014 {X}{G}{G}{U}: Put X +1/+1 counters on Sita Varma. Then you may have the base power and toughness of each other creature you control become equal to Sita Varma's power until end of turn. (Activate each exhaust ability only once.)",
@@ -2470,7 +2467,7 @@
         "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
         "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
       ],
-      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Flying, deathtouch",
@@ -2502,7 +2499,7 @@
         "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
         "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
       ],
-      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Exhaust \u2014 {3}{G}: Put a +1/+1 counter on this creature. Create a 3/3 green Elephant creature token. (Activate each exhaust ability only once.)",
@@ -2534,7 +2531,7 @@
           ]
         }
       ],
-      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified."
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate."
     },
     {
       "name": "Thundering Broodwagon",
@@ -2556,7 +2553,7 @@
         "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
         "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
       ],
-      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Reach, menace",
@@ -2607,7 +2604,7 @@
         "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
         "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
       ],
-      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Trample",
@@ -2651,7 +2648,7 @@
         "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
         "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
       ],
-      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "When this Vehicle enters, you gain 2 life.",
@@ -2712,7 +2709,7 @@
           ]
         }
       ],
-      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified."
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate."
     },
     {
       "name": "Veteran Beastrider",
@@ -2731,7 +2728,7 @@
         "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
         "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
       ],
-      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "At the beginning of your end step, untap each creature you control.",
@@ -2764,7 +2761,7 @@
         "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
         "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
       ],
-      "validation": "Root artifacts11/11 and Gearhulks12/12 pass; reports card-green-artifacts-20261102-103000Z and card-green-gearhulks-20261102-103000Z, frozen core reused.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.)",
@@ -2816,7 +2813,7 @@
           ]
         }
       ],
-      "validation": "All own target scenarios passed in accepted3415-test engine checkpoint fb878868d; root warm cache verified."
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate."
     },
     {
       "name": "Winter, Cursed Rider",
@@ -2838,7 +2835,7 @@
         "Frozen dft_hand_permanent_deployment_engine: private partial selection, one simultaneous all-permanent EntryMove batch, Aura/copy continuations, owned raw/index/restore and prior198 guards",
         "Frozen dft_filtered_growth_engine + dft_quantities_engine + dft_mana_output: declared nonmana X, one signed frozen group, post-counter power sampling, reserved source and restricted-mana funding; native/independent granted Ward and conditional damage contracts"
       ],
-      "validation": "Root focused runtime passed: legends10/10, final13/14 with only Mendicant failing; all earlier family targets passed using frozen engine.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Ward\u2014Pay 2 life.",
@@ -2882,7 +2879,7 @@
         "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
         "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
       ],
-      "validation": "Root artifacts11/11 and Gearhulks12/12 pass; reports card-green-artifacts-20261102-103000Z and card-green-gearhulks-20261102-103000Z, frozen core reused.",
+      "validation": "All referenced actual card scenarios passed at accepted cf5046f15; see validation_report. Whole-set games, release acceptance and final published-batch reviews remain separate.",
       "obligation_evidence": [
         {
           "obligation": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
@@ -2905,11 +2902,78 @@
       ]
     }
   ],
-  "engine_checkpoint": "3415 tests pass; independent nonauthor reviews; warm cache verified by root",
+  "engine_checkpoint": "Accepted cf5046f15:3643 passes, two independent runtime/source reviews and frozen core cache reuse; all80 green/multicolor identities have passing outcome evidence.",
   "authored_card_count": 80,
   "pending_authorship_count": 0,
   "status_counts": {
-    "authored candidate": 16,
-    "root-verified complete": 64
-  }
+    "root-verified complete": 80
+  },
+  "validation_report": {
+    "accepted_revision": "cf5046f1588a00817b3cecf9d31910552c16ff96",
+    "tested_revision": "cb1fbff78d2ef80c0eb4e15b5e9215e84f464ca9",
+    "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+    "report_sha256": "e0abbcfff29c74afed8fb40e924f6116ce7d619145bb49b416e802fea41dd9b9",
+    "passing_green_cases": 85,
+    "targets": [
+      {
+        "target": "dft_green_multi_cards_artifacts",
+        "passed": 11,
+        "failed": 0,
+        "execution_seconds": 0.01647006299754139
+      },
+      {
+        "target": "dft_green_multi_cards_basics",
+        "passed": 5,
+        "failed": 0,
+        "execution_seconds": 0.01621493700076826
+      },
+      {
+        "target": "dft_green_multi_cards_exhaust",
+        "passed": 8,
+        "failed": 0,
+        "execution_seconds": 0.016470019007101655
+      },
+      {
+        "target": "dft_green_multi_cards_final",
+        "passed": 14,
+        "failed": 0,
+        "execution_seconds": 0.016620979993604124
+      },
+      {
+        "target": "dft_green_multi_cards_gearhulks",
+        "passed": 12,
+        "failed": 0,
+        "execution_seconds": 0.0163155070040375
+      },
+      {
+        "target": "dft_green_multi_cards_legends",
+        "passed": 10,
+        "failed": 0,
+        "execution_seconds": 0.01644087300519459
+      },
+      {
+        "target": "dft_green_multi_cards_search",
+        "passed": 13,
+        "failed": 0,
+        "execution_seconds": 0.016446814013761468
+      },
+      {
+        "target": "dft_green_multi_cards_vehicles",
+        "passed": 12,
+        "failed": 0,
+        "execution_seconds": 0.01627418800489977
+      }
+    ],
+    "all_recorded_scenario_references_found_and_passed": true
+  },
+  "resolved_dependencies": [
+    {
+      "dependency": "ordinary permanent-spell capture for the triggering single-copy instruction",
+      "consumer": "Mendicant Core, Guidelight",
+      "engine_revision": "9000f120b",
+      "evidence": "docs/aetherdrift-permanent-cast-copy-evidence.json",
+      "actual_card_target": "dft_green_multi_cards_final",
+      "passed": 14
+    }
+  ]
 }

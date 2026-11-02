@@ -1,0 +1,133 @@
+{
+  "scope": "Read-only full276 identity/evidence closure reconciliation; admission flags and trace-loading rows are not whole-card outcome proofs.",
+  "snapshot_revision": "cf5046f1588a00817b3cecf9d31910552c16ff96",
+  "membership": {
+    "source": "data/sets/dft.json",
+    "sha256": "5b97e2d41364d52ba2887f9598807d98224adbda49fee758e98f11b1387f7e26",
+    "oracle_identities": 276,
+    "audit_partition": {
+      "green-multi": 80,
+      "white-blue": 74,
+      "black-red": 75,
+      "colorless": 47
+    },
+    "missing_audit_identities": [],
+    "duplicate_audit_oracle_ids": []
+  },
+  "accepted_evidence": {
+    "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+    "report_sha256": "e0abbcfff29c74afed8fb40e924f6116ce7d619145bb49b416e802fea41dd9b9",
+    "total_passing_cases": 3643,
+    "identities_with_named_authored_outcomes_present_in_source_and_ok_in_report": 228,
+    "partition_counts": {
+      "green-multi": 80,
+      "white-blue": 74,
+      "black-red": 59,
+      "colorless": 15
+    },
+    "missing_named_scenario_functions": [],
+    "missing_or_failed_recorded_case_references": [],
+    "green_cases": 85,
+    "green_targets": 8,
+    "green_printed_obligation_mapping_gaps": [],
+    "mendicant": "Resolved; actual final target14/14 and generic copy-capture target10/10 pass."
+  },
+  "snapshot_remaining": {
+    "identities_without_current_authored_outcome_mapping": 48,
+    "prepared_inherited_lands": {
+      "count": 20,
+      "commit": "c31760b54",
+      "ledger": "docs/aetherdrift-audit/colorless-inherited-lands-authored.json",
+      "test_target": "dft_colorless_cards_inherited_lands",
+      "status": "Prepared and source-pinned at snapshot; not included in the accepted3643 report. Root integrating/testing separately."
+    },
+    "black_red_missing_at_snapshot": [
+      "Adrenaline Jockey",
+      "Ancient Vendetta",
+      "Bloodghast",
+      "Boommobile",
+      "Chandra, Spark Hunter",
+      "Cursecloth Wrappings",
+      "Daretti, Rocketeer Engineer",
+      "Demonic Junker",
+      "Full Throttle",
+      "Gastal Thrillroller",
+      "Gonti, Night Minister",
+      "Grim Javelineer",
+      "Howlsquad Heavy",
+      "Push the Limit",
+      "Reckless Velocitaur",
+      "Spire Mechcycle"
+    ],
+    "colorless_without_authored_ledger_at_snapshot": [
+      "Camera Launcher",
+      "Lifecraft Engine",
+      "Marketback Walker",
+      "Marshals' Pathcruiser",
+      "Monument to Endurance",
+      "Pit Automaton",
+      "Radiant Lotus",
+      "Rover Blades",
+      "Scrap Compactor",
+      "Skybox Ferry",
+      "The Aetherspark",
+      "Wreck Remover"
+    ]
+  },
+  "newer_prepared_black_observation": {
+    "ledger_worktree": "/home/altf4/.codex/worktrees/dft-variable-costs/rustmage",
+    "ledger_sha256": "4249cc92f21cf8392b23ab7656d6b812a24e71f9f1f0b7986a1e98a4baa9871e",
+    "additional_named_outcome_candidates": [
+      "Adrenaline Jockey",
+      "Ancient Vendetta",
+      "Bloodghast",
+      "Boommobile",
+      "Chandra, Spark Hunter",
+      "Cursecloth Wrappings",
+      "Daretti, Rocketeer Engineer",
+      "Demonic Junker",
+      "Full Throttle",
+      "Gastal Thrillroller",
+      "Grim Javelineer",
+      "Push the Limit",
+      "Reckless Velocitaur",
+      "Spire Mechcycle"
+    ],
+    "remaining_without_named_outcomes": [
+      "Gonti, Night Minister",
+      "Howlsquad Heavy"
+    ],
+    "status": "Distinct newer observation; not credited to cf5046f15 accepted evidence. Owner/root supplies execution receipts and final ledger update."
+  },
+  "inherited_evidence_notes": {
+    "existing_genuine_legacy_outcomes": {
+      "The Aetherspark": {
+        "path": "tests/legacy/assurance/issue_93_aetherspark.rs",
+        "scenario": "engine::assurance::issue_93_aetherspark::aetherspark_full_card",
+        "proof": "Paid cast, attachment/+1counter, attack restriction, actual combat-trigger loyalty, -5 draw2 and -10 choose10mana; owned restore. Reuse after complete source/per-obligation reconciliation."
+      },
+      "Monument to Endurance": {
+        "path": "tests/legacy/assurance/hartford_discard.rs",
+        "scenario": "engine::assurance::hartford_discard::monument_uses_each_mode_once_per_incarnation_per_turn",
+        "proof": "Actual discard, each distinct mode, draw/Treasure/life outputs, no fourth effect and next-turn reset. Reuse after complete source/per-obligation reconciliation."
+      },
+      "Bloodghast": {
+        "path": "tests/legacy/assurance/hartford_returns.rs",
+        "scenario": "engine::assurance::hartford_returns::bloodghast_graveyard_landfall_choice_and_live_haste",
+        "proof": "Actual land-play/optional GY return, printed body/no-block/live10life haste, owned restore; separate stale/opponent-land contrast. New black family also prepared."
+      }
+    },
+    "still_need_dedicated_whole_card_outcomes": {
+      "Scrap Compactor": "No actual Rust scenario found for its own paid3damage and6destroy activations; card-trace/catalogue rows are insufficient.",
+      "Skybox Ferry": "Existing Roads test uses it only as a controlled Vehicle fixture; own Flying/Crew2/Cycling2 outcomes still needed.",
+      "Wreck Remover": "No actual Rust scenario found for its own optional ETB/attack GY exile, life gain or Cycling2.",
+      "Camera Launcher": "Current native tests check activation availability and borrowed exhaust counters; no direct own-card full counter+flying colorless1/1Thopter outcome. Inherited-artifact owner is reconciling this."
+    },
+    "no_unassigned_new_identity": "The12 colorless gaps are exactly the known six machine cards plus six inherited artifacts. The16 black/red gaps at the accepted snapshot are assigned; the newer owner observation above records subsequent preparation."
+  },
+  "limits": [
+    "This reconciliation validates membership, actual named test receipts and recorded obligation coverage; it is not an independent nonauthor approval of cards authored by this auditor.",
+    "Full DFT-only games, complete-set release validation, throughput measurement and two final published-batch nonauthor reviews remain root-owned and pending.",
+    "No engine, card, generated linkage, Cargo or linker changes were made for this closure audit."
+  ]
+}
