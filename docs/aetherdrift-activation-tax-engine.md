@@ -126,3 +126,24 @@ parse display separators, admit Rooms, or claim full Standard interactions with
 unsupported Room battlefield behavior. All DFT members are single-name sources.
 The whole-pool goal remains open through final integration, card implementation,
 independent reviews, broad rules checks and measured simulation throughput.
+
+## Post-integration exact-source and quantity review
+
+Independent scoped review found two contribution edges, repaired without adding
+Game state. `crew_saddle_subject_matches` uses current subtype only for the exact
+live source incarnation. After departure, projected `payment_departures` and the
+already refreshed active/suspended `SpellView.source.facts` provide the latest
+card/subtype witness. A preflight fallback is used only without a departure
+witness. Final paid sums can use the paid item's facts after its announcement
+header has left State. A new incarnation in the same CardId slot cannot supply
+the old qualifier. Copied-Vehicle sacrifice plus slot reuse and removal of a
+counter-granted Vehicle subtype before sacrifice have contrasting scenarios.
+
+The signed base and assistance bonus are now separate exact PowerSum terms.
+A positive base at i128::MAX plus two is never saturated before cancellation
+with a negative selected contribution. A Crew3 scenario selects MAX(+2) and
+-MAX+2, producing the exact legal total4. Any test-only i128 convenience
+projection fails closed if the individual value cannot be represented.
+The appended projected power-up scenario also verifies the shared world query
+for entry-turn reduction after a new projected incarnation. These follow-up
+scenario outcomes remain pending the integration owner's guarded run.

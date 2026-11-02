@@ -99,6 +99,17 @@ pub(super) struct FundingState<'g> {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ability_world::CharacteristicWorld for FundingState<'_> {
+    fn departed_source_subtypes(&self, source: ObjectRef) -> Option<(Card, GrantedSubtypes)> {
+        self.payment_departures
+            .iter()
+            .find(|(object, _)| *object == source)
+            .map(|(_, facts)| (facts.card, facts.subtypes))
+            .or_else(|| {
+                self.game
+                    .contributor_source_facts(source)
+                    .map(|facts| (facts.card, facts.granted_subtypes))
+            })
+    }
     fn projected_self_grant_used(&self, source: ObjectRef, timestamp: u64) -> bool {
         self.self_grant_uses.contains(&(source, timestamp))
     }

@@ -875,3 +875,218 @@ fn a_projected_new_incarnation_uses_the_same_power_up_reduction_and_tax_as_actua
     pay(&mut g);
     assert_eq!(g.state.players[0].mana, BLUE);
 }
+
+#[test]
+fn a_copied_vehicle_sacrificed_for_its_tax_uses_its_exact_departure_subtype_after_slot_reuse() {
+    const VEHICLE: CardRules = CardRules {
+        effect: Effect::Permanent,
+        activated: &[ability(
+            ActivationCost::ZERO,
+            &[Instruction::Crew { minimum: 4 }],
+        )],
+        ..CardRules::EMPTY
+    };
+    const PILOT: CardRules = CardRules {
+        keywords: Keywords::CREW_SADDLE_PLUS_TWO,
+        ..PLAIN
+    };
+    const FUEL: CardRules = CardRules {
+        activated: &[ability(
+            ActivationCost {
+                additional: Some(AdditionalCost {
+                    kind: EffectChoiceKind::Sacrifice,
+                    filter: SacrificeFilter {
+                        keywords: Keywords::NONE,
+                        source_only: false,
+                        kinds: 16,
+                        nonland: false,
+                        other: true,
+                        tokens: None,
+                        artifact_enchantment_or_token: false,
+                        subtype: None,
+                    },
+                }),
+                ..ActivationCost::ZERO
+            },
+            &[Instruction::AddMana(ManaProduction::Fixed(TWO))],
+        )],
+        ..MANA
+    };
+    let _scope = fixture_rules::activate(&[
+        (named("Ghost Vacuum"), &TAX),
+        (named("Broadcast Rambler"), &VEHICLE),
+        (Card::GrizzlyBears, &PLAIN),
+        (Card::GoblinPiker, &PILOT),
+        (Card::LlanowarElves, &FUEL),
+    ]);
+    let mut g = scenario(Player::P0);
+    let source = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    g.apply_temporary_copy(
+        g.object_ref(source),
+        CopyRecipe::new(named("Broadcast Rambler")),
+        CopyDeadline::EndOfTurn,
+    );
+    let old_source = g.object_ref(source);
+    let pilot = put(&mut g, Player::P0, "Goblin Piker", Zone::Battlefield);
+    let fuel = put(&mut g, Player::P0, "Llanowar Elves", Zone::Battlefield);
+    tax(&mut g, Player::P1, "Broadcast Rambler");
+    g.state.players[0].mana = [0; 6];
+    act(&mut g, start(source));
+    let participant = g.object_ref(pilot);
+    act(
+        &mut g,
+        Action::ChooseCrewer {
+            object: participant,
+        },
+    );
+    act(&mut g, Action::FinishCrew);
+    act(
+        &mut g,
+        Action::AnnounceMana {
+            card: fuel,
+            ability: 0,
+            counter_payment: Counters::default(),
+            production: TWO,
+        },
+    );
+    act(&mut g, Action::ChooseAdditionalCost { object: old_source });
+    pay(&mut g);
+    assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+    assert_eq!(g.state.objects[source as usize].card, Card::GrizzlyBears);
+    // A returned physical Bear is a new source incarnation. It supplies neither
+    // the old Vehicle qualifier nor an automatically selected contribution.
+    g.move_object(source, Zone::Battlefield);
+    assert_ne!(g.object_ref(source), old_source);
+    assert!(!g.has_subtype(source, "Vehicle"));
+    pay(&mut g);
+    let crew = g.state.stack.iter().find(|s| s.crew.is_some()).unwrap();
+    assert_eq!(crew.source.unwrap().object, old_source);
+    assert_eq!(crew.crew.as_ref().unwrap().paid_power, Some(4));
+    assert_eq!(crew.crew.as_ref().unwrap().contributors, vec![participant]);
+    assert!(g.object_view(pilot).tapped);
+}
+
+#[test]
+fn losing_vehicle_before_departure_does_not_keep_the_announcement_subtype_for_assistance() {
+    const TYPES: &[StaticAbilityGroup] = &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Type,
+        fragments: &[StaticAbilityFragment::SourceCounterSubtype {
+            kind: CounterKind::Charge,
+            minimum: 1,
+            subtype: "Vehicle",
+            keywords: Keywords::NONE,
+        }],
+    }];
+    const SOURCE_TYPES: CardRules = CardRules {
+        static_groups: TYPES,
+        activated: &[
+            ability(ActivationCost::ZERO, &[Instruction::Crew { minimum: 4 }]),
+            ability(
+                ActivationCost {
+                    remove: Some((Some(CounterKind::Charge), 1)),
+                    sacrifice: true,
+                    ..ActivationCost::ZERO
+                },
+                &[Instruction::AddMana(ManaProduction::Fixed([
+                    0, 0, 0, 0, 0, 4,
+                ]))],
+            ),
+        ],
+        extras: &CardExtras {
+            static_ability_groups: TYPES,
+            ..CardExtras::EMPTY
+        },
+        ..PLAIN
+    };
+    const PILOT: CardRules = CardRules {
+        keywords: Keywords::CREW_SADDLE_PLUS_TWO,
+        ..PLAIN
+    };
+    let _scope = fixture_rules::activate(&[
+        (named("Ghost Vacuum"), &TAX),
+        (Card::GrizzlyBears, &SOURCE_TYPES),
+        (Card::GoblinPiker, &PILOT),
+    ]);
+    let mut g = scenario(Player::P0);
+    let source = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    let pilot = put(&mut g, Player::P0, "Goblin Piker", Zone::Battlefield);
+    g.add_counter(source, CounterKind::Charge, 1);
+    assert!(g.has_subtype(source, "Vehicle"));
+    tax(&mut g, Player::P1, "Grizzly Bears");
+    g.state.players[0].mana = TWO;
+    act(&mut g, start(source));
+    let participant = g.object_ref(pilot);
+    act(
+        &mut g,
+        Action::ChooseCrewer {
+            object: participant,
+        },
+    );
+    act(&mut g, Action::FinishCrew);
+    let mut counters = Counters::default();
+    counters.add(CounterKind::Charge, 1);
+    // The counter is paid before sacrifice. At actual departure this source no
+    // longer has Vehicle, so its old announcement type cannot make power2 pay4.
+    reject(
+        &mut g,
+        Action::ActivateMana {
+            card: source,
+            ability: 1,
+            payment: TWO,
+            counter_payment: counters,
+            production: [0, 0, 0, 0, 0, 4],
+        },
+    );
+    pay(&mut g);
+    assert!(g.object_view(pilot).tapped);
+}
+
+#[test]
+fn exact_selected_assistance_keeps_the_bonus_above_i128_until_negative_terms_cancel() {
+    const VEHICLE: CardRules = CardRules {
+        effect: Effect::Permanent,
+        activated: &[ability(
+            ActivationCost::ZERO,
+            &[Instruction::Crew { minimum: 3 }],
+        )],
+        ..CardRules::EMPTY
+    };
+    const PILOT: CardRules = CardRules {
+        keywords: Keywords::CREW_SADDLE_PLUS_TWO,
+        ..PLAIN
+    };
+    let _scope = fixture_rules::activate(&[
+        (named("Ghost Vacuum"), &TAX),
+        (named("Broadcast Rambler"), &VEHICLE),
+        (Card::GrizzlyBears, &PILOT),
+        (Card::GoblinPiker, &PLAIN),
+    ]);
+    let mut g = scenario(Player::P0);
+    let source = put(&mut g, Player::P0, "Broadcast Rambler", Zone::Battlefield);
+    let pilot = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    let negative = put(&mut g, Player::P0, "Goblin Piker", Zone::Battlefield);
+    g.state.objects[pilot as usize].growth.power = i128::MAX - 2;
+    g.state.objects[negative as usize].growth.power = -i128::MAX;
+    tax(&mut g, Player::P1, "Broadcast Rambler");
+    g.state.players[0].mana = TWO;
+    act(&mut g, start(source));
+    let first = g.object_ref(pilot);
+    let second = g.object_ref(negative);
+    act(&mut g, Action::ChooseCrewer { object: first });
+    act(&mut g, Action::ChooseCrewer { object: second });
+    assert_eq!(g.crew_choice(Player::P0).unwrap().selected_power, Some(4));
+    act(&mut g, Action::FinishCrew);
+    pay(&mut g);
+    assert_eq!(
+        g.state
+            .stack
+            .last()
+            .unwrap()
+            .crew
+            .as_ref()
+            .unwrap()
+            .paid_power,
+        Some(4)
+    );
+}

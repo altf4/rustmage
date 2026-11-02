@@ -49,6 +49,7 @@ pub(super) struct ContributorSelection {
     pub selected: Vec<ObjectRef>,
     pub complete: bool,
     pub saddle: bool,
+    pub source_subtype: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ContributorSelection {
@@ -71,15 +72,18 @@ impl ContributorSelection {
                 continue;
             }
             let selected = self.selected.contains(&reference);
-            let power = world.crew_saddle_contribution(
-                id,
-                self.source.card,
+            let subject_matches = world.crew_saddle_subject_matches(
+                self.source,
                 if self.saddle { "Mount" } else { "Vehicle" },
+                self.source_subtype,
             );
+            let (base, bonus) = world.crew_saddle_contribution_terms(id, subject_matches);
+            let positive = base > 0 || base + bonus > 0;
             // During selection this is a bound, not a choice of a hidden subset.
             // It is reevaluated in each exact reachable payment world.
-            if selected || (!self.complete && power > 0) {
-                sum.add(power);
+            if selected || (!self.complete && positive) {
+                sum.add(base);
+                sum.add(bonus);
             }
         }
         sum.enough(self.minimum)
@@ -133,6 +137,53 @@ impl ActivatedAbility {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn contributor_source_facts(&self, source: ObjectRef) -> Option<DamageFacts> {
+        self.state
+            .announcing
+            .iter()
+            .map(|a| &a.item)
+            .chain(
+                self.state
+                    .mana_announcement_stack
+                    .iter()
+                    .flat_map(|frames| frames.iter().map(|f| &f.announcement.item)),
+            )
+            .filter_map(|item| item.source)
+            .find(|packet| packet.object == source)
+            .map(|packet| packet.facts)
+    }
+    pub(super) fn contributor_sum(
+        &self,
+        source: ObjectRef,
+        actor: Player,
+        selected: &[ObjectRef],
+        saddle: bool,
+        maximum: bool,
+        fallback: Option<DamageFacts>,
+    ) -> PowerSum {
+        use ability_world::CharacteristicWorld;
+        let subtype = if saddle { "Mount" } else { "Vehicle" };
+        let fallback = fallback
+            .or_else(|| self.contributor_source_facts(source))
+            .is_some_and(|facts| facts.has_subtype(subtype));
+        let subject_matches = self.crew_saddle_subject_matches(source, subtype, fallback);
+        let mut sum = PowerSum::default();
+        for id in 0..self.state.objects.len() {
+            let id = id as CardId;
+            let object = self.object_ref(id);
+            if !self.crew_saddle_eligible(source, actor, object) {
+                continue;
+            }
+            let chosen = selected.contains(&object);
+            let (base, bonus) = self.crew_saddle_contribution_terms(id, subject_matches);
+            let positive = base > 0 || base + bonus > 0;
+            if chosen || maximum && positive {
+                sum.add(base);
+                sum.add(bonus);
+            }
+        }
+        sum
+    }
     pub(super) fn contributor_requirement(
         &self,
         goal: &FundingGoal,
@@ -148,6 +199,14 @@ impl Game {
             actor: goal.actor,
             minimum,
             saddle,
+            source_subtype: self.contributor_source_facts(*source).map_or_else(
+                || {
+                    self.on_battlefield(source.card)
+                        && self.object_ref(source.card) == *source
+                        && self.has_subtype(source.card, if saddle { "Mount" } else { "Vehicle" })
+                },
+                |facts| facts.has_subtype(if saddle { "Mount" } else { "Vehicle" }),
+            ),
             selected: Vec::new(),
             complete: false,
         };
@@ -227,18 +286,7 @@ impl Game {
     }
     fn crew_sum(&self, maximum: bool) -> PowerSum {
         let p = self.state.crew.as_ref().unwrap().payment.as_ref().unwrap();
-        let mut sum = PowerSum::default();
-        for id in 0..self.state.objects.len() {
-            let r = self.object_ref(id as CardId);
-            if self.crew_eligible(p.source, p.actor, r) {
-                let selected = p.selected.contains(&r);
-                let power = self.crew_saddle_power(r.card, p.source.card, "Vehicle");
-                if selected || maximum && power > 0 {
-                    sum.add(power);
-                }
-            }
-        }
-        sum
+        self.contributor_sum(p.source, p.actor, &p.selected, false, maximum, None)
     }
     pub(super) fn crew_choice(&self, viewer: Player) -> Option<CrewChoiceView> {
         let viewer = self.choice_information_player(viewer);
@@ -388,7 +436,15 @@ impl Game {
                     p.complete && p.source == source.object && p.actor == item.controller
                 })
         {
-            let sum = self.crew_sum(false);
+            let p = self.state.crew.as_ref().unwrap().payment.as_ref().unwrap();
+            let sum = self.contributor_sum(
+                p.source,
+                p.actor,
+                &p.selected,
+                false,
+                false,
+                Some(source.facts),
+            );
             let p = self.state.crew.as_mut().unwrap().payment.take().unwrap();
             assert!(sum.enough(p.minimum));
             return Some(activations::ActivationPaymentCompletion::Crew(

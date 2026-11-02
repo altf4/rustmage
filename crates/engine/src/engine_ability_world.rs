@@ -205,7 +205,42 @@ pub(super) trait CharacteristicWorld {
             && !o.tapped
             && self.kinds(object.card) & 1 != 0
     }
+    fn departed_source_subtypes(&self, source: ObjectRef) -> Option<(Card, GrantedSubtypes)> {
+        self.game()
+            .contributor_source_facts(source)
+            .map(|facts| (facts.card, facts.granted_subtypes))
+    }
+    fn crew_saddle_subject_matches(
+        &self,
+        source: ObjectRef,
+        subtype: &str,
+        fallback: bool,
+    ) -> bool {
+        if self.reference(source.card) == source
+            && self.object(source.card).zone == Zone::Battlefield
+        {
+            self.subtypes(source.card)
+                .has(self.definition(source.card), subtype)
+        } else {
+            self.departed_source_subtypes(source)
+                .map_or(fallback, |(card, subtypes)| subtypes.has(card, subtype))
+        }
+    }
+    #[cfg(feature = "test-support")]
     fn crew_saddle_contribution(&self, card: CardId, subject: CardId, subtype: &str) -> i128 {
+        self.crew_saddle_contribution_for(
+            card,
+            self.subtypes(subject)
+                .has(self.definition(subject), subtype),
+        )
+    }
+    #[cfg(feature = "test-support")]
+    fn crew_saddle_contribution_for(&self, card: CardId, subject_matches: bool) -> i128 {
+        let (base, bonus) = self.crew_saddle_contribution_terms(card, subject_matches);
+        base.checked_add(bonus)
+            .capacity("individual crew/saddle quantity representation exhausted")
+    }
+    fn crew_saddle_contribution_terms(&self, card: CardId, subject_matches: bool) -> (i128, i128) {
         let query = characteristic_query::CharacteristicQuery::in_world(self);
         let uses_toughness = |fragment: &crate::cards::StaticAbilityFragment| {
             matches!(
@@ -220,11 +255,9 @@ pub(super) trait CharacteristicWorld {
             .any(|g| g.fragments.iter().any(uses_toughness))
             && query.continuous_fragment_available(card, uses_toughness)
         {
-            return query.stats(card).toughness;
+            return (query.stats(card).toughness, 0);
         }
-        let bonus = if self
-            .subtypes(subject)
-            .has(self.definition(subject), subtype)
+        let bonus = if subject_matches
             && query
                 .keywords(card)
                 .contains(Keywords::CREW_SADDLE_PLUS_TWO)
@@ -233,7 +266,7 @@ pub(super) trait CharacteristicWorld {
         } else {
             0
         };
-        query.stats(card).power.saturating_add(bonus)
+        (query.stats(card).power, bonus)
     }
     fn named_activation_generic_increase(&self, id: CardId) -> u32 {
         let query = characteristic_query::CharacteristicQuery::in_world(self);
@@ -1407,6 +1440,9 @@ struct SourceTappedWorld<'a, W: CharacteristicWorld + ?Sized> {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<'_, W> {
+    fn departed_source_subtypes(&self, source: ObjectRef) -> Option<(Card, GrantedSubtypes)> {
+        self.parent.departed_source_subtypes(source)
+    }
     fn game(&self) -> &Game {
         self.parent.game()
     }

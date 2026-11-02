@@ -80,6 +80,7 @@ impl ActivatedAbility {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    #[cfg(feature = "test-support")]
     pub(super) fn crew_saddle_power(&self, card: CardId, subject: CardId, subtype: &str) -> i128 {
         ability_world::CharacteristicWorld::crew_saddle_contribution(self, card, subject, subtype)
     }
@@ -127,18 +128,7 @@ impl Game {
     }
     fn saddle_sums(&self, maximum: bool) -> PowerSum {
         let f = self.state.saddle_payment.as_ref().unwrap();
-        let mut sum = PowerSum::default();
-        for id in 0..self.state.objects.len() {
-            let r = self.object_ref(id as CardId);
-            if self.saddle_eligible(f.source, f.actor, r) {
-                let selected = f.selected.contains(&r);
-                let p = self.crew_saddle_power(r.card, f.source.card, "Mount");
-                if selected || maximum && p > 0 {
-                    sum.add(p);
-                }
-            }
-        }
-        sum
+        self.contributor_sum(f.source, f.actor, &f.selected, true, maximum, None)
     }
     pub fn saddle_choice(&self) -> Option<SaddleChoiceView> {
         let f = self.state.saddle_payment.as_ref()?;
