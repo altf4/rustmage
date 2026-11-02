@@ -77,7 +77,7 @@ impl Game {
                     rules,
                     self.counter_amounts(card),
                     |counters| {
-                        production.in_world(self, card).visit(|production| {
+                        production.visit_at_start(self, card, |production| {
                             self.mana_packet_fundable(&packet, counters.clone(), production)
                                 && emit(Action::AnnounceSelfGrantedMana {
                                     source: row.recipient,

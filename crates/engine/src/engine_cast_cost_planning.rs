@@ -428,9 +428,10 @@ impl FundingState<'_> {
                         if !self
                             .payment_departures
                             .iter()
-                            .any(|(reference, _)| reference == r)
+                            .any(|(reference, _, _)| reference == r)
                         {
-                            n.payment_departures.retain(|(reference, _)| reference != r);
+                            n.payment_departures
+                                .retain(|(reference, _, _)| reference != r);
                         }
                         next.push(n);
                         continue;

@@ -598,11 +598,11 @@ impl Game {
     }
     // Capture before announcement costs can remove the producer or its choice.
     // The exact source reference identifies this announcement, not a live lookup.
-    pub(super) fn announced_mana_quality(
+    pub(super) fn announced_mana_recipe(
         &self,
         item: &SpellView,
         selected: Option<Mana>,
-    ) -> Option<(ObjectRef, Quality)> {
+    ) -> Option<ManaProduction> {
         let StackKind::ActivatedAbility { ability } = item.kind else {
             return None;
         };
@@ -618,10 +618,7 @@ impl Game {
                     grant.source == origin.grantor
                         && grant.sacrifice == (ability == Card::GRANTED_SACRIFICE_MANA)
                         && selected.is_none_or(|selected| {
-                            grant
-                                .production
-                                .in_world(self, source.id)
-                                .visit(|production| production == selected)
+                            grant.production.accepts_at_start(self, source.id, selected)
                         })
                 })
                 .map(|grant| grant.production)
@@ -629,7 +626,15 @@ impl Game {
             source.card.activation(ability).mana_production()
         };
         production
-            .and_then(|production| self.mana_quality(production, source.object.card))
+    }
+    pub(super) fn announced_mana_quality(
+        &self,
+        item: &SpellView,
+        selected: Option<Mana>,
+    ) -> Option<(ObjectRef, Quality)> {
+        let source = item.source?;
+        self.announced_mana_recipe(item, selected)
+            .and_then(|recipe| self.mana_quality(recipe, source.id))
             .map(|quality| (source.object, quality.with_definition(source.card)))
     }
     pub(super) fn capture_announced_mana_quality(

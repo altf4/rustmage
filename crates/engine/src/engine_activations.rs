@@ -524,7 +524,7 @@ impl Game {
         let grant = ability_world::CharacteristicWorld::granted_mana(self, card)
             .into_iter()
             .find(|g| {
-                g.source == grantor && g.production.in_world(self, card).visit(|p| p == production)
+                g.source == grantor && g.production.accepts_at_start(self, card, production)
             })?;
         let ability = if grant.sacrifice {
             Card::GRANTED_SACRIFICE_MANA
@@ -566,7 +566,7 @@ impl Game {
             {
                 continue;
             }
-            if grant.production.in_world(self, card).visit(|production| {
+            if grant.production.visit_at_start(self, card, |production| {
                 if ability_world::CharacteristicWorld::named_activation_generic_increase(self, card)
                     == 0
                 {
@@ -684,7 +684,7 @@ impl Game {
                     );
                     if targets_available && fundable() {
                         let done = if let Some(production) = ability.mana_production() {
-                            production.in_world(self, card).visit(|production| {
+                            production.visit_at_start(self, card, |production| {
                                 emit(Action::AnnounceMana {
                                     card,
                                     ability: index as u16,
@@ -756,7 +756,7 @@ impl Game {
                                     return;
                                 }
                                 if let Some(production) = ability.mana_production() {
-                                    done = production.in_world(self, card).visit(|production| {
+                                    done = production.visit_at_start(self, card, |production| {
                                         emit(Action::ActivateMana {
                                             card,
                                             ability: index as u16,

@@ -70,7 +70,8 @@ pub(super) struct FundingState<'g> {
     required_face_up: Option<ObjectRef>,
     pub(super) contributors: Option<Box<crew::ContributorSelection>>,
     // Sparse last-known facts for exact enclosing sources that leave a speculative world.
-    payment_departures: Vec<(ObjectRef, mana_lots::Source)>,
+    payment_departures: Vec<(ObjectRef, mana_lots::Source, i128)>,
+    watched_sources: Vec<ObjectRef>,
     life: i128,
     other_life: i128,
     life_replacement_possible: bool,
@@ -99,11 +100,18 @@ pub(super) struct FundingState<'g> {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ability_world::CharacteristicWorld for FundingState<'_> {
+    fn departed_source_power(&self, source: ObjectRef) -> Option<i128> {
+        self.payment_departures
+            .iter()
+            .find(|(r, _, _)| *r == source)
+            .map(|(_, _, p)| *p)
+            .or_else(|| self.game.contributor_source_facts(source).map(|f| f.power))
+    }
     fn departed_source_subtypes(&self, source: ObjectRef) -> Option<(Card, GrantedSubtypes)> {
         self.payment_departures
             .iter()
-            .find(|(object, _)| *object == source)
-            .map(|(_, facts)| (facts.card, facts.subtypes))
+            .find(|(object, _, _)| *object == source)
+            .map(|(_, facts, _)| (facts.card, facts.subtypes))
             .or_else(|| {
                 self.game
                     .contributor_source_facts(source)
@@ -340,6 +348,7 @@ struct FundingMove {
     external: Option<ExternalManaCost>,
     /// A previously announced activation keeps its immutable ability definition.
     frozen: Option<Box<(Card, Option<u64>)>>,
+    output: Option<Box<mana_output::ManaOutput>>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Hash, PartialEq, Eq)]
@@ -382,7 +391,7 @@ struct FundingKey {
     life_lost: [bool; 2],
     enduring_story: [bool; 2],
     exhaust_activated: [bool; 2],
-    payment_departures: Vec<(ObjectRef, mana_lots::Source)>,
+    payment_departures: Vec<(ObjectRef, mana_lots::Source, i128)>,
     source_linked_effects: Vec<SourceLinkedEffectView>,
     resolved_ability_modifications: Vec<ResolvedAbilityModificationView>,
     entries: Option<EntryFundingKey>,
@@ -481,7 +490,7 @@ fn funding_cost_payments(
     discount: u32,
     increase: u32,
     reductions: Option<&power_up::PowerUpCosts>,
-    mut emit: impl FnMut([u64; 6]),
+    mut emit: impl FnMut([u64; 6], Option<ManaCost>),
 ) {
     let mut seen = std::collections::HashSet::new();
     const ZERO: ManaCost = ManaCost {
@@ -496,12 +505,31 @@ fn funding_cost_payments(
             else {
                 continue;
             };
+            if !payable(pool, equivalent.colored, equivalent.generic) {
+                emit([0; 6], Some(equivalent));
+                continue;
+            }
             funding_payments(pool, equivalent.colored, equivalent.generic, |payment| {
                 if (cost.alternatives.is_empty() && reductions.is_none()) || seen.insert(payment) {
-                    emit(payment);
+                    emit(payment, None);
                 }
             });
         }
+    }
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+fn funding_allocations(
+    pool: [u128; 6],
+    lots: &[mana_lots::Lot],
+    purpose: mana_lots::Purpose,
+    payment: [u64; 6],
+    deferred: Option<ManaCost>,
+    mut emit: impl FnMut(Vec<[u64; 6]>),
+) {
+    if deferred.is_some() {
+        emit(Vec::new());
+    } else {
+        mana_lots::visit_allocations(pool, lots, purpose, payment, emit);
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -1029,6 +1057,7 @@ impl<'g> FundingState<'g> {
             required_face_up: game.face_up_payment().map(|request| request.object),
             contributors: game.contributor_requirement(goal),
             payment_departures: Vec::new(),
+            watched_sources: Vec::new(),
             life: game.state.players[goal.actor.index()].life,
             other_life: game.state.players[goal.actor.other().index()].life,
             life_replacement_possible,
@@ -1608,17 +1637,17 @@ impl<'g> FundingState<'g> {
                         0,
                         increase,
                         None,
-                        |payment| {
-                            mana_lots::visit_allocations(
+                        |payment, deferred| {
+                            funding_allocations(
                                 self.mana,
                                 &self.lots,
                                 purpose,
                                 payment,
+                                deferred,
                                 |allocation| {
                                     grant
                                         .production
-                                        .in_world(self, entry.id)
-                                        .visit(|production| {
+                                        .visit_at_start(self, entry.id, |production| {
                                             moves.push(FundingMove {
                                                 resource,
                                                 ability: (increase != 0).then_some(index),
@@ -1636,6 +1665,22 @@ impl<'g> FundingState<'g> {
                                                 allocation: allocation.clone(),
                                                 external: None,
                                                 frozen: None,
+                                                output: Some(Box::new({
+                                                    let mut o = mana_output::ManaOutput::new(
+                                                        self,
+                                                        grant.production,
+                                                        production,
+                                                        key,
+                                                        goal.actor,
+                                                        mana_lots::quality_from_world(
+                                                            self,
+                                                            grant.production,
+                                                            entry.id,
+                                                        ),
+                                                    );
+                                                    o.deferred_cost = deferred;
+                                                    o
+                                                })),
                                             });
                                             false
                                         });
@@ -1675,12 +1720,13 @@ impl<'g> FundingState<'g> {
                         0,
                         increase,
                         None,
-                        |payment| {
-                            mana_lots::visit_allocations(
+                        |payment, deferred| {
+                            funding_allocations(
                                 self.mana,
                                 &self.lots,
                                 purpose,
                                 payment,
+                                deferred,
                                 |allocation| {
                                     moves.push(FundingMove {
                                         resource,
@@ -1699,6 +1745,20 @@ impl<'g> FundingState<'g> {
                                         allocation,
                                         external: None,
                                         frozen: None,
+                                        output: deferred.map(|cost| {
+                                            Box::new({
+                                                let mut o = mana_output::ManaOutput::new(
+                                                    self,
+                                                    ManaProduction::Fixed(production),
+                                                    production,
+                                                    key,
+                                                    goal.actor,
+                                                    None,
+                                                );
+                                                o.deferred_cost = Some(cost);
+                                                o
+                                            })
+                                        }),
                                     });
                                 },
                             );
@@ -1710,7 +1770,7 @@ impl<'g> FundingState<'g> {
                 let Some(production) = ability.mana_production() else {
                     continue;
                 };
-                if !active_mana.is_empty() {
+                {
                     let origin = ability_world::CharacteristicWorld::ability_origin(self, entry.id);
                     let source = self.reference(entry.id);
                     let key = mana_announcements::ManaActivationKey {
@@ -1869,14 +1929,15 @@ impl<'g> FundingState<'g> {
                                 index,
                             )
                             .as_deref(),
-                            |payment| {
-                                mana_lots::visit_allocations(
+                            |payment, deferred| {
+                                funding_allocations(
                                     self.mana,
                                     &self.lots,
                                     purpose,
                                     payment,
+                                    deferred,
                                     |allocation| {
-                                        production.base().in_world(self, entry.id).visit(
+                                        production.visit_at_start(self, entry.id,
                                             |production| {
                                                 let step = FundingMove {
                                                     resource,
@@ -1891,6 +1952,19 @@ impl<'g> FundingState<'g> {
                                                     allocation: allocation.clone(),
                                                     external: None,
                                                     frozen: None,
+                                                    output: {
+                                                        let definition = self_grant.map_or_else(|| borrowed.map_or(object.card, |a| a.definition), |g| g.0);
+                                                        let origin = self.ability_origin(entry.id);
+                                                        let key = mana_announcements::ManaActivationKey { source: self.reference(entry.id), definition,
+                                                            ability: index, borrowed_slot: borrowed.map(|b| b.slot), self_grant: self_grant.map(|g| g.1),
+                                                            source_origin: self_grant.map(|g| g.1).or(origin),
+                                                            grant: (borrowed.is_none() && self_grant.is_none() && self.source_activation_template_available(entry.id,index))
+                                                                .then_some((self.reference(entry.id), object.card, origin)) };
+                                                        (deferred.is_some() || !matches!(ability.mana_production().unwrap().base(), ManaProduction::Fixed(_))).then(|| Box::new({
+                                                            let mut o = mana_output::ManaOutput::new(self, ability.mana_production().unwrap(), production, key, goal.actor, quality);
+                                                            o.deferred_cost = deferred; o
+                                                        }))
+                                                    },
                                                 };
                                                 if let Some(eligible) = &external {
                                                     for &external in eligible {
@@ -1974,6 +2048,7 @@ impl<'g> FundingState<'g> {
                 && item.source.is_some_and(|source| source.object == reference)
         };
         if self.payment_source != Some(reference)
+            && !self.watched_sources.contains(&reference)
             && !self
                 .game
                 .state
@@ -1996,25 +2071,23 @@ impl<'g> FundingState<'g> {
         if self
             .payment_departures
             .iter()
-            .any(|(object, _)| *object == reference)
+            .any(|(object, _, _)| *object == reference)
         {
             return;
         }
         let facts = mana_lots::Source::in_world(self, id);
-        self.payment_departures.push((reference, facts));
+        let power = self.power(id);
+        self.payment_departures.push((reference, facts, power));
         self.payment_departures
-            .sort_by_key(|(object, _)| (object.card, object.generation));
+            .sort_by_key(|(object, _, _)| (object.card, object.generation));
     }
-    fn apply(&mut self, step: &FundingMove, preserve_departure_counters: bool) {
+    fn apply(&mut self, step: &FundingMove, preserve_departure_counters: bool) -> u32 {
         for (lot, allocation) in self.lots.iter_mut().zip(&step.allocation) {
             for (held, paid) in lot.amounts.iter_mut().zip(allocation) {
                 *held -= u128::from(*paid);
             }
         }
         self.lots.retain(|lot| lot.amounts != [0; 6]);
-        if let Some(quality) = step.quality {
-            mana_lots::add_lot(&mut self.lots, quality, step.production.map(u128::from));
-        }
         for (pool, paid) in self.mana.iter_mut().zip(step.payment) {
             *pool -= u128::from(paid);
         }
@@ -2067,6 +2140,16 @@ impl<'g> FundingState<'g> {
         });
         if let Some(cost) = cost {
             self.pay_projected_life(self.actor, u32::from(cost.life), &[]);
+        }
+        if step.output.as_ref().is_some_and(|o| {
+            self.reference(id) != o.instance.source
+                || self.object(id).zone
+                    != o.instance
+                        .definition
+                        .activation(o.instance.ability)
+                        .source_zone()
+        }) {
+            return 0;
         }
         if let Some((definition, timestamp)) = step.self_grant
             && step.ability.is_some_and(|i| {
@@ -2224,16 +2307,34 @@ impl<'g> FundingState<'g> {
             self.prune_source_linked_projection();
             self.refresh_enduring_projection();
         }
-        for (pool, produced) in self.mana.iter_mut().zip(step.production) {
-            *pool = pool
-                .checked_add(u128::from(produced))
+        tap_bonus
+    }
+    fn visit_output(
+        &self,
+        step: &FundingMove,
+        tap_bonus: u32,
+        emit: &mut dyn FnMut(&Self) -> bool,
+    ) -> bool {
+        let mut finish = |production: Mana| {
+            let mut next = self.clone();
+            for (pool, produced) in next.mana.iter_mut().zip(production) {
+                *pool = pool
+                    .checked_add(u128::from(produced))
+                    .capacity("mana representation exhausted");
+            }
+            if let Some(quality) = step.output.as_ref().map_or(step.quality, |o| o.quality) {
+                mana_lots::add_lot(&mut next.lots, quality, production.map(u128::from));
+            }
+            next.mana[3] = next.mana[3]
+                .checked_add(u128::from(tap_bonus))
                 .capacity("mana representation exhausted");
+            emit(&next)
+        };
+        if let Some(output) = &step.output {
+            output.visit(self, output.source_power, finish)
+        } else {
+            finish(step.production)
         }
-        // Triggered mana is ordinary even when the activated ability's own
-        // production has a spending restriction or other quality.
-        self.mana[3] = self.mana[3]
-            .checked_add(u128::from(tap_bonus))
-            .capacity("mana representation exhausted");
     }
     fn key(&self, goal: &FundingGoal) -> FundingKey {
         // Attachment edges distinguish otherwise interchangeable mana sources.
@@ -3153,10 +3254,10 @@ impl<'g> FundingState<'g> {
             return self.purpose;
         }
         if let Some((object, ability, _, definition, _)) = goal.source.as_ref() {
-            if let Some((_, facts)) = self
+            if let Some((_, facts, _)) = self
                 .payment_departures
                 .iter()
-                .find(|(source, _)| source == object)
+                .find(|(source, _, _)| source == object)
             {
                 return mana_lots::Purpose::Activation(
                     (*facts).with_activation(definition.activation(*ability)),
@@ -3181,6 +3282,17 @@ impl<'g> FundingState<'g> {
         goal: &FundingGoal,
         evidence: Option<u16>,
         visited: &mut HashSet<FundingKey>,
+    ) -> bool {
+        self.reachable_with_completion(goal, evidence, visited, &mut |world| {
+            world.complete_funding_continuation(goal)
+        })
+    }
+    fn reachable_with_completion(
+        &self,
+        goal: &FundingGoal,
+        evidence: Option<u16>,
+        visited: &mut HashSet<FundingKey>,
+        completion: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
         if self.required_face_up.is_some_and(|object| {
             self.reference(object.card) != object
@@ -3230,7 +3342,7 @@ impl<'g> FundingState<'g> {
             })
             && self.cost_group_ready()
             && self.contributors.as_ref().is_none_or(|c| c.payable(self))
-            && self.complete_funding_continuation(goal)
+            && completion(self)
         {
             return true;
         }
@@ -3291,12 +3403,104 @@ impl<'g> FundingState<'g> {
         });
         for step in moves {
             if self.visit_applied(&step, &mut |next| {
-                next.reachable_with_evidence(goal, evidence, visited)
+                next.reachable_with_completion(goal, evidence, visited, completion)
             }) {
                 return true;
             }
         }
         false
+    }
+    fn restore_payment_context(&mut self, parent: &Self) {
+        self.purpose = parent.purpose;
+        self.payment_source = parent.payment_source;
+        self.exhaust_source_reuse_authorized = parent.exhaust_source_reuse_authorized;
+        self.source_use_independent = parent.source_use_independent;
+        self.required_face_up = parent.required_face_up;
+        self.contributors = parent.contributors.clone();
+        self.convoke = parent.convoke;
+        self.waterbend = parent.waterbend;
+        self.cost_group = parent.cost_group.clone();
+        self.cast_costs = parent.cast_costs.clone();
+        self.continuation = parent.continuation.clone();
+        self.active_mana_keys = parent.active_mana_keys.clone();
+        self.watched_sources = parent.watched_sources.clone();
+    }
+    fn visit_deferred(&self, step: &FundingMove, emit: &mut dyn FnMut(&Self) -> bool) -> bool {
+        let output = step.output.as_ref().expect("deferred output");
+        let cost = output.deferred_cost.expect("deferred cost");
+        let key = output.instance;
+        let rules = key.definition.activation(key.ability);
+        let goal = FundingGoal {
+            actor: output.controller,
+            required: cost.colored,
+            generic: cost.generic,
+            reserve: step
+                .external
+                .map(|e| (e.object, rules.cost.additional.expect("external cost"))),
+            source: Some((
+                key.source,
+                key.ability,
+                step.counters.clone(),
+                key.definition,
+                key.borrowed_slot,
+            )),
+        };
+        let mut child = self.clone();
+        if let Some(source) = self.payment_source {
+            child.watched_sources.push(source);
+        }
+        let keys = child
+            .active_mana_keys
+            .get_or_insert_with(|| self.game.active_mana_activation_keys());
+        if keys.contains(&key) {
+            return false;
+        }
+        keys.push(key);
+        child.purpose = mana_lots::Purpose::Activation(
+            mana_lots::Source::in_world(self, key.source.card).with_activation(rules),
+        );
+        child.payment_source = Some(key.source);
+        child.exhaust_source_reuse_authorized = exhaust::reuse_available(self, output.controller);
+        child.source_use_independent = key.self_grant.is_some();
+        child.required_face_up = None;
+        child.contributors = None;
+        child.convoke = false;
+        child.waterbend = 0;
+        child.cost_group = None;
+        child.cast_costs = None;
+        child.continuation = None;
+        child.reachable_with_completion(&goal, None, &mut HashSet::new(), &mut |world| {
+            let purpose = world.payment_purpose(&goal);
+            let pool = mana_lots::available(world.mana, &world.lots, purpose);
+            let mut found = false;
+            funding_payments(pool, goal.required, goal.generic, |payment| {
+                if found {
+                    return;
+                }
+                mana_lots::visit_allocations(
+                    world.mana,
+                    &world.lots,
+                    purpose,
+                    payment,
+                    |allocation| {
+                        if found {
+                            return;
+                        }
+                        let mut paid = step.clone();
+                        paid.payment = payment;
+                        paid.allocation = allocation;
+                        paid.output.as_mut().unwrap().deferred_cost = None;
+                        paid.frozen = Some(Box::new((key.definition, key.borrowed_slot)));
+                        found = world.visit_applied(&paid, &mut |completed| {
+                            let mut next = completed.clone();
+                            next.restore_payment_context(self);
+                            emit(&next)
+                        });
+                    },
+                );
+            });
+            found
+        })
     }
     fn action(&self, step: &FundingMove) -> Action {
         let card = self.resources[step.resource].id;
@@ -3322,7 +3526,7 @@ impl<'g> FundingState<'g> {
                 production: step.production,
             };
         }
-        if step.external.is_some() {
+        if step.external.is_some() || step.output.as_ref().and_then(|o| o.deferred_cost).is_some() {
             if let Some(borrowed) = step.borrowed {
                 return if borrowed.zone == Zone::Graveyard {
                     Action::AnnounceGraveyardBorrowedMana {
@@ -4589,7 +4793,7 @@ impl Game {
                     ability,
                     self.counter_amounts(id),
                     |counters| {
-                        production.in_world(self, id).visit(|produced| {
+                        production.visit_at_start(self, id, |produced| {
                             let mut candidate = self.payment_announcement(
                                 packet.clone(),
                                 counters.clone(),

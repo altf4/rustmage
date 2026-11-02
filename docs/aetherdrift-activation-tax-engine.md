@@ -1,10 +1,12 @@
 # Named activation increase engine contract
 
 This engine-only cluster supplies the remaining cost dependency for Skyseer's
-Chariot. It does not admit or edit ordinary DFT definitions. The fourteen
-`dft_activation_tax` scenarios are authored but have not been run in this
-isolated worktree; the root integration owner runs Cargo once the engine batch
-is assembled. No passing tax outcome is claimed by this document.
+Chariot. It does not admit or edit ordinary DFT definitions. The root integration
+owner has run the eighteen `dft_activation_tax` scenarios: seventeen pass at
+`db13683e8`; the initial-parent deferred grant scenario is the remaining case
+addressed by the ManaOutput repair below. The eight new `dft_mana_output`
+scenarios await the root owner's guarded run. No Cargo runs in this isolated
+worktree.
 
 ## Pinned rule evidence
 
@@ -156,3 +158,56 @@ scenario verifies the repair; its outcome is pending the next root run. The
 other failed case revealed initial-parent funding's missing deferred-grant
 snapshot route and remains open while the shared ManaOutput completion repair
 is authored. Neither failing expectation was weakened.
+
+## Deferred initial funding and post-cost ManaOutput
+
+A cold optional owned `ManaOutput` is shared by the actual announcement and the
+speculative funding move. It contains the immutable production recipe, exact
+ability instance, original controller, captured quality, optional color or exact
+Combination allocation, source-power fallback, speculative deferred cost, and
+an optional owned resume Pending for mana started outside a parent announcement.
+It adds no public action or view. Active and suspended announcement byte accounting
+includes the receipt and its resume state; old schema projection rejects it.
+Ordinary fixed direct mana keeps its original route.
+
+A currently available source can be frozen before mana to pay its own activation
+cost exists. Funding starts its exact child payment context, excludes every active
+ancestor instance, visits exact reachable cost payments and lot allocations,
+commits source and external costs, and only then evaluates the output. It restores
+all parent cost context and resumes the enclosing goal without cloning a Game.
+The already announced recipe, definition, grantor and spending quality survive
+provider departure. A source departure never applies unpaid use/counter/tap effects
+to a later incarnation. Parent contributor reservations and donor/use history
+remain independent of the temporary child context.
+
+SourcePower, tapped-source power, subtype counts, distinct creature powers and
+monocolored permanent colors are read after all costs. Controller expressions
+use the original activation controller. Exact projected departure facts extend
+the existing sparse card/subtype witness with sampled power, including its memo
+key; actual completion uses the refreshed paid packet's departure facts. A new
+incarnation cannot replace either witness. This follows the current-information
+and exact last-known-information rule in CR608.2h; mana activation and immediate
+resolution follow CR605.3.
+
+For a variable color choice, an all-zero announcement is an unselected late route,
+not a chosen color. If cost payment increases a zero quantity, the existing owned
+EffectMana/ChooseMana window chooses from the final domain. Early-selected colors
+remain an optional atomic shortcut and are applied to the final quantity. Fixed
+Combination allocations stay exact. A completed rollback event records actual
+concrete production and captured quality once; retained replay consumes this frozen
+result rather than sampling the recipe again.
+
+The new outcome contracts cover post-counter quantities in actual and initial
+parent funding, positive and rejected stale previews, nested sacrifice changing
+an Elf count, zero-to-positive late choice, exact latest departure power versus a
+new incarnation, original controller after departure/control change, fixed late
+Combination allocation, and completed late mana retained after a foreign Aura
+entry strands the cast. Late receipt and retained-replay branches compare raw,
+indexed and restored owned states. These outcomes are pending integrated validation.
+
+The root owner has separately confirmed all acquired-use, projected power-up,
+exact copied-source subtype/LKI and signed MAX-cancellation follow-ups pass;
+those expectations were preserved. The source-subtype fixture uses a legitimate
+copy transition rather than treating Vehicle as a creature subtype. The sparse
+static-provider index now opts in named activation increases, avoiding a scan of
+all library/hand objects in ordinary mana funding.

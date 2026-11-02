@@ -529,7 +529,7 @@ impl Game {
                 |counter_payment| {
                     if let Some(production) = ability.mana_production() {
                         let packet = self.borrowed_activation_packet(actor, *descriptor);
-                        if production.in_world(self, card).visit(|production| {
+                        if production.visit_at_start(self, card, |production| {
                             self.mana_packet_fundable(&packet, counter_payment.clone(), production)
                                 && emit(if descriptor.zone == Zone::Graveyard {
                                     Action::AnnounceGraveyardBorrowedMana {
@@ -588,7 +588,7 @@ impl Game {
                         return false;
                     }
                     if let Some(production) = ability.mana_production() {
-                        production.in_world(self, card).visit(|production| {
+                        production.visit_at_start(self, card, |production| {
                             emit(if descriptor.zone == Zone::Graveyard {
                                 Action::AnnounceGraveyardBorrowedMana {
                                     card,

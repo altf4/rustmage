@@ -1980,6 +1980,9 @@ impl<'g> FundingState<'g> {
         step: &FundingMove,
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
+        if step.output.as_ref().and_then(|o| o.deferred_cost).is_some() {
+            return self.visit_deferred(step, emit);
+        }
         if step.external.is_none()
             && self.cast_costs.is_none()
             && self.continuation.is_none()
@@ -2000,8 +2003,8 @@ impl<'g> FundingState<'g> {
             && self.counter_count(self.resources[step.resource].id, CounterKind::Finality) == 0
         {
             let mut next = self.clone();
-            next.apply(step, false);
-            return emit(&next);
+            let bonus = next.apply(step, false);
+            return next.visit_output(step, bonus, emit);
         }
         let external = if let Some(external) = step.external {
             let source = &self.resources[step.resource];
@@ -2016,7 +2019,13 @@ impl<'g> FundingState<'g> {
                 return false;
             };
             if external.kind != spec.kind
-                || !self.cost_object(spec, external.object, self.reference(source.id))
+                || !self.cost_object(
+                    spec,
+                    external.object,
+                    step.output
+                        .as_ref()
+                        .map_or_else(|| self.reference(source.id), |o| o.instance.source),
+                )
             {
                 return false;
             }
@@ -2025,12 +2034,15 @@ impl<'g> FundingState<'g> {
             None
         };
         let source = &self.resources[step.resource];
-        let reference = self.reference(source.id);
+        let reference = step
+            .output
+            .as_ref()
+            .map_or_else(|| self.reference(source.id), |o| o.instance.source);
         let mut next = self.clone();
         // Keep the post-payment counter snapshot until replacement planning.
         // Paying away the final Finality counter must differ from sacrificing
         // a permanent which still has one after the counter cost.
-        next.apply(step, true);
+        let bonus = next.apply(step, true);
         let departed = source.object.zone != next.object(source.id).zone;
         let destination = next.object(source.id).zone;
         if departed {
@@ -2051,7 +2063,12 @@ impl<'g> FundingState<'g> {
                 return false;
             }
         }
-        next.visit_mana_cost_departures(reference, departed.then_some(destination), external, emit)
+        next.visit_mana_cost_departures(
+            reference,
+            departed.then_some(destination),
+            external,
+            &mut |world| world.visit_output(step, bonus, emit),
+        )
     }
     pub(super) fn visit_mana_cost_departures(
         &self,
@@ -2180,6 +2197,7 @@ impl<'g> FundingState<'g> {
                     quality: current.quality.copied(),
                     allocation,
                     external,
+                    output: a.mana_output.clone(),
                     frozen: Some(Box::new((
                         a.item
                             .source

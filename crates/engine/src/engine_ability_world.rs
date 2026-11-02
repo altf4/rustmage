@@ -16,6 +16,11 @@ thread_local! {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) trait CharacteristicWorld {
+    fn departed_source_power(&self, source: ObjectRef) -> Option<i128> {
+        self.game()
+            .contributor_source_facts(source)
+            .map(|facts| facts.power)
+    }
     fn power(&self, id: CardId) -> i128 {
         characteristic_query::CharacteristicQuery::in_world(self)
             .stats(id)
@@ -270,24 +275,40 @@ pub(super) trait CharacteristicWorld {
     }
     fn named_activation_generic_increase(&self, id: CardId) -> u32 {
         let query = characteristic_query::CharacteristicQuery::in_world(self);
-        self.static_sources().iter().copied().fold(0u32, |total, source| {
-            let provider = self.object(source);
-            if provider.zone != Zone::Battlefield
-                || !matches!(self.entry_value(self.reference(source)),
+        self.static_sources()
+            .iter()
+            .copied()
+            .fold(0u32, |total, source| {
+                let provider = self.object(source);
+                if provider.zone != Zone::Battlefield
+                    || !matches!(self.entry_value(self.reference(source)),
                     Some(EntryChoiceValue::CardName(chosen)) if self.rules_name_matches(id, chosen))
-            {
-                return total;
-            }
-            provider.card.static_ability_groups().iter().flat_map(|g| g.fragments)
-                .fold(total, |total, fragment| {
-                    let crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(amount) = *fragment else {
-                        return total;
-                    };
-                    if query.continuous_fragment_available(source, |candidate| std::ptr::eq(candidate, fragment)) {
-                        total.checked_add(amount).capacity("activation cost increase exhausted")
-                    } else { total }
-                })
-        })
+                {
+                    return total;
+                }
+                provider
+                    .card
+                    .static_ability_groups()
+                    .iter()
+                    .flat_map(|g| g.fragments)
+                    .fold(total, |total, fragment| {
+                        let crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(
+                            amount,
+                        ) = *fragment
+                        else {
+                            return total;
+                        };
+                        if query.continuous_fragment_available(source, |candidate| {
+                            std::ptr::eq(candidate, fragment)
+                        }) {
+                            total
+                                .checked_add(amount)
+                                .capacity("activation cost increase exhausted")
+                        } else {
+                            total
+                        }
+                    })
+            })
     }
     fn battle_protector(&self, object: ObjectRef) -> Option<Player> {
         self.game().battle_protector(object)
@@ -1327,8 +1348,18 @@ impl ManaProduction {
         world: &W,
         source: CardId,
     ) -> Self {
+        self.in_world_for_controller(world, source, world.object(source).controller)
+    }
+    pub(super) fn in_world_for_controller<W: CharacteristicWorld + ?Sized>(
+        self,
+        world: &W,
+        source: CardId,
+        controller: Player,
+    ) -> Self {
         match self {
-            Self::Tagged { production, .. } => production.in_world(world, source),
+            Self::Tagged { production, .. } => {
+                production.in_world_for_controller(world, source, controller)
+            }
             Self::TapSourcePowerChoice { mask } => {
                 let amount = u32::try_from(power_after_source_tap(world, source).max(0))
                     .capacity("mana representation exhausted");
@@ -1363,7 +1394,6 @@ impl ManaProduction {
                     source,
                     object,
                 };
-                let controller = tapped.object(source).controller;
                 let mut powers = Vec::new();
                 for id in 0..tapped.game().state.objects.len() {
                     let id = id as CardId;
@@ -1385,7 +1415,6 @@ impl ManaProduction {
                 }
             }
             Self::MonocoloredPermanentColors => {
-                let controller = world.object(source).controller;
                 let mut mask = 0u8;
                 for id in 0..world.game().state.objects.len() {
                     let id = id as CardId;
@@ -1404,7 +1433,6 @@ impl ManaProduction {
                 Self::Fixed(mana)
             }
             Self::CountSubtype { color, subtype } => {
-                let controller = world.object(source).controller;
                 let count = world
                     .game()
                     .state
@@ -1439,6 +1467,9 @@ struct SourceTappedWorld<'a, W: CharacteristicWorld + ?Sized> {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<'_, W> {
+    fn departed_source_power(&self, source: ObjectRef) -> Option<i128> {
+        self.parent.departed_source_power(source)
+    }
     fn departed_source_subtypes(&self, source: ObjectRef) -> Option<(Card, GrantedSubtypes)> {
         self.parent.departed_source_subtypes(source)
     }

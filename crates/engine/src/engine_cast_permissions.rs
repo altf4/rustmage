@@ -479,6 +479,7 @@ impl Game {
             activation_discount: 0,
             activation_generic_increase: 0,
             activation_choice: None,
+            mana_output: None,
             power_up_costs: None,
             free_hand_permission: None,
             origin_counter_cost,

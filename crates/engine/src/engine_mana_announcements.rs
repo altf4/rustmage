@@ -111,6 +111,7 @@ impl Game {
                                 + f.pending.owned_bytes()
                                 + a.item.owned_bytes()
                                 + a.counter_payment.owned_bytes()
+                                + a.mana_output.as_ref().map_or(0, |o| o.bytes())
                                 + a.activation_choice.as_ref().map_or(0, |_| {
                                     std::mem::size_of::<targeting::ActivationCostChoice>()
                                 })

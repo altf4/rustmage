@@ -65,6 +65,9 @@ pub mod hand_exile;
 #[path = "engine_mana_announcements.rs"]
 pub mod mana_announcements;
 #[doc(hidden)]
+#[path = "engine_mana_output.rs"]
+pub mod mana_output;
+#[doc(hidden)]
 #[path = "engine_turn_facts.rs"]
 pub mod turn_facts;
 pub use turn_facts::TurnFactsView;
@@ -6636,11 +6639,14 @@ impl Game {
                     .into_iter()
                     .find(|g| {
                         g.source == grantor
-                            && g.production
-                                .in_world(self, card)
-                                .visit(|mana| mana == production)
+                            && g.production.accepts_at_start(self, card, production)
                     })
                     .expect("legal granted mana ability");
+                if !matches!(grant.production.base(), ManaProduction::Fixed(_)) {
+                    let mut item = self.granted_mana_packet(actor, card, grantor, production).expect("live grant");
+                    item.id = self.next_stack_id();
+                    if self.start_direct_mana_output(item, Counters::default(), [0;6], production) { return; }
+                }
                 let quality = self.mana_quality(grant.production, card);
                 let bonus = self.mountain_tap_bonus(actor, card);
                 self.tap_objects(&[card]);
@@ -6991,6 +6997,7 @@ impl Game {
                 production,
             } => {
                 let mut item = self.borrowed_activation_item(actor, card, exiled, ability);
+                if self.start_direct_mana_output(item.clone(), counter_payment.clone(), payment, production) { return; }
                 let quality = self
                     .mana_quality(
                         item.source
@@ -7134,6 +7141,7 @@ impl Game {
                 production,
             } => {
                 let mut item = self.activation_item(actor, card, ability);
+                if self.start_direct_mana_output(item.clone(), counter_payment.clone(), payment, production) { return; }
                 let definition = self.state.objects[card as usize]
                     .card
                     .activation(ability)
@@ -7161,6 +7169,11 @@ impl Game {
             }
             Action::ChooseManaLotSpend { .. } => unreachable!("allocation handled transactionally"),
             Action::ChooseMana { production } => {
+                if self.state.announcing.as_ref().is_some_and(|a| a.mana_output.is_some()) {
+                    let mut a = self.state.announcing.take().expect("paid mana announcement");
+                    self.complete_mana_output(&mut a, production);
+                    return;
+                }
                 let quality = self
                     .state
                     .mana_lots
@@ -11084,6 +11097,7 @@ impl Game {
                 .map_or(0, |r| r.bytes())
             + s.announcing.as_ref().map_or(0, |a| {
                 a.counter_payment.owned_bytes()
+                    + a.mana_output.as_ref().map_or(0, |o| o.bytes())
                     + a.activation_choice.as_ref().map_or(0, |_| {
                         std::mem::size_of::<targeting::ActivationCostChoice>()
                     })

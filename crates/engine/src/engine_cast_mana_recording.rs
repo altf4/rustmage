@@ -97,8 +97,7 @@ impl Game {
                 let sacrifice = ability_world::CharacteristicWorld::granted_mana(self, card)
                     .into_iter()
                     .find(|g| {
-                        g.source == grantor
-                            && g.production.in_world(self, card).visit(|p| p == production)
+                        g.source == grantor && g.production.accepts_at_start(self, card, production)
                     })
                     .expect("legal granted mana receipt")
                     .sacrifice;
@@ -213,7 +212,11 @@ impl Game {
             return;
         };
         assert_eq!(capture.event.actor, actor);
-        assert_eq!(capture.event.production, production);
+        if capture.produced {
+            assert_eq!(capture.event.production, production);
+        } else {
+            capture.event.production = production;
+        }
         capture.event.quality = quality;
         capture.produced = true;
     }

@@ -37,6 +37,7 @@ pub(super) struct Announcement {
     pub counter_payment: Counters,
     pub pay_window: bool,
     pub production: Option<Mana>,
+    pub mana_output: Option<Box<mana_output::ManaOutput>>,
     pub additional: Option<ObjectRef>,
     /// Explicit chosen life route for a discard-or-life additional cost.
     pub additional_life: bool,
@@ -2131,6 +2132,7 @@ impl Game {
                     )
                 }),
             activation_choice: None,
+            mana_output: None,
             power_up_costs: self.item_power_up_costs(&item),
             free_hand_permission: None,
             origin_counter_cost: None,
@@ -2203,9 +2205,13 @@ impl Game {
             self.set_copy_recipe(source.object, recipe);
             item.source_copy_recipe = Some(Box::new(recipe));
         }
+        let resume_mana = (production.is_some() && self.state.announcing.is_none())
+            .then(|| self.state.pending.clone());
         if production.is_some() {
             self.suspend_mana_announcement();
-            self.capture_announced_mana_quality(&item, production);
+            if production.is_some_and(|p| self.mana_output(&item, p).is_none()) {
+                self.capture_announced_mana_quality(&item, production);
+            }
         }
         let plan = self.target_spec(&item);
         assert!(
@@ -2226,6 +2232,14 @@ impl Game {
         let needs_mode = item.modes().is_some() && item.mode.is_none();
         self.state.announcing =
             Some(self.payment_announcement(item, counters, production, origin_counter_cost));
+        if let Some(output) = self
+            .state
+            .announcing
+            .as_mut()
+            .and_then(|a| a.mana_output.as_mut())
+        {
+            output.resume = resume_mana.map(Box::new);
+        }
         self.state
             .announcing
             .as_mut()
@@ -2243,6 +2257,7 @@ impl Game {
     ) -> Announcement {
         let plan = self.target_spec(&item);
         let casualty = self.casualty_declarations(&item);
+        let mana_output = production.and_then(|selected| self.mana_output(&item, selected));
         Announcement {
             equip_zero_available: self.item_first_equip_zero_available(&item)
                 && counters == Counters::default(),
@@ -2258,6 +2273,7 @@ impl Game {
                     )
                 }),
             activation_choice: None,
+            mana_output,
             power_up_costs: self.item_power_up_costs(&item),
             free_hand_permission: None,
             origin_counter_cost,
@@ -2534,7 +2550,7 @@ impl Game {
         self.finish_paid_announcement(announcement);
     }
 
-    fn finish_paid_announcement(&mut self, mut announcement: Announcement) {
+    pub(super) fn finish_paid_announcement(&mut self, mut announcement: Announcement) {
         // Costs may synchronously return exiled Auras/lands. Finish their entry
         // choices before the spell becomes cast and cast observers are collected.
         announcement.payment = None;
@@ -2574,6 +2590,10 @@ impl Game {
             announcement.item.controller
         };
         if let Some(production) = announcement.production {
+            if announcement.mana_output.is_some() {
+                self.finish_mana_output(announcement);
+                return;
+            }
             self.add_announced_mana(&announcement.item, production);
             self.committed_mana_reflexive(&announcement.item);
             if self.restore_mana_announcement() {
