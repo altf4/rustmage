@@ -346,6 +346,9 @@ pub mod activation_target_costs;
 #[path = "engine_activations.rs"]
 pub mod activations;
 #[doc(hidden)]
+#[path = "engine_exhaust.rs"]
+pub mod exhaust;
+#[doc(hidden)]
 #[path = "engine_power_up.rs"]
 pub mod power_up;
 pub use power_up::PowerUpUseView;
@@ -2647,6 +2650,7 @@ struct State {
         reason = "Cold rule state keeps one pointer in games without this mechanic"
     )]
     borrowed_uses: Option<Box<Vec<borrowed_activations::Use>>>,
+    granted_exhaust_uses: exhaust::GrantUses,
     used_free_hand_permissions: Option<SharedVec<ObjectRef>>,
     graveyard_cast_permissions: cast_permissions::Rows,
     turn_cast_grants: Option<Box<[PlayerCastGrantsView; 2]>>,
@@ -3258,6 +3262,8 @@ pub struct Observation {
     pub death_exile_replacements: Vec<ExileDeathReplacementView>,
     pub temporary_abilities: Vec<TemporaryAbilityView>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub granted_exhaust_uses: Option<Vec<exhaust::GrantedExhaustUseView>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub self_granted_abilities: Option<Vec<SelfGrantedAbilityView>>,
     pub suspected: Vec<ObjectRef>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -3734,6 +3740,7 @@ impl Game {
                 graveyard_borrowing: None,
                 borrowed_slots: None,
                 borrowed_uses: None,
+                granted_exhaust_uses: None,
                 used_free_hand_permissions: None,
                 graveyard_cast_permissions: None,
                 turn_cast_grants: None,
@@ -8552,6 +8559,7 @@ impl Game {
             .checked_add(1)
             .capacity("object generation exhausted");
         if before.zone == Zone::Graveyard {
+            self.forget_activation_observer(id);
             self.forget_graveyard_cast_permission(before.reference);
         }
         if (before.zone == Zone::Library && self.top_library_card(before.owner) == Some(id))
@@ -8754,6 +8762,7 @@ impl Game {
             self.record_zone_reveal(physical, before.owner, Zone::Battlefield);
         }
         self.clear_battle_protector(before.reference);
+        self.forget_granted_exhaust_uses(before.reference);
         self.forget_temporary_copy(before.reference);
         self.forget_copy_grant_origin(before.reference);
         let obj = &mut self.state.objects[id as usize];
@@ -9910,6 +9919,7 @@ impl Game {
                 .as_ref()
                 .map_or_else(Vec::new, |v| v.as_ref().clone()),
             self_granted_abilities: self.self_granted_ability_views(),
+            granted_exhaust_uses: s.granted_exhaust_uses.as_ref().map(|rows| rows.to_vec()),
             temporary_abilities: s
                 .temporary_abilities
                 .as_ref()
@@ -10687,6 +10697,7 @@ impl Game {
             + self.control_bytes()
             + self_granted::owned_bytes(&s.self_granted_abilities)
             + self.temporary_ability_bytes()
+            + exhaust::grant_use_bytes(&s.granted_exhaust_uses)
             + self.suspected_bytes()
             + self.state.solved_cases.as_ref().map_or(0, |v| {
                 std::mem::size_of::<Vec<ObjectRef>>() + v.len() * std::mem::size_of::<ObjectRef>()

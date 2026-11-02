@@ -7,6 +7,7 @@ use super::*;
 impl Game {
     // Reuse sparse event indexes for explicit graveyard observers.
     pub(super) fn register_graveyard_sources(&mut self, id: CardId) {
+        self.register_activation_observer(id);
         let triggers = self.state.objects[id as usize].card.triggers();
         if triggers.iter().any(|a| {
             a.condition.origin() == Some(TargetZone::Graveyard)
@@ -212,6 +213,8 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ReplaceLifePaymentWithLibraryExile
                             | crate::cards::StaticAbilityFragment::NoSpellsOrNonmanaDuringCombat
                             | crate::cards::StaticAbilityFragment::Storied
+                            | crate::cards::StaticAbilityFragment::ReuseExhaustBeforeFirstActivationOwnTurn
+                            | crate::cards::StaticAbilityFragment::OtherControlledExhaustGenericReduction(_)
                             | crate::cards::StaticAbilityFragment::DoubleDrawExceptFirst
                             | crate::cards::StaticAbilityFragment::ConditionalDoubleDraw(_)
                             | crate::cards::StaticAbilityFragment::AdditionalDrawWithAtMostOneCard

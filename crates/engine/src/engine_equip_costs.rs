@@ -10,6 +10,9 @@ impl Game {
         ability: &ActivatedAbility,
     ) -> ActivatedAbility {
         let mut readiness = *ability;
+        if readiness.exhaust && exhaust::reuse_available(self, actor) {
+            readiness.exhaust = false;
+        }
         if self.first_equip_zero_available(actor, ability) {
             readiness.cost = ActivationCost::ZERO;
         }

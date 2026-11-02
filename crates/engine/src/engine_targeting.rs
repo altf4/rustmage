@@ -13,6 +13,8 @@ pub(super) struct Announcement {
     pub payment: Option<Mana>,
     pub cost: Option<ManaCost>,
     pub equip_zero_available: bool,
+    /// Starting as-though authorization remains fixed while paying this activation.
+    pub exhaust_reuse_authorized: bool,
     pub activation_cost_route: ActivationCostRoute,
     pub total_cost: Option<ManaCost>,
     /// Locked before mana abilities or any nonmana payment changes the source.
@@ -2059,6 +2061,7 @@ impl Game {
         assert!(self.state.announcing.is_none());
         self.state.announcing = Some(Announcement {
             equip_zero_available: false,
+            exhaust_reuse_authorized: self.item_exhaust_reuse_available(&item),
             activation_cost_route: ActivationCostRoute::Printed,
             activation_discount: self.item_activation_discount(&item),
             power_up_costs: self.item_power_up_costs(&item),
@@ -2157,6 +2160,7 @@ impl Game {
         self.state.announcing = Some(Announcement {
             equip_zero_available: self.item_first_equip_zero_available(&item)
                 && counters == Counters::default(),
+            exhaust_reuse_authorized: self.item_exhaust_reuse_available(&item),
             activation_cost_route: ActivationCostRoute::Printed,
             activation_discount: self.item_activation_discount(&item),
             power_up_costs: self.item_power_up_costs(&item),

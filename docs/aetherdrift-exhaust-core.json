@@ -1,0 +1,126 @@
+{
+  "schema": 1,
+  "set": "DFT",
+  "phase": "Shared engine only; ordinary card authoring not begun",
+  "base": "aea3d6e7",
+  "fixture_dependency": "e782d0eb",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "sources": [
+    {
+      "path": "Mage.Sets/src/mage/cards/a/AdrenalineJockey.java",
+      "sha256": "0c85ceaca77bbb277aaec45b3d030ef57e6c09bc8ea7ec9626c4426f17e54938",
+      "full_source_read": true
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/a/AfterburnerExpert.java",
+      "sha256": "ff05de13a96d9a68a06e02609050dcba7501f9394995b728ff2694388cda69a5",
+      "full_source_read": false
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/b/BoomScholar.java",
+      "sha256": "ea0cf26a0c2b768b371634c11a7520e409c4fb1431729891643008fdb8aa286c",
+      "full_source_read": true
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/e/ElvishRefueler.java",
+      "sha256": "c455ef64027f8d8dff7897e6bc2904950406870ee59be75b0d22285e102a2e71",
+      "full_source_read": true
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/p/PitAutomaton.java",
+      "sha256": "e4c582f67465020449977a155f6a2e07d3e1be4e9a0f8c89422a50fb89cb15f8",
+      "full_source_read": true
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/ExhaustAbility.java",
+      "sha256": "8a3ebcdcf390152bc354a8493189b1d182befe3c3dc0002f1380744a3500d515",
+      "full_source_read": true
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/predicate/other/ExhaustAbilityPredicate.java",
+      "sha256": "b00cc40b822449c3af8ae02ec92505de3f112219e1791404a83d70ef6665a352",
+      "full_source_read": true
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/AbilitiesCostReductionControllerEffect.java",
+      "sha256": "8803481d88a5ba4037041bffa88dea8caeabb3b09a7c4b434b67a2aa1bfb9f08",
+      "full_source_read": true
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopyTargetStackObjectEffect.java",
+      "sha256": "b2e6312cd63002c83d7f2a3ac9d7240f1d5691bcd77156af2c0752cb28dc1172",
+      "full_source_read": true
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateDelayedTriggeredAbilityEffect.java",
+      "sha256": "537fdb546ad334c8e75d07346e68cf02ee4fa38bf830cbbd041ef491234f0661",
+      "full_source_read": true
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalAsThoughEffect.java",
+      "sha256": "40e0a82ae35b35c5434d1eb480e46ecff91ca69113a8cbc8e606dd1328bba618",
+      "full_source_read": true
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/ConditionalColorlessManaAbility.java",
+      "sha256": "a33a4fadca48e2602ea78ec9a7a27e8e53659b047720c5cfffc2d34a27a51a6c",
+      "full_source_read": true
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/builder/common/ActivatedAbilityManaBuilder.java",
+      "sha256": "5e3d352765c77caf9ff18b8b1738d63e867238acad62818d22d515ef364e7cb5",
+      "full_source_read": true
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/DelayedTriggeredAbility.java",
+      "sha256": "6f74a2ccfd069f65ed3ae7e7c99a7d6933043d586b0c43e1c11f0d557f9e41ff",
+      "full_source_read": true
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAbilityTriggeredAbility.java",
+      "sha256": "ac026c9e891ddf1ca80ef4b2847e5f12587bd504bbd2f213346d129ea2ae961c",
+      "full_source_read": true
+    }
+  ],
+  "api": [
+    "TriggerCondition::ExhaustAbilityActivated",
+    "TriggerCondition::DelayedExhaustAbilityActivated",
+    "Instruction::CopyNextExhaustAbility",
+    "StaticAbilityFragment::ReuseExhaustBeforeFirstActivationOwnTurn",
+    "StaticAbilityFragment::OtherControlledExhaustGenericReduction",
+    "TurnFactsView.exhaust_activated_this_turn",
+    "Observation.granted_exhaust_uses"
+  ],
+  "contracts": {
+    "event": "All real activation routes commit only after complete costs. Copies never fire; source need not survive its own costs. Graveyard observer zones are explicit.",
+    "history": "One public boolean per player, recorded before providers enter, reset at the actual turn boundary. Selective mana rollback keeps it only for retained original mana events and reuses recorded observer packets.",
+    "reuse": "Starting authorization is frozen on the exact enclosing announcement. New projected mana activations use current projected provider/history, consume permission and cannot waive independent once-per-turn limits. Spent bits/borrowed slots remain spent.",
+    "reductions": "Generic-only, only exhaust, only other controlled battlefield permanents, additive across available live providers. Actual and speculative worlds use the same query.",
+    "copy": "One source-independent delayed packet for next own nonmana exhaust activation until cleanup; retains captured packet/LKI and existing optional retarget state. Spells and mana exhaust leave it pending.",
+    "grants": "External grant histories qualified by recipient, grantor, immutable definition, ability index and origin. Distinct grantors do not collide with recipient printed bits; departures discard rows."
+  },
+  "tests": {
+    "target": "dft_exhaust_engine",
+    "cases": [
+      "actual_exhaust_events_include_mana_and_graveyard_observers_but_not_other_activations",
+      "refueler_permission_is_own_turn_before_first_event_and_never_clears_spent_history",
+      "projected_mana_consumes_one_reuse_but_preserves_enclosing_starting_authorization",
+      "exhaust_discounts_stack_for_other_controlled_sources_and_recheck_suppression",
+      "next_nonmana_exhaust_copy_is_independent_from_source_and_ignores_mana_and_spells",
+      "delayed_exhaust_copy_allows_retarget_and_owned_raw_index_restore",
+      "copied_or_countered_exhaust_packets_do_not_emit_extra_events_and_cleanup_expires_delay",
+      "external_exhaust_grants_keep_separate_use_keys_from_recipient_and_other_grantors",
+      "exhaust_event_waits_for_every_suspended_activation_cost_and_survives_countering",
+      "distinct_borrowed_exhaust_abilities_retain_donor_slot_history_and_reuse_independently",
+      "kept_mana_rollback_preserves_exhaust_event_fact_and_exact_original_observer_packet"
+    ],
+    "execution": "Not run in author worktree; root is sole guarded validation owner."
+  },
+  "validation": {
+    "rustfmt": "Syntax/format checked without Cargo",
+    "diff_check": "Passed",
+    "native_rules": "Pending integrated root run",
+    "independent_reviews": "Pending"
+  },
+  "source_discrepancy": "PitAutomaton Java matches ExhaustAbility but emits nonmana wording. Rust explicitly ignores mana abilities for delayed copy while counting all actual exhaust activations for history/observers."
+}

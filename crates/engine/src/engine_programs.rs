@@ -903,6 +903,8 @@ impl Game {
                     | TriggerCondition::TokensEnterYou
                     | TriggerCondition::CreatureAbilityActivated
                     | TriggerCondition::NonmanaAbilityActivated
+                    | TriggerCondition::ExhaustAbilityActivated
+                    | TriggerCondition::DelayedExhaustAbilityActivated
                     | TriggerCondition::LoyaltyAbilityActivated
                     | TriggerCondition::LoyaltyAbilityActivatedRemoving(_)
                     | TriggerCondition::OpponentLoyaltyAbilityActivated
@@ -3166,6 +3168,9 @@ impl Game {
                     if let Some(recipe) = item.captured_artifact_copy.as_deref() {
                         self.stage_copy_creation(item.controller, *recipe, 1);
                     }
+                }
+                Instruction::CopyNextExhaustAbility { ability } => {
+                    self.remember_next_spell_copy(&item, ability)
                 }
                 Instruction::CopyNextInstantSorcery { ability } => {
                     self.remember_next_spell_copy(&item, ability)

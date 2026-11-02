@@ -518,6 +518,16 @@ impl Game {
                     .capacity("retained activation IDs exhausted"),
             );
         }
+        if let ManaEventKind::Activated { item, .. } = &event.kind
+            && let StackKind::ActivatedAbility { ability } = item.kind
+            && item
+                .source
+                .is_some_and(|source| source.card.activation(ability).exhaust)
+        {
+            self.state.players[event.actor.index()]
+                .turn_facts
+                .exhaust_activated_this_turn = true;
+        }
         for trigger in &event.triggers {
             // Retained mana carries its actual observer packet and consumed limit;
             // an undone event carries neither. Do not recompute its past witnesses.

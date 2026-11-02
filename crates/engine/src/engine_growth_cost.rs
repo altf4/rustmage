@@ -133,7 +133,11 @@ impl Game {
                     continue;
                 };
                 let ability = giver.card.activation(index);
-                let readiness = self.activation_readiness(actor, ability);
+                let Some(readiness) = self
+                    .external_exhaust_readiness(source, grantor, giver.card, index, actor, ability)
+                else {
+                    continue;
+                };
                 if activations::pure_loyalty_placement_prohibited(self, source, &readiness)
                     || (ability.cost.sacrifice
                         && CharacteristicWorld::sacrifice_prohibited(self, card))
@@ -293,7 +297,16 @@ impl Game {
         };
         let source = self.object_view(recipient.card);
         for (index, ability) in giver.card.activations().iter().enumerate() {
-            let readiness = self.activation_readiness(actor, ability);
+            let Some(readiness) = self.external_exhaust_readiness(
+                recipient,
+                grantor,
+                giver.card,
+                index as u16,
+                actor,
+                ability,
+            ) else {
+                continue;
+            };
             if ability_world::CharacteristicWorld::activation_prohibited(
                 self,
                 actor,

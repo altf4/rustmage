@@ -232,7 +232,8 @@ impl Game {
                     )
                     .unwrap_or(u32::MAX)
                 });
-        self.power_up_generic_discount(source, definition, ability)
+        exhaust::generic_discount(self, source, definition, ability)
+            .saturating_add(self.power_up_generic_discount(source, definition, ability))
             .saturating_add(subtype_discount)
             .saturating_add(
                 definition
@@ -1005,6 +1006,9 @@ impl Game {
             return;
         };
         let definition = source.card.activation(ability);
+        if self.record_external_exhaust_use(item, ability) {
+            return;
+        }
         let Some(object) = self.state.objects.get(source.id as usize) else {
             return;
         };

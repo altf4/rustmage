@@ -74,6 +74,12 @@ fn delayed_copy_reads_source_power(item: &SpellView) -> bool {
     )
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn delayed_copy_exhaust(item: &SpellView) -> bool {
+    matches!(item.kind, StackKind::TriggeredAbility { ability }
+        if item.trigger_definition().triggers()[usize::from(ability)].condition.event()
+            == TriggerCondition::DelayedExhaustAbilityActivated)
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn delayed_copy_all_spells(item: &SpellView) -> bool {
     matches!(
         item.kind,
@@ -267,6 +273,27 @@ impl Game {
             self.state.stack_copy_data = None;
         }
     }
+    pub(super) fn capture_exhaust_copies(&mut self, activation: &SpellView) {
+        let Some(state) = &mut self.state.stack_copy_data else {
+            return;
+        };
+        let mut delayed = std::mem::take(&mut state.delayed);
+        let mut retained = Vec::new();
+        for mut trigger in delayed.drain(..) {
+            if trigger.controller == activation.controller && delayed_copy_exhaust(&trigger) {
+                trigger.id = self.next_stack_id();
+                trigger.copy_event = Some(Box::new(CopyEvent {
+                    spell: activation.clone(),
+                    amount: 1,
+                }));
+                self.state.pending_triggers.push(trigger);
+            } else {
+                retained.push(trigger);
+            }
+        }
+        self.state.stack_copy_data.as_mut().unwrap().delayed = retained;
+        self.release_stack_copy_state();
+    }
     pub(super) fn capture_mana_copies(&mut self, index: usize) {
         let Some(sources) = self.state.stack[index].mana_copy_sources.take() else {
             return;
@@ -402,7 +429,7 @@ impl Game {
         let mut delayed = std::mem::take(&mut state.delayed);
         let mut retained = Vec::new();
         for mut trigger in delayed.drain(..) {
-            if delayed_copy_all_spells(&trigger) {
+            if delayed_copy_all_spells(&trigger) || delayed_copy_exhaust(&trigger) {
                 retained.push(trigger);
                 continue;
             }

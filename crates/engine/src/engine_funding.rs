@@ -56,11 +56,13 @@ pub(super) struct FundingState<'g> {
     life_gained: [bool; 2],
     life_lost: [bool; 2],
     enduring_story: [bool; 2],
+    exhaust_activated: [bool; 2],
     active: Player,
     mana: [u128; 6],
     lots: Vec<mana_lots::Lot>,
     purpose: mana_lots::Purpose,
     payment_source: Option<ObjectRef>,
+    exhaust_source_reuse_authorized: bool,
     required_face_up: Option<ObjectRef>,
     // Sparse last-known facts for exact enclosing sources that leave a speculative world.
     payment_departures: Vec<(ObjectRef, mana_lots::Source)>,
@@ -103,6 +105,9 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
         self.graveyard_borrowing
             .as_ref()
             .map_or(&[], |rows| rows.as_slice())
+    }
+    fn exhaust_activated_this_turn(&self, player: Player) -> bool {
+        self.exhaust_activated[player.index()]
     }
     fn has_enduring_story(&self, player: Player) -> bool {
         self.enduring_story[player.index()]
@@ -322,6 +327,7 @@ struct EntryFundingKey {
 struct FundingKey {
     life_lost: [bool; 2],
     enduring_story: [bool; 2],
+    exhaust_activated: [bool; 2],
     payment_departures: Vec<(ObjectRef, mana_lots::Source)>,
     source_linked_effects: Vec<SourceLinkedEffectView>,
     resolved_ability_modifications: Vec<ResolvedAbilityModificationView>,
@@ -414,14 +420,24 @@ fn visit_funding_payments(
 }
 /// Exact equivalents of one mana ability, with duplicate physical allocations removed.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-fn funding_cost_payments(pool: [u128; 6], cost: ActivationCost, mut emit: impl FnMut([u64; 6])) {
+fn funding_cost_payments(
+    pool: [u128; 6],
+    cost: ActivationCost,
+    discount: u32,
+    mut emit: impl FnMut([u64; 6]),
+) {
     let mut seen = std::collections::HashSet::new();
     for equivalent in cost.mana_options() {
-        funding_payments(pool, equivalent.colored, equivalent.generic, |payment| {
-            if cost.alternatives.is_empty() || seen.insert(payment) {
-                emit(payment);
-            }
-        });
+        funding_payments(
+            pool,
+            equivalent.colored,
+            equivalent.generic.saturating_sub(discount),
+            |payment| {
+                if cost.alternatives.is_empty() || seen.insert(payment) {
+                    emit(payment);
+                }
+            },
+        );
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -459,11 +475,20 @@ fn source_obligations(
     kinds: u16,
     keywords: impl FnOnce() -> Keywords,
     life: i128,
+    exhaust_reuse_authorized: bool,
 ) -> bool {
     let Some((source, index, counters, definition, slot)) = goal.source.as_ref() else {
         return true;
     };
-    let ability = &definition.activation(*index);
+    let mut readiness = *definition.activation(*index);
+    if exhaust_reuse_authorized {
+        readiness.exhaust = false;
+    }
+    if definition.activation(*index).exhaust && definition.grants_activation(*index) {
+        readiness.exhaust = false;
+        readiness.once_per_turn = false;
+    }
+    let ability = &readiness;
     if ability.cost.life != 0 && i128::from(ability.cost.life) > life {
         return false;
     }
@@ -518,6 +543,7 @@ fn activation_gain_upper<'a>(
     production: ManaProduction,
     counters: impl Into<CounterAmounts<'a>>,
     life: i128,
+    discount: u32,
 ) -> u128 {
     let counters = counters.into();
     let mut produced = 0;
@@ -529,7 +555,8 @@ fn activation_gain_upper<'a>(
     let paid = cost
         .mana_options()
         .map(|option| {
-            u128::from(option.generic) + option.colored.into_iter().map(u128::from).sum::<u128>()
+            u128::from(option.generic.saturating_sub(discount))
+                + option.colored.into_iter().map(u128::from).sum::<u128>()
         })
         .min()
         .unwrap(); // mana_options always includes the primary cost.
@@ -768,7 +795,7 @@ impl<'g> FundingState<'g> {
                             || game.state.attachment_sources.iter().any(|&provider| game.state.objects[provider as usize].attached_to == Some(game.object_ref(*id as CardId)))
                             || !object.card.keyword_grants().is_empty()
                             || !object.card.counter_keyword_grants().is_empty()
-                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenBasicLandType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterCreature { .. } | crate::cards::StaticAbilityFragment::SourceGraveyardAllTypes { .. } | crate::cards::StaticAbilityFragment::SourceConditionalKeywords { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..) | crate::cards::StaticAbilityFragment::CounterKeywordOther(..))))
+                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste | crate::cards::StaticAbilityFragment::ReuseExhaustBeforeFirstActivationOwnTurn | crate::cards::StaticAbilityFragment::OtherControlledExhaustGenericReduction(_) | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ChosenBasicLandType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterCreature { .. } | crate::cards::StaticAbilityFragment::SourceGraveyardAllTypes { .. } | crate::cards::StaticAbilityFragment::SourceConditionalKeywords { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..) | crate::cards::StaticAbilityFragment::CounterKeywordOther(..))))
                             || object.controller == goal.actor
                                 && subtypes
                                     .iter()
@@ -792,6 +819,12 @@ impl<'g> FundingState<'g> {
             .collect();
         let mut result = Self {
             enduring_story: game.state.players.each_ref().map(|p| p.enduring_story),
+            exhaust_activated: game
+                .state
+                .players
+                .each_ref()
+                .map(|p| p.turn_facts.exhaust_activated_this_turn),
+            exhaust_source_reuse_authorized: game.exhaust_reuse_authorized_for_goal(goal),
             copy_recipes: game.state.copy_recipes.clone(),
             cast_costs: None,
             entry_projection: None,
@@ -1055,6 +1088,7 @@ impl<'g> FundingState<'g> {
                     })
                 },
                 self.life,
+                self.exhaust_source_reuse_authorized,
             )
     }
     fn granted_subtypes(&self, id: CardId) -> GrantedSubtypes {
@@ -1414,12 +1448,16 @@ impl<'g> FundingState<'g> {
                 {
                     continue;
                 }
+                let mut readiness = *ability;
+                if readiness.exhaust && exhaust::reuse_available(self, goal.actor) {
+                    readiness.exhaust = false;
+                }
                 let mut ready_object = object.clone();
                 if borrowed.is_some() {
                     ready_object.used_abilities = 0;
                 }
                 if borrowed.is_some_and(|a| {
-                    a.used && (a.once_per_turn || ability.once_per_turn || ability.exhaust)
+                    a.used && (a.once_per_turn || readiness.once_per_turn || readiness.exhaust)
                 }) || !self.guard_available(ability.guard, entry.id, goal.actor)
                     || !Game::object_activation_available_with_kinds(
                         &ready_object,
@@ -1427,7 +1465,7 @@ impl<'g> FundingState<'g> {
                         self.kinds(entry),
                         || ability_world::CharacteristicWorld::activation_keywords(self, entry.id),
                         self.life,
-                        ability,
+                        &readiness,
                         if borrowed.is_some() {
                             0
                         } else {
@@ -1485,44 +1523,54 @@ impl<'g> FundingState<'g> {
                             .map(|q| {
                                 q.with_definition(borrowed.map_or(object.card, |a| a.definition))
                             });
-                        funding_cost_payments(pool, ability.cost, |payment| {
-                            mana_lots::visit_allocations(
-                                self.mana,
-                                &self.lots,
-                                purpose,
-                                payment,
-                                |allocation| {
-                                    production.base().in_world(self, entry.id).visit(
-                                        |production| {
-                                            let step = FundingMove {
-                                                resource,
-                                                ability: Some(index),
-                                                grantor: None,
-                                                borrowed,
-                                                payment,
-                                                counters: counters.clone(),
-                                                production,
-                                                quality,
-                                                allocation: allocation.clone(),
-                                                external: None,
-                                                frozen: None,
-                                            };
-                                            if let Some(eligible) = &external {
-                                                for &external in eligible {
-                                                    moves.push(FundingMove {
-                                                        external: Some(external),
-                                                        ..step.clone()
-                                                    });
+                        funding_cost_payments(
+                            pool,
+                            ability.cost,
+                            exhaust::generic_discount(
+                                self,
+                                entry.id,
+                                borrowed.map_or(object.card, |a| a.definition),
+                                index,
+                            ),
+                            |payment| {
+                                mana_lots::visit_allocations(
+                                    self.mana,
+                                    &self.lots,
+                                    purpose,
+                                    payment,
+                                    |allocation| {
+                                        production.base().in_world(self, entry.id).visit(
+                                            |production| {
+                                                let step = FundingMove {
+                                                    resource,
+                                                    ability: Some(index),
+                                                    grantor: None,
+                                                    borrowed,
+                                                    payment,
+                                                    counters: counters.clone(),
+                                                    production,
+                                                    quality,
+                                                    allocation: allocation.clone(),
+                                                    external: None,
+                                                    frozen: None,
+                                                };
+                                                if let Some(eligible) = &external {
+                                                    for &external in eligible {
+                                                        moves.push(FundingMove {
+                                                            external: Some(external),
+                                                            ..step.clone()
+                                                        });
+                                                    }
+                                                } else {
+                                                    moves.push(step);
                                                 }
-                                            } else {
-                                                moves.push(step);
-                                            }
-                                            false
-                                        },
-                                    );
-                                },
-                            );
-                        });
+                                                false
+                                            },
+                                        );
+                                    },
+                                );
+                            },
+                        );
                         false
                     },
                 );
@@ -1638,6 +1686,23 @@ impl<'g> FundingState<'g> {
                 .iter()
                 .any(|g| g.source == source && g.sacrifice)
         });
+        let activated_exhaust = step.ability.is_some_and(|index| {
+            step.frozen
+                .as_deref()
+                .map_or_else(
+                    || {
+                        step.borrowed.map_or_else(
+                            || self.resources[step.resource].object.card.activation(index),
+                            |a| a.rules(),
+                        )
+                    },
+                    |(definition, _)| definition.activation(index),
+                )
+                .exhaust
+        });
+        if activated_exhaust {
+            self.exhaust_activated[self.actor.index()] = true;
+        }
         let cost = step.ability.map(|index| {
             step.frozen
                 .as_deref()
@@ -2000,6 +2065,7 @@ impl<'g> FundingState<'g> {
             .collect();
         FundingKey {
             enduring_story: self.enduring_story,
+            exhaust_activated: self.exhaust_activated,
             payment_departures: self.payment_departures.clone(),
             resolved_ability_modifications: self
                 .roles()
@@ -2185,7 +2251,7 @@ impl<'g> FundingState<'g> {
                     total = total.saturating_add(maximum);
                 }
             }
-            for (_, ability, _) in self.mana_activations(resource.id) {
+            for (index, ability, borrowed) in self.mana_activations(resource.id) {
                 // Tapped objects cannot pay tap costs in this closed search.
                 if (!object.tapped || !ability.cost.tap) && ability.mana_production().is_some() {
                     total = total.saturating_add(activation_gain_upper(
@@ -2200,6 +2266,12 @@ impl<'g> FundingState<'g> {
                         } else {
                             self.life
                         },
+                        exhaust::generic_discount(
+                            self,
+                            resource.id,
+                            borrowed.map_or(object.card, |a| a.definition),
+                            index,
+                        ),
                     ));
                 }
             }
@@ -2579,6 +2651,10 @@ impl<'g> FundingState<'g> {
                 let Some(production) = ability.mana_production() else {
                     continue;
                 };
+                let mut readiness = *ability;
+                if readiness.exhaust && exhaust::reuse_available(self, goal.actor) {
+                    readiness.exhaust = false;
+                }
                 if goal
                     .source
                     .as_ref()
@@ -2601,7 +2677,7 @@ impl<'g> FundingState<'g> {
                             )
                         },
                         self.life,
-                        ability,
+                        &readiness,
                         if borrowed.is_some() {
                             0
                         } else {
@@ -3077,6 +3153,7 @@ impl Game {
                 })
             },
             self.state.players[goal.actor.index()].life,
+            self.exhaust_reuse_authorized_for_goal(&goal),
         ) {
             return false;
         }

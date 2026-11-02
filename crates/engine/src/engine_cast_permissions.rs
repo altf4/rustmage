@@ -466,6 +466,7 @@ impl Game {
         }
         let a = Announcement {
             equip_zero_available: false,
+            exhaust_reuse_authorized: false,
             activation_cost_route: ActivationCostRoute::Printed,
             activation_discount: 0,
             power_up_costs: None,

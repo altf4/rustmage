@@ -488,7 +488,7 @@ impl Game {
                 descriptor.ability,
                 Some(descriptor.slot),
             ) || descriptor.used
-                && (descriptor.once_per_turn || ability.once_per_turn || ability.exhaust)
+                && (descriptor.once_per_turn || readiness.once_per_turn || readiness.exhaust)
             {
                 continue;
             }

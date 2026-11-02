@@ -57,6 +57,10 @@ pub enum StaticAbilityFragment {
     CrewSaddleWithToughness,
     /// A layer-six activated-ability template granted to this source at max speed.
     SourceMaxSpeedActivation(u16),
+    /// During own turn, ignore spent exhaust use before the first exhaust activation.
+    ReuseExhaustBeforeFirstActivationOwnTurn,
+    /// Generic reduction for exhaust abilities of other controlled permanents.
+    OtherControlledExhaustGenericReduction(u32),
     /// Controlled instant and sorcery spells have split second.
     ControlledInstantSorcerySplitSecond,
     /// Permanents controlled by this source's controller cannot be sacrificed.

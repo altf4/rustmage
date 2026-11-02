@@ -38,6 +38,11 @@ pub(super) trait CharacteristicWorld {
             .as_ref()
             .map_or(&[], |rows| rows.as_slice())
     }
+    fn exhaust_activated_this_turn(&self, player: Player) -> bool {
+        self.game().state.players[player.index()]
+            .turn_facts
+            .exhaust_activated_this_turn
+    }
     fn has_enduring_story(&self, player: Player) -> bool {
         self.game().state.players[player.index()].enduring_story
     }
@@ -1147,6 +1152,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
     }
     fn life(&self, p: Player) -> i128 {
         self.parent.life(p)
+    }
+    fn exhaust_activated_this_turn(&self, player: Player) -> bool {
+        self.parent.exhaust_activated_this_turn(player)
     }
     fn has_enduring_story(&self, player: Player) -> bool {
         self.parent.has_enduring_story(player)

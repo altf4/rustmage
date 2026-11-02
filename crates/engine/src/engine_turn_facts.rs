@@ -7,6 +7,13 @@ pub struct TurnFactsView {
     pub artifact_entered: bool,
     pub hero_entered: bool,
     pub hero_attacked: bool,
+    /// Actual committed activation history, retained even before a provider enters.
+    #[serde(skip_serializing_if = "is_false")]
+    pub exhaust_activated_this_turn: bool,
+}
+
+fn is_false(value: &bool) -> bool {
+    !*value
 }
 
 /// Frozen at declaration, before any per-attacker triggered-ability callbacks.
@@ -106,26 +113,32 @@ impl Game {
         // Public opt-in only. Never scan hidden hands/libraries for observers.
         // Suppression does not hide a publicly known definition; old queued packets
         // keep the facts visible after their source leaves or changes controller.
-        let observer = self.state.objects.iter().any(|o| {
-            o.zone == Zone::Battlefield
-                && o.card
-                    .triggers()
-                    .iter()
-                    .any(|a| condition_uses_facts(a.condition))
-        }) || self
+        let observer = self
             .state
-            .stack
+            .players
             .iter()
-            .chain(&self.state.pending_triggers)
-            .chain(&self.state.ordering_triggers)
-            .chain(self.state.resolving.iter().map(|r| &r.item))
-            .chain(self.state.announcing.iter().map(|a| &a.item))
-            .any(|item| match item.kind {
-                StackKind::TriggeredAbility { ability } => condition_uses_facts(
-                    item.trigger_definition().triggers()[usize::from(ability)].condition,
-                ),
-                _ => false,
-            });
+            .any(|p| p.turn_facts.exhaust_activated_this_turn)
+            || self.state.objects.iter().any(|o| {
+                o.zone == Zone::Battlefield
+                    && o.card
+                        .triggers()
+                        .iter()
+                        .any(|a| condition_uses_facts(a.condition))
+            })
+            || self
+                .state
+                .stack
+                .iter()
+                .chain(&self.state.pending_triggers)
+                .chain(&self.state.ordering_triggers)
+                .chain(self.state.resolving.iter().map(|r| &r.item))
+                .chain(self.state.announcing.iter().map(|a| &a.item))
+                .any(|item| match item.kind {
+                    StackKind::TriggeredAbility { ability } => condition_uses_facts(
+                        item.trigger_definition().triggers()[usize::from(ability)].condition,
+                    ),
+                    _ => false,
+                });
         observer.then(|| std::array::from_fn(|i| self.state.players[i].turn_facts))
     }
 }

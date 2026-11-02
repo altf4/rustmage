@@ -1334,6 +1334,10 @@ pub enum Instruction {
     CopyNextInstantSorcery {
         ability: u16,
     },
+    /// Register a source-independent next nonmana exhaust-activation callback.
+    CopyNextExhaustAbility {
+        ability: u16,
+    },
     /// Create a source-independent delayed trigger for every spell cast this turn.
     CopySpellsThisTurn {
         ability: u16,
@@ -3975,6 +3979,10 @@ pub enum TriggerCondition {
     CreatureAbilityActivated,
     /// The controller activated a nonmana ability.
     NonmanaAbilityActivated,
+    /// A committed exhaust activation, including mana abilities.
+    ExhaustAbilityActivated,
+    /// Source-independent next nonmana exhaust activation until cleanup.
+    DelayedExhaustAbilityActivated,
     /// The controller committed an activation of a loyalty ability.
     LoyaltyAbilityActivated,
     /// Committed loyalty activation paid at least this many loyalty counters.
