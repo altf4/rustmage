@@ -49,6 +49,8 @@
   "validation": {
     "rustfmt": "passed edition2024",
     "git_diff_check": "passed",
-    "Cargo": "not run; root sole guarded validation owner"
+    "Cargo": "No Cargo run by author; root guarded rerun pending.",
+    "first_integrated_run": "Root run focused-20261101-183334:4 passed,3 failed at actual prohibited-entry counter assertions; projected expectations passed.",
+    "fix": "Retain zero entry-index placements after prohibition so commit_counter_placements writes zero back to the pending EntryMove. Existing3 failed tests cover this exact continuation."
   }
 }

@@ -1366,7 +1366,9 @@ impl Game {
                 }
             }
         }
-        placements.retain(|p| p.amount.has_any());
+        // A prohibited entry still has to commit the cleared result back to
+        // EntryMove.counters. Ordinary zero placements have no continuation.
+        placements.retain(|p| p.entry_index.is_some() || p.amount.has_any());
         if placements.is_empty() && player_counters == [[0; 5]; 2] && proliferated.is_none() {
             if mode == ResumeMode::ActivationCosts {
                 self.record_cast_mana_counter_cost(&[]);
