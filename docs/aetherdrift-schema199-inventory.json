@@ -3,8 +3,8 @@
   "candidate_observation_schema": 199,
   "prior_schema": 198,
   "baseline_revision": "73092e3",
-  "inventory_revision": "83701e68e",
-  "phase": "integrated schema199 engine candidate; current trace baseline remains unaccepted pending exact previous198 proof",
+  "inventory_revision": "586895eee",
+  "phase": "integrated schema199 candidate; scoped prior198 action proof assembled, current trace baseline pending final execution",
   "public_json": [
     {
       "container": "Observation",
@@ -524,5 +524,11 @@
     "guard": "Typed prior_schema199_actions_supported resolves native, exile/GY borrowed and attached-grant templates. It rejects this new route while preserving genuine dynamic zero-power and fixed amount0 output. Final offered actions and selected journal actions are checked before source departure/copy.",
     "source_evidence": "docs/aetherdrift-prior198-trace-audit.json",
     "scope": "41 new semantic route rows are unrepresentable; Territory Forge duplicate actions are a separate production bug to repair, not a schema exception."
+  },
+  "schema_marker_receipt": {
+    "revision": "8c8e1a53f",
+    "previous": 198,
+    "current": 199,
+    "status": "bumped once; no further bump for this unpublished engine batch"
   }
 }

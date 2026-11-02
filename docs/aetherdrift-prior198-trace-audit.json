@@ -5,7 +5,7 @@
   "observation_schema": 199,
   "prior_schema": 198,
   "scope": "Independent source classification of all42 remaining previous-schema cast/entry differences. No raw observation export or permission to refresh fingerprints.",
-  "source_report": "/home/altf4/.cache/rustmage-authoring/aetherdrift/engine-candidate-20261101-220700/traces/report.json",
+  "source_report": "<cache>/rustmage-authoring/aetherdrift/engine-candidate-20261101-220700/traces/report.json",
   "comparison": {
     "total": 3007,
     "byte_exact_prior198": 2965,
