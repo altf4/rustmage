@@ -25,7 +25,7 @@ const PARITY_DRAW: &[Instruction] = &[
         odd: true,
         skip: 1,
     },
-    Instruction::DrawController(2),
+    Instruction::Draw(PlayerSet::Controller, 2),
 ];
 const COUNTER_PARITY: CardRules = CardRules {
     effect: Effect::Creature(2, 2),

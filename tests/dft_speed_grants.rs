@@ -58,7 +58,7 @@ const GY_ABILITY: ActivatedAbility = ActivatedAbility {
         ..ActivationCost::ZERO
     },
     targets: TargetPlan::NONE,
-    program: &[Instruction::DrawController(1)],
+    program: &[Instruction::Draw(PlayerSet::Controller, 1)],
     sorcery: false,
     once_per_turn: false,
 };
