@@ -132,7 +132,11 @@ fn start_rummage(g: &mut Game, source: CardId) {
 }
 fn effect_pick(g: &mut Game, id: CardId) {
     let object = g.object_ref(id);
-    act(g, Action::Sacrifice { object });
+    if g.object_view(id).zone == Zone::Hand {
+        act(g, Action::Discard { card: id });
+    } else {
+        act(g, Action::Sacrifice { object });
+    }
 }
 fn activate_reward(g: &mut Game, source: CardId, targets: &[CardId]) {
     act(
@@ -208,9 +212,7 @@ fn rummage_pending_choice_branches_raw_index_and_restore_without_private_leaks()
     start_rummage(&mut g, source);
     assert!(!g.observe(p.other()).objects.iter().any(|o| o.id == hidden));
     let before = g.snapshot();
-    let action = Action::Sacrifice {
-        object: g.object_ref(hidden),
-    };
+    let action = Action::Discard { card: hidden };
     let mut raw = g.clone();
     let mut indexed = g.clone();
     let index = indexed
@@ -283,8 +285,7 @@ fn sacrifice_fallback_cannot_discard_while_creature_or_uncrewed_vehicle_is_avail
         let spell = put(&mut g, Player::P0, "Divination", Zone::Hand);
         cast(&mut g, spell, None);
         reach_choice(&mut g);
-        let hidden_ref = g.object_ref(hidden);
-        reject(&mut g, Action::Sacrifice { object: hidden_ref });
+        reject(&mut g, Action::Discard { card: hidden });
         reject(&mut g, Action::DeclineEffectPayment);
         effect_pick(&mut g, victim);
         settle(&mut g);
