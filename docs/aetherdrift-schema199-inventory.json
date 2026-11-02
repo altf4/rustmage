@@ -285,7 +285,7 @@
       "members": [
         "ability_origin"
       ],
-      "contract": "Sparse Some origin binds exact acquired linked ability; reject both public links and private null-cast links with Some origin. None keeps prior bytes."
+      "contract": "New sparse public origin field; reject Some in JSON. The preexisting private NullCastLink.ability_origin and ExileRevealedLinked binding are inherited state and remain eligible; this does not erase the newly exposed public member. None keeps prior bytes."
     },
     {
       "container": "CopyExceptions",
@@ -443,10 +443,9 @@
     {
       "container": "State.linked_choices",
       "members": [
-        "links.ability_origin",
-        "null_cast_links.ability_origin"
+        "links.ability_origin"
       ],
-      "eligibility": "Reject Some acquired-link identities independently of observation visibility; inherited None links retain bytes and remain eligible."
+      "eligibility": "Reject Some origin in the newly extended LinkedExileView-backed links. Preserve preexisting null_cast_links.ability_origin Some and its acquisition semantics; this field and ExileRevealedLinked population already exist at baseline73092e3."
     },
     {
       "container": "CopyRow / temporary copies",
@@ -486,7 +485,7 @@
   "focused_tests": {
     "target": "legacy",
     "filter": "engine::assurance::schema199::",
-    "cases": 12,
+    "cases": 13,
     "coverage": [
       "byte-exact unchanged JSON and sole unsigned derived entry-count removal",
       "all new public field/action/phase families",
@@ -495,7 +494,16 @@
       "owned invisible acquired rows and raw branch/restore",
       "idle links, inactive copy-layer retained origins and original recipes",
       "active and suspended late mana receipt raw branch/restore",
-      "new semantics nested in inherited target/program/scalar/cost/filter shapes"
+      "new semantics nested in inherited target/program/scalar/cost/filter shapes",
+      "inherited null-cast linked acquisition Some remains eligible through owned branch/restore; newly public linked origins remain distinct"
     ]
-  }
+  },
+  "baseline_distinctions": [
+    {
+      "field": "NullCastLink.ability_origin",
+      "baseline": "73092e3:crates/engine/src/engine_linked_choices.rs:56",
+      "population": "73092e3:crates/engine/src/engine_hand_choices.rs:334-348 ExileRevealedLinked captures resolving.item.source_ability_origin",
+      "contract": "Inherited owned link binding remains prior198 eligible. New LinkedExileView.ability_origin JSON is a separate wire addition; no additional erasure is introduced."
+    }
+  ]
 }

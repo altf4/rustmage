@@ -601,10 +601,6 @@ pub(super) fn prior_schema199_state_supported(state: &State) -> bool {
         || state.linked_choices.as_ref().is_some_and(|choices| {
             choices.has_opaque_interaction()
                 || choices.links.iter().any(|row| row.ability_origin.is_some())
-                || choices
-                    .null_cast_links
-                    .iter()
-                    .any(|row| row.ability_origin.is_some())
         })
         || state.roles.as_ref().is_some_and(|roles| {
             roles
@@ -981,21 +977,9 @@ fn prior_198_rejects_idle_link_origins_and_lower_layer_retained_origins() {
     game.state.linked_choices.as_mut().unwrap().links[0].ability_origin = Some(19);
     assert!(!prior_schema199_state_supported(&game.state));
     game.restore(&linked).unwrap();
-    game.state
-        .linked_choices
-        .as_mut()
-        .unwrap()
-        .null_cast_links
-        .push(linked_choices::NullCastLink {
-            source,
-            exiled,
-            ability_origin: Some(23),
-        });
-    assert!(!prior_schema199_state_supported(&game.state));
-    game.restore(&linked).unwrap();
     game.apply_temporary_copy(
         source,
-        CopyRecipe::new(Card::SavannahLions),
+        CopyRecipe::new(Card::from_name("Savannah Lions").unwrap()),
         CopyDeadline::EndOfTurn,
     );
     game.apply_temporary_copy(
@@ -1146,4 +1130,55 @@ fn prior_198_rejects_new_semantics_nested_in_inherited_typed_continuations() {
         PlayerSet::Controller,
         1
     )]));
+}
+
+#[test]
+fn prior_198_keeps_inherited_null_cast_link_origins_eligible_after_owned_restore() {
+    let mut game = scenario(Player::P0);
+    let source = put(&mut game, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    let exiled = put(&mut game, Player::P1, "Hill Giant", Zone::Exile);
+    let source = game.object_ref(source);
+    let exiled = game.object_ref(exiled);
+    let clean = game.snapshot();
+    // Both this field and ExileRevealedLinked's acquisition binding existed at
+    // 73092e3. The new public LinkedExileView field does not make its owned
+    // counterpart a new semantic state.
+    game.state
+        .linked_choices
+        .get_or_insert_default()
+        .null_cast_links
+        .push(linked_choices::NullCastLink {
+            source,
+            exiled,
+            ability_origin: Some(23),
+        });
+    assert!(prior_schema199_state_supported(&game.state));
+    let linked = game.snapshot();
+    let mut branch = game.clone();
+    drop(game);
+    assert!(prior_schema199_state_supported(&branch.state));
+    assert_eq!(
+        branch
+            .state
+            .linked_choices
+            .as_ref()
+            .unwrap()
+            .null_cast_links[0]
+            .ability_origin,
+        Some(23)
+    );
+    branch.restore(&clean).unwrap();
+    assert!(prior_schema199_state_supported(&branch.state));
+    branch.restore(&linked).unwrap();
+    assert!(prior_schema199_state_supported(&branch.state));
+    assert_eq!(
+        branch
+            .state
+            .linked_choices
+            .as_ref()
+            .unwrap()
+            .null_cast_links[0]
+            .ability_origin,
+        Some(23)
+    );
 }
