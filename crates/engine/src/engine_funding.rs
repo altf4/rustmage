@@ -4808,7 +4808,11 @@ impl Game {
         external: Option<ObjectRef>,
         payment: Option<Mana>,
     ) -> bool {
-        let frames = self.state.mana_announcement_stack.as_deref().unwrap_or(&[]);
+        let frames = self
+            .state
+            .mana_announcement_stack
+            .as_deref()
+            .map_or(&[][..], |frames| frames.as_slice());
         if frames.is_empty()
             && !self.state.announcing.as_ref().is_some_and(|a| {
                 a.mana_output
@@ -5307,7 +5311,11 @@ impl Game {
             else {
                 return;
             };
-            let frames = self.state.mana_announcement_stack.as_deref().unwrap_or(&[]);
+            let frames = self
+                .state
+                .mana_announcement_stack
+                .as_deref()
+                .map_or(&[][..], |frames| frames.as_slice());
             let terminal = a
                 .mana_output
                 .as_ref()
