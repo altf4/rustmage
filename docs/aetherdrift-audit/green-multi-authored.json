@@ -135,7 +135,7 @@
         "{T}: Target creature you control with power 2 or less gains lifelink until end of turn and can't be blocked this turn.",
         "Crew 3 (Tap any number of creatures you control with total power 3 or more: This Vehicle becomes an artifact creature until end of turn.)"
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_vehicles",
       "outcome_proofs": [
         "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
@@ -146,7 +146,7 @@
         "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
         "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
       "obligation_evidence": [
         {
           "obligation": "{T}: Target creature you control with power 2 or less gains lifelink until end of turn and can't be blocked this turn.",
@@ -201,7 +201,7 @@
       "printed_obligations": [
         "{4}{G}: Look at the top three cards of your library. You may reveal a permanent card from among them and put it into your hand. Put the rest on the bottom of your library in any order."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_vehicles",
       "outcome_proofs": [
         "beastrider_vanguard_looks_privately_takes_a_permanent_and_orders_the_other_cards"
@@ -211,7 +211,7 @@
         "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
         "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
       "obligation_evidence": [
         {
           "obligation": "{4}{G}: Look at the top three cards of your library. You may reveal a permanent card from among them and put it into your hand. Put the rest on the bottom of your library in any order.",
@@ -227,7 +227,7 @@
       "printed_obligations": [
         "Target creature gets +4/+4 and gains trample until end of turn."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_search",
       "outcome_proofs": [
         "bestow_greatness_grants_exact_stats_and_trample_until_cleanup"
@@ -237,7 +237,7 @@
         "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
         "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
       "obligation_evidence": [
         {
           "obligation": "Target creature gets +4/+4 and gains trample until end of turn.",
@@ -286,10 +286,41 @@
         "Whenever you attack, draw a card, then discard a card.",
         "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)"
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_artifacts",
+      "outcome_proofs": [
+        "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+        "boosted_sloop_and_haunted_hellride_trigger_when_another_creature_attacks_without_crewing_them"
+      ],
+      "shared_contracts": [
+        "Frozen dft_queries: exact filtered batched graveyard departures and global historical Mount/Vehicle entry counts",
+        "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
+        "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Menace",
+          "scenario": [
+            "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+            "boosted_sloop_and_haunted_hellride_trigger_when_another_creature_attacks_without_crewing_them"
+          ]
+        },
+        {
+          "obligation": "Whenever you attack, draw a card, then discard a card.",
+          "scenario": [
+            "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+            "boosted_sloop_and_haunted_hellride_trigger_when_another_creature_attacks_without_crewing_them"
+          ]
+        },
+        {
+          "obligation": "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)",
+          "scenario": [
+            "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+            "boosted_sloop_and_haunted_hellride_trigger_when_another_creature_attacks_without_crewing_them"
+          ]
+        }
+      ]
     },
     {
       "name": "Brightglass Gearhulk",
@@ -309,10 +340,25 @@
       "printed_obligations": [
         "Broadside Barrage deals 5 damage to target creature or planeswalker. Draw a card, then discard a card."
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_artifacts",
+      "outcome_proofs": [
+        "broadside_barrage_damages_creature_or_planeswalker_then_draws_and_discards_and_hazard_exhausts_once"
+      ],
+      "shared_contracts": [
+        "Frozen dft_queries: exact filtered batched graveyard departures and global historical Mount/Vehicle entry counts",
+        "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
+        "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Broadside Barrage deals 5 damage to target creature or planeswalker. Draw a card, then discard a card.",
+          "scenario": [
+            "broadside_barrage_damages_creature_or_planeswalker_then_draws_and_discards_and_hazard_exhausts_once"
+          ]
+        }
+      ]
     },
     {
       "name": "Broken Wings",
@@ -320,7 +366,7 @@
       "printed_obligations": [
         "Destroy target artifact, enchantment, or creature with flying."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_search",
       "outcome_proofs": [
         "broken_wings_accepts_each_printed_kind_and_rejects_nonflying_creature"
@@ -330,7 +376,7 @@
         "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
         "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
       "obligation_evidence": [
         {
           "obligation": "Destroy target artifact, enchantment, or creature with flying.",
@@ -347,10 +393,31 @@
         "At the beginning of your upkeep, surveil 1.",
         "{2}{B}{G}, {T}, Sacrifice this artifact: Return target creature or Vehicle card from your graveyard to the battlefield. Activate only as a sorcery."
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_artifacts",
+      "outcome_proofs": [
+        "broodheart_engine_surveils_at_its_upkeep_and_pays_sorcery_tap_sacrifice_to_return_creature_or_vehicle"
+      ],
+      "shared_contracts": [
+        "Frozen dft_queries: exact filtered batched graveyard departures and global historical Mount/Vehicle entry counts",
+        "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
+        "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "At the beginning of your upkeep, surveil 1.",
+          "scenario": [
+            "broodheart_engine_surveils_at_its_upkeep_and_pays_sorcery_tap_sacrifice_to_return_creature_or_vehicle"
+          ]
+        },
+        {
+          "obligation": "{2}{B}{G}, {T}, Sacrifice this artifact: Return target creature or Vehicle card from your graveyard to the battlefield. Activate only as a sorcery.",
+          "scenario": [
+            "broodheart_engine_surveils_at_its_upkeep_and_pays_sorcery_tap_sacrifice_to_return_creature_or_vehicle"
+          ]
+        }
+      ]
     },
     {
       "name": "Captain Howler, Sea Scourge",
@@ -383,10 +450,31 @@
         "When this creature enters, scry 2.",
         "{T}: Create X 1/1 colorless Pilot creature tokens, where X is the number of Mounts and/or Vehicles that entered the battlefield under your control this turn. The tokens have \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\""
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_artifacts",
+      "outcome_proofs": [
+        "cloudspire_coordinator_scries_two_privately_and_uses_historical_entries_before_it_arrived"
+      ],
+      "shared_contracts": [
+        "Frozen dft_queries: exact filtered batched graveyard departures and global historical Mount/Vehicle entry counts",
+        "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
+        "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "When this creature enters, scry 2.",
+          "scenario": [
+            "cloudspire_coordinator_scries_two_privately_and_uses_historical_entries_before_it_arrived"
+          ]
+        },
+        {
+          "obligation": "{T}: Create X 1/1 colorless Pilot creature tokens, where X is the number of Mounts and/or Vehicles that entered the battlefield under your control this turn. The tokens have \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\"",
+          "scenario": [
+            "cloudspire_coordinator_scries_two_privately_and_uses_historical_entries_before_it_arrived"
+          ]
+        }
+      ]
     },
     {
       "name": "Cloudspire Skycycle",
@@ -396,10 +484,41 @@
         "When this Vehicle enters, distribute two +1/+1 counters among one or two other target Vehicles and/or creatures you control.",
         "Crew 1"
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_artifacts",
+      "outcome_proofs": [
+        "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+        "cloudspire_skycycle_announces_two_counters_split_or_together_on_other_controlled_targets"
+      ],
+      "shared_contracts": [
+        "Frozen dft_queries: exact filtered batched graveyard departures and global historical Mount/Vehicle entry counts",
+        "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
+        "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Flying",
+          "scenario": [
+            "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+            "cloudspire_skycycle_announces_two_counters_split_or_together_on_other_controlled_targets"
+          ]
+        },
+        {
+          "obligation": "When this Vehicle enters, distribute two +1/+1 counters among one or two other target Vehicles and/or creatures you control.",
+          "scenario": [
+            "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+            "cloudspire_skycycle_announces_two_counters_split_or_together_on_other_controlled_targets"
+          ]
+        },
+        {
+          "obligation": "Crew 1",
+          "scenario": [
+            "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+            "cloudspire_skycycle_announces_two_counters_split_or_together_on_other_controlled_targets"
+          ]
+        }
+      ]
     },
     {
       "name": "Coalstoke Gearhulk",
@@ -421,7 +540,7 @@
         "When this Vehicle enters, each opponent loses 3 life and you gain 3 life.",
         "Crew 2"
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_vehicles",
       "outcome_proofs": [
         "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
@@ -432,7 +551,7 @@
         "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
         "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
       "obligation_evidence": [
         {
           "obligation": "Trample",
@@ -465,7 +584,7 @@
         "\u2022 Target permanent you control gains hexproof and indestructible until end of turn.",
         "\u2022 Create a 1/1 colorless Pilot creature token with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\""
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_search",
       "outcome_proofs": [
         "defend_the_rider_protects_a_land_or_creates_a_pilot_that_really_crews_for_three"
@@ -475,7 +594,7 @@
         "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
         "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
       "obligation_evidence": [
         {
           "obligation": "Choose one \u2014",
@@ -549,10 +668,31 @@
         "Whenever one or more artifact and/or creature cards leave your graveyard, you gain 1 life.",
         "When this enchantment enters, mill four cards. You may put an artifact, creature, or land card from among the milled cards into your hand. (To mill four cards, put the top four cards of your library into your graveyard.)"
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_artifacts",
+      "outcome_proofs": [
+        "dredgers_insight_recovers_only_this_mill_batch_and_gains_life_only_for_artifact_or_creature_departure"
+      ],
+      "shared_contracts": [
+        "Frozen dft_queries: exact filtered batched graveyard departures and global historical Mount/Vehicle entry counts",
+        "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
+        "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Whenever one or more artifact and/or creature cards leave your graveyard, you gain 1 life.",
+          "scenario": [
+            "dredgers_insight_recovers_only_this_mill_batch_and_gains_life_only_for_artifact_or_creature_departure"
+          ]
+        },
+        {
+          "obligation": "When this enchantment enters, mill four cards. You may put an artifact, creature, or land card from among the milled cards into your hand. (To mill four cards, put the top four cards of your library into your graveyard.)",
+          "scenario": [
+            "dredgers_insight_recovers_only_this_mill_batch_and_gains_life_only_for_artifact_or_creature_departure"
+          ]
+        }
+      ]
     },
     {
       "name": "Dune Drifter",
@@ -561,10 +701,34 @@
         "When this Vehicle enters, return target artifact or creature card with mana value X or less from your graveyard to the battlefield.",
         "Crew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)"
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_artifacts",
+      "outcome_proofs": [
+        "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+        "dune_drifter_uses_cast_x_for_artifact_or_creature_recovery_but_noncast_return_has_x_zero"
+      ],
+      "shared_contracts": [
+        "Frozen dft_queries: exact filtered batched graveyard departures and global historical Mount/Vehicle entry counts",
+        "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
+        "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "When this Vehicle enters, return target artifact or creature card with mana value X or less from your graveyard to the battlefield.",
+          "scenario": [
+            "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+            "dune_drifter_uses_cast_x_for_artifact_or_creature_recovery_but_noncast_return_has_x_zero"
+          ]
+        },
+        {
+          "obligation": "Crew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)",
+          "scenario": [
+            "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+            "dune_drifter_uses_cast_x_for_artifact_or_creature_recovery_but_noncast_return_has_x_zero"
+          ]
+        }
+      ]
     },
     {
       "name": "Earthrumbler",
@@ -698,7 +862,7 @@
         "Reach",
         "When this creature enters, you may search your library and/or graveyard for a creature card with no abilities, reveal it, and put it into your hand. If you search your library this way, shuffle."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_search",
       "outcome_proofs": [
         "fang_druid_searches_either_zone_for_only_one_abilityless_creature_and_reveals_result",
@@ -709,7 +873,7 @@
         "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
         "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
       "obligation_evidence": [
         {
           "obligation": "Reach",
@@ -808,10 +972,41 @@
         "When this Vehicle enters, you may search your library for an artifact card and reveal it. Put it onto the battlefield if its mana value is 2 or less. Otherwise, put it into your hand. If you search your library this way, shuffle.",
         "Crew 2"
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_artifacts",
+      "outcome_proofs": [
+        "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+        "guidelight_pathmaker_search_destination_uses_selected_artifact_value_and_decline_does_not_shuffle"
+      ],
+      "shared_contracts": [
+        "Frozen dft_queries: exact filtered batched graveyard departures and global historical Mount/Vehicle entry counts",
+        "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
+        "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Vigilance",
+          "scenario": [
+            "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+            "guidelight_pathmaker_search_destination_uses_selected_artifact_value_and_decline_does_not_shuffle"
+          ]
+        },
+        {
+          "obligation": "When this Vehicle enters, you may search your library for an artifact card and reveal it. Put it onto the battlefield if its mana value is 2 or less. Otherwise, put it into your hand. If you search your library this way, shuffle.",
+          "scenario": [
+            "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+            "guidelight_pathmaker_search_destination_uses_selected_artifact_value_and_decline_does_not_shuffle"
+          ]
+        },
+        {
+          "obligation": "Crew 2",
+          "scenario": [
+            "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+            "guidelight_pathmaker_search_destination_uses_selected_artifact_value_and_decline_does_not_shuffle"
+          ]
+        }
+      ]
     },
     {
       "name": "Haunt the Network",
@@ -819,10 +1014,26 @@
       "printed_obligations": [
         "Choose target opponent. Create two 1/1 colorless Thopter artifact creature tokens with flying. Then the chosen player loses X life and you gain X life, where X is the number of artifacts you control."
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_artifacts",
+      "outcome_proofs": [
+        "haunt_the_network_counts_its_new_flying_artifact_tokens_before_the_life_change"
+      ],
+      "shared_contracts": [
+        "Frozen dft_queries: exact filtered batched graveyard departures and global historical Mount/Vehicle entry counts",
+        "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
+        "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Choose target opponent. Create two 1/1 colorless Thopter artifact creature tokens with flying. Then the chosen player loses X life and you gain X life, where X is the number of artifacts you control.",
+          "scenario": [
+            "haunt_the_network_counts_its_new_flying_artifact_tokens_before_the_life_change"
+          ]
+        }
+      ],
+      "definition_binding_note": "Use existing LoseOpponentGainSame with own artifact count after creating two Thopters; printed gain is X independently of whether the opponent actually loses that much life. Initial audit DrainLifeScaled binding was replaced by this exact existing operation."
     },
     {
       "name": "Haunted Hellride",
@@ -831,10 +1042,34 @@
         "Whenever you attack, target creature you control gets +1/+0 and gains deathtouch until end of turn. Untap it.",
         "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)"
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_artifacts",
+      "outcome_proofs": [
+        "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+        "boosted_sloop_and_haunted_hellride_trigger_when_another_creature_attacks_without_crewing_them"
+      ],
+      "shared_contracts": [
+        "Frozen dft_queries: exact filtered batched graveyard departures and global historical Mount/Vehicle entry counts",
+        "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
+        "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Whenever you attack, target creature you control gets +1/+0 and gains deathtouch until end of turn. Untap it.",
+          "scenario": [
+            "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+            "boosted_sloop_and_haunted_hellride_trigger_when_another_creature_attacks_without_crewing_them"
+          ]
+        },
+        {
+          "obligation": "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)",
+          "scenario": [
+            "remaining_vehicle_crew_costs_and_base_bodies_are_independently_wired",
+            "boosted_sloop_and_haunted_hellride_trigger_when_another_creature_attacks_without_crewing_them"
+          ]
+        }
+      ]
     },
     {
       "name": "Hazard of the Dunes",
@@ -843,10 +1078,31 @@
         "Reach, trample",
         "Exhaust \u2014 {6}{G}: Put three +1/+1 counters on this creature. (Activate each exhaust ability only once.)"
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_artifacts",
+      "outcome_proofs": [
+        "broadside_barrage_damages_creature_or_planeswalker_then_draws_and_discards_and_hazard_exhausts_once"
+      ],
+      "shared_contracts": [
+        "Frozen dft_queries: exact filtered batched graveyard departures and global historical Mount/Vehicle entry counts",
+        "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
+        "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Reach, trample",
+          "scenario": [
+            "broadside_barrage_damages_creature_or_planeswalker_then_draws_and_discards_and_hazard_exhausts_once"
+          ]
+        },
+        {
+          "obligation": "Exhaust \u2014 {6}{G}: Put three +1/+1 counters on this creature. (Activate each exhaust ability only once.)",
+          "scenario": [
+            "broadside_barrage_damages_creature_or_planeswalker_then_draws_and_discards_and_hazard_exhausts_once"
+          ]
+        }
+      ]
     },
     {
       "name": "Jibbirik Omnivore",
@@ -906,7 +1162,7 @@
         "Whenever Lagorin attacks while saddled, put a +1/+1 counter on each of up to two target Mounts and/or Vehicles.",
         "Saddle 1 (Tap any number of other creatures you control with total power 1 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_vehicles",
       "outcome_proofs": [
         "lagorin_saddle_one_attack_puts_counters_on_up_to_two_mounts_or_vehicles_of_any_controller"
@@ -916,7 +1172,7 @@
         "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
         "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
       "obligation_evidence": [
         {
           "obligation": "Flying",
@@ -959,7 +1215,7 @@
         "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
         "Max speed \u2014 {3}, Exile this card from your graveyard: Draw a card."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_vehicles",
       "outcome_proofs": [
         "loxodon_surveyor_starts_engines_and_its_graveyard_draw_requires_its_owners_max_speed"
@@ -969,7 +1225,7 @@
         "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
         "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
       "obligation_evidence": [
         {
           "obligation": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
@@ -993,7 +1249,7 @@
         "Whenever this Vehicle enters or attacks, you may search your library for a basic land card, put it onto the battlefield tapped, then shuffle.",
         "Crew 4"
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_vehicles",
       "outcome_proofs": [
         "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
@@ -1004,7 +1260,7 @@
         "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
         "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
       "obligation_evidence": [
         {
           "obligation": "This Vehicle's power is equal to the number of lands you control.",
@@ -1111,7 +1367,7 @@
         "{T}: Mill a card. (Put the top card of your library into your graveyard.)",
         "{T}, Exile a card from your graveyard: Add one mana of any color."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_search",
       "outcome_proofs": [
         "molt_tender_mills_one_and_pays_its_tap_and_graveyard_exile_for_colored_mana"
@@ -1121,7 +1377,7 @@
         "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
         "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
       "obligation_evidence": [
         {
           "obligation": "{T}: Mill a card. (Put the top card of your library into your graveyard.)",
@@ -1193,7 +1449,7 @@
         "\u2022 Target creature you control fights target creature an opponent controls. (Each deals damage equal to its power to the other.)",
         "\u2022 Destroy target Vehicle."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_search",
       "outcome_proofs": [
         "plow_through_has_independent_fight_and_uncrewed_vehicle_destruction_modes"
@@ -1203,7 +1459,7 @@
         "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
         "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
       "obligation_evidence": [
         {
           "obligation": "Choose one \u2014",
@@ -1232,7 +1488,7 @@
         "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
         "{3}{G}, Sacrifice this enchantment: Search your library for up to X basic land cards, where X is your speed. Put those cards onto the battlefield tapped, then shuffle."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_search",
       "outcome_proofs": [
         "point_the_way_starts_speed_and_sacrifices_for_up_to_current_speed_tapped_basics"
@@ -1242,7 +1498,7 @@
         "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
         "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
       "obligation_evidence": [
         {
           "obligation": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
@@ -1264,7 +1520,7 @@
       "printed_obligations": [
         "When this creature enters, mill three cards, then you may return a land card from your graveyard to your hand. (To mill three cards, put the top three cards of your library into your graveyard.)"
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_search",
       "outcome_proofs": [
         "pothole_mole_mills_three_then_can_recover_an_old_land_or_decline"
@@ -1274,7 +1530,7 @@
         "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
         "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
       "obligation_evidence": [
         {
           "obligation": "When this creature enters, mill three cards, then you may return a land card from your graveyard to your hand. (To mill three cards, put the top three cards of your library into your graveyard.)",
@@ -1353,7 +1609,7 @@
       "printed_obligations": [
         "Other Dinosaurs you control get +1/+1."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_vehicles",
       "outcome_proofs": [
         "regal_imperiosaur_buffs_only_other_controlled_dinosaurs_and_updates_when_control_changes"
@@ -1363,7 +1619,7 @@
         "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
         "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
       "obligation_evidence": [
         {
           "obligation": "Other Dinosaurs you control get +1/+1.",
@@ -1392,7 +1648,7 @@
       "printed_obligations": [
         "Return up to one target creature card, up to one target Mount card, up to one target Vehicle card, and up to one target creature card with no abilities from your graveyard to your hand."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_search",
       "outcome_proofs": [
         "rise_from_the_wreck_selects_all_four_printed_groups_and_returns_each_card"
@@ -1402,7 +1658,7 @@
         "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
         "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
       "obligation_evidence": [
         {
           "obligation": "Return up to one target creature card, up to one target Mount card, up to one target Vehicle card, and up to one target creature card with no abilities from your graveyard to your hand.",
@@ -1457,7 +1713,7 @@
         "This spell costs {1} less to cast if it targets a Mount or Vehicle you control.",
         "Target creature you control deals damage equal to its power to target creature an opponent controls."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_search",
       "outcome_proofs": [
         "run_over_reduces_mount_cost_and_deals_one_way_damage_while_plain_creature_pays_full"
@@ -1467,7 +1723,7 @@
         "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
         "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
       "obligation_evidence": [
         {
           "obligation": "This spell costs {1} less to cast if it targets a Mount or Vehicle you control.",
@@ -1519,7 +1775,7 @@
         "When this Aura enters, untap enchanted permanent.",
         "Enchanted permanent gets +1/+2 and has reach."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_search",
       "outcome_proofs": [
         "silken_strength_flashes_onto_creature_or_vehicle_untaps_and_grants_live_bonuses"
@@ -1529,7 +1785,7 @@
         "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
         "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
       "obligation_evidence": [
         {
           "obligation": "Flash",
@@ -1575,7 +1831,7 @@
         "Flying, deathtouch",
         "Exhaust \u2014 {4}: Reveal cards from the top of your library until you reveal two land cards. Put those land cards onto the battlefield tapped and the rest on the bottom of your library in a random order. Put a +1/+1 counter on this creature. (Activate each exhaust ability only once.)"
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_search",
       "outcome_proofs": [
         "skyserpent_reveals_through_two_lands_puts_them_tapped_and_adds_a_counter_even_if_empty"
@@ -1585,7 +1841,7 @@
         "dft_static_types + dft_attached_untap_engine: Aura creature-or-Vehicle legality, actual/funding keywords and exact attached incarnation",
         "existing fight, target-cost reduction, crew/saddle token power and phased additional-cost mana contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
       "obligation_evidence": [
         {
           "obligation": "Flying, deathtouch",
@@ -1607,7 +1863,7 @@
       "printed_obligations": [
         "Exhaust \u2014 {3}{G}: Put a +1/+1 counter on this creature. Create a 3/3 green Elephant creature token. (Activate each exhaust ability only once.)"
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_vehicles",
       "outcome_proofs": [
         "stampeding_scurryfoot_exhaust_adds_a_counter_and_an_actual_three_three_elephant_once"
@@ -1617,7 +1873,7 @@
         "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
         "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
       "obligation_evidence": [
         {
           "obligation": "Exhaust \u2014 {3}{G}: Put a +1/+1 counter on this creature. Create a 3/3 green Elephant creature token. (Activate each exhaust ability only once.)",
@@ -1660,7 +1916,7 @@
         "Crew 3",
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_vehicles",
       "outcome_proofs": [
         "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
@@ -1671,7 +1927,7 @@
         "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
         "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
       "obligation_evidence": [
         {
           "obligation": "Reach, menace",
@@ -1711,7 +1967,7 @@
         "Each other Vehicle and creature you control enters with an additional +1/+1 counter on it if its mana value is 4 or less. Otherwise, it enters with three additional +1/+1 counters on it.",
         "Crew 3"
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_vehicles",
       "outcome_proofs": [
         "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
@@ -1722,7 +1978,7 @@
         "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
         "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
       "obligation_evidence": [
         {
           "obligation": "Trample",
@@ -1755,7 +2011,7 @@
         "{T}: Add one mana of any color.",
         "Crew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)"
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_vehicles",
       "outcome_proofs": [
         "every_vehicle_pays_its_printed_crew_threshold_and_uses_its_printed_stats",
@@ -1766,7 +2022,7 @@
         "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
         "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
       "obligation_evidence": [
         {
           "obligation": "When this Vehicle enters, you gain 2 life.",
@@ -1836,7 +2092,7 @@
         "At the beginning of your end step, untap each creature you control.",
         "{2}{G}{W}: Creatures you control get +1/+1 until end of turn."
       ],
-      "status": "authored candidate",
+      "status": "root-verified complete",
       "test_target": "dft_green_multi_cards_vehicles",
       "outcome_proofs": [
         "veteran_beastrider_grows_its_controller_only_and_untaps_at_its_own_end_step"
@@ -1846,7 +2102,7 @@
         "Frozen dft_speed_grants: max-speed exact owner graveyard grants and projected funding",
         "Existing saddle/crew, library selection private reveal and owned restore, live CDA/static modifier, temporary keyword and combat damage contracts"
       ],
-      "validation": "pending root focused run",
+      "validation": "Root focused search13/13(.024s), Vehicles12/12(.033s), reports card-green-search-20261102-101000Z and card-green-vehicles-20261102-101000Z. Frozen core reused; compile all targets under4s.",
       "obligation_evidence": [
         {
           "obligation": "At the beginning of your end step, untap each creature you control.",
@@ -1869,10 +2125,31 @@
         "Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.)",
         "You draw three cards and gain 3 life."
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_artifacts",
+      "outcome_proofs": [
+        "voyage_home_affinity_reduces_only_generic_cost_and_always_draws_three_gains_three"
+      ],
+      "shared_contracts": [
+        "Frozen dft_queries: exact filtered batched graveyard departures and global historical Mount/Vehicle entry counts",
+        "Frozen entry and targeting contracts: successful reanimation, cast-X vs noncast-X, complete announced counter allocation, public artifact search destination by MV",
+        "Existing source-independent attack triggers, private scry/surveil, affinity actual/funding and token crew/saddle contribution contracts"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.)",
+          "scenario": [
+            "voyage_home_affinity_reduces_only_generic_cost_and_always_draws_three_gains_three"
+          ]
+        },
+        {
+          "obligation": "You draw three cards and gain 3 life.",
+          "scenario": [
+            "voyage_home_affinity_reduces_only_generic_cost_and_always_draws_three_gains_three"
+          ]
+        }
+      ]
     },
     {
       "name": "Webstrike Elite",

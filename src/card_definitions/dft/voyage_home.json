@@ -3,10 +3,30 @@
   "catalogue_id": 4941,
   "oracle_id": "5c0cbc44-6c31-44fe-a3da-a97a37a01726",
   "facts_sha256": "cddc1d490053e370f7a0da1f0548c8635707cbecb630f1dd327a5814ee537f4e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "113f4b1e6ef622c5139c7c5d0d074e04749b53f2f72ab0b50c479519c79775f5"
   },
-  "physical_metadata_sha256": "dcfa72053f8e014b58d6705eea45c729e3a0ea0ade6bd179e0739103b650efa1"
+  "physical_metadata_sha256": "dcfa72053f8e014b58d6705eea45c729e3a0ea0ade6bd179e0739103b650efa1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VoyageHome.java",
+  "java_sha256": "cfd80505156471d1e0a6b445cf178dac5e5a48b20aa98a18733247316962854e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/AffinityForArtifactsAbility.java",
+      "sha256": "5a56fb3667271af8fb5c5ac996d502bf9f3aa7e870415ed1a232b4da05388aa6"
+    }
+  ]
 }

@@ -8,5 +8,25 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4999fa51c677417d856c8d2a03f284704d682aaf370380616647136601ec1930"
   },
-  "physical_metadata_sha256": "b16d5258b226d7e30b4e95610a7d6aa82be2deb4ef8d2bb528359ec7f96531a5"
+  "physical_metadata_sha256": "b16d5258b226d7e30b4e95610a7d6aa82be2deb4ef8d2bb528359ec7f96531a5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BroadsideBarrage.java",
+  "java_sha256": "73db04f9712c5c5519139f4f280ccc1420f2894ecc2c315004f1a63a14cbb64b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreatureOrPlaneswalker.java",
+      "sha256": "74a515df49ac9de9bab546fb06aa877375286ce8bb4ea19113e77d811177d85f"
+    }
+  ]
 }
