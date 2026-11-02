@@ -41,7 +41,7 @@
         "Frostcliff Siege",
         "Glacierwood Siege"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (entry modes)."
     },
     {
       "id": "A02",
@@ -53,7 +53,7 @@
         "Dusyut Earthcarver",
         "Fortress Kin-Guard"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (fixed endure)."
     },
     {
       "id": "A03",
@@ -81,7 +81,7 @@
       "cards": [
         "Abzan Monument"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (dynamic token/endure)."
     },
     {
       "id": "A06",
@@ -163,7 +163,7 @@
         "Delta Bloodflies",
         "Formation Breaker"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (counter world)."
     },
     {
       "id": "A15",
@@ -181,7 +181,7 @@
       "cards": [
         "Dragonologist"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (counter world)."
     },
     {
       "id": "A17",
@@ -190,7 +190,7 @@
       "cards": [
         "Dragonstorm Globe"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (entry counters)."
     },
     {
       "id": "A18",
@@ -233,14 +233,14 @@
       "description": "entry modes",
       "required_change": "Extend owned as-enters choices with a bounded named mode, and gate whole triggered/static/activated printed lines on its exact incarnation. No choice on an in-place copy means neither mode. Copying/entry replacements and rollback must preserve this boundary.",
       "cards": [],
-      "status": "confirmed missing typed value and conditional providers"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (entry modes)."
     },
     {
       "id": "B:counter_on_own_creature",
       "description": "counter on own creature",
       "required_change": "Add placement trigger qualifying recipient current/pre-entry controller and creature characteristics regardless of placing player, across every counter kind. Existing CounterPlacedByYou variants qualify placer and do not implement Hollowmurk. Apply OncePerTurn at queue time; entry counters qualify.",
       "cards": [],
-      "status": "confirmed missing general event qualification"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (entry counters)."
     },
     {
       "id": "B:death_counter_snapshot",
@@ -254,21 +254,21 @@
       "description": "counter kind union",
       "required_change": "Add distinct positive counter-kind union over currently controlled creatures, using borrowed actual and speculative characteristic worlds. Count duplicate kinds once, exclude noncreatures/opponent creatures and zero counts. Source-local count or sum of per-object cardinalities is wrong.",
       "cards": [],
-      "status": "confirmed missing scalar"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (counter world)."
     },
     {
       "id": "B:graveyard_entry_counter",
       "description": "graveyard entry counter",
       "required_change": "Reuse SelfGraveyardCastIf for normal paid self permission; add graveyard-cast-only exact-entry counter qualification. Existing cast_entry_counters applies any cast and hand_cast_entry_counters applies only hand. A countered spell must return graveyard rather than flashback exile. Existing Finality death replacement remains authoritative after ability loss.",
       "cards": [],
-      "status": "confirmed missing origin-qualified entry counter metadata"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (entry counters)."
     },
     {
       "id": "B:any_damage_incarnation",
       "description": "any damage incarnation",
       "required_change": "Add/read actual positive damage dealt across the exact permanent incarnation (combat OR noncombat), surviving turns and control/copy changes but clearing on a true zone change. Expose through actual/speculative earlier-layer stat query for conditional hexproof. Update history before damage-trigger target acquisition.",
       "cards": [],
-      "status": "confirmed missing persistent any-damage history"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (counter world)."
     },
     {
       "id": "B:mana_spell_filter",
@@ -282,7 +282,7 @@
       "description": "variable endure",
       "required_change": "Extend Endure to an AmountValue and explicit subject, choosing exactly one dynamic white N/N Spirit or N +1 counters, including N0 no action. Reuse owned Pending and counter/token replacement pipeline; never require one pre-generated token card for every X. Preserve choice/recipe in raw/index branch and snapshot/restore.",
       "cards": [],
-      "status": "confirmed missing dynamic quantity/recipe"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (dynamic token/endure)."
     },
     {
       "id": "B:activation_x_life",
@@ -317,7 +317,7 @@
       "description": "search result entry counters",
       "required_change": "Extend searched-result entry operation to carry fixed/mixed counters before replacement/ETB commit. Magmatic Hellkite additionally freezes destroyed land controller before attempt, searches despite indestructibility, and searches only if target still legal. Do not add counter after entering or gate search on actual destruction.",
       "cards": [],
-      "status": "confirmed missing counter payload on search entry"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (entry counters)."
     },
     {
       "id": "B:linked_exile_attacking_copies",
@@ -359,7 +359,7 @@
       "description": "mixed entry counter return",
       "required_change": "Return a target own permanent from graveyard with both hexproof and indestructible counters before entry commit and all replacements/observers. Existing ReturnToBattlefieldWithCounter carries one kind; adding second later is rules-wrong. Share mixed entry payload with search-result entry counters.",
       "cards": [],
-      "status": "confirmed missing effect-entry mixed counter payload"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (entry counters)."
     },
     {
       "id": "B:delayed_noncreature_cast_trigger",
@@ -387,7 +387,7 @@
       "description": "decayed ability",
       "required_change": "Implement real Decayed keyword behavior: cannot block plus attack trigger scheduling sacrifice at end of combat. Keyword counter grants that ability while positive; existing CounterKind::Decayed stores values but has no active consumer. Already-queued attack sacrifice survives loss of ability/counter. Exact source reference prevents sacrificed old object affecting returned one.",
       "cards": [],
-      "status": "confirmed missing rules, storage alone exists"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (protection/Decayed)."
     },
     {
       "id": "B:exact_x_activation_targets",
@@ -422,7 +422,7 @@
       "description": "endure forbidden counter fallback",
       "required_change": "Current fixed Endure offers counters whenever exact source remains, even if an active counter prohibition prevents any counter placement. Official release notes require mandatory Spirit creation whenever counters cannot be put for any reason. Prune illegal choice and use same fallback when prohibition changes through replacement/entry transaction; preserve source-removed fallback and dynamic token variants. Use the enduring permanent current controller (or relevant departed LKI controller) as chooser and token creator. Distinguish inability to choose the counter payment from a legal payment later modified by replacement (CR118.11): a modified paid choice does not automatically create Spirit.",
       "cards": [],
-      "status": "confirmed existing behavior defect; source-departure case already handled"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (fixed endure)."
     },
     {
       "id": "B:event_scaled_opponent_free_cast",
@@ -440,7 +440,7 @@
         "Sinkhole Surveyor",
         "Warden of the Grove"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (fixed endure)."
     },
     {
       "id": "C:DYNAMIC_SUBJECT_ENDURE",
@@ -449,7 +449,7 @@
       "cards": [
         "Warden of the Grove"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (dynamic token/endure)."
     },
     {
       "id": "C:GRANTED_HARMONIZE",
@@ -458,7 +458,7 @@
       "cards": [
         "Songcrafter Mage"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (casting)."
     },
     {
       "id": "C:GRANTED_DELVE",
@@ -467,7 +467,7 @@
       "cards": [
         "Teval, Arbiter of Virtue"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (casting)."
     },
     {
       "id": "C:SUSPEND",
@@ -494,7 +494,7 @@
       "cards": [
         "Windcrag Siege"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (entry modes)."
     },
     {
       "id": "C:ATTACK_TRIGGER_DUPLICATION",
@@ -521,7 +521,7 @@
       "cards": [
         "Stalwart Successor"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (entry counters)."
     },
     {
       "id": "C:BEHOLD_RESOLUTION",
@@ -566,7 +566,7 @@
       "cards": [
         "Smile at Death"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (entry counters)."
     },
     {
       "id": "C:DAMAGE_PLAYER_RESULT",
@@ -692,7 +692,7 @@
       "cards": [
         "Ureni, the Song Unending"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (protection/Decayed)."
     },
     {
       "id": "D:OPTIONAL_CREATED_TOKEN_ATTACHMENT",
@@ -701,7 +701,7 @@
       "cards": [
         "Cori-Steel Cutter"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (optional attachment)."
     }
   ],
   "acceptance": {
@@ -725,27 +725,65 @@
     "full_validation_runs": 0,
     "simulation_benchmarks": [],
     "negative_regression_cases": 5,
-    "latest_focused_cases_passed": 5,
-    "root_native_runner_invocations": 7,
     "root_endure_cases_passed": 6,
-    "root_counter_cases_passed": 7
+    "root_counter_cases_passed": 7,
+    "latest_assembled_cases_passed": 147,
+    "latest_assembled_compile_seconds": 144.69915580193629,
+    "latest_assembled_scenario_seconds": 0.4118902189366054,
+    "scoped_reviewed_audit_groups_including_aliases": 25,
+    "total_audit_groups_including_aliases": 80,
+    "current_hot_layout_bytes": {
+      "Object": 160,
+      "ObjectView": 544,
+      "State": 4976
+    }
   },
   "active_checkpoints": {
     "fixed_endure": {
-      "status": "Fixed-source repair passed six focused groups and two refreshed independent nonauthor reviews at c68e647c5; dynamic subject Endure remains a separate dependency.",
-      "evidence": "docs/tdm-endure-evidence.json"
+      "commit": "c68e647c5",
+      "evidence": "docs/tdm-endure-evidence.json",
+      "status": "Six focused groups pass; two independent nonauthor scoped approvals."
     },
-    "entry_modes": "isolated engine authoring in progress",
-    "counter_world_queries": {
-      "status": "Integrated seven-group focused run passes; original commit reviewed independently by entry-mode owner and root; full shared checkpoint pending",
+    "entry_modes": {
+      "commit": "15ac5483c",
+      "evidence": "docs/tdm-entry-modes-evidence.json",
+      "status": "49 focused/compatibility scenarios pass; two independent scoped approvals."
+    },
+    "counter_world": {
       "commit": "e36436996",
       "evidence": "docs/tdm-counter-world-evidence.json",
-      "integrated_report": "<cache>/rustmage-tdm/counter-world-integrated/native.json"
+      "status": "Seven owner and seven integrated groups pass; two independent scoped approvals."
     },
-    "granted_cast_routes": "isolated engine authoring in progress",
-    "optional_created_attachment": {
-      "status": "six focused groups pass; final published source reviews pending",
-      "evidence": "docs/tdm-optional-attachment-evidence.json"
-    }
+    "optional_attachment": {
+      "commit": "b542ae7e1",
+      "evidence": "docs/tdm-optional-attachment-evidence.json",
+      "status": "Six focused groups pass; two independent scoped approvals."
+    },
+    "entry_counters": {
+      "commit": "3ed993d8e",
+      "evidence": "docs/tdm-entry-counters-evidence.json",
+      "status": "51 focused/compatibility scenarios pass; two independent scoped approvals."
+    },
+    "protection_decayed": {
+      "commit": "71e84359b",
+      "evidence": "docs/tdm-decayed-multiplicity-evidence.json",
+      "status": "16 focused plus24 compatibility pass after independent multiplicity finding; two refreshed scoped approvals."
+    },
+    "dynamic_tokens": {
+      "commit": "44612475ef8cbf42b44082f55b797117206824da",
+      "evidence": "docs/tdm-dynamic-tokens-evidence.json",
+      "status": "10 focused plus137 integrated/inherited groups pass; two exact published-source scoped approvals."
+    },
+    "casting": {
+      "original": "34cf40d5d",
+      "repair": "5ce4f4ac1e0c28c5454cbcaebeba8325f3028328",
+      "integration": "d87fa3781",
+      "evidence": "docs/tdm-harmonize-wide-evidence.json",
+      "status": "20 focused plus76 compatibility pass after independent wide-power and Bargain composition findings; two refreshed scoped approvals. New root integration awaits the next compiled checkpoint."
+    },
+    "copy_suspend": "18 focused groups first run17/18; final positive payment witness under repair in isolated worker; not accepted.",
+    "resolution_results": "First coherent22-group target authored in isolated worker; not yet validated.",
+    "behold_and_costs": "Complete source audit and typed implementation in progress; not accepted.",
+    "next_static_rules": "Root source/helper audit coversA09/A13/A18/attack duplication/conditional sacrifice/additive subtype; no implementation yet."
   }
 }

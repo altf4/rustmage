@@ -266,11 +266,11 @@
   "reviews": [
     {
       "reviewer": "/root/tdm_audit_a_g",
-      "result": "No actionable finding in final current source; exact published-head confirmation pending."
+      "result": "APPROVED exact published44612475ef8cbf42b44082f55b797117206824da source and147-case retained evidence; scoped review only."
     },
     {
       "reviewer": "/root/tdm_audit_s_z",
-      "result": "No actionable finding in final current source; exact published-head confirmation pending."
+      "result": "APPROVED exact published44612475ef8cbf42b44082f55b797117206824da source and147-case retained evidence; scoped review only."
     }
   ],
   "limitations": [

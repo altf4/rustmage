@@ -19,10 +19,9 @@ disjoint audit partitions cover all 275 resolved identities; the separate
 [Cori-Steel Cutter audit](tdm-cori-steel-audit.json) covers the final identity.
 The [complete dependency ledger](tdm-engine-audit.json) reconciles all 276 source
 audits and records 80 dependency/proof groups, including duplicate group aliases.
-Shared engine implementation may now begin; all groups remain open. Do not begin card authorship until all shared dependencies have
-focused rules/contract evidence and independent reviews.
+Shared engine implementation is in progress.25 of the80 audit/proof groups, including aliases, have scoped implementation, focused evidence and two independent nonauthor reviews. The full integrated engine checkpoint remains open. Do not begin card authorship until every shared dependency is finished, verified and reviewed.
 
-The first prepared repair covers existing fixed Endure: use the exact permanent's
+The reviewed fixed Endure repair covers: use the exact permanent's
 current controller, retain its last battlefield controller after departure, and
 create a Spirit when counter placement is prohibited. Existing departure packets
 already preserve that controller in `StackSourceView.facts.controller`; no new
@@ -60,10 +59,22 @@ completed-set PR; obtain two independent nonauthor final-head reviews.
 Initial source-pin verification: 5,488 definitions / 2,512 source blobs verified;
 generated-link consistency and authenticated frozen membership checks pass.
 No new complete cards, full acceptance runs or simulation throughput measurements
-have been produced yet. The [Endure evidence](tdm-endure-evidence.json) records
-six passing groups after the independent-review placing-player repair, with fresh
-committed-source reviews pending. The [counter-world evidence](tdm-counter-world-evidence.json)
-records seven passing owner scenarios and the integrated seven-group root pass.
-The counter rule scope received two independent nonauthor source reviews (root
-and the entry-mode owner). The complete shared checkpoint and set acceptance
-remain pending. The user goal remains active.
+have been produced. The latest assembled checkpoint passes147 selected rules
+scenarios:10 dynamic-token/Endure groups,85 other TDM groups and52 inherited
+copy/token groups. Compilation took144.699s and bounded scenario execution0.412s;
+those are rules-workload measurements, not simulation throughput.
+
+Reviewed scoped checkpoints now include fixed Endure, exact optional attachment,
+named entry modes, counter-world queries and damage history, entry counter payloads
+and first placement, colored protection and independent Decayed instances,
+sampled copiable token bases, and granted Harmonize/delve. Independent review found
+and repaired both Decayed multiplicity and wide Harmonize/payment-composition
+errors. The casting repair passes96 owner focused/compatibility scenarios and is
+integrated for the next root checkpoint.
+
+The dependency ledger links exact source hashes, reports and scoped reviews.
+Remaining work includes Suspend/copy lifecycle acceptance, resolving outcome and
+private-library continuations, Behold and cost extensions, static restrictions,
+and the other audited groups. Global observation-schema/trace migration, full
+shared-engine acceptance, every card's complete behavior, set-only games and the
+single final PR's acceptance/reviews remain open. The user goal stays active.
