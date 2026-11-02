@@ -387,28 +387,30 @@ impl Game {
             }));
             self.state.pending_triggers.push(trigger);
         }
-        if !instant_or_sorcery
-            && !spell
-                .source
-                .expect("object-backed spell or trigger")
-                .card
-                .is_prepared_face()
-        {
-            return;
-        }
+        // Ordinary cast-trigger consumers can refer to permanent spells too.
+        // Capture only for an actual consumer below; delayed instant/sorcery
+        // permissions retain their narrower event population after this loop.
+        let prepared = spell
+            .source
+            .expect("object-backed spell or trigger")
+            .card
+            .is_prepared_face();
         let prior = self.state.players[spell.controller.index()]
             .instant_sorcery_cast_this_turn
             .saturating_sub(1);
         for trigger in &mut self.state.pending_triggers[first_trigger..] {
             if let Some((_, program)) = trigger.program()
                 && let Some(amount) = program.iter().find_map(|i| match i {
-                    Instruction::CopyCastSpell { prior_spells } if instant_or_sorcery => {
-                        Some(if *prior_spells { prior } else { 1 })
+                    Instruction::CopyCastSpell {
+                        prior_spells: false,
+                    } => Some(1),
+                    Instruction::CopyCastSpell { prior_spells: true } if instant_or_sorcery => {
+                        Some(prior)
                     }
                     Instruction::CopyCastSpellChosenX if instant_or_sorcery => {
                         Some(u64::from(spell.x.unwrap_or(0)))
                     }
-                    Instruction::CopyPreparedCastSpell => Some(1),
+                    Instruction::CopyPreparedCastSpell if instant_or_sorcery || prepared => Some(1),
                     _ => None,
                 })
             {

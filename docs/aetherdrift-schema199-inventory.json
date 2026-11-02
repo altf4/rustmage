@@ -578,5 +578,11 @@
     "wire_change": "none; immutable program route only",
     "prior198": "Reject active new opcode; inherited TapAttached remains supported",
     "state": "Uses existing source_attachment LKI and current exact attachment; no new owned fields"
+  },
+  "permanent_cast_copy_semantic_delta": {
+    "shape": "existing SpellView.copy_event only; schema stays199",
+    "guard": "Reject newly populated noninstant CopyCastSpell(false) packets using the selected consumer program; preserve old prepared-copy (including mixed programs) and exact repeated-all-spells captured packets. Recurse into owned copy events.",
+    "regression": "prior_198_rejects_new_noninstant_single_copy_capture_but_preserves_old_capture_routes",
+    "contract": "docs/aetherdrift-permanent-cast-copy-evidence.json"
   }
 }

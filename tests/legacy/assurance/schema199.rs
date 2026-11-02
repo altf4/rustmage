@@ -656,6 +656,33 @@ fn program_supported(program: &[Instruction]) -> bool {
         }
     })
 }
+// The old noninstant capture path admitted a prepared-copy consumer, and
+// repeated-all-spells packets already retained any spell. The newly broadened
+// single-copy consumer needs schema199 only when neither old route supplied the
+// same amount-one packet. Keep mixed prepared programs eligible.
+fn prior_noninstant_cast_copy_supported(
+    condition: TriggerCondition,
+    program: &[Instruction],
+    prepared: bool,
+) -> bool {
+    !program.iter().any(|instruction| {
+        matches!(
+            instruction,
+            Instruction::CopyCastSpell {
+                prior_spells: false
+            }
+        )
+    }) || (prepared
+        && program
+            .iter()
+            .any(|instruction| matches!(instruction, Instruction::CopyPreparedCastSpell)))
+        || condition
+            == TriggerCondition::Granted(&TriggerCondition::SpellCast {
+                relation: CastRelation::You,
+                filter: card_rules::CastFilter::Any,
+                ordinal: None,
+            })
+}
 fn packet_supported(item: &SpellView) -> bool {
     if matches!(
         item.kind,
@@ -683,6 +710,21 @@ fn packet_supported(item: &SpellView) -> bool {
             .program()
             .is_none_or(|(plan, program)| plan_supported(plan) && program_supported(program)))
         && trigger.is_none_or(|trigger| trigger_supported(trigger.condition))
+        && trigger.is_none_or(|trigger| {
+            item.copy_event.as_ref().is_none_or(|event| {
+                event.spell.kind != StackKind::Spell
+                    || event.spell.source.is_none_or(|source| {
+                        card_rules::CastFilter::InstantSorcery.matches(source.card)
+                            || item.program().is_none_or(|(_, program)| {
+                                prior_noninstant_cast_copy_supported(
+                                    trigger.condition,
+                                    program,
+                                    source.card.is_prepared_face(),
+                                )
+                            })
+                    })
+            })
+        })
         && match item.kind {
             StackKind::ActivatedAbility { ability } => item.source.is_none_or(|source| {
                 source
@@ -1978,4 +2020,160 @@ fn prior_198_rejects_new_private_deployment_mode_even_when_opponent_cannot_see_k
     assert!(prior_schema199_state_supported(&child.state));
     child.restore(&selected).unwrap();
     assert!(!prior_schema199_state_supported(&child.state));
+}
+
+#[test]
+fn prior_198_rejects_new_noninstant_single_copy_capture_but_preserves_old_capture_routes() {
+    use card_rules::authored::CardRules;
+    const COPY: TriggeredAbility = TriggeredAbility {
+        condition: TriggerCondition::SpellCast {
+            relation: CastRelation::You,
+            filter: card_rules::CastFilter::Any,
+            ordinal: None,
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::CopyCastSpell {
+            prior_spells: false,
+        }],
+    };
+    const MODAL: TriggeredAbility = TriggeredAbility {
+        program: &[Instruction::Modal(&[SpellMode {
+            text: "Copy the triggering spell.",
+            targets: TargetPlan::NONE,
+            program: &[Instruction::CopyCastSpell {
+                prior_spells: false,
+            }],
+        }])],
+        ..COPY
+    };
+    const RULES: CardRules = CardRules {
+        effect: Effect::Permanent,
+        triggers: &[COPY, MODAL],
+        ..CardRules::EMPTY
+    };
+    let _scope =
+        card_rules::fixture_rules::activate(&[(Card::from_name("Ghost Vacuum").unwrap(), &RULES)]);
+    let mut game = scenario(Player::P0);
+    let source = put(&mut game, Player::P0, "Ghost Vacuum", Zone::Battlefield);
+    let bear = put(&mut game, Player::P0, "Grizzly Bears", Zone::Hand);
+    cast(&mut game, bear, None);
+    let packet = game
+        .state
+        .pending_triggers
+        .iter()
+        .chain(&game.state.ordering_triggers)
+        .chain(&game.state.stack)
+        .find(|item| {
+            matches!(item.kind, StackKind::TriggeredAbility { ability: 0 })
+                && item.source.is_some_and(|s| s.id == source)
+        })
+        .unwrap()
+        .clone();
+    assert!(packet.copy_event.is_some());
+    assert!(!packet_supported(&packet));
+    assert!(!prior_schema199_state_supported(&game.state));
+    let mut modal = packet.clone();
+    modal.kind = StackKind::TriggeredAbility { ability: 1 };
+    modal.mode = Some(0);
+    assert!(
+        !packet_supported(&modal),
+        "selected mode programs require the same capture guard"
+    );
+    modal.copy_event = None;
+    assert!(
+        packet_supported(&modal),
+        "an inherited modal program without a new capture stays eligible"
+    );
+    let mut uncaptured = packet.clone();
+    uncaptured.copy_event = None;
+    assert!(
+        packet_supported(&uncaptured),
+        "the inherited program alone is unchanged"
+    );
+    let mut nested = packet.clone();
+    nested.copy_event.as_mut().unwrap().spell = packet.clone();
+    assert!(
+        !packet_supported(&nested),
+        "an inner new capture must not escape the owned packet guard"
+    );
+    let mut instant = packet.clone();
+    instant
+        .copy_event
+        .as_mut()
+        .unwrap()
+        .spell
+        .source
+        .as_mut()
+        .unwrap()
+        .card = Card::from_name("Shock").unwrap();
+    assert!(
+        packet_supported(&instant),
+        "inherited instant/sorcery captures stay eligible"
+    );
+    assert!(!prior_noninstant_cast_copy_supported(
+        COPY.condition,
+        COPY.program,
+        false
+    ));
+    assert!(
+        !prior_noninstant_cast_copy_supported(COPY.condition, COPY.program, true),
+        "prepared alone did not admit the old false arm"
+    );
+    // No currently admitted permanent prepared face exists. Explicitly test
+    // the historical classifier inputs instead of masquerading an instant face
+    // as noninstant metadata and accidentally taking the I/S fast path above.
+    const MIXED_PROGRAMS: &[&[Instruction]] = &[
+        &[
+            Instruction::CopyCastSpell {
+                prior_spells: false,
+            },
+            Instruction::CopyPreparedCastSpell,
+        ],
+        &[
+            Instruction::CopyPreparedCastSpell,
+            Instruction::CopyCastSpell {
+                prior_spells: false,
+            },
+        ],
+    ];
+    for &program in MIXED_PROGRAMS {
+        let mixed = TriggeredAbility { program, ..COPY };
+        assert!(prior_noninstant_cast_copy_supported(
+            mixed.condition,
+            mixed.program,
+            true
+        ));
+        assert!(!prior_noninstant_cast_copy_supported(
+            mixed.condition,
+            mixed.program,
+            false
+        ));
+    }
+    let prepared = TriggeredAbility {
+        program: &[Instruction::CopyPreparedCastSpell],
+        ..COPY
+    };
+    assert!(prior_noninstant_cast_copy_supported(
+        prepared.condition,
+        prepared.program,
+        true
+    ));
+    let repeated = TriggeredAbility {
+        condition: TriggerCondition::Granted(&TriggerCondition::SpellCast {
+            relation: CastRelation::You,
+            filter: card_rules::CastFilter::Any,
+            ordinal: None,
+        }),
+        ..COPY
+    };
+    assert!(prior_noninstant_cast_copy_supported(
+        repeated.condition,
+        repeated.program,
+        false
+    ));
+    assert!(prior_noninstant_cast_copy_supported(
+        repeated.condition,
+        repeated.program,
+        true
+    ));
 }
