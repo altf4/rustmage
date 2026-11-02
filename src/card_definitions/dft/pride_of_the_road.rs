@@ -17,13 +17,16 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         },
     ],
     triggers: &[TriggeredAbility {
-        condition: TriggerCondition::AtStep {
-            step: TriggerStep::BeginCombat,
-            relation: CastRelation::You,
+        condition: TriggerCondition::When {
             guard: StepGuard::Expression {
                 value: StatValue::ControllerSpeed,
                 minimum: Some(4),
                 maximum: None,
+            },
+            event: &TriggerCondition::AtStep {
+                step: TriggerStep::BeginCombat,
+                relation: CastRelation::You,
+                guard: StepGuard::Always,
             },
         },
         targets: TargetPlan::Single(TargetSpec::one(TargetRule::CreatureOrVehicle {

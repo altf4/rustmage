@@ -327,3 +327,40 @@ fn dft_vanillas_have_no_rules_abilities_and_pay_for_their_printed_bodies() {
         assert_eq!(g.keywords(source), Keywords::NONE);
     }
 }
+
+#[test]
+fn pride_max_speed_grants_the_trigger_at_combat_without_a_resolution_recheck() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let source = put(&mut g, p, "Pride of the Road", Zone::Battlefield);
+    let vehicle = put(&mut g, p, "Air Response Unit", Zone::Battlefield);
+    g.state.players[p.index()].speed = 4;
+    g.begin_step(Step::BeginCombat);
+    g.give_priority();
+    for _ in 0..16 {
+        if g.legal_actions().contains(&Action::ChooseTarget {
+            target: Target::Card(vehicle),
+        }) {
+            break;
+        }
+        choose(&mut g, |a| {
+            matches!(a, Action::Pass | Action::PutTrigger { .. })
+        });
+    }
+    act(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(vehicle),
+        },
+    );
+    if g.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut g, Action::FinishTargets);
+    }
+    // Max speed grants the already-triggered ability; it is not a printed
+    // intervening-if clause checked again when that independent packet resolves.
+    g.state.players[p.index()].speed = 3;
+    g.move_object(source, Zone::Graveyard);
+    drain(&mut g);
+    assert!(g.keywords(vehicle).contains(Keywords::DOUBLE_STRIKE));
+    assert!(!g.is_creature(vehicle));
+}
