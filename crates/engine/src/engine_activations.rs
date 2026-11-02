@@ -791,6 +791,12 @@ impl Game {
         ability: u16,
     ) -> SpellView {
         self.state.passes = 0;
+        let mut item = self.activation_packet(actor, card, ability);
+        item.id = self.next_stack_id();
+        item
+    }
+    /// An uncommitted header for legality/funding only; it never enters an event queue.
+    pub(super) fn activation_packet(&self, actor: Player, card: CardId, ability: u16) -> SpellView {
         SpellView {
             source: Some(StackSourceView {
                 id: card,
@@ -848,7 +854,7 @@ impl Game {
                     })
                 }),
             cast: None,
-            id: self.next_stack_id(),
+            id: self.state.next_stack_id,
             kind: StackKind::ActivatedAbility { ability },
             source_transform: self.state.objects[card as usize]
                 .card

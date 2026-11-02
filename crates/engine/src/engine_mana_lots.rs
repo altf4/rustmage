@@ -598,24 +598,24 @@ impl Game {
     }
     // Capture before announcement costs can remove the producer or its choice.
     // The exact source reference identifies this announcement, not a live lookup.
-    pub(super) fn capture_announced_mana_quality(&mut self, item: &SpellView) {
+    pub(super) fn announced_mana_quality(&self, item: &SpellView) -> Option<(ObjectRef, Quality)> {
         let StackKind::ActivatedAbility { ability } = item.kind else {
-            return;
+            return None;
         };
-        let Some(source) = item.source else {
-            return;
-        };
-        let quality = source
+        let source = item.source?;
+        source
             .card
             .activation(ability)
             .mana_production()
             .and_then(|production| self.mana_quality(production, source.object.card))
-            .map(|quality| quality.with_definition(source.card));
-        if let Some(quality) = quality {
+            .map(|quality| (source.object, quality.with_definition(source.card)))
+    }
+    pub(super) fn capture_announced_mana_quality(&mut self, item: &SpellView) {
+        if let Some(quality) = self.announced_mana_quality(item) {
             self.state
                 .mana_lots
                 .get_or_insert_default()
-                .announcement_quality = Some((source.object, quality));
+                .announcement_quality = Some(quality);
         }
     }
     pub(super) fn mountain_tap_bonus(&self, actor: Player, card: CardId) -> u32 {

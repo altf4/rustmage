@@ -1394,6 +1394,7 @@ impl<'g> FundingState<'g> {
     }
     fn moves(&self, goal: &FundingGoal) -> Vec<FundingMove> {
         let mut moves = Vec::new();
+        let active_mana = self.game.active_mana_activation_keys();
         for (resource, entry) in self.resources.iter().enumerate() {
             let object = &entry.object;
             if object.zone != Zone::Battlefield || object.controller != goal.actor {
@@ -1468,6 +1469,25 @@ impl<'g> FundingState<'g> {
                 let Some(production) = ability.mana_production() else {
                     continue;
                 };
+                if !active_mana.is_empty() {
+                    let origin = ability_world::CharacteristicWorld::ability_origin(self, entry.id);
+                    let source = self.reference(entry.id);
+                    let key = mana_announcements::ManaActivationKey {
+                        source,
+                        definition: borrowed.map_or(object.card, |row| row.definition),
+                        ability: index,
+                        borrowed_slot: borrowed.map(|row| row.slot),
+                        self_grant: None,
+                        source_origin: origin,
+                        grant: (borrowed.is_none()
+                            && self.source_activation_template_available(entry.id, index))
+                        .then_some((source, object.card, origin)),
+                    };
+                    if active_mana.contains(&key) {
+                        continue;
+                    }
+                }
+
                 if ability.cost.sacrifice && self.sacrifice_prohibited(entry.id) {
                     continue;
                 }
@@ -4114,6 +4134,101 @@ impl Game {
             })
         })
     }
+    pub(super) fn deferred_mana_fundable(
+        &self,
+        candidate: &Announcement,
+        parents: &[mana_announcements::ManaAnnouncement],
+        quality: Option<&mana_lots::Quality>,
+    ) -> bool {
+        if candidate
+            .item
+            .mana_activation_key()
+            .is_some_and(|key| self.active_mana_activation_keys().contains(&key))
+        {
+            return false;
+        }
+        let goal = self.funding_goal(candidate);
+        let mut world = FundingState::from_game(self, &goal);
+        world.set_purpose(self.purpose_for_item(&candidate.item));
+        world.set_payment_context(candidate);
+        world.set_funding_continuation(candidate, parents, quality);
+        world.reachable_with_evidence(
+            &goal,
+            candidate.evidence.as_ref().map(|row| row.threshold),
+            &mut HashSet::new(),
+        )
+    }
+    fn visit_deferred_indexed_mana(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
+        let Some(actor) = self.semantic_actor() else {
+            return false;
+        };
+        let parents = self.deferred_mana_parents();
+        if parents.is_empty() {
+            return false;
+        }
+        for (id, object) in self.state.objects.iter().enumerate() {
+            let id = id as CardId;
+            for (index, ability) in object.card.activations().iter().enumerate() {
+                let Some(production) = ability.mana_production() else {
+                    continue;
+                };
+                // Selected external costs retain the existing incremental route;
+                // this candidate path adds deferred payment of a mana component.
+                if !ability.cost.mana_component
+                    || ability.cost.additional.is_some()
+                    || object.card.legacy_subtype_mana_activation(index as u16)
+                    || object.card.self_granted_activation_template(index as u16)
+                    || !self.activation_cost_available(id, ability, index, actor, false)
+                {
+                    continue;
+                }
+                let packet = self.activation_packet(actor, id, index as u16);
+                let quality = self.announced_mana_quality(&packet);
+                if self.visit_activation_counter_payments(
+                    actor,
+                    ability,
+                    self.counter_amounts(id),
+                    |counters| {
+                        production.in_world(self, id).visit(|produced| {
+                            let mut candidate = self.payment_announcement(
+                                packet.clone(),
+                                counters.clone(),
+                                Some(produced),
+                                None,
+                            );
+                            let options: Vec<_> = candidate
+                                .cost_options()
+                                .enumerate()
+                                .map(|(slot, cost)| {
+                                    (cost, candidate.activation_route_for_index(slot))
+                                })
+                                .collect();
+                            for (cost, route) in options {
+                                candidate.cost = Some(cost);
+                                candidate.activation_cost_route = route;
+                                if self.deferred_mana_fundable(
+                                    &candidate,
+                                    &parents,
+                                    quality.as_ref().map(|(_, q)| q),
+                                ) && emit(Action::AnnounceMana {
+                                    card: id,
+                                    ability: index as u16,
+                                    counter_payment: counters.clone(),
+                                    production: produced,
+                                }) {
+                                    return true;
+                                }
+                            }
+                            false
+                        })
+                    },
+                ) {
+                    return true;
+                }
+            }
+        }
+        false
+    }
     pub(super) fn visit_cost_payment(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
         let announcement = self.state.announcing.as_ref().unwrap();
         if announcement.cast_costs.as_ref().is_some_and(|c| {
@@ -4220,7 +4335,7 @@ impl Game {
                 return true;
             }
         }
-        false
+        self.visit_deferred_indexed_mana(emit)
     }
 }
 

@@ -133,3 +133,77 @@ impl Game {
             })
     }
 }
+
+/// An activated instance, independent of its mutable characteristics or costs.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) struct ManaActivationKey {
+    pub source: ObjectRef,
+    pub definition: Card,
+    pub ability: u16,
+    pub borrowed_slot: Option<u64>,
+    pub self_grant: Option<u64>,
+    pub source_origin: Option<u64>,
+    pub grant: Option<(ObjectRef, Card, Option<u64>)>,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl SpellView {
+    pub(super) fn mana_activation_key(&self) -> Option<ManaActivationKey> {
+        let StackKind::ActivatedAbility { ability } = self.kind else {
+            return None;
+        };
+        let source = self.source?;
+        Some(ManaActivationKey {
+            source: source.object,
+            definition: source.card,
+            ability,
+            borrowed_slot: self.borrowed_slot,
+            self_grant: self
+                .self_granted_activation
+                .as_ref()
+                .map(|row| row.grant_timestamp),
+            source_origin: self.source_ability_origin,
+            grant: self
+                .attachment_trigger
+                .as_ref()
+                .map(|row| (row.grantor, row.granting_card, row.origin)),
+        })
+    }
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    pub(super) fn active_mana_activation_keys(&self) -> Vec<ManaActivationKey> {
+        self.state
+            .announcing
+            .iter()
+            .chain(
+                self.state
+                    .mana_announcement_stack
+                    .iter()
+                    .flat_map(|rows| rows.iter().map(|row| &row.announcement)),
+            )
+            .filter(|row| row.production.is_some())
+            .filter_map(|row| row.item.mana_activation_key())
+            .collect()
+    }
+    pub(super) fn deferred_mana_parents(&self) -> Vec<ManaAnnouncement> {
+        let mut parents = self
+            .state
+            .mana_announcement_stack
+            .as_deref()
+            .cloned()
+            .unwrap_or_default();
+        if let Some(parent) = &self.state.announcing {
+            parents.push(ManaAnnouncement {
+                announcement: parent.clone(),
+                pending: self.state.pending.clone(),
+                quality: self
+                    .state
+                    .mana_lots
+                    .as_ref()
+                    .and_then(|lots| lots.announcement_quality),
+            });
+        }
+        parents
+    }
+}

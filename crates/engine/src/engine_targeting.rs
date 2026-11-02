@@ -2159,8 +2159,26 @@ impl Game {
                     .is_some_and(|plan| { self.item_targets_available(&item, plan) })
         );
         let needs_mode = item.modes().is_some() && item.mode.is_none();
+        self.state.announcing =
+            Some(self.payment_announcement(item, counters, production, origin_counter_cost));
+        self.state
+            .announcing
+            .as_mut()
+            .unwrap()
+            .initialize_alternative_life();
+        self.continue_announcement_choices(needs_mode);
+    }
+
+    pub(super) fn payment_announcement(
+        &self,
+        item: SpellView,
+        counters: Counters,
+        production: Option<Mana>,
+        origin_counter_cost: Option<u16>,
+    ) -> Announcement {
+        let plan = self.target_spec(&item);
         let casualty = self.casualty_declarations(&item);
-        self.state.announcing = Some(Announcement {
+        Announcement {
             equip_zero_available: self.item_first_equip_zero_available(&item)
                 && counters == Counters::default(),
             exhaust_reuse_authorized: self.item_exhaust_reuse_available(&item),
@@ -2194,13 +2212,7 @@ impl Game {
             additional_paid: false,
             pay_window: true,
             production,
-        });
-        self.state
-            .announcing
-            .as_mut()
-            .unwrap()
-            .initialize_alternative_life();
-        self.continue_announcement_choices(needs_mode);
+        }
     }
 
     pub(super) fn finish_announcement(&mut self) {
