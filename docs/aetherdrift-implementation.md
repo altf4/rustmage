@@ -42,10 +42,16 @@ outputs use a persistent cache outside the checkout. Sources remain fixed while
 a consuming process runs, and required libraries remain at their recorded paths.
 
 Focused engine evidence and build timings are retained in
-`docs/aetherdrift-engine-progress.json`. Combined focused evidence now covers all
-288 scenarios, including the corrected rollback fixtures, on the same engine.
-The final batch covers deferred-funding performance, duplicate borrowed actions,
-and precise compatibility guards for newly available late mana choices. All
-remaining engine source changes and review corrections are being assembled
-before the next shared build. Broad native validation, schema evidence and both
-independent review decisions still gate the engine freeze and card authorship.
+`docs/aetherdrift-engine-progress.json`. The assembled checkpoint passed all 291
+focused scenarios in 32 targets after one 151-second engine/set/test build.
+Cached execution completed the remaining 199 native cases after a restricted-mana
+stack overflow. In total, ordinary legacy assurance has 3023 passes, three stale
+mana-action-count assertions, two unfundable-converter assertions and that abort.
+Two native BIG pairings pass; two exceed the unchanged 45-second limit.
+
+The trace migration proof now has 2966 exact prior198 matches and 41 expected
+unrepresentable late-mana routes, with no unexpected differences or outcome
+changes. The baseline remains unpromoted while funding correctness and performance
+repairs are assembled and reviewed. Diagnostics reuse the current binaries; the
+next expensive build waits for the complete repair batch. Broad native acceptance,
+trace promotion and independent reviews still gate engine freeze/card authorship.

@@ -667,7 +667,7 @@
   ],
   "resource_policy": "All Cargo uses resource_guard; one shared build slot,6GiB cgroup, serial tests; no OOM probe or unmanaged builds",
   "pending": "Finish all engine blockers and focused/shared contract proofs plus independent reviews before ordinary DFT definitions. Then complete card behavior/provenance, inherited119 verification, legal set-only complete games/replay/owned search, full release acceptance, README counts, one completed-set PR and two independent nonauthor reviews.",
-  "throughput": "0 new whole cards admitted during engine phase. Engine/set/test compilation129.86seconds for latest full288-scenario run; test-only two-scenario followup completed in0.90seconds with engine reused. All288 have combined passing evidence. Native BIG pairing remains a45-second performance blocker. No set simulation or all-Standard throughput claim.",
+  "throughput": "0 new whole cards admitted during engine phase. One assembled engine/set/test build151.06seconds;291 focused cases execute0.543seconds. Cached remaining199native cases execute0.700seconds. Native BIG passing pairing zero:3games/1456decisions in0.456seconds; pairing three:3games/1859decisions in1.284seconds. Two other pairings exceed45seconds, so no aggregate game throughput or DFT acceptance claim.",
   "implemented_engine_clusters_pending_final_review": [
     "speed scalars/grants/replacements and exact mana quality",
     "crew/saddle participant events, toughness and direct designation",
@@ -693,10 +693,11 @@
     "acquired nonmana independent usage and exact counter-cost receipts; temporary acquired Embalm graveyard activations with white/Zombie/no-cost copy exceptions"
   ],
   "remaining_engine_blockers": [
-    "Complete deferred-funding performance repair and remove duplicate borrowed mana actions, with independent source review before a shared build",
-    "Classify and guard the41 genuinely new costly late-mana action routes in prior198 trace compatibility; repair the separate Territory Forge duplicate-action regression",
-    "Run one assembled focused/broad native checkpoint, finish schema199 trace evidence and obtain both independent engine review decisions",
-    "Regenerate linkage and warm the stable guarded test cache before ordinary card authorship"
+    "Repair restricted-lot child search termination and unfundable speculative converter steps; preserve complete post-cost mana planning",
+    "Finish deferred-announcement funding performance for native BIG pairings one/two without cutoffs or raised timeouts",
+    "Update three stale Loot/Lotus tests to preserve all concrete output assertions and separately prove late-choice output",
+    "Source-review the coherent repair batch, then run one shared build and complete native/trace/performance acceptance",
+    "Promote reviewed trace baseline only after correctness/performance pass; obtain both independent engine reviews and freeze/warm the guarded authoring cache"
   ],
   "all_authoring_reports": "<cache>/rustmage-authoring/aetherdrift/ (per-run immutable logs/results; reusable target kept separately)",
   "in_progress_checkpoints": [
@@ -772,7 +773,7 @@
       "command_seconds": 1.0176801930065267
     }
   ],
-  "current_runtime_evidence": "Combined focused evidence288/288 scenarios on engine586895eee: complete run286/288, then corrected casualty fixture2/2 in under1second using the cached engine. Tax18, ManaOutput11, Embalm17, acquired6 and schema14 all pass. BIG replay/search still exceeds45seconds; prior198 trace export2965/3007 exact,42 typed action-route differences under audit. No new DFT card admission.",
+  "current_runtime_evidence": "Single assembled build bb985fa7c:291/291 focused across32targets; ordinary legacy3023 passed,5 failed assertions and1 restricted-mana stack overflow (including199/199 cached followup). BIG pairings zero/three pass, one/two exceed45seconds. Prior198 proof2966 exact +41 expected new late routes, no other differences/outcome changes; baseline not promoted. Production/fmt/provenance/strict Clippy pass. All subsequent diagnostics reused cached binaries.",
   "latest_affected_regressions": {
     "revision": "8c8e1a53f",
     "schema199": {
@@ -796,5 +797,57 @@
     "report": "<cache>/rustmage-authoring/aetherdrift/review-checkpoint-20261101-213600/result.json",
     "peak_memory_gib": 3.1
   },
-  "validation_policy": "Per explicit user steering: assemble all remaining engine features/fixes and source-review corrections before the next shared guarded build; then run the combined checkpoint. No intermediate engine-test builds while this batch is authored."
+  "validation_policy": "Per explicit user steering: assemble all remaining engine features/fixes and source-review corrections before the next shared guarded build; then run the combined checkpoint. No intermediate engine-test builds while this batch is authored.",
+  "assembled_checkpoint": {
+    "revision": "bb985fa7c9c45cd0eafb31f8ec99572a77b90d8d",
+    "report": "<cache>/rustmage-authoring/aetherdrift/assembled-engine-20261101-225600/report.corrected.json",
+    "original_report_preserved": true,
+    "production_format_provenance_clippy": "all passed before single test compilation",
+    "cargo_test_builds": 1,
+    "cargo_test_build_seconds": 151.0595303230075,
+    "focused": {
+      "passed": 291,
+      "failed": 0,
+      "targets": 32,
+      "execution_seconds": 0.5429340580740245
+    },
+    "ordinary_legacy": {
+      "expected": 3029,
+      "passed_before_abort": 2824,
+      "failed_assertions": 5,
+      "stack_overflow_aborts": 1,
+      "unexecuted_after_abort": 199,
+      "cached_followup_passed": 199,
+      "cached_followup_seconds": 0.6996994950022781
+    },
+    "failures": {
+      "stale_legacy_action_counts": 3,
+      "unfundable_converter_moves": 2,
+      "stack_overflow": "repeatable spell-only mana inside an activation payment child"
+    },
+    "big_games": {
+      "passed_pairings": [
+        "zero",
+        "three"
+      ],
+      "timed_out_pairings": [
+        "one",
+        "two"
+      ],
+      "timeout_seconds": 45,
+      "scope": "existing native Standard BIG decks; natural games/replay/owned search, not DFT set acceptance"
+    },
+    "trace_proof": {
+      "expected": 3007,
+      "prior198_exact": 2966,
+      "expected_unrepresentable": 41,
+      "unexpected_differences": 0,
+      "outcome_changes": 0,
+      "territory_forge_restored_exact": true,
+      "current_baseline_promoted": false
+    },
+    "runtime_diagnostics": "<cache>/rustmage-authoring/aetherdrift/cached-diagnostics-bb985-20261101-232200/report.json",
+    "diagnostics": "No Cargo; exact five assertions, remaining199 cases and two8second MI stacks; binary/revision unchanged, zero remaining processes",
+    "engine_freeze": "blocked by funding correctness/performance repairs; no card authoring or admissions yet"
+  }
 }
