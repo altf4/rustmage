@@ -159,7 +159,7 @@ fn search_is_optional_for_public_graveyard_copies_and_always_shuffles_even_at_ze
         let public = available.then(|| put(&mut g, p.other(), "Grizzly Bears", Zone::Graveyard));
         begin(&mut g, p);
         choose_name(&mut g, "Grizzly Bears");
-        let rng = g.state.rng.clone();
+        let rng = g.state.rng;
         assert!(matches!(g.state.pending, Pending::EffectChoice { .. }));
         act(&mut g, Action::FinishSearch);
         settle(&mut g);
