@@ -39,6 +39,14 @@
     "Private selection, raw/index children, parent disposal and snapshot restore retain independent exact selections and shuffle state"
   ],
   "existing_consumer": "CoverUpSearch still starts from graveyard choice, has no cap and draws for actual exiled hand cards. Its behavior remains distinct in the common finalizer.",
-  "target": "tests/dft_named_search.rs (6 scenarios)",
-  "remaining": "Skyseer activation tax remains a separate engine blocker; ordinary definitions and independent reviewed complete rules evidence not admitted by these fixtures."
+  "target": "tests/dft_named_search.rs (8 scenarios)",
+  "remaining": "Skyseer activation tax remains a separate engine blocker; ordinary definitions and independent reviewed complete rules evidence not admitted by these fixtures.",
+  "review_fix": {
+    "finding": "A selectable split/Room half name did not equal the displayed joined card name.",
+    "fix": "Match structured outside-zone rules names with existing interchangeable-name equality; DFC/adventure cards retain only their front name. No display-string splitting.",
+    "tests": [
+      "split_and_room_cards_match_either_individual_outside_zone_name",
+      "double_faced_cards_match_the_front_name_only_outside_battlefield"
+    ]
+  }
 }

@@ -155,7 +155,7 @@ impl Game {
                 && o.is_card()
                 && matches!(o.zone, Zone::Graveyard | Zone::Hand | Zone::Library)
                 && self.object_ref(object.card) == object
-                && name.matches(self.object_name(object.card))
+                && outside_names::matches(o.card, name)
                 && !choice.selected[player.index()].contains(&object);
         }
         if let EffectChoiceKind::CoverUpSearch { owner, name } = choice.kind.payment_kind() {

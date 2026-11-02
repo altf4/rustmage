@@ -265,3 +265,56 @@ fn private_name_search_raw_index_and_restore_keep_selection_and_shuffle_owned() 
     settle(&mut restored);
     assert_eq!(raw.snapshot(), restored.snapshot());
 }
+
+#[test]
+fn split_and_room_cards_match_either_individual_outside_zone_name() {
+    let _scope = fixture_rules::activate(&[(Card::Divination, &SEARCH)]);
+    for (identity, names) in [
+        ("Cease // Desist", ["Cease", "Desist"]),
+        (
+            "Bottomless Pool // Locker Room",
+            ["Bottomless Pool", "Locker Room"],
+        ),
+    ] {
+        let card = Card::from_name(identity).unwrap();
+        for name in names {
+            for zone in [Zone::Hand, Zone::Library, Zone::Graveyard] {
+                let mut g = scenario(Player::P0);
+                // A named search reads card metadata even while that card's own
+                // gameplay remains gated; it never casts or resolves the card.
+                let id = put(&mut g, Player::P1, "Grizzly Bears", zone);
+                g.state.objects[id as usize].card = card;
+                begin(&mut g, Player::P0);
+                choose_name(&mut g, name);
+                exile_pick(&mut g, id);
+                act(&mut g, Action::FinishSearch);
+                settle(&mut g);
+                assert_eq!(
+                    g.object_view(id).zone,
+                    Zone::Exile,
+                    "{identity}, {name}, {zone:?}"
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn double_faced_cards_match_the_front_name_only_outside_battlefield() {
+    let _scope = fixture_rules::activate(&[(Card::Divination, &SEARCH)]);
+    let mut g = scenario(Player::P0);
+    let id = put(&mut g, Player::P1, "Grizzly Bears", Zone::Graveyard);
+    g.state.objects[id as usize].card = Card::from_name("Braided Net").unwrap();
+    begin(&mut g, Player::P0);
+    choose_name(&mut g, "Braided Quipu");
+    let reference = g.object_ref(id);
+    reject(&mut g, Action::SelectResolutionExile { object: reference });
+    act(&mut g, Action::FinishSearch);
+    settle(&mut g);
+    begin(&mut g, Player::P0);
+    choose_name(&mut g, "Braided Net");
+    exile_pick(&mut g, id);
+    act(&mut g, Action::FinishSearch);
+    settle(&mut g);
+    assert_eq!(g.object_view(id).zone, Zone::Exile);
+}
