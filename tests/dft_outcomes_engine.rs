@@ -217,7 +217,7 @@ fn rummage_pending_choice_branches_raw_index_and_restore_without_private_leaks()
         .legal_actions()
         .iter()
         .position(|a| *a == action)
-        .unwrap() as u32;
+        .unwrap();
     let rev = indexed.revision();
     act(&mut raw, action.clone());
     indexed.apply_index(p, rev, index).unwrap();
@@ -246,7 +246,7 @@ fn rummage_draws_actual_discards_after_prevention_and_redirection() {
     let _reset = Reset;
     let _scope = fixture_rules::activate(&[
         (Card::GrizzlyBears, &RUMMAGE),
-        (Card::ShortBow, &EXILE_REPLACEMENT),
+        (Card::from_name("Short Bow").unwrap(), &EXILE_REPLACEMENT),
     ]);
     for prevented in [false, true] {
         let mut g = scenario(Player::P0);
@@ -297,7 +297,10 @@ fn sacrifice_fallback_cannot_discard_while_creature_or_uncrewed_vehicle_is_avail
 fn sacrifice_fallback_discards_when_matching_permanents_absent_or_prohibited() {
     let _scope = fixture_rules::activate(&[
         (Card::Divination, &FALLBACK),
-        (Card::ShortBow, &SACRIFICE_PROHIBITION),
+        (
+            Card::from_name("Short Bow").unwrap(),
+            &SACRIFICE_PROHIBITION,
+        ),
     ]);
     for p in [Player::P0, Player::P1] {
         for prohibit in [false, true] {
@@ -349,7 +352,7 @@ fn post_mill_threshold_uses_current_graveyard_and_does_not_restrict_announced_ta
 fn post_mill_threshold_uses_replaced_mill_and_stale_target_fizzles_before_mill() {
     let _scope = fixture_rules::activate(&[
         (Card::Divination, &FEAST),
-        (Card::ShortBow, &EXILE_REPLACEMENT),
+        (Card::from_name("Short Bow").unwrap(), &EXILE_REPLACEMENT),
     ]);
     let mut g = scenario(Player::P0);
     put(&mut g, Player::P0, "Short Bow", Zone::Battlefield);
@@ -364,8 +367,8 @@ fn post_mill_threshold_uses_replaced_mill_and_stale_target_fizzles_before_mill()
     );
     let spell = put(&mut g, Player::P0, "Divination", Zone::Hand);
     cast(&mut g, spell, Some(Target::Card(target)));
-    g.move_card(target, Zone::Hand);
-    g.move_card(target, Zone::Battlefield);
+    g.move_object(target, Zone::Hand);
+    g.move_object(target, Zone::Battlefield);
     let library = g.state.players[0].library.clone();
     settle(&mut g);
     assert_eq!(g.state.players[0].library, library);
@@ -393,8 +396,8 @@ fn destruction_reward_happens_once_only_for_actual_own_creature_destruction() {
         };
         activate_reward(&mut g, source, &targets);
         if mode == 4 {
-            g.move_card(own, Zone::Hand);
-            g.move_card(own, Zone::Battlefield);
+            g.move_object(own, Zone::Hand);
+            g.move_object(own, Zone::Battlefield);
         }
         settle(&mut g);
         assert_eq!(
@@ -412,7 +415,7 @@ fn destruction_reward_happens_once_only_for_actual_own_creature_destruction() {
 fn destruction_reward_counts_exile_replacement_but_never_rebinds_source() {
     let _scope = fixture_rules::activate(&[
         (Card::GrizzlyBears, &REWARD),
-        (Card::ShortBow, &EXILE_REPLACEMENT),
+        (Card::from_name("Short Bow").unwrap(), &EXILE_REPLACEMENT),
     ]);
     for reenter in [false, true] {
         let mut g = scenario(Player::P0);
@@ -421,8 +424,8 @@ fn destruction_reward_counts_exile_replacement_but_never_rebinds_source() {
         put(&mut g, Player::P0, "Short Bow", Zone::Battlefield);
         activate_reward(&mut g, source, &[own]);
         if reenter {
-            g.move_card(source, Zone::Hand);
-            g.move_card(source, Zone::Battlefield);
+            g.move_object(source, Zone::Hand);
+            g.move_object(source, Zone::Battlefield);
         }
         settle(&mut g);
         assert_eq!(g.object_view(own).zone, Zone::Exile);
