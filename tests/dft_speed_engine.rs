@@ -204,6 +204,7 @@ fn conditional_damage_addition_covers_combat_and_permanents_but_only_opponents()
                         combat,
                         preventable: true,
                     }]);
+                    g.advance_replacements(false);
                     assert_eq!(g.state.objects[target as usize].damage, amount);
                     g.apply_damage_batch(&[DamageEvent {
                         source,
@@ -212,6 +213,7 @@ fn conditional_damage_addition_covers_combat_and_permanents_but_only_opponents()
                         combat,
                         preventable: true,
                     }]);
+                    g.advance_replacements(false);
                     assert_eq!(g.state.players[p.other().index()].life, 20 - amount);
                     g.apply_damage_batch(&[DamageEvent {
                         source,
@@ -220,6 +222,7 @@ fn conditional_damage_addition_covers_combat_and_permanents_but_only_opponents()
                         combat,
                         preventable: true,
                     }]);
+                    g.advance_replacements(false);
                     assert_eq!(
                         g.state.players[p.index()].life,
                         19,

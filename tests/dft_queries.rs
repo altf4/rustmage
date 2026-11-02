@@ -231,8 +231,9 @@ fn global_exile_trigger_uses_observer_turn_and_excludes_tokens() {
     assert_eq!(g.state.players[0].cards_drawn_this_turn, 0);
     let mut g = scenario(Player::P0);
     put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
-    let token = put(&mut g, Player::P0, "Savannah Lions", Zone::Battlefield);
-    g.state.objects[token as usize].copy_kind = CopyKind::Token;
+    let token = g.state.objects.len() as CardId;
+    g.create_tokens(Player::P0, Card::DrakeToken, 1, false);
+    assert!(g.object_view(token).is_token());
     let spell = put(&mut g, Player::P0, "Opt", Zone::Hand);
     cast(&mut g, spell, Some(Target::Card(token)));
     settle(&mut g);
