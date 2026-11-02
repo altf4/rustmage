@@ -115,10 +115,22 @@ fn actual_fang_druid_searches_audited_vanillas_in_either_zone_and_rejects_all_ab
                         .is_none()
                 );
                 act(&mut g, Action::ChooseSearch { card: found });
-                reject(&mut g, Action::ChooseSearch { card: second });
+                // This single-card search permits editing the pending choice;
+                // a second selection replaces it rather than accumulating one.
+                act(&mut g, Action::ChooseSearch { card: second });
+                assert_eq!(
+                    g.observe(p).zone_search.as_ref().unwrap().selected,
+                    Some(g.object_ref(second))
+                );
+                act(&mut g, Action::ChooseSearch { card: found });
                 act(&mut g, Action::FinishSearch);
                 drain(&mut g);
                 assert_eq!(g.object_view(found).zone, Zone::Hand, "{name}");
+                assert_eq!(
+                    g.object_view(second).zone,
+                    zone,
+                    "only the final selection moves"
+                );
                 assert!(
                     g.observe(p.other())
                         .known_hand
