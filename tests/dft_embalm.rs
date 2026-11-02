@@ -407,7 +407,7 @@ fn embalm_timing_and_owner_restrictions_are_activation_restrictions() {
     reject(&mut g, a.clone());
     g.state.priority = Player::P0;
     assert!(g.legal_actions().contains(&a));
-    let spell = put(&mut g, Player::P0, "Opt", Zone::Hand);
+    let spell = put(&mut g, Player::P0, "Bear Cub", Zone::Hand);
     cast(&mut g, spell, None);
     assert!(!g.legal_actions().contains(&a));
     finish(&mut g);
