@@ -39,6 +39,24 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         }
     }
 
+    /// Count actual surviving triggered instances through the ordered ability
+    /// timeline, after provider suppression and recipient ability removal.
+    pub(super) fn decayed_instances(&self, id: CardId) -> usize {
+        if !self.on_battlefield(id) {
+            return 0;
+        }
+        if let Some(evaluation) = &self.evaluation {
+            evaluation.result.objects[id as usize].decayed_instances
+        } else {
+            // Ordinary keywords keep their mask-only fast path. Only an actual
+            // Decayed attack needs multiplicity when there was no other reason
+            // to evaluate the layer-six world.
+            ability_evaluation::evaluate_abilities(self.world)
+                .result
+                .objects[id as usize]
+                .decayed_instances
+        }
+    }
     pub(super) fn object_ref(&self, id: CardId) -> ObjectRef {
         self.reference(id)
     }

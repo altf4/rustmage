@@ -13,8 +13,10 @@ mod basic_land_type_tests {
         };
         let initial = LayerSixObject {
             printed: true,
-            keywords: Keywords::FLYING,
+            keywords: Keywords::FLYING.union(Keywords::DECAYED),
             granted_keywords: Keywords::NONE,
+            decayed_instances: 1,
+            granted_decayed_instances: 0,
             grants: Vec::new(),
             self_grants: Vec::new(),
             mana: Vec::new(),
@@ -25,7 +27,9 @@ mod basic_land_type_tests {
             timestamp: 1,
             recipients: vec![0],
             action: LayerSixAction::Grant {
-                keywords: Keywords::FLYING.union(Keywords::HEXPROOF),
+                keywords: Keywords::FLYING
+                    .union(Keywords::HEXPROOF)
+                    .union(Keywords::DECAYED),
                 abilities: Vec::new(),
             },
         };
@@ -48,6 +52,10 @@ mod basic_land_type_tests {
         };
         let result = apply_layer_six(vec![initial.clone()], &[external, replacement.clone()]);
         assert!(!result.objects[0].printed);
+        assert_eq!(
+            result.objects[0].decayed_instances, 1,
+            "printed Decayed is removed while the independent acquired instance survives"
+        );
         assert!(
             result.objects[0]
                 .keywords
@@ -63,6 +71,7 @@ mod basic_land_type_tests {
         };
         let result = apply_layer_six(vec![initial], &[replacement, remove]);
         assert_eq!(result.objects[0].keywords, Keywords::NONE);
+        assert_eq!(result.objects[0].decayed_instances, 0);
         assert!(result.objects[0].mana.is_empty());
     }
     #[test]
@@ -85,6 +94,8 @@ mod basic_land_type_tests {
             printed: true,
             keywords: Keywords::NONE,
             granted_keywords: Keywords::NONE,
+            decayed_instances: 0,
+            granted_decayed_instances: 0,
             grants: Vec::new(),
             self_grants: Vec::new(),
             mana: vec![mana(1, true), mana(5, false)],
@@ -129,6 +140,8 @@ mod basic_land_type_tests {
             printed: true,
             keywords: Keywords::NONE,
             granted_keywords: Keywords::NONE,
+            decayed_instances: 0,
+            granted_decayed_instances: 0,
             grants: Vec::new(),
             self_grants: Vec::new(),
             mana: Vec::new(),
@@ -198,6 +211,8 @@ mod basic_land_loss_tests {
             printed: true,
             keywords: Keywords::NONE,
             granted_keywords: Keywords::NONE,
+            decayed_instances: 0,
+            granted_decayed_instances: 0,
             grants: Vec::new(),
             self_grants: Vec::new(),
             mana: vec![mana(1, true), mana(5, false)],

@@ -34,10 +34,38 @@ pub(super) struct LayerSixObject {
     pub keywords: Keywords,
     /// Acquired keywords retained when a type effect removes rules-text abilities.
     pub granted_keywords: Keywords,
+    /// Decayed's triggered instances are not redundant (CR113.2c/702.147).
+    /// These ephemeral counts follow the same ordered effects as the keyword
+    /// mask; interchangeable counters of a kind enter as one grant row.
+    pub decayed_instances: usize,
+    pub granted_decayed_instances: usize,
     pub grants: Vec<GrantedAbilityKey>,
     /// Independently acquired self-owned static/activated ability instances.
     pub self_grants: Vec<u64>,
     pub mana: Vec<GrantedManaAbility>,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl LayerSixObject {
+    fn grant_keywords(&mut self, keywords: Keywords) {
+        self.keywords = self.keywords.union(keywords);
+        self.granted_keywords = self.granted_keywords.union(keywords);
+        if keywords.contains(Keywords::DECAYED) {
+            self.decayed_instances = self
+                .decayed_instances
+                .checked_add(1)
+                .capacity("Decayed ability instance count exhausted");
+            self.granted_decayed_instances = self
+                .granted_decayed_instances
+                .checked_add(1)
+                .capacity("acquired Decayed ability instance count exhausted");
+        }
+    }
+    fn clear_keywords(&mut self) {
+        self.keywords = Keywords::NONE;
+        self.granted_keywords = Keywords::NONE;
+        self.decayed_instances = 0;
+        self.granted_decayed_instances = 0;
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug)]
@@ -205,6 +233,7 @@ pub(super) fn apply_layer_six(
                 let object = &mut objects[recipient as usize];
                 object.printed = false;
                 object.keywords = object.granted_keywords;
+                object.decayed_instances = object.granted_decayed_instances;
                 object.mana.retain(|ability| !ability.subtype_derived);
             }
         }
@@ -212,8 +241,7 @@ pub(super) fn apply_layer_six(
             for &recipient in &effect.recipients {
                 let object = &mut objects[recipient as usize];
                 object.printed = false;
-                object.keywords = Keywords::NONE;
-                object.granted_keywords = Keywords::NONE;
+                object.clear_keywords();
                 object.grants.clear();
                 object.self_grants.clear();
                 object.mana.clear();
@@ -225,8 +253,7 @@ pub(super) fn apply_layer_six(
         {
             for row in rows {
                 let object = &mut objects[row.recipient as usize];
-                object.keywords = object.keywords.union(row.keywords);
-                object.granted_keywords = object.granted_keywords.union(row.keywords);
+                object.grant_keywords(row.keywords);
                 object.grants.extend_from_slice(&row.abilities);
                 object.mana.extend_from_slice(&row.mana);
             }
@@ -241,14 +268,17 @@ pub(super) fn apply_layer_six(
                 LayerSixAction::RemoveKeywords(keywords) => {
                     object.keywords = object.keywords.without(*keywords);
                     object.granted_keywords = object.granted_keywords.without(*keywords);
+                    if keywords.contains(Keywords::DECAYED) {
+                        object.decayed_instances = 0;
+                        object.granted_decayed_instances = 0;
+                    }
                 }
                 LayerSixAction::RemoveSubtypeMana => {
                     object.mana.retain(|ability| !ability.subtype_derived);
                 }
                 LayerSixAction::Remove => {
                     object.printed = false;
-                    object.keywords = Keywords::NONE;
-                    object.granted_keywords = Keywords::NONE;
+                    object.clear_keywords();
                     object.grants.clear();
                     object.self_grants.clear();
                     object.mana.clear();
@@ -258,8 +288,7 @@ pub(super) fn apply_layer_six(
                     keywords,
                     abilities,
                 } => {
-                    object.keywords = object.keywords.union(*keywords);
-                    object.granted_keywords = object.granted_keywords.union(*keywords);
+                    object.grant_keywords(*keywords);
                     object.grants.extend_from_slice(abilities);
                 }
             }

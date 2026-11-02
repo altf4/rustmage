@@ -898,3 +898,170 @@ fn keyword_widening_retains_old_numeric_wire_values_and_records_hot_layout() {
         .unwrap();
     }
 }
+
+#[test]
+fn printed_decayed_and_keyword_counter_are_independent_counterable_attack_abilities() {
+    const COUNTER: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::Single(TargetSpec::one(TargetRule::Ability)),
+            &[Instruction::Counter],
+        ),
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[
+        (Card::GrizzlyBears, &DECAYED),
+        (Card::from_name("Opt").unwrap(), &COUNTER),
+    ]);
+    let mut g = scenario(Player::P0);
+    let source = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    g.add_counter(source, CounterKind::Decayed, 3);
+    declare(&mut g, source);
+    assert_eq!(
+        decayed_packets(&g),
+        2,
+        "printed ability plus one ability from interchangeable same-kind counters"
+    );
+    while matches!(g.state.pending, Pending::OrderTriggers { .. }) {
+        choose(&mut g, |a| matches!(a, Action::PutTrigger { .. }));
+    }
+    let victim = g.state.stack.last().unwrap().id;
+    let counter = put(&mut g, Player::P0, "Opt", Zone::Hand);
+    cast(&mut g, counter, Some(Target::Stack(victim)));
+    settle(&mut g);
+    assert_eq!(
+        g.observe(Player::P0).delayed_sacrifices.len(),
+        1,
+        "countering one independent attack ability leaves the other"
+    );
+    end_combat(&mut g);
+    settle(&mut g);
+    assert_eq!(g.state.objects[source as usize].zone, Zone::Graveyard);
+}
+
+#[test]
+fn decayed_multiplicity_counts_only_instances_surviving_layer_six_provider_and_recipient_suppression()
+ {
+    const PROVIDER: CardRules = CardRules {
+        effect: Effect::Creature(2, 2),
+        static_groups: &[StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Ability,
+            fragments: &[StaticAbilityFragment::ControlledSubtypeKeywords {
+                subtype: "Bear",
+                keywords: Keywords::DECAYED,
+            }],
+        }],
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[
+        (Card::GrizzlyBears, &DECAYED),
+        (Card::LlanowarElves, &PROVIDER),
+        (Card::from_name("Opt").unwrap(), &BLANK),
+    ]);
+    for mode in 0..4 {
+        let mut g = scenario(Player::P0);
+        let source = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
+        let provider = put(&mut g, Player::P0, "Llanowar Elves", Zone::Battlefield);
+        g.add_counter(source, CounterKind::Decayed, 2);
+        if mode > 0 {
+            let recipient = if mode == 1 { provider } else { source };
+            let blank = put(&mut g, Player::P0, "Opt", Zone::Hand);
+            cast(&mut g, blank, Some(Target::Card(recipient)));
+            settle(&mut g);
+        }
+        if mode == 3 {
+            g.add_counter(source, CounterKind::Decayed, 1);
+        }
+        let world = FundingState::from_game(&g, &goal(Player::P0));
+        assert_eq!(
+            characteristic_query::CharacteristicQuery::in_world(&world).decayed_instances(source),
+            [3, 2, 0, 1][mode]
+        );
+        if mode == 0 {
+            let saved = g.snapshot();
+            let movement = g.entry_move(provider, Zone::Graveyard, false);
+            let mut visited = false;
+            world.visit_entry_moves(vec![movement], true, None, &mut |next| {
+                assert_eq!(
+                    characteristic_query::CharacteristicQuery::in_world(next)
+                        .decayed_instances(source),
+                    2,
+                    "virtual provider departure removes only its granted instance"
+                );
+                visited = true;
+                false
+            });
+            assert!(visited);
+            assert_eq!(g.snapshot(), saved);
+        }
+        declare(&mut g, source);
+        assert_eq!(
+            decayed_packets(&g),
+            [3, 2, 0, 1][mode],
+            "only surviving printed, static-granted and counter-granted origins count; mode={mode}"
+        );
+    }
+}
+
+#[test]
+fn distinct_resolution_and_copiable_decayed_instances_follow_keyword_removal_and_newer_grants() {
+    const REMOVE: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::NONE,
+            &[Instruction::RemovePermanentGroupKeywords {
+                filters: &[BattlefieldFilter {
+                    kinds: 1,
+                    relation: -1,
+                    nonland: false,
+                    tapped: None,
+                    without: Keywords::NONE,
+                    subtype: None,
+                    max_mana: u32::MAX,
+                }],
+                keywords: Keywords::DECAYED,
+            }],
+        ),
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[
+        (Card::GrizzlyBears, &DECAYED),
+        (Card::from_name("Opt").unwrap(), &REMOVE),
+    ]);
+    let mut g = scenario(Player::P0);
+    let source = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    let mut recipe = CopyRecipe::new(Card::GrizzlyBears);
+    recipe.overrides = Some(CopyOverrides {
+        keywords: Keywords::DECAYED,
+        ..CopyOverrides::NONE
+    });
+    g.apply_temporary_copy(g.object_ref(source), recipe, CopyDeadline::EndOfTurn);
+    g.add_counter(source, CounterKind::Decayed, 3);
+    let origin = g.object_ref(source);
+    g.grant_keyword_effects(&[source], origin, Keywords::DECAYED);
+    g.grant_keyword_effects(&[source], origin, Keywords::DECAYED);
+    assert_eq!(
+        g.characteristic_query().decayed_instances(source),
+        5,
+        "one printed, one copiable exception, one same-kind counter effect, two distinct resolutions"
+    );
+    let remove = put(&mut g, Player::P0, "Opt", Zone::Hand);
+    cast(&mut g, remove, None);
+    settle(&mut g);
+    assert_eq!(g.characteristic_query().decayed_instances(source), 0);
+    g.pay_counters(source, &Counters::of(CounterKind::Decayed, 2));
+    assert_eq!(
+        g.characteristic_query().decayed_instances(source),
+        0,
+        "removing only some counters does not refresh an old grant"
+    );
+    g.grant_keyword_effects(&[source], origin, Keywords::DECAYED);
+    assert_eq!(g.characteristic_query().decayed_instances(source), 1);
+    g.add_counter(source, CounterKind::Decayed, 1);
+    assert_eq!(
+        g.characteristic_query().decayed_instances(source),
+        2,
+        "new same-kind placement refreshes its one grant after removal"
+    );
+    declare(&mut g, source);
+    assert_eq!(decayed_packets(&g), 2);
+}

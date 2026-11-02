@@ -470,16 +470,23 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
         .enumerate()
         .map(|(i, _)| {
             let object = world.object(i as CardId);
+            let intrinsic = if object.zone == Zone::Stack {
+                game.effective_spell_card(i as CardId).keywords()
+            } else {
+                world.intrinsic_keywords(i as CardId)
+            };
+            let copied = if object.zone == Zone::Stack {
+                Keywords::NONE
+            } else {
+                world.copied_keywords(i as CardId)
+            };
             LayerSixObject {
                 printed: true,
                 granted_keywords: Keywords::NONE,
-                keywords: if object.zone == Zone::Stack {
-                    game.effective_spell_card(i as CardId).keywords()
-                } else {
-                    world
-                        .intrinsic_keywords(i as CardId)
-                        .union(world.copied_keywords(i as CardId))
-                },
+                keywords: intrinsic.union(copied),
+                decayed_instances: usize::from(intrinsic.contains(Keywords::DECAYED))
+                    + usize::from(copied.contains(Keywords::DECAYED)),
+                granted_decayed_instances: 0,
                 grants: Vec::new(),
                 self_grants: Vec::new(),
                 // Native land subtypes exist before any later layer-six removal.

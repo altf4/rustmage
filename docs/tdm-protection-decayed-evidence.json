@@ -216,12 +216,13 @@
     "Two independent nonauthor reviews of final published inputs; broader compatibility/release validation and inherited trace checks remain with set integrator.",
     "No authored TDM behavior/admission edits, no full-set completion claim; simulation throughput not measured."
   ],
-  "review_status": "pending two independent nonauthor reviews",
+  "review_status": "Independent review found nonredundant Decayed instances were collapsed; original13-case proof superseded by docs/tdm-decayed-multiplicity-evidence.json, refreshed reviews pending.",
   "acceptance": {
-    "focused_rules_pass": true,
+    "focused_rules_pass": false,
     "full_release_validation_run": false,
     "newly_complete_cards": 0,
     "all_shared_rules_complete": false,
     "simulation_benchmarks_run": false
-  }
+  },
+  "followup": "docs/tdm-decayed-multiplicity-evidence.json"
 }

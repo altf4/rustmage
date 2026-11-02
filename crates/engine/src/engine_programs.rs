@@ -2386,13 +2386,16 @@ impl Game {
         first_attack: bool,
     ) {
         if source.keywords.contains(Keywords::DECAYED) {
-            let mut item = self.activation_item(source.controller, source.id, 0);
-            item.kind = StackKind::DecayedAttack;
-            item.attachment_trigger = None;
-            item.source_counter_lki = None;
-            item.source_quantity_lki = None;
-            item.additional_triggers = source.additional_triggers;
-            self.state.pending_triggers.push(item);
+            let instances = self.characteristic_query().decayed_instances(source.id);
+            for _ in 0..instances {
+                let mut item = self.activation_item(source.controller, source.id, 0);
+                item.kind = StackKind::DecayedAttack;
+                item.attachment_trigger = None;
+                item.source_counter_lki = None;
+                item.source_quantity_lki = None;
+                item.additional_triggers = source.additional_triggers;
+                self.state.pending_triggers.push(item);
+            }
         }
         for (index, ability) in source.card.triggers().iter().enumerate() {
             if match ability.condition.event() {
