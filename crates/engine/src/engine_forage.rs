@@ -116,11 +116,9 @@ impl Game {
         if let Some(grantor) = a.item.attached_activation_tap_cost() {
             return Some((grantor, Self::attached_tap_spec()));
         }
-        if a.additional_paid
-            && (a.ordered_craft()
-                || a.additional_cost()
-                    .is_some_and(|spec| matches!(spec.kind, EffectChoiceKind::DiscardOrLife(_))))
-        {
+        // A paid additional component is an owned result, not a reservation on
+        // its former incarnation. Ordered routes may pay it before their mana.
+        if a.additional_paid {
             return None;
         }
         if let Some(f) = &a.forage

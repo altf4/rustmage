@@ -422,6 +422,8 @@ fn prevented_exile_retains_only_beneficiary_top_knowledge_with_owned_restore_and
         let mut reordered = raw.clone();
         reordered.state.priority = owner;
         reordered.state.passes = 0;
+        // Advancing through combat emptied the fixture's initial mana pools.
+        reordered.state.players[owner.index()].mana = [0, 1, 0, 0, 0, 0];
         let scry = put(&mut reordered, owner, "Opt", Zone::Hand);
         cast(&mut reordered, scry, None);
         for _ in 0..32 {
