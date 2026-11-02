@@ -92,27 +92,9 @@ impl Game {
                 }
                 continue;
             }
+            let packet = self.self_granted_activation_packet(*row);
             if self.targets_available(rules.targets, actor, row.recipient)
-                && self
-                    .activation_mana_costs(card, row.granting_card, ability, 0)
-                    .any(|cost| {
-                        self.initial_activation_target_fundable(
-                            FundingGoal {
-                                reserve: None,
-                                actor,
-                                required: cost.colored,
-                                generic: cost.generic,
-                                source: Some((
-                                    row.recipient,
-                                    ability,
-                                    Counters::default(),
-                                    row.granting_card,
-                                    None,
-                                )),
-                            },
-                            rules.targets,
-                        )
-                    })
+                && self.initial_activation_packet_target_fundable(&packet)
                 && emit(Action::AnnounceSelfGrantedAbility {
                     source: row.recipient,
                     grant_timestamp: row.timestamp,

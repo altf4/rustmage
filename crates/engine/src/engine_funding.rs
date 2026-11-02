@@ -4710,6 +4710,20 @@ impl Game {
             )
         }
     }
+    /// Initial acquired nonmana activations need the immutable packet's origin
+    /// before any live announcement exists. Reuse the full cost context so
+    /// source use, target totals and additional witnesses stay in one world.
+    pub(super) fn activation_packet_fundable(&self, candidate: &Announcement) -> bool {
+        let goal = self.funding_goal(candidate);
+        let mut world = FundingState::from_game(self, &goal);
+        world.set_purpose(self.purpose_for_item(&candidate.item));
+        world.set_payment_context(candidate);
+        world.reachable_with_evidence(
+            &goal,
+            candidate.evidence.as_ref().map(|row| row.threshold),
+            &mut HashSet::new(),
+        )
+    }
     pub(super) fn mana_packet_fundable(
         &self,
         packet: &SpellView,
