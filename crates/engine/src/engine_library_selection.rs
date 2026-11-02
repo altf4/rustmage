@@ -97,11 +97,9 @@ impl Game {
         let land = self.current_kinds(id) & 2 != 0;
         self.remember_private_library_top(owner, owner, object);
         self.state.resolving.as_mut().unwrap().selection = Some(Box::new(LibrarySelection {
-            top_land: Some(if land {
-                TopLandStage::Hand
-            } else {
-                TopLandStage::Graveyard
-            }),
+            // Ineligible hidden cards still take the same first decision. The
+            // opponent must not infer landness from public resolution pacing.
+            top_land: Some(TopLandStage::Hand),
             spec: LibrarySelectionSpec {
                 look: 1,
                 count: LibrarySelectionCount::Fixed(1),
@@ -114,16 +112,12 @@ impl Game {
             may_transform: false,
             entered: None,
             transform_pending: false,
-            destination: if land {
-                LibraryPickDestination::Hand
-            } else {
-                LibraryPickDestination::Graveyard
-            },
+            destination: LibraryPickDestination::Hand,
             exclude_selected_from_remainder: true,
             public: false,
             entering: false,
             remaining: vec![object],
-            eligible: vec![object],
+            eligible: if land { vec![object] } else { Vec::new() },
             selected: Vec::new(),
             bottom: Vec::new(),
             minimum: 0,
@@ -406,6 +400,7 @@ impl Game {
             f.top_land = Some(TopLandStage::Graveyard);
             f.destination = LibraryPickDestination::Graveyard;
             f.spec.reveal = false;
+            f.eligible.clone_from(&f.remaining);
             self.state.pending = Pending::EffectLibrarySelection { player: owner };
             return true;
         }

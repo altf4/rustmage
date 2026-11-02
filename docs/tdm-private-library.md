@@ -12,8 +12,10 @@ existing exact-top viewer mask. No card identities or ordering are revealed to
 the opponent beyond the ordinary public graveyard departures (CR401.4).
 
 `LookTopLandThenMayGraveyard` uses the existing private library selection frame.
-A land offers a revealed hand move first. Declining advances the same exact card
-to a separate optional graveyard phase. A nonland starts in that latter phase.
+Every nonempty look offers the same private hand phase first. Only a land is
+eligible for the revealed hand move. Declining advances the same exact card to
+a separate optional graveyard phase, including for a nonland. This identical
+public decision progression prevents inference of an unchosen card's landness.
 The `Keep` remainder leaves an unselected card in place; double decline retains
 its private exact-top knowledge. Movement and shuffling use ordinary knowledge
 invalidation. The new phase is owned inside the existing boxed frame.
@@ -27,3 +29,9 @@ The final matching-input target passes30 scenarios, including all22 earlier
 resolution-result groups. Fourteen directly affected inherited private library,
 copy selection, hideaway, random remainder and milled-continuation cases pass.
 No card definitions, admissions or generated linkage changed.
+
+Independent review found and repaired the original land/nonland pacing leak.
+The paired both-seat regression compares complete opponent observations after
+each decline; the exact original runtime fails it, while the corrected31-group
+target and14 inherited private-library cases pass. See
+`tdm-private-top-pacing-evidence.json` for the retained negative and final hashes.

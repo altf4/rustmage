@@ -1255,6 +1255,11 @@ fn private_nonland_top_never_offers_hand_and_source_departure_is_independent() {
         ready(&mut g, None, |g| {
             matches!(g.state.pending, Pending::EffectLibrarySelection { .. })
         });
+        let first = g.observe(p).library_selection.unwrap();
+        assert_eq!(first.destination, "hand");
+        assert!(first.candidates.is_empty());
+        reject(&mut g, Action::SelectLibrary { card: top });
+        act(&mut g, Action::FinishLibrarySelection);
         assert_eq!(
             g.observe(p).library_selection.unwrap().destination,
             "graveyard"
@@ -1336,4 +1341,39 @@ fn private_top_fallback_is_owned_and_illegal_choices_are_transactional() {
     act(&mut indexed, Action::FinishLibrarySelection);
     drain(&mut indexed);
     assert_eq!(raw.snapshot(), indexed.snapshot());
+}
+
+#[test]
+fn unchosen_land_and_nonland_have_identical_opponent_visible_choice_progression() {
+    let _scope = fixture_rules::activate(&[(card("Bear Cub"), &BOTANIST)]);
+    for p in [Player::P0, Player::P1] {
+        let mut land = scenario(p);
+        let mut nonland = scenario(p);
+        botanist(&mut land, p, "Forest");
+        botanist(&mut nonland, p, "Opt");
+        for phase in 0..=2 {
+            assert_eq!(
+                serde_json::to_value(land.observe(p.other())).unwrap(),
+                serde_json::to_value(nonland.observe(p.other())).unwrap(),
+                "phase {phase}"
+            );
+            if phase < 2 {
+                assert!(matches!(
+                    land.state.pending,
+                    Pending::EffectLibrarySelection { .. }
+                ));
+                assert!(matches!(
+                    nonland.state.pending,
+                    Pending::EffectLibrarySelection { .. }
+                ));
+                act(&mut land, Action::FinishLibrarySelection);
+                act(&mut nonland, Action::FinishLibrarySelection);
+            }
+        }
+        drain(&mut land);
+        drain(&mut nonland);
+        assert_eq!(land.library_card_count(p), nonland.library_card_count(p));
+        assert!(land.observe(p).known_library_top[p.index()].is_some());
+        assert!(nonland.observe(p).known_library_top[p.index()].is_some());
+    }
 }
