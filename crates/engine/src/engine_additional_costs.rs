@@ -227,21 +227,32 @@ impl Game {
             actor,
             o,
             self.current_kinds(object.card),
+            ability_world::CharacteristicWorld::mana_value(self, object.card),
             self.keywords(object.card),
             self.granted_subtypes(object.card),
             self.object_name(object.card),
         )
     }
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "Live and borrowed cost predicates share explicit characteristics"
+    )]
     pub(super) fn additional_object_matches(
         spec: AdditionalCost,
         actor: Player,
         o: &Object,
         kinds: u16,
+        mana_value: u64,
         keywords: Keywords,
         subtypes: GrantedSubtypes,
         name: &str,
     ) -> bool {
         let spec = spec.in_zone(o.zone);
+        if let EffectChoiceKind::SacrificeManaValue { value } = spec.kind
+            && value != Some(mana_value)
+        {
+            return false;
+        }
         if !spec.kind.cost_matches_any(o.card, kinds, subtypes) {
             return false;
         }
@@ -1089,6 +1100,7 @@ impl Game {
             }
             EffectChoiceKind::ColorCounter { .. }
             | EffectChoiceKind::FilteredCost { .. }
+            | EffectChoiceKind::SacrificeManaValue { .. }
             | EffectChoiceKind::TargetAttackingReturn { .. }
             | EffectChoiceKind::AmassGoblins(_)
             | EffectChoiceKind::EmpowerJace(_)

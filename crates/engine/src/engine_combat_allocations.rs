@@ -434,7 +434,10 @@ impl ActivatedAbility {
         .expect("activation X header count")
     }
     pub(super) fn has_x_cost(&self) -> bool {
-        self.x_symbols() != 0 || self.life_x_cost()
+        self.x_symbols() != 0 || self.life_x_cost() || self.nonmana_x()
+    }
+    pub(super) fn nonmana_x(&self) -> bool {
+        self.program.first() == Some(&Instruction::ActivationNonmanaX)
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -464,6 +467,13 @@ impl Announcement {
                         .card
                         .activation(ability)
                         .life_x_cost()
+                    || self
+                        .item
+                        .source
+                        .expect("activation source")
+                        .card
+                        .activation(ability)
+                        .nonmana_x()
             }
             _ => false,
         }

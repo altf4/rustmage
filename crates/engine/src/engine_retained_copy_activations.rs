@@ -109,7 +109,7 @@ impl Game {
             };
             targets = TargetPlan::Single(spec);
         }
-        self.targets_available(targets, actor, source)
+        (rules.nonmana_x() || self.targets_available(targets, actor, source))
             && self
                 .activation_mana_costs(id, template.definition, template.ability, 0)
                 .any(|cost| {

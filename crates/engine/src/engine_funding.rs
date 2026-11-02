@@ -558,6 +558,7 @@ fn reserve_obligations(
     goal: &FundingGoal,
     object: Option<&Object>,
     kinds: u16,
+    mana_value: u64,
     keywords: Keywords,
     subtypes: GrantedSubtypes,
     name: &str,
@@ -571,7 +572,7 @@ fn reserve_obligations(
                         .as_ref()
                         .is_some_and(|(source, _, _, _, _)| o.attached_to == Some(*source)))
                 && Game::additional_object_matches(
-                    spec, goal.actor, o, kinds, keywords, subtypes, name,
+                    spec, goal.actor, o, kinds, mana_value, keywords, subtypes, name,
                 )
         })
     })
@@ -1221,6 +1222,7 @@ impl<'g> FundingState<'g> {
                             goal.actor,
                             o,
                             ability_world::CharacteristicWorld::kinds(self, r.card),
+                            ability_world::CharacteristicWorld::mana_value(self, r.card),
                             self.keywords(&Resource {
                                 id: r.card,
                                 attacking: self
@@ -1285,6 +1287,9 @@ impl<'g> FundingState<'g> {
                 goal,
                 reserve.map(|r| &r.object),
                 reserve.map_or(0, |r| self.kinds(r)),
+                reserve.map_or(0, |r| {
+                    ability_world::CharacteristicWorld::mana_value(self, r.id)
+                }),
                 reserve.map_or(Keywords::NONE, |r| self.keywords(r)),
                 reserve.map_or(GrantedSubtypes::default(), |r| self.granted_subtypes(r.id)),
                 reserve.map_or("", |r| ability_world::CharacteristicWorld::name(self, r.id)),
@@ -4001,6 +4006,9 @@ impl Game {
             &goal,
             reserve,
             reserve.map_or(0, |o| self.object_kinds(goal.reserve.unwrap().0.card, o)),
+            reserve.map_or(0, |_| {
+                ability_world::CharacteristicWorld::mana_value(self, goal.reserve.unwrap().0.card)
+            }),
             reserve.map_or(Keywords::NONE, |_| {
                 self.keywords(goal.reserve.unwrap().0.card)
             }),
@@ -4226,6 +4234,19 @@ impl Game {
         }
         if !self.exact_x_targets_fundable(a, None, false) {
             return false;
+        }
+        if a.nonmana_x() {
+            let mut proposal = a.clone();
+            proposal.cost = Some(cost);
+            proposal.plan = self.target_spec(&proposal.item);
+            if proposal.item.x.is_none()
+                || !self.item_targets_available(&proposal.item, proposal.plan)
+            {
+                return false;
+            }
+            proposal.cast_costs.get_or_insert_with(Default::default);
+            proposal.initialize_cast_costs(false);
+            return self.activation_packet_fundable(&proposal);
         }
         if let StackKind::ActivatedAbility { ability } = a.item.kind
             && a.item
@@ -4963,6 +4984,20 @@ impl Game {
         let mut world = FundingState::from_game(self, &goal);
         world.set_purpose(self.purpose_for_item(&candidate.item));
         world.set_payment_context(candidate);
+        if goal.generic == 0
+            && goal.required == [0; 6]
+            && candidate.activation_generic_increase == 0
+            && goal
+                .source
+                .as_ref()
+                .is_some_and(|(_, index, _, definition, _)| {
+                    !definition.activation(*index).cost.mana_component
+                })
+        {
+            // A full proposal still has no mana-ability window when its total
+            // contains only nonmana costs. Complete those costs in this world.
+            return world.obligations(&goal) && world.cost_completion();
+        }
         world.reachable_with_evidence(
             &goal,
             candidate.evidence.as_ref().map(|row| row.threshold),
@@ -5142,6 +5177,7 @@ impl Game {
                 .cast
                 .is_some_and(|c| c.method.is_harmonize() || c.blight == Some(true))
             || announcement.ordered_craft()
+            || announcement.nonmana_x()
             || announcement.self_graveyard_cast_cost().is_some()
             || announcement
                 .additional_cost()

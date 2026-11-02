@@ -683,14 +683,25 @@ impl Game {
                         Some(Instruction::Modal(modes)) => Some(*modes),
                         _ => None,
                     };
-                    let targets_available = modes.map_or_else(
-                        || self.targets_available(ability.targets, actor, self.object_ref(card)),
-                        |modes| {
-                            modes.iter().any(|mode| {
-                                self.targets_available(mode.targets, actor, self.object_ref(card))
-                            })
-                        },
-                    );
+                    let targets_available = ability.nonmana_x()
+                        || modes.map_or_else(
+                            || {
+                                self.targets_available(
+                                    ability.targets,
+                                    actor,
+                                    self.object_ref(card),
+                                )
+                            },
+                            |modes| {
+                                modes.iter().any(|mode| {
+                                    self.targets_available(
+                                        mode.targets,
+                                        actor,
+                                        self.object_ref(card),
+                                    )
+                                })
+                            },
+                        );
                     if targets_available && fundable() {
                         let done = if let Some(production) = ability.mana_production() {
                             self.visit_activation_mana_outputs(

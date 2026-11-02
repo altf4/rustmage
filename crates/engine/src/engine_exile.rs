@@ -165,6 +165,33 @@ impl Game {
     pub(super) fn exile_top_play(&mut self, player: Player, amount: u128, next_turn: bool) {
         self.exile_top_play_from(player, player, amount, next_turn);
     }
+    pub(super) fn exile_random_graveyard_play(&mut self, player: Player) {
+        let candidates: Vec<_> = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, object)| {
+                (object.zone == Zone::Graveyard && object.owner == player && object.is_card())
+                    .then_some(id as CardId)
+            })
+            .collect();
+        if candidates.is_empty() {
+            return;
+        }
+        let index = if candidates.len() == 1 {
+            0
+        } else {
+            self.state.rng.below(candidates.len() as u64) as usize
+        };
+        let events = self.move_objects_raw(&[candidates[index]], Zone::Exile);
+        for event in &events {
+            if event.moved && event.destination == Zone::Exile {
+                self.grant_exile_play_permission(player, event.after, false);
+            }
+        }
+        self.finish_zone_events(&events, &[]);
+    }
 
     pub(super) fn exile_top_play_from(
         &mut self,

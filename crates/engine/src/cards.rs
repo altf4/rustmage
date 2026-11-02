@@ -1072,6 +1072,10 @@ pub enum EffectChoiceKind {
     Forage,
     ForageOrBlack,
     Sacrifice,
+    /// A declaration-bound sacrifice cost. None is the immutable X placeholder.
+    SacrificeManaValue {
+        value: Option<u64>,
+    },
     /// One controlled Equipment attached to this exact activated source.
     SacrificeAttachedEquipment,
     /// Non-targeted return payment for Sneak, after blockers are declared.
@@ -1100,6 +1104,7 @@ impl EffectChoiceKind {
                 action: CostAction::Sacrifice,
                 ..
             } => Self::Sacrifice,
+            Self::SacrificeManaValue { .. } => Self::Sacrifice,
             Self::FilteredCost {
                 action: CostAction::TapPermanents(n),
                 ..
@@ -1645,6 +1650,8 @@ pub enum Instruction {
         next_turn: bool,
     },
     ExileEachLibraryTopCastFree,
+    /// Uniformly exile an own graveyard card; grant normal play through cleanup.
+    ExileRandomGraveyardPlayThisTurn,
     /// Until cleanup, each tap of a Mountain for mana triggers an extra red mana.
     AddMountainManaTrigger,
     AllowJaceLoyaltyAnytime,
@@ -2003,6 +2010,8 @@ pub enum Instruction {
     RequireBlocks(CreatureFilter),
     /// Definition header: announce X as a generic activation mana cost.
     ActivationX,
+    /// Definition header: declare X for a nonmana cost and its target quantity.
+    ActivationNonmanaX,
     /// Definition header: pay the announced X as an additional life cost.
     ActivationLifeX,
     /// Definition header: the single homogeneous target group requires exactly X.

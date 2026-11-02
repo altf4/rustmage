@@ -201,15 +201,22 @@ impl Announcement {
                 .expect("announcement has object source")
                 .card
                 .additional_cost(),
-            StackKind::ActivatedAbility { ability } => {
-                self.item
-                    .source
-                    .expect("announcement has object source")
-                    .card
-                    .activation(ability)
-                    .cost
-                    .additional
-            }
+            StackKind::ActivatedAbility { ability } => self
+                .item
+                .source
+                .expect("announcement has object source")
+                .card
+                .activation(ability)
+                .cost
+                .additional
+                .map(|mut cost| {
+                    if cost.kind == (EffectChoiceKind::SacrificeManaValue { value: None }) {
+                        cost.kind = EffectChoiceKind::SacrificeManaValue {
+                            value: self.item.x.map(u64::from),
+                        };
+                    }
+                    cost
+                }),
             StackKind::TriggeredAbility { .. }
             | StackKind::DecayedAttack
             | StackKind::SuspendTick
@@ -2353,7 +2360,8 @@ impl Game {
         }
         let plan = self.target_spec(&item);
         assert!(
-            self.item_targets_available(&item, plan)
+            matches!(item.kind, StackKind::ActivatedAbility { ability } if item.x.is_none() && source.card.activation(ability).nonmana_x())
+                || self.item_targets_available(&item, plan)
                 || source.card.gift().is_some_and(|gift| {
                     self.item_targets_available(&item, gift.promised_targets)
                 })
@@ -2612,6 +2620,7 @@ impl Game {
         // observers. External sacrifice follows source tap/mana costs: the chosen
         // object may itself be this ability's source. No priority is granted.
         if !announcement.ordered_craft()
+            && announcement.cast_costs.is_none()
             && matches!(announcement.item.kind, StackKind::ActivatedAbility { .. })
             && !announcement.additional_paid
         {
@@ -2712,7 +2721,7 @@ impl Game {
             .take()
             .expect("suspended activation announcement");
         announcement.item = item;
-        if !announcement.additional_paid {
+        if announcement.cast_costs.is_none() && !announcement.additional_paid {
             self.pay_additional_cost(&mut announcement);
             announcement.additional_paid = true;
         }

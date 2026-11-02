@@ -103,6 +103,9 @@ impl Announcement {
     }
     pub(super) fn initialize_cast_costs(&mut self, improvise: bool) {
         self.initialize_alternative_life();
+        if self.nonmana_x() {
+            self.add_cast_cost_clause(CastCostClause::Mana);
+        }
         if self.item.cast.is_some_and(|cast| cast.beheld == Some(true)) {
             let subtype = self
                 .item

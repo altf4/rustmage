@@ -295,7 +295,9 @@ impl Game {
             return None;
         }
         let a = self.state.announcing.as_ref()?;
-        let mut intervals = if a.item.kind == StackKind::Spell
+        let mut intervals = if a.nonmana_x() {
+            self.nonmana_x_intervals(a)
+        } else if a.item.kind == StackKind::Spell
             && a.item
                 .source
                 .expect("cost announcement has object source")

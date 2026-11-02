@@ -4765,6 +4765,9 @@ impl Game {
                     self.exile_each_top_cast_free(item.controller);
                     return;
                 }
+                Instruction::ExileRandomGraveyardPlayThisTurn => {
+                    self.exile_random_graveyard_play(item.controller)
+                }
                 Instruction::CounterRelatedUnlessPayLife(amount) => {
                     if self.start_resolution_life(&item, amount) {
                         return;
@@ -5693,6 +5696,7 @@ impl Game {
                 Instruction::RequireBlocks(filter) => self.require_blocks(&item, filter),
                 Instruction::ExileDamagedIfDiesThisTurn
                 | Instruction::ActivationX
+                | Instruction::ActivationNonmanaX
                 | Instruction::ActivationLifeX
                 | Instruction::TargetsExactlyX
                 | Instruction::SourceCounterCost { .. }

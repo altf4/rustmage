@@ -380,6 +380,9 @@ pub mod turn_callbacks;
 pub use combat_schedule::MainPhaseCombatView;
 pub use turn_callbacks::TurnCallbackView;
 #[doc(hidden)]
+#[path = "engine_nonmana_x.rs"]
+pub mod nonmana_x;
+#[doc(hidden)]
 #[path = "engine_scalar_x.rs"]
 pub mod scalar_x;
 #[doc(hidden)]
@@ -7616,6 +7619,7 @@ impl Game {
                     || self
                         .exact_x_targets(&self.state.announcing.as_ref().unwrap().item)
                         .is_some()
+                    || self.state.announcing.as_ref().unwrap().nonmana_x()
                 {
                     let plan = self.target_spec(&self.state.announcing.as_ref().unwrap().item);
                     self.state.announcing.as_mut().unwrap().plan = plan;

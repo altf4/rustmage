@@ -381,6 +381,7 @@ impl FundingState<'_> {
                 self.actor,
                 o,
                 CharacteristicWorld::kinds(self, r.card),
+                CharacteristicWorld::mana_value(self, r.card),
                 self.keywords_for_cost(r.card),
                 self.subtypes(r.card),
                 self.name(r.card),
