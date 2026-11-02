@@ -284,24 +284,24 @@ fn chandra_minus_seven_emblem_survives_the_planeswalker_and_artifact_entries_dea
 fn cursecloth_live_zombie_bonus_tracks_controller_and_covers_new_and_copied_zombies() {
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);
-        let own = put(&mut g, p, "Streaking Oilgorger", Zone::Battlefield);
-        let enemy = put(&mut g, p.other(), "Streaking Oilgorger", Zone::Battlefield);
+        let own = put(&mut g, p, "Deathless Pilot", Zone::Battlefield);
+        let enemy = put(&mut g, p.other(), "Deathless Pilot", Zone::Battlefield);
         let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
         let source = put(&mut g, p, "Cursecloth Wrappings", Zone::Hand);
         g.state.players[p.index()].mana = [0, 0, 2, 0, 0, 2];
         cast(&mut g, source, None);
         drain(&mut g);
         assert_eq!(g.state.players[p.index()].mana, [0; 6]);
-        assert_eq!(stats(&g, own), (4, 4));
-        assert_eq!(stats(&g, enemy), (3, 3));
-        assert_eq!(stats(&g, bear), (2, 2));
-        let later = put(&mut g, p, "Streaking Oilgorger", Zone::Battlefield);
-        assert_eq!(stats(&g, later), (4, 4));
-        g.change_controller(g.object_ref(source), p.other());
         assert_eq!(stats(&g, own), (3, 3));
-        assert_eq!(stats(&g, enemy), (4, 4));
-        g.move_object(source, Zone::Hand);
+        assert_eq!(stats(&g, enemy), (2, 2));
+        assert_eq!(stats(&g, bear), (2, 2));
+        let later = put(&mut g, p, "Deathless Pilot", Zone::Battlefield);
+        assert_eq!(stats(&g, later), (3, 3));
+        g.change_controller(g.object_ref(source), p.other());
+        assert_eq!(stats(&g, own), (2, 2));
         assert_eq!(stats(&g, enemy), (3, 3));
+        g.move_object(source, Zone::Hand);
+        assert_eq!(stats(&g, enemy), (2, 2));
     }
 }
 #[test]
@@ -445,11 +445,11 @@ fn daretti_power_is_greatest_controlled_artifact_mana_value_in_every_zone_and_up
         put(&mut g, p.other(), "Gilded Lotus", Zone::Battlefield);
         assert_eq!(stats(&g, source), (0, 5));
         put(&mut g, p, "Short Bow", Zone::Battlefield);
-        assert_eq!(stats(&g, source), (1, 5));
+        assert_eq!(stats(&g, source), (2, 5));
         let big = put(&mut g, p, "Gilded Lotus", Zone::Battlefield);
         assert_eq!(stats(&g, source), (5, 5));
         g.move_object(big, Zone::Hand);
-        assert_eq!(stats(&g, source), (1, 5));
+        assert_eq!(stats(&g, source), (2, 5));
     }
 }
 #[test]
@@ -505,7 +505,7 @@ fn daretti_entry_chooses_own_artifact_card_before_optional_sacrifice_and_returns
                 Zone::Graveyard
             }
         );
-        assert_eq!(stats(&g, source), if accept { (4, 5) } else { (1, 5) });
+        assert_eq!(stats(&g, source), if accept { (4, 5) } else { (2, 5) });
         if accept {
             assert!(!g.object_view(target).tapped);
             assert!(!g.is_creature(target));
