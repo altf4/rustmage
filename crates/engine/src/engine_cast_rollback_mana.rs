@@ -426,12 +426,18 @@ impl Game {
                 {
                     return false;
                 }
-                if let Some((spec, external)) = additional
-                    && (spec.kind != EffectChoiceKind::ExileGraveyard
-                        || self.object_ref(external.card) != *external
-                        || self.state.objects[external.card as usize].zone != Zone::Graveyard)
-                {
-                    return false;
+                if let Some((spec, external)) = additional {
+                    let zone = match spec.kind.payment_kind() {
+                        EffectChoiceKind::Sacrifice => Zone::Battlefield,
+                        EffectChoiceKind::ExileGraveyard => Zone::Graveyard,
+                        _ => return false,
+                    };
+                    if self.object_ref(external.card) != *external
+                        || self.state.objects[external.card as usize].zone != zone
+                        || !self.additional_candidate(*spec, event.actor, source, *external)
+                    {
+                        return false;
+                    }
                 }
             }
         }
@@ -470,7 +476,14 @@ impl Game {
                 counters,
                 additional,
             } => {
-                if let Some((_, external)) = additional {
+                // Match actual announcement order: source tap/mana/counter
+                // costs precede an external sacrifice; graveyard exile is paid
+                // before those source costs. The replay hooks apply the frozen
+                // replacement/entry/trigger receipts for the real operation.
+                let sacrifice = additional.is_some_and(|(spec, _)| {
+                    spec.kind.payment_kind() == EffectChoiceKind::Sacrifice
+                });
+                if !sacrifice && let Some((_, external)) = additional {
                     self.move_object(external.card, Zone::Exile);
                 }
                 let mut item = (**item).clone();
@@ -479,6 +492,9 @@ impl Game {
                     .is_some()
                 {
                     return false;
+                }
+                if sacrifice && let Some((_, external)) = additional {
+                    self.sacrifice_batch(&[(event.actor, external.card)]);
                 }
                 self.commit_activation_use(&item);
             }

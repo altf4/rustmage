@@ -145,7 +145,7 @@ fn choose_cost_and_pay(g: &mut Game) {
         if let Some(a) = g
             .legal_actions()
             .into_iter()
-            .find(|a| matches!(a, Action::ChooseManaCost { .. }))
+            .find(|a| matches!(a, Action::ChooseActivationCost { .. }))
         {
             act(g, a)
         } else {
