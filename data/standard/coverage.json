@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "d248c1a6edfc08b487369515d53b584f4929dde9f81ae7c71586e6e44b436cbb",
+  "catalogue_version": "56c3d7a714b479c69dbce2802a5f8f9bbee5001f8fbf3a203ced63f1d5b1f97f",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3156,
-  "implemented_total": 3162,
+  "implemented_standard_cards": 3158,
+  "implemented_total": 3164,
   "token_definitions": 156,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -32,8 +32,7 @@
     },
     "dft": {
       "total": 259,
-      "complete": 257,
-      "gated": 2
+      "complete": 259
     },
     "dsk": {
       "total": 264,
@@ -14850,8 +14849,8 @@
     {
       "name": "Gonti, Night Minister",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/gonti_night_minister.rs",
       "set": "dft"
     },
@@ -16906,8 +16905,8 @@
     {
       "name": "Howlsquad Heavy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/howlsquad_heavy.rs",
       "set": "dft"
     },
