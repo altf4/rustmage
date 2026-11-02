@@ -270,17 +270,8 @@ impl Game {
                 self.state.power_up_uses = None;
             }
         }
-        if self
-            .state
-            .entered_this_turn
-            .as_ref()
-            .is_some_and(|r| r.contains(&object))
-        {
-            let rows = self.state.entered_this_turn.as_mut().unwrap();
-            rows.retain(|r| *r != object);
-            if rows.is_empty() {
-                self.state.entered_this_turn = None;
-            }
-        }
+        // Exact entry history also qualifies damage from a departed permanent's
+        // last known incarnation. Retain it until the ordinary turn reset;
+        // another incarnation never matches this ObjectRef.
     }
 }

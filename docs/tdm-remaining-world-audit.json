@@ -1,0 +1,472 @@
+{
+  "schema": 1,
+  "scope": "seven remaining B shared world/copy/replacement groups; no ordinary card behavior or admissions",
+  "baseline": "626160fdd6002980ef0e41ab61614e6c321b750d",
+  "branch": "codex/tdm-remaining-world-rules",
+  "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "source_authority": {
+    "oracle": [
+      {
+        "oracle_id": "78b6dd40-c182-4037-a4d3-9fd012b2c584",
+        "name": "Herd Heirloom",
+        "layout": "normal",
+        "mana_cost": "{1}{G}",
+        "cmc": 2.0,
+        "type_line": "Artifact",
+        "oracle_text": "{T}: Add one mana of any color. Spend this mana only to cast a creature spell.\n{T}: Until end of turn, target creature you control with power 4 or greater gains trample and \"Whenever this creature deals combat damage to a player, draw a card.\"",
+        "colors": [
+          "G"
+        ],
+        "color_identity": [
+          "G"
+        ],
+        "keywords": [],
+        "produced_mana": [
+          "B",
+          "G",
+          "R",
+          "U",
+          "W"
+        ],
+        "reference_printing": {
+          "id": "a88c7713-b3a9-4685-b1d3-623d35b62365",
+          "set": "tdm",
+          "collector_number": "144",
+          "released_at": "2025-04-11"
+        }
+      },
+      {
+        "oracle_id": "09277185-fccd-4747-aa79-f569c581022a",
+        "name": "Kishla Trawlers",
+        "layout": "normal",
+        "mana_cost": "{2}{U}",
+        "cmc": 3.0,
+        "type_line": "Creature \u2014 Human Citizen",
+        "oracle_text": "When this creature enters, you may exile a creature card from your graveyard. When you do, return target instant or sorcery card from your graveyard to your hand.",
+        "power": "3",
+        "toughness": "2",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [],
+        "reference_printing": {
+          "id": "190fbc55-e8e9-4077-9532-1de7406baabf",
+          "set": "tdm",
+          "collector_number": "50",
+          "released_at": "2025-04-11"
+        }
+      },
+      {
+        "oracle_id": "49e9fba7-8465-4bbb-95db-73a7e149f494",
+        "name": "Maelstrom of the Spirit Dragon",
+        "layout": "normal",
+        "mana_cost": "",
+        "cmc": 0.0,
+        "type_line": "Land",
+        "oracle_text": "{T}: Add {C}.\n{T}: Add one mana of any color. Spend this mana only to cast a Dragon spell or an Omen spell.\n{4}, {T}, Sacrifice this land: Search your library for a Dragon card, reveal it, put it into your hand, then shuffle.",
+        "colors": [],
+        "color_identity": [],
+        "keywords": [],
+        "produced_mana": [
+          "B",
+          "C",
+          "G",
+          "R",
+          "U",
+          "W"
+        ],
+        "reference_printing": {
+          "id": "c4e90bfb-d9a5-48a9-9ff9-b0f50a813eee",
+          "set": "tdm",
+          "collector_number": "260",
+          "released_at": "2025-04-11"
+        }
+      },
+      {
+        "oracle_id": "a4f8012e-9880-45b0-9eba-d74c207d3242",
+        "name": "Naga Fleshcrafter",
+        "layout": "normal",
+        "mana_cost": "{3}{U}",
+        "cmc": 4.0,
+        "type_line": "Creature \u2014 Snake Shapeshifter",
+        "oracle_text": "You may have this creature enter as a copy of any creature on the battlefield.\nRenew \u2014 {2}{U}, Exile this card from your graveyard: Put a +1/+1 counter on target nonlegendary creature you control. Each other creature you control becomes a copy of that creature until end of turn. Activate only as a sorcery.",
+        "power": "0",
+        "toughness": "0",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [
+          "Renew"
+        ],
+        "reference_printing": {
+          "id": "5df17423-9fdd-4432-8660-1d267c685595",
+          "set": "tdm",
+          "collector_number": "52",
+          "released_at": "2025-04-11"
+        }
+      },
+      {
+        "oracle_id": "1a2a74b8-0689-4959-9348-02cc832194cf",
+        "name": "Narset, Jeskai Waymaster",
+        "layout": "normal",
+        "mana_cost": "{U}{R}{W}",
+        "cmc": 3.0,
+        "type_line": "Legendary Creature \u2014 Human Monk",
+        "oracle_text": "At the beginning of your end step, you may discard your hand. If you do, draw cards equal to the number of spells you've cast this turn.",
+        "power": "3",
+        "toughness": "4",
+        "colors": [
+          "R",
+          "U",
+          "W"
+        ],
+        "color_identity": [
+          "R",
+          "U",
+          "W"
+        ],
+        "keywords": [],
+        "reference_printing": {
+          "id": "6b77cbc1-dbc8-44d9-aa29-15cbb19afecd",
+          "set": "tdm",
+          "collector_number": "209",
+          "released_at": "2025-04-11"
+        }
+      },
+      {
+        "oracle_id": "66290104-ac65-4eb5-bf00-89b944249e07",
+        "name": "Neriv, Heart of the Storm",
+        "layout": "normal",
+        "mana_cost": "{1}{R}{W}{B}",
+        "cmc": 4.0,
+        "type_line": "Legendary Creature \u2014 Spirit Dragon",
+        "oracle_text": "Flying\nIf a creature you control that entered this turn would deal damage, it deals twice that much damage instead.",
+        "power": "4",
+        "toughness": "5",
+        "colors": [
+          "B",
+          "R",
+          "W"
+        ],
+        "color_identity": [
+          "B",
+          "R",
+          "W"
+        ],
+        "keywords": [
+          "Flying"
+        ],
+        "reference_printing": {
+          "id": "b58112b0-a05c-4b98-b650-fd27ad97789f",
+          "set": "tdm",
+          "collector_number": "210",
+          "released_at": "2025-04-11"
+        }
+      },
+      {
+        "oracle_id": "429368e6-3de1-4a44-a062-86cbbb73e243",
+        "name": "New Way Forward",
+        "layout": "normal",
+        "mana_cost": "{2}{U}{R}{W}",
+        "cmc": 5.0,
+        "type_line": "Instant",
+        "oracle_text": "The next time a source of your choice would deal damage to you this turn, prevent that damage. When damage is prevented this way, New Way Forward deals that much damage to that source's controller and you draw that many cards.",
+        "colors": [
+          "R",
+          "U",
+          "W"
+        ],
+        "color_identity": [
+          "R",
+          "U",
+          "W"
+        ],
+        "keywords": [],
+        "reference_printing": {
+          "id": "d9d48f9e-79f0-478c-9db0-ff7ac4a8f401",
+          "set": "tdm",
+          "collector_number": "211",
+          "released_at": "2025-04-11"
+        }
+      },
+      {
+        "oracle_id": "1fd78bf7-43ba-4e09-834b-14bfc1fd9d0d",
+        "name": "Reverberating Summons",
+        "layout": "normal",
+        "mana_cost": "{1}{R}",
+        "cmc": 2.0,
+        "type_line": "Enchantment",
+        "oracle_text": "At the beginning of each combat, if you've cast two or more spells this turn, this enchantment becomes a 3/3 Monk creature with haste in addition to its other types until end of turn.\n{1}{R}, Discard your hand, Sacrifice this enchantment: Draw two cards.",
+        "colors": [
+          "R"
+        ],
+        "color_identity": [
+          "R"
+        ],
+        "keywords": [],
+        "reference_printing": {
+          "id": "1af19ce8-bc0c-420c-9e3b-9059b4df32cb",
+          "set": "tdm",
+          "collector_number": "117",
+          "released_at": "2025-04-11"
+        }
+      },
+      {
+        "oracle_id": "6512ddb8-0868-4d32-ab32-8a5250fc571b",
+        "name": "Rite of Renewal",
+        "layout": "normal",
+        "mana_cost": "{3}{G}",
+        "cmc": 4.0,
+        "type_line": "Sorcery",
+        "oracle_text": "Return up to two target permanent cards from your graveyard to your hand. Target player shuffles up to four target cards from their graveyard into their library. Exile Rite of Renewal.",
+        "colors": [
+          "G"
+        ],
+        "color_identity": [
+          "G"
+        ],
+        "keywords": [],
+        "reference_printing": {
+          "id": "f737698a-d934-4851-b238-828959ef4835",
+          "set": "tdm",
+          "collector_number": "153",
+          "released_at": "2025-04-11"
+        }
+      }
+    ],
+    "complete_java_classes_read": [
+      {
+        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/h/HerdHeirloom.java",
+        "sha256": "72b8e237332f8be92e43643b2ff649e70955d0a95ae4e35ffe04372f64a514ca"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/m/MaelstromOfTheSpiritDragon.java",
+        "sha256": "b777e8205cff6f7d9ca57dd79dd7292f2b3f6e205d465da3364c1b476e802c93"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/n/NagaFleshcrafter.java",
+        "sha256": "659d4dce41274b3150197348f12cddcae6be2781e84b00b4257f4d15409e132c"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/n/NarsetJeskaiWaymaster.java",
+        "sha256": "3741719efcca487c0409504c6b5bfbc17f71e398b9232bbeb57132f04b604160"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/r/ReverberatingSummons.java",
+        "sha256": "31c30eb01cad6b57c47eeea4a2a9fc56bebd27d120aaf86fbab5ea997ca1cfb3"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/r/RiteOfRenewal.java",
+        "sha256": "579f1fb6056eb885177774da32211af16aaa2811a0994812adcd393ec0359b5f"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/n/NerivHeartOfTheStorm.java",
+        "sha256": "374a04f821a7dbcd3880ed190199ec49f3d5f6ecaf74de494c41876952d1dfa3"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/n/NewWayForward.java",
+        "sha256": "4725fcd5103cb58b9510f879cfe26c315ab34f5aa33084f0f33ccb63d3dcee7d"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/k/KishlaTrawlers.java",
+        "sha256": "f04570c1fb5ef5e441ebe495ce15a9fc4ee17fb9bba03d8e007045b3245bb1a6"
+      }
+    ],
+    "complete_helpers_read": [
+      {
+        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/costs/common/DiscardHandCost.java",
+        "sha256": "070e69a35af785aced9d186215f0cd304b9265775000b413252e0a635ad4d2b4"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+        "sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/costs/common/ExileFromGraveCost.java",
+        "sha256": "0fbd76b0759d6ff66e0517af68a598d62dfd5fca5a520f4ee834132b0275166e"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/PreventNextDamageFromChosenSourceEffect.java",
+        "sha256": "c60e79ba1f31aa6335f34bfa9020ad515ef2321730870877af7ff43bb011aff9"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/PreventionEffectImpl.java",
+        "sha256": "35c73be2ddcb40be12bc5a1ca2d11a654436c7b6b0c4ae1e37cb18383a97daf5"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/target/TargetSource.java",
+        "sha256": "4138f70ecd9cf5c8eb97e257f6a74471099318bd9325a028dd0da92c2961c9ea"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/mana/conditional/CreatureCastConditionalMana.java",
+        "sha256": "2a18d636eff2dabefb5518fd38f54fe6292d5c1697efb714ca1c44aacb0efb62"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/mana/conditional/ConditionalSpellManaBuilder.java",
+        "sha256": "ce56830a429737325b5010a205e0d800b41ac7f2e4c59367598f4fa99e1d246e"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/mana/conditional/CreatureCastManaCondition.java",
+        "sha256": "2fe6eba8a8c032287e84bb56b3a9301126f3b3bc9c79ba40b63c66d7b116d47e"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/mana/ConditionalAnyColorManaAbility.java",
+        "sha256": "2042d72737462646216eea22a1ecdd05d338f1f2b3bfbb3c19fdb273f067c736"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/target/common/TargetCardInTargetPlayersGraveyard.java",
+        "sha256": "ed938506ad826a62a30f8cb89a55ab25388fc774f304a882244f4a727ed85366"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/TargetPlayerShufflesTargetCardsEffect.java",
+        "sha256": "d10484210b65af0c396d0907271775eb9e7b31d3613782cfe357fc5df70cbbe8"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+        "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/CopyPermanentEffect.java",
+        "sha256": "256e2224f1087a614a7e4826dcdd43873e9e5b50236b9904affb8408698fe8fe"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+        "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+        "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+      },
+      {
+        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+        "sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+      }
+    ],
+    "rules": {
+      "path": "/home/altf4/.cache/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
+      "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca"
+    }
+  },
+  "groups": [
+    {
+      "id": "B:mana_spell_filter",
+      "cards": [
+        "Herd Heirloom",
+        "Maelstrom of the Spirit Dragon"
+      ],
+      "need": "Creature-only spell predicate and immutable Dragon OR Omen spell-subtype union",
+      "reuse": "ManaRestriction/ManaRestrictionView, selected-face Purpose::Spell(Source), owned lots, actual/speculative funding; no producer lifetime binding",
+      "tests": [
+        "Creature spell legal, Omen face not creature; Dragon or Omen accepts either chosen face; unrelated activations/ward reject; valid additional spell costs, lots remain qualified after producer leaves; owned raw/index/restore"
+      ]
+    },
+    {
+      "id": "B:mass_in_place_copy",
+      "cards": [
+        "Naga Fleshcrafter"
+      ],
+      "need": "Snapshot every other currently controlled creature and one target copiable recipe, then apply EOT copies without entry events",
+      "reuse": "Existing optional creature EntryCopySpec for entry; copiable_recipe and apply_temporary_copy for renew; preserve per-recipient counters/tap/damage/control and exact incarnation",
+      "tests": [
+        "Target nonlegendary/controlled legality and loss of target; no ETBs or entry counters; copied-copy/token exceptions, counter from first instruction not copied, old externals survive, same frozen recipient set, expiration/blink/control/layer suppression, owned branch"
+      ]
+    },
+    {
+      "id": "B:discard_hand_cost",
+      "cards": [
+        "Narset, Jeskai Waymaster",
+        "Reverberating Summons"
+      ],
+      "need": "Real entire-hand activation cost through ordinary ordered payment, empty hand legal; verify existing May+DiscardHand+DrawScaled for Narset",
+      "reuse": "AdditionalCost/EffectChoiceKind instead of large ActivationCost field churn if possible; discard_batch continuation and existing actual spell count",
+      "tests": [
+        "0/multiple hand cards; true paid activation, mana+sacrifice transactional failure, mana-child hand change and ordered costs, replaced discard still paid, optional decline/empty-hand Narset draw, actual casts exclude copies, privacy/owned restore"
+      ]
+    },
+    {
+      "id": "B:graveyard_owner_player_constraint",
+      "cards": [
+        "Rite of Renewal"
+      ],
+      "need": "Cross-target-group graveyard owner relationship at announcement/resolution and targeted player shuffle even with zero chosen cards",
+      "reuse": "TargetRule group wrappers and exact BoundTarget group membership; normal return/shuffle/exile resolving source",
+      "tests": [
+        "Both graveyards/group isolation, invalid chosen player/cross-owner rejection, same card may occur across groups but returned card cannot later shuffle, zero-card shuffle, partial targets/hexproof/all targets illegal, owned exact replay"
+      ]
+    },
+    {
+      "id": "B:entered_this_turn_damage_double",
+      "cards": [
+        "Neriv, Heart of the Storm"
+      ],
+      "need": "Filtered controlled-creature damage replacement using exact entered-this-turn identity and source LKI",
+      "reuse": "Existing entered_this_turn exact sparse history survives departure until turn reset; DamageSource frozen facts/controller and DoubleCreatureDamage ordering; no new hot field appears necessary",
+      "tests": [
+        "Self/other entry, old creature/control change/blink/new turn, departing source ability LKI, noncombat and combat split damage, multiple providers/prevention order, source provenance and owned choice roots"
+      ]
+    },
+    {
+      "id": "B:chosen_source_prevention",
+      "cards": [
+        "New Way Forward"
+      ],
+      "need": "Non-target source choice at resolution, one-next-event shield and actual-prevented reflexive damage/draw callback",
+      "reuse": "Existing event-local damage prevention/replacement order and owned packet/counterable reflexive machinery; likely new cold exact chosen-source state/pending view/action",
+      "tests": [
+        "CR609.7a source set includes permanent/spell/referred departed source/face-up command, no shroud/hexproof targeting, exact spell-to-permanent continuation, ability LKI, copy/reentry distinct; positive actual prevented amount, 0/unpreventable does not reduce shield (CR615.8/12), replacement order, simultaneous events, cleanup, source controller at damage, no-target callback/counterable and owned raw/index/restore"
+      ]
+    },
+    {
+      "id": "B:resolution_exile_cost_success",
+      "cards": [
+        "Kishla Trawlers"
+      ],
+      "need": "Minimal true prohibition qualification for ordinary resolution ExileGraveyard cost; full proof existing optional ChooseObjects+Reflexive works, no duplicate subsystem unless actual gap",
+      "reuse": "Existing optional_skip, selected exact creature-card cost and independent target selection on reflexive stack packet",
+      "tests": [
+        "No legal resource/prohibition gives no payment/callback; legal cost with replacement modification remains paid under118.11/12; decline, no instant target still allows payment, source departure, Omen physical creature front, stale/illegal choice rollback, owned roots"
+      ]
+    }
+  ],
+  "source_discrepancies": [
+    {
+      "card": "Rite of Renewal",
+      "source": "TargetPlayerShufflesTargetCardsEffect.apply",
+      "detail": "Java returns without shuffling if chosen-card set is empty; Oracle instructs targeted player to shuffle even for zero cards. Rust proof must require the shuffle."
+    },
+    {
+      "card": "New Way Forward",
+      "source": "TargetSource.possibleTargets",
+      "detail": "Java broadly enumerates all graveyard/exile cards. CR609.7a restricts departed objects to those referred to by stack/replacement/prevention/delayed objects. Rust must use the current rule source set, including permanent-spell continuation."
+    }
+  ],
+  "audit_corrections": [
+    {
+      "id": "B:resolution_exile_cost_success",
+      "old_claim": "A prevented cost must not queue the reflexive trigger.",
+      "corrected": "True prohibition/no legal resource prevents paying. A legal payment modified by replacement, including replaced event, is still paid under118.11;118.12 tracks the choice to pay. Do not conflate with actual-effect mill event success. Root agreed."
+    }
+  ],
+  "implementation_status": {
+    "first_checkpoint": "Five complete engine groups plus Narset existing-route proof; guarded final89/89 pass. Whole-hand activation cost and chosen-source prevention remain pending. No ordinary card definitions or admissions.",
+    "completed": [
+      "B:mana_spell_filter",
+      "B:mass_in_place_copy",
+      "B:graveyard_owner_player_constraint",
+      "B:entered_this_turn_damage_double",
+      "B:resolution_exile_cost_success"
+    ],
+    "partial": {
+      "B:discard_hand_cost": "Narset May+DiscardHand+DrawScaled proof passes; Reverberating Summons mandatory whole-hand activation cost pending"
+    },
+    "pending": [
+      "B:chosen_source_prevention"
+    ]
+  }
+}

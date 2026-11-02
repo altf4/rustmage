@@ -1120,6 +1120,8 @@ impl Game {
                 | TargetGroupConstraint::DistinctCardTypeSlots => unreachable!(),
             TargetGroupConstraint::ControllerOfPlayerGroup(first_group) => object.zone == Zone::Battlefield
                 && chosen.iter().find(|b| b.group == first_group).is_some_and(|b| matches!(b.target, Target::Player(player) if object.controller == player)),
+            TargetGroupConstraint::GraveyardOwnerOfPlayerGroup(first_group) => object.zone == Zone::Graveyard
+                && chosen.iter().find(|b| b.group == first_group).is_some_and(|b| matches!(b.target, Target::Player(player) if object.owner == player)),
             TargetGroupConstraint::AttachedToGroup(first_group) => object.zone == Zone::Battlefield
                 && chosen.iter().find(|b| b.group == first_group).is_some_and(|b| {
                     self.same_target_object(*b) && object.attached_to == b.object
@@ -1220,7 +1222,9 @@ impl Game {
         if let Some(TargetSpec {
             rule:
                 TargetRule::Grouped {
-                    constraint: TargetGroupConstraint::ControllerOfPlayerGroup(_),
+                    constraint:
+                        TargetGroupConstraint::ControllerOfPlayerGroup(_)
+                        | TargetGroupConstraint::GraveyardOwnerOfPlayerGroup(_),
                     ..
                 },
             ..
@@ -1674,6 +1678,7 @@ impl Game {
                 }
                 let zone = match constraint {
                     TargetGroupConstraint::SameGraveyard
+                    | TargetGroupConstraint::GraveyardOwnerOfPlayerGroup(_)
                     | TargetGroupConstraint::DistinctCardTypeSlots => Some(Zone::Graveyard),
                     TargetGroupConstraint::DifferentControllers
                     | TargetGroupConstraint::SharedCardType

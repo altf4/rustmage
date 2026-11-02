@@ -132,9 +132,26 @@ fn normalized(mut after: State, before: &State, ids: &[CardId]) -> Option<State>
     }
     let mut entered = after.entered_this_turn.clone();
     if let Some(rows) = &mut entered {
-        for row in rows.iter_mut() {
-            *row = map(*row)?;
+        // The admitted cycle contains only noncreature pure exilers and inert
+        // lands, with no observer that can read entry history. Their exact old
+        // incarnations are retained for LKI damage generally, but add no choice
+        // or observable difference in this closed cycle. Preserve every other
+        // object's history and restore only these proven-inert IDs.
+        rows.retain(|row| !ids.contains(&row.card));
+        let unchanged = before
+            .entered_this_turn
+            .as_ref()
+            .map_or_else(Vec::new, |original| {
+                original
+                    .iter()
+                    .filter(|row| !ids.contains(&row.card))
+                    .copied()
+                    .collect()
+            });
+        if rows.as_slice() != unchanged.as_slice() {
+            return None;
         }
+        entered = before.entered_this_turn.clone();
     }
     // Pure entry programs do not read this counter. All other battlefield
     // observers and generated/layered abilities are excluded by admission.

@@ -243,6 +243,9 @@ impl Game {
                 && !choice.selected[player.index()].contains(&object);
         }
         if choice.kind.payment_kind() == EffectChoiceKind::ExileGraveyard {
+            if ability_world::CharacteristicWorld::graveyard_exile_prohibited(self, object.card) {
+                return false;
+            }
             return !choice.selected[player.index()].contains(&object)
                 && self.additional_candidate(
                     AdditionalCost {

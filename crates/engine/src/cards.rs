@@ -207,6 +207,8 @@ pub enum TargetGroupConstraint {
     SharedCardType,
     /// Controlled by the player chosen in a distinct target group.
     ControllerOfPlayerGroup(u16),
+    /// Graveyard card owned by the player selected in another target group.
+    GraveyardOwnerOfPlayerGroup(u16),
     /// Attached to the exact object selected in another target group.
     AttachedToGroup(u16),
     DifferentControllers,
@@ -611,6 +613,10 @@ pub enum ManaRestriction {
     InstantSorcery,
     /// Only the cost of casting a noncreature spell.
     NoncreatureSpell,
+    /// Only creature spells, using the face actually cast.
+    CreatureSpells,
+    /// Only spells with at least one of these subtypes on the face actually cast.
+    SpellSubtypeAny(&'static [&'static str]),
     /// Only the cost of casting a planeswalker spell.
     PlaneswalkerSpell,
     Unrestricted,
@@ -1688,6 +1694,8 @@ pub enum Instruction {
     },
     BecomeSourceLandUntilNextTurn,
     BecomeCopy(InPlaceCopySpec),
+    /// Freeze one target blueprint and every other currently controlled creature.
+    CopyTargetToOtherControlledCreatures,
     /// Copy a chosen card from the trigger's exact exile batch onto its token target.
     CopyChosenExiledTriggerCreature,
     /// The resolving controller ignores the legend rule for the rest of this turn.
@@ -2882,6 +2890,11 @@ pub enum Instruction {
     /// Shuffle the live source and valid target into their owners' libraries together.
     ShuffleSourceAndTargetIntoLibraries,
     ShuffleGraveyardIntoLibrary,
+    /// Shuffle the selected player even when the selected card group is empty.
+    ShuffleGraveyardTargetsIntoPlayerLibrary {
+        player_group: u16,
+        cards_group: u16,
+    },
     DoubleTargetPower,
     DrawAndProtectCounterCreatures,
     MultiplyTargetStats {
@@ -3582,6 +3595,7 @@ pub enum ReplacementSpec {
     /// counters on their own permanent. General providers do not apply entering.
     CountersPlacedByController,
     DoubleCreatureDamage,
+    DoubleEnteredCreatureDamage,
     DoubleOpponentDamage,
     NoncombatDamagePlusSourcePower,
     /// Add a fixed amount to controlled-source noncombat damage to opponents or their permanents.

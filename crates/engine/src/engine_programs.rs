@@ -3183,6 +3183,7 @@ impl Game {
                     | Instruction::ScaledPowerDamage { .. }
                     | Instruction::CreateCopyTokenForPlayer { .. }
                     | Instruction::BecomeCopy(..)
+                    | Instruction::ShuffleGraveyardTargetsIntoPlayerLibrary { .. }
                     | Instruction::GainControl {
                         controller: PlayerSet::Targeted,
                         ..
@@ -3734,6 +3735,19 @@ impl Game {
                             );
                         }
                     }
+                }
+                Instruction::CopyTargetToOtherControlledCreatures => {
+                    self.copy_target_to_other_controlled_creatures(&item);
+                }
+                Instruction::ShuffleGraveyardTargetsIntoPlayerLibrary {
+                    player_group,
+                    cards_group,
+                } => {
+                    self.shuffle_graveyard_targets_into_player_library(
+                        &item,
+                        player_group,
+                        cards_group,
+                    );
                 }
                 Instruction::ShuffleGraveyardIntoLibrary => {
                     let ids: Vec<_> = self

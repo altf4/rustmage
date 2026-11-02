@@ -1040,6 +1040,12 @@ impl Game {
                             && event.source.facts.is_creature()
                             && event.source.controller == object.controller
                     }
+                    ReplacementSpec::DoubleEnteredCreatureDamage => {
+                        event.source.facts.battlefield
+                            && event.source.facts.is_creature()
+                            && event.source.controller == object.controller
+                            && self.entered_this_turn(event.source.reference)
+                    }
                     ReplacementSpec::DoubleOpponentDamage => {
                         event.source.controller == object.controller
                             && self.damage_recipient_controller(event) != object.controller
@@ -1174,6 +1180,7 @@ impl Game {
     ) {
         match choice.source_card.replacement_effects()[usize::from(choice.ability)] {
             ReplacementSpec::DoubleCreatureDamage
+            | ReplacementSpec::DoubleEnteredCreatureDamage
             | ReplacementSpec::DoubleOpponentDamage
             | ReplacementSpec::DoubleEquippedDamage => {
                 event.amount = event

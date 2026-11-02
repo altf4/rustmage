@@ -106,15 +106,48 @@ fn optional_instant_and_rejected_indices_preserve_the_game() {
 }
 
 #[test]
-fn stale_unmapped_entry_history_declines_detection() {
+fn inert_departed_entry_history_does_not_create_an_escape_from_the_closed_cycle() {
     let mut g = cycle();
     let source = g.state.exile_links[0].source.card;
     g.state.entered_this_turn.as_mut().unwrap().push(ObjectRef {
         card: source,
         generation: 0,
     });
-    for _ in 0..64 {
+    for _ in 0..48 {
+        if g.outcome().is_some() {
+            break;
+        }
         advance(&mut g, false);
-        assert_eq!(g.outcome(), None);
+    }
+    assert_eq!(g.outcome(), Some(Outcome::Draw));
+}
+
+#[test]
+fn entry_history_damage_replacement_observer_excludes_the_closed_loop_proof() {
+    use rustmage_core::cards::authored::{CardExtras, CardRules};
+    use rustmage_core::cards::*;
+    const REPLACEMENT: ReplacementSpec = ReplacementSpec::DoubleEnteredCreatureDamage;
+    const NERIV: CardRules = CardRules {
+        effect: Effect::Permanent,
+        static_groups: &[StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::Replacement(0, REPLACEMENT)],
+        }],
+        extras: &CardExtras {
+            replacement_effects: &[REPLACEMENT],
+            ..CardExtras::EMPTY
+        },
+        ..CardRules::EMPTY
+    };
+    let _scope =
+        fixture_rules::activate(&[(rustmage::Card::from_name("Short Bow").unwrap(), &NERIV)]);
+    for p in [Player::P0, Player::P1] {
+        let mut g = cycle_for(p);
+        put(&mut g, p, "Short Bow", Zone::Battlefield);
+        for _ in 0..64 {
+            advance(&mut g, false);
+            assert_eq!(g.outcome(), None);
+        }
     }
 }

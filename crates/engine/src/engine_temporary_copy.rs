@@ -252,6 +252,34 @@ impl Game {
         };
         self.apply_temporary_copy(recipient, recipe, deadline);
     }
+    pub(super) fn copy_target_to_other_controlled_creatures(&mut self, item: &SpellView) {
+        let Some(blueprint) = item.targets.iter().find_map(|bound| {
+            bound.object.filter(|reference| {
+                self.same_target_object(*bound) && self.on_battlefield(reference.card)
+            })
+        }) else {
+            return;
+        };
+        let recipe = self.copiable_recipe(blueprint);
+        // Both the recipe and recipients precede any copy/provider changes.
+        let recipients = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, object)| {
+                let id = id as CardId;
+                (object.zone == Zone::Battlefield
+                    && object.controller == item.controller
+                    && self.is_creature(id)
+                    && self.object_ref(id) != blueprint)
+                    .then(|| self.object_ref(id))
+            })
+            .collect::<Vec<_>>();
+        for recipient in recipients {
+            self.apply_temporary_copy(recipient, recipe, CopyDeadline::EndOfTurn);
+        }
+    }
     pub(super) fn temporary_copy_row(&self, object: ObjectRef) -> Option<&Row> {
         self.state
             .temporary_copies

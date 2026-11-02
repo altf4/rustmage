@@ -1,0 +1,872 @@
+{
+  "schema": 1,
+  "scope": "First remaining-world checkpoint: five B groups, plus proof of existing Narset discard-hand route; whole-hand activation cost and New Way Forward remain open",
+  "base_revision": "626160fdd6002980ef0e41ab61614e6c321b750d",
+  "tracking_issue": "https://github.com/altf4/rustmage/issues/570",
+  "card_authorship_or_admission_changes": false,
+  "source_inputs": [
+    {
+      "path": "crates/engine/src/cards.rs",
+      "sha256": "255a4a31676db3d8b0b279b5174a65f23693f8b349326fa85ee144c89cb934cd"
+    },
+    {
+      "path": "crates/engine/src/engine_effect_choices.rs",
+      "sha256": "cff993f01fcdba285c5fb09a2117e29ff296d7815e1853f4a2428fefac5e6c98"
+    },
+    {
+      "path": "crates/engine/src/engine_mana_lots.rs",
+      "sha256": "cee75a1455378c7c06a32dc55398710798a6e946ba8b9e2a1906e3d277d942c1"
+    },
+    {
+      "path": "crates/engine/src/engine_mandatory_loops.rs",
+      "sha256": "7879b252ec577c1b26a5896b2c724ac3a86425bf7f23fab5c80717639b4cdf00"
+    },
+    {
+      "path": "crates/engine/src/engine_power_up.rs",
+      "sha256": "675a165f068661ac0837562dcf15f7f7ebb362b5fa5675cf4375f57d6a40b040"
+    },
+    {
+      "path": "crates/engine/src/engine_programs.rs",
+      "sha256": "34914a6b8d82f0c1909bb19f4afe1c96fe2b5e625966a5c96f4491109e93168f"
+    },
+    {
+      "path": "crates/engine/src/engine_replacements.rs",
+      "sha256": "99361302d822d77ea910460b240fa1d27737f33d98b6e5271981c6d62396b39c"
+    },
+    {
+      "path": "crates/engine/src/engine_targeting.rs",
+      "sha256": "c2e3fcb32097bf642c0dca1b1bc13c6b0ae56fc473d4c0df53b3d75ff1f8cd6d"
+    },
+    {
+      "path": "crates/engine/src/engine_temporary_copy.rs",
+      "sha256": "d7b7e84200cc7b1499d43fd424c8e37ed3d4a897d0f03377c1daaa60f267ec0f"
+    },
+    {
+      "path": "crates/engine/src/engine_tiered.rs",
+      "sha256": "716fbb7b8a618ac14bda8a88172798e1e353bf4b82bbe7e6fe1432576e407e5e"
+    },
+    {
+      "path": "tests/mandatory_loops.rs",
+      "sha256": "515e9059236d434b84a1accded42d6f655d123f2a7d8096bff042c38a9f231ef"
+    },
+    {
+      "path": "tests/tdm_remaining_world_rules.rs",
+      "sha256": "b4b6e1b3e204233831a83279c9f388d04992353b1b33e6ed3f21f3faa8231478"
+    }
+  ],
+  "source_freeze": {
+    "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-compat-final/source-hashes.json",
+    "sha256": "4cfa41be19029d120468af823c13966fb07e658d2047f9f0d6df08f85c348f21",
+    "count": 6529,
+    "verified_after_terminal": true
+  },
+  "authority": {
+    "audit": {
+      "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/docs/tdm-remaining-world-audit.json",
+      "sha256": "8d8af4d103ffbb1b06be41373cc819567155f255b4e4d80af60ec2c7a3adb449"
+    },
+    "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "complete_java_and_helpers": {
+      "oracle": [
+        {
+          "oracle_id": "78b6dd40-c182-4037-a4d3-9fd012b2c584",
+          "name": "Herd Heirloom",
+          "layout": "normal",
+          "mana_cost": "{1}{G}",
+          "cmc": 2.0,
+          "type_line": "Artifact",
+          "oracle_text": "{T}: Add one mana of any color. Spend this mana only to cast a creature spell.\n{T}: Until end of turn, target creature you control with power 4 or greater gains trample and \"Whenever this creature deals combat damage to a player, draw a card.\"",
+          "colors": [
+            "G"
+          ],
+          "color_identity": [
+            "G"
+          ],
+          "keywords": [],
+          "produced_mana": [
+            "B",
+            "G",
+            "R",
+            "U",
+            "W"
+          ],
+          "reference_printing": {
+            "id": "a88c7713-b3a9-4685-b1d3-623d35b62365",
+            "set": "tdm",
+            "collector_number": "144",
+            "released_at": "2025-04-11"
+          }
+        },
+        {
+          "oracle_id": "09277185-fccd-4747-aa79-f569c581022a",
+          "name": "Kishla Trawlers",
+          "layout": "normal",
+          "mana_cost": "{2}{U}",
+          "cmc": 3.0,
+          "type_line": "Creature \u2014 Human Citizen",
+          "oracle_text": "When this creature enters, you may exile a creature card from your graveyard. When you do, return target instant or sorcery card from your graveyard to your hand.",
+          "power": "3",
+          "toughness": "2",
+          "colors": [
+            "U"
+          ],
+          "color_identity": [
+            "U"
+          ],
+          "keywords": [],
+          "reference_printing": {
+            "id": "190fbc55-e8e9-4077-9532-1de7406baabf",
+            "set": "tdm",
+            "collector_number": "50",
+            "released_at": "2025-04-11"
+          }
+        },
+        {
+          "oracle_id": "49e9fba7-8465-4bbb-95db-73a7e149f494",
+          "name": "Maelstrom of the Spirit Dragon",
+          "layout": "normal",
+          "mana_cost": "",
+          "cmc": 0.0,
+          "type_line": "Land",
+          "oracle_text": "{T}: Add {C}.\n{T}: Add one mana of any color. Spend this mana only to cast a Dragon spell or an Omen spell.\n{4}, {T}, Sacrifice this land: Search your library for a Dragon card, reveal it, put it into your hand, then shuffle.",
+          "colors": [],
+          "color_identity": [],
+          "keywords": [],
+          "produced_mana": [
+            "B",
+            "C",
+            "G",
+            "R",
+            "U",
+            "W"
+          ],
+          "reference_printing": {
+            "id": "c4e90bfb-d9a5-48a9-9ff9-b0f50a813eee",
+            "set": "tdm",
+            "collector_number": "260",
+            "released_at": "2025-04-11"
+          }
+        },
+        {
+          "oracle_id": "a4f8012e-9880-45b0-9eba-d74c207d3242",
+          "name": "Naga Fleshcrafter",
+          "layout": "normal",
+          "mana_cost": "{3}{U}",
+          "cmc": 4.0,
+          "type_line": "Creature \u2014 Snake Shapeshifter",
+          "oracle_text": "You may have this creature enter as a copy of any creature on the battlefield.\nRenew \u2014 {2}{U}, Exile this card from your graveyard: Put a +1/+1 counter on target nonlegendary creature you control. Each other creature you control becomes a copy of that creature until end of turn. Activate only as a sorcery.",
+          "power": "0",
+          "toughness": "0",
+          "colors": [
+            "U"
+          ],
+          "color_identity": [
+            "U"
+          ],
+          "keywords": [
+            "Renew"
+          ],
+          "reference_printing": {
+            "id": "5df17423-9fdd-4432-8660-1d267c685595",
+            "set": "tdm",
+            "collector_number": "52",
+            "released_at": "2025-04-11"
+          }
+        },
+        {
+          "oracle_id": "1a2a74b8-0689-4959-9348-02cc832194cf",
+          "name": "Narset, Jeskai Waymaster",
+          "layout": "normal",
+          "mana_cost": "{U}{R}{W}",
+          "cmc": 3.0,
+          "type_line": "Legendary Creature \u2014 Human Monk",
+          "oracle_text": "At the beginning of your end step, you may discard your hand. If you do, draw cards equal to the number of spells you've cast this turn.",
+          "power": "3",
+          "toughness": "4",
+          "colors": [
+            "R",
+            "U",
+            "W"
+          ],
+          "color_identity": [
+            "R",
+            "U",
+            "W"
+          ],
+          "keywords": [],
+          "reference_printing": {
+            "id": "6b77cbc1-dbc8-44d9-aa29-15cbb19afecd",
+            "set": "tdm",
+            "collector_number": "209",
+            "released_at": "2025-04-11"
+          }
+        },
+        {
+          "oracle_id": "66290104-ac65-4eb5-bf00-89b944249e07",
+          "name": "Neriv, Heart of the Storm",
+          "layout": "normal",
+          "mana_cost": "{1}{R}{W}{B}",
+          "cmc": 4.0,
+          "type_line": "Legendary Creature \u2014 Spirit Dragon",
+          "oracle_text": "Flying\nIf a creature you control that entered this turn would deal damage, it deals twice that much damage instead.",
+          "power": "4",
+          "toughness": "5",
+          "colors": [
+            "B",
+            "R",
+            "W"
+          ],
+          "color_identity": [
+            "B",
+            "R",
+            "W"
+          ],
+          "keywords": [
+            "Flying"
+          ],
+          "reference_printing": {
+            "id": "b58112b0-a05c-4b98-b650-fd27ad97789f",
+            "set": "tdm",
+            "collector_number": "210",
+            "released_at": "2025-04-11"
+          }
+        },
+        {
+          "oracle_id": "429368e6-3de1-4a44-a062-86cbbb73e243",
+          "name": "New Way Forward",
+          "layout": "normal",
+          "mana_cost": "{2}{U}{R}{W}",
+          "cmc": 5.0,
+          "type_line": "Instant",
+          "oracle_text": "The next time a source of your choice would deal damage to you this turn, prevent that damage. When damage is prevented this way, New Way Forward deals that much damage to that source's controller and you draw that many cards.",
+          "colors": [
+            "R",
+            "U",
+            "W"
+          ],
+          "color_identity": [
+            "R",
+            "U",
+            "W"
+          ],
+          "keywords": [],
+          "reference_printing": {
+            "id": "d9d48f9e-79f0-478c-9db0-ff7ac4a8f401",
+            "set": "tdm",
+            "collector_number": "211",
+            "released_at": "2025-04-11"
+          }
+        },
+        {
+          "oracle_id": "1fd78bf7-43ba-4e09-834b-14bfc1fd9d0d",
+          "name": "Reverberating Summons",
+          "layout": "normal",
+          "mana_cost": "{1}{R}",
+          "cmc": 2.0,
+          "type_line": "Enchantment",
+          "oracle_text": "At the beginning of each combat, if you've cast two or more spells this turn, this enchantment becomes a 3/3 Monk creature with haste in addition to its other types until end of turn.\n{1}{R}, Discard your hand, Sacrifice this enchantment: Draw two cards.",
+          "colors": [
+            "R"
+          ],
+          "color_identity": [
+            "R"
+          ],
+          "keywords": [],
+          "reference_printing": {
+            "id": "1af19ce8-bc0c-420c-9e3b-9059b4df32cb",
+            "set": "tdm",
+            "collector_number": "117",
+            "released_at": "2025-04-11"
+          }
+        },
+        {
+          "oracle_id": "6512ddb8-0868-4d32-ab32-8a5250fc571b",
+          "name": "Rite of Renewal",
+          "layout": "normal",
+          "mana_cost": "{3}{G}",
+          "cmc": 4.0,
+          "type_line": "Sorcery",
+          "oracle_text": "Return up to two target permanent cards from your graveyard to your hand. Target player shuffles up to four target cards from their graveyard into their library. Exile Rite of Renewal.",
+          "colors": [
+            "G"
+          ],
+          "color_identity": [
+            "G"
+          ],
+          "keywords": [],
+          "reference_printing": {
+            "id": "f737698a-d934-4851-b238-828959ef4835",
+            "set": "tdm",
+            "collector_number": "153",
+            "released_at": "2025-04-11"
+          }
+        }
+      ],
+      "complete_java_classes_read": [
+        {
+          "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/h/HerdHeirloom.java",
+          "sha256": "72b8e237332f8be92e43643b2ff649e70955d0a95ae4e35ffe04372f64a514ca"
+        },
+        {
+          "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/m/MaelstromOfTheSpiritDragon.java",
+          "sha256": "b777e8205cff6f7d9ca57dd79dd7292f2b3f6e205d465da3364c1b476e802c93"
+        },
+        {
+          "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/n/NagaFleshcrafter.java",
+          "sha256": "659d4dce41274b3150197348f12cddcae6be2781e84b00b4257f4d15409e132c"
+        },
+        {
+          "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/n/NarsetJeskaiWaymaster.java",
+          "sha256": "3741719efcca487c0409504c6b5bfbc17f71e398b9232bbeb57132f04b604160"
+        },
+        {
+          "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/r/ReverberatingSummons.java",
+          "sha256": "31c30eb01cad6b57c47eeea4a2a9fc56bebd27d120aaf86fbab5ea997ca1cfb3"
+        },
+        {
+          "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/r/RiteOfRenewal.java",
+          "sha256": "579f1fb6056eb885177774da32211af16aaa2811a0994812adcd393ec0359b5f"
+        },
+        {
+          "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/n/NerivHeartOfTheStorm.java",
+          "sha256": "374a04f821a7dbcd3880ed190199ec49f3d5f6ecaf74de494c41876952d1dfa3"
+        },
+        {
+          "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/n/NewWayForward.java",
+          "sha256": "4725fcd5103cb58b9510f879cfe26c315ab34f5aa33084f0f33ccb63d3dcee7d"
+        },
+        {
+          "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/k/KishlaTrawlers.java",
+          "sha256": "f04570c1fb5ef5e441ebe495ce15a9fc4ee17fb9bba03d8e007045b3245bb1a6"
+        }
+      ],
+      "complete_helpers_read": [
+        {
+          "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/costs/common/DiscardHandCost.java",
+          "sha256": "070e69a35af785aced9d186215f0cd304b9265775000b413252e0a635ad4d2b4"
+        },
+        {
+          "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+          "sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac"
+        },
+        {
+          "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/costs/common/ExileFromGraveCost.java",
+          "sha256": "0fbd76b0759d6ff66e0517af68a598d62dfd5fca5a520f4ee834132b0275166e"
+        },
+        {
+          "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/PreventNextDamageFromChosenSourceEffect.java",
+          "sha256": "c60e79ba1f31aa6335f34bfa9020ad515ef2321730870877af7ff43bb011aff9"
+        },
+        {
+          "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/PreventionEffectImpl.java",
+          "sha256": "35c73be2ddcb40be12bc5a1ca2d11a654436c7b6b0c4ae1e37cb18383a97daf5"
+        },
+        {
+          "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/target/TargetSource.java",
+          "sha256": "4138f70ecd9cf5c8eb97e257f6a74471099318bd9325a028dd0da92c2961c9ea"
+        },
+        {
+          "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/mana/conditional/CreatureCastConditionalMana.java",
+          "sha256": "2a18d636eff2dabefb5518fd38f54fe6292d5c1697efb714ca1c44aacb0efb62"
+        },
+        {
+          "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/mana/conditional/ConditionalSpellManaBuilder.java",
+          "sha256": "ce56830a429737325b5010a205e0d800b41ac7f2e4c59367598f4fa99e1d246e"
+        },
+        {
+          "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/mana/conditional/CreatureCastManaCondition.java",
+          "sha256": "2fe6eba8a8c032287e84bb56b3a9301126f3b3bc9c79ba40b63c66d7b116d47e"
+        },
+        {
+          "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/mana/ConditionalAnyColorManaAbility.java",
+          "sha256": "2042d72737462646216eea22a1ecdd05d338f1f2b3bfbb3c19fdb273f067c736"
+        },
+        {
+          "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/target/common/TargetCardInTargetPlayersGraveyard.java",
+          "sha256": "ed938506ad826a62a30f8cb89a55ab25388fc774f304a882244f4a727ed85366"
+        },
+        {
+          "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/TargetPlayerShufflesTargetCardsEffect.java",
+          "sha256": "d10484210b65af0c396d0907271775eb9e7b31d3613782cfe357fc5df70cbbe8"
+        },
+        {
+          "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+          "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+        },
+        {
+          "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/CopyPermanentEffect.java",
+          "sha256": "256e2224f1087a614a7e4826dcdd43873e9e5b50236b9904affb8408698fe8fe"
+        },
+        {
+          "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+          "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+        },
+        {
+          "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+          "sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+        }
+      ],
+      "rules": {
+        "path": "/home/altf4/.cache/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
+        "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca"
+      }
+    },
+    "rules_correction": [
+      {
+        "id": "B:resolution_exile_cost_success",
+        "old_claim": "A prevented cost must not queue the reflexive trigger.",
+        "corrected": "True prohibition/no legal resource prevents paying. A legal payment modified by replacement, including replaced event, is still paid under118.11;118.12 tracks the choice to pay. Do not conflate with actual-effect mill event success. Root agreed."
+      }
+    ],
+    "source_discrepancies": [
+      {
+        "card": "Rite of Renewal",
+        "source": "TargetPlayerShufflesTargetCardsEffect.apply",
+        "detail": "Java returns without shuffling if chosen-card set is empty; Oracle instructs targeted player to shuffle even for zero cards. Rust proof must require the shuffle."
+      },
+      {
+        "card": "New Way Forward",
+        "source": "TargetSource.possibleTargets",
+        "detail": "Java broadly enumerates all graveyard/exile cards. CR609.7a restricts departed objects to those referred to by stack/replacement/prevention/delayed objects. Rust must use the current rule source set, including permanent-spell continuation."
+      }
+    ]
+  },
+  "implementation": [
+    "CreatureSpells and SpellSubtypeAny typed restrictions evaluate the selected spell face; all activation/other purposes reject; ordinary owned mana lots remain valid after producer departure.",
+    "Mass copy snapshots one copiable recipe and all other currently controlled creature incarnations before applying existing EOT copy layers, with no entry events or counter copying.",
+    "GraveyardOwnerOfPlayerGroup binds graveyard cards to the chosen player at announcement and resolution. A dedicated aggregate shuffle instruction keeps all role groups and shuffles the player even if zero selected cards remain.",
+    "DoubleEnteredCreatureDamage uses existing exact turn-entry history and current/LKI DamageSource facts/controller. Departures no longer erase this sparse history; ordinary begin_turn clears it. Reentry uses a different ObjectRef. No new hot state field.",
+    "Pure exile-loop proof already excludes replacement/zone/copy/grant/control observers and only admits three noncreature pure exilers plus inert lands. Normalize only participant history to baseline, after verifying all unrelated history is identical. Inert departed entry history supplies no legal escape. The previous underflow-based stale-history negative is now the distinguishing draw positive; its original source remains pinned by the baseline. Explicit Neriv observer and existing optional/observer negatives still reject a draw.",
+    "Resolution ExileGraveyard cost candidates reject true graveyard-exile prohibition. Existing optional payment and independently targeted reflexive packet handle Kishla. Legal replacement-modified payments stay paid under CR118.11/12; do not infer success from actual zone movement.",
+    "Existing Narset May + DiscardHand + resolution-time actual cast-count draw works with an empty hand; declining is independent."
+  ],
+  "expected_negative_and_fixture_repairs": {
+    "reports": [
+      {
+        "label": "initial16",
+        "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-first16/native.json",
+        "sha256": "d5abfb8747bd794395e02627606f5919b11b5b88faa139e17d19941fda9613c1",
+        "terminal": true,
+        "success": false,
+        "passed": 13,
+        "failed_tests": [
+          "entered_creature_damage_uses_source_lki_after_a_real_sacrifice_cost",
+          "entered_damage_qualification_excludes_an_old_creature_that_only_changed_control_and_an_artifact",
+          "exact_entry_history_damage_multiplier_ignores_old_creatures_and_tracks_control_and_turn_reset"
+        ],
+        "compile_exit": 0,
+        "resource": {
+          "path": "/home/altf4/.cache/rustmage-build-reports/f2ac14ce76a94a89ba2462f5bab71138.json",
+          "sha256": "552a2f842b85df0ef7f1a6cb220156d64dea4af4db92634ba851d5b16136752e",
+          "command": [
+            "/usr/bin/python3",
+            "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+            "--test-target",
+            "tdm_remaining_world_rules",
+            "--target-dir",
+            "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target",
+            "--report",
+            "/home/altf4/.cache/rustmage-tdm/remaining-world-first16/native.json"
+          ],
+          "terminal": true,
+          "exit_code": 1,
+          "seconds": 112.37530535901897,
+          "memory_max_bytes": 6442450944,
+          "memory_peak_bytes": 1936654336,
+          "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+          "cargo_jobs": 1,
+          "test_threads": 1
+        }
+      },
+      {
+        "label": "fixed17-fixture-owner-error",
+        "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-fixed17/native.json",
+        "sha256": "5e33ed8a2cf9f977aa89c3a436002d1a2e569a671a3d4aad248dd3ba649631be",
+        "terminal": true,
+        "success": false,
+        "passed": 16,
+        "failed_tests": [
+          "entered_damage_qualification_excludes_an_old_creature_that_only_changed_control_and_an_artifact"
+        ],
+        "compile_exit": 0,
+        "resource": {
+          "path": "/home/altf4/.cache/rustmage-build-reports/6152a5e89ecb4d1c87059438375b6368.json",
+          "sha256": "2db042602b194989e9c3297a3417898868c0a9b82b7775c516118658ef9be817",
+          "command": [
+            "/usr/bin/python3",
+            "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+            "--test-target",
+            "tdm_remaining_world_rules",
+            "--target-dir",
+            "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target",
+            "--report",
+            "/home/altf4/.cache/rustmage-tdm/remaining-world-fixed17/native.json"
+          ],
+          "terminal": true,
+          "exit_code": 1,
+          "seconds": 112.32740889000706,
+          "memory_max_bytes": 6442450944,
+          "memory_peak_bytes": 1925902336,
+          "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+          "cargo_jobs": 1,
+          "test_threads": 1
+        }
+      },
+      {
+        "label": "observer-test-private-helper",
+        "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-compat/0.json",
+        "sha256": "2ba94d2813b6a8bb5d2a394cbc910d0a3ad0c9e36efbb43148c66e202eb61c35",
+        "terminal": true,
+        "success": false,
+        "passed": 0,
+        "failed_tests": [],
+        "compile_exit": 101,
+        "resource": {
+          "path": "/home/altf4/.cache/rustmage-build-reports/66b3cf3aad6f421992465ac718e2581d.json",
+          "sha256": "57bcebbde305fe3ace5290d3afa7ce02bfd22af0c5c709537bbbf36dc90cb43b",
+          "command": [
+            "/usr/bin/python3",
+            "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+            "--test-target",
+            "mandatory_loops",
+            "--target-dir",
+            "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target",
+            "--report",
+            "/home/altf4/.cache/rustmage-tdm/remaining-world-compat/0.json"
+          ],
+          "terminal": true,
+          "exit_code": 1,
+          "seconds": 0.21103587897960097,
+          "memory_max_bytes": 6442450944,
+          "memory_peak_bytes": 57376768,
+          "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+          "cargo_jobs": 1,
+          "test_threads": 1
+        }
+      }
+    ],
+    "interpretation": "Initial13/16 included a genuine sacrificed-source LKI failure plus direct-damage helper missing advance_replacements. Fixed16/17 isolated an opponent-owned blink fixture: it correctly returned under its owner, so the test now explicitly regains control. Observer compatibility initially called a private helper; corrected to64 observable legal steps and no draw, without exposing engine APIs. All prior failure reports/logs retained."
+  },
+  "final_runs": [
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-compat-final/0.json",
+      "sha256": "cae98a56e9e42708de35e63b08c099a6162b7d82acaf841aa8bd62e962b7cae9",
+      "cases": 17,
+      "passed": 17,
+      "success": true,
+      "terminal": true,
+      "compile_seconds": 0.06499742201413028,
+      "execution_seconds": 0.02463218997581862,
+      "resource": {
+        "path": "/home/altf4/.cache/rustmage-build-reports/4ded22bc573b4d84944c152c02f86f0a.json",
+        "sha256": "ea7deb3671db8db6214ab6bab01f3006599e782f9f0a94ee8c9de69abc1fdf91",
+        "command": [
+          "/usr/bin/python3",
+          "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "tdm_remaining_world_rules",
+          "--target-dir",
+          "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "/home/altf4/.cache/rustmage-tdm/remaining-world-compat-final/0.json"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.12176857798476703,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 32366592,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-compat-final/1.json",
+      "sha256": "6331370ddbd195fdaae0ed0be9d44ccc5af5d39963062de7d94681907fd852da",
+      "cases": 5,
+      "passed": 5,
+      "success": true,
+      "terminal": true,
+      "compile_seconds": 0.7669046559894923,
+      "execution_seconds": 0.041766379988985136,
+      "resource": {
+        "path": "/home/altf4/.cache/rustmage-build-reports/3580c8d10a76497c99ae564df2e73d22.json",
+        "sha256": "7116f33184711c94c931e2d35043911773c2f7de70a073395020dc7c5c9c7136",
+        "command": [
+          "/usr/bin/python3",
+          "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "mandatory_loops",
+          "--target-dir",
+          "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "/home/altf4/.cache/rustmage-tdm/remaining-world-compat-final/1.json"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.8512747009808663,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 209829888,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-compat-final/2.json",
+      "sha256": "76f1429402c63b82bbf3bb5d9f75521964661b25ea1747c88cf7cc51b00e35d5",
+      "cases": 12,
+      "passed": 12,
+      "success": true,
+      "terminal": true,
+      "compile_seconds": 0.9170663240074646,
+      "execution_seconds": 0.042688866989919916,
+      "resource": {
+        "path": "/home/altf4/.cache/rustmage-build-reports/ea06e3ad0c1a40338f752fdc73181ae0.json",
+        "sha256": "1c622a1d7b52f9908f006ab957f7e2dd08a3d0c18084d3c8eb5287b0d4d51e7f",
+        "command": [
+          "/usr/bin/python3",
+          "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "dft_mana_output",
+          "--target-dir",
+          "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "/home/altf4/.cache/rustmage-tdm/remaining-world-compat-final/2.json"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 1.0047026949760038,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 236761088,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-compat-final/3.json",
+      "sha256": "881a378b7e60af2a7c1d1519fe3bede7d5ae9752a795650a07849f510b1a40d4",
+      "cases": 15,
+      "passed": 15,
+      "success": true,
+      "terminal": true,
+      "compile_seconds": 0.8674310079950374,
+      "execution_seconds": 0.03350928201689385,
+      "resource": {
+        "path": "/home/altf4/.cache/rustmage-build-reports/f05145bde73a404f83d0104ddc4620f1.json",
+        "sha256": "1c25b40a8ae785c1b16c41130207259c60698e5e5942a4eafe410224654dfe63",
+        "command": [
+          "/usr/bin/python3",
+          "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "dft_aggregate_target_groups_engine",
+          "--target-dir",
+          "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "/home/altf4/.cache/rustmage-tdm/remaining-world-compat-final/3.json"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.9367879670171533,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 222490624,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-compat-final/4.json",
+      "sha256": "0edc3072216934ebeb028b7bb1faeeafea5d0ec08e0a7d2f8ede302684fe5413",
+      "cases": 16,
+      "passed": 16,
+      "success": true,
+      "terminal": true,
+      "compile_seconds": 0.8171289350138977,
+      "execution_seconds": 0.0243880889902357,
+      "resource": {
+        "path": "/home/altf4/.cache/rustmage-build-reports/0936ce85b77c4d828743e90a611441be.json",
+        "sha256": "89da91925ec9723ced1fd2dc65c693ec4d3da9ac49549425727074b18bf02a1f",
+        "command": [
+          "/usr/bin/python3",
+          "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "dft_entry_copies",
+          "--target-dir",
+          "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "/home/altf4/.cache/rustmage-tdm/remaining-world-compat-final/4.json"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.8921072619850747,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 221601792,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-compat-final/5.json",
+      "sha256": "e00d919198381aa867e617f9e4edb210a02efb182247a923e328f4feeefe53fc",
+      "cases": 7,
+      "passed": 7,
+      "success": true,
+      "terminal": true,
+      "compile_seconds": 0.7673691319942009,
+      "execution_seconds": 0.032979929994326085,
+      "resource": {
+        "path": "/home/altf4/.cache/rustmage-build-reports/dae1d8bbcc0e4e48b97cd62004fb2bc6.json",
+        "sha256": "6373245796ecc1d98f164779372729504c92dbaad388fe67d1315bad8826366e",
+        "command": [
+          "/usr/bin/python3",
+          "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "dft_retained_copy",
+          "--target-dir",
+          "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "/home/altf4/.cache/rustmage-tdm/remaining-world-compat-final/5.json"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.8422110580140725,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 217096192,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-compat-final/6.json",
+      "sha256": "cf8d72b24c4a6def3b9ae1decbb869382c298c7e2c48e8b6deba5b31da6a1908",
+      "cases": 16,
+      "passed": 16,
+      "success": true,
+      "terminal": true,
+      "compile_seconds": 0.7172601530037355,
+      "execution_seconds": 0.024731828016228974,
+      "resource": {
+        "path": "/home/altf4/.cache/rustmage-build-reports/4fce6b541f3841d4aff99d485c87f962.json",
+        "sha256": "ee7e0898f7d66e81986f8a6f9a91b67440c3a7be81d1a506db3beb87953610e8",
+        "command": [
+          "/usr/bin/python3",
+          "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "tdm_protection_decayed",
+          "--target-dir",
+          "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "/home/altf4/.cache/rustmage-tdm/remaining-world-compat-final/6.json"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.7854809609998483,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 227557376,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-compat-final/7.json",
+      "sha256": "6ed6a6b8460f6325f4a9c1ba1b579ada14813d63b391ad91ff8ef0b23209a80e",
+      "cases": 1,
+      "passed": 1,
+      "success": true,
+      "terminal": true,
+      "compile_seconds": 0.8675284740165807,
+      "execution_seconds": 0.025412892980966717,
+      "resource": {
+        "path": "/home/altf4/.cache/rustmage-build-reports/2590aeec784e499faaf517bbd24c1f83.json",
+        "sha256": "1d14ef007cbb265d0dc5b679728f9d165b633cfd84c9cbf83596a6d0ee440b51",
+        "command": [
+          "/usr/bin/python3",
+          "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "dft_activation_tax",
+          "--target-dir",
+          "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "/home/altf4/.cache/rustmage-tdm/remaining-world-compat-final/7.json",
+          "--filter",
+          "a_projected_new_incarnation_uses_the_same_power_up_reduction_and_tax_as_actual_entry"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.932407107000472,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 227262464,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    }
+  ],
+  "summary": {
+    "focused": 17,
+    "compatibility": 72,
+    "total_passes": 89,
+    "all_final_terminal_success": true,
+    "compile_seconds": 5.785686104034539,
+    "execution_seconds": 0.250109458953375,
+    "earlier_engine_compile_seconds": 112.24935665697558,
+    "compatibility_rationale": [
+      "mandatory_loops5: inert historical references and explicit Neriv replacement observer exclusion",
+      "dft_mana_output12: immutable selected-face funding/late mana recipes",
+      "dft_aggregate_target_groups_engine15: aggregate instructions preserve independently revalidated roles",
+      "dft_entry_copies16 + dft_retained_copy7: copiable recipes, acquisition identity, expiration and owned copies",
+      "tdm_protection_decayed16: damage replacement/prevention ordering and source facts",
+      "dft_activation_tax1 selected projected-new-incarnation Power-up case: retained old entry history does not qualify a new incarnation incorrectly"
+    ]
+  },
+  "state_and_wire": {
+    "new_object_or_state_fields": false,
+    "new_actions_or_pending_variants": false,
+    "public_wire_additions": [
+      "ManaRestrictionView::CreatureSpells",
+      "ManaRestrictionView::SpellSubtypeAny(&[&str])"
+    ],
+    "typed_definition_additions": [
+      "ManaRestriction::{CreatureSpells,SpellSubtypeAny}",
+      "TargetGroupConstraint::GraveyardOwnerOfPlayerGroup",
+      "Instruction::{CopyTargetToOtherControlledCreatures,ShuffleGraveyardTargetsIntoPlayerLibrary}",
+      "ReplacementSpec::DoubleEnteredCreatureDamage"
+    ],
+    "hot_layout": "No Object/State/SpellView/DamageFacts fields changed. Existing sparse entered_this_turn vector can retain departed exact refs through the current turn; no separate history allocation or epoch field. Prior measured Object160/State4960 unchanged by field layout; layout not remeasured in this checkpoint.",
+    "schema_owner": "root; no independent global version bump"
+  },
+  "required_shared_libraries": [
+    {
+      "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/librustmage.so",
+      "sha256": "0543d2c666fa2b96282ba95d149d0fa2e879a1d3dd780e502bb175ef5550763f"
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/librustmage_test_access-636adfcd609bee93.so",
+      "sha256": "c009fbc5de616b8bd2e9b74040b5e3a93b47809c2a8f4c5e2a78d1a564398f6a"
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/libserde_derive-4a3ec5018aa504ef.so",
+      "sha256": "16e56c72844cb52549aca635bf643fd0903d223d703291e366575e6900e074a7"
+    }
+  ],
+  "verification": [
+    "All selected jobs terminal, active_processes empty; lease released to s-z before larger source authoring.",
+    "All6529 frozen Rust/Cargo inputs rehashed after terminal and matched.",
+    "One Cargo job, one test thread,6GiB cgroup; final resource reports record no OOM events.",
+    "No full validator/release/simulation or complete-set claim; independent reviews and root assembled validation pending."
+  ],
+  "remaining": [
+    "B:discard_hand_cost mandatory entire-hand activation payment for Reverberating Summons",
+    "B:chosen_source_prevention New Way Forward lifecycle, exact source universe and reflexive callback",
+    "Two independent nonauthor final published checkpoint reviews, root schema/assembled validation, ordinary set implementation later"
+  ]
+}
