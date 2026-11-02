@@ -193,7 +193,9 @@ pub(super) trait CharacteristicWorld {
         let bonus = if self
             .subtypes(subject)
             .has(self.definition(subject), subtype)
-            && self.keywords(card).contains(Keywords::CREW_SADDLE_PLUS_TWO)
+            && query
+                .keywords(card)
+                .contains(Keywords::CREW_SADDLE_PLUS_TWO)
         {
             2
         } else {

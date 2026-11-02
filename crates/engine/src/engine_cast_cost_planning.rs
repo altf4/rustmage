@@ -813,7 +813,9 @@ impl FundingState<'_> {
             let card = resource.object.card;
             if self
                 .mana_activations(resource.id)
-                .any(|(_, a, borrowed)| borrowed.is_some() || !Self::only_tap_mana(a))
+                .any(|(_, a, borrowed, acquired)| {
+                    borrowed.is_some() || acquired.is_some() || !Self::only_tap_mana(a)
+                })
                 || CharacteristicWorld::granted_mana(self, resource.id)
                     .iter()
                     .any(|g| g.sacrifice)
