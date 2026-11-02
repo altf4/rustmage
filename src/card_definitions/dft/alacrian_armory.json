@@ -3,10 +3,35 @@
   "catalogue_id": 122,
   "oracle_id": "3fa2d51c-d549-4287-ac3b-76bc72bcd8bc",
   "facts_sha256": "87a9689b316ea914f9fd6d28b9ab4f9e4e5bfd2aaad5c2c1ba4926e15bc094b5",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "37ff3335c35ba3710df7be1c28403d3e11d4065fda36be98f564bdd645a6bf73"
   },
-  "physical_metadata_sha256": "2a862124651a5f57958037f7df6211cbfdb0c96aa00d375a30a20a5f50b5f786"
+  "physical_metadata_sha256": "2a862124651a5f57958037f7df6211cbfdb0c96aa00d375a30a20a5f50b5f786",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AlacrianArmory.java",
+  "java_sha256": "238f9f567824cd44a05c291c8d5cfb1b40883ecfd889ff67aa4256e33dacb3f2",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardTypeTargetEffect.java",
+      "sha256": "95ebcf49ca842a8831f4925cfff4199bdd0740c37f0dbe77a7c542a73272cc67"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/SaddleAbility.java",
+      "sha256": "ad652baf45e4662717bfe85771ddc22b35eacc9a7b7727bed1a07157ed473b3d"
+    }
+  ]
 }

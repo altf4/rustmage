@@ -3,10 +3,25 @@
   "catalogue_id": 2195,
   "oracle_id": "c4272676-a38a-4b23-988e-9cdb2feb46c1",
   "facts_sha256": "757bd7ff59f438cec6210c2fe57b34095024524a7a8939b1d581ed3e6c2f9197",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6bcd29ac9c2db0f97201106abfcddab2537014be8c873ad523137dea612f662e"
   },
-  "physical_metadata_sha256": "3b0dd70ac46bf8f33e6b45b288de52a8d125e2f80301a7c37c30178aeba24583"
+  "physical_metadata_sha256": "3b0dd70ac46bf8f33e6b45b288de52a8d125e2f80301a7c37c30178aeba24583",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/InterfaceAce.java",
+  "java_sha256": "2d5da9f983cb3fd19186d05a27a54268c814e5a7856dcea5fa015fe6ebf7c8e2",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CrewSaddleWithToughnessAbility.java",
+      "sha256": "12e4e4c78e13aa03855330916572f31b090538d0b704e78af4ba3edb53537053"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapSourceEffect.java",
+      "sha256": "8c7620af194cc7b4085783cc6bc7d8644e670a0c96931c087ecb4a3b7bd6ac71"
+    }
+  ]
 }

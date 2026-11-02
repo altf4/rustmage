@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cee2ada70f81c81fa2c40391021c5148ea1748c9de85dbaaa294bc2410e2c3bf"
   },
-  "physical_metadata_sha256": "f146ee1411b8c5dac2516a26afcf2349f3f3117398a6ca6d9f138ed862a62889"
+  "physical_metadata_sha256": "f146ee1411b8c5dac2516a26afcf2349f3f3117398a6ca6d9f138ed862a62889",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GloryheathLynx.java",
+  "java_sha256": "032a337b00ca87a187dce791c639bba22dd8bfb9307aed41bf229e2222ab2741",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/SaddleAbility.java",
+      "sha256": "ad652baf45e4662717bfe85771ddc22b35eacc9a7b7727bed1a07157ed473b3d"
+    }
+  ]
 }

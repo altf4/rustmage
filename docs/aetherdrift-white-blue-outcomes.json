@@ -47,7 +47,7 @@
         "Flying, vigilance",
         "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "air_response_hulldrifter_and_midnight_mangler_have_their_real_crew_bodies"
@@ -70,10 +70,13 @@
         "Creatures you control get +0/+1 and have vigilance.",
         "At the beginning of combat on your turn, choose up to one target Mount or Vehicle you control. Until end of turn, that permanent becomes saddled if it's a Mount and becomes an artifact creature if it's a Vehicle."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_mounts",
+      "outcome_scenarios": [
+        "armory_buffs_only_own_creatures_and_independently_saddles_mounts_or_animates_vehicles",
+        "armory_can_choose_no_target_and_does_not_trigger_in_the_opponents_combat"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; exact contribution, participant events, generic saddle, keyword and search machinery shared; actual printed costs/timing/recipients/results asserted by listed scenarios"
     },
     {
       "name": "Basri, Tomorrow's Champion",
@@ -92,10 +95,13 @@
         "Cycling {2}{W} ({2}{W}, Discard this card: Draw a card.)",
         "When you cycle this card, Cats you control gain hexproof and indestructible until end of turn."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_mounts",
+      "outcome_scenarios": [
+        "basri_pays_white_tap_and_exert_for_one_lifelink_cat_and_cycles_for_own_cat_protection"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; exact contribution, participant events, generic saddle, keyword and search machinery shared; actual printed costs/timing/recipients/results asserted by listed scenarios",
+      "rules_note": "Temporary Cat grant uses the permanent-group API so its subtype noun also applies to any noncreature Cat permanent."
     },
     {
       "name": "Bounce Off",
@@ -136,10 +142,13 @@
         "Whenever this creature attacks while saddled, it gets +1/+2 and gains flying until end of turn.",
         "Saddle 3 (Tap any number of other creatures you control with total power 3 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_mounts",
+      "outcome_scenarios": [
+        "saddled_brightfield_attacks_have_distinct_growth_flying_untap_and_counter_results",
+        "unsaddled_attack_does_not_grant_brightfield_growth_or_mustang_counters"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; exact contribution, participant events, generic saddle, keyword and search machinery shared; actual printed costs/timing/recipients/results asserted by listed scenarios"
     },
     {
       "name": "Brightfield Mustang",
@@ -157,10 +166,13 @@
         "Whenever this creature attacks while saddled, untap it and put a +1/+1 counter on it.",
         "Saddle 1 (Tap any number of other creatures you control with total power 1 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_mounts",
+      "outcome_scenarios": [
+        "saddled_brightfield_attacks_have_distinct_growth_flying_untap_and_counter_results",
+        "unsaddled_attack_does_not_grant_brightfield_growth_or_mustang_counters"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; exact contribution, participant events, generic saddle, keyword and search machinery shared; actual printed costs/timing/recipients/results asserted by listed scenarios"
     },
     {
       "name": "Broadcast Rambler",
@@ -178,7 +190,7 @@
         "When this Vehicle enters, create a 1/1 colorless Thopter artifact creature token with flying.",
         "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "broadcast_and_nimble_entries_create_one_real_colorless_flying_artifact_thopter"
@@ -202,10 +214,12 @@
         "Sacrifice this creature: Creatures you control with counters on them gain hexproof and indestructible until end of turn.",
         "Saddle 1 (Tap any number of other creatures you control with total power 1 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_mounts",
+      "outcome_scenarios": [
+        "bulwark_attack_targets_any_creature_and_sacrifice_protects_only_own_counter_bearers"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; exact contribution, participant events, generic saddle, keyword and search machinery shared; actual printed costs/timing/recipients/results asserted by listed scenarios"
     },
     {
       "name": "Caelorna, Coral Tyrant",
@@ -244,10 +258,12 @@
       "printed_obligations": [
         "Whenever this creature saddles a Mount or crews a Vehicle during your main phase, that Mount or Vehicle gains flying until end of turn."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_mounts",
+      "outcome_scenarios": [
+        "canyon_vaulter_grants_flying_for_main_phase_crew_and_saddle_only"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; exact contribution, participant events, generic saddle, keyword and search machinery shared; actual printed costs/timing/recipients/results asserted by listed scenarios"
     },
     {
       "name": "Cloudspire Captain",
@@ -265,10 +281,12 @@
         "Mounts and Vehicles you control get +1/+1.",
         "This creature saddles Mounts and crews Vehicles as though its power were 2 greater."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_mounts",
+      "outcome_scenarios": [
+        "captain_boosts_the_union_once_and_its_two_extra_contribution_pays_saddle_four"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; exact contribution, participant events, generic saddle, keyword and search machinery shared; actual printed costs/timing/recipients/results asserted by listed scenarios"
     },
     {
       "name": "Collision Course",
@@ -309,7 +327,7 @@
       "printed_obligations": [
         "{3}{W}: Put a +1/+1 counter on target Mount or Vehicle."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "daring_mechanic_can_counter_opposing_mounts_and_uncrewed_vehicles_but_not_other_creatures"
@@ -424,7 +442,7 @@
         "Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.)",
         "{5}{U}: This creature can't be blocked this turn."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "artifact_affinity_pays_only_the_remaining_generic_and_required_blue"
@@ -473,10 +491,12 @@
         "Whenever this creature attacks while saddled, search your library for a basic Plains card, reveal it, put it into your hand, then shuffle.",
         "Saddle 2 (Tap any number of other creatures you control with total power 2 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_mounts",
+      "outcome_scenarios": [
+        "lynx_saddled_attack_searches_only_a_basic_plains_and_keeps_lifelink"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; exact contribution, participant events, generic saddle, keyword and search machinery shared; actual printed costs/timing/recipients/results asserted by listed scenarios"
     },
     {
       "name": "Guardian Sunmare",
@@ -495,10 +515,13 @@
         "Whenever this creature attacks while saddled, search your library for a nonland permanent card with mana value 3 or less, put it onto the battlefield, then shuffle.",
         "Saddle 4"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_mounts",
+      "outcome_scenarios": [
+        "sunmare_searches_a_small_nonland_permanent_onto_the_battlefield",
+        "sunmare_ward_counters_an_opposing_spell_unless_its_controller_pays_two"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; exact contribution, participant events, generic saddle, keyword and search machinery shared; actual printed costs/timing/recipients/results asserted by listed scenarios"
     },
     {
       "name": "Guidelight Optimizer",
@@ -538,7 +561,7 @@
         "Flying",
         "This creature gets +1/+0 for each artifact you control."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "guidelight_synergist_tracks_only_its_live_controllers_artifact_count"
@@ -583,7 +606,7 @@
         "When this Vehicle enters, draw two cards.",
         "Crew 3 (Tap any number of creatures you control with total power 3 or more: This Vehicle becomes an artifact creature until end of turn.)"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "air_response_hulldrifter_and_midnight_mangler_have_their_real_crew_bodies"
@@ -606,10 +629,12 @@
         "This creature saddles Mounts and crews Vehicles using its toughness rather than its power.",
         "Whenever this creature becomes tapped during your turn, untap it. This ability triggers only once each turn."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_mounts",
+      "outcome_scenarios": [
+        "interface_ace_uses_toughness_and_untaps_only_for_the_first_own_turn_tap"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; exact contribution, participant events, generic saddle, keyword and search machinery shared; actual printed costs/timing/recipients/results asserted by listed scenarios"
     },
     {
       "name": "Keen Buccaneer",
@@ -700,7 +725,7 @@
         "Enchanted permanent gets +1/+1 and has vigilance.",
         "Max speed — You may cast this card from your graveyard."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "lightwheel_starts_speed_enchants_a_vehicle_and_casts_normally_from_own_graveyard_at_four"
@@ -723,7 +748,7 @@
         "Flying",
         "When this creature enters, target creature or Vehicle gains lifelink and indestructible until end of turn."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "lotusguard_entry_grants_both_keywords_to_an_uncrewed_vehicle_independent_of_source"
@@ -746,7 +771,7 @@
         "Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.)",
         "Flying"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "artifact_affinity_pays_only_the_remaining_generic_and_required_blue"
@@ -769,7 +794,7 @@
         "During turns other than yours, this Vehicle is an artifact creature.",
         "Crew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "air_response_hulldrifter_and_midnight_mangler_have_their_real_crew_bodies"
@@ -858,7 +883,7 @@
       "printed_obligations": [
         "When this creature enters, create a 1/1 colorless Thopter artifact creature token with flying."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "broadcast_and_nimble_entries_create_one_real_colorless_flying_artifact_thopter"
@@ -925,11 +950,12 @@
         "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
         "Max speed — At the beginning of combat on your turn, target creature or Vehicle you control gains double strike until end of turn."
       ],
-      "status": "verified: integrator reports all nine speed-family scenarios pass on accepted engine freeze fb878868d",
+      "status": "first nine speed-family scenarios verified; added granted-trigger timing contrast pending integrator run",
       "test_target": "dft_white_blue_cards_speed",
       "outcome_scenarios": [
         "paid_speed_permanents_start_at_one_and_keep_their_printed_bodies",
-        "pride_triggers_at_max_speed_and_can_grant_double_strike_to_an_uncrewed_vehicle"
+        "pride_triggers_at_max_speed_and_can_grant_double_strike_to_an_uncrewed_vehicle",
+        "pride_max_speed_grants_the_trigger_at_combat_without_a_resolution_recheck"
       ],
       "shared_proof": "frozen engine checkpoint; printed keyword/card wiring is asserted by the listed real-card outcomes"
     },
@@ -1036,7 +1062,7 @@
         "When this Aura enters, create a 1/1 colorless Pilot creature token with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\"",
         "Enchanted permanent gets +1/+1 and has lifelink."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "roadside_assistance_grants_stats_lifelink_and_a_colorless_pilot_that_can_crew_three"
@@ -1302,7 +1328,7 @@
         "When this Vehicle enters, scry 2. (Look at the top two cards of your library, then put any number of them on the bottom and the rest on top in any order.)",
         "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "spotcycle_scouter_scries_exactly_two_privately_then_crews_as_a_three_two"
@@ -1529,7 +1555,7 @@
       "printed_obligations": [
         "At the beginning of your end step, untap all nonland permanents you control."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "unstoppable_plan_untaps_own_nonlands_only_at_its_controllers_end_step"
@@ -1552,10 +1578,12 @@
         "Whenever this creature attacks while saddled, it gains indestructible until end of turn. Untap all creatures you control.",
         "Saddle 4 (Tap any number of other creatures you control with total power 4 or more: This Mount becomes saddled until end of turn. Saddle only as a sorcery.)"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_mounts",
+      "outcome_scenarios": [
+        "sloth_saddled_attack_untaps_own_creatures_and_grants_temporary_indestructible"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; exact contribution, participant events, generic saddle, keyword and search machinery shared; actual printed costs/timing/recipients/results asserted by listed scenarios"
     },
     {
       "name": "Valor's Flagship",
@@ -1622,10 +1650,12 @@
         "Tap three other untapped creatures you control: Until end of turn, this Vehicle becomes an artifact creature and gains flying. Put a +1/+1 counter on it.",
         "Crew 1"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_mounts",
+      "outcome_scenarios": [
+        "voyager_glidecar_scries_one_then_taps_three_other_creatures_for_flying_and_a_counter"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; exact contribution, participant events, generic saddle, keyword and search machinery shared; actual printed costs/timing/recipients/results asserted by listed scenarios"
     },
     {
       "name": "Voyager Quickwelder",
@@ -1642,7 +1672,7 @@
       "printed_obligations": [
         "Artifact spells you cast cost {1} less to cast."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 11 permanent-family scenarios pass at accepted engine baseline",
       "test_target": "dft_white_blue_cards_permanents",
       "outcome_scenarios": [
         "quickwelder_reduces_only_artifact_spells_of_its_controller"

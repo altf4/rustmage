@@ -8,5 +8,25 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ecb404d1e95ae0c36d4a8f96eb5721ba96f7d0ffdb3afd75a6c76a0512e99572"
   },
-  "physical_metadata_sha256": "c1fd99f67408699a06ef2250ada0dcba634048408c0bd379a7542dffe8137ddc"
+  "physical_metadata_sha256": "c1fd99f67408699a06ef2250ada0dcba634048408c0bd379a7542dffe8137ddc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BrightfieldMustang.java",
+  "java_sha256": "f33c8455e8fa98ba69a70c9fc2111689496c2078b602d1b40603051e98edb527",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapSourceEffect.java",
+      "sha256": "8c7620af194cc7b4085783cc6bc7d8644e670a0c96931c087ecb4a3b7bd6ac71"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/SaddleAbility.java",
+      "sha256": "ad652baf45e4662717bfe85771ddc22b35eacc9a7b7727bed1a07157ed473b3d"
+    }
+  ]
 }

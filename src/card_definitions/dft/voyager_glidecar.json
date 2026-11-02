@@ -3,10 +3,40 @@
   "catalogue_id": 4942,
   "oracle_id": "8f40d73b-9106-448e-8649-5d62939f0d38",
   "facts_sha256": "a1f87e34c97619328aaaf23fd1e12347bfae0eda5133fb7fef3460eb0692876e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4e5913910a346e24adc6417bec0fa2d4a2426270d99242dba67a24c45e4ce961"
   },
-  "physical_metadata_sha256": "cefa08beb1ba4c02d84144321d5adceec29630fcfdb2f7fddbcbe7325637738b"
+  "physical_metadata_sha256": "cefa08beb1ba4c02d84144321d5adceec29630fcfdb2f7fddbcbe7325637738b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VoyagerGlidecar.java",
+  "java_sha256": "55e2832b62ce9f4c62d29ae8998b8f247342f7e2ea3195684eae90ff3f4929d8",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ScryEffect.java",
+      "sha256": "2b5d4d62bb612633238db872252ec41349e37180816e4a965002ee3b6f8d0b58"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapTargetCost.java",
+      "sha256": "50cd08137872171eb722841ac8da4a5f5fd9e834f886eabd31e61423ca0f6452"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardTypeSourceEffect.java",
+      "sha256": "eebc0ef4cbc6c73c1d811abab3b1909a235d0dedf97ff992d1618e76644a325c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    }
+  ]
 }

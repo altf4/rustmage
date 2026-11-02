@@ -3,10 +3,25 @@
   "catalogue_id": 782,
   "oracle_id": "c86bac69-96d6-4b9f-87e4-2d7faecaa112",
   "facts_sha256": "964175a9f99421f71b3d3e430663b191fd415ac50b7761e21f7231a3c0674908",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8c55283a6de17db53acacca34cfb1d9592bb6bfec44265ca8a7fadd2a4f49208"
   },
-  "physical_metadata_sha256": "66b3c7d786a6913bbc483e7cce986d653707b81ac3925bb9523b267b2255f74b"
+  "physical_metadata_sha256": "66b3c7d786a6913bbc483e7cce986d653707b81ac3925bb9523b267b2255f74b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CloudspireCaptain.java",
+  "java_sha256": "4eb8899579daddc20ef486b460ddd7887dac8306570d74ed94832362e27c7dad",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CrewSaddleIncreasedPowerAbility.java",
+      "sha256": "acbdad8faa6f24f7e1793367b07ce3dc0944b6068fee6dbf14286bb3579fb398"
+    }
+  ]
 }

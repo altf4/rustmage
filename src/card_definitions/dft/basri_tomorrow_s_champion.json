@@ -3,10 +3,40 @@
   "catalogue_id": 347,
   "oracle_id": "d8e1e9ba-708c-4f54-abc3-817004a2f2ac",
   "facts_sha256": "f1edb3ac4b68d8aeebe803bffe35f7c44065ea4b181b05b37753a79e4fff13a2",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5697bdac81d251d6d0c514578fb95d41e6f4eb799852fee6d06eaaa204cfe83f"
   },
-  "physical_metadata_sha256": "2c93c4fe4dccb9b5e4e3099cb5ff4400d54f1a68adf1b59c3768234c25f483df"
+  "physical_metadata_sha256": "2c93c4fe4dccb9b5e4e3099cb5ff4400d54f1a68adf1b59c3768234c25f483df",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BasriTomorrowsChampion.java",
+  "java_sha256": "dbc1b8871480c5e9401731050fbeddbdde6c7103cfa62d14b4e1796476fecde7",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExertSourceCost.java",
+      "sha256": "70fee901ee3dd2ae04bac4fd9bd1ec5a54e30bcb895c3645eb6e51f5b1314f41"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/Cat11LifelinkToken.java",
+      "sha256": "97f9c911b283b2f483825e687d788ece1742d3a129edff08d40b3167ce658576"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+      "sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    }
+  ]
 }
