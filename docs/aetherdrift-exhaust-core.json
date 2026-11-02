@@ -14,7 +14,7 @@
     {
       "path": "Mage.Sets/src/mage/cards/a/AfterburnerExpert.java",
       "sha256": "ff05de13a96d9a68a06e02609050dcba7501f9394995b728ff2694388cda69a5",
-      "full_source_read": false
+      "full_source_read": true
     },
     {
       "path": "Mage.Sets/src/mage/cards/b/BoomScholar.java",
@@ -79,6 +79,26 @@
     {
       "path": "Mage/src/main/java/mage/abilities/common/ActivateAbilityTriggeredAbility.java",
       "sha256": "ac026c9e891ddf1ca80ef4b2847e5f12587bd504bbd2f213346d129ea2ae961c",
+      "full_source_read": true
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToBattlefieldEffect.java",
+      "sha256": "16cae19ce2e7af02a635cb76afbd5f1139e792df2170daa35f5692a12412f54b",
+      "full_source_read": true
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53",
+      "full_source_read": true
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b",
+      "full_source_read": true
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5",
       "full_source_read": true
     }
   ],
