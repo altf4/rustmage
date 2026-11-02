@@ -26,7 +26,7 @@ const HASTE: KeywordGrant = KeywordGrant {
 const HASTE_GROUP: &[StaticAbilityGroup] = &[StaticAbilityGroup {
     line: 0,
     first_layer: AbilityLayer::Ability,
-    fragments: &[StaticAbilityFragment::KeywordGrant(HASTE)],
+    fragments: &[StaticAbilityFragment::KeywordGrant(0, HASTE)],
 }];
 const HASTE_EXTRAS: CardExtras = CardExtras {
     keyword_grants: &[HASTE],
