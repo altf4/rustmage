@@ -1582,6 +1582,12 @@ impl<'g> FundingState<'g> {
             )
     }
     fn moves(&self, goal: &FundingGoal) -> Vec<FundingMove> {
+        self.mana_moves(goal, false)
+    }
+    fn action_moves(&self, goal: &FundingGoal) -> Vec<FundingMove> {
+        self.mana_moves(goal, true)
+    }
+    fn mana_moves(&self, goal: &FundingGoal, late_fixed: bool) -> Vec<FundingMove> {
         let mut moves = Vec::new();
         let actual_active;
         let active_mana = if let Some(keys) = self.active_mana_keys.as_deref() {
@@ -1656,9 +1662,11 @@ impl<'g> FundingState<'g> {
                                 payment,
                                 deferred,
                                 |allocation| {
-                                    grant
-                                        .production
-                                        .visit_at_start(self, entry.id, |production| {
+                                    grant.production.visit_at_start_with_fixed_choice(
+                                        self,
+                                        entry.id,
+                                        late_fixed && (grant.sacrifice || increase != 0),
+                                        |production| {
                                             moves.push(FundingMove {
                                                 resource,
                                                 ability: (increase != 0).then_some(index),
@@ -1694,7 +1702,8 @@ impl<'g> FundingState<'g> {
                                                 })),
                                             });
                                             false
-                                        });
+                                        },
+                                    );
                                 },
                             );
                         },
@@ -1948,7 +1957,10 @@ impl<'g> FundingState<'g> {
                                     payment,
                                     deferred,
                                     |allocation| {
-                                        production.visit_at_start(self, entry.id,
+                                        production.visit_at_start_with_fixed_choice(self, entry.id,
+                                            late_fixed && matches!(production.base(), ManaProduction::Choice { .. } | ManaProduction::Combination { .. })
+                                                && self.fixed_mana_choice_can_be_late(entry.id,
+                                                    self_grant.map_or_else(|| borrowed.map_or(object.card, |a| a.definition), |g| g.0), index),
                                             |production| {
                                                 let step = FundingMove {
                                                     resource,
@@ -4812,31 +4824,37 @@ impl Game {
                     ability,
                     self.counter_amounts(id),
                     |counters| {
-                        production.visit_at_start(self, id, |produced| {
-                            let mut candidate = self.payment_announcement(
-                                packet.clone(),
-                                counters.clone(),
-                                Some(produced),
-                                None,
-                            );
-                            let options = candidate.cost_options().count();
-                            for slot in 0..options {
-                                candidate.select_cost(slot);
-                                if self.deferred_mana_fundable(
-                                    &candidate,
-                                    &parents,
-                                    quality.as_ref().map(|(_, q)| q),
-                                ) && emit(Action::AnnounceMana {
-                                    card: id,
-                                    ability: index as u16,
-                                    counter_payment: counters.clone(),
-                                    production: produced,
-                                }) {
-                                    return true;
+                        self.visit_activation_mana_outputs(
+                            production,
+                            id,
+                            object.card,
+                            index as u16,
+                            |produced| {
+                                let mut candidate = self.payment_announcement(
+                                    packet.clone(),
+                                    counters.clone(),
+                                    Some(produced),
+                                    None,
+                                );
+                                let options = candidate.cost_options().count();
+                                for slot in 0..options {
+                                    candidate.select_cost(slot);
+                                    if self.deferred_mana_fundable(
+                                        &candidate,
+                                        &parents,
+                                        quality.as_ref().map(|(_, q)| q),
+                                    ) && emit(Action::AnnounceMana {
+                                        card: id,
+                                        ability: index as u16,
+                                        counter_payment: counters.clone(),
+                                        production: produced,
+                                    }) {
+                                        return true;
+                                    }
                                 }
-                            }
-                            false
-                        })
+                                false
+                            },
+                        )
                     },
                 ) {
                     return true;
@@ -4943,7 +4961,7 @@ impl Game {
         {
             return false;
         }
-        for step in state.moves(&goal) {
+        for step in state.action_moves(&goal) {
             if state.visit_applied(&step, &mut |next| {
                 next.reachable_with_evidence(
                     &goal,
@@ -4991,7 +5009,7 @@ impl Game {
         ) {
             return true;
         }
-        for step in state.moves(&goal) {
+        for step in state.action_moves(&goal) {
             if state.visit_applied(&step, &mut |next| {
                 next.reachable(&goal, &mut HashSet::new())
             }) && emit(state.action(&step))
@@ -5029,7 +5047,7 @@ impl Game {
         ) {
             return true;
         }
-        for step in state.moves(&goal) {
+        for step in state.action_moves(&goal) {
             if state.visit_applied(&step, &mut |next| {
                 next.reachable(&goal, &mut HashSet::new())
             }) && emit(state.action(&step))
@@ -5112,7 +5130,7 @@ impl Game {
             source: None,
         };
         let state = FundingState::from_game(self, &goal);
-        for step in state.moves(&goal) {
+        for step in state.action_moves(&goal) {
             if emit(state.action(&step)) {
                 return true;
             }
@@ -5206,7 +5224,7 @@ impl Game {
         };
         let world = FundingState::from_game_with_convoke(self, &goal, convoke);
         let mut viable = Vec::new();
-        for step in world.moves(&goal) {
+        for step in world.action_moves(&goal) {
             if world.action(&step) != *action {
                 continue;
             }
@@ -5466,7 +5484,7 @@ impl Game {
         ) {
             return true;
         }
-        for step in state.moves(&goal) {
+        for step in state.action_moves(&goal) {
             if state.visit_applied(&step, &mut |next| {
                 next.reachable(&goal, &mut HashSet::new())
             }) && emit(state.action(&step))

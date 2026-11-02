@@ -145,10 +145,13 @@ impl ManaProduction {
                 | Self::DistinctCreaturePowers
         )
     }
-    pub(super) fn visit_at_start<W: CharacteristicWorld + ?Sized>(
+    /// Planning fixed domains uses concrete outputs once; real costly actions
+    /// may additionally retain an unselected choice until those costs finish.
+    pub(super) fn visit_at_start_with_fixed_choice<W: CharacteristicWorld + ?Sized>(
         self,
         world: &W,
         source: CardId,
+        late_fixed: bool,
         mut emit: impl FnMut(Mana) -> bool,
     ) -> bool {
         let mut zero = false;
@@ -158,7 +161,11 @@ impl ManaProduction {
         }) {
             return true;
         }
-        self.has_late_choice() && !zero && emit([0; 6])
+        let late_dynamic = matches!(
+            self.base(),
+            Self::TapSourcePowerChoice { .. } | Self::DistinctCreaturePowers
+        );
+        (late_dynamic || (late_fixed && self.has_late_choice())) && !zero && emit([0; 6])
     }
     pub(super) fn accepts_at_start<W: CharacteristicWorld + ?Sized>(
         self,
@@ -166,11 +173,28 @@ impl ManaProduction {
         source: CardId,
         selected: Mana,
     ) -> bool {
-        self.visit_at_start(world, source, |mana| mana == selected)
+        self.visit_at_start_with_fixed_choice(world, source, true, |mana| mana == selected)
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn visit_activation_mana_outputs(
+        &self,
+        production: ManaProduction,
+        source: CardId,
+        definition: Card,
+        index: u16,
+        emit: impl FnMut(Mana) -> bool,
+    ) -> bool {
+        let late_fixed = matches!(
+            production.base(),
+            ManaProduction::Choice { .. } | ManaProduction::Combination { .. }
+        ) && self.fixed_mana_choice_can_be_late(source, definition, index);
+        // Pure tap-only fixed mana has no intervening information choice and
+        // retains its original concrete action set. Real costs retain a full
+        // late color/allocation route after those costs have been paid.
+        production.visit_at_start_with_fixed_choice(self, source, late_fixed, emit)
+    }
     pub(super) fn mana_output(&self, item: &SpellView, selected: Mana) -> Option<Box<ManaOutput>> {
         let recipe = self.announced_mana_recipe(item, Some(selected))?;
         let instance = item.mana_activation_key()?;

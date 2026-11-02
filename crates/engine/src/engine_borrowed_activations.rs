@@ -531,9 +531,17 @@ impl Game {
                 |counter_payment| {
                     if let Some(production) = ability.mana_production() {
                         let packet = self.borrowed_activation_packet(actor, *descriptor);
-                        if production.visit_at_start(self, card, |production| {
-                            self.mana_packet_fundable(&packet, counter_payment.clone(), production)
-                                && emit(if descriptor.zone == Zone::Graveyard {
+                        if self.visit_activation_mana_outputs(
+                            production,
+                            card,
+                            descriptor.definition,
+                            descriptor.ability,
+                            |production| {
+                                self.mana_packet_fundable(
+                                    &packet,
+                                    counter_payment.clone(),
+                                    production,
+                                ) && emit(if descriptor.zone == Zone::Graveyard {
                                     Action::AnnounceGraveyardBorrowedMana {
                                         card,
                                         graveyard: descriptor.donor,
@@ -550,7 +558,8 @@ impl Game {
                                         production,
                                     }
                                 })
-                        }) {
+                            },
+                        ) {
                             return true;
                         }
                     }
@@ -590,25 +599,31 @@ impl Game {
                         return false;
                     }
                     if let Some(production) = ability.mana_production() {
-                        production.visit_at_start(self, card, |production| {
-                            emit(if descriptor.zone == Zone::Graveyard {
-                                Action::AnnounceGraveyardBorrowedMana {
-                                    card,
-                                    graveyard: descriptor.donor,
-                                    ability: descriptor.ability,
-                                    counter_payment: counter_payment.clone(),
-                                    production,
-                                }
-                            } else {
-                                Action::AnnounceBorrowedMana {
-                                    card,
-                                    exiled: descriptor.donor,
-                                    ability: descriptor.ability,
-                                    counter_payment: counter_payment.clone(),
-                                    production,
-                                }
-                            })
-                        })
+                        self.visit_activation_mana_outputs(
+                            production,
+                            card,
+                            descriptor.definition,
+                            descriptor.ability,
+                            |production| {
+                                emit(if descriptor.zone == Zone::Graveyard {
+                                    Action::AnnounceGraveyardBorrowedMana {
+                                        card,
+                                        graveyard: descriptor.donor,
+                                        ability: descriptor.ability,
+                                        counter_payment: counter_payment.clone(),
+                                        production,
+                                    }
+                                } else {
+                                    Action::AnnounceBorrowedMana {
+                                        card,
+                                        exiled: descriptor.donor,
+                                        ability: descriptor.ability,
+                                        counter_payment: counter_payment.clone(),
+                                        production,
+                                    }
+                                })
+                            },
+                        )
                     } else {
                         emit(if descriptor.zone == Zone::Graveyard {
                             Action::AnnounceGraveyardBorrowedAbility {

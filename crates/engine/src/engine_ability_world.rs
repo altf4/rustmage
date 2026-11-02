@@ -93,6 +93,13 @@ pub(super) trait CharacteristicWorld {
 
     /// Costs use the actual source's current name, independent of the card
     /// defining an indexed, borrowed or externally granted ability.
+    fn fixed_mana_choice_can_be_late(&self, source: CardId, definition: Card, index: u16) -> bool {
+        let mut cost = definition.activation(index).cost;
+        cost.tap = false;
+        cost != ActivationCost::ZERO
+            || definition.activation_put_counter(index).is_some()
+            || self.named_activation_generic_increase(source) != 0
+    }
     fn activation_generic_discount(&self, source: CardId, definition: Card, ability: u16) -> u32 {
         let controller = self.object(source).controller;
         let subtype = definition

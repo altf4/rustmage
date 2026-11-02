@@ -566,27 +566,31 @@ impl Game {
             {
                 continue;
             }
-            if grant.production.visit_at_start(self, card, |production| {
-                if ability_world::CharacteristicWorld::named_activation_generic_increase(self, card)
-                    == 0
-                {
-                    emit(Action::TapGrantedMana {
-                        card,
-                        grantor: grant.source,
-                        production,
-                    })
-                } else {
-                    let packet = self
-                        .granted_mana_packet(actor, card, grant.source, production)
-                        .expect("live grant");
-                    self.mana_packet_fundable(&packet, Counters::default(), production)
-                        && emit(Action::AnnounceGrantedMana {
+            let increase = self.named_activation_generic_increase(card);
+            if grant.production.visit_at_start_with_fixed_choice(
+                self,
+                card,
+                grant.sacrifice || increase != 0,
+                |production| {
+                    if increase == 0 {
+                        emit(Action::TapGrantedMana {
                             card,
                             grantor: grant.source,
                             production,
                         })
-                }
-            }) {
+                    } else {
+                        let packet = self
+                            .granted_mana_packet(actor, card, grant.source, production)
+                            .expect("live grant");
+                        self.mana_packet_fundable(&packet, Counters::default(), production)
+                            && emit(Action::AnnounceGrantedMana {
+                                card,
+                                grantor: grant.source,
+                                production,
+                            })
+                    }
+                },
+            ) {
                 return true;
             }
         }
@@ -684,14 +688,20 @@ impl Game {
                     );
                     if targets_available && fundable() {
                         let done = if let Some(production) = ability.mana_production() {
-                            production.visit_at_start(self, card, |production| {
-                                emit(Action::AnnounceMana {
-                                    card,
-                                    ability: index as u16,
-                                    counter_payment: counter_payment.clone(),
-                                    production,
-                                })
-                            })
+                            self.visit_activation_mana_outputs(
+                                production,
+                                card,
+                                object.card,
+                                index as u16,
+                                |production| {
+                                    emit(Action::AnnounceMana {
+                                        card,
+                                        ability: index as u16,
+                                        counter_payment: counter_payment.clone(),
+                                        production,
+                                    })
+                                },
+                            )
                         } else {
                             emit(Action::AnnounceActivate {
                                 card,
@@ -756,15 +766,21 @@ impl Game {
                                     return;
                                 }
                                 if let Some(production) = ability.mana_production() {
-                                    done = production.visit_at_start(self, card, |production| {
-                                        emit(Action::ActivateMana {
-                                            card,
-                                            ability: index as u16,
-                                            payment,
-                                            counter_payment: counter_payment.clone(),
-                                            production,
-                                        })
-                                    });
+                                    done = self.visit_activation_mana_outputs(
+                                        production,
+                                        card,
+                                        object.card,
+                                        index as u16,
+                                        |production| {
+                                            emit(Action::ActivateMana {
+                                                card,
+                                                ability: index as u16,
+                                                payment,
+                                                counter_payment: counter_payment.clone(),
+                                                production,
+                                            })
+                                        },
+                                    );
                                     return;
                                 }
                                 let plan = ability.targets;

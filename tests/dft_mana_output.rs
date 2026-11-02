@@ -355,6 +355,7 @@ fn a_fixed_combination_can_be_chosen_late_without_losing_its_exact_allocation() 
         activated: &[ActivatedAbility {
             cost: ActivationCost {
                 tap: true,
+                life: 1,
                 ..ActivationCost::ZERO
             },
             program: &[Instruction::AddMana(ManaProduction::Combination {
@@ -366,24 +367,41 @@ fn a_fixed_combination_can_be_chosen_late_without_losing_its_exact_allocation() 
         ..CardRules::EMPTY
     };
     let _scope = fixture_rules::activate(&[(Card::GrizzlyBears, &SOURCE)]);
-    let mut g = scenario(Player::P1);
-    let source = put(&mut g, Player::P1, "Grizzly Bears", Zone::Battlefield);
-    g.state.players[1].mana = [0; 6];
-    act(&mut g, direct(source, [0; 6]));
-    assert!(matches!(g.state.pending, Pending::EffectMana { .. }));
-    reject(
-        &mut g,
-        Action::ChooseMana {
-            production: [0, 0, 2, 0, 0, 0],
-        },
-    );
-    act(
-        &mut g,
-        Action::ChooseMana {
-            production: [1, 1, 0, 0, 0, 0],
-        },
-    );
-    assert_eq!(g.state.players[1].mana, [1, 1, 0, 0, 0, 0]);
+    for nested in [false, true] {
+        let mut g = scenario(Player::P1);
+        let source = put(&mut g, Player::P1, "Grizzly Bears", Zone::Battlefield);
+        g.state.players[1].mana = if nested { [0, 1, 0, 0, 0, 0] } else { [0; 6] };
+        if nested {
+            let spell = put(&mut g, Player::P1, "Divination", Zone::Hand);
+            act(&mut g, Action::AnnounceCast { card: spell });
+        }
+        let life = g.state.players[1].life;
+        act(&mut g, direct(source, [0; 6]));
+        assert_eq!(g.state.players[1].life, life - 1);
+        assert!(matches!(g.state.pending, Pending::EffectMana { .. }));
+        reject(
+            &mut g,
+            Action::ChooseMana {
+                production: [0, 0, 2, 0, 0, 0],
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseMana {
+                production: [1, 1, 0, 0, 0, 0],
+            },
+        );
+        assert_eq!(
+            g.state.players[1].mana,
+            [1, if nested { 2 } else { 1 }, 0, 0, 0, 0]
+        );
+        if nested {
+            pay(&mut g);
+            settle(&mut g);
+            assert_eq!(g.state.players[1].cards_drawn_this_turn, 2);
+            assert_eq!(g.state.players[1].mana, [0; 6]);
+        }
+    }
 }
 
 #[test]
@@ -680,4 +698,36 @@ fn granted_dynamic_mana_uses_conservative_bounds_and_exact_post_cost_search() {
             assert_eq!(g.state.players[p.index()].mana, [0; 6]);
         }
     }
+}
+
+#[test]
+fn a_silent_fixed_choice_retains_the_original_concrete_domain_in_a_parent_payment() {
+    let mut g = scenario(Player::P0);
+    let source = put(&mut g, Player::P0, "Gilded Lotus", Zone::Battlefield);
+    let spell = put(&mut g, Player::P0, "Divination", Zone::Hand);
+    g.state.players[0].mana = [0, 1, 0, 0, 0, 0];
+    reject(&mut g, direct(source, [0; 6]));
+    act(&mut g, Action::AnnounceCast { card: spell });
+    let outputs = g
+        .legal_actions()
+        .into_iter()
+        .filter_map(|a| match a {
+            Action::ActivateMana {
+                card, production, ..
+            } if card == source => Some(production),
+            _ => None,
+        })
+        .collect::<Vec<_>>();
+    assert_eq!(outputs.len(), 5);
+    assert!(
+        outputs
+            .iter()
+            .all(|m| m.iter().sum::<u32>() == 3 && m.iter().filter(|n| **n != 0).count() == 1)
+    );
+    reject(&mut g, direct(source, [0; 6]));
+    act(&mut g, direct(source, [0, 3, 0, 0, 0, 0]));
+    pay(&mut g);
+    settle(&mut g);
+    assert_eq!(g.state.players[0].cards_drawn_this_turn, 2);
+    assert_eq!(g.state.players[0].mana, [0, 1, 0, 0, 0, 0]);
 }

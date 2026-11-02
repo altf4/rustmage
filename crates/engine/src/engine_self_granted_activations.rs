@@ -77,15 +77,21 @@ impl Game {
                     rules,
                     self.counter_amounts(card),
                     |counters| {
-                        production.visit_at_start(self, card, |production| {
-                            self.mana_packet_fundable(&packet, counters.clone(), production)
-                                && emit(Action::AnnounceSelfGrantedMana {
-                                    source: row.recipient,
-                                    grant_timestamp: row.timestamp,
-                                    counter_payment: counters.clone(),
-                                    production,
-                                })
-                        })
+                        self.visit_activation_mana_outputs(
+                            production,
+                            card,
+                            row.granting_card,
+                            ability,
+                            |production| {
+                                self.mana_packet_fundable(&packet, counters.clone(), production)
+                                    && emit(Action::AnnounceSelfGrantedMana {
+                                        source: row.recipient,
+                                        grant_timestamp: row.timestamp,
+                                        counter_payment: counters.clone(),
+                                        production,
+                                    })
+                            },
+                        )
                     },
                 ) {
                     return true;

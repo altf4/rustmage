@@ -250,3 +250,22 @@ owned capture and absence of a completed event, rejects an invalid late amount,
 compares raw/index/restore choices, then retains the exact finished event. Its
 turn-quality check uses the ordinary end-of-step keep-turn flag and separately
 proves expiry when cleanup clears that flag. Root validation is pending.
+
+## Fixed-domain planning and silent actual starts
+
+A fixed Choice/Combination recipe has the same finite output domain before and
+after costs. New speculative planning enumerates those concrete outcomes once;
+it no longer repeats all of them through an extra unselected-zero start. Actual
+payment action enumeration and mana-lot matching retain a separate action-mode
+visitor: genuine mana, sacrifice, life, counter or external costs (including
+counter-placement headers and named tax) still expose the full owned late choice.
+An already announced unselected receipt still explores every final outcome.
+Dynamic color quantities retain their late route.
+
+Pure tap-only fixed mana has no intervening information choice and preserves its
+existing concrete offered actions. A real Gilded Lotus scenario asserts its five
+nonzero three-mana options during a parent payment, rejects the redundant zero
+start transactionally, and pays/finishes the parent. The fixed Combination late
+scenario now pays and asserts a real one-life cost before its owned allocation
+choice. No memoization, search cutoff or gameplay-name table was added. Root
+validation and the bounded BIG workload measurement remain pending.
