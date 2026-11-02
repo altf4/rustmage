@@ -283,6 +283,9 @@ impl Game {
             StatValue::CardLeftGraveyardThisTurn => {
                 i128::from(self.state.players[owner.index()].card_left_graveyard_this_turn)
             }
+            StatValue::ControllerEndStep => {
+                i128::from(self.state.step == Step::End && self.state.active == owner)
+            }
             StatValue::CardsDrawnThisTurn => {
                 i128::from(self.state.players[owner.index()].cards_drawn_this_turn)
             }

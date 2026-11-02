@@ -74,6 +74,7 @@ fn omnipresence_permission_is_lost_while_blanked_and_restored_afterward() {
                 colors: None,
                 creature_types: None,
                 all_creature_types: false,
+                additional_creature_types: false,
                 base: Some((3, 3)),
                 keywords: Keywords::NONE,
                 expires_turn: None,

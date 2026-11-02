@@ -31,6 +31,7 @@ fn positive_loyalty_cost_cannot_be_paid_when_counters_are_prohibited() {
                 colors: None,
                 creature_types: None,
                 all_creature_types: false,
+                additional_creature_types: false,
                 base: Some((3, 3)),
                 keywords: Keywords::NONE,
                 expires_turn: None,

@@ -56,6 +56,7 @@ fn loot_borrowed_by_forge_uses_bearers_controller_and_funds_real_cast() {
                 colors: None,
                 creature_types: None,
                 all_creature_types: false,
+                additional_creature_types: false,
                 base: None,
                 keywords: Keywords::NONE,
                 expires_turn: None,

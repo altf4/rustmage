@@ -308,6 +308,10 @@ impl Game {
                 self.state.players[actor.index()].life >= STARTING_LIFE + i128::from(extra)
             }
             ActivationGuard::OwnTurn => self.state.active == actor,
+            ActivationGuard::OwnTurnAfterGraveyardDeparture => {
+                self.state.active == actor
+                    && ability_world::CharacteristicWorld::card_left_graveyard(self, actor)
+            }
             ActivationGuard::ControlledPlaneswalkerSubtypeLoyaltyAtLeast { subtype, minimum } => {
                 let world = self.characteristic_query();
                 self.state

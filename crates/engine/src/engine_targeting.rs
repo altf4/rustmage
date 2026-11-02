@@ -1468,6 +1468,7 @@ impl Game {
         controller: Player,
         source: ObjectRef,
         qualification: Option<TargetSourceCharacteristics<'_>>,
+        keywords: Keywords,
     ) -> bool {
         let object = &self.state.objects[id as usize];
         if object.zone != Zone::Battlefield || object.controller == controller {
@@ -1487,12 +1488,16 @@ impl Game {
                     }
                 })
         };
-        if filters().next().is_none() {
+        let monocolored = keywords.contains(Keywords::HEXPROOF_MONOCOLORED);
+        if filters().next().is_none() && !monocolored {
             return false;
         }
         let Some((colors, kinds)) = self.target_source_qualities(source, qualification) else {
             return false;
         };
+        if monocolored && colors.count_ones() == 1 {
+            return true;
+        }
         let query = self.characteristic_query();
         filters().any(|filter| {
             let matches = match filter {
@@ -1809,8 +1814,9 @@ impl Game {
                 let Some(obj) = self.state.objects.get(id as usize) else {
                     return false;
                 };
-                if obj.zone == Zone::Battlefield && {
-                    let keywords = self.keywords(id);
+                let battlefield_keywords =
+                    (obj.zone == Zone::Battlefield).then(|| self.keywords(id));
+                if battlefield_keywords.is_some_and(|keywords| {
                     keywords.contains(Keywords::PROTECTION_EVERYTHING)
                         || (keywords.protection_colors() != 0
                             || keywords.contains(Keywords::PROTECTION_INSTANT_SORCERY))
@@ -1819,13 +1825,19 @@ impl Game {
                                 .is_some_and(|(colors, kinds)| {
                                     keywords.protects_from(colors, kinds)
                                 })
-                } {
+                }) {
                     return false;
                 }
-                if obj.zone == Zone::Battlefield
+                if let Some(keywords) = battlefield_keywords
                     && obj.controller != controller
-                    && (self.keywords(id).contains(Keywords::HEXPROOF)
-                        || self.qualified_hexproof_blocks(id, controller, source, qualification))
+                    && (keywords.contains(Keywords::HEXPROOF)
+                        || self.qualified_hexproof_blocks(
+                            id,
+                            controller,
+                            source,
+                            qualification,
+                            keywords,
+                        ))
                 {
                     return false;
                 }

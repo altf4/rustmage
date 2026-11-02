@@ -52,6 +52,7 @@ fn board(player: Player) -> (Game, CardId, CardId) {
             colors: None,
             creature_types: None,
             all_creature_types: false,
+            additional_creature_types: false,
             base: Some((3, 3)),
             keywords: Keywords::NONE,
             expires_turn: None,

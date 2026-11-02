@@ -3241,6 +3241,8 @@ pub enum StatValue {
     DistinctCreatureCounterKinds,
     ControlledCreatureDiedThisTurn,
     CardLeftGraveyardThisTurn,
+    /// Live condition for a provider's own end step, including projected control.
+    ControllerEndStep,
     Fixed(u16),
     TappedCount(CountFilter),
     Not(&'static StatValue),
@@ -4970,13 +4972,21 @@ pub enum ActivationGuard {
     SourceAttackedThisTurn,
     Always,
     OwnTurn,
+    /// Both starting restrictions must already hold before announcement.
+    OwnTurnAfterGraveyardDeparture,
     ControlSubtypeAny(&'static [&'static str]),
     ControlLandsAtLeast(u16),
-    ControlledPlaneswalkerSubtypeLoyaltyAtLeast { subtype: &'static str, minimum: u64 },
+    ControlledPlaneswalkerSubtypeLoyaltyAtLeast {
+        subtype: &'static str,
+        minimum: u64,
+    },
     ControlCreatureToughnessAtLeast(u16),
     SourceEnteredOrControlsBasicLand,
     HandSizeAtLeast(u16),
-    GraveyardCardsAtLeast { kind: u16, minimum: u16 },
+    GraveyardCardsAtLeast {
+        kind: u16,
+        minimum: u16,
+    },
     LifeAboveStarting(u16),
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -4991,6 +5001,7 @@ impl ActivationGuard {
             | Self::ScriedOrSurveilledThisTurn
             | Self::OpponentNoncombatDamageThisTurn
             | Self::OwnTurn
+            | Self::OwnTurnAfterGraveyardDeparture
             | Self::ControlLandsAtLeast(_)
             | Self::ControlledPlaneswalkerSubtypeLoyaltyAtLeast { .. }
             | Self::ControlCreatureToughnessAtLeast(_)
@@ -5164,6 +5175,10 @@ impl Keywords {
     pub const PROTECTION_GREEN: Self = Self(1u64 << 36);
     /// Both the blocking restriction and the attack-triggered delayed sacrifice.
     pub const DECAYED: Self = Self(1u64 << 37);
+    /// Hexproof qualified by an opposing source having exactly one color.
+    pub const HEXPROOF_MONOCOLORED: Self = Self(1u64 << 38);
+    /// A granted static ability, removed with the recipient's other abilities.
+    pub const CANT_BE_SACRIFICED: Self = Self(1u64 << 39);
     pub const fn protection_from_color(color: ChoiceColor) -> Self {
         match color {
             ChoiceColor::White => Self::PROTECTION_WHITE,

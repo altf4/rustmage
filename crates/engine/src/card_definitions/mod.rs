@@ -101,6 +101,7 @@ impl CardRules {
                                 | StaticAbilityFragment::KeywordGrant(..)
                                 | StaticAbilityFragment::ControlledPermanentKeywords { .. }
                                 | StaticAbilityFragment::PlayLandFromGraveyard
+                                | StaticAbilityFragment::AdditionalTriggers { .. }
                         ),
                     "entry mode fragment consumer is not integrated"
                 );

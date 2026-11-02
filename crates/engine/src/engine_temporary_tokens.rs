@@ -35,6 +35,7 @@ impl Game {
                 exceptions: CopyExceptions::NONE,
                 overrides: None,
                 faces: None,
+                sampled_size: None,
             })
             .collect();
         self.stage_linked_attacking_recipes(item, recipes);

@@ -748,6 +748,7 @@ fn echo_legally_copies_animated_chandra_loyalty_ability() {
                 colors: None,
                 creature_types: None,
                 all_creature_types: false,
+                additional_creature_types: false,
                 base: Some((3, 3)),
                 keywords: Keywords::NONE,
                 expires_turn: None,

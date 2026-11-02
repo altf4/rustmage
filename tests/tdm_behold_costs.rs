@@ -134,6 +134,7 @@ fn color(g: &mut Game, card: CardId, mask: u8) {
             colors: Some(mask),
             creature_types: None,
             all_creature_types: false,
+            additional_creature_types: false,
             base: None,
             keywords: Keywords::NONE,
             expires_turn: None,

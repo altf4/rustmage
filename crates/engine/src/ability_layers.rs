@@ -40,6 +40,8 @@ pub struct StaticAbilityGroup {
 pub enum AdditionalTriggerScope {
     ControlledSubtype(&'static str),
     EquippedCreature,
+    /// Only abilities triggered by a creature attacking, never other events.
+    ControlledPermanentAttack,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -76,6 +78,8 @@ pub enum StaticAbilityFragment {
     ControlledInstantSorcerySplitSecond,
     /// Permanents controlled by this source's controller cannot be sacrificed.
     ControlledPermanentsCannotBeSacrificed,
+    /// No player may activate abilities of matching battlefield permanent kinds.
+    ActivatedPermanentKindsProhibited(u16),
     /// Cards in graveyards cannot be exiled by any player.
     GraveyardCardsCannotBeExiled,
     /// Replace a controlled permanent's move to a graveyard with no move.
@@ -425,6 +429,8 @@ pub enum AnimationDuration {
 pub enum AnimationCreatureTypes {
     Unchanged,
     Named(&'static [&'static str]),
+    /// Add creature types while retaining existing subtypes.
+    Additional(&'static [&'static str]),
     All,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

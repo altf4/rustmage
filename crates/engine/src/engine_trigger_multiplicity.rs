@@ -31,6 +31,20 @@ pub(super) fn additional_triggers<W: CharacteristicWorld + ?Sized>(
     query: &characteristic_query::CharacteristicQuery<'_, W>,
     id: CardId,
 ) -> usize {
+    additional_triggers_for_event(query, id, false)
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn additional_attack_triggers<W: CharacteristicWorld + ?Sized>(
+    query: &characteristic_query::CharacteristicQuery<'_, W>,
+    id: CardId,
+) -> usize {
+    additional_triggers_for_event(query, id, true)
+}
+fn additional_triggers_for_event<W: CharacteristicWorld + ?Sized>(
+    query: &characteristic_query::CharacteristicQuery<'_, W>,
+    id: CardId,
+    attack_only: bool,
+) -> usize {
     let Some(state) = &query.game().state.trigger_multiplicity else {
         return 0;
     };
@@ -50,6 +64,10 @@ pub(super) fn additional_triggers<W: CharacteristicWorld + ?Sized>(
                 else {
                     continue;
                 };
+                if matches!(scope, AdditionalTriggerScope::ControlledPermanentAttack) != attack_only
+                {
+                    continue;
+                }
                 if query.value(condition, provider) == 0
                     || !query.continuous_fragment_available(provider, |f| matches!(f, StaticAbilityFragment::AdditionalTriggers { scope: s, condition: c } if *s == scope && *c == condition))
                 { continue; }
@@ -57,6 +75,9 @@ pub(super) fn additional_triggers<W: CharacteristicWorld + ?Sized>(
                     AdditionalTriggerScope::ControlledSubtype(subtype) => {
                         recipient.controller == object.controller
                             && query.subtypes(id).has(recipient.card, subtype)
+                    }
+                    AdditionalTriggerScope::ControlledPermanentAttack => {
+                        recipient.controller == object.controller
                     }
                     AdditionalTriggerScope::EquippedCreature => {
                         query.is_equipment(provider)

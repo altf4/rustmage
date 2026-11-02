@@ -2130,11 +2130,11 @@ impl Game {
                         .is_none_or(|prior| prior < i128::from(minimum))
                     && power_event.total >= i128::from(minimum)
                 {
-                    self.queue_trigger(&source, index);
+                    self.queue_attack_trigger(&source, index);
                 }
                 if ability.condition.event() == TriggerCondition::ControlledCreatureAttacksAlone
                     && let Some(attacker) = alone
-                    && self.queue_trigger(&source, index)
+                    && self.queue_attack_trigger(&source, index)
                 {
                     // This existing field holds a generic exact event object.
                     // Capture the declared attacker, not a target or later combat count.
@@ -2149,7 +2149,7 @@ impl Game {
                         let object = self.object_ref(attacker.card);
                         let facts =
                             EventObjectFacts::DamageActor(self.damage_source(attacker.card));
-                        if self.queue_trigger(&source, index) {
+                        if self.queue_attack_trigger(&source, index) {
                             self.state.pending_triggers.last_mut().unwrap().event_object =
                                 Some(Box::new(EventObjectView {
                                     object,
@@ -2164,7 +2164,7 @@ impl Game {
                     == TriggerCondition::ControlledCreatureAttacksPlayerAlone
                     && let Some(attacker) = alone
                     && matches!(declared[0].defender, Some(CombatDefender::Player(_)))
-                    && self.queue_trigger(&source, index)
+                    && self.queue_attack_trigger(&source, index)
                 {
                     self.state
                         .pending_triggers
@@ -2177,7 +2177,7 @@ impl Game {
                     for attacker in declared {
                         let event = self.object_view(attacker.card);
                         if self.source_equipment_count(event.reference).unwrap_or(0) != 0
-                            && self.queue_trigger(&source, index)
+                            && self.queue_attack_trigger(&source, index)
                         {
                             self.state
                                 .pending_triggers
@@ -2201,7 +2201,7 @@ impl Game {
                         })
                         .count();
                     for _ in 0..count {
-                        self.queue_trigger(&source, index);
+                        self.queue_attack_trigger(&source, index);
                     }
                 }
                 if let TriggerCondition::AttackPlayer(filter) = ability.condition.event() {
@@ -2217,7 +2217,7 @@ impl Game {
                                     attack.card,
                                 )
                         }) {
-                            self.queue_trigger(&source, index);
+                            self.queue_attack_trigger(&source, index);
                         }
                     }
                 }
@@ -2244,7 +2244,7 @@ impl Game {
                     if count >= usize::from(minimum)
                         && self.step_guard(guard, actor, source.reference, source.tapped)
                     {
-                        self.queue_trigger(&source, index);
+                        self.queue_attack_trigger(&source, index);
                     }
                 }
             }
@@ -2281,7 +2281,7 @@ impl Game {
             };
             for (index, ability) in source.card.triggers().iter().enumerate() {
                 if ability.condition.event() == TriggerCondition::CreaturesAttackYou
-                    && self.queue_trigger(&source, index)
+                    && self.queue_attack_trigger(&source, index)
                 {
                     self.state
                         .pending_triggers
@@ -2417,9 +2417,47 @@ impl Game {
                 } else {
                     giver.clone()
                 };
-                self.queue_trigger_from(&source, index, Some(event));
+                if blocking {
+                    self.queue_trigger_from(&source, index, Some(event));
+                } else {
+                    self.queue_attack_trigger_from(&source, index, Some(event));
+                }
             }
         }
+    }
+
+    /// Attack-event multiplicity is separate from ordinary permanent trigger
+    /// multipliers so shared ETB/attack conditions and delayed packets stay exact.
+    fn queue_attack_trigger(&mut self, source: &ObjectView, index: usize) -> bool {
+        self.queue_attack_trigger_from(source, index, None)
+    }
+    fn queue_attack_trigger_from(
+        &mut self,
+        source: &ObjectView,
+        index: usize,
+        grant: Option<Box<AttachmentTriggerView>>,
+    ) -> bool {
+        if !self.queue_trigger_from(source, index, grant) {
+            return false;
+        }
+        // A printed once-per-turn limit caps all additional instances too.
+        let queued = self.state.pending_triggers.last().unwrap();
+        if queued.trigger_definition().triggers()[index]
+            .condition
+            .once_per_turn()
+        {
+            return true;
+        }
+        let extra = trigger_multiplicity::additional_attack_triggers(
+            &self.characteristic_query(),
+            source.id,
+        );
+        let item = self.state.pending_triggers.last_mut().unwrap();
+        item.additional_triggers = item
+            .additional_triggers
+            .checked_add(extra)
+            .capacity("attack trigger multiplicity exhausted");
+        true
     }
 
     pub(super) fn attack_triggers_for_declaration(
@@ -2436,7 +2474,13 @@ impl Game {
                 item.attachment_trigger = None;
                 item.source_counter_lki = None;
                 item.source_quantity_lki = None;
-                item.additional_triggers = source.additional_triggers;
+                item.additional_triggers = source
+                    .additional_triggers
+                    .checked_add(trigger_multiplicity::additional_attack_triggers(
+                        &self.characteristic_query(),
+                        source.id,
+                    ))
+                    .capacity("attack trigger multiplicity exhausted");
                 self.state.pending_triggers.push(item);
             }
         }
@@ -2451,7 +2495,7 @@ impl Game {
                 | TriggerCondition::SelfEntersOrAttacksWhileSaddled => source.saddled,
                 _ => false,
             } {
-                self.queue_trigger(source, index);
+                self.queue_attack_trigger(source, index);
             }
         }
     }

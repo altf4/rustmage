@@ -29,6 +29,9 @@ pub struct AnimationView {
     pub colors: Option<u8>,
     pub creature_types: Option<&'static [&'static str]>,
     pub all_creature_types: bool,
+    /// This row adds named creature types instead of replacing them.
+    #[serde(skip_serializing_if = "is_false")]
+    pub additional_creature_types: bool,
     pub base: Option<(i128, i128)>,
     pub keywords: Keywords,
     pub expires_turn: Option<u32>,
@@ -490,8 +493,16 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
         if row.all_creature_types {
             Some((row.timestamp, SubtypeChange::All))
         } else {
-            row.creature_types
-                .map(|t| (row.timestamp, SubtypeChange::Named(t, false)))
+            row.creature_types.map(|t| {
+                (
+                    row.timestamp,
+                    if row.additional_creature_types {
+                        SubtypeChange::Add(t)
+                    } else {
+                        SubtypeChange::Named(t, false)
+                    },
+                )
+            })
         }
     }));
     changes
@@ -675,10 +686,14 @@ impl Game {
             enchantment_noncreature: false,
             colors,
             creature_types: match spec.creature_types {
-                AnimationCreatureTypes::Named(t) => Some(t),
+                AnimationCreatureTypes::Named(t) | AnimationCreatureTypes::Additional(t) => Some(t),
                 _ => None,
             },
             all_creature_types: matches!(spec.creature_types, AnimationCreatureTypes::All),
+            additional_creature_types: matches!(
+                spec.creature_types,
+                AnimationCreatureTypes::Additional(_)
+            ),
             base: spec.base,
             keywords: spec.keywords,
             expires_turn: match spec.duration {
@@ -714,6 +729,7 @@ impl Game {
                 colors: Some(colors),
                 creature_types: Some(types),
                 all_creature_types: false,
+                additional_creature_types: false,
                 base: Some((value, value)),
                 keywords: Keywords::NONE,
                 expires_turn: Some(self.state.turn),
@@ -755,6 +771,7 @@ pub(super) fn food_form(object: ObjectRef, timestamp: u64) -> AnimationView {
         colors: None,
         creature_types: None,
         all_creature_types: false,
+        additional_creature_types: false,
         base: None,
         keywords: Keywords::NONE,
         expires_turn: None,
