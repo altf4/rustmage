@@ -8,5 +8,40 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "72a09a091d53d0b4944aa00cebcb4d482994b265908bfc6167b0022fd09d5f8b"
   },
-  "physical_metadata_sha256": "458ede3f7615d32a4ec508b929d3f08eff9516c788677e8d33be87c36c6aa7c7"
+  "physical_metadata_sha256": "458ede3f7615d32a4ec508b929d3f08eff9516c788677e8d33be87c36c6aa7c7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DebrisBeetle.java",
+  "java_sha256": "a0d1d5b9d91a6922218bd62a3135473034ae5a86d933ee768900dd4889e8cd21",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeOpponentsEffect.java",
+      "sha256": "0efbab18123aec32ac502d57e9a8d9571965d09f3f4e09c448a4ed4cf10aa0e1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    }
+  ]
 }

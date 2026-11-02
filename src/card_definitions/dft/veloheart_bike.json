@@ -8,5 +8,30 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "515f8c621d3146ef20af2f8e42d3dc4f0f4a1d041456de7cf25d18a3922f7c51"
   },
-  "physical_metadata_sha256": "ae2b7a7a001f98d0d2824da8996b21de521bfcc6d3faafdfae9f1bd2b6b5998a"
+  "physical_metadata_sha256": "ae2b7a7a001f98d0d2824da8996b21de521bfcc6d3faafdfae9f1bd2b6b5998a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VeloheartBike.java",
+  "java_sha256": "b55f833fee29433efd767c320c36e200d5c0dd671e61aeff7fdcb398d0c7b8c2",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+      "sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+    }
+  ]
 }

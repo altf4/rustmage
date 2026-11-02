@@ -8,5 +8,30 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e29baa310e700325f040419a8b416e86cb5b982d6170a0739bfbacfe8720aa34"
   },
-  "physical_metadata_sha256": "9f58f1be5f9bdfbfc29f3c80b58e27d739a7a474d4253140725f1ed07ea8160c"
+  "physical_metadata_sha256": "9f58f1be5f9bdfbfc29f3c80b58e27d739a7a474d4253140725f1ed07ea8160c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BeastriderVanguard.java",
+  "java_sha256": "091b4463c1e22a95bb1500e20de0f4c21e0af9ef96dcb5b2654574bf395ca402",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+      "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+    }
+  ]
 }

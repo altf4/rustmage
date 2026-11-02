@@ -3,10 +3,60 @@
   "catalogue_id": 4588,
   "oracle_id": "899007b5-6a07-4491-9104-bb537106b07d",
   "facts_sha256": "8870d1dd905808e749b3c45a814734e404dcb649258b552568447149ff2804e6",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8fa385695213e5f5443791d69e1eecaa76431d77418eb69da0d605f3b212943e"
   },
-  "physical_metadata_sha256": "341e27474b308f7627d242003f43d1108ea79fc735f3017f01a45fa212335d48"
+  "physical_metadata_sha256": "341e27474b308f7627d242003f43d1108ea79fc735f3017f01a45fa212335d48",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/ThunderousVelocipede.java",
+  "java_sha256": "af33093119bb3eedb1ed365651ff3b78110557abe265f6cad50851e17b0e39d5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/EntersWithCountersControlledEffect.java",
+      "sha256": "bfa7b64ddf72a842033fb29987be71155355c4d9effe7ad9dcb849906835055d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/counters/CounterType.java",
+      "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+      "sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+      "sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+      "sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+    }
+  ]
 }

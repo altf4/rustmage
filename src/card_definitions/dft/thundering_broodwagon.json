@@ -3,10 +3,75 @@
   "catalogue_id": 4585,
   "oracle_id": "817464d8-1e2d-4e12-96f8-5c7ec9b3e681",
   "facts_sha256": "bf9fa74d581ae087e7e6b3b88e99165a77fc9770b85cc55d836f040e42e3d6ca",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d35658f6dfe4106e784eb81494ff0b45506516685cf4e593aa0574775c2e6a62"
   },
-  "physical_metadata_sha256": "34cd00224eb30876fa3e5e45cb36cbdf86b3aae5830bd1c536593baee1ae306d"
+  "physical_metadata_sha256": "34cd00224eb30876fa3e5e45cb36cbdf86b3aae5830bd1c536593baee1ae306d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/ThunderingBroodwagon.java",
+  "java_sha256": "296f00e14ac2ebb538ee3970c3e6f7582ab07a4c211658e87babf97d086befe5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CyclingAbility.java",
+      "sha256": "ef482a6a01ae60a29d658b669d218e5a0c73bc6ef618b2d0c93b287cf5fe753c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+      "sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterNonlandPermanent.java",
+      "sha256": "451cffb8d2af71777225c79e09772339e74603483d0f32ad2cc65c88e3a73cb9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+      "sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ]
 }
