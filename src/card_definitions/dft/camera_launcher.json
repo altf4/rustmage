@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ba650ab852b3aac4e7f48b16f32a850a5abfd44e16d45f6820aa862b0d80bc56"
   },
-  "physical_metadata_sha256": "cefab2f48846da1589f856276f1096aa26896e040594c77348690c1b0f81ec7c"
+  "physical_metadata_sha256": "cefab2f48846da1589f856276f1096aa26896e040594c77348690c1b0f81ec7c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CameraLauncher.java",
+  "java_sha256": "d38b7d7e0c4602f473c56ac315f7c908ce6dd7278e635206a3ba3785e6b1f083",
+  "rules_tests": "tests/dft_colorless_cards_inherited_artifacts.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ExhaustAbility.java",
+      "sha256": "8a3ebcdcf390152bc354a8493189b1d182befe3c3dc0002f1380744a3500d515"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/ThopterColorlessToken.java",
+      "sha256": "b33786a4fd2e4da0f01b8c8fe86280aeb5e471737a5e092b18b1853a3c5665fb"
+    }
+  ]
 }
