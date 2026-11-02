@@ -30,6 +30,36 @@ fn pure_exiler(card: Card) -> bool {
                 max: 0
             })
         )
+        && card.entry_tapped() == crate::cards::EntryTapped::Never
+        && card.entry_counter_rules().is_empty()
+        && card.entry_choice().is_none()
+        && card.chosen_entry_counters().is_none()
+        && card.activated().iter().all(|ability| {
+            use crate::cards::{ActivationGuard, ActivationOrigin, EffectChoiceKind};
+            ability.guard == ActivationGuard::Always
+                && ability.origin == ActivationOrigin::Battlefield
+                && !ability.cycling
+                && !ability.exhaust
+                && ability.cost.remove.is_none()
+                && ability.cost.loyalty.is_none()
+                && ability
+                    .cost
+                    .additional
+                    .is_none_or(|cost| cost.kind == EffectChoiceKind::DiscardLegendary)
+                && matches!(
+                    ability.program,
+                    [Instruction::Draw(PlayerSet::Controller, 1)]
+                        | [Instruction::PutCounters {
+                            subject: Subject::Targets,
+                            kind: CounterKind::PlusOne,
+                            amount: 1
+                        }]
+                        | [
+                            Instruction::LinkedExileToGraveyardTokens { .. },
+                            Instruction::SacrificeSource
+                        ]
+                )
+        })
         && card.static_ability_groups().iter().all(|group| {
             group.fragments.iter().all(|fragment| {
                 matches!(
@@ -41,30 +71,17 @@ fn pure_exiler(card: Card) -> bool {
         })
 }
 
-fn reference(value: &mut serde_json::Value, state: &State, ids: &[CardId]) {
-    use serde_json::Value;
-    match value {
-        Value::Object(row) => {
-            if row.len() == 2 && row.contains_key("card") && row.contains_key("generation") {
-                let card = row["card"].as_u64().unwrap() as CardId;
-                if ids.contains(&card) {
-                    let offset = i128::from(row["generation"].as_u64().unwrap())
-                        - i128::from(state.objects[card as usize].generation);
-                    row.insert("generation".into(), serde_json::to_value(offset).unwrap());
-                }
-            } else {
-                for child in row.values_mut() {
-                    reference(child, state, ids);
-                }
-            }
-        }
-        Value::Array(rows) => {
-            for child in rows {
-                reference(child, state, ids);
-            }
-        }
-        _ => (),
+fn map_reference(r: ObjectRef, before: &State, after: &State, ids: &[CardId]) -> Option<ObjectRef> {
+    if !ids.contains(&r.card) {
+        return Some(r);
     }
+    let generation = i128::from(r.generation)
+        - i128::from(after.objects[r.card as usize].generation)
+        + i128::from(before.objects[r.card as usize].generation);
+    Some(ObjectRef {
+        card: r.card,
+        generation: u64::try_from(generation).ok()?,
+    })
 }
 
 fn same_announcement(
@@ -74,19 +91,27 @@ fn same_announcement(
     after: &State,
     ids: &[CardId],
 ) -> bool {
-    let mut aa = serde_json::to_value(&a.item).unwrap();
-    let mut bb = serde_json::to_value(&b.item).unwrap();
-    reference(&mut aa, before, ids);
-    reference(&mut bb, after, ids);
-    // Stack identity is alpha-renamed relative to the allocator, not erased:
-    // stale and live links must remain distinguishable.
-    aa["id"] =
-        serde_json::to_value(i128::from(a.item.id) - i128::from(before.next_stack_id)).unwrap();
-    bb["id"] =
-        serde_json::to_value(i128::from(b.item.id) - i128::from(after.next_stack_id)).unwrap();
-    let mut other = b.clone();
-    other.item = a.item.clone();
-    aa == bb && *a == other
+    let mut candidate = b.clone();
+    let offset =
+        i128::from(b.item.id) - i128::from(after.next_stack_id) + i128::from(before.next_stack_id);
+    let Ok(id) = u64::try_from(offset) else {
+        return false;
+    };
+    candidate.item.id = id;
+    if let Some(source) = &mut candidate.item.source {
+        let Some(mapped) = map_reference(source.object, before, after, ids) else {
+            return false;
+        };
+        source.object = mapped;
+    }
+    if let Some(object) = &mut candidate.item.entering_object {
+        let Some(mapped) = map_reference(*object, before, after, ids) else {
+            return false;
+        };
+        *object = mapped;
+    }
+    // Typed equality includes all private/nonserialized packet witnesses.
+    *a == candidate
 }
 
 fn normalized(mut after: State, before: &State, ids: &[CardId]) -> Option<State> {
@@ -99,18 +124,7 @@ fn normalized(mut after: State, before: &State, ids: &[CardId]) -> Option<State>
     ) {
         return None;
     }
-    let map = |r: ObjectRef| -> Option<ObjectRef> {
-        if !ids.contains(&r.card) {
-            return Some(r);
-        }
-        let old = before.objects[r.card as usize].generation;
-        let now = after.objects[r.card as usize].generation;
-        let generation = i128::from(r.generation) - i128::from(now) + i128::from(old);
-        Some(ObjectRef {
-            card: r.card,
-            generation: u64::try_from(generation).ok()?,
-        })
-    };
+    let map = |r| map_reference(r, before, &after, ids);
     let mut links = after.exile_links.clone();
     for row in &mut links {
         row.source = map(row.source)?;
@@ -163,7 +177,9 @@ impl Game {
         }
         // Only printed pure exilers and inert noncreature lands may observe the
         // cycle. No generated abilities, replacement/zone rules or copies.
-        if self.state.zone_rules.is_some()
+        if self.state.mana_lots.is_some()
+            || self.state.library_top.is_some()
+            || self.state.zone_rules.is_some()
             || self.state.replacements.is_some()
             || self.state.temporary_abilities.is_some()
             || self.state.self_granted_abilities.is_some()
@@ -174,6 +190,17 @@ impl Game {
             || self.state.controls.is_some()
             || self.state.temporary_controls.is_some()
         {
+            return false;
+        }
+        // Counter-dependent cast timing/alternative costs in hidden zones
+        // could introduce an escape after a later iteration. Decline them.
+        if self.state.objects.iter().any(|o| {
+            o.zone != Zone::Library
+                && (o.card.cast_timing_guard() != StepGuard::Always
+                    || o.card
+                        .cost_alternative_guard()
+                        .is_some_and(|g| g != StepGuard::Always))
+        }) {
             return false;
         }
         let mut ids = Vec::new();

@@ -10,6 +10,12 @@ fn cycle_for(player: Player) -> Game {
     let cage = put(&mut g, player, "Pinnacle Starcage", Zone::Exile);
     g.state.objects[snare as usize].generation = 7;
     g.state.objects[cage as usize].generation = 11;
+    for stamp in &mut g.state.roles.as_mut().unwrap().ability_timestamps {
+        if stamp.source.card == snare {
+            stamp.source.generation = 7;
+        }
+    }
+
     g.state.exile_links.push(ExileLink {
         source: g.object_ref(snare),
         exiled: g.object_ref(cage),
