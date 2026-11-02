@@ -277,5 +277,47 @@
     "independent whole-engine reviews and broad existing regressions",
     "final wire schema integration and implementation/simulation performance evidence"
   ],
-  "all_authoring_reports": "<cache>/rustmage-authoring/aetherdrift/ (per-run immutable logs/results; reusable target kept separately)"
+  "all_authoring_reports": "<cache>/rustmage-authoring/aetherdrift/ (per-run immutable logs/results; reusable target kept separately)",
+  "in_progress_checkpoints": [
+    {
+      "revision": "92e3acfe",
+      "report": "<cache>/rustmage-authoring/aetherdrift/focused-20261101-193034/result.json",
+      "production_check": "passed5.48s",
+      "previous_scenarios": {
+        "passed": 196,
+        "failed": 0
+      },
+      "new_entry_copy_scenarios": {
+        "passed": 2,
+        "failed": 13
+      },
+      "combined_command_seconds": 121.83731649800029,
+      "blocking_findings": [
+        "ordinary permanent spell entries bypass early copy-choice staging",
+        "projected entry-copy departure retains copied definition instead of physical identity",
+        "pending parent-payment choices do not reflect new copy in all continuation paths"
+      ],
+      "status": "copy owner repairing before further copy mechanics"
+    }
+  ],
+  "acceptance_workload": {
+    "example": "examples/dft_acceptance.rs",
+    "scope": "ten legal60-card DFT-only deck lists, both deck assignments, shared smoke policy; full-pool gate before any game",
+    "compile_check_report": "<cache>/rustmage-authoring/aetherdrift/example-check-20261101-193349/result.json",
+    "compile_check_seconds": 21.823240645011538,
+    "runtime_acceptance": "not run; full276-card support required first",
+    "witnesses": [
+      "all five actual cast colors",
+      "speed started/increased/max",
+      "exhaust paid",
+      "crew paid",
+      "saddled attack",
+      "cycling",
+      "exert paid",
+      "discard",
+      "token created",
+      "graveyard return"
+    ],
+    "contracts": "full deterministic replay plus sampled wrong-actor, owned raw/index children, observations and restore"
+  }
 }
