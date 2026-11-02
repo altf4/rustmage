@@ -382,7 +382,7 @@ fn dune_drifter_uses_cast_x_for_artifact_or_creature_recovery_but_noncast_return
     drain(&mut g);
     assert_eq!(g.object_view(boots).zone, Zone::Battlefield);
     g.move_object(source, Zone::Graveyard);
-    let zero = put(&mut g, Player::P0, "Ornithopter", Zone::Graveyard);
+    let zero = put(&mut g, Player::P0, "Mox Jasper", Zone::Graveyard);
     let two = put(&mut g, Player::P0, "Grizzly Bears", Zone::Graveyard);
     let engine = put(&mut g, Player::P0, "Broodheart Engine", Zone::Battlefield);
     begin(&mut g, engine, 0);
