@@ -919,9 +919,15 @@ pub(super) trait CharacteristicWorld {
         if self.object(id).zone != Zone::Battlefield {
             return true;
         }
-        let Some(evaluation) = ability_evaluation::evaluate_if_needed(self) else {
+        let evaluation = ability_evaluation::evaluate_if_needed(self);
+        if evaluation.is_none()
+            && !matches!(
+                self.object(id).card.entry_choice(),
+                Some(EntryChoiceKind::NamedModes(_))
+            )
+        {
             return true;
-        };
+        }
         self.object(id)
             .card
             .static_ability_groups()
@@ -929,7 +935,10 @@ pub(super) trait CharacteristicWorld {
             .enumerate()
             .any(|(index, group)| {
                 group.fragments.iter().any(&matches)
-                    && evaluation.group_available(self.reference(id), index)
+                    && entry_modes::group_enabled(self, self.reference(id), group)
+                    && evaluation.as_ref().is_none_or(|evaluation| {
+                        evaluation.group_available(self.reference(id), index)
+                    })
             })
     }
     fn printed_abilities_available(&self, id: CardId) -> bool {
@@ -1096,7 +1105,7 @@ pub(super) trait CharacteristicWorld {
         if object.zone != ability.source_zone()
             || !object.card.static_ability_groups().iter().any(|group| {
                 group.fragments.iter().any(|fragment| matches!(fragment,
-                    crate::cards::StaticAbilityFragment::SourceMaxSpeedActivation(slot) if *slot == index))
+                    crate::cards::StaticAbilityFragment::SourceMaxSpeedActivation(slot) | crate::cards::StaticAbilityFragment::SourceEntryModeActivation { ability: slot, .. } if *slot == index))
             })
         {
             return false;
@@ -1106,13 +1115,29 @@ pub(super) trait CharacteristicWorld {
         } else {
             object.owner
         };
-        if self.game().state.players[controller.index()].speed < 4 {
+        let eligible = object.card.static_ability_groups().iter().any(|group| {
+            entry_modes::group_enabled(self, self.reference(id), group)
+                && group.fragments.iter().any(|fragment| match *fragment {
+                    crate::cards::StaticAbilityFragment::SourceMaxSpeedActivation(slot) => {
+                        slot == index && self.game().state.players[controller.index()].speed >= 4
+                    }
+                    crate::cards::StaticAbilityFragment::SourceEntryModeActivation {
+                        mode,
+                        ability,
+                    } => {
+                        ability == index
+                            && entry_modes::active_mode(self, self.reference(id)) == Some(mode)
+                    }
+                    _ => false,
+                })
+        });
+        if !eligible {
             return false;
         }
         match object.zone {
             Zone::Battlefield => {
-                // The evaluator itself uses only the immutable template +
-                // speed predicate, never this query, so evaluation is acyclic.
+                // The evaluator itself uses only the immutable template and
+                // earlier-layer predicates, never this query, so it is acyclic.
                 ability_evaluation::evaluate_abilities(self).result.objects[id as usize]
                     .grants
                     .iter()
@@ -1122,7 +1147,13 @@ pub(super) trait CharacteristicWorld {
                             && grant.kind == ability_order::GrantedAbilityKind::Template(index)
                     })
             }
-            Zone::Hand | Zone::Graveyard => true,
+            Zone::Hand | Zone::Graveyard => {
+                self.game().state.players[controller.index()].speed >= 4
+                    && object.card.static_ability_groups().iter().any(|group| {
+                        group.fragments.iter().any(|fragment| matches!(fragment,
+                            crate::cards::StaticAbilityFragment::SourceMaxSpeedActivation(slot) if *slot == index))
+                    })
+            }
             _ => false,
         }
     }

@@ -1258,6 +1258,11 @@ impl Game {
             },
             |event| event.origin,
         );
+        if event.as_ref().is_none_or(|grant| !grant.granted)
+            && !entry_modes::trigger_available(source, definition, index)
+        {
+            return false;
+        }
         let condition = definition.triggers()[index].condition;
         if condition.event() == TriggerCondition::SelfAttacksIfEquipped
             && self.source_equipment_count(source.reference).unwrap_or(0) == 0

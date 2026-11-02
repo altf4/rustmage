@@ -534,6 +534,8 @@ impl BasicLandType {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum EntryChoiceValue {
+    /// Zero-based selection from this definition's bounded named entry choices.
+    NamedMode(u16),
     CardName(crate::CardName),
     Color(ChoiceColor),
     BasicLandType(BasicLandType),
@@ -543,6 +545,8 @@ pub enum EntryChoiceValue {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EntryChoiceKind {
+    /// Printed names, in stable source-local order; no text is interpreted.
+    NamedModes(&'static [&'static str]),
     CardName,
     NonlandCardName,
     CardNameAfterOpponentHand,
@@ -555,6 +559,9 @@ pub enum EntryChoiceKind {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl EntryChoiceKind {
     pub(crate) fn matches(self, value: EntryChoiceValue) -> bool {
+        if let Self::NamedModes(names) = self {
+            return matches!(value, EntryChoiceValue::NamedMode(index) if usize::from(index) < names.len());
+        }
         if self == Self::NonlandCardName {
             return matches!(value, EntryChoiceValue::CardName(name) if !name.is_land());
         }
@@ -5541,7 +5548,7 @@ impl Card {
         self.static_ability_groups().iter().any(|g| {
             g.fragments
                 .iter()
-                .any(|f| matches!(f, StaticAbilityFragment::AttachmentActivation(i) | StaticAbilityFragment::ControlledPlaneswalkerActivation(i) | StaticAbilityFragment::SourceMaxSpeedActivation(i) if *i == index))
+                .any(|f| matches!(f, StaticAbilityFragment::AttachmentActivation(i) | StaticAbilityFragment::ControlledPlaneswalkerActivation(i) | StaticAbilityFragment::SourceMaxSpeedActivation(i) | StaticAbilityFragment::SourceEntryModeActivation { ability: i, .. } if *i == index))
         })
     }
     pub(crate) fn graveyard_activation_subtype(self) -> Option<&'static str> {

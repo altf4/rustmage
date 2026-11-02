@@ -1057,6 +1057,13 @@ impl FundingState<'_> {
         {
             let mut choices = Vec::new();
             match kind {
+                crate::cards::EntryChoiceKind::NamedModes(names) => {
+                    choices.extend(names.iter().enumerate().map(|(index, _)| {
+                        EntryChoiceValue::NamedMode(
+                            u16::try_from(index).expect("bounded entry modes"),
+                        )
+                    }))
+                }
                 crate::cards::EntryChoiceKind::ManaValueParity => choices.extend(
                     [ManaValueParity::Odd, ManaValueParity::Even]
                         .into_iter()

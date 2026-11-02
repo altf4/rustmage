@@ -68,6 +68,7 @@ impl Card {
                             | StaticAbilityFragment::ControlledPermanentKeywords { .. }
                             | StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                             | StaticAbilityFragment::SourceMaxSpeedActivation(..)
+                            | StaticAbilityFragment::SourceEntryModeActivation { .. }
                             | StaticAbilityFragment::ControlledPlaneswalkerActivation(..)
                             | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
                             | StaticAbilityFragment::ControlledSubtypeKeywords { .. }

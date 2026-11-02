@@ -39,6 +39,98 @@ impl CardRules {
         static_groups: &[],
     };
     pub const fn checked_effect(&self) -> Effect {
+        let mode_count = match self.extras.entry_choice {
+            Some(EntryChoiceKind::NamedModes(names)) => {
+                assert!(!names.is_empty(), "named entry modes cannot be empty");
+                assert!(
+                    names.len() <= u16::MAX as usize + 1,
+                    "too many named entry modes"
+                );
+                let mut index = 0;
+                while index < names.len() {
+                    assert!(!names[index].is_empty(), "named entry mode needs a label");
+                    index += 1;
+                }
+                names.len()
+            }
+            _ => 0,
+        };
+        let mut index = 0;
+        while index < self.extras.entry_mode_triggers.len() {
+            let (slot, mode) = self.extras.entry_mode_triggers[index];
+            assert!(
+                (slot as usize) < self.triggers.len(),
+                "entry mode lacks trigger slot"
+            );
+            assert!((mode as usize) < mode_count, "invalid trigger entry mode");
+            let mut previous = 0;
+            while previous < index {
+                assert!(
+                    self.extras.entry_mode_triggers[previous].0 != slot,
+                    "duplicate trigger entry mode"
+                );
+                previous += 1;
+            }
+            index += 1;
+        }
+        let mut group = 0;
+        while group < self.static_groups.len() {
+            let mut has_mode_gate = false;
+            let mut fragment = 0;
+            while fragment < self.static_groups[group].fragments.len() {
+                if matches!(
+                    self.static_groups[group].fragments[fragment],
+                    StaticAbilityFragment::EntryMode(_)
+                ) {
+                    has_mode_gate = true;
+                }
+                fragment += 1;
+            }
+            let mut fragment = 0;
+            while fragment < self.static_groups[group].fragments.len() {
+                // Only these consumers currently consult group availability in
+                // both real and speculative worlds. New families require their
+                // own consumer integration and focused evidence before use.
+                assert!(
+                    !has_mode_gate
+                        || matches!(
+                            self.static_groups[group].fragments[fragment],
+                            StaticAbilityFragment::EntryMode(_)
+                                | StaticAbilityFragment::SourceEntryModeActivation { .. }
+                                | StaticAbilityFragment::StaticModifier(..)
+                                | StaticAbilityFragment::KeywordGrant(..)
+                                | StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                                | StaticAbilityFragment::PlayLandFromGraveyard
+                        ),
+                    "entry mode fragment consumer is not integrated"
+                );
+                match self.static_groups[group].fragments[fragment] {
+                    StaticAbilityFragment::EntryMode(mode) => {
+                        assert!((mode as usize) < mode_count, "invalid static entry mode");
+                    }
+                    StaticAbilityFragment::SourceEntryModeActivation { mode, ability } => {
+                        assert!(
+                            (mode as usize) < mode_count,
+                            "invalid activation entry mode"
+                        );
+                        assert!(
+                            (ability as usize) < self.activated.len(),
+                            "entry mode lacks activation slot"
+                        );
+                        assert!(
+                            matches!(
+                                self.activated[ability as usize].origin,
+                                ActivationOrigin::Battlefield
+                            ),
+                            "mode activation needs battlefield source"
+                        );
+                    }
+                    _ => {}
+                }
+                fragment += 1;
+            }
+            group += 1;
+        }
         assert!(
             self.activated.len() <= activation_slots::FIRST_RESERVED as usize,
             "authored activation slots overlap reserved engine templates"
@@ -222,6 +314,8 @@ pub struct CardExtras {
     pub battle_defense: u64,
     pub as_turned_face_up_counters: &'static [(CounterKind, u64)],
     pub entry_choice: Option<EntryChoiceKind>,
+    /// (trigger slot, named-mode index), checked only at the triggering event.
+    pub entry_mode_triggers: &'static [(u16, u16)],
     pub entry_copy: Option<EntryCopySpec>,
     pub entry_exile_counters: Option<EntryExileCountersSpec>,
     pub chosen_entry_counters: Option<CounterKind>,
@@ -337,6 +431,7 @@ impl CardExtras {
         hand_cast_entry_counters: &[],
         named_activation_lock: false,
         entry_choice: None,
+        entry_mode_triggers: &[],
         entry_copy: None,
         entry_exile_counters: None,
         chosen_entry_counters: None,

@@ -2821,6 +2821,10 @@ pub struct EndureChoiceView {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ObjectView {
+    /// Trigger-time witness for conditional printed abilities, qualified by
+    /// this exact ability acquisition rather than a dormant raw copy choice.
+    #[serde(skip)]
+    pub(crate) active_entry_mode: Option<u16>,
     // Internal trigger-time witness. Observations are output-only (Serialize,
     // never Deserialize); supported snapshots own State and retain this value.
     #[serde(skip)]
@@ -11412,9 +11416,11 @@ impl Game {
 #[path = "engine_equipment.rs"]
 pub mod equipment;
 
-#[doc(hidden)]
 #[path = "engine_entry_choices.rs"]
 pub mod entry_choices;
+#[doc(hidden)]
+#[path = "engine_entry_modes.rs"]
+pub mod entry_modes;
 pub use entry_choices::EntryChoiceView;
 
 #[doc(hidden)]

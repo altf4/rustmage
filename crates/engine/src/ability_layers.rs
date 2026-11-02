@@ -49,6 +49,15 @@ pub enum AdditionalTriggerScope {
     reason = "Complete immutable typed origin payloads are preserved while legacy fast tables supply some values; do not discard during direct-definition migration"
 )]
 pub enum StaticAbilityFragment {
+    /// Qualifies this entire immutable static ability group by its source's
+    /// active as-entry choice. Checked definitions restrict this to integrated
+    /// consumers. An in-place copy has no inherited choice.
+    EntryMode(u16),
+    /// A printed activated template present only in this source's chosen mode.
+    SourceEntryModeActivation {
+        mode: u16,
+        ability: u16,
+    },
     /// Cast the exact card exiled by this source's linked hand-reveal ability at threshold.
     CastLinkedExileAtThreshold,
     /// Initiates its controller's persistent speed designation as a state-based action.

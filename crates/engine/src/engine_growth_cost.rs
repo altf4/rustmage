@@ -35,7 +35,11 @@ impl Game {
         if controller != actor
             || !object.card.static_ability_groups().iter().any(|group| {
                 group.fragments.iter().any(|fragment| {
-                    matches!(fragment, StaticAbilityFragment::SourceMaxSpeedActivation(_))
+                    matches!(
+                        fragment,
+                        StaticAbilityFragment::SourceMaxSpeedActivation(_)
+                            | StaticAbilityFragment::SourceEntryModeActivation { .. }
+                    )
                 })
             })
             || ability_world::CharacteristicWorld::activation_prohibited(self, actor, card)

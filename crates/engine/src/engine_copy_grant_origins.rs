@@ -94,18 +94,21 @@ pub(super) fn program_grant_active<W: ability_world::CharacteristicWorld + ?Size
             .definition(source.card)
             .static_ability_groups()
             .iter()
+            .filter(|group| entry_modes::group_enabled(world, source, group))
             .flat_map(|group| group.fragments)
             .any(|fragment| {
-                matches!(
-                    fragment,
-                    F::AttachmentTrigger(_)
-                        | F::SourceMaxSpeedActivation(_)
-                        | F::AttachmentActivation(_)
-                        | F::ControlledPlaneswalkerActivation(_)
-                        | F::ControlledPlaneswalkerAttackLimit
-                        | F::GrantInstantSorceryStorm { .. }
-                        | F::CascadeFromHand { .. }
-                        | F::HandMiracle { .. }
-                )
+                matches!(fragment, F::SourceEntryModeActivation { mode, .. }
+                    if entry_modes::active_mode(world, source) == Some(*mode))
+                    || matches!(
+                        fragment,
+                        F::AttachmentTrigger(_)
+                            | F::SourceMaxSpeedActivation(_)
+                            | F::AttachmentActivation(_)
+                            | F::ControlledPlaneswalkerActivation(_)
+                            | F::ControlledPlaneswalkerAttackLimit
+                            | F::GrantInstantSorceryStorm { .. }
+                            | F::CascadeFromHand { .. }
+                            | F::HandMiracle { .. }
+                    )
             })
 }

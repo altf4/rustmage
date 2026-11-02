@@ -41,7 +41,7 @@ fn has_fragment<W: ability_world::CharacteristicWorld + ?Sized>(
                 .static_ability_groups()
                 .iter()
                 .any(|g| g.fragments.iter().any(&predicate))
-            && world.printed_abilities_available(id)
+            && world.fragment_available(id, &predicate)
     })
 }
 /// A live rule changes only the origin of an ordinary land play. It never grants

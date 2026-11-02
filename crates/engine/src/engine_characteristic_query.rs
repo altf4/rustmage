@@ -952,9 +952,16 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         if !self.on_battlefield(source) {
             return true;
         }
-        let Some(evaluation) = self.evaluation.as_ref() else {
+        let evaluation = self.evaluation.as_ref();
+        // Existing definitions without entry modes retain the ordinary no-removal fast path.
+        if evaluation.is_none()
+            && !matches!(
+                self.object(source).card.entry_choice(),
+                Some(EntryChoiceKind::NamedModes(_))
+            )
+        {
             return true;
-        };
+        }
         let reference = self.object_ref(source);
         let mut bound = false;
         let mut available = false;
@@ -967,7 +974,9 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         {
             if group.fragments.iter().any(&matches) {
                 bound = true;
-                available |= evaluation.group_available(reference, index);
+                available |= entry_modes::group_enabled(self, reference, group)
+                    && evaluation
+                        .is_none_or(|evaluation| evaluation.group_available(reference, index));
             }
         }
         assert!(
@@ -1081,6 +1090,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         };
         ObjectView {
             additional_triggers: trigger_multiplicity::additional_triggers(self, id),
+            active_entry_mode: entry_modes::active_mode(self, self.object_ref(id)),
             prepared: self.is_prepared(self.object_ref(id)),
             harnessed: CharacteristicWorld::harnessed(self, id).then_some(true),
             abilities: self.ability_availability(id),

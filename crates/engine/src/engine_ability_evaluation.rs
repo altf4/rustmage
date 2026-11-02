@@ -15,6 +15,7 @@ pub(super) struct EvaluatedAbilityGroup {
     pub group: usize,
     pub first_layer: AbilityLayer,
     pub effect: Option<usize>,
+    pub enabled: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) struct AbilityEvaluation {
@@ -29,9 +30,10 @@ impl AbilityEvaluation {
             .iter()
             .find(|r| r.source == source && r.group == group)
             .expect("bound immutable static-effect group");
-        row.first_layer < AbilityLayer::Ability
-            || row.effect.is_some_and(|i| self.result.started[i])
-            || (row.effect.is_none() && self.result.objects[source.card as usize].printed)
+        row.enabled
+            && (row.first_layer < AbilityLayer::Ability
+                || row.effect.is_some_and(|i| self.result.started[i])
+                || (row.effect.is_none() && self.result.objects[source.card as usize].printed))
     }
 }
 
@@ -130,6 +132,20 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             ability,
         } => {
             if !world.conditional_ward_applies(source, condition, filter, id) {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: vec![key(ability)],
+                mana: Vec::new(),
+            });
+        }
+        StaticAbilityFragment::SourceEntryModeActivation { mode, ability } => {
+            if id != source.card
+                || provider.zone != Zone::Battlefield
+                || entry_modes::active_mode(world, source) != Some(mode)
+            {
                 return None;
             }
             return Some(LayerSixGrant {
@@ -385,8 +401,8 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
             source.zone == Zone::Battlefield
                 && source.card.static_ability_groups().iter().any(|group| {
                     group.fragments.iter().any(|fragment| matches!(
-                        fragment, StaticAbilityFragment::SourceMaxSpeedActivation(_) | StaticAbilityFragment::ControlledPlaneswalkerActivation(_) | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit | StaticAbilityFragment::OpponentPlayerAttackerKeywords(_)
-                    ))
+                        fragment, StaticAbilityFragment::SourceEntryModeActivation { .. } | StaticAbilityFragment::SourceMaxSpeedActivation(_) | StaticAbilityFragment::ControlledPlaneswalkerActivation(_) | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit | StaticAbilityFragment::OpponentPlayerAttackerKeywords(_)
+                    ) || (matches!(fragment, StaticAbilityFragment::EntryMode(_)) && source.card.has_layer6_provider()))
                 })
         })
         // External attachment rules must participate even without ability removal.
@@ -545,6 +561,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
             }
         }
         for (group, origin) in object.card.static_ability_groups().iter().enumerate() {
+            let enabled = entry_modes::group_enabled(world, source, origin);
             let removes = origin
                 .fragments
                 .iter()
@@ -561,6 +578,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::AttachmentKeywords(..)
                         | StaticAbilityFragment::AttachedTurnKeywords(..)
                         | StaticAbilityFragment::SourceMaxSpeedActivation(..)
+                        | StaticAbilityFragment::SourceEntryModeActivation { .. }
                         | StaticAbilityFragment::HarnessedTrigger(..)
                         | StaticAbilityFragment::ConditionalWard { .. }
                         | StaticAbilityFragment::AttachmentTrigger(..)
@@ -583,7 +601,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::LiveKeywords(..)
                 )
             });
-            let effect = if removes || provides {
+            let effect = if enabled && (removes || provides) {
                 let time = timestamp(world, source);
                 let recipients: Vec<_> = if removes {
                     object
@@ -632,6 +650,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                 group,
                 first_layer: origin.first_layer,
                 effect,
+                enabled,
             });
         }
     }
