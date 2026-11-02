@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "set": "DFT",
+  "phase": "engine; ordinary card authorship not started",
+  "membership": 276,
+  "starting_admitted": 119,
+  "newly_admitted": 0,
+  "source_audit": "docs/aetherdrift-audit/; full direct card bodies covered, reusable helper review limits remain explicit",
+  "focused_checkpoints": [
+    {
+      "revision": "148572fec8c3fe4e6e5fae35c89dfb935c4e4f10",
+      "status": "passed; subsequent engine changes require rerun",
+      "targets": {
+        "dft_crew": 10,
+        "dft_fixture_rules": 2,
+        "dft_queries": 10,
+        "dft_speed_engine": 10
+      },
+      "passed": 32,
+      "failed": 0,
+      "ignored": 0,
+      "report": "<cache>/rustmage-authoring/aetherdrift/focused-20261101-175018/result.json",
+      "command_seconds": 1.5183093750092667,
+      "cargo_build_seconds": 1.42,
+      "reported_scenario_seconds": 0.01,
+      "resource_report": "<cache>/rustmage-build-reports/7eedc7ea557c4071ae8afd713ab9e21d.json"
+    }
+  ],
+  "earlier_focused_runs": [
+    {
+      "report_suffix": "focused-20261101-174354",
+      "seconds": 28.831207258001086,
+      "result": "compile failed: scaled-search borrow conflict; fixed1768d336"
+    },
+    {
+      "report_suffix": "focused-20261101-174530",
+      "seconds": 101.31380501300737,
+      "result": "engine/sets compiled; speed fixture used nonexistent Bounce instruction; fixed521ac5a7"
+    },
+    {
+      "report_suffix": "focused-20261101-174754",
+      "seconds": 1.2172481210000115,
+      "result": "9crew cases passed; fixture expected effective creature stats on noncreature Vehicle; fixedd183a2fb"
+    },
+    {
+      "report_suffix": "focused-20261101-174916",
+      "seconds": 0.8160798330063699,
+      "result": "30/32 passed; fixture token lacked required recipe, direct damage fixture had not advanced replacement batch; fixed148572fe"
+    }
+  ],
+  "resource_policy": "All Cargo uses resource_guard; one shared build slot,6GiB cgroup, serial tests; no OOM probe or unmanaged builds",
+  "pending": "Remaining shared engines and reviews; complete card behavior/provenance; final schema integration; full release acceptance; DFT-only complete games, replay/search and performance; single completed-set PR and two independent nonauthor reviews",
+  "throughput": "No whole cards newly completed during engine phase. No set simulation benchmark measured yet."
+}

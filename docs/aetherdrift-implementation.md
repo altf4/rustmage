@@ -15,13 +15,13 @@ games, deterministic replay and owned search behavior pass acceptance.
 
 The branch starts at the merged engine/per-set/test build split (#565). It uses
 `crates/engine`, generated per-set crates and separate integration test targets.
-A full-source audit is in progress for all 276 members, including the already
-admitted cards. Auditors partition monochrome W/U, monochrome B/R, green plus
+The direct-source dependency audit covers all 276 members, including the already
+admitted cards; reusable helper review limits are explicit in its ledgers. Auditors partition monochrome W/U, monochrome B/R, green plus
 multicolor, and colorless/lands; they do not author cards during this phase.
 
 The audit must identify costs, timing, targets, modes, entry choices, triggers,
 continuous effects, replacements, token/copy behavior, source departure and
-controller changes. Every dependency will be recorded before engine work begins.
+controller changes. All identified dependencies were recorded in issue #566 before engine work began.
 Focused assertions and affected shared contracts must pass before the engine
 baseline is frozen and the authoring cache warmed.
 
@@ -40,3 +40,7 @@ baseline is frozen and the authoring cache warmed.
 All Cargo compilation uses `scripts/resource_guard.py`. Reports and compiler
 outputs use a persistent cache outside the checkout. Sources remain fixed while
 a consuming process runs, and required libraries remain at their recorded paths.
+
+Focused engine evidence and build timings are retained in
+`docs/aetherdrift-engine-progress.json`. The first32 selected cases passed on
+148572fe; subsequent shared changes remain subject to revalidation and review.
