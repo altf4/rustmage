@@ -8,5 +8,10 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ce4ae28c9e00db19eeb971c25e9095792fa2383e1fc52e47f479e98f2de8f01e"
   },
-  "physical_metadata_sha256": "1ac13e55299e7ef2f2f0dcda1d3d15b34a4eb284d0af3bdf623c77418edda637"
+  "physical_metadata_sha256": "1ac13e55299e7ef2f2f0dcda1d3d15b34a4eb284d0af3bdf623c77418edda637",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SundialDawnTyrant.java",
+  "java_sha256": "6449e9d1ce456ef83ae23d688f42a8a3bf6a915e4acb15e52098548e290281a8",
+  "xmage_dependencies": [],
+  "has_rules_abilities": false
 }

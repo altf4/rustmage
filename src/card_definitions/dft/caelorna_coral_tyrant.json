@@ -8,5 +8,10 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f99d36002af34a2dd767f00b371e643d71e94af177c76730a82f495f6dd0ff3d"
   },
-  "physical_metadata_sha256": "0af643eff9c7f479493aecd65291ef3e0039ba450c5a48f024493087f5eec09a"
+  "physical_metadata_sha256": "0af643eff9c7f479493aecd65291ef3e0039ba450c5a48f024493087f5eec09a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CaelornaCoralTyrant.java",
+  "java_sha256": "04af8051fbba1248ccd040739fbc8983521ca46430fbcfeccebde999038838f2",
+  "xmage_dependencies": [],
+  "has_rules_abilities": false
 }

@@ -1,16 +1,38 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from the complete pinned Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(2, 5),
     keywords: Keywords::VIGILANCE,
+    static_groups: &[
+        StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Ability,
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::VIGILANCE,
+            )],
+        },
+        StaticAbilityGroup {
+            line: 1,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::StartYourEngines],
+        },
+    ],
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::AtStep {
+            step: TriggerStep::BeginCombat,
+            relation: CastRelation::You,
+            guard: StepGuard::Expression {
+                value: StatValue::ControllerSpeed,
+                minimum: Some(4),
+                maximum: None,
+            },
+        },
+        targets: TargetPlan::Single(TargetSpec::one(TargetRule::CreatureOrVehicle {
+            relation: 0,
+        })),
+        program: &[Instruction::GrantKeywords {
+            subject: Subject::Targets,
+            keywords: Keywords::DOUBLE_STRIKE,
+        }],
+    }],
     ..CardRules::EMPTY
 };
