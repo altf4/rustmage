@@ -427,6 +427,24 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 }
             }
             Action::ChooseEntryValue { .. } => 0,
+            Action::ChooseEntryCopy { object } => {
+                // Copying an unchanged as-entry copier grants a fresh choice.
+                // Prefer a completed blueprint and decline copy-only loops.
+                object
+                    .and_then(|reference| {
+                        observation
+                            .objects
+                            .iter()
+                            .find(|object| object.reference == reference)
+                    })
+                    .map_or(0, |object| {
+                        if object.card.entry_copy().is_some() {
+                            -1
+                        } else {
+                            60
+                        }
+                    })
+            }
             Action::ChooseEntryBehold { object } => {
                 if object.is_some() {
                     80
