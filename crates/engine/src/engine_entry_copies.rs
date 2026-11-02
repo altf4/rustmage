@@ -52,7 +52,7 @@ pub(super) fn apply_blueprint(movement: &mut entries::EntryMove, recipe: CopyRec
         .base
         .map(|(p, t)| (i128::from(p), i128::from(t)))
         .unwrap_or_else(|| match recipe.definition.effect() {
-            Effect::Creature(p, t) => (p, t),
+            Effect::Creature(p, t) => (i128::from(p), i128::from(t)),
             _ => (0, 0),
         });
     movement.before.power = base.0;

@@ -104,7 +104,7 @@ pub(super) trait CharacteristicWorld {
         self.game().copied_grant_origin(object)
     }
     fn face_down(&self, id: CardId) -> bool {
-        self.game().is_face_down(id)
+        self.game().is_face_down(self.reference(id))
     }
     fn temporary_copy_rows_state(&self) -> &temporary_copy::Rows {
         &self.game().state.temporary_copies
