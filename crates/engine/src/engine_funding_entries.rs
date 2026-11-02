@@ -2200,10 +2200,24 @@ impl<'g> FundingState<'g> {
         }
     }
     pub(super) fn continuation_memo_safe(&self) -> bool {
+        // An initial copy profile is immutable for this query, just like its
+        // Game's rule tables. Changed recipes and projected entries still need
+        // the old complete-world search. Source-bound layers remain outside
+        // early reuse, including hidden layers which could become active.
         self.entry_projection.is_none()
-            && self.copy_recipes.is_none()
-            && self.game.state.copy_recipes.is_none()
-            && self.game.state.temporary_copies.is_none()
+            && self.copy_recipes == self.game.state.copy_recipes
+            && self
+                .game
+                .state
+                .temporary_copies
+                .as_ref()
+                .is_none_or(|rows| {
+                    rows.iter().all(|row| {
+                        row.layers
+                            .iter()
+                            .all(|layer| layer.value.deadline.source().is_none())
+                    })
+                })
     }
     pub(super) fn scoped_continuation_query(&self) -> Option<Self> {
         if self.continuation_memo.is_some()
@@ -2237,6 +2251,14 @@ impl<'g> FundingState<'g> {
             memo.exact.extend(payment.selected.iter().map(|r| r.card));
         }
         memo.contributors |= self.contributors.is_some();
+        // The profile itself is fixed, but copied recipients may otherwise
+        // resemble an ordinary basic whose colors, types or power differ.
+        if let Some(rows) = &self.copy_recipes {
+            memo.exact.extend(rows.iter().map(|row| row.object.card));
+        }
+        if let Some(rows) = &self.game.state.temporary_copies {
+            memo.exact.extend(rows.iter().map(|row| row.object.card));
+        }
         if let Some(rows) = &self.game.state.self_granted_abilities {
             memo.exact.extend(rows.iter().map(|r| r.recipient.card));
         }
@@ -2263,6 +2285,25 @@ impl<'g> FundingState<'g> {
         // A caller installing a new immutable chain starts a separate query.
         // Only the explicit parent transition below restores its scoped cache.
         self.continuation_memo = None;
+        if !outer.is_empty() {
+            // Each actual ancestor has already selected its cost before opening
+            // a mana window. Count every frozen payment conservatively, even
+            // though strict spell-only lots can only pay the final spell. If a
+            // future route has an unlocked cost, retain exact lot amounts.
+            let demand = std::iter::once(head)
+                .chain(outer.iter().map(|frame| &frame.announcement))
+                .try_fold(0u128, |total, announcement| {
+                    announcement.total_cost.or(announcement.cost).map(|cost| {
+                        total
+                            + cost.colored.into_iter().map(u128::from).sum::<u128>()
+                            + u128::from(cost.generic)
+                    })
+                });
+            self.spell_lot_demand = self
+                .spell_lot_demand
+                .zip(demand)
+                .map(|(previous, demand)| previous.max(demand));
+        }
         self.active_mana_keys = Some(
             std::iter::once(head)
                 .chain(outer.iter().map(|frame| &frame.announcement))

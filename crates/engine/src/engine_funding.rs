@@ -65,6 +65,10 @@ pub(super) struct FundingState<'g> {
     active: Player,
     mana: [u128; 6],
     lots: Vec<mana_lots::Lot>,
+    // Strict spell-only mana cannot pay any intermediate activated ability.
+    // This fixed query bound includes all frozen ancestor payments and limits
+    // only equivalent search-key amounts, never owned pools or allocations.
+    spell_lot_demand: Option<u128>,
     purpose: mana_lots::Purpose,
     payment_source: Option<ObjectRef>,
     exhaust_source_reuse_authorized: bool,
@@ -1080,6 +1084,9 @@ impl<'g> FundingState<'g> {
             active: game.state.active,
             mana: game.state.players[goal.actor.index()].mana.map(u128::from),
             lots: game.mana_lots(goal.actor).to_vec(),
+            spell_lot_demand: Some(
+                goal.required.into_iter().map(u128::from).sum::<u128>() + u128::from(goal.generic),
+            ),
             purpose: game.funding_purpose(goal),
             payment_source: goal.source.as_ref().map(|(source, ..)| *source),
             required_face_up: game.face_up_payment().map(|request| request.object),
@@ -1599,12 +1606,20 @@ impl<'g> FundingState<'g> {
             )
     }
     fn moves(&self, goal: &FundingGoal) -> Vec<FundingMove> {
-        self.mana_moves(goal, false)
+        self.mana_moves(goal, false, Some(false))
+    }
+    fn deferred_moves(&self, goal: &FundingGoal) -> Vec<FundingMove> {
+        self.mana_moves(goal, false, Some(true))
     }
     fn action_moves(&self, goal: &FundingGoal) -> Vec<FundingMove> {
-        self.mana_moves(goal, true)
+        self.mana_moves(goal, true, None)
     }
-    fn mana_moves(&self, goal: &FundingGoal, late_fixed: bool) -> Vec<FundingMove> {
+    fn mana_moves(
+        &self,
+        goal: &FundingGoal,
+        late_fixed: bool,
+        deferred_only: Option<bool>,
+    ) -> Vec<FundingMove> {
         let mut moves = Vec::new();
         let actual_active;
         let active_mana = if let Some(keys) = self.active_mana_keys.as_deref() {
@@ -1672,6 +1687,9 @@ impl<'g> FundingState<'g> {
                         increase,
                         None,
                         |payment, deferred| {
+                            if deferred_only.is_some_and(|only| only != deferred.is_some()) {
+                                return;
+                            }
                             funding_allocations(
                                 self.mana,
                                 &self.lots,
@@ -1758,6 +1776,9 @@ impl<'g> FundingState<'g> {
                         increase,
                         None,
                         |payment, deferred| {
+                            if deferred_only.is_some_and(|only| only != deferred.is_some()) {
+                                return;
+                            }
                             funding_allocations(
                                 self.mana,
                                 &self.lots,
@@ -1967,6 +1988,9 @@ impl<'g> FundingState<'g> {
                             )
                             .as_deref(),
                             |payment, deferred| {
+                                if deferred_only.is_some_and(|only| only != deferred.is_some()) {
+                                    return;
+                                }
                                 funding_allocations(
                                     self.mana,
                                     &self.lots,
@@ -2580,33 +2604,43 @@ impl<'g> FundingState<'g> {
             .lots
             .iter()
             .filter_map(|lot| {
-                let spell_only = inert_spell_lots
-                    && matches!(
-                        lot.quality.restriction,
-                        mana_lots::ManaRestrictionView::CastFromExile
-                            | mana_lots::ManaRestrictionView::ArtifactSpell
-                            | mana_lots::ManaRestrictionView::InstantSorcery
-                            | mana_lots::ManaRestrictionView::NoncreatureSpell
-                            | mana_lots::ManaRestrictionView::PlaneswalkerSpell
-                            | mana_lots::ManaRestrictionView::SpellSubtype(_)
-                            | mana_lots::ManaRestrictionView::CreatureSpell(_)
-                    );
+                let spell_only = matches!(
+                    lot.quality.restriction,
+                    mana_lots::ManaRestrictionView::CastFromExile
+                        | mana_lots::ManaRestrictionView::ArtifactSpell
+                        | mana_lots::ManaRestrictionView::InstantSorcery
+                        | mana_lots::ManaRestrictionView::NoncreatureSpell
+                        | mana_lots::ManaRestrictionView::PlaneswalkerSpell
+                        | mana_lots::ManaRestrictionView::SpellSubtype(_)
+                        | mana_lots::ManaRestrictionView::CreatureSpell(_)
+                );
                 if !spell_only {
                     return Some(lot.clone());
                 }
-                if !lot.quality.eligible(self.purpose) {
+                if inert_spell_lots && !lot.quality.eligible(self.purpose) {
                     for (pool, amount) in key_mana.iter_mut().zip(lot.amounts) {
                         *pool -= amount;
                     }
                     return None;
                 }
+                let Some(demand) = (if inert_spell_lots {
+                    Some(final_demand)
+                } else {
+                    self.spell_lot_demand
+                }) else {
+                    return Some(lot.clone());
+                };
                 let mut capped = lot.clone();
                 for (pool, amount) in key_mana.iter_mut().zip(&mut capped.amounts) {
-                    let excess = amount.saturating_sub(final_demand);
+                    let excess = amount.saturating_sub(demand);
                     *amount -= excess;
                     *pool -= excess;
                 }
-                Some(capped)
+                capped
+                    .amounts
+                    .iter()
+                    .any(|&amount| amount != 0)
+                    .then_some(capped)
             })
             .collect();
         FundingKey {
@@ -3440,47 +3474,58 @@ impl<'g> FundingState<'g> {
         if !memoized && !visited.insert(self.key(goal)) {
             return false;
         }
-        let mut moves = self.moves(goal);
-        // Prefer mana eligible for the final payment and colors that close
-        // its requirements. Retain every move: an ineligible lot can still
-        // fund an intermediate ability or change the projected world. Stable
-        // sorting preserves the order of equally useful moves.
-        let adjusted = cast_origins::payment_goal(self, goal, purpose);
-        let available = mana_lots::available(self.mana, &self.lots, purpose);
-        moves.sort_by_key(|step| {
-            let ineligible = step
-                .quality
-                .is_some_and(|quality| !quality.eligible(purpose));
-            let mut after = available;
-            if !ineligible {
-                for (amount, produced) in after.iter_mut().zip(step.production) {
-                    *amount = amount.saturating_add(u128::from(produced));
+        // First try completing mana abilities that are payable now. Only a
+        // failed ordinary branch needs to freeze another ability before funding
+        // its cost. The second pass retains those exact nested plans without
+        // starting their child searches ahead of available ordinary steps.
+        for deferred in [false, true] {
+            let mut moves = if deferred {
+                self.deferred_moves(goal)
+            } else {
+                self.moves(goal)
+            };
+            // Prefer mana eligible for the final payment and colors that close
+            // its requirements. Retain every move: an ineligible lot can still
+            // fund an intermediate ability or change the projected world. Stable
+            // sorting preserves the order of equally useful moves.
+            let adjusted = cast_origins::payment_goal(self, goal, purpose);
+            let available = mana_lots::available(self.mana, &self.lots, purpose);
+            moves.sort_by_key(|step| {
+                let ineligible = step
+                    .quality
+                    .is_some_and(|quality| !quality.eligible(purpose));
+                let mut after = available;
+                if !ineligible {
+                    for (amount, produced) in after.iter_mut().zip(step.production) {
+                        *amount = amount.saturating_add(u128::from(produced));
+                    }
                 }
-            }
-            let missing =
-                after
-                    .iter()
-                    .zip(adjusted.required)
-                    .fold(0u128, |sum, (&amount, required)| {
-                        sum.saturating_add(u128::from(required).saturating_sub(amount))
-                    });
-            (
-                ineligible,
-                !payable(after, adjusted.required, adjusted.generic),
-                missing,
-            )
-        });
-        for step in moves {
-            if self.visit_applied(&step, &mut |next| {
-                next.reachable_with_completion(goal, evidence, visited, completion)
-            }) {
-                return true;
+                let missing =
+                    after
+                        .iter()
+                        .zip(adjusted.required)
+                        .fold(0u128, |sum, (&amount, required)| {
+                            sum.saturating_add(u128::from(required).saturating_sub(amount))
+                        });
+                (
+                    ineligible,
+                    !payable(after, adjusted.required, adjusted.generic),
+                    missing,
+                )
+            });
+            for step in moves {
+                if self.visit_applied(&step, &mut |next| {
+                    next.reachable_with_completion(goal, evidence, visited, completion)
+                }) {
+                    return true;
+                }
             }
         }
         false
     }
     fn restore_payment_context(&mut self, parent: &Self) {
         self.purpose = parent.purpose;
+        self.spell_lot_demand = parent.spell_lot_demand;
         self.payment_source = parent.payment_source;
         self.exhaust_source_reuse_authorized = parent.exhaust_source_reuse_authorized;
         self.source_use_independent = parent.source_use_independent;
@@ -5429,11 +5474,18 @@ impl FundingState<'_> {
         if !visited.insert((self.key(goal), facts)) {
             return false;
         }
-        for step in self.moves(goal) {
-            if self.visit_applied(&step, &mut |next| {
-                next.fund_creature_counter_cost(goal, amount, selected, visited)
-            }) {
-                return true;
+        for deferred in [false, true] {
+            let moves = if deferred {
+                self.deferred_moves(goal)
+            } else {
+                self.moves(goal)
+            };
+            for step in moves {
+                if self.visit_applied(&step, &mut |next| {
+                    next.fund_creature_counter_cost(goal, amount, selected, visited)
+                }) {
+                    return true;
+                }
             }
         }
         false

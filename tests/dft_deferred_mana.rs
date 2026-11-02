@@ -388,3 +388,108 @@ fn a_basic_land_with_an_acquired_mana_template_is_not_interchanged_with_a_plain_
         assert_eq!(g.state.players[p.index()].mana.iter().sum::<u32>(), 1);
     }
 }
+
+#[test]
+fn immutable_copy_profiles_preserve_exact_recipients_and_allow_only_scoped_reuse() {
+    use rustmage_core::engine::funding::FundingState;
+    let _scope = fixture_rules::activate(&[(Card::GrizzlyBears, &SOURCE)]);
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let producer = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let copied = put(&mut g, p, "Forest", Zone::Battlefield);
+        let plain = put(&mut g, p, "Forest", Zone::Battlefield);
+        let temporary = put(&mut g, p, "Mountain", Zone::Battlefield);
+        let spell = put(&mut g, p, "Divination", Zone::Hand);
+        let copied_ref = g.object_ref(copied);
+        let temporary_ref = g.object_ref(temporary);
+        let mut recipe = CopyRecipe::new(Card::Forest);
+        recipe.overrides = Some(CopyOverrides {
+            name: Some("Immutable copied Forest"),
+            ..CopyOverrides::NONE
+        });
+        g.set_copy_recipe(copied_ref, recipe);
+        g.apply_temporary_copy(
+            temporary_ref,
+            CopyRecipe::new(Card::Forest),
+            CopyDeadline::EndOfTurn,
+        );
+        g.state.players[p.index()].mana = [0; 6];
+        act(&mut g, Action::AnnounceCast { card: spell });
+        act(&mut g, announce(producer, BLUE));
+        {
+            let goal = g.funding_goal(g.state.announcing.as_ref().unwrap());
+            let world = FundingState::from_game(&g, &goal);
+            assert_eq!(world.spell_lot_demand, Some(4));
+            let scoped = world.scoped_continuation_query().unwrap();
+            let exact = &scoped.continuation_memo.as_ref().unwrap().exact;
+            assert!(exact.contains(&copied));
+            assert!(exact.contains(&temporary));
+            assert!(!exact.contains(&plain));
+            for _ in 0..2 {
+                assert!(world.reachable(&goal, &mut std::collections::HashSet::new()));
+            }
+            assert!(world.continuation_memo.is_none());
+            let mut changed = world.clone();
+            changed.copy_recipes.as_mut().unwrap()[0].recipe.overrides = None;
+            assert!(!changed.continuation_memo_safe());
+            assert!(changed.scoped_continuation_query().is_none());
+            assert!(changed.reachable(&goal, &mut std::collections::HashSet::new()));
+            let mut projected = world.clone();
+            projected.prepare_entry_projection();
+            assert!(projected.scoped_continuation_query().is_none());
+        }
+        // Even an inactive source-bound layer excludes early reuse. A later
+        // projection could expose it, so checking only the active layer fails.
+        let mut source_bound = g.clone();
+        let source = source_bound.object_ref(plain);
+        source_bound.apply_temporary_copy(
+            temporary_ref,
+            CopyRecipe::new(Card::Forest),
+            CopyDeadline::WhileSource { source },
+        );
+        source_bound.apply_temporary_copy(
+            temporary_ref,
+            CopyRecipe::new(Card::Forest),
+            CopyDeadline::EndOfTurn,
+        );
+        let goal = source_bound.funding_goal(source_bound.state.announcing.as_ref().unwrap());
+        assert!(
+            FundingState::from_game(&source_bound, &goal)
+                .scoped_continuation_query()
+                .is_none()
+        );
+        let saved = g.snapshot();
+        let mut raw = g.clone();
+        let mut indexed = g.clone();
+        let mut restored = g.clone();
+        restored.restore(&saved).unwrap();
+        drop(g);
+        for (i, branch) in [&mut raw, &mut indexed, &mut restored]
+            .into_iter()
+            .enumerate()
+        {
+            let action = Action::TapMana { card: plain };
+            if i == 1 {
+                let index = branch
+                    .legal_actions()
+                    .iter()
+                    .position(|candidate| *candidate == action)
+                    .unwrap();
+                branch
+                    .apply_index(branch.actor().unwrap(), branch.revision(), index)
+                    .unwrap();
+            } else {
+                act(branch, action);
+            }
+            pay(branch);
+            pay(branch);
+            settle(branch);
+            assert_eq!(branch.state.players[p.index()].cards_drawn_this_turn, 2);
+            assert_eq!(branch.state.players[p.index()].mana, [0; 6]);
+            assert!(branch.object_view(plain).tapped);
+            assert!(!branch.object_view(copied).tapped);
+        }
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        assert_eq!(raw.snapshot(), restored.snapshot());
+    }
+}

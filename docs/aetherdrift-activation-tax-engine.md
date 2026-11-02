@@ -318,3 +318,54 @@ completion equality. All descriptors and counter choices remain enumerated.
 The combined core batch awaits the root owner's single guarded compile/runtime,
 current BIG performance and prior-schema trace checkpoint. No Cargo has run in
 this isolated worktree; no measured improvement is claimed yet.
+
+## Restricted-lot cycles and immutable copied profiles
+
+The assembled bb985fa7c checkpoint passed all 291 focused scenarios and strict
+source, formatting, production and workspace Clippy checks. Broad native testing
+then found two immediate-move contract failures and a stack overflow: a prevented,
+repeatable artifact-spell-only source was being explored while funding a
+converter. New deferred starts appeared among immediate moves, and the child
+activation's source obligation disabled the older standalone restricted-lot key
+equivalence. Increasing unusable spell-only lots therefore created unbounded
+search keys. The BIG one/two workloads still exceeded their unchanged 45-second
+limits; eight-second symbol stacks locate actual deferred-announcement funding
+and repeated parent completion. BIG zero completed in 0.471s. These measurements
+describe the pre-repair checkpoint, not an improvement claim.
+
+Planning now visits immediately payable mana moves first and lazily visits
+unpaid deferred starts in its second pass. The specialized creature-counter
+funding walker follows the same ordering. Actual action enumeration still
+includes every deferred announcement and late-choice route. No plan is removed,
+search depth limited or arbitrary resource count imposed.
+
+A query carries the total demand of its initial goal and, before starting a
+shared memo, the maximum full sum of its selected actual ancestor costs. An
+unknown selected ancestor cost disables this bound. Projected child searches
+inherit the fixed bound; returning to the parent restores it. Only search keys
+cap each quality/color of universally spell-only mana at that demand. Such mana
+cannot pay any intervening activated ability, and the one final spell cannot
+spend more than the full outstanding demand. Ordinary mana, owned restricted
+pools, provenance and allocation witnesses remain exact. The older narrow
+standalone ineligible-lot erasure remains separate. The new repeated-source
+scenario keeps three parent-spendable units distinct before equating excess,
+proves two positive converters cannot bootstrap from spell-only mana, and shows
+that one ordinary unit makes the contrasting plan fundable.
+
+Scoped parent reuse now accepts an unchanged initial copy profile. It still
+requires no entry projection and exact equality between projected recipe rows
+and the immutable Game rows. Every temporary-copy layer must have a deadline
+independent of a source; any WhileSource layer, including a hidden lower
+layer, keeps the old complete-world search. EndOfTurn and NextTurn deadlines
+cannot expire inside a cost query. All copied recipients are exact identities,
+including basic lands and temporary-copy recipients; unrelated ordinary basics
+retain symmetry. Any projected recipe change opts out before early reuse.
+Initial profile data need not be copied into every key because the cache belongs
+to one immutable Game/query and is used only while that profile remains equal.
+
+The copied-profile scenario checks the selected parent/child demand, exact copied
+basic identities, unchanged plain-basic symmetry, independent query lifetime,
+changed-recipe and entry-projection fallback, and a hidden WhileSource exclusion.
+Its paid spell result is compared through owned raw/index/restore branches. Both
+new scenarios and the repair's BIG effect await the root owner's single shared
+build/runtime checkpoint. No Cargo was run in the isolated author worktree.
