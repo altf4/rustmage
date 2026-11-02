@@ -16,7 +16,7 @@ const RUMMAGE: CardRules = CardRules {
         cycling: false,
         cost: ActivationCost {
             generic: 2,
-            colored: [0, 0, 0, 0, 1, 0],
+            colored: [0, 0, 0, 1, 0, 0],
             mana_component: true,
             ..ActivationCost::ZERO
         },
@@ -172,7 +172,7 @@ fn capped_rummage_zero_one_two_are_optional_and_draw_exact_counts() {
                 .map(|_| put(&mut g, p, "Mountain", Zone::Hand))
                 .collect();
             start_rummage(&mut g, source);
-            assert!(g.state.players[p.index()].mana[4] < 8, "red cost was paid");
+            assert!(g.state.players[p.index()].mana[3] < 8, "red cost was paid");
             for &id in cards.iter().take(count) {
                 effect_pick(&mut g, id);
             }
