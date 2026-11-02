@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "49b0b3aff276940a8565e37a0c09d149186423a4643b38794f0692a340ac2e51",
+  "catalogue_version": "00ef218d74c5f6345786ef5753d39852aeda00e2fb321ed7eddb724650c76223",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3001,
-  "implemented_total": 3007,
+  "implemented_standard_cards": 3009,
+  "implemented_total": 3015,
   "token_definitions": 156,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -32,8 +32,8 @@
     },
     "dft": {
       "total": 259,
-      "complete": 102,
-      "gated": 157
+      "complete": 110,
+      "gated": 149
     },
     "dsk": {
       "total": 264,
@@ -778,8 +778,8 @@
     {
       "name": "Aether Syphon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/aether_syphon.rs",
       "set": "dft"
     },
@@ -14482,8 +14482,8 @@
     {
       "name": "Glitch Ghost Surveyor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/glitch_ghost_surveyor.rs",
       "set": "dft"
     },
@@ -15434,8 +15434,8 @@
     {
       "name": "Guidelight Optimizer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/guidelight_optimizer.rs",
       "set": "dft"
     },
@@ -20018,8 +20018,8 @@
     {
       "name": "Leonin Surveyor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/leonin_surveyor.rs",
       "set": "dft"
     },
@@ -23562,8 +23562,8 @@
     {
       "name": "Nesting Bot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/nesting_bot.rs",
       "set": "dft"
     },
@@ -26026,8 +26026,8 @@
     {
       "name": "Pride of the Road",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/pride_of_the_road.rs",
       "set": "dft"
     },
@@ -34554,8 +34554,8 @@
     {
       "name": "Swiftwing Assailant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/swiftwing_assailant.rs",
       "set": "dft"
     },
@@ -39610,8 +39610,8 @@
     {
       "name": "Vnwxt, Verbose Host",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/vnwxt_verbose_host.rs",
       "set": "dft"
     },
