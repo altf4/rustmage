@@ -318,6 +318,7 @@ fn decks() -> Result<(Vec<Deck>, usize), String> {
 #[derive(Default)]
 struct Tracker {
     seen_packets: BTreeSet<u64>,
+    hand_activations: BTreeSet<u64>,
     seen_events: BTreeSet<String>,
     cards: BTreeSet<String>,
     witnesses: BTreeMap<String, u64>,
@@ -330,6 +331,19 @@ impl Tracker {
         }
     }
     fn inspect(&mut self, before: &Observation, after: &Observation, _action: &Action) {
+        for view in [before, after] {
+            if let Some(item) = &view.announcing
+                && matches!(item.kind, StackKind::ActivatedAbility { .. })
+                && let Some(source) = item.source()
+                && source.card.info().oracle_keywords.contains(&"Cycling")
+                && view
+                    .objects
+                    .iter()
+                    .any(|object| object.id == source.id && object.zone == Zone::Hand)
+            {
+                self.hand_activations.insert(item.id);
+            }
+        }
         for s in after.stack.iter().chain(after.resolving.iter()) {
             if !self.seen_packets.insert(s.id) {
                 continue;
@@ -343,14 +357,7 @@ impl Tracker {
                 self.hit("actual_cast", s.id.to_string());
             }
             if matches!(s.kind, StackKind::ActivatedAbility { .. })
-                && before
-                    .objects
-                    .iter()
-                    .any(|old| old.id == source.id && old.zone == Zone::Hand)
-                && after
-                    .objects
-                    .iter()
-                    .any(|new| new.id == source.id && new.zone == Zone::Graveyard)
+                && self.hand_activations.contains(&s.id)
             {
                 self.hit("cycling", s.id.to_string());
             }
