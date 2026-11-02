@@ -2004,6 +2004,10 @@ impl<'g> FundingState<'g> {
         {
             let mut next = self.clone();
             let bonus = next.apply(step, false);
+            if let Some(production) = next.singleton_output(step) {
+                next.add_funding_output(step, bonus, production);
+                return emit(&next);
+            }
             return next.visit_output(step, bonus, emit);
         }
         let external = if let Some(external) = step.external {

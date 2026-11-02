@@ -512,3 +512,132 @@ fn a_retained_late_choice_replays_its_concrete_output_and_quality_exactly_once()
         "retained frozen quality survives replay"
     );
 }
+
+#[test]
+fn removing_a_negative_counter_can_raise_power_mana_enough_to_fund_the_parent() {
+    const SOURCE: CardRules = CardRules {
+        effect: Effect::Creature(2, 2),
+        activated: &[ActivatedAbility {
+            cost: ActivationCost {
+                tap: true,
+                remove: Some((Some(CounterKind::MinusOne), 1)),
+                ..ActivationCost::ZERO
+            },
+            program: &[Instruction::AddMana(ManaProduction::SourcePower {
+                color: 4,
+            })],
+            ..BASE
+        }],
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[(Card::GrizzlyBears, &SOURCE)]);
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        g.add_counter(source, CounterKind::MinusOne, 1);
+        let spell = put(&mut g, p, "Druid of the Cowl", Zone::Hand);
+        let wrong_color = put(&mut g, p, "Divination", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        assert_eq!(stats(&g, source), (1, 1));
+        reject(&mut g, Action::AnnounceCast { card: wrong_color });
+        act(&mut g, Action::AnnounceCast { card: spell });
+        let mut counters = Counters::default();
+        counters.add(CounterKind::MinusOne, 1);
+        act(
+            &mut g,
+            Action::ActivateMana {
+                card: source,
+                ability: 0,
+                payment: [0; 6],
+                counter_payment: counters,
+                production: [0, 0, 0, 0, 1, 0],
+            },
+        );
+        assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 0, 2, 0]);
+        assert_eq!(g.counter_count(source, CounterKind::MinusOne), 0);
+        pay(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(spell).zone, Zone::Battlefield);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+}
+
+#[test]
+fn granted_dynamic_mana_uses_conservative_bounds_and_exact_post_cost_search() {
+    const GROUPS: &[StaticAbilityGroup] = &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Ability,
+        fragments: &[StaticAbilityFragment::AttachmentMana(
+            ManaProduction::SourcePower { color: 4 },
+        )],
+    }];
+    const GRANTOR: CardRules = CardRules {
+        effect: Effect::Permanent,
+        static_groups: GROUPS,
+        extras: &CardExtras {
+            static_ability_groups: GROUPS,
+            ..CardExtras::EMPTY
+        },
+        ..CardRules::EMPTY
+    };
+    const PLAIN: CardRules = CardRules {
+        effect: Effect::Creature(2, 2),
+        ..CardRules::EMPTY
+    };
+    const REMOVE: CardRules = CardRules {
+        activated: &[ActivatedAbility {
+            cost: ActivationCost {
+                remove: Some((Some(CounterKind::MinusOne), 1)),
+                ..ActivationCost::ZERO
+            },
+            program: &[Instruction::AddMana(ManaProduction::Fixed([0; 6]))],
+            ..BASE
+        }],
+        ..PLAIN
+    };
+    for (rules, can_remove) in [(&PLAIN, false), (&REMOVE, true)] {
+        let _scope =
+            fixture_rules::activate(&[(Card::GrizzlyBears, rules), (named("Stop Cold"), &GRANTOR)]);
+        for p in [Player::P0, Player::P1] {
+            let mut g = scenario(p);
+            let source = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+            let grantor = put(&mut g, p, "Stop Cold", Zone::Battlefield);
+            g.state.objects[grantor as usize].attached_to = Some(g.object_ref(source));
+            g.add_counter(source, CounterKind::MinusOne, 1);
+            let spell = put(&mut g, p, "Druid of the Cowl", Zone::Hand);
+            g.state.players[p.index()].mana = [0; 6];
+            if !can_remove {
+                reject(&mut g, Action::AnnounceCast { card: spell });
+                assert_eq!(g.counter_count(source, CounterKind::MinusOne), 1);
+                continue;
+            }
+            act(&mut g, Action::AnnounceCast { card: spell });
+            let mut counters = Counters::default();
+            counters.add(CounterKind::MinusOne, 1);
+            act(
+                &mut g,
+                Action::ActivateMana {
+                    card: source,
+                    ability: 0,
+                    payment: [0; 6],
+                    counter_payment: counters,
+                    production: [0; 6],
+                },
+            );
+            let grantor = g.object_ref(grantor);
+            act(
+                &mut g,
+                Action::TapGrantedMana {
+                    card: source,
+                    grantor,
+                    production: [0, 0, 0, 0, 2, 0],
+                },
+            );
+            assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 0, 2, 0]);
+            pay(&mut g);
+            settle(&mut g);
+            assert_eq!(g.object_view(spell).zone, Zone::Battlefield);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        }
+    }
+}

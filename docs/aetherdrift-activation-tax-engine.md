@@ -211,3 +211,20 @@ those expectations were preserved. The source-subtype fixture uses a legitimate
 copy transition rather than treating Vehicle as a creature subtype. The sparse
 static-provider index now opts in named activation increases, avoiding a scan of
 all library/hand objects in ordinary mana funding.
+
+## Dynamic pruning review follow-up
+
+Fresh nonauthor review found an optimistic color bound still sampling dynamic
+production before costs, and a granted-mana bound passing an unevaluated recipe
+to the concrete-output visitor. All total/color pruning now uses the same
+conservative recipe ceiling. Source power and distinct-power quantities retain
+the representable ceiling; subtype counts may count every represented object;
+chosen or monocolored colors overcount all five colors. Only the exact post-cost
+visitor determines legal production. The contrasting printed and granted
+scenarios remove a negative counter to raise power from one to two, pay an actual
+{1}{G} parent, and reject the wrong color or insufficient fixed quantity without
+mutation. These two new scenarios await root validation.
+
+The ordinary fixed-output fast path adds its result directly to the already
+owned post-cost FundingState. It no longer clones that state a second time;
+dynamic choices continue to branch for distinct concrete outputs.

@@ -715,7 +715,7 @@ impl<'g> FundingState<'g> {
                 _ => None,
             })
     }
-    fn power_upper_production(&self, production: ManaProduction, source: CardId) -> ManaProduction {
+    fn production_upper(&self, production: ManaProduction) -> ManaProduction {
         match production.base() {
             ManaProduction::TapSourcePowerChoice { mask } => ManaProduction::Choice {
                 mask,
@@ -727,7 +727,18 @@ impl<'g> FundingState<'g> {
                 mana[usize::from(color)] = u32::MAX;
                 ManaProduction::Fixed(mana)
             }
-            _ => production.in_world(self, source),
+            // Each type can appear on every represented object after costs.
+            // This is only a pruning bound; exact moves still count the final world.
+            ManaProduction::CountSubtype { color, .. } => {
+                let mut mana = [0; 6];
+                mana[usize::from(color)] =
+                    u32::try_from(self.game.state.objects.len()).unwrap_or(u32::MAX);
+                ManaProduction::Fixed(mana)
+            }
+            ManaProduction::MonocoloredPermanentColors | ManaProduction::ChosenColor => {
+                ManaProduction::Fixed([1, 1, 1, 1, 1, 0])
+            }
+            value => value,
         }
     }
 
@@ -2309,25 +2320,46 @@ impl<'g> FundingState<'g> {
         }
         tap_bonus
     }
+    fn add_funding_output(&mut self, step: &FundingMove, tap_bonus: u32, production: Mana) {
+        for (pool, produced) in self.mana.iter_mut().zip(production) {
+            *pool = pool
+                .checked_add(u128::from(produced))
+                .capacity("mana representation exhausted");
+        }
+        if let Some(quality) = step.output.as_ref().map_or(step.quality, |o| o.quality) {
+            mana_lots::add_lot(&mut self.lots, quality, production.map(u128::from));
+        }
+        self.mana[3] = self.mana[3]
+            .checked_add(u128::from(tap_bonus))
+            .capacity("mana representation exhausted");
+    }
+    /// The ordinary fixed path adds to the already owned cost world directly.
+    /// Dynamic choices keep a separate branch for every distinct concrete result.
+    fn singleton_output(&self, step: &FundingMove) -> Option<Mana> {
+        let Some(output) = &step.output else {
+            return Some(step.production);
+        };
+        let mut first = None;
+        let mut multiple = false;
+        output.visit(self, output.source_power, |production| {
+            if first.is_some_and(|one| one != production) {
+                multiple = true;
+                return true;
+            }
+            first = Some(production);
+            false
+        });
+        if multiple { None } else { first }
+    }
     fn visit_output(
         &self,
         step: &FundingMove,
         tap_bonus: u32,
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
-        let mut finish = |production: Mana| {
+        let mut finish = |production| {
             let mut next = self.clone();
-            for (pool, produced) in next.mana.iter_mut().zip(production) {
-                *pool = pool
-                    .checked_add(u128::from(produced))
-                    .capacity("mana representation exhausted");
-            }
-            if let Some(quality) = step.output.as_ref().map_or(step.quality, |o| o.quality) {
-                mana_lots::add_lot(&mut next.lots, quality, production.map(u128::from));
-            }
-            next.mana[3] = next.mana[3]
-                .checked_add(u128::from(tap_bonus))
-                .capacity("mana representation exhausted");
+            next.add_funding_output(step, tap_bonus, production);
             emit(&next)
         };
         if let Some(output) = &step.output {
@@ -2698,7 +2730,7 @@ impl<'g> FundingState<'g> {
                                 ) | crate::cards::StaticAbilityFragment::AttachmentSacrificeMana(production) = fragment
                                 {
                                     let mut maximum = 0;
-                                    self.power_upper_production(*production, resource.id).visit(|mana| {
+                                    self.production_upper(*production).visit(|mana| {
                                         maximum =
                                             maximum.max(mana.into_iter().map(u128::from).sum());
                                         false
@@ -2713,11 +2745,10 @@ impl<'g> FundingState<'g> {
             if !object.tapped {
                 for production in self.potential_land_mana() {
                     let mut maximum = 0;
-                    self.power_upper_production(production, resource.id)
-                        .visit(|mana| {
-                            maximum = maximum.max(mana.into_iter().map(u128::from).sum());
-                            false
-                        });
+                    self.production_upper(production).visit(|mana| {
+                        maximum = maximum.max(mana.into_iter().map(u128::from).sum());
+                        false
+                    });
                     total = total.saturating_add(maximum);
                 }
             }
@@ -2726,10 +2757,7 @@ impl<'g> FundingState<'g> {
                 if (!object.tapped || !ability.cost.tap) && ability.mana_production().is_some() {
                     total = total.saturating_add(activation_gain_upper(
                         ability,
-                        self.power_upper_production(
-                            ability.mana_production().unwrap(),
-                            resource.id,
-                        ),
+                        self.production_upper(ability.mana_production().unwrap()),
                         ability_world::CharacteristicWorld::counter_amounts(self, resource.id),
                         if self.life_replacement_possible {
                             i128::MAX
@@ -2790,30 +2818,7 @@ impl<'g> FundingState<'g> {
                 ));
             }
             let mut add = |production: ManaProduction, uses: u128| {
-                let production = match production.base() {
-                    // Types may be restored after an Aura leaves. Counting every
-                    // object (even in other zones) deliberately overestimates.
-                    ManaProduction::MonocoloredPermanentColors => {
-                        ManaProduction::Fixed([1, 1, 1, 1, 1, 0])
-                    }
-                    ManaProduction::TapSourcePowerChoice { mask } => ManaProduction::Choice {
-                        mask,
-                        amount: u32::MAX,
-                    },
-                    ManaProduction::DistinctCreaturePowers => ManaProduction::any_color(u32::MAX),
-                    ManaProduction::SourcePower { color } => {
-                        let mut mana = [0; 6];
-                        mana[usize::from(color)] = u32::MAX;
-                        ManaProduction::Fixed(mana)
-                    }
-                    ManaProduction::CountSubtype { color, .. } => {
-                        let mut mana = [0; 6];
-                        mana[usize::from(color)] =
-                            u32::try_from(self.game.state.objects.len()).unwrap_or(u32::MAX);
-                        ManaProduction::Fixed(mana)
-                    }
-                    _ => production.in_world(self, resource.id),
-                };
+                let production = self.production_upper(production);
                 production.visit(|mana| {
                     for i in 0..6 {
                         upper[i] =
@@ -3010,7 +3015,7 @@ impl<'g> FundingState<'g> {
                 }
                 for grant in ability_world::CharacteristicWorld::granted_mana(self, id as CardId) {
                     if grant.subtype_derived {
-                        grant.production.visit(|mana| {
+                        self.production_upper(grant.production).visit(|mana| {
                             for (amount, produced) in upper.iter_mut().zip(mana) {
                                 *amount = amount.saturating_add(u128::from(produced));
                             }
@@ -3116,7 +3121,7 @@ impl<'g> FundingState<'g> {
                     self.game.state.players[self.actor.index()].mountain_mana_bonus,
                 ));
                 for grant in ability_world::CharacteristicWorld::granted_mana(self, resource.id) {
-                    grant.production.visit(|mana| {
+                    self.production_upper(grant.production).visit(|mana| {
                         for i in 0..6 {
                             upper[i] = upper[i].saturating_add(u128::from(mana[i]));
                         }
@@ -3194,7 +3199,7 @@ impl<'g> FundingState<'g> {
                     uses = uses.min(u64::try_from(count / u128::from(amount)).unwrap_or(u64::MAX));
                 }
                 let mut maximum = [0u32; 6];
-                production.in_world(self, resource.id).visit(|mana| {
+                self.production_upper(production).visit(|mana| {
                     for index in 0..6 {
                         maximum[index] = maximum[index].max(mana[index]);
                     }
