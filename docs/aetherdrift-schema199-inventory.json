@@ -3,8 +3,8 @@
   "candidate_observation_schema": 199,
   "prior_schema": 198,
   "baseline_revision": "73092e3",
-  "inventory_revision": "cc67d4dc08350a9a4bd77ab40fdb8b97e1371f44",
-  "phase": "final integrated engine compatibility candidate; central marker and traces unchanged",
+  "inventory_revision": "83701e68e",
+  "phase": "integrated schema199 engine candidate; current trace baseline remains unaccepted pending exact previous198 proof",
   "public_json": [
     {
       "container": "Observation",
@@ -493,7 +493,7 @@
   "focused_tests": {
     "target": "legacy",
     "filter": "engine::assurance::schema199::",
-    "cases": 13,
+    "cases": 14,
     "coverage": [
       "byte-exact unchanged JSON and sole unsigned derived entry-count removal",
       "all new public field/action/phase families",

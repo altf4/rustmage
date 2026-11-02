@@ -11,4 +11,10 @@ trigger receipts remain authoritative; production is the completed recorded amou
 a casualty cast after a completed mana ability. Ordinary and typed union sacrifice
 costs, both players, retained/reversed events, Rest in Peace replacement, actor
 privacy, original observer count, raw/index application and snapshot restore are
-covered. Test execution is pending. No card behavior or admission is changed.
+covered. A second case records two actual mana events: the first returns the
+later producer to the battlefield, and the later no-tap Exert ability sacrifices
+an external artifact. Reversing the first event makes the later source cost
+unpayable; retention queries must reject it transactionally instead of panicking.
+Exert now explicitly requires its exact battlefield source during replay.
+The observer fixture is kept below casualty's printed threshold.
+Runtime verification of the repaired cases is pending. No card behavior or admission is changed.
