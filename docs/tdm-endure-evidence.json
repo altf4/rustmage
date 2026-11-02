@@ -6,7 +6,7 @@
   "source_inputs": [
     {
       "path": "crates/engine/src/engine_endure.rs",
-      "sha256": "769cb310e7a92b63fdb08fecbde6355ac560847c89d47caf5e6755ac6f11f4ee"
+      "sha256": "16c3faf80d58d506d8bf20ae51315efb0c5b4647f403612562ff80e46af24455"
     },
     {
       "path": "crates/engine/src/engine_programs.rs",
@@ -14,16 +14,18 @@
     },
     {
       "path": "tests/tdm_endure.rs",
-      "sha256": "9cf2cec476665af3fb8b637f543b7c3e12fd1a4dfafc635678e9790d8f50f7fa"
+      "sha256": "00be141ef350efe51ce77862c3099388dc4c52e139564338324f18ee7383b80e"
     }
   ],
   "changes": [
     "Use exact live enduring permanent controller, and frozen last battlefield controller after departure.",
     "Create the Spirit automatically when counter placement is prohibited.",
-    "Reuse existing source facts, owned Pending and counter/token replacement pipelines; no public wire fields."
+    "Reuse existing source facts, owned Pending and counter/token replacement pipelines; no public wire fields.",
+    "Attribute the counter placement itself to the enduring permanent controller, including placing-player counter replacements/observers."
   ],
   "outcome_evidence": [
-    "Five focused regression groups cover actual Anafenza death triggers in both seats, live counter/token choices after theft, departure and reentry, current-controller Elspeth token doubling, counter-prohibition fallback and owned raw/index/restore plus wrong-actor transactionality."
+    "Five focused regression groups cover actual Anafenza death triggers in both seats, live counter/token choices after theft, departure and reentry, current-controller Elspeth token doubling, counter-prohibition fallback and owned raw/index/restore plus wrong-actor transactionality.",
+    "Actual Doc Samson under current vs previous controller proves the Endure counter placing player, independently of choice ownership."
   ],
   "runs": [
     {
@@ -67,6 +69,34 @@
       "total_seconds": 3.150251950020902,
       "timeouts": false,
       "orphaned_processes": false
+    },
+    {
+      "report": "<cache>/rustmage-tdm/endure-placer-before/native.json",
+      "interpretation": "Independent review reproduction: actual current-controller Doc Samson receives two counters instead of required three.",
+      "success": false,
+      "terminal": true,
+      "cases": 1,
+      "passed": 0,
+      "failed": 1,
+      "compile_seconds": 0.9182404429884627,
+      "execution_seconds": 0.03307342200423591,
+      "total_seconds": 0.9519148929975927,
+      "timeouts": false,
+      "orphaned_processes": false
+    },
+    {
+      "report": "<cache>/rustmage-tdm/endure-placer-fixed/native.json",
+      "interpretation": "Explicit enduring-controller placing player: all six groups pass on integrated counter-query engine.",
+      "success": true,
+      "terminal": true,
+      "cases": 6,
+      "passed": 6,
+      "failed": 0,
+      "compile_seconds": 110.94229219300905,
+      "execution_seconds": 0.025130284018814564,
+      "total_seconds": 110.97040499400464,
+      "timeouts": false,
+      "orphaned_processes": false
     }
   ],
   "resource_contract": {
@@ -76,12 +106,13 @@
     "test_threads": 1,
     "no_oom_probe": true
   },
-  "review_status": "pending two independent reviews of final committed inputs",
+  "review_status": "First-head review found the placing-player defect; approval withdrawn. Corrected final source awaiting two refreshed independent reviews.",
   "acceptance": {
     "dynamic_endure_complete": false,
     "all_shared_rules_complete": false,
     "full_release_validation_run": false,
     "newly_complete_cards": 0,
     "simulation_benchmarks_run": 0
-  }
+  },
+  "integration_base_revision": "e36436996"
 }

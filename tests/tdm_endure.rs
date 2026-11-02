@@ -133,6 +133,41 @@ fn endure_uses_the_live_permanent_controller_for_both_outcomes() {
 }
 
 #[test]
+fn enduring_controller_also_places_the_counters_for_replacements() {
+    let _rules = fixture_rules::activate(&[(Card::from_name("Opt").unwrap(), &STEAL)]);
+    for original in [Player::P0, Player::P1] {
+        for current_controls_provider in [false, true] {
+            let (mut g, source) = trigger_root(original);
+            let current = original.other();
+            steal_source(&mut g, source, current);
+            let provider = if current_controls_provider {
+                current
+            } else {
+                original
+            };
+            put(
+                &mut g,
+                provider,
+                "Doc Samson, Super Psychiatrist",
+                Zone::Battlefield,
+            );
+            wait(&mut g, |g| {
+                matches!(g.state.pending, Pending::Endure { .. })
+            });
+            assert_eq!(g.actor(), Some(current));
+            act(&mut g, Action::ChooseEndure { put_counters: true });
+            settle(&mut g);
+            // Doc Samson replaces counters placed by its controller on a
+            // controlled permanent, so the enduring controller must place them.
+            assert_eq!(
+                g.counter_count(source, CounterKind::PlusOne),
+                if current_controls_provider { 3 } else { 2 }
+            );
+        }
+    }
+}
+
+#[test]
 fn forced_endure_spirit_uses_its_current_controllers_token_replacements() {
     let _rules = fixture_rules::activate(&[
         (Card::from_name("Opt").unwrap(), &STEAL),

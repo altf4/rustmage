@@ -50,10 +50,11 @@ impl Game {
         // while resolution is suspended. The source was validated at creation.
         assert!(self.on_battlefield(source.card) && self.object_ref(source.card) == source);
         if put_counters {
-            self.effect_counter(
+            self.effect_counter_by(
                 source.card,
                 CounterKind::PlusOne,
                 u64::from(amount),
+                player,
                 replacements::ResumeMode::Program,
             );
         } else {

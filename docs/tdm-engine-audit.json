@@ -686,6 +686,15 @@
       "status": "pending shared-rule implementation and acceptance"
     },
     {
+      "id": "C:COLOR_QUALIFIED_PROTECTION",
+      "description": "Protection from specified colors, applied to targeting, blocking, damage and attachment legality with correct source color/LKI and layer-six suppression.",
+      "required_change": "Protection from specified colors, applied to targeting, blocking, damage and attachment legality with correct source color/LKI and layer-six suppression.",
+      "cards": [
+        "Ureni, the Song Unending"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
       "id": "D:OPTIONAL_CREATED_TOKEN_ATTACHMENT",
       "description": "Optional exact-created-token Equipment attachment",
       "required_change": "Generalize creation completion to preserve exact created-token candidates and offer optional decline, while preserving mandatory JobAttach behavior. Existing equipment legality checks must govern attachment without targeting restrictions.",
@@ -713,20 +722,26 @@
   },
   "measurements": {
     "new_complete_cards": 0,
-    "cargo_builds": 3,
-    "focused_runs": 3,
     "full_validation_runs": 0,
     "simulation_benchmarks": [],
     "negative_regression_cases": 5,
-    "latest_focused_cases_passed": 5
+    "latest_focused_cases_passed": 5,
+    "root_native_runner_invocations": 6,
+    "root_endure_cases_passed": 6,
+    "root_counter_cases_passed": 7
   },
   "active_checkpoints": {
     "fixed_endure": {
-      "status": "five focused groups pass; independent committed-source reviews pending",
+      "status": "Six focused groups pass, including independent-review placing-player repair; refreshed committed-source reviews pending.",
       "evidence": "docs/tdm-endure-evidence.json"
     },
     "entry_modes": "isolated engine authoring in progress",
-    "counter_world_queries": "isolated engine authoring in progress",
+    "counter_world_queries": {
+      "status": "Integrated seven-group focused run passes; original commit reviewed independently by entry-mode owner and root; full shared checkpoint pending",
+      "commit": "e36436996",
+      "evidence": "docs/tdm-counter-world-evidence.json",
+      "integrated_report": "<cache>/rustmage-tdm/counter-world-integrated/native.json"
+    },
     "granted_cast_routes": "isolated engine authoring in progress"
   }
 }

@@ -12,7 +12,7 @@
     "candidate_admitted": 47,
     "candidate_gated": 45,
     "identities_with_core_dependency_or_semantics_review": 26,
-    "core_dependency_families": 28,
+    "core_dependency_families": 29,
     "tests_executed": 0,
     "complete_set_acceptance": false
   },
@@ -482,6 +482,21 @@
       "priority": 1,
       "cards": [
         "Taigam, Master Opportunist"
+      ]
+    },
+    "COLOR_QUALIFIED_PROTECTION": {
+      "description": "Protection from specified colors, applied to targeting, blocking, damage and attachment legality with correct source color/LKI and layer-six suppression.",
+      "baseline_evidence": [
+        "Keywords has PROTECTION_EVERYTHING and PROTECTION_INSTANT_SORCERY, no color-qualified protection API"
+      ],
+      "required_contract_outcomes": [
+        "Ureni cannot be targeted, damaged, blocked or enchanted/equipped by qualifying white or black sources",
+        "Multicolored qualifying sources, source color change and departure LKI",
+        "Shared characteristic queries, speculative funding, and owned raw/index/restore agree"
+      ],
+      "priority": 1,
+      "cards": [
+        "Ureni, the Song Unending"
       ]
     }
   },
@@ -5204,12 +5219,13 @@
         }
       ],
       "mapped_typed_support": [
-        "FLYING + existing protection masks W/B",
+        "FLYING; color-qualified protection from W/B is missing",
         "Target own-opponent Creature/Planeswalker filter",
         "AmountValue Stat controlled Lands count exists, but division_total supports fixed DamageDivided or chosen-X counters only"
       ],
       "missing_core_dependencies": [
-        "SCALED_DAMAGE_DIVISION"
+        "SCALED_DAMAGE_DIVISION",
+        "COLOR_QUALIFIED_PROTECTION"
       ],
       "candidate_focused_outcomes": [
         "At trigger announcement freeze land countX; choose0..X opposing creatures/planeswalkers and allocate positive shares totalingX",
