@@ -39,18 +39,35 @@ pub(super) fn generic_discount<W: CharacteristicWorld + ?Sized>(
         return 0;
     }
     let controller = world.object(source).controller;
-    world.static_sources().iter().copied().filter(|&id| {
-        id != source && world.object(id).zone == Zone::Battlefield
-            && world.object(id).controller == controller
-    }).flat_map(|id| {
-        world.object(id).card.static_ability_groups().iter().flat_map(move |group|
-            group.fragments.iter().filter_map(move |f| {
-                let StaticAbilityFragment::OtherControlledExhaustGenericReduction(amount) = *f else { return None; };
-                world.fragment_available(id, |candidate| matches!(candidate,
-                    StaticAbilityFragment::OtherControlledExhaustGenericReduction(n) if *n == amount))
-                    .then_some(amount)
-            }))
-    }).fold(0u32, u32::saturating_add)
+    world
+        .static_sources()
+        .iter()
+        .copied()
+        .filter(|&id| {
+            id != source
+                && world.object(id).zone == Zone::Battlefield
+                && world.object(id).controller == controller
+        })
+        .flat_map(|id| {
+            world
+                .object(id)
+                .card
+                .static_ability_groups()
+                .iter()
+                .flat_map(move |group| {
+                    group.fragments.iter().filter_map(move |f| {
+                        let StaticAbilityFragment::OtherControlledExhaustGenericReduction(amount) =
+                            *f
+                        else {
+                            return None;
+                        };
+                        world
+                            .fragment_available(id, |candidate| std::ptr::eq(candidate, f))
+                            .then_some(amount)
+                    })
+                })
+        })
+        .fold(0u32, u32::saturating_add)
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
