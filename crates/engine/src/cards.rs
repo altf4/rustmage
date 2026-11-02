@@ -14,6 +14,11 @@ pub use ability_layers::{
 pub mod test_counter_providers;
 
 #[doc(hidden)]
+#[cfg(feature = "test-support")]
+#[path = "cards_fixture_rules.rs"]
+pub mod fixture_rules;
+
+#[doc(hidden)]
 #[path = "card_mana_symbols.rs"]
 pub mod mana_symbols;
 
@@ -5052,6 +5057,10 @@ impl Card {
         self.equipment().or_else(|| self.aura().map(|a| a.bonus))
     }
     pub fn keywords(self) -> Keywords {
+        #[cfg(feature = "test-support")]
+        if let Some(rules) = fixture_rules::rules(self) {
+            return rules.keywords;
+        }
         self.info().keywords
     }
     pub fn is_creature(self) -> bool {
@@ -5078,6 +5087,10 @@ impl Card {
     }
     pub(crate) fn effect(self) -> Effect {
         #[cfg(feature = "test-support")]
+        if let Some(rules) = fixture_rules::rules(self) {
+            return rules.effect;
+        }
+        #[cfg(feature = "test-support")]
         if let Some(effect) = test_counter_providers::outside_self_spell(self) {
             return effect;
         }
@@ -5097,6 +5110,10 @@ impl Card {
         }
     }
     pub(crate) fn triggers(self) -> &'static [TriggeredAbility] {
+        #[cfg(feature = "test-support")]
+        if let Some(rules) = fixture_rules::rules(self) {
+            return rules.triggers;
+        }
         generated::catalogue().definitions[self.0 as usize].triggers
     }
     pub(crate) fn keyword_grants(self) -> &'static [KeywordGrant] {
@@ -5315,6 +5332,10 @@ impl Card {
     }
     pub(crate) fn activations(self) -> &'static [ActivatedAbility] {
         #[cfg(feature = "test-support")]
+        if let Some(rules) = fixture_rules::rules(self) {
+            return rules.activated;
+        }
+        #[cfg(feature = "test-support")]
         if self == Card::from_name("Fanatical Firebrand").unwrap()
             && issue_93_copy_cost_fixture::enabled()
         {
@@ -5339,6 +5360,10 @@ impl Card {
         generated::catalogue().definitions[self.0 as usize].activated
     }
     pub(crate) fn entry_tapped(self) -> EntryTapped {
+        #[cfg(feature = "test-support")]
+        if let Some(rules) = fixture_rules::rules(self) {
+            return rules.entry;
+        }
         generated::catalogue().definitions[self.0 as usize].entry
     }
     pub fn saga_final_chapter(self) -> Option<u16> {
@@ -5351,9 +5376,10 @@ impl Card {
             .max()
     }
     pub(crate) fn enters_counters(self) -> Counters {
-        let mut counters: Counters = generated::catalogue().definitions[self.0 as usize]
-            .enters
-            .into();
+        let initial = generated::catalogue().definitions[self.0 as usize].enters;
+        #[cfg(feature = "test-support")]
+        let initial = fixture_rules::rules(self).map_or(initial, |rules| rules.enters);
+        let mut counters: Counters = initial.into();
         counters.loyalty = self.starting_loyalty();
         counters.lore = u64::from(self.saga_final_chapter().is_some());
         counters.add(CounterKind::Defense, self.printed_defense());

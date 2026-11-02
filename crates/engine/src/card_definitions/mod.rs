@@ -386,6 +386,10 @@ impl CardExtras {
 }
 
 pub fn rules(card: Card) -> Option<&'static CardRules> {
+    #[cfg(feature = "test-support")]
+    if let Some(rules) = super::fixture_rules::rules(card) {
+        return Some(rules);
+    }
     super::generated::catalogue()
         .rules
         .get(card.index())
