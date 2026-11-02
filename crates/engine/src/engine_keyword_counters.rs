@@ -3,7 +3,7 @@ use super::*;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl CounterKind {
-    pub(crate) const KEYWORDS: [Self; 12] = [
+    pub(crate) const KEYWORDS: [Self; 13] = [
         Self::Haste,
         Self::Flying,
         Self::FirstStrike,
@@ -16,6 +16,7 @@ impl CounterKind {
         Self::Trample,
         Self::Vigilance,
         Self::Hexproof,
+        Self::Decayed,
     ];
     pub(crate) fn keyword(self) -> Option<Keywords> {
         Some(match self {
@@ -31,6 +32,7 @@ impl CounterKind {
             Self::Trample => Keywords::TRAMPLE,
             Self::Vigilance => Keywords::VIGILANCE,
             Self::Hexproof => Keywords::HEXPROOF,
+            Self::Decayed => Keywords::DECAYED,
             _ => return None,
         })
     }

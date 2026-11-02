@@ -365,6 +365,15 @@ impl Game {
         controller: Player,
         target: ObjectRef,
     ) -> bool {
+        self.aura_can_enchant_with_colors(aura, controller, aura.colors(), target)
+    }
+    pub(super) fn aura_can_enchant_with_colors(
+        &self,
+        aura: Card,
+        controller: Player,
+        colors: u8,
+        target: ObjectRef,
+    ) -> bool {
         let Some(spec) = aura.aura() else {
             return false;
         };
@@ -372,7 +381,7 @@ impl Game {
             && self.object_ref(target.card) == target
             && !self
                 .keywords(target.card)
-                .contains(Keywords::PROTECTION_EVERYTHING)
+                .protects_from(colors, aura.kind_mask())
             && ability_world::aura_kind_matches(self, aura, target.card)
             && match spec.relation {
                 0 => self.state.objects[target.card as usize].controller == controller,

@@ -8,6 +8,9 @@ pub struct DelayedSacrificeView {
     pub source_card: Card,
     pub controller: Player,
     pub tokens: Vec<ObjectRef>,
+    /// Ordinary mobilize batches retain their existing next-end-step wire shape.
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub end_combat: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl DelayedSacrificeView {
@@ -188,6 +191,7 @@ impl Game {
                 source_card: source.card,
                 controller: item.controller,
                 tokens,
+                end_combat: false,
             },
             keywords: item.source_keywords,
             tapped: item.source_tapped,
@@ -218,6 +222,14 @@ impl Game {
         self.register_delayed_sacrifice(item, tokens);
     }
     pub(super) fn register_delayed_sacrifice(&mut self, item: &SpellView, tokens: Vec<ObjectRef>) {
+        self.register_delayed_sacrifice_at(item, tokens, false);
+    }
+    pub(super) fn register_delayed_sacrifice_at(
+        &mut self,
+        item: &SpellView,
+        tokens: Vec<ObjectRef>,
+        end_combat: bool,
+    ) {
         if tokens.is_empty() {
             return;
         }
@@ -232,6 +244,7 @@ impl Game {
                 source_card: source.card,
                 controller: item.controller,
                 tokens,
+                end_combat,
             },
             keywords: item.source_keywords,
             tapped: item.source_tapped,
@@ -243,15 +256,21 @@ impl Game {
             .get_or_insert_with(|| Box::new(Vec::new()))
             .push(batch);
     }
-    pub(super) fn queue_delayed_sacrifices(&mut self) {
+    pub(super) fn queue_delayed_sacrifices(&mut self, end_combat: bool) {
         let Some(batches) = self.state.delayed_sacrifices.take() else {
             return;
         };
+        let (ready, later): (Vec<_>, Vec<_>) = batches
+            .into_iter()
+            .partition(|batch| batch.view.end_combat == end_combat);
+        if !later.is_empty() {
+            self.state.delayed_sacrifices = Some(Box::new(later));
+        }
         self.state
             .pending_triggers
-            .try_reserve(batches.len())
+            .try_reserve(ready.len())
             .capacity("delayed trigger allocation exhausted");
-        for b in *batches {
+        for b in ready {
             let id = self.next_stack_id();
             let source = b.view.source;
             let card = b.view.source_card;

@@ -4600,6 +4600,7 @@ impl Game {
                 a.additional_cost(),
             ),
             StackKind::TriggeredAbility { .. }
+            | StackKind::DecayedAttack
             | StackKind::CopyEndStepSacrifice
             | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
@@ -4704,6 +4705,7 @@ impl Game {
                 }
             }
             StackKind::TriggeredAbility { .. }
+            | StackKind::DecayedAttack
             | StackKind::CopyEndStepSacrifice
             | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy

@@ -47,7 +47,9 @@ impl Game {
                 && self.is_creature(id)
                 && self.current_kinds(id) & crate::cards::BATTLE_KIND == 0
                 && !b.tapped
-                && !self.keywords(id).contains(Keywords::CANT_BLOCK)
+                && !self
+                    .keywords(id)
+                    .intersects(Keywords::CANT_BLOCK.union(Keywords::DECAYED))
                 && !self.combat_restricted(id, false)
         })
     }
@@ -92,7 +94,10 @@ impl Game {
             || keywords.contains(Keywords::CANT_BE_BLOCKED)
             || keywords.contains(Keywords::ONLY_HASTE_BLOCKERS)
                 && !self.keywords(blocker).contains(Keywords::HASTE)
-            || keywords.contains(Keywords::PROTECTION_EVERYTHING)
+            || keywords.protects_from(
+                ability_world::CharacteristicWorld::colors(self, blocker),
+                self.current_kinds(blocker),
+            )
             || keywords.contains(Keywords::NO_HUMAN_BLOCKERS) && self.has_subtype(blocker, "Human")
             || keywords.contains(Keywords::NO_TOKEN_BLOCKERS) && b.is_token()
             || keywords.contains(Keywords::FLYING)

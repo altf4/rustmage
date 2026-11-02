@@ -1921,6 +1921,7 @@ impl SpellView {
             StackKind::DelayedSacrifice
             | StackKind::DelayedWarpExile
             | StackKind::SiegeDefeat
+            | StackKind::DecayedAttack
             | StackKind::CopyEndStepSacrifice
             | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
@@ -2070,6 +2071,9 @@ impl SpellView {
                     prior_spells: false,
                 }],
             )),
+            StackKind::DecayedAttack => {
+                Some((TargetPlan::NONE, &[Instruction::SacrificeSourceAtEndCombat]))
+            }
             StackKind::CopyEndStepSacrifice => {
                 Some((TargetPlan::NONE, &[Instruction::SacrificeSource]))
             }
@@ -2158,6 +2162,7 @@ pub enum StackKind {
     DelayedWarpExile,
     SiegeDefeat,
     CopyEndStepSacrifice,
+    DecayedAttack,
     CopyEndStepConditionalSacrifice,
     CasualtyCopy,
     DelayedReturn,
@@ -9715,7 +9720,7 @@ impl Game {
                 && ((event.combat
                     && (event.source.keywords.contains(Keywords::PREVENT_COMBAT_BY)
                         || matches!(event.target, Target::Card(id) if self.keywords(id).contains(Keywords::PREVENT_COMBAT_TO))))
-                    || matches!(event.target, Target::Card(id) if self.keywords(id).contains(Keywords::PROTECTION_EVERYTHING) || (self.keywords(id).contains(Keywords::PROTECTION_INSTANT_SORCERY) && event.source.facts.kinds & (4 | 8) != 0)))
+                    || matches!(event.target, Target::Card(id) if self.keywords(id).protects_from(event.source.facts.colors, event.source.facts.kinds)))
         };
         let dealt = events.iter().any(prevented).then(|| {
             events

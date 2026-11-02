@@ -224,7 +224,12 @@ impl Game {
                     batch.detached.push(self.object_ref(id));
                 } else if !self.printed_abilities_available(id)
                     || !object.attached_to.is_some_and(|target| {
-                        self.aura_can_enchant(object.card, object.controller, target)
+                        self.aura_can_enchant_with_colors(
+                            object.card,
+                            object.controller,
+                            ability_world::CharacteristicWorld::colors(self, id),
+                            target,
+                        )
                     })
                 {
                     batch.deaths.push(id);
@@ -239,7 +244,10 @@ impl Game {
                     || characteristics
                         .get_or_init(|| self.characteristic_query())
                         .keywords(target.card)
-                        .contains(Keywords::PROTECTION_EVERYTHING))
+                        .protects_from(
+                            ability_world::CharacteristicWorld::colors(self, id),
+                            self.current_kinds(id),
+                        ))
             {
                 batch.detached.push(self.object_ref(id));
             }

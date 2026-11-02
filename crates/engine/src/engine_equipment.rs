@@ -166,5 +166,5 @@ pub(super) fn can_attach<W: ability_world::CharacteristicWorld + ?Sized>(
         && world.kinds(target.card) & 1 != 0
         && !characteristic_query::CharacteristicQuery::in_world(world)
             .keywords(target.card)
-            .contains(Keywords::PROTECTION_EVERYTHING)
+            .protects_from(world.colors(source.card), world.kinds(source.card))
 }

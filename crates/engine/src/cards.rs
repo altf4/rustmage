@@ -1777,6 +1777,8 @@ pub enum Instruction {
         amount: AmountValue,
     },
     SacrificeDelayedTokens,
+    /// Create a source-independent delayed ability for this exact source.
+    SacrificeSourceAtEndCombat,
     SacrificeSource,
     SacrificeSourceIfNoPlaneswalker,
     /// Continue in this resolution only if sacrificing the exact source succeeds.
@@ -4965,7 +4967,7 @@ pub enum ZoneReplacementRule {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize)]
 #[serde(transparent)]
-pub struct Keywords(u32);
+pub struct Keywords(u64);
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Keywords {
@@ -5005,7 +5007,32 @@ impl Keywords {
     /// Contribution bonus while paying crew or saddle costs.
     pub const CREW_SADDLE_PLUS_TWO: Self = Self(1073741824);
     /// The spell prevents further spells and nonmana activations while on the stack.
-    pub const SPLIT_SECOND: Self = Self(1u32 << 31);
+    pub const SPLIT_SECOND: Self = Self(1u64 << 31);
+    pub const PROTECTION_WHITE: Self = Self(1u64 << 32);
+    pub const PROTECTION_BLUE: Self = Self(1u64 << 33);
+    pub const PROTECTION_BLACK: Self = Self(1u64 << 34);
+    pub const PROTECTION_RED: Self = Self(1u64 << 35);
+    pub const PROTECTION_GREEN: Self = Self(1u64 << 36);
+    /// Both the blocking restriction and the attack-triggered delayed sacrifice.
+    pub const DECAYED: Self = Self(1u64 << 37);
+    pub const fn protection_from_color(color: ChoiceColor) -> Self {
+        match color {
+            ChoiceColor::White => Self::PROTECTION_WHITE,
+            ChoiceColor::Blue => Self::PROTECTION_BLUE,
+            ChoiceColor::Black => Self::PROTECTION_BLACK,
+            ChoiceColor::Red => Self::PROTECTION_RED,
+            ChoiceColor::Green => Self::PROTECTION_GREEN,
+        }
+    }
+    pub(crate) const fn protection_colors(self) -> u8 {
+        ((self.0 >> 32) & 31) as u8
+    }
+    /// CR702.16 checks the source's qualities, independently of its controller.
+    pub(crate) fn protects_from(self, colors: u8, kinds: u16) -> bool {
+        self.contains(Self::PROTECTION_EVERYTHING)
+            || self.protection_colors() & colors != 0
+            || (self.contains(Self::PROTECTION_INSTANT_SORCERY) && kinds & (4 | 8) != 0)
+    }
     pub fn contains(self, keyword: Self) -> bool {
         self.0 & keyword.0 == keyword.0
     }

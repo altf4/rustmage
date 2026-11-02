@@ -28,6 +28,7 @@ pub enum DamagePreventionKind {
     CombatToRecipient,
     ProtectionEverything,
     ProtectionInstantSorcery,
+    ProtectionColor(crate::cards::ChoiceColor),
     SourceLinkedDamage,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -1124,6 +1125,12 @@ impl Game {
                 && event.source.facts.kinds & (4 | 8) != 0
             {
                 add(DamagePreventionKind::ProtectionInstantSorcery);
+            }
+            let protected_colors = keywords.protection_colors() & event.source.facts.colors;
+            for color in crate::cards::ChoiceColor::ALL {
+                if protected_colors & (1 << color.index()) != 0 {
+                    add(DamagePreventionKind::ProtectionColor(color));
+                }
             }
         }
         out

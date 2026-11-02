@@ -201,6 +201,7 @@ impl Announcement {
                     .additional
             }
             StackKind::TriggeredAbility { .. }
+            | StackKind::DecayedAttack
             | StackKind::CopyEndStepSacrifice
             | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
@@ -344,6 +345,7 @@ impl Announcement {
                 .cost
                 .mana_options(),
             StackKind::TriggeredAbility { .. }
+            | StackKind::DecayedAttack
             | StackKind::CopyEndStepSacrifice
             | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
@@ -639,6 +641,7 @@ impl Announcement {
                 }
                 StackKind::ActivatedAbility { .. } => self.cost_options().count() > 1,
                 StackKind::TriggeredAbility { .. }
+                | StackKind::DecayedAttack
                 | StackKind::CopyEndStepSacrifice
                 | StackKind::CopyEndStepConditionalSacrifice
                 | StackKind::CasualtyCopy
@@ -1399,43 +1402,7 @@ impl Game {
         if filters().next().is_none() {
             return false;
         }
-        let packets = || {
-            self.state
-                .stack
-                .iter()
-                .chain(&self.state.pending_triggers)
-                .chain(&self.state.ordering_triggers)
-                .chain(self.state.announcing.iter().map(|a| &a.item))
-                .chain(self.state.resolving.iter().map(|r| &r.item))
-        };
-        let qualification = qualification.or_else(|| {
-            packets()
-                .find(|item| {
-                    item.source
-                        .is_some_and(|identity| identity.object == source)
-                })
-                .map(TargetSourceCharacteristics::from_item)
-        });
-        let source = qualification.map_or(source, |q| q.reference);
-        let current = self
-            .state
-            .objects
-            .get(source.card as usize)
-            .filter(|o| o.generation == source.generation);
-        let facts = if let Some(definition) = qualification.and_then(|q| q.spell) {
-            // A spell uses its chosen face even in preflight, before it reaches the stack.
-            Some((definition.colors(), definition.kind_mask()))
-        } else if let Some(current) = current {
-            Some((
-                ability_world::CharacteristicWorld::colors(self, source.card),
-                self.object_kinds(source.card, current),
-            ))
-        } else {
-            qualification
-                .and_then(|q| q.snapshot)
-                .map(|snapshot| (snapshot.colors(), snapshot.kinds))
-        };
-        let Some((colors, kinds)) = facts else {
+        let Some((colors, kinds)) = self.target_source_qualities(source, qualification) else {
             return false;
         };
         let query = self.characteristic_query();
@@ -1485,40 +1452,48 @@ impl Game {
             .map(|_| source.card);
         self.target_matches_without_hand(rule, controller, source, target, departing, None)
     }
-    fn instant_sorcery_source(
+    fn target_source_qualities(
         &self,
         source: ObjectRef,
         qualification: Option<TargetSourceCharacteristics<'_>>,
-    ) -> bool {
-        let qualification = qualification.or_else(|| {
+    ) -> Option<(u8, u16)> {
+        let packets = || {
             self.state
                 .stack
                 .iter()
-                .chain(self.state.pending_triggers.iter())
-                .chain(self.state.ordering_triggers.iter())
+                .chain(&self.state.pending_triggers)
+                .chain(&self.state.ordering_triggers)
                 .chain(self.state.announcing.iter().map(|a| &a.item))
                 .chain(self.state.resolving.iter().map(|r| &r.item))
+        };
+        let qualification = qualification.or_else(|| {
+            packets()
                 .find(|item| {
                     item.source
                         .is_some_and(|identity| identity.object == source)
                 })
                 .map(TargetSourceCharacteristics::from_item)
         });
-        let kinds = if let Some(card) = qualification.and_then(|q| q.spell) {
-            card.kind_mask()
-        } else if let Some(object) = self
+        let source = qualification.map_or(source, |q| q.reference);
+        let current = self
             .state
             .objects
             .get(source.card as usize)
-            .filter(|o| o.generation == source.generation)
-        {
-            self.object_kinds(source.card, object)
+            .filter(|o| o.generation == source.generation);
+        let facts = if let Some(definition) = qualification.and_then(|q| q.spell) {
+            // A spell uses its chosen face even in preflight, before it reaches the stack.
+            Some((definition.colors(), definition.kind_mask()))
+        } else if let Some(current) = current {
+            Some((
+                ability_world::CharacteristicWorld::colors(self, source.card),
+                self.object_kinds(source.card, current),
+            ))
         } else {
             qualification
                 .and_then(|q| q.snapshot)
-                .map_or(0, |f| f.kinds)
+                .map(|snapshot| (snapshot.colors(), snapshot.kinds))
         };
-        kinds & (4 | 8) != 0
+        facts
     }
     fn target_matches_without_hand(
         &self,
@@ -1746,13 +1721,17 @@ impl Game {
                 let Some(obj) = self.state.objects.get(id as usize) else {
                     return false;
                 };
-                if obj.zone == Zone::Battlefield
-                    && (self.keywords(id).contains(Keywords::PROTECTION_EVERYTHING)
-                        || (self
-                            .keywords(id)
-                            .contains(Keywords::PROTECTION_INSTANT_SORCERY)
-                            && self.instant_sorcery_source(source, qualification)))
-                {
+                if obj.zone == Zone::Battlefield && {
+                    let keywords = self.keywords(id);
+                    keywords.contains(Keywords::PROTECTION_EVERYTHING)
+                        || (keywords.protection_colors() != 0
+                            || keywords.contains(Keywords::PROTECTION_INSTANT_SORCERY))
+                            && self
+                                .target_source_qualities(source, qualification)
+                                .is_some_and(|(colors, kinds)| {
+                                    keywords.protects_from(colors, kinds)
+                                })
+                } {
                     return false;
                 }
                 if obj.zone == Zone::Battlefield

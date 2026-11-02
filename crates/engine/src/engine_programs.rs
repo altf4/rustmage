@@ -2384,6 +2384,15 @@ impl Game {
         declared_count: usize,
         first_attack: bool,
     ) {
+        if source.keywords.contains(Keywords::DECAYED) {
+            let mut item = self.activation_item(source.controller, source.id, 0);
+            item.kind = StackKind::DecayedAttack;
+            item.attachment_trigger = None;
+            item.source_counter_lki = None;
+            item.source_quantity_lki = None;
+            item.additional_triggers = source.additional_triggers;
+            self.state.pending_triggers.push(item);
+        }
         for (index, ability) in source.card.triggers().iter().enumerate() {
             if match ability.condition.event() {
                 TriggerCondition::SelfAttacks
@@ -2542,6 +2551,7 @@ impl Game {
         }
         let program = match item.kind {
             StackKind::TriggeredAbility { .. }
+            | StackKind::DecayedAttack
             | StackKind::CopyEndStepSacrifice
             | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
@@ -3553,6 +3563,11 @@ impl Game {
                     }
                 }
                 Instruction::SacrificeDelayedTokens => self.sacrifice_delayed_tokens(&item),
+                Instruction::SacrificeSourceAtEndCombat => {
+                    if let Some(source) = item.source {
+                        self.register_delayed_sacrifice_at(&item, vec![source.object], true);
+                    }
+                }
                 Instruction::ExileWarpedPermanent => self.exile_warped_permanent(&item),
                 Instruction::ResolveSiegeDefeat => {
                     if self.resolve_siege_defeat(&item) {

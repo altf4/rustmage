@@ -50,12 +50,15 @@ impl Game {
             self.queue_paradigm_triggers();
             self.precombat_lore_counters();
         }
+        if step == Step::EndCombat {
+            self.queue_delayed_sacrifices(true);
+        }
         if step == Step::End {
             self.state
                 .exile_permissions
                 .retain(|row| row.expiry != ExilePlayExpiry::StartOfNextEndStep(self.state.active));
             self.queue_copy_end_step_abilities();
-            self.queue_delayed_sacrifices();
+            self.queue_delayed_sacrifices(false);
             if let Some(items) = self.state.delayed_artifact_copies.take() {
                 self.state.pending_triggers.extend(*items);
             }
