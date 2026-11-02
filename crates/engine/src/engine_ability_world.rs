@@ -134,6 +134,38 @@ pub(super) trait CharacteristicWorld {
                     }),
             )
     }
+    fn activation_power_up_costs(
+        &self,
+        object: ObjectRef,
+        definition: Card,
+        ability: u16,
+    ) -> Option<Box<power_up::PowerUpCosts>> {
+        if !definition.power_up_abilities().contains(&ability) {
+            return None;
+        }
+        let source = self.object(object.card);
+        let reductions = if source.zone == Zone::Battlefield
+            && self.reference(object.card) == object
+            && self.entered_this_turn(object)
+        {
+            let mana_definition = self.recipe(object.card).definition;
+            let (colored, generic) = mana_definition.cost();
+            std::iter::once(ManaCost { colored, generic })
+                .chain(
+                    mana_definition
+                        .power_up_mana_cost_alternatives()
+                        .iter()
+                        .copied(),
+                )
+                .collect()
+        } else {
+            vec![ManaCost {
+                colored: [0; 6],
+                generic: 0,
+            }]
+        };
+        Some(Box::new(power_up::PowerUpCosts { reductions }))
+    }
     fn projected_self_grant_used(&self, _source: ObjectRef, _timestamp: u64) -> bool {
         false
     }

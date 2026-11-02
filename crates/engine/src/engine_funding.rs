@@ -1849,16 +1849,15 @@ impl<'g> FundingState<'g> {
                                 index,
                             ),
                             self.named_activation_generic_increase(entry.id),
-                            self.game
-                                .power_up_costs(
-                                    self.reference(entry.id),
-                                    self_grant.map_or_else(
-                                        || borrowed.map_or(object.card, |a| a.definition),
-                                        |g| g.0,
-                                    ),
-                                    index,
-                                )
-                                .as_deref(),
+                            self.activation_power_up_costs(
+                                self.reference(entry.id),
+                                self_grant.map_or_else(
+                                    || borrowed.map_or(object.card, |a| a.definition),
+                                    |g| g.0,
+                                ),
+                                index,
+                            )
+                            .as_deref(),
                             |payment| {
                                 mana_lots::visit_allocations(
                                     self.mana,

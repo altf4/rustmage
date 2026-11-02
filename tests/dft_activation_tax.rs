@@ -808,3 +808,69 @@ fn a_split_source_in_hand_matches_either_structured_rules_name() {
         assert_eq!(g.state.players[0].cards_drawn_this_turn, 1);
     }
 }
+
+#[test]
+fn a_projected_new_incarnation_uses_the_same_power_up_reduction_and_tax_as_actual_entry() {
+    use std::collections::HashSet;
+    const POWER_UP_MANA: CardRules = CardRules {
+        activated: &[ActivatedAbility {
+            once_per_turn: true,
+            ..ability(
+                ActivationCost {
+                    generic: 2,
+                    mana_component: true,
+                    ..ActivationCost::ZERO
+                },
+                &[Instruction::AddMana(ManaProduction::Fixed(BLUE))],
+            )
+        }],
+        extras: &CardExtras {
+            power_up_abilities: &[0],
+            ..CardExtras::EMPTY
+        },
+        ..PLAIN
+    };
+    let _scope = fixture_rules::activate(&[
+        (named("Ghost Vacuum"), &TAX),
+        (Card::GrizzlyBears, &POWER_UP_MANA),
+    ]);
+    let mut g = scenario(Player::P0);
+    let source = put(&mut g, Player::P0, "Grizzly Bears", Zone::Graveyard);
+    tax(&mut g, Player::P1, "Grizzly Bears");
+    g.state.players[0].mana = TWO;
+    let goal = FundingGoal {
+        actor: Player::P0,
+        required: [0, 1, 0, 0, 0, 0],
+        generic: 2,
+        source: None,
+        reserve: None,
+    };
+    let world = FundingState::from_game(&g, &goal);
+    let movement = g.entry_move(source, Zone::Battlefield, false);
+    assert!(
+        world.visit_entry_moves(vec![movement], true, None, &mut |next| {
+            assert!(next.entered_this_turn(next.reference(source)));
+            // Generic2 + tax2 - the newly entered Bear's {1}{G} = generic2.
+            // It produces three blue, exactly enough for this final payment.
+            next.reachable(&goal, &mut HashSet::new())
+        })
+    );
+    g.move_object(source, Zone::Hand);
+    g.state.players[0].mana = [0, 0, 0, 0, 1, 1];
+    cast(&mut g, source, None);
+    settle(&mut g);
+    assert!(g.entered_this_turn(g.object_ref(source)));
+    g.state.players[0].mana = TWO;
+    act(
+        &mut g,
+        Action::AnnounceMana {
+            card: source,
+            ability: 0,
+            counter_payment: Counters::default(),
+            production: BLUE,
+        },
+    );
+    assert_eq!(g.mana_payment_domain().unwrap().generic, 2);
+    pay(&mut g);
+    assert_eq!(g.state.players[0].mana, BLUE);
+}

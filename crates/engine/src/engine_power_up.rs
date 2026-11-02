@@ -173,31 +173,9 @@ impl Game {
         definition: Card,
         ability: u16,
     ) -> Option<Box<PowerUpCosts>> {
-        if !definition.power_up_abilities().contains(&ability) {
-            return None;
-        }
-        let source = &self.state.objects[object.card as usize];
-        let reductions = if source.zone == Zone::Battlefield
-            && self.object_ref(object.card) == object
-            && self.entered_this_turn(object)
-        {
-            let mana_definition = self.copiable_recipe(object).definition;
-            let (colored, generic) = mana_definition.cost();
-            std::iter::once(ManaCost { colored, generic })
-                .chain(
-                    mana_definition
-                        .power_up_mana_cost_alternatives()
-                        .iter()
-                        .copied(),
-                )
-                .collect()
-        } else {
-            vec![ManaCost {
-                colored: [0; 6],
-                generic: 0,
-            }]
-        };
-        Some(Box::new(PowerUpCosts { reductions }))
+        ability_world::CharacteristicWorld::activation_power_up_costs(
+            self, object, definition, ability,
+        )
     }
     pub(super) fn item_power_up_costs(&self, item: &SpellView) -> Option<Box<PowerUpCosts>> {
         let StackKind::ActivatedAbility { ability } = item.kind else {
