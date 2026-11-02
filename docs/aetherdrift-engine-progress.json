@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "set": "DFT",
-  "phase": "engine aggregate groups accepted; separate Trade and Junker controller-role card repairs pending",
+  "phase": "all 276 member definitions and focused outcomes integrated; complete-game and release acceptance in progress",
   "membership": 276,
   "starting_admitted": 119,
   "newly_admitted": 157,
@@ -2282,7 +2282,7 @@
       "peak_memory_gib": 3.1
     }
   },
-  "admissions_status": "276/276 local candidates; Trade the Helm and Demonic Junker remain known incorrect until separate card-role repairs; full acceptance remains pending",
+  "admissions_status": "276/276 local DFT candidates; all276 have passed focused outcomes; full set acceptance remains open",
   "implemented_engine_clusters": [
     "speed scalars/grants/replacements and exact mana quality",
     "crew/saddle participant events, toughness and direct designation",
@@ -2326,8 +2326,9 @@
     ],
     "cause": "Symmetric DifferentControllers discards per-target controller roles; relation-specific target groups also require both aggregate opcodes to consume all groups.",
     "engine_scope": "Two existing aggregate opcodes in the existing run_program cross-group preservation list; synthetic legality/interaction/owned tests and scoped prior198 assurance, no new wire shape.",
-    "card_phase": "separate relation-specific definitions and controller-response outcomes may now resume against accepted 2c7ffccc6 and the same cache",
+    "card_phase": "resolved at faf0f3395; actual role6/6, Junker10/10, Trade12/12, all core fresh; no remaining card source blocker",
     "other_DFT_group_audit": "Plow Through Fight, Run Over PowerDamage and Rise from Wreck ReturnAllTargetsToHand already preserve cross-group targets; no additional concrete aggregate dependency found.",
-    "status": "shared engine accepted; actual card repairs still pending"
-  }
+    "status": "engine accepted; both card-only role repairs passed all28 focused response/regression cases"
+  },
+  "remaining_card_blockers": []
 }

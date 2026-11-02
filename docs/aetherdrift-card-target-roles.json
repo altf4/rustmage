@@ -23,5 +23,15 @@
     "tests/dft_black_red_cards_exhaust_vehicles.rs: affinity colored/floor; optional empty target groups; reject reversed-role announcement; once actual controlled destruction; indestructible/stale contrasts; actual Crew2"
   ],
   "test_adjustments": "Junker no-target entry finishes each offered optional role; an opposing role with no candidates is already skipped by the existing announcement API. The old reverse-order permutation is now a wrong-first-role transactional rejection followed by own/opposing selection, preserving both-target destruction and once-only reward. No prior outcome assertions removed.",
-  "validation": "No Cargo or linker run by author; root owns focused execution against warm accepted engine. rustfmt, read-only catalogue/provenance validation and git diff --check only."
+  "validation": {
+    "status": "passed all28 focused cases; engine reused",
+    "new_actual_role_cases": 6,
+    "existing_junker_cases": 10,
+    "existing_tempo_cases": 12,
+    "reports": [
+      "<cache>/rustmage-authoring/aetherdrift/card-controller-roles-20261102-170600Z/report.json",
+      "<cache>/rustmage-authoring/aetherdrift/card-junker-role-regressions-20261102-170600Z/report.json",
+      "<cache>/rustmage-authoring/aetherdrift/card-trade-role-regressions-20261102-170600Z/report.json"
+    ]
+  }
 }
