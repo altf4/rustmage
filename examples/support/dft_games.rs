@@ -616,7 +616,11 @@ pub fn run(
                 _ => {}
             }
             if matches!(action, Action::Concede) {
-                return Err("smoke policy selected concession".into());
+                return Err(format!(
+                    "smoke policy selected concession pair{pair}/seed{seed}/swapped{deck_swapped}/decision{decisions}; phase{}; offered{offered:?}; all{actions:?}; last{:?}; observation{before:?}",
+                    before.decision,
+                    &trace[trace.len().saturating_sub(20)..]
+                ));
             }
             if mode.verifies() {
                 hash = digest(hash, actor, &action);
