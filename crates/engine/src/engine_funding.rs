@@ -467,6 +467,20 @@ fn reserve_obligations(
         })
     })
 }
+/// A source-exile cost must be legal in the final payment world. Do not reject
+/// the initial state: paying mana may first remove its prohibition provider.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+fn source_exile_payable<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    goal: &FundingGoal,
+) -> bool {
+    goal.source
+        .as_ref()
+        .is_none_or(|(source, index, _, definition, _)| {
+            !definition.activation(*index).cost.exile_self
+                || !world.graveyard_exile_prohibited(source.card)
+        })
+}
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn source_obligations(
     goal: &FundingGoal,
@@ -1344,6 +1358,15 @@ impl<'g> FundingState<'g> {
                 !object.card.self_granted_activation_template(*index as u16)
                     && !object.card.legacy_subtype_mana_activation(*index as u16)
                     && ability.mana_production().is_some()
+                    && if object.card.grants_activation(*index as u16) {
+                        ability_world::CharacteristicWorld::source_activation_template_available(
+                            self,
+                            id,
+                            *index as u16,
+                        )
+                    } else {
+                        ability_world::CharacteristicWorld::printed_abilities_available(self, id)
+                    }
             })
             .map(|(index, ability)| (index as u16, ability, None))
             .chain(
@@ -1396,10 +1419,8 @@ impl<'g> FundingState<'g> {
                         });
                 }
             }
-            if !ability_world::CharacteristicWorld::printed_abilities_available(self, entry.id) {
-                continue;
-            }
-            if !object.tapped
+            if ability_world::CharacteristicWorld::printed_abilities_available(self, entry.id)
+                && !object.tapped
                 && (self.kinds(entry) & 1 == 0
                     || !object.summoning_sick
                     || ability_world::CharacteristicWorld::activation_keywords(self, entry.id)
@@ -2835,6 +2856,7 @@ impl<'g> FundingState<'g> {
             )
         }) && evidence.is_none_or(|n| self.evidence_value() >= u128::from(n))
             && mana_loyalty_placement_payable(self, goal)
+            && source_exile_payable(self, goal)
             && goal.reserve.is_none_or(|(reference, spec)| {
                 spec.kind != EffectChoiceKind::ExileControlledOrGraveyard
                     || !ability_world::CharacteristicWorld::graveyard_exile_prohibited(
@@ -3165,6 +3187,7 @@ impl Game {
             adjusted.required,
             adjusted.generic,
         ) && mana_loyalty_placement_payable(self, &goal)
+            && source_exile_payable(self, &goal)
             && goal.reserve.is_none_or(|(reference, spec)| {
                 spec.kind != EffectChoiceKind::ExileControlledOrGraveyard
                     || !ability_world::CharacteristicWorld::graveyard_exile_prohibited(
@@ -3950,6 +3973,7 @@ impl Game {
             if !state.obligations(&goal)
                 || !state.cost_completion()
                 || !mana_loyalty_placement_payable(&state, &goal)
+                || !source_exile_payable(&state, &goal)
                 || a.cast_costs.is_none() && a.evidence.as_ref().is_some_and(|e| !e.complete)
             {
                 return None;

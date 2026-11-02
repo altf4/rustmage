@@ -214,7 +214,8 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
             if row.definition.legacy_subtype_mana_activation(ability) {
                 continue;
             }
-            if row.definition.grants_activation(ability)
+            if (row.definition.grants_activation(ability)
+                && !world.source_activation_template_available(row.donor.card, ability))
                 || row.definition.self_granted_activation_template(ability)
             {
                 continue;

@@ -26,76 +26,68 @@ impl Game {
         sorcery: bool,
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
-        if self.state.players[actor.index()].speed < 4
-            || !self.state.objects[card as usize]
-                .card
-                .static_ability_groups()
-                .iter()
-                .any(|g| {
-                    g.fragments
-                        .iter()
-                        .any(|f| matches!(f, StaticAbilityFragment::SourceMaxSpeedActivation(_)))
+        let object = &self.state.objects[card as usize];
+        let controller = if object.zone == Zone::Battlefield {
+            object.controller
+        } else {
+            object.owner
+        };
+        if controller != actor
+            || !object.card.static_ability_groups().iter().any(|group| {
+                group.fragments.iter().any(|fragment| {
+                    matches!(fragment, StaticAbilityFragment::SourceMaxSpeedActivation(_))
                 })
+            })
             || ability_world::CharacteristicWorld::activation_prohibited(self, actor, card)
+            || self.nonmana_actions_prohibited()
             || self.named_activation_prohibited(card)
         {
             return false;
         }
         let source = self.object_ref(card);
-        let view = self.object_view(card);
-        for &provider in &self.state.static_sources {
-            let giver = &self.state.objects[provider as usize];
-            if provider != card || giver.zone != Zone::Battlefield || giver.controller != actor {
+        for (index, ability) in object.card.activations().iter().enumerate() {
+            let index = index as u16;
+            // Indexed mana templates use the normal mana action path in both
+            // priority and nested payments, preserving all their real costs.
+            if ability.mana_production().is_some()
+                || !CharacteristicWorld::source_activation_template_available(self, card, index)
+            {
                 continue;
             }
-            let grantor = self.object_ref(provider);
-            for fragment in giver
-                .card
-                .static_ability_groups()
-                .iter()
-                .flat_map(|g| g.fragments)
-            {
-                let StaticAbilityFragment::SourceMaxSpeedActivation(index) = *fragment else {
-                    continue;
-                };
-                let ability = giver.card.activation(index);
-                let readiness = self.activation_readiness(actor, ability);
-                if activations::pure_loyalty_placement_prohibited(self, source, &readiness)
-                    || (ability.cost.sacrifice
-                        && CharacteristicWorld::sacrifice_prohibited(self, card))
-                    || !view.grant_available(grantor, giver.card, index, None)
-                    || !self.activation_guard_available(ability.guard, card, actor)
-                    || !Self::object_activation_available_with_kinds(
-                        &self.state.objects[card as usize],
-                        self.counter_amounts(card),
-                        self.current_kinds(card),
-                        || ability_world::CharacteristicWorld::activation_keywords(self, card),
-                        self.state.players[actor.index()].life,
-                        &readiness,
-                        usize::from(index),
+            let readiness = self.activation_readiness(actor, ability);
+            if activations::pure_loyalty_placement_prohibited(self, source, &readiness)
+                || (ability.cost.sacrifice && CharacteristicWorld::sacrifice_prohibited(self, card))
+                || !self.activation_guard_available(ability.guard, card, actor)
+                || !Self::object_activation_available_with_kinds(
+                    object,
+                    self.counter_amounts(card),
+                    self.current_kinds(card),
+                    || CharacteristicWorld::activation_keywords(self, card),
+                    self.state.players[actor.index()].life,
+                    &readiness,
+                    usize::from(index),
+                    actor,
+                    self.loyalty_timing(card, ability, actor, sorcery),
+                )
+                || !self.targets_available(ability.targets, actor, source)
+                || !self.initial_activation_target_fundable(
+                    FundingGoal {
+                        reserve: None,
                         actor,
-                        self.loyalty_timing(card, ability, actor, sorcery),
-                    )
-                    || !self.targets_available(ability.targets, actor, source)
-                    || !self.initial_activation_target_fundable(
-                        FundingGoal {
-                            reserve: None,
-                            actor,
-                            required: ability.cost.colored,
-                            generic: ability.cost.generic,
-                            source: Some((source, index, Counters::default(), giver.card, None)),
-                        },
-                        ability.targets,
-                    )
-                {
-                    continue;
-                }
-                if emit(Action::AnnounceSourceGrant {
-                    source,
-                    ability: index,
-                }) {
-                    return true;
-                }
+                        required: ability.cost.colored,
+                        generic: ability.cost.generic,
+                        source: Some((source, index, Counters::default(), object.card, None)),
+                    },
+                    ability.targets,
+                )
+            {
+                continue;
+            }
+            if emit(Action::AnnounceSourceGrant {
+                source,
+                ability: index,
+            }) {
+                return true;
             }
         }
         false
@@ -187,7 +179,12 @@ impl Game {
         ability: u16,
     ) {
         let giver = self.state.objects[grantor.card as usize].card;
-        let actor = self.state.objects[source.card as usize].controller;
+        let object = &self.state.objects[source.card as usize];
+        let actor = if object.zone == Zone::Battlefield {
+            object.controller
+        } else {
+            object.owner
+        };
         let mut item = self.activation_item(actor, source.card, ability);
         item.set_source_definition(giver);
         item.source_ability_origin = self.copied_grant_origin(grantor);

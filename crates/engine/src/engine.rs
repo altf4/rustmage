@@ -4949,7 +4949,7 @@ impl Game {
                     {
                         return true;
                     }
-                    if obj.zone == Zone::Battlefield
+                    if matches!(obj.zone, Zone::Battlefield | Zone::Hand | Zone::Graveyard)
                         && !self.nonmana_actions_prohibited()
                         && self.visit_source_grants(card, actor, sorcery, &mut emit)
                     {

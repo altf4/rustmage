@@ -411,7 +411,18 @@ impl Game {
             && !ability_world::CharacteristicWorld::activation_prohibited(self, actor, card)
             && (!ability.cost.sacrifice
                 || !ability_world::CharacteristicWorld::sacrifice_prohibited(self, card))
-            && self.printed_abilities_available(card)
+            && if self.state.objects[card as usize]
+                .card
+                .grants_activation(index as u16)
+            {
+                ability_world::CharacteristicWorld::source_activation_template_available(
+                    self,
+                    card,
+                    index as u16,
+                )
+            } else {
+                self.printed_abilities_available(card)
+            }
             && (ability.mana_production().is_some()
                 || (!self.nonmana_actions_prohibited() && !self.named_activation_prohibited(card)))
             && self.activation_guard_available(ability.guard, card, actor)
@@ -448,7 +459,11 @@ impl Game {
         sorcery: bool,
     ) -> bool {
         if object.zone != ability.source_zone()
-            || object.controller != actor
+            || (if object.zone == Zone::Battlefield {
+                object.controller
+            } else {
+                object.owner
+            }) != actor
             || (ability.sorcery && !sorcery)
             || ((ability.once_per_turn || ability.exhaust)
                 && object.used_abilities & (1u64 << index) != 0)
@@ -538,7 +553,9 @@ impl Game {
         let object = &self.state.objects[card as usize];
         for (index, ability) in object.card.activations().iter().enumerate() {
             if object.card.legacy_subtype_mana_activation(index as u16)
-                || object.card.grants_activation(index as u16)
+                || (object.card.grants_activation(index as u16)
+                    && (ability.mana_production().is_none()
+                        || !ability_world::CharacteristicWorld::source_activation_template_available(self, card, index as u16)))
                 || object.card.self_granted_activation_template(index as u16)
             {
                 continue;
@@ -816,7 +833,20 @@ impl Game {
             x: None,
             loyalty_x: None,
             reflexive_target_limit: None,
-            attachment_trigger: None,
+            attachment_trigger:
+                ability_world::CharacteristicWorld::source_activation_template_available(
+                    self, card, ability,
+                )
+                .then(|| {
+                    Box::new(AttachmentTriggerView {
+                        grantor: self.object_ref(card),
+                        granting_card: self.state.objects[card as usize].card,
+                        recipient: self.object_ref(card),
+                        defender: None,
+                        granted: true,
+                        origin: self.copy_ability_origin(self.object_ref(card)),
+                    })
+                }),
             cast: None,
             id: self.next_stack_id(),
             kind: StackKind::ActivatedAbility { ability },

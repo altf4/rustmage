@@ -806,6 +806,47 @@ pub(super) trait CharacteristicWorld {
                 }
             }
     }
+    /// Availability of an exact immutable activation template granted to its
+    /// own source. This is not a printed-ability permission or a flattened tap
+    /// mana grant: the activation retains its slot, costs and use identity.
+    fn source_activation_template_available(&self, id: CardId, index: u16) -> bool {
+        let object = self.object(id);
+        let Some(ability) = object.card.activations().get(usize::from(index)) else {
+            return false;
+        };
+        if object.zone != ability.source_zone()
+            || !object.card.static_ability_groups().iter().any(|group| {
+                group.fragments.iter().any(|fragment| matches!(fragment,
+                    crate::cards::StaticAbilityFragment::SourceMaxSpeedActivation(slot) if *slot == index))
+            })
+        {
+            return false;
+        }
+        let controller = if object.zone == Zone::Battlefield {
+            object.controller
+        } else {
+            object.owner
+        };
+        if self.game().state.players[controller.index()].speed < 4 {
+            return false;
+        }
+        match object.zone {
+            Zone::Battlefield => {
+                // The evaluator itself uses only the immutable template +
+                // speed predicate, never this query, so evaluation is acyclic.
+                ability_evaluation::evaluate_abilities(self).result.objects[id as usize]
+                    .grants
+                    .iter()
+                    .any(|grant| {
+                        grant.source == self.reference(id)
+                            && grant.granting_card == object.card
+                            && grant.kind == ability_order::GrantedAbilityKind::Template(index)
+                    })
+            }
+            Zone::Hand | Zone::Graveyard => true,
+            _ => false,
+        }
+    }
     fn granted_mana(&self, id: CardId) -> Vec<ability_order::GrantedManaAbility> {
         // Animation grants only keywords. It cannot remove a provider's printed
         // ability or change a mana grant, so only removal needs layer-six order.

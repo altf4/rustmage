@@ -36,7 +36,8 @@ pub(super) fn has_craft_activated_ability<W: ability_world::CharacteristicWorld 
         && (card.mana_color().is_some()
             || card.activations().iter().enumerate().any(|(index, _)| {
                 !card.self_granted_activation_template(index as u16)
-                    && !card.grants_activation(index as u16)
+                    && (!card.grants_activation(index as u16)
+                        || world.source_activation_template_available(id, index as u16))
                     && !card.legacy_subtype_mana_activation(index as u16)
             })))
         || (object.zone == Zone::Battlefield

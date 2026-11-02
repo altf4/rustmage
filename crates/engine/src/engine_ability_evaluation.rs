@@ -141,6 +141,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
         }
         StaticAbilityFragment::SourceMaxSpeedActivation(ability) => {
             if id != source.card
+                || provider.card.activation(ability).source_zone() != provider.zone
                 || world.game().state.players[provider.controller.index()].speed < 4
             {
                 return None;
