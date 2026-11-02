@@ -1773,6 +1773,17 @@ pub enum Instruction {
         amount: u16,
         token: Card,
     },
+    /// A sampled quantity and exact recipient, independent of the ability source.
+    EndureScaled {
+        recipient: EndureRecipient,
+        amount: AmountValue,
+        token: Card,
+    },
+    /// One token whose copiable base power and toughness are the sampled quantity.
+    CreateSizedToken {
+        token: Card,
+        size: AmountValue,
+    },
 
     Mobilize {
         token: Card,
@@ -3347,6 +3358,12 @@ pub struct AuraSpec {
     pub bonus: EquipmentSpec,
 }
 
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum EndureRecipient {
+    Source,
+    Entering,
+}
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Subject {

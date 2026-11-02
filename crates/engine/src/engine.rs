@@ -2351,8 +2351,9 @@ enum Pending {
     Endure {
         player: Player,
         source: ObjectRef,
-        amount: u16,
+        amount: u128,
         token: Card,
+        sampled_size: Option<copies::SampledTokenSize>,
     },
     PlotPayment {
         player: Player,
@@ -2831,8 +2832,10 @@ pub struct Game {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct EndureChoiceView {
     pub source: ObjectRef,
-    pub amount: u16,
+    pub amount: u128,
     pub token: Card,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub token_size: Option<u128>,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -10210,11 +10213,13 @@ impl Game {
                         source,
                         amount,
                         token,
+                        sampled_size,
                         ..
                     } => Some(EndureChoiceView {
                         source,
                         amount,
                         token,
+                        token_size: sampled_size.map(copies::SampledTokenSize::value),
                     }),
                     _ => None,
                 }

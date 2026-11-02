@@ -1,5 +1,6 @@
 //! Owned untargeted event objects, distinct from the source of their ability.
 use super::*;
+use crate::cards::EndureRecipient;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -28,7 +29,7 @@ impl CreatureComparisonFacts {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub enum EventObjectFacts {
     DamageActor(DamageSource),
-    /// Current or latest battlefield controller of an exact untargeted conniver.
+    /// Current or latest battlefield controller of an exact untargeted recipient.
     Controller(Player),
     /// Exact untargeted entrant's current or latest battlefield copiable values.
     Copiable(CopyRecipe),
@@ -165,7 +166,7 @@ impl Game {
             }
         }
     }
-    /// Only programs that connive the exact event object own controller facts.
+    /// Programs that connive or endure the exact event object own controller facts.
     /// Other packets retain their existing payload and departure work.
     pub(super) fn bind_entering_conniver(
         &mut self,
@@ -177,6 +178,9 @@ impl Game {
                 instruction,
                 Instruction::Connive {
                     subject: Subject::Entering,
+                    ..
+                } | Instruction::EndureScaled {
+                    recipient: EndureRecipient::Entering,
                     ..
                 }
             )

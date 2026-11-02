@@ -6360,6 +6360,20 @@ impl Game {
                         .alternatives = alternatives;
                     return;
                 }
+                Instruction::CreateSizedToken { token, size } => {
+                    let size = self.item_amount(size, &item);
+                    self.create_sized_token(item.controller, token, size);
+                }
+                Instruction::EndureScaled {
+                    recipient,
+                    amount,
+                    token,
+                } => {
+                    let amount = self.item_amount(amount, &item);
+                    if self.start_scaled_endure(&item, recipient, amount, token) {
+                        return;
+                    }
+                }
                 Instruction::Endure { amount, token } => {
                     if self.start_fixed_endure(&item, amount, token) {
                         return;

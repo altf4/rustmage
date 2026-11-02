@@ -81,6 +81,8 @@ fn selected(program: &[Instruction]) -> (bool, bool) {
             | Instruction::GrowCreaturesScaled { amount: value, .. }
             | Instruction::GrowPermanentGroupScaled { amount: value, .. }
             | Instruction::CreateTokensScaled { amount: value, .. }
+            | Instruction::EndureScaled { amount: value, .. }
+            | Instruction::CreateSizedToken { size: value, .. }
             | Instruction::CreateTokensWithCounters {
                 counters: value, ..
             } => amount(value, &mut result),
