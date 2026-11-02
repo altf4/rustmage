@@ -429,7 +429,7 @@ const BOUNCE_SPEED_RULES: CardRules = CardRules {
     effect: Effect::Spell(
         TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
         &[
-            Instruction::Bounce,
+            Instruction::ReturnToHand,
             Instruction::DecreaseLeadingSpeed {
                 players: PlayerSet::TargetController,
                 minimum: 1,
