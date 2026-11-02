@@ -4861,3 +4861,38 @@ impl Game {
         false
     }
 }
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    pub(super) fn self_graveyard_announcement_fundable(
+        &self,
+        a: &Announcement,
+        cost: ManaCost,
+    ) -> bool {
+        let source = a.item.source.expect("graveyard route spell source");
+        let base = Self::with_kicker_cost(
+            Self::with_offspring_cost(
+                cost,
+                source.card,
+                a.item.cast.is_some_and(|c| c.offspring == Some(true)),
+            ),
+            source.card,
+            a.item.cast.is_some_and(|c| c.kicker == Some(true)),
+        );
+        let Some(total) =
+            self.spell_total_for_definition(a.item.controller, source.id, base, source.card)
+        else {
+            return false;
+        };
+        let mut proposed = a.clone();
+        proposed.cost = Some(cost);
+        proposed.total_cost = Some(total);
+        proposed.initialize_cast_costs(improvise::potential(self, source.card));
+        let goal = self.funding_goal(&proposed);
+        let mut world =
+            FundingState::from_game_with_convoke(self, &goal, source.card.has_convoke());
+        world.set_purpose(self.purpose_for_item(&proposed.item));
+        world.set_payment_context(&proposed);
+        world.reachable(&goal, &mut HashSet::new())
+    }
+}
