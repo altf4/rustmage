@@ -2205,6 +2205,15 @@ pub enum Instruction {
     UntapControlledTokens,
     /// Untap every land currently controlled by the resolving player.
     UntapControlledLands,
+    /// Untap the current deduplicated non-targeted battlefield recipient union.
+    UntapPermanentGroup(&'static [BattlefieldFilter]),
+    /// Freeze controlled creatures with any kind of counter, then grant through cleanup.
+    GrantCounterBearingCreatures(Keywords),
+    /// Remove only these keyword abilities from a frozen union through cleanup.
+    RemovePermanentGroupKeywords {
+        filters: &'static [BattlefieldFilter],
+        keywords: Keywords,
+    },
     /// Grant target land colorless mana until the paid exiled source is cast.
     GrantLandManaUntilSourceCast,
     UntapPlayerCreatures(PlayerSet),

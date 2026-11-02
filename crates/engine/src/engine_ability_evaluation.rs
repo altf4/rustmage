@@ -688,9 +688,13 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                     started_earlier: false,
                     timestamp: row.timestamp,
                     recipients: vec![row.recipient.card],
-                    action: LayerSixAction::Grant {
-                        keywords: row.keywords,
-                        abilities: Vec::new(),
+                    action: if matches!(row.origin, KeywordEffectOrigin::ResolutionRemoval { .. }) {
+                        LayerSixAction::RemoveKeywords(row.keywords)
+                    } else {
+                        LayerSixAction::Grant {
+                            keywords: row.keywords,
+                            abilities: Vec::new(),
+                        }
                     },
                 });
             }

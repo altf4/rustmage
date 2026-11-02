@@ -14,6 +14,40 @@ impl Game {
         let recipients = self.battlefield_group(item, filters);
         self.grant_keyword_effects(&recipients, source.object, keywords);
     }
+    pub(super) fn remove_permanent_group_keywords(
+        &mut self,
+        item: &SpellView,
+        filters: &[BattlefieldFilter],
+        keywords: Keywords,
+    ) {
+        let Some(source) = item.source else {
+            return;
+        };
+        let keywords = keywords.without(keywords.resolution_rules());
+        let recipients = self.battlefield_group(item, filters);
+        if recipients.is_empty() || keywords == Keywords::NONE {
+            return;
+        }
+        let timestamp = self.next_role_timestamp();
+        for id in recipients {
+            let recipient = self.object_ref(id);
+            self.state
+                .roles
+                .as_mut()
+                .unwrap()
+                .keyword_effects
+                .push(KeywordEffectView {
+                    recipient,
+                    origin: KeywordEffectOrigin::ResolutionRemoval {
+                        source: source.object,
+                    },
+                    keywords,
+                    rules: Keywords::NONE,
+                    timestamp,
+                    expires_turn: Some(self.state.turn),
+                });
+        }
+    }
     pub(super) fn grow_permanent_group(
         &mut self,
         item: &SpellView,

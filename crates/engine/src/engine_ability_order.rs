@@ -51,6 +51,7 @@ pub(super) struct LayerSixGrant {
 #[derive(Clone, Debug)]
 pub(super) enum LayerSixAction {
     Remove,
+    RemoveKeywords(Keywords),
     /// Losing the land card type removes its subtype-derived abilities only.
     RemoveSubtypeMana,
     GrantSelf(u64),
@@ -237,6 +238,10 @@ pub(super) fn apply_layer_six(
                 LayerSixAction::GrantEach(_)
                 | LayerSixAction::RemoveAndGrant(_)
                 | LayerSixAction::RemovePrintedAndGrant(_) => unreachable!(),
+                LayerSixAction::RemoveKeywords(keywords) => {
+                    object.keywords = object.keywords.without(*keywords);
+                    object.granted_keywords = object.granted_keywords.without(*keywords);
+                }
                 LayerSixAction::RemoveSubtypeMana => {
                     object.mana.retain(|ability| !ability.subtype_derived);
                 }

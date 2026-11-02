@@ -6736,6 +6736,32 @@ impl Game {
                 Instruction::GrantLandManaUntilSourceCast => {
                     self.grant_land_mana_until_paid_source_cast(&item)
                 }
+                Instruction::UntapPermanentGroup(filters) => {
+                    let recipients = self.battlefield_group(&item, filters);
+                    self.untap_objects(&recipients, untap_rules::UntapCause::Effect);
+                }
+                Instruction::GrantCounterBearingCreatures(keywords) => {
+                    let recipients: Vec<_> = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter_map(|(id, object)| {
+                            let id = id as CardId;
+                            (object.zone == Zone::Battlefield
+                                && object.controller == item.controller
+                                && self.is_creature(id)
+                                && self.counter_amounts(id).has_any())
+                            .then_some(id)
+                        })
+                        .collect();
+                    if let Some(source) = item.source {
+                        self.grant_keyword_effects(&recipients, source.object, keywords);
+                    }
+                }
+                Instruction::RemovePermanentGroupKeywords { filters, keywords } => {
+                    self.remove_permanent_group_keywords(&item, filters, keywords);
+                }
                 Instruction::UntapControlledLands => {
                     let ids: Vec<_> = self
                         .state

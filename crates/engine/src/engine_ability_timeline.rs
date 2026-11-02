@@ -14,6 +14,10 @@ pub enum KeywordEffectOrigin {
     Resolution {
         source: ObjectRef,
     },
+    /// Source-independent loss of exactly the recorded keyword mask until cleanup.
+    ResolutionRemoval {
+        source: ObjectRef,
+    },
     ResolutionUntilNextTurn {
         source: ObjectRef,
         controller: Player,
