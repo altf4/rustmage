@@ -66,12 +66,20 @@
     "simultaneous_graveyard_entrants_are_unavailable_for_the_entry_exile_choice",
     "prevented_selected_exile_grants_neither_entry_counters_nor_a_link_in_actual_or_projection",
     "true_graveyard_exile_prohibition_stops_effects_and_projected_moves_without_a_replacement_choice",
-    "partial_entry_exile_selection_is_owned_across_raw_index_restore_and_parent_disposal"
+    "partial_entry_exile_selection_is_owned_across_raw_index_restore_and_parent_disposal",
+    "a_prevented_exile_selection_is_reserved_across_all_simultaneous_entry_replacements"
   ],
   "validation": {
     "rustfmt": "passed edition2024",
     "git_diff_check": "passed",
-    "Cargo": "No Cargo by author; root guarded build/scenarios pending."
+    "Cargo": "No Cargo by author; root guarded build/scenarios pending.",
+    "first_integrated_run": "Root focused200816:all6initial linked-entry scenarios passed."
   },
-  "remaining": "Self-bound permanent copy with base0/0 and immutable retained linked activated ability is not in this commit."
+  "remaining": "Self-bound permanent copy with base0/0 and immutable retained linked activated ability is not in this commit.",
+  "peer_review_followup": {
+    "rule": "614.13b",
+    "source": "https://media.wizards.com/2025/downloads/MagicCompRules%2020250919.pdf",
+    "semantics": "Reserve every exact selected identity across all entry replacements in the same simultaneous batch, even if the attempted move is prohibited or prevented.",
+    "test": "New seventh actual/projected simultaneous-entrant regression pending root."
+  }
 }

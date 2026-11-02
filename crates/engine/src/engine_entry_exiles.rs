@@ -87,6 +87,12 @@ impl Game {
                     && filter_matches(self, spec.filter, id as CardId)
                     && !selected.contains(&object)
                     && !batch.moves.iter().any(|other| {
+                        other
+                            .exile_preparation
+                            .as_ref()
+                            .is_some_and(|p| p.selected.contains(&object))
+                    })
+                    && !batch.moves.iter().any(|other| {
                         !other.skipped
                             && other.destination == Zone::Battlefield
                             && other.before.reference == object

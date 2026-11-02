@@ -246,3 +246,66 @@ fn partial_entry_exile_selection_is_owned_across_raw_index_restore_and_parent_di
     assert_eq!(indexed.counter_count(entrant, CounterKind::PlusOne), 0);
     assert_eq!(indexed.state.objects[a as usize].zone, Zone::Graveyard);
 }
+
+#[test]
+fn a_prevented_exile_selection_is_reserved_across_all_simultaneous_entry_replacements() {
+    let _scope = fixture_rules::activate(&[
+        (Card::from_name("Pterafractyl").unwrap(), &ENTRY),
+        (Card::from_name("Swiftfoot Boots").unwrap(), &PROHIBIT),
+    ]);
+    let mut g = scenario(Player::P0);
+    put(&mut g, Player::P1, "Swiftfoot Boots", Zone::Battlefield);
+    let a = put(&mut g, Player::P0, "Grizzly Bears", Zone::Graveyard);
+    let b = put(&mut g, Player::P0, "Savannah Lions", Zone::Graveyard);
+    let first = put(&mut g, Player::P0, "Pterafractyl", Zone::Exile);
+    let second = put(&mut g, Player::P0, "Pterafractyl", Zone::Exile);
+    let mut moves = vec![
+        g.entry_move(first, Zone::Battlefield, false),
+        g.entry_move(second, Zone::Battlefield, false),
+    ];
+    for m in &mut moves {
+        m.x = 1
+    }
+    let mut projected_moves = moves.clone();
+    projected_moves[0].exile_preparation = Some(Box::new(entry_exiles::Preparation {
+        selected: vec![g.object_ref(a)],
+        selection_closed: true,
+        ..Default::default()
+    }));
+    let world = FundingState::from_game(&g, &goal());
+    let mut branches = 0;
+    world.visit_entry_exile_choices(projected_moves, &mut |_world, completed| {
+        assert_eq!(
+            completed[0].exile_preparation.as_ref().unwrap().selected,
+            vec![g.object_ref(a)]
+        );
+        assert!(
+            !completed[1]
+                .exile_preparation
+                .as_ref()
+                .unwrap()
+                .selected
+                .contains(&g.object_ref(a))
+        );
+        branches += 1;
+        false
+    });
+    assert!(
+        branches >= 2,
+        "second entrant may choose zero or the unreserved card"
+    );
+    g.stage_entries(moves, None);
+    g.advance_entries();
+    pick(&mut g, a);
+    assert!(matches!(g.state.pending, Pending::EntryExile { .. }));
+    let repeated = g.object_ref(a);
+    reject(&mut g, Action::ChooseEntryExile { object: repeated });
+    pick(&mut g, b);
+    settle(&mut g);
+    for id in [first, second] {
+        assert_eq!(g.counter_count(id, CounterKind::PlusOne), 0)
+    }
+    for id in [a, b] {
+        assert_eq!(g.state.objects[id as usize].zone, Zone::Graveyard)
+    }
+}
