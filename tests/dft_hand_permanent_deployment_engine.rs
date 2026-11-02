@@ -254,9 +254,10 @@ fn as_entry_copy_uses_existing_blueprints_and_never_other_incoming_selected_obje
     drain(&mut g);
     for id in [first, second] {
         assert_eq!(stats(&g, id), (4, 4));
-        assert!(g
-            .keywords(id)
-            .contains(Keywords::FLYING.union(Keywords::VIGILANCE)));
+        assert!(
+            g.keywords(id)
+                .contains(Keywords::FLYING.union(Keywords::VIGILANCE))
+        );
         assert!(!g.state.objects[id as usize].is_token());
     }
 }
