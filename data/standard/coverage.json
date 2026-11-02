@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "04955664083ba98a80e79d45f7210c3cd2ac1ce0fdfa02a55cbf0987cd9b22af",
+  "catalogue_version": "af10bcc001c409a1e4b7b17c2b2d370c2dc01278346b27e7c284516166f48d51",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3133,
-  "implemented_total": 3139,
+  "implemented_standard_cards": 3138,
+  "implemented_total": 3144,
   "token_definitions": 156,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -32,8 +32,8 @@
     },
     "dft": {
       "total": 259,
-      "complete": 234,
-      "gated": 25
+      "complete": 239,
+      "gated": 20
     },
     "dsk": {
       "total": 264,
@@ -16850,8 +16850,8 @@
     {
       "name": "Hour of Victory",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/hour_of_victory.rs",
       "set": "dft"
     },
@@ -18986,8 +18986,8 @@
     {
       "name": "Kickoff Celebrations",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/kickoff_celebrations.rs",
       "set": "dft"
     },
@@ -22802,8 +22802,8 @@
     {
       "name": "Momentum Breaker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/momentum_breaker.rs",
       "set": "dft"
     },
@@ -24706,8 +24706,8 @@
     {
       "name": "Outpace Oblivion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/outpace_oblivion.rs",
       "set": "dft"
     },
@@ -35882,8 +35882,8 @@
     {
       "name": "The Last Ride",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/the_last_ride.rs",
       "set": "dft"
     },
