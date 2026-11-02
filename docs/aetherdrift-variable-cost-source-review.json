@@ -1,0 +1,95 @@
+{
+  "schema": 1,
+  "scope": "Generic engine costs only; no DFT card authorship or admission",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "reviewed_complete_sources": [
+    {
+      "path": "Mage.Sets/src/mage/cards/r/RadiantLotus.java",
+      "sha256": "c9e8d78a1fef15267982597a78690ee14d85312781c90715278d0b4ce23739a1"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/w/WinterCursedRider.java",
+      "sha256": "04d05cf05c21f1b2da1a4746ff402660c20753b8a955725b40ea8b3129a81cc5"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/h/HellishSideswipe.java",
+      "sha256": "076d05b331c3102034e55b264112258d659e05ebd3869d4cd61f0807c89c53c6"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/SpireMechcycle.java",
+      "sha256": "e066d5b32d9e77649180bdec7b5eae5a92343964b9ee92896e2cab586c8b237f"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/g/GasGuzzler.java",
+      "sha256": "6df4f8508b6d4f3892c75c37399a3105a43991009e4ff15b7e368146b1293c1d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeXTargetCost.java",
+      "sha256": "94158ee058a114f997a3a00678d5c4e9bacbea9fca01a959dec64c1cbc8d74cc"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileXFromYourGraveCost.java",
+      "sha256": "edc1df419657570d2142ea48c35cc10c1a8ea0dd2e2eda91c4c1575a80dde569"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileFromGraveCost.java",
+      "sha256": "0fbd76b0759d6ff66e0517af68a598d62dfd5fca5a520f4ee834132b0275166e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SacrificedPermanentCondition.java",
+      "sha256": "f876077a438f688ba1219cc1c7f58eb01573efb1d150dd7451fc3d6bf9716591"
+    },
+    {
+      "path": "Mage/src/main/java/mage/choices/ChoiceColor.java",
+      "sha256": "1db540710d45621c881502405d5dbcf85ce255f78239ac71fe8c4669f31b6ccd"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetSacrifice.java",
+      "sha256": "24e8ec2dda0609630c60e91b1b890feebc7c8dbb0eb6002565897a07ca9113d7"
+    }
+  ],
+  "oracle": [
+    {
+      "name": "Gas Guzzler",
+      "oracle_id": "7c98626b-ba97-4d1e-9be7-291480ae8d22",
+      "oracle_text": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\nThis creature enters tapped.\nMax speed \u2014 {B}, Sacrifice another creature or Vehicle: Draw a card."
+    },
+    {
+      "name": "Hellish Sideswipe",
+      "oracle_id": "d919d8e9-d1ba-42de-9884-12e38dca78ac",
+      "oracle_text": "As an additional cost to cast this spell, sacrifice an artifact or creature.\nDestroy target creature or Vehicle. If the sacrificed permanent was a Vehicle, draw a card."
+    },
+    {
+      "name": "Radiant Lotus",
+      "oracle_id": "307be184-176a-40a8-944c-48aa00cfdd29",
+      "oracle_text": "{T}, Sacrifice one or more artifacts: Choose a color. Target player adds three mana of the chosen color for each artifact sacrificed this way. (Activate only as an instant.)"
+    },
+    {
+      "name": "Spire Mechcycle",
+      "oracle_id": "7d347d59-0cd5-4207-86cb-5d6244c7c70a",
+      "oracle_text": "Haste\nExhaust \u2014 Tap another untapped Mount or Vehicle you control: This Vehicle becomes an artifact creature. Put a +1/+1 counter on it for each Mount and/or Vehicle you control other than this Vehicle. (Activate each exhaust ability only once.)\nCrew 2"
+    },
+    {
+      "name": "Winter, Cursed Rider",
+      "oracle_id": "343833c1-19fd-4e8f-b82e-0f20903caaff",
+      "oracle_text": "Ward\u2014Pay 2 life.\nArtifacts you control have \"Ward\u2014Pay 2 life.\"\nExhaust \u2014 {2}{U}{B}, {T}, Exile X artifact cards from your graveyard: Each other nonartifact creature gets -X/-X until end of turn. (Activate each exhaust ability only once.)"
+    }
+  ],
+  "validation": {
+    "cargo": "Not run by author: root owns guarded integrated validation",
+    "authored_target": "dft_variable_costs_engine",
+    "scenario_count": 10
+  },
+  "contracts": {
+    "typed_filter": "Immutable CostMatch disjunction layered on unchanged SacrificeFilter; shared actual/projected evaluation",
+    "selection": "Ranged groups choose incrementally, freeze exact incarnations on Finish, no optional powerset enumeration",
+    "lotus": "One or more artifacts, source tap may precede its own sacrifice, only actual sacrifices count including replacement to exile; targeted player receives three of one chosen color per actual sacrifice; controller chooses; uses the stack",
+    "winter": "Zero or more own artifact graveyard cards; frozen declared selection count is X even if replacement prevents/redirects an event; actual exile count retained separately",
+    "sideswipe": "Frozen predeparture actual sacrifice Vehicle fact; exile replacement preserves sacrifice qualification; all-illegal-target spell does not draw",
+    "payment": "Distinct departure components cannot consume the same source, duplicate incarnations are rejected, removal of a graveyard exile prohibition by funding is projected before final payment"
+  }
+}

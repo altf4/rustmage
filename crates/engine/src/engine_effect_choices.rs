@@ -110,15 +110,18 @@ impl Game {
         object: ObjectRef,
         enforce_sacrifice_prohibition: bool,
     ) -> bool {
-        if choice.kind == EffectChoiceKind::RemoveCreatureCounters(1) {
+        if choice.kind.payment_kind() == EffectChoiceKind::RemoveCreatureCounters(1) {
             return self.resolution_counter_candidate(player, object)
                 && self.counter_amounts(object.card).has_any();
         }
-        if matches!(choice.kind, EffectChoiceKind::TargetAttackingReturn { .. }) {
+        if matches!(
+            choice.kind.payment_kind(),
+            EffectChoiceKind::TargetAttackingReturn { .. }
+        ) {
             return false;
         }
         let o = &self.state.objects[object.card as usize];
-        if choice.kind == EffectChoiceKind::CopyExiledTriggerCreature {
+        if choice.kind.payment_kind() == EffectChoiceKind::CopyExiledTriggerCreature {
             return o.zone == Zone::Exile
                 && o.is_card()
                 && self.object_ref(object.card) == object
@@ -134,14 +137,14 @@ impl Game {
                     .is_some_and(|cards| cards.contains(&object))
                 && !choice.selected[player.index()].contains(&object);
         }
-        if choice.kind == EffectChoiceKind::CoverUpGraveyardCard {
+        if choice.kind.payment_kind() == EffectChoiceKind::CoverUpGraveyardCard {
             return o.zone == Zone::Graveyard
                 && o.owner != player
                 && o.is_card()
                 && self.object_ref(object.card) == object
                 && !choice.selected[player.index()].contains(&object);
         }
-        if let EffectChoiceKind::CoverUpSearch { owner, name } = choice.kind {
+        if let EffectChoiceKind::CoverUpSearch { owner, name } = choice.kind.payment_kind() {
             return o.owner == owner
                 && o.is_card()
                 && matches!(o.zone, Zone::Graveyard | Zone::Hand | Zone::Library)
@@ -149,13 +152,16 @@ impl Game {
                 && crate::card_names::same_name(o.card.name(), name)
                 && !choice.selected[player.index()].contains(&object);
         }
-        if choice.kind == EffectChoiceKind::ExileCardFromAnyGraveyard {
+        if choice.kind.payment_kind() == EffectChoiceKind::ExileCardFromAnyGraveyard {
             return o.zone == Zone::Graveyard
                 && o.is_card()
                 && self.object_ref(object.card) == object
                 && !choice.selected[player.index()].contains(&object);
         }
-        if matches!(choice.kind, EffectChoiceKind::DiscardedLand { .. }) {
+        if matches!(
+            choice.kind.payment_kind(),
+            EffectChoiceKind::DiscardedLand { .. }
+        ) {
             return self.state.resolving.as_ref().unwrap().item.controller == player
                 && self.object_ref(object.card) == object
                 && choice
@@ -169,7 +175,7 @@ impl Game {
                 && self.current_kinds(object.card) & 2 != 0
                 && choice.selected[player.index()].is_empty();
         }
-        if let EffectChoiceKind::ExileSourceAndNamed { name, .. } = choice.kind {
+        if let EffectChoiceKind::ExileSourceAndNamed { name, .. } = choice.kind.payment_kind() {
             let o = &self.state.objects[object.card as usize];
             return o.zone == Zone::Graveyard
                 && o.owner == player
@@ -183,7 +189,7 @@ impl Game {
                 && crate::card_names::same_name(o.card.name(), name)
                 && !choice.selected[player.index()].contains(&object);
         }
-        if choice.kind == EffectChoiceKind::ExileGraveyard {
+        if choice.kind.payment_kind() == EffectChoiceKind::ExileGraveyard {
             return !choice.selected[player.index()].contains(&object)
                 && self.additional_candidate(
                     AdditionalCost {
@@ -195,10 +201,14 @@ impl Game {
                     object,
                 );
         }
-        if matches!(choice.kind, EffectChoiceKind::TapPermanents(_)) && o.tapped {
+        if matches!(
+            choice.kind.payment_kind(),
+            EffectChoiceKind::TapPermanents(_)
+        ) && o.tapped
+        {
             return false;
         }
-        if let EffectChoiceKind::UntapLands { maximum } = choice.kind {
+        if let EffectChoiceKind::UntapLands { maximum } = choice.kind.payment_kind() {
             return o.zone == Zone::Battlefield
                 && self.untap_allowed(object.card, untap_rules::UntapCause::Effect)
                 && self.current_kinds(object.card) & 2 != 0
@@ -209,7 +219,7 @@ impl Game {
         if let EffectChoiceKind::GraveyardCreatures {
             maximum,
             total_mana_value,
-        } = choice.kind
+        } = choice.kind.payment_kind()
         {
             let selected = &choice.selected[player.index()];
             let spent = selected.iter().fold(0u64, |sum, r| {
@@ -224,7 +234,7 @@ impl Game {
                 && selected.len() < usize::from(maximum)
                 && o.card.fixed_mana_value() <= total_mana_value.saturating_sub(spent);
         }
-        if let EffectChoiceKind::LandCards { maximum, .. } = choice.kind {
+        if let EffectChoiceKind::LandCards { maximum, .. } = choice.kind.payment_kind() {
             return o.owner == player
                 && o.is_card()
                 && self.object_ref(object.card) == object
@@ -233,7 +243,7 @@ impl Game {
                 && !choice.selected[player.index()].contains(&object)
                 && choice.selected[player.index()].len() < maximum as usize;
         }
-        if let EffectChoiceKind::SacrificeOrDiscard { nonland } = choice.kind
+        if let EffectChoiceKind::SacrificeOrDiscard { nonland } = choice.kind.payment_kind()
             && o.zone == Zone::Hand
         {
             return o.owner == player
@@ -243,7 +253,7 @@ impl Game {
                 && (!nonland || !o.card.is_land());
         }
         let hand_choice = matches!(
-            choice.kind,
+            choice.kind.payment_kind(),
             EffectChoiceKind::Discard
                 | EffectChoiceKind::HandToTop
                 | EffectChoiceKind::HandExileCopy
@@ -260,7 +270,7 @@ impl Game {
             return false;
         }
         if matches!(
-            choice.kind,
+            choice.kind.payment_kind(),
             EffectChoiceKind::Discard
                 | EffectChoiceKind::HandToTop
                 | EffectChoiceKind::HandExileCopy
@@ -271,7 +281,7 @@ impl Game {
         ) {
             return o.zone == Zone::Hand
                 && o.is_card()
-                && match choice.kind {
+                && match choice.kind.payment_kind() {
                     // Hand costs use the same typed characteristics and filters as
                     // announced discard costs, including artifact lands in hand.
                     EffectChoiceKind::Discard => self.additional_candidate(
@@ -302,7 +312,7 @@ impl Game {
         }
         if choice.greatest_value[player.index()].is_some_and(|max| {
             let value = if matches!(
-                choice.kind,
+                choice.kind.payment_kind(),
                 EffectChoiceKind::ExileGreatestManaValue
                     | EffectChoiceKind::SacrificeGreatestManaValue
             ) {
@@ -315,8 +325,15 @@ impl Game {
             return false;
         }
         let f = choice.filter;
+        if !choice.kind.cost_matches_any(
+            o.card,
+            self.current_kinds(object.card),
+            self.granted_subtypes(object.card),
+        ) {
+            return false;
+        }
         if matches!(
-            choice.kind,
+            choice.kind.payment_kind(),
             EffectChoiceKind::Sacrifice
                 | EffectChoiceKind::SacrificeGreatestManaValue
                 | EffectChoiceKind::SacrificeDifferentNames(_)
@@ -694,7 +711,10 @@ impl Game {
             .choice
             .take()
             .unwrap();
-        if matches!(choice.kind, EffectChoiceKind::UntapLands { .. }) {
+        if matches!(
+            choice.kind.payment_kind(),
+            EffectChoiceKind::UntapLands { .. }
+        ) {
             let ids: Vec<_> = choice
                 .selected
                 .iter()
@@ -707,7 +727,7 @@ impl Game {
             self.untap_objects(&ids, untap_rules::UntapCause::Effect);
             return;
         }
-        let (tapped, discarded) = match choice.kind {
+        let (tapped, discarded) = match choice.kind.payment_kind() {
             EffectChoiceKind::LandCards { tapped, .. } => (tapped, false),
             EffectChoiceKind::DiscardedLand { tapped } => (tapped, true),
             _ => unreachable!(),
@@ -800,7 +820,7 @@ impl Game {
     fn advance_target_attacking_return(&mut self) -> bool {
         let resolution = self.state.resolving.as_ref().unwrap();
         let choice = resolution.choice.as_ref().unwrap();
-        let EffectChoiceKind::TargetAttackingReturn { counter } = choice.kind else {
+        let EffectChoiceKind::TargetAttackingReturn { counter } = choice.kind.payment_kind() else {
             unreachable!()
         };
         let player = resolution.item.controller;
@@ -1077,13 +1097,16 @@ impl Game {
                 }
             }
         }
-        if matches!(choice.kind, EffectChoiceKind::CoverUpSearch { .. }) {
+        if matches!(
+            choice.kind.payment_kind(),
+            EffectChoiceKind::CoverUpSearch { .. }
+        ) {
             self.state.pending = Pending::EffectChoice {
                 player: self.state.resolving.as_ref().unwrap().item.controller,
             };
             return true;
         }
-        if let EffectChoiceKind::GraveyardCreatures { maximum, .. } = choice.kind {
+        if let EffectChoiceKind::GraveyardCreatures { maximum, .. } = choice.kind.payment_kind() {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
             if choice.selected[player.index()].len() >= usize::from(maximum) {
                 self.finish_graveyard_return_selection();
@@ -1092,7 +1115,7 @@ impl Game {
             self.state.pending = Pending::EffectChoice { player };
             return true;
         }
-        if let EffectChoiceKind::UntapLands { maximum } = choice.kind {
+        if let EffectChoiceKind::UntapLands { maximum } = choice.kind.payment_kind() {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
             if choice.selected[player.index()].len() >= usize::from(maximum) {
                 self.finish_land_selection();
@@ -1101,7 +1124,10 @@ impl Game {
             self.state.pending = Pending::EffectChoice { player };
             return true;
         }
-        if matches!(choice.kind, EffectChoiceKind::DiscardedLand { .. }) {
+        if matches!(
+            choice.kind.payment_kind(),
+            EffectChoiceKind::DiscardedLand { .. }
+        ) {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
             if !choice.selected[player.index()].is_empty() {
                 self.finish_land_selection();
@@ -1110,7 +1136,7 @@ impl Game {
             self.state.pending = Pending::EffectChoice { player };
             return true;
         }
-        if let EffectChoiceKind::LandCards { maximum, .. } = choice.kind {
+        if let EffectChoiceKind::LandCards { maximum, .. } = choice.kind.payment_kind() {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
             if choice.selected[player.index()].len() >= maximum as usize {
                 self.finish_land_selection();
@@ -1127,7 +1153,7 @@ impl Game {
                 return true;
             }
         }
-        if choice.kind == EffectChoiceKind::CoverUpGraveyardCard {
+        if choice.kind.payment_kind() == EffectChoiceKind::CoverUpGraveyardCard {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
             let selected = choice.selected[player.index()].first().copied();
             if let Some(reference) = selected {
@@ -1151,7 +1177,7 @@ impl Game {
             self.state.resolving.as_mut().unwrap().choice = None;
             return false;
         }
-        if choice.kind == EffectChoiceKind::HandToTop {
+        if choice.kind.payment_kind() == EffectChoiceKind::HandToTop {
             let choice = self
                 .state
                 .resolving
@@ -1170,7 +1196,10 @@ impl Game {
             self.finish_zone_events(&events, &[]);
             return false;
         }
-        if matches!(choice.kind, EffectChoiceKind::HandPlot { .. }) {
+        if matches!(
+            choice.kind.payment_kind(),
+            EffectChoiceKind::HandPlot { .. }
+        ) {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
             let reference = choice.selected[player.index()][0];
             self.state.resolving.as_mut().unwrap().choice = None;
@@ -1184,7 +1213,7 @@ impl Game {
             return false;
         }
         if matches!(
-            choice.kind,
+            choice.kind.payment_kind(),
             EffectChoiceKind::HandExileCopy
                 | EffectChoiceKind::HandCreature
                 | EffectChoiceKind::HandPermanent { .. }
@@ -1207,7 +1236,7 @@ impl Game {
                 self.state.resolving.as_mut().unwrap().choice = None;
                 return false;
             };
-            if choice.kind == EffectChoiceKind::HandExileCopy {
+            if choice.kind.payment_kind() == EffectChoiceKind::HandExileCopy {
                 let definition = self.state.objects[reference.card as usize].card;
                 self.state.resolving.as_mut().unwrap().choice = None;
                 let events = self.move_objects_raw(&[reference.card], Zone::Exile);
@@ -1222,10 +1251,10 @@ impl Game {
                 }
                 return false;
             }
-            let enchantment = choice.kind == EffectChoiceKind::HandCreature
+            let enchantment = choice.kind.payment_kind() == EffectChoiceKind::HandCreature
                 && self.state.objects[reference.card as usize].card.kind_mask() & 32 != 0;
             let forced_tapped = matches!(
-                choice.kind,
+                choice.kind.payment_kind(),
                 EffectChoiceKind::HandLand { tapped: true }
                     | EffectChoiceKind::HandPermanent { tapped: true, .. }
             );
@@ -1307,7 +1336,7 @@ impl Game {
             }
             return false;
         }
-        if choice.kind == EffectChoiceKind::CopyExiledTriggerCreature {
+        if choice.kind.payment_kind() == EffectChoiceKind::CopyExiledTriggerCreature {
             let item = self.state.resolving.as_ref().unwrap().item.clone();
             if let Some(&card) = choice.selected[item.controller.index()].first()
                 && self.object_ref(card.card) == card
@@ -1330,7 +1359,9 @@ impl Game {
                 });
                 self.apply_temporary_copy(recipient, recipe, CopyDeadline::EndOfTurn);
             }
-        } else if let EffectChoiceKind::ExileSourceAndNamed { amount, .. } = choice.kind {
+        } else if let EffectChoiceKind::ExileSourceAndNamed { amount, .. } =
+            choice.kind.payment_kind()
+        {
             let item = self.state.resolving.as_ref().unwrap().item.clone();
             let selected = &choice.selected[item.controller.index()];
             // Validate every component before committing any movement. An
@@ -1380,7 +1411,7 @@ impl Game {
             } else {
                 self.state.resolving.as_mut().unwrap().pc = failure_pc;
             }
-        } else if let EffectChoiceKind::AmassGoblins(amount) = choice.kind {
+        } else if let EffectChoiceKind::AmassGoblins(amount) = choice.kind.payment_kind() {
             let item = self.state.resolving.as_ref().unwrap().item.clone();
             // The owned selection seat is the amassing player. The resolving
             // ability retains its original controller, which can be another player.
@@ -1394,7 +1425,7 @@ impl Game {
             {
                 self.finish_amass_goblins(&item, player, recipient, amount);
             }
-        } else if let EffectChoiceKind::EmpowerJace(amount) = choice.kind {
+        } else if let EffectChoiceKind::EmpowerJace(amount) = choice.kind.payment_kind() {
             if let Some(recipient) = choice.selected[self
                 .state
                 .resolving
@@ -1409,7 +1440,7 @@ impl Game {
                 let player = self.state.resolving.as_ref().unwrap().item.controller;
                 self.finish_empower_jace(player, recipient, amount);
             }
-        } else if choice.kind == EffectChoiceKind::ExileCreatureAndGraveyard {
+        } else if choice.kind.payment_kind() == EffectChoiceKind::ExileCreatureAndGraveyard {
             let item = &self.state.resolving.as_ref().unwrap().item;
             let player = item
                 .targets
@@ -1437,19 +1468,21 @@ impl Game {
             let events = self.move_objects_raw(&ids, Zone::Exile);
             self.finish_zone_events(&events, &[]);
         } else if matches!(
-            choice.kind,
+            choice.kind.payment_kind(),
             EffectChoiceKind::ExileGraveyard
                 | EffectChoiceKind::ExileCardFromAnyGraveyard
                 | EffectChoiceKind::ExileGreatestManaValue
-        ) || matches!(choice.kind, EffectChoiceKind::TapPermanents(_))
-        {
+        ) || matches!(
+            choice.kind.payment_kind(),
+            EffectChoiceKind::TapPermanents(_)
+        ) {
             let ids: Vec<_> = choice
                 .selected
                 .iter()
                 .flat_map(|rows| rows.iter().map(|r| r.card))
                 .collect();
             if matches!(
-                choice.kind,
+                choice.kind.payment_kind(),
                 EffectChoiceKind::ExileGraveyard
                     | EffectChoiceKind::ExileCardFromAnyGraveyard
                     | EffectChoiceKind::ExileGreatestManaValue
@@ -1459,7 +1492,10 @@ impl Game {
             } else {
                 self.tap_objects(&ids);
             }
-        } else if matches!(choice.kind, EffectChoiceKind::SacrificeOrDiscard { .. }) {
+        } else if matches!(
+            choice.kind.payment_kind(),
+            EffectChoiceKind::SacrificeOrDiscard { .. }
+        ) {
             // The resolving packet captures the payer/cause. A legal chosen cost
             // is paid even if its zone-change destination is replaced.
             let payer = self.state.resolving.as_ref().unwrap().item.controller;
@@ -1470,7 +1506,7 @@ impl Game {
             } else {
                 self.sacrifice_batch(&[(payer, reference.card)]);
             }
-        } else if choice.kind == EffectChoiceKind::Discard {
+        } else if choice.kind.payment_kind() == EffectChoiceKind::Discard {
             let ids: Vec<_> = [self.state.active, self.state.active.other()]
                 .into_iter()
                 .flat_map(|p| choice.selected[p.index()].iter().map(|object| object.card))
@@ -1695,7 +1731,7 @@ impl Game {
             .choice
             .take()
             .unwrap();
-        let EffectChoiceKind::CoverUpSearch { owner, .. } = choice.kind else {
+        let EffectChoiceKind::CoverUpSearch { owner, .. } = choice.kind.payment_kind() else {
             unreachable!()
         };
         let player = self.state.resolving.as_ref().unwrap().item.controller;
@@ -1720,7 +1756,7 @@ impl Game {
         let choice = self.state.resolving.as_ref()?.choice.as_ref()?;
         let actor = self.semantic_actor()?;
         if matches!(
-            choice.kind,
+            choice.kind.payment_kind(),
             EffectChoiceKind::Discard
                 | EffectChoiceKind::SacrificeOrDiscard { .. }
                 | EffectChoiceKind::HandToTop
@@ -1733,12 +1769,14 @@ impl Game {
         {
             return None;
         }
-        if matches!(choice.kind, EffectChoiceKind::CoverUpSearch { .. })
-            && !self.shares_information(viewer, actor)
+        if matches!(
+            choice.kind.payment_kind(),
+            EffectChoiceKind::CoverUpSearch { .. }
+        ) && !self.shares_information(viewer, actor)
         {
             return None;
         }
-        let inspected_cards = match choice.kind {
+        let inspected_cards = match choice.kind.payment_kind() {
             EffectChoiceKind::CoverUpSearch { owner, .. }
                 if self.shares_information(viewer, actor) =>
             {
@@ -1759,7 +1797,10 @@ impl Game {
             _ => None,
         };
         let public_only = !self.shares_information(viewer, actor)
-            && matches!(choice.kind, EffectChoiceKind::LandCards { .. });
+            && matches!(
+                choice.kind.payment_kind(),
+                EffectChoiceKind::LandCards { .. }
+            );
         let candidates = self
             .state
             .objects
@@ -1780,7 +1821,7 @@ impl Game {
                 choice.selected[index]
                     .iter()
                     .filter(|_| {
-                        choice.kind != EffectChoiceKind::Discard
+                        choice.kind.payment_kind() != EffectChoiceKind::Discard
                             || self.shares_information(
                                 viewer,
                                 if index == 0 { Player::P0 } else { Player::P1 },

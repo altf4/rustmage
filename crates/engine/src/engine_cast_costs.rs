@@ -331,7 +331,8 @@ impl Game {
             CastCostClause::Additional => {
                 let spec = a.additional_cost().unwrap();
                 let p = a.item.controller;
-                let selected = a.additional.is_some() || a.additional_life;
+                let selected =
+                    a.additional.is_some() || a.additional_group_complete || a.additional_life;
                 self.state.announcing = Some(a);
                 if selected {
                     self.state.pending = Pending::PayCosts { player: p };

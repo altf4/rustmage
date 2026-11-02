@@ -188,15 +188,15 @@ pub use cast_permissions::GraveyardCastPermissionView;
 #[path = "engine_crew.rs"]
 pub mod crew;
 #[doc(hidden)]
-#[path = "engine_saddle.rs"]
-pub mod saddle;
-#[doc(hidden)]
 #[path = "engine_crew_participants.rs"]
 pub mod crew_participants;
 #[doc(hidden)]
 #[path = "engine_exert.rs"]
 pub mod exert;
 pub use exert::ExertionView;
+#[doc(hidden)]
+#[path = "engine_saddle.rs"]
+pub mod saddle;
 pub use adventure::{AdventurePermission, SpellCharacteristicsView};
 pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
 pub use saddle::SaddleChoiceView;
@@ -274,6 +274,10 @@ pub use replacements::{
 };
 
 use crate::shared_vec::SharedVec;
+#[doc(hidden)]
+#[path = "engine_variable_costs.rs"]
+pub mod variable_costs;
+pub use variable_costs::PaidAdditionalCostView;
 #[doc(hidden)]
 #[path = "engine_additional_costs.rs"]
 pub mod additional_costs;
@@ -696,6 +700,7 @@ define_actions! {
     ChooseZoneReplacement { effect: ZoneReplacementKind },
     FinishStackTargets,
     FinishCraftMaterials,
+    FinishAdditionalCostGroup,
     AllocateTargetAmount { amount: u32 },
     RestoreStackTarget { index: u32 },
     SetStackTarget { index: u32, target: Target },
@@ -1411,6 +1416,8 @@ pub struct SpellView {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[allow(clippy::box_collection)]
     pub craft_materials: Option<Box<Vec<ObjectRef>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paid_additional_cost: Option<Box<PaidAdditionalCostView>>,
     /// Exact public card incarnations captured by an exile-batch trigger.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[allow(clippy::box_collection)]
@@ -1724,6 +1731,10 @@ impl SpellView {
                 .creature_combat_event
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<CreatureCombatEventView>())
+            + self
+                .paid_additional_cost
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<PaidAdditionalCostView>())
             + self.delayed_sacrifice.as_ref().map_or(0, |d| d.bytes())
             + self.crew.as_ref().map_or(0, |c| c.bytes())
             + self
@@ -2453,6 +2464,7 @@ enum Pending {
     EffectMana {
         player: Player,
         production: ManaProduction,
+        recipients: [bool; 2],
     },
     Targets {
         player: Player,
@@ -4665,7 +4677,7 @@ impl Game {
                 for (index, _) in s.objects.iter().enumerate() {
                     let object = self.object_ref(index as CardId);
                     if self.effect_choice_candidate(choice, player, object) {
-                        let action = match choice.kind {
+                        let action = match choice.kind.payment_kind() {
                             EffectChoiceKind::GraveyardCreatures { .. } => {
                                 Action::SelectGraveyardReturn { object }
                             }
@@ -4737,6 +4749,11 @@ impl Game {
                 }
             }
             Pending::AdditionalCost { .. } => {
+                if self.variable_cost_selection_complete()
+                    && emit(Action::FinishAdditionalCostGroup)
+                {
+                    return true;
+                }
                 if self.craft_material_selection_complete() && emit(Action::FinishCraftMaterials) {
                     return true;
                 }
@@ -6329,6 +6346,7 @@ impl Game {
                 ability,
             } => self.announce_planeswalker_grant(source, grantor, ability),
             Action::ChooseAdditionalCost { object } => self.choose_additional_cost(object),
+            Action::FinishAdditionalCostGroup => self.finish_additional_cost_group(),
             Action::FinishCraftMaterials => self.finish_graveyard_symbol_cost(),
             Action::ChooseAdditionalLife => self.choose_additional_life(),
             Action::FinishGraveyardSymbolCost => self.finish_graveyard_symbol_cost(),
@@ -7006,7 +7024,14 @@ impl Game {
                     .mana_lots
                     .as_mut()
                     .and_then(|state| state.effect_quality.take());
-                self.add_quality_mana(actor, production, quality);
+                let Pending::EffectMana { recipients, .. } = self.state.pending else {
+                    unreachable!("resolved mana choice");
+                };
+                for recipient in [Player::P0, Player::P1] {
+                    if recipients[recipient.index()] {
+                        self.add_quality_mana(recipient, production, quality);
+                    }
+                }
                 self.run_program();
             }
             Action::BeginActivate {
@@ -7980,6 +8005,12 @@ impl Game {
     /// has been chosen and all proposed events remain possible. Redirected
     /// and prevented events are valid cost payments (CR 118.11).
     fn sacrifice_cost_batch_atomic(&mut self, sacrifices: &[(Player, CardId)]) -> bool {
+        self.sacrifice_cost_batch_outcome(sacrifices).is_some()
+    }
+    fn sacrifice_cost_batch_outcome(
+        &mut self,
+        sacrifices: &[(Player, CardId)],
+    ) -> Option<PaidAdditionalCostView> {
         self.refresh_enduring_stories();
         if sacrifices.iter().enumerate().any(|(i, &(actor, id))| {
             let object = &self.state.objects[id as usize];
@@ -7988,7 +8019,7 @@ impl Game {
                 || sacrifices[..i].iter().any(|&(_, prior)| prior == id)
                 || ability_world::CharacteristicWorld::sacrifice_prohibited(self, id)
         }) {
-            return false;
+            return None;
         }
         let sources = self.death_trigger_sources();
         let moves: Vec<_> = sacrifices
@@ -7996,7 +8027,7 @@ impl Game {
             .map(|&(_, id)| (self.object_ref(id), Zone::Graveyard))
             .collect();
         let Some(plans) = self.plan_atomic_zone_cost(&moves) else {
-            return false;
+            return None;
         };
         self.capture_event_object_facts(plans.iter().map(|(view, _)| view));
         self.capture_source_quantities(plans.iter().map(|(view, _)| view));
@@ -8030,8 +8061,18 @@ impl Game {
         }
         self.refresh_controllers();
         self.record_own_sacrifices(&events);
+        let paid = PaidAdditionalCostView {
+            selected: sacrifices.len() as u64,
+            count: events
+                .iter()
+                .filter(|event| event.sacrificed_by.is_some())
+                .count() as u64,
+            sacrificed_vehicle: events
+                .iter()
+                .any(|event| event.sacrificed_by.is_some() && event.before.has_subtype("Vehicle")),
+        };
         self.finish_zone_events(&events, &sources);
-        true
+        Some(paid)
     }
 
     /// Capture every pre-event characteristic before any simultaneous departure.

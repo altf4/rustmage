@@ -1373,6 +1373,7 @@ impl Game {
             loyalty_counters_paid: 0,
             exiled_symbol_cards: None,
             craft_materials: None,
+            paid_additional_cost: None,
             exiled_trigger_cards: None,
             source_counter_lki: {
                 let mut facts = card_quantities::counter_quantity_facts(
@@ -1457,6 +1458,7 @@ impl Game {
         slot.source_counter_payment = item.source_counter_payment;
         slot.mana_tap_bonus = item.mana_tap_bonus;
         slot.source_move = item.source_move;
+        slot.paid_additional_cost = item.paid_additional_cost;
         slot.crime_qualifying_target = item.crime_qualifying_target;
         if source_still_exact {
             slot.source_counter_lki = item.source_counter_lki;
@@ -5473,6 +5475,31 @@ impl Game {
                         self.add_mana(item.controller, mana);
                     }
                 }
+                Instruction::IfSacrificedVehicle { skip } => {
+                    if !item
+                        .paid_additional_cost
+                        .as_ref()
+                        .is_some_and(|paid| paid.sacrificed_vehicle)
+                    {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
+                Instruction::AddManaChosenScaled { players, amount } => {
+                    let amount = u32::try_from(self.item_amount(amount, &item))
+                        .capacity("chosen mana amount exhausted");
+                    let mut recipients = [false; 2];
+                    for player in self.program_players(players, &item) {
+                        recipients[player.index()] = true;
+                    }
+                    if recipients.iter().any(|&recipient| recipient) {
+                        self.state.pending = Pending::EffectMana {
+                            player: item.controller,
+                            production: ManaProduction::any_color(amount),
+                            recipients,
+                        };
+                        return;
+                    }
+                }
                 Instruction::AddMana(production) => {
                     let quality = self.item_mana_quality(&item, production).map(|quality| {
                         quality.with_definition(
@@ -5502,6 +5529,7 @@ impl Game {
                             self.state.pending = Pending::EffectMana {
                                 player: item.controller,
                                 production,
+                                recipients: std::array::from_fn(|i| i == item.controller.index()),
                             };
                             if quality.is_some() {
                                 self.state.mana_lots.get_or_insert_default().effect_quality =

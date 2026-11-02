@@ -883,10 +883,31 @@ pub struct SearchSpec {
     pub reveal: bool,
 }
 
+/// An immutable disjunction over the selected cost object's live characteristics.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum CostMatch {
+    Kinds(u16),
+    Subtype(&'static str),
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum CostAction {
+    Sacrifice,
+    TapPermanents(u16),
+    SacrificeRange { minimum: u16 },
+    ExileGraveyardRange { minimum: u16 },
+}
+
 /// A resolution choice; discard here is a cost, not a forced discard effect.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EffectChoiceKind {
+    /// Apply one ordinary payment operation with an additional typed OR filter.
+    FilteredCost {
+        action: CostAction,
+        any: &'static [CostMatch],
+    },
     /// Choose a controlled permanent or reveal a matching card in hand.
     Behold,
     /// Non-targeted Army selection during amass.
@@ -914,6 +935,13 @@ pub enum EffectChoiceKind {
     /// Optionally choose a creature card captured by an exile-batch trigger.
     CopyExiledTriggerCreature,
     SacrificeDifferentNames(u16),
+    /// Incremental non-target selection; the group is explicitly finished before payment.
+    SacrificeRange {
+        minimum: u16,
+    },
+    ExileGraveyardRange {
+        minimum: u16,
+    },
     /// Choose distinct untapped permanents as a non-targeting activation cost.
     TapPermanents(u16),
     ExileGraveyardCards(u16),
@@ -984,6 +1012,53 @@ pub enum EffectChoiceKind {
     SacrificeOrDiscard {
         nonland: bool,
     },
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl EffectChoiceKind {
+    pub(crate) fn payment_kind(self) -> Self {
+        match self {
+            Self::FilteredCost {
+                action: CostAction::Sacrifice,
+                ..
+            } => Self::Sacrifice,
+            Self::FilteredCost {
+                action: CostAction::TapPermanents(n),
+                ..
+            } => Self::TapPermanents(n),
+            Self::FilteredCost {
+                action: CostAction::SacrificeRange { minimum },
+                ..
+            } => Self::SacrificeRange { minimum },
+            Self::FilteredCost {
+                action: CostAction::ExileGraveyardRange { minimum },
+                ..
+            } => Self::ExileGraveyardRange { minimum },
+            other => other,
+        }
+    }
+    pub(crate) fn variable_cost_minimum(self) -> Option<u16> {
+        match self.payment_kind() {
+            Self::SacrificeRange { minimum } | Self::ExileGraveyardRange { minimum } => {
+                Some(minimum)
+            }
+            _ => None,
+        }
+    }
+    pub(crate) fn cost_matches_any(
+        self,
+        card: Card,
+        kinds: u16,
+        subtypes: GrantedSubtypes,
+    ) -> bool {
+        match self {
+            Self::FilteredCost { any, .. } => any.iter().any(|predicate| match predicate {
+                CostMatch::Kinds(mask) => kinds & mask != 0,
+                CostMatch::Subtype(name) => subtypes.has(card, name),
+            }),
+            _ => true,
+        }
+    }
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -1951,7 +2026,10 @@ pub enum Instruction {
     ResolveRadiation,
     IncreaseSpeed,
     /// Decrease a selected player's speed by one only while they strictly lead, with a floor.
-    DecreaseLeadingSpeed { players: PlayerSet, minimum: u8 },
+    DecreaseLeadingSpeed {
+        players: PlayerSet,
+        minimum: u8,
+    },
     /// Event-local self-replacements belong to this resolving instruction.
     #[allow(dead_code, reason = "Gated typed proliferate foundation")]
     PutPlayerCountersWithSelf {
@@ -2069,6 +2147,14 @@ pub enum Instruction {
     },
     AddMana(ManaProduction),
     AddColorlessScaled(AmountValue),
+    /// The resolving controller chooses one color; indicated recipients receive the same production.
+    AddManaChosenScaled {
+        players: PlayerSet,
+        amount: AmountValue,
+    },
+    IfSacrificedVehicle {
+        skip: usize,
+    },
     AddManaScaled {
         color: ChoiceColor,
         amount: AmountValue,
@@ -2797,6 +2883,10 @@ pub enum AmountValue {
     DiscardEventAmount,
     /// Actual result of the preceding remembered zone-move instruction.
     MovedCount,
+    /// Actual completed departure events of this packet's additional cost.
+    PaidAdditionalCostCount,
+    /// Chosen cardinality for an X nonmana cost, retained even if replaced.
+    PaidAdditionalCostSelectionCount,
     Multiple {
         value: &'static AmountValue,
         factor: u16,
@@ -3106,7 +3196,10 @@ pub enum ReplacementSpec {
     /// Add a fixed amount to controlled-source noncombat damage to opponents or their permanents.
     NoncombatDamageToOpponentPlus(u16),
     /// Add to any controlled-source damage to an opposing player or permanent.
-    ConditionalControlledDamageToOpponentPlus { condition: StatValue, amount: u16 },
+    ConditionalControlledDamageToOpponentPlus {
+        condition: StatValue,
+        amount: u16,
+    },
     DoubleEquippedDamage,
     HealPreviousDamageToSelf,
     PreventOtherCreatureNoncombatDamage,

@@ -316,6 +316,7 @@ impl Game {
                 loyalty_counters_paid: 0,
                 exiled_symbol_cards: None,
                 craft_materials: None,
+                paid_additional_cost: None,
                 exiled_trigger_cards: None,
                 source_counter_lki: None,
                 source_quantity_lki: None,

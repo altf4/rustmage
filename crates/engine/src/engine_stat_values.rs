@@ -547,6 +547,8 @@ impl Game {
             | AmountValue::TargetPlayerCreatureCount
             | AmountValue::MilledCreatures
             | AmountValue::MovedCount
+            | AmountValue::PaidAdditionalCostCount
+            | AmountValue::PaidAdditionalCostSelectionCount
             | AmountValue::ChosenX
             | AmountValue::ReflexiveTargetLimit
             | AmountValue::ManaSpent

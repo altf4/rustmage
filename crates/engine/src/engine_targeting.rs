@@ -29,6 +29,7 @@ pub(super) struct Announcement {
     pub additional: Option<ObjectRef>,
     /// Explicit chosen life route for a discard-or-life additional cost.
     pub additional_life: bool,
+    pub additional_group_complete: bool,
     #[allow(
         clippy::box_collection,
         reason = "Rare growable tap selections use one pointer in ordinary announcements"
@@ -1997,6 +1998,7 @@ impl Game {
             loyalty_counters_paid: 0,
             exiled_symbol_cards: None,
             craft_materials: None,
+            paid_additional_cost: None,
             exiled_trigger_cards: None,
             source_counter_lki: None,
             source_quantity_lki: None,
@@ -2079,6 +2081,7 @@ impl Game {
             counter_payment: Counters::default(),
             additional: None,
             additional_life: false,
+            additional_group_complete: false,
             additional_group: None,
             creature_counter_cost: None,
             forage: None,
@@ -2178,6 +2181,7 @@ impl Game {
             counter_payment: counters,
             additional: None,
             additional_life: false,
+            additional_group_complete: false,
             additional_group: None,
             creature_counter_cost: None,
             forage: None,
@@ -2312,6 +2316,7 @@ impl Game {
                 .additional_cost()
                 .is_some_and(|spec| !forage::is_forage_cost(spec))
                 && announcement.additional.is_none()
+                && !announcement.additional_group_complete
                 && !announcement.additional_life
             {
                 Pending::AdditionalCost {
@@ -2360,8 +2365,9 @@ impl Game {
                     spec.in_zone(self.state.objects[object.card as usize].zone)
                 });
                 matches!(
-                    spec.kind,
+                    spec.kind.payment_kind(),
                     EffectChoiceKind::Sacrifice
+                        | EffectChoiceKind::SacrificeRange { .. }
                         | EffectChoiceKind::SacrificeDifferentNames(_)
                         | EffectChoiceKind::ReturnToHand
                 ) || forage::is_forage_cost(spec)

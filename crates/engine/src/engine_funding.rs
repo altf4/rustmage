@@ -456,7 +456,7 @@ fn reserve_obligations(
     goal.reserve.is_none_or(|(reference, spec)| {
         object.is_some_and(|o| {
             o.generation == reference.generation
-                && (spec.kind != EffectChoiceKind::SacrificeAttachedEquipment
+                && (spec.kind.payment_kind() != EffectChoiceKind::SacrificeAttachedEquipment
                     || goal
                         .source
                         .as_ref()
@@ -753,10 +753,9 @@ impl<'g> FundingState<'g> {
                                 | ManaProduction::TapSourcePowerChoice { .. }
                                 | ManaProduction::DistinctCreaturePowers
                         );
-                        sacrifice_mana_cost |= ability
-                            .cost
-                            .additional
-                            .is_some_and(|cost| cost.kind == EffectChoiceKind::Sacrifice);
+                        sacrifice_mana_cost |= ability.cost.additional.is_some_and(|cost| {
+                            cost.kind.payment_kind() == EffectChoiceKind::Sacrifice
+                        });
                         graveyard_mana_cost |= ability
                             .cost
                             .additional
@@ -852,8 +851,10 @@ impl<'g> FundingState<'g> {
                 .and_then(|a| {
                     let spec = a.additional_cost()?;
                     if !matches!(
-                        spec.kind,
+                        spec.kind.payment_kind(),
                         EffectChoiceKind::TapPermanents(_)
+                            | EffectChoiceKind::SacrificeRange { .. }
+                            | EffectChoiceKind::ExileGraveyardRange { .. }
                             | EffectChoiceKind::ExileGraveyardCards(_)
                     ) {
                         return None;
@@ -988,6 +989,16 @@ impl<'g> FundingState<'g> {
         }
         result
     }
+    fn cost_group_ready(&self) -> bool {
+        self.cost_group.as_ref().is_none_or(|(spec, group)| {
+            !matches!(
+                spec.kind.payment_kind(),
+                EffectChoiceKind::ExileGraveyardRange { .. }
+            ) || group.iter().all(|r| {
+                !ability_world::CharacteristicWorld::graveyard_exile_prohibited(self, r.card)
+            })
+        })
+    }
     fn obligations(&self, goal: &FundingGoal) -> bool {
         let source = goal
             .source
@@ -1002,14 +1013,15 @@ impl<'g> FundingState<'g> {
                     let o = ability_world::CharacteristicWorld::object(self, r.card);
                     o.generation == r.generation
                         && (!matches!(
-                            spec.kind,
+                            spec.kind.payment_kind(),
                             EffectChoiceKind::Sacrifice
+                                | EffectChoiceKind::SacrificeRange { .. }
                                 | EffectChoiceKind::SacrificeDifferentNames(_)
                                 | EffectChoiceKind::SacrificeAttachedEquipment
                         ) || !self.sacrifice_prohibited(r.card))
-                        && (spec.kind != EffectChoiceKind::DiscardLegendary
+                        && (spec.kind.payment_kind() != EffectChoiceKind::DiscardLegendary
                             || ability_world::CharacteristicWorld::legendary(self, r.card))
-                        && (spec.kind != EffectChoiceKind::DiscardMatchingLegendary
+                        && (spec.kind.payment_kind() != EffectChoiceKind::DiscardMatchingLegendary
                             || additional_costs::legendary_name_match(self, goal.actor, r.card))
                         && Game::additional_object_matches(
                             *spec,
@@ -1062,17 +1074,18 @@ impl<'g> FundingState<'g> {
             })
             && goal.reserve.is_none_or(|(r, spec)| {
                 (!matches!(
-                    spec.kind,
+                    spec.kind.payment_kind(),
                     EffectChoiceKind::Sacrifice
+                        | EffectChoiceKind::SacrificeRange { .. }
                         | EffectChoiceKind::SacrificeDifferentNames(_)
                         | EffectChoiceKind::SacrificeAttachedEquipment
                 ) || !self.sacrifice_prohibited(r.card))
-                    && (spec.kind != EffectChoiceKind::ReturnUnblockedAttacker
+                    && (spec.kind.payment_kind() != EffectChoiceKind::ReturnUnblockedAttacker
                         || self.game.ninjutsu_attacker(goal.actor, r)
                             && ability_world::CharacteristicWorld::attacking(self, r.card))
-                    && (spec.kind != EffectChoiceKind::DiscardLegendary
+                    && (spec.kind.payment_kind() != EffectChoiceKind::DiscardLegendary
                         || ability_world::CharacteristicWorld::legendary(self, r.card))
-                    && (spec.kind != EffectChoiceKind::DiscardMatchingLegendary
+                    && (spec.kind.payment_kind() != EffectChoiceKind::DiscardMatchingLegendary
                         || additional_costs::legendary_name_match(self, goal.actor, r.card))
             })
             && reserve_obligations(
@@ -1501,7 +1514,7 @@ impl<'g> FundingState<'g> {
                 }
                 let external = if let Some(spec) = ability.cost.additional {
                     if !matches!(
-                        spec.kind,
+                        spec.kind.payment_kind(),
                         EffectChoiceKind::ExileGraveyard | EffectChoiceKind::Sacrifice
                     ) {
                         continue;
@@ -2858,12 +2871,13 @@ impl<'g> FundingState<'g> {
             && mana_loyalty_placement_payable(self, goal)
             && source_exile_payable(self, goal)
             && goal.reserve.is_none_or(|(reference, spec)| {
-                spec.kind != EffectChoiceKind::ExileControlledOrGraveyard
+                spec.kind.payment_kind() != EffectChoiceKind::ExileControlledOrGraveyard
                     || !ability_world::CharacteristicWorld::graveyard_exile_prohibited(
                         self,
                         reference.card,
                     )
             })
+            && self.cost_group_ready()
             && self.complete_funding_continuation(goal)
         {
             return true;
@@ -3080,12 +3094,11 @@ impl Game {
         state.reachable(&goal, &mut HashSet::new())
     }
     pub(super) fn can_fund_for(&self, goal: FundingGoal, purpose: mana_lots::Purpose) -> bool {
-        if self
-            .state
-            .announcing
-            .as_ref()
-            .is_some_and(|a| a.cast_costs.is_some())
-        {
+        if self.state.announcing.as_ref().is_some_and(|a| {
+            a.cast_costs.is_some()
+                || a.additional_cost()
+                    .is_some_and(|s| s.kind.variable_cost_minimum().is_some())
+        }) {
             let mut world = FundingState::from_game(self, &goal);
             world.set_purpose(purpose);
             return world.reachable(&goal, &mut HashSet::new());
@@ -3189,7 +3202,7 @@ impl Game {
         ) && mana_loyalty_placement_payable(self, &goal)
             && source_exile_payable(self, &goal)
             && goal.reserve.is_none_or(|(reference, spec)| {
-                spec.kind != EffectChoiceKind::ExileControlledOrGraveyard
+                spec.kind.payment_kind() != EffectChoiceKind::ExileControlledOrGraveyard
                     || !ability_world::CharacteristicWorld::graveyard_exile_prohibited(
                         self,
                         reference.card,
@@ -3315,7 +3328,8 @@ impl Game {
                 && !a
                     .additional_cost()
                     .is_some_and(|s| evidence::threshold(s).is_some())
-                && a.additional.is_none())
+                && a.additional.is_none()
+                && !a.additional_group_complete)
             || a.evidence.as_ref().is_some_and(|e| !e.complete)
             || a.forage.as_ref().is_some_and(|f| !f.complete())
         {
@@ -3416,7 +3430,7 @@ impl Game {
             };
             let purpose = self.purpose_for_item(&a.item);
             if matches!(
-                spec.kind,
+                spec.kind.payment_kind(),
                 EffectChoiceKind::TapPermanents(_)
                     | EffectChoiceKind::ExileGraveyardCards(_)
                     | EffectChoiceKind::ExileGraveyardSymbols { .. }
@@ -3971,6 +3985,7 @@ impl Game {
             let mut state = FundingState::from_game(self, &goal);
             state.mark_mana_clause_paid();
             if !state.obligations(&goal)
+                || !state.cost_group_ready()
                 || !state.cost_completion()
                 || !mana_loyalty_placement_payable(&state, &goal)
                 || !source_exile_payable(&state, &goal)

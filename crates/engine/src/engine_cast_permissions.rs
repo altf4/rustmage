@@ -486,6 +486,7 @@ impl Game {
             production: None,
             additional: None,
             additional_life: false,
+            additional_group_complete: false,
             additional_group: None,
             creature_counter_cost: None,
             forage: None,

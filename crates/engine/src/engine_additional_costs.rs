@@ -73,6 +73,8 @@ pub struct AdditionalCostView {
     pub selected_group: Vec<ObjectRef>,
     pub creature_counter_payments: Vec<(ObjectRef, CounterKind)>,
     pub paid: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_finish_group: Option<bool>,
 }
 /// A tap-symbol cost and a separate tap-permanents cost cannot both tap the
 /// same source. Without the tap symbol the source is an ordinary candidate.
@@ -112,7 +114,7 @@ impl Game {
     }
     /// A mana ability may remove a current graveyard-exile prohibition before
     /// this nonmana cost is actually paid. Funding proves that continuation.
-    fn additional_candidate_for_funding(
+    pub(super) fn additional_candidate_for_funding(
         &self,
         spec: AdditionalCost,
         actor: Player,
@@ -132,37 +134,41 @@ impl Game {
         let Some(o) = self.state.objects.get(object.card as usize) else {
             return false;
         };
-        if spec.kind == EffectChoiceKind::SacrificeAttachedEquipment
+        if spec.kind.payment_kind() == EffectChoiceKind::SacrificeAttachedEquipment
             && o.attached_to != Some(source)
         {
             return false;
         }
         if !projected
             && matches!(
-                spec.kind,
+                spec.kind.payment_kind(),
                 EffectChoiceKind::ExileControlledOrGraveyard
                     | EffectChoiceKind::ExileCraftNonlands(_)
+                    | EffectChoiceKind::ExileGraveyardRange { .. }
             )
             && ability_world::CharacteristicWorld::graveyard_exile_prohibited(self, object.card)
         {
             return false;
         }
-        if matches!(spec.kind, EffectChoiceKind::ExileCraftNonlands(_))
-            && !has_craft_activated_ability(self, object.card)
+        if matches!(
+            spec.kind.payment_kind(),
+            EffectChoiceKind::ExileCraftNonlands(_)
+        ) && !has_craft_activated_ability(self, object.card)
         {
             return false;
         }
         let spec = spec.in_zone(o.zone);
         if matches!(
-            spec.kind,
+            spec.kind.payment_kind(),
             EffectChoiceKind::Sacrifice
+                | EffectChoiceKind::SacrificeRange { .. }
                 | EffectChoiceKind::SacrificeDifferentNames(_)
                 | EffectChoiceKind::SacrificeAttachedEquipment
         ) && ability_world::CharacteristicWorld::sacrifice_prohibited(self, object.card)
         {
             return false;
         }
-        let controls_cost_object = match spec.kind {
+        let controls_cost_object = match spec.kind.payment_kind() {
             EffectChoiceKind::Behold => match o.zone {
                 Zone::Battlefield => o.controller == actor,
                 Zone::Hand => o.owner == actor,
@@ -174,9 +180,11 @@ impl Game {
             | EffectChoiceKind::DiscardLegendary
             | EffectChoiceKind::ExileGraveyard
             | EffectChoiceKind::ExileGraveyardCards(_)
+            | EffectChoiceKind::ExileGraveyardRange { .. }
             | EffectChoiceKind::ExileGraveyardSymbols { .. } => o.owner == actor,
             EffectChoiceKind::ExileControlled
             | EffectChoiceKind::Sacrifice
+            | EffectChoiceKind::SacrificeRange { .. }
             | EffectChoiceKind::SacrificeDifferentNames(_)
             | EffectChoiceKind::ReturnUnblockedAttacker
             | EffectChoiceKind::ReturnToHand
@@ -187,7 +195,7 @@ impl Game {
             || self.object_ref(object.card) != object
             || object == source
                 && (matches!(
-                    spec.kind,
+                    spec.kind.payment_kind(),
                     EffectChoiceKind::Discard
                         | EffectChoiceKind::DiscardNamed(_)
                         | EffectChoiceKind::DiscardMatchingLegendary
@@ -197,17 +205,17 @@ impl Game {
         {
             return false;
         }
-        if spec.kind == EffectChoiceKind::DiscardLegendary
+        if spec.kind.payment_kind() == EffectChoiceKind::DiscardLegendary
             && !ability_world::CharacteristicWorld::legendary(self, object.card)
         {
             return false;
         }
-        if spec.kind == EffectChoiceKind::DiscardMatchingLegendary
+        if spec.kind.payment_kind() == EffectChoiceKind::DiscardMatchingLegendary
             && !legendary_name_match(self, actor, object.card)
         {
             return false;
         }
-        if spec.kind == EffectChoiceKind::ReturnUnblockedAttacker
+        if spec.kind.payment_kind() == EffectChoiceKind::ReturnUnblockedAttacker
             && !self.ninjutsu_attacker(actor, object)
         {
             return false;
@@ -232,13 +240,17 @@ impl Game {
         name: &str,
     ) -> bool {
         let spec = spec.in_zone(o.zone);
+        if !spec.kind.cost_matches_any(o.card, kinds, subtypes) {
+            return false;
+        }
         if matches!(o.zone, Zone::Hand | Zone::Graveyard) && !o.is_card() {
             return false;
         }
-        let zone = match spec.kind {
+        let zone = match spec.kind.payment_kind() {
             EffectChoiceKind::Behold if matches!(o.zone, Zone::Battlefield | Zone::Hand) => o.zone,
             EffectChoiceKind::ExileGraveyard
             | EffectChoiceKind::ExileGraveyardCards(_)
+            | EffectChoiceKind::ExileGraveyardRange { .. }
             | EffectChoiceKind::ExileGraveyardSymbols { .. } => Zone::Graveyard,
             EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_)
@@ -246,36 +258,41 @@ impl Game {
             | EffectChoiceKind::DiscardLegendary => Zone::Hand,
             EffectChoiceKind::ExileControlled
             | EffectChoiceKind::Sacrifice
+            | EffectChoiceKind::SacrificeRange { .. }
             | EffectChoiceKind::SacrificeDifferentNames(_)
             | EffectChoiceKind::ReturnUnblockedAttacker
             | EffectChoiceKind::ReturnToHand
             | EffectChoiceKind::TapPermanents(_) => Zone::Battlefield,
             _ => return false,
         };
-        if let EffectChoiceKind::DiscardNamed(required) = spec.kind
+        if let EffectChoiceKind::DiscardNamed(required) = spec.kind.payment_kind()
             && !crate::card_names::same_name(name, required)
         {
             return false;
         }
-        if let EffectChoiceKind::ExileGraveyardSymbols { color, .. } = spec.kind
+        if let EffectChoiceKind::ExileGraveyardSymbols { color, .. } = spec.kind.payment_kind()
             && o.card.colors() & (1 << color.index()) == 0
         {
             return false;
         }
-        if spec.kind == EffectChoiceKind::Behold && zone == Zone::Hand && !o.is_card() {
+        if spec.kind.payment_kind() == EffectChoiceKind::Behold
+            && zone == Zone::Hand
+            && !o.is_card()
+        {
             return false;
         }
         let f = spec.filter;
         if matches!(
-            spec.kind,
+            spec.kind.payment_kind(),
             EffectChoiceKind::ExileGraveyard
                 | EffectChoiceKind::ExileGraveyardCards(_)
+                | EffectChoiceKind::ExileGraveyardRange { .. }
                 | EffectChoiceKind::ExileGraveyardSymbols { .. }
         ) && !o.is_card()
         {
             return false;
         }
-        if matches!(spec.kind, EffectChoiceKind::TapPermanents(_)) && o.tapped {
+        if matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_)) && o.tapped {
             return false;
         }
         (if zone == Zone::Battlefield {
@@ -374,10 +391,21 @@ impl Game {
         let Some(spec) = definition.additional_cost() else {
             return self.can_fund_for(base, purpose);
         };
+        if spec.kind.variable_cost_minimum().is_some() {
+            return self.variable_cost_group_fundable(
+                base,
+                purpose,
+                spec,
+                self.object_ref(card),
+                &[],
+                false,
+            );
+        }
         if matches!(
-            spec.kind,
+            spec.kind.payment_kind(),
             EffectChoiceKind::TapPermanents(_)
                 | EffectChoiceKind::ExileGraveyardCards(_)
+                | EffectChoiceKind::ExileGraveyardRange { .. }
                 | EffectChoiceKind::ExileGraveyardSymbols { .. }
         ) {
             return self.group_cost_fundable(base, purpose, spec, self.object_ref(card), &[]);
@@ -409,10 +437,13 @@ impl Game {
         source: ObjectRef,
         chosen: &[ObjectRef],
     ) -> bool {
-        if matches!(spec.kind, EffectChoiceKind::ExileGraveyardSymbols { .. }) {
+        if matches!(
+            spec.kind.payment_kind(),
+            EffectChoiceKind::ExileGraveyardSymbols { .. }
+        ) {
             return self.can_fund_symbol_cost_group(goal, purpose, spec, source, chosen);
         }
-        let amount = match spec.kind {
+        let amount = match spec.kind.payment_kind() {
             EffectChoiceKind::TapPermanents(n) | EffectChoiceKind::ExileGraveyardCards(n) => n,
             _ => unreachable!("group cost"),
         };
@@ -424,7 +455,7 @@ impl Game {
         let eligible = |r: ObjectRef| {
             !chosen.contains(&r)
                 && self.additional_candidate(spec, goal.actor, source, r)
-                && (!matches!(spec.kind, EffectChoiceKind::TapPermanents(_))
+                && (!matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
                     || !tap_cost_reserves_source(&goal, r))
         };
         if needed > 0
@@ -459,7 +490,7 @@ impl Game {
             let r = self.object_ref(id as CardId);
             if chosen.contains(&r)
                 || !self.additional_candidate(spec, goal.actor, source, r)
-                || (matches!(spec.kind, EffectChoiceKind::TapPermanents(_))
+                || (matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
                     && tap_cost_reserves_source(&goal, r))
             {
                 return false;
@@ -506,14 +537,40 @@ impl Game {
         let Some(spec) = spec else {
             return self.can_fund(goal);
         };
+        if spec.kind.variable_cost_minimum().is_some() {
+            let source = goal.source.as_ref().expect("activation source").0;
+            let current = self.state.announcing.as_ref().filter(|a| {
+                !a.additional_paid
+                    && a.item.controller == goal.actor
+                    && a.item.source.is_some_and(|s| s.object == source)
+                    && goal
+                        .source
+                        .as_ref()
+                        .is_some_and(|(_, index, _, definition, _)| {
+                            a.item.kind == StackKind::ActivatedAbility { ability: *index }
+                                && a.item.source.is_some_and(|s| s.card == *definition)
+                        })
+            });
+            let selected = current
+                .and_then(|a| a.additional_group.as_deref())
+                .map_or(&[][..], Vec::as_slice);
+            return self.variable_cost_group_fundable(
+                goal.clone(),
+                self.funding_purpose(&goal),
+                spec,
+                source,
+                selected,
+                current.is_some_and(|a| a.additional_group_complete),
+            );
+        }
         if matches!(
-            spec.kind,
+            spec.kind.payment_kind(),
             EffectChoiceKind::ExileControlledOrGraveyard | EffectChoiceKind::ExileCraftNonlands(_)
         ) {
             return self.preview_ordered_craft(goal, spec);
         }
         let source = goal.source.as_ref().expect("activation source").0;
-        if let EffectChoiceKind::RemoveCreatureCounters(amount) = spec.kind {
+        if let EffectChoiceKind::RemoveCreatureCounters(amount) = spec.kind.payment_kind() {
             let purpose = self.funding_purpose(&goal);
             let selected = self
                 .state
@@ -530,15 +587,16 @@ impl Game {
             return self.creature_counter_fundable(goal, purpose, amount, selected);
         }
         if matches!(
-            spec.kind,
+            spec.kind.payment_kind(),
             EffectChoiceKind::TapPermanents(_)
                 | EffectChoiceKind::ExileGraveyardCards(_)
+                | EffectChoiceKind::ExileGraveyardRange { .. }
                 | EffectChoiceKind::ExileGraveyardSymbols { .. }
         ) {
             let purpose = self.funding_purpose(&goal);
             return self.group_cost_fundable(goal, purpose, spec, source, &[]);
         }
-        if let EffectChoiceKind::SacrificeDifferentNames(amount) = spec.kind {
+        if let EffectChoiceKind::SacrificeDifferentNames(amount) = spec.kind.payment_kind() {
             return self.different_name_sacrifice_fundable(goal, spec, amount, &[]);
         }
         if let Some(n) = evidence::threshold(spec) {
@@ -564,6 +622,9 @@ impl Game {
         let Some(spec) = a.additional_cost() else {
             return false;
         };
+        if spec.kind.variable_cost_minimum().is_some() {
+            return self.variable_cost_candidate_available(a, spec, object);
+        }
         if self.cast_costs_mana_paid() {
             if !self.additional_candidate(
                 spec,
@@ -577,9 +638,10 @@ impl Game {
                 return false;
             }
             if matches!(
-                spec.kind,
+                spec.kind.payment_kind(),
                 EffectChoiceKind::TapPermanents(_)
                     | EffectChoiceKind::ExileGraveyardCards(_)
+                    | EffectChoiceKind::ExileGraveyardRange { .. }
                     | EffectChoiceKind::ExileGraveyardSymbols { .. }
                     | EffectChoiceKind::ExileCraftNonlands(_)
                     | EffectChoiceKind::SacrificeDifferentNames(_)
@@ -588,14 +650,15 @@ impl Game {
                 if selected.contains(&object) {
                     return false;
                 }
-                if matches!(spec.kind, EffectChoiceKind::SacrificeDifferentNames(_))
-                    && selected.iter().any(|r| {
-                        crate::card_names::same_name(
-                            self.object_name(r.card),
-                            self.object_name(object.card),
-                        )
-                    })
-                {
+                if matches!(
+                    spec.kind.payment_kind(),
+                    EffectChoiceKind::SacrificeDifferentNames(_)
+                ) && selected.iter().any(|r| {
+                    crate::card_names::same_name(
+                        self.object_name(r.card),
+                        self.object_name(object.card),
+                    )
+                }) {
                     return false;
                 }
                 selected.push(object);
@@ -603,7 +666,7 @@ impl Game {
             }
             return self.cast_cost_object_fundable(object);
         }
-        if let EffectChoiceKind::SacrificeDifferentNames(amount) = spec.kind {
+        if let EffectChoiceKind::SacrificeDifferentNames(amount) = spec.kind.payment_kind() {
             let mut selected = a
                 .additional_group
                 .as_ref()
@@ -636,9 +699,10 @@ impl Game {
             );
         }
         if matches!(
-            spec.kind,
+            spec.kind.payment_kind(),
             EffectChoiceKind::TapPermanents(_)
                 | EffectChoiceKind::ExileGraveyardCards(_)
+                | EffectChoiceKind::ExileGraveyardRange { .. }
                 | EffectChoiceKind::ExileGraveyardSymbols { .. }
         ) {
             let mut selected = a
@@ -655,7 +719,7 @@ impl Game {
                         .object,
                     object,
                 )
-                || (matches!(spec.kind, EffectChoiceKind::TapPermanents(_))
+                || (matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
                     && tap_cost_reserves_source(&self.funding_goal(a), object))
             {
                 return false;
@@ -713,6 +777,12 @@ impl Game {
     }
     pub(super) fn choose_additional_cost(&mut self, object: ObjectRef) {
         let a = self.state.announcing.as_mut().unwrap();
+        if a.additional_cost()
+            .is_some_and(|spec| spec.kind.variable_cost_minimum().is_some())
+        {
+            a.additional_group.get_or_insert_default().push(object);
+            return;
+        }
         if matches!(
             a.additional_cost().unwrap().kind,
             EffectChoiceKind::ExileGraveyardSymbols { .. }
@@ -721,13 +791,10 @@ impl Game {
             a.additional_group.get_or_insert_default().push(object);
             return;
         }
-        if let Some(AdditionalCost {
-            kind:
-                EffectChoiceKind::TapPermanents(amount)
-                | EffectChoiceKind::ExileGraveyardCards(amount)
-                | EffectChoiceKind::SacrificeDifferentNames(amount),
-            ..
-        }) = a.additional_cost()
+        if let EffectChoiceKind::TapPermanents(amount)
+        | EffectChoiceKind::ExileGraveyardCards(amount)
+        | EffectChoiceKind::SacrificeDifferentNames(amount) =
+            a.additional_cost().unwrap().kind.payment_kind()
         {
             let group = a
                 .additional_group
@@ -764,6 +831,10 @@ impl Game {
         let Some(spec) = a.additional_cost() else {
             return;
         };
+        if spec.kind.variable_cost_minimum().is_some() {
+            self.pay_variable_additional_cost(a, spec);
+            return;
+        }
         // The local announcement is outside State while an external cost commits.
         // Preserve its actual pre-departure source, not a borrowed definition.
         if matches!(a.item.kind, StackKind::ActivatedAbility { .. })
@@ -800,7 +871,7 @@ impl Game {
                 ),
             );
         }
-        if let EffectChoiceKind::ExileCraftNonlands(minimum) = spec.kind {
+        if let EffectChoiceKind::ExileCraftNonlands(minimum) = spec.kind.payment_kind() {
             let group = a
                 .additional_group
                 .as_deref()
@@ -831,7 +902,8 @@ impl Game {
             a.additional_paid = true;
             return;
         }
-        if let EffectChoiceKind::ExileGraveyardSymbols { color, minimum } = spec.kind {
+        if let EffectChoiceKind::ExileGraveyardSymbols { color, minimum } = spec.kind.payment_kind()
+        {
             let group = a.additional_group.as_deref().unwrap();
             assert!(self.graveyard_symbol_total(group, color) >= u128::from(minimum));
             assert!(group.iter().all(|&r| {
@@ -860,14 +932,14 @@ impl Game {
             a.additional_paid = true;
             return;
         }
-        if let EffectChoiceKind::RemoveCreatureCounters(amount) = spec.kind {
+        if let EffectChoiceKind::RemoveCreatureCounters(amount) = spec.kind.payment_kind() {
             let selected = a.creature_counter_cost.as_ref().unwrap();
             assert_eq!(selected.len(), usize::from(amount));
             self.pay_selected_creature_counters(&mut a.item, selected);
             a.additional_paid = true;
             return;
         }
-        if let EffectChoiceKind::SacrificeDifferentNames(amount) = spec.kind {
+        if let EffectChoiceKind::SacrificeDifferentNames(amount) = spec.kind.payment_kind() {
             let group = a
                 .additional_group
                 .as_ref()
@@ -893,7 +965,7 @@ impl Game {
             a.additional_paid = true;
             return;
         }
-        if let EffectChoiceKind::ExileGraveyardCards(amount) = spec.kind {
+        if let EffectChoiceKind::ExileGraveyardCards(amount) = spec.kind.payment_kind() {
             let group = a
                 .additional_group
                 .as_ref()
@@ -918,7 +990,7 @@ impl Game {
             a.additional_paid = true;
             return;
         }
-        if let EffectChoiceKind::TapPermanents(amount) = spec.kind {
+        if let EffectChoiceKind::TapPermanents(amount) = spec.kind.payment_kind() {
             let group = a.additional_group.as_ref().expect("selected tap group");
             assert_eq!(group.len(), usize::from(amount));
             assert!(group.iter().all(|&r| {
@@ -977,7 +1049,7 @@ impl Game {
             a.additional_paid = true;
             return;
         }
-        if let EffectChoiceKind::DiscardOrLife(amount) = spec.kind
+        if let EffectChoiceKind::DiscardOrLife(amount) = spec.kind.payment_kind()
             && a.additional_life
         {
             self.pay_life(a.item.controller, i128::from(amount));
@@ -1007,13 +1079,14 @@ impl Game {
             self.refresh_local_source_counter_quantities(&mut a.item);
         }
         let spec = spec.in_zone(self.state.objects[object.card as usize].zone);
-        match spec.kind {
+        match spec.kind.payment_kind() {
             EffectChoiceKind::Behold => {
                 if self.state.objects[object.card as usize].zone == Zone::Hand {
                     self.remember_public_hand(object);
                 }
             }
-            EffectChoiceKind::TargetAttackingReturn { .. }
+            EffectChoiceKind::FilteredCost { .. }
+            | EffectChoiceKind::TargetAttackingReturn { .. }
             | EffectChoiceKind::AmassGoblins(_)
             | EffectChoiceKind::EmpowerJace(_)
             | EffectChoiceKind::HandToTop
@@ -1023,11 +1096,13 @@ impl Game {
             | EffectChoiceKind::CoverUpSearch { .. }
             | EffectChoiceKind::CopyExiledTriggerCreature
             | EffectChoiceKind::ExileGraveyardCards(_)
+            | EffectChoiceKind::ExileGraveyardRange { .. }
             | EffectChoiceKind::ExileSourceAndNamed { .. }
             | EffectChoiceKind::ExileGraveyardSymbols { .. }
             | EffectChoiceKind::ExileGreatestManaValue
             | EffectChoiceKind::SacrificeGreatestManaValue
             | EffectChoiceKind::SacrificeDifferentNames(_)
+            | EffectChoiceKind::SacrificeRange { .. }
             | EffectChoiceKind::RemoveCreatureCounters(_)
             | EffectChoiceKind::TapPermanents(_)
             | EffectChoiceKind::UntapLands { .. }
@@ -1103,7 +1178,17 @@ impl Game {
                 }) {
                     a.item.sacrificed_power = Some(Box::new(self.stats(object.card).power));
                 }
-                self.sacrifice_batch(&[(a.item.controller, object.card)]);
+                if a.item.program().is_some_and(|(_, p)| {
+                    p.iter()
+                        .any(|i| matches!(i, Instruction::IfSacrificedVehicle { .. }))
+                }) {
+                    a.item.paid_additional_cost = Some(Box::new(
+                        self.sacrifice_cost_batch_outcome(&[(a.item.controller, object.card)])
+                            .expect("legal sacrifice cost"),
+                    ));
+                } else {
+                    self.sacrifice_batch(&[(a.item.controller, object.card)]);
+                }
             }
         }
     }
@@ -1137,6 +1222,10 @@ impl Game {
                 .as_ref()
                 .map_or_else(Vec::new, |v| v.as_ref().clone()),
             paid: a.additional_paid,
+            can_finish_group: spec
+                .kind
+                .variable_cost_minimum()
+                .map(|_| self.variable_cost_selection_complete()),
         })
     }
 }
