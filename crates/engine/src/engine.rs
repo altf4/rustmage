@@ -193,12 +193,12 @@ pub mod crew_participants;
 #[doc(hidden)]
 #[path = "engine_exert.rs"]
 pub mod exert;
-pub use exert::ExertionView;
 #[doc(hidden)]
 #[path = "engine_saddle.rs"]
 pub mod saddle;
 pub use adventure::{AdventurePermission, SpellCharacteristicsView};
 pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
+pub use exert::ExertionView;
 pub use saddle::SaddleChoiceView;
 pub use teamwork::TeamworkChoiceView;
 #[doc(hidden)]
@@ -341,6 +341,10 @@ pub use target_library::{TargetLibraryMovement, TargetLibraryView};
 pub mod combat_allocations;
 pub use combat_allocations::CombatDamagePlayerView;
 #[doc(hidden)]
+#[path = "engine_combat_schedule.rs"]
+pub mod combat_schedule;
+pub use combat_schedule::MainPhaseCombatView;
+#[doc(hidden)]
 #[path = "engine_scalar_x.rs"]
 pub mod scalar_x;
 #[doc(hidden)]
@@ -429,9 +433,6 @@ pub mod blocking;
 pub mod combat_restrictions;
 pub use combat_restrictions::AttackPaymentView;
 #[doc(hidden)]
-#[path = "engine_outcome_effects.rs"]
-pub mod outcome_effects;
-#[doc(hidden)]
 #[path = "engine_effect_choices.rs"]
 pub mod effect_choices;
 #[doc(hidden)]
@@ -440,6 +441,9 @@ pub mod exile;
 #[doc(hidden)]
 #[path = "engine_exile_life.rs"]
 pub mod exile_life;
+#[doc(hidden)]
+#[path = "engine_outcome_effects.rs"]
+pub mod outcome_effects;
 #[doc(hidden)]
 #[path = "engine_target_exile_play.rs"]
 pub mod target_exile_play;
@@ -3278,6 +3282,10 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub toughness_combat_damage: Option<[bool; 2]>,
     pub additional_combats: u64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub after_main_combats: Option<MainPhaseCombatView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub delayed_begin_combat: Option<Vec<SpellView>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub turn_schedule: Option<TurnScheduleView>,
     pub must_be_blocked: Vec<ObjectRef>,
@@ -9221,6 +9229,7 @@ impl Game {
                 self.give_priority();
             }
             Step::Main1 => {
+                self.take_main_phase_combat();
                 self.begin_step(Step::BeginCombat);
                 self.give_priority();
             }
@@ -9269,15 +9278,17 @@ impl Game {
                 self.state.attack_declared = false;
                 self.state.blocks.clear();
                 self.state.first_strikers.clear();
-                if self.take_additional_combat() {
-                    self.begin_step(Step::BeginCombat);
-                } else {
-                    self.begin_step(Step::Main2);
-                }
+                let next = self.step_after_combat();
+                self.begin_step(next);
                 self.give_priority();
             }
             Step::Main2 => {
-                self.begin_step(Step::End);
+                let next = if self.take_main_phase_combat() {
+                    Step::BeginCombat
+                } else {
+                    Step::End
+                };
+                self.begin_step(next);
                 self.give_priority();
             }
             Step::End | Step::Cleanup => {
@@ -9299,6 +9310,8 @@ impl Game {
         if let Some(rules) = &mut self.state.combat_rules {
             rules.must_be_blocked.clear();
             rules.additional_combats = 0;
+            rules.after_main = None;
+            rules.begin_combat_this_turn = None;
         }
         self.state.casting_prohibited = false;
         self.state.damage_prevention_prohibited = false;
@@ -10031,7 +10044,16 @@ impl Game {
                     .any(|x| *x)
                     .then_some(r.toughness_combat_damage)
             }),
-            additional_combats: s.combat_rules.as_ref().map_or(0, |r| r.additional_combats),
+            additional_combats: s.combat_rules.as_ref().map_or(0, |r| {
+                r.additional_combats
+                    .checked_add(r.after_main.map_or(0, |schedule| schedule.remaining))
+                    .capacity("additional combat count exhausted")
+            }),
+            after_main_combats: s.combat_rules.as_ref().and_then(|r| r.after_main),
+            delayed_begin_combat: s
+                .combat_rules
+                .as_ref()
+                .and_then(|r| r.begin_combat_this_turn.as_deref().cloned()),
             turn_schedule: s.turn_schedule.as_deref().cloned(),
             must_be_blocked: s
                 .combat_rules
@@ -10306,7 +10328,10 @@ impl Game {
                 .unwrap_or_default(),
             plotted_cards: s.plot.as_ref().map_or_else(Vec::new, |p| p.cards.clone()),
             crew_choice: self.crew_choice(viewer),
-            exertions: s.exertions.as_ref().map(|rows| rows.iter().copied().collect()),
+            exertions: s
+                .exertions
+                .as_ref()
+                .map(|rows| rows.iter().copied().collect()),
             crewed_vehicles: s.crew.as_ref().map_or_else(Vec::new, |c| c.history.clone()),
             warped_cards: s.warp.as_ref().map_or_else(Vec::new, |w| w.cards.clone()),
             delayed_warp_exiles: s

@@ -23,6 +23,9 @@ pub(super) fn attached_controller_turn<W: ability_world::CharacteristicWorld + ?
 impl Game {
     pub(super) fn begin_step(&mut self, step: Step) {
         self.state.step = step;
+        if step == Step::BeginCombat {
+            self.queue_begin_combat_this_turn();
+        }
         if step == Step::Upkeep
             && let Some(rows) = self.state.delayed_upkeep_tokens.take()
         {

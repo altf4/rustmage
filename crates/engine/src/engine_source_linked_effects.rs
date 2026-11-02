@@ -248,6 +248,12 @@ impl Game {
                 .delayed_artifact_copies
                 .as_ref()
                 .is_some_and(|rows| !rows.is_empty())
+            || self.state.combat_rules.as_ref().is_some_and(|rules| {
+                rules
+                    .begin_combat_this_turn
+                    .as_ref()
+                    .is_some_and(|rows| !rows.is_empty())
+            })
             || self
                 .state
                 .delayed_attack_this_turn

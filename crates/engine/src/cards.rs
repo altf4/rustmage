@@ -1783,6 +1783,14 @@ pub enum Instruction {
     },
 
     AdditionalCombat,
+    /// Insert this many combats after the current main, then resume its frozen successor.
+    AdditionalCombatsAfterCurrentMain(u16),
+    /// Source-independent repeated delayed trigger, expiring at cleanup.
+    ScheduleBeginCombatThisTurn {
+        ability: u16,
+    },
+    /// All current creatures whose exact objects declared an attack this turn.
+    UntapCreaturesThatAttackedThisTurn,
     ExtraTurn {
         power_up_prohibited: bool,
     },

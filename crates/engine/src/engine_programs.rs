@@ -5373,6 +5373,15 @@ impl Game {
                     self.state.damage_prevention_prohibited = true;
                 }
                 Instruction::AdditionalCombat => self.add_combat(),
+                Instruction::AdditionalCombatsAfterCurrentMain(count) => {
+                    self.add_combats_after_current_main(count)
+                }
+                Instruction::ScheduleBeginCombatThisTurn { ability } => {
+                    self.schedule_begin_combat_this_turn(&item, ability)
+                }
+                Instruction::UntapCreaturesThatAttackedThisTurn => {
+                    self.untap_creatures_that_attacked_this_turn()
+                }
                 Instruction::ExtraTurn {
                     power_up_prohibited,
                 } => self.add_extra_turn(item.controller, power_up_prohibited),
