@@ -11,6 +11,8 @@ pub struct DelayedSacrificeView {
     /// Ordinary mobilize batches retain their existing next-end-step wire shape.
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub end_combat: bool,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub own_end_step: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl DelayedSacrificeView {
@@ -135,24 +137,29 @@ impl Game {
         defenders
             .try_reserve_exact(amount)
             .capacity("mobilize defender allocation exhausted");
-        let choice = self.state.objects.iter().enumerate().any(|(id, o)| {
-            o.zone == Zone::Battlefield
-                && o.controller == item.controller.other()
-                && self.current_kinds(id as CardId) & 64 != 0
-        });
-        if !choice {
-            defenders.resize(amount, CombatDefender::Player(item.controller.other()));
-        }
+        let player = item.controller;
         self.state.mobilize = Some(Box::new(MobilizePlan {
             token,
             groups,
             amount,
             defenders,
         }));
+        // Use the same legal defender population as the public chooser. A
+        // defended battle can require choices even without a planeswalker.
+        let choice = self.visit_mobilize_actions(&mut |action| {
+            matches!(action, Action::ChooseMobilizeDefender { defender }
+                if defender != CombatDefender::Player(player.other()))
+        });
+        if !choice {
+            self.state
+                .mobilize
+                .as_mut()
+                .unwrap()
+                .defenders
+                .resize(amount, CombatDefender::Player(player.other()));
+        }
         if choice {
-            self.state.pending = Pending::Mobilize {
-                player: item.controller,
-            };
+            self.state.pending = Pending::Mobilize { player };
             true
         } else {
             self.finish_mobilize();
@@ -192,6 +199,7 @@ impl Game {
                 controller: item.controller,
                 tokens,
                 end_combat: false,
+                own_end_step: false,
             },
             keywords: item.source_keywords,
             tapped: item.source_tapped,
@@ -230,6 +238,15 @@ impl Game {
         tokens: Vec<ObjectRef>,
         end_combat: bool,
     ) {
+        self.register_delayed_sacrifice_when(item, tokens, end_combat, false);
+    }
+    pub(super) fn register_delayed_sacrifice_when(
+        &mut self,
+        item: &SpellView,
+        tokens: Vec<ObjectRef>,
+        end_combat: bool,
+        own_end_step: bool,
+    ) {
         if tokens.is_empty() {
             return;
         }
@@ -245,6 +262,7 @@ impl Game {
                 controller: item.controller,
                 tokens,
                 end_combat,
+                own_end_step,
             },
             keywords: item.source_keywords,
             tapped: item.source_tapped,
@@ -260,9 +278,10 @@ impl Game {
         let Some(batches) = self.state.delayed_sacrifices.take() else {
             return;
         };
-        let (ready, later): (Vec<_>, Vec<_>) = batches
-            .into_iter()
-            .partition(|batch| batch.view.end_combat == end_combat);
+        let (ready, later): (Vec<_>, Vec<_>) = batches.into_iter().partition(|batch| {
+            batch.view.end_combat == end_combat
+                && (!batch.view.own_end_step || batch.view.controller == self.state.active)
+        });
         if !later.is_empty() {
             self.state.delayed_sacrifices = Some(Box::new(later));
         }

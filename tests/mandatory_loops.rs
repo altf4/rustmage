@@ -23,6 +23,7 @@ fn cycle_for(player: Player) -> Game {
     }
 
     g.state.exile_links.push(ExileLink {
+        ability_origin: None,
         source: g.object_ref(snare),
         exiled: g.object_ref(cage),
         return_zone: Zone::Battlefield,

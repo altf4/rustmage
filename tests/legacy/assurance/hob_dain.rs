@@ -476,6 +476,7 @@ fn dain_foreign_entry_during_nested_mana_can_reverse_or_keep_earlier_mana() {
             let prison = put(&mut g, p, "Banishing Light", Zone::Battlefield);
             let aura = put(&mut g, p.other(), "Witness Protection", Zone::Exile);
             g.state.exile_links.push(ExileLink {
+                ability_origin: None,
                 source: g.object_ref(prison),
                 exiled: g.object_ref(aura),
                 return_zone: Zone::Battlefield,

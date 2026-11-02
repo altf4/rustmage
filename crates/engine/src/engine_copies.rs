@@ -321,6 +321,16 @@ impl Game {
         recipes: &[Option<CopyRecipe>],
         temporary: Option<&SpellView>,
     ) -> Vec<ObjectRef> {
+        self.create_copy_groups_with_instructions(player, groups, recipes, temporary, None)
+    }
+    pub(super) fn create_copy_groups_with_instructions(
+        &mut self,
+        player: Player,
+        groups: &[TokenGroupView],
+        recipes: &[Option<CopyRecipe>],
+        temporary: Option<&SpellView>,
+        instructions: Option<&temporary_tokens::TokenInstructions>,
+    ) -> Vec<ObjectRef> {
         assert_eq!(groups.len(), recipes.len());
         let total = groups
             .iter()
@@ -405,7 +415,19 @@ impl Game {
                         },
                     );
                 }
-                moves.push(self.entry_move(id, Zone::Battlefield, group.tapped));
+                let mut movement = self.entry_move(id, Zone::Battlefield, group.tapped);
+                if let Some(context) = instructions {
+                    if context.attacking {
+                        movement.attacking = Some(CombatDefender::Player(player.other()));
+                    }
+                    if context.keywords != Keywords::NONE {
+                        movement.keywords_after = context
+                            .item
+                            .source
+                            .map(|source| (source.object, context.keywords));
+                    }
+                }
+                moves.push(movement);
             }
         }
         let created = moves
@@ -422,7 +444,9 @@ impl Game {
             .collect();
         if !moves.is_empty() {
             self.track_nightmare_copy_entries(&moves);
-            if let Some(item) = temporary {
+            if let Some(context) = instructions {
+                self.stage_temporary_token_entries(moves, &context.item, context.own_end_step);
+            } else if let Some(item) = temporary {
                 self.stage_temporary_copy_entries(moves, item);
             } else {
                 self.stage_entries(moves, None);

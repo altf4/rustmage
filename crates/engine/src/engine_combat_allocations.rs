@@ -12,6 +12,9 @@ pub struct CombatDamagePlayerView {
 pub(super) struct CombatRulesState {
     pub additional_combats: u64,
     pub after_main: Option<MainPhaseCombatView>,
+    pub inserted_phases: Vec<Step>,
+    pub turn_callbacks: Vec<TurnCallbackView>,
+    pub attack_without_defender: Vec<ObjectRef>,
     #[allow(
         clippy::box_collection,
         reason = "Cold delayed packets use one pointer when absent"
@@ -36,6 +39,13 @@ struct ExcessDamage {
 impl CombatRulesState {
     pub(super) fn owned_bytes(&self) -> usize {
         std::mem::size_of::<Self>()
+            + self.inserted_phases.len() * std::mem::size_of::<Step>()
+            + self.attack_without_defender.len() * std::mem::size_of::<ObjectRef>()
+            + self
+                .turn_callbacks
+                .iter()
+                .map(|row| std::mem::size_of::<TurnCallbackView>() + row.item.owned_bytes())
+                .sum::<usize>()
             + self.begin_combat_this_turn.as_ref().map_or(0, |rows| {
                 std::mem::size_of::<Vec<SpellView>>()
                     + rows

@@ -417,7 +417,16 @@ impl Game {
                     self.move_object(object.card, Zone::Exile);
                 }
                 HandChoiceKind::ExileRevealedOrCreature => {
-                    self.exile_objects_until_source_leaves(interaction.source, &[object])
+                    let origin = self
+                        .state
+                        .resolving
+                        .as_ref()
+                        .and_then(|r| r.item.source_ability_origin);
+                    self.exile_objects_until_source_leaves_origin(
+                        interaction.source,
+                        &[object],
+                        origin,
+                    )
                 }
                 HandChoiceKind::ExileRevealedLinked => {
                     let event = self.move_object(object.card, Zone::Exile);

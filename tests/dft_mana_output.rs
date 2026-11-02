@@ -467,6 +467,7 @@ fn a_retained_late_choice_replays_its_concrete_output_and_quality_exactly_once()
     );
     let returning = put(&mut g, Player::P1, "Grizzly Bears", Zone::Exile);
     g.state.exile_links.push(ExileLink {
+        ability_origin: None,
         source: g.object_ref(mana),
         exiled: g.object_ref(returning),
         return_zone: Zone::Battlefield,

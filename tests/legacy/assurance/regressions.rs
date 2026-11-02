@@ -9374,6 +9374,7 @@ fn prior_schema192_rejects_outside_replacement_wire_and_owned_continuations() {
             })),
             temporary_copy: None,
             delayed_sacrifice: None,
+            delayed_sacrifice_own_end: false,
             captures_result: false,
             copying: false,
             discard_context: None,

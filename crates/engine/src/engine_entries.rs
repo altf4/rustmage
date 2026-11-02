@@ -96,6 +96,7 @@ pub(super) struct EntryBatch {
     pub atomic_cost: Option<Box<AtomicCostCheckpoint>>,
     pub temporary_copy: Option<Box<SpellView>>,
     pub delayed_sacrifice: Option<Box<SpellView>>,
+    pub delayed_sacrifice_own_end: bool,
     pub captures_result: bool,
     pub copying: bool,
     pub discard_context: Option<discard_events::DiscardContext>,
@@ -398,32 +399,76 @@ impl Game {
         EntryMove::from_view(self.object_view(id), destination, tapped)
     }
     pub(super) fn stage_entries(&mut self, moves: Vec<EntryMove>, shuffle_after: Option<Player>) {
-        self.stage_entries_inner(moves, shuffle_after, None, None, None, None);
+        self.stage_entries_inner(moves, shuffle_after, None, None, None, None, false);
     }
     pub(super) fn stage_discard_entries(
         &mut self,
         moves: Vec<EntryMove>,
         context: discard_events::DiscardContext,
     ) {
-        self.stage_entries_inner(moves, None, Some(context), None, None, None);
+        self.stage_entries_inner(moves, None, Some(context), None, None, None, false);
     }
     pub(super) fn stage_temporary_copy_entries(&mut self, moves: Vec<EntryMove>, item: &SpellView) {
-        self.stage_entries_inner(moves, None, None, Some(Box::new(item.clone())), None, None);
+        self.stage_entries_inner(
+            moves,
+            None,
+            None,
+            Some(Box::new(item.clone())),
+            None,
+            None,
+            false,
+        );
     }
     pub(super) fn stage_atomic_cost_entries(
         &mut self,
         moves: Vec<EntryMove>,
         checkpoint: AtomicCostCheckpoint,
     ) {
-        self.stage_entries_inner(moves, None, None, None, Some(Box::new(checkpoint)), None);
+        self.stage_entries_inner(
+            moves,
+            None,
+            None,
+            None,
+            Some(Box::new(checkpoint)),
+            None,
+            false,
+        );
     }
     pub(super) fn stage_entries_with_delayed_sacrifice(
         &mut self,
         moves: Vec<EntryMove>,
         item: &SpellView,
     ) {
-        self.stage_entries_inner(moves, None, None, None, None, Some(Box::new(item.clone())));
+        self.stage_entries_inner(
+            moves,
+            None,
+            None,
+            None,
+            None,
+            Some(Box::new(item.clone())),
+            false,
+        );
     }
+    pub(super) fn stage_temporary_token_entries(
+        &mut self,
+        moves: Vec<EntryMove>,
+        item: &SpellView,
+        own_end: bool,
+    ) {
+        self.stage_entries_inner(
+            moves,
+            None,
+            None,
+            None,
+            None,
+            Some(Box::new(item.clone())),
+            own_end,
+        );
+    }
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "Cold entry transactions retain independent optional contexts and one explicit sacrifice timing flag"
+    )]
     fn stage_entries_inner(
         &mut self,
         moves: Vec<EntryMove>,
@@ -432,6 +477,7 @@ impl Game {
         temporary_copy: Option<Box<SpellView>>,
         atomic_cost: Option<Box<AtomicCostCheckpoint>>,
         delayed_sacrifice: Option<Box<SpellView>>,
+        delayed_sacrifice_own_end: bool,
     ) {
         if atomic_cost.is_none() && self.replay_frozen_mana_entries() {
             return;
@@ -462,6 +508,7 @@ impl Game {
             atomic_cost,
             temporary_copy,
             delayed_sacrifice,
+            delayed_sacrifice_own_end,
             captures_result,
             copying: true,
             discard_context,
@@ -1240,7 +1287,12 @@ impl Game {
                 .filter(|event| event.moved && event.destination == Zone::Battlefield)
                 .map(|event| event.after)
                 .collect();
-            self.register_delayed_sacrifice(item, recipients);
+            self.register_delayed_sacrifice_when(
+                item,
+                recipients,
+                false,
+                batch.delayed_sacrifice_own_end,
+            );
         }
         if let Some(context) = batch.discard_context {
             self.finish_discard_events(&events, context);

@@ -130,6 +130,7 @@ fn rollback(p: Player, replacement: bool, dependent: bool) -> (Game, CardId, Car
     let returner = dependent.then(|| {
         let returner = put(&mut g, p, "Druid of the Cowl", Zone::Battlefield);
         g.state.exile_links.push(ExileLink {
+            ability_origin: None,
             source: g.object_ref(returner),
             exiled: g.object_ref(source),
             return_zone: Zone::Battlefield,

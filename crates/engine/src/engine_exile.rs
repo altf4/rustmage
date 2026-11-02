@@ -281,7 +281,11 @@ impl Game {
             .filter(|&b| self.same_target_object(b))
             .filter_map(|b| b.object)
             .collect::<Vec<_>>();
-        self.exile_objects_until_source_leaves(source.object, &objects);
+        self.exile_objects_until_source_leaves_origin(
+            source.object,
+            &objects,
+            item.source_ability_origin,
+        );
     }
     /// A non-target hand choice and an ordinary bound target share the same exact
     /// movement/link transaction. Only an actual arrival in exile creates a link.
@@ -289,6 +293,18 @@ impl Game {
         &mut self,
         source: ObjectRef,
         objects: &[ObjectRef],
+    ) {
+        self.exile_objects_until_source_leaves_origin(
+            source,
+            objects,
+            self.copy_ability_origin(source),
+        );
+    }
+    pub(super) fn exile_objects_until_source_leaves_origin(
+        &mut self,
+        source: ObjectRef,
+        objects: &[ObjectRef],
+        ability_origin: Option<u64>,
     ) {
         if !self.on_battlefield(source.card) || self.object_ref(source.card) != source {
             return;
@@ -302,6 +318,7 @@ impl Game {
         for event in &events {
             if event.moved && event.destination == Zone::Exile {
                 self.state.exile_links.push(ExileLink {
+                    ability_origin,
                     source,
                     exiled: event.after,
                     return_zone: event.before.zone,
@@ -408,7 +425,10 @@ impl Game {
         };
         // Static sources are already registered for every member of the batch.
         // No moves occur during dispatch, so compute this union just once.
-        let entry_suppression = if sources.is_empty() {
+        let entry_suppression = if !events
+            .iter()
+            .any(|event| event.moved && event.destination == Zone::Battlefield)
+        {
             0
         } else {
             self.state.static_sources.iter().fold(0, |mask, &id| {
@@ -460,6 +480,14 @@ impl Game {
             }
             self.zone_triggers(event, death_sources, &sources, entry_suppression);
             if event.moved && event.destination == Zone::Battlefield {
+                let entrant = self.object_view(event.after.card);
+                if entrant.kinds & 1 != 0 && entrant.kinds & entry_suppression == 0 {
+                    self.queue_turn_callbacks(
+                        crate::cards::TurnCallbackEvent::CreatureEntry,
+                        entrant.controller,
+                        Some(event.after),
+                    );
+                }
                 // Entering with counters is a placement event on every entry path,
                 // including raw returns and tokens, exactly once after the whole batch.
                 let placed_by = event

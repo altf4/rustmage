@@ -138,6 +138,7 @@ impl Game {
         let keywords = self.keywords(id);
         (!object.summoning_sick || keywords.contains(Keywords::HASTE))
             && (!keywords.contains(Keywords::DEFENDER)
+                || self.state.combat_rules.as_ref().is_some_and(|rules| rules.attack_without_defender.contains(&self.object_ref(id)))
                 || self.state.static_sources.iter().copied().any(|source| {
                     self.on_battlefield(source)
                         && self.state.objects[source as usize].controller == actor

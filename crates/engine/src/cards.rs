@@ -1325,9 +1325,17 @@ pub struct EntryCopySpec {
     pub optional: bool,
 }
 
-/// Quantity frozen at the triggering cast, independently of later spells/copies.
+/// Source-independent callbacks whose stated duration is the current turn.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum TurnCallbackEvent {
+    Attack,
+    NoncreatureCast,
+    CreatureEntry,
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+/// Quantity frozen at the triggering cast, independently of later spells/copies.
 pub enum SpellCopyCount {
     One,
     EarlierSpellsThisTurn,
@@ -1499,6 +1507,13 @@ pub enum Instruction {
         event: DelayedTargetEvent,
         ability: u16,
     },
+    ScheduleTurnTrigger {
+        event: TurnCallbackEvent,
+        ability: u16,
+        once: bool,
+    },
+    AttackWithoutDefenderThisTurn,
+    CombatAndMainAfterCurrentMain(u16),
     ScheduleAttackTriggerThisTurn {
         ability: u16,
     },
@@ -1635,6 +1650,13 @@ pub enum Instruction {
     CreateTemporaryArtifactCopy,
     /// A normal token copy with source-independent next-end-step sacrifice.
     CreateCopyWithDelayedSacrifice,
+    /// Copy each physical card linked to this acquired ability, tapped attacking opponents.
+    CreateLinkedExileAttackingCopies,
+    CreateTemporaryTokens {
+        token: Card,
+        amount: AmountValue,
+        keywords: Keywords,
+    },
     BecomeSourceLandUntilNextTurn,
     BecomeCopy(InPlaceCopySpec),
     /// Copy a chosen card from the trigger's exact exile batch onto its token target.

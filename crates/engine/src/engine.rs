@@ -367,7 +367,14 @@ pub use combat_allocations::CombatDamagePlayerView;
 #[doc(hidden)]
 #[path = "engine_combat_schedule.rs"]
 pub mod combat_schedule;
+#[doc(hidden)]
+#[path = "engine_temporary_tokens.rs"]
+pub mod temporary_tokens;
+#[doc(hidden)]
+#[path = "engine_turn_callbacks.rs"]
+pub mod turn_callbacks;
 pub use combat_schedule::MainPhaseCombatView;
+pub use turn_callbacks::TurnCallbackView;
 #[doc(hidden)]
 #[path = "engine_scalar_x.rs"]
 pub mod scalar_x;
@@ -3214,6 +3221,8 @@ pub struct LegendGroupView {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct ExileLink {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ability_origin: Option<u64>,
     pub source: ObjectRef,
     pub exiled: ObjectRef,
     pub return_zone: Zone,
@@ -3377,6 +3386,12 @@ pub struct Observation {
     pub additional_combats: u64,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub after_main_combats: Option<MainPhaseCombatView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub inserted_phases: Option<Vec<Step>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub turn_callbacks: Option<Vec<TurnCallbackView>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub attack_without_defender: Option<Vec<ObjectRef>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub delayed_begin_combat: Option<Vec<SpellView>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8902,6 +8917,7 @@ impl Game {
         }
         self.forget_stack_graveyard_exile(before.reference);
         self.forget_cast_entry_counters(before.reference);
+        self.capture_turn_callback_source_departure(&before);
         self.capture_source_counter_departure(&before);
         self.clear_entry_value(before.reference);
         if before.zone == Zone::Battlefield {
@@ -9553,8 +9569,8 @@ impl Game {
                 self.give_priority();
             }
             Step::Main1 => {
-                self.take_main_phase_combat();
-                self.begin_step(Step::BeginCombat);
+                let next = self.step_after_main();
+                self.begin_step(next);
                 self.give_priority();
             }
             Step::BeginCombat => {
@@ -9610,11 +9626,7 @@ impl Game {
                 self.give_priority();
             }
             Step::Main2 => {
-                let next = if self.take_main_phase_combat() {
-                    Step::BeginCombat
-                } else {
-                    Step::End
-                };
+                let next = self.step_after_main();
                 self.begin_step(next);
                 self.give_priority();
             }
@@ -9640,6 +9652,9 @@ impl Game {
             rules.additional_combats = 0;
             rules.after_main = None;
             rules.begin_combat_this_turn = None;
+            rules.inserted_phases.clear();
+            rules.turn_callbacks.clear();
+            rules.attack_without_defender.clear();
         }
         self.state.casting_prohibited = false;
         self.state.damage_prevention_prohibited = false;
@@ -10413,6 +10428,17 @@ impl Game {
                 r.additional_combats
                     .checked_add(r.after_main.map_or(0, |schedule| schedule.remaining))
                     .capacity("additional combat count exhausted")
+            }),
+            inserted_phases: s.combat_rules.as_ref().and_then(|r| {
+                (!r.inserted_phases.is_empty())
+                    .then(|| r.inserted_phases.iter().rev().copied().collect())
+            }),
+            turn_callbacks: s
+                .combat_rules
+                .as_ref()
+                .and_then(|r| (!r.turn_callbacks.is_empty()).then(|| r.turn_callbacks.clone())),
+            attack_without_defender: s.combat_rules.as_ref().and_then(|r| {
+                (!r.attack_without_defender.is_empty()).then(|| r.attack_without_defender.clone())
             }),
             after_main_combats: s.combat_rules.as_ref().and_then(|r| r.after_main),
             delayed_begin_combat: s

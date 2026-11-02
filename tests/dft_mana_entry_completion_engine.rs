@@ -110,6 +110,7 @@ fn index(g: &mut Game, action: Action) {
 fn returning_copy(g: &mut Game, p: Player, source: CardId) -> CardId {
     let returning = put(g, p, "Grizzly Bears", Zone::Exile);
     g.state.exile_links.push(ExileLink {
+        ability_origin: None,
         source: g.object_ref(source),
         exiled: g.object_ref(returning),
         return_zone: Zone::Battlefield,

@@ -191,7 +191,11 @@ impl Game {
             .into_iter()
             .map(|id| self.object_ref(id))
             .collect::<Vec<_>>();
-        self.exile_objects_until_source_leaves(source.object, &objects);
+        self.exile_objects_until_source_leaves_origin(
+            source.object,
+            &objects,
+            item.source_ability_origin,
+        );
     }
 
     pub(super) fn move_battlefield_group(

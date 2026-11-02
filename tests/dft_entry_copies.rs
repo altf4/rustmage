@@ -496,6 +496,7 @@ fn an_as_entry_copy_can_supply_the_remaining_parent_cast_mana_and_decline_is_unf
     g.state.objects[blueprint as usize].tapped = true;
     let returning = put(&mut g, Player::P0, "Grizzly Bears", Zone::Exile);
     g.state.exile_links.push(ExileLink {
+        ability_origin: None,
         source: g.object_ref(mana),
         exiled: g.object_ref(returning),
         return_zone: Zone::Battlefield,
@@ -594,6 +595,7 @@ fn foreign_as_entry_copy_that_invalidates_a_parent_cast_is_kept_with_its_mana_ev
     );
     let returning = put(&mut g, Player::P1, "Grizzly Bears", Zone::Exile);
     g.state.exile_links.push(ExileLink {
+        ability_origin: None,
         source: g.object_ref(mana),
         exiled: g.object_ref(returning),
         return_zone: Zone::Battlefield,

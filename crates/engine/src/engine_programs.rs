@@ -1864,6 +1864,13 @@ impl Game {
             self.queue_hand_cascade(index);
             self.queue_instant_sorcery_storm(index);
         }
+        if card.kind_mask() & 1 == 0 {
+            self.queue_turn_callbacks(
+                crate::cards::TurnCallbackEvent::NoncreatureCast,
+                caster,
+                None,
+            );
+        }
         self.temporary_cast_triggers(caster, card, stack);
         self.capture_cast_creature_subjects(stack, first_trigger);
         self.capture_copy_cast(stack, first_trigger);
@@ -2053,6 +2060,7 @@ impl Game {
             }
         }
         if !declared.is_empty() {
+            self.queue_turn_callbacks(crate::cards::TurnCallbackEvent::Attack, actor, None);
             let packets: Vec<_> = self
                 .state
                 .delayed_attack_this_turn
@@ -3273,6 +3281,17 @@ impl Game {
                 }
                 Instruction::DelayTargetEvent { event, ability } => {
                     self.delay_target_event(&item, event, ability);
+                }
+                Instruction::ScheduleTurnTrigger {
+                    event,
+                    ability,
+                    once,
+                } => self.schedule_turn_callback(&item, event, ability, once),
+                Instruction::AttackWithoutDefenderThisTurn => {
+                    self.allow_source_attack_without_defender(&item)
+                }
+                Instruction::CombatAndMainAfterCurrentMain(count) => {
+                    self.add_combat_main_pairs(count)
                 }
                 Instruction::ScheduleAttackTriggerThisTurn { ability } => {
                     let mut delayed = item.clone();
@@ -5285,6 +5304,29 @@ impl Game {
                 }
                 Instruction::BecomeSourceLandUntilNextTurn => {
                     self.source_land_until_next_turn(&item)
+                }
+                Instruction::CreateLinkedExileAttackingCopies => {
+                    self.create_linked_exile_attacking_copies(&item)
+                }
+                Instruction::CreateTemporaryTokens {
+                    token,
+                    amount,
+                    keywords,
+                } => {
+                    self.stage_token_creation(
+                        item.controller,
+                        token,
+                        self.item_amount(amount, &item),
+                        false,
+                        replacements::TokenCompletion::TemporaryTokens(Box::new(
+                            temporary_tokens::TokenInstructions {
+                                item: item.clone(),
+                                keywords,
+                                attacking: false,
+                                own_end_step: false,
+                            },
+                        )),
+                    );
                 }
                 Instruction::CreateCopyWithDelayedSacrifice => {
                     if let Some(recipe) = self.recipe_for_subject(&item, Subject::Targets) {

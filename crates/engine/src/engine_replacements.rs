@@ -237,6 +237,7 @@ pub(super) enum TokenCompletion {
     /// Evaluate the controller's graveyard after this creation event completes.
     GraveyardGroups(std::num::NonZeroU16),
     TemporaryCopy(Box<SpellView>),
+    TemporaryTokens(Box<temporary_tokens::TokenInstructions>),
     AnimateNoncreatures(AnimationSpec),
     Keywords {
         source: ObjectRef,
@@ -376,6 +377,10 @@ impl ReplacementState {
                 + b.recipes.len() * std::mem::size_of::<Option<CopyRecipe>>()
                 + b.used.len() * std::mem::size_of::<(ObjectRef, u16)>()
                 + match &b.completion {
+                    TokenCompletion::TemporaryTokens(context) => {
+                        std::mem::size_of::<temporary_tokens::TokenInstructions>()
+                            + context.item.owned_bytes()
+                    }
                     TokenCompletion::CounterSet(counters) => {
                         std::mem::size_of::<Counters>() + counters.owned_bytes()
                     }
@@ -2041,6 +2046,38 @@ impl Game {
         self.stage_copy_token_batch(batch);
     }
     /// A single creation event may contain many unrelated frozen copy recipes.
+    pub(super) fn stage_linked_attacking_recipes(
+        &mut self,
+        item: &SpellView,
+        recipes: Vec<CopyRecipe>,
+    ) {
+        if recipes.is_empty() {
+            return;
+        }
+        let groups = recipes
+            .iter()
+            .map(|recipe| TokenGroupView {
+                token: recipe.definition,
+                amount: 1,
+                tapped: true,
+            })
+            .collect();
+        self.stage_copy_token_batch(TokenBatch {
+            recipes: recipes.into_iter().map(Some).collect(),
+            player: item.controller,
+            groups,
+            effect: true,
+            used: Vec::new(),
+            completion: TokenCompletion::TemporaryTokens(Box::new(
+                temporary_tokens::TokenInstructions {
+                    item: item.clone(),
+                    keywords: Keywords::NONE,
+                    attacking: true,
+                    own_end_step: true,
+                },
+            )),
+        });
+    }
     pub(super) fn stage_copy_recipes(&mut self, player: Player, recipes: Vec<CopyRecipe>) {
         if recipes.is_empty() {
             return;
@@ -2626,6 +2663,26 @@ impl Game {
                             let Some(Event::Tokens(batch)) = state.active.take() else {
                                 unreachable!()
                             };
+                            if let TokenCompletion::TemporaryTokens(context) = &batch.completion {
+                                let recipes = if batch.recipes.is_empty() {
+                                    vec![None; batch.groups.len()]
+                                } else {
+                                    batch.recipes.clone()
+                                };
+                                self.create_copy_groups_with_instructions(
+                                    batch.player,
+                                    &batch.groups,
+                                    &recipes,
+                                    None,
+                                    Some(context),
+                                );
+                                if let Some(entry) = self.state.entry_batch.as_mut() {
+                                    assert!(entry.replacement_resume.is_none());
+                                    entry.replacement_resume = Some(state);
+                                    return self.advance_entries();
+                                }
+                                continue;
+                            }
                             if !batch.recipes.is_empty() {
                                 let temporary = match &batch.completion {
                                     TokenCompletion::TemporaryCopy(item) => Some(item.as_ref()),
