@@ -8,9 +8,9 @@
   "engine_status": "frozen reviewed checkpoint; authors do not mutate shared engine",
   "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "counts": {
-    "authored_candidates": 32,
+    "authored_candidates": 35,
     "validated_by_integrator": 35,
-    "not_started": 8
+    "not_started": 5
   },
   "validation_owner": "root integrator; no Cargo run by card author",
   "validation_targets": [
@@ -66,6 +66,12 @@
       "target": "dft_black_red_cards_exhaust_vehicles",
       "cases": 10,
       "scope": "4 complete Vehicles: five exact one-color4 mana outputs with real ability-only restriction and paid X exhaust using restricted mana; X0/player/creature/PW/source departure and independent counters/Crew2/exhaust lifetime; artifact-affinity own-count/floor/colored cost, per-player grouped targets and actual destruction reward once versus indestructible/stale; actual Thrillroller entry Haste/Trample animation/Crew2 and 2R+discard sorcery graveyard finality return/death exile; Spire other untapped controlled Mount/Vehicle tap cost, live union dedup and permanent animation, independent Crew2 plus owned raw/index/restore",
+      "status": "pending root execution"
+    },
+    {
+      "target": "dft_black_red_cards_mass_spells",
+      "cases": 6,
+      "scope": "3 whole spells: Ancient paid3B name and optional bounded4 three-zone opponent search, land/unavailable names, private inspection, no replacement draws, shuffle at0 and owned raw/index restore; Full Throttle actual4RR cast in main1/2 followed through exact phase sequence, source-independent repeated untap of exact actual attackers/current creatures across controller change and blink, cleanup expiry; Push actual5RR simultaneous own Mount/Vehicle return, existing-group animation/haste, late-recipient exclusion, next either-player endstep exact/controller-constrained sacrifice, blink/ownership and owned restore",
       "status": "pending root execution"
     }
   ],
@@ -144,11 +150,46 @@
         "Choose a card name. Search target opponent's graveyard, hand, and library for up to four cards with that name and exile them. Then that player shuffles."
       ],
       "inherited_admitted": false,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [
         "capped-name-exile-search"
       ],
-      "outcome_tests": []
+      "outcome_tests": [
+        "ancient_vendetta_reveals_only_the_name_then_privately_selects_four_across_three_opponent_zones",
+        "ancient_vendetta_can_name_land_or_unavailable_card_stop_at_zero_and_owns_private_branches"
+      ],
+      "test_target": "dft_black_red_cards_mass_spells",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/a/AncientVendetta.java",
+        "java_sha256": "05c14b9e302eba212122ce4082ad9dfb3c54d0ce4472d732aeb6d089a10ed804",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/Ability.java",
+            "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseACardNameEffect.java",
+            "sha256": "33f32c237aec9329b59275757fadc7b1a4b63f898c44999e9169de81e30a3561"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchTargetGraveyardHandLibraryForCardNameAndExileEffect.java",
+            "sha256": "016001641a5c77bb2787f141b904ad653803e5b9311f49324edbaba71defc90b"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+            "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+          }
+        ]
+      },
+      "definition_sha256": "7a7b338b07c8143fc2339a27639a4190707bbd58e876827179a44bb8937fee1f"
     },
     {
       "name": "Back on Track",
@@ -1561,11 +1602,61 @@
         "At the beginning of each combat this turn, untap all creatures that attacked this turn."
       ],
       "inherited_admitted": false,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [
         "after-main-combats"
       ],
-      "outcome_tests": []
+      "outcome_tests": [
+        "full_throttle_inserts_two_combats_after_main_one_or_two_without_extra_mains",
+        "full_throttle_repeated_delayed_untap_tracks_exact_attackers_any_controller_until_cleanup"
+      ],
+      "test_target": "dft_black_red_cards_mass_spells",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/f/FullThrottle.java",
+        "java_sha256": "85fe176f981c1213930b7157f194df3052d4472a207e0870156b93f57846ab44",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/Ability.java",
+            "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/DelayedTriggeredAbility.java",
+            "sha256": "6f74a2ccfd069f65ed3ae7e7c99a7d6933043d586b0c43e1c11f0d557f9e41ff"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+            "sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+            "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/AdditionalCombatPhaseEffect.java",
+            "sha256": "52f33fcfab80ac5e2027406daace88dec6cd258ea19421a98551e2d34394efd3"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/CreateDelayedTriggeredAbilityEffect.java",
+            "sha256": "537fdb546ad334c8e75d07346e68cf02ee4fa38bf830cbbd041ef491234f0661"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/UntapAllEffect.java",
+            "sha256": "47ebd67f929a1ed625874e7efc4fa26009e074822875002bac26772575136f3c"
+          }
+        ]
+      },
+      "definition_sha256": "4b6e58f7851976394122cfbdd877b0e05c6e0263298b36a8c27bb1b51c390bdd"
     },
     {
       "name": "Gas Guzzler",
@@ -3511,11 +3602,71 @@
         "Vehicles you control become artifact creatures until end of turn. Creatures you control gain haste until end of turn."
       ],
       "inherited_admitted": false,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [
         "filtered-mass-return-delayed-sacrifice"
       ],
-      "outcome_tests": []
+      "outcome_tests": [
+        "push_the_limit_returns_only_own_mount_vehicle_union_animates_existing_vehicles_and_hastes_creatures",
+        "push_delayed_sacrifice_rejects_blinked_or_foreign_controlled_results_and_owned_branches_keep_exact_group"
+      ],
+      "test_target": "dft_black_red_cards_mass_spells",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/p/PushTheLimit.java",
+        "java_sha256": "e8855c22ecb0c140a38aa43a568b675989be9358a75b091cab65813944986aa2",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/Ability.java",
+            "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/delayed/AtTheBeginOfNextEndStepDelayedTriggeredAbility.java",
+            "sha256": "9f3272690e0ade9a48526bd13165b3015a71d8bbed9d86a997af960d5f3214a5"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/Effect.java",
+            "sha256": "92f49363848fa1b18215e3a0d516923e10d917638a38e5bbad73f274f6a1e917"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+            "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeTargetEffect.java",
+            "sha256": "c45c32e2c47bd7f62480c732af33864bcac93ec246a9cf7e292dd32a2d10917c"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAllEffect.java",
+            "sha256": "fccf43cbeaa763aae8a75efc3f28c5e33dcd045398d9b1cf6a97270e4a9000e4"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/VehiclesBecomeArtifactCreatureEffect.java",
+            "sha256": "353d99096ec8607a5ab33915f133edf54b0f28350a22ef6c6a96827f9f0f36ad"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+            "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java",
+            "sha256": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655"
+          }
+        ]
+      },
+      "definition_sha256": "0c0cdc9150a0acbea2ecdf63facdfa19230159aa011a4f7d174d884faaad251c"
     },
     {
       "name": "Quag Feast",
