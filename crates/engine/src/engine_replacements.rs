@@ -2099,7 +2099,25 @@ impl Game {
             completion: TokenCompletion::None,
         });
     }
-    fn stage_copy_token_batch(&mut self, batch: TokenBatch) {
+    fn stage_copy_token_batch(&mut self, mut batch: TokenBatch) {
+        assert_eq!(batch.groups.len(), batch.recipes.len());
+        // Rejected copies do not cause a token-creation event. Remove them
+        // before replacement applicability while retaining parallel alignment.
+        {
+            let mut recipes = batch.recipes.iter();
+            batch.groups.retain(|_| {
+                recipes
+                    .next()
+                    .unwrap()
+                    .is_none_or(CopyRecipe::can_create_token)
+            });
+        }
+        batch
+            .recipes
+            .retain(|recipe| recipe.is_none_or(CopyRecipe::can_create_token));
+        if batch.groups.is_empty() {
+            return;
+        }
         if matches!(
             batch.completion,
             TokenCompletion::None | TokenCompletion::TemporaryCopy(_)

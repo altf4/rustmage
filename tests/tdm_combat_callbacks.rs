@@ -994,7 +994,10 @@ fn copied_exile_triggers_link_multiple_cards_and_copy_each_in_one_replacement_ev
 }
 #[test]
 fn exiled_noncreature_physical_card_makes_tapped_nonattacking_copy_even_if_previously_animated() {
-    let _s = fixture_rules::activate(&[(Card::GrizzlyBears, &MARDU)]);
+    let _s = fixture_rules::activate(&[
+        (Card::GrizzlyBears, &MARDU),
+        (Card::from_name("Ghost Vacuum").unwrap(), &ADD_FOOD),
+    ]);
     let mut g = scenario(Player::P0);
     let artifact = put(&mut g, Player::P0, "Short Bow", Zone::Battlefield);
     g.change_object_form(
@@ -1009,16 +1012,172 @@ fn exiled_noncreature_physical_card_makes_tapped_nonattacking_copy_even_if_previ
         characteristic_layers::AnimationTypeMode::AddCreature,
     );
     let src = exile(&mut g, Player::P0, artifact);
+    put(&mut g, Player::P0, "Ghost Vacuum", Zone::Battlefield);
     attack(&mut g, Player::P0, &[src]);
     drain(&mut g);
     let made = tokens(&g);
-    assert_eq!(made.len(), 1);
-    assert!(!g.is_creature(made[0]));
-    assert!(g.state.objects[made[0] as usize].tapped);
-    assert!(g.state.attackers.iter().all(|a| a.card != made[0]));
+    assert_eq!(made.len(), 2, "the artifact event still receives AddToken");
+    assert_eq!(
+        made.iter()
+            .filter(|&&id| g.object_view(id).card == Card::from_name("Short Bow").unwrap())
+            .count(),
+        1
+    );
+    assert_eq!(
+        made.iter()
+            .filter(|&&id| g.object_view(id).card == FOOD)
+            .count(),
+        1
+    );
+    for &id in &made {
+        assert!(!g.is_creature(id));
+        assert!(g.state.objects[id as usize].tapped);
+        assert!(g.state.attackers.iter().all(|a| a.card != id));
+    }
+    assert_eq!(g.observe(Player::P0).delayed_sacrifices[0].tokens.len(), 2);
     end(&mut g, Player::P0);
     assert!(tokens(&g).is_empty());
 }
+#[test]
+fn linked_nonpermanent_manifested_cards_create_no_tokens_or_replacement_event() {
+    let _s = fixture_rules::activate(&[
+        (Card::GrizzlyBears, &MARDU),
+        (Card::from_name("Ghost Vacuum").unwrap(), &ADD_FOOD),
+    ]);
+    for p in [Player::P0, Player::P1] {
+        for name in ["Opt", "Divination"] {
+            let mut g = scenario(p);
+            let physical = put(&mut g, p, name, Zone::Library);
+            let entry = g.manifest_entry(g.object_ref(physical), p).unwrap();
+            g.stage_entries(vec![entry], None);
+            assert!(!g.advance_entries());
+            assert!(g.is_face_down(g.object_ref(physical)));
+            assert!(g.is_creature(physical));
+            let source = exile(&mut g, p, physical);
+            assert_eq!(g.object_view(physical).card, Card::from_name(name).unwrap());
+            assert!(!g.is_creature(physical));
+            assert_eq!(g.state.exile_links.len(), 1);
+            let link = &g.state.exile_links[0];
+            assert_eq!(link.source, g.object_ref(source));
+            assert_eq!(link.exiled, g.object_ref(physical));
+            assert_eq!(link.ability_origin, None);
+            put(&mut g, p, "Ghost Vacuum", Zone::Battlefield);
+            let objects = g.state.objects.len();
+            attack(&mut g, p, &[source]);
+            drain(&mut g);
+            assert!(
+                tokens(&g).is_empty(),
+                "CR111.5 rejects {name} before AddToken"
+            );
+            assert!(g.state.replacements.is_none());
+            assert!(g.observe(p).delayed_sacrifices.is_empty());
+            assert_eq!(
+                g.state.objects.len(),
+                objects,
+                "no token slot was allocated"
+            );
+            assert_eq!(g.state.exile_links.len(), 1);
+            assert_eq!(g.state.objects[physical as usize].zone, Zone::Exile);
+        }
+    }
+}
+#[test]
+fn linked_nonpermanent_double_face_front_cannot_use_its_creature_back_to_create_a_token() {
+    let _s = fixture_rules::activate(&[
+        (Card::GrizzlyBears, &MARDU),
+        (Card::from_name("Ghost Vacuum").unwrap(), &ADD_FOOD),
+    ]);
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        put(&mut g, p, "Ghost Vacuum", Zone::Battlefield);
+        let front = Card::from_name("Opt").unwrap();
+        let back = Card::from_name("Bear Cub").unwrap();
+        // The pinned catalogue has no instant/sorcery-front modal DFC. Use a
+        // complete typed two-face recipe to test the same pre-event boundary.
+        let recipe = CopyRecipe::new(front).with_faces(copies::CopyFaces::Double {
+            physical_front: front,
+            front,
+            back,
+            back_up: false,
+        });
+        assert!(!recipe.definition.is_creature());
+        assert!(back.is_creature());
+        let mut item = g.activation_item(p, source, 0);
+        item.kind = StackKind::TriggeredAbility { ability: 1 };
+        let before = g.snapshot();
+        g.stage_linked_attacking_recipes(&item, vec![recipe]);
+        assert!(
+            g.state.replacements.is_none(),
+            "no creation replacement event"
+        );
+        assert_eq!(g.snapshot(), before, "no object, entry or delayed packet");
+    }
+}
+#[test]
+fn linked_nonpermanent_filter_preserves_valid_recipe_alignment_and_ability_origin() {
+    let _s = fixture_rules::activate(&[
+        (Card::GrizzlyBears, &MARDU),
+        (Card::HillGiant, &MARDU),
+        (Card::from_name("Ghost Vacuum").unwrap(), &ADD_FOOD),
+    ]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let physical = put(&mut g, p, "Opt", Zone::Library);
+    let entry = g.manifest_entry(g.object_ref(physical), p).unwrap();
+    g.stage_entries(vec![entry], None);
+    assert!(!g.advance_entries());
+    let source = exile(&mut g, p, physical);
+    let native = g.object_ref(source);
+    g.apply_temporary_copy(
+        native,
+        CopyRecipe::new(Card::HillGiant),
+        CopyDeadline::EndOfTurn,
+    );
+    let origin = g.copy_ability_origin(native);
+    assert!(origin.is_some());
+    let foreign = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+    let mut item = g.activation_item(p, source, 0);
+    item.kind = StackKind::TriggeredAbility { ability: 0 };
+    item.source_ability_origin = origin;
+    item.targets = vec![g.bind_target(Target::Card(foreign))];
+    g.exile_until_source_leaves(&item);
+    g.expire_temporary_copies(true);
+    assert_eq!(g.copy_ability_origin(native), None);
+    let valid = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let mut item = g.activation_item(p, source, 0);
+    item.kind = StackKind::TriggeredAbility { ability: 0 };
+    item.targets = vec![g.bind_target(Target::Card(valid))];
+    g.exile_until_source_leaves(&item);
+    assert_eq!(g.state.exile_links.len(), 3);
+    put(&mut g, p, "Ghost Vacuum", Zone::Battlefield);
+    attack(&mut g, p, &[source]);
+    drain(&mut g);
+    let made = tokens(&g);
+    assert_eq!(
+        made.len(),
+        2,
+        "only matching permanent recipe plus added Food"
+    );
+    assert_eq!(
+        made.iter()
+            .filter(|&&id| g.object_view(id).card == Card::from_name("Bear Cub").unwrap())
+            .count(),
+        1
+    );
+    assert_eq!(
+        made.iter()
+            .filter(|&&id| g.object_view(id).card == FOOD)
+            .count(),
+        1
+    );
+    assert!(
+        made.iter()
+            .all(|&id| g.object_view(id).card != Card::HillGiant)
+    );
+    assert_eq!(g.observe(p).delayed_sacrifices[0].tokens.len(), 2);
+}
+
 #[test]
 fn linked_original_and_fresh_copy_template_origins_remain_separate_and_departure_returns_all() {
     let _s = fixture_rules::activate(&[(Card::GrizzlyBears, &MARDU), (Card::HillGiant, &MARDU)]);

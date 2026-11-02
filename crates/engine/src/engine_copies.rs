@@ -137,6 +137,11 @@ impl CopyRecipe {
             .and_then(|value| value.kinds)
             .unwrap_or(kinds)
     }
+    /// CR111.5: an instant/sorcery copy cannot be created as a token.
+    /// Use the selected copiable definition, including its type exceptions.
+    pub(super) fn can_create_token(self) -> bool {
+        self.kinds() & (4 | 8) == 0
+    }
     pub(super) fn copy_types(self) -> CopyTypes {
         self.overrides
             .and_then(|value| value.types)

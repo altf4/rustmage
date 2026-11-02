@@ -28,14 +28,12 @@ impl Game {
                     && self.state.objects[link.exiled.card as usize].zone == Zone::Exile
                     && self.state.objects[link.exiled.card as usize].is_card()
             })
-            .map(|link| CopyRecipe {
-                definition: self.state.objects[link.exiled.card as usize]
-                    .card
-                    .front_face(),
-                exceptions: CopyExceptions::NONE,
-                overrides: None,
-                faces: None,
-                sampled_size: None,
+            .map(|link| {
+                CopyRecipe::new(
+                    self.state.objects[link.exiled.card as usize]
+                        .card
+                        .front_face(),
+                )
             })
             .collect();
         self.stage_linked_attacking_recipes(item, recipes);
