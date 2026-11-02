@@ -157,8 +157,8 @@ fn pathcruiser_actual_entry_searches_only_basic_lands_privately_and_shuffles_eve
             cast(&mut g, source, None);
             reach(&mut g, |a| matches!(a, Action::FinishSearch));
             assert_eq!(g.state.players[p.index()].mana, [0; 6]);
-            assert!(g.observe(p).library_choice.is_some());
-            assert!(g.observe(p.other()).library_choice.is_none());
+            assert!(g.observe(p).search_choice.as_ref().unwrap().reveal);
+            assert!(g.observe(p.other()).search_choice.is_none());
             reject(&mut g, Action::ChooseSearch { card: nonbasic });
             let rng = g.state.rng;
             if accept {
@@ -242,7 +242,7 @@ fn pit_actual_body_defender_and_two_mana_pay_abilities_but_cannot_cast_spells() 
     act(&mut g, mana);
     let spell = put(&mut g, p, "Swiftfoot Boots", Zone::Hand);
     reject(&mut g, Action::AnnounceCast { card: spell });
-    g.state.players[0].mana = [0, 0, 0, 0, 0, 2];
+    g.state.players[0].mana[5] += 2;
     act(&mut g, activation(walker, 0));
     pay(&mut g);
     drain(&mut g);
