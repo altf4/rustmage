@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "af10bcc001c409a1e4b7b17c2b2d370c2dc01278346b27e7c284516166f48d51",
+  "catalogue_version": "bc2458fb7abc903087e2a26d7787249c48bf54b486674011050172bfda13fc5a",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3138,
-  "implemented_total": 3144,
+  "implemented_standard_cards": 3148,
+  "implemented_total": 3154,
   "token_definitions": 156,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -32,8 +32,8 @@
     },
     "dft": {
       "total": 259,
-      "complete": 239,
-      "gated": 20
+      "complete": 249,
+      "gated": 10
     },
     "dsk": {
       "total": 264,
@@ -690,8 +690,8 @@
     {
       "name": "Adrenaline Jockey",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/adrenaline_jockey.rs",
       "set": "dft"
     },
@@ -1490,8 +1490,8 @@
     {
       "name": "Ancient Vendetta",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/ancient_vendetta.rs",
       "set": "dft"
     },
@@ -4226,8 +4226,8 @@
     {
       "name": "Boommobile",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/boommobile.rs",
       "set": "dft"
     },
@@ -8522,8 +8522,8 @@
     {
       "name": "Demonic Junker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/demonic_junker.rs",
       "set": "dft"
     },
@@ -13370,8 +13370,8 @@
     {
       "name": "Full Throttle",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/full_throttle.rs",
       "set": "dft"
     },
@@ -13738,8 +13738,8 @@
     {
       "name": "Gastal Thrillroller",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/gastal_thrillroller.rs",
       "set": "dft"
     },
@@ -15242,8 +15242,8 @@
     {
       "name": "Grim Javelineer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/grim_javelineer.rs",
       "set": "dft"
     },
@@ -26506,8 +26506,8 @@
     {
       "name": "Push the Limit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/push_the_limit.rs",
       "set": "dft"
     },
@@ -27586,8 +27586,8 @@
     {
       "name": "Reckless Velocitaur",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/reckless_velocitaur.rs",
       "set": "dft"
     },
@@ -32626,8 +32626,8 @@
     {
       "name": "Spire Mechcycle",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/spire_mechcycle.rs",
       "set": "dft"
     },
