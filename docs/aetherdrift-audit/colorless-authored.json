@@ -1,0 +1,446 @@
+{
+  "base_revision": "819fa96ec",
+  "engine_phase": "frozen; no engine changes",
+  "cards": [
+    {
+      "name": "Country Roads",
+      "definition": "src/card_definitions/dft/country_roads.rs",
+      "oracle_id": "c5a39f76-dd1b-442c-9f52-08561ecb91ad",
+      "oracle_text": "This land enters tapped unless you control a Mount or Vehicle.\n{T}: Add {W}.\n{1}{W}, {T}, Sacrifice this land: Create a 1/1 colorless Pilot creature token with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\" Activate only as a sorcery.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/c/CountryRoads.java",
+        "sha256": "84da319acc5b0f8559ffc0d74274d0a877d561e9975580d938d0fb8af33defba"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedUnlessAbility.java",
+          "sha256": "389f076d5e9c21e7e868cef5ed4d35d7a346a8a33bccaf9516e09843c1fad1f6"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+          "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+          "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/permanent/token/PilotSaddleCrewToken.java",
+          "sha256": "6baa82d26e400013e81e4a917ac7ab7b2a1b03e2f1bd1e0b7cd7c0f18db03db5"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/CrewSaddleIncreasedPowerAbility.java",
+          "sha256": "acbdad8faa6f24f7e1793367b07ce3dc0944b6068fee6dbf14286bb3579fb398"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+          "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+          "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/WhiteManaAbility.java",
+          "sha256": "36c9c240bb0e9509d304d9300d0a157085253b4ab5d9a52cbdf1d051a43221b6"
+        }
+      ],
+      "printed_obligations": [
+        {
+          "clause": "Enters tapped unless controlled Mount or Vehicle",
+          "test": "roads_entry_checks_the_actual_controller_and_either_subtype"
+        },
+        {
+          "clause": "Tap for printed single color",
+          "test": "roads_pay_colored_sorcery_cost_and_create_the_real_pilot"
+        },
+        {
+          "clause": "1+colored,tap,sacrifice at sorcery speed creates 1/1 colorless Pilot with +2 crew/saddle contribution",
+          "test": "roads_pay_colored_sorcery_cost_and_create_the_real_pilot; country_roads_pilot_actually_crews_and_saddles_on_owned_branches"
+        }
+      ],
+      "runtime_status": "pending root focused run"
+    },
+    {
+      "name": "Reef Roads",
+      "definition": "src/card_definitions/dft/reef_roads.rs",
+      "oracle_id": "32438050-5ae7-4c19-bcaf-5a07a673e0e0",
+      "oracle_text": "This land enters tapped unless you control a Mount or Vehicle.\n{T}: Add {U}.\n{1}{U}, {T}, Sacrifice this land: Create a 1/1 colorless Pilot creature token with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\" Activate only as a sorcery.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/r/ReefRoads.java",
+        "sha256": "76d37c584d1d05188a1b573e2cfca163c023ecf08ad74ba2e81f375fa03fc162"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedUnlessAbility.java",
+          "sha256": "389f076d5e9c21e7e868cef5ed4d35d7a346a8a33bccaf9516e09843c1fad1f6"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+          "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+          "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/permanent/token/PilotSaddleCrewToken.java",
+          "sha256": "6baa82d26e400013e81e4a917ac7ab7b2a1b03e2f1bd1e0b7cd7c0f18db03db5"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/CrewSaddleIncreasedPowerAbility.java",
+          "sha256": "acbdad8faa6f24f7e1793367b07ce3dc0944b6068fee6dbf14286bb3579fb398"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+          "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+          "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/BlueManaAbility.java",
+          "sha256": "8b0ffaec3d6002607e0a62e142031604a31556313e44830d9ad44026872cdf1f"
+        }
+      ],
+      "printed_obligations": [
+        {
+          "clause": "Enters tapped unless controlled Mount or Vehicle",
+          "test": "roads_entry_checks_the_actual_controller_and_either_subtype"
+        },
+        {
+          "clause": "Tap for printed single color",
+          "test": "roads_pay_colored_sorcery_cost_and_create_the_real_pilot"
+        },
+        {
+          "clause": "1+colored,tap,sacrifice at sorcery speed creates 1/1 colorless Pilot with +2 crew/saddle contribution",
+          "test": "roads_pay_colored_sorcery_cost_and_create_the_real_pilot; country_roads_pilot_actually_crews_and_saddles_on_owned_branches"
+        }
+      ],
+      "runtime_status": "pending root focused run"
+    },
+    {
+      "name": "Foul Roads",
+      "definition": "src/card_definitions/dft/foul_roads.rs",
+      "oracle_id": "d4e4c8a5-e97b-4295-a403-d17834f73502",
+      "oracle_text": "This land enters tapped unless you control a Mount or Vehicle.\n{T}: Add {B}.\n{1}{B}, {T}, Sacrifice this land: Create a 1/1 colorless Pilot creature token with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\" Activate only as a sorcery.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/f/FoulRoads.java",
+        "sha256": "6b963ca24382171ccbe509630bff7eae54bc034f1430ac1e4ea45b159f7b8557"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedUnlessAbility.java",
+          "sha256": "389f076d5e9c21e7e868cef5ed4d35d7a346a8a33bccaf9516e09843c1fad1f6"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+          "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+          "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/permanent/token/PilotSaddleCrewToken.java",
+          "sha256": "6baa82d26e400013e81e4a917ac7ab7b2a1b03e2f1bd1e0b7cd7c0f18db03db5"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/CrewSaddleIncreasedPowerAbility.java",
+          "sha256": "acbdad8faa6f24f7e1793367b07ce3dc0944b6068fee6dbf14286bb3579fb398"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+          "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+          "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/BlackManaAbility.java",
+          "sha256": "c7c69b99a3cc42aa1be3926c5f631440e6a34cb0156dd5065ab32204e954d28f"
+        }
+      ],
+      "printed_obligations": [
+        {
+          "clause": "Enters tapped unless controlled Mount or Vehicle",
+          "test": "roads_entry_checks_the_actual_controller_and_either_subtype"
+        },
+        {
+          "clause": "Tap for printed single color",
+          "test": "roads_pay_colored_sorcery_cost_and_create_the_real_pilot"
+        },
+        {
+          "clause": "1+colored,tap,sacrifice at sorcery speed creates 1/1 colorless Pilot with +2 crew/saddle contribution",
+          "test": "roads_pay_colored_sorcery_cost_and_create_the_real_pilot; country_roads_pilot_actually_crews_and_saddles_on_owned_branches"
+        }
+      ],
+      "runtime_status": "pending root focused run"
+    },
+    {
+      "name": "Rocky Roads",
+      "definition": "src/card_definitions/dft/rocky_roads.rs",
+      "oracle_id": "a659c29f-aaca-44c5-8426-cdafcb195f86",
+      "oracle_text": "This land enters tapped unless you control a Mount or Vehicle.\n{T}: Add {R}.\n{1}{R}, {T}, Sacrifice this land: Create a 1/1 colorless Pilot creature token with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\" Activate only as a sorcery.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/r/RockyRoads.java",
+        "sha256": "56ce9024b7eb881795873f48af6dbcc2e35e51a1a668145e305b21fdb4f3f135"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedUnlessAbility.java",
+          "sha256": "389f076d5e9c21e7e868cef5ed4d35d7a346a8a33bccaf9516e09843c1fad1f6"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+          "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+          "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/permanent/token/PilotSaddleCrewToken.java",
+          "sha256": "6baa82d26e400013e81e4a917ac7ab7b2a1b03e2f1bd1e0b7cd7c0f18db03db5"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/CrewSaddleIncreasedPowerAbility.java",
+          "sha256": "acbdad8faa6f24f7e1793367b07ce3dc0944b6068fee6dbf14286bb3579fb398"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+          "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+          "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/RedManaAbility.java",
+          "sha256": "1648a5c546271d42dd7cb1e3b988d6be224431812867755b96dd633593a5b8ee"
+        }
+      ],
+      "printed_obligations": [
+        {
+          "clause": "Enters tapped unless controlled Mount or Vehicle",
+          "test": "roads_entry_checks_the_actual_controller_and_either_subtype"
+        },
+        {
+          "clause": "Tap for printed single color",
+          "test": "roads_pay_colored_sorcery_cost_and_create_the_real_pilot"
+        },
+        {
+          "clause": "1+colored,tap,sacrifice at sorcery speed creates 1/1 colorless Pilot with +2 crew/saddle contribution",
+          "test": "roads_pay_colored_sorcery_cost_and_create_the_real_pilot; country_roads_pilot_actually_crews_and_saddles_on_owned_branches"
+        }
+      ],
+      "runtime_status": "pending root focused run"
+    },
+    {
+      "name": "Wild Roads",
+      "definition": "src/card_definitions/dft/wild_roads.rs",
+      "oracle_id": "36fbc8ba-bb4c-4e5e-9031-78c36e376851",
+      "oracle_text": "This land enters tapped unless you control a Mount or Vehicle.\n{T}: Add {G}.\n{1}{G}, {T}, Sacrifice this land: Create a 1/1 colorless Pilot creature token with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\" Activate only as a sorcery.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/w/WildRoads.java",
+        "sha256": "589f127215ecb4dc5996d7ca4b8e10ab309c19e2059bf46499eb3b533879bea8"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedUnlessAbility.java",
+          "sha256": "389f076d5e9c21e7e868cef5ed4d35d7a346a8a33bccaf9516e09843c1fad1f6"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+          "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+          "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/permanent/token/PilotSaddleCrewToken.java",
+          "sha256": "6baa82d26e400013e81e4a917ac7ab7b2a1b03e2f1bd1e0b7cd7c0f18db03db5"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/CrewSaddleIncreasedPowerAbility.java",
+          "sha256": "acbdad8faa6f24f7e1793367b07ce3dc0944b6068fee6dbf14286bb3579fb398"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+          "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+          "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/GreenManaAbility.java",
+          "sha256": "77cae7fc213823ee0bdb2f8447f60c1323776dae061b5062edacc26fd304808c"
+        }
+      ],
+      "printed_obligations": [
+        {
+          "clause": "Enters tapped unless controlled Mount or Vehicle",
+          "test": "roads_entry_checks_the_actual_controller_and_either_subtype"
+        },
+        {
+          "clause": "Tap for printed single color",
+          "test": "roads_pay_colored_sorcery_cost_and_create_the_real_pilot"
+        },
+        {
+          "clause": "1+colored,tap,sacrifice at sorcery speed creates 1/1 colorless Pilot with +2 crew/saddle contribution",
+          "test": "roads_pay_colored_sorcery_cost_and_create_the_real_pilot; country_roads_pilot_actually_crews_and_saddles_on_owned_branches"
+        }
+      ],
+      "runtime_status": "pending root focused run"
+    }
+  ]
+}
