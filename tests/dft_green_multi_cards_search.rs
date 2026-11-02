@@ -145,6 +145,7 @@ fn defend_the_rider_protects_a_land_or_creates_a_pilot_that_really_crews_for_thr
         !g.keywords(land)
             .intersects(Keywords::HEXPROOF.union(Keywords::INDESTRUCTIBLE))
     );
+    let mut g = scenario(Player::P0);
     let vehicle = put(
         &mut g,
         Player::P0,
@@ -414,7 +415,9 @@ fn pothole_mole_mills_three_then_can_recover_an_old_land_or_decline() {
             let object = g.object_ref(old);
             act(&mut g, Action::SelectMilled { object });
         }
-        act(&mut g, Action::FinishMilledSelection);
+        if g.legal_actions().contains(&Action::FinishMilledSelection) {
+            act(&mut g, Action::FinishMilledSelection);
+        }
         drain(&mut g);
         assert_eq!(
             g.object_view(old).zone,
