@@ -196,7 +196,8 @@ fn pending_foreign_attachment_preserves_lookback_across_raw_index_and_restore() 
     );
     act(&mut g, action);
     assert_eq!(g.snapshot(), owned.snapshot());
-    assert_eq!(g.state.pending_triggers.len(), 1);
+    // Applying the Aura choice may already publish the captured trigger.
+    assert_eq!(g.state.pending_triggers.len() + g.state.stack.len(), 1);
     finish(&mut g);
     finish(&mut owned);
     assert_eq!(g.snapshot(), owned.snapshot());
