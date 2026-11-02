@@ -1,4 +1,5 @@
 //! Shared cost contracts only: no ordinary DFT definition or admission changes.
+use rustmage as _;
 mod support;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
