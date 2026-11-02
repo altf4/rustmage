@@ -936,7 +936,7 @@ impl Game {
         item: &mut SpellView,
         payment: Mana,
         counter_payment: Counters,
-        ability: u16,
+        _ability: u16,
         definition: &ActivatedAbility,
     ) -> Option<ActivationPaymentPhase> {
         if !self.start_activation_payment(item, payment, counter_payment, definition) {
@@ -959,7 +959,7 @@ impl Game {
     pub(super) fn resume_activation_costs(
         &mut self,
         item: &mut SpellView,
-        ability: u16,
+        _ability: u16,
         definition: &ActivatedAbility,
         phase: ActivationPaymentPhase,
     ) -> Option<ActivationPaymentPhase> {
