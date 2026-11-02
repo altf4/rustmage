@@ -629,6 +629,19 @@ fn foreign_as_entry_copy_that_invalidates_a_parent_cast_is_kept_with_its_mana_ev
         Zone::Hand,
         "the copied Aura removes the remaining producer's mana ability"
     );
+    assert!(matches!(g.state.pending, Pending::ManaRollback { .. }));
+    let keep = Action::ChooseManaRollback { keep: true };
+    let mut indexed = g.clone();
+    let index = indexed
+        .legal_actions()
+        .iter()
+        .position(|action| *action == keep)
+        .expect("the exact completed mana event can be retained");
+    let actor = indexed.actor().unwrap();
+    let revision = indexed.revision();
+    act(&mut g, keep);
+    indexed.apply_index(actor, revision, index).unwrap();
+    assert_eq!(g.snapshot(), indexed.snapshot());
     assert_eq!(g.state.objects[mana as usize].zone, Zone::Graveyard);
     assert_eq!(
         g.state.objects[returning as usize].zone,
