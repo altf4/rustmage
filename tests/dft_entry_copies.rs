@@ -760,9 +760,13 @@ fn a_simultaneously_departing_battlefield_blueprint_remains_copyable() {
         let mut g = scenario(Player::P0);
         let blueprint = put(&mut g, Player::P0, "Savannah Lions", Zone::Battlefield);
         let incoming = put(&mut g, Player::P0, "Grizzly Bears", Zone::Graveyard);
+        let mut blueprint_move = g.entry_move(blueprint, destination, false);
+        // A completed/no-op row is explicitly skipped; same-zone movement is
+        // an ordering operation and must not be committed as a zone change.
+        blueprint_move.skipped = destination == Zone::Battlefield;
         let moves = vec![
             g.entry_move(incoming, Zone::Battlefield, false),
-            g.entry_move(blueprint, destination, false),
+            blueprint_move,
         ];
         let world = FundingState::from_game(&g, &goal(Player::P0));
         let mut projected = false;
