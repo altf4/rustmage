@@ -951,6 +951,9 @@ pub enum CostAction {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum DelayedTargetEvent {
     DiesOnce,
+    /// Exact watched permanent enters a graveyard under this packet's controller;
+    /// unlike generic DiesOnce, it need not still be a creature (TDM ruling).
+    GraveyardUnderControllerOnce,
     CombatDamageToPlayer,
 }
 
@@ -2943,6 +2946,10 @@ pub enum Instruction {
         amount: u16,
     },
     PutSourceCountersOnTargets,
+    /// The complete frozen multiset on the independent creature which died.
+    PutEventCountersOnTargets,
+    /// Destroy the exact untargeted entrant, independently of later type/control.
+    DestroyEntering,
     /// Choose and remove up to this many counters from one targeted permanent.
     RemoveUpToTargetCounters(u16),
     /// Optional non-targeted source-counter removal; an actual removal queues the named reflexive trigger.
@@ -4602,6 +4609,10 @@ pub enum TriggerCondition {
         own_turn: bool,
     },
     AttachedCreatureDies,
+    /// Freeze the dying creature's positive counter kinds, including self.
+    CreatureDiesWithCounters {
+        relation: CastRelation,
+    },
     CreatureDies {
         relation: CastRelation,
         other: bool,
@@ -4742,6 +4753,8 @@ pub enum TriggerCondition {
     },
     ArtifactEntersYou,
     EnchantmentEntersYou,
+    /// Entry under your control of an actual spell cast by you.
+    CreatureEntersYouIfCast,
     CreatureEntersYou,
     OtherArtifactEntersYou,
     LandEntersYou,

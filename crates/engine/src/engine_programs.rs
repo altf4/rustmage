@@ -738,6 +738,19 @@ impl Game {
                         TriggerCondition::SelfDies | TriggerCondition::SelfEntersOrDies => {
                             source.reference == event.before.reference
                         }
+                        TriggerCondition::CreatureDiesWithCounters { relation } => {
+                            event.before.is_creature()
+                                && event.before.counters.has_any()
+                                && match relation {
+                                    CastRelation::You => {
+                                        source.controller == event.before.controller
+                                    }
+                                    CastRelation::Opponent => {
+                                        source.controller != event.before.controller
+                                    }
+                                    CastRelation::Any => true,
+                                }
+                        }
                         TriggerCondition::CreatureDies {
                             relation,
                             other,
@@ -841,6 +854,19 @@ impl Game {
                         _ => false,
                     };
                     if matched && self.queue_zone_trigger(source, index, event) {
+                        if ability.program.iter().any(|instruction| {
+                            matches!(instruction, Instruction::PutEventCountersOnTargets)
+                        }) {
+                            self.state.pending_triggers.last_mut().unwrap().event_object =
+                                Some(Box::new(EventObjectView {
+                                    object: event.before.reference,
+                                    facts: EventObjectFacts::DeathCounters(
+                                        event.before.counters.clone(),
+                                    ),
+                                    conniver_creature: None,
+                                    subtype_lki: None,
+                                }));
+                        }
                         if matches!(ability.condition.event(), TriggerCondition::ReturnDeath(_)) {
                             self.capture_return_death(event);
                         }
@@ -980,6 +1006,7 @@ impl Game {
                     | TriggerCondition::SelfLeaves
                     | TriggerCondition::ReturnDeath(_)
                     | TriggerCondition::CreatureDies { .. }
+                    | TriggerCondition::CreatureDiesWithCounters { .. }
                     | TriggerCondition::OtherControlledPermanentWithSubtypeDies { .. }
                     | TriggerCondition::AttachedCreatureDies
                     | TriggerCondition::PermanentToGraveyard { .. }
@@ -1114,6 +1141,15 @@ impl Game {
                     }
                     TriggerCondition::ArtifactEntersYou => yours && entered.kinds & 16 != 0,
                     TriggerCondition::EnchantmentEntersYou => yours && entered.kinds & 32 != 0,
+                    TriggerCondition::CreatureEntersYouIfCast => {
+                        yours
+                            && entered.is_creature()
+                            && event.was_cast
+                            && event
+                                .cast_event
+                                .as_ref()
+                                .is_some_and(|cast| cast.controller == source.controller)
+                    }
                     TriggerCondition::CreatureEntersYou => yours && entered.is_creature(),
                     TriggerCondition::LandEntersYou => yours && entered.kinds & 2 != 0,
                     TriggerCondition::OtherArtifactEntersYou => {
@@ -5633,6 +5669,25 @@ impl Game {
                         };
                         return;
                     }
+                }
+                Instruction::DestroyEntering => {
+                    if let Some(id) = self.entering_subject(&item)
+                        && !self.effect_destruction_prevented(id)
+                    {
+                        self.move_object(id, Zone::Graveyard);
+                    }
+                }
+                Instruction::PutEventCountersOnTargets => {
+                    let event = item.event_object.as_ref().expect("counter event facts");
+                    let EventObjectFacts::DeathCounters(counters) = &event.facts else {
+                        unreachable!("counter event facts")
+                    };
+                    let changes = self
+                        .keyword_subjects(&item, Subject::Targets)
+                        .into_iter()
+                        .map(|id| (self.object_ref(id), counters.clone()))
+                        .collect();
+                    self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
                 Instruction::PutSourceCountersOnTargets => {
                     let mut counters = Counters::default();

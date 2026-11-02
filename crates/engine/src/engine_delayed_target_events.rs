@@ -78,7 +78,15 @@ impl Game {
                 retained.push(row);
                 continue;
             }
-            if row.event == DelayedTargetEvent::DiesOnce && dies {
+            let matches = match row.event {
+                DelayedTargetEvent::DiesOnce => dies,
+                DelayedTargetEvent::GraveyardUnderControllerOnce => {
+                    event.destination == Zone::Graveyard
+                        && event.before.controller == row.packet.controller
+                }
+                DelayedTargetEvent::CombatDamageToPlayer => false,
+            };
+            if matches {
                 let mut packet = row.packet;
                 packet.id = self.next_stack_id();
                 self.state.pending_triggers.push(packet);

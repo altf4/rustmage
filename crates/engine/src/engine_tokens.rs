@@ -255,6 +255,9 @@ impl Game {
     }
 
     pub(super) fn cease_token(&mut self, id: CardId) {
+        if self.state.objects[id as usize].zone == Zone::Graveyard {
+            self.unregister_graveyard_sources(id);
+        }
         self.clear_copy_recipe(self.object_ref(id));
         let object = &mut self.state.objects[id as usize];
         assert!(object.is_token());

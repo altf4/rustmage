@@ -21,6 +21,28 @@ impl Game {
         }) {
             self.state.damage_sources.push(id);
         }
+        if triggers.iter().any(|ability| {
+            ability.condition.origin() == Some(TargetZone::Graveyard)
+                && matches!(
+                    ability.condition.event(),
+                    TriggerCondition::CreatureDies { .. }
+                )
+        }) {
+            self.state.death_sources.push(id);
+        }
+    }
+    /// Ceasing a token/card copy is not a zone change, but must release its
+    /// graveyard observer indexes before the reusable object slot is occupied.
+    pub(super) fn unregister_graveyard_sources(&mut self, id: CardId) {
+        if self.state.death_sources.contains(&id) {
+            self.state.death_sources.retain(|&source| source != id);
+        }
+        if self.state.step_sources.contains(&id) {
+            self.state.step_sources.retain(|&source| source != id);
+        }
+        if self.state.damage_sources.contains(&id) {
+            self.state.damage_sources.retain(|&source| source != id);
+        }
     }
     pub(super) fn register_battlefield_sources(&mut self, id: CardId) {
         let object = self.object_ref(id);
@@ -162,6 +184,7 @@ impl Game {
                     | TriggerCondition::ReturnDeath(_)
                     | TriggerCondition::SelfEntersOrDies
                     | TriggerCondition::CreatureDies { .. }
+                    | TriggerCondition::CreatureDiesWithCounters { .. }
                     | TriggerCondition::OtherControlledPermanentWithSubtypeDies { .. }
                     | TriggerCondition::AttachedCreatureDies
                     | TriggerCondition::PermanentToGraveyard { .. }

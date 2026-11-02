@@ -72,6 +72,9 @@ impl Game {
                 .library
                 .retain(|&id| id != reference.card);
         }
+        if self.state.objects[reference.card as usize].zone == Zone::Graveyard {
+            self.unregister_graveyard_sources(reference.card);
+        }
         self.state
             .exile_permissions
             .retain(|p| p.object != reference);

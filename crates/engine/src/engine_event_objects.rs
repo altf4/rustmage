@@ -28,6 +28,8 @@ impl CreatureComparisonFacts {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub enum EventObjectFacts {
+    /// Immutable pre-death multiset; never refreshed from a live/new incarnation.
+    DeathCounters(Counters),
     DamageActor(DamageSource),
     /// Current or latest battlefield controller of an exact untargeted recipient.
     Controller(Player),
@@ -46,6 +48,16 @@ pub struct EventObjectView {
     /// Opt-in last-known characteristics for a later subtype condition.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subtype_lki: Option<DamageFacts>,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl EventObjectView {
+    pub(super) fn owned_bytes(&self) -> usize {
+        std::mem::size_of::<Self>()
+            + match &self.facts {
+                EventObjectFacts::DeathCounters(counters) => counters.owned_bytes(),
+                _ => 0,
+            }
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn actor(view: &ObjectView) -> DamageSource {
@@ -153,6 +165,7 @@ impl Game {
                     e.subtype_lki = Some(damage.facts);
                 }
                 e.facts = match e.facts {
+                    EventObjectFacts::DeathCounters(_) => continue,
                     EventObjectFacts::DamageActor(_) => EventObjectFacts::DamageActor(*damage),
                     EventObjectFacts::Copiable(_) => EventObjectFacts::Copiable(*recipe),
                     EventObjectFacts::Controller(_) => {

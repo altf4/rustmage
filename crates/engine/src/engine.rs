@@ -1736,7 +1736,7 @@ impl SpellView {
             + self
                 .event_object
                 .as_ref()
-                .map_or(0, |_| std::mem::size_of::<EventObjectView>())
+                .map_or(0, |event| event.owned_bytes())
             + self.manifest_event.as_ref().map_or(0, |event| {
                 std::mem::size_of::<ManifestDreadEvent>()
                     + event.graveyard_cards.len() * std::mem::size_of::<ObjectRef>()
@@ -8897,8 +8897,7 @@ impl Game {
             "same-zone moves are ordering operations except re-exile"
         );
         if before.zone == Zone::Graveyard {
-            self.state.step_sources.retain(|&source| source != id);
-            self.state.damage_sources.retain(|&source| source != id);
+            self.unregister_graveyard_sources(id);
         }
         self.forget_suspend_card(before.reference);
         self.forget_borrowed_source(before.reference);
