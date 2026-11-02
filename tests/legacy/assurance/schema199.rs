@@ -34,6 +34,7 @@ const NEW_FIELDS: &[&str] = &[
     "zombie",
 ];
 const NEW_VARIANTS: &[&str] = &[
+    "DeployPermanents",
     "FinishAdditionalCostGroup",
     "AnnounceGraveyardAdditionalCosts",
     "AnnounceGrantedMana",
@@ -519,7 +520,8 @@ fn instruction_players_supported(instruction: Instruction) -> bool {
 fn program_supported(program: &[Instruction]) -> bool {
     program.iter().all(|instruction| {
         instruction_players_supported(*instruction) && match *instruction {
-            Instruction::GrowFilteredScaled { .. }
+            Instruction::DeployHandPermanents
+            | Instruction::GrowFilteredScaled { .. }
             | Instruction::GrantEmbalmTargets
             | Instruction::CreateEmbalmedSourceCopy
             | Instruction::CopySourceFromLinkedExile { .. }
@@ -1932,4 +1934,48 @@ fn prior_198_rejects_the_new_filtered_signed_growth_program() {
         power: 1,
         toughness: 1
     }]));
+}
+
+#[test]
+fn prior_198_rejects_new_private_deployment_mode_even_when_opponent_cannot_see_kind() {
+    use card_rules::authored::CardRules;
+    const SOURCE: CardRules = CardRules {
+        effect: Effect::Creature(2, 2),
+        activated: &[ActivatedAbility {
+            exhaust: false,
+            guard: ActivationGuard::Always,
+            origin: ActivationOrigin::Battlefield,
+            cycling: false,
+            cost: ActivationCost::ZERO,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::DeployHandPermanents],
+            sorcery: false,
+            once_per_turn: false,
+        }],
+        ..CardRules::EMPTY
+    };
+    assert!(!wire_supported(&HandChoiceKind::DeployPermanents));
+    assert!(wire_supported(&HandChoiceKind::DeployCreatures));
+    assert!(!program_supported(&[Instruction::DeployHandPermanents]));
+    assert!(program_supported(&[Instruction::DeployHandCreaturesEach]));
+    let _scope = card_rules::fixture_rules::activate(&[(Card::GrizzlyBears, &SOURCE)]);
+    let mut game = scenario(Player::P0);
+    let source = put(&mut game, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    let clean = game.snapshot();
+    let item = game.activation_packet(Player::P0, source, 0);
+    game.start_controller_hand_permanent_deployment(&item);
+    assert!(game.observe(Player::P1).hand_choice.is_none());
+    assert!(
+        wire_supported(&game.observe(Player::P1)),
+        "the old-shaped public count does not reveal the private new mode"
+    );
+    assert!(!prior_schema199_state_supported(&game.state));
+    let selected = game.snapshot();
+    let mut child = game.clone();
+    drop(game);
+    assert!(!prior_schema199_state_supported(&child.state));
+    child.restore(&clean).unwrap();
+    assert!(prior_schema199_state_supported(&child.state));
+    child.restore(&selected).unwrap();
+    assert!(!prior_schema199_state_supported(&child.state));
 }

@@ -354,6 +354,13 @@
         "ExileRevealedKinds { kinds: u16 }"
       ],
       "contract": "New positive-kind required selection after full public reveal. Existing ChooseHandCard action and hand_card_choice pending shape stay unchanged; reject the two new discriminants, preserve inherited DiscardRevealed and existing linked-exile variants."
+    },
+    {
+      "container": "HandChoiceKind",
+      "members": [
+        "DeployPermanents"
+      ],
+      "contract": "New controller-only private hand selection kind. HandChoiceView fields and ChooseHandCard action are inherited; new kind rejected. Opponent sees no private view."
     }
   ],
   "eligibility": [
@@ -512,6 +519,14 @@
         "GrowFilteredScaled"
       ],
       "eligibility": "New signed CountFilter group-growth semantics; reject through program_supported even though stack packet shape is inherited. No new public observation/state member."
+    },
+    {
+      "container": "ChoiceState.deployment",
+      "members": [
+        "HandDeploymentMode::ControllerPermanents",
+        "Instruction::DeployHandPermanents"
+      ],
+      "eligibility": "Existing has_opaque_interaction rejects all live deployment rows, including a new mode invisible to the opposing observation. The new immutable instruction is separately rejected by program_supported. Old APNAP creature mode keeps inherited wire shapes."
     }
   ],
   "focused_tests": {

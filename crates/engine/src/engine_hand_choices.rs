@@ -5,6 +5,7 @@ use super::*;
 pub enum HandChoiceKind {
     LookDiscardDraw,
     DeployCreatures,
+    DeployPermanents,
     RevealSubset,
     DiscardRevealed,
     /// Mandatory one-card choice from a publicly revealed hand, using a positive kind union.
@@ -305,7 +306,7 @@ impl Game {
         }
         let o = &self.state.objects[reference.card as usize];
         match interaction.kind {
-            HandChoiceKind::DeployCreatures => unreachable!(),
+            HandChoiceKind::DeployCreatures | HandChoiceKind::DeployPermanents => unreachable!(),
             HandChoiceKind::LookDiscardDraw
             | HandChoiceKind::RevealSubset
             | HandChoiceKind::DiscardRevealed => {
@@ -340,7 +341,7 @@ impl Game {
         }
     }
     pub(super) fn visit_hand_card_choices(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
-        if self.hand_deployment().is_some() {
+        if self.hand_deployment_active() {
             return self.visit_hand_deployment(emit);
         }
         let interaction = self
@@ -372,7 +373,7 @@ impl Game {
             })
     }
     pub(super) fn choose_hand_card(&mut self, object: Option<ObjectRef>) {
-        if self.hand_deployment().is_some() {
+        if self.hand_deployment_active() {
             self.choose_hand_deployment(object);
             return;
         }
@@ -457,7 +458,9 @@ impl Game {
                         self.untap_objects(&[land.card], untap_rules::UntapCause::Effect);
                     }
                 }
-                HandChoiceKind::RevealSubset | HandChoiceKind::DeployCreatures => unreachable!(),
+                HandChoiceKind::RevealSubset
+                | HandChoiceKind::DeployCreatures
+                | HandChoiceKind::DeployPermanents => unreachable!(),
             }
         }
         if interaction.kind == HandChoiceKind::Behold {
@@ -470,7 +473,7 @@ impl Game {
         {
             return None;
         }
-        if self.hand_deployment().is_some() {
+        if self.hand_deployment_active() {
             return self.hand_deployment_view(viewer);
         }
         let interaction = self.state.linked_choices.as_ref()?.hand.as_ref()?;

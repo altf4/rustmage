@@ -1,9 +1,16 @@
 //! Exact exile results and APNAP private hand selections with simultaneous entry.
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum HandDeploymentMode {
+    CreaturesEach,
+    ControllerPermanents,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct HandDeployment {
     players: [Player; 2],
+    mode: HandDeploymentMode,
     next: usize,
     selected: [Vec<ObjectRef>; 2],
     counts: [Option<usize>; 2],
@@ -16,6 +23,15 @@ pub struct HandDeploymentView {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl HandDeployment {
+    fn player_count(&self) -> usize {
+        match self.mode {
+            HandDeploymentMode::CreaturesEach => 2,
+            HandDeploymentMode::ControllerPermanents => 1,
+        }
+    }
+    fn actor(&self) -> Option<Player> {
+        (self.next < self.player_count()).then(|| self.players[self.next])
+    }
     pub(super) fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + self.selected.iter().map(Vec::len).sum::<usize>() * std::mem::size_of::<ObjectRef>()
@@ -76,18 +92,33 @@ impl Game {
     pub(super) fn hand_deployment(&self) -> Option<&HandDeployment> {
         self.state.linked_choices.as_ref()?.deployment.as_deref()
     }
+    pub(super) fn hand_deployment_active(&self) -> bool {
+        self.hand_deployment()
+            .is_some_and(|deployment| deployment.actor().is_some())
+    }
     pub(super) fn start_hand_deployment(&mut self) {
-        let player = self.state.active;
+        self.start_hand_deployment_mode(self.state.active, HandDeploymentMode::CreaturesEach);
+    }
+    pub(super) fn start_controller_hand_permanent_deployment(&mut self, item: &SpellView) {
+        self.start_hand_deployment_mode(item.controller, HandDeploymentMode::ControllerPermanents);
+    }
+    fn start_hand_deployment_mode(&mut self, player: Player, mode: HandDeploymentMode) {
         self.state.linked_choices.get_or_insert_default().deployment =
             Some(Box::new(HandDeployment {
                 players: [player, player.other()],
+                mode,
                 next: 0,
                 selected: std::array::from_fn(|_| Vec::new()),
                 counts: [None; 2],
             }));
         self.state.pending = Pending::HandCardChoice { player };
     }
-    fn deployment_candidate(&self, player: Player, object: ObjectRef) -> bool {
+    fn deployment_object_eligible(
+        &self,
+        player: Player,
+        object: ObjectRef,
+        mode: HandDeploymentMode,
+    ) -> bool {
         let Some(o) = self.state.objects.get(object.card as usize) else {
             return false;
         };
@@ -95,12 +126,23 @@ impl Game {
             && o.zone == Zone::Hand
             && o.owner == player
             && o.is_card()
-            && o.card.is_creature()
-            && !self.hand_deployment().unwrap().selected[player.index()].contains(&object)
+            && match mode {
+                HandDeploymentMode::CreaturesEach => o.card.is_creature(),
+                HandDeploymentMode::ControllerPermanents => PermanentType::ALL
+                    .into_iter()
+                    .any(|kind| o.card.kind_mask() & kind.mask() != 0),
+            }
+    }
+    fn deployment_candidate(&self, player: Player, object: ObjectRef) -> bool {
+        let deployment = self.hand_deployment().unwrap();
+        self.deployment_object_eligible(player, object, deployment.mode)
+            && !deployment.selected[player.index()].contains(&object)
     }
     pub(super) fn visit_hand_deployment(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
         let d = self.hand_deployment().unwrap();
-        let player = d.players[d.next];
+        let Some(player) = d.actor() else {
+            return false;
+        };
         if emit(Action::ChooseHandCard { object: None }) {
             return true;
         }
@@ -115,18 +157,21 @@ impl Game {
     pub(super) fn public_hand_deployment_view(&self) -> Option<HandDeploymentView> {
         let d = self.hand_deployment()?;
         Some(HandDeploymentView {
-            actor: d.players.get(d.next).copied(),
+            actor: d.actor(),
             selected_counts: d.counts,
         })
     }
     pub(super) fn hand_deployment_view(&self, viewer: Player) -> Option<HandChoiceView> {
         let d = self.hand_deployment()?;
-        let actor = d.players[d.next];
+        let actor = d.actor()?;
         if !self.shares_information(viewer, actor) {
             return None;
         }
         Some(HandChoiceView {
-            kind: HandChoiceKind::DeployCreatures,
+            kind: match d.mode {
+                HandDeploymentMode::CreaturesEach => HandChoiceKind::DeployCreatures,
+                HandDeploymentMode::ControllerPermanents => HandChoiceKind::DeployPermanents,
+            },
             inspected_cards: None,
             actor,
             victim: Some(actor),
@@ -161,7 +206,7 @@ impl Game {
         }
         d.counts[player.index()] = Some(d.selected[player.index()].len());
         d.next += 1;
-        if d.next < 2 {
+        if d.next < d.player_count() {
             self.state.pending = Pending::HandCardChoice {
                 player: d.players[d.next],
             };
@@ -176,17 +221,22 @@ impl Game {
             .as_mut()
             .unwrap();
         let players = d.players;
+        let player_count = d.player_count();
+        let mode = d.mode;
         let selected = std::mem::take(&mut d.selected);
         let moves = players
             .into_iter()
-            .flat_map(|p| selected[p.index()].iter().copied())
-            .filter(|r| {
-                self.object_ref(r.card) == *r
-                    && self.state.objects[r.card as usize].zone == Zone::Hand
+            .take(player_count)
+            .flat_map(|player| {
+                selected[player.index()]
+                    .iter()
+                    .copied()
+                    .map(move |r| (player, r))
             })
-            .map(|r| {
+            .filter(|(player, r)| self.deployment_object_eligible(*player, *r, mode))
+            .map(|(player, r)| {
                 let mut m = self.entry_move(r.card, Zone::Battlefield, false);
-                m.controller = m.before.owner;
+                m.controller = player;
                 m
             })
             .collect();

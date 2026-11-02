@@ -1,0 +1,83 @@
+{
+  "scope": "Generic controller-only simultaneous private hand-permanent deployment; no ordinary card behavior or admission edits.",
+  "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "full_sources_read": [
+    {
+      "path": "Mage.Sets/src/mage/cards/r/RedshiftRocketeerChief.java",
+      "sha256": "944137d0116de9bbcbc5704ee417fc1af43634bb001336dd5717dc371c4004af"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInHand.java",
+      "sha256": "0b88ed18c6053986dc57c50ac6363da0acacc35899724fae164813085a428f88"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/ExhaustAbility.java",
+      "sha256": "8a3ebcdcf390152bc354a8493189b1d182befe3c3dc0002f1380744a3500d515"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/builder/common/ActivatedAbilityManaBuilder.java",
+      "sha256": "5e3d352765c77caf9ff18b8b1738d63e867238acad62818d22d515ef364e7cb5"
+    }
+  ],
+  "primitives_reused": [
+    "HandDeployment exact private selected refs, APNAP existing mode, existing ChooseHandCard and HandCardChoice",
+    "one EntryMove vector and existing batch replacements, Aura choice, pre-entry copy/exile/counter/tap/identity pipeline",
+    "existing shared immutable physical permanent-type masks; no names or catalogue arrays in engine",
+    "existing snapshots/raw-index actions and ChoiceState private byte accounting"
+  ],
+  "new_interfaces": [
+    "Instruction::DeployHandPermanents",
+    "HandChoiceKind::DeployPermanents",
+    "internal HandDeploymentMode::ControllerPermanents"
+  ],
+  "preserved_interfaces": [
+    "ChooseHandCard action wire unchanged",
+    "HandChoiceView and HandDeploymentView field shapes unchanged",
+    "DeployHandCreaturesEach still selects both players APNAP, creature cards only, and enters them together"
+  ],
+  "semantics": [
+    "The resolving item controller selects exact own hand permanent cards, including lands, creatures, artifacts, enchantments, planeswalkers and any supported battle identities; instants/sorceries and foreign/stale/duplicate refs are ineligible.",
+    "Zero selections are legal; only the controller acts. Private candidate/selected identities and unfinished counts are unavailable to the other viewer; no selected card moves and no entry trigger is queued until Finish.",
+    "Finish revalidates exact selected refs and stages one simultaneous EntryMove batch. Ordinary replacement/prevention, Aura and as-entry copy choices apply to that batch. Simultaneous new objects are not pre-event Aura recipients or copy blueprints.",
+    "All entry choices complete before the next resolving instruction. Completed deployment metadata no longer intercepts a subsequent hand selector, while old public completed counts remain available until normal resolution cleanup.",
+    "Noncast permanent entrants use entry X=0. They are not cast, and no activation or spell parent chosen-X value is implicitly forwarded."
+  ],
+  "wire_and_owned_contract": {
+    "public": "Only the new HandChoiceKind discriminant is new JSON. Existing private view/action/count field shapes stay unchanged. Prior198 check rejects DeployPermanents and the new immutable program.",
+    "owned": "One mode enum added to existing cold HandDeployment row, placed beside players. No new State/SpellView/Object fields or separate choice vector. Existing ChoiceState.has_opaque_interaction already rejects every live deployment, including new mode hidden from opponent observation.",
+    "layout": "Root focused test prints HandDeployment/HandChoiceKind representation sizes; no Cargo run by author.",
+    "schema": "Unpublished199 batch, no central marker or corpus edits."
+  },
+  "coordination": "Positive hand selection73c8998a0 equivalentb527d8455 retained; shared interception predicates changed only from stored deployment existence to active deployment selection. Followup positive-selector composition has a focused regression.",
+  "focused_target": "dft_hand_permanent_deployment_engine",
+  "cases": [
+    "controller_only_private_selection_can_decline_on_an_opponents_turn_without_second_player_phase",
+    "simultaneous_selected_creatures_observe_each_other_and_partial_private_choices_do_not_move",
+    "every_available_permanent_card_kind_enters_together_and_the_cards_were_not_cast",
+    "aura_choices_use_existing_battlefield_objects_and_never_simultaneous_incoming_creatures",
+    "as_entry_copy_uses_existing_blueprints_and_never_other_incoming_selected_objects",
+    "a_prevented_entry_does_not_consume_other_selected_cards_or_rebind_a_stale_selection",
+    "owned_private_selection_can_finish_independently_after_parent_drop_raw_index_and_restore",
+    "completed_deployment_metadata_does_not_intercept_a_following_positive_hand_selector",
+    "inherited_each_player_creature_deployment_keeps_apnap_order_and_simultaneous_entries",
+    "noncast_hand_entrants_do_not_inherit_a_resolving_parent_spells_chosen_x"
+  ],
+  "prior_schema_test": "prior_198_rejects_new_private_deployment_mode_even_when_opponent_cannot_see_kind",
+  "validation": {
+    "rustfmt": "passed edition2024",
+    "git_diff_check": "passed",
+    "Cargo": "Not run by author. Root owns combined guarded production/all-target/focused validation and source freeze."
+  },
+  "rules_reference": {
+    "url": "https://media.wizards.com/2025/downloads/MagicCompRules%2020250919.pdf",
+    "sections": [
+      "101.4",
+      "107.3g",
+      "303.4f",
+      "400.7",
+      "614.12",
+      "614.13"
+    ],
+    "use": "Controller/private choice, noncast X, Aura entry recipients, exact incarnations and simultaneous entry replacement choices."
+  }
+}

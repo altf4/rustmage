@@ -2176,6 +2176,9 @@ pub enum Instruction {
     /// Exile creatures simultaneously and count only those actually exiled, including tokens.
     ExileAllCreaturesCount,
     DeployHandCreaturesEach,
+    /// Privately choose any number of the resolving controller's hand permanents,
+    /// then put the exact chosen cards onto the battlefield simultaneously.
+    DeployHandPermanents,
     ReturnExiledResultToHands,
     ExileDamagedLibraryUntilNonland,
     MayCounterSourceOtherwiseCast,

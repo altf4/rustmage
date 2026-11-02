@@ -4863,6 +4863,10 @@ impl Game {
                 }
                 Instruction::ExileAllCreaturesRemember => self.exile_all_creatures_remember(),
                 Instruction::ExileAllCreaturesCount => self.exile_all_creatures_count(),
+                Instruction::DeployHandPermanents => {
+                    self.start_controller_hand_permanent_deployment(&item);
+                    return;
+                }
                 Instruction::DeployHandCreaturesEach => {
                     self.start_hand_deployment();
                     return;
