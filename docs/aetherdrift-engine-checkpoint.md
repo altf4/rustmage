@@ -108,3 +108,5 @@ remains historical evidence; its reusable outputs are preserved.
 Reentry accepted at `8657c4e6c`: all seven followups and the activated source-quantity lifecycle repair pass 3,415 combined cases, two independent nonauthor reviews, exact inherited trace comparison, strict baseline promotion, and a fresh-engine-free warm-cache check. See `aetherdrift-engine-freeze.json`. Ordinary card work may resume; full276-card set acceptance remains open.
 
 Permanent spell cast-copy reentry accepted at `9000f120b`. The combined checkpoint, prior-schema proof, two independent nonauthor reviews and fresh-engine-free rewarm are recorded in `aetherdrift-engine-freeze.json`. Ordinary card work may resume; full 276-card set acceptance remains open.
+
+Aggregate target-group reentry accepted at `2c7ffccc6`. The combined checkpoint, prior-schema proof, two independent nonauthor reviews and fresh-engine-free rewarm are recorded in `aetherdrift-engine-freeze.json`. Separate Trade/Junker controller-role card repairs may resume; full 276-card set acceptance remains open.

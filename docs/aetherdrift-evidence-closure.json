@@ -75,7 +75,7 @@
     ]
   },
   "newer_prepared_black_observation": {
-    "ledger_worktree": "/home/altf4/.codex/worktrees/dft-variable-costs/rustmage",
+    "ledger_worktree": "<worktree>",
     "ledger_sha256": "4249cc92f21cf8392b23ab7656d6b812a24e71f9f1f0b7986a1e98a4baa9871e",
     "additional_named_outcome_candidates": [
       "Adrenaline Jockey",
