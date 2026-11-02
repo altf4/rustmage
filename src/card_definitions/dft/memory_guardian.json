@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "041fc8db258d737faaa2112dbddcb042bfe2aa5ec57b30e3a559f059d7f493fa"
   },
-  "physical_metadata_sha256": "35c610c57601fb0b3129d66d9bc47fa39377f84182cce2ca016fd0b16bce061d"
+  "physical_metadata_sha256": "35c610c57601fb0b3129d66d9bc47fa39377f84182cce2ca016fd0b16bce061d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MemoryGuardian.java",
+  "java_sha256": "af309e3119a9e07aaadd0a371f5eb3998dd30ebbea07bfa3c29b72f299cb71fa",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/AffinityForArtifactsAbility.java",
+      "sha256": "5a56fb3667271af8fb5c5ac996d502bf9f3aa7e870415ed1a232b4da05388aa6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/AffinityAbility.java",
+      "sha256": "b1b523671266f687df90eb3003d186bb0f68f9ca99ccaffe675f25ed11f40547"
+    }
+  ]
 }

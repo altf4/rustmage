@@ -3,10 +3,25 @@
   "catalogue_id": 4801,
   "oracle_id": "3f6f4c98-ed7e-4fb1-8bfe-4210a39f77f2",
   "facts_sha256": "34dbc20f16c06760da44016416dc90ee681b32d9cc7473b93270921a812d90fd",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "916a15624161d6270a9876683a4bba680ddf7ec59b40c84be9a41989e57f8b75"
   },
-  "physical_metadata_sha256": "60a2b8940fd6f67c7742b2be6cf737f00d08bd5cdac8ede5c4dc5c67ae63fbaa"
+  "physical_metadata_sha256": "60a2b8940fd6f67c7742b2be6cf737f00d08bd5cdac8ede5c4dc5c67ae63fbaa",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UnstoppablePlan.java",
+  "java_sha256": "1f5b47548e8aa3446c69f62f10ba38daf350bcbf8735f1e333a3a98cf90028f3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapAllEffect.java",
+      "sha256": "47ebd67f929a1ed625874e7efc4fa26009e074822875002bac26772575136f3c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    }
+  ]
 }

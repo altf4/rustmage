@@ -8,5 +8,15 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "947b6847889c0a04d0d52d53f0d29a0694c994566b67e809ff57fb34a853edf2"
   },
-  "physical_metadata_sha256": "63756bae8caf12ae3ae28559fd8c548e4eb9ef2aa1ae957048540529414c8db6"
+  "physical_metadata_sha256": "63756bae8caf12ae3ae28559fd8c548e4eb9ef2aa1ae957048540529414c8db6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VoyagerQuickwelder.java",
+  "java_sha256": "37e987004eaba6823ce9398353b1e0f8b55c8fac256c6f89a936b1fb8661b22a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellsCostReductionControllerEffect.java",
+      "sha256": "47783fefecfbb22810317538f30e9e92302add21ebff508bc21f43683a85ad06"
+    }
+  ]
 }

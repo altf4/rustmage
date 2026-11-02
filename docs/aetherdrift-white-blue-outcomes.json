@@ -47,10 +47,12 @@
         "Flying, vigilance",
         "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_permanents",
+      "outcome_scenarios": [
+        "air_response_hulldrifter_and_midnight_mangler_have_their_real_crew_bodies"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; keywords/crew/attachment/stat and permission contracts shared, actual card costs and effects asserted by listed scenarios"
     },
     {
       "name": "Alacrian Armory",
@@ -110,7 +112,7 @@
       "printed_obligations": [
         "Return target creature or Vehicle to its owner's hand."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "bounce_gallant_and_parry_keep_their_distinct_targets_results_and_duration"
@@ -176,10 +178,12 @@
         "When this Vehicle enters, create a 1/1 colorless Thopter artifact creature token with flying.",
         "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_permanents",
+      "outcome_scenarios": [
+        "broadcast_and_nimble_entries_create_one_real_colorless_flying_artifact_thopter"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; keywords/crew/attachment/stat and permission contracts shared, actual card costs and effects asserted by listed scenarios"
     },
     {
       "name": "Bulwark Ox",
@@ -283,7 +287,7 @@
         "• Collision Course deals X damage to target creature, where X is the number of permanents you control that are creatures and/or Vehicles.",
         "• Destroy target artifact."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "collision_course_counts_the_creature_vehicle_union_once_and_has_an_artifact_mode"
@@ -305,10 +309,13 @@
       "printed_obligations": [
         "{3}{W}: Put a +1/+1 counter on target Mount or Vehicle."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_permanents",
+      "outcome_scenarios": [
+        "daring_mechanic_can_counter_opposing_mounts_and_uncrewed_vehicles_but_not_other_creatures"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; keywords/crew/attachment/stat and permission contracts shared, actual card costs and effects asserted by listed scenarios",
+      "rules_note": "Pinned Oracle permits any Mount or Vehicle, including opponent-controlled; relation is any, not own only."
     },
     {
       "name": "Detention Chariot",
@@ -370,7 +377,7 @@
         "When this Aura enters, tap enchanted permanent.",
         "Enchanted permanent loses all abilities and doesn't untap during its controller's untap step."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "flood_the_engine_taps_blanks_and_locks_an_uncrewed_vehicle_until_the_aura_leaves"
@@ -393,7 +400,7 @@
         "Destroy target creature with toughness 4 or greater.",
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "bounce_gallant_and_parry_keep_their_distinct_targets_results_and_duration",
@@ -417,10 +424,12 @@
         "Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.)",
         "{5}{U}: This creature can't be blocked this turn."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_permanents",
+      "outcome_scenarios": [
+        "artifact_affinity_pays_only_the_remaining_generic_and_required_blue"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; keywords/crew/attachment/stat and permission contracts shared, actual card costs and effects asserted by listed scenarios"
     },
     {
       "name": "Glitch Ghost Surveyor",
@@ -529,10 +538,12 @@
         "Flying",
         "This creature gets +1/+0 for each artifact you control."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_permanents",
+      "outcome_scenarios": [
+        "guidelight_synergist_tracks_only_its_live_controllers_artifact_count"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; keywords/crew/attachment/stat and permission contracts shared, actual card costs and effects asserted by listed scenarios"
     },
     {
       "name": "Howler's Heavy",
@@ -572,10 +583,12 @@
         "When this Vehicle enters, draw two cards.",
         "Crew 3 (Tap any number of creatures you control with total power 3 or more: This Vehicle becomes an artifact creature until end of turn.)"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_permanents",
+      "outcome_scenarios": [
+        "air_response_hulldrifter_and_midnight_mangler_have_their_real_crew_bodies"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; keywords/crew/attachment/stat and permission contracts shared, actual card costs and effects asserted by listed scenarios"
     },
     {
       "name": "Interface Ace",
@@ -661,7 +674,7 @@
         "Target creature gets +2/+2 until end of turn.",
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "bounce_gallant_and_parry_keep_their_distinct_targets_results_and_duration",
@@ -687,10 +700,12 @@
         "Enchanted permanent gets +1/+1 and has vigilance.",
         "Max speed — You may cast this card from your graveyard."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_permanents",
+      "outcome_scenarios": [
+        "lightwheel_starts_speed_enchants_a_vehicle_and_casts_normally_from_own_graveyard_at_four"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; keywords/crew/attachment/stat and permission contracts shared, actual card costs and effects asserted by listed scenarios"
     },
     {
       "name": "Lotusguard Disciple",
@@ -708,10 +723,12 @@
         "Flying",
         "When this creature enters, target creature or Vehicle gains lifelink and indestructible until end of turn."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_permanents",
+      "outcome_scenarios": [
+        "lotusguard_entry_grants_both_keywords_to_an_uncrewed_vehicle_independent_of_source"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; keywords/crew/attachment/stat and permission contracts shared, actual card costs and effects asserted by listed scenarios"
     },
     {
       "name": "Memory Guardian",
@@ -729,10 +746,12 @@
         "Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.)",
         "Flying"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_permanents",
+      "outcome_scenarios": [
+        "artifact_affinity_pays_only_the_remaining_generic_and_required_blue"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; keywords/crew/attachment/stat and permission contracts shared, actual card costs and effects asserted by listed scenarios"
     },
     {
       "name": "Midnight Mangler",
@@ -750,10 +769,12 @@
         "During turns other than yours, this Vehicle is an artifact creature.",
         "Crew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_permanents",
+      "outcome_scenarios": [
+        "air_response_hulldrifter_and_midnight_mangler_have_their_real_crew_bodies"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; keywords/crew/attachment/stat and permission contracts shared, actual card costs and effects asserted by listed scenarios"
     },
     {
       "name": "Mindspring Merfolk",
@@ -837,10 +858,12 @@
       "printed_obligations": [
         "When this creature enters, create a 1/1 colorless Thopter artifact creature token with flying."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_permanents",
+      "outcome_scenarios": [
+        "broadcast_and_nimble_entries_create_one_real_colorless_flying_artifact_thopter"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; keywords/crew/attachment/stat and permission contracts shared, actual card costs and effects asserted by listed scenarios"
     },
     {
       "name": "Perilous Snare",
@@ -968,7 +991,7 @@
         "This spell costs {3} less to cast if it targets a tapped permanent.",
         "Exile target creature or Vehicle."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "target_discounts_are_paid_for_tapped_permanents_and_mana_value_one_only"
@@ -1013,10 +1036,12 @@
         "When this Aura enters, create a 1/1 colorless Pilot creature token with \"This token saddles Mounts and crews Vehicles as though its power were 2 greater.\"",
         "Enchanted permanent gets +1/+1 and has lifelink."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_permanents",
+      "outcome_scenarios": [
+        "roadside_assistance_grants_stats_lifelink_and_a_colorless_pilot_that_can_crew_three"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; keywords/crew/attachment/stat and permission contracts shared, actual card costs and effects asserted by listed scenarios"
     },
     {
       "name": "Roadside Blowout",
@@ -1035,7 +1060,7 @@
         "Return target creature or Vehicle an opponent controls to its owner's hand.",
         "Draw a card."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "target_discounts_are_paid_for_tapped_permanents_and_mana_value_one_only"
@@ -1189,7 +1214,7 @@
         "All creatures and Vehicles lose indestructible until end of turn, then destroy all creatures and Vehicles.",
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "spectacular_pileup_removes_indestructible_only_from_the_destroyed_union",
@@ -1212,7 +1237,7 @@
       "printed_obligations": [
         "Counter target artifact or creature spell unless its controller pays {4}."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "spectral_interference_and_spell_pierce_offer_the_correct_payment_or_counter"
@@ -1234,7 +1259,7 @@
       "printed_obligations": [
         "Counter target noncreature spell unless its controller pays {2}."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "spectral_interference_and_spell_pierce_offer_the_correct_payment_or_counter"
@@ -1277,10 +1302,12 @@
         "When this Vehicle enters, scry 2. (Look at the top two cards of your library, then put any number of them on the bottom and the rest on top in any order.)",
         "Crew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)"
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_permanents",
+      "outcome_scenarios": [
+        "spotcycle_scouter_scries_exactly_two_privately_then_crews_as_a_three_two"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; keywords/crew/attachment/stat and permission contracts shared, actual card costs and effects asserted by listed scenarios"
     },
     {
       "name": "Stall Out",
@@ -1298,7 +1325,7 @@
         "Tap target creature or Vehicle, then put three stun counters on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)",
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "stall_out_puts_three_real_stun_counters_on_a_vehicle",
@@ -1321,7 +1348,7 @@
       "printed_obligations": [
         "Look at the top five cards of your library. Put two of them into your hand and the rest on the bottom of your library in any order."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "stock_up_keeps_the_look_private_selects_two_and_orders_the_other_three_with_restore"
@@ -1413,7 +1440,7 @@
         "Exchange control of target artifact or creature you control and target artifact or creature an opponent controls.",
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "trade_the_helm_exchanges_both_objects_or_neither_when_one_incarnation_is_lost",
@@ -1457,7 +1484,7 @@
         "Target nonland permanent's owner puts it on their choice of the top or bottom of their library.",
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "trip_up_lets_the_owner_choose_top_or_bottom_even_under_foreign_control",
@@ -1480,7 +1507,7 @@
       "printed_obligations": [
         "Return target artifact card from your graveyard to the battlefield. If it's a Vehicle, it becomes an artifact creature."
       ],
-      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "status": "verified: integrator reports all 12 tempo-family scenarios pass after card-only Trade target grouping correction f0761b18a",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "tune_up_returns_the_owned_artifact_and_animates_only_its_exact_vehicle_entry"
@@ -1502,10 +1529,12 @@
       "printed_obligations": [
         "At the beginning of your end step, untap all nonland permanents you control."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_permanents",
+      "outcome_scenarios": [
+        "unstoppable_plan_untaps_own_nonlands_only_at_its_controllers_end_step"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; keywords/crew/attachment/stat and permission contracts shared, actual card costs and effects asserted by listed scenarios"
     },
     {
       "name": "Unswerving Sloth",
@@ -1613,10 +1642,12 @@
       "printed_obligations": [
         "Artifact spells you cast cost {1} less to cast."
       ],
-      "status": "pending card authorship and inherited behavior verification",
-      "test_target": null,
-      "outcome_scenarios": [],
-      "shared_proof": null
+      "status": "candidate: complete printed behavior and scenarios authored; focused execution pending",
+      "test_target": "dft_white_blue_cards_permanents",
+      "outcome_scenarios": [
+        "quickwelder_reduces_only_artifact_spells_of_its_controller"
+      ],
+      "shared_proof": "accepted engine freeze fb878868d; keywords/crew/attachment/stat and permission contracts shared, actual card costs and effects asserted by listed scenarios"
     },
     {
       "name": "Waxen Shapethief",

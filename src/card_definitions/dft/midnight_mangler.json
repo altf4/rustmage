@@ -3,10 +3,30 @@
   "catalogue_id": 2745,
   "oracle_id": "c9f8651a-4118-4d80-902e-60473e81d3a9",
   "facts_sha256": "a9aea994e0b07548dda4cb1871d40f58af4f81301430b06dbfa2447a4db98624",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "20203a07cca1e4c07dc7c019fb9665bd2831ab40bf88a762ae8454c239b14be4"
   },
-  "physical_metadata_sha256": "f29e72f1f71b5dcc05112f4714fe266aaa9dae00a557c50ad1dae98cfc49eccc"
+  "physical_metadata_sha256": "f29e72f1f71b5dcc05112f4714fe266aaa9dae00a557c50ad1dae98cfc49eccc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MidnightMangler.java",
+  "java_sha256": "6225dfbfba895f74772e51a629e833a5e109a6e554404cede75d52fc8ccc4b40",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardTypeSourceEffect.java",
+      "sha256": "eebc0ef4cbc6c73c1d811abab3b1909a235d0dedf97ff992d1618e76644a325c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/NotMyTurnCondition.java",
+      "sha256": "db899ec29be5298f5f3d4e36f0df6975f3f23ef347fa7753aa14cc9c1580e9df"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    }
+  ]
 }
