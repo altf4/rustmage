@@ -24,6 +24,97 @@
       "cargo_build_seconds": 1.42,
       "reported_scenario_seconds": 0.01,
       "resource_report": "<cache>/rustmage-build-reports/7eedc7ea557c4071ae8afd713ab9e21d.json"
+    },
+    {
+      "revision": "4d5507a7",
+      "status": "partial engine checkpoint; subsequent engine features and fixes require fresh combined verification",
+      "targets": {
+        "dft_attack_groups": {
+          "passed": 8,
+          "failed": 0
+        },
+        "dft_combat_schedule": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_control_duration": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_crew": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_entry_counters": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_entry_results": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_exert_engine": {
+          "passed": 9,
+          "failed": 0
+        },
+        "dft_exhaust_engine": {
+          "passed": 11,
+          "failed": 0
+        },
+        "dft_fixture_rules": {
+          "passed": 2,
+          "failed": 0
+        },
+        "dft_group_engine": {
+          "passed": 4,
+          "failed": 0
+        },
+        "dft_named_search": {
+          "passed": 6,
+          "failed": 0
+        },
+        "dft_outcomes_engine": {
+          "passed": 9,
+          "failed": 0
+        },
+        "dft_quantities_engine": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_queries": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_speed_engine": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_speed_grants": {
+          "passed": 12,
+          "failed": 1
+        },
+        "dft_static_types": {
+          "passed": 13,
+          "failed": 0
+        },
+        "dft_trigger_facts_engine": {
+          "passed": 11,
+          "failed": 0
+        },
+        "dft_variable_costs_engine": {
+          "passed": 11,
+          "failed": 0
+        }
+      },
+      "passed": 167,
+      "failed": 1,
+      "ignored": 0,
+      "report": "<cache>/rustmage-authoring/aetherdrift/focused-20261101-184344/result.json",
+      "command_seconds": 115.80187910600216,
+      "cargo_engine_set_test_build_reported": "1m 55s",
+      "reported_scenario_seconds": 0.06,
+      "resource_report": "<cache>/rustmage-build-reports/f741073dac1c4bb4bd493d3f2ac05bf0.json",
+      "remaining_failure": "Deferred indexed mana announcement absent inside a parent payment window; shared constructor/continuation fix now integrated, scenario verification pending."
     }
   ],
   "earlier_focused_runs": [
@@ -49,6 +140,34 @@
     }
   ],
   "resource_policy": "All Cargo uses resource_guard; one shared build slot,6GiB cgroup, serial tests; no OOM probe or unmanaged builds",
-  "pending": "Remaining shared engines and reviews; complete card behavior/provenance; final schema integration; full release acceptance; DFT-only complete games, replay/search and performance; single completed-set PR and two independent nonauthor reviews",
-  "throughput": "No whole cards newly completed during engine phase. No set simulation benchmark measured yet."
+  "pending": "Finish all engine blockers and focused/shared contract proofs plus independent reviews before ordinary DFT definitions. Then complete card behavior/provenance, inherited119 verification, legal set-only complete games/replay/owned search, full release acceptance, README counts, one completed-set PR and two independent nonauthor reviews.",
+  "throughput": "0 new whole cards admitted during engine phase. Latest combined frozen run 167/168: 115.80s command; Cargo engine/set/test build reported 1m 55s. Test-only outcome9/9 took0.87s command/0.80s build. No set simulation benchmark or all-Standard performance claim.",
+  "implemented_engine_clusters_pending_final_review": [
+    "speed scalars/grants/replacements and exact mana quality",
+    "crew/saddle participant events, toughness and direct designation",
+    "queries/searches, ability presence and historical entry/exile batches",
+    "exhaust observer/reuse/discount/copy plus exert obligations",
+    "snapshot group keyword grants/removal and nonland untap",
+    "successful-entry witnesses, lasting forms/keywords and delayed return obligations",
+    "typed union/ranged costs and actual versus declared paid facts",
+    "all-counter parity, signed group base stats and player attack groups/keywords",
+    "live static creature/subtype effects, union modifiers and Aura eligibility",
+    "effective entry counters/prohibitions and zero-result continuation",
+    "actual caster and attack history plus original-controller delayed target packets",
+    "destruction outcome reward, post-mill threshold, capped rummage and mandatory fallback",
+    "source-controlled duration and combat restriction with projected layer-two dependencies",
+    "main-relative extra combats and repeated source-independent combat packets",
+    "all/nonland name choices and capped private mixed-zone named exile search",
+    "deferred mana headers, current-combat token requirement and private chosen-card discard/draw (production check passed; scenarios pending)",
+    "independent hidden exile/play rights and route-specific graveyard costs (just integrated; verification pending)"
+  ],
+  "remaining_engine_blockers": [
+    "full named activation tax across ordinary/borrowed/granted/mana/crew/saddle routes",
+    "as-entry artifact/creature copying and fresh copied entry-choice origins",
+    "Mimeoplasm successful linked pre-entry exile/counters and retained permanent0/0 copying",
+    "temporary acquired embalm graveyard activation and copiable token exceptions",
+    "remaining focused failures/new-feature checks; independent whole-engine reviews and broad existing regressions",
+    "final wire schema integration and implementation/simulation performance evidence"
+  ],
+  "all_authoring_reports": "<cache>/rustmage-authoring/aetherdrift/ (per-run immutable logs/results; reusable target kept separately)"
 }
