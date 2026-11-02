@@ -8,9 +8,9 @@
   "engine_status": "frozen reviewed checkpoint; authors do not mutate shared engine",
   "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "counts": {
-    "authored_candidates": 35,
+    "authored_candidates": 38,
     "validated_by_integrator": 35,
-    "not_started": 5
+    "not_started": 2
   },
   "validation_owner": "root integrator; no Cargo run by card author",
   "validation_targets": [
@@ -72,6 +72,12 @@
       "target": "dft_black_red_cards_mass_spells",
       "cases": 6,
       "scope": "3 whole spells: Ancient paid3B name and optional bounded4 three-zone opponent search, land/unavailable names, private inspection, no replacement draws, shuffle at0 and owned raw/index restore; Full Throttle actual4RR cast in main1/2 followed through exact phase sequence, source-independent repeated untap of exact actual attackers/current creatures across controller change and blink, cleanup expiry; Push actual5RR simultaneous own Mount/Vehicle return, existing-group animation/haste, late-recipient exclusion, next either-player endstep exact/controller-constrained sacrifice, blink/ownership and owned restore",
+      "status": "pending root execution"
+    },
+    {
+      "target": "dft_black_red_cards_final_support",
+      "cases": 11,
+      "scope": "3 complete cards: Chandra actual3R loyalty4, optional own-combat Vehicle/Haste and EOT; +2 actual artifact sacrifice/card discard/decline and loyalty timing/once; real3/2colorless Crew1 token; paid-7/source death/command emblem with opponent artifact contrast and three any-target damage domains. Cursecloth actual2BB/live ownZombie lord and controller changes; exact tap ownGY creature filters, native1G embalm cost/sorcery/exile, whiteZombie/no mana cost token/nativeBear identity/source departure, cleanup/stale acquisition, raw-index/restore and copiable exceptions. Daretti all-zone current own-artifact maxMV CDA, actual4R entry preselected target and optional payment, attack-source departure and all-illegal target prevents payment.",
       "status": "pending root execution"
     }
   ],
@@ -634,9 +640,106 @@
         "\u22127: You get an emblem with \"Whenever an artifact you control enters, this emblem deals 3 damage to any target.\""
       ],
       "inherited_admitted": true,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [],
-      "outcome_tests": []
+      "outcome_tests": [
+        "chandra_enters_at_four_and_own_combat_optionally_animates_only_a_controlled_vehicle_until_cleanup",
+        "chandra_plus_two_may_discard_any_card_or_sacrifice_an_artifact_and_draws_only_if_paid",
+        "chandra_zero_creates_untapped_colorless_three_two_vehicle_with_real_crew_one",
+        "chandra_minus_seven_emblem_survives_the_planeswalker_and_artifact_entries_deal_three_to_any_target"
+      ],
+      "test_target": "dft_black_red_cards_final_support",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/c/ChandraSparkHunter.java",
+        "java_sha256": "330d61d50aa87440d02be9a538a75a06912a0dd24cbf8f10ab2e76f9cdfcf989",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/Ability.java",
+            "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/LoyaltyAbility.java",
+            "sha256": "9e648c878fd77eaa324aa746254377711cf4929573ed960055ee57f342b9ce79"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/OrCost.java",
+            "sha256": "a36fc6c29c41ef6d0673a6e40c9992c8f5b6c9bb64f9559d4011d0b9593fcf10"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+            "sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+            "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+            "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+            "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+            "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/GetEmblemEffect.java",
+            "sha256": "0799410e96d621146994fbecaab27e0fc806237d1f34ff3adee415de1390f1e2"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardTypeTargetEffect.java",
+            "sha256": "95ebcf49ca842a8831f4925cfff4199bdd0740c37f0dbe77a7c542a73272cc67"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+            "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+            "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfCombatTriggeredAbility.java",
+            "sha256": "c8f16a3b46db04f428d1bebc9c1ee8171d14dc9879ff0f6f825a2b49909f2f41"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/game/command/emblems/ChandraSparkHunterEmblem.java",
+            "sha256": "2a428b5dff9c196b71abb19df9dbe6a49f88e8b9cc5cab820c82000e66161a5f"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/game/permanent/token/VehicleToken.java",
+            "sha256": "f58f5a3dec5c8be46cb2a93f6c37029a75d40b141480a343154a6c8728f0478b"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+            "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+          }
+        ]
+      },
+      "definition_sha256": "713b87e158c05ac5e874d88bdf9fdef0d3f393ce0b920c95ac52575c2ef7c5d6"
     },
     {
       "name": "Chitin Gravestalker",
@@ -959,11 +1062,68 @@
         "{T}: Target creature card in your graveyard gains embalm until end of turn. The embalm cost is equal to its mana cost. (Exile that card and pay its embalm cost: Create a token that's a copy of it, except it's a white Zombie in addition to its other types and has no mana cost. Embalm only as a sorcery.)"
       ],
       "inherited_admitted": false,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [
         "embalm-grant"
       ],
-      "outcome_tests": []
+      "outcome_tests": [
+        "cursecloth_live_zombie_bonus_tracks_controller_and_covers_new_and_copied_zombies",
+        "cursecloth_tap_targets_only_own_graveyard_creature_and_uses_exact_native_embalm_cost_after_source_leaves",
+        "cursecloth_embalm_acquisition_expires_at_cleanup_and_never_rebinds_a_new_graveyard_incarnation",
+        "cursecloth_embalm_payment_and_copiable_token_properties_survive_raw_index_restore_and_parent_drop"
+      ],
+      "test_target": "dft_black_red_cards_final_support",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/c/CurseclothWrappings.java",
+        "java_sha256": "76dcb4196fc57c456d0217865a8129596e798910d0799f2729d3d9cc6fd9ea80",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/Ability.java",
+            "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+            "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+            "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+            "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+            "sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+            "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/keyword/EmbalmAbility.java",
+            "sha256": "7b8e17f54df05a428c6b30ff01d785c7ecfd7e2018948bce0067e70d267ea10f"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+            "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+          }
+        ]
+      },
+      "definition_sha256": "5fcc4ce338895cf4e0bcd311ddb5fedd8cb6f664fd6f3b7ca8f8b3d7c6d72402"
     },
     {
       "name": "Daretti, Rocketeer Engineer",
@@ -976,9 +1136,75 @@
         "Whenever Daretti enters or attacks, choose target artifact card in your graveyard. You may sacrifice an artifact. If you do, return the chosen card to the battlefield."
       ],
       "inherited_admitted": false,
-      "status": "not_started",
+      "status": "authored_candidate_pending_integrator_test",
       "required_engine_dependencies": [],
-      "outcome_tests": []
+      "outcome_tests": [
+        "daretti_power_is_greatest_controlled_artifact_mana_value_in_every_zone_and_updates_live",
+        "daretti_entry_chooses_own_artifact_card_before_optional_sacrifice_and_returns_only_that_card",
+        "daretti_attack_trigger_survives_source_departure_but_all_illegal_target_skips_optional_sacrifice"
+      ],
+      "test_target": "dft_black_red_cards_final_support",
+      "source_review": {
+        "full_oracle": true,
+        "full_xmage_main": true,
+        "referenced_reusable_bodies": true,
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/d/DarettiRocketeerEngineer.java",
+        "java_sha256": "c3ea947060f7a650ac8cecfbf7de36ef7b1118a8fe39b4a9dd19bcecc0b1485c",
+        "dependency_pins": [
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/Ability.java",
+            "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldOrAttacksSourceTriggeredAbility.java",
+            "sha256": "b5c87d096aa0a689c9915ee2c8c8f8b6eb0fcd2acd4ad8c0c8696c6204f27224"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+            "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+            "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GreatestAmongPermanentsValue.java",
+            "sha256": "1fb2bb2baf97bbbf6aa1cf4669139b3d10d3fc3beb40a6f2c76fc403393fb299"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+            "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+            "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerSourceEffect.java",
+            "sha256": "07d7b0ba8fdb6f3e6eeb405c2768a37677e7fded311795af1425dc2bfdb9bbd1"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessSourceEffect.java",
+            "sha256": "278acb623e2d4c4db2efdc4764512cfe0a983770512e2eb2c73afb887a193fe3"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+            "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+          }
+        ]
+      },
+      "definition_sha256": "06e93531dc1bed633061e0d39d76d319bcca21fc6ba12d2fd34656c5ae37d4d3"
     },
     {
       "name": "Deathless Pilot",
