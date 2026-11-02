@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "set": "DFT",
-  "phase": "all 276 member definitions and focused outcomes integrated; complete-game and release acceptance in progress",
+  "phase": "engine reentry: preserve cross-group aggregate targets before separate controller-role card repairs",
   "membership": 276,
   "starting_admitted": 119,
   "newly_admitted": 157,
@@ -668,7 +668,9 @@
   "resource_policy": "All Cargo uses resource_guard; one shared build slot,6GiB cgroup, serial tests; no OOM probe or unmanaged builds",
   "pending": "Finish all 276 member card obligations, provenance and focused outcomes, including inherited119; run legal DFT-only complete games/replay/owned search; update README counts; full release acceptance; one completed-set PR and two independent nonauthor reviews of its published head.",
   "throughput": "Combined reentry checkpoint: 336 engine scenarios and 39 prepared-card scenarios, 3035 ordinary legacy cases, four BIG cases and one strict trace pass. Final test compilation 165.993s; focused execution 0.779s; ordinary legacy 77.952s. No new card admissions during engine reentry; DFT143/276 are local candidates, not complete-set acceptance.",
-  "remaining_engine_blockers": [],
+  "remaining_engine_blockers": [
+    "ExchangeControlTargets and DestroyTargetsThenSourceCountersIfOwnCreature must preserve independently revalidated target groups"
+  ],
   "all_authoring_reports": "<cache>/rustmage-authoring/aetherdrift/ (per-run immutable logs/results; reusable target kept separately)",
   "in_progress_checkpoints": [
     {
@@ -1985,5 +1987,17 @@
     "validation": "one additional core test compilation after full source reviews; retain guarded warm target and unchanged profile/features",
     "status": "accepted; see aetherdrift-engine-freeze.json"
   },
-  "focused_member_receipts": "docs/aetherdrift-focused-card-evidence.json"
+  "focused_member_receipts": "docs/aetherdrift-focused-card-evidence.json",
+  "controller_role_reentry": {
+    "source_base": "ff1cf92bc",
+    "found_in_independent_review": "engine_review_one",
+    "affected_cards": [
+      "Trade the Helm",
+      "Demonic Junker"
+    ],
+    "cause": "Symmetric DifferentControllers discards per-target controller roles; relation-specific target groups also require both aggregate opcodes to consume all groups.",
+    "engine_scope": "Two existing aggregate opcodes in the existing run_program cross-group preservation list; synthetic legality/interaction/owned tests and scoped prior198 assurance, no new wire shape.",
+    "card_phase": "parked; relation-specific card definitions and real controller-change scenarios follow only after engine acceptance",
+    "other_DFT_group_audit": "Plow Through Fight, Run Over PowerDamage and Rise from Wreck ReturnAllTargetsToHand already preserve cross-group targets; no additional concrete aggregate dependency found."
+  }
 }

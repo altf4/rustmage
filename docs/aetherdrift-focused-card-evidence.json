@@ -1477,7 +1477,8 @@
         "demonic_junker_does_not_reward_indestructible_or_stale_own_targets_but_still_destroys_legal_other",
         "demonic_junker_targets_at_most_one_per_player_and_rewards_actual_own_destruction_once"
       ],
-      "report": "<cache>/rustmage-authoring/aetherdrift/card-black-red-exhaust-fixtures-20261102-161900Z/report.json"
+      "report": "<cache>/rustmage-authoring/aetherdrift/card-black-red-exhaust-fixtures-20261102-161900Z/report.json",
+      "status": "blocked on engine cross-group checkpoint, then separate controller-role definition repair"
     },
     {
       "name": "Detention Chariot",
@@ -3847,7 +3848,8 @@
         "tempo_family_cycling_pays_two_and_discards_before_exactly_one_draw",
         "trade_the_helm_exchanges_both_objects_or_neither_when_one_incarnation_is_lost"
       ],
-      "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json"
+      "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json",
+      "status": "blocked on engine cross-group checkpoint, then separate controller-role definition repair"
     },
     {
       "name": "Tranquil Cove",
@@ -4204,5 +4206,11 @@
       ],
       "report": "<cache>/rustmage-authoring/aetherdrift/permanent-copy-assembled-20261102-160800Z/report.json"
     }
-  ]
+  ],
+  "known_incorrect_members": [
+    "Trade the Helm",
+    "Demonic Junker"
+  ],
+  "members_without_known_source_blockers": 274,
+  "review_note": "Passing original334 cases do not cover target-controller role changes; independent review found and blocked these two definitions before full set acceptance."
 }
