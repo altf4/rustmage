@@ -524,3 +524,49 @@ fn crew_choice_raw_index_and_restore_branches_keep_owned_pending_and_events() {
     settle_choices(&mut restored);
     assert_eq!(restored.snapshot(), raw.snapshot());
 }
+
+#[test]
+fn participant_packets_capture_post_tap_continuous_characteristics() {
+    const POST_TAP: CardRules = CardRules {
+        static_groups: &[StaticAbilityGroup {
+            line: 1,
+            first_layer: AbilityLayer::Ability,
+            fragments: &[StaticAbilityFragment::SourceConditionalKeywords {
+                condition: StatValue::TappedCount(CountFilter {
+                    zone: CountZone::Battlefield,
+                    relation: 0,
+                    kind: 1,
+                    exclude: 0,
+                    subtype: None,
+                    basic: false,
+                    other: false,
+                    cards_only: false,
+                }),
+                keywords: Keywords::HEXPROOF,
+            }],
+        }],
+        ..FLYING_PARTICIPANT
+    };
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &POST_TAP)]);
+    let mut g = scenario(Player::P0);
+    let pilot = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    let vehicle = put(&mut g, Player::P0, "Broadcast Rambler", Zone::Battlefield);
+    assert!(!g.keywords(pilot).contains(Keywords::HEXPROOF));
+    begin_cost(&mut g, vehicle);
+    contribute(&mut g, pilot, true);
+    finish_cost(&mut g, true);
+    assert!(g.keywords(pilot).contains(Keywords::HEXPROOF));
+    let trigger = g
+        .state
+        .stack
+        .iter()
+        .find(|item| matches!(item.kind, StackKind::TriggeredAbility { .. }))
+        .unwrap();
+    assert!(trigger.source_tapped);
+    assert!(
+        trigger.source_keywords.contains(Keywords::HEXPROOF),
+        "post-tap derived source facts, not prepayment facts"
+    );
+    settle_choices(&mut g);
+    assert!(g.keywords(vehicle).contains(Keywords::FLYING));
+}

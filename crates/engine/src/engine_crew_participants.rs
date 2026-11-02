@@ -1,4 +1,4 @@
-//! Committed Crew/Saddle contribution events retain pre-tap effective abilities.
+//! Committed Crew/Saddle contribution events retain post-tap effective abilities.
 use super::*;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -17,8 +17,9 @@ impl Game {
             .filter(|object| has_event(self.state.objects[object.card as usize].card))
             .map(|object| object.card)
             .collect();
-        // A participant can have a real trigger granted by an attachment. Capture
-        // both the recipient's effective availability and the grant's origin now.
+        // CR603.10 uses post-event characteristics. A participant can have a
+        // real trigger granted by an attachment; freeze its effective post-tap
+        // availability and grant origin before later costs or responses change it.
         for &id in &self.state.attachment_sources {
             if has_event(self.state.objects[id as usize].card)
                 && !ids.contains(&id)
@@ -50,10 +51,7 @@ impl Game {
         sources: Vec<(ObjectView, Option<AttachmentTriggerView>)>,
         recipient: ObjectRef,
     ) {
-        for (mut source, grant) in sources {
-            // The event is the completed tap cost. Availability was captured
-            // before that simultaneous transition; tapped facts describe it.
-            source.tapped = true;
+        for (source, grant) in sources {
             let definition = grant
                 .as_ref()
                 .map_or(source.card, |grant| grant.granting_card);

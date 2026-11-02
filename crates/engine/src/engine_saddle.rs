@@ -328,8 +328,8 @@ impl Game {
         self.finish_paid_saddle(a.item, f.selected);
     }
     pub(super) fn finish_paid_saddle(&mut self, item: SpellView, selected: Vec<ObjectRef>) {
-        let participants = self.capture_crew_saddle_participants(&selected);
         self.tap_objects(&selected.iter().map(|r| r.card).collect::<Vec<_>>());
+        let participants = self.capture_crew_saddle_participants(&selected);
         self.queue_crew_saddle_participant_triggers(
             participants,
             item.source.expect("Saddle has an object source").object,
