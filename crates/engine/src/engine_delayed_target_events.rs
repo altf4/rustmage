@@ -1,9 +1,10 @@
 //! Delayed clauses keep their original controller and source independently of
 //! the watched creature's control, abilities, or exact source's later departure.
 use super::*;
+use crate::cards::DelayedTargetEvent;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct DelayedTargetTriggerView {
     pub subject: ObjectRef,
     pub event: DelayedTargetEvent,
