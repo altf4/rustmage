@@ -1164,6 +1164,8 @@ pub struct BattlefieldFilter {
 pub enum Instruction {
     /// Marks the printed waterbend component of an activation cost.
     WaterbendCost(u16),
+    /// Definition-only marker: exert the exact permanent as an activation cost.
+    ExertCost,
     /// Increase the exact source permanent to this Class level.
     GainClassLevel(u8),
     /// First half of amass: create an Army only if none is controlled.
@@ -4568,6 +4570,17 @@ impl ActivatedAbility {
     pub(crate) fn is_equip(&self) -> bool {
         self.origin == ActivationOrigin::Battlefield && self.program == [Instruction::AttachSource]
     }
+    pub(crate) fn exerts(&self) -> bool {
+        let exerts = self
+            .program
+            .iter()
+            .any(|instruction| matches!(instruction, Instruction::ExertCost));
+        assert!(
+            !exerts || self.origin == ActivationOrigin::Battlefield,
+            "only battlefield permanents can be exerted"
+        );
+        exerts
+    }
     pub(crate) fn source_counter_cost(&self) -> Option<CounterKind> {
         match self.program.first() {
             Some(Instruction::SourceCounterCost { kind }) => {
@@ -4589,7 +4602,11 @@ impl ActivatedAbility {
         if self.cost.loyalty.is_some() {
             return None;
         }
-        match self.program {
+        let program = self
+            .program
+            .strip_prefix(&[Instruction::ExertCost])
+            .unwrap_or(self.program);
+        match program {
             [Instruction::AddMana(production)]
             | [
                 Instruction::AddMana(production),

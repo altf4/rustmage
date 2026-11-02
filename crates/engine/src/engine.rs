@@ -193,6 +193,10 @@ pub mod saddle;
 #[doc(hidden)]
 #[path = "engine_crew_participants.rs"]
 pub mod crew_participants;
+#[doc(hidden)]
+#[path = "engine_exert.rs"]
+pub mod exert;
+pub use exert::ExertionView;
 pub use adventure::{AdventurePermission, SpellCharacteristicsView};
 pub use crew::{CrewChoiceView, CrewContext, CrewHistory};
 pub use saddle::SaddleChoiceView;
@@ -2567,6 +2571,7 @@ struct State {
     #[allow(clippy::box_collection)]
     earthbend_returns: Option<Box<Vec<earthbend::EarthbendReturn>>>,
     mobilize: Option<Box<mobilize::MobilizePlan>>,
+    exertions: exert::Rows,
     saddled: Vec<ObjectRef>,
     saddle_payment: Option<Box<saddle::SaddlePayment>>,
     crew: Option<Box<crew::CrewState>>,
@@ -3335,6 +3340,9 @@ pub struct Observation {
     pub plotted_cards: Vec<PlottedCard>,
     pub crew_choice: Option<CrewChoiceView>,
     pub crewed_vehicles: Vec<CrewHistory>,
+    /// Public exact permanents that will skip the indicated player's next untap.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub exertions: Option<Vec<ExertionView>>,
     pub warped_cards: Vec<WarpedCard>,
     pub delayed_warp_exiles: Vec<DelayedWarpExileView>,
     pub plot_payment: Option<PlotPaymentView>,
@@ -3767,6 +3775,7 @@ impl Game {
                 delayed_returns: None,
                 earthbend_returns: None,
                 mobilize: None,
+                exertions: None,
                 saddled: Vec::new(),
                 saddle_payment: None,
                 crew: None,
@@ -8550,6 +8559,7 @@ impl Game {
             self.capture_stat_subject_departure(&before);
             self.forget_death_exile_replacements(before.reference);
             self.forget_vehicle_animation(before.reference);
+            self.forget_exertions(before.reference);
             self.state.saddled.retain(|r| *r != before.reference);
         }
         self.forget_adventure(before.reference);
@@ -10226,6 +10236,7 @@ impl Game {
                 .unwrap_or_default(),
             plotted_cards: s.plot.as_ref().map_or_else(Vec::new, |p| p.cards.clone()),
             crew_choice: self.crew_choice(viewer),
+            exertions: s.exertions.as_ref().map(|rows| rows.iter().copied().collect()),
             crewed_vehicles: s.crew.as_ref().map_or_else(Vec::new, |c| c.history.clone()),
             warped_cards: s.warp.as_ref().map_or_else(Vec::new, |w| w.cards.clone()),
             delayed_warp_exiles: s
@@ -10722,6 +10733,7 @@ impl Game {
             + live_counters::owned_bytes(&s.named_counters)
             + entry_choices::owned_bytes(&s.entry_values)
             + power_up::owned_bytes(&s.power_up_uses)
+            + exert::owned_bytes(&s.exertions)
             + tap_history::owned_bytes(&s.tap_history)
             + s.entered_this_turn.as_ref().map_or(0, |r| {
                 std::mem::size_of::<Vec<ObjectRef>>() + r.len() * std::mem::size_of::<ObjectRef>()

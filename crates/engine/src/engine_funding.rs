@@ -495,7 +495,8 @@ fn source_obligations(
     let current = object.filter(|object| {
         object.zone == ability.source_zone() && object.generation == source.generation
     });
-    let requires_source = ability.cost.tap
+    let requires_source = ability.exerts()
+        || ability.cost.tap
         || ability.cost.sacrifice
         || ability.cost.discard
         || ability.cost.exile_self

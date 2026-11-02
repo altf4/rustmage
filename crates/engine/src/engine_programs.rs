@@ -5269,7 +5269,8 @@ impl Game {
                 Instruction::ExileDamagedIfDiesThisTurn
                 | Instruction::ActivationX
                 | Instruction::SourceCounterCost { .. }
-                | Instruction::WaterbendCost(_) => (),
+                | Instruction::WaterbendCost(_)
+                | Instruction::ExertCost => (),
                 Instruction::RemoveCreatureCounterThenDraw => {
                     if self.start_resolution_counter_payment(&item) {
                         return;

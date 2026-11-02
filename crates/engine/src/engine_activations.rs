@@ -965,7 +965,8 @@ impl Game {
                     && !cost.discard
                     && !cost.exile_self
                     && cost.remove.is_none()
-                    && cost.loyalty.is_none(),
+                    && cost.loyalty.is_none()
+                    && !definition.exerts(),
                 "unpaid source cost"
             );
             return false;
@@ -1080,6 +1081,9 @@ impl Game {
             {
                 self.tap_objects(&[grant.grantor.card]);
             }
+        }
+        if definition.exerts() {
+            self.exert_source(source.object, item.controller);
         }
     }
 
