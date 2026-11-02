@@ -161,7 +161,7 @@ fn reach_choice(g: &mut Game) {
 fn graveyard_departure_is_one_filtered_owner_batch() {
     let _scope = fixture_rules::activate(&[
         (Card::GrizzlyBears, &GRAVE_DEPARTURE_OBSERVER),
-        (Card::Opt, &RETURN_GRAVE),
+        (Card::from_name("Opt").unwrap(), &RETURN_GRAVE),
     ]);
     let mut g = scenario(Player::P0);
     put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
@@ -190,7 +190,7 @@ fn graveyard_departure_is_one_filtered_owner_batch() {
 fn global_exile_batch_counts_physical_noncreatures_and_source_departure() {
     let _scope = fixture_rules::activate(&[
         (Card::GrizzlyBears, &EXILE_OBSERVER),
-        (Card::Opt, &EXILE_MIXED),
+        (Card::from_name("Opt").unwrap(), &EXILE_MIXED),
     ]);
     let mut g = scenario(Player::P0);
     let observer = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
@@ -219,7 +219,7 @@ fn global_exile_batch_counts_physical_noncreatures_and_source_departure() {
 fn global_exile_trigger_uses_observer_turn_and_excludes_tokens() {
     let _scope = fixture_rules::activate(&[
         (Card::GrizzlyBears, &EXILE_OBSERVER),
-        (Card::Opt, &EXILE_MIXED),
+        (Card::from_name("Opt").unwrap(), &EXILE_MIXED),
     ]);
     let mut g = scenario(Player::P1);
     put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
@@ -243,7 +243,7 @@ fn global_exile_trigger_uses_observer_turn_and_excludes_tokens() {
 fn optional_zone_search_has_private_owned_choices_and_reveals_only_result() {
     let _scope = fixture_rules::activate(&[
         (Card::GrizzlyBears, &ABILITYLESS),
-        (Card::Opt, &SEARCH_ZONES),
+        (Card::from_name("Opt").unwrap(), &SEARCH_ZONES),
     ]);
     let mut g = scenario(Player::P0);
     let library = put(&mut g, Player::P0, "Grizzly Bears", Zone::Library);
@@ -319,7 +319,7 @@ fn optional_zone_search_has_private_owned_choices_and_reveals_only_result() {
 fn optional_zone_search_can_decline_without_shuffling_or_moving_public_card() {
     let _scope = fixture_rules::activate(&[
         (Card::GrizzlyBears, &ABILITYLESS),
-        (Card::Opt, &SEARCH_ZONES),
+        (Card::from_name("Opt").unwrap(), &SEARCH_ZONES),
     ]);
     let mut g = scenario(Player::P0);
     let grave = put(&mut g, Player::P0, "Grizzly Bears", Zone::Graveyard);
@@ -348,7 +348,7 @@ fn optional_zone_search_can_decline_without_shuffling_or_moving_public_card() {
 
 #[test]
 fn conditional_search_destination_reveals_and_uses_selected_mana_value() {
-    let _scope = fixture_rules::activate(&[(Card::Opt, &SEARCH_ARTIFACT)]);
+    let _scope = fixture_rules::activate(&[(Card::from_name("Opt").unwrap(), &SEARCH_ARTIFACT)]);
     for (name, expected) in [
         ("Swiftfoot Boots", Zone::Battlefield),
         ("Meteor Golem", Zone::Hand),
@@ -374,7 +374,7 @@ fn conditional_search_destination_reveals_and_uses_selected_mana_value() {
 
 #[test]
 fn historical_entry_quantity_survives_departure_and_bounds_tapped_search() {
-    let _scope = fixture_rules::activate(&[(Card::Opt, &SEARCH_SCALED)]);
+    let _scope = fixture_rules::activate(&[(Card::from_name("Opt").unwrap(), &SEARCH_SCALED)]);
     let mut g = scenario(Player::P0);
     let first = put(&mut g, Player::P0, "Veloheart Bike", Zone::Hand);
     cast(&mut g, first, None);
@@ -421,7 +421,7 @@ fn historical_entry_quantity_survives_departure_and_bounds_tapped_search() {
 
 #[test]
 fn reveal_until_second_land_preserves_lower_library_and_handles_shortage() {
-    let _scope = fixture_rules::activate(&[(Card::Opt, &REVEAL_LANDS)]);
+    let _scope = fixture_rules::activate(&[(Card::from_name("Opt").unwrap(), &REVEAL_LANDS)]);
     for lands in [1, 2] {
         let mut g = scenario(Player::P0);
         for object in &mut g.state.objects {
@@ -459,7 +459,7 @@ fn reveal_until_second_land_preserves_lower_library_and_handles_shortage() {
 
 #[test]
 fn target_third_from_top_uses_owner_and_short_library_bottom() {
-    let _scope = fixture_rules::activate(&[(Card::Opt, &THIRD_FROM_TOP)]);
+    let _scope = fixture_rules::activate(&[(Card::from_name("Opt").unwrap(), &THIRD_FROM_TOP)]);
     for library_len in [0, 1, 3] {
         let mut g = scenario(Player::P0);
         for object in &mut g.state.objects {
@@ -505,7 +505,7 @@ fn abilityless_graveyard_targets_reject_cycling_and_acquired_abilities() {
     };
     let _scope = fixture_rules::activate(&[
         (Card::GrizzlyBears, &ABILITYLESS),
-        (Card::Opt, &RETURN_ABILITYLESS),
+        (Card::from_name("Opt").unwrap(), &RETURN_ABILITYLESS),
     ]);
     let mut g = scenario(Player::P0);
     let vanilla = put(&mut g, Player::P0, "Grizzly Bears", Zone::Graveyard);

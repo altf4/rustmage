@@ -2561,6 +2561,7 @@ impl Game {
                     rows.iter().any(|row| {
                         row.object == self.object_ref(id)
                             && row.kind == crate::cards::GraveyardCastKind::Flashback
+                            && row.expires_turn >= self.state.turn
                     })
                 })
     }
