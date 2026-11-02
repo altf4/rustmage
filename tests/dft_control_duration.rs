@@ -230,15 +230,10 @@ fn control_projection_applies_source_change_before_dependent_link_when_aura_is_s
         false
     });
     assert!(visited);
-    act(
+    choose(
         &mut g,
-        Action::AnnounceActivate {
-            card: aura,
-            ability: 0,
-            counter_payment: Counters::default(),
-        },
+        |action| matches!(action, Action::ActivateMana { card, ability: 0, .. } if *card == aura),
     );
-    pay(&mut g);
     assert_eq!(g.object_view(source).controller, Player::P1);
     assert_eq!(g.object_view(target).controller, Player::P1);
     assert_eq!(g.state.players[0].mana[0], 1);
