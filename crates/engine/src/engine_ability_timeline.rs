@@ -71,6 +71,7 @@ impl Card {
                             | StaticAbilityFragment::ControlledPlaneswalkerActivation(..)
                             | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
                             | StaticAbilityFragment::ControlledSubtypeKeywords { .. }
+                            | StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. }
                             | StaticAbilityFragment::AttachmentKeywords(..)
                             | StaticAbilityFragment::AttachedTurnKeywords(..)
                             | StaticAbilityFragment::HarnessedTrigger(..)

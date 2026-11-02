@@ -3003,6 +3003,8 @@ pub enum AmountValue {
     CastSpellManaSymbols(ChoiceColor),
     SourcePower,
     SourceToughness,
+    /// Resolution-time derived quantity, floored at zero if no positive toughness exists.
+    GreatestCreatureToughness,
     SourceEquipmentCount,
     #[allow(
         dead_code,
@@ -3089,6 +3091,12 @@ pub enum StatValue {
     DistinctControlledPlaneswalkerTypes,
     /// The source has not dealt combat damage in its current incarnation.
     SourceHasNotDealtCombatDamage,
+    /// No positive combat or noncombat damage in this exact incarnation.
+    SourceHasNotDealtDamage,
+    /// Controlled creatures with at least one counter of any supported kind.
+    CounterBearingCreatures,
+    /// Union of positive counter kinds among current controlled creatures.
+    DistinctCreatureCounterKinds,
     ControlledCreatureDiedThisTurn,
     CardLeftGraveyardThisTurn,
     Fixed(u16),

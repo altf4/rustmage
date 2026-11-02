@@ -374,6 +374,7 @@ struct ResourceKey {
     counters: InitialCounters,
     used: u64,
     loyalty_activated_this_turn: bool,
+    dealt_damage_this_incarnation: bool,
     dealt_combat_damage_this_incarnation: bool,
     gained: Keywords,
     owned: bool,
@@ -974,7 +975,7 @@ impl<'g> FundingState<'g> {
                             || game.state.attachment_sources.iter().any(|&provider| game.state.objects[provider as usize].attached_to == Some(game.object_ref(*id as CardId)))
                             || !object.card.keyword_grants().is_empty()
                             || !object.card.counter_keyword_grants().is_empty()
-                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(_) | crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste | crate::cards::StaticAbilityFragment::ReuseExhaustBeforeFirstActivationOwnTurn | crate::cards::StaticAbilityFragment::OtherControlledExhaustGenericReduction(_) | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. } | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..) | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. } | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. } | crate::cards::StaticAbilityFragment::SourceOffTurnCreature | crate::cards::StaticAbilityFragment::CreatureGroupBonus { .. } | crate::cards::StaticAbilityFragment::ChosenBasicLandType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterCreature { .. } | crate::cards::StaticAbilityFragment::SourceGraveyardAllTypes { .. } | crate::cards::StaticAbilityFragment::SourceConditionalKeywords { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..) | crate::cards::StaticAbilityFragment::CounterKeywordOther(..))))
+                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(_) | crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste | crate::cards::StaticAbilityFragment::ReuseExhaustBeforeFirstActivationOwnTurn | crate::cards::StaticAbilityFragment::OtherControlledExhaustGenericReduction(_) | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. } | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..) | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. } | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. } | crate::cards::StaticAbilityFragment::SourceOffTurnCreature | crate::cards::StaticAbilityFragment::CreatureGroupBonus { .. } | crate::cards::StaticAbilityFragment::ChosenBasicLandType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterCreature { .. } | crate::cards::StaticAbilityFragment::SourceGraveyardAllTypes { .. } | crate::cards::StaticAbilityFragment::SourceConditionalKeywords { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..) | crate::cards::StaticAbilityFragment::CounterKeywordOther(..))))
                             || object.controller == goal.actor
                                 && subtypes
                                     .iter()
@@ -1384,6 +1385,16 @@ impl<'g> FundingState<'g> {
                                     ability_world::CharacteristicWorld::definition(self, target.id),
                                     subtype,
                                 ) =>
+                            {
+                                keywords = keywords.union(grant)
+                            }
+                            crate::cards::StaticAbilityFragment::ControlledUntappedSubtypeKeywords {
+                                subtype,
+                                keywords: grant,
+                            } if !target.object.tapped
+                                && target.object.controller == source.object.controller
+                                && ability_world::CharacteristicWorld::subtypes(self, target.id)
+                                    .has(ability_world::CharacteristicWorld::definition(self, target.id), subtype) =>
                             {
                                 keywords = keywords.union(grant)
                             }
@@ -2350,6 +2361,7 @@ impl<'g> FundingState<'g> {
                 object.damage = 0;
                 object.damaged_this_turn = false;
                 object.dealt_damage_this_turn = false;
+                object.dealt_damage_this_incarnation = false;
                 object.dealt_combat_damage_this_incarnation = false;
                 object.deathtouch_since_sba = false;
                 object.growth = Stats::default();
@@ -2492,6 +2504,7 @@ impl<'g> FundingState<'g> {
                 counters: r.object.counters,
                 used: r.object.used_abilities,
                 loyalty_activated_this_turn: r.object.loyalty_activated_this_turn,
+                dealt_damage_this_incarnation: r.object.dealt_damage_this_incarnation,
                 dealt_combat_damage_this_incarnation: r.object.dealt_combat_damage_this_incarnation,
                 gained: r.object.gained_keywords,
                 // Ownership still determines whose graveyard receives a sacrificed
@@ -2597,7 +2610,11 @@ impl<'g> FundingState<'g> {
                 ],
                 r.used,
                 r.gained,
-                (r.attacking, r.dealt_combat_damage_this_incarnation),
+                (
+                    r.attacking,
+                    r.dealt_damage_this_incarnation,
+                    r.dealt_combat_damage_this_incarnation,
+                ),
                 (r.owned, r.controlled, r.identity, r.attached),
             )
         });

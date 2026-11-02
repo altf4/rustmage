@@ -1179,7 +1179,8 @@ struct Object {
     damage: i128,
     damaged_this_turn: bool,
     dealt_damage_this_turn: bool,
-    // History belongs to this exact zone incarnation and persists across turns.
+    // Histories belong to this exact zone incarnation and persist across turns.
+    dealt_damage_this_incarnation: bool,
     dealt_combat_damage_this_incarnation: bool,
     deathtouch_since_sba: bool,
     growth: Stats,
@@ -3751,6 +3752,7 @@ impl Game {
                     damage: 0,
                     damaged_this_turn: false,
                     dealt_damage_this_turn: false,
+                    dealt_damage_this_incarnation: false,
                     dealt_combat_damage_this_incarnation: false,
                     deathtouch_since_sba: false,
                     growth: Stats::default(),
@@ -9096,6 +9098,7 @@ impl Game {
         obj.damage = 0;
         obj.damaged_this_turn = false;
         obj.dealt_damage_this_turn = false;
+        obj.dealt_damage_this_incarnation = false;
         obj.dealt_combat_damage_this_incarnation = false;
         obj.deathtouch_since_sba = false;
         obj.growth = Stats::default();
@@ -9780,6 +9783,7 @@ impl Game {
                 && source.generation == event.source.reference.generation
             {
                 source.dealt_damage_this_turn = true;
+                source.dealt_damage_this_incarnation = true;
                 if event.combat {
                     source.dealt_combat_damage_this_incarnation = true;
                 }

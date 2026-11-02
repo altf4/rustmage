@@ -179,6 +179,11 @@ pub enum StaticAbilityFragment {
         subtype: &'static str,
         keywords: Keywords,
     },
+    /// Live layer-six grant; virtual taps and control/subtype changes requalify recipients.
+    ControlledUntappedSubtypeKeywords {
+        subtype: &'static str,
+        keywords: Keywords,
+    },
     PlayerHexproof,
     ActivateControlledCreaturesAsHaste,
     PlayerHexproofIfSourceCounter {

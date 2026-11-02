@@ -319,6 +319,7 @@ impl Game {
                     damage: 0,
                     damaged_this_turn: false,
                     dealt_damage_this_turn: false,
+                    dealt_damage_this_incarnation: false,
                     dealt_combat_damage_this_incarnation: false,
                     deathtouch_since_sba: false,
                     growth: Stats::default(),

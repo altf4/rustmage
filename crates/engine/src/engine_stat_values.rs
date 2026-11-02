@@ -112,6 +112,36 @@ impl Game {
                 .map_or(0, |(_, object)| {
                     i128::from(!object.dealt_combat_damage_this_incarnation)
                 }),
+            StatValue::SourceHasNotDealtDamage => objects()
+                .find(|(id, object)| *id == source.card && object.generation == source.generation)
+                .map_or(0, |(_, object)| {
+                    i128::from(!object.dealt_damage_this_incarnation)
+                }),
+            StatValue::CounterBearingCreatures => objects()
+                .filter(|(id, object)| {
+                    object.zone == Zone::Battlefield
+                        && object.controller == owner
+                        && kinds(*id, object) & 1 != 0
+                        && has_counters(*id)
+                })
+                .count() as i128,
+            StatValue::DistinctCreatureCounterKinds => {
+                // No allocation or source-owned counter copy, including sparse kinds.
+                let mut present = [false; CounterKind::ALL.len()];
+                for (id, object) in objects() {
+                    if object.zone != Zone::Battlefield
+                        || object.controller != owner
+                        || kinds(id, object) & 1 == 0
+                        || !has_counters(id)
+                    {
+                        continue;
+                    }
+                    for (index, kind) in CounterKind::ALL.into_iter().enumerate() {
+                        present[index] |= counter_count(id, kind) != 0;
+                    }
+                }
+                present.into_iter().filter(|present| *present).count() as i128
+            }
             StatValue::DistinctControlledPlaneswalkerTypes => {
                 let mut distinct = std::collections::BTreeSet::new();
                 for (id, object) in objects() {
@@ -563,6 +593,10 @@ impl Game {
                     .capacity("effect sum exhausted")
             }),
             AmountValue::Fixed(n) => u128::from(n),
+            AmountValue::GreatestCreatureToughness => {
+                ability_world::CharacteristicWorld::greatest_creature_toughness(self, owner).max(0)
+                    as u128
+            }
             AmountValue::OpponentCreaturesExiledThisTurn => u128::from(
                 self.state.players[owner.other().index()].controlled_creatures_exiled_this_turn,
             ),

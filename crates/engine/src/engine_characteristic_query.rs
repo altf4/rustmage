@@ -640,6 +640,16 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         {
                             keywords = keywords.union(grant)
                         }
+                        StaticAbilityFragment::ControlledUntappedSubtypeKeywords {
+                            subtype,
+                            keywords: grant,
+                        } if !target.tapped
+                            && target.controller == object.controller
+                            && CharacteristicWorld::subtypes(self, id)
+                                .has(CharacteristicWorld::definition(self, id), subtype) =>
+                        {
+                            keywords = keywords.union(grant)
+                        }
                         StaticAbilityFragment::PlusOnePlacedKeywords {
                             filter,
                             keywords: grant,

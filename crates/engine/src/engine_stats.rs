@@ -266,6 +266,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. }
                             | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. }
                             | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. }
                             | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..)
                             | crate::cards::StaticAbilityFragment::CounterKeywordOther(..)

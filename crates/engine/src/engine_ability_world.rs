@@ -26,6 +26,22 @@ pub(super) trait CharacteristicWorld {
             .stats(id)
             .power
     }
+    /// Derived toughness is sampled only by resolving quantities and costs, never
+    /// as an earlier-layer StatValue that could recursively define its own stats.
+    fn greatest_creature_toughness(&self, player: Player) -> i128 {
+        let query = characteristic_query::CharacteristicQuery::in_world(self);
+        (0..self.game().state.objects.len())
+            .map(|id| id as CardId)
+            .filter(|&id| {
+                let object = self.object(id);
+                object.zone == Zone::Battlefield
+                    && object.controller == player
+                    && self.kinds(id) & 1 != 0
+            })
+            .map(|id| query.stats(id).toughness)
+            .max()
+            .unwrap_or(0)
+    }
     fn game(&self) -> &Game;
     fn borrowed_slots_state(&self) -> &borrowed_activations::SlotRows {
         &self.game().state.borrowed_slots

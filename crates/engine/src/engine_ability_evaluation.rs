@@ -225,6 +225,12 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             keywords
         }
+        StaticAbilityFragment::ControlledUntappedSubtypeKeywords { subtype, keywords } => {
+            if !own || target.tapped || !world.subtypes(id).has(world.definition(id), subtype) {
+                return None;
+            }
+            keywords
+        }
         StaticAbilityFragment::DeathBaronLord => {
             if !world.death_baron_applies(source, id) {
                 return None;
@@ -573,6 +579,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::ControlledPlaneswalkerActivation(..)
                         | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
                         | StaticAbilityFragment::ControlledSubtypeKeywords { .. }
+                        | StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. }
                         | StaticAbilityFragment::LiveKeywords(..)
                 )
             });
