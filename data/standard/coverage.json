@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "c15eec32e036828d9b852bbcd8b04b448db4ab77d0d52ab1e0802914db3f4659",
+  "catalogue_version": "3f37ab4b9320ad05de69f5587d3b48fc8f80416e03a5e4981cc11e6495f8de8e",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3025,
-  "implemented_total": 3031,
+  "implemented_standard_cards": 3031,
+  "implemented_total": 3037,
   "token_definitions": 156,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -32,8 +32,8 @@
     },
     "dft": {
       "total": 259,
-      "complete": 126,
-      "gated": 133
+      "complete": 132,
+      "gated": 127
     },
     "dsk": {
       "total": 264,
@@ -6594,8 +6594,8 @@
     {
       "name": "Collision Course",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/collision_course.rs",
       "set": "dft"
     },
@@ -12698,8 +12698,8 @@
     {
       "name": "Flood the Engine",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/flood_the_engine.rs",
       "set": "dft"
     },
@@ -32154,8 +32154,8 @@
     {
       "name": "Spectacular Pileup",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/spectacular_pileup.rs",
       "set": "dft"
     },
@@ -32930,8 +32930,8 @@
     {
       "name": "Stall Out",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/stall_out.rs",
       "set": "dft"
     },
@@ -37386,8 +37386,8 @@
     {
       "name": "Trade the Helm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/trade_the_helm.rs",
       "set": "dft"
     },
@@ -37810,8 +37810,8 @@
     {
       "name": "Tune Up",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/tune_up.rs",
       "set": "dft"
     },
