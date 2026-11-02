@@ -295,8 +295,8 @@ fn mindspring_pays_chosen_x_and_tap_but_counters_each_own_merfolk_even_for_zero(
         let p = Player::P0;
         let mut g = scenario(p);
         let source = put(&mut g, p, "Mindspring Merfolk", Zone::Battlefield);
-        let own = put(&mut g, p, "Merfolk Looter", Zone::Battlefield);
-        let enemy = put(&mut g, p.other(), "Merfolk Looter", Zone::Battlefield);
+        let own = put(&mut g, p, "Mindspring Merfolk", Zone::Battlefield);
+        let enemy = put(&mut g, p.other(), "Mindspring Merfolk", Zone::Battlefield);
         let nonmerfolk = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
         g.state.players[0].mana = [0, 2, 0, 0, 0, x];
         begin(&mut g, source, 0);
@@ -379,6 +379,8 @@ fn refueler_draws_for_own_exhaust_including_itself_and_its_animation_is_permanen
     );
     let other = put(&mut g, p.other(), "Skystreak Engineer", Zone::Battlefield);
     act(&mut g, Action::Pass);
+    // Cleanup cleared both players' pools before the opponent's activation.
+    g.state.players[p.other().index()].mana = [0, 1, 0, 0, 0, 4];
     begin(&mut g, other, 0);
     pay(&mut g);
     drain(&mut g);
