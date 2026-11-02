@@ -357,7 +357,15 @@ impl Tracker {
                 self.hit("actual_cast", s.id.to_string());
             }
             if matches!(s.kind, StackKind::ActivatedAbility { .. })
-                && self.hand_activations.contains(&s.id)
+                && (self.hand_activations.contains(&s.id)
+                    || (source.card.info().oracle_keywords.contains(&"Cycling")
+                        && before
+                            .objects
+                            .iter()
+                            .any(|object| object.id == source.id && object.zone == Zone::Hand)
+                        && after.objects.iter().any(|object| {
+                            object.id == source.id && object.zone == Zone::Graveyard
+                        })))
             {
                 self.hit("cycling", s.id.to_string());
             }
