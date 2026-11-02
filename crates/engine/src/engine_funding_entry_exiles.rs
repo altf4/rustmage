@@ -16,6 +16,11 @@ impl FundingState<'_> {
         else {
             return emit(self, moves);
         };
+        if self.entry_projection.is_none() {
+            let mut seed = self.clone();
+            seed.prepare_entry_projection();
+            return seed.visit_entry_exile_choices(moves, emit);
+        }
         let m = &moves[index];
         let spec = m.before.card.entry_exile_counters().unwrap();
         let selected = m

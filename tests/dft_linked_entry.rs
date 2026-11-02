@@ -309,3 +309,25 @@ fn a_prevented_exile_selection_is_reserved_across_all_simultaneous_entry_replace
         assert_eq!(g.state.objects[id as usize].zone, Zone::Graveyard)
     }
 }
+
+#[test]
+fn projected_entry_exiles_include_nonmana_graveyard_cards_and_every_optional_count() {
+    let _scope = fixture_rules::activate(&[(Card::from_name("Pterafractyl").unwrap(), &ENTRY)]);
+    let mut g = scenario(Player::P0);
+    put(&mut g, Player::P0, "Grizzly Bears", Zone::Graveyard);
+    put(&mut g, Player::P0, "Savannah Lions", Zone::Graveyard);
+    let entrant = put(&mut g, Player::P0, "Pterafractyl", Zone::Exile);
+    let mut movement = g.entry_move(entrant, Zone::Battlefield, false);
+    movement.x = 2;
+    let saved = g.snapshot();
+    let world = FundingState::from_game(&g, &goal());
+    let mut counts = Vec::new();
+    world.visit_entry_moves(vec![movement], true, None, &mut |next| {
+        counts.push(next.counter_count(entrant, CounterKind::PlusOne));
+        false
+    });
+    counts.sort_unstable();
+    counts.dedup();
+    assert_eq!(counts, vec![0, 3, 6]);
+    assert_eq!(g.snapshot(), saved);
+}
