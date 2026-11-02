@@ -512,3 +512,126 @@ fn source_exile_can_be_funded_by_sacrificing_its_prohibition_provider() {
     settle(&mut g);
     assert_eq!(g.state.players[0].cards_drawn_this_turn, 1);
 }
+
+const NON_TAP_MAX_SOURCE: CardRules = CardRules {
+    activated: &[ActivatedAbility {
+        origin: ActivationOrigin::Battlefield,
+        cost: ActivationCost {
+            generic: 3,
+            mana_component: true,
+            ..ActivationCost::ZERO
+        },
+        ..GY_ABILITY
+    }],
+    ..MAX_GY
+};
+const PLANESWALKER_GRANT: CardRules = CardRules {
+    effect: Effect::Creature(2, 2),
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Ability,
+        fragments: &[StaticAbilityFragment::ControlledPlaneswalkerActivation(0)],
+    }],
+    activated: &[ActivatedAbility {
+        origin: ActivationOrigin::Battlefield,
+        cost: ActivationCost {
+            tap: true,
+            ..ActivationCost::ZERO
+        },
+        ..GY_ABILITY
+    }],
+    ..CardRules::EMPTY
+};
+const ATTACHED_TAP_GRANT: CardRules = CardRules {
+    effect: Effect::Aura(TargetPlan::Single(TargetSpec::one(TargetRule::Creature))),
+    aura: Some(AuraSpec {
+        kinds: 1,
+        relation: -1,
+        bonus: EquipmentSpec {
+            stats: Stats {
+                power: 0,
+                toughness: 0,
+            },
+            keywords: Keywords::NONE,
+        },
+    }),
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Ability,
+        fragments: &[StaticAbilityFragment::AttachmentActivation(0)],
+    }],
+    activated: PLANESWALKER_GRANT.activated,
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn max_speed_source_grant_never_invents_a_distinct_attachment_tap_cost() {
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &NON_TAP_MAX_SOURCE)]);
+    let mut g = scenario(Player::P0);
+    g.state.players[0].speed = 4;
+    let source = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    g.state.objects[source as usize].tapped = true;
+    grant(&mut g, source);
+    settle(&mut g);
+    assert!(g.object_view(source).tapped);
+    assert_eq!(g.state.players[0].cards_drawn_this_turn, 1);
+}
+
+#[test]
+fn planeswalker_grant_taps_only_the_recipient_even_if_provider_is_already_tapped() {
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &PLANESWALKER_GRANT)]);
+    for tapped in [false, true] {
+        let mut g = scenario(Player::P0);
+        let provider = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
+        let recipient = put(
+            &mut g,
+            Player::P0,
+            "Ajani, Caller of the Pride",
+            Zone::Battlefield,
+        );
+        g.add_counter(recipient, CounterKind::Loyalty, 4);
+        g.state.objects[provider as usize].tapped = tapped;
+        let source = g.object_ref(recipient);
+        let grantor = g.object_ref(provider);
+        act(
+            &mut g,
+            Action::AnnouncePlaneswalkerGrant {
+                source,
+                grantor,
+                ability: 0,
+            },
+        );
+        pay(&mut g);
+        settle(&mut g);
+        assert!(g.object_view(recipient).tapped);
+        assert_eq!(g.object_view(provider).tapped, tapped);
+        assert_eq!(g.state.players[0].cards_drawn_this_turn, 1);
+    }
+}
+
+#[test]
+fn attachment_activation_still_reserves_and_pays_its_distinct_grantor_tap() {
+    let _rules =
+        fixture_rules::activate(&[(Card::from_name("Stop Cold").unwrap(), &ATTACHED_TAP_GRANT)]);
+    let mut g = scenario(Player::P0);
+    let recipient = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    let provider = put(&mut g, Player::P0, "Stop Cold", Zone::Battlefield);
+    g.state.objects[provider as usize].attached_to = Some(g.object_ref(recipient));
+    let grantor = g.object_ref(provider);
+    act(
+        &mut g,
+        Action::AnnounceAttachedAbility {
+            grantor,
+            ability: 0,
+        },
+    );
+    g.state.objects[provider as usize].tapped = true;
+    reject(&mut g, Action::PayCosts { payment: [0; 6] });
+    assert!(!g.object_view(recipient).tapped);
+    g.untap_objects(&[provider], untap_rules::UntapCause::Effect);
+    pay(&mut g);
+    assert!(g.object_view(provider).tapped);
+    assert!(g.object_view(recipient).tapped);
+    settle(&mut g);
+    assert_eq!(g.state.players[0].cards_drawn_this_turn, 1);
+}

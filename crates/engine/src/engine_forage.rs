@@ -113,10 +113,8 @@ impl Game {
         &self,
         a: &Announcement,
     ) -> Option<(ObjectRef, AdditionalCost)> {
-        if matches!(a.item.kind, StackKind::ActivatedAbility { .. })
-            && let Some(grant) = &a.item.attachment_trigger
-        {
-            return Some((grant.grantor, Self::attached_tap_spec()));
+        if let Some(grantor) = a.item.attached_activation_tap_cost() {
+            return Some((grantor, Self::attached_tap_spec()));
         }
         if a.additional_paid
             && (a.ordered_craft()

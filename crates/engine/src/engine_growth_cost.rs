@@ -501,3 +501,29 @@ impl Game {
         }
     }
 }
+
+// Grant provenance alone creates no payment obligation. These legacy attached
+// templates explicitly include tapping their distinct attachment grantor.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl SpellView {
+    pub(super) fn attached_activation_tap_cost(&self) -> Option<ObjectRef> {
+        let StackKind::ActivatedAbility { ability } = self.kind else {
+            return None;
+        };
+        let source = self.source?;
+        let grant = self.attachment_trigger.as_ref()?;
+        (grant.granted
+            && grant.grantor != source.object
+            && grant
+                .granting_card
+                .static_ability_groups()
+                .iter()
+                .any(|group| {
+                    group.fragments.iter().any(|fragment| {
+                        matches!(fragment,
+                    StaticAbilityFragment::AttachmentActivation(index) if *index == ability)
+                    })
+                }))
+        .then_some(grant.grantor)
+    }
+}

@@ -946,7 +946,7 @@ impl Game {
         if self.state.replacements.is_some() {
             return Some(ActivationPaymentPhase::AfterLoyalty);
         }
-        self.pay_activation_tap(item, ability, definition);
+        self.pay_activation_tap(item, definition);
         self.pay_activation_source_counter(item);
         if self.state.replacements.is_some() {
             return Some(ActivationPaymentPhase::AfterSourceCounter);
@@ -964,7 +964,7 @@ impl Game {
         phase: ActivationPaymentPhase,
     ) -> Option<ActivationPaymentPhase> {
         if phase == ActivationPaymentPhase::AfterLoyalty {
-            self.pay_activation_tap(item, ability, definition);
+            self.pay_activation_tap(item, definition);
             self.pay_activation_source_counter(item);
             if self.state.replacements.is_some() {
                 return Some(ActivationPaymentPhase::AfterSourceCounter);
@@ -1091,12 +1091,7 @@ impl Game {
 
     /// Tap is a distinct cost phase: a later counter replacement choice must
     /// not repeat the tap event when payment resumes.
-    fn pay_activation_tap(
-        &mut self,
-        item: &mut SpellView,
-        ability: u16,
-        definition: &ActivatedAbility,
-    ) {
+    fn pay_activation_tap(&mut self, item: &mut SpellView, definition: &ActivatedAbility) {
         let source = item.source.expect("activated ability has an object source");
         let cost = definition.cost;
         // Capture the tap event before a subsequent sacrifice/discard/exile
@@ -1107,10 +1102,8 @@ impl Game {
                 item.mana_tap_bonus = (bonus > 0).then_some(bonus);
             }
             self.tap_objects(&[source.id]);
-            if let Some(grant) = &item.attachment_trigger
-                && source.card.grants_activation(ability)
-            {
-                self.tap_objects(&[grant.grantor.card]);
+            if let Some(grantor) = item.attached_activation_tap_cost() {
+                self.tap_objects(&[grantor.card]);
             }
         }
         if definition.exerts() {
