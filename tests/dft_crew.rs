@@ -223,7 +223,11 @@ fn crew_participant_trigger_is_nontargeted_and_independent_of_countered_crew() {
             g.keywords(vehicle).contains(Keywords::FLYING),
             "paid participant event survives countering Crew"
         );
-        assert_eq!(g.stats(vehicle).power, 5);
+        assert_eq!(
+            g.stats(vehicle),
+            Stats::default(),
+            "noncreature Vehicle has no effective creature stats"
+        );
         g.finish_cleanup();
         assert!(!g.keywords(vehicle).contains(Keywords::FLYING));
     }
