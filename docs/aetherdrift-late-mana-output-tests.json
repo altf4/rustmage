@@ -51,7 +51,7 @@
       "target": "dft_mana_output",
       "scenario": "a_retained_late_choice_replays_its_concrete_output_and_quality_exactly_once",
       "source": "tests/dft_mana_output.rs:409",
-      "outcome": "Opponent-controlled as-entry copy/Aura removes the original parent resource after legal mana costs. Child can finish its correct-quantity output despite now-unfundable old parent, then selective ManaRollback retains exact source cost/output/Turn quality once across raw/index/restore."
+      "outcome": "Opponent-controlled as-entry copy/Aura removes the original parent resource after legal mana costs. All5 exact-quantity colors remain legal and actor-observed despite now-unfundable old parent; cloned branches choose each color, enter ManaRollback and retain exact source cost/output/Turn quality. Original White raw/index/restore proof remains."
     },
     {
       "target": "dft_deferred_mana",

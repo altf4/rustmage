@@ -508,6 +508,52 @@ fn a_retained_late_choice_replays_its_concrete_output_and_quality_exactly_once()
             .produced
     );
     assert!(g.state.cast_rollback.as_ref().unwrap().events.is_empty());
+    // The opponent's copied Aura has already stranded the original parent.
+    // Every exact-quantity output must remain usable before selective rollback;
+    // this escape is different from choosing a color that newly strands a parent.
+    let colors: Vec<Mana> = (0..5)
+        .map(|color| {
+            let mut production = [0; 6];
+            production[color] = 1;
+            production
+        })
+        .collect();
+    let expected: std::collections::BTreeSet<_> = colors.iter().copied().collect();
+    let offered: std::collections::BTreeSet<_> = g
+        .legal_actions()
+        .into_iter()
+        .filter_map(|action| match action {
+            Action::ChooseMana { production } => Some(production),
+            _ => None,
+        })
+        .collect();
+    assert_eq!(offered, expected);
+    assert_eq!(
+        g.observe(Player::P0)
+            .mana_choices
+            .into_iter()
+            .collect::<std::collections::BTreeSet<_>>(),
+        expected
+    );
+    assert!(g.observe(Player::P1).mana_choices.is_empty());
+    for production in colors {
+        let mut branch = g.clone();
+        act(&mut branch, Action::ChooseMana { production });
+        assert!(matches!(branch.state.pending, Pending::ManaRollback { .. }));
+        act(&mut branch, Action::ChooseManaRollback { keep: true });
+        assert_eq!(branch.state.players[0].mana, production);
+        assert_eq!(branch.object_view(spell).zone, Zone::Hand);
+        assert_eq!(branch.object_view(mana).zone, Zone::Graveyard);
+        assert_eq!(
+            branch.object_view(returning).card,
+            named("Witness Protection")
+        );
+        branch.clear_step_mana(false, true);
+        assert_eq!(
+            branch.state.players[0].mana, production,
+            "every retained color keeps its frozen Turn quality"
+        );
+    }
     reject(
         &mut g,
         Action::ChooseMana {
