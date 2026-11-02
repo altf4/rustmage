@@ -85,6 +85,12 @@
       "cases": 9,
       "scope": "2 complete identities: Gonti actual2BB3/4 and actual caster-owner/observer matrix offturn/countered foreign spells creates functional untapped colorless Treasure only for caster; actual per-creature combat damage original-dealer-controller private face-down exact WhileExiled entitlement, source/dealer departure and control change, anymana paid spell nextturn, land timing/shared limit/no Treasure/reincarnation, noncombat/observer-own damage exclusions, prevented exile private look and raw-index/restore/shuffle. Howlsquad actual2R2/3 StartYourEngines, live other-controlledGoblin haste/new/controller/source changes, own-combat red1/1 mustattack exact requirement expiry, source-departure sickness contrast, maxspeed/sickness/tap gated currentGoblin mana and actual LightningStrike funding.",
       "status": "pending root execution"
+    },
+    {
+      "target": "dft_black_red_cards_target_roles",
+      "cases": 6,
+      "status": "pending root execution",
+      "scope": "Paid Trade and Junker response-role matrix both seats, one/full controller swaps, per-player optional target groups/independent partial destruction, original queued controller after source control change and owned raw/index/restore response branches"
     }
   ],
   "shared_proofs": [
@@ -1297,7 +1303,11 @@
       "outcome_tests": [
         "demonic_junker_affinity_counts_only_controlled_artifacts_reduces_generic_to_zero_and_keeps_black",
         "demonic_junker_targets_at_most_one_per_player_and_rewards_actual_own_destruction_once",
-        "demonic_junker_does_not_reward_indestructible_or_stale_own_targets_but_still_destroys_legal_other"
+        "demonic_junker_does_not_reward_indestructible_or_stale_own_targets_but_still_destroys_legal_other",
+        "junker_paid_entry_optional_groups_choose_either_both_or_neither_player_independently",
+        "junker_response_controller_changes_leave_only_the_still_legal_player_role_destroyed",
+        "junker_original_queued_controller_owns_target_roles_and_reward_after_source_control_changes",
+        "junker_owned_queued_response_branch_preserves_original_roles_and_partial_reward"
       ],
       "test_target": "dft_black_red_cards_exhaust_vehicles",
       "source_review": {
@@ -1345,6 +1355,11 @@
           },
           {
             "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+            "path": "Mage/src/main/java/mage/filter/predicate/permanent/ControllerIdPredicate.java",
+            "sha256": "3e6dddd03c3d0b8025f5988d804acf40a090f03c51e7836507a8a79f8a55589f"
+          },
+          {
+            "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
             "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
             "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
           },
@@ -1360,7 +1375,19 @@
           }
         ]
       },
-      "definition_sha256": "31fd59f660c13e0026d8bb47983d99c1f90392ffdbeda2307a1f32d87d4ab4a6"
+      "definition_sha256": "8f62e54ac9810c5e62bd8db4880730f8191b699a8e10f77fe01df53437fe8f48",
+      "target_role_followup": {
+        "engine_checkpoint": "cbb7866f9",
+        "test_target": "dft_black_red_cards_target_roles",
+        "scenarios": [
+          "junker_paid_entry_optional_groups_choose_either_both_or_neither_player_independently",
+          "junker_response_controller_changes_leave_only_the_still_legal_player_role_destroyed",
+          "junker_original_queued_controller_owns_target_roles_and_reward_after_source_control_changes",
+          "junker_owned_queued_response_branch_preserves_original_roles_and_partial_reward"
+        ],
+        "status": "pending root focused execution; card-only correction after reviewed engine checkpoint",
+        "contract": "Independent target occurrences retain original queued-controller roles under control-change responses; no symmetric live DifferentControllers constraint."
+      }
     },
     {
       "name": "Draconautics Engineer",

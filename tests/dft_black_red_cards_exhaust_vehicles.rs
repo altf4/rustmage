@@ -185,7 +185,11 @@ fn demonic_junker_affinity_counts_only_controlled_artifacts_reduces_generic_to_z
         g.state.players[0].mana = [0, 0, 1, 0, 0, generic];
         cast(&mut g, source, None);
         reach(&mut g, |a| matches!(a, Action::FinishTargets));
-        act(&mut g, Action::FinishTargets);
+        act(&mut g, Action::FinishTargets); // Choose no controlled creature.
+        // An empty opposing role is skipped automatically; otherwise decline it.
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            act(&mut g, Action::FinishTargets);
+        }
         drain(&mut g);
         assert_eq!(g.state.players[0].mana, [0; 6]);
         assert_eq!(g.object_view(source).counters.plus_one, 0);
@@ -195,7 +199,7 @@ fn demonic_junker_affinity_counts_only_controlled_artifacts_reduces_generic_to_z
 #[test]
 fn demonic_junker_targets_at_most_one_per_player_and_rewards_actual_own_destruction_once() {
     for p in [Player::P0, Player::P1] {
-        for reverse in [false, true] {
+        for reject_opponent_first in [false, true] {
             let mut g = scenario(p);
             let ours = put(&mut g, p, "Bear Cub", Zone::Battlefield);
             let another = put(&mut g, p, "Bear Cub", Zone::Battlefield);
@@ -203,29 +207,30 @@ fn demonic_junker_targets_at_most_one_per_player_and_rewards_actual_own_destruct
             let source = put(&mut g, p, "Demonic Junker", Zone::Hand);
             cast(&mut g, source, None);
             reach(&mut g, |a| matches!(a, Action::ChooseTarget { .. }));
-            let ids = if reverse {
-                [theirs, ours]
-            } else {
-                [ours, theirs]
-            };
-            act(
-                &mut g,
-                Action::ChooseTarget {
-                    target: Target::Card(ids[0]),
-                },
-            );
-            if !reverse {
+            if reject_opponent_first {
                 reject(
                     &mut g,
                     Action::ChooseTarget {
-                        target: Target::Card(another),
+                        target: Target::Card(theirs),
                     },
                 );
             }
             act(
                 &mut g,
                 Action::ChooseTarget {
-                    target: Target::Card(ids[1]),
+                    target: Target::Card(ours),
+                },
+            );
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(another),
+                },
+            );
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(theirs),
                 },
             );
             drain(&mut g);

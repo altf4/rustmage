@@ -50,6 +50,11 @@
     },
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/ControllerIdPredicate.java",
+      "sha256": "3e6dddd03c3d0b8025f5988d804acf40a090f03c51e7836507a8a79f8a55589f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
       "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
       "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
     },

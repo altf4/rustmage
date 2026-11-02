@@ -1507,13 +1507,26 @@
         "Exchange control of target artifact or creature you control and target artifact or creature an opponent controls.",
         "Cycling {2} ({2}, Discard this card: Draw a card.)"
       ],
-      "status": "focused verified: all printed obligations mapped to passing real-card scenarios or the cited accepted shared proof; independent final batch review and whole-set acceptance remain pending",
+      "status": "card-only independent-role correction authored; prior paid/cycling outcomes preserved; focused response-role validation pending integrator",
       "test_target": "dft_white_blue_cards_tempo",
       "outcome_scenarios": [
         "trade_the_helm_exchanges_both_objects_or_neither_when_one_incarnation_is_lost",
-        "tempo_family_cycling_pays_two_and_discards_before_exactly_one_draw"
+        "tempo_family_cycling_pays_two_and_discards_before_exactly_one_draw",
+        "trade_paid_target_roles_revalidate_independently_after_one_or_both_control_changes",
+        "trade_owned_raw_index_resolution_and_restored_full_swap_response_keep_distinct_results"
       ],
-      "shared_proof": "accepted engine freeze fb878868d; shared keyword/target/zone semantics, with actual card wiring and printed outcomes in listed scenarios"
+      "shared_proof": "Accepted aggregate target-group engine checkpoint cbb7866f9; 15 generic role/outcome/owned scenarios and 2 scoped prior198 contrasts; actual corrected card scenarios listed here still require root focused execution.",
+      "definition_sha256": "b314839daed7c2cfb182fa56b1cb209ec009fcc9a4bd8a58578bcce7ddb4b82d",
+      "target_role_followup": {
+        "engine_checkpoint": "cbb7866f9",
+        "test_target": "dft_black_red_cards_target_roles",
+        "scenarios": [
+          "trade_paid_target_roles_revalidate_independently_after_one_or_both_control_changes",
+          "trade_owned_raw_index_resolution_and_restored_full_swap_response_keep_distinct_results"
+        ],
+        "status": "pending root focused execution; card-only correction after reviewed engine checkpoint",
+        "contract": "Independent target occurrences retain original queued-controller roles under control-change responses; no symmetric live DifferentControllers constraint."
+      }
     },
     {
       "name": "Transit Mage",

@@ -1,4 +1,4 @@
-// Complete Oracle: reward once for an actual controlled creature destroyed, independent of target order.
+// Complete Oracle: independent optional player roles; one reward from the actual aggregate destruction.
 const REDUCTION: SpellReduction = SpellReduction {
     source_only: true,
     filter: CastFilter::Any,
@@ -28,14 +28,36 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
     static_groups: GROUPS,
     triggers: &[TriggeredAbility {
         condition: TriggerCondition::SelfEnters,
-        targets: TargetPlan::Single(TargetSpec {
-            rule: TargetRule::Grouped {
-                base: &TargetRule::Creature,
-                constraint: TargetGroupConstraint::DifferentControllers,
+        targets: TargetPlan::Groups(&[
+            TargetSpec {
+                rule: TargetRule::Object {
+                    zone: TargetZone::Battlefield,
+                    kinds: 1,
+                    relation: 0,
+                    other: false,
+                    nonland: false,
+                    tapped: false,
+                    min_mana: 0,
+                    max_mana: u32::MAX,
+                },
+                min: 0,
+                max: 1,
             },
-            min: 0,
-            max: 2,
-        }),
+            TargetSpec {
+                rule: TargetRule::Object {
+                    zone: TargetZone::Battlefield,
+                    kinds: 1,
+                    relation: 1,
+                    other: false,
+                    nonland: false,
+                    tapped: false,
+                    min_mana: 0,
+                    max_mana: u32::MAX,
+                },
+                min: 0,
+                max: 1,
+            },
+        ]),
         program: &[Instruction::DestroyTargetsThenSourceCountersIfOwnCreature {
             kind: CounterKind::PlusOne,
             amount: 2,
