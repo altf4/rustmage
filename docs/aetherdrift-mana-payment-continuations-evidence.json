@@ -144,5 +144,16 @@
     "cargo_run_by_author": false,
     "linker_run_by_author": false,
     "set_acceptance": "No full-set acceptance claim."
+  },
+  "final_engine_acceptance": {
+    "tested_revision": "3b29b55758059e9366ee6cd487b7bef8b0fe7c06",
+    "engine_source": "7cb154785ff4893759854032ddf243e7beeedba3",
+    "status": "accepted; source and terminal runtime approved by both independent nonauthor reviewers",
+    "new_scenario_count": 26,
+    "checkpoint": "docs/aetherdrift-engine-freeze.json",
+    "reports": {
+      "combined": "<cache>/rustmage-authoring/aetherdrift/late-mana-completion-assembled-20261102-01/report.json",
+      "promoted_trace_and_warm": "<cache>/rustmage-authoring/aetherdrift/frozen-late-mana-completion-20261102-01/report.json"
+    }
   }
 }
