@@ -128,7 +128,11 @@ impl Game {
             && (filter.max_mana == u32::MAX
                 || self.object_mana_value(id) <= u64::from(filter.max_mana))
     }
-    fn battlefield_group(&self, item: &SpellView, filters: &[BattlefieldFilter]) -> Vec<CardId> {
+    pub(super) fn battlefield_group(
+        &self,
+        item: &SpellView,
+        filters: &[BattlefieldFilter],
+    ) -> Vec<CardId> {
         (0..self.state.objects.len())
             .filter_map(|id| {
                 let id = id as CardId;
