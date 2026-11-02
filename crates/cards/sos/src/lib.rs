@@ -15,1800 +15,2100 @@ use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/aberrant_manawurm.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0032 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/abigale_poet_laureate_heroic_stanza.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0039 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/abstract_paintmage.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0057 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/additive_evolution.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0065 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/adventurous_eater_have_a_bite.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0115 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/ajani_s_response.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0144 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/ambitious_augmenter.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0156 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/ancestral_anger.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0180 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/antiquities_on_the_loose.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0190 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/applied_geometry.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0205 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/arcane_omens.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0207 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/archaic_s_agony.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0221 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/ark_of_hunger.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0232 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/arnyn_deathbloom_botanist.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0235 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/artistic_process.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0236 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/ascendant_dustspeaker.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0293 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/aziza_mage_tower_captain.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0320 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/banishing_betrayal.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0390 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/berta_wise_extrapolator.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0404 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/biblioplex_tomekeeper.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0443 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/blazing_firesinger_seething_song.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0445 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/blech_loafing_pest.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0480 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/bogwater_lumaret.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0508 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/borrowed_knowledge.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0573 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/brush_off.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0596 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/burrog_banemaker.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0597 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/burrog_barrage.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0627 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/campus_composer_aqueous_aria.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0685 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/cauldron_of_essence.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0723 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/charging_strifeknight.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0730 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/chase_inspiration.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0732 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/cheerful_osteomancer_raise_dead.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0734 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/chelonian_tackle.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0746 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/choreographed_sparks.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0800 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/colorstorm_stallion.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0804 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/colossus_of_the_blood_age.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0810 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/comforting_counsel.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0824 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/conciliator_s_duelist.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0865 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/cost_of_brilliance.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0921 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/cuboid_colony.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_0988 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/daydream.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1005 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/deathcap_glade.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1015 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/decorum_dissertation.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1035 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/deluge_virtuoso.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1071 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/diary_of_dreams.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1074 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/dig_site_inventory.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1081 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/dina_s_guidance.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1099 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/dissection_practice.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1105 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/divergent_equation.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1183 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/dreamroot_cascade.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1200 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/duel_tactics.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1226 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/eager_glyphmage.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1251 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/echocasting_symposium.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1270 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/efflorescence.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1282 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/elemental_mascot.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1288 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/elite_interceptor_rejoinder.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1309 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/embrace_the_paradox.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1314 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/emeritus_of_abundance_regrowth.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1315 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/emeritus_of_conflict_lightning_bolt.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1316 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/emeritus_of_ideation_ancestral_recall.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1317 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/emeritus_of_truce_swords_to_plowshares.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1318 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/emeritus_of_woe_demonic_tutor.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1320 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/emil_vastlands_roamer.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1326 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/encouraging_aviator_jump.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1329 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/end_of_the_hunt.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1342 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/ennis_debate_moderator.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1350 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/environmental_scientist.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1360 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/erode.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1373 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/essence_scatter.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1375 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/essenceknit_scholar.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1379 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/eternal_student.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1397 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/exhibition_tidecaller.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1410 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/expressive_firedancer.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1502 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/fields_of_strife.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1539 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/fix_what_s_broken.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1549 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/flashback.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1569 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/flow_state.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1580 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/follow_the_lumarets.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1584 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/foolish_fate.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1604 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/forum_necroscribe.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1605 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/forum_of_amity.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1610 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/fractal_anomaly.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1611 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/fractal_mascot.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1612 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/fractal_tender.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1613 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/fractalize.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1685 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/garrison_excavator.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1713 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/geometer_s_arthropod.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1717 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/germination_practicum.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1789 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/glorious_decay.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1803 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/goblin_glasswright_craft_with_pride.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1839 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/graduation_day.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1847 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/grapple_with_death.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1853 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/grave_researcher_reanimate.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1865 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/great_hall_of_the_biblioplex.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1886 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/group_project.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1891 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/growth_curve.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1943 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/hardened_academic.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1951 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/harmonized_trio_brainstorm.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1956 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/harsh_annotation.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_1985 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/heated_argument.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2060 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/homesickness.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2066 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/honorbound_page_forum_s_favor.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2102 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/hungry_graffalon.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2112 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/hydro_channeler.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2146 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/imperious_inkmage.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2151 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/impractical_joke.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2153 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/improvisation_capstone.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2164 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/infirmary_healer_stream_of_life.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2165 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/informed_inkwright.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2169 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/inkling_mascot.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2170 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/inkshape_demonstrator.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2196 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/interjection.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2256 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/jadzi_steward_of_fate_oracle_s_gift.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2285 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/joined_researchers_secret_rendezvous.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2351 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/killian_s_confidence.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2370 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/kirol_history_buff_pack_a_punch.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2444 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/landscape_painter_vibrant_idea.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2467 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/lecturing_scornmage.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2468 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/leech_collector_bloodletting.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2523 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/living_history.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2528 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/lluwen_exchange_student_pest_friend.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2559 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/lorehold_charm.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2560 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/lorehold_the_historian.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2575 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/lumaret_s_favor.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2610 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/maelstrom_artisan_rocket_volley.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2614 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/mage_tower_referee.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2621 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/magmablood_archaic.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2648 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/mana_sculpt.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2684 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/masterful_flourish.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2685 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/mathemagics.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2687 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/matterbending_mage.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2706 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/melancholic_poet.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2737 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/mica_reader_of_ruins.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2762 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/mind_roots.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2766 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/mind_into_matter.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2767 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/mindful_biomancer.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2818 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/molten_note.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2819 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/molten_core_maestro.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2822 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/moment_of_reckoning.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2857 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/moseo_vein_s_new_dean.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2883 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/muse_seeker.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2884 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/muse_s_encouragement.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2948 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/nita_forum_conciliator.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_2974 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/noxious_newt.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3008 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/old_growth_educator.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3030 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/oracle_s_restoration.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3044 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/orysa_tide_choreographer.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3082 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/owlin_historian.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3088 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/page_loose_leaf.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3097 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/paradox_gardens.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3099 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/paradox_surveyor.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3124 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/pensive_professor.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3137 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/pest_mascot.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3138 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/pestbrood_sloth.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3144 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/petrified_hamlet.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3160 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/pigment_wrangler_striking_palette.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3180 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/planar_engineering.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3196 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/poisoner_s_apprentice.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3209 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/postmortem_professor.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3211 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/potioner_s_trove.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3213 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/pox_plague.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3214 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/practiced_offense.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3215 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/practiced_scrollsmith.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3233 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/primary_research.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3240 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prismari_charm.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3241 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prismari_the_inspiration.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3245 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/procrastinate.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3247 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/proctor_s_gaze.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3249 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/professor_dellian_fel.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3270 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/pterafractyl.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3276 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/pull_from_the_grave.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3286 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/pursue_the_past.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3304 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/quandrix_charm.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3305 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/quandrix_the_proof.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3312 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/quick_study.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3316 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/quill_blade_laureate_twofold_intent.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3327 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/rabid_attack.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3357 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/ral_zarek_guest_lecturer.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3368 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/rancorous_archaic.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3383 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/rapier_wit.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3384 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/rapturous_moment.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3415 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/rearing_embermare.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3447 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/rehearsed_debater.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3457 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/render_speechless.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3480 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/resonating_lute.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3494 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/restoration_seminar.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3586 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/root_manipulation.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3606 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/rubble_rouser.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3618 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/run_behind.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3671 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/sanar_unfinished_genius_wild_idea.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3716 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/scathing_shadelock_venomous_words.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3721 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/scheming_silvertongue_sign_in_blood.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3724 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/scolding_administrator.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3776 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/seize_the_spoils.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3786 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/send_in_the_pest.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3819 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/shattered_acolyte.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3820 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/shattered_sanctum.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3843 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/shopkeeper_s_bane.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3874 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/silverquill_charm.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3875 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/silverquill_the_disputant.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3899 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/skycoach_conductor_all_aboard.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3900 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/skycoach_waypoint.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3931 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/slumbering_trudge.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3942 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/snarl_song.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3944 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/sneering_shadewriter.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3945 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/snooping_page.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3950 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/soaring_stoneglider.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3951 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/social_snub.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3993 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/spectacle_summit.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_3995 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/spectacular_skywhale.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4008 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/spellbook_seeker_careful_study.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4055 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/spirit_mascot.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4057 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/spiritcall_enthusiast_scrollboost.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4063 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/splatter_technique.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4085 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/stadium_tidalmage.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4094 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/stand_up_for_yourself.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4114 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/startled_relic_sloth.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4123 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/steal_the_show.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4150 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/stirring_honormancer.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4151 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/stirring_hopesinger.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4162 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/stone_docent.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4171 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/stormcarved_coast.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4186 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/stress_dream.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4187 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/strife_scholar_awaken_the_ages.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4189 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/strixhaven_skycoach.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4196 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/studious_first_year_rampant_growth.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4228 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/summoned_dromedary.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4238 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/sundering_archaic.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4240 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/sundown_pass.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4277 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/suspend_aggression.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4314 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/tablet_of_discovery.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4315 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/tackle_artist.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4329 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/tam_observant_sequencer_deep_sight.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4349 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/teacher_s_pest.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4384 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/tenured_concocter.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4402 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/tester_of_the_tangential.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4408 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/textbook_tabulator.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4433 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/the_dawning_archaic.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4542 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/thornfist_striker.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4583 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/thunderdrum_soloist.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4611 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/titan_s_grave.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4618 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/together_as_one.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4626 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/tome_blast.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4636 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/topiary_lecturer.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4649 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/tragedy_feaster.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4656 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/transcendent_archaic.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4663 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/traumatic_critique.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4740 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/ulna_alley_shopkeep.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4803 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/unsubtle_mockery.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4851 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/vastlands_scavenger_bind_to_life.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4885 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/vibrant_outburst.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4887 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/vicious_rivalry.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4917 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/visionary_s_dance.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_4962 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/wander_off.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5057 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/wild_hypothesis.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5066 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/wildgrowth_archaic.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5073 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/wilt_in_the_heat.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5089 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/wisdom_of_ages.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5098 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/witherbloom_charm.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5099 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/witherbloom_the_balancer.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5100 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/withering_curse.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5151 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/zaffai_and_the_tempests.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5155 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/zealous_lorecaster.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5163 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/zimone_s_experiment.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5351 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_abigale_poet_laureate_heroic_stanza.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5352 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_adventurous_eater_have_a_bite.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5353 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_blazing_firesinger_seething_song.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5354 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_campus_composer_aqueous_aria.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5355 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_cheerful_osteomancer_raise_dead.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5356 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_elite_interceptor_rejoinder.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5357 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_emeritus_of_abundance_regrowth.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5358 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_emeritus_of_conflict_lightning_bolt.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5359 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_emeritus_of_ideation_ancestral_recall.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5360 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_emeritus_of_truce_swords_to_plowshares.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5361 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_emeritus_of_woe_demonic_tutor.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5362 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_encouraging_aviator_jump.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5363 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_goblin_glasswright_craft_with_pride.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5364 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_grave_researcher_reanimate.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5365 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_harmonized_trio_brainstorm.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5366 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_honorbound_page_forum_s_favor.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5367 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_infirmary_healer_stream_of_life.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5368 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_jadzi_steward_of_fate_oracle_s_gift.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5369 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_joined_researchers_secret_rendezvous.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5370 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_kirol_history_buff_pack_a_punch.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5371 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_landscape_painter_vibrant_idea.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5372 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_leech_collector_bloodletting.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5373 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_lluwen_exchange_student_pest_friend.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5374 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_maelstrom_artisan_rocket_volley.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5375 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_pigment_wrangler_striking_palette.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5376 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_quill_blade_laureate_twofold_intent.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5377 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_sanar_unfinished_genius_wild_idea.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5378 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_scathing_shadelock_venomous_words.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5379 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_scheming_silvertongue_sign_in_blood.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5380 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_skycoach_conductor_all_aboard.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5381 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_spellbook_seeker_careful_study.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5382 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_spiritcall_enthusiast_scrollboost.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5383 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_strife_scholar_awaken_the_ages.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5384 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_studious_first_year_rampant_growth.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5385 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_tam_observant_sequencer_deep_sight.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 pub(super) mod card_5386 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
 use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/sos/prepare_vastlands_scavenger_bind_to_life.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
 }
 #[rustfmt::skip]
