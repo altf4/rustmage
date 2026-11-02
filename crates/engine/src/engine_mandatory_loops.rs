@@ -199,7 +199,12 @@ impl Game {
                 && (o.card.cast_timing_guard() != StepGuard::Always
                     || o.card
                         .cost_alternative_guard()
-                        .is_some_and(|g| g != StepGuard::Always))
+                        .is_some_and(|g| g != StepGuard::Always)
+                    || (o.zone != Zone::Battlefield
+                        && o.card
+                            .triggers()
+                            .iter()
+                            .any(|t| t.condition.origin().is_some())))
         }) {
             return false;
         }
