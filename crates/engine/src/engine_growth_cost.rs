@@ -282,7 +282,7 @@ impl Game {
                     expires_turn: self.state.turn,
                     permanent: true,
                     timestamp,
-                    origin: item.source_ability_origin.map(|_| timestamp),
+                    origin: Some(timestamp),
                 });
         }
     }

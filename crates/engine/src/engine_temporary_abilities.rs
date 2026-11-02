@@ -45,7 +45,7 @@ impl Game {
                 expires_turn: self.state.turn,
                 permanent: true,
                 timestamp,
-                origin: item.source_ability_origin.map(|_| timestamp),
+                origin: Some(timestamp),
             });
     }
     /// Each stored grant identifies one ability. Scanning its definition's whole
@@ -188,7 +188,7 @@ impl Game {
                 expires_turn: self.state.turn,
                 permanent: false,
                 timestamp,
-                origin: item.source_ability_origin.map(|_| timestamp),
+                origin: Some(timestamp),
             };
             self.state
                 .temporary_abilities

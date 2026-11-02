@@ -1173,19 +1173,23 @@ fn windcrag_does_not_duplicate_independent_attack_callback_after_its_source_leav
         (Card::from_name("Anthem of Champions").unwrap(), &MULTIPLIER),
         (Card::from_name("Short Bow").unwrap(), &CALLBACK),
     ]);
-    let mut g = scenario(Player::P0);
-    multiplier(&mut g, Player::P0, 0);
-    let installer = put(&mut g, Player::P0, "Short Bow", Zone::Battlefield);
-    activate(&mut g, installer, 0);
-    settle(&mut g);
-    g.move_object(installer, Zone::Graveyard);
-    let attacker = put(&mut g, Player::P0, "Hill Giant", Zone::Battlefield);
-    declare(&mut g, attacker);
-    drain(&mut g);
-    assert_eq!(
-        g.state.players[0].life, 23,
-        "the delayed ability has no permanent as its current source"
-    );
+    for leave in [false, true] {
+        let mut g = scenario(Player::P0);
+        multiplier(&mut g, Player::P0, 0);
+        let installer = put(&mut g, Player::P0, "Short Bow", Zone::Battlefield);
+        activate(&mut g, installer, 0);
+        settle(&mut g);
+        if leave {
+            g.move_object(installer, Zone::Graveyard);
+        }
+        let attacker = put(&mut g, Player::P0, "Hill Giant", Zone::Battlefield);
+        declare(&mut g, attacker);
+        drain(&mut g);
+        assert_eq!(
+            g.state.players[0].life, 23,
+            "the scheduled ability is independent whether its installer stays or leaves"
+        );
+    }
 }
 
 #[test]
@@ -1234,4 +1238,204 @@ fn windcrag_temporary_grant_still_obeys_a_printed_once_per_turn_trigger_limit() 
     declare(&mut g, attacker);
     drain(&mut g);
     assert_eq!(g.state.players[0].life, 23);
+}
+
+#[test]
+fn independent_native_once_per_turn_grants_keep_separate_acquisitions_and_owned_trigger_history() {
+    const FILTER: CreatureFilter = CreatureFilter {
+        relation: 0,
+        other: false,
+        subtype: None,
+        keyword: Keywords::NONE,
+        attacking: false,
+        tokens: None,
+        artifact: false,
+    };
+    const LIMITED: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::NONE,
+            &[Instruction::GrantCreatureAbility {
+                filter: FILTER,
+                ability: 0,
+            }],
+        ),
+        triggers: &[TriggeredAbility {
+            condition: TriggerCondition::Granted(&TriggerCondition::OncePerTurn(
+                &TriggerCondition::SelfAttacks,
+            )),
+            targets: TargetPlan::NONE,
+            program: LIFE,
+        }],
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[
+        (Card::from_name("Anthem of Champions").unwrap(), &MULTIPLIER),
+        (Card::from_name("Opt").unwrap(), &LIMITED),
+    ]);
+    for p in [Player::P0, Player::P1] {
+        let mut parent = scenario(p);
+        multiplier(&mut parent, p, 0);
+        let attacker = put(&mut parent, p, "Hill Giant", Zone::Battlefield);
+        for _ in 0..2 {
+            let spell = put(&mut parent, p, "Opt", Zone::Hand);
+            cast(&mut parent, spell, None);
+            settle(&mut parent);
+        }
+        assert_eq!(parent.state.temporary_abilities.as_ref().unwrap().len(), 2);
+        parent.state.pending = Pending::Attackers;
+        parent.state.step = Step::Attackers;
+        act(&mut parent, Action::Attack { card: attacker });
+        let saved = parent.snapshot();
+        let revision = parent.revision();
+        let index = parent
+            .legal_actions()
+            .iter()
+            .position(|a| *a == Action::FinishAttackers)
+            .unwrap();
+        let mut raw = parent.clone();
+        let mut indexed = parent.clone();
+        drop(parent);
+        raw.apply(p, Action::FinishAttackers).unwrap();
+        indexed.apply_index(p, revision, index).unwrap();
+        drain(&mut raw);
+        drain(&mut indexed);
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        assert_eq!(
+            raw.state.players[p.index()].life,
+            26,
+            "two independently acquired limited abilities each trigger once"
+        );
+        indexed.restore(&saved).unwrap();
+        indexed.apply(p, Action::FinishAttackers).unwrap();
+        drain(&mut indexed);
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        raw.state.attackers.clear();
+        raw.state.objects[attacker as usize].tapped = false;
+        declare(&mut raw, attacker);
+        drain(&mut raw);
+        assert_eq!(
+            raw.state.players[p.index()].life,
+            26,
+            "both independent instances have used their own limit"
+        );
+    }
+}
+
+#[test]
+fn independent_native_permanent_trigger_grants_each_keep_their_own_once_limit() {
+    const SELF_GRANT: CardRules = CardRules {
+        effect: Effect::Creature(4, 4),
+        activated: &[ability(
+            ActivationCost::ZERO,
+            ActivationOrigin::Battlefield,
+            ActivationGuard::Always,
+            &[Instruction::GrantSourcePermanentTrigger(0)],
+        )],
+        triggers: &[TriggeredAbility {
+            condition: TriggerCondition::Granted(&TriggerCondition::OncePerTurn(
+                &TriggerCondition::SelfAttacks,
+            )),
+            targets: TargetPlan::NONE,
+            program: LIFE,
+        }],
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[(Card::HillGiant, &SELF_GRANT)]);
+    let mut g = scenario(Player::P0);
+    let attacker = put(&mut g, Player::P0, "Hill Giant", Zone::Battlefield);
+    for _ in 0..2 {
+        activate(&mut g, attacker, 0);
+        settle(&mut g);
+    }
+    declare(&mut g, attacker);
+    drain(&mut g);
+    assert_eq!(g.state.players[0].life, 26);
+}
+
+#[test]
+fn independent_native_evolved_trigger_grants_keep_prior_acquired_abilities() {
+    const EVOLVE: CardRules = CardRules {
+        effect: Effect::Creature(4, 4),
+        activated: &[ability(
+            ActivationCost::ZERO,
+            ActivationOrigin::Battlefield,
+            ActivationGuard::Always,
+            &[Instruction::EvolveSource {
+                required: "Elf",
+                types: &["Elf", "Druid"],
+                stats: None,
+                keywords: Keywords::NONE,
+                ability: Some(0),
+            }],
+        )],
+        triggers: &[TriggeredAbility {
+            condition: TriggerCondition::Granted(&TriggerCondition::OncePerTurn(
+                &TriggerCondition::SelfAttacks,
+            )),
+            targets: TargetPlan::NONE,
+            program: LIFE,
+        }],
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[(Card::LlanowarElves, &EVOLVE)]);
+    let mut g = scenario(Player::P0);
+    let attacker = put(&mut g, Player::P0, "Llanowar Elves", Zone::Battlefield);
+    for _ in 0..2 {
+        activate(&mut g, attacker, 0);
+        settle(&mut g);
+    }
+    declare(&mut g, attacker);
+    drain(&mut g);
+    assert_eq!(g.state.players[0].life, 26);
+}
+
+#[test]
+fn independent_native_granted_and_printed_abilities_at_the_same_index_do_not_share_history() {
+    const FILTER: CreatureFilter = CreatureFilter {
+        relation: 0,
+        other: false,
+        subtype: None,
+        keyword: Keywords::NONE,
+        attacking: false,
+        tokens: None,
+        artifact: false,
+    };
+    const GRANT: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::NONE,
+            &[Instruction::GrantCreatureAbility {
+                filter: FILTER,
+                ability: 0,
+            }],
+        ),
+        triggers: &[TriggeredAbility {
+            condition: TriggerCondition::Granted(&TriggerCondition::OncePerTurn(
+                &TriggerCondition::SelfAttacks,
+            )),
+            targets: TargetPlan::NONE,
+            program: LIFE,
+        }],
+        ..CardRules::EMPTY
+    };
+    const PRINTED: CardRules = CardRules {
+        effect: Effect::Creature(4, 4),
+        triggers: &[TriggeredAbility {
+            condition: TriggerCondition::OncePerTurn(&TriggerCondition::SelfAttacks),
+            targets: TargetPlan::NONE,
+            program: LIFE,
+        }],
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[
+        (Card::HillGiant, &PRINTED),
+        (Card::from_name("Opt").unwrap(), &GRANT),
+    ]);
+    let mut g = scenario(Player::P0);
+    let attacker = put(&mut g, Player::P0, "Hill Giant", Zone::Battlefield);
+    let spell = put(&mut g, Player::P0, "Opt", Zone::Hand);
+    cast(&mut g, spell, None);
+    settle(&mut g);
+    declare(&mut g, attacker);
+    drain(&mut g);
+    assert_eq!(g.state.players[0].life, 26);
 }

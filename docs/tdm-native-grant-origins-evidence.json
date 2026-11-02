@@ -1,0 +1,258 @@
+{
+  "schema": 1,
+  "scope": "Independent per-acquisition identity for granted abilities and refreshed static checkpoint",
+  "base_revision": "174770586190fa63b8b5c521753f76c45c8035bc",
+  "source_inputs": [
+    {
+      "path": "crates/engine/src/engine_temporary_abilities.rs",
+      "sha256": "77475a2d6371198fd45c300244f2f0193c346643041096cfbf903cdf020fce35"
+    },
+    {
+      "path": "crates/engine/src/engine_growth_cost.rs",
+      "sha256": "3df6cb17daf7a7501b3f8fa307f0b90772cf5b3a7cfd9bf5247b63547bb3b7d4"
+    },
+    {
+      "path": "tests/tdm_static_rules.rs",
+      "sha256": "8c7b31cedc9243d2a1eb50c9151f58dd6e0608f6ee6110d6bf1ff28e79396bdb"
+    }
+  ],
+  "independent_finding": {
+    "reviewer": "/root/tdm_audit_a_g",
+    "problem": "Native grants used origin None, so two independent once-per-turn abilities, or a native granted and printed ability at the same index, shared TriggerUse history."
+  },
+  "repair": [
+    "Use Some(timestamp) for each acquired ability in grant_source_permanent_trigger, grant_temporary_ability_to and evolve_source. mayhem already uses that identity.",
+    "Global checked role timestamps distinguish acquisitions; the exact recipient is a separate history key, so one grant to several recipients remains independent. Existing availability timestamps, copied queued origins and modal-history retention are reused.",
+    "No field or hot-state allocation was added. Existing optional origin fields now serialize for native grants; affected observation/trace values remain part of the pending global schema/trace checkpoint."
+  ],
+  "negative_witness": {
+    "report": "<cache>/rustmage-tdm/independent-native-grants-negative/native.json",
+    "sha256": "9e7f4040306f218d379c3f3b8735ebbe7e548940d5aa6760c6ef414ec68e2de4",
+    "result": "Expected terminal0/4: all four concrete outcomes give23 life instead of26. Temporary, permanent-source and evolution constructors plus native-vs-printed index collision covered.",
+    "baseline_revision": "03fb87e17",
+    "affected_constructor_files_unchanged_by_later_Behold_integration": true
+  },
+  "final_source_manifest": {
+    "path": "/home/altf4/.cache/rustmage-tdm/native-acquisitions-fixed/source-hashes.json",
+    "sha256": "7aab32d0550cf3735898eb4b854f7beb89bfa7c522aa2b22756047393838c044",
+    "all_consumed_hashes_unchanged_after_terminal": true
+  },
+  "final_runs": [
+    {
+      "report": "<cache>/rustmage-tdm/native-acquisitions-fixed/0/native.json",
+      "sha256": "3627a519abb4f49a68548f09cff1dd1f65d712444731c2cf23345ec46dd352b2",
+      "cases": 28,
+      "compile_seconds": 115.05683338499512,
+      "execution_seconds": 0.04354530098498799,
+      "terminal": true,
+      "success": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/native-acquisitions-fixed/1/native.json",
+      "sha256": "9c650aa2aee2b982e7f1db49a62020190640af49109ea77b7a56bb73ab4fbe52",
+      "cases": 35,
+      "compile_seconds": 1.7207269220089074,
+      "execution_seconds": 0.043609004002064466,
+      "terminal": true,
+      "success": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/native-acquisitions-fixed/2/native.json",
+      "sha256": "5b7cae6d05cec5a755192ba18e9b7eb6584bdd34d82d2f1dbc80bccf0314e124",
+      "cases": 32,
+      "compile_seconds": 1.6191598269797396,
+      "execution_seconds": 0.04363682298571803,
+      "terminal": true,
+      "success": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/native-acquisitions-fixed/3/native.json",
+      "sha256": "0863a3c5b7193c98613483791a316d1665e85ecd556ec2f0de8977a22c2c06d8",
+      "cases": 12,
+      "compile_seconds": 0.8167619760206435,
+      "execution_seconds": 0.03368844397482462,
+      "terminal": true,
+      "success": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/native-acquisitions-fixed/4/native.json",
+      "sha256": "0f9209563622512c6506e446246be038052f9871449093e11bb9b43d6306d1f1",
+      "cases": 16,
+      "compile_seconds": 0.8693510519806296,
+      "execution_seconds": 0.2959811300097499,
+      "terminal": true,
+      "success": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/native-acquisitions-fixed/5/native.json",
+      "sha256": "8109f3ed9f6832e494be5a06a1fe1f0fb61ab9af0ca391bf921349cf2d73c3b4",
+      "cases": 12,
+      "compile_seconds": 0.9180143859994132,
+      "execution_seconds": 0.02483589801704511,
+      "terminal": true,
+      "success": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/native-acquisitions-fixed/6/native.json",
+      "sha256": "c856b1c7eee65e24a113e6d2f0c51873687c00420ff37dc23c941b65fa7ead5f",
+      "cases": 18,
+      "compile_seconds": 1.6189401419833302,
+      "execution_seconds": 0.04330399300670251,
+      "terminal": true,
+      "success": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/native-acquisitions-fixed/7/native.json",
+      "sha256": "e139aa8ac79fe42bcc6c5f4d4129e1a608b196a267d261ce036bddbc168a200d",
+      "cases": 36,
+      "compile_seconds": 1.9700789870112203,
+      "execution_seconds": 0.04974647902417928,
+      "terminal": true,
+      "success": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/native-acquisitions-fixed/8/native.json",
+      "sha256": "70ccb2586e7a0d1cd0115748458a6d80d5a531d03442863e2c1142ca383a2e08",
+      "cases": 31,
+      "compile_seconds": 1.7190891110221855,
+      "execution_seconds": 0.03487033100100234,
+      "terminal": true,
+      "success": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/native-acquisitions-fixed/9/native.json",
+      "sha256": "180ef6f75829d6da02480afb1bb6945a2b415853f14b9be2682d7204895533f7",
+      "cases": 16,
+      "compile_seconds": 0.8673122210020665,
+      "execution_seconds": 0.04233657999429852,
+      "terminal": true,
+      "success": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/native-acquisitions-fixed/10/native.json",
+      "sha256": "3bd637aa7ade5a81a38f063e5d07ab017c3a95d0153e9a7c80fbb9ded67d52f8",
+      "cases": 17,
+      "compile_seconds": 0.8189295770134777,
+      "execution_seconds": 0.042862783011514693,
+      "terminal": true,
+      "success": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/native-acquisitions-fixed/11/native.json",
+      "sha256": "b63bb4ba5b5432a0e58b6141f70e26a0478cbd8f07eda21275b2218345a8aeae",
+      "cases": 10,
+      "compile_seconds": 22.7724950700067,
+      "execution_seconds": 0.04263579600956291,
+      "terminal": true,
+      "success": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/native-acquisitions-fixed/12/native.json",
+      "sha256": "5be15d401b9aee9d98369b528fe3d084a6d516fbcb4e044970af62d6c91e480b",
+      "cases": 12,
+      "compile_seconds": 0.06461099599255249,
+      "execution_seconds": 0.04274605499813333,
+      "terminal": true,
+      "success": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/native-acquisitions-fixed/13/native.json",
+      "sha256": "9da597f2529087a528cc8f28b049fec12d5624bc48dfd9f5a753b58777e5be52",
+      "cases": 6,
+      "compile_seconds": 0.06468063397915103,
+      "execution_seconds": 0.042492805019719526,
+      "terminal": true,
+      "success": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/native-acquisitions-fixed/14/native.json",
+      "sha256": "2a44b38a33ffaf946c4e89c35bd0e7d4c8152ff2b774e2ad2ff91360a45485bd",
+      "cases": 20,
+      "compile_seconds": 1.5187336649978533,
+      "execution_seconds": 0.05089044102351181,
+      "terminal": true,
+      "success": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/native-acquisitions-fixed/15/native.json",
+      "sha256": "dfbec5d4e3907b6601c32519cd758156142c3042f89bae48e2dc92d10d958749",
+      "cases": 9,
+      "compile_seconds": 0.7661042640102096,
+      "execution_seconds": 0.025298788998043165,
+      "terminal": true,
+      "success": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/native-acquisitions-fixed/16/native.json",
+      "sha256": "8e591bdfd772afc57513e18e155fc020462e3377538de8d027841b13050aaaff",
+      "cases": 11,
+      "compile_seconds": 1.4684894579986576,
+      "execution_seconds": 0.024266353022539988,
+      "terminal": true,
+      "success": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/native-acquisitions-fixed/17/native.json",
+      "sha256": "394387bfbd500088a53ad92068e2f15191c0d9a6e4e538de51e0c381addc2df8",
+      "cases": 11,
+      "compile_seconds": 0.8169065430120099,
+      "execution_seconds": 0.04954949099919759,
+      "terminal": true,
+      "success": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/native-acquisitions-fixed/18/native.json",
+      "sha256": "df36b4b4fd6071ab0c9f901e0cc0b8c63932a43d46638b4ebf2050fbb749aeab",
+      "cases": 32,
+      "compile_seconds": 0.06444788500084542,
+      "execution_seconds": 0.05822006598464213,
+      "terminal": true,
+      "success": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/native-acquisitions-fixed/19/native.json",
+      "sha256": "071f5f4b922848c6f8c9ef1bc6010d54b3ce381c11ac5e0830f3be5260d69d4e",
+      "cases": 10,
+      "compile_seconds": 0.06527821201598272,
+      "execution_seconds": 0.05082332901656628,
+      "terminal": true,
+      "success": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/native-acquisitions-fixed/20/native.json",
+      "sha256": "6572496f1016442e67a048a5cedfbdf7f59a17c43acb2cf97d963e39ca6aa3b0",
+      "cases": 1,
+      "compile_seconds": 0.06501537401345558,
+      "execution_seconds": 0.033312248007860035,
+      "terminal": true,
+      "success": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/native-acquisitions-fixed/21/native.json",
+      "sha256": "31746df2f2e14dfdda5e67eb5c3df202dc2e54ee486ce41dc33100757f815e23",
+      "cases": 1,
+      "compile_seconds": 0.06498454898246564,
+      "execution_seconds": 0.03326140998979099,
+      "terminal": true,
+      "success": true
+    }
+  ],
+  "final_cases": 376,
+  "compile_seconds": 155.7269442360266,
+  "execution_seconds": 1.1519135490816552,
+  "outcomes": [
+    "All28 static groups pass, including four previously failing identity cases, owned raw/index/restore, per-instance once limits and actual Root Manipulation attack multiplicity.",
+    "Independent attack callbacks remain undoubled whether their installer stays or leaves. Recipient/provider suppression and control changes remain exact.",
+    "Combined branch includes validated Behold/free-origin integration174770586, combat/token repair3300f7173 and linked event castsd4fa3594e. All36 cost,32 combat,35 event, copy/privacy and affected inherited grant/mana consumers pass."
+  ],
+  "card_authorship_or_admission_changes": false,
+  "verification": [
+    "One guarded build/test at a time under shared6GiB cap; no timeouts or active children in final reports.",
+    "Native executable inputs remained fixed until all22 selected target/filter runs terminated.",
+    "rustfmt and git diff --check; no full validator or simulation benchmark."
+  ],
+  "limitations": [
+    "Two refreshed independent nonauthor static approvals pending exact published repair.",
+    "All engine dependencies, shared schema/trace acceptance, complete cards/set games, performance/release validation and final PR-head reviews remain open."
+  ]
+}

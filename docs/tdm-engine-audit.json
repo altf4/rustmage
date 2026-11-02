@@ -727,9 +727,9 @@
     "negative_regression_cases": 5,
     "root_endure_cases_passed": 6,
     "root_counter_cases_passed": 7,
-    "latest_assembled_cases_passed": 237,
-    "latest_assembled_compile_seconds": 147.3384136800305,
-    "latest_assembled_scenario_seconds": 0.42542873494676314,
+    "latest_assembled_cases_passed": 376,
+    "latest_assembled_compile_seconds": 155.7269442360266,
+    "latest_assembled_scenario_seconds": 1.1519135490816552,
     "scoped_reviewed_audit_groups_including_aliases": 43,
     "total_audit_groups_including_aliases": 80,
     "current_hot_layout_bytes": {
@@ -737,7 +737,7 @@
       "ObjectView": 544,
       "State": 4976
     },
-    "additional_implemented_tested_groups_pending_review": 12
+    "additional_implemented_tested_groups_pending_review": 22
   },
   "active_checkpoints": {
     "fixed_endure": {
@@ -803,13 +803,15 @@
     },
     "behold_and_costs": {
       "commit": "fa54386fd73d9fcc3294f260c545cf322ad5d6a3",
-      "status": "131 owner focused/compatibility cases pass; root integration and independent reviews pending."
+      "status": "131 owner cases and36 matching cost cases in376 root assembly pass; independent reviews pending.",
+      "integration": "174770586"
     },
     "next_static_rules": {
       "commit": "989edcb49e4fddcd1163fc98589d5ef0bc28389d",
       "evidence": "docs/tdm-static-rules-evidence.json",
       "followup_evidence": "docs/tdm-gained-attack-evidence.json",
-      "status": "148 original scoped cases passed; gained attack dispatcher finding reproduced and repair passes237 combined cases. Second independent finding: separate native once-per-turn grants coalesce; acquisition identity repair pending. Five other static scopes have no reported finding; no static approval yet."
+      "status": "Both independent findings reproduced and repaired. Gained dispatch passes237 cases; independent grant-origin repair passes376 combined cases, including28 static. Refreshed independent exact-repair reviews pending.",
+      "origin_repair_evidence": "docs/tdm-native-grant-origins-evidence.json"
     },
     "private_library": {
       "commit": "00f48177e",
