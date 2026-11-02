@@ -143,6 +143,8 @@ pub enum StaticAbilityFragment {
     /// Grant keywords to creatures of the source's chosen creature type.
     ChosenTypeKeywords(Keywords),
     /// Grant keywords to controlled battlefield permanents matching a live kind mask.
+    /// Any creature attacking an opponent player of this source controller.
+    OpponentPlayerAttackerKeywords(Keywords),
     ControlledPermanentKeywords {
         kinds: u16,
         keywords: Keywords,

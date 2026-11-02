@@ -4386,6 +4386,8 @@ pub enum TriggerCondition {
     CreatureAttacksYou {
         colors: u8,
     },
+    /// Once per declaration, capturing only creatures declared attacking this controller as a player.
+    CreaturesAttackYou,
     /// Declaration-time condition; not a resolution-time intervening if.
     SelfAttacksAlone,
     /// A completed declaration with exactly one controlled creature, whether this source attacked or not.

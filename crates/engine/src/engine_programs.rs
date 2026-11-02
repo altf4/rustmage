@@ -961,6 +961,7 @@ impl Game {
                     | TriggerCondition::LifeLost { .. }
                     | TriggerCondition::SelfCountersAdded { .. }
                     | TriggerCondition::CreatureAttacksYou { .. }
+                    | TriggerCondition::CreaturesAttackYou
                     | TriggerCondition::OtherCreatureCountersAdded { .. }
                     | TriggerCondition::OtherCreatureCounterPlacedByYou { .. }
                     | TriggerCondition::CounterPlacedByYou { .. }
@@ -1934,6 +1935,7 @@ impl Game {
     ) {
         self.attachment_attack_triggers(actor, alone);
         self.temporary_attack_triggers(actor);
+        self.defender_attack_group_triggers(declared);
         let delayed = self
             .state
             .delayed_opponent_attack_until_next_turn
@@ -2148,6 +2150,51 @@ impl Game {
                     {
                         self.queue_trigger(&source, index);
                     }
+                }
+            }
+        }
+    }
+
+    /// One event per defender player in this declaration, with exact non-targeted subjects.
+    fn defender_attack_group_triggers(&mut self, declared: &[AttackDeclaration]) {
+        let sources: Vec<_> = self
+            .state
+            .attack_sources
+            .iter()
+            .copied()
+            .filter(|&id| {
+                self.on_battlefield(id)
+                    && self.state.objects[id as usize]
+                        .card
+                        .triggers()
+                        .iter()
+                        .any(|ability| {
+                            ability.condition.event() == TriggerCondition::CreaturesAttackYou
+                        })
+            })
+            .map(|id| self.object_view(id))
+            .collect();
+        for source in sources {
+            let attackers: Vec<_> = declared
+                .iter()
+                .filter(|row| row.defender == Some(CombatDefender::Player(source.controller)))
+                .map(|row| self.object_ref(row.card))
+                .collect();
+            let Some((&first, rest)) = attackers.split_first() else {
+                continue;
+            };
+            for (index, ability) in source.card.triggers().iter().enumerate() {
+                if ability.condition.event() == TriggerCondition::CreaturesAttackYou
+                    && self.queue_trigger(&source, index)
+                {
+                    self.state
+                        .pending_triggers
+                        .last_mut()
+                        .unwrap()
+                        .reflexive_subject = Some(Box::new(ReflexiveSubjectView {
+                        object: first,
+                        additional_objects: rest.to_vec(),
+                    }));
                 }
             }
         }

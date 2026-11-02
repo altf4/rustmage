@@ -256,6 +256,21 @@ pub(super) trait CharacteristicWorld {
         self.game().state.players[player.index()].life_lost_this_turn > 0
     }
     fn attacking(&self, id: CardId) -> bool;
+    /// Exact current combat subject in this actual or projected world.
+    fn attacking_defender(&self, id: CardId) -> Option<CombatDefender> {
+        if !self.attacking(id)
+            || self.object(id).zone != Zone::Battlefield
+            || self.reference(id) != self.game().object_ref(id)
+        {
+            return None;
+        }
+        self.game()
+            .state
+            .attackers
+            .iter()
+            .find(|row| row.card == id)?
+            .defender
+    }
 
     /// Effective string name in this actual or speculative object world.
     /// Name-changing effects belong here, before later characteristic layers.
