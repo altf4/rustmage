@@ -250,6 +250,7 @@ pub(super) enum TokenCompletion {
         ability: u16,
     },
     JobAttach(ObjectRef),
+    OptionalAttachSource(ObjectRef),
     /// Creation precedes attachment; an absent/illegal recipient leaves tokens intact.
     AttachCreatedTo(ObjectRef),
     RoleAttach(ObjectRef),
@@ -347,7 +348,7 @@ enum Work {
 pub(super) struct ReplacementState {
     work: VecDeque<Work>,
     active: Option<Event>,
-    attachment: Option<(ObjectRef, Vec<ObjectRef>)>,
+    attachment: Option<(ObjectRef, Vec<ObjectRef>, bool)>,
     resume: Option<Pending>,
     mode: ResumeMode,
 }
@@ -443,7 +444,7 @@ impl ReplacementState {
             + self
                 .attachment
                 .as_ref()
-                .map_or(0, |(_, r)| r.len() * std::mem::size_of::<ObjectRef>())
+                .map_or(0, |(_, r, _)| r.len() * std::mem::size_of::<ObjectRef>())
     }
 }
 /// Fast-path guard: project an entrant only when a power-sensitive counter
@@ -2661,6 +2662,7 @@ impl Game {
                                     TokenCompletion::CounterOtherWizards
                                         | TokenCompletion::AttackThisCombat
                                         | TokenCompletion::JobAttach(_)
+                                        | TokenCompletion::OptionalAttachSource(_)
                                         | TokenCompletion::AttachCreatedTo(_)
                                         | TokenCompletion::Counters { .. }
                                         | TokenCompletion::CounterSet(_)
@@ -2821,26 +2823,30 @@ impl Game {
                                         self.attach_equipment(equipment, recipient);
                                     }
                                 }
-                                if let TokenCompletion::JobAttach(source) = batch.completion {
+                                if let TokenCompletion::JobAttach(source)
+                                | TokenCompletion::OptionalAttachSource(source) =
+                                    batch.completion
+                                {
+                                    let optional = matches!(
+                                        batch.completion,
+                                        TokenCompletion::OptionalAttachSource(_)
+                                    );
                                     let eligible = created
                                         .into_iter()
-                                        .filter(|r| self.is_creature(r.card))
+                                        .filter(|&recipient| {
+                                            self.equipment_can_attach(source, recipient)
+                                        })
                                         .collect::<Vec<_>>();
-                                    if self.on_battlefield(source.card)
-                                        && self.object_ref(source.card) == source
-                                        && !self.is_creature(source.card)
-                                    {
-                                        match eligible.as_slice() {
-                                            [] => {}
-                                            [only] => {
-                                                self.attach_equipment(source, *only);
-                                            }
-                                            _ => {
-                                                state.attachment = Some((source, eligible));
-                                                self.state.pending = Pending::CreatedToken {
-                                                    player: batch.player,
-                                                };
-                                            }
+                                    match eligible.as_slice() {
+                                        [] => {}
+                                        [only] if !optional => {
+                                            self.attach_equipment(source, *only);
+                                        }
+                                        _ => {
+                                            state.attachment = Some((source, eligible, optional));
+                                            self.state.pending = Pending::CreatedToken {
+                                                player: batch.player,
+                                            };
                                         }
                                     }
                                 }
@@ -2861,7 +2867,7 @@ impl Game {
     }
     pub(super) fn choose_created_token(&mut self, object: ObjectRef) {
         let state = self.state.replacements.as_mut().unwrap();
-        let (source, _) = state.attachment.take().unwrap();
+        let (source, _, _) = state.attachment.take().unwrap();
         self.attach_equipment(source, object);
         self.advance_replacements(true);
     }
@@ -2869,19 +2875,27 @@ impl Game {
         &self,
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
-        self.state
+        let (_, recipients, optional) = self
+            .state
             .replacements
             .as_ref()
             .unwrap()
             .attachment
             .as_ref()
-            .unwrap()
-            .1
-            .iter()
-            .any(|&object| emit(Action::ChooseCreatedToken { object }))
+            .unwrap();
+        (*optional && emit(Action::ChooseOptional { accept: false }))
+            || recipients
+                .iter()
+                .any(|&object| emit(Action::ChooseCreatedToken { object }))
+    }
+    pub(super) fn decline_created_attachment(&mut self) {
+        let state = self.state.replacements.as_mut().unwrap();
+        let (_, _, optional) = state.attachment.take().unwrap();
+        assert!(optional, "mandatory creation attachment cannot be declined");
+        self.advance_replacements(true);
     }
     pub(super) fn created_token_choice(&self) -> Option<CreatedTokenChoiceView> {
-        let (source, candidates) = self.state.replacements.as_ref()?.attachment.as_ref()?;
+        let (source, candidates, _) = self.state.replacements.as_ref()?.attachment.as_ref()?;
         Some(CreatedTokenChoiceView {
             source: *source,
             candidates: candidates.clone(),

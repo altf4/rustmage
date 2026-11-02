@@ -726,13 +726,13 @@
     "simulation_benchmarks": [],
     "negative_regression_cases": 5,
     "latest_focused_cases_passed": 5,
-    "root_native_runner_invocations": 6,
+    "root_native_runner_invocations": 7,
     "root_endure_cases_passed": 6,
     "root_counter_cases_passed": 7
   },
   "active_checkpoints": {
     "fixed_endure": {
-      "status": "Six focused groups pass, including independent-review placing-player repair; refreshed committed-source reviews pending.",
+      "status": "Fixed-source repair passed six focused groups and two refreshed independent nonauthor reviews at c68e647c5; dynamic subject Endure remains a separate dependency.",
       "evidence": "docs/tdm-endure-evidence.json"
     },
     "entry_modes": "isolated engine authoring in progress",
@@ -742,6 +742,10 @@
       "evidence": "docs/tdm-counter-world-evidence.json",
       "integrated_report": "<cache>/rustmage-tdm/counter-world-integrated/native.json"
     },
-    "granted_cast_routes": "isolated engine authoring in progress"
+    "granted_cast_routes": "isolated engine authoring in progress",
+    "optional_created_attachment": {
+      "status": "six focused groups pass; final published source reviews pending",
+      "evidence": "docs/tdm-optional-attachment-evidence.json"
+    }
   }
 }

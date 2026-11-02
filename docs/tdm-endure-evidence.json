@@ -106,7 +106,7 @@
     "test_threads": 1,
     "no_oom_probe": true
   },
-  "review_status": "First-head review found the placing-player defect; approval withdrawn. Corrected final source awaiting two refreshed independent reviews.",
+  "review_status": "Two refreshed independent nonauthor scoped reviews approve c68e647c5 after placing-player finding was fixed.",
   "acceptance": {
     "dynamic_endure_complete": false,
     "all_shared_rules_complete": false,
@@ -114,5 +114,17 @@
     "newly_complete_cards": 0,
     "simulation_benchmarks_run": 0
   },
-  "integration_base_revision": "e36436996"
+  "integration_base_revision": "e36436996",
+  "reviews": [
+    {
+      "reviewer": "entry-mode engine owner (nonauthor of Endure)",
+      "commit": "c68e647c5",
+      "result": "approved; found initial placing-player defect and verified explicit Pending.player correction plus actual Doc Samson scenarios and source hashes"
+    },
+    {
+      "reviewer": "counter/protection engine owner (nonauthor of Endure)",
+      "commit": "c68e647c5",
+      "result": "approved; original approval withdrawn after finding, then refreshed on complete corrected inputs"
+    }
+  ]
 }

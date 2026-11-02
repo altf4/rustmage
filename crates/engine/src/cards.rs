@@ -1737,6 +1737,12 @@ pub enum Instruction {
     JobSelect {
         token: Card,
     },
+    /// Create the entire replacement-adjusted event before optionally attaching
+    /// this exact source to one of its created creatures, without targeting.
+    CreateTokensThenMayAttachSource {
+        token: Card,
+        amount: u16,
+    },
     /// Choose and pay X during resolution, then create a separate reflexive trigger.
     PayXReflexive {
         ability: u16,

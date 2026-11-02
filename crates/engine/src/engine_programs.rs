@@ -6529,6 +6529,19 @@ impl Game {
                 Instruction::CreateRole { token, subject } => {
                     self.resolve_role(&item, token, subject);
                 }
+                Instruction::CreateTokensThenMayAttachSource { token, amount } => {
+                    self.stage_token_creation(
+                        item.controller,
+                        token,
+                        u128::from(amount),
+                        false,
+                        replacements::TokenCompletion::OptionalAttachSource(
+                            item.source
+                                .expect("attachment requires an object source")
+                                .object,
+                        ),
+                    );
+                }
                 Instruction::JobSelect { token } => {
                     self.stage_token_creation(
                         item.controller,

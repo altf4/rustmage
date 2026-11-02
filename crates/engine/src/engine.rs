@@ -7837,6 +7837,11 @@ impl Game {
                     self.begin_turn();
                 }
             }
+            Action::ChooseOptional { accept: false }
+                if matches!(self.state.pending, Pending::CreatedToken { .. }) =>
+            {
+                self.decline_created_attachment();
+            }
             Action::ChooseOptional { accept }
                 if matches!(self.state.pending, Pending::OptionalSearch(_)) =>
             {
