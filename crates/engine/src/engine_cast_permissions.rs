@@ -406,9 +406,11 @@ impl Game {
         }) else {
             return false;
         };
-        if method == CastMethod::GrantedHarmonize && (definition.is_land()
-            || !self.has_graveyard_cast(actor, card, GraveyardCastKind::Harmonize)
-            || crate::cards::mana_symbols::printed_cost(definition.info().mana_cost).is_none()) {
+        if method == CastMethod::GrantedHarmonize
+            && (definition.is_land()
+                || !self.has_graveyard_cast(actor, card, GraveyardCastKind::Harmonize)
+                || crate::cards::mana_symbols::printed_cost(definition.info().mana_cost).is_none())
+        {
             return false;
         }
         if !self.spell_graveyard_requirement_holds(actor, card, definition) {

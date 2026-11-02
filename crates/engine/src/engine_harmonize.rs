@@ -14,9 +14,10 @@ impl Announcement {
         let card = self.item.source.expect("object-backed cost").card;
         match self.item.cast.map(|cast| cast.method) {
             Some(CastMethod::Harmonize) => u32::from(card.harmonize_x_symbols()),
-            Some(CastMethod::GrantedHarmonize) => crate::cards::mana_symbols::printed_cost(
-                card.info().mana_cost,
-            ).map_or(0, |cost| cost.x_symbols),
+            Some(CastMethod::GrantedHarmonize) => {
+                crate::cards::mana_symbols::printed_cost(card.info().mana_cost)
+                    .map_or(0, |cost| cost.x_symbols)
+            }
             _ => u32::from(card.x_symbols()),
         }
     }

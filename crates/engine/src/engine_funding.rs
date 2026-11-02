@@ -766,7 +766,8 @@ impl<'g> FundingState<'g> {
     fn set_purpose(&mut self, purpose: mana_lots::Purpose) {
         self.purpose = purpose;
         let needs_improvise_resources = matches!(purpose, mana_lots::Purpose::Spell(spell) if improvise::potential(self, spell.card));
-        let needs_delve_resources = matches!(purpose, mana_lots::Purpose::Spell(_)) && delve::potential(self);
+        let needs_delve_resources =
+            matches!(purpose, mana_lots::Purpose::Spell(_)) && delve::potential(self);
         if self.waterbend == 0 && !needs_improvise_resources && !needs_delve_resources {
             return;
         }
@@ -776,7 +777,9 @@ impl<'g> FundingState<'g> {
                 continue;
             }
             let object = ability_world::CharacteristicWorld::object(self, id);
-            if object.zone == Zone::Battlefield || needs_delve_resources && object.zone == Zone::Graveyard {
+            if object.zone == Zone::Battlefield
+                || needs_delve_resources && object.zone == Zone::Graveyard
+            {
                 self.resources.push(Resource {
                     id,
                     object: object.clone(),
@@ -4186,7 +4189,9 @@ impl Game {
         let mut proposal = a.clone();
         proposal.harmonizer = Some(object);
         proposal.total_cost = Some(total);
-        if delve::potential(self) { proposal.add_cast_cost_clause(CastCostClause::Mana); }
+        if delve::potential(self) {
+            proposal.add_cast_cost_clause(CastCostClause::Mana);
+        }
         if let Some(reference) = object {
             proposal.add_cast_cost_clause(CastCostClause::Harmonize(reference));
         }
@@ -4215,10 +4220,7 @@ impl Game {
         if a.self_graveyard_cast_cost().is_some() {
             return self.self_graveyard_announcement_fundable(a, cost);
         }
-        if a.item
-            .cast
-            .is_some_and(|c| c.method.is_harmonize())
-        {
+        if a.item.cast.is_some_and(|c| c.method.is_harmonize()) {
             let mut selected = a.clone();
             selected.cost = Some(cost);
             if let Some(object) = selected.harmonizer {
@@ -4227,8 +4229,9 @@ impl Game {
             if self.harmonize_choice_fundable(&selected, None) {
                 return true;
             }
-            return (0..self.state.objects.len())
-                .any(|id| self.harmonize_choice_fundable(&selected, Some(self.object_ref(id as CardId))));
+            return (0..self.state.objects.len()).any(|id| {
+                self.harmonize_choice_fundable(&selected, Some(self.object_ref(id as CardId)))
+            });
         }
         if let StackKind::ActivatedAbility { ability } = a.item.kind
             && Self::activation_target_sensitive(
@@ -4657,13 +4660,14 @@ impl Game {
                     .map(|f| f.remaining)
                     .or(announcement.total_cost)
                     .unwrap_or_else(|| {
-                        if announcement.payment_x_symbols() > 0 || announcement
-                            .item
-                            .source
-                            .expect("cost announcement has object source")
-                            .card
-                            .x_symbols()
-                            > 0
+                        if announcement.payment_x_symbols() > 0
+                            || announcement
+                                .item
+                                .source
+                                .expect("cost announcement has object source")
+                                .card
+                                .x_symbols()
+                                > 0
                         {
                             return self
                                 .scalar_x_total(
@@ -4767,7 +4771,10 @@ impl Game {
                     .is_none_or(|i| c.clauses[usize::from(i)].clause != CastCostClause::Mana)
         }) && !matches!(
             self.state.pending,
-            Pending::Convoke { .. } | Pending::Improvise { .. } | Pending::Delve { .. } | Pending::Waterbend { .. }
+            Pending::Convoke { .. }
+                | Pending::Improvise { .. }
+                | Pending::Delve { .. }
+                | Pending::Waterbend { .. }
         ) {
             return None;
         }
@@ -5073,10 +5080,11 @@ impl Game {
         if done {
             return true;
         }
-        if (delve::potential(self) || announcement
-            .item
-            .cast
-            .is_some_and(|c| c.method.is_harmonize() || c.blight == Some(true))
+        if (delve::potential(self)
+            || announcement
+                .item
+                .cast
+                .is_some_and(|c| c.method.is_harmonize() || c.blight == Some(true))
             || announcement.ordered_craft()
             || announcement.self_graveyard_cast_cost().is_some()
             || announcement
@@ -5398,7 +5406,7 @@ impl Game {
             Pending::PayCosts { .. }
             | Pending::Convoke { .. }
             | Pending::Improvise { .. }
-                | Pending::Delve { .. }
+            | Pending::Delve { .. }
             | Pending::Waterbend { .. } => {
                 let a = self.state.announcing.as_ref().unwrap();
                 (

@@ -86,9 +86,12 @@ impl Announcement {
     pub(super) fn fixed_alternative_cost(&self) -> Option<ManaCost> {
         self.item.cast.and_then(|c| match c.method {
             CastMethod::Harmonize => self.item.source?.card.harmonize_cost(),
-            CastMethod::GrantedHarmonize => crate::cards::mana_symbols::printed_cost(
-                self.item.source?.card.info().mana_cost,
-            )?.options.first().copied(),
+            CastMethod::GrantedHarmonize => {
+                crate::cards::mana_symbols::printed_cost(self.item.source?.card.info().mana_cost)?
+                    .options
+                    .first()
+                    .copied()
+            }
             CastMethod::Miracle => self.miracle_cost,
             CastMethod::Mayhem => self
                 .item
@@ -369,11 +372,22 @@ impl Announcement {
                 .expect("activated source")
                 .card
                 .activation_cost_options(ability)
-        } else if self.item.cast.is_some_and(|cast| cast.method == CastMethod::GrantedHarmonize) {
+        } else if self
+            .item
+            .cast
+            .is_some_and(|cast| cast.method == CastMethod::GrantedHarmonize)
+        {
             crate::cards::mana_symbols::ManaOptions::Printed(
                 crate::cards::mana_symbols::printed_cost(
-                    self.item.source.expect("harmonize source").card.info().mana_cost,
-                ).map_or_else(Vec::new, |cost| cost.options).into_iter(),
+                    self.item
+                        .source
+                        .expect("harmonize source")
+                        .card
+                        .info()
+                        .mana_cost,
+                )
+                .map_or_else(Vec::new, |cost| cost.options)
+                .into_iter(),
             )
         } else {
             crate::cards::mana_symbols::ManaOptions::Static(options)
@@ -1320,9 +1334,7 @@ impl Game {
         {
             self.state.pending = Pending::Casualty { player };
         } else if a.pay_window
-            && a.item
-                .cast
-                .is_some_and(|c| c.method.is_harmonize())
+            && a.item.cast.is_some_and(|c| c.method.is_harmonize())
             && a.harmonizer.is_none()
         {
             self.state.pending = Pending::Harmonize { player };
@@ -1339,8 +1351,13 @@ impl Game {
                     .card,
             );
             if self.state.announcing.as_ref().unwrap().item.kind == StackKind::Spell
-                && delve::potential(self) {
-                self.state.announcing.as_mut().unwrap().add_cast_cost_clause(CastCostClause::Mana);
+                && delve::potential(self)
+            {
+                self.state
+                    .announcing
+                    .as_mut()
+                    .unwrap()
+                    .add_cast_cost_clause(CastCostClause::Mana);
             }
             self.state
                 .announcing
@@ -2362,13 +2379,14 @@ impl Game {
                 });
                 let extra =
                     Self::announcement_optional_reduction(announcement) + u64::from(discount);
-                let total = if announcement.payment_x_symbols() > 0 || announcement
-                    .item
-                    .source
-                    .expect("announcement has object source")
-                    .card
-                    .x_symbols()
-                    > 0
+                let total = if announcement.payment_x_symbols() > 0
+                    || announcement
+                        .item
+                        .source
+                        .expect("announcement has object source")
+                        .card
+                        .x_symbols()
+                        > 0
                 {
                     self.scalar_x_total_with_extra(
                         announcement.item.controller,
@@ -2450,9 +2468,7 @@ impl Game {
         }
         let mut announcement = self.state.announcing.take().unwrap();
         self.capture_announced_cast_mana(&announcement);
-        if announcement.cast_costs.is_none()
-            && announcement.convoke.is_some()
-        {
+        if announcement.cast_costs.is_none() && announcement.convoke.is_some() {
             self.pay_mana_contributors(&mut announcement);
             announcement.convoke = None;
         }
@@ -2711,8 +2727,11 @@ impl Game {
                 .is_some_and(|rows| {
                     rows.iter().any(|row| {
                         row.object == self.object_ref(id)
-                            && matches!(row.kind, crate::cards::GraveyardCastKind::Flashback
-                                | crate::cards::GraveyardCastKind::Harmonize)
+                            && matches!(
+                                row.kind,
+                                crate::cards::GraveyardCastKind::Flashback
+                                    | crate::cards::GraveyardCastKind::Harmonize
+                            )
                             && row.expires_turn >= self.state.turn
                     })
                 })

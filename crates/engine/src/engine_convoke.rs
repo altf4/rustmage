@@ -74,7 +74,9 @@ impl ConvokeSelection {
             .collect()
     }
     pub(super) fn contains(&self, r: ObjectRef) -> bool {
-        self.selected.iter().any(|s| s.object == r) || self.improvised.contains(&r) || self.delved.contains(&r)
+        self.selected.iter().any(|s| s.object == r)
+            || self.improvised.contains(&r)
+            || self.delved.contains(&r)
     }
     pub(super) fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
@@ -302,9 +304,16 @@ impl Game {
             if f.contains(object) {
                 continue;
             }
-            if self.item_delve(&a.item) && delve::eligible(self, a.item.controller, object,
-                a.item.source.map(|s| s.object))
-                && self.delver_fundable(object) && emit(Action::ChooseDelver { object }) {
+            if self.item_delve(&a.item)
+                && delve::eligible(
+                    self,
+                    a.item.controller,
+                    object,
+                    a.item.source.map(|s| s.object),
+                )
+                && self.delver_fundable(object)
+                && emit(Action::ChooseDelver { object })
+            {
                 return true;
             }
             if self.item_waterbend(&a.item) != 0

@@ -45,31 +45,53 @@ impl Game {
         card: Card,
         reduction: u64,
     ) -> Option<ManaCost> {
-        let a = self.state.announcing.as_ref().filter(|a| a.item.kind == StackKind::Spell
-            && a.item.controller == actor && a.item.source.is_some_and(|s| s.id == id && s.card == card));
-        self.scalar_x_total_with_symbols(actor, id, base, x, card,
-            a.map_or(u32::from(card.x_symbols()), Announcement::payment_x_symbols),
-            a.map_or(&[], |a| a.item.targets.as_slice()), reduction)
-    }
-    #[allow(clippy::too_many_arguments)] // Keep printed value, payment symbols and target discounts independent.
-    pub(super) fn scalar_x_total_with_symbols(
-        &self, actor: Player, id: CardId, base: ManaCost, x: u32, card: Card,
-        payment_symbols: u32, targets: &[BoundTarget], reduction: u64,
-    ) -> Option<ManaCost> {
-        let extra = u64::from(payment_symbols) * u64::from(x);
-        let mana_value = card.fixed_mana_value() + u64::from(card.x_symbols()) * u64::from(x);
-        let discount = card.target_cost_reduction().filter(|r| targets.iter().any(|b|
-            self.same_target_object(*b) && self.cast_target_matches(r.rule, actor, self.object_ref(id), b.target)
-        )).map_or(ManaCost { colored: [0; 6], generic: 0 }, |r| r.discount);
-        self.spell_total_with_reductions(
+        let a = self.state.announcing.as_ref().filter(|a| {
+            a.item.kind == StackKind::Spell
+                && a.item.controller == actor
+                && a.item.source.is_some_and(|s| s.id == id && s.card == card)
+        });
+        self.scalar_x_total_with_symbols(
             actor,
             id,
             base,
+            x,
             card,
-            mana_value,
-            extra,
-            discount,
+            a.map_or(u32::from(card.x_symbols()), Announcement::payment_x_symbols),
+            a.map_or(&[], |a| a.item.targets.as_slice()),
             reduction,
+        )
+    }
+    #[allow(clippy::too_many_arguments)] // Keep printed value, payment symbols and target discounts independent.
+    pub(super) fn scalar_x_total_with_symbols(
+        &self,
+        actor: Player,
+        id: CardId,
+        base: ManaCost,
+        x: u32,
+        card: Card,
+        payment_symbols: u32,
+        targets: &[BoundTarget],
+        reduction: u64,
+    ) -> Option<ManaCost> {
+        let extra = u64::from(payment_symbols) * u64::from(x);
+        let mana_value = card.fixed_mana_value() + u64::from(card.x_symbols()) * u64::from(x);
+        let discount = card
+            .target_cost_reduction()
+            .filter(|r| {
+                targets.iter().any(|b| {
+                    self.same_target_object(*b)
+                        && self.cast_target_matches(r.rule, actor, self.object_ref(id), b.target)
+                })
+            })
+            .map_or(
+                ManaCost {
+                    colored: [0; 6],
+                    generic: 0,
+                },
+                |r| r.discount,
+            );
+        self.spell_total_with_reductions(
+            actor, id, base, card, mana_value, extra, discount, reduction,
         )
     }
     pub(super) fn scalar_x_intervals(&self, actor: Player, id: CardId) -> Vec<XInterval> {
@@ -81,8 +103,11 @@ impl Game {
         id: CardId,
         card: Card,
     ) -> Vec<XInterval> {
-        let current = self.state.announcing.as_ref().filter(|a| a.item.kind == StackKind::Spell
-            && a.item.controller == actor && a.item.source.is_some_and(|s| s.id == id && s.card == card));
+        let current = self.state.announcing.as_ref().filter(|a| {
+            a.item.kind == StackKind::Spell
+                && a.item.controller == actor
+                && a.item.source.is_some_and(|s| s.id == id && s.card == card)
+        });
         let symbols = u64::from(card.x_symbols());
         if current.map_or(symbols, |a| u64::from(a.payment_x_symbols())) == 0 {
             return Vec::new();
@@ -90,7 +115,9 @@ impl Game {
         let end = u64::from(u32::MAX) + 1;
         let mut cuts = vec![0, end];
         fn thresholds(filter: CastFilter, base: u64, symbols: u64, end: u64, cuts: &mut Vec<u64>) {
-            if symbols == 0 { return; }
+            if symbols == 0 {
+                return;
+            }
             match filter {
                 CastFilter::ManaValueMinimum { filter, minimum } => {
                     cuts.push(minimum.saturating_sub(base).div_ceil(symbols).min(end));
@@ -148,12 +175,14 @@ impl Game {
             if let Some(a) = current {
                 let mut candidate = a.clone();
                 candidate.item.x = Some(x);
-                return candidate.cost_options().any(|cost| {
-                    self.announcement_cost_fundable(&candidate, cost)
-                });
+                return candidate
+                    .cost_options()
+                    .any(|cost| self.announcement_cost_fundable(&candidate, cost));
             }
             self.scalar_x_total_for_definition(actor, id, base, x, card)
-                .is_some_and(|cost| self.spell_can_fund_total_for_definition(actor, id, cost, None, card))
+                .is_some_and(|cost| {
+                    self.spell_can_fund_total_for_definition(actor, id, cost, None, card)
+                })
         };
         let mut intervals: Vec<XInterval> = Vec::new();
         for ends in cuts.windows(2) {

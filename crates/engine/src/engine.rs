@@ -398,14 +398,14 @@ pub mod connive;
 #[path = "engine_convoke.rs"]
 pub mod convoke;
 #[doc(hidden)]
+#[path = "engine_delve.rs"]
+pub mod delve;
+#[doc(hidden)]
 #[path = "engine_harmonize.rs"]
 pub mod harmonize;
 #[doc(hidden)]
 #[path = "engine_improvise.rs"]
 pub mod improvise;
-#[doc(hidden)]
-#[path = "engine_delve.rs"]
-pub mod delve;
 pub use delve::DelveChoiceView;
 #[doc(hidden)]
 #[path = "engine_proliferate.rs"]
@@ -4537,7 +4537,10 @@ impl Game {
                     return true;
                 }
             }
-            Pending::Convoke { .. } | Pending::Improvise { .. } | Pending::Delve { .. } | Pending::Waterbend { .. } => {
+            Pending::Convoke { .. }
+            | Pending::Improvise { .. }
+            | Pending::Delve { .. }
+            | Pending::Waterbend { .. } => {
                 if self.visit_convoke_actions(&mut emit) {
                     return true;
                 }
@@ -5486,14 +5489,26 @@ impl Game {
                     {
                         return true;
                     }
-                    if !casting_prohibited && !self.nonhand_cast_prohibited(actor)
+                    if !casting_prohibited
+                        && !self.nonhand_cast_prohibited(actor)
                         && obj.zone == Zone::Graveyard
                         && self.has_graveyard_cast(actor, card, GraveyardCastKind::Harmonize)
                     {
-                        for face in [CastFace::Normal, CastFace::Adventure, CastFace::Omen, CastFace::Back] {
-                            if self.permitted_cast_available(actor, card, CastMethod::GrantedHarmonize,
-                                face, sorcery, false)
-                                && emit(Action::AnnounceGrantedHarmonize { card, face }) {
+                        for face in [
+                            CastFace::Normal,
+                            CastFace::Adventure,
+                            CastFace::Omen,
+                            CastFace::Back,
+                        ] {
+                            if self.permitted_cast_available(
+                                actor,
+                                card,
+                                CastMethod::GrantedHarmonize,
+                                face,
+                                sorcery,
+                                false,
+                            ) && emit(Action::AnnounceGrantedHarmonize { card, face })
+                            {
                                 return true;
                             }
                         }
@@ -7015,8 +7030,15 @@ impl Game {
                 } else {
                     CastMethod::Harmonize
                 };
-                if !granted && item.source.expect("harmonize source").card.harmonize_x_symbols() == 0
-                    && item.source.expect("harmonize source").card.x_symbols() > 0 {
+                if !granted
+                    && item
+                        .source
+                        .expect("harmonize source")
+                        .card
+                        .harmonize_x_symbols()
+                        == 0
+                    && item.source.expect("harmonize source").card.x_symbols() > 0
+                {
                     item.x = Some(0);
                 }
                 // Reuse the exact-object leave-stack exile replacement.
@@ -10204,7 +10226,11 @@ impl Game {
             } else {
                 None
             },
-            delve_choice: if owns_choice { self.delve_choice() } else { None },
+            delve_choice: if owns_choice {
+                self.delve_choice()
+            } else {
+                None
+            },
             waterbend_choice: if owns_choice {
                 self.waterbend_choice()
             } else {

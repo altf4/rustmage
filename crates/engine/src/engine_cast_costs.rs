@@ -262,12 +262,16 @@ impl Game {
             }
             CastCostClause::Mana => {
                 let delving = self.item_delve(&a.item);
-                let contributors = a.item.kind == StackKind::Spell &&
-                    (a.item.source.unwrap().card.has_convoke() || self.item_improvise(&a.item) || delving);
+                let contributors = a.item.kind == StackKind::Spell
+                    && (a.item.source.unwrap().card.has_convoke()
+                        || self.item_improvise(&a.item)
+                        || delving);
                 if contributors && a.convoke.is_none() {
                     a.convoke = Some(Box::new(convoke::ConvokeSelection {
                         remaining: a.total_cost.expect("locked mana cost"),
-                        selected: Vec::new(), improvised: Vec::new(), delved: Vec::new(),
+                        selected: Vec::new(),
+                        improvised: Vec::new(),
+                        delved: Vec::new(),
                     }));
                 }
                 self.state.pending = if a
@@ -291,7 +295,9 @@ impl Game {
                         player: a.item.controller,
                     }
                 } else if delving {
-                    Pending::Delve { player: a.item.controller }
+                    Pending::Delve {
+                        player: a.item.controller,
+                    }
                 } else {
                     Pending::PayCosts {
                         player: a.item.controller,

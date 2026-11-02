@@ -147,12 +147,19 @@ impl Game {
         let Some(f) = &a.convoke else {
             return true;
         };
-        (f.delved.is_empty() || self.item_delve(&a.item)
-            && f.delved.iter().all(|&object| super::delve::eligible(self,
-                a.item.controller, object, a.item.source.map(|s| s.object))))
+        (f.delved.is_empty()
+            || self.item_delve(&a.item)
+                && f.delved.iter().all(|&object| {
+                    super::delve::eligible(
+                        self,
+                        a.item.controller,
+                        object,
+                        a.item.source.map(|s| s.object),
+                    )
+                }))
             && f.selected
-            .iter()
-            .all(|s| self.convoke_eligible(a.item.controller, s.object))
+                .iter()
+                .all(|s| self.convoke_eligible(a.item.controller, s.object))
             && (f.improvised.is_empty()
                 || self.item_waterbend(&a.item) != 0
                     && f.improvised

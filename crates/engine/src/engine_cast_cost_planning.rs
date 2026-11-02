@@ -238,9 +238,12 @@ impl FundingState<'_> {
             if !frame.delved.is_empty() {
                 let mut projected = None;
                 self.cost_departures(&frame.delved, Zone::Exile, &mut |next| {
-                    projected = Some(next.clone()); true
+                    projected = Some(next.clone());
+                    true
                 });
-                if let Some(next) = projected { *self = next; }
+                if let Some(next) = projected {
+                    *self = next;
+                }
             }
         }
     }
@@ -258,7 +261,9 @@ impl FundingState<'_> {
         }
     }
     fn install_cost_context(&mut self, context: Option<Box<CostContext>>) {
-        if let Some(context) = &context { self.payment_source = Some(context.source); }
+        if let Some(context) = &context {
+            self.payment_source = Some(context.source);
+        }
         self.cast_costs = context;
         if self.cast_costs.is_some() {
             self.power_sensitive = true;
@@ -292,15 +297,27 @@ impl FundingState<'_> {
         if !matches!(self.purpose, mana_lots::Purpose::Spell(_))
             || self.game.state.objects.get(source.card as usize).is_none()
             || self.reference(source.card) != source
-        { return; }
-        let index = self.resources.iter().position(|resource| resource.id == source.card)
+        {
+            return;
+        }
+        let index = self
+            .resources
+            .iter()
+            .position(|resource| resource.id == source.card)
             .unwrap_or_else(|| {
                 let object = self.object(source.card).clone();
-                self.resources.push(Resource { id: source.card, object, attacking: false });
+                self.resources.push(Resource {
+                    id: source.card,
+                    object,
+                    attacking: false,
+                });
                 self.resources.len() - 1
             });
         let object = &mut self.resources[index].object;
-        if matches!(object.zone, Zone::Hand | Zone::Graveyard | Zone::Exile | Zone::Library) {
+        if matches!(
+            object.zone,
+            Zone::Hand | Zone::Graveyard | Zone::Exile | Zone::Library
+        ) {
             if object.zone == Zone::Graveyard {
                 self.graveyard_left[object.owner.index()] = true;
             }
@@ -938,7 +955,9 @@ impl FundingState<'_> {
             && matches!(a.program, [Instruction::AddMana(_)])
     }
     fn mana_clause_payable(&self, c: &CostContext) -> bool {
-        if c.delve_selected && !self.delve_available() { return false; }
+        if c.delve_selected && !self.delve_available() {
+            return false;
+        }
         let Some(cost) = c.mana else {
             return false;
         };
@@ -983,13 +1002,18 @@ impl FundingState<'_> {
         }
         for resource in &self.resources {
             let object = self.reference(resource.id);
-            if self.delve_available() && delve::eligible(self, c.actor, object, self.payment_source)
-                && cost.generic > 0 {
+            if self.delve_available()
+                && delve::eligible(self, c.actor, object, self.payment_source)
+                && cost.generic > 0
+            {
                 let mut context = c.clone();
                 context.mana.as_mut().unwrap().generic -= 1;
                 context.delve_selected = true;
-                if self.cost_departures(&[object], Zone::Exile, &mut |next|
-                    next.complete_convoke_clause(&context, later, rest)) { return true; }
+                if self.cost_departures(&[object], Zone::Exile, &mut |next| {
+                    next.complete_convoke_clause(&context, later, rest)
+                }) {
+                    return true;
+                }
             }
             if resource.object.zone != Zone::Battlefield
                 || resource.object.controller != c.actor
@@ -1092,7 +1116,9 @@ impl FundingState<'_> {
         true
     }
     pub(in crate::engine) fn project_delver(&mut self, object: ObjectRef) -> bool {
-        if !self.delve_available() || !delve::eligible(self, self.actor, object, self.payment_source) {
+        if !self.delve_available()
+            || !delve::eligible(self, self.actor, object, self.payment_source)
+        {
             return false;
         }
         let Some(context) = self.cast_costs.as_mut() else {
@@ -1101,14 +1127,22 @@ impl FundingState<'_> {
         let Some(cost) = context.mana.as_mut() else {
             return false;
         };
-        let Some(remaining) = cost.generic.checked_sub(1) else { return false; };
+        let Some(remaining) = cost.generic.checked_sub(1) else {
+            return false;
+        };
         cost.generic = remaining;
         context.delve_selected = true;
         let mut projected = None;
         self.cost_departures(&[object], Zone::Exile, &mut |next| {
-            projected = Some(next.clone()); true
+            projected = Some(next.clone());
+            true
         });
-        if let Some(next) = projected { *self = next; true } else { false }
+        if let Some(next) = projected {
+            *self = next;
+            true
+        } else {
+            false
+        }
     }
     fn complete_additional(
         &self,
@@ -1638,10 +1672,7 @@ impl Game {
                     .card,
             ));
         }
-        if a.item
-            .cast
-            .is_some_and(|c| c.method.is_harmonize())
-        {
+        if a.item.cast.is_some_and(|c| c.method.is_harmonize()) {
             return self.harmonize_choice_fundable(&a, None)
                 || (0..self.state.objects.len()).any(|id| {
                     self.harmonize_choice_fundable(&a, Some(self.object_ref(id as CardId)))
@@ -1741,10 +1772,12 @@ impl Game {
                     .card
                     == spell.card
         });
-        let ordered_additional = delve::potential(self) || additional
-            .is_some_and(|a| matches!(a.kind, EffectChoiceKind::DiscardOrLife(_)))
+        let ordered_additional = delve::potential(self)
+            || additional.is_some_and(|a| matches!(a.kind, EffectChoiceKind::DiscardOrLife(_)))
             || additional.is_some()
-                && (spell.card.has_convoke() || improvise::potential(self, spell.card) || delve::potential(self));
+                && (spell.card.has_convoke()
+                    || improvise::potential(self, spell.card)
+                    || delve::potential(self));
         if !ordered_additional
             && extra.is_empty()
             && current.is_none_or(|a| a.casualty.is_none() && a.cast_costs.is_none())
@@ -1825,7 +1858,10 @@ impl Game {
                         paid: false,
                     });
                 }
-                if spell.card.has_convoke() || improvise::potential(self, spell.card) || delve::potential(self) {
+                if spell.card.has_convoke()
+                    || improvise::potential(self, spell.card)
+                    || delve::potential(self)
+                {
                     clauses.push(CastCostRow {
                         clause: CastCostClause::Mana,
                         paid: false,
@@ -1846,11 +1882,13 @@ impl Game {
                         .map_or_else(Vec::new, |c| c.teammates.clone()),
                     teamwork_exact: false,
                     actor: goal.actor,
-                    mana: (spell.card.has_convoke() || improvise::potential(self, spell.card) || delve::potential(self))
-                        .then_some(ManaCost {
-                            colored: attempt.required,
-                            generic: attempt.generic,
-                        }),
+                    mana: (spell.card.has_convoke()
+                        || improvise::potential(self, spell.card)
+                        || delve::potential(self))
+                    .then_some(ManaCost {
+                        colored: attempt.required,
+                        generic: attempt.generic,
+                    }),
                     source,
                     source_counter_reservation: Counters::default(),
                     clauses,
