@@ -524,7 +524,8 @@
         "amonkhet_haste_targets_either_player_and_survives_source_departure_until_cleanup"
       ],
       "test_target": "dft_colorless_cards_raceways",
-      "runtime_status": "pending focused run"
+      "runtime_status": "passed7/7; engine reused",
+      "runtime_report": "<cache>/rustmage-authoring/aetherdrift/card-raceways-20261102-095600Z/report.json"
     },
     {
       "name": "Avishkar Raceway",
@@ -603,7 +604,8 @@
         "avishkar_pays_three_taps_and_discards_before_drawing_with_no_empty_hand_route"
       ],
       "test_target": "dft_colorless_cards_raceways",
-      "runtime_status": "pending focused run"
+      "runtime_status": "passed7/7; engine reused",
+      "runtime_report": "<cache>/rustmage-authoring/aetherdrift/card-raceways-20261102-095600Z/report.json"
     },
     {
       "name": "Muraganda Raceway",
@@ -667,7 +669,8 @@
         "muraganda_max_speed_mana_is_two_colorless_and_uses_one_tap_at_instant_speed"
       ],
       "test_target": "dft_colorless_cards_raceways",
-      "runtime_status": "pending focused run"
+      "runtime_status": "passed7/7; engine reused",
+      "runtime_report": "<cache>/rustmage-authoring/aetherdrift/card-raceways-20261102-095600Z/report.json"
     },
     {
       "name": "Night Market",
@@ -742,6 +745,174 @@
         "night_market_cycles_for_three_at_instant_speed_without_entering_or_choosing_a_color"
       ],
       "test_target": "dft_colorless_cards_raceways",
+      "runtime_status": "passed7/7; engine reused",
+      "runtime_report": "<cache>/rustmage-authoring/aetherdrift/card-raceways-20261102-095600Z/report.json"
+    },
+    {
+      "name": "Racers' Scoreboard",
+      "definition": "src/card_definitions/dft/racers_scoreboard.rs",
+      "oracle_id": "54c2b3b3-e247-4146-8045-d49480b795f2",
+      "oracle_text": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\nWhen this artifact enters, draw two cards, then discard a card.\nMax speed \u2014 Spells you cast cost {1} less to cast.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/r/RacersScoreboard.java",
+        "sha256": "c0b5109f3d3d54b63656e65a76810d017b90adcc85f913c7fb3108592dc4b064"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/StartYourEnginesAbility.java",
+          "sha256": "aa2762d7300e49a5bc8ba7f537d7839c48d24ad3643b4cf2a26988ac6b896b4c"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/MaxSpeedAbility.java",
+          "sha256": "527c1706bd17311a4d048d5c0732a7ea58ec73ee1b1b8778cfc10e1a612b2481"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ControllerSpeedCount.java",
+          "sha256": "79d02234c0d1639d7bbda609a03b512f7021c1b5b78ab009cbf1eea537bd5bcc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+          "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellsCostReductionControllerEffect.java",
+          "sha256": "47783fefecfbb22810317538f30e9e92302add21ebff508bc21f43683a85ad06"
+        }
+      ],
+      "printed_obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "When this artifact enters, draw two cards, then discard a card.",
+        "Max speed \u2014 Spells you cast cost {1} less to cast."
+      ],
+      "outcome_scenarios": [
+        "all_three_artifacts_start_speed_only_on_their_actual_paid_entry",
+        "scoreboard_draws_two_before_choosing_exactly_one_discard_even_after_it_leaves",
+        "scoreboard_discount_is_live_own_controller_generic_only_and_requires_max_speed"
+      ],
+      "test_target": "dft_colorless_cards_speed",
+      "runtime_status": "pending focused run"
+    },
+    {
+      "name": "Starting Column",
+      "definition": "src/card_definitions/dft/starting_column.rs",
+      "oracle_id": "d608a3fa-faee-44a4-9ab6-be701d3b7a49",
+      "oracle_text": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\n{T}: Add one mana of any color.\nMax speed \u2014 {T}, Sacrifice this artifact: Draw two cards, then discard a card.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/s/StartingColumn.java",
+        "sha256": "59c66d47490784e6383af865092a53ea33851457273698b53c6758cb91eab7fa"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/StartYourEnginesAbility.java",
+          "sha256": "aa2762d7300e49a5bc8ba7f537d7839c48d24ad3643b4cf2a26988ac6b896b4c"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/MaxSpeedAbility.java",
+          "sha256": "527c1706bd17311a4d048d5c0732a7ea58ec73ee1b1b8778cfc10e1a612b2481"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ControllerSpeedCount.java",
+          "sha256": "79d02234c0d1639d7bbda609a03b512f7021c1b5b78ab009cbf1eea537bd5bcc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+          "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+          "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+          "sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaOfAnyColorEffect.java",
+          "sha256": "1ab49b0ed403a80a0daed4883b432e65e47e38a72d5e4ebca87894284c4fa085"
+        }
+      ],
+      "printed_obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "{T}: Add one mana of any color.",
+        "Max speed \u2014 {T}, Sacrifice this artifact: Draw two cards, then discard a card."
+      ],
+      "outcome_scenarios": [
+        "all_three_artifacts_start_speed_only_on_their_actual_paid_entry",
+        "starting_column_produces_each_color_and_max_speed_sacrifices_before_draw_two_discard_one"
+      ],
+      "test_target": "dft_colorless_cards_speed",
+      "runtime_status": "pending focused run"
+    },
+    {
+      "name": "Walking Sarcophagus",
+      "definition": "src/card_definitions/dft/walking_sarcophagus.rs",
+      "oracle_id": "791b8ac8-8db8-44b4-8c85-fcc9017c17ef",
+      "oracle_text": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)\nMax speed \u2014 This creature gets +1/+2.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/w/WalkingSarcophagus.java",
+        "sha256": "1fce5f3536e7665b40f73f976526b1ac4d5097d494d6280201b337e27dcc9408"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/StartYourEnginesAbility.java",
+          "sha256": "aa2762d7300e49a5bc8ba7f537d7839c48d24ad3643b4cf2a26988ac6b896b4c"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/MaxSpeedAbility.java",
+          "sha256": "527c1706bd17311a4d048d5c0732a7ea58ec73ee1b1b8778cfc10e1a612b2481"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ControllerSpeedCount.java",
+          "sha256": "79d02234c0d1639d7bbda609a03b512f7021c1b5b78ab009cbf1eea537bd5bcc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+          "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+        }
+      ],
+      "printed_obligations": [
+        "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+        "Max speed \u2014 This creature gets +1/+2."
+      ],
+      "outcome_scenarios": [
+        "all_three_artifacts_start_speed_only_on_their_actual_paid_entry",
+        "walking_sarcophagus_uses_only_its_live_controllers_max_speed_and_bonus_is_not_cumulative"
+      ],
+      "test_target": "dft_colorless_cards_speed",
       "runtime_status": "pending focused run"
     }
   ]

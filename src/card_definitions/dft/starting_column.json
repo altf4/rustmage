@@ -3,10 +3,56 @@
   "catalogue_id": 4112,
   "oracle_id": "d608a3fa-faee-44a4-9ab6-be701d3b7a49",
   "facts_sha256": "6509a39f472f216927ec72cf3e569a96ff7cc57dbb3084df3f8c03b9daf70534",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "81ad23ac5192a4f0a9a0f742ad8e0cf3abba1d69bced772796989362025c815d"
-  },
-  "physical_metadata_sha256": "0f74c845d4bfd12cffc2c2b2a2e72bd315f2daaf83fdcb4c82576bcf9d06d182"
+  "complete": true,
+  "physical_metadata_sha256": "0f74c845d4bfd12cffc2c2b2a2e72bd315f2daaf83fdcb4c82576bcf9d06d182",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StartingColumn.java",
+  "java_sha256": "59c66d47490784e6383af865092a53ea33851457273698b53c6758cb91eab7fa",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StartYourEnginesAbility.java",
+      "sha256": "aa2762d7300e49a5bc8ba7f537d7839c48d24ad3643b4cf2a26988ac6b896b4c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/MaxSpeedAbility.java",
+      "sha256": "527c1706bd17311a4d048d5c0732a7ea58ec73ee1b1b8778cfc10e1a612b2481"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ControllerSpeedCount.java",
+      "sha256": "79d02234c0d1639d7bbda609a03b512f7021c1b5b78ab009cbf1eea537bd5bcc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+      "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+      "sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaOfAnyColorEffect.java",
+      "sha256": "1ab49b0ed403a80a0daed4883b432e65e47e38a72d5e4ebca87894284c4fa085"
+    }
+  ]
 }
