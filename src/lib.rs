@@ -11,7 +11,9 @@ pub use cards::{
 };
 pub use catalogue::CATALOGUE_VERSION;
 use rustmage_core::cards;
+pub use rustmage_core::cards::RetainedCopyActivation;
 pub use rustmage_core::engine::exhaust::GrantedExhaustUseView;
+pub use rustmage_core::engine::temporary_copy::RetainedActivationOrigin;
 pub use rustmage_core::engine::{
     AbilityAvailabilityView, AbilityResolutionView, AbilitySourceTimestampView, Action,
     ActivationCostRoute, AdditionalCostView, AdventurePermission, AnimationView,
