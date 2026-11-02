@@ -16,6 +16,7 @@ pub enum ManaRestrictionView {
     ExceptCastFromHand,
     CastFromExile,
     ArtifactSpell,
+    ArtifactSpellOrActivation,
     ExceptNonArtifactSpells,
     SubtypeSpellOrActivation(&'static str),
     InstantSorcery,
@@ -148,6 +149,9 @@ impl Quality {
                 ManaRestriction::CreatureActivation => ManaRestrictionView::CreatureActivation,
                 ManaRestriction::AbilityActivation => ManaRestrictionView::AbilityActivation,
                 ManaRestriction::ArtifactSpell => ManaRestrictionView::ArtifactSpell,
+                ManaRestriction::ArtifactSpellOrActivation => {
+                    ManaRestrictionView::ArtifactSpellOrActivation
+                }
                 ManaRestriction::ExceptNonArtifactSpells => {
                     ManaRestrictionView::ExceptNonArtifactSpells
                 }
@@ -228,6 +232,11 @@ impl Quality {
             ManaRestrictionView::ArtifactSpell => {
                 matches!(purpose, Purpose::Spell(facts) if facts.kinds & 16 != 0)
             }
+            ManaRestrictionView::ArtifactSpellOrActivation => match purpose {
+                Purpose::Spell(facts) => facts.kinds & 16 != 0,
+                Purpose::Activation(_) => true,
+                Purpose::Other => false,
+            },
             ManaRestrictionView::ExceptNonArtifactSpells => {
                 !matches!(purpose, Purpose::Spell(facts) if facts.kinds & 16 == 0)
             }

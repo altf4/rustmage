@@ -230,6 +230,8 @@ pub enum TargetRule {
     },
     Any,
     Spell,
+    /// Any spell controlled by the choosing player, regardless of its card types.
+    YourSpell,
     SingleTargetStackObject,
     /// Any activated or triggered ability on the stack.
     Ability,
@@ -413,6 +415,8 @@ pub enum PlayerSet {
     Controller,
     Opponent,
     Each,
+    /// Each player whose own persistent speed is strictly below this threshold.
+    SpeedBelow(u8),
     Targeted,
 }
 
@@ -552,6 +556,8 @@ pub enum ManaRestriction {
     CastFromExile,
     /// Only the costs of casting a spell with the artifact card type.
     ArtifactSpell,
+    /// Only artifact spell casts or activated-ability costs; never unrelated payments.
+    ArtifactSpellOrActivation,
     /// Any cost except casting a spell without the artifact card type.
     ExceptNonArtifactSpells,
     /// Spells or activated abilities of any source with this subtype.
@@ -1931,6 +1937,8 @@ pub enum Instruction {
     /// Inherent rad-counter trigger: mill, lose life, then remove rad counters.
     ResolveRadiation,
     IncreaseSpeed,
+    /// Decrease a selected player's speed by one only while they strictly lead, with a floor.
+    DecreaseLeadingSpeed { players: PlayerSet, minimum: u8 },
     /// Event-local self-replacements belong to this resolving instruction.
     #[allow(dead_code, reason = "Gated typed proliferate foundation")]
     PutPlayerCountersWithSelf {
@@ -2729,6 +2737,8 @@ pub enum AmountValue {
     LifeGainedThisTurn,
     LifeEventAmount,
     CardsDiscardedThisTurn,
+    /// Actual cards in this packet's one completed simultaneous discard event.
+    DiscardEventAmount,
     /// Actual result of the preceding remembered zone-move instruction.
     MovedCount,
     Multiple {
@@ -2807,6 +2817,10 @@ pub enum StatValue {
     CreaturesDiedThisTurn,
     LifeGainedThisTurn,
     ControllerLife,
+    /// Persistent player designation; zero means the controller has no speed.
+    ControllerSpeed,
+    /// Compare current land counts using the same actual or speculative world.
+    OpponentControlsMoreLands,
     /// Whether the opposing player's life is at most this threshold.
     OpponentLifeAtMost(u16),
     /// Boolean threshold relative to the rules configuration, not a printed 20.
@@ -3034,6 +3048,8 @@ pub enum ReplacementSpec {
     NoncombatDamagePlusSourcePower,
     /// Add a fixed amount to controlled-source noncombat damage to opponents or their permanents.
     NoncombatDamageToOpponentPlus(u16),
+    /// Add to any controlled-source damage to an opposing player or permanent.
+    ConditionalControlledDamageToOpponentPlus { condition: StatValue, amount: u16 },
     DoubleEquippedDamage,
     HealPreviousDamageToSelf,
     PreventOtherCreatureNoncombatDamage,

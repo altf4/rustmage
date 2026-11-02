@@ -39,26 +39,14 @@ impl Game {
             .iter()
             .copied()
             .filter(move |&id| {
-                !exempt
-                    && self.on_battlefield(id)
+                self.on_battlefield(id)
                     && self.state.objects[id as usize].controller == player
-                    && self.state.objects[id as usize]
-                        .card
-                        .static_ability_groups()
-                        .iter()
-                        .any(|group| {
-                            group.fragments.iter().any(|fragment| {
-                                matches!(
-                                    fragment,
-                                    crate::cards::StaticAbilityFragment::DoubleDrawExceptFirst
-                                )
-                            })
-                        })
-                    && self.continuous_fragment_available(id, |fragment| {
-                        matches!(
-                            fragment,
-                            crate::cards::StaticAbilityFragment::DoubleDrawExceptFirst
-                        )
+                    && self.active_rule_fragment(id, |fragment| match *fragment {
+                        crate::cards::StaticAbilityFragment::DoubleDrawExceptFirst => !exempt,
+                        crate::cards::StaticAbilityFragment::ConditionalDoubleDraw(condition) => {
+                            self.stat_value(condition, self.object_ref(id), player) != 0
+                        }
+                        _ => false,
                     })
             })
             .map(|id| self.object_ref(id))

@@ -2581,6 +2581,10 @@ impl Game {
                         | Instruction::SearchTargetController(_)
                         | Instruction::LoseLifeTargetController(_)
                         | Instruction::DamageTargetController(_)
+                        | Instruction::DecreaseLeadingSpeed {
+                            players: PlayerSet::TargetController,
+                            ..
+                        }
                 )
             })
             .then(|| {
@@ -2710,6 +2714,12 @@ impl Game {
             PlayerSet::Controller => [Some(controller), None],
             PlayerSet::Opponent => [Some(controller.other()), None],
             PlayerSet::Each => [Some(self.state.active), Some(self.state.active.other())],
+            PlayerSet::SpeedBelow(threshold) => {
+                let first = self.state.active;
+                [first, first.other()].map(|player| {
+                    (self.state.players[player.index()].speed < threshold).then_some(player)
+                })
+            }
             PlayerSet::Targeted => {
                 let first = self.state.active;
                 let selected = |player| {
@@ -4574,6 +4584,22 @@ impl Game {
                         owned,
                         replacements::ResumeMode::Program,
                     );
+                }
+                Instruction::DecreaseLeadingSpeed { players, minimum } => {
+                    // Freeze qualifying recipients before changing either player's designation.
+                    let players: Vec<_> = self
+                        .program_players(players, &item)
+                        .filter(|player| {
+                            self.state.players[player.index()].speed
+                                > self.state.players[player.other().index()].speed
+                        })
+                        .collect();
+                    for player in players {
+                        let speed = &mut self.state.players[player.index()].speed;
+                        if *speed > minimum {
+                            *speed -= 1;
+                        }
+                    }
                 }
                 Instruction::IncreaseSpeed => {
                     let StackKind::InherentRule {

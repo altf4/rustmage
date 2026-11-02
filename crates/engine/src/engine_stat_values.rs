@@ -347,6 +347,16 @@ impl Game {
                     .capacity("life gain count representation exhausted")
             }
             StatValue::ControllerLife => life,
+            StatValue::ControllerSpeed => i128::from(self.state.players[owner.index()].speed),
+            StatValue::OpponentControlsMoreLands => {
+                let mut counts = [0usize; 2];
+                for (id, object) in objects() {
+                    if object.zone == Zone::Battlefield && kinds(id, object) & 2 != 0 {
+                        counts[object.controller.index()] += 1;
+                    }
+                }
+                i128::from(counts[owner.other().index()] > counts[owner.index()])
+            }
             StatValue::OpponentLifeAtMost(maximum) => {
                 i128::from(opponent_life <= i128::from(maximum))
             }
@@ -552,6 +562,7 @@ impl Game {
             | AmountValue::SourceToughness
             | AmountValue::SourceEquipmentCount
             | AmountValue::LifeEventAmount
+            | AmountValue::DiscardEventAmount
             | AmountValue::DamageEventAmount
             | AmountValue::CreatureCombatDamageAmount
             | AmountValue::DamageReceivedAmount => 0, // Off-stack expressions have no cast parameter.

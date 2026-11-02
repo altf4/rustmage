@@ -350,6 +350,9 @@ impl Game {
     }
     pub(super) fn item_amount(&self, value: AmountValue, item: &SpellView) -> u128 {
         match value {
+            AmountValue::DiscardEventAmount => item
+                .discard_event
+                .map_or(0, |event| u128::from(event.amount)),
             AmountValue::MovedCount => u128::from(
                 self.state
                     .resolving

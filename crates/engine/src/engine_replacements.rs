@@ -961,6 +961,14 @@ impl Game {
                         event.source.controller == object.controller
                             && self.damage_recipient_controller(event) != object.controller
                     }
+                    ReplacementSpec::ConditionalControlledDamageToOpponentPlus {
+                        condition,
+                        ..
+                    } => {
+                        event.source.controller == object.controller
+                            && self.damage_recipient_controller(event) != object.controller
+                            && self.stat_value(condition, source, object.controller) != 0
+                    }
                     ReplacementSpec::NoncombatDamagePlusSourcePower
                     | ReplacementSpec::NoncombatDamageToOpponentPlus(_) => {
                         !event.combat
@@ -1084,7 +1092,8 @@ impl Game {
                     .checked_mul(2)
                     .capacity("damage replacement quantity exhausted")
             }
-            ReplacementSpec::NoncombatDamageToOpponentPlus(amount) => {
+            ReplacementSpec::NoncombatDamageToOpponentPlus(amount)
+            | ReplacementSpec::ConditionalControlledDamageToOpponentPlus { amount, .. } => {
                 event.amount = event
                     .amount
                     .checked_add(i128::from(amount))

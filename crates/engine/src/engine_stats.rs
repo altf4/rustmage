@@ -212,6 +212,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::NoSpellsOrNonmanaDuringCombat
                             | crate::cards::StaticAbilityFragment::Storied
                             | crate::cards::StaticAbilityFragment::DoubleDrawExceptFirst
+                            | crate::cards::StaticAbilityFragment::ConditionalDoubleDraw(_)
                             | crate::cards::StaticAbilityFragment::AdditionalDrawWithAtMostOneCard
                             | crate::cards::StaticAbilityFragment::AdditionalTriggers { .. }
                             | crate::cards::StaticAbilityFragment::AttackControllerTax { .. }

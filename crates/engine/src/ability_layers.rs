@@ -84,6 +84,8 @@ pub enum StaticAbilityFragment {
     SourceNegativePowerCombatDamage,
     /// Replace each nonexempt controller draw with two draws.
     DoubleDrawExceptFirst,
+    /// Double each controller draw, including their normal draw-step draw, while true.
+    ConditionalDoubleDraw(StatValue),
     /// Add one to a controller draw instruction while their hand has at most one card.
     AdditionalDrawWithAtMostOneCard,
     /// Increase opponents' noncreature spell costs by generic mana.
