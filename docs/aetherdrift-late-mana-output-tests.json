@@ -1,0 +1,64 @@
+{
+  "base_revision": "87ad5904ab4229723ddfcd56e2cfc6101a244f3c",
+  "scope": "Disjoint tests-only ownership for late output completion; no engine/card/generated changes and no Cargo by author.",
+  "test_target": "dft_late_mana_outputs_engine",
+  "native_source": {
+    "name": "Draconautics Engineer",
+    "oracle_id": "380d8d64-9aec-4656-b5b8-d336ebf803c8",
+    "facts_sha256": "7e5f9c3286dfaca50159b5292f751a7c31c5377e1bdfa0c2b2985732d8e7bddc",
+    "java_source": "Mage.Sets/src/mage/cards/d/DraconauticsEngineer.java",
+    "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "java_sha256": "24b42c5275c20b25cbf46012a2e55f4e34935013d5cdcfe51f917b34f462dc1a"
+  },
+  "token_identity": "@token/b60f6cd3b44b22bd289fe4e2",
+  "contracts": [
+    {
+      "risk": "Last real Treasure cannot strand an announced R-cost activation or spell.",
+      "proofs": [
+        "actual_engineer_last_treasure_has_only_red_in_raw_index_and_observed_choices_owned",
+        "actual_red_spell_parents_reject_a_late_wrong_color_after_the_treasure_is_spent"
+      ],
+      "outcomes": "OnlyR appears in legal/indexed and actor-observed domains; forgedG leaves snapshot/revision unchanged. RealR completes paid exhaust/counter or red spell damage. Both seats and parent-dropped raw/index/restored branches."
+    },
+    {
+      "risk": "Real nested mana costs remain mandatory even under a soft outer resolution request.",
+      "proofs": [
+        "last_treasure_output_must_finish_the_real_blue_mana_child_and_its_red_ancestor",
+        "declining_an_outer_resolution_does_not_excuse_stranding_its_real_mana_child"
+      ],
+      "outcomes": "Converter costsU and producesRR: last Treasure must chooseU, notR orG; real child and all ancestors complete."
+    },
+    {
+      "risk": "A local color-deficit heuristic would reject valid completion paths.",
+      "proofs": [
+        "another_real_red_source_keeps_a_green_late_output_viable",
+        "frozen_tap_bonus_funds_red_while_the_sacrificed_sources_green_keeps_its_turn_quality"
+      ],
+      "outcomes": "G remains legal when another Mountain paysR, or a saved pre-sacrifice Mountain tap bonus providesR. TaggedG retains Turn lifetime after source departure, exactly one base output and one bonus."
+    },
+    {
+      "risk": "No hard parent exists at priority or ordinary resolving AddMana; an optional resolution payment can decline.",
+      "proofs": [
+        "priority_mana_has_no_hard_parent_and_keeps_every_color",
+        "ordinary_resolving_add_mana_keeps_every_color_and_continues_the_spell",
+        "optional_resolution_payment_keeps_all_colors_because_the_resolution_can_decline"
+      ],
+      "outcomes": "All5colors remain offered and observed; ordinary spell continues; optional request either paysR for3life or choosesG and declines."
+    }
+  ],
+  "required_existing_shared_regressions": [
+    {
+      "target": "dft_mana_output",
+      "scenario": "a_retained_late_choice_replays_its_concrete_output_and_quality_exactly_once",
+      "source": "tests/dft_mana_output.rs:409",
+      "outcome": "Opponent-controlled as-entry copy/Aura removes the original parent resource after legal mana costs. Child can finish its correct-quantity output despite now-unfundable old parent, then selective ManaRollback retains exact source cost/output/Turn quality once across raw/index/restore."
+    },
+    {
+      "target": "dft_deferred_mana",
+      "scenario": "nested_costed_mana_announcements_reject_all_active_ancestor_instances",
+      "outcome": "Real deferred ancestry/resume and anti-recursion behavior stays intact."
+    }
+  ],
+  "privacy": "Only actor Observation.mana_choices exposes the filtered domain; opposite viewer remains empty. Legal/observe enumeration preserves snapshot and revision.",
+  "validation": "No Cargo/linker run. Root owns one combined frozen-source validation after independent engine review."
+}
