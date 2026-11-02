@@ -26,6 +26,7 @@ pub(super) struct OptionalWheel {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Resolution {
+    pub chosen_card_name: Option<crate::CardName>,
     pub chosen_creature_type: Option<crate::cards::CreatureType>,
     pub target_counter_removal: Option<Box<TargetCounterRemovalView>>,
     pub linked_copy: Option<Box<linked_copies::LinkedCopyCapture>>,
@@ -2692,6 +2693,7 @@ impl Game {
                 )
             });
         self.state.resolving = Some(Resolution {
+            chosen_card_name: None,
             chosen_creature_type: None,
             target_counter_removal: None,
             linked_copy: None,
@@ -3074,6 +3076,18 @@ impl Game {
                         .collect();
                     for creature in creatures {
                         self.prepare_permanent(creature);
+                    }
+                }
+                Instruction::ChooseCardName { nonland } => {
+                    self.state.pending = Pending::CardName {
+                        player: item.controller,
+                        nonland,
+                    };
+                    return;
+                }
+                Instruction::ExileTargetNamedCards { maximum } => {
+                    if self.start_named_card_search(&item, maximum) {
+                        return;
                     }
                 }
                 Instruction::ChooseLandCardName => {

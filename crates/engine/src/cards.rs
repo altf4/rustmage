@@ -515,6 +515,8 @@ pub enum EntryChoiceValue {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EntryChoiceKind {
+    CardName,
+    NonlandCardName,
     CardNameAfterOpponentHand,
     ManaValueParity,
     LandCardName,
@@ -525,13 +527,16 @@ pub enum EntryChoiceKind {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl EntryChoiceKind {
     pub(crate) fn matches(self, value: EntryChoiceValue) -> bool {
+        if self == Self::NonlandCardName {
+            return matches!(value, EntryChoiceValue::CardName(name) if !name.is_land());
+        }
         if self == Self::LandCardName {
             return matches!(value, EntryChoiceValue::CardName(name) if name.is_land());
         }
         matches!(
             (self, value),
             (
-                Self::CardNameAfterOpponentHand,
+                Self::CardNameAfterOpponentHand | Self::CardName,
                 EntryChoiceValue::CardName(_)
             ) | (Self::ManaValueParity, EntryChoiceValue::ManaValueParity(_))
                 | (Self::Color, EntryChoiceValue::Color(_))
@@ -938,6 +943,12 @@ pub enum EffectChoiceKind {
     /// Targeted player chooses a creature to exile with their graveyard.
     ExileCreatureAndGraveyard,
     CoverUpGraveyardCard,
+    /// Optional combined search of an opponent's graveyard, hand and library.
+    NamedSearch {
+        owner: Player,
+        name: crate::CardName,
+        maximum: u16,
+    },
     CoverUpSearch {
         owner: Player,
         name: &'static str,
@@ -1340,6 +1351,12 @@ pub enum Instruction {
     PrepareSource,
     PrepareControlledCreatures,
     ChooseLandCardName,
+    ChooseCardName {
+        nonland: bool,
+    },
+    ExileTargetNamedCards {
+        maximum: u16,
+    },
     Prepare {
         subject: Subject,
     },

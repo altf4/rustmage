@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "set": "DFT",
+  "phase": "engine only; ordinary cards unchanged",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "sources": [
+    {
+      "path": "Mage.Sets/src/mage/cards/a/AncientVendetta.java",
+      "sha256": "05c14b9e302eba212122ce4082ad9dfb3c54d0ce4472d732aeb6d089a10ed804",
+      "read": "complete body"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/SkyseersChariot.java",
+      "sha256": "2018997694a4827146adf0f5c93d54b4b5da5cf7a9e873e2b5a8aa543a8c8ce6",
+      "read": "complete body"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseACardNameEffect.java",
+      "sha256": "33f32c237aec9329b59275757fadc7b1a4b63f898c44999e9169de81e30a3561",
+      "read": "complete body"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchTargetGraveyardHandLibraryForCardNameAndExileEffect.java",
+      "sha256": "016001641a5c77bb2787f141b904ad653803e5b9311f49324edbaba71defc90b",
+      "read": "complete body"
+    }
+  ],
+  "api": [
+    "EntryChoiceKind::CardName and NonlandCardName support all pinned selectable names independent of playable admissions",
+    "Instruction::ChooseCardName stores a name on the owned Resolution, never on the physical source",
+    "Instruction::ExileTargetNamedCards uses optional non-targeted selection across opponent graveyard/hand/library with one total cap, shuffle even zero and no replacement draws"
+  ],
+  "outcome_contracts": [
+    "Nonland entry rejects land names transactionally and allows outside-pool names before entry; exact choice clears on departure",
+    "Public chosen name visible to both players, inspected hand/library only to searching controller",
+    "One total maximum4 across three zones; wrong owner and wrong name illegal; copies may be left in public graveyard",
+    "Selection optional even no candidates, shuffle consumes owned deterministic randomness even zero",
+    "Land names permitted for Ancient Vendetta; finish below cap never exiles additional matches",
+    "Private selection, raw/index children, parent disposal and snapshot restore retain independent exact selections and shuffle state"
+  ],
+  "existing_consumer": "CoverUpSearch still starts from graveyard choice, has no cap and draws for actual exiled hand cards. Its behavior remains distinct in the common finalizer.",
+  "target": "tests/dft_named_search.rs (6 scenarios)",
+  "remaining": "Skyseer activation tax remains a separate engine blocker; ordinary definitions and independent reviewed complete rules evidence not admitted by these fixtures."
+}

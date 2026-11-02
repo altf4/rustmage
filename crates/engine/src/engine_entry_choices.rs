@@ -59,6 +59,11 @@ impl Game {
         &self,
         mut emit: impl FnMut(EntryChoiceValue) -> bool,
     ) -> bool {
+        if let Pending::CardName { nonland, .. } = self.state.pending {
+            return crate::CardName::all()
+                .filter(|name| !nonland || !name.is_land())
+                .any(|name| emit(EntryChoiceValue::CardName(name)));
+        }
         if matches!(self.state.pending, Pending::LandCardName { .. }) {
             return crate::CardName::lands().any(|name| emit(EntryChoiceValue::CardName(name)));
         }
@@ -68,7 +73,10 @@ impl Game {
             EntryChoiceKind::LandCardName => {
                 crate::CardName::lands().any(|name| emit(EntryChoiceValue::CardName(name)))
             }
-            EntryChoiceKind::CardNameAfterOpponentHand => {
+            EntryChoiceKind::NonlandCardName => crate::CardName::all()
+                .filter(|name| !name.is_land())
+                .any(|name| emit(EntryChoiceValue::CardName(name))),
+            EntryChoiceKind::CardName | EntryChoiceKind::CardNameAfterOpponentHand => {
                 crate::CardName::all().any(|name| emit(EntryChoiceValue::CardName(name)))
             }
             EntryChoiceKind::ManaValueParity => [ManaValueParity::Odd, ManaValueParity::Even]
@@ -88,6 +96,15 @@ impl Game {
         }
     }
     pub(super) fn choose_entry_value(&mut self, value: EntryChoiceValue) {
+        if let Pending::CardName { nonland, .. } = self.state.pending {
+            let EntryChoiceValue::CardName(name) = value else {
+                unreachable!("legal card name choice")
+            };
+            assert!(!nonland || !name.is_land());
+            self.state.resolving.as_mut().unwrap().chosen_card_name = Some(name);
+            self.run_program();
+            return;
+        }
         if matches!(self.state.pending, Pending::LandCardName { .. }) {
             assert!(EntryChoiceKind::LandCardName.matches(value));
             let source = self
@@ -138,6 +155,20 @@ impl Game {
         }
     }
     pub(super) fn entry_choice_view(&self, viewer: Player) -> Option<EntryChoiceView> {
+        if let Pending::CardName { nonland, .. } = self.state.pending {
+            let source = self.state.resolving.as_ref()?.item.source?;
+            return Some(EntryChoiceView {
+                object: source.object,
+                card: source.card,
+                kind: if nonland {
+                    EntryChoiceKind::NonlandCardName
+                } else {
+                    EntryChoiceKind::CardName
+                },
+                opponent_hand: None,
+                selected: Vec::new(),
+            });
+        }
         if matches!(self.state.pending, Pending::LandCardName { .. }) {
             let item = &self.state.resolving.as_ref()?.item;
             let source = item.source?;

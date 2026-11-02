@@ -1094,6 +1094,7 @@ impl Game {
             | EffectChoiceKind::ExileCreatureAndGraveyard
             | EffectChoiceKind::CoverUpGraveyardCard
             | EffectChoiceKind::CoverUpSearch { .. }
+            | EffectChoiceKind::NamedSearch { .. }
             | EffectChoiceKind::CopyExiledTriggerCreature
             | EffectChoiceKind::ExileGraveyardCards(_)
             | EffectChoiceKind::ExileGraveyardRange { .. }

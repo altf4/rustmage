@@ -958,10 +958,14 @@ impl FundingState<'_> {
                 crate::cards::EntryChoiceKind::LandCardName => {
                     choices.extend(crate::CardName::lands().map(EntryChoiceValue::CardName));
                 }
-                crate::cards::EntryChoiceKind::CardNameAfterOpponentHand => {
+                crate::cards::EntryChoiceKind::CardName
+                | crate::cards::EntryChoiceKind::NonlandCardName
+                | crate::cards::EntryChoiceKind::CardNameAfterOpponentHand => {
                     // Names absent from this world are equivalent for cost completion.
                     let mut unmatched = false;
-                    for name in crate::CardName::all() {
+                    for name in crate::CardName::all().filter(|name| {
+                        kind != crate::cards::EntryChoiceKind::NonlandCardName || !name.is_land()
+                    }) {
                         let present = self.resources.iter().any(|r| name.matches(self.name(r.id)));
                         if present || !unmatched {
                             choices.push(EntryChoiceValue::CardName(name));

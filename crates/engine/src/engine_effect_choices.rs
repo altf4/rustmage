@@ -144,6 +144,20 @@ impl Game {
                 && self.object_ref(object.card) == object
                 && !choice.selected[player.index()].contains(&object);
         }
+        if let EffectChoiceKind::NamedSearch {
+            owner,
+            name,
+            maximum,
+        } = choice.kind.payment_kind()
+        {
+            return choice.selected[player.index()].len() < usize::from(maximum)
+                && o.owner == owner
+                && o.is_card()
+                && matches!(o.zone, Zone::Graveyard | Zone::Hand | Zone::Library)
+                && self.object_ref(object.card) == object
+                && name.matches(self.object_name(object.card))
+                && !choice.selected[player.index()].contains(&object);
+        }
         if let EffectChoiceKind::CoverUpSearch { owner, name } = choice.kind.payment_kind() {
             return o.owner == owner
                 && o.is_card()
@@ -1100,6 +1114,15 @@ impl Game {
                 }
             }
         }
+        if let EffectChoiceKind::NamedSearch { maximum, .. } = choice.kind.payment_kind() {
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            if choice.selected[player.index()].len() >= usize::from(maximum) {
+                self.complete_name_search();
+                return false;
+            }
+            self.state.pending = Pending::EffectChoice { player };
+            return true;
+        }
         if matches!(
             choice.kind.payment_kind(),
             EffectChoiceKind::CoverUpSearch { .. }
@@ -1725,7 +1748,39 @@ impl Game {
         self.run_program();
     }
 
+    pub(super) fn start_named_card_search(&mut self, item: &SpellView, maximum: u16) -> bool {
+        let Some(owner) = self
+            .program_players(PlayerSet::Targeted, item)
+            .into_iter()
+            .next()
+        else {
+            return false;
+        };
+        let name = self
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .chosen_card_name
+            .expect("preceding card-name choice");
+        self.start_effect_choice(
+            item,
+            EffectChoiceKind::NamedSearch {
+                owner,
+                name,
+                maximum,
+            },
+            PlayerSet::Controller,
+            evidence::cost(0).filter,
+            0,
+            None,
+        )
+    }
     pub(super) fn finish_cover_up_search(&mut self) {
+        self.complete_name_search();
+        self.run_program();
+    }
+    fn complete_name_search(&mut self) {
         let choice = self
             .state
             .resolving
@@ -1734,8 +1789,10 @@ impl Game {
             .choice
             .take()
             .unwrap();
-        let EffectChoiceKind::CoverUpSearch { owner, .. } = choice.kind.payment_kind() else {
-            unreachable!()
+        let (owner, draws_for_hand) = match choice.kind.payment_kind() {
+            EffectChoiceKind::CoverUpSearch { owner, .. } => (owner, true),
+            EffectChoiceKind::NamedSearch { owner, .. } => (owner, false),
+            _ => unreachable!(),
         };
         let player = self.state.resolving.as_ref().unwrap().item.controller;
         let ids: Vec<_> = choice.selected[player.index()]
@@ -1752,8 +1809,9 @@ impl Game {
         self.finish_zone_events(&events, &[]);
         self.forget_library_top(owner);
         self.shuffle_library_cards(owner);
-        self.draw_many(owner, hand_count as u128);
-        self.run_program();
+        if draws_for_hand {
+            self.draw_many(owner, hand_count as u128);
+        }
     }
     pub(super) fn effect_choice_view(&self, viewer: Player) -> Option<EffectChoiceView> {
         let choice = self.state.resolving.as_ref()?.choice.as_ref()?;
@@ -1774,13 +1832,14 @@ impl Game {
         }
         if matches!(
             choice.kind.payment_kind(),
-            EffectChoiceKind::CoverUpSearch { .. }
+            EffectChoiceKind::CoverUpSearch { .. } | EffectChoiceKind::NamedSearch { .. }
         ) && !self.shares_information(viewer, actor)
         {
             return None;
         }
         let inspected_cards = match choice.kind.payment_kind() {
             EffectChoiceKind::CoverUpSearch { owner, .. }
+            | EffectChoiceKind::NamedSearch { owner, .. }
                 if self.shares_information(viewer, actor) =>
             {
                 Some(

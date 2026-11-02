@@ -2427,6 +2427,10 @@ enum Pending {
     LandCardName {
         player: Player,
     },
+    CardName {
+        player: Player,
+        nonland: bool,
+    },
     EntryLife {
         player: Player,
     },
@@ -3443,6 +3447,8 @@ pub struct Observation {
     pub search_distribution: Option<SearchDistributionView>,
     pub search_destination_choice: Option<SearchDestinationChoiceView>,
     pub effect_choice: Option<EffectChoiceView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub chosen_card_name: Option<crate::CardName>,
     pub entry_value: Option<entry_choices::EntryChoiceView>,
     pub aura_entry: Option<entries::AuraEntryView>,
     pub entry_life: Option<entries::EntryLifeView>,
@@ -3945,6 +3951,7 @@ impl Game {
             | Pending::CreatureTypeChoice { player }
             | Pending::EntryValue { player }
             | Pending::LandCardName { player }
+            | Pending::CardName { player, .. }
             | Pending::EntryLife { player }
             | Pending::EntryBehold { player }
             | Pending::AuraEntry { player }
@@ -4571,7 +4578,9 @@ impl Game {
                     return true;
                 }
             }
-            Pending::EntryValue { .. } | Pending::LandCardName { .. } => {
+            Pending::EntryValue { .. }
+            | Pending::LandCardName { .. }
+            | Pending::CardName { .. } => {
                 if self.visit_entry_values(|value| emit(Action::ChooseEntryValue { value })) {
                     return true;
                 }
@@ -4657,8 +4666,10 @@ impl Game {
                 if choice.kind == EffectChoiceKind::RemoveCreatureCounters(1) {
                     return self.visit_resolution_counter_payments(player, &mut emit);
                 }
-                if matches!(choice.kind, EffectChoiceKind::CoverUpSearch { .. })
-                    && emit(Action::FinishSearch)
+                if matches!(
+                    choice.kind,
+                    EffectChoiceKind::CoverUpSearch { .. } | EffectChoiceKind::NamedSearch { .. }
+                ) && emit(Action::FinishSearch)
                 {
                     return true;
                 }
@@ -4730,6 +4741,7 @@ impl Game {
                             | EffectChoiceKind::ExileCreatureAndGraveyard
                             | EffectChoiceKind::CoverUpGraveyardCard
                             | EffectChoiceKind::CoverUpSearch { .. }
+                            | EffectChoiceKind::NamedSearch { .. }
                             | EffectChoiceKind::CopyExiledTriggerCreature => {
                                 Action::SelectResolutionExile { object }
                             }
@@ -10181,6 +10193,7 @@ impl Game {
                 Pending::LinkedChoice { .. } => "linked_choice",
                 Pending::EntryValue { .. } => "entry_value",
                 Pending::LandCardName { .. } => "land_card_name",
+                Pending::CardName { .. } => "card_name",
                 Pending::EntryLife { .. } => "entry_life",
                 Pending::EntryBehold { .. } => "entry_behold",
                 Pending::EntryReplacement { .. } => "entry_replacement",
@@ -10278,6 +10291,11 @@ impl Game {
                 _ => None,
             },
             effect_choice: self.effect_choice_view(viewer),
+            chosen_card_name: self
+                .state
+                .resolving
+                .as_ref()
+                .and_then(|r| r.chosen_card_name),
             entry_value: self.entry_choice_view(viewer),
             aura_entry: self.aura_entry_view(viewer),
             entry_life: self.entry_life_view(viewer),
