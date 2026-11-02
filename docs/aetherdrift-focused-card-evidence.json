@@ -6,7 +6,7 @@
   "members": 276,
   "initially_admitted": 119,
   "newly_admitted": 157,
-  "full_set_verified": false,
+  "full_set_verified": true,
   "card_and_provenance_cases": 340,
   "target_count": 35,
   "targets": [
@@ -4243,5 +4243,6 @@
       "report": "<cache>/rustmage-authoring/aetherdrift/aggregate-groups-reentry-20261102-165000Z/report.json"
     }
   ],
-  "latest_combined_engine_receipt": "docs/aetherdrift-engine-freeze.json"
+  "latest_combined_engine_receipt": "docs/aetherdrift-engine-freeze.json",
+  "full_set_acceptance": "docs/aetherdrift-acceptance.json"
 }

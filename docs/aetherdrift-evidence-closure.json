@@ -129,5 +129,12 @@
     "This reconciliation validates membership, actual named test receipts and recorded obligation coverage; it is not an independent nonauthor approval of cards authored by this auditor.",
     "Full DFT-only games, complete-set release validation, throughput measurement and two final published-batch nonauthor reviews remain root-owned and pending.",
     "No engine, card, generated linkage, Cargo or linker changes were made for this closure audit."
-  ]
+  ],
+  "current_closure": {
+    "status": "all 276 identities reconciled and passed full acceptance; historical snapshot below preserved",
+    "receipt": "docs/aetherdrift-acceptance.json",
+    "members": 276,
+    "missing_obligation_maps": 0,
+    "missing_or_failed_case_references": 0
+  }
 }

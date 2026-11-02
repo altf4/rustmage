@@ -1,12 +1,12 @@
 {
   "scope": "Focused whole-card authoring receipts across immutable consuming runs; full frozen release/native and DFT-only game acceptance remain separate.",
   "source_revision": "932b428ccc9659720d62b9798bf94c5244a76beb",
-  "engine_source": "2c7ffccc6",
-  "engine_freeze": "cbb7866f9",
+  "engine_source": "7cb154785ff4893759854032ddf243e7beeedba3",
+  "engine_freeze": "9848e4caf",
   "members": 276,
   "initially_admitted": 119,
   "newly_admitted": 157,
-  "full_set_verified": false,
+  "full_set_verified": true,
   "card_and_provenance_cases": 340,
   "target_count": 35,
   "targets": [
@@ -720,5 +720,6 @@
         "trade_paid_target_roles_revalidate_independently_after_one_or_both_control_changes"
       ]
     }
-  ]
+  ],
+  "full_set_acceptance": "docs/aetherdrift-acceptance.json"
 }

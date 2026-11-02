@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "set": "DFT",
-  "status": "complete fixed gameplay and interaction corpus passed; release acceptance pending",
+  "status": "full fixed gameplay corpus passed; final release acceptance passed",
   "source_revision": "9848e4caff86c49f737633ae1906612c4268e9bb",
   "engine_source": "7cb154785ff4893759854032ddf243e7beeedba3",
   "engine_freeze": "9848e4caf",
@@ -3461,5 +3461,6 @@
   ],
   "unchanged_inputs": true,
   "terminal": true,
-  "acceptance_limits": "Full276 member definitions have separate whole-card outcome receipts. These fixed80 games cover colors/mechanics and deterministic owned contracts; not exhaustive choice exploration or all-Standard acceptance."
+  "acceptance_limits": "Full276 member definitions have separate whole-card outcome receipts. These fixed80 games cover colors/mechanics and deterministic owned contracts; not exhaustive choice exploration or all-Standard acceptance.",
+  "release_acceptance": "docs/aetherdrift-acceptance.json"
 }

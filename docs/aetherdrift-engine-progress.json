@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "set": "DFT",
-  "phase": "all276 card outcomes and full fixed DFT gameplay passed; release acceptance and published-head reviews pending",
+  "phase": "all 276 members, full DFT gameplay and release acceptance passed; one PR and final published-head reviews pending",
   "membership": 276,
   "starting_admitted": 119,
   "newly_admitted": 157,
@@ -3069,5 +3069,7 @@
       "same_cases_outcomes_decisions_witnesses_as_verification": true
     },
     "receipt": "docs/aetherdrift-game-acceptance.json"
-  }
+  },
+  "completed_set_verified": true,
+  "full_set_acceptance": "docs/aetherdrift-acceptance.json"
 }

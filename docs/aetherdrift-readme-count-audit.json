@@ -2,10 +2,11 @@
   "schema": 1,
   "purpose": "Portable reproducible README count proposal; coverage accounting does not replace rules or whole-set acceptance.",
   "publication_gate": {
-    "status": "game corpus passed; README candidate applied before full release validation",
+    "status": "complete DFT game corpus and full release validation passed",
     "dft_count_is_full_membership_admission": true,
     "dft_acceptance_is_not_claimed_by_this_audit": true,
-    "game_evidence": "docs/aetherdrift-game-acceptance.json"
+    "game_evidence": "docs/aetherdrift-game-acceptance.json",
+    "release_evidence": "docs/aetherdrift-acceptance.json"
   },
   "repository": "https://github.com/altf4/rustmage",
   "frozen_standard_as_of": "2026-10-15",
