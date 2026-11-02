@@ -42,7 +42,10 @@ outputs use a persistent cache outside the checkout. Sources remain fixed while
 a consuming process runs, and required libraries remain at their recorded paths.
 
 Focused engine evidence and build timings are retained in
-`docs/aetherdrift-engine-progress.json`. The latest full focused run has 279 of
-283 scenarios passing across 32 targets. Final payment/counter-receipt fixes,
-full focused and broad native validation, exact prior-schema trace evidence,
-performance repair and independent review remain before the engine freeze.
+`docs/aetherdrift-engine-progress.json`. Combined focused evidence now covers all
+288 scenarios, including the corrected rollback fixtures, on the same engine.
+The final batch covers deferred-funding performance, duplicate borrowed actions,
+and precise compatibility guards for newly available late mana choices. All
+remaining engine source changes and review corrections are being assembled
+before the next shared build. Broad native validation, schema evidence and both
+independent review decisions still gate the engine freeze and card authorship.

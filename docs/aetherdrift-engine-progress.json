@@ -686,16 +686,17 @@
     "all/nonland name choices and capped private mixed-zone named exile search",
     "deferred mana headers and exact nested child continuation; current-combat token requirement with exact live-incarnation de-duplication; private chosen-card discard/draw",
     "independent hidden exile/play rights and route-specific graveyard costs; paid additional-cost reservations released before mana funding",
-    "as-entry artifact/creature copying with fresh copied choices; simultaneous departing blueprints (15previouscasespassed;matrixfollowup pending)",
-    "pre-entry selected exiles with actual result counters/links (first6passed); whole-batch exact-object reservation and complete projected graveyard inventory followups pending",
-    "retained immutable linked activation and copiable0/0 exception; root pre-event graveyard exile lookback correction; shared projected power-up reduction (compile-checked, focused execution pending)"
+    "as-entry artifact/creature copying, fresh copied choices and simultaneous departing blueprints",
+    "pre-entry selected exiles, actual-result counters/links, whole-batch exact-object reservation and complete projected graveyard inventory",
+    "retained immutable linked activations and copiable0/0 exceptions; pre-event graveyard exile lookback and shared projected power-up reduction",
+    "named activation increases, immutable post-cost mana output, nested payment identity/continuations and exact external sacrifice/exert rollback receipts",
+    "acquired nonmana independent usage and exact counter-cost receipts; temporary acquired Embalm graveyard activations with white/Zombie/no-cost copy exceptions"
   ],
   "remaining_engine_blockers": [
-    "deferred initial funding of costed mana with frozen source/grant identity and exact actual/projected completion",
-    "resolve characteristic-dependent mana output after costs through shared cold receipt/late color choice",
-    "temporary acquired Embalm graveyard activation and copiable token exceptions",
-    "two independent nonauthor scoped reviews covering every final engine change, plus broad existing regressions",
-    "final schema199 integration/previous198 trace equality and final cache warm before cards"
+    "Complete deferred-funding performance repair and remove duplicate borrowed mana actions, with independent source review before a shared build",
+    "Classify and guard the41 genuinely new costly late-mana action routes in prior198 trace compatibility; repair the separate Territory Forge duplicate-action regression",
+    "Run one assembled focused/broad native checkpoint, finish schema199 trace evidence and obtain both independent engine review decisions",
+    "Regenerate linkage and warm the stable guarded test cache before ordinary card authorship"
   ],
   "all_authoring_reports": "<cache>/rustmage-authoring/aetherdrift/ (per-run immutable logs/results; reusable target kept separately)",
   "in_progress_checkpoints": [
@@ -794,5 +795,6 @@
     },
     "report": "<cache>/rustmage-authoring/aetherdrift/review-checkpoint-20261101-213600/result.json",
     "peak_memory_gib": 3.1
-  }
+  },
+  "validation_policy": "Per explicit user steering: assemble all remaining engine features/fixes and source-review corrections before the next shared guarded build; then run the combined checkpoint. No intermediate engine-test builds while this batch is authored."
 }
