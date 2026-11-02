@@ -1,4 +1,4 @@
-// Cycling's X declaration is copied into its independent discard-trigger packet.
+// Full Oracle and pinned XMage reviewed; typed costs, events and keyword contracts.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(3, 3),
     keywords: Keywords::REACH,
