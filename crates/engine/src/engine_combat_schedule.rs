@@ -12,6 +12,37 @@ pub struct MainPhaseCombatView {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn require_created_attacks_this_combat(&mut self, created: &[ObjectRef]) {
+        if !matches!(
+            self.state.step,
+            Step::BeginCombat
+                | Step::Attackers
+                | Step::Blockers
+                | Step::FirstStrikeDamage
+                | Step::CombatDamage
+                | Step::EndCombat
+        ) {
+            return;
+        }
+        let actual: Vec<_> = created
+            .iter()
+            .copied()
+            .filter(|r| self.on_battlefield(r.card) && self.object_ref(r.card) == *r)
+            .collect();
+        if actual.is_empty() {
+            return;
+        }
+        let rows = &mut self
+            .state
+            .combat_rules
+            .get_or_insert_with(Default::default)
+            .must_attack_this_combat;
+        for object in actual {
+            if !rows.contains(&object) {
+                rows.push(object);
+            }
+        }
+    }
     pub(super) fn add_combats_after_current_main(&mut self, count: u16) {
         if count == 0 {
             return;

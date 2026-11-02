@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "set": "DFT",
+  "phase": "engine only; no card admissions",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "sources": [
+    {
+      "path": "Mage.Sets/src/mage/cards/h/HowlsquadHeavy.java",
+      "sha256": "c1138ba0f3556938e22f75aceeff147a178e7bde06589feecad7ca7ef72bb787",
+      "read": "complete body"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/AttacksIfAbleTargetEffect.java",
+      "sha256": "cbeb390017cf463b4246fc1852db39be1dafa655db8496cdb23a6555c441da7f",
+      "read": "complete body"
+    },
+    {
+      "path": "Mage/src/main/java/mage/game/permanent/token/GoblinToken.java",
+      "sha256": "16e001f88ad007f0445ce679eea218189f6c226eced65a5144fe17dfe7a72131",
+      "read": "complete body"
+    }
+  ],
+  "oracle": "At the beginning of combat on your turn, create a 1/1 red Goblin creature token. That token attacks this combat if able.",
+  "independent_clauses": "Other Goblins you control have haste is a live static ability of the source, and must not become a permanent token keyword. The resolved attack requirement is not an ability granted to the token and persists after source/recipient ability removal.",
+  "architecture": "Existing token replacement/completion pipeline captures exact actual created incarnations; copied creation waits for entry completion before recording. Sparse CombatRulesState rows clear after EndCombat and at cleanup. Existing mandatory-attack legality counts only possible untaxed attacks and exact recipients, de-duplicating existing requirement sources.",
+  "tests": [
+    "live haste and exact mandatory attacker in both seats",
+    "source departure before/after creation leaves requirement but loses haste; sickness prevents attack",
+    "token doubling binds every actual result; next combat has no requirement",
+    "restriction survives removal and never binds a reused token slot",
+    "tapping or optional attack tax permits zero declaration",
+    "owned raw/index/restore and source-independent branch histories"
+  ],
+  "target": "tests/dft_combat_tokens.rs",
+  "remaining": "Ordinary Howlsquad Heavy must wire all other printed obligations, including engines, max-speed Goblin-count restricted activation, and provenance. No inherited or new DFT admission is certified by this fixture."
+}

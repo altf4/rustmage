@@ -169,6 +169,15 @@ impl Game {
         if self.on_battlefield(id)
             && self
                 .state
+                .combat_rules
+                .as_ref()
+                .is_some_and(|rules| rules.must_attack_this_combat.contains(&self.object_ref(id)))
+        {
+            return true;
+        }
+        if self.on_battlefield(id)
+            && self
+                .state
                 .self_granted_abilities
                 .as_ref()
                 .is_some_and(|rows| {
@@ -258,20 +267,39 @@ impl Game {
             .self_granted_abilities
             .as_deref()
             .map_or(&[][..], |rows| rows.as_slice());
-        self.state.static_sources.iter().copied().chain(
-            grants
-                .iter()
-                .enumerate()
-                .filter(move |(index, row)| {
-                    row.kind == SelfGrantedAbilityKind::AttacksEachCombat
-                        && !self.state.static_sources.contains(&row.recipient.card)
-                        && !grants[..*index].iter().any(|prior| {
-                            prior.kind == SelfGrantedAbilityKind::AttacksEachCombat
-                                && prior.recipient.card == row.recipient.card
-                        })
-                })
-                .map(|(_, row)| row.recipient.card),
-        )
+        self.state
+            .static_sources
+            .iter()
+            .copied()
+            .chain(
+                grants
+                    .iter()
+                    .enumerate()
+                    .filter(move |(index, row)| {
+                        row.kind == SelfGrantedAbilityKind::AttacksEachCombat
+                            && !self.state.static_sources.contains(&row.recipient.card)
+                            && !grants[..*index].iter().any(|prior| {
+                                prior.kind == SelfGrantedAbilityKind::AttacksEachCombat
+                                    && prior.recipient.card == row.recipient.card
+                            })
+                    })
+                    .map(|(_, row)| row.recipient.card),
+            )
+            .chain(
+                self.state
+                    .combat_rules
+                    .as_ref()
+                    .into_iter()
+                    .flat_map(|rules| &rules.must_attack_this_combat)
+                    .filter(move |row| {
+                        !self.state.static_sources.contains(&row.card)
+                            && !grants.iter().any(|grant| {
+                                grant.kind == SelfGrantedAbilityKind::AttacksEachCombat
+                                    && grant.recipient.card == row.card
+                            })
+                    })
+                    .map(|row| row.card),
+            )
     }
     /// Maximum number of simultaneously satisfiable attack requirements. Unlimited
     /// defenders need no matching; limited planeswalkers are capacity-one slots.

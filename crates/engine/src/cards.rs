@@ -2754,6 +2754,11 @@ pub enum Instruction {
     CreateTokenThenCounterOtherWizards {
         token: Card,
     },
+    /// Actual created tokens must attack only the current combat if able.
+    CreateTokensAttackThisCombat {
+        token: Card,
+        amount: u16,
+    },
     CreateTokens {
         token: Card,
         amount: u16,

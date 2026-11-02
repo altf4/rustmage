@@ -226,6 +226,7 @@ pub(super) struct RoleReflexiveCompletion {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) enum TokenCompletion {
     None,
+    AttackThisCombat,
     CounterOtherWizards,
     Counters {
         kind: CounterKind,
@@ -307,6 +308,7 @@ enum Event {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Work {
+    CreatedAttackThisCombat(Vec<ObjectRef>),
     AmassSubtype {
         source: ObjectRef,
         recipient: ObjectRef,
@@ -393,7 +395,8 @@ impl ReplacementState {
                 .work
                 .iter()
                 .map(|w| match w {
-                    Work::AnimateCreated { created, .. } => {
+                    Work::CreatedAttackThisCombat(created)
+                    | Work::AnimateCreated { created, .. } => {
                         created.len() * std::mem::size_of::<ObjectRef>()
                     }
                     Work::Damage(b) => {
@@ -2191,6 +2194,10 @@ impl Game {
             }
             if state.active.is_none() {
                 match state.work.pop_front() {
+                    Some(Work::CreatedAttackThisCombat(created)) => {
+                        self.require_created_attacks_this_combat(&created);
+                        continue;
+                    }
                     Some(Work::AnimateCreated { created, spec }) => {
                         self.animate_created_noncreatures(&created, spec);
                         continue;
@@ -2604,6 +2611,11 @@ impl Game {
                                     &batch.recipes,
                                     temporary,
                                 );
+                                if matches!(batch.completion, TokenCompletion::AttackThisCombat) {
+                                    state
+                                        .work
+                                        .push_front(Work::CreatedAttackThisCombat(created.clone()));
+                                }
                                 if let TokenCompletion::AnimateNoncreatures(spec) = batch.completion
                                 {
                                     state.work.push_front(Work::AnimateCreated {
@@ -2647,6 +2659,7 @@ impl Game {
                                 let capture = matches!(
                                     batch.completion,
                                     TokenCompletion::CounterOtherWizards
+                                        | TokenCompletion::AttackThisCombat
                                         | TokenCompletion::JobAttach(_)
                                         | TokenCompletion::AttachCreatedTo(_)
                                         | TokenCompletion::Counters { .. }
@@ -2684,6 +2697,9 @@ impl Game {
                                         capture,
                                     ),
                                 };
+                                if matches!(batch.completion, TokenCompletion::AttackThisCombat) {
+                                    self.require_created_attacks_this_combat(&created);
+                                }
                                 if matches!(batch.completion, TokenCompletion::CounterOtherWizards)
                                 {
                                     let others = self

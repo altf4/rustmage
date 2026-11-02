@@ -3293,6 +3293,8 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub turn_schedule: Option<TurnScheduleView>,
     pub must_be_blocked: Vec<ObjectRef>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub must_attack_this_combat: Vec<ObjectRef>,
     pub combat_damaged_players: Vec<combat_allocations::CombatDamagePlayerView>,
     pub animations: Vec<AnimationView>,
     pub temporary_controls: Vec<TemporaryControlView>,
@@ -9285,6 +9287,9 @@ impl Game {
             }
             Step::EndCombat => {
                 self.state.declared_attack_history = None;
+                if let Some(rules) = &mut self.state.combat_rules {
+                    rules.must_attack_this_combat.clear();
+                }
                 self.state.attackers.clear();
                 self.state.blocking.clear();
                 self.state.attack_declared = false;
@@ -9321,6 +9326,7 @@ impl Game {
         self.state.delayed_target_events = None;
         if let Some(rules) = &mut self.state.combat_rules {
             rules.must_be_blocked.clear();
+            rules.must_attack_this_combat.clear();
             rules.additional_combats = 0;
             rules.after_main = None;
             rules.begin_combat_this_turn = None;
@@ -10067,6 +10073,10 @@ impl Game {
                 .as_ref()
                 .and_then(|r| r.begin_combat_this_turn.as_deref().cloned()),
             turn_schedule: s.turn_schedule.as_deref().cloned(),
+            must_attack_this_combat: s
+                .combat_rules
+                .as_ref()
+                .map_or_else(Vec::new, |rules| rules.must_attack_this_combat.clone()),
             must_be_blocked: s
                 .combat_rules
                 .as_ref()

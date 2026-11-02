@@ -6518,6 +6518,15 @@ impl Game {
                         replacements::TokenCompletion::CounterOtherWizards,
                     );
                 }
+                Instruction::CreateTokensAttackThisCombat { token, amount } => {
+                    self.stage_token_creation(
+                        item.controller,
+                        token,
+                        u128::from(amount),
+                        false,
+                        replacements::TokenCompletion::AttackThisCombat,
+                    );
+                }
                 Instruction::CreateTokens {
                     token,
                     amount,

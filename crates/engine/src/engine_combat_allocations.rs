@@ -18,6 +18,7 @@ pub(super) struct CombatRulesState {
     )]
     pub begin_combat_this_turn: Option<Box<Vec<SpellView>>>,
     pub must_be_blocked: Vec<ObjectRef>,
+    pub must_attack_this_combat: Vec<ObjectRef>,
     pub damaged_players: Vec<CombatDamagePlayerView>,
     excess: Option<ExcessDamage>,
 }
@@ -42,7 +43,8 @@ impl CombatRulesState {
                         .map(|row| std::mem::size_of::<SpellView>() + row.owned_bytes())
                         .sum::<usize>()
             })
-            + self.must_be_blocked.len() * std::mem::size_of::<ObjectRef>()
+            + (self.must_be_blocked.len() + self.must_attack_this_combat.len())
+                * std::mem::size_of::<ObjectRef>()
             + self.damaged_players.len() * std::mem::size_of::<CombatDamagePlayerView>()
     }
 }
