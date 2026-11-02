@@ -114,7 +114,115 @@
       "cargo_engine_set_test_build_reported": "1m 55s",
       "reported_scenario_seconds": 0.06,
       "resource_report": "<cache>/rustmage-build-reports/f741073dac1c4bb4bd493d3f2ac05bf0.json",
-      "remaining_failure": "Deferred indexed mana announcement absent inside a parent payment window; shared constructor/continuation fix now integrated, scenario verification pending."
+      "remaining_failure": "Resolved and independently exercised in checkpoint61a720af; retained as historical failure evidence."
+    },
+    {
+      "revision": "61a720af3e5201604c95deb0692438b28df4bc4c",
+      "status": "passed; final tax/copy engine features and full-engine reviews still pending",
+      "production_check": "passed",
+      "targets": {
+        "dft_attack_groups": {
+          "passed": 8,
+          "failed": 0
+        },
+        "dft_cast_permissions_engine": {
+          "passed": 9,
+          "failed": 0
+        },
+        "dft_combat_schedule": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_combat_tokens": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_control_duration": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_crew": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_deferred_mana": {
+          "passed": 4,
+          "failed": 0
+        },
+        "dft_entry_counters": {
+          "passed": 7,
+          "failed": 0
+        },
+        "dft_entry_results": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_exert_engine": {
+          "passed": 9,
+          "failed": 0
+        },
+        "dft_exhaust_engine": {
+          "passed": 11,
+          "failed": 0
+        },
+        "dft_fixture_rules": {
+          "passed": 2,
+          "failed": 0
+        },
+        "dft_group_engine": {
+          "passed": 4,
+          "failed": 0
+        },
+        "dft_named_search": {
+          "passed": 8,
+          "failed": 0
+        },
+        "dft_outcomes_engine": {
+          "passed": 9,
+          "failed": 0
+        },
+        "dft_private_hand": {
+          "passed": 6,
+          "failed": 0
+        },
+        "dft_quantities_engine": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_queries": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_speed_engine": {
+          "passed": 10,
+          "failed": 0
+        },
+        "dft_speed_grants": {
+          "passed": 13,
+          "failed": 0
+        },
+        "dft_static_types": {
+          "passed": 13,
+          "failed": 0
+        },
+        "dft_trigger_facts_engine": {
+          "passed": 11,
+          "failed": 0
+        },
+        "dft_variable_costs_engine": {
+          "passed": 11,
+          "failed": 0
+        }
+      },
+      "passed": 196,
+      "failed": 0,
+      "ignored": 0,
+      "report": "<cache>/rustmage-authoring/aetherdrift/focused-20261101-191659/result.json",
+      "command_seconds": 117.82443391501147,
+      "production_check_seconds": 5.628672553008073,
+      "cargo_engine_set_test_build_reported": "1m 57s",
+      "resource_report": "<cache>/rustmage-build-reports/79c3368fda1b44569d1217cb9c249f0b.json",
+      "memory_peak_bytes": 1817440256
     }
   ],
   "earlier_focused_runs": [
@@ -141,7 +249,7 @@
   ],
   "resource_policy": "All Cargo uses resource_guard; one shared build slot,6GiB cgroup, serial tests; no OOM probe or unmanaged builds",
   "pending": "Finish all engine blockers and focused/shared contract proofs plus independent reviews before ordinary DFT definitions. Then complete card behavior/provenance, inherited119 verification, legal set-only complete games/replay/owned search, full release acceptance, README counts, one completed-set PR and two independent nonauthor reviews.",
-  "throughput": "0 new whole cards admitted during engine phase. Latest combined frozen run 167/168: 115.80s command; Cargo engine/set/test build reported 1m 55s. Test-only outcome9/9 took0.87s command/0.80s build. No set simulation benchmark or all-Standard performance claim.",
+  "throughput": "0 new whole cards admitted during engine phase. Latest combined frozen run196/196:117.82s command; Cargo engine/set/test build reported1m57s; production check5.63s; cgroup peak1.69GiB. Test-only Howlsquad6/6 took1.17s command/1.11s build. No set simulation benchmark or all-Standard performance claim.",
   "implemented_engine_clusters_pending_final_review": [
     "speed scalars/grants/replacements and exact mana quality",
     "crew/saddle participant events, toughness and direct designation",
@@ -158,15 +266,15 @@
     "source-controlled duration and combat restriction with projected layer-two dependencies",
     "main-relative extra combats and repeated source-independent combat packets",
     "all/nonland name choices and capped private mixed-zone named exile search",
-    "deferred mana headers, current-combat token requirement and private chosen-card discard/draw (production check passed; scenarios pending)",
-    "independent hidden exile/play rights and route-specific graveyard costs (just integrated; verification pending)"
+    "deferred mana headers and exact nested child continuation; current-combat token requirement with exact live-incarnation de-duplication; private chosen-card discard/draw",
+    "independent hidden exile/play rights and route-specific graveyard costs; paid additional-cost reservations released before mana funding"
   ],
   "remaining_engine_blockers": [
     "full named activation tax across ordinary/borrowed/granted/mana/crew/saddle routes",
     "as-entry artifact/creature copying and fresh copied entry-choice origins",
     "Mimeoplasm successful linked pre-entry exile/counters and retained permanent0/0 copying",
     "temporary acquired embalm graveyard activation and copiable token exceptions",
-    "remaining focused failures/new-feature checks; independent whole-engine reviews and broad existing regressions",
+    "independent whole-engine reviews and broad existing regressions",
     "final wire schema integration and implementation/simulation performance evidence"
   ],
   "all_authoring_reports": "<cache>/rustmage-authoring/aetherdrift/ (per-run immutable logs/results; reusable target kept separately)"
