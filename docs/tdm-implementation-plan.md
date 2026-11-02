@@ -18,7 +18,7 @@ Complete whole-set source and dependency audit before changing behavior. Three
 disjoint audit partitions cover all 275 resolved identities; the separate
 [Cori-Steel Cutter audit](tdm-cori-steel-audit.json) covers the final identity.
 The [complete dependency ledger](tdm-engine-audit.json) reconciles all 276 source
-audits and records 77 dependency/proof groups, including duplicate group aliases.
+audits and records 79 dependency/proof groups, including duplicate group aliases.
 Shared engine implementation may now begin; all groups remain open. Do not begin card authorship until all shared dependencies have
 focused rules/contract evidence and independent reviews.
 
@@ -59,6 +59,9 @@ completed-set PR; obtain two independent nonauthor final-head reviews.
 
 Initial source-pin verification: 5,488 definitions / 2,512 source blobs verified;
 generated-link consistency and authenticated frozen membership checks pass.
-No new complete cards, Cargo builds, focused rule runs, full acceptance runs or
-simulation throughput measurements have been produced yet. Source audit is not
-set acceptance. The user goal remains active.
+No new complete cards, full acceptance runs or simulation throughput measurements
+have been produced yet. The [fixed Endure evidence](tdm-endure-evidence.json)
+records three focused runs: the negative baseline, the engine fix with one fixture
+error, and a final five-of-five pass. Independent committed-source reviews remain
+pending. Source audit and focused rules evidence are not set acceptance. The user
+goal remains active.

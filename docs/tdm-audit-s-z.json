@@ -12,7 +12,7 @@
     "candidate_admitted": 47,
     "candidate_gated": 45,
     "identities_with_core_dependency_or_semantics_review": 26,
-    "core_dependency_families": 26,
+    "core_dependency_families": 28,
     "tests_executed": 0,
     "complete_set_acceptance": false
   },
@@ -93,8 +93,9 @@
       "description": "Granted suspend on exact exiled physical card: time counters, owner-upkeep trigger, last-counter trigger, immediate optional free cast, permanent haste until control loss.",
       "baseline_evidence": [
         "crates/engine/src/engine_stack_copies.rs",
-        "crates/engine/src/engine_resolution_casts.rs",
-        "No suspend or time-counter lifecycle in baseline"
+        "crates/engine/src/engine_cast_origins.rs::ResolutionFreeCasts",
+        "crates/engine/src/cards.rs::CounterKind::Time already exists",
+        "No granted suspend, owner-upkeep removal or last-time-counter trigger lifecycle in baseline"
       ],
       "required_contract_outcomes": [
         "Last-counter removed by any effect triggers correctly",
@@ -448,6 +449,39 @@
       "priority": 2,
       "cards": [
         "Yathan Roadwatcher"
+      ]
+    },
+    "TEMPORARY_ADDITIVE_SUBTYPE": {
+      "description": "Add temporary additive creature subtype(s) to exact subject without replacing existing types or setting base stats; expire at cleanup.",
+      "baseline_evidence": [
+        "crates/engine/src/cards.rs::AddCreatureTypes documents permanent additive subtypes",
+        "crates/engine/src/engine_subtypes.rs::add_creature_types stores CreatureTypesEffectView without expiry",
+        "crates/engine/src/engine_characteristic_layers.rs::AnimationCreatureTypes::Named is subtype replacement"
+      ],
+      "required_contract_outcomes": [
+        "Sarkhan remains Human Druid while adding Dragon until cleanup",
+        "Later type-changing effects obey timestamps/dependencies; unrelated granted creature types do not expire",
+        "Source departure/reentry does not carry old grant; real and funding characteristic queries agree"
+      ],
+      "priority": 1,
+      "cards": [
+        "Sarkhan, Dragon Ascendant"
+      ]
+    },
+    "CAPTURED_COPY_WITHOUT_RETARGET": {
+      "description": "Copy the captured triggering spell with its existing targets and shares, without an optional retarget phase. Taigam does not permit choosing new targets.",
+      "baseline_evidence": [
+        "crates/engine/src/engine_stack_copies.rs::copy_captured_spell always calls advance_copy_targets",
+        "crates/engine/src/engine_stack_copies.rs::copy_target_spell supports retarget:false but reads targeted live stack item rather than captured cast packet"
+      ],
+      "required_contract_outcomes": [
+        "Taigam copy has identical target/mode/X/allocation and paid-cost facts",
+        "No ChangeCopyTarget action offered by Taigam copy",
+        "Original countered or otherwise departed still copied from captured facts; copied targets may be illegal at resolution"
+      ],
+      "priority": 1,
+      "cards": [
+        "Taigam, Master Opportunist"
       ]
     }
   },
@@ -1049,11 +1083,13 @@
       ],
       "mapped_typed_support": [
         "SubtypeEntersYou(\"Dragon\")",
-        "PutCounters Source PlusOne1; AddCreatureTypes Source Dragon; GrantKeywords Source FLYING until cleanup",
+        "PutCounters Source PlusOne1 and GrantKeywords Source FLYING until cleanup",
+        "AddCreatureTypes exists but is PERMANENT additive; AnimationSpec Named replaces creature types",
         "Behold additional-cost machinery and search-specific behold interaction exist"
       ],
       "missing_core_dependencies": [
-        "BEHOLD_RESOLUTION"
+        "BEHOLD_RESOLUTION",
+        "TEMPORARY_ADDITIVE_SUBTYPE"
       ],
       "candidate_focused_outcomes": [
         "ETB reveals hand Dragon or chooses controlled Dragon or declines; creates one Treasure only after behold",
@@ -2511,7 +2547,7 @@
       ],
       "mapped_typed_support": [
         "Self upkeep Mill3",
-        "StatValue Count zone Library available through CountZone? needs inspected query extension",
+        "StepValue and CountZone have no Library quantity; explicit empty-library condition needed",
         "Untargeted ordered graveyard-to-top choice not represented"
       ],
       "missing_core_dependencies": [
@@ -2523,7 +2559,7 @@
         "Recovery still happens if source already departed; selection/order hidden except public graveyard changes, exact stale exclusions",
         "Entry/mill replacement, empty graveyard and independent branch/restore behavior"
       ],
-      "audit_notes": "Need verify CountZone enumeration supports Library; do not assume broad CountFilter supports arbitrary zones. Current StepValue lacks Library.",
+      "audit_notes": "CountZone only Battlefield/Graveyard/Exile and StepValue has no Library. Need explicit typed empty-library condition plus ordered graveyard recovery.",
       "acceptance": "pending independent outcome tests and final complete-set acceptance; no builds run during audit"
     },
     {
@@ -3492,11 +3528,13 @@
         }
       ],
       "mapped_typed_support": [
-        "Flurry SpellCast ordinal2; CopyCastSpell false preserves permanent or instant/sorcery spell",
+        "Flurry SpellCast ordinal2 and captured copy event preserve permanent or instant/sorcery spell",
+        "CopyCastSpell false currently invokes copy_captured_spell, which always calls advance_copy_targets and offers retarget",
         "Exact exile moves and source-independent pending free casts exist"
       ],
       "missing_core_dependencies": [
-        "SUSPEND"
+        "SUSPEND",
+        "CAPTURED_COPY_WITHOUT_RETARGET"
       ],
       "candidate_focused_outcomes": [
         "Second spell each turn copied with same modes/X/targets/shares, no optional retarget, even if original leaves stack first",
@@ -5436,7 +5474,7 @@
         }
       ],
       "mapped_typed_support": [
-        "Effect::Modal; targeted opponent player with GrowPlayerCreatures -1/-1 if available",
+        "Effect::Modal; targeted opponent player + GrowPlayerCreatures { players:PlayerSet::Targeted,power:-1,toughness:-1 }",
         "Own grave0..2 Creature targets ReturnToHand"
       ],
       "missing_core_dependencies": [],
@@ -5445,7 +5483,7 @@
         "Second returns0/1/2 exact creature cards to owner hand; partial targets independent",
         "Countered/all-illegal first mode no effect; target opponent hexproof; mode-specific target legality"
       ],
-      "audit_notes": "Verify chosen-player group pump helper exists; if absent add targeted-player creature modifier rather than hardcoding PlayerSet::Opponent. Two-player engine makes current Opponent value observationally equivalent only while chosen target survives.",
+      "audit_notes": "Both modes have existing correct typed primitives; no new shared engine dependency required.",
       "acceptance": "pending independent outcome tests and final complete-set acceptance; no builds run during audit"
     },
     {
@@ -6633,6 +6671,31 @@
     {
       "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
       "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e",
+      "full_implementation_read": true
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/StormAbility.java",
+      "sha256": "50780a61df4fcc4f08d1055021373554d896532c977990f209edf1dd3606c1fd",
+      "full_implementation_read": true
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/CastSecondSpellTriggeredAbility.java",
+      "sha256": "a4e91db65304a2f0a017d34eb680d683186071207b0002b036e94fcdc773ddce",
+      "full_implementation_read": true
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainSuspendEffect.java",
+      "sha256": "f353fcbff204368f6250b56ced404b789a6c0dc4094c4bea1a86fa7048f1abbf",
+      "full_implementation_read": true
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/CantBeSacrificedSourceEffect.java",
+      "sha256": "d79fde524805cc269d9af69967a3201a3632308fa20117662295f57209f8a522",
+      "full_implementation_read": true
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/IsStepCondition.java",
+      "sha256": "b3f0092f2f07317847908a76c367c0f02462a8e8b284cebc02a1673b15c29cc4",
       "full_implementation_read": true
     }
   ],

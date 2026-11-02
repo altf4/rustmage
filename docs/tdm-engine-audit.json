@@ -668,6 +668,24 @@
       "status": "pending shared-rule implementation and acceptance"
     },
     {
+      "id": "C:TEMPORARY_ADDITIVE_SUBTYPE",
+      "description": "Add temporary additive creature subtype(s) to exact subject without replacing existing types or setting base stats; expire at cleanup.",
+      "required_change": "Add temporary additive creature subtype(s) to exact subject without replacing existing types or setting base stats; expire at cleanup.",
+      "cards": [
+        "Sarkhan, Dragon Ascendant"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
+      "id": "C:CAPTURED_COPY_WITHOUT_RETARGET",
+      "description": "Copy the captured triggering spell with its existing targets and shares, without an optional retarget phase. Taigam does not permit choosing new targets.",
+      "required_change": "Copy the captured triggering spell with its existing targets and shares, without an optional retarget phase. Taigam does not permit choosing new targets.",
+      "cards": [
+        "Taigam, Master Opportunist"
+      ],
+      "status": "pending shared-rule implementation and acceptance"
+    },
+    {
       "id": "D:OPTIONAL_CREATED_TOKEN_ATTACHMENT",
       "description": "Optional exact-created-token Equipment attachment",
       "required_change": "Generalize creation completion to preserve exact created-token candidates and offer optional decline, while preserving mandatory JobAttach behavior. Existing equipment legality checks must govern attachment without targeting restrictions.",
@@ -695,9 +713,20 @@
   },
   "measurements": {
     "new_complete_cards": 0,
-    "cargo_builds": 0,
-    "focused_runs": 0,
+    "cargo_builds": 3,
+    "focused_runs": 3,
     "full_validation_runs": 0,
-    "simulation_benchmarks": []
+    "simulation_benchmarks": [],
+    "negative_regression_cases": 5,
+    "latest_focused_cases_passed": 5
+  },
+  "active_checkpoints": {
+    "fixed_endure": {
+      "status": "five focused groups pass; independent committed-source reviews pending",
+      "evidence": "docs/tdm-endure-evidence.json"
+    },
+    "entry_modes": "isolated engine authoring in progress",
+    "counter_world_queries": "isolated engine authoring in progress",
+    "granted_cast_routes": "isolated engine authoring in progress"
   }
 }

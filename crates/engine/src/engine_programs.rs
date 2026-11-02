@@ -6322,32 +6322,8 @@ impl Game {
                     return;
                 }
                 Instruction::Endure { amount, token } => {
-                    if amount != 0 {
-                        if self.on_battlefield(
-                            item.source
-                                .expect("instruction requires an object source")
-                                .id,
-                        ) && self.object_ref(
-                            item.source
-                                .expect("instruction requires an object source")
-                                .id,
-                        ) == item
-                            .source
-                            .expect("instruction requires an object source")
-                            .object
-                        {
-                            self.state.pending = Pending::Endure {
-                                player: item.controller,
-                                source: item
-                                    .source
-                                    .expect("instruction requires an object source")
-                                    .object,
-                                amount,
-                                token,
-                            };
-                            return;
-                        }
-                        self.create_tokens(item.controller, token, 1, false);
+                    if self.start_fixed_endure(&item, amount, token) {
+                        return;
                     }
                 }
                 Instruction::CreateTokensWithTemporaryKeywords {
