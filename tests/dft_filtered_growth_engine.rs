@@ -484,20 +484,25 @@ fn borrowed_and_acquired_programs_freeze_actual_recipient_quantities_not_donor_s
 }
 
 const ONE_COLORLESS: Mana = [0, 0, 0, 0, 0, 1];
+const TWO_COLORLESS: Mana = [0, 0, 0, 0, 0, 2];
 const NESTED_TOUGHNESS: CardRules = CardRules {
     effect: Effect::Creature(2, 3),
     activated: &[
         ActivatedAbility {
             cost: ActivationCost {
-                generic: 1,
+                generic: 2,
                 mana_component: true,
                 ..ActivationCost::ZERO
             },
             ..QUANTITY_ABILITY
         },
         ActivatedAbility {
-            cost: COUNTER_SACRIFICE_COST,
-            program: &[Instruction::AddMana(ManaProduction::Fixed(ONE_COLORLESS))],
+            cost: ActivationCost {
+                generic: 1,
+                mana_component: true,
+                ..COUNTER_SACRIFICE_COST
+            },
+            program: &[Instruction::AddMana(ManaProduction::Fixed(TWO_COLORLESS))],
             ..QUANTITY_ABILITY
         },
     ],
@@ -521,7 +526,7 @@ fn suspended_parent_quantities_refresh_after_nested_mana_counter_cost_and_surviv
         let source = put(&mut parent, Player::P0, "Grizzly Bears", Zone::Battlefield);
         let recipient = put(&mut parent, Player::P1, "Hill Giant", Zone::Battlefield);
         parent.add_counter(source, CounterKind::PlusOne, 2);
-        parent.state.players[0].mana = [0; 6];
+        parent.state.players[0].mana = ONE_COLORLESS;
         start(&mut parent, source);
         act(
             &mut parent,
@@ -529,7 +534,7 @@ fn suspended_parent_quantities_refresh_after_nested_mana_counter_cost_and_surviv
                 card: source,
                 ability: 1,
                 counter_payment: Counters::of(CounterKind::PlusOne, 1),
-                production: ONE_COLORLESS,
+                production: TWO_COLORLESS,
             },
         );
         assert_eq!(

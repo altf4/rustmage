@@ -73,7 +73,7 @@
       },
       {
         "test": "suspended_parent_quantities_refresh_after_nested_mana_counter_cost_and_survive_owned_restore",
-        "outcome": "Parent costs one generic; another ability on its source removes one +1 counter, sacrifices that source and adds one colorless. Suspended parent must use last toughness4 or remaining counter1 after the nested payment. Raw/index/independent owned children and restore produce identical outcomes after parent disposal."
+        "outcome": "Parent costs two generic with one initial colorless; another ability on its source costs one generic, removes one +1 counter, sacrifices that source and adds two colorless. Suspended parent must use last toughness4 or remaining counter1 after the nested payment. Raw/index/independent owned children and restore produce identical outcomes after parent disposal. A mana cost is deliberate: a zero-mana child instead uses the immediate ActivateMana route."
       },
       {
         "test": "activated_equipment_count_is_frozen_before_source_sacrifice_detaches_equipment",
