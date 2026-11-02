@@ -257,7 +257,7 @@ fn combat_to_end(g: &mut Game) {
 fn gonti_rules() -> &'static CardRules {
     let program = Box::leak(Box::new([Instruction::CreateTokensFor {
         players: PlayerSet::CastingPlayer,
-        token: named("Treasure Token"),
+        token: named("@token/b60f6cd3b44b22bd289fe4e2"),
         amount: 1,
         tapped: false,
     }]));

@@ -338,7 +338,7 @@ fn lotus_source_tap_self_sacrifice_tokens_and_redirected_sacrifice_freeze_actual
         let mut g = scenario(p);
         let source = put(&mut g, p, "Clamorous Ironclad", Zone::Battlefield);
         let token = g.state.objects.len() as CardId;
-        g.create_tokens(p, named("Treasure Token"), 1, false);
+        g.create_tokens(p, named("@token/b60f6cd3b44b22bd289fe4e2"), 1, false);
         assert!(g.object_view(token).is_token());
         put(&mut g, p, "Rest in Peace", Zone::Battlefield);
         g.state.players[p.index()].mana = [0; 6];
