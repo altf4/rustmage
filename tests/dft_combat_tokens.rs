@@ -74,6 +74,7 @@ fn heavy() -> &'static CardRules {
 fn begin(g: &mut Game) {
     g.begin_step(Step::BeginCombat);
     g.give_priority();
+    act(g, Action::Pass); // Publish queued beginning-of-combat triggers.
     settle(g);
 }
 fn attackers(g: &mut Game) {
@@ -151,6 +152,7 @@ fn source_departure_before_or_after_creation_leaves_requirement_but_loses_live_h
         let source = put(&mut g, Player::P0, "Goblin Piker", Zone::Battlefield);
         g.begin_step(Step::BeginCombat);
         g.give_priority();
+        act(&mut g, Action::Pass);
         if before {
             g.move_object(source, Zone::Graveyard);
         }
