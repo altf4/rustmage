@@ -361,14 +361,7 @@ impl Game {
         let mut item = self.activation_packet(actor, descriptor.source.card, descriptor.ability);
         item.attachment_trigger = None;
         item.set_source_definition(descriptor.definition);
-        item.source_counter_lki =
-            card_quantities::counter_quantity_facts(descriptor.rules().program, |kind| {
-                self.source_counter_quantity_live(
-                    item.source.expect("activated ability has source").object,
-                    kind,
-                )
-                .expect("live inherited source")
-            });
+        self.bind_activation_source_quantities(&mut item, descriptor.rules().program);
         item.source_copy_recipe = Some(Box::new(
             self.copiable_recipe(item.source.expect("activated ability has source").object),
         ));

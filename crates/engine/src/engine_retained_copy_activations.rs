@@ -140,8 +140,10 @@ impl Game {
         item.set_source_definition(template.definition);
         item.source_ability_origin = origin;
         item.source_transform = None;
-        item.source_counter_lki = None;
-        item.source_quantity_lki = None;
+        self.bind_activation_source_quantities(
+            &mut item,
+            template.definition.activation(template.ability).program,
+        );
         self.open_payment_announcement(item, Counters::default(), None);
     }
     pub(super) fn copy_source_from_linked_exile(&mut self, item: &SpellView, base: (i16, i16)) {

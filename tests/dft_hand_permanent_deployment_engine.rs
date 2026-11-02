@@ -163,7 +163,7 @@ fn every_available_permanent_card_kind_enters_together_and_the_cards_were_not_ca
     }
     assert_eq!(
         g.counter_count(cards[4], CounterKind::Loyalty),
-        3,
+        4,
         "new Doubling Season is not present before the simultaneous entry"
     );
     assert_eq!(

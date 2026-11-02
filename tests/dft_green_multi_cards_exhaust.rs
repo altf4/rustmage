@@ -343,6 +343,9 @@ fn fang_guardian_flashes_in_and_targets_only_another_controlled_creature_or_vehi
         assert_eq!(stats(&g, fang), (4, 2));
         assert!(g.keywords(fang).contains(Keywords::FLASH));
         if vehicle {
+            assert_eq!(g.actor(), Some(Player::P1));
+            act(&mut g, Action::Pass);
+            assert_eq!(g.actor(), Some(Player::P0));
             crew(&mut g, recipient, 1, &[fang]);
             assert_eq!(stats(&g, recipient), (7, 7));
         } else {

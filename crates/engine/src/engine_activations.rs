@@ -871,7 +871,7 @@ impl Game {
     }
     /// An uncommitted header for legality/funding only; it never enters an event queue.
     pub(super) fn activation_packet(&self, actor: Player, card: CardId, ability: u16) -> SpellView {
-        SpellView {
+        let mut item = SpellView {
             source: Some(StackSourceView {
                 id: card,
                 object: self.object_ref(card),
@@ -956,16 +956,7 @@ impl Game {
             craft_materials: None,
             paid_additional_cost: None,
             exiled_trigger_cards: None,
-            source_counter_lki: self.state.objects[card as usize]
-                .card
-                .activations()
-                .get(usize::from(ability))
-                .and_then(|ability| {
-                    card_quantities::counter_quantity_facts(ability.program, |kind| {
-                        self.source_counter_quantity_live(self.object_ref(card), kind)
-                            .expect("live activated source")
-                    })
-                }),
+            source_counter_lki: None,
             source_quantity_lki: None,
             event_player: None,
             event_object: None,
@@ -978,7 +969,15 @@ impl Game {
             controller: actor,
             targets: Vec::new(),
             mode: None,
+        };
+        if let Some(definition) = self.state.objects[card as usize]
+            .card
+            .activations()
+            .get(usize::from(ability))
+        {
+            self.bind_activation_source_quantities(&mut item, definition.program);
         }
+        item
     }
 
     pub(super) fn pay_activation(
@@ -1019,6 +1018,7 @@ impl Game {
         _ability: u16,
         definition: &ActivatedAbility,
     ) -> Option<ActivationPaymentPhase> {
+        self.bind_activation_source_quantities(item, definition.program);
         if !self.start_activation_payment(item, payment, counter_payment, definition) {
             return None;
         }
@@ -1218,6 +1218,7 @@ impl Game {
         let source = item.source.expect("activated ability has an object source");
         let cost = definition.cost;
         self.refresh_local_source_counter_quantities(item);
+        self.refresh_local_source_quantities(item);
         // Costs and real mana activations may briefly reach the threshold before
         // the same payment sacrifices its source. Speculative planning never does.
         self.refresh_enduring_stories();

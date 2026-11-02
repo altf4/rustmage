@@ -151,8 +151,10 @@ impl Game {
             grant_timestamp: row.timestamp,
         }));
         item.source_transform = None;
-        item.source_counter_lki = None;
-        item.source_quantity_lki = None;
+        self.bind_activation_source_quantities(
+            &mut item,
+            row.granting_card.activation(ability).program,
+        );
         item.attachment_trigger = None;
         item
     }

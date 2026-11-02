@@ -179,6 +179,13 @@ impl Game {
                     .iter_mut()
                     .map(|p| &mut p.item),
             )
+            .chain(
+                self.state
+                    .mana_announcement_stack
+                    .iter_mut()
+                    .flat_map(|frames| frames.iter_mut())
+                    .map(|frame| &mut frame.announcement.item),
+            )
         {
             if item
                 .source

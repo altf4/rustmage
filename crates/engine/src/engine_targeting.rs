@@ -2258,11 +2258,18 @@ impl Game {
 
     pub(super) fn payment_announcement(
         &self,
-        item: SpellView,
+        mut item: SpellView,
         counters: Counters,
         production: Option<Mana>,
         origin_counter_cost: Option<u16>,
     ) -> Announcement {
+        if let StackKind::ActivatedAbility { ability } = item.kind {
+            let definition = item.source.expect("activated ability source").card;
+            self.bind_activation_source_quantities(
+                &mut item,
+                definition.activation(ability).program,
+            );
+        }
         let plan = self.target_spec(&item);
         let casualty = self.casualty_declarations(&item);
         let mana_output = production.and_then(|selected| self.mana_output(&item, selected));

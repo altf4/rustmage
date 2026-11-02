@@ -335,3 +335,270 @@ fn signed_growth_registers_toughness_and_named_counter_lki_before_source_sacrifi
         assert_eq!(stats(&g, recipient), (expected, 3));
     }
 }
+
+const TOUGHNESS_GROWTH: &[Instruction] = &[Instruction::GrowFilteredScaled {
+    filter: GROUP,
+    amount: AmountValue::SourceToughness,
+    power: 1,
+    toughness: 0,
+}];
+const COUNTER_GROWTH: &[Instruction] = &[Instruction::GrowFilteredScaled {
+    filter: GROUP,
+    amount: AmountValue::SourceCounterQuantity(CounterKind::PlusOne),
+    power: 1,
+    toughness: 0,
+}];
+const QUANTITY_ABILITY: ActivatedAbility = ActivatedAbility {
+    exhaust: false,
+    guard: ActivationGuard::Always,
+    origin: ActivationOrigin::Battlefield,
+    cycling: false,
+    cost: ActivationCost {
+        sacrifice: true,
+        ..ActivationCost::ZERO
+    },
+    targets: TargetPlan::NONE,
+    program: TOUGHNESS_GROWTH,
+    sorcery: false,
+    once_per_turn: false,
+};
+const COUNTER_SACRIFICE_COST: ActivationCost = ActivationCost {
+    remove: Some((Some(CounterKind::PlusOne), 1)),
+    sacrifice: true,
+    ..ActivationCost::ZERO
+};
+const LOCAL_TOUGHNESS: CardRules = CardRules {
+    effect: Effect::Creature(2, 3),
+    activated: &[ActivatedAbility {
+        cost: COUNTER_SACRIFICE_COST,
+        ..QUANTITY_ABILITY
+    }],
+    ..CardRules::EMPTY
+};
+const LOCAL_COUNTER: CardRules = CardRules {
+    activated: &[ActivatedAbility {
+        program: COUNTER_GROWTH,
+        ..LOCAL_TOUGHNESS.activated[0]
+    }],
+    ..LOCAL_TOUGHNESS
+};
+#[test]
+fn local_quantity_snapshots_follow_counter_payment_before_the_source_is_sacrificed() {
+    for (rules, expected) in [(&LOCAL_TOUGHNESS, 7), (&LOCAL_COUNTER, 4)] {
+        let _scope = fixture_rules::activate(&[(Card::GrizzlyBears, rules)]);
+        let mut g = scenario(Player::P0);
+        let source = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
+        let recipient = put(&mut g, Player::P1, "Hill Giant", Zone::Battlefield);
+        g.add_counter(source, CounterKind::PlusOne, 2);
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::of(CounterKind::PlusOne, 1),
+            },
+        );
+        pay(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+        resolve(&mut g);
+        assert_eq!(stats(&g, recipient), (expected, 3));
+    }
+}
+
+const RECIPIENT: CardRules = CardRules {
+    effect: Effect::Creature(2, 3),
+    extras: &CardExtras {
+        borrows_exiled_activations: true,
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+const DONOR: CardRules = CardRules {
+    effect: Effect::Creature(1, 7),
+    activated: &[QUANTITY_ABILITY],
+    ..CardRules::EMPTY
+};
+const GRANTOR: CardRules = CardRules {
+    extras: &CardExtras {
+        self_granted_activation_templates: &[0],
+        ..CardExtras::EMPTY
+    },
+    ..DONOR
+};
+#[test]
+fn borrowed_and_acquired_programs_freeze_actual_recipient_quantities_not_donor_stats() {
+    for borrowed in [false, true] {
+        let _scope = fixture_rules::activate(&[
+            (Card::GrizzlyBears, &RECIPIENT),
+            (
+                Card::LlanowarElves,
+                if borrowed { &DONOR } else { &GRANTOR },
+            ),
+        ]);
+        let mut g = scenario(Player::P0);
+        let source = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
+        let recipient = put(&mut g, Player::P1, "Hill Giant", Zone::Battlefield);
+        g.add_counter(source, CounterKind::PlusOne, 2);
+        let object = g.object_ref(source);
+        let action = if borrowed {
+            let donor = put(&mut g, Player::P0, "Llanowar Elves", Zone::Exile);
+            let exiled = g.object_ref(donor);
+            g.state
+                .borrowed_links
+                .get_or_insert_default()
+                .push(borrowed_activations::Link {
+                    source: object,
+                    origin: None,
+                    exiled,
+                    first_slot: 0,
+                    width: borrowed_activations::DONOR_SLOT_WIDTH,
+                    once_per_turn: false,
+                });
+            Action::AnnounceBorrowedAbility {
+                card: source,
+                exiled,
+                ability: 0,
+                counter_payment: Counters::default(),
+            }
+        } else {
+            let timestamp = g.next_role_timestamp();
+            g.grant_recipient_ability(
+                object,
+                Card::LlanowarElves,
+                SelfGrantedAbilityKind::Activated { ability: 0 },
+                timestamp,
+                None,
+            );
+            Action::AnnounceSelfGrantedAbility {
+                source: object,
+                grant_timestamp: timestamp,
+                counter_payment: Counters::default(),
+            }
+        };
+        act(&mut g, action);
+        pay(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+        resolve(&mut g);
+        assert_eq!(stats(&g, recipient), (8, 3));
+    }
+}
+
+const ONE_COLORLESS: Mana = [0, 0, 0, 0, 0, 1];
+const NESTED_TOUGHNESS: CardRules = CardRules {
+    effect: Effect::Creature(2, 3),
+    activated: &[
+        ActivatedAbility {
+            cost: ActivationCost {
+                generic: 1,
+                mana_component: true,
+                ..ActivationCost::ZERO
+            },
+            ..QUANTITY_ABILITY
+        },
+        ActivatedAbility {
+            cost: COUNTER_SACRIFICE_COST,
+            program: &[Instruction::AddMana(ManaProduction::Fixed(ONE_COLORLESS))],
+            ..QUANTITY_ABILITY
+        },
+    ],
+    ..CardRules::EMPTY
+};
+const NESTED_COUNTER: CardRules = CardRules {
+    activated: &[
+        ActivatedAbility {
+            program: COUNTER_GROWTH,
+            ..NESTED_TOUGHNESS.activated[0]
+        },
+        NESTED_TOUGHNESS.activated[1],
+    ],
+    ..NESTED_TOUGHNESS
+};
+#[test]
+fn suspended_parent_quantities_refresh_after_nested_mana_counter_cost_and_survive_owned_restore() {
+    for (rules, expected) in [(&NESTED_TOUGHNESS, 7), (&NESTED_COUNTER, 4)] {
+        let _scope = fixture_rules::activate(&[(Card::GrizzlyBears, rules)]);
+        let mut parent = scenario(Player::P0);
+        let source = put(&mut parent, Player::P0, "Grizzly Bears", Zone::Battlefield);
+        let recipient = put(&mut parent, Player::P1, "Hill Giant", Zone::Battlefield);
+        parent.add_counter(source, CounterKind::PlusOne, 2);
+        parent.state.players[0].mana = [0; 6];
+        start(&mut parent, source);
+        act(
+            &mut parent,
+            Action::AnnounceMana {
+                card: source,
+                ability: 1,
+                counter_payment: Counters::of(CounterKind::PlusOne, 1),
+                production: ONE_COLORLESS,
+            },
+        );
+        assert_eq!(
+            parent.state.mana_announcement_stack.as_ref().unwrap().len(),
+            1
+        );
+        let saved = parent.snapshot();
+        let action = parent
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a, Action::PayCosts { .. }))
+            .unwrap();
+        let mut raw = parent.clone();
+        let mut indexed = parent.clone();
+        let index = indexed
+            .legal_actions()
+            .iter()
+            .position(|a| *a == action)
+            .unwrap();
+        let actor = indexed.actor().unwrap();
+        let revision = indexed.revision();
+        drop(parent);
+        act(&mut raw, action.clone());
+        indexed.apply_index(actor, revision, index).unwrap();
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        for branch in [&mut raw, &mut indexed] {
+            assert_eq!(branch.object_view(source).zone, Zone::Graveyard);
+            assert!(branch.state.mana_announcement_stack.is_none());
+            pay(branch);
+            resolve(branch);
+            assert_eq!(stats(branch, recipient), (expected, 3));
+        }
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        indexed.restore(&saved).unwrap();
+        act(&mut indexed, action);
+        pay(&mut indexed);
+        resolve(&mut indexed);
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+    }
+}
+
+#[test]
+fn activated_equipment_count_is_frozen_before_source_sacrifice_detaches_equipment() {
+    const EQUIPPED: CardRules = CardRules {
+        effect: Effect::Creature(2, 3),
+        activated: &[ActivatedAbility {
+            program: &[Instruction::GrowFilteredScaled {
+                filter: GROUP,
+                amount: AmountValue::SourceEquipmentCount,
+                power: 1,
+                toughness: 0,
+            }],
+            ..QUANTITY_ABILITY
+        }],
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[(Card::GrizzlyBears, &EQUIPPED)]);
+    let mut g = scenario(Player::P0);
+    let source = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    let recipient = put(&mut g, Player::P1, "Hill Giant", Zone::Battlefield);
+    for owner in [Player::P0, Player::P1] {
+        let bow = put(&mut g, owner, "Short Bow", Zone::Battlefield);
+        g.state.objects[bow as usize].attached_to = Some(g.object_ref(source));
+    }
+    let loose = put(&mut g, Player::P0, "Short Bow", Zone::Battlefield);
+    start(&mut g, source);
+    pay(&mut g);
+    assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+    resolve(&mut g);
+    assert_eq!(stats(&g, recipient), (5, 3));
+    assert!(g.object_view(loose).attached_to.is_none());
+}
