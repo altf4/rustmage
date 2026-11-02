@@ -74,7 +74,8 @@
     "an_as_entry_copy_can_supply_the_remaining_parent_cast_mana_and_decline_is_unfundable",
     "foreign_as_entry_copy_that_invalidates_a_parent_cast_is_kept_with_its_mana_event",
     "copied_own_off_turn_type_is_visible_to_creature_only_entry_replacements",
-    "a_copied_aura_that_cannot_enter_never_changes_the_physical_card"
+    "a_copied_aura_that_cannot_enter_never_changes_the_physical_card",
+    "copying_an_unchanged_clone_gains_a_new_as_entry_replacement_instance"
   ],
   "validation": {
     "rustfmt": "passed edition2024",
@@ -89,5 +90,11 @@
       "cast_cost",
       "foreign"
     ]
+  },
+  "rules_reference": {
+    "url": "https://media.wizards.com/2025/downloads/MagicCompRules%2020250919.pdf",
+    "rule": "707.9e",
+    "pages": "198-199",
+    "application": "The Altered Ego/unchanged Clone example explicitly applies the newly copied replacement ability. Selecting such a blueprint creates another entry-copy choice; it does not reapply the original effect."
   }
 }

@@ -715,3 +715,26 @@ fn a_copied_aura_that_cannot_enter_never_changes_the_physical_card() {
     );
     assert!(g.temporary_copy_view(g.object_ref(incoming)).is_none());
 }
+
+#[test]
+fn copying_an_unchanged_clone_gains_a_new_as_entry_replacement_instance() {
+    let _scope = fixture_rules::activate(&[(Card::from_name("Grizzly Bears").unwrap(), &COPY)]);
+    let mut g = scenario(Player::P0);
+    let unchanged = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    g.state.objects[unchanged as usize].growth = Stats {
+        power: 1,
+        toughness: 1,
+    };
+    let ordinary = put(&mut g, Player::P0, "Savannah Lions", Zone::Battlefield);
+    let incoming = copy_cast(&mut g);
+    select_copy(&mut g, unchanged);
+    assert!(matches!(g.state.pending, Pending::EntryCopy { .. }));
+    assert_eq!(g.state.objects[incoming as usize].zone, Zone::Stack);
+    select_copy(&mut g, ordinary);
+    settle(&mut g);
+    assert_eq!(stats(&g, incoming), (2, 1));
+    assert_eq!(
+        g.state.objects[incoming as usize].card,
+        Card::from_name("Savannah Lions").unwrap()
+    );
+}
