@@ -801,7 +801,8 @@
         "scoreboard_discount_is_live_own_controller_generic_only_and_requires_max_speed"
       ],
       "test_target": "dft_colorless_cards_speed",
-      "runtime_status": "pending focused run"
+      "runtime_status": "passed5/5; engine reused",
+      "runtime_report": "<cache>/rustmage-authoring/aetherdrift/card-colorless-speed-20261102-101000Z/report.json"
     },
     {
       "name": "Starting Column",
@@ -870,7 +871,8 @@
         "starting_column_produces_each_color_and_max_speed_sacrifices_before_draw_two_discard_one"
       ],
       "test_target": "dft_colorless_cards_speed",
-      "runtime_status": "pending focused run"
+      "runtime_status": "passed5/5; engine reused",
+      "runtime_report": "<cache>/rustmage-authoring/aetherdrift/card-colorless-speed-20261102-101000Z/report.json"
     },
     {
       "name": "Walking Sarcophagus",
@@ -913,6 +915,187 @@
         "walking_sarcophagus_uses_only_its_live_controllers_max_speed_and_bonus_is_not_cumulative"
       ],
       "test_target": "dft_colorless_cards_speed",
+      "runtime_status": "passed5/5; engine reused",
+      "runtime_report": "<cache>/rustmage-authoring/aetherdrift/card-colorless-speed-20261102-101000Z/report.json"
+    },
+    {
+      "name": "Aetherjacket",
+      "definition": "src/card_definitions/dft/aetherjacket.rs",
+      "oracle_id": "062c8e40-dea7-4df7-bcaa-f1d696fe61c3",
+      "oracle_text": "Flying, vigilance\n{2}, {T}, Sacrifice this creature: Destroy another target artifact. Activate only as a sorcery.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/a/Aetherjacket.java",
+        "sha256": "e7338cd94f3d8c39326f1459483068c16c0617ddd3464130b0f6eeb9ca49b439"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+          "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+          "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+          "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        }
+      ],
+      "printed_obligations": [
+        "Flying, vigilance",
+        "{2}, {T}, Sacrifice this creature: Destroy another target artifact. Activate only as a sorcery."
+      ],
+      "outcome_scenarios": [
+        "utility_artifacts_have_their_actual_paid_bodies_and_matrix_draws_one",
+        "aetherjacket_pays_two_taps_and_sacrifices_at_sorcery_speed_to_destroy_another_artifact"
+      ],
+      "test_target": "dft_colorless_cards_utility",
+      "runtime_status": "pending focused run"
+    },
+    {
+      "name": "Guidelight Matrix",
+      "definition": "src/card_definitions/dft/guidelight_matrix.rs",
+      "oracle_id": "98005890-d566-4a27-906f-625513171e85",
+      "oracle_text": "When this artifact enters, draw a card.\n{2}, {T}: Target Mount you control becomes saddled until end of turn. Activate only as a sorcery.\n{2}, {T}: Target Vehicle you control becomes an artifact creature until end of turn.",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/g/GuidelightMatrix.java",
+        "sha256": "788adabea9f787848c36c36c7000b464bcf237262476fd465fb5f5247df70421"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+          "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+          "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+          "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/SaddleTargetMountEffect.java",
+          "sha256": "38abe18bf44f271b3020329312ad1109cef78b1d16df259dfad2be920e2f936f"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/SaddleAbility.java",
+          "sha256": "ad652baf45e4662717bfe85771ddc22b35eacc9a7b7727bed1a07157ed473b3d"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardTypeTargetEffect.java",
+          "sha256": "95ebcf49ca842a8831f4925cfff4199bdd0740c37f0dbe77a7c542a73272cc67"
+        }
+      ],
+      "printed_obligations": [
+        "When this artifact enters, draw a card.",
+        "{2}, {T}: Target Mount you control becomes saddled until end of turn. Activate only as a sorcery.",
+        "{2}, {T}: Target Vehicle you control becomes an artifact creature until end of turn."
+      ],
+      "outcome_scenarios": [
+        "utility_artifacts_have_their_actual_paid_bodies_and_matrix_draws_one",
+        "guidelight_matrix_uses_separate_mount_sorcery_and_vehicle_instant_abilities"
+      ],
+      "test_target": "dft_colorless_cards_utility",
+      "runtime_status": "pending focused run"
+    },
+    {
+      "name": "Ticket Tortoise",
+      "definition": "src/card_definitions/dft/ticket_tortoise.rs",
+      "oracle_id": "952083c5-9ffa-4cd9-915f-b7de7f3e5326",
+      "oracle_text": "Defender\nWhen this creature enters, if an opponent controls more lands than you, you create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+      "full_xmage_body_read": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/t/TicketTortoise.java",
+        "sha256": "79d1f26f727477b4838ebda3553e45292eebd5931bd7b9a46c60d1deaf5f2d80"
+      },
+      "full_reusable_bodies_read": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+          "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/condition/common/OpponentControlsMoreCondition.java",
+          "sha256": "1851991ffc9adb3363d04f26a3532eac00d36f97b6aa6baa70bf1eaf53360ee3"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/DefenderAbility.java",
+          "sha256": "ad5269c8613d7ef2e18e64fb3ea53099a4649870fae2cc0a54ad80a50ca0755e"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/permanent/token/TreasureToken.java",
+          "sha256": "76bcec2847fbc47566c41b561b5bf8890073a94cc1da9cda19b369ff69782d2e"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/token/TreasureAbility.java",
+          "sha256": "d0b4701fc40514cb0d6efe11255d4644b28e4d6b9f5d5acf3c92093c571b5bae"
+        }
+      ],
+      "printed_obligations": [
+        "Defender",
+        "When this creature enters, if an opponent controls more lands than you, you create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")"
+      ],
+      "outcome_scenarios": [
+        "utility_artifacts_have_their_actual_paid_bodies_and_matrix_draws_one",
+        "ticket_tortoise_checks_more_lands_on_entry_and_again_at_resolution"
+      ],
+      "test_target": "dft_colorless_cards_utility",
       "runtime_status": "pending focused run"
     }
   ]
