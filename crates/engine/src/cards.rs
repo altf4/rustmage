@@ -2619,6 +2619,13 @@ pub enum Instruction {
         exclude_source: bool,
         amount: AmountValue,
     },
+    /// Freeze a battlefield group using earlier-layer kinds and one sampled scalar.
+    GrowFilteredScaled {
+        filter: CountFilter,
+        amount: AmountValue,
+        power: i32,
+        toughness: i32,
+    },
     GrowCreaturesScaled {
         filter: CreatureFilter,
         excluding_subtype: Option<&'static str>,

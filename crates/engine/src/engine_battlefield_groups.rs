@@ -89,6 +89,51 @@ impl Game {
             };
         }
     }
+    pub(super) fn grow_filtered_scaled(
+        &mut self,
+        item: &SpellView,
+        filter: CountFilter,
+        amount: AmountValue,
+        power: i32,
+        toughness: i32,
+    ) {
+        assert!(
+            filter.zone == CountZone::Battlefield,
+            "growth recipients are battlefield permanents"
+        );
+        let Some(source) = item.source else { return };
+        let amount = i128::try_from(self.item_amount(amount, item))
+            .capacity("filtered growth quantity exhausted");
+        let delta = Stats {
+            power: i128::from(power)
+                .checked_mul(amount)
+                .capacity("filtered power growth exhausted"),
+            toughness: i128::from(toughness)
+                .checked_mul(amount)
+                .capacity("filtered toughness growth exhausted"),
+        };
+        let affected: Vec<_> = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(id, object)| {
+                Self::count_object_matches(
+                    filter,
+                    source.object,
+                    item.controller,
+                    *id as CardId,
+                    object,
+                    &|id| self.granted_subtypes(id),
+                    &|id, object| self.object_kinds(id, object),
+                )
+            })
+            .map(|(id, _)| self.object_ref(id as CardId))
+            .collect();
+        for recipient in affected {
+            self.state.objects[recipient.card as usize].growth += delta;
+        }
+    }
     pub(super) fn put_permanent_counters_scaled(
         &mut self,
         item: &SpellView,

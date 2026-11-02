@@ -519,7 +519,8 @@ fn instruction_players_supported(instruction: Instruction) -> bool {
 fn program_supported(program: &[Instruction]) -> bool {
     program.iter().all(|instruction| {
         instruction_players_supported(*instruction) && match *instruction {
-            Instruction::GrantEmbalmTargets
+            Instruction::GrowFilteredScaled { .. }
+            | Instruction::GrantEmbalmTargets
             | Instruction::CreateEmbalmedSourceCopy
             | Instruction::CopySourceFromLinkedExile { .. }
             | Instruction::ExertCost
@@ -1905,5 +1906,30 @@ fn prior_198_distinguishes_conditional_self_cast_from_inherited_graveyard_author
         subject: Subject::Targets,
         subtype: "Vehicle",
         skip: 1,
+    }]));
+}
+
+#[test]
+fn prior_198_rejects_the_new_filtered_signed_growth_program() {
+    let instruction = Instruction::GrowFilteredScaled {
+        filter: card_rules::CountFilter {
+            zone: card_rules::CountZone::Battlefield,
+            relation: -1,
+            kind: 1,
+            exclude: 16,
+            subtype: None,
+            basic: false,
+            other: true,
+            cards_only: false,
+        },
+        amount: AmountValue::Fixed(1),
+        power: -1,
+        toughness: -1,
+    };
+    assert!(!program_supported(&[instruction]));
+    assert!(program_supported(&[Instruction::Grow {
+        subject: Subject::Source,
+        power: 1,
+        toughness: 1
     }]));
 }

@@ -505,6 +505,13 @@
         "Instruction::RevealTargetHandChoose { kinds, exile }"
       ],
       "eligibility": "Existing opaque hand-decision state guard rejects the new owned choices without adding fields. Reject the new immutable instruction in packets even before the decision opens; never erase selected-card behavior."
+    },
+    {
+      "container": "Typed immutable packet programs",
+      "members": [
+        "GrowFilteredScaled"
+      ],
+      "eligibility": "New signed CountFilter group-growth semantics; reject through program_supported even though stack packet shape is inherited. No new public observation/state member."
     }
   ],
   "focused_tests": {

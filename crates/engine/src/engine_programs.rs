@@ -7607,6 +7607,14 @@ impl Game {
                 } => {
                     self.grow_permanent_group_scaled(&item, filters, exclude_source, amount);
                 }
+                Instruction::GrowFilteredScaled {
+                    filter,
+                    amount,
+                    power,
+                    toughness,
+                } => {
+                    self.grow_filtered_scaled(&item, filter, amount, power, toughness);
+                }
                 Instruction::GrowCreaturesScaled {
                     filter,
                     excluding_subtype,
