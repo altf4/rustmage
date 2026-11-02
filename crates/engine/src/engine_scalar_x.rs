@@ -73,7 +73,8 @@ impl Game {
         targets: &[BoundTarget],
         reduction: u64,
     ) -> Option<ManaCost> {
-        let extra = u64::from(payment_symbols) * u64::from(x);
+        let extra = (u64::from(payment_symbols) * u64::from(x))
+            .checked_add(self.target_spell_increase(actor, id, card, targets))?;
         let mana_value = card.fixed_mana_value() + u64::from(card.x_symbols()) * u64::from(x);
         let discount = card
             .target_cost_reduction()

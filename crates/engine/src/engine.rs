@@ -5667,7 +5667,7 @@ impl Game {
                         }
                         continue;
                     }
-                    let target_cost = obj.card.target_cost_reduction().is_some();
+                    let target_cost = obj.card.has_target_cost_modifier();
                     let has_generic = if flashback {
                         obj.card.flashback_cost().unwrap().generic > 0
                     } else {
@@ -6210,6 +6210,9 @@ impl Game {
                     .filter(|bound| bound.group == announcement.group)
                     .count();
                 if count >= usize::from(announcement.spec.min)
+                    && self
+                        .exact_x_targets(&announcement.item)
+                        .is_none_or(|required| count == required)
                     && (count > 0
                         || announcement
                             .item
@@ -7485,12 +7488,13 @@ impl Game {
             Action::ChooseX { value } => {
                 self.state.announcing.as_mut().unwrap().item.x = Some(value);
                 let a = self.state.announcing.as_mut().unwrap();
-                if a.item.kind == StackKind::Spell
+                if (a.item.kind == StackKind::Spell
                     && a.item
                         .source
                         .expect("cast or activated ability has a source")
                         .card
-                        .life_x_cost()
+                        .life_x_cost())
+                    || matches!(a.item.kind, StackKind::ActivatedAbility { ability } if a.item.source.expect("activation source").card.activation(ability).life_x_cost())
                 {
                     a.add_cast_cost_clause(CastCostClause::Life(value));
                 }
@@ -7504,6 +7508,9 @@ impl Game {
                     .expect("object-backed announcement")
                     .card
                     .targets_up_to_x()
+                    || self
+                        .exact_x_targets(&self.state.announcing.as_ref().unwrap().item)
+                        .is_some()
                 {
                     let plan = self.target_spec(&self.state.announcing.as_ref().unwrap().item);
                     self.state.announcing.as_mut().unwrap().plan = plan;

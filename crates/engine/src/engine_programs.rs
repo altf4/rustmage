@@ -5527,6 +5527,8 @@ impl Game {
                 Instruction::RequireBlocks(filter) => self.require_blocks(&item, filter),
                 Instruction::ExileDamagedIfDiesThisTurn
                 | Instruction::ActivationX
+                | Instruction::ActivationLifeX
+                | Instruction::TargetsExactlyX
                 | Instruction::SourceCounterCost { .. }
                 | Instruction::WaterbendCost(_)
                 | Instruction::ExertCost => (),

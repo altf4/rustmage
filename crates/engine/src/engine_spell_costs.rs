@@ -304,7 +304,7 @@ impl Game {
         };
         costs.into_iter().any(|cost| {
             let cost = Self::with_flash_surcharge(cost, definition, true);
-            if definition.target_cost_reduction().is_some() {
+            if definition.has_target_cost_modifier() {
                 self.initial_target_cost_fundable(actor, card, cost)
             } else if definition.collect_evidence_cost().is_some() {
                 self.evidence_cast_fundable(actor, card, cost, false)
@@ -373,8 +373,7 @@ impl Game {
             .source
             .expect("cost announcement has object source")
             .card
-            .target_cost_reduction()
-            .is_some()
+            .has_target_cost_modifier()
         {
             return self.announcement_target_fundable(a, None, None, Some(pay), None, false);
         }

@@ -449,10 +449,22 @@ impl Announcement {
                     .map_or(&ZERO[..], |r| r.reductions.as_slice())
                     .iter()
                     .filter_map(move |&reduction| {
-                        power_up::reduce(
+                        power_up::reduce_wide(
                             cost,
                             reduction,
-                            self.activation_discount,
+                            u64::from(self.activation_discount)
+                                + match self.item.kind {
+                                    StackKind::ActivatedAbility { ability } => {
+                                        5 * u64::from(
+                                            self.item
+                                                .source
+                                                .expect("activation source")
+                                                .card
+                                                .activation_target_color_discount(ability),
+                                        )
+                                    }
+                                    _ => 0,
+                                },
                             u64::from(self.activation_generic_increase)
                                 + if route == ActivationCostRoute::Printed {
                                     u64::from(self.item.x.unwrap_or(0))
@@ -718,6 +730,13 @@ impl Game {
             .map(|(plan, _)| plan)
             .unwrap_or(TargetPlan::NONE);
         if let Some((TargetPlan::Single(mut spec), program)) = item.program()
+            && program.contains(&Instruction::TargetsExactlyX)
+        {
+            assert_eq!(spec.min, 0, "exact X has an explicit dynamic minimum");
+            spec.max = usize::try_from(item.x.unwrap_or(0)).expect("X fits target capacity");
+            return TargetPlan::Single(spec);
+        }
+        if let Some((TargetPlan::Single(mut spec), program)) = item.program()
             && let Some(Instruction::UpToTargets(value)) = program.first()
         {
             assert_eq!(spec.min, 0, "optional bound requires zero minimum");
@@ -788,6 +807,38 @@ impl Game {
         } else {
             plan
         }
+    }
+
+    pub(super) fn exact_x_targets(&self, item: &SpellView) -> Option<usize> {
+        item.program()
+            .filter(|(_, program)| program.contains(&Instruction::TargetsExactlyX))
+            .map(|_| usize::try_from(item.x.unwrap_or(0)).expect("X fits target capacity"))
+    }
+
+    pub(super) fn exact_x_targets_fundable(
+        &self,
+        a: &Announcement,
+        extra: Option<Target>,
+        finished: bool,
+    ) -> bool {
+        let Some(required) = self.exact_x_targets(&a.item) else {
+            return true;
+        };
+        let count = a.item.targets.len() + usize::from(extra.is_some());
+        if count > required || finished && count != required {
+            return false;
+        }
+        let TargetPlan::Single(spec) = self.target_spec(&a.item) else {
+            panic!("exact X target group");
+        };
+        let mut available = 0usize;
+        self.visit_item_targets(&a.item, spec.rule, |target| {
+            if extra != Some(target) && !a.item.targets.iter().any(|b| b.target == target) {
+                available += 1;
+            }
+            false
+        });
+        count + available >= required
     }
 
     // A spell will leave its origin before targets are chosen (CR601.2a/c).

@@ -4217,6 +4217,23 @@ impl Game {
         world.reachable(&goal, &mut HashSet::new())
     }
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
+        if !self.exact_x_targets_fundable(a, None, false) {
+            return false;
+        }
+        if let StackKind::ActivatedAbility { ability } = a.item.kind
+            && a.item
+                .source
+                .expect("activation source")
+                .card
+                .activation(ability)
+                .life_x_cost()
+        {
+            let mut proposal = a.clone();
+            proposal.cost = Some(cost);
+            proposal.add_cast_cost_clause(CastCostClause::Life(a.item.x.unwrap_or(0)));
+            proposal.initialize_cast_costs(false);
+            return self.activation_packet_fundable(&proposal);
+        }
         if a.self_graveyard_cast_cost().is_some() {
             return self.self_graveyard_announcement_fundable(a, cost);
         }
@@ -4245,6 +4262,15 @@ impl Game {
             let mut proposal = a.clone();
             proposal.cost = Some(cost);
             return self.announcement_activation_target_fundable(&proposal, None, false);
+        }
+        if a.item.kind == StackKind::Spell
+            && a.item
+                .source
+                .expect("spell source")
+                .card
+                .has_target_cost_modifier()
+        {
+            return self.announcement_target_fundable(a, None, Some(cost), None, None, false);
         }
         if a.item
             .cast
@@ -4531,8 +4557,7 @@ impl Game {
             .source
             .expect("cost announcement has object source")
             .card
-            .target_cost_reduction()
-            .is_some()
+            .has_target_cost_modifier()
             && a.item.kind == StackKind::Spell
         {
             return self.announcement_target_fundable(a, None, Some(cost), None, None, false);

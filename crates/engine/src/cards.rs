@@ -1276,6 +1276,13 @@ pub struct TargetSpellReduction {
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct TargetSpellIncrease {
+    pub rule: TargetRule,
+    pub generic: u32,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub type ManaCostOptions = std::iter::Chain<
     std::iter::Once<ManaCost>,
     std::iter::Copied<std::slice::Iter<'static, ManaCost>>,
@@ -1935,6 +1942,11 @@ pub enum Instruction {
     RequireBlocks(CreatureFilter),
     /// Definition header: announce X as a generic activation mana cost.
     ActivationX,
+    /// Definition header: pay the announced X as an additional life cost.
+    ActivationLifeX,
+    /// Definition header: the single homogeneous target group requires exactly X.
+    /// Its static minimum is zero; the announced cardinality is not narrowed to u16.
+    TargetsExactlyX,
     DestroyCombatDamagedPlayersPermanents,
     CreateCopyTokenWithExceptions {
         subject: Subject,
@@ -4990,6 +5002,9 @@ pub struct ActivatedAbility {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ActivatedAbility {
+    pub(crate) fn life_x_cost(&self) -> bool {
+        self.program.contains(&Instruction::ActivationLifeX)
+    }
     /// The first marker identifies the generic component that can be paid by
     /// tapping artifacts or creatures. It has no effect during resolution.
     pub(crate) fn waterbend_cost(&self) -> u16 {
@@ -6063,6 +6078,15 @@ impl Card {
             .find(|(index, _)| *index == ability)
             .map(|(_, kind)| *kind)
     }
+    pub(crate) fn activation_target_color_discount(self, ability: u16) -> u32 {
+        authored::rules(self)
+            .unwrap()
+            .extras
+            .activation_target_color_discounts
+            .iter()
+            .find(|(slot, _)| *slot == ability)
+            .map_or(0, |(_, amount)| *amount)
+    }
     pub(crate) fn activation_subtype_discount(self, ability: u16) -> Option<&'static str> {
         authored::rules(self)
             .unwrap()
@@ -6159,6 +6183,12 @@ impl Card {
     }
     pub(crate) fn target_cost_reduction(self) -> Option<&'static TargetSpellReduction> {
         generated::target_cost_reduction(self)
+    }
+    pub(crate) fn target_cost_increase(self) -> Option<&'static TargetSpellIncrease> {
+        authored::rules(self).unwrap().extras.target_cost_increase
+    }
+    pub(crate) fn has_target_cost_modifier(self) -> bool {
+        self.target_cost_reduction().is_some() || self.target_cost_increase().is_some()
     }
     /// Timing permission is an as-though effect, not a granted Flash keyword.
     pub(crate) fn cast_timing_grants(self) -> &'static [CastFilter] {

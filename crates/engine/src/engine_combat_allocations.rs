@@ -424,7 +424,7 @@ impl ActivatedAbility {
         .expect("activation X header count")
     }
     pub(super) fn has_x_cost(&self) -> bool {
-        self.x_symbols() != 0
+        self.x_symbols() != 0 || self.life_x_cost()
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -447,6 +447,13 @@ impl Announcement {
                     .card
                     .activation_x_symbols(ability)
                     > 0
+                    || self
+                        .item
+                        .source
+                        .expect("activation source")
+                        .card
+                        .activation(ability)
+                        .life_x_cost()
             }
             _ => false,
         }

@@ -200,6 +200,22 @@ impl CardRules {
             }
             counter_reduction_index += 1;
         }
+        let mut color_reduction_index = 0;
+        while color_reduction_index < self.extras.activation_target_color_discounts.len() {
+            let (slot, _) = self.extras.activation_target_color_discounts[color_reduction_index];
+            assert!(
+                (slot as usize) < self.activated.len(),
+                "target color reduction lacks activated slot"
+            );
+            match self.activated[slot as usize].targets {
+                TargetPlan::Single(spec) => assert!(
+                    spec.min == 1 && spec.max == 1,
+                    "target color reduction requires one mandatory target"
+                ),
+                _ => panic!("target color reduction requires one target group"),
+            }
+            color_reduction_index += 1;
+        }
         // A printed mana component opens the mana-ability payment window.
         // Reject zero-mana template flags copied into newly authored paid abilities.
         let mut index = 0;
@@ -306,6 +322,8 @@ pub struct CardExtras {
     pub activation_target_reductions: &'static [(u16, TargetActivationReduction)],
     /// Generic cost reduced by the chosen target's counters of this kind.
     pub activation_target_counter_discounts: &'static [(u16, CounterKind)],
+    /// Generic reduction per distinct color of the chosen permanent target.
+    pub activation_target_color_discounts: &'static [(u16, u32)],
     pub activation_counter_discounts: &'static [(u16, CounterKind)],
     /// Reduce generic activation cost once per controlled permanent of this subtype.
     pub activation_subtype_discounts: &'static [(u16, &'static str)],
@@ -371,6 +389,7 @@ pub struct CardExtras {
     pub flashback_cost_alternatives: &'static [ManaCost],
     pub flashback_additional: Option<AdditionalCost>,
     pub target_cost_reduction: Option<&'static TargetSpellReduction>,
+    pub target_cost_increase: Option<&'static TargetSpellIncrease>,
     pub cast_timing_grants: &'static [CastFilter],
     pub cast_timing_requires_opponent_spell: bool,
     pub self_cast_timing: Option<SelfCastTiming>,
@@ -424,6 +443,7 @@ impl CardExtras {
         power_up_mana_cost_alternatives: &[],
         activation_target_reductions: &[],
         activation_target_counter_discounts: &[],
+        activation_target_color_discounts: &[],
         activation_counter_discounts: &[],
         activation_subtype_discounts: &[],
         activation_put_counters: &[],
@@ -489,6 +509,7 @@ impl CardExtras {
         flashback_cost_alternatives: &[],
         flashback_additional: None,
         target_cost_reduction: None,
+        target_cost_increase: None,
         cast_timing_grants: &[],
         cast_timing_requires_opponent_spell: false,
         self_cast_timing: None,

@@ -45,12 +45,23 @@ pub(super) fn reduce(
     generic: u32,
     x: u64,
 ) -> Option<ManaCost> {
+    reduce_wide(base, reduction, u64::from(generic), x)
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn reduce_wide(
+    base: ManaCost,
+    reduction: ManaCost,
+    generic: u64,
+    x: u64,
+) -> Option<ManaCost> {
     let colored = std::array::from_fn(|i| base.colored[i].saturating_sub(reduction.colored[i]));
     let excess = (0..6)
         .map(|i| u64::from(reduction.colored[i].saturating_sub(base.colored[i])))
         .sum::<u64>();
     let raw = u64::from(base.generic).checked_add(x)?;
-    let reduction = excess + u64::from(reduction.generic) + u64::from(generic);
+    let reduction = excess
+        .saturating_add(u64::from(reduction.generic))
+        .saturating_add(generic);
     Some(ManaCost {
         colored,
         generic: u32::try_from(raw.saturating_sub(reduction)).ok()?,
@@ -63,7 +74,7 @@ pub(super) struct ActivationManaCosts {
     power_up: Option<Box<PowerUpCosts>>,
     base: Option<ManaCost>,
     reduction_index: usize,
-    generic_discount: u32,
+    generic_discount: u64,
     generic_increase: u32,
     x: u64,
 }
@@ -89,7 +100,7 @@ impl Iterator for ActivationManaCosts {
                 continue;
             };
             self.reduction_index += 1;
-            if let Some(cost) = reduce(
+            if let Some(cost) = reduce_wide(
                 self.base.unwrap(),
                 reduction,
                 self.generic_discount,
@@ -196,7 +207,14 @@ impl Game {
             power_up: self.power_up_costs(self.object_ref(source), definition, ability),
             base: None,
             reduction_index: 0,
-            generic_discount: self.activation_generic_discount(source, definition, ability),
+            // A target is still to be chosen. Keep every raw choice that might
+            // fit after its color reduction; target-aware funding recomputes
+            // the exact total from the raw choice before accepting any target.
+            generic_discount: u64::from(
+                self.activation_generic_discount(source, definition, ability),
+            ) + 5 * u64::from(
+                definition.activation_target_color_discount(ability),
+            ),
             generic_increase: ability_world::CharacteristicWorld::named_activation_generic_increase(
                 self, source,
             ),

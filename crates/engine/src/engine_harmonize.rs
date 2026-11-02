@@ -69,16 +69,26 @@ impl Game {
         let extra = Self::announcement_optional_reduction(a).saturating_add(discount);
         let source = a.item.source.expect("harmonize has a source");
         let x = a.item.x.unwrap_or(0);
-        let Some(total) = self.scalar_x_total_with_symbols(
-            a.item.controller,
-            source.id,
-            base,
-            x,
-            source.card,
-            a.payment_x_symbols(),
-            &a.item.targets,
-            extra,
-        ) else {
+        let total = if source.card.has_target_cost_modifier() {
+            let plan = if a.plan == TargetPlan::NONE {
+                self.target_spec(&a.item)
+            } else {
+                a.plan
+            };
+            self.target_proposal_total(a, base, plan, None, false, extra)
+        } else {
+            self.scalar_x_total_with_symbols(
+                a.item.controller,
+                source.id,
+                base,
+                x,
+                source.card,
+                a.payment_x_symbols(),
+                &a.item.targets,
+                extra,
+            )
+        };
+        let Some(total) = total else {
             return false;
         };
         self.harmonize_proposal_fundable(a, object, total)
