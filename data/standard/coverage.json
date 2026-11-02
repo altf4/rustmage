@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "bc2458fb7abc903087e2a26d7787249c48bf54b486674011050172bfda13fc5a",
+  "catalogue_version": "d248c1a6edfc08b487369515d53b584f4929dde9f81ae7c71586e6e44b436cbb",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3148,
-  "implemented_total": 3154,
+  "implemented_standard_cards": 3156,
+  "implemented_total": 3162,
   "token_definitions": 156,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -32,8 +32,8 @@
     },
     "dft": {
       "total": 259,
-      "complete": 249,
-      "gated": 10
+      "complete": 257,
+      "gated": 2
     },
     "dsk": {
       "total": 264,
@@ -7690,8 +7690,8 @@
     {
       "name": "Cursecloth Wrappings",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/cursecloth_wrappings.rs",
       "set": "dft"
     },
@@ -7866,8 +7866,8 @@
     {
       "name": "Daretti, Rocketeer Engineer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/daretti_rocketeer_engineer.rs",
       "set": "dft"
     },
@@ -20130,8 +20130,8 @@
     {
       "name": "Lifecraft Engine",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/lifecraft_engine.rs",
       "set": "dft"
     },
@@ -21538,8 +21538,8 @@
     {
       "name": "Marketback Walker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/marketback_walker.rs",
       "set": "dft"
     },
@@ -21562,8 +21562,8 @@
     {
       "name": "Marshals' Pathcruiser",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/marshals_pathcruiser.rs",
       "set": "dft"
     },
@@ -25586,8 +25586,8 @@
     {
       "name": "Pit Automaton",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/pit_automaton.rs",
       "set": "dft"
     },
@@ -26866,8 +26866,8 @@
     {
       "name": "Radiant Lotus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/radiant_lotus.rs",
       "set": "dft"
     },
@@ -28978,8 +28978,8 @@
     {
       "name": "Rover Blades",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dft/rover_blades.rs",
       "set": "dft"
     },
