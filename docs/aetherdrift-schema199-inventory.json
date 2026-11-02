@@ -3,8 +3,8 @@
   "candidate_observation_schema": 199,
   "prior_schema": 198,
   "baseline_revision": "73092e3",
-  "inventory_revision": "7a135cae",
-  "phase": "engine-only migration candidate; central marker and traces unchanged",
+  "inventory_revision": "cc67d4dc08350a9a4bd77ab40fdb8b97e1371f44",
+  "phase": "final integrated engine compatibility candidate; central marker and traces unchanged",
   "public_json": [
     {
       "container": "Observation",
@@ -17,7 +17,9 @@
         "delayed_target_events",
         "exertions",
         "chosen_card_name",
-        "entry_copy"
+        "entry_copy",
+        "entry_exile",
+        "embalm_abilities"
       ],
       "contract": "Sparse fields; all present values rejected for prior198."
     },
@@ -47,14 +49,14 @@
       "members": [
         "additional_creature_types"
       ],
-      "contract": "Canonical taxonomy-name list omitted whenempty; reject nonempty overlays in any frozen view."
+      "contract": "Canonical taxonomy-name list omitted when empty; reject nonempty overlays in any frozen view."
     },
     {
       "container": "AdditionalCostView",
       "members": [
         "can_finish_group"
       ],
-      "contract": "Typed ranged selection completion; reject whenpresent."
+      "contract": "Typed ranged selection completion; reject when present."
     },
     {
       "container": "HandChoiceView",
@@ -174,14 +176,23 @@
       "container": "Action",
       "members": [
         "FinishAdditionalCostGroup",
-        "AnnounceGraveyardAdditionalCosts"
+        "AnnounceGraveyardAdditionalCosts",
+        "AnnounceGrantedMana",
+        "AnnounceSelfGrantedMana",
+        "ChooseEntryCopy",
+        "ChooseEntryExile",
+        "FinishEntryExile",
+        "AnnounceRetainedCopyAbility",
+        "AnnounceEmbalm"
       ],
       "contract": "New serialized legal/journal actions."
     },
     {
       "container": "Observation.pending.kind",
       "members": [
-        "card_name"
+        "card_name",
+        "entry_copy",
+        "entry_exile"
       ],
       "contract": "New name-decision phase."
     },
@@ -257,39 +268,77 @@
         "ChooseEntryCopy",
         "entry_copy"
       ],
-      "contract": "Waxen copy-choice action and phase newly integrated since61a720af."
-    }
-  ],
-  "pending_agent_additions": [
-    {
-      "owner": "white-blue",
-      "container": "Action",
-      "members": [
-        "AnnounceGrantedMana",
-        "AnnounceSelfGrantedMana"
-      ],
-      "owned_only": [
-        "CrewPayment/SaddlePayment source/actor/complete",
-        "Announcement activation_generic_increase and activation_choice receipt",
-        "FundingState active_mana_keys is speculative only"
-      ]
+      "contract": "As-entry copy action and phase are new. Entry-exile actions/phase and acquired activation routes are listed separately above."
     },
     {
-      "owner": "green-multi",
-      "container": "Observation/Action",
+      "container": "EntryExileChoiceView",
       "members": [
-        "entry_copy",
-        "ChooseEntryCopy"
+        "entrant",
+        "maximum",
+        "selected",
+        "candidates"
       ],
-      "payload": "EntryCopyChoiceView { entrant, card, optional, candidates }",
-      "owned_only": [
-        "EntryMove.copy_preparation",
-        "EntryBatch.copying",
-        "EntryChoiceRow.origin",
-        "EntryIdentity.copy/choice",
-        "funding projected copy rows/origins"
+      "contract": "Sparse entry_exile payload; non-targeted exact selections including unsuccessful reserved attempts are meaningful and rejected."
+    },
+    {
+      "container": "LinkedExileView",
+      "members": [
+        "ability_origin"
       ],
-      "status": "Waxen integrated through7a135cae; exact copied-origin state guard included. Mimeoplasm early-exile extension remains pending."
+      "contract": "Sparse Some origin binds exact acquired linked ability; reject both public links and private null-cast links with Some origin. None keeps prior bytes."
+    },
+    {
+      "container": "CopyExceptions",
+      "members": [
+        "retained_activation",
+        "embalm"
+      ],
+      "contract": "Retained immutable template Option and copiable white/Zombie/no-mana-cost bool omitted at neutral values; reject present properties in object, packet, token recipe, original recipe and any copy layer."
+    },
+    {
+      "container": "RetainedCopyActivation",
+      "members": [
+        "definition",
+        "ability"
+      ],
+      "contract": "New retained_activation payload; immutable card and activated-template index."
+    },
+    {
+      "container": "CopyTypes",
+      "members": [
+        "zombie"
+      ],
+      "contract": "False omitted; true is a new copiable subtype exception and is rejected in any recipe/override."
+    },
+    {
+      "container": "CopyLayerView",
+      "members": [
+        "retained_link_origin"
+      ],
+      "contract": "None omitted. Any Some origin is meaningful, including Some { ability_origin: null } and a hidden lower layer; inspect complete layer value rather than only its recipe."
+    },
+    {
+      "container": "RetainedActivationOrigin",
+      "members": [
+        "ability_origin"
+      ],
+      "contract": "New nested link origin; None inside a present wrapper intentionally means the original printed acquisition and cannot be erased."
+    },
+    {
+      "container": "EmbalmAbilityView",
+      "members": [
+        "object",
+        "acquisition",
+        "expires_turn"
+      ],
+      "contract": "Sparse acquired graveyard ability rows; reject nonempty owned history even after an expired/currently invisible row is omitted from observations."
+    },
+    {
+      "container": "StackKind::ActivatedAbility",
+      "members": [
+        "ability = 65526"
+      ],
+      "contract": "Reserved MAX-9 embalm activation reuses the old packet shape but introduces new behavior. Reject this exact historical slot in JSON and every held packet after the paid exile removes the acquired row."
     }
   ],
   "eligibility": [
@@ -298,21 +347,155 @@
     "Reject private exact-top knowledge, opaque announcements, activation payments, nested mana frames, replacement continuations, staged entries, linked private decisions and rollback checkpoints.",
     "Inspect all retained packet containers, their nested copy events, recipe facts, keyword/control rows, damage LKI and mana qualities; no observation-only eligibility claim.",
     "Conservatively reject new typed instruction/trigger continuations whose packet shape reuses an old representation.",
-    "Reject any copied-origin EntryChoiceRow at idle roots; active copy preparation/identity payloads already rejected as opaque entry batches."
+    "Reject any copied-origin EntryChoiceRow at idle roots; active copy preparation/identity payloads already rejected as opaque entry batches.",
+    "Reject sparse acquired embalm and exact retained/link origins at idle roots, and builtin65526 packets after the source has already paid exile.",
+    "Reject retained origins in every copy layer, including inactive lower layers, and copiable Zombie/embalm properties in retained original recipes.",
+    "An active or suspended Announcement containing ManaOutput remains opaque even during the inherited EffectMana/ChooseMana public phase.",
+    "No blanket false/present-field erasure is permitted; neutral new optional/bool properties are already omitted by their real serializers."
   ],
   "registry": {
     "module": "tests/legacy/assurance/schema199.rs",
     "recording_hook": "tests/legacy/assurance/regressions.rs before prior198 projector",
     "central_marker_edited": false,
     "trace_corpus_edited": false,
-    "existing_schema_version_assertion": "Leave198 until root performs actual final199bump, then update regressions.rs schema184 assertion in same final version commit."
+    "existing_schema_version_assertion": "Keep198 in the candidate. Root changes the central marker and exact schema assertion to199 together during the final migration commit."
   },
-  "validation": "rustfmt and git diff --check only; parent owns guarded Cargo and full trace recording/comparison",
+  "validation": "No Cargo run by schema author. rustfmt --edition 2024 --config skip_children=true, JSON syntax validation and git diff --check only; root owns guarded test compilation, scenarios and migration recording.",
   "final_acceptance": [
-    "Integrate remaining tax/copy features and refresh this field/state inventory.",
-    "Set central observation schema to199 once.",
-    "Update exact schema assertion198to199.",
+    "All final tax, copy, retained activation, ManaOutput and Embalm public/owned shapes are inventoried against cc67d4dc0; refresh if any further core fix adds wire or state.",
+    "Run the guarded focused legacy schema199 cases and resolve any compilation/runtime failures before the bump.",
+    "Set central observation schema to199 once and update the exact schema version assertion in the same final migration commit.",
     "Record candidate with RUSTMAGE_RECORD_CARD_TRACES_PREVIOUS_SCHEMA=198.",
     "Compare every inherited full previous-schema trace and action journal against committed198 baseline before replacing only reviewed current-schema fingerprints."
-  ]
+  ],
+  "owned_continuations": [
+    {
+      "container": "State.announcing / mana_announcement_stack",
+      "members": [
+        "Announcement.mana_output",
+        "Announcement.activation_generic_increase",
+        "Announcement.activation_choice",
+        "Announcement.exhaust_reuse_authorized",
+        "Announcement.additional_group_complete"
+      ],
+      "eligibility": "Reject any active or suspended announcement; do not clear a private receipt merely because public totals or targets match schema198."
+    },
+    {
+      "container": "ManaOutput",
+      "members": [
+        "recipe",
+        "choice",
+        "instance",
+        "controller",
+        "quality",
+        "source_power",
+        "deferred_cost",
+        "resume"
+      ],
+      "eligibility": "Cold receipt owned through an active/suspended Announcement, including post-cost late choice. All such roots are ineligible. FundingMove output and its deferred_cost are speculative only and absent from Game snapshots."
+    },
+    {
+      "container": "ActivationCostChoice",
+      "members": [
+        "base",
+        "reduction",
+        "route"
+      ],
+      "eligibility": "Pre-reduction alternative receipt freezes taxes and reductions. Opaque announcement guard rejects it."
+    },
+    {
+      "container": "CrewPayment / SaddlePayment",
+      "members": [
+        "source",
+        "actor",
+        "complete"
+      ],
+      "eligibility": "Complete contributor groups may survive through named-tax payment and nested mana. Reject any selected payment continuation."
+    },
+    {
+      "container": "EntryBatch / EntryMove / EntryIdentity",
+      "members": [
+        "copying",
+        "copy_preparation",
+        "exile_preparation",
+        "copy",
+        "choice",
+        "result capture and delayed sacrifice completion"
+      ],
+      "eligibility": "Reject any staged entry batch and replacement continuation, including completed selections still awaiting commit. Reject new entry_copy/entry_exile pending phase explicitly."
+    },
+    {
+      "container": "EntryChoiceRow",
+      "members": [
+        "origin"
+      ],
+      "eligibility": "Reject Some copied acquisition even at idle roots after all entry continuations have ended."
+    },
+    {
+      "container": "State.embalm_abilities",
+      "members": [
+        "object",
+        "acquisition",
+        "expires_turn"
+      ],
+      "eligibility": "Reject nonempty rows independently of visibility; also reject builtin65526 stack/held packets after the exact acquired row is pruned."
+    },
+    {
+      "container": "State.linked_choices",
+      "members": [
+        "links.ability_origin",
+        "null_cast_links.ability_origin"
+      ],
+      "eligibility": "Reject Some acquired-link identities independently of observation visibility; inherited None links retain bytes and remain eligible."
+    },
+    {
+      "container": "CopyRow / temporary copies",
+      "members": [
+        "recipe.exceptions.retained_activation",
+        "recipe.exceptions.embalm",
+        "recipe.overrides.types.zombie",
+        "original_recipe",
+        "layers[].retained_link_origin"
+      ],
+      "eligibility": "Inspect originals and every active/inactive layer; a later ordinary copy cannot hide a lower new semantic layer from eligibility."
+    },
+    {
+      "container": "FundingState / EntryProjection",
+      "members": [
+        "active_mana_keys",
+        "payment_departures exact source facts and power",
+        "contributor receipt",
+        "projected copies and origins"
+      ],
+      "eligibility": "Speculative borrowed search state is outside owned Game snapshots and public JSON; no wire erasure is introduced for these internal implementation details."
+    },
+    {
+      "container": "Typed immutable packet programs",
+      "members": [
+        "LinkedExileCreature",
+        "GrantEmbalmTargets",
+        "CreateEmbalmedSourceCopy",
+        "CopySourceFromLinkedExile",
+        "SpeedBelow recipient",
+        "SourcePower resolved scalar",
+        "new amount/filter/copy properties through inherited instructions"
+      ],
+      "eligibility": "Reject new semantics before old-shaped packet programs are mistaken for inherited state; recursively inspect target wrappers, modes, quantities, copy exceptions and player selectors."
+    }
+  ],
+  "focused_tests": {
+    "target": "legacy",
+    "filter": "engine::assurance::schema199::",
+    "cases": 12,
+    "coverage": [
+      "byte-exact unchanged JSON and sole unsigned derived entry-count removal",
+      "all new public field/action/phase families",
+      "neutral copy-property omission",
+      "paid embalm65526 packet without live acquisition across retained containers",
+      "owned invisible acquired rows and raw branch/restore",
+      "idle links, inactive copy-layer retained origins and original recipes",
+      "active and suspended late mana receipt raw branch/restore",
+      "new semantics nested in inherited target/program/scalar/cost/filter shapes"
+    ]
+  }
 }
