@@ -19,7 +19,8 @@
   "semantics": [
     "Filter uses existing earlier-layer card kinds, excluded kinds, owner/controller relation, subtype and exact other-source reference. Growth recipients must be battlefield permanents.",
     "Amount is sampled once, signed multipliers are checked once, and the recipient set is frozen before any growth changes. The resolution modifier stays on those incarnations through later type/control changes and expires through existing cleanup growth reset.",
-    "Nonmana variable exile costs use PaidAdditionalCostSelectionCount for declared X, including replacement-modified payment; actual successful departures remain a separate frozen count."
+    "Nonmana variable exile costs use PaidAdditionalCostSelectionCount for declared X, including replacement-modified payment; actual successful departures remain a separate frozen count.",
+    "The new amount-bearing instruction participates in all existing source-quantity, named-counter-quantity and cast-symbol collectors, preserving frozen facts after departure."
   ],
   "owned_state_fields_added": 0,
   "public_wire_fields_added": 0,
@@ -31,7 +32,8 @@
     "affected_membership_stays_frozen_through_later_type_changes_and_new_entries",
     "a_source_new_incarnation_is_other_than_the_independent_resolving_source",
     "one_scalar_is_sampled_before_modifying_its_source_and_all_recipients",
-    "owned_counter_cost_selection_and_group_resolution_match_raw_index_and_restore"
+    "owned_counter_cost_selection_and_group_resolution_match_raw_index_and_restore",
+    "signed_growth_registers_toughness_and_named_counter_lki_before_source_sacrifice"
   ],
   "validation": {
     "rustfmt": "passed",

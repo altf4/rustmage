@@ -283,3 +283,55 @@ fn owned_counter_cost_selection_and_group_resolution_match_raw_index_and_restore
     resolve(&mut indexed);
     assert_eq!(stats(&indexed, victim), (3, 3));
 }
+
+#[test]
+fn signed_growth_registers_toughness_and_named_counter_lki_before_source_sacrifice() {
+    const TOUGHNESS: CardRules = CardRules {
+        effect: Effect::Creature(2, 3),
+        activated: &[ActivatedAbility {
+            exhaust: false,
+            guard: ActivationGuard::Always,
+            origin: ActivationOrigin::Battlefield,
+            cycling: false,
+            cost: ActivationCost {
+                sacrifice: true,
+                ..ActivationCost::ZERO
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::GrowFilteredScaled {
+                filter: GROUP,
+                amount: AmountValue::SourceToughness,
+                power: 1,
+                toughness: 0,
+            }],
+            sorcery: false,
+            once_per_turn: false,
+        }],
+        ..CardRules::EMPTY
+    };
+    const NAMED: CardRules = CardRules {
+        activated: &[ActivatedAbility {
+            program: &[Instruction::GrowFilteredScaled {
+                filter: GROUP,
+                amount: AmountValue::SourceCounterQuantity(CounterKind::Charge),
+                power: 1,
+                toughness: 0,
+            }],
+            ..TOUGHNESS.activated[0]
+        }],
+        ..TOUGHNESS
+    };
+    for (rules, expected) in [(&TOUGHNESS, 8), (&NAMED, 6)] {
+        let _scope = fixture_rules::activate(&[(Card::GrizzlyBears, rules)]);
+        let mut g = scenario(Player::P0);
+        let source = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
+        let recipient = put(&mut g, Player::P1, "Hill Giant", Zone::Battlefield);
+        g.add_counter(source, CounterKind::PlusOne, 2);
+        g.add_counter(source, CounterKind::Charge, 3);
+        start(&mut g, source);
+        pay(&mut g);
+        assert_eq!(g.state.objects[source as usize].zone, Zone::Graveyard);
+        resolve(&mut g);
+        assert_eq!(stats(&g, recipient), (expected, 3));
+    }
+}
