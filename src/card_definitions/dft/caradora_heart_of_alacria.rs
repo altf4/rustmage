@@ -1,9 +1,22 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// This replacement adds one per counter-placement event, including noncreature Vehicles.
+const REPLACEMENT: ReplacementSpec = ReplacementSpec::Counters {
+    filter: ReplacementFilter::CreatureOrVehicle,
+    kind: Some(CounterKind::PlusOne),
+    factor: 1,
+    add: 1,
+    effects_only: false,
+};
+const GROUPS: &[StaticAbilityGroup] = &[StaticAbilityGroup {
+    line: 1,
+    first_layer: AbilityLayer::Rule,
+    fragments: &[StaticAbilityFragment::Replacement(0, REPLACEMENT)],
+}];
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(4, 2),
+    static_groups: GROUPS,
     triggers: &[TriggeredAbility {
         condition: TriggerCondition::SelfEnters,
-        targets: TargetPlan::Single(TargetSpec::NONE),
+        targets: TargetPlan::NONE,
         program: &[
             Instruction::May { skip: 1 },
             Instruction::Search(SearchSpec {
@@ -18,52 +31,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             }),
         ],
     }],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
-    static_groups: &[StaticAbilityGroup {
-        line: 1,
-        first_layer: AbilityLayer::Rule,
-        fragments: &[StaticAbilityFragment::Replacement(
-            0,
-            ReplacementSpec::Counters {
-                filter: ReplacementFilter::CreatureOrVehicle,
-                kind: Some(CounterKind::PlusOne),
-                factor: 1,
-                add: 1,
-                effects_only: false,
-            },
-        )],
-    }],
     extras: &CardExtras {
-        static_ability_groups: &[StaticAbilityGroup {
-            line: 1,
-            first_layer: AbilityLayer::Rule,
-            fragments: &[StaticAbilityFragment::Replacement(
-                0,
-                ReplacementSpec::Counters {
-                    filter: ReplacementFilter::CreatureOrVehicle,
-                    kind: Some(CounterKind::PlusOne),
-                    factor: 1,
-                    add: 1,
-                    effects_only: false,
-                },
-            )],
-        }],
-        replacement_effects: &[ReplacementSpec::Counters {
-            filter: ReplacementFilter::CreatureOrVehicle,
-            kind: Some(CounterKind::PlusOne),
-            factor: 1,
-            add: 1,
-            effects_only: false,
-        }],
+        static_ability_groups: GROUPS,
+        replacement_effects: &[REPLACEMENT],
         ..CardExtras::EMPTY
     },
     ..CardRules::EMPTY

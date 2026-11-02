@@ -329,10 +329,31 @@
         "First strike, trample",
         "When this creature enters, you may search your library for up to two artifact, creature, and/or enchantment cards with mana value 1 or less, reveal them, put them into your hand, then shuffle."
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_gearhulks",
+      "outcome_proofs": [
+        "brightglass_finds_at_most_two_small_artifact_creature_or_enchantment_cards_and_can_decline"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_results: exact successful-entry witnesses, permanent acquired keywords, finality, own-next-end-step delay, post-entry artifact counters and replacement prevention/redirect contrast",
+        "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
+        "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "First strike, trample",
+          "scenario": [
+            "brightglass_finds_at_most_two_small_artifact_creature_or_enchantment_cards_and_can_decline"
+          ]
+        },
+        {
+          "obligation": "When this creature enters, you may search your library for up to two artifact, creature, and/or enchantment cards with mana value 1 or less, reveal them, put them into your hand, then shuffle.",
+          "scenario": [
+            "brightglass_finds_at_most_two_small_artifact_creature_or_enchantment_cards_and_can_decline"
+          ]
+        }
+      ]
     },
     {
       "name": "Broadside Barrage",
@@ -438,10 +459,31 @@
         "When Caradora enters, you may search your library for a Mount or Vehicle card, reveal it, put it into your hand, then shuffle.",
         "If one or more +1/+1 counters would be put on a creature or Vehicle you control, that many plus one +1/+1 counters are put on it instead."
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_gearhulks",
+      "outcome_proofs": [
+        "caradora_searches_mount_or_vehicle_and_adds_one_per_counter_event_on_creature_or_vehicle"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_results: exact successful-entry witnesses, permanent acquired keywords, finality, own-next-end-step delay, post-entry artifact counters and replacement prevention/redirect contrast",
+        "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
+        "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "When Caradora enters, you may search your library for a Mount or Vehicle card, reveal it, put it into your hand, then shuffle.",
+          "scenario": [
+            "caradora_searches_mount_or_vehicle_and_adds_one_per_counter_event_on_creature_or_vehicle"
+          ]
+        },
+        {
+          "obligation": "If one or more +1/+1 counters would be put on a creature or Vehicle you control, that many plus one +1/+1 counters are put on it instead.",
+          "scenario": [
+            "caradora_searches_mount_or_vehicle_and_adds_one_per_counter_event_on_creature_or_vehicle"
+          ]
+        }
+      ]
     },
     {
       "name": "Cloudspire Coordinator",
@@ -527,10 +569,32 @@
         "Menace, deathtouch",
         "When this creature enters, put target creature card with mana value 4 or less from a graveyard onto the battlefield under your control with a finality counter on it. That creature gains menace, deathtouch, and haste. At the beginning of your next end step, exile that creature."
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_gearhulks",
+      "outcome_proofs": [
+        "coalstoke_returns_opponents_creature_with_finality_and_lasting_keywords_until_our_next_end_step"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_results: exact successful-entry witnesses, permanent acquired keywords, finality, own-next-end-step delay, post-entry artifact counters and replacement prevention/redirect contrast",
+        "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
+        "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Menace, deathtouch",
+          "scenario": [
+            "coalstoke_returns_opponents_creature_with_finality_and_lasting_keywords_until_our_next_end_step"
+          ]
+        },
+        {
+          "obligation": "When this creature enters, put target creature card with mana value 4 or less from a graveyard onto the battlefield under your control with a finality counter on it. That creature gains menace, deathtouch, and haste. At the beginning of your next end step, exile that creature.",
+          "scenario": [
+            "coalstoke_returns_opponents_creature_with_finality_and_lasting_keywords_until_our_next_end_step"
+          ]
+        }
+      ],
+      "definition_binding_note": "Pinned Oracle gives menace/deathtouch/haste without a duration. Author a permanent exact-entry grant; pinned XMage calls GainAbilityTargetEffect default EndOfTurn, so that Java duration is deliberately corrected to Oracle. Scenario crosses opponent cleanup before our delayed exile."
     },
     {
       "name": "Debris Beetle",
@@ -807,10 +871,37 @@
         "When this creature enters, create a 2/2 black Zombie creature token.",
         "Max speed \u2014 Whenever a creature you control dies, each opponent loses 1 life and you gain 1 life."
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_gearhulks",
+      "outcome_proofs": [
+        "embalmed_ascendant_makes_a_zombie_and_its_max_speed_death_trigger_includes_itself_and_tokens"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_results: exact successful-entry witnesses, permanent acquired keywords, finality, own-next-end-step delay, post-entry artifact counters and replacement prevention/redirect contrast",
+        "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
+        "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+          "scenario": [
+            "embalmed_ascendant_makes_a_zombie_and_its_max_speed_death_trigger_includes_itself_and_tokens"
+          ]
+        },
+        {
+          "obligation": "When this creature enters, create a 2/2 black Zombie creature token.",
+          "scenario": [
+            "embalmed_ascendant_makes_a_zombie_and_its_max_speed_death_trigger_includes_itself_and_tokens"
+          ]
+        },
+        {
+          "obligation": "Max speed \u2014 Whenever a creature you control dies, each opponent loses 1 life and you gain 1 life.",
+          "scenario": [
+            "embalmed_ascendant_makes_a_zombie_and_its_max_speed_death_trigger_includes_itself_and_tokens"
+          ]
+        }
+      ]
     },
     {
       "name": "Explosive Getaway",
@@ -819,10 +910,31 @@
         "Exile up to one target artifact or creature. Return it to the battlefield under its owner's control at the beginning of the next end step.",
         "Explosive Getaway deals 4 damage to each creature."
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_gearhulks",
+      "outcome_proofs": [
+        "explosive_getaway_blinks_before_dealing_four_and_returns_under_owner_control_next_end_step"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_results: exact successful-entry witnesses, permanent acquired keywords, finality, own-next-end-step delay, post-entry artifact counters and replacement prevention/redirect contrast",
+        "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
+        "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Exile up to one target artifact or creature. Return it to the battlefield under its owner's control at the beginning of the next end step.",
+          "scenario": [
+            "explosive_getaway_blinks_before_dealing_four_and_returns_under_owner_control_next_end_step"
+          ]
+        },
+        {
+          "obligation": "Explosive Getaway deals 4 damage to each creature.",
+          "scenario": [
+            "explosive_getaway_blinks_before_dealing_four_and_returns_under_owner_control_next_end_step"
+          ]
+        }
+      ]
     },
     {
       "name": "Fang Guardian",
@@ -1400,10 +1512,34 @@
         "Lifelink, ward {1}",
         "When this creature enters, look at target player's hand. You may choose a card from it. If you do, that player discards that card, then draws a card."
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_gearhulks",
+      "outcome_proofs": [
+        "oildeep_private_hand_look_can_decline_or_replace_one_chosen_card",
+        "oildeep_ward_cost_is_one_mana_and_decline_counters_the_related_targeting_spell"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_results: exact successful-entry witnesses, permanent acquired keywords, finality, own-next-end-step delay, post-entry artifact counters and replacement prevention/redirect contrast",
+        "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
+        "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Lifelink, ward {1}",
+          "scenario": [
+            "oildeep_private_hand_look_can_decline_or_replace_one_chosen_card",
+            "oildeep_ward_cost_is_one_mana_and_decline_counters_the_related_targeting_spell"
+          ]
+        },
+        {
+          "obligation": "When this creature enters, look at target player's hand. You may choose a card from it. If you do, that player discards that card, then draws a card.",
+          "scenario": [
+            "oildeep_private_hand_look_can_decline_or_replace_one_chosen_card",
+            "oildeep_ward_cost_is_one_mana_and_decline_counters_the_related_targeting_spell"
+          ]
+        }
+      ]
     },
     {
       "name": "Ooze Patrol",
@@ -1436,10 +1572,34 @@
         "Each creature that's attacking one of your opponents has trample.",
         "{G}, {T}: You may put a creature or Vehicle card from your hand onto the battlefield. If you put an artifact onto the battlefield this way, put two +1/+1 counters on it."
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_gearhulks",
+      "outcome_proofs": [
+        "oviya_puts_only_creature_or_vehicle_from_private_hand_and_adds_counters_only_if_artifact",
+        "oviya_grants_trample_only_to_creatures_attacking_its_opponent"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_results: exact successful-entry witnesses, permanent acquired keywords, finality, own-next-end-step delay, post-entry artifact counters and replacement prevention/redirect contrast",
+        "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
+        "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Each creature that's attacking one of your opponents has trample.",
+          "scenario": [
+            "oviya_puts_only_creature_or_vehicle_from_private_hand_and_adds_counters_only_if_artifact",
+            "oviya_grants_trample_only_to_creatures_attacking_its_opponent"
+          ]
+        },
+        {
+          "obligation": "{G}, {T}: You may put a creature or Vehicle card from your hand onto the battlefield. If you put an artifact onto the battlefield this way, put two +1/+1 counters on it.",
+          "scenario": [
+            "oviya_puts_only_creature_or_vehicle_from_private_hand_and_adds_counters_only_if_artifact",
+            "oviya_grants_trample_only_to_creatures_attacking_its_opponent"
+          ]
+        }
+      ]
     },
     {
       "name": "Plow Through",
@@ -1547,10 +1707,31 @@
         "Vigilance, menace",
         "When this creature enters, other creatures you control get +2/+2 and gain vigilance and menace until end of turn. Damage can't be prevented this turn."
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_gearhulks",
+      "outcome_proofs": [
+        "pyrewood_buffs_only_other_controlled_creatures_and_disables_prevention_through_cleanup"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_results: exact successful-entry witnesses, permanent acquired keywords, finality, own-next-end-step delay, post-entry artifact counters and replacement prevention/redirect contrast",
+        "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
+        "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Vigilance, menace",
+          "scenario": [
+            "pyrewood_buffs_only_other_controlled_creatures_and_disables_prevention_through_cleanup"
+          ]
+        },
+        {
+          "obligation": "When this creature enters, other creatures you control get +2/+2 and gain vigilance and menace until end of turn. Damage can't be prevented this turn.",
+          "scenario": [
+            "pyrewood_buffs_only_other_controlled_creatures_and_disables_prevention_through_cleanup"
+          ]
+        }
+      ]
     },
     {
       "name": "Rangers' Aetherhive",
@@ -1637,10 +1818,37 @@
         "Prowess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)",
         "When this creature enters, for each opponent, put up to one target nonland permanent that player controls into its owner's library third from the top."
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_gearhulks",
+      "outcome_proofs": [
+        "riptide_inserts_opposing_nonland_in_its_owners_library_third_and_prowess_is_temporary"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_results: exact successful-entry witnesses, permanent acquired keywords, finality, own-next-end-step delay, post-entry artifact counters and replacement prevention/redirect contrast",
+        "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
+        "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Double strike",
+          "scenario": [
+            "riptide_inserts_opposing_nonland_in_its_owners_library_third_and_prowess_is_temporary"
+          ]
+        },
+        {
+          "obligation": "Prowess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)",
+          "scenario": [
+            "riptide_inserts_opposing_nonland_in_its_owners_library_third_and_prowess_is_temporary"
+          ]
+        },
+        {
+          "obligation": "When this creature enters, for each opponent, put up to one target nonland permanent that player controls into its owner's library third from the top.",
+          "scenario": [
+            "riptide_inserts_opposing_nonland_in_its_owners_library_third_and_prowess_is_temporary"
+          ]
+        }
+      ]
     },
     {
       "name": "Rise from the Wreck",
@@ -2210,10 +2418,37 @@
         "Sacrifice another creature: Surveil 1. Activate only once each turn.",
         "Max speed \u2014 Whenever a nontoken creature you control dies, create a tapped 2/2 black Zombie creature token."
       ],
-      "status": "pending",
-      "test_target": null,
-      "outcome_proofs": [],
-      "shared_contracts": []
+      "status": "authored candidate",
+      "test_target": "dft_green_multi_cards_gearhulks",
+      "outcome_proofs": [
+        "zahur_sacrifices_another_once_per_turn_surveils_and_only_nontoken_deaths_make_tapped_zombies"
+      ],
+      "shared_contracts": [
+        "Frozen dft_entry_results: exact successful-entry witnesses, permanent acquired keywords, finality, own-next-end-step delay, post-entry artifact counters and replacement prevention/redirect contrast",
+        "Frozen target/search/hand contracts: type/MV filters, optional failure-to-find/shuffle, private hand choice and owned raw/index/restore, ward related spell payment",
+        "Existing simultaneous damage, prevention prohibition, owner-controlled blink returns, controller-owned live counter replacement and source-LKI death triggers"
+      ],
+      "validation": "pending root focused run",
+      "obligation_evidence": [
+        {
+          "obligation": "Start your engines! (If you have no speed, it starts at 1. It increases once on each of your turns when an opponent loses life. Max speed is 4.)",
+          "scenario": [
+            "zahur_sacrifices_another_once_per_turn_surveils_and_only_nontoken_deaths_make_tapped_zombies"
+          ]
+        },
+        {
+          "obligation": "Sacrifice another creature: Surveil 1. Activate only once each turn.",
+          "scenario": [
+            "zahur_sacrifices_another_once_per_turn_surveils_and_only_nontoken_deaths_make_tapped_zombies"
+          ]
+        },
+        {
+          "obligation": "Max speed \u2014 Whenever a nontoken creature you control dies, create a tapped 2/2 black Zombie creature token.",
+          "scenario": [
+            "zahur_sacrifices_another_once_per_turn_surveils_and_only_nontoken_deaths_make_tapped_zombies"
+          ]
+        }
+      ]
     }
   ],
   "engine_checkpoint": "3415 tests pass; independent nonauthor reviews; warm cache verified by root"
