@@ -5,7 +5,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         condition: TriggerCondition::SelfEnters,
         targets: TargetPlan::NONE,
         program: &[
-            Instruction::Mill(PlayerSet::Controller, 2),
+            Instruction::Mill(PlayerSet::Controller, MillAmount::Fixed(2)),
             Instruction::PutCountersScaled {
                 subject: Subject::Source,
                 kind: CounterKind::PlusOne,
