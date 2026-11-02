@@ -584,5 +584,14 @@
     "guard": "Reject newly populated noninstant CopyCastSpell(false) packets using the selected consumer program; preserve old prepared-copy (including mixed programs) and exact repeated-all-spells captured packets. Recurse into owned copy events.",
     "regression": "prior_198_rejects_new_noninstant_single_copy_capture_but_preserves_old_capture_routes",
     "contract": "docs/aetherdrift-permanent-cast-copy-evidence.json"
+  },
+  "aggregate_target_group_semantic_delta": {
+    "shape": "No new public or owned fields; existing declared target groups now reach two aggregate instructions intact",
+    "guard": "Reject selected multi-group ExchangeControlTargets plan/program pairs, nested modal declarations and recursively retained packet captures. Preserve inherited Single and one-element Groups exchanges, actual Burglar Adventure packets and unrelated grouped programs. Existing reward-opcode prior198 rejection remains unchanged.",
+    "regressions": [
+      "prior_198_rejects_multigroup_aggregate_exchange_but_preserves_single_occurrence_and_unrelated_groups",
+      "prior_198_keeps_real_burglars_plot_single_group_capture_eligible"
+    ],
+    "contract": "docs/aetherdrift-aggregate-target-groups-evidence.json"
   }
 }

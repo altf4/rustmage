@@ -651,11 +651,25 @@ fn program_supported(program: &[Instruction]) -> bool {
             | Instruction::ModalOncePerTurn(modes)
             | Instruction::ModalUpToX { modes, .. } => modes
                 .iter()
-                .all(|mode| plan_supported(mode.targets) && program_supported(mode.program)),
+                .all(|mode| plan_program_supported(mode.targets, mode.program)),
             _ => true,
         }
     })
 }
+// Exchange formerly consumed only the active group. Preserving all roles is
+// meaningful only when a selected declaration has more than one group; retain
+// old single-occurrence exchanges (including a two-target Single specification).
+// The destruction/reward opcode was already new to schema199 and remains
+// rejected by program_supported independently of its group count.
+fn plan_program_supported(plan: TargetPlan, program: &[Instruction]) -> bool {
+    plan_supported(plan)
+        && program_supported(program)
+        && !(matches!(plan, TargetPlan::Groups(groups) if groups.len() > 1)
+            && program
+                .iter()
+                .any(|instruction| matches!(instruction, Instruction::ExchangeControlTargets)))
+}
+
 // The old noninstant capture path admitted a prepared-copy consumer, and
 // repeated-all-spells packets already retained any spell. The newly broadened
 // single-copy consumer needs schema199 only when neither old route supplied the
@@ -708,7 +722,7 @@ fn packet_supported(item: &SpellView) -> bool {
     (legacy_trigger
         || item
             .program()
-            .is_none_or(|(plan, program)| plan_supported(plan) && program_supported(program)))
+            .is_none_or(|(plan, program)| plan_program_supported(plan, program)))
         && trigger.is_none_or(|trigger| trigger_supported(trigger.condition))
         && trigger.is_none_or(|trigger| {
             item.copy_event.as_ref().is_none_or(|event| {
@@ -2176,4 +2190,181 @@ fn prior_198_rejects_new_noninstant_single_copy_capture_but_preserves_old_captur
         repeated.program,
         true
     ));
+}
+
+#[test]
+fn prior_198_rejects_multigroup_aggregate_exchange_but_preserves_single_occurrence_and_unrelated_groups()
+ {
+    use card_rules::authored::CardRules;
+    const fn role(relation: i8) -> TargetRule {
+        TargetRule::Object {
+            zone: TargetZone::Battlefield,
+            kinds: 17,
+            relation,
+            other: false,
+            nonland: false,
+            tapped: false,
+            min_mana: 0,
+            max_mana: u32::MAX,
+        }
+    }
+    const ROLES: TargetPlan =
+        TargetPlan::Groups(&[TargetSpec::one(role(0)), TargetSpec::one(role(1))]);
+    const SINGLE: TargetPlan = TargetPlan::Single(TargetSpec {
+        rule: TargetRule::Grouped {
+            base: &role(-1),
+            constraint: TargetGroupConstraint::DifferentControllers,
+        },
+        min: 2,
+        max: 2,
+    });
+    const EXCHANGE: &[Instruction] = &[Instruction::ExchangeControlTargets];
+    const fn ability(targets: TargetPlan, program: &'static [Instruction]) -> ActivatedAbility {
+        ActivatedAbility {
+            exhaust: false,
+            guard: ActivationGuard::Always,
+            origin: ActivationOrigin::Battlefield,
+            cycling: false,
+            cost: ActivationCost::ZERO,
+            targets,
+            program,
+            sorcery: false,
+            once_per_turn: false,
+        }
+    }
+    const RULES: CardRules = CardRules {
+        effect: Effect::Creature(2, 2),
+        activated: &[
+            ability(ROLES, EXCHANGE),
+            ability(SINGLE, EXCHANGE),
+            ability(
+                TargetPlan::Groups(&[TargetSpec {
+                    rule: role(-1),
+                    min: 2,
+                    max: 2,
+                }]),
+                EXCHANGE,
+            ),
+            ability(ROLES, &[Instruction::SelectGroup(1), Instruction::Destroy]),
+            ability(
+                TargetPlan::NONE,
+                &[Instruction::Modal(&[
+                    SpellMode {
+                        text: "Exchange one occurrence.",
+                        targets: SINGLE,
+                        program: EXCHANGE,
+                    },
+                    SpellMode {
+                        text: "Exchange independent roles.",
+                        targets: ROLES,
+                        program: EXCHANGE,
+                    },
+                ])],
+            ),
+        ],
+        ..CardRules::EMPTY
+    };
+    let _scope = card_rules::fixture_rules::activate(&[(Card::GrizzlyBears, &RULES)]);
+    let mut game = scenario(Player::P0);
+    let source = put(&mut game, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    assert!(prior_schema199_state_supported(&game.state));
+    let new = game.activation_packet(Player::P0, source, 0);
+    assert!(
+        !packet_supported(&new),
+        "a new multigroup declaration is meaningful even before choices"
+    );
+    for index in [1, 2, 3] {
+        assert!(
+            packet_supported(&game.activation_packet(Player::P0, source, index)),
+            "inherited declaration {index}"
+        );
+    }
+    let mut modal = game.activation_packet(Player::P0, source, 4);
+    modal.mode = Some(0);
+    assert!(
+        packet_supported(&modal),
+        "use the selected mode's one-group declaration"
+    );
+    modal.mode = Some(1);
+    assert!(
+        !packet_supported(&modal),
+        "use the selected mode's independent roles"
+    );
+    assert!(
+        !program_supported(&[Instruction::Modal(&[SpellMode {
+            text: "New aggregate declaration.",
+            targets: ROLES,
+            program: EXCHANGE
+        },])]),
+        "nested declared modes must not hide new semantics"
+    );
+    assert!(program_supported(&[Instruction::Modal(&[SpellMode {
+        text: "Inherited single declaration.",
+        targets: SINGLE,
+        program: EXCHANGE
+    },])]));
+    // Every owned packet family calls the same predicate; do not erase groups.
+    let clean = game.snapshot();
+    game.state.stack.push(new.clone());
+    assert!(!prior_schema199_state_supported(&game.state));
+    let saved = game.snapshot();
+    let mut branch = game.clone();
+    branch.restore(&clean).unwrap();
+    assert!(prior_schema199_state_supported(&branch.state));
+    branch.restore(&saved).unwrap();
+    assert!(!prior_schema199_state_supported(&branch.state));
+    game.state.stack.clear();
+    game.state.delayed_artifact_copies = Some(Box::new(vec![new.clone()]));
+    assert!(!prior_schema199_state_supported(&game.state));
+    let mut nested = game.activation_packet(Player::P0, source, 1);
+    nested.copy_event = Some(Box::new(CopyEvent {
+        spell: new,
+        amount: 1,
+    }));
+    assert!(
+        !packet_supported(&nested),
+        "recursively owned captures retain their own declaration guard"
+    );
+    assert!(
+        !plan_program_supported(
+            SINGLE,
+            &[Instruction::DestroyTargetsThenSourceCountersIfOwnCreature {
+                kind: CounterKind::PlusOne,
+                amount: 2,
+            }]
+        ),
+        "the reward opcode itself remains schema199-only even for one group"
+    );
+}
+
+#[test]
+fn prior_198_keeps_real_burglars_plot_single_group_capture_eligible() {
+    let mut game = scenario(Player::P0);
+    let own = put(&mut game, Player::P0, "Bear Cub", Zone::Battlefield);
+    let enemy = put(&mut game, Player::P1, "Bear Cub", Zone::Battlefield);
+    let spell = put(
+        &mut game,
+        Player::P0,
+        "Bilbo, Luckwearer // Burglar's Plot",
+        Zone::Hand,
+    );
+    act(&mut game, Action::AnnounceAdventure { card: spell });
+    for card in [own, enemy] {
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(card),
+            },
+        );
+    }
+    if game.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut game, Action::FinishTargets);
+    }
+    choose(&mut game, |action| {
+        matches!(action, Action::PayCosts { .. })
+    });
+    let packet = game.state.stack.last().unwrap();
+    assert!(matches!(packet.program().unwrap().0, TargetPlan::Single(_)));
+    assert!(packet_supported(packet));
+    assert!(prior_schema199_state_supported(&game.state));
 }

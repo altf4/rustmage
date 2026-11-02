@@ -3051,6 +3051,10 @@ impl Game {
                     | Instruction::AttachEquipmentByGroups { .. }
                     | Instruction::AttachEquipmentGroupsReflexive { .. }
                     | Instruction::ReturnAllTargetsToHand
+                    // These aggregate operations consume every independently
+                    // revalidated target role, regardless of SelectGroup.
+                    | Instruction::ExchangeControlTargets
+                    | Instruction::DestroyTargetsThenSourceCountersIfOwnCreature { .. }
                     | Instruction::CopyTargetSpell { .. }
                     | Instruction::CopyTargetAbility { .. }
                     | Instruction::DamageByGroup { .. }
