@@ -64,6 +64,17 @@ def load(root=ROOT):
         source=path.with_suffix('.rs')
         if not source.is_file():raise ValueError('missing typed Rust: '+str(source))
         if type(record.get('complete')) is not bool:raise ValueError('missing complete declaration: '+str(path))
+        absence = record.get('has_rules_abilities')
+        if absence is not None and type(absence) is not bool:
+            raise ValueError('invalid authored ability-presence fact: '+card['name'])
+        if absence is False and card['oracle_id']:
+            oracle = facts[card['oracle_id']]
+            face = oracle.get('card_faces', [oracle])[0]
+            if card['category'] == 'back_face':
+                face = oracle['card_faces'][1]
+            if face.get('oracle_text', '').strip() or card['basic']:
+                raise ValueError('abilityless fact contradicts pinned Oracle: '+card['name'])
+
         records[index]=dict(record,source=source,relative=source.relative_to(root).as_posix())
         fingerprint.extend(canonical(record));fingerprint.extend(source.read_bytes())
     if records.keys()!=by_id.keys():raise ValueError('missing card definitions: '+str(sorted(by_id.keys()-records.keys())))

@@ -39,6 +39,19 @@ impl CardRules {
         static_groups: &[],
     };
     pub const fn checked_effect(&self) -> Effect {
+        if let Some(false) = self.extras.has_rules_abilities {
+            assert!(
+                self.triggers.is_empty()
+                    && self.activated.is_empty()
+                    && self.static_groups.is_empty()
+                    && self.extras.static_ability_groups.is_empty(),
+                "abilityless definition has rules abilities"
+            );
+            assert!(
+                self.keywords.0 == 0 && self.aura.is_none() && self.extras.aura.is_none(),
+                "abilityless definition has keywords or enchant ability"
+            );
+        }
         assert!(
             !matches!(self.effect, Effect::Unsupported),
             "complete authored card lacks behavior"
@@ -165,6 +178,8 @@ pub const fn object(kinds: u8) -> TargetRule {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub struct CardExtras {
+    /// Explicit source-audited absence/presence of rules abilities, including outside the battlefield.
+    pub has_rules_abilities: Option<bool>,
     pub transforming_double_face: bool,
     pub targets_up_to_x: bool,
     pub life_x_cost: bool,
@@ -282,6 +297,7 @@ pub struct CardExtras {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl CardExtras {
     pub const EMPTY: Self = Self {
+        has_rules_abilities: None,
         transforming_double_face: false,
         targets_up_to_x: false,
         life_x_cost: false,

@@ -1004,6 +1004,7 @@ pub enum LibraryDestination {
     Graveyard,
     Shuffle,
     SecondFromTop,
+    NthFromTop(u16),
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -1176,6 +1177,7 @@ struct PlayerState {
     extra_land_plays_remaining: u64,
     extra_land_plays_granted: u64,
     nonland_permanents_entered_this_turn: u64,
+    mount_or_vehicle_entries_this_turn: u64,
     spells_cast_this_turn: u64,
     instant_sorcery_cast_this_turn: u64,
     creature_spells_cast_this_turn: u64,
@@ -2918,6 +2920,8 @@ pub struct PlayerView {
     pub no_maximum_hand_size: bool,
     /// Historical actual entries this turn; departures do not remove them.
     pub nonland_permanents_entered_this_turn: u64,
+    #[serde(skip_serializing_if = "is_zero_u64")]
+    pub mount_or_vehicle_entries_this_turn: u64,
     pub spells_cast_this_turn: u64,
     pub cards_drawn_this_turn: u64,
     /// Whether this player completed a positive scry or surveil this turn.
@@ -3576,6 +3580,7 @@ impl Game {
             extra_land_plays_remaining: 0,
             extra_land_plays_granted: 0,
             nonland_permanents_entered_this_turn: 0,
+            mount_or_vehicle_entries_this_turn: 0,
             spells_cast_this_turn: 0,
             instant_sorcery_cast_this_turn: 0,
             creature_spells_cast_this_turn: 0,
@@ -8844,7 +8849,7 @@ impl Game {
                 );
             }
             let (owner, _) = entry_identity;
-            self.record_nonland_entry(owner, self.current_kinds(id));
+            self.record_nonland_entry(owner, id, self.current_kinds(id));
             self.register_battlefield_sources(id);
         } else if destination == Zone::Graveyard {
             self.register_graveyard_sources(id);
@@ -8980,7 +8985,14 @@ impl Game {
 
     // Both normal zone moves and token batches record actual entry once. All
     // entries in a simultaneous batch are recorded before entry observers run.
-    fn record_nonland_entry(&mut self, controller: Player, kinds: u16) {
+    fn record_nonland_entry(&mut self, controller: Player, id: CardId, kinds: u16) {
+        if self.has_subtype(id, "Mount") || self.has_subtype(id, "Vehicle") {
+            let count =
+                &mut self.state.players[controller.index()].mount_or_vehicle_entries_this_turn;
+            *count = count
+                .checked_add(1)
+                .capacity("Mount/Vehicle entry history exhausted");
+        }
         if kinds & 2 == 0 {
             let count =
                 &mut self.state.players[controller.index()].nonland_permanents_entered_this_turn;
@@ -9048,6 +9060,7 @@ impl Game {
         for player in &mut self.state.players {
             player.turn_facts = TurnFactsView::default();
             player.nonland_permanents_entered_this_turn = 0;
+            player.mount_or_vehicle_entries_this_turn = 0;
             player.spells_cast_this_turn = 0;
             player.instant_sorcery_cast_this_turn = 0;
             player.creature_spells_cast_this_turn = 0;
@@ -10085,6 +10098,7 @@ impl Game {
                 }),
                 nonland_permanents_entered_this_turn: s.players[i]
                     .nonland_permanents_entered_this_turn,
+                mount_or_vehicle_entries_this_turn: s.players[i].mount_or_vehicle_entries_this_turn,
                 spells_cast_this_turn: s.players[i].spells_cast_this_turn,
                 cards_drawn_this_turn: s.players[i].cards_drawn_this_turn,
                 scried_or_surveilled_this_turn: s.players[i].scried_or_surveilled_this_turn,

@@ -4,6 +4,7 @@ use super::*;
 impl Game {
     /// One triggered packet for the entire simultaneous exile event.
     pub(super) fn creatures_exiled_batch_triggers(&mut self, events: &[ZoneChange]) {
+        self.cards_exiled_from_public_zones_triggers(events);
         if !events
             .iter()
             .any(|event| event.moved && event.destination == Zone::Exile)
@@ -110,6 +111,61 @@ impl Game {
             }
         }
     }
+    /// Battlefield departures look back; graveyard departures use the completed world.
+    /// Merge the two observer populations by exact incarnation AND controller.
+    fn cards_exiled_from_public_zones_triggers(&mut self, events: &[ZoneChange]) {
+        if !events.iter().any(|event| {
+            event.moved
+                && event.was_card
+                && event.destination == Zone::Exile
+                && matches!(event.before.zone, Zone::Battlefield | Zone::Graveyard)
+        }) {
+            return;
+        }
+        let observes = |source: &ObjectView| {
+            source.printed_abilities_available()
+                && source.card.triggers().iter().any(|ability| {
+                    ability.condition.event()
+                        == TriggerCondition::CardsExiledFromBattlefieldOrGraveyard
+                })
+        };
+        let before = events
+            .iter()
+            .find_map(|event| event.graveyard_observers.as_ref());
+        let mut observers: Vec<(ObjectView, bool, bool)> = before
+            .into_iter()
+            .flat_map(|rows| rows.iter())
+            .filter(|source| observes(source))
+            .map(|source| (source.clone(), true, false))
+            .collect();
+        for source in self.death_trigger_sources().into_iter().filter(observes) {
+            if let Some((_, _, after)) = observers.iter_mut().find(|(prior, _, _)| {
+                prior.reference == source.reference && prior.controller == source.controller
+            }) {
+                *after = true;
+            } else {
+                observers.push((source, false, true));
+            }
+        }
+        for (source, battlefield, graveyard) in observers {
+            let qualifies = events.iter().any(|event| {
+                event.moved
+                    && event.was_card
+                    && event.destination == Zone::Exile
+                    && ((battlefield && event.before.zone == Zone::Battlefield)
+                        || (graveyard && event.before.zone == Zone::Graveyard))
+            });
+            if qualifies {
+                for (index, ability) in source.card.triggers().iter().enumerate() {
+                    if ability.condition.event()
+                        == TriggerCondition::CardsExiledFromBattlefieldOrGraveyard
+                    {
+                        self.queue_trigger(&source, index);
+                    }
+                }
+            }
+        }
+    }
     /// Freeze only when a battlefield observer needs an exile-batch witness.
     pub(super) fn freeze_exile_batch_observers(&self) -> Option<std::sync::Arc<[ObjectView]>> {
         self.state
@@ -121,8 +177,11 @@ impl Game {
                     .triggers()
                     .iter()
                     .any(|ability| {
-                        ability.condition.event()
-                            == TriggerCondition::ControlledCreaturesOrGraveyardCardsExiled
+                        matches!(
+                            ability.condition.event(),
+                            TriggerCondition::ControlledCreaturesOrGraveyardCardsExiled
+                                | TriggerCondition::CardsExiledFromBattlefieldOrGraveyard
+                        )
                     })
             })
             .then(|| self.freeze_graveyard_observers())
@@ -140,6 +199,8 @@ impl Game {
                         matches!(
                             a.condition.event(),
                             TriggerCondition::CardsLeaveGraveyard
+                                | TriggerCondition::CardsLeaveGraveyardKinds(_)
+                                | TriggerCondition::CardsExiledFromBattlefieldOrGraveyard
                                 | TriggerCondition::CreatureCardLeavesYourGraveyard
                                 | TriggerCondition::ControlledCreaturesOrGraveyardCardsExiled
                         )
@@ -175,6 +236,18 @@ impl Game {
             }
             for (index, ability) in source.card.triggers().iter().enumerate() {
                 match ability.condition.event() {
+                    TriggerCondition::CardsLeaveGraveyardKinds(kinds) => {
+                        if events.iter().any(|event| {
+                            event.moved
+                                && event.before.zone == Zone::Graveyard
+                                && event.destination != Zone::Graveyard
+                                && event.before.owner == source.controller
+                                && event.was_card
+                                && event.before.kinds & kinds != 0
+                        }) {
+                            self.queue_trigger(source, index);
+                        }
+                    }
                     TriggerCondition::CardsLeaveGraveyard => {
                         self.queue_trigger(source, index);
                     }

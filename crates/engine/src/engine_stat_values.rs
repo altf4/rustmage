@@ -210,6 +210,9 @@ impl Game {
             StatValue::ControllerHandSize => objects()
                 .filter(|(_, o)| o.owner == owner && o.zone == Zone::Hand && o.is_card())
                 .count() as i128,
+            StatValue::MountOrVehicleEntriesThisTurn => {
+                i128::from(self.state.players[owner.index()].mount_or_vehicle_entries_this_turn)
+            }
             StatValue::NonlandEntriesThisTurn => {
                 i128::from(self.state.players[owner.index()].nonland_permanents_entered_this_turn)
             }

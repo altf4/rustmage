@@ -204,6 +204,13 @@ impl Game {
                     SearchDestination::Hand => Zone::Hand,
                     SearchDestination::Graveyard => Zone::Graveyard,
                     SearchDestination::Battlefield => Zone::Battlefield,
+                    SearchDestination::BattlefieldIfManaValueAtMostElseHand(maximum) => {
+                        if self.state.objects[id as usize].card.fixed_mana_value() <= maximum {
+                            Zone::Battlefield
+                        } else {
+                            Zone::Hand
+                        }
+                    }
                     SearchDestination::BattlefieldThenHand { .. } => {
                         if choice
                             .battlefield

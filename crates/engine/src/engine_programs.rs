@@ -133,7 +133,9 @@ impl Game {
             LibraryDestination::Top => choice.top.push(card),
             LibraryDestination::Bottom => choice.bottom.push(card),
             LibraryDestination::Graveyard => choice.graveyard.push(card),
-            LibraryDestination::Shuffle | LibraryDestination::SecondFromTop => {
+            LibraryDestination::Shuffle
+            | LibraryDestination::SecondFromTop
+            | LibraryDestination::NthFromTop(_) => {
                 unreachable!("destination is not an arrangement action")
             }
         }
@@ -905,6 +907,8 @@ impl Game {
                     | TriggerCondition::LoyaltyAbilityActivatedRemoving(_)
                     | TriggerCondition::OpponentLoyaltyAbilityActivated
                     | TriggerCondition::CardsLeaveGraveyard
+                    | TriggerCondition::CardsLeaveGraveyardKinds(_)
+                    | TriggerCondition::CardsExiledFromBattlefieldOrGraveyard
                     | TriggerCondition::CreatureCardLeavesYourGraveyard
                     | TriggerCondition::PermanentCardsEnterYourGraveyard
                     | TriggerCondition::CreatureCardsEnterYourGraveyard
@@ -3543,6 +3547,7 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::OwnerLibraryNthFromTop(n) => self.put_targets_nth_from_top(&item, n),
                 Instruction::PutSourceThirdFromTop => self.put_source_third_from_top(&item),
                 Instruction::ChooseManaValueParityDestroyOthers => {
                     self.state.pending = Pending::ManaValueParity {
@@ -5546,11 +5551,16 @@ impl Game {
                     self.start_zone_search(&item, filter, counter, haste_at);
                     return;
                 }
+                Instruction::SearchLibraryAndOrGraveyardToHand(filter) => {
+                    self.start_zone_hand_search(&item, filter);
+                    return;
+                }
                 Instruction::SearchHandAndOrLibrary(filter) => {
                     self.start_hand_library_search(item.controller, filter);
                     return;
                 }
                 Instruction::Search(spec)
+                | Instruction::SearchScaled { spec, .. }
                 | Instruction::SearchDamageReceived(spec)
                 | Instruction::SearchTargetController(spec)
                 | Instruction::SearchTargetPlayer(spec)
@@ -5559,6 +5569,10 @@ impl Game {
                 | Instruction::SearchDifferentNames(spec)
                 | Instruction::SearchDifferentNamesChosenX(spec) => {
                     let mut spec = spec;
+                    if let Instruction::SearchScaled { maximum, .. } = instruction {
+                        spec.maximum =
+                            u64::try_from(self.item_amount(maximum, &item)).unwrap_or(u64::MAX);
+                    }
                     if matches!(instruction, Instruction::SearchDamageReceived(_)) {
                         spec.maximum = u64::try_from(
                             item.damage_received.as_ref().expect("damage event").amount,

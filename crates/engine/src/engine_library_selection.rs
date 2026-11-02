@@ -123,6 +123,23 @@ impl Game {
                 usize::try_from(self.item_amount(value, item)).unwrap_or(usize::MAX)
             }
             LibraryLook::ChosenX => usize::try_from(item.x.unwrap_or(0)).unwrap_or(usize::MAX),
+            LibraryLook::UntilKindsCount { kinds, count } => {
+                if count == 0 {
+                    0
+                } else {
+                    self.state.players[owner.index()]
+                        .library
+                        .iter()
+                        .rev()
+                        .filter(|&&id| self.state.objects[id as usize].is_card())
+                        .enumerate()
+                        .filter(|(_, id)| {
+                            self.state.objects[**id as usize].card.kind_mask() & kinds != 0
+                        })
+                        .nth(usize::from(count - 1))
+                        .map_or(usize::MAX, |(at, _)| at + 1)
+                }
+            }
             LibraryLook::UntilKinds(kinds) => self.state.players[owner.index()]
                 .library
                 .iter()
@@ -222,7 +239,10 @@ impl Game {
             exclude_selected_from_remainder: matches!(
                 effect.destination,
                 LibraryPickDestination::BattlefieldIfManaValueAtMostElseHand(_)
-            ) || matches!(effect.look, LibraryLook::UntilKinds(_)),
+            ) || matches!(
+                effect.look,
+                LibraryLook::UntilKinds(_) | LibraryLook::UntilKindsCount { .. }
+            ),
             public: effect.public,
             entering: false,
             remaining,

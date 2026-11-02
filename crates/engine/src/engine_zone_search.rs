@@ -12,6 +12,7 @@ pub(super) struct ZoneSearch {
     haste: bool,
     zones: Option<(bool, bool)>,
     selected: Option<ObjectRef>,
+    to_hand: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Serialize)]
@@ -19,6 +20,8 @@ pub struct ZoneSearchView {
     pub player: Player,
     pub filter: SearchFilter,
     pub choosing_zones: bool,
+    #[serde(skip_serializing_if = "is_false")]
+    pub to_hand: bool,
     pub library: bool,
     pub graveyard: bool,
     pub maximum_mana_value: u64,
@@ -56,10 +59,22 @@ impl Game {
             haste: haste_at.is_some_and(|n| x >= n),
             zones: None,
             selected: None,
+            to_hand: false,
         }));
         self.state.pending = Pending::LibraryGraveyardSearch {
             player: item.controller,
         };
+    }
+    pub(super) fn start_zone_hand_search(&mut self, item: &SpellView, filter: SearchFilter) {
+        self.start_zone_search(item, filter, CounterKind::PlusOne, None);
+        self.state
+            .linked_choices
+            .as_mut()
+            .unwrap()
+            .zone_search
+            .as_mut()
+            .unwrap()
+            .to_hand = true;
     }
     fn zone_search(&self) -> Option<&ZoneSearch> {
         self.state.linked_choices.as_ref()?.zone_search.as_deref()
@@ -74,8 +89,8 @@ impl Game {
         o.is_card()
             && o.owner == s.player
             && ((library && o.zone == Zone::Library) || (graveyard && o.zone == Zone::Graveyard))
-            && s.filter.matches(o.card)
-            && o.card.fixed_mana_value() <= u64::from(s.x)
+            && self.object_search_filter_matches(s.filter, id)
+            && (s.to_hand || o.card.fixed_mana_value() <= u64::from(s.x))
     }
     fn zone_search_selected(&self, s: &ZoneSearch) -> Option<ObjectRef> {
         s.selected
@@ -93,6 +108,14 @@ impl Game {
     pub(super) fn visit_zone_search(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
         let s = self.zone_search().unwrap();
         if s.zones.is_none() {
+            if s.to_hand
+                && emit(Action::ChooseSearchZones {
+                    library: false,
+                    graveyard: false,
+                })
+            {
+                return true;
+            }
             for (library, graveyard) in [(true, false), (false, true), (true, true)] {
                 if emit(Action::ChooseSearchZones { library, graveyard }) {
                     return true;
@@ -155,8 +178,20 @@ impl Game {
         let moves = selected
             .into_iter()
             .map(|r| {
-                let mut m = self.entry_move(r.card, Zone::Battlefield, false);
-                m.effect_counter = Some((s.counter, u64::from(s.x)));
+                let mut m = self.entry_move(
+                    r.card,
+                    if s.to_hand {
+                        Zone::Hand
+                    } else {
+                        Zone::Battlefield
+                    },
+                    false,
+                );
+                if s.to_hand {
+                    m.reveal_hand = true;
+                } else {
+                    m.effect_counter = Some((s.counter, u64::from(s.x)));
+                }
                 if s.haste {
                     m.keywords_after = Some((s.source, Keywords::HASTE));
                 }
@@ -174,11 +209,12 @@ impl Game {
             player: s.player,
             filter: s.filter,
             choosing_zones: s.zones.is_none(),
+            to_hand: s.to_hand,
             library,
             graveyard,
-            maximum_mana_value: u64::from(s.x),
+            maximum_mana_value: if s.to_hand { u64::MAX } else { u64::from(s.x) },
             counter: s.counter,
-            counter_amount: u64::from(s.x),
+            counter_amount: if s.to_hand { 0 } else { u64::from(s.x) },
             haste: s.haste,
             minimum: self.zone_search_minimum(s),
             cards: (entitled && s.zones.is_some()).then(|| {

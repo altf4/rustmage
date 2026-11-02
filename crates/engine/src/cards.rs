@@ -332,6 +332,7 @@ pub enum TargetPredicate {
     Token,
     Subtype(&'static str),
     Nonbasic,
+    NoAbilities,
     Legendary,
     Nonlegendary,
     NonOutlaw,
@@ -773,6 +774,7 @@ pub enum LibraryLook {
     Fixed(u16),
     ChosenX,
     UntilKinds(u16),
+    UntilKindsCount { kinds: u16, count: u16 },
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -789,6 +791,7 @@ pub struct LibrarySelectionEffect {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum SearchFilter {
     Any,
+    NoAbilities,
     Colorless,
     Nonland,
     ManaValue {
@@ -818,6 +821,7 @@ impl SearchFilter {
     pub(crate) fn matches(self, card: Card) -> bool {
         match self {
             Self::Any => true,
+            Self::NoAbilities => !card.has_rules_abilities(),
             Self::Colorless => card.colors() == 0,
             Self::Nonland => !card.is_land(),
             Self::ManaValue { minimum, maximum } => {
@@ -866,6 +870,7 @@ pub enum SearchDestination {
     BattlefieldThenHand {
         battlefield: u16,
     },
+    BattlefieldIfManaValueAtMostElseHand(u64),
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -2106,6 +2111,11 @@ pub enum Instruction {
         haste_at: Option<u32>,
     },
     Search(SearchSpec),
+    SearchScaled {
+        spec: SearchSpec,
+        maximum: AmountValue,
+    },
+    SearchLibraryAndOrGraveyardToHand(SearchFilter),
     /// Qualified battlefield search using the frozen mana value of a paid sacrifice.
     SearchSacrificedManaValue {
         kinds: u16,
@@ -2401,6 +2411,7 @@ pub enum Instruction {
     /// Its owner chooses top or bottom; successful top movement deals damage.
     OwnerLibraryTopOrBottomDamage(u16),
     OwnerLibrarySecondFromTop,
+    OwnerLibraryNthFromTop(u16),
     /// Put the exact live source in its owner’s library below its top two cards.
     PutSourceThirdFromTop,
     ChooseManaValueParityDestroyOthers,
@@ -2796,6 +2807,7 @@ pub enum StatValue {
     /// Number of distinct basic land types among lands the controller controls.
     ControllerDomain,
     NonlandEntriesThisTurn,
+    MountOrVehicleEntriesThisTurn,
     SourceAttacking,
     AttackingCreatures,
     AttackingSubtype(&'static str),
@@ -3970,6 +3982,10 @@ pub enum TriggerCondition {
     /// An opponent committed a loyalty activation.
     OpponentLoyaltyAbilityActivated,
     CardsLeaveGraveyard,
+    /// One simultaneous departure batch containing a physical card of these kinds.
+    CardsLeaveGraveyardKinds(u16),
+    /// One physical-card batch from either battlefield or graveyard to exile.
+    CardsExiledFromBattlefieldOrGraveyard,
     /// One trigger per actual creature CARD departing its owner's graveyard.
     CreatureCardLeavesYourGraveyard,
     /// One post-event batch of creature cards entering the controller's graveyard.
@@ -5081,6 +5097,12 @@ impl Card {
     }
     pub(crate) fn attachment_bonus(self) -> Option<EquipmentSpec> {
         self.equipment().or_else(|| self.aura().map(|a| a.bonus))
+    }
+    /// Explicit immutable authored fact. Unreviewed/gated cards conservatively have abilities.
+    pub fn has_rules_abilities(self) -> bool {
+        self.is_basic_land()
+            || authored::rules(self)
+                .is_none_or(|rules| rules.extras.has_rules_abilities.unwrap_or(true))
     }
     pub fn keywords(self) -> Keywords {
         #[cfg(feature = "test-support")]

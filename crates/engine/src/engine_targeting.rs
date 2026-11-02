@@ -1592,6 +1592,7 @@ impl Game {
                     }
                     TargetPredicate::Blocking => self.state.blocking.contains(&id),
                     TargetPredicate::Nontoken => !object.is_token(),
+                    TargetPredicate::NoAbilities => !self.object_has_rules_abilities(id),
                     TargetPredicate::Attacking => self.state.attackers.iter().any(|a| a.card == id),
                     TargetPredicate::AttackedThisTurn => {
                         self.state.attacked_this_turn.contains(&self.object_ref(id))
@@ -2537,6 +2538,46 @@ impl Game {
         } else {
             let events = self.move_objects_raw(&ids, destination);
             self.finish_zone_events(&events, &sources);
+        }
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    /// Current immutable recipe plus any rules abilities acquired in the current zone.
+    pub(super) fn object_has_rules_abilities(&self, id: CardId) -> bool {
+        let object = &self.state.objects[id as usize];
+        if object.card.has_rules_abilities() {
+            return true;
+        }
+        // Existing graveyard cast rows grant flashback-like abilities, rather than
+        // merely allowing an out-of-zone cast. They count even while unusable.
+        object.zone == Zone::Graveyard
+            && self
+                .state
+                .graveyard_cast_permissions
+                .as_ref()
+                .is_some_and(|rows| {
+                    rows.iter().any(|row| {
+                        row.object == self.object_ref(id)
+                            && row.kind == crate::cards::GraveyardCastKind::Flashback
+                    })
+                })
+    }
+    pub(super) fn object_search_filter_matches(
+        &self,
+        filter: crate::SearchFilter,
+        id: CardId,
+    ) -> bool {
+        match filter {
+            crate::SearchFilter::NoAbilities => !self.object_has_rules_abilities(id),
+            crate::SearchFilter::AllOf(filters) => filters
+                .iter()
+                .all(|filter| self.object_search_filter_matches(*filter, id)),
+            crate::SearchFilter::AnyOf(filters) => filters
+                .iter()
+                .any(|filter| self.object_search_filter_matches(*filter, id)),
+            filter => filter.matches(self.state.objects[id as usize].card),
         }
     }
 }

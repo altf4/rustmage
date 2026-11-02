@@ -149,6 +149,7 @@ impl Game {
                 TriggerCondition::PermanentCardsEnterYourGraveyard
                     | TriggerCondition::CreatureCardsEnterYourGraveyard
                     | TriggerCondition::ControlledCreaturesOrGraveyardCardsExiled
+                    | TriggerCondition::CardsExiledFromBattlefieldOrGraveyard
                     | TriggerCondition::OtherControlledNonlandReturnedToOwnersHand
                     | TriggerCondition::DamagedCreatureDies
                     | TriggerCondition::SelfDies

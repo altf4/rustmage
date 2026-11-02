@@ -55,6 +55,7 @@ fn selected(program: &[Instruction]) -> (bool, bool) {
             | Instruction::PutLandCards { maximum: value, .. }
             | Instruction::DiscardScaled(_, value)
             | Instruction::AddCastEntryCounters { amount: value, .. }
+            | Instruction::SearchScaled { maximum: value, .. }
             | Instruction::DrawThenDiscardIfDrew { amount: value, .. }
             | Instruction::SetCreatureForm { base: value, .. }
             | Instruction::MoveCountersFromSource { amount: value, .. }
