@@ -21,7 +21,7 @@ const COST: AdditionalCost = AdditionalCost {
     filter: ARTIFACT,
 };
 const FUEL: CardRules = CardRules {
-    effect: Effect::Creature(1, 1),
+    effect: Effect::Creature(0, 1),
     activated: &[ActivatedAbility {
         exhaust: false,
         guard: ActivationGuard::Always,
@@ -61,7 +61,7 @@ const FILTERED: CardRules = CardRules {
     ..FUEL
 };
 const OBSERVER: CardRules = CardRules {
-    effect: Effect::Creature(1, 3),
+    effect: Effect::Creature(0, 3),
     triggers: &[TriggeredAbility {
         condition: TriggerCondition::Sacrificed {
             filter: ARTIFACT,
@@ -124,10 +124,9 @@ fn rollback(p: Player, replacement: bool, dependent: bool) -> (Game, CardId, Car
         },
     );
     let external = put(&mut g, p, "Swiftfoot Boots", Zone::Battlefield);
-    let observer = put(&mut g, p, "Hill Giant", Zone::Battlefield);
-    // Fixtures replace typed behavior, not the physical printed power. Keep
-    // this observer below casualty's threshold after the foreign Aura returns.
-    g.state.objects[observer as usize].growth.power = -3;
+    // Neither the mana producer nor the observer can pay casualty1. Only
+    // Silverquill can, until the foreign Aura reduces its power to zero.
+    put(&mut g, p, "Hill Giant", Zone::Battlefield);
     let returner = dependent.then(|| {
         let returner = put(&mut g, p, "Druid of the Cowl", Zone::Battlefield);
         g.state.exile_links.push(ExileLink {
@@ -198,7 +197,11 @@ fn rollback(p: Player, replacement: bool, dependent: bool) -> (Game, CardId, Car
     act(&mut g, Action::ChooseCastCost { clause });
     let object = g.object_ref(silver);
     act(&mut g, Action::ChooseAuraAttachment { object });
-    assert!(matches!(g.state.pending, Pending::ManaRollback { .. }));
+    assert!(
+        matches!(g.state.pending, Pending::ManaRollback { .. }),
+        "{p:?}/replacement={replacement}/dependent={dependent}: {:?}",
+        g.state.pending
+    );
     assert_eq!(g.object_view(spell).zone, Zone::Hand);
     (g, source, external, spell)
 }

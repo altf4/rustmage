@@ -16,5 +16,8 @@ later producer to the battlefield, and the later no-tap Exert ability sacrifices
 an external artifact. Reversing the first event makes the later source cost
 unpayable; retention queries must reject it transactionally instead of panicking.
 Exert now explicitly requires its exact battlefield source during replay.
-The observer fixture is kept below casualty's printed threshold.
-Runtime verification of the repaired cases is pending. No card behavior or admission is changed.
+The producer and observer fixtures have zero power so neither can pay casualty1;
+this leaves the returning Aura to remove the sole legal casualty candidate. Both
+regression scenarios pass, including both players and the replacement/retention
+matrices. The cached test-only compile and execution command completed in under
+one second; report: `<cache>/rustmage-authoring/aetherdrift/rollback-fixture-20261101-221700/report.json`. No card behavior or admission is changed.

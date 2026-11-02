@@ -624,6 +624,23 @@
         "activation tax: granted-mana fixture not registered as an Aura",
         "rollback: test observer incorrectly remains a casualty alternative"
       ]
+    },
+    {
+      "revision": "586895eee",
+      "status": "286/288 passed; both remaining casualty fixtures corrected in test-only followup, yielding combined 288/288 evidence on the same engine",
+      "passed": 286,
+      "failed": 2,
+      "expected": 288,
+      "target_count": 32,
+      "report": "<cache>/rustmage-authoring/aetherdrift/engine-candidate-20261101-220700/focused/report.json",
+      "cargo_build_seconds": 129.858889436,
+      "followup": {
+        "target": "dft_mana_rollback",
+        "passed": 2,
+        "failed": 0,
+        "report": "<cache>/rustmage-authoring/aetherdrift/rollback-fixture-20261101-221700/report.json",
+        "scope": "Zero-power fixture bodies remove unintended casualty1 alternatives; engine unchanged"
+      }
     }
   ],
   "earlier_focused_runs": [
@@ -650,7 +667,7 @@
   ],
   "resource_policy": "All Cargo uses resource_guard; one shared build slot,6GiB cgroup, serial tests; no OOM probe or unmanaged builds",
   "pending": "Finish all engine blockers and focused/shared contract proofs plus independent reviews before ordinary DFT definitions. Then complete card behavior/provenance, inherited119 verification, legal set-only complete games/replay/owned search, full release acceptance, README counts, one completed-set PR and two independent nonauthor reviews.",
-  "throughput": "0 new whole cards admitted during engine phase. Full252-scenario run124.71s(command includes engine/set/test compile);250pass2fail. Test-onlytax18rerun1.02s/0.96sbuild correctedonefixture,17pass1knownrealgap. Retained-copy measured Object160,ObjectView512,CopyRecipe64,CopyExceptions20,CopyLayerView136bytes. No set simulation benchmark or all-Standard throughput claim.",
+  "throughput": "0 new whole cards admitted during engine phase. Engine/set/test compilation129.86seconds for latest full288-scenario run; test-only two-scenario followup completed in0.90seconds with engine reused. All288 have combined passing evidence. Native BIG pairing remains a45-second performance blocker. No set simulation or all-Standard throughput claim.",
   "implemented_engine_clusters_pending_final_review": [
     "speed scalars/grants/replacements and exact mana quality",
     "crew/saddle participant events, toughness and direct designation",
@@ -754,7 +771,7 @@
       "command_seconds": 1.0176801930065267
     }
   ],
-  "current_runtime_evidence": "Latest full focused engine run: 279/283 scenarios across 32 targets at 4c72c0d2f. Embalm17/17, acquired3/3, schema13/13, hybrid37/37 and Stoneglider3/3 passed. Four focused failures and a bounded BIG performance timeout remain under repair. Later acquired-counter and exert-rollback repairs are not yet runtime-validated. No new DFT card admission.",
+  "current_runtime_evidence": "Combined focused evidence288/288 scenarios on engine586895eee: complete run286/288, then corrected casualty fixture2/2 in under1second using the cached engine. Tax18, ManaOutput11, Embalm17, acquired6 and schema14 all pass. BIG replay/search still exceeds45seconds; prior198 trace export2965/3007 exact,42 typed action-route differences under audit. No new DFT card admission.",
   "latest_affected_regressions": {
     "revision": "8c8e1a53f",
     "schema199": {
