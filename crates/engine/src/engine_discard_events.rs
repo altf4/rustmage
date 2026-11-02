@@ -14,13 +14,27 @@ pub struct DiscardTriggerView {
 pub(super) enum DiscardAfter {
     Recruit(Player, Card),
     LoseLife(Player, i128),
-    DrawActual { players: [bool; 2], bonus: u16 },
+    DrawActual {
+        players: [bool; 2],
+        bonus: u16,
+    },
+    /// A chosen-card condition, independent of whether the discard was replaced.
+    DrawFixed(Player, u16),
     RememberActual,
     DrawUnlessOpponentDiscardedTwoNonland(Player),
-    NonlandReflexive { controller: Player, ability: u16 },
+    NonlandReflexive {
+        controller: Player,
+        ability: u16,
+    },
     ConniveCounters(ObjectRef, u64, Player),
-    ChooseLand { player: Player, tapped: bool },
-    ReturnLandFromGraveyard { player: Player, tapped: bool },
+    ChooseLand {
+        player: Player,
+        tapped: bool,
+    },
+    ReturnLandFromGraveyard {
+        player: Player,
+        tapped: bool,
+    },
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -386,6 +400,9 @@ impl Game {
                         );
                     }
                 }
+            }
+            Some(DiscardAfter::DrawFixed(player, amount)) => {
+                self.draw_many(player, u128::from(amount))
             }
             Some(DiscardAfter::LoseLife(player, amount)) => self.lose_life(player, amount),
             Some(DiscardAfter::ConniveCounters(object, amount, placed_by))

@@ -4833,6 +4833,11 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::LookTargetHandMayDiscardThenDraw => {
+                    if self.start_private_hand_discard_draw(&item) {
+                        return;
+                    }
+                }
                 Instruction::RevealTargetHandSubsetDiscard(amount) => {
                     if self.start_hand_subset_discard(&item, amount) {
                         return;

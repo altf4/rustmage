@@ -3,6 +3,7 @@ use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum HandChoiceKind {
+    LookDiscardDraw,
     DeployCreatures,
     RevealSubset,
     DiscardRevealed,
@@ -21,6 +22,8 @@ pub struct HandChoiceView {
     pub selected: Vec<ObjectRef>,
     pub candidates: Vec<ObjectRef>,
     pub optional: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub inspected_cards: Option<Vec<ObjectView>>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -123,6 +126,22 @@ impl Game {
         );
         self.state.linked_choices.get_or_insert_default().hand = Some(Box::new(interaction));
         self.state.pending = Pending::HandCardChoice { player: actor };
+    }
+    pub(super) fn start_private_hand_discard_draw(&mut self, item: &SpellView) -> bool {
+        let Some(victim) = self.program_players(PlayerSet::Targeted, item).next() else {
+            return false;
+        };
+        self.set_hand_interaction(HandInteraction {
+            kind: HandChoiceKind::LookDiscardDraw,
+            actor: item.controller,
+            controller: item.controller,
+            victim: Some(victim),
+            source: item.source.expect("object-backed hand choice").object,
+            required: 0,
+            selected: Vec::new(),
+            candidates: self.exact_hand(victim),
+        });
+        true
     }
     pub(super) fn start_hand_subset_discard(
         &mut self,
@@ -241,7 +260,9 @@ impl Game {
         let o = &self.state.objects[reference.card as usize];
         match interaction.kind {
             HandChoiceKind::DeployCreatures => unreachable!(),
-            HandChoiceKind::RevealSubset | HandChoiceKind::DiscardRevealed => {
+            HandChoiceKind::LookDiscardDraw
+            | HandChoiceKind::RevealSubset
+            | HandChoiceKind::DiscardRevealed => {
                 o.zone == Zone::Hand && Some(o.owner) == interaction.victim && o.is_card()
             }
             HandChoiceKind::ExileRevealedLinked => {
@@ -279,7 +300,9 @@ impl Game {
             .unwrap();
         if matches!(
             interaction.kind,
-            HandChoiceKind::ExileRevealedOrCreature | HandChoiceKind::Behold
+            HandChoiceKind::ExileRevealedOrCreature
+                | HandChoiceKind::Behold
+                | HandChoiceKind::LookDiscardDraw
         ) && emit(Action::ChooseHandCard { object: None })
         {
             return true;
@@ -322,6 +345,17 @@ impl Game {
         }
         if let Some(object) = object {
             match interaction.kind {
+                HandChoiceKind::LookDiscardDraw => {
+                    self.discard_batch_with_after(
+                        &[object.card],
+                        None,
+                        Some(interaction.controller),
+                        Some(discard_events::DiscardAfter::DrawFixed(
+                            interaction.victim.unwrap(),
+                            1,
+                        )),
+                    );
+                }
                 HandChoiceKind::DiscardRevealed => {
                     self.discard_batch_caused(&[object.card], None, Some(interaction.controller))
                 }
@@ -396,9 +430,20 @@ impl Game {
                 .copied()
                 .filter(|&r| self.hand_choice_candidate(interaction, r))
                 .collect(),
+            inspected_cards: (interaction.kind == HandChoiceKind::LookDiscardDraw).then(|| {
+                interaction
+                    .candidates
+                    .iter()
+                    .copied()
+                    .filter(|&r| self.hand_choice_candidate(interaction, r))
+                    .map(|r| self.object_view(r.card))
+                    .collect()
+            }),
             optional: matches!(
                 interaction.kind,
-                HandChoiceKind::ExileRevealedOrCreature | HandChoiceKind::Behold
+                HandChoiceKind::ExileRevealedOrCreature
+                    | HandChoiceKind::Behold
+                    | HandChoiceKind::LookDiscardDraw
             ),
         })
     }

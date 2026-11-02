@@ -2113,6 +2113,8 @@ pub enum Instruction {
     ReturnExiledResultToHands,
     ExileDamagedLibraryUntilNonland,
     MayCounterSourceOtherwiseCast,
+    /// Private look, optional exact card choice, then discard and a draw for that player.
+    LookTargetHandMayDiscardThenDraw,
     RevealTargetHandSubsetDiscard(AmountValue),
     RevealTargetHandExileUntilSourceLeaves,
     RevealTargetHandExileLinked,

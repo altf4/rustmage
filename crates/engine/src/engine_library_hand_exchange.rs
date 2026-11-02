@@ -127,6 +127,7 @@ impl Game {
         }
         Some(HandChoiceView {
             kind: HandChoiceKind::DeployCreatures,
+            inspected_cards: None,
             actor,
             victim: Some(actor),
             required: 0,
