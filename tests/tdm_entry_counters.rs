@@ -465,7 +465,7 @@ fn graveyard_origin_counters_require_an_actual_cast_and_keep_normal_costs() {
         let id = put(&mut g, p, "Bear Cub", Zone::Graveyard);
         let m = g.entry_move(id, Zone::Battlefield, false);
         assert_eq!(
-            projected(&g, &[m.clone()], CounterKind::Finality),
+            projected(&g, std::slice::from_ref(&m), CounterKind::Finality),
             vec![vec![0]]
         );
         entry(&mut g, vec![m]);
@@ -521,7 +521,7 @@ fn mixed_return_counters_are_visible_to_entry_observers_and_keyword_rules() {
         movement.effect_counters = PROTECTED;
         let saved = g.snapshot();
         assert_eq!(
-            projected(&g, &[movement.clone()], CounterKind::Hexproof),
+            projected(&g, std::slice::from_ref(&movement), CounterKind::Hexproof),
             vec![vec![1]]
         );
         assert_eq!(
