@@ -340,6 +340,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             teamwork: None,
                             blight: None,
                             bargain: None,
+                            beheld: None,
                             evidence: None,
                             origin: if info.method == CastMethod::Flashback {
                                 Zone::Graveyard

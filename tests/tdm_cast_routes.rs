@@ -612,7 +612,7 @@ fn harmonize_keeps_power_wide_until_tax_and_x_costs_are_reduced() {
                 },
             );
             let announcement = g.state.announcing.as_ref().unwrap();
-            assert_eq!(u64::from(announcement.harmonize_discount), power);
+            assert_eq!(announcement.harmonize_discount, power);
             assert_eq!(announcement.total_cost.unwrap().generic, 0);
             pay(&mut g);
             if artifact.is_some() {
