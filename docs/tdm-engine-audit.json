@@ -12,7 +12,7 @@
     "unresolved_membership_facts": 1,
     "independently_verified_complete_set_cards": 0
   },
-  "phase": "Final shared engine integration, source-choice completion, schema/replay reconciliation and two independent whole-engine reviews; card authoring remains gated.",
+  "phase": "Final engine review found two remaining source-reference defects after443 assembled focused cases pass. Repair and revalidation precede final shared-engine acceptance and card authoring.",
   "audit_reports": [
     "docs/tdm-audit-a-g.json",
     "docs/tdm-audit-g-s.json",
@@ -360,7 +360,7 @@
       "description": "discard hand cost",
       "required_change": "Support discard-entire-hand as real cost (empty hand legal), combined with mana and sacrifice transactionally; existing ActivationCost.discard means one card. For Narset may discard hand then draw, verify ordinary May+DiscardHand is sufficient under discard restrictions/replacements; use explicit optional payment continuation if not. Do not demand actual discarded-card count>0.",
       "cards": [],
-      "status": "Initial owner checkpoint149/149 selected focused/compatibility cases passes and is integrated at077dd9f46. Mandatory independent source-universe and simultaneous-world findings are being repaired in the isolated owner worktree; final acceptance remains open.",
+      "status": "Full-hand activation sampling and legal funding repairs integrated atd0ed3693e. Owner96 focused+257 compatibility and root439 TDM+4schema cases pass. Final assembled broad validation and independent engine reviews remain pending.",
       "implementation_evidence": "docs/tdm-remaining-world-second-checkpoint.json"
     },
     {
@@ -437,7 +437,7 @@
       "description": "chosen source prevention",
       "required_change": "Choose a source without targeting as spell resolves; retain source exact/permitted source identity and shield through cleanup. Replace only its next positive damage event to shield controller, consuming shield once; actual prevented amount queues independent reflexive damage-to-damager-controller and draw callback. Integrate prevention prohibitions, affected-player replacement ordering, departed source LKI and owned pending state.",
       "cards": [],
-      "status": "Initial owner checkpoint149/149 selected focused/compatibility cases passes and is integrated at077dd9f46. Mandatory independent source-universe and simultaneous-world findings are being repaired in the isolated owner worktree; final acceptance remains open.",
+      "status": "Initial full semantic-source/waiting repair integrated atd0ed3693e, owner96+257 and root443 focused cases pass. Independent final review found GY-to-BF departure old-identity loss and premature deletion of untriggered Goggles DTA roots on lost/ineligible mana; both mandatory repairs in progress. Engine acceptance remains open.",
       "implementation_evidence": "docs/tdm-remaining-world-second-checkpoint.json"
     },
     {
@@ -791,19 +791,19 @@
     "negative_regression_cases": 5,
     "root_endure_cases_passed": 6,
     "root_counter_cases_passed": 7,
-    "latest_assembled_cases_passed": 376,
-    "latest_assembled_compile_seconds": 155.7269442360266,
-    "latest_assembled_scenario_seconds": 1.1519135490816552,
+    "latest_assembled_cases_passed": 443,
+    "latest_assembled_compile_seconds": 158.0265355600277,
+    "latest_assembled_scenario_seconds": 0.6344783469976392,
     "scoped_reviewed_audit_groups_including_aliases": 49,
     "total_audit_groups_including_aliases": 81,
     "current_hot_layout_bytes": {
       "Object": 160,
       "ObjectView": 544,
-      "State": 4976
+      "State": 4992
     },
     "additional_implemented_tested_groups_pending_review": 30,
     "authored_audit_groups_including_aliases": 81,
-    "owner_focused_passing_audit_groups_including_aliases": 79,
+    "owner_focused_passing_audit_groups_including_aliases": 81,
     "audit_group_counts_are_unweighted": true,
     "newer_integrated_checkpoint": {
       "head": "7b417fcbb",
@@ -815,7 +815,8 @@
       "execution_seconds": 6.82793541502906,
       "source_unchanged": true,
       "scope": "schema2+search28+firstworld17+Sidisi20+mana17; separate explicit trace candidate expected baseline drift, not complete shared engine acceptance"
-    }
+    },
+    "latest_assembled_scope": "439 all TDM engine cases plus4schema200 cases at344a8caac; not broad/full-set acceptance, two newly reviewed source-reference gaps remain."
   },
   "active_checkpoints": {
     "fixed_endure": {
@@ -962,13 +963,28 @@
     "schema_replay": {
       "previous": 199,
       "candidate": 200,
-      "status": "Initial schema2 tests and82 newer integrated mechanic cases pass at7b417fcbb. Explicit3164 trace candidates all complete with unchanged journal/decisions/zones and changed observation hashes. Prior199 candidate exposed an inherited damage_source false rejection; independent review found missing variant guards and an inherited linked-exile overreach. Corrected projector and actual typed/owned regressions await guarded compilation; no trace baseline accepted."
+      "status": "Initial schema200 baseline accepted after two independent field-level reviews; new final semantic packet changes require fresh explicit trace candidate and schema audit. Actual typed wire/owned tests4/4 pass at344a8caac; no final trace acceptance yet."
     },
     "remaining_world_second": {
       "commit": "11403d9e84ad3c899aca9d7e0dc82304ad1e98bd",
       "integration": "077dd9f46",
       "evidence": "docs/tdm-remaining-world-second-checkpoint.json",
-      "status": "Initial43 focused+106 compatibility cases pass; exact final repairs for mass-copy simultaneity, stack-source identity and semantic event/attachment references remain mandatory."
+      "status": "Owner96focused+257compatibility and root443focused passes. Two independent final review source-reference gaps now being repaired before acceptance.",
+      "followup_commit": "1119afcddb319d435253069eaa9870ffc4901aef",
+      "followup_integration": "d0ed3693e",
+      "followup_evidence": "docs/tdm-semantic-source-evidence.json"
+    },
+    "assembled_semantic_review": {
+      "head": "344a8caac02cc71c401dbde0509d4a15b398ae70",
+      "report": "/home/altf4/.cache/rustmage-tdm/root-semantic-final-focused-1793676290249894204/terminal.json",
+      "source_hashes": "/home/altf4/.cache/rustmage-tdm/root-semantic-final-focused-1793676290249894204/source-hashes.json",
+      "passing_cases": 443,
+      "source_unchanged": true,
+      "two_confirmed_findings": [
+        "Preserve old graveyard identity for actual GY-to-BF departure observers while preserving ETB exclusion",
+        "Retain exact Goggles source for untriggered delayed abilities after mana lost or spent without qualifying event"
+      ],
+      "card_authoring_permitted": false
     }
   }
 }
