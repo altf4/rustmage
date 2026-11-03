@@ -1812,16 +1812,17 @@ fn prevention_callback_keeps_damage_time_controller_after_control_changes_before
 }
 
 #[test]
-fn source_prevention_uses_only_cold_state_and_preserves_hot_object_and_state_layout() {
+fn source_prevention_layout_matches_the_integrated_shared_state_budget() {
     assert_eq!(std::mem::size_of::<Object>(), 160);
-    // The integrated pre-prevention baseline includes the u128 Endure pending
-    // alignment (4976 bytes), unlike this mechanic's isolated 4960-byte base.
-    // The prevention state remains behind the existing cold RoleState pointer.
-    assert_eq!(std::mem::size_of::<State>(), 4976);
+    // Measured assembled budget: wide Endure, frozen division and color-sequence
+    // packet fields are all present here. Isolated mechanic bases are smaller.
+    // Shield/choice collections stay under the existing cold RoleState pointer.
+    assert_eq!(std::mem::size_of::<State>(), 4992);
     if let Ok(path) = std::env::var("RUSTMAGE_TDM_WORLD_LAYOUT") {
         let layout = serde_json::json!({
             "Object":std::mem::size_of::<Object>(),"ObjectView":std::mem::size_of::<ObjectView>(),
             "State":std::mem::size_of::<State>(),"DamageSource":std::mem::size_of::<DamageSource>(),
+            "Pending":std::mem::size_of::<Pending>(),"SpellView":std::mem::size_of::<SpellView>(),
             "RoleState":std::mem::size_of::<roles::RoleState>(),
             "SourcePreventionState":std::mem::size_of::<source_prevention::SourcePreventionState>(),
             "DamagePreventionKind":std::mem::size_of::<DamagePreventionKind>(),
