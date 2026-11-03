@@ -12,7 +12,7 @@
     "unresolved_membership_facts": 1,
     "independently_verified_complete_set_cards": 0
   },
-  "phase": "Shared engine implementation and scoped review in progress; full integrated acceptance and card authoring remain gated.",
+  "phase": "Final shared engine integration, source-choice completion, schema/replay reconciliation and two independent whole-engine reviews; card authoring remains gated.",
   "audit_reports": [
     "docs/tdm-audit-a-g.json",
     "docs/tdm-audit-g-s.json",
@@ -72,7 +72,8 @@
         "All-Out Assault",
         "Dalkovan Encampment"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (combat callbacks); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "implementation_evidence": "docs/tdm-combat-callbacks-evidence.json"
     },
     {
       "id": "A05",
@@ -90,10 +91,11 @@
       "cards": [
         "Breaching Dragonstorm"
       ],
-      "status": "pending shared-rule implementation and acceptance",
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (search and color sequences); final assembled engine, schema/replay and independent batch reviews remain pending.",
       "blocking_engine_dependencies": [
         "D:MANA_PAYMENT_WINDOW"
-      ]
+      ],
+      "implementation_evidence": "docs/tdm-search-color-sequences-evidence.json"
     },
     {
       "id": "A07",
@@ -102,7 +104,8 @@
       "cards": [
         "Call the Spirit Dragons"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (search and color sequences); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "implementation_evidence": "docs/tdm-search-color-sequences-evidence.json"
     },
     {
       "id": "A08",
@@ -111,7 +114,8 @@
       "cards": [
         "Dispelling Exhale"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (behold and free costs); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "implementation_evidence": "docs/tdm-behold-free-costs-evidence.json"
     },
     {
       "id": "A09",
@@ -129,10 +133,11 @@
       "cards": [
         "Dracogenesis"
       ],
-      "status": "pending shared-rule implementation and acceptance",
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (behold and free costs); final assembled engine, schema/replay and independent batch reviews remain pending.",
       "blocking_engine_dependencies": [
         "D:MANA_PAYMENT_WINDOW"
-      ]
+      ],
+      "implementation_evidence": "docs/tdm-behold-free-costs-evidence.json"
     },
     {
       "id": "A11",
@@ -181,7 +186,8 @@
       "cards": [
         "Desperate Measures"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (first event contexts); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "implementation_evidence": "docs/tdm-event-contexts-evidence.json"
     },
     {
       "id": "A16",
@@ -226,7 +232,8 @@
       "cards": [
         "Furious Forebear"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (first event contexts); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "implementation_evidence": "docs/tdm-event-contexts-evidence.json"
     },
     {
       "id": "A21",
@@ -235,7 +242,8 @@
       "cards": [
         "Glacial Dragonhunt"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (search and color sequences); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "implementation_evidence": "docs/tdm-search-color-sequences-evidence.json"
     },
     {
       "id": "B:entry_modes",
@@ -256,7 +264,8 @@
       "description": "death counter snapshot",
       "required_change": "Add a death observer matching any controlled creature with counters, freezing the whole per-kind counter multiset from its pre-death ObjectView onto each packet. Copy this snapshot to legal recipients on resolution; never read observer counters, live graveyard object counters, or a later incarnation. Include simultaneous self/other deaths and negative counters before +1/-1 annihilation.",
       "cards": [],
-      "status": "confirmed missing captured other-object counter payload"
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (first event contexts); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "implementation_evidence": "docs/tdm-event-contexts-evidence.json"
     },
     {
       "id": "B:counter_kind_union",
@@ -284,7 +293,8 @@
       "description": "mana spell filter",
       "required_change": "Generalize immutable produced-mana restrictions to creature spells and union spell predicates Dragon OR Omen, evaluating the selected spell face in actual/speculative funding. Existing SpellSubtype is single-subtype only; do not mark all Dragon-card faces as Dragons. Retain ordinary restrictions for extra costs and cannot fund unrelated activation/ward payments.",
       "cards": [],
-      "status": "confirmed missing restriction forms"
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (first remaining world); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "implementation_evidence": "docs/tdm-remaining-world-first-evidence.json"
     },
     {
       "id": "B:variable_endure",
@@ -319,7 +329,8 @@
       "description": "distinct color search",
       "required_change": "Add color search predicates and a single private library search with independent distinct B/G/U slots. A multicolor card can fill one role while permitting other multicolor cards in other roles; fail-to-find any subset0..3 legal. Freeze group and move simultaneously to graveyard then shuffle once; enforce search restrictions and privacy.",
       "cards": [],
-      "status": "confirmed missing qualified search shape"
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (search and color sequences); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "implementation_evidence": "docs/tdm-search-color-sequences-evidence.json"
     },
     {
       "id": "B:search_result_entry_counters",
@@ -333,35 +344,39 @@
       "description": "linked exile attacking copies",
       "required_change": "Copy exact still-linked physical exile card recipe, create tapped token per opponent attacking that opponent, and register exact results for the controller next end step (not whichever player next has end step). Reuse exile-until-source-leaves, copy/entry replacement and delayed sacrifice foundations. Handle source gone before ETB, tokens ceasing, copied noncreature physical cards, blink/rebind and departure-trigger LKI.",
       "cards": [],
-      "status": "confirmed missing composed instruction and delayed timing"
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (combat callbacks); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "implementation_evidence": "docs/tdm-combat-callbacks-evidence.json"
     },
     {
       "id": "B:mass_in_place_copy",
       "description": "mass in place copy",
       "required_change": "Generalize in-place copy recipient selection to snapshot every other currently controlled creature using one frozen legal target blueprint. Preserve counters/tap/damage/control, copy copiable exceptions, apply same EOT expiry and no entry events. EntryCopySpec optional any creature already covers Naga entry; do not add another entry-copy subsystem.",
       "cards": [],
-      "status": "confirmed missing group recipient operation"
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (first remaining world); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "implementation_evidence": "docs/tdm-remaining-world-first-evidence.json"
     },
     {
       "id": "B:discard_hand_cost",
       "description": "discard hand cost",
       "required_change": "Support discard-entire-hand as real cost (empty hand legal), combined with mana and sacrifice transactionally; existing ActivationCost.discard means one card. For Narset may discard hand then draw, verify ordinary May+DiscardHand is sufficient under discard restrictions/replacements; use explicit optional payment continuation if not. Do not demand actual discarded-card count>0.",
       "cards": [],
-      "status": "confirmed missing full-hand activation cost; optional resolution route needs explicit payment audit"
+      "status": "Authored in isolated remaining-world worktree; final owner validation and exact legal damage-source universe refinement are in progress. Not yet integrated or accepted."
     },
     {
       "id": "B:chosen_x_library_search",
       "description": "chosen x library search",
       "required_change": "Expose a qualified library search with creature MV<=chosenX and battlefield destination+shuffle. SearchScaled.maximum means number of cards, not maximum MV. Reuse harmonize chosen-X generic cost and discount logic; freeze X for search and keep free-X=0 semantics.",
       "cards": [],
-      "status": "confirmed missing dynamic MV qualifier"
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (search and color sequences); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "implementation_evidence": "docs/tdm-search-color-sequences-evidence.json"
     },
     {
       "id": "B:optional_behold_flash",
       "description": "optional behold flash",
       "required_change": "Add optional Dragon behold cast additional-cost declaration (controlled Dragon or revealed Dragon card in hand), save committed paid qualification in exact cast packet and copies, and allow Molten Exhale instant timing only through that committed route. Existing EffectChoiceKind::Behold/hand witness/reveal code can be reused but mandatory additional costs and late board checks are insufficient. Extra consequences must continue under partial target legality when printed.",
       "cards": [],
-      "status": "confirmed missing committed optional cast marker/timing route"
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (behold and free costs); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "implementation_evidence": "docs/tdm-behold-free-costs-evidence.json"
     },
     {
       "id": "B:mixed_entry_counter_return",
@@ -375,21 +390,24 @@
       "description": "delayed noncreature cast trigger",
       "required_change": "Register source-independent repeated noncreature-cast triggered template until cleanup; source Saga may sacrifice immediately after chapter3. Target own creature when each trigger goes on stack, not at chapter resolution. Existing CopySpellsThisTurn scheduler stores specialized copy callback; generalize/reuse, do not grant a battlefield source-bound trigger.",
       "cards": [],
-      "status": "confirmed missing generic delayed cast callback variant"
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (combat callbacks); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "implementation_evidence": "docs/tdm-combat-callbacks-evidence.json"
     },
     {
       "id": "B:graveyard_owner_player_constraint",
       "description": "graveyard owner player constraint",
       "required_change": "Add graveyard owner equal to player in specified target group, at announcement and resolution. Existing ControllerOfPlayerGroup explicitly accepts battlefield only. Then shuffle chosen player library even if zero graveyard cards chosen, while early returned cards invalidate only their later bindings; isolate each optional target group and exile resolving spell.",
       "cards": [],
-      "status": "confirmed missing target cross-group owner relationship and zero-card shuffle operation"
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (first remaining world); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "implementation_evidence": "docs/tdm-remaining-world-first-evidence.json"
     },
     {
       "id": "B:source_attack_without_defender",
       "description": "source attack without defender",
       "required_change": "Add until-cleanup source-only attack-as-though-no-defender rule without removing defender keyword. Reuse attack eligibility actual/projected/mandatory attack queries and existing continuous defender exemptions; expiry/branch/restore and copied/ability-lost recipient retain resolved permission.",
       "cards": [],
-      "status": "confirmed missing resolved exact-object permission"
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (combat callbacks); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "implementation_evidence": "docs/tdm-combat-callbacks-evidence.json"
     },
     {
       "id": "B:decayed_ability",
@@ -410,21 +428,23 @@
       "description": "entered this turn damage double",
       "required_change": "Generalize controlled-creature damage multiplier with exact entry-this-turn predicate and source LKI for departed damagers, not control-entered-this-turn or only combat damage. Preserve original damage source and affected-player replacement order with prevention; double after division/assignment. Existing unqualified DoubleCreatureDamage is broader than Neriv.",
       "cards": [],
-      "status": "confirmed missing filtered replacement form"
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (first remaining world); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "implementation_evidence": "docs/tdm-remaining-world-first-evidence.json"
     },
     {
       "id": "B:chosen_source_prevention",
       "description": "chosen source prevention",
       "required_change": "Choose a source without targeting as spell resolves; retain source exact/permitted source identity and shield through cleanup. Replace only its next positive damage event to shield controller, consuming shield once; actual prevented amount queues independent reflexive damage-to-damager-controller and draw callback. Integrate prevention prohibitions, affected-player replacement ordering, departed source LKI and owned pending state.",
       "cards": [],
-      "status": "confirmed missing shield state and callback"
+      "status": "Authored in isolated remaining-world worktree; final owner validation and exact legal damage-source universe refinement are in progress. Not yet integrated or accepted."
     },
     {
       "id": "B:resolution_exile_cost_success",
       "description": "resolution exile cost success",
       "required_change": "Current ChooseObjects ExileGraveyard followed by Reflexive uses move_objects_raw and unconditionally continues; it does not encode an exact-success reflexive cost boundary. Prove payment/replacement legality or add explicit atomic optional exile-cost-reflexive instruction. A prevented cost must not queue return trigger or leave partially mutated payment state. Ordinary replaced destinations may still count as paid according to CR118; distinguish prevention from redirection.",
       "cards": [],
-      "status": "requires focused rules/transaction proof; current generic choice is not a ready proof"
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (first remaining world); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "implementation_evidence": "docs/tdm-remaining-world-first-evidence.json"
     },
     {
       "id": "B:endure_forbidden_counter_fallback",
@@ -438,7 +458,8 @@
       "description": "event scaled opponent free cast",
       "required_change": "Reuse ResolutionFreeCasts with captured combat-damaged player, AmountValue::DamageEventAmount for exiled top-card count and maximum per-spell mana value, unlimited repeated casts, no lands. Existing ExileTargetLibraryTopCastFree requires explicit player target/fixed u16 count and has no MV ceiling. Own exact exile refs and captured X must survive source departure, responses during nested casts, mandatory extra costs, rollback and branch/restore.",
       "cards": [],
-      "status": "confirmed missing event-scaled instruction wiring"
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (linked event casts); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "implementation_evidence": "docs/tdm-linked-event-casts-evidence.json"
     },
     {
       "id": "C:ENDURE_CORRECTNESS",
@@ -539,7 +560,8 @@
       "cards": [
         "Sarkhan, Dragon Ascendant"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (behold and free costs); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "implementation_evidence": "docs/tdm-behold-free-costs-evidence.json"
     },
     {
       "id": "C:TOKEN_TEMPORARY_DELAY",
@@ -548,7 +570,8 @@
       "cards": [
         "Salt Road Skirmish"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (combat callbacks); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "implementation_evidence": "docs/tdm-combat-callbacks-evidence.json"
     },
     {
       "id": "C:OPTIONAL_LINKED_EXILE_SPIRIT",
@@ -557,7 +580,8 @@
       "cards": [
         "Severance Priest"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (linked event casts); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "implementation_evidence": "docs/tdm-linked-event-casts-evidence.json"
     },
     {
       "id": "C:SACRIFICE_MANA_VALUE_TARGET",
@@ -566,10 +590,11 @@
       "cards": [
         "Sidisi, Regent of the Mire"
       ],
-      "status": "pending shared-rule implementation and acceptance",
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (sacrifice and random graveyard play); final assembled engine, schema/replay and independent batch reviews remain pending.",
       "blocking_engine_dependencies": [
         "D:MANA_PAYMENT_WINDOW"
-      ]
+      ],
+      "implementation_evidence": "docs/tdm-sacrifice-random-evidence.json"
     },
     {
       "id": "C:POST_ENTRY_RETURN_COUNTERS",
@@ -614,7 +639,8 @@
       "cards": [
         "Tersa Lightshatter"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (sacrifice and random graveyard play); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "implementation_evidence": "docs/tdm-sacrifice-random-evidence.json"
     },
     {
       "id": "C:CAST_CREATURE_ENTRY_OBSERVER",
@@ -623,7 +649,8 @@
       "cards": [
         "The Sibsig Ceremony"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (first event contexts); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "implementation_evidence": "docs/tdm-event-contexts-evidence.json"
     },
     {
       "id": "C:DELAYED_CREATURE_ENTRY_DRAIN",
@@ -632,7 +659,8 @@
       "cards": [
         "Thunder of Unity"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (combat callbacks); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "implementation_evidence": "docs/tdm-combat-callbacks-evidence.json"
     },
     {
       "id": "C:DRAW_RESULT_FALLBACK",
@@ -659,7 +687,8 @@
       "cards": [
         "Ureni, the Song Unending"
       ],
-      "status": "pending shared-rule implementation and acceptance"
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (search and color sequences); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "implementation_evidence": "docs/tdm-search-color-sequences-evidence.json"
     },
     {
       "id": "C:SOURCE_POWER_MILL",
@@ -726,14 +755,15 @@
         "Breaching Dragonstorm",
         "Sidisi, Regent of the Mire"
       ],
-      "status": "New cross-cutting dependency identified during independent casting review; complete primary-rule audit recorded, a-g authoring focused final-total guard and outcome tests. No passing checkpoint yet.",
+      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (mana payment windows); final assembled engine, schema/replay and independent batch reviews remain pending.",
       "authority": [
         "CR117.1d",
         "CR118.5",
         "CR601.2f-g",
         "CR605.3a",
         "https://apps.magicjudges.org/forum/topic/42243/?page=1"
-      ]
+      ],
+      "implementation_evidence": "docs/tdm-mana-windows-evidence.json"
     }
   ],
   "acceptance": {
@@ -769,7 +799,10 @@
       "ObjectView": 544,
       "State": 4976
     },
-    "additional_implemented_tested_groups_pending_review": 22
+    "additional_implemented_tested_groups_pending_review": 30,
+    "authored_audit_groups_including_aliases": 81,
+    "owner_focused_passing_audit_groups_including_aliases": 79,
+    "audit_group_counts_are_unweighted": true
   },
   "active_checkpoints": {
     "fixed_endure": {
@@ -892,7 +925,31 @@
     "search_color_sequences": {
       "commit": "4fc84c0087f0eb89445c1a03e80657213b077b84",
       "evidence": "docs/tdm-search-color-sequences-evidence.json",
-      "status": "Six owner groups pass129 selected scenarios; integration and independent reviews pending. U64 allocation domain and new ColorCounter action join global schema acceptance."
+      "status": "Six groups pass129 owner selected cases; integrated, one independent scoped review approved. Final assembled validation and whole-engine reviews remain pending.",
+      "integration": "765f79773"
+    },
+    "remaining_world_first": {
+      "commit": "53441402d72ddb07fb4eed689dc96c38fb01a3be",
+      "integration": "174a9512e",
+      "evidence": "docs/tdm-remaining-world-first-evidence.json",
+      "status": "Five groups have89 owner focused/compatibility passes. Mass-copy timestamp followup is in final remaining-world worktree; root combined acceptance pending."
+    },
+    "sacrifice_random": {
+      "commit": "3e206c0cb6987a1d05e9301242311a7879e8e95f",
+      "integration": "f0f2598ae",
+      "evidence": "docs/tdm-sacrifice-random-evidence.json",
+      "status": "Two groups have121 owner focused/compatibility passes after ordered-payment repair; root combined acceptance and independent reviews pending."
+    },
+    "mana_payment_windows": {
+      "commit": "8a326dda5f9fcea579232fd040c6f04ea10bb102",
+      "integration": "68bace68f",
+      "evidence": "docs/tdm-mana-windows-evidence.json",
+      "status": "One cross-cutting group has169 owner focused/compatibility passes; integrated, one independent scoped review approved. Root combined acceptance and whole-engine reviews pending."
+    },
+    "schema_replay": {
+      "previous": 199,
+      "candidate": 200,
+      "status": "Wire migration and conservative prior-199 recording audit prepared; no baseline changes accepted yet."
     }
   }
 }
