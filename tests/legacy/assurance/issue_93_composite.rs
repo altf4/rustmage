@@ -64,6 +64,34 @@ fn board(player: Player) -> (Game, CardId, CardId) {
     (g, walker, aura)
 }
 
+// Keep the targeted positive control at a final cost of one: its synthetic
+// target reduction removes one from this raw cost of two.
+const TARGETED_POSITIVE_LOYALTY: crate::cards::authored::CardRules =
+    crate::cards::authored::CardRules {
+        effect: Effect::Permanent,
+        activated: &[ActivatedAbility {
+            exhaust: false,
+            guard: ActivationGuard::Always,
+            origin: ActivationOrigin::Battlefield,
+            cycling: false,
+            cost: ActivationCost {
+                generic: 2,
+                mana_component: true,
+                loyalty: Some(1),
+                ..ActivationCost::ZERO
+            },
+            targets: TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
+            program: &[],
+            sorcery: true,
+            once_per_turn: false,
+        }],
+        extras: &crate::cards::authored::CardExtras {
+            starting_loyalty: 3,
+            ..crate::cards::authored::CardExtras::EMPTY
+        },
+        ..crate::cards::authored::CardRules::EMPTY
+    };
+
 #[test]
 fn mana_window_must_remove_prohibition_before_positive_loyalty_payment() {
     let _mana = crate::cards::sacrifice_mana_fixture::Guard::new();
@@ -73,6 +101,12 @@ fn mana_window_must_remove_prohibition_before_positive_loyalty_payment() {
         } else {
             crate::cards::composite_loyalty_fixture::Guard::with_mana_positive()
         };
+        let _positive_target = target_sensitive.then(|| {
+            crate::cards::fixture_rules::activate(&[(
+                Card::JacePlaneswalkerToken,
+                &TARGETED_POSITIVE_LOYALTY,
+            )])
+        });
         for player in [Player::P0, Player::P1] {
             let (mut g, walker, aura) = board(player);
             let target = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
@@ -141,5 +175,56 @@ fn mana_in_pool_does_not_pay_a_prohibited_loyalty_cost() {
         };
         assert!(!g.legal_actions().contains(&announce));
         reject(&mut g, announce);
+    }
+}
+
+#[test]
+fn zero_target_total_cannot_open_a_mana_window_to_remove_a_loyalty_prohibition() {
+    let _mana = crate::cards::sacrifice_mana_fixture::Guard::new();
+    let _loyalty = crate::cards::composite_loyalty_fixture::Guard::with_mana_positive_target();
+    for player in [Player::P0, Player::P1] {
+        let (mut g, walker, aura) = board(player);
+        g.state.players[player.index()].mana = [0; 6];
+        let target = put(&mut g, player.other(), "Bear Cub", Zone::Battlefield);
+        let forest = put(&mut g, player, "Forest", Zone::Battlefield);
+        let announce = Action::AnnounceActivate {
+            card: walker,
+            ability: 0,
+            counter_payment: Counters::default(),
+        };
+        assert!(!g.legal_actions().contains(&announce));
+        reject(&mut g, announce.clone());
+        // Priority independently permits mana abilities. Pay the Aura's
+        // sacrifice here, before announcing the zero-total loyalty activation.
+        let mana = g.legal_actions().into_iter().find(|action| matches!(action,
+            Action::ActivateMana { card, .. } | Action::AnnounceMana { card, .. } if *card == aura
+        )).expect("ordinary Priority mana action");
+        owned_step(&mut g, mana);
+        if matches!(g.state.pending, Pending::PayCosts { .. })
+            && g.state
+                .announcing
+                .as_ref()
+                .is_some_and(|a| a.production.is_some())
+        {
+            owned_pay(&mut g);
+        }
+        assert_eq!(g.object_view(aura).zone, Zone::Graveyard);
+        owned_step(&mut g, announce);
+        owned_step(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            owned_step(&mut g, Action::FinishTargets);
+        }
+        let late_mana = Action::TapMana { card: forest };
+        assert!(!g.legal_actions().contains(&late_mana));
+        reject(&mut g, late_mana);
+        owned_step(&mut g, Action::PayCosts { payment: [0; 6] });
+        assert_eq!(g.counter_count(walker, CounterKind::Loyalty), 4);
+        assert_eq!(g.state.players[player.index()].mana, [0, 0, 0, 0, 1, 0]);
+        assert!(!g.object_view(forest).tapped);
     }
 }

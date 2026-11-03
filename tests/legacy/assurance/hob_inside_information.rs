@@ -20,6 +20,7 @@ const FIXTURES: &[&str] = &[
     "Silverquill, the Disputant",
     "Candy Grapple",
     "Witness Protection",
+    "Thalia, the Survivor",
 ];
 fn fixture(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
     assert!(FIXTURES.contains(&name), "unlisted fixture {name}");
@@ -485,6 +486,9 @@ fn inside_failed_foreign_entry_rolls_back_paid_life_and_exact_exile_permission_w
             finish(&mut g);
             assert_eq!(g.object_view(aura).zone, Zone::Exile);
             let forest = fixture(&mut g, p, "Forest", Zone::Battlefield);
+            // A real positive tax opens the mana window even though the
+            // alternative cost replaces the printed mana with life.
+            fixture(&mut g, p.other(), "Thalia, the Survivor", Zone::Battlefield);
             let original = g.object_ref(spell);
             act(&mut g, announce_life(spell, CastFace::Normal));
             let sacrifice = Some(g.object_ref(prison));
