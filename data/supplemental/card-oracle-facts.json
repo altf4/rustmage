@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "scope": "Pinned non-Standard-legal Oracle facts for complete physical-set membership and Freeform behavior. Does not extend the frozen legal Standard inventory.",
+  "oracle_cards_sha256": "88584cc4a79fc5ade4f879348e3dcfb0c91f77ea0648573cec8a54eb4eb2be06",
+  "target": {
+    "path": "data/targets/standard-2026-10-15.json",
+    "sha256": "9ce06f9b15c53a7076d6db96b872c99cf5a1382ff335f999522da50d46d1dc38"
+  },
+  "cards": [
+    {
+      "facts_sha256": "a59be8cc02d5088dc5bc570e63c390b32308738da9399c1840cc9f40c40125a1",
+      "standard_legal": false,
+      "standard_status": "banned",
+      "source": "https://api.scryfall.com/cards/named?exact=Cori-Steel%20Cutter",
+      "source_response_sha256": "0279de56f3aadb94accb87469b1718f3258dd924185b31257d324d3214166d33",
+      "facts": {
+        "oracle_id": "46b1a169-bc32-47bf-b379-fa0c3d13878f",
+        "name": "Cori-Steel Cutter",
+        "layout": "normal",
+        "mana_cost": "{1}{R}",
+        "cmc": 2.0,
+        "type_line": "Artifact — Equipment",
+        "oracle_text": "Equipped creature gets +1/+1 and has trample and haste.\nFlurry — Whenever you cast your second spell each turn, create a 1/1 white Monk creature token with prowess. You may attach this Equipment to it. (Whenever you cast a noncreature spell, the token gets +1/+1 until end of turn.)\nEquip {1}{R}",
+        "colors": [
+          "R"
+        ],
+        "color_identity": [
+          "R"
+        ],
+        "keywords": [
+          "Flurry",
+          "Equip"
+        ],
+        "all_parts": [
+          {
+            "id": "470dd3c8-07c9-42ef-aa9e-3c73b23607ff",
+            "component": "combo_piece",
+            "name": "Cori-Steel Cutter",
+            "type_line": "Artifact — Equipment"
+          },
+          {
+            "id": "633d2d10-def7-426f-8496-ed6b45684299",
+            "component": "token",
+            "name": "Monk",
+            "type_line": "Token Creature — Monk"
+          }
+        ],
+        "reference_printing": {
+          "id": "490eb213-9ae2-4b45-abec-6f1dfc83792a",
+          "set": "tdm",
+          "collector_number": "103",
+          "released_at": "2025-04-11"
+        }
+      }
+    }
+  ]
+}

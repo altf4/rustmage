@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 """Generate exact outside-game names from pinned structured Oracle facts."""
 import argparse
-import json
 from pathlib import Path
+try:
+    from . import oracle_facts
+except ImportError:
+    import oracle_facts
 ROOT = Path(__file__).resolve().parents[1]
 
 def render():
-    cards = json.loads((ROOT / 'data/standard/cards.json').read_text())['cards']
+    facts, _ = oracle_facts.load(ROOT)
+    cards = facts.values()
     rows = []
     for card in cards:
         layout = card['layout']

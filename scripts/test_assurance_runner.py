@@ -12,6 +12,7 @@ from resource_limits import MAX_MEMORY, bounded_group
 from test_validate import ValidatorTests
 from test_build_cache import CacheInputTests
 from test_workspace_catalogue import WorkspaceCatalogueTests
+from test_oracle_facts import OracleFactsTests, CatalogueFactsTests
 
 ROOT = Path(__file__).resolve().parents[1]
 

@@ -855,7 +855,7 @@
     8,
     0,
     9,
-    0,
+    8,
     8,
     4,
     20,
@@ -54067,29 +54067,32 @@
     {
       "index": 849,
       "module": "card_0849",
-      "path": "legacy/cori_steel_cutter.rs",
-      "set": "legacy",
+      "path": "tdm/cori_steel_cutter.rs",
+      "set": "tdm",
       "category": "physical",
       "name": "Cori-Steel Cutter",
-      "oracle_id": null,
-      "facts_sha256": null,
-      "mana_cost": "",
-      "type_line": "",
-      "oracle_keywords": [],
+      "oracle_id": "46b1a169-bc32-47bf-b379-fa0c3d13878f",
+      "facts_sha256": "a59be8cc02d5088dc5bc570e63c390b32308738da9399c1840cc9f40c40125a1",
+      "mana_cost": "{1}{R}",
+      "type_line": "Artifact — Equipment",
+      "oracle_keywords": [
+        "Flurry",
+        "Equip"
+      ],
       "standard_legal": false,
       "legendary": false,
-      "kind": 0,
+      "kind": 16,
       "basic": false,
       "mana_color": null,
       "colored": [
         0,
         0,
         0,
-        0,
+        1,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1
     },
     {
       "index": 850,

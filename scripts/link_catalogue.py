@@ -2,9 +2,10 @@
 """Assemble pinned metadata and direct Rust modules. Never interpret rules text."""
 import argparse, hashlib, json, re
 try:
-    from . import workspace_catalogue
+    from . import workspace_catalogue, oracle_facts
 except ImportError:
     import workspace_catalogue
+    import oracle_facts
 from collections import Counter, defaultdict
 from pathlib import Path
 try:
@@ -44,7 +45,13 @@ def load(root=ROOT):
         raise ValueError('catalogue IDs must be contiguous and leave the source-less sentinel unused')
     if sum(card['category']=='physical' for card in metadata['cards']) != metadata['physical_count']:
         raise ValueError('physical_count must count physical identities, not imply a contiguous prefix')
-    facts={c['oracle_id']:c for c in json.loads((root/'data/standard/cards.json').read_text())['cards']}
+    facts,standard_ids=oracle_facts.load(root)
+    for card in metadata['cards']:
+        if card['category']=='physical' and card['oracle_id'] and card['standard_legal'] != (card['oracle_id'] in standard_ids):
+            raise ValueError('Standard legality differs from frozen inventory: '+card['name'])
+    physical_oracles=[card['oracle_id'] for card in metadata['cards'] if card['category']=='physical' and card['oracle_id']]
+    if len(physical_oracles)!=len(set(physical_oracles)):
+        raise ValueError('duplicate physical Oracle identity in catalogue')
     by_id={c['index']:c for c in metadata['cards']}
     by_oracle={c['oracle_id']:c for c in [card for card in metadata['cards'] if card['category']=='physical'] if c['oracle_id']}
     records={};fingerprint=bytearray(canonical(metadata))
@@ -59,6 +66,8 @@ def load(root=ROOT):
         expected=directory/card['path']
         if path!=expected.with_suffix('.json'):raise ValueError('card must use pinned canonical set/path: '+card['path'])
         if card['facts_sha256']:
+            if card['oracle_id'] not in facts:
+                raise ValueError('missing pinned Oracle facts: '+card['name'])
             if record.get('facts_sha256')!=card['facts_sha256'] or hashlib.sha256(canonical(facts[card['oracle_id']])).hexdigest()!=card['facts_sha256']:raise ValueError('pinned facts changed: '+card['name'])
         if record.get('physical_metadata_sha256')!=physical_digest(metadata,card):raise ValueError('pinned physical metadata changed: '+card['name'])
         source=path.with_suffix('.rs')
