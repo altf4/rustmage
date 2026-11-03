@@ -12,7 +12,7 @@
     "unresolved_membership_facts": 1,
     "independently_verified_complete_set_cards": 0
   },
-  "phase": "Final engine review found two remaining source-reference defects after443 assembled focused cases pass. Repair and revalidation precede final shared-engine acceptance and card authoring.",
+  "phase": "Shared engine checkpoint accepted atb4562e25c after final integrated release validation and two independent nonauthor reviews. Metadata reconciliation/linkage/cache warming precedes full card authoring.",
   "audit_reports": [
     "docs/tdm-audit-a-g.json",
     "docs/tdm-audit-g-s.json",
@@ -41,7 +41,7 @@
         "Frostcliff Siege",
         "Glacierwood Siege"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (entry modes)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "A02",
@@ -53,7 +53,7 @@
         "Dusyut Earthcarver",
         "Fortress Kin-Guard"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (fixed endure)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "A03",
@@ -62,7 +62,7 @@
       "cards": [
         "Ainok Wayfarer"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (resolution/private-library results after privacy pacing repair)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "A04",
@@ -72,7 +72,7 @@
         "All-Out Assault",
         "Dalkovan Encampment"
       ],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (combat callbacks); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "implementation_evidence": "docs/tdm-combat-callbacks-evidence.json"
     },
     {
@@ -82,7 +82,7 @@
       "cards": [
         "Abzan Monument"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (sampled source LKI repair)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "A06",
@@ -91,7 +91,7 @@
       "cards": [
         "Breaching Dragonstorm"
       ],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (search and color sequences); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "blocking_engine_dependencies": [
         "D:MANA_PAYMENT_WINDOW"
       ],
@@ -104,7 +104,7 @@
       "cards": [
         "Call the Spirit Dragons"
       ],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (search and color sequences); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "implementation_evidence": "docs/tdm-search-color-sequences-evidence.json"
     },
     {
@@ -114,7 +114,7 @@
       "cards": [
         "Dispelling Exhale"
       ],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (behold and free costs); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "implementation_evidence": "docs/tdm-behold-free-costs-evidence.json"
     },
     {
@@ -124,7 +124,7 @@
       "cards": [
         "Clarion Conqueror"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (static rules after gained dispatch and acquisition-origin repairs)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "A10",
@@ -133,7 +133,7 @@
       "cards": [
         "Dracogenesis"
       ],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (behold and free costs); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "blocking_engine_dependencies": [
         "D:MANA_PAYMENT_WINDOW"
       ],
@@ -146,7 +146,7 @@
       "cards": [
         "Dragon's Prey"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (target/scalar activation costs after lint correction)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "A12",
@@ -155,7 +155,7 @@
       "cards": [
         "Dragonfire Blade"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (target/scalar activation costs after lint correction).",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "blocking_engine_dependencies": [
         "D:MANA_PAYMENT_WINDOW"
       ]
@@ -167,7 +167,7 @@
       "cards": [
         "Dragonfire Blade"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (static rules after gained dispatch and acquisition-origin repairs)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "A14",
@@ -177,7 +177,7 @@
         "Delta Bloodflies",
         "Formation Breaker"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (counter world)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "A15",
@@ -186,7 +186,7 @@
       "cards": [
         "Desperate Measures"
       ],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (first event contexts); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "implementation_evidence": "docs/tdm-event-contexts-evidence.json"
     },
     {
@@ -196,7 +196,7 @@
       "cards": [
         "Dragonologist"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (counter world)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "A17",
@@ -205,7 +205,7 @@
       "cards": [
         "Dragonstorm Globe"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (entry counters)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "A18",
@@ -214,7 +214,7 @@
       "cards": [
         "Essence Anchor"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (static rules after gained dispatch and acquisition-origin repairs)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "A19",
@@ -223,7 +223,7 @@
       "cards": [
         "Flamehold Grappler"
       ],
-      "status": "Scoped implementation,37 focused/compatibility cases and two independent nonauthor reviews complete at48dc9ce44; final root integrated acceptance remains pending."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "A20",
@@ -232,7 +232,7 @@
       "cards": [
         "Furious Forebear"
       ],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (first event contexts); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "implementation_evidence": "docs/tdm-event-contexts-evidence.json"
     },
     {
@@ -242,7 +242,7 @@
       "cards": [
         "Glacial Dragonhunt"
       ],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (search and color sequences); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "implementation_evidence": "docs/tdm-search-color-sequences-evidence.json"
     },
     {
@@ -250,21 +250,21 @@
       "description": "entry modes",
       "required_change": "Extend owned as-enters choices with a bounded named mode, and gate whole triggered/static/activated printed lines on its exact incarnation. No choice on an in-place copy means neither mode. Copying/entry replacements and rollback must preserve this boundary.",
       "cards": [],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (entry modes)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "B:counter_on_own_creature",
       "description": "counter on own creature",
       "required_change": "Add placement trigger qualifying recipient current/pre-entry controller and creature characteristics regardless of placing player, across every counter kind. Existing CounterPlacedByYou variants qualify placer and do not implement Hollowmurk. Apply OncePerTurn at queue time; entry counters qualify.",
       "cards": [],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (entry counters)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "B:death_counter_snapshot",
       "description": "death counter snapshot",
       "required_change": "Add a death observer matching any controlled creature with counters, freezing the whole per-kind counter multiset from its pre-death ObjectView onto each packet. Copy this snapshot to legal recipients on resolution; never read observer counters, live graveyard object counters, or a later incarnation. Include simultaneous self/other deaths and negative counters before +1/-1 annihilation.",
       "cards": [],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (first event contexts); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "implementation_evidence": "docs/tdm-event-contexts-evidence.json"
     },
     {
@@ -272,28 +272,28 @@
       "description": "counter kind union",
       "required_change": "Add distinct positive counter-kind union over currently controlled creatures, using borrowed actual and speculative characteristic worlds. Count duplicate kinds once, exclude noncreatures/opponent creatures and zero counts. Source-local count or sum of per-object cardinalities is wrong.",
       "cards": [],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (counter world)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "B:graveyard_entry_counter",
       "description": "graveyard entry counter",
       "required_change": "Reuse SelfGraveyardCastIf for normal paid self permission; add graveyard-cast-only exact-entry counter qualification. Existing cast_entry_counters applies any cast and hand_cast_entry_counters applies only hand. A countered spell must return graveyard rather than flashback exile. Existing Finality death replacement remains authoritative after ability loss.",
       "cards": [],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (entry counters)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "B:any_damage_incarnation",
       "description": "any damage incarnation",
       "required_change": "Add/read actual positive damage dealt across the exact permanent incarnation (combat OR noncombat), surviving turns and control/copy changes but clearing on a true zone change. Expose through actual/speculative earlier-layer stat query for conditional hexproof. Update history before damage-trigger target acquisition.",
       "cards": [],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (counter world)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "B:mana_spell_filter",
       "description": "mana spell filter",
       "required_change": "Generalize immutable produced-mana restrictions to creature spells and union spell predicates Dragon OR Omen, evaluating the selected spell face in actual/speculative funding. Existing SpellSubtype is single-subtype only; do not mark all Dragon-card faces as Dragons. Retain ordinary restrictions for extra costs and cannot fund unrelated activation/ward payments.",
       "cards": [],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (first remaining world); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "implementation_evidence": "docs/tdm-remaining-world-first-evidence.json"
     },
     {
@@ -301,35 +301,35 @@
       "description": "variable endure",
       "required_change": "Extend Endure to an AmountValue and explicit subject, choosing exactly one dynamic white N/N Spirit or N +1 counters, including N0 no action. Reuse owned Pending and counter/token replacement pipeline; never require one pre-generated token card for every X. Preserve choice/recipe in raw/index branch and snapshot/restore.",
       "cards": [],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (sampled source LKI repair)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "B:activation_x_life",
       "description": "activation x life",
       "required_change": "Add real X life payment for declared activation X alongside generic X mana, colored mana, tap and other costs. Current life_x_cost branch only handles StackKind::Spell; ActivationCost.life is fixed u16. Funding/legal X intervals and life-payment replacements must consider all cost components and restore failed attempts atomically.",
       "cards": [],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (target/scalar activation costs after lint correction)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "B:dynamic_exact_optional_mill",
       "description": "dynamic exact optional mill",
       "required_change": "Generalize existing MayMill exact-feasibility guard and MillAmount to controlled-land-count amount sampled on resolution. The choice to mill N must be unavailable when fewer than N library cards remain. Fixed MayMill3 already covers Rainveil without new machinery.",
       "cards": [],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (resolution/private-library results after privacy pacing repair)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "B:graveyard_power_damage",
       "description": "graveyard power damage",
       "required_change": "Freeze a legal own graveyard creature target current power, including CDAs, for subsequent spell-source damage to an independent creature target after return-to-hand. Current AmountValue::TargetCreaturePower capture is wired only for specific Amass consumers and selected group, not this graveyard group. CR608.2b: illegal graveyard target cannot supply power and causes no damage, while an illegal battlefield target does not prevent returning the legal card.",
       "cards": [],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (resolution/private-library results after privacy pacing repair)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "B:distinct_color_search",
       "description": "distinct color search",
       "required_change": "Add color search predicates and a single private library search with independent distinct B/G/U slots. A multicolor card can fill one role while permitting other multicolor cards in other roles; fail-to-find any subset0..3 legal. Freeze group and move simultaneously to graveyard then shuffle once; enforce search restrictions and privacy.",
       "cards": [],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (search and color sequences); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "implementation_evidence": "docs/tdm-search-color-sequences-evidence.json"
     },
     {
@@ -337,14 +337,14 @@
       "description": "search result entry counters",
       "required_change": "Extend searched-result entry operation to carry fixed/mixed counters before replacement/ETB commit. Magmatic Hellkite additionally freezes destroyed land controller before attempt, searches despite indestructibility, and searches only if target still legal. Do not add counter after entering or gate search on actual destruction.",
       "cards": [],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (entry counters)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "B:linked_exile_attacking_copies",
       "description": "linked exile attacking copies",
       "required_change": "Copy exact still-linked physical exile card recipe, create tapped token per opponent attacking that opponent, and register exact results for the controller next end step (not whichever player next has end step). Reuse exile-until-source-leaves, copy/entry replacement and delayed sacrifice foundations. Handle source gone before ETB, tokens ceasing, copied noncreature physical cards, blink/rebind and departure-trigger LKI.",
       "cards": [],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (combat callbacks); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "implementation_evidence": "docs/tdm-combat-callbacks-evidence.json"
     },
     {
@@ -352,7 +352,7 @@
       "description": "mass in place copy",
       "required_change": "Generalize in-place copy recipient selection to snapshot every other currently controlled creature using one frozen legal target blueprint. Preserve counters/tap/damage/control, copy copiable exceptions, apply same EOT expiry and no entry events. EntryCopySpec optional any creature already covers Naga entry; do not add another entry-copy subsystem.",
       "cards": [],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (first remaining world); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "implementation_evidence": "docs/tdm-remaining-world-first-evidence.json"
     },
     {
@@ -360,7 +360,7 @@
       "description": "discard hand cost",
       "required_change": "Support discard-entire-hand as real cost (empty hand legal), combined with mana and sacrifice transactionally; existing ActivationCost.discard means one card. For Narset may discard hand then draw, verify ordinary May+DiscardHand is sufficient under discard restrictions/replacements; use explicit optional payment continuation if not. Do not demand actual discarded-card count>0.",
       "cards": [],
-      "status": "Full-hand activation sampling and legal funding repairs integrated atd0ed3693e. Owner96 focused+257 compatibility and root439 TDM+4schema cases pass. Final assembled broad validation and independent engine reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "implementation_evidence": "docs/tdm-remaining-world-second-checkpoint.json"
     },
     {
@@ -368,7 +368,7 @@
       "description": "chosen x library search",
       "required_change": "Expose a qualified library search with creature MV<=chosenX and battlefield destination+shuffle. SearchScaled.maximum means number of cards, not maximum MV. Reuse harmonize chosen-X generic cost and discount logic; freeze X for search and keep free-X=0 semantics.",
       "cards": [],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (search and color sequences); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "implementation_evidence": "docs/tdm-search-color-sequences-evidence.json"
     },
     {
@@ -376,7 +376,7 @@
       "description": "optional behold flash",
       "required_change": "Add optional Dragon behold cast additional-cost declaration (controlled Dragon or revealed Dragon card in hand), save committed paid qualification in exact cast packet and copies, and allow Molten Exhale instant timing only through that committed route. Existing EffectChoiceKind::Behold/hand witness/reveal code can be reused but mandatory additional costs and late board checks are insufficient. Extra consequences must continue under partial target legality when printed.",
       "cards": [],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (behold and free costs); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "implementation_evidence": "docs/tdm-behold-free-costs-evidence.json"
     },
     {
@@ -384,14 +384,14 @@
       "description": "mixed entry counter return",
       "required_change": "Return a target own permanent from graveyard with both hexproof and indestructible counters before entry commit and all replacements/observers. Existing ReturnToBattlefieldWithCounter carries one kind; adding second later is rules-wrong. Share mixed entry payload with search-result entry counters.",
       "cards": [],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (entry counters)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "B:delayed_noncreature_cast_trigger",
       "description": "delayed noncreature cast trigger",
       "required_change": "Register source-independent repeated noncreature-cast triggered template until cleanup; source Saga may sacrifice immediately after chapter3. Target own creature when each trigger goes on stack, not at chapter resolution. Existing CopySpellsThisTurn scheduler stores specialized copy callback; generalize/reuse, do not grant a battlefield source-bound trigger.",
       "cards": [],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (combat callbacks); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "implementation_evidence": "docs/tdm-combat-callbacks-evidence.json"
     },
     {
@@ -399,7 +399,7 @@
       "description": "graveyard owner player constraint",
       "required_change": "Add graveyard owner equal to player in specified target group, at announcement and resolution. Existing ControllerOfPlayerGroup explicitly accepts battlefield only. Then shuffle chosen player library even if zero graveyard cards chosen, while early returned cards invalidate only their later bindings; isolate each optional target group and exile resolving spell.",
       "cards": [],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (first remaining world); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "implementation_evidence": "docs/tdm-remaining-world-first-evidence.json"
     },
     {
@@ -407,7 +407,7 @@
       "description": "source attack without defender",
       "required_change": "Add until-cleanup source-only attack-as-though-no-defender rule without removing defender keyword. Reuse attack eligibility actual/projected/mandatory attack queries and existing continuous defender exemptions; expiry/branch/restore and copied/ability-lost recipient retain resolved permission.",
       "cards": [],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (combat callbacks); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "implementation_evidence": "docs/tdm-combat-callbacks-evidence.json"
     },
     {
@@ -415,21 +415,21 @@
       "description": "decayed ability",
       "required_change": "Implement real Decayed keyword behavior: cannot block plus attack trigger scheduling sacrifice at end of combat. Keyword counter grants that ability while positive; existing CounterKind::Decayed stores values but has no active consumer. Already-queued attack sacrifice survives loss of ability/counter. Exact source reference prevents sacrificed old object affecting returned one.",
       "cards": [],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (protection/Decayed)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "B:exact_x_activation_targets",
       "description": "exact x activation targets",
       "required_change": "Provide exact chosen-X target minimum/maximum for activated ability, including X0. Current targets_up_to_x specialization applies only StackKind::Spell and min0; UpToTargets requires min0. Coordinate legal X intervals with count of legal distinct creature targets and full variable cost feasibility, without enumerating huge X domains.",
       "cards": [],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (target/scalar activation costs after lint correction)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "B:entered_this_turn_damage_double",
       "description": "entered this turn damage double",
       "required_change": "Generalize controlled-creature damage multiplier with exact entry-this-turn predicate and source LKI for departed damagers, not control-entered-this-turn or only combat damage. Preserve original damage source and affected-player replacement order with prevention; double after division/assignment. Existing unqualified DoubleCreatureDamage is broader than Neriv.",
       "cards": [],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (first remaining world); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "implementation_evidence": "docs/tdm-remaining-world-first-evidence.json"
     },
     {
@@ -437,7 +437,7 @@
       "description": "chosen source prevention",
       "required_change": "Choose a source without targeting as spell resolves; retain source exact/permitted source identity and shield through cleanup. Replace only its next positive damage event to shield controller, consuming shield once; actual prevented amount queues independent reflexive damage-to-damager-controller and draw callback. Integrate prevention prohibitions, affected-player replacement ordering, departed source LKI and owned pending state.",
       "cards": [],
-      "status": "Initial full semantic-source/waiting repair integrated atd0ed3693e, owner96+257 and root443 focused cases pass. Independent final review found GY-to-BF departure old-identity loss and premature deletion of untriggered Goggles DTA roots on lost/ineligible mana; both mandatory repairs in progress. Engine acceptance remains open.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "implementation_evidence": "docs/tdm-remaining-world-second-checkpoint.json"
     },
     {
@@ -445,7 +445,7 @@
       "description": "resolution exile cost success",
       "required_change": "Current ChooseObjects ExileGraveyard followed by Reflexive uses move_objects_raw and unconditionally continues; it does not encode an exact-success reflexive cost boundary. Prove payment/replacement legality or add explicit atomic optional exile-cost-reflexive instruction. A prevented cost must not queue return trigger or leave partially mutated payment state. Ordinary replaced destinations may still count as paid according to CR118; distinguish prevention from redirection.",
       "cards": [],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (first remaining world); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "implementation_evidence": "docs/tdm-remaining-world-first-evidence.json"
     },
     {
@@ -453,14 +453,14 @@
       "description": "endure forbidden counter fallback",
       "required_change": "Current fixed Endure offers counters whenever exact source remains, even if an active counter prohibition prevents any counter placement. Official release notes require mandatory Spirit creation whenever counters cannot be put for any reason. Prune illegal choice and use same fallback when prohibition changes through replacement/entry transaction; preserve source-removed fallback and dynamic token variants. Use the enduring permanent current controller (or relevant departed LKI controller) as chooser and token creator. Distinguish inability to choose the counter payment from a legal payment later modified by replacement (CR118.11): a modified paid choice does not automatically create Spirit.",
       "cards": [],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (fixed endure)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "B:event_scaled_opponent_free_cast",
       "description": "event scaled opponent free cast",
       "required_change": "Reuse ResolutionFreeCasts with captured combat-damaged player, AmountValue::DamageEventAmount for exiled top-card count and maximum per-spell mana value, unlimited repeated casts, no lands. Existing ExileTargetLibraryTopCastFree requires explicit player target/fixed u16 count and has no MV ceiling. Own exact exile refs and captured X must survive source departure, responses during nested casts, mandatory extra costs, rollback and branch/restore.",
       "cards": [],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (linked event casts); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "implementation_evidence": "docs/tdm-linked-event-casts-evidence.json"
     },
     {
@@ -472,7 +472,7 @@
         "Sinkhole Surveyor",
         "Warden of the Grove"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (fixed endure)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "C:DYNAMIC_SUBJECT_ENDURE",
@@ -481,7 +481,7 @@
       "cards": [
         "Warden of the Grove"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (sampled source LKI repair)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "C:GRANTED_HARMONIZE",
@@ -490,7 +490,7 @@
       "cards": [
         "Songcrafter Mage"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (casting)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "C:GRANTED_DELVE",
@@ -499,7 +499,7 @@
       "cards": [
         "Teval, Arbiter of Virtue"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (casting)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "C:SUSPEND",
@@ -508,7 +508,7 @@
       "cards": [
         "Taigam, Master Opportunist"
       ],
-      "status": "Scoped implementation,37 focused/compatibility cases and two independent nonauthor reviews complete at48dc9ce44; final root integrated acceptance remains pending."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "C:PRINTED_STORM",
@@ -517,7 +517,7 @@
       "cards": [
         "Stormscale Scion"
       ],
-      "status": "Scoped implementation,37 focused/compatibility cases and two independent nonauthor reviews complete at48dc9ce44; final root integrated acceptance remains pending."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "C:NAMED_ENTRY_MODE",
@@ -526,7 +526,7 @@
       "cards": [
         "Windcrag Siege"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (entry modes)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "C:ATTACK_TRIGGER_DUPLICATION",
@@ -535,7 +535,7 @@
       "cards": [
         "Windcrag Siege"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (static rules after gained dispatch and acquisition-origin repairs)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "C:CONDITIONAL_SACRIFICE_PROHIBITION",
@@ -544,7 +544,7 @@
       "cards": [
         "Zurgo, Thunder's Decree"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (static rules after gained dispatch and acquisition-origin repairs)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "C:FIRST_COUNTER_PLACEMENT",
@@ -553,7 +553,7 @@
       "cards": [
         "Stalwart Successor"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (entry counters)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "C:BEHOLD_RESOLUTION",
@@ -562,7 +562,7 @@
       "cards": [
         "Sarkhan, Dragon Ascendant"
       ],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (behold and free costs); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "implementation_evidence": "docs/tdm-behold-free-costs-evidence.json"
     },
     {
@@ -572,7 +572,7 @@
       "cards": [
         "Salt Road Skirmish"
       ],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (combat callbacks); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "implementation_evidence": "docs/tdm-combat-callbacks-evidence.json"
     },
     {
@@ -582,7 +582,7 @@
       "cards": [
         "Severance Priest"
       ],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (linked event casts); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "implementation_evidence": "docs/tdm-linked-event-casts-evidence.json"
     },
     {
@@ -592,7 +592,7 @@
       "cards": [
         "Sidisi, Regent of the Mire"
       ],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (sacrifice and random graveyard play); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "blocking_engine_dependencies": [
         "D:MANA_PAYMENT_WINDOW"
       ],
@@ -605,7 +605,7 @@
       "cards": [
         "Smile at Death"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (entry counters)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "C:DAMAGE_PLAYER_RESULT",
@@ -614,7 +614,7 @@
       "cards": [
         "Sonic Shrieker"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (resolution/private-library results after privacy pacing repair)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "C:EMPTY_LIBRARY_GRAVEYARD_TOP",
@@ -623,7 +623,7 @@
       "cards": [
         "Stillness in Motion"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (resolution/private-library results after privacy pacing repair)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "C:RETURN_TOKEN_DRAW_RESULT",
@@ -632,7 +632,7 @@
       "cards": [
         "Sunpearl Kirin"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (resolution/private-library results after privacy pacing repair)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "C:RANDOM_GRAVEYARD_EXILE_PLAY",
@@ -641,7 +641,7 @@
       "cards": [
         "Tersa Lightshatter"
       ],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (sacrifice and random graveyard play); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "implementation_evidence": "docs/tdm-sacrifice-random-evidence.json"
     },
     {
@@ -651,7 +651,7 @@
       "cards": [
         "The Sibsig Ceremony"
       ],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (first event contexts); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "implementation_evidence": "docs/tdm-event-contexts-evidence.json"
     },
     {
@@ -661,7 +661,7 @@
       "cards": [
         "Thunder of Unity"
       ],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (combat callbacks); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "implementation_evidence": "docs/tdm-combat-callbacks-evidence.json"
     },
     {
@@ -671,7 +671,7 @@
       "cards": [
         "Trade Route Envoy"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (resolution/private-library results after privacy pacing repair)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "C:PRIVATE_TOP_LAND_THEN_OPTIONAL_GRAVE",
@@ -680,7 +680,7 @@
       "cards": [
         "Traveling Botanist"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (resolution/private-library results after privacy pacing repair)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "C:SCALED_DAMAGE_DIVISION",
@@ -689,7 +689,7 @@
       "cards": [
         "Ureni, the Song Unending"
       ],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (search and color sequences); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "implementation_evidence": "docs/tdm-search-color-sequences-evidence.json"
     },
     {
@@ -699,7 +699,7 @@
       "cards": [
         "Veteran Ice Climber"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (resolution/private-library results after privacy pacing repair)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "C:YATHAN_MILL_SEMANTICS_REVIEW",
@@ -708,7 +708,7 @@
       "cards": [
         "Yathan Roadwatcher"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (resolution/private-library results after privacy pacing repair)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "C:TEMPORARY_ADDITIVE_SUBTYPE",
@@ -717,7 +717,7 @@
       "cards": [
         "Sarkhan, Dragon Ascendant"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (static rules after gained dispatch and acquisition-origin repairs)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "C:CAPTURED_COPY_WITHOUT_RETARGET",
@@ -726,7 +726,7 @@
       "cards": [
         "Taigam, Master Opportunist"
       ],
-      "status": "Scoped implementation,37 focused/compatibility cases and two independent nonauthor reviews complete at48dc9ce44; final root integrated acceptance remains pending."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "C:COLOR_QUALIFIED_PROTECTION",
@@ -735,7 +735,7 @@
       "cards": [
         "Ureni, the Song Unending"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (protection/Decayed)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "D:OPTIONAL_CREATED_TOKEN_ATTACHMENT",
@@ -744,7 +744,7 @@
       "cards": [
         "Cori-Steel Cutter"
       ],
-      "status": "Scoped implementation, focused rules/compatibility evidence and two independent nonauthor reviews complete; final integrated shared-engine acceptance remains pending (optional attachment)."
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate."
     },
     {
       "id": "D:MANA_PAYMENT_WINDOW",
@@ -757,7 +757,7 @@
         "Breaching Dragonstorm",
         "Sidisi, Regent of the Mire"
       ],
-      "status": "Implementation integrated with passing owner focused rules/compatibility evidence (mana payment windows); final assembled engine, schema/replay and independent batch reviews remain pending.",
+      "status": "Shared-engine implementation and integrated acceptance complete atb4562e25c:4235 native cases, release/bindings and two independent nonauthor final engine approvals. Actual card wiring and whole-set acceptance remain separate.",
       "authority": [
         "CR117.1d",
         "CR118.5",
@@ -769,11 +769,13 @@
     }
   ],
   "acceptance": {
-    "shared_rules_reviewed": false,
-    "card_authoring_permitted": false,
+    "shared_rules_reviewed": true,
+    "card_authoring_permitted": true,
     "set_only_complete_games": false,
     "full_release_acceptance": false,
-    "final_two_nonauthor_reviews": false
+    "final_two_nonauthor_reviews": false,
+    "engine_release_checkpoint": true,
+    "engine_checkpoint_two_nonauthor_reviews": true
   },
   "initial_checks": {
     "source_pin_check": {
@@ -786,14 +788,35 @@
   },
   "measurements": {
     "new_complete_cards": 0,
-    "full_validation_runs": 0,
-    "simulation_benchmarks": [],
+    "full_validation_runs": 3,
+    "simulation_benchmarks": [
+      {
+        "workload": "Ten-game Freeform native-smoke only",
+        "report": "/home/altf4/.cache/rustmage-validation-o8jjr7os/report/result.json",
+        "clone_ns": 182.22161,
+        "decisions": 4941,
+        "decisions_per_second": 26851.116428500452,
+        "deck_names": [
+          "native-smoke"
+        ],
+        "deck_rules": "Freeform",
+        "decklist_archive": null,
+        "games": 10,
+        "games_per_second": 54.343485991703,
+        "initial_state_bytes_excluding_capacity_and_allocator": 24712,
+        "max_decisions_per_game": 655,
+        "note": "native smoke policy and observation construction included; optional named decks rotate adjacent matchups through both seats; setup and gameplay timed, archive loading excluded; no model, tensor encoding, or per-decision JSON; verify mode also times owned raw/index branch and restore checks; sampled gameplay is not complete card-interaction coverage or XMage parity",
+        "owned_raw_index_restore_checks": false,
+        "restore_ns": 182.5001,
+        "seconds": 0.184014695
+      }
+    ],
     "negative_regression_cases": 5,
     "root_endure_cases_passed": 6,
     "root_counter_cases_passed": 7,
-    "latest_assembled_cases_passed": 443,
-    "latest_assembled_compile_seconds": 158.0265355600277,
-    "latest_assembled_scenario_seconds": 0.6344783469976392,
+    "latest_assembled_cases_passed": 4235,
+    "latest_assembled_compile_seconds": 247.4585791590216,
+    "latest_assembled_scenario_seconds": 96.6399016979849,
     "scoped_reviewed_audit_groups_including_aliases": 49,
     "total_audit_groups_including_aliases": 81,
     "current_hot_layout_bytes": {
@@ -801,7 +824,7 @@
       "ObjectView": 544,
       "State": 4992
     },
-    "additional_implemented_tested_groups_pending_review": 30,
+    "additional_implemented_tested_groups_pending_review": 0,
     "authored_audit_groups_including_aliases": 81,
     "owner_focused_passing_audit_groups_including_aliases": 81,
     "audit_group_counts_are_unweighted": true,
@@ -816,163 +839,195 @@
       "source_unchanged": true,
       "scope": "schema2+search28+firstworld17+Sidisi20+mana17; separate explicit trace candidate expected baseline drift, not complete shared engine acceptance"
     },
-    "latest_assembled_scope": "439 all TDM engine cases plus4schema200 cases at344a8caac; not broad/full-set acceptance, two newly reviewed source-reference gaps remain."
+    "latest_assembled_scope": "Final complete native assurance atb4562e25c, all99 targets; not complete TDM card/set acceptance.",
+    "final_integrated_reviewed_audit_groups_including_aliases": 81,
+    "engine_validation_attempts": 3,
+    "engine_validation_successes": 1,
+    "card_implementation_throughput": {
+      "phase": "Card authoring not yet started",
+      "new_complete_cards": 0,
+      "rate": null
+    }
   },
   "active_checkpoints": {
     "fixed_endure": {
       "commit": "c68e647c5",
       "evidence": "docs/tdm-endure-evidence.json",
-      "status": "Six focused groups pass; two independent nonauthor scoped approvals."
+      "status": "Included in the final accepted shared-engine checkpoint atb4562e25c; see docs/tdm-engine-acceptance.json.",
+      "status_before_final_integration": "Six focused groups pass; two independent nonauthor scoped approvals."
     },
     "entry_modes": {
       "commit": "15ac5483c",
       "evidence": "docs/tdm-entry-modes-evidence.json",
-      "status": "49 focused/compatibility scenarios pass; two independent scoped approvals."
+      "status": "Included in the final accepted shared-engine checkpoint atb4562e25c; see docs/tdm-engine-acceptance.json.",
+      "status_before_final_integration": "49 focused/compatibility scenarios pass; two independent scoped approvals."
     },
     "counter_world": {
       "commit": "e36436996",
       "evidence": "docs/tdm-counter-world-evidence.json",
-      "status": "Seven owner and seven integrated groups pass; two independent scoped approvals."
+      "status": "Included in the final accepted shared-engine checkpoint atb4562e25c; see docs/tdm-engine-acceptance.json.",
+      "status_before_final_integration": "Seven owner and seven integrated groups pass; two independent scoped approvals."
     },
     "optional_attachment": {
       "commit": "b542ae7e1",
       "evidence": "docs/tdm-optional-attachment-evidence.json",
-      "status": "Six focused groups pass; two independent scoped approvals."
+      "status": "Included in the final accepted shared-engine checkpoint atb4562e25c; see docs/tdm-engine-acceptance.json.",
+      "status_before_final_integration": "Six focused groups pass; two independent scoped approvals."
     },
     "entry_counters": {
       "commit": "3ed993d8e",
       "evidence": "docs/tdm-entry-counters-evidence.json",
-      "status": "51 focused/compatibility scenarios pass; two independent scoped approvals."
+      "status": "Included in the final accepted shared-engine checkpoint atb4562e25c; see docs/tdm-engine-acceptance.json.",
+      "status_before_final_integration": "51 focused/compatibility scenarios pass; two independent scoped approvals."
     },
     "protection_decayed": {
       "commit": "71e84359b",
       "evidence": "docs/tdm-decayed-multiplicity-evidence.json",
-      "status": "16 focused plus24 compatibility pass after independent multiplicity finding; two refreshed scoped approvals."
+      "status": "Included in the final accepted shared-engine checkpoint atb4562e25c; see docs/tdm-engine-acceptance.json.",
+      "status_before_final_integration": "16 focused plus24 compatibility pass after independent multiplicity finding; two refreshed scoped approvals."
     },
     "dynamic_tokens": {
       "commit": "44612475ef8cbf42b44082f55b797117206824da",
       "evidence": "docs/tdm-dynamic-tokens-evidence.json",
-      "status": "12 focused/199 assembled cases pass; both independent nonauthor reviewers approve exact published source812a0b7d0 after two reproduced baseline negatives.",
+      "status": "Included in the final accepted shared-engine checkpoint atb4562e25c; see docs/tdm-engine-acceptance.json.",
       "followup_evidence": "docs/tdm-sampled-source-lki-evidence.json",
       "followup_commit": "812a0b7d0a9eaa0eec7ba6ec9388fd9c930a664f",
       "reviewers": [
         "/root/tdm_audit_a_g",
         "/root/tdm_audit_s_z"
-      ]
+      ],
+      "status_before_final_integration": "12 focused/199 assembled cases pass; both independent nonauthor reviewers approve exact published source812a0b7d0 after two reproduced baseline negatives."
     },
     "casting": {
       "original": "34cf40d5d",
       "repair": "5ce4f4ac1e0c28c5454cbcaebeba8325f3028328",
       "integration": "d87fa3781",
       "evidence": "docs/tdm-harmonize-wide-evidence.json",
-      "status": "20 focused plus76 compatibility pass after independent wide-power and Bargain composition findings; two refreshed scoped approvals. New root integration awaits the next compiled checkpoint."
+      "status": "Included in the final accepted shared-engine checkpoint atb4562e25c; see docs/tdm-engine-acceptance.json.",
+      "status_before_final_integration": "20 focused plus76 compatibility pass after independent wide-power and Bargain composition findings; two refreshed scoped approvals. New root integration awaits the next compiled checkpoint."
     },
     "copy_suspend": {
       "commit": "48dc9ce44e0e08b0bb0f0ef810d7f4facde35f86",
       "integration": "8490c1156",
       "evidence": "docs/tdm-copy-suspend-evidence.json",
-      "status": "37 selected focused/compatibility cases and two scoped independent approvals; new root assembly awaits next compiled checkpoint."
+      "status": "Included in the final accepted shared-engine checkpoint atb4562e25c; see docs/tdm-engine-acceptance.json.",
+      "status_before_final_integration": "37 selected focused/compatibility cases and two scoped independent approvals; new root assembly awaits next compiled checkpoint."
     },
     "resolution_results": {
       "commit": "194065c62",
       "integration": "fe47363dd",
       "evidence": "docs/tdm-resolution-results-evidence.json",
-      "status": "Scoped runtime/outcome review approved by root and s-z, including mandatory mill semantics and the privacy pacing repair.",
-      "root_review": "docs/tdm-resolution-results-root-review.json"
+      "status": "Included in the final accepted shared-engine checkpoint atb4562e25c; see docs/tdm-engine-acceptance.json.",
+      "root_review": "docs/tdm-resolution-results-root-review.json",
+      "status_before_final_integration": "Scoped runtime/outcome review approved by root and s-z, including mandatory mill semantics and the privacy pacing repair."
     },
     "behold_and_costs": {
       "commit": "fa54386fd73d9fcc3294f260c545cf322ad5d6a3",
-      "status": "131 owner cases and36 matching cost cases in376 root assembly pass; independent reviews pending.",
-      "integration": "174770586"
+      "status": "Included in the final accepted shared-engine checkpoint atb4562e25c; see docs/tdm-engine-acceptance.json.",
+      "integration": "174770586",
+      "status_before_final_integration": "131 owner cases and36 matching cost cases in376 root assembly pass; independent reviews pending."
     },
     "next_static_rules": {
       "commit": "989edcb49e4fddcd1163fc98589d5ef0bc28389d",
       "evidence": "docs/tdm-static-rules-evidence.json",
       "followup_evidence": "docs/tdm-gained-attack-evidence.json",
-      "status": "All six scopes approved by a-g and g-s at exact c7489ce1e284b6b321eef1753fda3792605cbb2c after two reproduced findings; 376 combined passing cases retained. Full engine/schema/set acceptance remains pending.",
+      "status": "Included in the final accepted shared-engine checkpoint atb4562e25c; see docs/tdm-engine-acceptance.json.",
       "origin_repair_evidence": "docs/tdm-native-grant-origins-evidence.json",
       "review_commit": "c7489ce1e284b6b321eef1753fda3792605cbb2c",
       "reviewers": [
         "/root/tdm_audit_a_g",
         "/root/tdm_audit_g_s"
       ],
-      "review_record": "docs/tdm-static-rules-review-record.json"
+      "review_record": "docs/tdm-static-rules-review-record.json",
+      "status_before_final_integration": "All six scopes approved by a-g and g-s at exact c7489ce1e284b6b321eef1753fda3792605cbb2c after two reproduced findings; 376 combined passing cases retained. Full engine/schema/set acceptance remains pending."
     },
     "private_library": {
       "commit": "00f48177e",
       "integration": "b2a42eb84",
       "evidence": "docs/tdm-private-library-evidence.json",
-      "status": "Privacy pacing repair passes45 owner scenarios and is present in199 root assembled cases; root and s-z approve the exact scoped repair.",
+      "status": "Included in the final accepted shared-engine checkpoint atb4562e25c; see docs/tdm-engine-acceptance.json.",
       "repair": "2ef69055450dba01aad61e496d2d45f5615d962a",
-      "repair_evidence": "docs/tdm-private-top-pacing-evidence.json"
+      "repair_evidence": "docs/tdm-private-top-pacing-evidence.json",
+      "status_before_final_integration": "Privacy pacing repair passes45 owner scenarios and is present in199 root assembled cases; root and s-z approve the exact scoped repair."
     },
     "target_activation_costs": {
       "commit": "fc95fb1da2575002c32d75cadb2fc438c0489a85",
       "integration": "f20081bfcb6509fe3f16912852d80dea7c655e12",
       "evidence": "docs/tdm-target-activation-costs-evidence.json",
-      "status": "70 owner selected cases and14 matching root cases pass; root and g-s scoped rules approvals, lint repair8df06babc integrated.",
-      "root_review": "docs/tdm-target-activation-costs-root-review.json"
+      "status": "Included in the final accepted shared-engine checkpoint atb4562e25c; see docs/tdm-engine-acceptance.json.",
+      "root_review": "docs/tdm-target-activation-costs-root-review.json",
+      "status_before_final_integration": "70 owner selected cases and14 matching root cases pass; root and g-s scoped rules approvals, lint repair8df06babc integrated."
     },
     "combat_callbacks": {
       "commit": "d6eb0889e1a455dc390525d9925272aeb74fc02b",
       "integration": "409a73558",
       "evidence": "docs/tdm-combat-callbacks-evidence.json",
-      "status": "CR111.5 repair passes93 owner cases, one refreshed scoped approval and all32 combat cases in237 root assembly; root second review pending.",
-      "repair_integration": "3300f7173"
+      "status": "Included in the final accepted shared-engine checkpoint atb4562e25c; see docs/tdm-engine-acceptance.json.",
+      "repair_integration": "3300f7173",
+      "status_before_final_integration": "CR111.5 repair passes93 owner cases, one refreshed scoped approval and all32 combat cases in237 root assembly; root second review pending."
     },
     "event_contexts": {
       "commit": "5bffb5ea8bea46a733ddc40906ebefc18bfd96ae",
       "integration": "58e701c35",
       "evidence": "docs/tdm-event-contexts-evidence.json",
-      "status": "58 selected cases pass; g-s approves scoped review, root second review pending."
+      "status": "Included in the final accepted shared-engine checkpoint atb4562e25c; see docs/tdm-engine-acceptance.json.",
+      "status_before_final_integration": "58 selected cases pass; g-s approves scoped review, root second review pending."
     },
     "linked_event_casts": {
       "commit": "81a729a8c9a76648b4d48989b60985ef16787526",
-      "status": "99 owner cases and35 matching root cases pass; two independent scoped reviews pending.",
-      "integration": "d4fa3594e"
+      "status": "Included in the final accepted shared-engine checkpoint atb4562e25c; see docs/tdm-engine-acceptance.json.",
+      "integration": "d4fa3594e",
+      "status_before_final_integration": "99 owner cases and35 matching root cases pass; two independent scoped reviews pending."
     },
     "mana_payment_window": {
       "owner": "/root/tdm_audit_a_g",
       "evidence": "docs/tdm-mana-window-audit.json",
-      "status": "New final-total legal-action/funding interaction; implementation and focused proof in progress. Earlier scoped cost proofs do not establish this shared contract."
+      "status": "Included in the final accepted shared-engine checkpoint atb4562e25c; see docs/tdm-engine-acceptance.json.",
+      "status_before_final_integration": "New final-total legal-action/funding interaction; implementation and focused proof in progress. Earlier scoped cost proofs do not establish this shared contract."
     },
     "search_color_sequences": {
       "commit": "4fc84c0087f0eb89445c1a03e80657213b077b84",
       "evidence": "docs/tdm-search-color-sequences-evidence.json",
-      "status": "Six groups pass129 owner selected cases; integrated, one independent scoped review approved. Final assembled validation and whole-engine reviews remain pending.",
-      "integration": "765f79773"
+      "status": "Included in the final accepted shared-engine checkpoint atb4562e25c; see docs/tdm-engine-acceptance.json.",
+      "integration": "765f79773",
+      "status_before_final_integration": "Six groups pass129 owner selected cases; integrated, one independent scoped review approved. Final assembled validation and whole-engine reviews remain pending."
     },
     "remaining_world_first": {
       "commit": "53441402d72ddb07fb4eed689dc96c38fb01a3be",
       "integration": "174a9512e",
       "evidence": "docs/tdm-remaining-world-first-evidence.json",
-      "status": "Five groups have89 owner focused/compatibility passes. Mass-copy timestamp followup is in final remaining-world worktree; root combined acceptance pending."
+      "status": "Included in the final accepted shared-engine checkpoint atb4562e25c; see docs/tdm-engine-acceptance.json.",
+      "status_before_final_integration": "Five groups have89 owner focused/compatibility passes. Mass-copy timestamp followup is in final remaining-world worktree; root combined acceptance pending."
     },
     "sacrifice_random": {
       "commit": "3e206c0cb6987a1d05e9301242311a7879e8e95f",
       "integration": "f0f2598ae",
       "evidence": "docs/tdm-sacrifice-random-evidence.json",
-      "status": "Two groups have121 owner focused/compatibility passes after ordered-payment repair; root combined acceptance and independent reviews pending."
+      "status": "Included in the final accepted shared-engine checkpoint atb4562e25c; see docs/tdm-engine-acceptance.json.",
+      "status_before_final_integration": "Two groups have121 owner focused/compatibility passes after ordered-payment repair; root combined acceptance and independent reviews pending."
     },
     "mana_payment_windows": {
       "commit": "8a326dda5f9fcea579232fd040c6f04ea10bb102",
       "integration": "68bace68f",
       "evidence": "docs/tdm-mana-windows-evidence.json",
-      "status": "One cross-cutting group has169 owner focused/compatibility passes; integrated, one independent scoped review approved. Root combined acceptance and whole-engine reviews pending."
+      "status": "Included in the final accepted shared-engine checkpoint atb4562e25c; see docs/tdm-engine-acceptance.json.",
+      "status_before_final_integration": "One cross-cutting group has169 owner focused/compatibility passes; integrated, one independent scoped review approved. Root combined acceptance and whole-engine reviews pending."
     },
     "schema_replay": {
       "previous": 199,
       "candidate": 200,
-      "status": "Initial schema200 baseline accepted after two independent field-level reviews; new final semantic packet changes require fresh explicit trace candidate and schema audit. Actual typed wire/owned tests4/4 pass at344a8caac; no final trace acceptance yet."
+      "status": "Included in the final accepted shared-engine checkpoint atb4562e25c; see docs/tdm-engine-acceptance.json.",
+      "status_before_final_integration": "Initial schema200 baseline accepted after two independent field-level reviews; new final semantic packet changes require fresh explicit trace candidate and schema audit. Actual typed wire/owned tests4/4 pass at344a8caac; no final trace acceptance yet."
     },
     "remaining_world_second": {
       "commit": "11403d9e84ad3c899aca9d7e0dc82304ad1e98bd",
       "integration": "077dd9f46",
       "evidence": "docs/tdm-remaining-world-second-checkpoint.json",
-      "status": "Owner96focused+257compatibility and root443focused passes. Two independent final review source-reference gaps now being repaired before acceptance.",
+      "status": "Included in the final accepted shared-engine checkpoint atb4562e25c; see docs/tdm-engine-acceptance.json.",
       "followup_commit": "1119afcddb319d435253069eaa9870ffc4901aef",
       "followup_integration": "d0ed3693e",
-      "followup_evidence": "docs/tdm-semantic-source-evidence.json"
+      "followup_evidence": "docs/tdm-semantic-source-evidence.json",
+      "status_before_final_integration": "Owner96focused+257compatibility and root443focused passes. Two independent final review source-reference gaps now being repaired before acceptance."
     },
     "assembled_semantic_review": {
       "head": "344a8caac02cc71c401dbde0509d4a15b398ae70",
@@ -985,6 +1040,25 @@
         "Retain exact Goggles source for untriggered delayed abilities after mana lost or spent without qualifying event"
       ],
       "card_authoring_permitted": false
+    },
+    "final_engine": {
+      "revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+      "evidence": "docs/tdm-engine-acceptance.json",
+      "passing_native_cases": 4235,
+      "tdm_mechanic_cases": 447,
+      "typed_schema_cases": 5,
+      "binding_cases": 10,
+      "source_unchanged": true,
+      "independent_nonauthor_approvals": 2
     }
+  },
+  "engine_acceptance": {
+    "revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+    "evidence": "docs/tdm-engine-acceptance.json",
+    "scope": "All81 audited shared-engine groups; separate full-set and final-PR acceptance remains open",
+    "reviewers": [
+      "/root/tdm_engine_review_one",
+      "/root/tdm_engine_review_two"
+    ]
   }
 }

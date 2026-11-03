@@ -1,0 +1,239 @@
+{
+  "schema": 1,
+  "scope": "Shared engine acceptance before complete Tarkir: Dragonstorm card authoring; not completed-set or final-PR acceptance",
+  "status": "Accepted after complete integrated validation and two independent nonauthor reviews",
+  "validated_published_revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+  "branch": "codex/tdm-complete-set",
+  "tracking_issue": "https://github.com/altf4/rustmage/issues/570",
+  "audit_groups_including_aliases": 81,
+  "audit_group_counts_are_unweighted": true,
+  "newly_verified_complete_tdm_cards": 0,
+  "full_set_denominator": 276,
+  "card_authoring_permitted": true,
+  "engine_frozen": true,
+  "validation": {
+    "report": "/home/altf4/.cache/rustmage-validation-o8jjr7os/report/result.json",
+    "sha256": "2f03aabc529bc1d07c3d5d80dd90a5d828777e803e1eb0e0f0c8a9703ded7667",
+    "input_sha256": "ccfb6c6f30a0fc15eed5737b429bef08386d0002746cee4fe10808007b11c73b",
+    "files_verified": 12968,
+    "source_drift": [],
+    "active_processes": [],
+    "terminal": true,
+    "seconds": 621.9509622729965,
+    "phases": [
+      {
+        "name": "source pins",
+        "exit": 0,
+        "seconds": 0.8162548249820247,
+        "log": "/home/altf4/.cache/rustmage-validation-o8jjr7os/report/00.log"
+      },
+      {
+        "name": "format",
+        "exit": 0,
+        "seconds": 4.32695872799377,
+        "log": "/home/altf4/.cache/rustmage-validation-o8jjr7os/report/01.log"
+      },
+      {
+        "name": "card format",
+        "exit": 0,
+        "seconds": 1.1199185770237818,
+        "log": "/home/altf4/.cache/rustmage-validation-o8jjr7os/report/02.log"
+      },
+      {
+        "name": "script contracts",
+        "exit": 0,
+        "seconds": 1.2178298030048609,
+        "log": "/home/altf4/.cache/rustmage-validation-o8jjr7os/report/03.log"
+      },
+      {
+        "name": "clippy",
+        "exit": 0,
+        "seconds": 75.82394394598668,
+        "log": "/home/altf4/.cache/rustmage-validation-o8jjr7os/report/04.log"
+      },
+      {
+        "name": "native assurance",
+        "exit": 0,
+        "seconds": 344.190994198987,
+        "log": "/home/altf4/.cache/rustmage-validation-o8jjr7os/report/05.log"
+      },
+      {
+        "name": "release build",
+        "exit": 0,
+        "seconds": 193.84157200998743,
+        "log": "/home/altf4/.cache/rustmage-validation-o8jjr7os/report/06.log"
+      },
+      {
+        "name": "simulation sample",
+        "exit": 0,
+        "seconds": 0.2651765469927341,
+        "log": "/home/altf4/.cache/rustmage-validation-o8jjr7os/report/07.log"
+      },
+      {
+        "name": "Python assurance",
+        "exit": 0,
+        "seconds": 0.16530378902098164,
+        "log": "/home/altf4/.cache/rustmage-validation-o8jjr7os/report/08.log"
+      }
+    ]
+  },
+  "native_assurance": {
+    "report": "/home/altf4/.cache/rustmage-validation-o8jjr7os/report/native.json",
+    "sha256": "23f5a30ac9df217cbd1ed4b5e1165abce2a1b548ee4cb5e066038a96689826b7",
+    "cases": 4235,
+    "integration_targets": 99,
+    "compile_seconds": 247.4585791590216,
+    "execution_seconds": 96.6399016979849,
+    "tdm_mechanic_cases": 447,
+    "typed_schema_cases": 5,
+    "bounded_card_trace_rows": 3164,
+    "all_status_ok": true
+  },
+  "production_only_check": {
+    "report": "/home/altf4/.cache/rustmage-tdm/root-production-check-1793679251783041047/terminal.json",
+    "command": [
+      "cargo",
+      "clippy",
+      "-p",
+      "rustmage",
+      "--lib",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "success": true,
+    "seconds": 19.421115326986182
+  },
+  "binding_assurance": {
+    "suite": "contract",
+    "requested_suite": "smoke",
+    "library": "/home/altf4/.cache/rustmage-validation-o8jjr7os/report/libraries/librustmage.so",
+    "terminal": true,
+    "tests": 10,
+    "success": true,
+    "seconds": 0.04769206899800338,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "runtime_budget_seconds": 5.0,
+    "budget_exceeded": false,
+    "timeout_seconds": 15.0
+  },
+  "required_immutable_shared_libraries": [
+    {
+      "path": "/home/altf4/.cache/rustmage-validation-o8jjr7os/report/libraries/librustmage.so",
+      "sha256": "4aebb4867b67d084c98f12113c9eefb19e17a3c02a272e44e7f341cc15df2248",
+      "requires_preservation_at_exact_path_and_hash": true,
+      "readonly": true,
+      "consumers": [
+        "Final validation Python binding contracts"
+      ]
+    }
+  ],
+  "compiler_outputs": "Reusable Cargo outputs remain mutable; the required published library is the immutable per-run copy above. No clean builds or active-output removal.",
+  "resource_guard": {
+    "report": "/home/altf4/.cache/rustmage-build-reports/18f614011bf24d88ae4dc918defff2ba.json",
+    "sha256": "79c9228dd7d9bb46a44b82f3199477d551c8a79659b4dafac6caf8c6b46302bb",
+    "command": [
+      "/usr/bin/python3",
+      "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/scripts/validate.py",
+      "--release",
+      "--python",
+      "smoke",
+      "--target-dir",
+      "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target",
+      "--timeout",
+      "1200"
+    ],
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 622.1877321130014,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 5302267904,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1
+  },
+  "hot_layout_bytes": {
+    "Object": 160,
+    "ObjectView": 544,
+    "State": 4992,
+    "Pending": 64,
+    "SpellView": 880
+  },
+  "simulation": {
+    "clone_ns": 182.22161,
+    "decisions": 4941,
+    "decisions_per_second": 26851.116428500452,
+    "deck_names": [
+      "native-smoke"
+    ],
+    "deck_rules": "Freeform",
+    "decklist_archive": null,
+    "games": 10,
+    "games_per_second": 54.343485991703,
+    "initial_state_bytes_excluding_capacity_and_allocator": 24712,
+    "max_decisions_per_game": 655,
+    "note": "native smoke policy and observation construction included; optional named decks rotate adjacent matchups through both seats; setup and gameplay timed, archive loading excluded; no model, tensor encoding, or per-decision JSON; verify mode also times owned raw/index branch and restore checks; sampled gameplay is not complete card-interaction coverage or XMage parity",
+    "owned_raw_index_restore_checks": false,
+    "restore_ns": 182.5001,
+    "seconds": 0.184014695
+  },
+  "simulation_scope": "Ten-game Freeform native-smoke regression workload only; no general Standard/TDM throughput, full-set rules coverage, parity, or speedup claim. Timed benchmark verification mode is false; owned raw/index/restore is covered separately by native and binding contracts.",
+  "trace_acceptance": "docs/tdm-schema200-evidence.json",
+  "final_source_boundary_evidence": "docs/tdm-semantic-final-boundary-evidence.json",
+  "independent_nonauthor_reviews": [
+    {
+      "reviewer": "/root/tdm_engine_review_one",
+      "role": "Independent nonauthor; no authored ancestors in this batch",
+      "revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+      "status": "Approved complete audited shared-engine checkpoint; no actionable findings remain",
+      "independently_verified": [
+        "Final source delta and all81 audit groups",
+        "All12968 fixed input hashes and validator fingerprint",
+        "Nine terminal passing phases and4235 accounted native cases",
+        "Five strict schema guards and accepted3164 trace baseline",
+        "Production-only Clippy and production release behavior",
+        "Readonly immutable library path/hash and10 binding contracts",
+        "Resource cap/one job/one thread/no OOM",
+        "Limited Freeform smoke scope; separate full-set acceptance remains required"
+      ]
+    },
+    {
+      "reviewer": "/root/tdm_engine_review_two",
+      "role": "Independent nonauthor; no authored ancestors in this batch",
+      "revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+      "status": "Approved complete audited shared-engine checkpoint; no actionable findings remain",
+      "independently_verified": [
+        "Final source delta and all81 audit groups",
+        "All12968 fixed input hashes and validator fingerprint",
+        "Nine terminal passing phases and4235 accounted native cases",
+        "Five strict schema guards and accepted3164 trace baseline",
+        "Production-only Clippy and production release behavior",
+        "Readonly immutable library path/hash and10 binding contracts",
+        "Resource cap/one job/one thread/no OOM",
+        "Limited Freeform smoke scope; separate full-set acceptance remains required"
+      ]
+    }
+  ],
+  "preceding_engine_validation_attempts": [
+    {
+      "report": "/home/altf4/.cache/rustmage-validation-e9593dhs/report/result.json",
+      "result": "Terminal all-target example compatibility failure; no native/release execution"
+    },
+    {
+      "report": "/home/altf4/.cache/rustmage-validation-7_kydqnp/report/result.json",
+      "result": "4235 native pass; production-only visibility compile failure; no published library"
+    }
+  ],
+  "remaining_set_requirements": [
+    "Reconcile supplemental Cori-Steel Cutter physical metadata and full membership without changing Standard ban",
+    "Regenerate metadata/module linkage and warm stable guarded author caches against this frozen engine",
+    "Directly author and prove every printed obligation of all276 members including existing admission candidates and13 Omen faces",
+    "Set-only legal complete games across all colors/mechanics and focused cross-card outcomes",
+    "Deterministic replay and owned raw/index branching/restore for the completed set",
+    "Measured set-workload throughput and final README verified progress",
+    "Final full release validation on completed-set executable inputs",
+    "Exactly one completed-set PR and two fresh independent nonauthor final published-PR-head reviews"
+  ]
+}
