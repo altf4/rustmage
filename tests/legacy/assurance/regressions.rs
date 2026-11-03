@@ -4803,7 +4803,7 @@ fn prior_schema184_state_supported(state: &State) -> bool {
 
 #[test]
 fn schema184_preserves_old_bytes_and_rejects_changed_card_and_paid_offer() {
-    assert_eq!(OBSERVATION_SCHEMA, 199);
+    assert_eq!(OBSERVATION_SCHEMA, 200);
     let old = r#"[{"resolution_free_casts":{"paid":null},"other":true}]"#;
     assert_eq!(project_prior_schema184(old).unwrap(), old);
     for card in ["Chandra, Torch of Defiance", "@emblem/fra-chandra-torch"] {
@@ -7517,6 +7517,7 @@ fn trace_candidate_with_prepared_observation_audit(
 
     let mut journal = Vec::new();
     let mut prior199_journal_supported = true;
+    let mut prior200_journal_supported = true;
     let offered = g.legal_actions().contains(&opening);
     assert!(
         offered,
@@ -7524,6 +7525,10 @@ fn trace_candidate_with_prepared_observation_audit(
         card.identity()
     );
     let status = if offered {
+        if schema_projection.is_some_and(|schema| schema < 200) {
+            prior200_journal_supported &=
+                super::schema200::prior_schema200_actions_supported(std::slice::from_ref(&opening));
+        }
         if schema_projection.is_some_and(|schema| schema < 199) {
             prior199_journal_supported &= super::schema199::prior_schema199_actions_supported(
                 &g,
@@ -7572,6 +7577,11 @@ fn trace_candidate_with_prepared_observation_audit(
                     })
                     .clone()
             };
+            if schema_projection.is_some_and(|schema| schema < 200) {
+                prior200_journal_supported &= super::schema200::prior_schema200_actions_supported(
+                    std::slice::from_ref(&action),
+                );
+            }
             if schema_projection.is_some_and(|schema| schema < 199) {
                 // Validate while the exact source/borrowed definition still
                 // exists, before a paid sacrifice or later copy can replace it.
@@ -7619,7 +7629,22 @@ fn trace_candidate_with_prepared_observation_audit(
     }
     let mut observation_bytes = serde_json::to_string(&views).unwrap();
     let mut projection_error = None;
-    if schema_projection.is_some_and(|schema| schema < 199) {
+    if schema_projection.is_some_and(|schema| schema < 200) {
+        if !prior200_journal_supported
+            || views
+                .iter()
+                .any(|view| !super::schema200::prior_schema200_actions_supported(&view.actions))
+        {
+            projection_error =
+                Some("new Tarkir action cannot be projected to schema 199".to_owned());
+        } else {
+            match super::schema200::project_prior_schema200(&observation_bytes) {
+                Ok(projected) => observation_bytes = projected,
+                Err(reason) => projection_error = Some(reason),
+            }
+        }
+    }
+    if projection_error.is_none() && schema_projection.is_some_and(|schema| schema < 199) {
         if !prior199_journal_supported
             || !super::schema199::prior_schema199_state_supported(&g.state)
             || views
