@@ -10,7 +10,7 @@ pub struct EarthbendReturnView {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EarthbendReturn {
-    subject: ObjectRef,
+    pub(super) subject: ObjectRef,
     pub(super) item: SpellView,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

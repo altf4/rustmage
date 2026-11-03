@@ -32,7 +32,7 @@ pub struct PrintedManaCost {
     pub x_symbols: u32,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-pub(super) fn printed_cost(cost: &str) -> Option<PrintedManaCost> {
+pub(crate) fn printed_cost(cost: &str) -> Option<PrintedManaCost> {
     use super::ManaCost;
     if cost.is_empty() {
         return None;
