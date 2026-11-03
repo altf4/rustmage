@@ -281,14 +281,27 @@ impl Game {
         }
         let provider_time = self.next_role_timestamp();
         let hand_time = self.new_copy_hand_timestamp(recipe.definition);
-        for recipient in recipients {
+        for &recipient in &recipients {
             self.apply_temporary_copy_timestamped(
                 recipient,
                 recipe,
                 CopyDeadline::EndOfTurn,
                 Some((provider_time, hand_time)),
+                false,
             );
         }
+        // No intermediate recipient prefix is a game world. In particular,
+        // control changes, enduring designations and ability acquisitions can
+        // have irreversible consequences, so project only the complete cohort.
+        self.refresh_controllers();
+        for recipient in recipients {
+            if !self.is_face_down(recipient) {
+                self.renew_copy_grant_origin(recipient, true);
+            }
+        }
+        // The final controller/story projection may enable other providers too.
+        self.refresh_copy_grant_availability();
+        self.refresh_combat_battle_types();
     }
     pub(super) fn temporary_copy_row(&self, object: ObjectRef) -> Option<&Row> {
         self.state
@@ -472,7 +485,7 @@ impl Game {
         recipe: CopyRecipe,
         deadline: CopyDeadline,
     ) {
-        self.apply_temporary_copy_timestamped(object, recipe, deadline, None);
+        self.apply_temporary_copy_timestamped(object, recipe, deadline, None, true);
     }
     fn apply_temporary_copy_timestamped(
         &mut self,
@@ -480,6 +493,7 @@ impl Game {
         recipe: CopyRecipe,
         deadline: CopyDeadline,
         shared_time: Option<(u64, Option<u64>)>,
+        project_world: bool,
     ) {
         if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {
             return;
@@ -544,11 +558,13 @@ impl Game {
             .unwrap()
             .value
             .hand_timestamp = hand_time;
-        if !self.is_face_down(object) {
-            self.renew_copy_grant_origin(object, true);
+        if project_world {
+            if !self.is_face_down(object) {
+                self.renew_copy_grant_origin(object, true);
+            }
+            self.refresh_controllers();
+            self.refresh_combat_battle_types();
         }
-        self.refresh_controllers();
-        self.refresh_combat_battle_types();
     }
     pub(super) fn reveal_temporary_copy(&mut self, object: ObjectRef, physical: Card) -> bool {
         let Some(row) = self

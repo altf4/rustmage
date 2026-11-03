@@ -110,6 +110,26 @@ fn same_announcement(
         };
         *object = mapped;
     }
+    if let Some(event) = &mut candidate.item.event_object {
+        if event.facts != EventObjectFacts::Identity {
+            return false;
+        }
+        let Some(mapped) = map_reference(event.object, before, after, ids) else {
+            return false;
+        };
+        event.object = mapped;
+        if let Some(objects) = &mut event.semantic_objects {
+            for reference in objects.iter_mut() {
+                let DamageSourceRef::Object(object) = reference else {
+                    return false;
+                };
+                let Some(mapped) = map_reference(*object, before, after, ids) else {
+                    return false;
+                };
+                *object = mapped;
+            }
+        }
+    }
     // Typed equality includes all private/nonserialized packet witnesses.
     *a == candidate
 }

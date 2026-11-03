@@ -1229,7 +1229,7 @@ fn chosen_source_is_nontargeted_private_and_excludes_unreferenced_hidden_graveya
     drain(&mut g);
     assert_eq!(
         g.observe(p).chosen_source_shields.unwrap()[0].chosen,
-        g.object_ref(permanent)
+        DamageSourceRef::Object(g.object_ref(permanent))
     );
 }
 #[test]
@@ -1789,7 +1789,10 @@ fn waiting_delayed_trigger_references_are_legal_source_choices_after_their_sourc
     assert!(!choices.contains(&g.object_ref(unrelated)));
     act(&mut g, Action::ChooseDamageSource { source: old });
     drain(&mut g);
-    assert_eq!(g.observe(p).chosen_source_shields.unwrap()[0].chosen, old);
+    assert_eq!(
+        g.observe(p).chosen_source_shields.unwrap()[0].chosen,
+        DamageSourceRef::Object(old)
+    );
 }
 #[test]
 fn prevention_callback_keeps_damage_time_controller_after_control_changes_before_the_trigger_resolves()
@@ -1826,7 +1829,11 @@ fn source_prevention_layout_matches_the_integrated_shared_state_budget() {
             "RoleState":std::mem::size_of::<roles::RoleState>(),
             "SourcePreventionState":std::mem::size_of::<source_prevention::SourcePreventionState>(),
             "DamagePreventionKind":std::mem::size_of::<DamagePreventionKind>(),
-            "DamagePreventionView":std::mem::size_of::<DamagePreventionView>()
+            "DamagePreventionView":std::mem::size_of::<DamagePreventionView>(),
+            "SpellView":std::mem::size_of::<SpellView>(), "EventObjectView":std::mem::size_of::<EventObjectView>(),
+            "DamageSourceRef":std::mem::size_of::<DamageSourceRef>(),
+            "ReflexiveSubjectView":std::mem::size_of::<ReflexiveSubjectView>(),
+            "ExileDeathReplacementView":std::mem::size_of::<ExileDeathReplacementView>()
         });
         std::fs::write(path, serde_json::to_string_pretty(&layout).unwrap()).unwrap();
     }
@@ -1943,7 +1950,10 @@ fn a_waiting_replacement_effect_exposes_its_historical_source_without_exposing_t
     assert!(!choices.contains(&g.object_ref(spell)));
     act(&mut g, Action::ChooseDamageSource { source: old });
     drain(&mut g);
-    assert_eq!(g.observe(p).chosen_source_shields.unwrap()[0].chosen, old);
+    assert_eq!(
+        g.observe(p).chosen_source_shields.unwrap()[0].chosen,
+        DamageSourceRef::Object(old)
+    );
 }
 
 #[test]
@@ -1993,4 +2003,2323 @@ fn one_mass_copy_effect_has_shared_provider_chronology_with_independent_acquisit
     g.finish_cleanup();
     assert_eq!(g.object_view(a).card, card("Hill Giant"));
     assert_eq!(g.object_view(b).card, card("Llanowar Elves"));
+}
+
+#[test]
+fn source_world_completion_mass_copy_never_awards_a_story_from_a_transient_recipient_prefix() {
+    const ARTIFACT_CREATURE: CardRules = CardRules {
+        effect: Effect::Creature(1, 1),
+        keywords: Keywords::HASTE,
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[
+        (card("Opt"), &MASS),
+        (card("Gingerbrute"), &ARTIFACT_CREATURE),
+    ]);
+    for preexisting in [false, true] {
+        let p = Player::P0;
+        let mut g = scenario(p);
+        let bears = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        // Gingerbrute's ordinary definition is gated in this base. Construct its
+        // real physical metadata with a complete typed artifact-creature fixture;
+        // no production admission or catalogue entry is altered.
+        let mut artifact = g.state.objects[bears as usize].clone();
+        artifact.card = card("Gingerbrute");
+        let blueprint = g.state.objects.len() as CardId;
+        g.state.objects.push(artifact);
+        g.register_battlefield_sources(blueprint);
+        let balin = put(&mut g, p, "Balin, Loremaster", Zone::Battlefield);
+        if preexisting {
+            put(&mut g, p, "Short Bow", Zone::Battlefield);
+        }
+        g.refresh_enduring_stories();
+        assert_eq!(g.state.players[p.index()].enduring_story, preexisting);
+        let spell = put(&mut g, p, "Opt", Zone::Hand);
+        cast(&mut g, spell, Some(Target::Card(blueprint)));
+        let saved = g.snapshot();
+        let revision = g.revision();
+        let index = g
+            .legal_actions()
+            .iter()
+            .position(|a| *a == Action::Pass)
+            .unwrap();
+        let mut raw = g.clone();
+        let mut indexed = g.clone();
+        drop(g);
+        raw.apply(p, Action::Pass).unwrap();
+        indexed.apply_index(p, revision, index).unwrap();
+        drain(&mut raw);
+        drain(&mut indexed);
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        indexed.restore(&saved).unwrap();
+        act(&mut indexed, Action::Pass);
+        drain(&mut indexed);
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        let g = raw;
+        assert_eq!(g.object_view(bears).card, card("Gingerbrute"));
+        assert_eq!(g.object_view(balin).card, card("Gingerbrute"));
+        assert_eq!(
+            g.state.players[p.index()].enduring_story,
+            preexisting,
+            "only a genuinely acquired prior Story survives; no intermediate recipient world is observed"
+        );
+    }
+}
+#[test]
+fn source_world_completion_incidental_equip_bearer_is_excluded_but_departed_target_is_referred() {
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let a = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+    let b = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+    let bow = put(&mut g, p, "Short Bow", Zone::Battlefield);
+    let old_a = g.object_ref(a);
+    let old_b = g.object_ref(b);
+    assert!(g.attach_equipment(g.object_ref(bow), old_a));
+    act(
+        &mut g,
+        Action::AnnounceActivate {
+            card: bow,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    act(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(b),
+        },
+    );
+    pay(&mut g);
+    g.move_object(a, Zone::Graveyard);
+    g.move_object(b, Zone::Graveyard);
+    g.state.priority = p;
+    source_choice(&mut g);
+    let choices = g.observe(p).damage_source_choice.unwrap().candidates;
+    assert!(
+        !choices.contains(&old_a),
+        "the old Equip bearer is only incidental announcement metadata"
+    );
+    assert!(
+        choices.contains(&old_b),
+        "the actual Equip target remains a semantic reference"
+    );
+    assert!(!choices.contains(&g.object_ref(a)));
+    assert!(!choices.contains(&g.object_ref(b)));
+    reject(&mut g, Action::ChooseDamageSource { source: old_a });
+    act(&mut g, Action::ChooseDamageSource { source: old_b });
+    drain(&mut g);
+}
+#[test]
+fn source_world_completion_dying_event_identity_is_referred_even_when_effect_uses_no_event_facts() {
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let bloodwitch = put(&mut g, p, "Vengeful Bloodwitch", Zone::Battlefield);
+    let creature = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+    let before = g.object_ref(creature);
+    g.move_object(creature, Zone::Graveyard);
+    let after = g.object_ref(creature);
+    g.give_priority();
+    for _ in 0..64 {
+        if g.state
+            .stack
+            .iter()
+            .any(|item| item.source.is_some_and(|source| source.id == bloodwitch))
+        {
+            break;
+        }
+        choose(&mut g, |a| {
+            matches!(a, Action::Pass | Action::PutTrigger { .. })
+                || matches!(a,Action::ChooseTarget{target:Target::Player(player)} if *player==p.other())
+        });
+    }
+    assert!(
+        g.state
+            .stack
+            .iter()
+            .any(|item| item.source.is_some_and(|source| source.id == bloodwitch))
+    );
+    g.state.priority = p;
+    source_choice(&mut g);
+    let choices = g.observe(p).damage_source_choice.unwrap().candidates;
+    assert!(
+        choices.contains(&before),
+        "the dying creature is referred to by the actual trigger condition"
+    );
+    assert!(
+        choices.contains(&after),
+        "the zone-change trigger can find its public resulting incarnation under400.7e"
+    );
+    act(&mut g, Action::ChooseDamageSource { source: before });
+    drain(&mut g);
+}
+#[test]
+fn source_world_completion_departed_physical_stack_spell_keeps_its_target_reference_without_rebinding()
+ {
+    const COUNTER: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::Single(TargetSpec::one(TargetRule::Spell)),
+            &[Instruction::Counter],
+        ),
+        ..CardRules::EMPTY
+    };
+    let _scope =
+        fixture_rules::activate(&[(card("Opt"), &NWF), (card("Lightning Bolt"), &COUNTER)]);
+    for copied in [false, true] {
+        let p = Player::P0;
+        let mut g = scenario(p);
+        let card_id = put(&mut g, p, "Divination", Zone::Hand);
+        cast(&mut g, card_id, None);
+        let original = g.state.stack.last().unwrap().clone();
+        let (spell, old, stack_id, target) = if copied {
+            let copy = g.allocate_spell_copy(&original, p);
+            let source = copy.source.unwrap();
+            let id = copy.id;
+            g.state.stack.push(copy);
+            (source.id, source.object, id, Target::Stack(id))
+        } else {
+            (
+                card_id,
+                g.object_ref(card_id),
+                original.id,
+                Target::Spell(card_id),
+            )
+        };
+        let counter = put(&mut g, p, "Lightning Bolt", Zone::Hand);
+        cast(&mut g, counter, Some(target));
+        assert!(g.counter_stack_item(stack_id, false));
+        assert_ne!(g.object_ref(spell), old);
+        g.state.priority = p;
+        source_choice(&mut g);
+        let choices = g.observe(p).damage_source_choice.unwrap().candidates;
+        assert!(
+            choices.contains(&old),
+            "the waiting counterspell still refers to its exact old spell object; copied={copied}"
+        );
+        assert!(
+            !choices.contains(&g.object_ref(spell)),
+            "a later incarnation is a different object"
+        );
+        act(&mut g, Action::ChooseDamageSource { source: old });
+        drain(&mut g);
+    }
+}
+
+const fn event_trigger(condition: TriggerCondition) -> TriggeredAbility {
+    TriggeredAbility {
+        condition,
+        targets: TargetPlan::NONE,
+        program: &[],
+    }
+}
+const fn event_observer(triggers: &'static [TriggeredAbility]) -> CardRules {
+    CardRules { triggers, ..PLAIN }
+}
+fn stack_event_observers(g: &mut Game) {
+    g.give_priority();
+    for _ in 0..128 {
+        if g.state.pending == Pending::Priority
+            && g.state.pending_triggers.is_empty()
+            && g.state.ordering_triggers.is_empty()
+        {
+            return;
+        }
+        choose(g, |a| {
+            matches!(
+                a,
+                Action::Pass | Action::PutTrigger { .. } | Action::FinishTargets
+            )
+        });
+    }
+    panic!("event observer staging bound: {:?}", g.state.pending);
+}
+fn source_candidates(g: &mut Game) -> Vec<ObjectRef> {
+    stack_event_observers(g);
+    g.state.priority = g.state.active;
+    source_choice(g);
+    assert!(
+        g.observe(g.state.active.other())
+            .damage_source_choice
+            .is_none()
+    );
+    g.observe(g.state.active)
+        .damage_source_choice
+        .unwrap()
+        .candidates
+}
+#[test]
+fn source_world_completion_referred_ability_is_a_distinct_legal_no_damage_source_owned_in_both_realms()
+ {
+    const COUNTER_ABILITY: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::Single(TargetSpec::one(TargetRule::Ability)),
+            &[Instruction::Counter],
+        ),
+        ..CardRules::EMPTY
+    };
+    const ACTIVATOR: CardRules = CardRules {
+        activated: &[ability(&[])],
+        ..PLAIN
+    };
+    let _scope = fixture_rules::activate(&[
+        (card("Opt"), &NWF),
+        (card("Lightning Bolt"), &COUNTER_ABILITY),
+        (card("Bear Cub"), &ACTIVATOR),
+    ]);
+    for p in [Player::P0, Player::P1] {
+        let mut parent = scenario(p);
+        let source = put(&mut parent, p, "Bear Cub", Zone::Battlefield);
+        let old = parent.object_ref(source);
+        let damage = parent.damage_source(source);
+        act(
+            &mut parent,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        pay(&mut parent);
+        let id = parent.state.stack.last().unwrap().id;
+        let counter = put(&mut parent, p, "Lightning Bolt", Zone::Hand);
+        cast(&mut parent, counter, Some(Target::Stack(id)));
+        assert!(
+            parent.state.stack.last().unwrap().targets[0]
+                .object
+                .is_none(),
+            "an ability's source permanent is not its target object"
+        );
+        assert!(parent.counter_stack_item(id, false));
+        parent.move_object(source, Zone::Graveyard);
+        parent.state.priority = p;
+        source_choice(&mut parent);
+        let choice = parent.observe(p).damage_source_choice.unwrap();
+        assert!(choice.stack_objects.contains(&id));
+        assert!(
+            !choice.candidates.contains(&old),
+            "countering an ability does not name its source permanent"
+        );
+        assert!(parent.observe(p.other()).damage_source_choice.is_none());
+        let action = Action::ChooseStackDamageSource { id };
+        reject(
+            &mut parent,
+            Action::ChooseStackDamageSource { id: u64::MAX },
+        );
+        reject(&mut parent, Action::ChooseDamageSource { source: old });
+        let saved = parent.snapshot();
+        let revision = parent.revision();
+        let index = parent
+            .legal_actions()
+            .iter()
+            .position(|a| *a == action)
+            .unwrap();
+        let mut raw = parent.clone();
+        let mut indexed = parent.clone();
+        drop(parent);
+        assert_eq!(raw.apply(p.other(), action.clone()), Err(Error::WrongActor));
+        assert_eq!(raw.snapshot(), saved);
+        raw.apply(p, action.clone()).unwrap();
+        indexed.apply_index(p, revision, index).unwrap();
+        for g in [&mut raw, &mut indexed] {
+            drain(g);
+            assert_eq!(
+                g.observe(p).chosen_source_shields.unwrap()[0].chosen,
+                DamageSourceRef::StackObject { stack_object: id }
+            );
+            finish_hits(
+                g,
+                &[DamageEvent {
+                    source: damage,
+                    target: Target::Player(p),
+                    amount: 2,
+                    combat: false,
+                    preventable: true,
+                }],
+            );
+            assert_eq!(
+                g.state.players[p.index()].life,
+                18,
+                "the old ability object is not the damage actor"
+            );
+            assert!(g.observe(p).chosen_source_shields.is_some());
+            assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 0);
+        }
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        indexed.restore(&saved).unwrap();
+        act(&mut indexed, action);
+        drain(&mut indexed);
+        finish_hits(
+            &mut indexed,
+            &[DamageEvent {
+                source: damage,
+                target: Target::Player(p),
+                amount: 2,
+                combat: false,
+                preventable: true,
+            }],
+        );
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        let json = serde_json::to_value(raw.observe(p)).unwrap();
+        assert_eq!(
+            json["chosen_source_shields"][0]["chosen"]["stack_object"],
+            id
+        );
+    }
+}
+#[test]
+fn source_world_completion_ordinary_cast_condition_keeps_spell_and_only_qualifying_nested_targets()
+{
+    const OBS: CardRules = event_observer(&[event_trigger(TriggerCondition::SpellCast {
+        relation: CastRelation::You,
+        filter: CastFilter::AnyOf(&[
+            CastFilter::Targeted {
+                filter: &CastFilter::Any,
+                target: CastTarget::Creature(CastRelation::You),
+            },
+            CastFilter::Creature,
+        ]),
+        ordinal: None,
+    })]);
+    const TARGETED: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::Single(TargetSpec {
+                rule: TargetRule::Creature,
+                min: 2,
+                max: 2,
+            }),
+            &[],
+        ),
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[
+        (card("Opt"), &NWF),
+        (card("Bear Cub"), &OBS),
+        (card("Lightning Bolt"), &TARGETED),
+    ]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let own = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+    let other = put(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+    let own_ref = g.object_ref(own);
+    let other_ref = g.object_ref(other);
+    let spell = put(&mut g, p, "Lightning Bolt", Zone::Hand);
+    act(&mut g, Action::AnnounceCast { card: spell });
+    act(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(own),
+        },
+    );
+    act(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(other),
+        },
+    );
+    pay(&mut g);
+    let old_spell = g.object_ref(spell);
+    let id = g
+        .state
+        .stack
+        .iter()
+        .find(|item| {
+            item.kind == StackKind::Spell && item.source.is_some_and(|source| source.id == spell)
+        })
+        .unwrap()
+        .id;
+    stack_event_observers(&mut g);
+    assert!(g.counter_stack_item(id, false));
+    g.move_objects_raw(&[own, other], Zone::Graveyard);
+    let choices = source_candidates(&mut g);
+    assert!(choices.contains(&old_spell));
+    assert!(choices.contains(&own_ref));
+    assert!(!choices.contains(&other_ref));
+    assert!(!choices.contains(&g.object_ref(spell)));
+    assert!(!choices.contains(&g.object_ref(own)));
+}
+#[test]
+fn source_world_completion_damage_aggregate_retains_named_dealers_but_player_only_clause_excludes_them()
+ {
+    for named in [false, true] {
+        const NAMED: CardRules =
+            event_observer(&[event_trigger(TriggerCondition::PlayerDamaged {
+                subject: DamageSubject::Creatures {
+                    filter: CreatureFilter {
+                        relation: 0,
+                        other: false,
+                        subtype: None,
+                        keyword: Keywords::NONE,
+                        attacking: false,
+                        tokens: None,
+                        artifact: false,
+                    },
+                    qualification: DamageQualification::Any,
+                },
+                combat_only: false,
+                opponent_only: true,
+                one_or_more: true,
+            })]);
+        const PLAYERS: CardRules =
+            event_observer(&[event_trigger(TriggerCondition::PlayerDamaged {
+                subject: DamageSubject::AnySources,
+                combat_only: false,
+                opponent_only: true,
+                one_or_more: false,
+            })]);
+        let _scope = fixture_rules::activate(&[
+            (card("Opt"), &NWF),
+            (card("Bear Cub"), if named { &NAMED } else { &PLAYERS }),
+        ]);
+        let p = Player::P0;
+        let mut g = scenario(p);
+        put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let a = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+        let b = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let old = [g.object_ref(a), g.object_ref(b)];
+        let hits = [
+            event(&g, a, p.other(), 1, true),
+            event(&g, b, p.other(), 2, true),
+        ];
+        g.player_damage_triggers(&hits);
+        stack_event_observers(&mut g);
+        g.move_objects_raw(&[a, b], Zone::Graveyard);
+        let choices = source_candidates(&mut g);
+        for object in old {
+            assert_eq!(choices.contains(&object), named);
+        }
+        assert!(!choices.contains(&g.object_ref(a)));
+        assert!(!choices.contains(&g.object_ref(b)));
+    }
+}
+#[test]
+fn source_world_completion_controlled_tap_batch_keeps_every_matching_old_creature_and_excludes_opponents_and_lands()
+ {
+    const OBS: CardRules = event_observer(&[event_trigger(
+        TriggerCondition::ControlledCreaturesBecomeTapped,
+    )]);
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF), (card("Bear Cub"), &OBS)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let a = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+    let b = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+    let c = put(&mut g, p.other(), "Llanowar Elves", Zone::Battlefield);
+    let land = put(&mut g, p, "Forest", Zone::Battlefield);
+    let old = [
+        g.object_ref(a),
+        g.object_ref(b),
+        g.object_ref(c),
+        g.object_ref(land),
+    ];
+    g.tap_objects(&[a, b, c, land]);
+    stack_event_observers(&mut g);
+    g.move_objects_raw(&[a, b, c, land], Zone::Graveyard);
+    let choices = source_candidates(&mut g);
+    for (i, object) in old.into_iter().enumerate() {
+        assert_eq!(choices.contains(&object), i < 2);
+    }
+}
+#[test]
+fn source_world_completion_counter_batch_and_single_recipient_conditions_preserve_exact_matching_sets()
+ {
+    const OBS: CardRules = event_observer(&[
+        event_trigger(TriggerCondition::CounterBatchPlacedByYou {
+            kind: CounterKind::PlusOne,
+            filter: CountFilter {
+                zone: CountZone::Battlefield,
+                relation: 0,
+                kind: 1,
+                exclude: 0,
+                subtype: None,
+                basic: false,
+                other: true,
+                cards_only: false,
+            },
+        }),
+        event_trigger(TriggerCondition::OtherCreatureCounterPlacedByYou {
+            kind: CounterKind::PlusOne,
+        }),
+    ]);
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF), (card("Bear Cub"), &OBS)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let a = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+    let b = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+    let c = put(&mut g, p.other(), "Llanowar Elves", Zone::Battlefield);
+    let land = put(&mut g, p, "Forest", Zone::Battlefield);
+    let old = [
+        g.object_ref(a),
+        g.object_ref(b),
+        g.object_ref(c),
+        g.object_ref(land),
+    ];
+    let plus = Counters {
+        plus_one: 1,
+        ..Counters::default()
+    };
+    let rows = [
+        (old[0], &plus, p),
+        (old[1], &plus, p),
+        (old[2], &plus, p.other()),
+        (old[3], &plus, p),
+    ];
+    g.counter_batch_added(rows.iter().copied());
+    g.self_counters_added(old[0], CounterKind::PlusOne, 1, p);
+    stack_event_observers(&mut g);
+    g.move_objects_raw(&[a, b, c, land], Zone::Graveyard);
+    let choices = source_candidates(&mut g);
+    for (i, object) in old.into_iter().enumerate() {
+        assert_eq!(choices.contains(&object), i < 2);
+    }
+}
+#[test]
+fn source_world_completion_creature_declaration_and_player_attack_are_explicitly_distinct_after_departure()
+ {
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF)]);
+    for explicit in [false, true] {
+        let p = Player::P0;
+        let mut g = scenario(p);
+        put(
+            &mut g,
+            p,
+            if explicit {
+                "Ancestor Dragon"
+            } else {
+                "Battlesong Berserker"
+            },
+            Zone::Battlefield,
+        );
+        let attacker = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let old = g.object_ref(attacker);
+        g.state.step = Step::Attackers;
+        g.state.pending = Pending::Attackers;
+        g.state.objects[attacker as usize].summoning_sick = false;
+        act(&mut g, Action::Attack { card: attacker });
+        act(&mut g, Action::FinishAttackers);
+        stack_event_observers(&mut g);
+        g.move_object(attacker, Zone::Graveyard);
+        let choices = source_candidates(&mut g);
+        assert_eq!(choices.contains(&old), explicit);
+        assert!(!choices.contains(&g.object_ref(attacker)));
+    }
+}
+#[test]
+fn source_world_completion_successful_draw_refers_only_to_the_actual_card_and_not_earlier_draws_or_private_faces()
+ {
+    const OBS: CardRules = event_observer(&[event_trigger(TriggerCondition::CardDrawn {
+        relation: CastRelation::Opponent,
+        ordinal: Some(2),
+    })]);
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF), (card("Bear Cub"), &OBS)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let first = g.top_library_card(p.other()).unwrap();
+    let old_first = g.object_ref(first);
+    assert!(g.draw_one_unreplaced(p.other()));
+    let new_first = g.object_ref(first);
+    assert!(g.state.pending_triggers.is_empty());
+    let second = g.top_library_card(p.other()).unwrap();
+    let old_second = g.object_ref(second);
+    assert!(g.draw_one_unreplaced(p.other()));
+    let drawn = g.object_ref(second);
+    stack_event_observers(&mut g);
+    g.move_object(second, Zone::Exile);
+    let choices = source_candidates(&mut g);
+    assert!(choices.contains(&drawn));
+    assert!(!choices.contains(&old_second));
+    assert!(!choices.contains(&old_first));
+    assert!(!choices.contains(&new_first));
+    assert!(!choices.contains(&g.object_ref(second)));
+    let json = serde_json::to_value(g.observe(p).damage_source_choice.unwrap()).unwrap();
+    assert!(json["candidates"].as_array().unwrap().iter().all(|row| {
+        row.as_object()
+            .unwrap()
+            .keys()
+            .all(|k| k == "card" || k == "generation")
+    }));
+    reject(&mut g, Action::ChooseDamageSource { source: old_second });
+    act(&mut g, Action::ChooseDamageSource { source: drawn });
+    drain(&mut g);
+}
+#[test]
+fn source_world_completion_prevented_and_empty_draws_create_neither_event_nor_hidden_source_reference()
+ {
+    const OBS: CardRules = event_observer(&[event_trigger(TriggerCondition::CardDrawn {
+        relation: CastRelation::You,
+        ordinal: None,
+    })]);
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF), (card("Bear Cub"), &OBS)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let top = g.top_library_card(p).unwrap();
+    let old = g.object_ref(top);
+    struct Reset;
+    impl Drop for Reset {
+        fn drop(&mut self) {
+            zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|v| v.set(None));
+        }
+    }
+    let _reset = Reset;
+    zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|v| v.set(Some(old)));
+    assert!(!g.draw_one_unreplaced(p));
+    assert!(g.state.pending_triggers.is_empty());
+    zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|v| v.set(None));
+    g.state.players[p.index()].library.clear();
+    assert!(!g.draw_one_unreplaced(p));
+    assert!(g.state.pending_triggers.is_empty());
+}
+#[test]
+fn source_world_completion_discard_batches_keep_each_explicit_old_card_and_public_result_without_unrelated_hands()
+ {
+    const OBS: CardRules = event_observer(&[event_trigger(TriggerCondition::Discarded {
+        relation: CastRelation::You,
+        one_or_more: true,
+    })]);
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF), (card("Bear Cub"), &OBS)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let a = put(&mut g, p, "Hill Giant", Zone::Hand);
+    let b = put(&mut g, p, "Grizzly Bears", Zone::Hand);
+    let untouched = put(&mut g, p.other(), "Shivan Dragon", Zone::Hand);
+    let old = [g.object_ref(a), g.object_ref(b)];
+    g.discard_batch(&[a, b], None);
+    let public = [g.object_ref(a), g.object_ref(b)];
+    stack_event_observers(&mut g);
+    g.move_objects_raw(&[a, b], Zone::Exile);
+    let choices = source_candidates(&mut g);
+    for object in old.into_iter().chain(public) {
+        assert!(choices.contains(&object));
+    }
+    assert!(!choices.contains(&g.object_ref(untouched)));
+    assert!(!choices.contains(&g.object_ref(a)));
+    assert!(!choices.contains(&g.object_ref(b)));
+}
+#[test]
+fn source_world_completion_simultaneous_deaths_refer_to_all_matching_old_and_public_result_objects()
+{
+    const OBS: CardRules = event_observer(&[event_trigger(TriggerCondition::CreatureDiesBatch {
+        filter: CreatureFilter {
+            relation: 0,
+            other: true,
+            subtype: None,
+            keyword: Keywords::NONE,
+            attacking: false,
+            tokens: None,
+            artifact: false,
+        },
+    })]);
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF), (card("Bear Cub"), &OBS)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let a = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+    let b = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+    let c = put(&mut g, p.other(), "Llanowar Elves", Zone::Battlefield);
+    let old = [g.object_ref(a), g.object_ref(b), g.object_ref(c)];
+    let before = g.death_trigger_sources();
+    let events = g.move_objects_raw(&[a, b, c], Zone::Graveyard);
+    g.finish_zone_events(&events, &before);
+    let public = [g.object_ref(a), g.object_ref(b), g.object_ref(c)];
+    let choices = source_candidates(&mut g);
+    for (i, object) in old.into_iter().enumerate() {
+        assert_eq!(choices.contains(&object), i < 2);
+    }
+    for (i, object) in public.into_iter().enumerate() {
+        assert_eq!(choices.contains(&object), i < 2);
+    }
+}
+#[test]
+fn source_world_completion_graveyard_departure_batches_retain_only_matching_owner_and_kind() {
+    const OBS: CardRules =
+        event_observer(&[event_trigger(TriggerCondition::CardsLeaveGraveyardKinds(1))]);
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF), (card("Bear Cub"), &OBS)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let a = put(&mut g, p, "Hill Giant", Zone::Graveyard);
+    let b = put(&mut g, p, "Grizzly Bears", Zone::Graveyard);
+    let c = put(&mut g, p.other(), "Llanowar Elves", Zone::Graveyard);
+    let d = put(&mut g, p, "Divination", Zone::Graveyard);
+    let old = [
+        g.object_ref(a),
+        g.object_ref(b),
+        g.object_ref(c),
+        g.object_ref(d),
+    ];
+    let before = g.death_trigger_sources();
+    let events = g.move_objects_raw(&[a, b, c, d], Zone::Exile);
+    g.finish_zone_events(&events, &before);
+    let public = [
+        g.object_ref(a),
+        g.object_ref(b),
+        g.object_ref(c),
+        g.object_ref(d),
+    ];
+    stack_event_observers(&mut g);
+    g.move_objects_raw(&[a, b, c, d], Zone::Hand);
+    let choices = source_candidates(&mut g);
+    for (i, object) in old.into_iter().enumerate() {
+        assert_eq!(choices.contains(&object), i < 2);
+    }
+    for (i, object) in public.into_iter().enumerate() {
+        assert_eq!(choices.contains(&object), i < 2);
+    }
+}
+#[test]
+fn source_world_completion_from_anywhere_graveyard_entry_references_new_cards_not_old_hidden_library_objects()
+ {
+    const OBS: CardRules = event_observer(&[event_trigger(
+        TriggerCondition::PermanentCardsEnterYourGraveyard,
+    )]);
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF), (card("Bear Cub"), &OBS)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let a = put(&mut g, p, "Hill Giant", Zone::Library);
+    let b = put(&mut g, p, "Forest", Zone::Library);
+    let c = put(&mut g, p, "Divination", Zone::Library);
+    let old = [g.object_ref(a), g.object_ref(b), g.object_ref(c)];
+    let before = g.death_trigger_sources();
+    let events = g.move_objects_raw(&[a, b, c], Zone::Graveyard);
+    g.finish_zone_events(&events, &before);
+    let public = [g.object_ref(a), g.object_ref(b), g.object_ref(c)];
+    stack_event_observers(&mut g);
+    g.move_objects_raw(&[a, b, c], Zone::Exile);
+    let choices = source_candidates(&mut g);
+    for object in old {
+        assert!(!choices.contains(&object));
+    }
+    for (i, object) in public.into_iter().enumerate() {
+        assert_eq!(choices.contains(&object), i < 2);
+    }
+}
+#[test]
+fn source_world_completion_food_sacrifice_uses_precommit_food_facts_and_actual_public_results() {
+    const OBS: CardRules = event_observer(&[event_trigger(TriggerCondition::FoodsSacrificed)]);
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF), (card("Bear Cub"), &OBS)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let food = g.state.objects.len() as CardId;
+    g.create_tokens(p, Card::test_index(5246), 1, false);
+    g.advance_replacements(true);
+    assert!(g.on_battlefield(food));
+
+    let other = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+    let old = [g.object_ref(food), g.object_ref(other)];
+    g.sacrifice_batch(&[(p, food), (p, other)]);
+    let public = [g.object_ref(food), g.object_ref(other)];
+    let choices = source_candidates(&mut g);
+    assert!(choices.contains(&old[0]));
+    assert!(choices.contains(&public[0]));
+    assert!(!choices.contains(&old[1]));
+    assert!(!choices.contains(&public[1]));
+}
+#[test]
+fn source_world_completion_token_entry_batch_keeps_every_matching_entrant_without_later_graveyard_incarnations()
+ {
+    const OBS: CardRules = event_observer(&[event_trigger(TriggerCondition::TokensEnterYou)]);
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF), (card("Bear Cub"), &OBS)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let start = g.state.objects.len();
+    g.create_tokens(p, Card::test_index(5246), 2, false);
+    g.advance_replacements(true);
+    let own: Vec<_> = (start..g.state.objects.len())
+        .filter(|&i| g.state.objects[i].zone == Zone::Battlefield)
+        .map(|i| g.object_ref(i as CardId))
+        .collect();
+    assert_eq!(own.len(), 2);
+    let unrelated = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+    let unrelated_ref = g.object_ref(unrelated);
+    stack_event_observers(&mut g);
+    let ids: Vec<_> = own.iter().map(|r| r.card).chain([unrelated]).collect();
+    g.move_objects_raw(&ids, Zone::Graveyard);
+    let choices = source_candidates(&mut g);
+    for object in own {
+        assert!(choices.contains(&object));
+        assert!(!choices.contains(&g.object_ref(object.card)));
+    }
+    assert!(!choices.contains(&unrelated_ref));
+}
+#[test]
+fn source_world_completion_exact_delayed_dies_subject_survives_dispatch_and_public_move() {
+    const WATCH: CardRules = CardRules {
+        effect: Effect::Spell(
+            CREATURE,
+            &[Instruction::DelayTargetEvent {
+                event: DelayedTargetEvent::DiesOnce,
+                ability: 0,
+            }],
+        ),
+        triggers: &[event_trigger(TriggerCondition::DelayedTargetEvent)],
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF), (card("Lightning Bolt"), &WATCH)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let creature = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+    let old = g.object_ref(creature);
+    let spell = put(&mut g, p, "Lightning Bolt", Zone::Hand);
+    cast(&mut g, spell, Some(Target::Card(creature)));
+    drain(&mut g);
+    g.move_object(creature, Zone::Graveyard);
+    let after = g.object_ref(creature);
+    assert!(g.state.delayed_target_events.is_none());
+    let choices = source_candidates(&mut g);
+    assert!(choices.contains(&old));
+    assert!(choices.contains(&after));
+}
+#[test]
+fn source_world_completion_exact_delayed_combat_dealer_is_retained_after_watcher_and_subject_departure()
+ {
+    const WATCH: CardRules = CardRules {
+        effect: Effect::Spell(
+            CREATURE,
+            &[Instruction::DelayTargetEvent {
+                event: DelayedTargetEvent::CombatDamageToPlayer,
+                ability: 0,
+            }],
+        ),
+        triggers: &[event_trigger(TriggerCondition::DelayedTargetEvent)],
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF), (card("Lightning Bolt"), &WATCH)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let creature = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+    let old = g.object_ref(creature);
+    let spell = put(&mut g, p, "Lightning Bolt", Zone::Hand);
+    cast(&mut g, spell, Some(Target::Card(creature)));
+    drain(&mut g);
+    let mut hit = event(&g, creature, p.other(), 1, true);
+    hit.combat = true;
+    g.delayed_target_combat_damage(&[hit]);
+    stack_event_observers(&mut g);
+    g.move_object(creature, Zone::Graveyard);
+    assert!(
+        g.state
+            .delayed_target_events
+            .as_ref()
+            .is_some_and(|rows| rows.iter().any(|row| row.subject == old)),
+        "the turn-duration ability still refers to its old subject until cleanup"
+    );
+    let choices = source_candidates(&mut g);
+    assert!(choices.contains(&old));
+    assert!(!choices.contains(&g.object_ref(creature)));
+}
+#[test]
+fn source_world_completion_earthbend_keeps_only_the_still_watched_land_and_its_actual_trigger_move()
+{
+    const EARTH: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::Single(TargetSpec {
+                rule: TargetRule::Object {
+                    zone: TargetZone::Battlefield,
+                    kinds: 2,
+                    relation: 0,
+                    other: false,
+                    nonland: false,
+                    tapped: false,
+                    min_mana: 0,
+                    max_mana: u32::MAX,
+                },
+                min: 2,
+                max: 2,
+            }),
+            &[
+                Instruction::AnimateEarthbendTargets,
+                Instruction::PutCounters {
+                    subject: Subject::Targets,
+                    kind: CounterKind::PlusOne,
+                    amount: 1,
+                },
+                Instruction::RegisterEarthbendReturn,
+            ],
+        ),
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF), (card("Lightning Bolt"), &EARTH)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let a = put(&mut g, p, "Forest", Zone::Battlefield);
+    let b = put(&mut g, p, "Island", Zone::Battlefield);
+    let old = [g.object_ref(a), g.object_ref(b)];
+    let spell = put(&mut g, p, "Lightning Bolt", Zone::Hand);
+    act(&mut g, Action::AnnounceCast { card: spell });
+    act(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(a),
+        },
+    );
+    act(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(b),
+        },
+    );
+    pay(&mut g);
+    drain(&mut g);
+    // A's delayed ability genuinely triggers and finishes. Its old incarnation
+    // must not leak through B's cloned initiating target array.
+    g.move_object(a, Zone::Graveyard);
+    g.give_priority();
+    drain(&mut g);
+    assert_ne!(g.object_ref(a), old[0]);
+    g.move_object(b, Zone::Graveyard);
+    let after = g.object_ref(b);
+    let choices = source_candidates(&mut g);
+    assert!(!choices.contains(&old[0]));
+    assert!(
+        choices.contains(&g.object_ref(a)),
+        "the returned current land is a permanent"
+    );
+    assert!(choices.contains(&old[1]));
+    assert!(choices.contains(&after));
+}
+#[test]
+fn source_world_completion_next_noncreature_callback_keeps_actual_spell_and_discards_installation_targets()
+ {
+    const INSTALL: CardRules = CardRules {
+        activated: &[ActivatedAbility {
+            targets: CREATURE,
+            ..ability(&[Instruction::ScheduleTurnTrigger {
+                event: TurnCallbackEvent::NoncreatureCast,
+                ability: 0,
+                once: true,
+            }])
+        }],
+        triggers: &[event_trigger(TriggerCondition::DelayedTargetEvent)],
+        ..PLAIN
+    };
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF), (card("Bear Cub"), &INSTALL)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let installer = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let incidental = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+    let old_incidental = g.object_ref(incidental);
+    act(
+        &mut g,
+        Action::AnnounceActivate {
+            card: installer,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    act(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(incidental),
+        },
+    );
+    pay(&mut g);
+    drain(&mut g);
+    g.move_object(incidental, Zone::Graveyard);
+    let spell = put(&mut g, p, "Divination", Zone::Hand);
+    cast(&mut g, spell, None);
+    let old_spell = g.object_ref(spell);
+    let id = g
+        .state
+        .stack
+        .iter()
+        .find(|item| {
+            item.kind == StackKind::Spell && item.source.is_some_and(|source| source.id == spell)
+        })
+        .unwrap()
+        .id;
+    stack_event_observers(&mut g);
+    assert!(g.counter_stack_item(id, false));
+    let choices = source_candidates(&mut g);
+    assert!(choices.contains(&old_spell));
+    assert!(!choices.contains(&old_incidental));
+    assert!(!choices.contains(&g.object_ref(spell)));
+}
+#[test]
+fn source_world_completion_next_upkeep_tokens_refer_only_to_successfully_returned_owned_creatures()
+{
+    const RETURN: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::Single(TargetSpec {
+                rule: TargetRule::Creature,
+                min: 3,
+                max: 3,
+            }),
+            &[Instruction::ReturnTargetsCreateNextUpkeep {
+                token: Card::test_index(5255),
+            }],
+        ),
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF), (card("Lightning Bolt"), &RETURN)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let a = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+    let b = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+    let c = put(&mut g, p.other(), "Llanowar Elves", Zone::Battlefield);
+    let old = [g.object_ref(a), g.object_ref(b), g.object_ref(c)];
+    let spell = put(&mut g, p, "Lightning Bolt", Zone::Hand);
+    act(&mut g, Action::AnnounceCast { card: spell });
+    for id in [a, b, c] {
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(id),
+            },
+        );
+    }
+    pay(&mut g);
+    drain(&mut g);
+    let choices = source_candidates(&mut g);
+    for (i, object) in old.into_iter().enumerate() {
+        assert_eq!(choices.contains(&object), i < 2);
+    }
+    assert!(!choices.contains(&g.object_ref(a)));
+    assert!(!choices.contains(&g.object_ref(b)));
+    assert!(!choices.contains(&g.object_ref(c)));
+}
+#[test]
+fn source_world_completion_creature_activation_keeps_nonmana_ability_and_old_creature_but_mana_has_no_stack_object()
+ {
+    const OBS: CardRules =
+        event_observer(&[event_trigger(TriggerCondition::CreatureAbilityActivated)]);
+    const NONMANA: CardRules = CardRules {
+        activated: &[ActivatedAbility {
+            cost: ActivationCost {
+                sacrifice: true,
+                ..ActivationCost::ZERO
+            },
+            ..ability(&[])
+        }],
+        ..PLAIN
+    };
+    const MANA: CardRules = CardRules {
+        activated: &[ActivatedAbility {
+            cost: ActivationCost {
+                sacrifice: true,
+                ..ActivationCost::ZERO
+            },
+            ..ability(&[Instruction::AddMana(ManaProduction::Fixed([
+                1, 0, 0, 0, 0, 0,
+            ]))])
+        }],
+        ..PLAIN
+    };
+    for mana in [false, true] {
+        let _scope = fixture_rules::activate(&[
+            (card("Opt"), &NWF),
+            (card("Bear Cub"), &OBS),
+            (card("Llanowar Elves"), if mana { &MANA } else { &NONMANA }),
+        ]);
+        let p = Player::P0;
+        let mut g = scenario(p);
+        put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let source = put(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        let old = g.object_ref(source);
+        let action = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| {
+                if mana {
+                    matches!(a,Action::AnnounceMana{card,..}if*card==source)
+                } else {
+                    matches!(a,Action::AnnounceActivate{card,..}if*card==source)
+                }
+            })
+            .unwrap();
+        act(&mut g, action);
+        pay(&mut g);
+        let activated = g
+            .state
+            .stack
+            .iter()
+            .find(|s| matches!(s.kind, StackKind::ActivatedAbility { .. }))
+            .map(|s| s.id);
+        stack_event_observers(&mut g);
+        if let Some(id) = activated {
+            assert!(g.counter_stack_item(id, false));
+        }
+        let choices = source_candidates(&mut g);
+        assert!(choices.contains(&old));
+        let stack = g.observe(p).damage_source_choice.unwrap().stack_objects;
+        if let Some(id) = activated {
+            assert!(stack.contains(&id));
+        } else {
+            assert!(stack.is_empty(), "mana abilities have no stack objects");
+        }
+    }
+}
+#[test]
+fn source_world_completion_explore_condition_retains_explorer_and_only_explicitly_named_revealed_card()
+ {
+    const BARE: CardRules = event_observer(&[event_trigger(TriggerCondition::CreatureExploresYou)]);
+    const CARD: CardRules =
+        event_observer(&[event_trigger(TriggerCondition::CreatureExploresCardYou {
+            land: true,
+        })]);
+    for named_card in [false, true] {
+        let _scope = fixture_rules::activate(&[
+            (card("Opt"), &NWF),
+            (card("Bear Cub"), if named_card { &CARD } else { &BARE }),
+        ]);
+        let p = Player::P0;
+        let mut g = scenario(p);
+        put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let creature = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+        let old = g.object_ref(creature);
+        let land = put(&mut g, p, "Forest", Zone::Library);
+        let revealed = g.object_ref(land);
+        let moved = g.move_object(land, Zone::Hand);
+        g.explore_completed(
+            ExplorerView {
+                kinds: 1,
+                object: old,
+                card: card("Hill Giant"),
+                controller: p,
+            },
+            Some(RevealedLibraryCard {
+                object: revealed,
+                card: card("Forest"),
+            }),
+            Some(Zone::Hand),
+            Some(moved.after),
+            false,
+        );
+        stack_event_observers(&mut g);
+        g.move_object(creature, Zone::Graveyard);
+        let choices = source_candidates(&mut g);
+        assert!(choices.contains(&old));
+        assert_eq!(choices.contains(&revealed), named_card);
+        assert!(
+            !choices.contains(&g.object_ref(land)),
+            "explore completion is not a zone-move trigger following the card into a hidden zone"
+        );
+        assert!(!choices.contains(&g.object_ref(creature)));
+    }
+}
+#[test]
+fn source_world_completion_bare_manifest_action_excludes_incidental_graveyard_payload_references() {
+    const OBS: CardRules = event_observer(&[event_trigger(TriggerCondition::YouManifestDread)]);
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF), (card("Bear Cub"), &OBS)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let incidental = put(&mut g, p, "Divination", Zone::Graveyard);
+    let old = g.object_ref(incidental);
+    g.queue_manifest_dread_triggers(ManifestDreadEvent {
+        player: p,
+        manifested: None,
+        graveyard_cards: vec![old],
+    });
+    let choices = source_candidates(&mut g);
+    assert!(!choices.contains(&old));
+    reject(&mut g, Action::ChooseDamageSource { source: old });
+}
+#[test]
+fn source_world_completion_prevention_reflexive_explicitly_refers_to_the_prevented_dealer_after_it_departs()
+ {
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let dealer = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+    let old = g.object_ref(dealer);
+    shield(&mut g, old);
+    let hit = event(&g, dealer, p, 2, true);
+    g.apply_damage_batch(&[hit]);
+    g.advance_replacements(true);
+    assert!(g.observe(p).chosen_source_shields.is_none());
+    stack_event_observers(&mut g);
+    g.move_object(dealer, Zone::Graveyard);
+    let choices = source_candidates(&mut g);
+    assert!(choices.contains(&old));
+    assert!(!choices.contains(&g.object_ref(dealer)));
+}
+#[test]
+fn source_world_completion_reflexive_x_payment_does_not_keep_the_parent_entrants_semantic_identity()
+{
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let preserver = put(&mut g, p, "Wildborn Preserver", Zone::Battlefield);
+    let creature = put(&mut g, p, "Bear Cub", Zone::Hand);
+    cast(&mut g, creature, None);
+    wait(&mut g, |g| {
+        g.state.stack.iter().any(|item| {
+            item.source.is_some_and(|s| s.id == preserver)
+                && item.kind == StackKind::TriggeredAbility { ability: 0 }
+        })
+    });
+    assert_eq!(g.object_view(creature).zone, Zone::Battlefield);
+    let old = g.object_ref(creature);
+    g.move_object(creature, Zone::Graveyard);
+    for _ in 0..64 {
+        if g.state.stack.iter().any(|item| {
+            item.source.is_some_and(|s| s.id == preserver)
+                && item.kind == StackKind::TriggeredAbility { ability: 1 }
+        }) {
+            break;
+        }
+        choose(&mut g, |a| {
+            matches!(
+                a,
+                Action::Pass
+                    | Action::PutTrigger { .. }
+                    | Action::ChooseOptional { accept: true }
+                    | Action::ChooseX { value: 1 }
+                    | Action::PayResolutionMana { .. }
+            )
+        });
+    }
+    assert!(
+        g.state
+            .stack
+            .iter()
+            .any(|item| item.source.is_some_and(|s| s.id == preserver)
+                && item.kind == StackKind::TriggeredAbility { ability: 1 })
+    );
+    let choices = source_candidates(&mut g);
+    assert!(
+        !choices.contains(&old),
+        "the reflexive clause names only Wildborn Preserver and X; the parent trigger has finished"
+    );
+    assert!(!choices.contains(&g.object_ref(creature)));
+    reject(&mut g, Action::ChooseDamageSource { source: old });
+    let chosen = g.object_ref(preserver);
+    act(&mut g, Action::ChooseDamageSource { source: chosen });
+    drain(&mut g);
+    assert_eq!(
+        g.counter_amounts(preserver).get(CounterKind::PlusOne),
+        1,
+        "successful mandatory payment remains meaningful"
+    );
+}
+#[test]
+fn source_world_completion_final_bolg_rebinds_the_sacrificed_creature_and_its_public_result() {
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let sacrifice = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let old = g.object_ref(sacrifice);
+    let target = put(&mut g, p.other(), "Shivan Dragon", Zone::Battlefield);
+    let bolg = put(&mut g, p, "Bolg of the North", Zone::Hand);
+    cast(&mut g, bolg, None);
+    let old_spell = g.object_ref(bolg);
+    for _ in 0..96 {
+        if g.state.stack.iter().any(|item| {
+            item.source.is_some_and(|s| s.id == bolg)
+                && item.kind == StackKind::TriggeredAbility { ability: 1 }
+        }) {
+            break;
+        }
+        choose(&mut g, |a| {
+            matches!(
+                a,
+                Action::Pass | Action::PutTrigger { .. } | Action::FinishTargets
+            ) || matches!(a,Action::Sacrifice{object}if*object==old)
+                || matches!(a,Action::ChooseTarget{target:Target::Card(id)}if*id==target)
+        });
+    }
+    assert!(
+        g.state
+            .stack
+            .iter()
+            .any(|item| item.source.is_some_and(|s| s.id == bolg)
+                && item.kind == StackKind::TriggeredAbility { ability: 1 })
+    );
+    assert_eq!(g.object_view(sacrifice).zone, Zone::Graveyard);
+    let after = g.object_ref(sacrifice);
+    let choices = source_candidates(&mut g);
+    assert!(choices.contains(&old));
+    assert!(choices.contains(&after));
+    assert!(
+        !choices.contains(&old_spell),
+        "the new clause does not retain Bolg's old entering spell incarnation"
+    );
+    act(&mut g, Action::ChooseDamageSource { source: old });
+    drain(&mut g);
+    assert_eq!(g.object_view(target).damage, 2);
+}
+#[test]
+fn source_world_completion_final_attached_upkeep_guard_keeps_exact_trigger_time_creature_after_both_depart()
+ {
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let creature = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let old = g.object_ref(creature);
+    let aura = put(&mut g, p, "Super Intelligence", Zone::Battlefield);
+    g.state.objects[aura as usize].attached_to = Some(old);
+    g.begin_step(Step::Upkeep);
+    stack_event_observers(&mut g);
+    assert!(
+        g.state
+            .stack
+            .iter()
+            .any(|item| item.source.is_some_and(|s| s.id == aura))
+    );
+    g.move_object(creature, Zone::Graveyard);
+    g.move_object(aura, Zone::Graveyard);
+    let choices = source_candidates(&mut g);
+    assert!(choices.contains(&old));
+    assert!(!choices.contains(&g.object_ref(creature)));
+    assert!(!choices.contains(&g.object_ref(aura)));
+}
+#[test]
+fn source_world_completion_semantic_event_group_survives_owned_raw_index_restore_after_parent_drop()
+{
+    const OBS: CardRules =
+        event_observer(&[event_trigger(TriggerCondition::CreatureAbilityActivated)]);
+    const ACT: CardRules = CardRules {
+        activated: &[ActivatedAbility {
+            cost: ActivationCost {
+                sacrifice: true,
+                ..ActivationCost::ZERO
+            },
+            ..ability(&[])
+        }],
+        ..PLAIN
+    };
+    let _scope = fixture_rules::activate(&[
+        (card("Opt"), &NWF),
+        (card("Bear Cub"), &OBS),
+        (card("Llanowar Elves"), &ACT),
+    ]);
+    let p = Player::P1;
+    let mut parent = scenario(p);
+    put(&mut parent, p, "Bear Cub", Zone::Battlefield);
+    let source = put(&mut parent, p, "Llanowar Elves", Zone::Battlefield);
+    let old = parent.object_ref(source);
+    act(
+        &mut parent,
+        Action::AnnounceActivate {
+            card: source,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    pay(&mut parent);
+    let id = parent
+        .state
+        .stack
+        .iter()
+        .find(|item| matches!(item.kind, StackKind::ActivatedAbility { .. }))
+        .unwrap()
+        .id;
+    stack_event_observers(&mut parent);
+    assert!(parent.counter_stack_item(id, false));
+    source_choice(&mut parent);
+    assert!(
+        parent
+            .observe(p)
+            .damage_source_choice
+            .unwrap()
+            .stack_objects
+            .contains(&id)
+    );
+    let action = Action::ChooseDamageSource { source: old };
+    let saved = parent.snapshot();
+    let revision = parent.revision();
+    let index = parent
+        .legal_actions()
+        .iter()
+        .position(|a| *a == action)
+        .unwrap();
+    let mut raw = parent.clone();
+    let mut indexed = parent.clone();
+    drop(parent);
+    assert_eq!(raw.apply(p.other(), action.clone()), Err(Error::WrongActor));
+    assert_eq!(raw.snapshot(), saved);
+    raw.apply(p, action.clone()).unwrap();
+    indexed.apply_index(p, revision, index).unwrap();
+    drain(&mut raw);
+    drain(&mut indexed);
+    assert_eq!(raw.snapshot(), indexed.snapshot());
+    indexed.restore(&saved).unwrap();
+    act(&mut indexed, Action::ChooseStackDamageSource { id });
+    drain(&mut indexed);
+    assert_eq!(
+        indexed.observe(p).chosen_source_shields.unwrap()[0].chosen,
+        DamageSourceRef::StackObject { stack_object: id }
+    );
+    indexed.restore(&saved).unwrap();
+    act(&mut indexed, action);
+    drain(&mut indexed);
+    assert_eq!(raw.snapshot(), indexed.snapshot());
+}
+#[test]
+fn source_world_completion_opponent_draw_reference_reveals_no_face_in_paired_hidden_worlds() {
+    const OBS: CardRules = event_observer(&[event_trigger(TriggerCondition::CardDrawn {
+        relation: CastRelation::Opponent,
+        ordinal: None,
+    })]);
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF), (card("Bear Cub"), &OBS)]);
+    let p = Player::P0;
+    let mut observations = Vec::new();
+    for secret in ["Shivan Dragon", "Divination"] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let top = g.top_library_card(p.other()).unwrap();
+        g.state.objects[top as usize].card = card(secret);
+        assert!(g.draw_one_unreplaced(p.other()));
+        let drawn = g.object_ref(top);
+        let choices = source_candidates(&mut g);
+        assert!(choices.contains(&drawn));
+        observations.push(serde_json::to_value(g.observe(p)).unwrap());
+    }
+    assert_eq!(
+        observations[0], observations[1],
+        "the event names an opaque exact card, never its private face"
+    );
+}
+#[test]
+fn source_world_completion_cast_during_resolution_finishes_parent_before_child_source_choice() {
+    const PARENT: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::Single(TargetSpec::one(TargetRule::Player {
+                opponent_only: false,
+            })),
+            &[Instruction::ExileTargetLibraryTopCastFree {
+                amount: 2,
+                maximum_casts: 1,
+            }],
+        ),
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF), (card("Lightning Bolt"), &PARENT)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let land = put(&mut g, p, "Forest", Zone::Library);
+    let child = put(&mut g, p, "Opt", Zone::Library);
+    let parent = put(&mut g, p, "Lightning Bolt", Zone::Hand);
+    cast(&mut g, parent, Some(Target::Player(p)));
+    wait(&mut g, |g| {
+        matches!(g.state.pending, Pending::ResolutionCasts { .. })
+    });
+    let exiled_land = g.object_ref(land);
+    let parent_id = g.state.resolving.as_ref().unwrap().item.id;
+    let child_ref = g.object_ref(child);
+    act(
+        &mut g,
+        Action::CastExiledDuringResolution {
+            object: child_ref,
+            face: CastFace::Normal,
+        },
+    );
+    pay(&mut g);
+    assert_eq!(
+        g.state.resolving.as_ref().unwrap().item.id,
+        parent_id,
+        "casting the child does not resolve it"
+    );
+    act(&mut g, Action::FinishResolutionCasts);
+    assert_eq!(g.object_view(parent).zone, Zone::Graveyard);
+    assert!(g.state.resolving.is_none());
+    wait(&mut g, |g| {
+        matches!(g.state.pending, Pending::DamageSource { .. })
+    });
+    assert_eq!(
+        g.state.resolving.as_ref().unwrap().item.source.unwrap().id,
+        child
+    );
+    let choices = g.observe(p).damage_source_choice.unwrap().candidates;
+    assert!(
+        !choices.contains(&exiled_land),
+        "CR608.2g: the finished parent does not expose its old exile roster"
+    );
+    reject(
+        &mut g,
+        Action::ChooseDamageSource {
+            source: exiled_land,
+        },
+    );
+}
+#[test]
+fn source_world_completion_reflexive_discard_rebinds_paid_card_without_incidental_old_parent_refs()
+{
+    const DISCARD: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::NONE,
+            &[
+                Instruction::ChooseObjects {
+                    kind: EffectChoiceKind::Discard,
+                    players: PlayerSet::Controller,
+                    filter: ANY_FILTER,
+                    amount: 1,
+                    optional_skip: Some(1),
+                },
+                Instruction::Reflexive { ability: 0 },
+            ],
+        ),
+        triggers: &[TriggeredAbility {
+            condition: TriggerCondition::Reflexive,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::GainLife(PlayerSet::Controller, 1)],
+        }],
+        ..CardRules::EMPTY
+    };
+    let _scope =
+        fixture_rules::activate(&[(card("Opt"), &NWF), (card("Lightning Bolt"), &DISCARD)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let discarded = put(&mut g, p, "Hill Giant", Zone::Hand);
+    let old = g.object_ref(discarded);
+    let unrelated = put(&mut g, p, "Grizzly Bears", Zone::Hand);
+    let spell = put(&mut g, p, "Lightning Bolt", Zone::Hand);
+    cast(&mut g, spell, None);
+    for _ in 0..64 {
+        if g.state.stack.iter().any(|item| {
+            item.source.is_some_and(|s| s.id == spell)
+                && matches!(item.kind, StackKind::TriggeredAbility { .. })
+        }) {
+            break;
+        }
+        choose(&mut g, |a| {
+            matches!(a, Action::Pass | Action::PutTrigger { .. })
+                || matches!(a,Action::Discard{card}if*card==discarded)
+        });
+    }
+    let after = g.object_ref(discarded);
+    assert_ne!(old, after);
+    let choices = source_candidates(&mut g);
+    assert!(choices.contains(&old));
+    assert!(choices.contains(&after));
+    assert!(!choices.contains(&g.object_ref(unrelated)));
+    act(&mut g, Action::ChooseDamageSource { source: old });
+    drain(&mut g);
+    assert_eq!(g.state.players[p.index()].life, 21);
+}
+#[test]
+fn source_world_completion_reflexive_creation_rebinds_every_actual_created_token_after_departure() {
+    const CREATE: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::NONE,
+            &[Instruction::CreateTokensReflexive {
+                token: Card::test_index(5246),
+                amount: 2,
+                ability: 0,
+            }],
+        ),
+        triggers: &[event_trigger(TriggerCondition::Reflexive)],
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF), (card("Lightning Bolt"), &CREATE)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let spell = put(&mut g, p, "Lightning Bolt", Zone::Hand);
+    cast(&mut g, spell, None);
+    wait(&mut g, |g| {
+        g.state.stack.iter().any(|item| {
+            item.source.is_some_and(|s| s.id == spell)
+                && matches!(item.kind, StackKind::TriggeredAbility { .. })
+        })
+    });
+    let tokens: Vec<_> = g
+        .state
+        .objects
+        .iter()
+        .enumerate()
+        .filter(|(_, o)| o.zone == Zone::Battlefield && o.is_token())
+        .map(|(i, _)| g.object_ref(i as CardId))
+        .collect();
+    assert_eq!(tokens.len(), 2);
+    let ids: Vec<_> = tokens.iter().map(|r| r.card).collect();
+    g.move_objects_raw(&ids, Zone::Graveyard);
+    let choices = source_candidates(&mut g);
+    for token in tokens {
+        assert!(choices.contains(&token));
+        assert!(!choices.contains(&g.object_ref(token.card)));
+    }
+}
+#[test]
+fn source_world_completion_thorin_reflexive_names_only_the_creature_and_equipment_that_actually_attached()
+ {
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let recipient = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let old_recipient = g.object_ref(recipient);
+    let a = put(&mut g, p, "Short Bow", Zone::Battlefield);
+    let b = put(&mut g, p, "Short Bow", Zone::Battlefield);
+    let old_a = g.object_ref(a);
+    let old_b = g.object_ref(b);
+    let target = put(&mut g, p.other(), "Shivan Dragon", Zone::Battlefield);
+    let thorin = put(&mut g, p, "Thorin, Mountain-king", Zone::Hand);
+    cast(&mut g, thorin, None);
+    wait(&mut g, |g| {
+        matches!(g.state.pending, Pending::Targets { .. })
+            && g.state.announcing.as_ref().is_some_and(|a| {
+                a.item.source.is_some_and(|s| s.id == thorin)
+                    && a.item.kind == StackKind::TriggeredAbility { ability: 0 }
+            })
+    });
+    act(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(b),
+        },
+    );
+    act(&mut g, Action::FinishTargets);
+    act(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(recipient),
+        },
+    );
+    for _ in 0..64 {
+        if matches!(g.state.pending, Pending::Targets { .. })
+            && g.state.announcing.as_ref().is_some_and(|a| {
+                a.item.source.is_some_and(|s| s.id == thorin)
+                    && a.item.kind == StackKind::TriggeredAbility { ability: 1 }
+            })
+        {
+            break;
+        }
+        choose(&mut g, |a| {
+            matches!(
+                a,
+                Action::Pass | Action::PutTrigger { .. } | Action::FinishTargets
+            )
+        });
+    }
+    act(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(target),
+        },
+    );
+    if g.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut g, Action::FinishTargets);
+    }
+    assert_eq!(g.object_view(b).attached_to, Some(old_recipient));
+    g.move_objects_raw(&[recipient, a, b], Zone::Graveyard);
+    let choices = source_candidates(&mut g);
+    assert!(choices.contains(&old_recipient));
+    assert!(choices.contains(&old_b));
+    assert!(!choices.contains(&old_a));
+    for id in [recipient, a, b] {
+        assert!(!choices.contains(&g.object_ref(id)));
+    }
+    act(&mut g, Action::ChooseDamageSource { source: old_b });
+    drain(&mut g);
+    assert_eq!(
+        g.object_view(target).damage,
+        3,
+        "the actual creature's predeparture equipped power is retained"
+    );
+}
+#[test]
+fn source_world_completion_reflexive_mill_uses_only_actual_public_results_and_never_hidden_parent_library_refs()
+ {
+    const MILL: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::NONE,
+            &[Instruction::MillThenReflexive {
+                amount: 4,
+                ability: 0,
+            }],
+        ),
+        triggers: &[event_trigger(TriggerCondition::Reflexive)],
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF), (card("Lightning Bolt"), &MILL)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let ids: Vec<_> = g.state.players[p.index()]
+        .library
+        .iter()
+        .rev()
+        .take(4)
+        .copied()
+        .collect();
+    let old: Vec<_> = ids.iter().map(|&id| g.object_ref(id)).collect();
+    let spell = put(&mut g, p, "Lightning Bolt", Zone::Hand);
+    cast(&mut g, spell, None);
+    wait(&mut g, |g| {
+        g.state.stack.iter().any(|item| {
+            item.source.is_some_and(|s| s.id == spell)
+                && matches!(item.kind, StackKind::TriggeredAbility { .. })
+        })
+    });
+    let public: Vec<_> = ids.iter().map(|&id| g.object_ref(id)).collect();
+    g.move_objects_raw(&ids, Zone::Exile);
+    let choices = source_candidates(&mut g);
+    for object in old {
+        assert!(!choices.contains(&object));
+    }
+    for object in public {
+        assert!(choices.contains(&object));
+        assert!(!choices.contains(&g.object_ref(object.card)));
+    }
+}
+#[test]
+fn waiting_source_boundary_paradigm_retains_the_actual_exiled_object_after_later_departure() {
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let bear = put(&mut g, p, "Bear Cub", Zone::Graveyard);
+    let seminar = put(&mut g, p, "Restoration Seminar", Zone::Hand);
+    cast(&mut g, seminar, Some(Target::Card(bear)));
+    drain(&mut g);
+    assert_eq!(g.object_view(seminar).zone, Zone::Exile);
+    assert_eq!(g.observe(p).paradigms.len(), 1);
+    let exiled = g.object_ref(seminar);
+    g.move_object(seminar, Zone::Graveyard);
+    g.move_object(bear, Zone::Hand);
+    let choices = source_candidates(&mut g);
+    assert!(
+        choices.contains(&exiled),
+        "the waiting Paradigm clause refers to the actual exiled incarnation"
+    );
+    assert!(!choices.contains(&g.object_ref(seminar)));
+    assert!(!choices.contains(&g.object_ref(bear)));
+}
+#[test]
+fn waiting_source_boundary_unspent_goggles_mana_retains_its_exact_delayed_trigger_source() {
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let goggles = put(&mut g, p, "Pyromancer's Goggles", Zone::Battlefield);
+    let old = g.object_ref(goggles);
+    let action = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a,Action::AnnounceMana{card,..}if*card==goggles))
+        .unwrap();
+    act(&mut g, action);
+    pay(&mut g);
+    assert!(
+        g.mana_lot_views()
+            .iter()
+            .any(|lot| lot.copy_source.is_some_and(|s| s.object == old)
+                && lot.amounts.iter().any(|&n| n > 0))
+    );
+    g.move_object(goggles, Zone::Graveyard);
+    let choices = source_candidates(&mut g);
+    assert!(choices.contains(&old));
+    assert!(!choices.contains(&g.object_ref(goggles)));
+}
+#[test]
+fn waiting_source_boundary_generous_plunderer_refers_to_the_actual_created_treasure_after_mana_sacrifice()
+ {
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let plunderer = put(&mut g, p, "Generous Plunderer", Zone::Battlefield);
+    g.begin_step(Step::Upkeep);
+    wait(&mut g, |g| {
+        matches!(g.state.pending, Pending::EffectOptional { .. })
+    });
+    act(&mut g, Action::ChooseOptional { accept: true });
+    for _ in 0..64 {
+        if g.state.stack.iter().any(|item| {
+            item.source.is_some_and(|s| s.id == plunderer)
+                && item.kind == StackKind::TriggeredAbility { ability: 1 }
+        }) {
+            break;
+        }
+        choose(&mut g, |a| {
+            matches!(a, Action::Pass | Action::PutTrigger { .. })
+                || matches!(a,Action::ChooseTarget{target:Target::Player(player)}if*player==p.other())
+        });
+    }
+    let treasure = g
+        .state
+        .objects
+        .iter()
+        .enumerate()
+        .find(|(_, o)| o.zone == Zone::Battlefield && o.controller == p && o.is_token())
+        .map(|(i, _)| i as CardId)
+        .unwrap();
+    let old = g.object_ref(treasure);
+    let action = g
+        .legal_actions()
+        .into_iter()
+        .find(|a| matches!(a,Action::AnnounceMana{card,..}if*card==treasure))
+        .unwrap();
+    act(&mut g, action);
+    pay(&mut g);
+    let choices = source_candidates(&mut g);
+    assert!(
+        choices.contains(&old),
+        "the new reflexive condition is the actual creation action"
+    );
+    assert!(!choices.contains(&g.object_ref(treasure)));
+}
+#[test]
+fn waiting_source_boundary_until_cleanup_combat_prevention_retains_departed_recipient() {
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let old = g.object_ref(bear);
+    let flight = put(&mut g, p, "Fleeting Flight", Zone::Hand);
+    cast(&mut g, flight, Some(Target::Card(bear)));
+    drain(&mut g);
+    g.move_object(bear, Zone::Hand);
+    let choices = source_candidates(&mut g);
+    assert!(
+        choices.contains(&old),
+        "the until-EOT prevention still refers to its exact recipient"
+    );
+    assert!(!choices.contains(&g.object_ref(bear)));
+}
+#[test]
+fn waiting_source_boundary_until_cleanup_target_only_would_die_effect_retains_departed_target() {
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let dragon = put(&mut g, p, "Shivan Dragon", Zone::Battlefield);
+    let old = g.object_ref(dragon);
+    let bolt = put(&mut g, p, "Obliterating Bolt", Zone::Hand);
+    cast(&mut g, bolt, Some(Target::Card(dragon)));
+    let source = g.object_ref(bolt);
+    drain(&mut g);
+    assert!(g.on_battlefield(dragon));
+    g.move_object(dragon, Zone::Hand);
+    let choices = source_candidates(&mut g);
+    assert!(choices.contains(&old));
+    assert!(
+        !choices.contains(&source),
+        "target-only wording does not refer to the historical creator"
+    );
+    assert!(!choices.contains(&g.object_ref(dragon)));
+    assert!(!choices.contains(&g.object_ref(bolt)));
+}
+const EARTH_WAIT: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::Single(TargetSpec::one(TargetRule::Object {
+            zone: TargetZone::Battlefield,
+            kinds: 2,
+            relation: 0,
+            other: false,
+            nonland: false,
+            tapped: false,
+            min_mana: 0,
+            max_mana: u32::MAX,
+        })),
+        &[
+            Instruction::AnimateEarthbendTargets,
+            Instruction::PutCounters {
+                subject: Subject::Targets,
+                kind: CounterKind::PlusOne,
+                amount: 1,
+            },
+            Instruction::RegisterEarthbendReturn,
+        ],
+    ),
+    ..CardRules::EMPTY
+};
+#[test]
+fn waiting_source_boundary_target_death_callback_remains_waiting_after_a_nontriggering_departure() {
+    const WATCH: CardRules = CardRules {
+        effect: Effect::Spell(
+            CREATURE,
+            &[Instruction::DelayTargetEvent {
+                event: DelayedTargetEvent::DiesOnce,
+                ability: 0,
+            }],
+        ),
+        triggers: &[event_trigger(TriggerCondition::DelayedTargetEvent)],
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF), (card("Lightning Bolt"), &WATCH)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let bear = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let old = g.object_ref(bear);
+    let spell = put(&mut g, p, "Lightning Bolt", Zone::Hand);
+    cast(&mut g, spell, Some(Target::Card(bear)));
+    drain(&mut g);
+    g.move_object(bear, Zone::Hand);
+    let choices = source_candidates(&mut g);
+    assert!(choices.contains(&old));
+    assert!(!choices.contains(&g.object_ref(bear)));
+}
+#[test]
+fn waiting_source_boundary_earthbend_remains_waiting_after_nontriggering_departure() {
+    let _scope =
+        fixture_rules::activate(&[(card("Opt"), &NWF), (card("Lightning Bolt"), &EARTH_WAIT)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let land = put(&mut g, p, "Forest", Zone::Battlefield);
+    let old = g.object_ref(land);
+    let spell = put(&mut g, p, "Lightning Bolt", Zone::Hand);
+    cast(&mut g, spell, Some(Target::Card(land)));
+    drain(&mut g);
+    assert!(g.is_creature(land));
+    g.move_object(land, Zone::Hand);
+    let choices = source_candidates(&mut g);
+    assert!(choices.contains(&old));
+    assert!(!choices.contains(&g.object_ref(land)));
+}
+#[test]
+fn waiting_source_boundary_earthbend_noncreature_land_does_not_die_but_its_delayed_ability_still_waits()
+ {
+    const LAND: CardRules = CardRules {
+        effect: Effect::Permanent,
+        activated: &[ability(&[Instruction::BecomeSourceLandUntilNextTurn])],
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[
+        (card("Opt"), &NWF),
+        (card("Lightning Bolt"), &EARTH_WAIT),
+        (card("Forest"), &LAND),
+    ]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let land = put(&mut g, p, "Forest", Zone::Battlefield);
+    let old = g.object_ref(land);
+    let spell = put(&mut g, p, "Lightning Bolt", Zone::Hand);
+    cast(&mut g, spell, Some(Target::Card(land)));
+    drain(&mut g);
+    act(
+        &mut g,
+        Action::AnnounceActivate {
+            card: land,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    pay(&mut g);
+    drain(&mut g);
+    assert!(!g.is_creature(land));
+    g.move_object(land, Zone::Graveyard);
+    assert!(
+        !g.state
+            .pending_triggers
+            .iter()
+            .any(|item| item.kind == StackKind::DelayedReturn),
+        "only a creature dies; this land did not"
+    );
+    let choices = source_candidates(&mut g);
+    assert!(choices.contains(&old));
+    assert!(!choices.contains(&g.object_ref(land)));
+}
+#[test]
+fn waiting_source_boundary_earthbend_returns_under_the_effect_controllers_control_even_for_an_opponents_land()
+ {
+    let _scope =
+        fixture_rules::activate(&[(card("Opt"), &NWF), (card("Lightning Bolt"), &EARTH_WAIT)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let land = put(&mut g, p.other(), "Forest", Zone::Battlefield);
+    g.record_control(g.object_ref(land), p, None);
+    let spell = put(&mut g, p, "Lightning Bolt", Zone::Hand);
+    cast(&mut g, spell, Some(Target::Card(land)));
+    drain(&mut g);
+    g.move_object(land, Zone::Graveyard);
+    g.give_priority();
+    drain(&mut g);
+    assert_eq!(
+        g.object_view(land).controller,
+        p,
+        "CR701.66a says under your control, not the physical owner's"
+    );
+    assert_eq!(g.object_view(land).owner, p.other());
+    assert!(g.object_view(land).tapped);
+}
+#[test]
+fn waiting_source_boundary_named_torch_damage_refers_to_both_old_damage_source_and_recipient() {
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let dragon = put(&mut g, p, "Shivan Dragon", Zone::Battlefield);
+    let recipient = g.object_ref(dragon);
+    let torch = put(&mut g, p, "Torch the Tower", Zone::Hand);
+    act(&mut g, Action::AnnounceCast { card: torch });
+    act(&mut g, Action::ChooseBargain { sacrifice: None });
+    act(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(dragon),
+        },
+    );
+    pay(&mut g);
+    let source = g.object_ref(torch);
+    drain(&mut g);
+    g.move_object(dragon, Zone::Hand);
+    let choices = source_candidates(&mut g);
+    assert!(choices.contains(&recipient));
+    assert!(choices.contains(&source));
+    assert!(!choices.contains(&g.object_ref(torch)));
+    assert!(!choices.contains(&g.object_ref(dragon)));
+}
+#[test]
+fn waiting_source_boundary_plain_prevention_and_target_only_exile_do_not_refer_to_their_creators() {
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF)]);
+    for name in ["Fleeting Flight", "Scorching Dragonfire"] {
+        let p = Player::P0;
+        let mut g = scenario(p);
+        let dragon = put(&mut g, p, "Shivan Dragon", Zone::Battlefield);
+        let recipient = g.object_ref(dragon);
+        let spell = put(&mut g, p, name, Zone::Hand);
+        cast(&mut g, spell, Some(Target::Card(dragon)));
+        let creator = g.object_ref(spell);
+        drain(&mut g);
+        g.move_object(dragon, Zone::Hand);
+        let choices = source_candidates(&mut g);
+        assert!(choices.contains(&recipient));
+        assert!(
+            !choices.contains(&creator),
+            "{name} creator is provenance only"
+        );
+        reject(&mut g, Action::ChooseDamageSource { source: creator });
+    }
+}
+
+#[test]
+fn waiting_source_boundary_mana_delayed_trigger_ends_when_the_actual_lot_is_spent_or_emptied() {
+    const SPEND: CardRules = CardRules {
+        activated: &[ActivatedAbility {
+            cost: ActivationCost {
+                generic: 1,
+                ..ActivationCost::ZERO
+            },
+            ..ability(&[])
+        }],
+        ..PLAIN
+    };
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF), (card("Bear Cub"), &SPEND)]);
+    for spend in [false, true] {
+        let p = Player::P0;
+        let mut g = scenario(p);
+        let safe = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let goggles = put(&mut g, p, "Pyromancer's Goggles", Zone::Battlefield);
+        let old = g.object_ref(goggles);
+        g.clear_step_mana(false, false);
+        let action = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| matches!(a,Action::AnnounceMana{card,..} if *card==goggles))
+            .unwrap();
+        act(&mut g, action);
+        pay(&mut g);
+        g.move_object(goggles, Zone::Graveyard);
+        g.state.players[p.index()].mana[1] = 3; // Ordinary blue, distinct from the actual tagged red lot.
+        let choices = source_candidates(&mut g);
+        assert!(choices.contains(&old));
+        let safe = g.object_ref(safe);
+        act(&mut g, Action::ChooseDamageSource { source: safe });
+        drain(&mut g);
+        if spend {
+            g.state.players[p.index()].mana[1] = 0;
+            act(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: safe.card,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            pay(&mut g);
+            drain(&mut g);
+        } else {
+            g.clear_step_mana(false, false);
+        }
+        assert!(g.mana_lot_views().is_empty());
+        g.state.players[p.index()].mana[1] = 3;
+        let choices = source_candidates(&mut g);
+        assert!(!choices.contains(&old));
+        reject(&mut g, Action::ChooseDamageSource { source: old });
+    }
+}
+#[test]
+fn waiting_source_boundary_prevention_and_death_replacement_references_expire_at_cleanup_without_rebinding()
+ {
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF)]);
+    for name in ["Fleeting Flight", "Scorching Dragonfire"] {
+        let p = Player::P0;
+        let mut g = scenario(p);
+        let safe = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+        let recipient = put(&mut g, p, "Shivan Dragon", Zone::Battlefield);
+        let old = g.object_ref(recipient);
+        let spell = put(&mut g, p, name, Zone::Hand);
+        cast(&mut g, spell, Some(Target::Card(recipient)));
+        drain(&mut g);
+        g.move_object(recipient, Zone::Hand);
+        g.move_object(recipient, Zone::Battlefield);
+        let current = g.object_ref(recipient);
+        assert_ne!(old, current);
+        let choices = source_candidates(&mut g);
+        assert!(choices.contains(&old));
+        assert!(choices.contains(&current));
+        let safe = g.object_ref(safe);
+        act(&mut g, Action::ChooseDamageSource { source: safe });
+        drain(&mut g);
+        // Neither old fixed-recipient effect follows the newly entered dragon.
+        g.move_object(recipient, Zone::Graveyard);
+        assert_eq!(g.object_view(recipient).zone, Zone::Graveyard);
+        g.finish_cleanup();
+        for player in &mut g.state.players {
+            player.mana = [8; 6];
+        }
+        g.state.step = Step::Main1;
+        g.give_priority();
+        let choices = source_candidates(&mut g);
+        assert!(!choices.contains(&old));
+        assert!(!choices.contains(&current));
+    }
+}
+#[test]
+fn waiting_source_boundary_paradigm_waiting_reference_is_owned_and_the_copy_keeps_its_existing_lifecycle()
+ {
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF)]);
+    let p = Player::P1;
+    let mut parent = scenario(p);
+    let bear = put(&mut parent, p, "Bear Cub", Zone::Graveyard);
+    let seminar = put(&mut parent, p, "Restoration Seminar", Zone::Hand);
+    cast(&mut parent, seminar, Some(Target::Card(bear)));
+    drain(&mut parent);
+    let exiled = parent.object_ref(seminar);
+    parent.move_object(seminar, Zone::Hand);
+    parent.move_object(bear, Zone::Graveyard);
+    let choices = source_candidates(&mut parent);
+    assert!(choices.contains(&exiled));
+    assert!(
+        !choices.contains(&parent.object_ref(bear)),
+        "the initiating target was cleared from the recurring delayed template"
+    );
+    let action = Action::ChooseDamageSource { source: exiled };
+    let saved = parent.snapshot();
+    let revision = parent.revision();
+    let index = parent
+        .legal_actions()
+        .iter()
+        .position(|a| *a == action)
+        .unwrap();
+    let mut raw = parent.clone();
+    let mut indexed = parent.clone();
+    drop(parent);
+    assert_eq!(raw.apply(p.other(), action.clone()), Err(Error::WrongActor));
+    assert_eq!(raw.snapshot(), saved);
+    raw.apply(p, action.clone()).unwrap();
+    indexed.apply_index(p, revision, index).unwrap();
+    for g in [&mut raw, &mut indexed] {
+        drain(g);
+        g.begin_step(Step::Main1);
+        wait(
+            g,
+            |g| matches!(g.state.pending, Pending::ResolutionCasts{player} if player==p),
+        );
+        assert!(
+            g.legal_actions()
+                .iter()
+                .any(|a| matches!(a, Action::CastExiledDuringResolution { .. })),
+            "the original card may leave exile without removing the recurring copy offer"
+        );
+        act(g, Action::FinishResolutionCasts);
+        drain(g);
+        assert_eq!(g.observe(p).paradigms.len(), 1);
+    }
+    assert_eq!(raw.snapshot(), indexed.snapshot());
+    indexed.restore(&saved).unwrap();
+    act(&mut indexed, action);
+    drain(&mut indexed);
+    indexed.begin_step(Step::Main1);
+    wait(
+        &mut indexed,
+        |g| matches!(g.state.pending,Pending::ResolutionCasts{player}if player==p),
+    );
+    act(&mut indexed, Action::FinishResolutionCasts);
+    drain(&mut indexed);
+    assert_eq!(raw.snapshot(), indexed.snapshot());
+}
+#[test]
+fn waiting_source_boundary_generous_plunderer_replacement_group_is_exact_and_decline_has_no_reflexive()
+ {
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF)]);
+    for accept in [false, true] {
+        let p = Player::P0;
+        let mut g = scenario(p);
+        let plunderer = put(&mut g, p, "Generous Plunderer", Zone::Battlefield);
+        let elspeth = put(&mut g, p, "Elspeth, Storm Slayer", Zone::Battlefield);
+        g.add_counter(elspeth, CounterKind::Loyalty, 5);
+        g.begin_step(Step::Upkeep);
+        wait(&mut g, |g| {
+            matches!(g.state.pending, Pending::EffectOptional { .. })
+        });
+        act(&mut g, Action::ChooseOptional { accept });
+        for _ in 0..64 {
+            if g.state.stack.iter().any(|item| {
+                item.source.is_some_and(|s| s.id == plunderer)
+                    && item.kind == StackKind::TriggeredAbility { ability: 1 }
+            }) || idle(&g)
+            {
+                break;
+            }
+            choose(&mut g, |a| {
+                matches!(
+                    a,
+                    Action::Pass | Action::PutTrigger { .. } | Action::ChooseReplacement { .. }
+                ) || matches!(a,Action::ChooseTarget{target:Target::Player(player)}if *player==p.other())
+            });
+        }
+        let created: Vec<_> = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(_, o)| o.zone == Zone::Battlefield && o.controller == p && o.is_token())
+            .map(|(id, _)| g.object_ref(id as CardId))
+            .collect();
+        assert_eq!(created.len(), if accept { 2 } else { 0 });
+        assert_eq!(
+            g.state
+                .stack
+                .iter()
+                .filter(|item| item.source.is_some_and(|s| s.id == plunderer)
+                    && item.kind == StackKind::TriggeredAbility { ability: 1 })
+                .count(),
+            usize::from(accept)
+        );
+        if accept {
+            let ids: Vec<_> = created.iter().map(|r| r.card).collect();
+            g.move_objects_raw(&ids, Zone::Graveyard);
+            let choices = source_candidates(&mut g);
+            for object in created {
+                assert!(choices.contains(&object));
+                assert!(!choices.contains(&g.object_ref(object.card)));
+            }
+        }
+    }
+}
+
+#[test]
+fn waiting_source_boundary_paradigm_never_fabricates_an_exile_reference_when_the_move_is_prevented()
+{
+    struct Reset;
+    impl Drop for Reset {
+        fn drop(&mut self) {
+            zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|v| v.set(None));
+        }
+    }
+    let _reset = Reset;
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let bear = put(&mut g, p, "Bear Cub", Zone::Graveyard);
+    let seminar = put(&mut g, p, "Restoration Seminar", Zone::Hand);
+    cast(&mut g, seminar, Some(Target::Card(bear)));
+    let packet = g.state.stack.last().unwrap().clone();
+    let original = g.object_ref(seminar);
+    zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|v| v.set(Some(original)));
+    g.resolve_paradigm(&packet, 0);
+    assert_eq!(g.object_ref(seminar), original);
+    assert_eq!(g.object_view(seminar).zone, Zone::Stack);
+    let waiting: Vec<_> = g.state.paradigm.as_ref().unwrap().packets().collect();
+    assert_eq!(waiting.len(), 1);
+    assert!(waiting[0].targets.is_empty());
+    assert!(
+        waiting[0].event_object.is_none(),
+        "no successful public result exists to refer to"
+    );
+    assert!(waiting[0].entering_object.is_none());
+    assert!(waiting[0].return_link.is_none());
 }

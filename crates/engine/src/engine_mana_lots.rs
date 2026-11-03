@@ -568,6 +568,18 @@ impl Game {
             }
         }
     }
+    pub(super) fn waiting_mana_copy_sources(&self) -> impl Iterator<Item = ObjectRef> + '_ {
+        self.state
+            .mana_lots
+            .iter()
+            .flat_map(|state| state.pools.iter())
+            .flat_map(|pool| pool.iter())
+            .filter(|lot| {
+                lot.quality.spell_bonus == ManaSpellBonusView::CopyRedInstantSorcery
+                    && lot.amounts.iter().any(|&amount| amount > 0)
+            })
+            .filter_map(|lot| lot.quality.copy_source.map(|source| source.object))
+    }
     pub(super) fn mana_lots(&self, actor: Player) -> &[Lot] {
         self.state
             .mana_lots

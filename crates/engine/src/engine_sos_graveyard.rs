@@ -60,11 +60,11 @@ impl Game {
                     == TriggerCondition::ControlledCreaturesOrGraveyardCardsExiled
                     && self.queue_trigger(source, index)
                 {
-                    self.state
-                        .pending_triggers
-                        .last_mut()
-                        .unwrap()
-                        .exiled_trigger_cards = Some(Box::new(cards.clone()));
+                    let packet = self.state.pending_triggers.last_mut().unwrap();
+                    for event in &qualifying {
+                        packet.refer_zone_event(event);
+                    }
+                    packet.exiled_trigger_cards = Some(Box::new(cards.clone()));
                 }
             }
         }
@@ -92,8 +92,17 @@ impl Game {
             for (index, ability) in source.card.triggers().iter().enumerate() {
                 if ability.condition.event()
                     == TriggerCondition::CardsExiledFromBattlefieldOrGraveyard
+                    && self.queue_trigger(source, index)
                 {
-                    self.queue_trigger(source, index);
+                    let packet = self.state.pending_triggers.last_mut().unwrap();
+                    for event in events.iter().filter(|event| {
+                        event.moved
+                            && event.was_card
+                            && event.destination == Zone::Exile
+                            && matches!(event.before.zone, Zone::Battlefield | Zone::Graveyard)
+                    }) {
+                        packet.refer_zone_event(event);
+                    }
                 }
             }
         }
@@ -168,20 +177,29 @@ impl Game {
             }
             for (index, ability) in source.card.triggers().iter().enumerate() {
                 match ability.condition.event() {
-                    TriggerCondition::CardsLeaveGraveyardKinds(kinds) => {
-                        if events.iter().any(|event| {
-                            event.moved
-                                && event.before.zone == Zone::Graveyard
-                                && event.destination != Zone::Graveyard
-                                && event.before.owner == source.controller
-                                && event.was_card
-                                && event.before.kinds & kinds != 0
-                        }) {
-                            self.queue_trigger(source, index);
+                    TriggerCondition::CardsLeaveGraveyardKinds(_)
+                    | TriggerCondition::CardsLeaveGraveyard => {
+                        let kinds = match ability.condition.event() {
+                            TriggerCondition::CardsLeaveGraveyardKinds(kinds) => kinds,
+                            _ => u16::MAX,
+                        };
+                        let matching: Vec<_> = events
+                            .iter()
+                            .filter(|event| {
+                                event.moved
+                                    && event.before.zone == Zone::Graveyard
+                                    && event.destination != Zone::Graveyard
+                                    && event.before.owner == source.controller
+                                    && event.was_card
+                                    && event.before.kinds & kinds != 0
+                            })
+                            .collect();
+                        if !matching.is_empty() && self.queue_trigger(source, index) {
+                            let packet = self.state.pending_triggers.last_mut().unwrap();
+                            for event in matching {
+                                packet.refer_zone_event(event);
+                            }
                         }
-                    }
-                    TriggerCondition::CardsLeaveGraveyard => {
-                        self.queue_trigger(source, index);
                     }
                     TriggerCondition::CreatureCardLeavesYourGraveyard => {
                         for event in events.iter().filter(|event| {
@@ -232,7 +250,27 @@ impl Game {
             let definition = grant.as_ref().map_or(source.card, |g| g.granting_card);
             for (index, ability) in definition.triggers().iter().enumerate() {
                 if ability.condition.event() == TriggerCondition::CreatureCardsEnterYourGraveyard {
-                    self.queue_trigger_from(&source, index, grant.map(Box::new));
+                    let matching: Vec<_> = events
+                        .iter()
+                        .filter(|e| {
+                            e.moved
+                                && e.destination == Zone::Graveyard
+                                && e.before.zone != Zone::Graveyard
+                                && e.before.owner == source.controller
+                                && e.was_card
+                                && self.object_ref(e.after.card) == e.after
+                                && self.state.objects[e.after.card as usize].zone == Zone::Graveyard
+                                && self.current_kinds(e.after.card) & 1 != 0
+                        })
+                        .map(|e| e.after)
+                        .collect();
+                    if self.queue_trigger_from(&source, index, grant.map(Box::new)) {
+                        self.state
+                            .pending_triggers
+                            .last_mut()
+                            .unwrap()
+                            .refer_objects(matching);
+                    }
                 }
             }
         }
@@ -261,7 +299,28 @@ impl Game {
             let definition = grant.as_ref().map_or(source.card, |g| g.granting_card);
             for (index, ability) in definition.triggers().iter().enumerate() {
                 if ability.condition.event() == TriggerCondition::PermanentCardsEnterYourGraveyard {
-                    self.queue_trigger_from(&source, index, grant.map(Box::new));
+                    let matching: Vec<_> = events
+                        .iter()
+                        .filter(|e| {
+                            e.moved
+                                && e.destination == Zone::Graveyard
+                                && e.before.zone != Zone::Graveyard
+                                && e.before.owner == source.controller
+                                && e.was_card
+                                && self.object_ref(e.after.card) == e.after
+                                && self.state.objects[e.after.card as usize].zone == Zone::Graveyard
+                                && self.current_kinds(e.after.card) & (1 | 2 | 16 | 32 | 64 | 256)
+                                    != 0
+                        })
+                        .map(|e| e.after)
+                        .collect();
+                    if self.queue_trigger_from(&source, index, grant.map(Box::new)) {
+                        self.state
+                            .pending_triggers
+                            .last_mut()
+                            .unwrap()
+                            .refer_objects(matching);
+                    }
                 }
             }
         }

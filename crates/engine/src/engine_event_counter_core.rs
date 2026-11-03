@@ -37,7 +37,13 @@ impl Game {
             for (index, ability) in source.card.triggers().iter().enumerate() {
                 if ability.condition.event() == TriggerCondition::AttachedDealtCombatDamage
                     && self.queue_trigger(&source, index)
-                    && ability.program.iter().any(|instruction| {
+                {
+                    self.state
+                        .pending_triggers
+                        .last_mut()
+                        .unwrap()
+                        .refer_objects([recipient]);
+                    if ability.program.iter().any(|instruction| {
                         matches!(
                             instruction,
                             Instruction::PutCountersScaled {
@@ -45,16 +51,16 @@ impl Game {
                                 ..
                             }
                         )
-                    })
-                {
-                    self.state
-                        .pending_triggers
-                        .last_mut()
-                        .unwrap()
-                        .creature_combat_event = Some(Box::new(CreatureCombatEventView {
-                        dealer: recipient,
-                        amount,
-                    }));
+                    }) {
+                        self.state
+                            .pending_triggers
+                            .last_mut()
+                            .unwrap()
+                            .creature_combat_event = Some(Box::new(CreatureCombatEventView {
+                            dealer: recipient,
+                            amount,
+                        }));
+                    }
                 }
             }
         }

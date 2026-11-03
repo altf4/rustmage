@@ -22,6 +22,7 @@ impl Game {
         packet.id = self.next_stack_id();
         packet.kind = StackKind::TriggeredAbility { ability };
         packet.targets.clear();
+        packet.clear_initiating_event_references();
         packet.crime_qualifying_target = false;
         packet.target_type_slots = None;
         packet.mode = None;

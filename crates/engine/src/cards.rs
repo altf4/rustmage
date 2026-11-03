@@ -4815,7 +4815,14 @@ pub enum TriggerCondition {
     ControlledCreatureFirstTapOwnTurn,
     AttachedBecomesUntapped,
     AttachedCreatureBecomesTapped,
+    /// Player event: the literal "Whenever you attack" clause.
     AttackDeclared {
+        minimum: u16,
+        power_min: Option<i32>,
+        guard: StepGuard,
+    },
+    /// Explicitly refers to the qualifying creatures in this declaration.
+    CreaturesAttackDeclared {
         minimum: u16,
         power_min: Option<i32>,
         guard: StepGuard,

@@ -532,13 +532,17 @@ impl Game {
                     _ => false,
                 };
                 if matched && self.queue_trigger_from(&source, index, grant.map(Box::new)) {
-                    self.state.pending_triggers.last_mut().unwrap().event_object =
-                        Some(Box::new(EventObjectView {
+                    self.state
+                        .pending_triggers
+                        .last_mut()
+                        .unwrap()
+                        .set_event_object(EventObjectView {
                             object,
                             facts: EventObjectFacts::Controller(controller),
+                            semantic_objects: None,
                             conniver_creature: None,
                             subtype_lki: None,
-                        }));
+                        });
                 }
             }
         }

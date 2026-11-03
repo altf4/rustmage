@@ -119,6 +119,14 @@ impl RoleState {
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum ReflexiveAction {
+    Sacrifice,
+    Discard,
+    Mill,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn nonhand_cast_prohibited(&self, player: Player) -> bool {
         self.state
@@ -127,12 +135,80 @@ impl Game {
             .is_some_and(|roles| roles.prohibit_opponent_nonhand_casts[player.other().index()])
     }
 
+    pub(super) fn capture_reflexive_zone_action(
+        &mut self,
+        events: &[ZoneChange],
+        action: ReflexiveAction,
+    ) {
+        let Some(resolving) = self.state.resolving.as_ref() else {
+            return;
+        };
+        let instruction = resolving.program.get(resolving.pc.saturating_sub(1));
+        let follows = resolving.program[resolving.pc..].iter().any(|i| {
+            matches!(
+                i,
+                Instruction::Reflexive { .. } | Instruction::ReflexiveSacrificedPower { .. }
+            )
+        });
+        let matches_action = match (action, instruction) {
+            (ReflexiveAction::Sacrifice, Some(Instruction::SacrificeSourceReflexive { .. })) => {
+                true
+            }
+            (ReflexiveAction::Mill, Some(Instruction::MillThenReflexive { .. })) => true,
+            (ReflexiveAction::Sacrifice, Some(Instruction::ChooseObjects { kind, .. })) => {
+                follows
+                    && matches!(
+                        kind.payment_kind(),
+                        EffectChoiceKind::Sacrifice
+                            | EffectChoiceKind::SacrificeGreatestManaValue
+                            | EffectChoiceKind::SacrificeOrDiscard { .. }
+                    )
+            }
+            (ReflexiveAction::Discard, Some(Instruction::ChooseObjects { kind, .. })) => {
+                follows
+                    && matches!(
+                        kind.payment_kind(),
+                        EffectChoiceKind::Discard | EffectChoiceKind::SacrificeOrDiscard { .. }
+                    )
+            }
+            _ => false,
+        };
+        if !matches_action {
+            return;
+        }
+        let mut objects = Vec::new();
+        for event in events {
+            if action != ReflexiveAction::Mill {
+                objects.push(event.before.reference);
+            }
+            if event.moved
+                && matches!(
+                    event.destination,
+                    Zone::Battlefield | Zone::Stack | Zone::Graveyard | Zone::Exile | Zone::Command
+                )
+            {
+                objects.push(event.after);
+            }
+        }
+        let item = &mut self.state.resolving.as_mut().unwrap().item;
+        item.set_reflexive_action_objects(objects);
+    }
     pub(super) fn queue_reflexive(
         &mut self,
         item: &SpellView,
         ability: u16,
         subject: Option<ObjectRef>,
     ) {
+        self.queue_reflexive_objects(item, ability, subject);
+    }
+    pub(super) fn queue_reflexive_objects(
+        &mut self,
+        item: &SpellView,
+        ability: u16,
+        subjects: impl IntoIterator<Item = ObjectRef>,
+    ) {
+        let mut subjects = subjects.into_iter();
+        let subject = subjects.next();
         let Some(source) = item.source else {
             return;
         };
@@ -148,6 +224,14 @@ impl Game {
             return;
         }
         let mut reflexive = item.clone();
+        // A reflexive clause is a new ability. The original event is not its
+        // condition; retain scalar/fact inputs but rebind its own action objects.
+        reflexive.clear_initiating_event_references();
+        reflexive.damage_event = item.damage_event; // amount / damaged-player scalar
+        reflexive.return_link = None;
+        reflexive.exiled_trigger_cards = None;
+        reflexive.exiled_symbol_cards = None;
+        reflexive.craft_materials = None;
         reflexive.id = self.next_stack_id();
         reflexive.kind = StackKind::TriggeredAbility { ability };
         reflexive.is_copy = false;
@@ -192,7 +276,8 @@ impl Game {
         reflexive.reflexive_subject = subject.map(|object| {
             Box::new(ReflexiveSubjectView {
                 object,
-                additional_objects: Vec::new(),
+                action: false,
+                additional_objects: subjects.collect(),
             })
         });
         if reflexive
@@ -200,12 +285,13 @@ impl Game {
             .is_some_and(|(_, program)| program.contains(&Instruction::EventObjectPowerDamage))
             && let Some(object) = subject
         {
-            reflexive.event_object = Some(Box::new(EventObjectView {
+            reflexive.set_event_object(EventObjectView {
                 object,
                 facts: EventObjectFacts::DamageActor(self.damage_source(object.card)),
+                semantic_objects: None,
                 conniver_creature: None,
                 subtype_lki: None,
-            }));
+            });
         }
         self.state.pending_triggers.push(reflexive);
     }

@@ -34,9 +34,14 @@ impl Game {
     pub(super) fn register_earthbend_return(&mut self, item: &SpellView) {
         let subjects = self.keyword_subjects(item, Subject::Targets);
         for id in subjects {
+            let subject = self.object_ref(id);
+            let mut packet = item.clone();
+            packet.targets.clear();
+            packet.clear_initiating_event_references();
+            packet.refer_objects([subject]);
             let row = EarthbendReturn {
-                subject: self.object_ref(id),
-                item: item.clone(),
+                subject,
+                item: packet,
             };
             self.state
                 .earthbend_returns
@@ -58,8 +63,12 @@ impl Game {
                 continue;
             };
             if event.before.zone != Zone::Battlefield
-                || !matches!(event.destination, Zone::Graveyard | Zone::Exile)
+                || !(event.destination == Zone::Exile
+                    || (event.destination == Zone::Graveyard && event.before.is_creature()))
             {
+                // Earthbend has no stated duration. A different zone movement
+                // cannot trigger it or erase its reference to the old land.
+                retained.push(row);
                 continue;
             }
             let mut item = row.item;
@@ -70,11 +79,12 @@ impl Game {
                 additional_returning: None,
                 object: event.after,
                 zone: event.destination,
-                controller: event.before.owner,
+                controller: item.controller,
                 counter: None,
                 tapped: true,
             }));
             item.targets.clear();
+            item.refer_zone_event(event);
             item.crime_qualifying_target = false;
             item.target_type_slots = None;
             item.mode = None;

@@ -30,6 +30,8 @@ impl CreatureComparisonFacts {
 pub enum EventObjectFacts {
     /// Immutable pre-death multiset; never refreshed from a live/new incarnation.
     DeathCounters(Counters),
+    /// Identity only; no private or unused event characteristics are captured.
+    Identity,
     DamageActor(DamageSource),
     /// Current or latest battlefield controller of an exact untargeted recipient.
     Controller(Player),
@@ -42,6 +44,14 @@ pub enum EventObjectFacts {
 pub struct EventObjectView {
     pub object: ObjectRef,
     pub facts: EventObjectFacts,
+    /// Exact objects semantically named by the event/condition/effect.  Sparse
+    /// and cold; never inferred from incidental frozen implementation fields.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[allow(
+        clippy::box_collection,
+        reason = "Cold semantic groups retain one pointer in the existing event packet"
+    )]
+    pub semantic_objects: Option<Box<Vec<DamageSourceRef>>>,
     /// Only saved on the actual departure of an untargeted conniver.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub conniver_creature: Option<bool>,
@@ -49,16 +59,140 @@ pub struct EventObjectView {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subtype_lki: Option<DamageFacts>,
 }
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl EventObjectView {
     pub(super) fn owned_bytes(&self) -> usize {
         std::mem::size_of::<Self>()
+            + self.semantic_objects.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<DamageSourceRef>>()
+                    + rows.len() * std::mem::size_of::<DamageSourceRef>()
+            })
             + match &self.facts {
                 EventObjectFacts::DeathCounters(counters) => counters.owned_bytes(),
                 _ => 0,
             }
     }
 }
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl SpellView {
+    pub(super) fn semantic_stack_reference(&self) -> Option<DamageSourceRef> {
+        if self.kind == StackKind::Spell {
+            self.source
+                .map(|source| DamageSourceRef::Object(source.object))
+        } else if let StackKind::ActivatedAbility { ability } = self.kind
+            && self
+                .source
+                .is_some_and(|source| source.card.activation(ability).mana_production().is_some())
+        {
+            None
+        } else {
+            Some(DamageSourceRef::StackObject {
+                stack_object: self.id,
+            })
+        }
+    }
+    /// A newly installed delayed clause is its own ability. Its source remains
+    /// exact, but the initiating packet's unrelated event/target data is not a
+    /// reference of that new clause. Callers rebind explicitly named subjects.
+    pub(super) fn clear_initiating_event_references(&mut self) {
+        self.event_object = None;
+        self.entering_object = None;
+        self.source_move = None;
+        self.reflexive_subject = None;
+        self.damage_event = None;
+        self.damage_received = None;
+        self.creature_combat_event = None;
+        self.cast_event = None;
+        self.cast_creature_subjects = None;
+        self.copy_event = None;
+        self.manifest_event = None;
+        self.crew = None;
+    }
+    pub(super) fn set_reflexive_action_objects(
+        &mut self,
+        objects: impl IntoIterator<Item = ObjectRef>,
+    ) {
+        // The parent still refers to its original event until it finishes.
+        if let Some(previous) = self.reflexive_subject.take() {
+            self.refer_objects(std::iter::once(previous.object).chain(previous.additional_objects));
+        }
+        let mut objects = objects.into_iter();
+        self.reflexive_subject = objects.next().map(|object| {
+            Box::new(ReflexiveSubjectView {
+                object,
+                action: true,
+                additional_objects: objects.collect(),
+            })
+        });
+    }
+    pub(super) fn reflexive_action_objects(&self) -> impl Iterator<Item = ObjectRef> + '_ {
+        self.reflexive_subject
+            .iter()
+            .filter(|row| row.action)
+            .flat_map(|row| {
+                std::iter::once(row.object).chain(row.additional_objects.iter().copied())
+            })
+    }
+    pub(super) fn refer_zone_event(&mut self, event: &ZoneChange) {
+        if event.destination != Zone::Battlefield
+            && matches!(
+                event.before.zone,
+                Zone::Battlefield | Zone::Stack | Zone::Graveyard | Zone::Exile | Zone::Command
+            )
+        {
+            self.refer_objects([event.before.reference]);
+        }
+        if matches!(
+            event.destination,
+            Zone::Battlefield | Zone::Stack | Zone::Graveyard | Zone::Exile | Zone::Command
+        ) {
+            self.refer_objects([event.after]);
+        }
+    }
+    pub(super) fn refer_objects(&mut self, objects: impl IntoIterator<Item = ObjectRef>) {
+        self.refer_sources(objects.into_iter().map(DamageSourceRef::Object));
+    }
+    pub(super) fn refer_sources(&mut self, objects: impl IntoIterator<Item = DamageSourceRef>) {
+        for object in objects {
+            if self.event_object.is_none() {
+                let primary = match object {
+                    DamageSourceRef::Object(object) => object,
+                    DamageSourceRef::StackObject { .. } => {
+                        self.source.expect("object-backed event").object
+                    }
+                };
+                self.event_object = Some(Box::new(EventObjectView {
+                    object: primary,
+                    facts: EventObjectFacts::Identity,
+                    semantic_objects: None,
+                    conniver_creature: None,
+                    subtype_lki: None,
+                }));
+            }
+            let event = self.event_object.as_mut().unwrap();
+            if object == DamageSourceRef::Object(event.object) {
+                continue;
+            }
+            let rows = event.semantic_objects.get_or_insert_with(Default::default);
+            if !rows.contains(&object) {
+                rows.push(object);
+            }
+        }
+    }
+    pub(super) fn set_event_object(&mut self, event: EventObjectView) {
+        if let Some(previous) = self.event_object.take() {
+            let primary = previous.object;
+            let objects = previous.semantic_objects;
+            self.event_object = Some(Box::new(event));
+            self.refer_objects([primary]);
+            self.refer_sources(objects.into_iter().flat_map(|rows| *rows));
+        } else {
+            self.event_object = Some(Box::new(event));
+        }
+    }
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn actor(view: &ObjectView) -> DamageSource {
     DamageSource {
@@ -166,6 +300,7 @@ impl Game {
                 }
                 e.facts = match e.facts {
                     EventObjectFacts::DeathCounters(_) => continue,
+                    EventObjectFacts::Identity => EventObjectFacts::Identity,
                     EventObjectFacts::DamageActor(_) => EventObjectFacts::DamageActor(*damage),
                     EventObjectFacts::Copiable(_) => EventObjectFacts::Copiable(*recipe),
                     EventObjectFacts::Controller(_) => {
@@ -198,13 +333,17 @@ impl Game {
                 }
             )
         }) {
-            self.state.pending_triggers.last_mut().unwrap().event_object =
-                Some(Box::new(EventObjectView {
+            self.state
+                .pending_triggers
+                .last_mut()
+                .unwrap()
+                .set_event_object(EventObjectView {
                     object: entering.reference,
                     facts: EventObjectFacts::Controller(entering.controller),
+                    semantic_objects: None,
                     conniver_creature: None,
                     subtype_lki: None,
-                }));
+                });
         }
     }
     /// Opt in to subtype LKI only for programs that examine their event object.
@@ -228,12 +367,13 @@ impl Game {
             );
             event.subtype_lki = Some(facts);
         } else {
-            packet.event_object = Some(Box::new(EventObjectView {
+            packet.set_event_object(EventObjectView {
                 object: entering.reference,
                 facts: EventObjectFacts::DamageActor(actor(entering)),
+                semantic_objects: None,
                 conniver_creature: None,
                 subtype_lki: Some(facts),
-            }));
+            });
         }
     }
     pub(super) fn event_object_has_subtype(&self, item: &SpellView, subtype: &str) -> bool {
@@ -256,14 +396,15 @@ impl Game {
             equipment_count: None,
             creature_comparison: Some(CreatureComparisonFacts::from_view(source)),
         }));
-        p.event_object = Some(Box::new(EventObjectView {
+        p.set_event_object(EventObjectView {
             object: entering.reference,
             facts: EventObjectFacts::CreatureComparison(CreatureComparisonFacts::from_view(
                 entering,
             )),
+            semantic_objects: None,
             conniver_creature: None,
             subtype_lki: None,
-        }));
+        });
     }
     fn comparison_facts(
         &self,
@@ -328,13 +469,17 @@ impl Game {
                     && self.queue_trigger(&source, index)
                 {
                     let facts = EventObjectFacts::DamageActor(self.damage_source(recipient.card));
-                    self.state.pending_triggers.last_mut().unwrap().event_object =
-                        Some(Box::new(EventObjectView {
+                    self.state
+                        .pending_triggers
+                        .last_mut()
+                        .unwrap()
+                        .set_event_object(EventObjectView {
                             object: recipient,
                             facts,
+                            semantic_objects: None,
                             conniver_creature: None,
                             subtype_lki: None,
-                        }));
+                        });
                 }
             }
         }

@@ -33,7 +33,13 @@ impl Game {
             }
         }
     }
-    pub(super) fn creature_ability_activated(&mut self, actor: Player, creature: bool) {
+    pub(super) fn creature_ability_activated(
+        &mut self,
+        actor: Player,
+        creature: bool,
+        object: ObjectRef,
+        stack: Option<DamageSourceRef>,
+    ) {
         if !creature
             || self
                 .state
@@ -55,8 +61,12 @@ impl Game {
             .collect();
         for source in observers {
             for (index, ability) in source.card.triggers().iter().enumerate() {
-                if ability.condition.event() == TriggerCondition::CreatureAbilityActivated {
-                    self.queue_trigger(&source, index);
+                if ability.condition.event() == TriggerCondition::CreatureAbilityActivated
+                    && self.queue_trigger(&source, index)
+                {
+                    let packet = self.state.pending_triggers.last_mut().unwrap();
+                    packet.refer_objects([object]);
+                    packet.refer_sources(stack);
                 }
             }
         }
@@ -149,7 +159,12 @@ impl Game {
             identity.card.activation(ability_index).source_zone() == Zone::Battlefield
                 && identity.facts.is_creature()
         };
-        self.creature_ability_activated(item.controller, creature);
+        self.creature_ability_activated(
+            item.controller,
+            creature,
+            identity.object,
+            item.semantic_stack_reference(),
+        );
         if identity
             .card
             .activation(ability_index)
@@ -186,13 +201,14 @@ impl Game {
                         }
                         _ => false,
                     };
-                    if triggered
-                        && self.queue_trigger(&source, index)
-                        && ability.condition.event()
+                    if triggered && self.queue_trigger(&source, index) {
+                        let packet = self.state.pending_triggers.last_mut().unwrap();
+                        packet.refer_sources(item.semantic_stack_reference());
+                        if ability.condition.event()
                             == TriggerCondition::OpponentLoyaltyAbilityActivated
-                    {
-                        self.state.pending_triggers.last_mut().unwrap().event_player =
-                            Some(item.controller);
+                        {
+                            packet.event_player = Some(item.controller);
+                        }
                     }
                 }
             }

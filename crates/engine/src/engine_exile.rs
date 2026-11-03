@@ -470,22 +470,30 @@ impl Game {
             })
         };
         // One trigger per observing source for the entire simultaneous entry event.
-        let mut token_entered = [false; 2];
+        let mut token_entered = [Vec::new(), Vec::new()];
         for event in events {
             if event.moved && event.destination == Zone::Battlefield {
                 let entered = self.object_view(event.after.card);
                 if entered.is_token() && entered.kinds & entry_suppression == 0 {
-                    token_entered[entered.controller.index()] = true;
+                    token_entered[entered.controller.index()].push(entered.reference);
                 }
             }
         }
         for source in &sources {
-            if source.zone != Zone::Battlefield || !token_entered[source.controller.index()] {
+            if source.zone != Zone::Battlefield
+                || token_entered[source.controller.index()].is_empty()
+            {
                 continue;
             }
             for (index, ability) in source.card.triggers().iter().enumerate() {
-                if ability.condition.event() == TriggerCondition::TokensEnterYou {
-                    self.queue_trigger(source, index);
+                if ability.condition.event() == TriggerCondition::TokensEnterYou
+                    && self.queue_trigger(source, index)
+                {
+                    self.state
+                        .pending_triggers
+                        .last_mut()
+                        .unwrap()
+                        .refer_objects(token_entered[source.controller.index()].iter().copied());
                 }
             }
         }

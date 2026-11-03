@@ -110,8 +110,15 @@ impl Game {
                             }
                             _ => false,
                         };
-                        if matches_event {
-                            self.queue_trigger(&source, index);
+                        if matches_event && self.queue_trigger(&source, index) {
+                            let packet = self.state.pending_triggers.last_mut().unwrap();
+                            packet.refer_objects([explorer.object]);
+                            if matches!(
+                                ability.condition.event(),
+                                TriggerCondition::CreatureExploresCardYou { .. }
+                            ) {
+                                packet.refer_objects(revealed.map(|card| card.object));
+                            }
                         }
                     }
                 }

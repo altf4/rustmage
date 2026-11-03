@@ -14,26 +14,34 @@ impl Game {
                 else {
                     continue;
                 };
-                let event = events.iter().find(|event| {
-                    event.moved
-                        && event.before.zone == Zone::Battlefield
-                        && event.destination == Zone::Graveyard
-                        && event.before.is_creature()
-                        && filter.matches_characteristics(
-                            event.before.card,
-                            event.before.is_token(),
-                            event.before.kinds,
-                            event.before.granted_subtypes,
-                            event.before.controller == source.controller,
-                            event.before.reference == source.reference,
-                            event.before.attacking,
-                        )
-                        && event.before.keywords.contains(filter.keyword)
-                });
-                if let Some(event) = event {
+                let matching: Vec<_> = events
+                    .iter()
+                    .filter(|event| {
+                        event.moved
+                            && event.before.zone == Zone::Battlefield
+                            && event.destination == Zone::Graveyard
+                            && event.before.is_creature()
+                            && filter.matches_characteristics(
+                                event.before.card,
+                                event.before.is_token(),
+                                event.before.kinds,
+                                event.before.granted_subtypes,
+                                event.before.controller == source.controller,
+                                event.before.reference == source.reference,
+                                event.before.attacking,
+                            )
+                            && event.before.keywords.contains(filter.keyword)
+                    })
+                    .collect();
+                if let Some(event) = matching.first() {
                     // This queues one annotated original. Its frozen multiplicity
                     // witness expands only after all event annotations are complete.
-                    self.queue_zone_trigger_from(source, index, event, None);
+                    if self.queue_zone_trigger_from(source, index, event, None) {
+                        let packet = self.state.pending_triggers.last_mut().unwrap();
+                        for event in matching {
+                            packet.refer_zone_event(event);
+                        }
+                    }
                 }
             }
         }

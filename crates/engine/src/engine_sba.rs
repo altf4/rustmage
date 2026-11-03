@@ -526,13 +526,13 @@ impl Game {
             .filter(|&&id| self.saga_sacrifice_required(id))
             .map(|&id| (self.state.objects[id as usize].controller, id))
             .collect();
-        self.food_sacrifice_triggers(&sacrifices, &sources);
         let mut events = self.move_objects_raw(&batch.deaths, Zone::Graveyard);
         for event in &mut events {
             if let Some(&(actor, _)) = sacrifices.iter().find(|&&(_, id)| id == event.before.id) {
                 event.sacrificed_by = Some(actor);
             }
         }
+        self.food_sacrifice_triggers(&events, &sources);
         for source in batch.detached {
             if self.object_ref(source.card) == source {
                 self.state.objects[source.card as usize].attached_to = None;

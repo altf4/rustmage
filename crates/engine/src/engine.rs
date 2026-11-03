@@ -553,7 +553,7 @@ pub use source_linked_effects::{SourceLinkedEffectKind, SourceLinkedEffectView};
 #[doc(hidden)]
 #[path = "engine_source_prevention.rs"]
 pub mod source_prevention;
-pub use source_prevention::{ChosenSourceShieldView, DamageSourceChoiceView};
+pub use source_prevention::{ChosenSourceShieldView, DamageSourceChoiceView, DamageSourceRef};
 #[doc(hidden)]
 #[path = "engine_ability_world.rs"]
 pub mod ability_world;
@@ -777,6 +777,7 @@ define_actions! {
     ChooseDamagePrevention { source: ObjectRef, prevention: DamagePreventionKind },
     ChooseDamageEvent { index: u32 },
     ChooseDamageSource { source: ObjectRef },
+    ChooseStackDamageSource { id: u64 },
     ChooseCreatedToken { object: ObjectRef },
     ChooseEndure { put_counters: bool },
     BeginConvoke,
@@ -1450,6 +1451,9 @@ pub struct TriggerSourceMoveView {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ReflexiveSubjectView {
     pub object: ObjectRef,
+    /// A newly performed action, rather than the originating trigger's event.
+    #[serde(skip_serializing_if = "is_false")]
+    pub action: bool,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub additional_objects: Vec<ObjectRef>,
 }
@@ -4665,6 +4669,11 @@ impl Game {
                         return true;
                     }
                 }
+                for &id in self.damage_stack_source_choices() {
+                    if emit(Action::ChooseStackDamageSource { id }) {
+                        return true;
+                    }
+                }
             }
             Pending::LinkedExile { .. } => {
                 let Some(source) = s
@@ -6632,7 +6641,11 @@ impl Game {
                 self.choose_damage_prevention(source, prevention)
             }
             Action::ChooseDamageEvent { index } => self.choose_damage_event(index),
-            Action::ChooseDamageSource { source } => self.finish_source_prevention_choice(source),
+            Action::ChooseDamageSource { source } => {
+                self.finish_source_prevention_choice(DamageSourceRef::Object(source))
+            }
+            Action::ChooseStackDamageSource { id } => self
+                .finish_source_prevention_choice(DamageSourceRef::StackObject { stack_object: id }),
             Action::ChooseCreatedToken { object } => self.choose_created_token(object),
             Action::ChooseLibraryDestination {
                 object,
@@ -6894,12 +6907,13 @@ impl Game {
                 let bonus = self.mountain_tap_bonus(actor, card);
                 self.tap_objects(&[card]);
                 let creature = self.is_creature(card);
+                let activated_object = self.object_ref(card);
                 if grant.sacrifice {
                     self.sacrifice_batch(&[(actor, card)]);
                 }
                 self.add_quality_mana(actor, production, quality);
                 self.produce_mountain_tap_bonus(actor, bonus);
-                self.creature_ability_activated(actor, creature);
+                self.creature_ability_activated(actor, creature, activated_object, None);
                 self.state.passes = 0;
             }
             Action::TapMana { card } => {
@@ -6920,7 +6934,12 @@ impl Game {
                 }
                 self.produce_mountain_tap_bonus(actor, bonus);
                 if self.state.activation_observers.is_some() {
-                    self.creature_ability_activated(actor, self.is_creature(card));
+                    self.creature_ability_activated(
+                        actor,
+                        self.is_creature(card),
+                        self.object_ref(card),
+                        None,
+                    );
                 }
                 self.state.passes = 0;
             }
@@ -8228,7 +8247,7 @@ impl Game {
             Some(id) => {
                 let event = self.move_object(id, Zone::Hand);
                 if event.moved && event.destination == Zone::Hand {
-                    self.card_drawn(p);
+                    self.card_drawn(p, event.after);
                     self.offer_miracle_reveal(p, id);
                     true
                 } else {
@@ -8485,12 +8504,6 @@ impl Game {
         let plans = self.plan_atomic_zone_cost(&moves)?;
         self.capture_event_object_facts(plans.iter().map(|(view, _)| view));
         self.capture_source_quantities(plans.iter().map(|(view, _)| view));
-        let actual: Vec<_> = sacrifices
-            .iter()
-            .zip(&plans)
-            .filter_map(|(&sacrifice, (_, plan))| (!plan.prevented).then_some(sacrifice))
-            .collect();
-        self.food_sacrifice_triggers(&actual, &sources);
         let graveyard_observers = self.freeze_exile_batch_observers();
         let mut events: Vec<_> = plans
             .into_iter()
@@ -8513,6 +8526,8 @@ impl Game {
                 event.sacrificed_by = Some(actor);
             }
         }
+        self.capture_reflexive_zone_action(&events, roles::ReflexiveAction::Sacrifice);
+        self.food_sacrifice_triggers(&events, &sources);
         self.refresh_controllers();
         self.record_own_sacrifices(&events);
         let paid = PaidAdditionalCostView {
@@ -9069,7 +9084,6 @@ impl Game {
         }
         if before.zone == Zone::Battlefield {
             self.capture_stat_subject_departure(&before);
-            self.forget_death_exile_replacements(before.reference);
             self.forget_vehicle_animation(before.reference);
             self.forget_exertions(before.reference);
             self.state.saddled.retain(|r| *r != before.reference);

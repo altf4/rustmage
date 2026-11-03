@@ -3096,7 +3096,11 @@ impl Game {
                                     &batch.completion
                                     && !created.is_empty()
                                 {
-                                    self.queue_reflexive(item, *ability, None);
+                                    self.queue_reflexive_objects(
+                                        item,
+                                        *ability,
+                                        created.iter().copied(),
+                                    );
                                 }
                                 if let TokenCompletion::ReflexiveCreated { item, ability } =
                                     &batch.completion
@@ -3119,7 +3123,14 @@ impl Game {
                                                 == Some(c.recipient)
                                     })
                                 {
-                                    self.queue_reflexive(&c.item, c.ability, Some(c.recipient));
+                                    let subjects: Vec<_> = std::iter::once(c.recipient)
+                                        .chain(created.iter().copied().filter(|r| {
+                                            self.object_view(r.card).card == c.token
+                                                && self.object_view(r.card).attached_to
+                                                    == Some(c.recipient)
+                                        }))
+                                        .collect();
+                                    self.queue_reflexive_objects(&c.item, c.ability, subjects);
                                 }
                                 if let TokenCompletion::AttachCreatedTo(recipient) =
                                     batch.completion

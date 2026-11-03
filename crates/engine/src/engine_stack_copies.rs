@@ -227,6 +227,7 @@ impl Game {
         delayed.cast = None;
         delayed.is_copy = false;
         delayed.targets.clear();
+        delayed.clear_initiating_event_references();
         delayed.crime_qualifying_target = false;
         delayed.target_type_slots = None;
         self.state

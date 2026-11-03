@@ -415,8 +415,15 @@ impl Game {
             }
             let source = self.object_view(id);
             for (index, ability) in source.card.triggers().iter().enumerate() {
-                if ability.condition.event() == TriggerCondition::AttachedBecomesUntapped {
-                    self.queue_trigger(&source, index);
+                if ability.condition.event() == TriggerCondition::AttachedBecomesUntapped
+                    && let Some(recipient) = source.attached_to
+                    && self.queue_trigger(&source, index)
+                {
+                    self.state
+                        .pending_triggers
+                        .last_mut()
+                        .unwrap()
+                        .refer_objects([recipient]);
                 }
             }
         }

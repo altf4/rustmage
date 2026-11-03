@@ -166,9 +166,9 @@ impl Game {
             state
                 .characteristic_sources
                 .retain(|&source| source != reference);
-            state
-                .keyword_effects
-                .retain(|row| row.recipient != reference);
+            state.keyword_effects.retain(|row| {
+                row.recipient != reference || row.rules.contains(Keywords::PREVENT_COMBAT_TO)
+            });
         }
     }
     /// A cast-spending effect follows only this spell's actual stack-to-battlefield move.

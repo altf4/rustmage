@@ -454,29 +454,42 @@ impl Game {
                                 && subtypes
                                     .iter()
                                     .any(|subtype| self.has_subtype(object.card, subtype))
+                                && self.queue_trigger(&source, index)
                             {
-                                self.queue_trigger(&source, index);
+                                self.state
+                                    .pending_triggers
+                                    .last_mut()
+                                    .unwrap()
+                                    .refer_objects([object]);
                             }
                         }
                     }
                     TriggerCondition::CounterBatchPlacedByYou { kind, filter } => {
-                        let qualifies = placements.clone().any(|(object, amount, placed_by)| {
-                            amount.get(kind) > 0
-                                && placed_by == source.controller
-                                && self.on_battlefield(object.card)
-                                && self.object_ref(object.card) == object
-                                && Self::count_object_matches(
-                                    filter,
-                                    source.reference,
-                                    source.controller,
-                                    object.card,
-                                    &self.state.objects[object.card as usize],
-                                    &|id| self.granted_subtypes(id),
-                                    &|id, o| self.object_kinds(id, o),
-                                )
-                        });
-                        if qualifies {
-                            self.queue_trigger(&source, index);
+                        let matching: Vec<_> = placements
+                            .clone()
+                            .filter(|&(object, amount, placed_by)| {
+                                amount.get(kind) > 0
+                                    && placed_by == source.controller
+                                    && self.on_battlefield(object.card)
+                                    && self.object_ref(object.card) == object
+                                    && Self::count_object_matches(
+                                        filter,
+                                        source.reference,
+                                        source.controller,
+                                        object.card,
+                                        &self.state.objects[object.card as usize],
+                                        &|id| self.granted_subtypes(id),
+                                        &|id, o| self.object_kinds(id, o),
+                                    )
+                            })
+                            .map(|(object, _, _)| object)
+                            .collect();
+                        if !matching.is_empty() && self.queue_trigger(&source, index) {
+                            self.state
+                                .pending_triggers
+                                .last_mut()
+                                .unwrap()
+                                .refer_objects(matching);
                         }
                     }
                     _ => {}
@@ -565,8 +578,12 @@ impl Game {
                         }
                         _ => false,
                     };
-                    if qualifies {
-                        self.queue_trigger(&source, index);
+                    if qualifies && self.queue_trigger(&source, index) {
+                        self.state
+                            .pending_triggers
+                            .last_mut()
+                            .unwrap()
+                            .refer_objects([object]);
                     }
                 }
             }
@@ -858,15 +875,19 @@ impl Game {
                         if ability.program.iter().any(|instruction| {
                             matches!(instruction, Instruction::PutEventCountersOnTargets)
                         }) {
-                            self.state.pending_triggers.last_mut().unwrap().event_object =
-                                Some(Box::new(EventObjectView {
+                            self.state
+                                .pending_triggers
+                                .last_mut()
+                                .unwrap()
+                                .set_event_object(EventObjectView {
                                     object: event.before.reference,
                                     facts: EventObjectFacts::DeathCounters(
                                         event.before.counters.clone(),
                                     ),
+                                    semantic_objects: None,
                                     conniver_creature: None,
                                     subtype_lki: None,
-                                }));
+                                });
                         }
                         if matches!(ability.condition.event(), TriggerCondition::ReturnDeath(_)) {
                             self.capture_return_death(event);
@@ -1029,6 +1050,7 @@ impl Game {
                     | TriggerCondition::CounterBatchPlacedByYou { .. }
                     | TriggerCondition::CounterPlacedByYouOnControlledSubtypes { .. }
                     | TriggerCondition::AttackDeclared { .. }
+                    | TriggerCondition::CreaturesAttackDeclared { .. }
                     | TriggerCondition::FirstAttackWithTotalPowerAtLeast(_)
                     | TriggerCondition::AttackPlayer(_)
                     | TriggerCondition::SelfAttacks
@@ -1241,6 +1263,25 @@ impl Game {
             let mut captured = **context;
             captured.entry = Some(event.after);
             self.state.pending_triggers.last_mut().unwrap().gift = Some(Box::new(captured));
+        }
+        // The event condition names its matched object independently of any
+        // effect-specific payload. Public zone moves may also find the new
+        // object (CR400.7e); hidden pre-event hand/library identities are not
+        // retained merely because they occurred in the implementation event.
+        let packet = self.state.pending_triggers.last_mut().unwrap();
+        if event.destination != Zone::Battlefield
+            && matches!(
+                event.before.zone,
+                Zone::Battlefield | Zone::Stack | Zone::Graveyard | Zone::Exile | Zone::Command
+            )
+        {
+            packet.refer_objects([event.before.reference]);
+        }
+        if matches!(
+            event.destination,
+            Zone::Battlefield | Zone::Stack | Zone::Graveyard | Zone::Exile | Zone::Command
+        ) {
+            packet.refer_objects([event.after]);
         }
         // Only the movement which actually triggered this ability may bind its
         // new source. Unrelated simultaneous observer deaths do not qualify.
@@ -1489,6 +1530,13 @@ impl Game {
             targets: Vec::new(),
             mode: None,
         });
+        if source_prevention::condition_refers_to_attachment(condition) {
+            self.state
+                .pending_triggers
+                .last_mut()
+                .unwrap()
+                .refer_objects(source.attached_to);
+        }
         true
     }
 
@@ -1729,6 +1777,68 @@ impl Game {
         }
     }
 
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "Semantic cast references use the same exact event and observer context as qualification"
+    )]
+    pub(super) fn cast_semantic_targets(
+        &self,
+        owner: Option<Player>,
+        filter: CastFilter,
+        card: Card,
+        mana_value: u64,
+        caster: Player,
+        source: &ObjectView,
+        targets: &[BoundTarget],
+    ) -> Vec<ObjectRef> {
+        if !self.cast_filter_matches_value(owner, filter, card, mana_value, caster, source, targets)
+        {
+            return Vec::new();
+        }
+        let mut objects = Vec::new();
+        match filter {
+            CastFilter::Targeted { filter: inner, .. } => {
+                objects.extend(self.cast_semantic_targets(
+                    owner, *inner, card, mana_value, caster, source, targets,
+                ));
+                for bound in targets {
+                    if self.cast_filter_matches_value(
+                        owner,
+                        filter,
+                        card,
+                        mana_value,
+                        caster,
+                        source,
+                        std::slice::from_ref(bound),
+                    ) && let Some(object) = bound.object
+                    {
+                        objects.push(object);
+                    }
+                }
+            }
+            CastFilter::CasterOffTurn { filter }
+            | CastFilter::Colors { filter, .. }
+            | CastFilter::ManaSymbols { filter, .. }
+            | CastFilter::ManaValueMaximum { filter, .. }
+            | CastFilter::ManaValueMinimum { filter, .. } => {
+                objects.extend(self.cast_semantic_targets(
+                    owner, *filter, card, mana_value, caster, source, targets,
+                ));
+            }
+            CastFilter::AnyOf(filters) => {
+                for &filter in filters {
+                    objects.extend(self.cast_semantic_targets(
+                        owner, filter, card, mana_value, caster, source, targets,
+                    ));
+                }
+            }
+            _ => {}
+        }
+        objects.sort_unstable();
+        objects.dedup();
+        objects
+    }
+
     pub(super) fn record_cast(&mut self, caster: Player, card: Card, stack: Option<usize>) {
         // Every committed path classifies the selected spell face, including
         // manual direct-payment insertion. The physical front may differ.
@@ -1846,6 +1956,22 @@ impl Game {
                         && wanted.is_none_or(|wanted| wanted == ordinal)
                         && self.queue_trigger_from(&source, index, grant.map(Box::new))
                     {
+                        if let Some(event) = cast_event.as_ref() {
+                            let targets = stack
+                                .map(|i| self.state.stack[i].targets.as_slice())
+                                .unwrap_or(&[]);
+                            let objects = self.cast_semantic_targets(
+                                spell_owner,
+                                filter,
+                                card,
+                                event.mana_value,
+                                caster,
+                                &source,
+                                targets,
+                            );
+                            let packet = self.state.pending_triggers.last_mut().unwrap();
+                            packet.refer_objects(std::iter::once(event.object).chain(objects));
+                        }
                         // A cast trigger owns the triggering spell's chosen X even after that
                         // spell is countered or leaves the stack. ChosenX reads this packet.
                         let chosen_x = stack.and_then(|i| self.state.stack[i].x);
@@ -1906,7 +2032,7 @@ impl Game {
             self.queue_turn_callbacks(
                 crate::cards::TurnCallbackEvent::NoncreatureCast,
                 caster,
-                None,
+                cast_event.as_ref().map(|event| event.object),
             );
         }
         self.temporary_cast_triggers(caster, card, stack);
@@ -1974,7 +2100,23 @@ impl Game {
             for (index, ability) in source.card.triggers().iter().enumerate() {
                 match ability.condition.event() {
                     TriggerCondition::ControlledCreaturesBecomeTapped => {
-                        self.queue_trigger(&source, index);
+                        let matching: Vec<_> = changed
+                            .iter()
+                            .copied()
+                            .filter(|&id| {
+                                let object = &self.state.objects[id as usize];
+                                object.controller == source.controller
+                                    && self.object_kinds(id, object) & 1 != 0
+                            })
+                            .map(|id| self.object_ref(id))
+                            .collect();
+                        if self.queue_trigger(&source, index) {
+                            self.state
+                                .pending_triggers
+                                .last_mut()
+                                .unwrap()
+                                .refer_objects(matching);
+                        }
                     }
                     TriggerCondition::ControlledCreatureFirstTapOwnTurn
                         if self.state.active == source.controller =>
@@ -2076,6 +2218,7 @@ impl Game {
                         trigger.id = self.next_stack_id();
                         trigger.reflexive_subject = Some(Box::new(ReflexiveSubjectView {
                             object: self.object_ref(attack.card),
+                            action: false,
                             additional_objects: Vec::new(),
                         }));
                         self.state.pending_triggers.push(trigger);
@@ -2091,6 +2234,7 @@ impl Game {
                     packet.id = self.next_stack_id();
                     packet.reflexive_subject = Some(Box::new(ReflexiveSubjectView {
                         object: first,
+                        action: false,
                         additional_objects: rest.to_vec(),
                     }));
                     self.state.pending_triggers.push(packet);
@@ -2131,8 +2275,15 @@ impl Game {
                         .previous_maximum
                         .is_none_or(|prior| prior < i128::from(minimum))
                     && power_event.total >= i128::from(minimum)
+                    && self.queue_attack_trigger(&source, index)
                 {
-                    self.queue_attack_trigger(&source, index);
+                    let objects: Vec<_> =
+                        declared.iter().map(|a| self.object_ref(a.card)).collect();
+                    self.state
+                        .pending_triggers
+                        .last_mut()
+                        .unwrap()
+                        .refer_objects(objects);
                 }
                 if ability.condition.event() == TriggerCondition::ControlledCreatureAttacksAlone
                     && let Some(attacker) = alone
@@ -2152,13 +2303,17 @@ impl Game {
                         let facts =
                             EventObjectFacts::DamageActor(self.damage_source(attacker.card));
                         if self.queue_attack_trigger(&source, index) {
-                            self.state.pending_triggers.last_mut().unwrap().event_object =
-                                Some(Box::new(EventObjectView {
+                            self.state
+                                .pending_triggers
+                                .last_mut()
+                                .unwrap()
+                                .set_event_object(EventObjectView {
                                     object,
                                     facts,
+                                    semantic_objects: None,
                                     conniver_creature: None,
                                     subtype_lki: None,
-                                }));
+                                });
                         }
                     }
                 }
@@ -2191,35 +2346,45 @@ impl Game {
                     }
                 }
                 if let TriggerCondition::CreatureAttacksYou { colors } = ability.condition.event() {
-                    let count = self
-                        .state
-                        .attackers
-                        .iter()
-                        .filter(|attacker| {
-                            self.state.objects[attacker.card as usize].controller == actor
-                                && ability_world::CharacteristicWorld::colors(self, attacker.card)
-                                    & colors
-                                    != 0
-                        })
-                        .count();
-                    for _ in 0..count {
-                        self.queue_attack_trigger(&source, index);
+                    for attacker in declared {
+                        if self.state.objects[attacker.card as usize].controller == actor
+                            && ability_world::CharacteristicWorld::colors(self, attacker.card)
+                                & colors
+                                != 0
+                            && self.queue_attack_trigger(&source, index)
+                        {
+                            let object = self.object_ref(attacker.card);
+                            self.state
+                                .pending_triggers
+                                .last_mut()
+                                .unwrap()
+                                .refer_objects([object]);
+                        }
                     }
                 }
                 if let TriggerCondition::AttackPlayer(filter) = ability.condition.event() {
                     // Qualification belongs to this declaration, not all live attackers.
                     // A creature put onto the battlefield attacking did not attack.
                     for player in [Player::P0, Player::P1] {
-                        if declared.iter().any(|attack| {
-                            attack.defender == Some(CombatDefender::Player(player))
-                                && self.creature_matches(
-                                    filter,
-                                    actor,
-                                    source.reference,
-                                    attack.card,
-                                )
-                        }) {
-                            self.queue_attack_trigger(&source, index);
+                        let matching: Vec<_> = declared
+                            .iter()
+                            .filter(|attack| {
+                                attack.defender == Some(CombatDefender::Player(player))
+                                    && self.creature_matches(
+                                        filter,
+                                        actor,
+                                        source.reference,
+                                        attack.card,
+                                    )
+                            })
+                            .map(|attack| self.object_ref(attack.card))
+                            .collect();
+                        if !matching.is_empty() && self.queue_attack_trigger(&source, index) {
+                            self.state
+                                .pending_triggers
+                                .last_mut()
+                                .unwrap()
+                                .refer_objects(matching);
                         }
                     }
                 }
@@ -2227,26 +2392,45 @@ impl Game {
                     minimum,
                     power_min,
                     guard,
+                }
+                | TriggerCondition::CreaturesAttackDeclared {
+                    minimum,
+                    power_min,
+                    guard,
                 } = ability.condition.event()
                 {
-                    let count = self
-                        .state
-                        .attackers
-                        .iter()
-                        .filter(|a| {
-                            let o = &self.state.objects[a.card as usize];
-                            o.controller == actor
-                                && o.zone == Zone::Battlefield
-                                && self.is_creature(a.card)
-                                && power_min
-                                    .is_none_or(|p| self.object_view(a.card).power >= i128::from(p))
-                        })
-                        .count();
+                    let explicit_creatures = matches!(
+                        ability.condition.event(),
+                        TriggerCondition::CreaturesAttackDeclared { .. }
+                    );
+                    let mut count = 0usize;
+                    let mut objects = Vec::new();
+                    for attack in declared {
+                        let object = &self.state.objects[attack.card as usize];
+                        if object.controller == actor
+                            && object.zone == Zone::Battlefield
+                            && self.is_creature(attack.card)
+                            && power_min.is_none_or(|power| {
+                                self.object_view(attack.card).power >= i128::from(power)
+                            })
+                        {
+                            count += 1;
+                            if explicit_creatures {
+                                objects.push(self.object_ref(attack.card));
+                            }
+                        }
+                    }
                     // This is an event qualification, never an intervening-if recheck.
+                    // Player-only clauses do not allocate or retain a creature roster.
                     if count >= usize::from(minimum)
                         && self.step_guard(guard, actor, source.reference, source.tapped)
+                        && self.queue_attack_trigger(&source, index)
                     {
-                        self.queue_attack_trigger(&source, index);
+                        self.state
+                            .pending_triggers
+                            .last_mut()
+                            .unwrap()
+                            .refer_objects(objects);
                     }
                 }
             }
@@ -2291,6 +2475,7 @@ impl Game {
                         .unwrap()
                         .reflexive_subject = Some(Box::new(ReflexiveSubjectView {
                         object: first,
+                        action: false,
                         additional_objects: rest.to_vec(),
                     }));
                 }
@@ -2332,13 +2517,17 @@ impl Game {
                     if ability.condition.event() == TriggerCondition::OpponentCreatureBlocksSmall
                         && self.queue_trigger(source, index)
                     {
-                        self.state.pending_triggers.last_mut().unwrap().event_object =
-                            Some(Box::new(EventObjectView {
+                        self.state
+                            .pending_triggers
+                            .last_mut()
+                            .unwrap()
+                            .set_event_object(EventObjectView {
                                 object,
                                 facts: EventObjectFacts::Controller(actor),
+                                semantic_objects: None,
                                 conniver_creature: None,
                                 subtype_lki: None,
-                            }));
+                            });
                     }
                 }
             }
@@ -3305,6 +3494,7 @@ impl Game {
                     delayed.id = self.next_stack_id();
                     delayed.kind = StackKind::TriggeredAbility { ability };
                     delayed.targets.clear();
+                    delayed.clear_initiating_event_references();
                     delayed.crime_qualifying_target = false;
                     delayed.target_type_slots = None;
                     delayed.mode = None;
@@ -3385,6 +3575,7 @@ impl Game {
                     delayed.id = self.next_stack_id();
                     delayed.kind = StackKind::TriggeredAbility { ability };
                     delayed.targets.clear();
+                    delayed.clear_initiating_event_references();
                     delayed.crime_qualifying_target = false;
                     delayed.target_type_slots = None;
                     delayed.mode = None;
@@ -3643,6 +3834,7 @@ impl Game {
                             delayed.id = self.next_stack_id();
                             delayed.kind = StackKind::TriggeredAbility { ability };
                             delayed.targets.clear();
+                            delayed.clear_initiating_event_references();
                             delayed.crime_qualifying_target = false;
                             delayed.target_type_slots = None;
                             delayed.mode = None;
@@ -3968,11 +4160,15 @@ impl Game {
                     }
                 }
                 Instruction::Reflexive { ability } => {
-                    self.queue_reflexive(&item, ability, None);
+                    self.queue_reflexive_objects(&item, ability, item.reflexive_action_objects());
                 }
                 Instruction::ReflexiveSacrificedPower { ability } => {
                     if item.sacrificed_power.is_some() {
-                        self.queue_reflexive(&item, ability, None);
+                        self.queue_reflexive_objects(
+                            &item,
+                            ability,
+                            item.reflexive_action_objects(),
+                        );
                     }
                 }
                 Instruction::Modal(_)
@@ -4982,7 +5178,12 @@ impl Game {
                         item.controller,
                     );
                     if milled == usize::from(amount) {
-                        self.queue_reflexive(&item, ability, None);
+                        let item = self.state.resolving.as_ref().unwrap().item.clone();
+                        self.queue_reflexive_objects(
+                            &item,
+                            ability,
+                            item.reflexive_action_objects(),
+                        );
                     }
                 }
                 Instruction::MayMill(_) | Instruction::MayMillAmount(_) => {
@@ -5550,7 +5751,11 @@ impl Game {
                         // Departure refreshes the saved packet's LKI, including
                         // keywords gained after the historical threshold event.
                         let sacrificed = self.state.resolving.as_ref().unwrap().item.clone();
-                        self.queue_reflexive(&sacrificed, ability, None);
+                        self.queue_reflexive_objects(
+                            &sacrificed,
+                            ability,
+                            sacrificed.reflexive_action_objects(),
+                        );
                     }
                 }
                 Instruction::ExileAndCopyNightmare => self.exile_and_copy_nightmare(&item),

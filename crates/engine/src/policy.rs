@@ -178,6 +178,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::ChooseSelfCounterReplacement { .. }
             | Action::ChooseDamagePrevention { .. }
             | Action::ChooseDamageSource { .. }
+            | Action::ChooseStackDamageSource { .. }
             | Action::ChooseDamageEvent { .. } => 120,
             Action::ChooseCreatedToken { .. } => 120,
             Action::ChooseEndure { put_counters } => {

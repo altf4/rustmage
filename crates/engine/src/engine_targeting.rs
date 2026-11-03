@@ -1486,7 +1486,20 @@ impl Game {
             group: 0,
             target,
             object: match target {
-                Target::Stack(_) | Target::Player(_) => None,
+                Target::Player(_) => None,
+                Target::Stack(id) => self
+                    .state
+                    .stack
+                    .iter()
+                    .find(|item| item.id == id)
+                    .filter(|item| item.kind == StackKind::Spell)
+                    .and_then(|item| item.source)
+                    .filter(|source| {
+                        source.id == source.object.card
+                            && self.object_ref(source.id) == source.object
+                            && self.state.objects[source.id as usize].zone == Zone::Stack
+                    })
+                    .map(|source| source.object),
                 Target::Card(id) | Target::Spell(id) => Some(self.object_ref(id)),
             },
         }

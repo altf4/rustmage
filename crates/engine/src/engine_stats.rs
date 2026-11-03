@@ -114,6 +114,7 @@ impl Game {
                 TriggerCondition::CreatureAttacksYou { .. }
                     | TriggerCondition::CreaturesAttackYou
                     | TriggerCondition::AttackDeclared { .. }
+                    | TriggerCondition::CreaturesAttackDeclared { .. }
                     | TriggerCondition::FirstAttackWithTotalPowerAtLeast(_)
                     | TriggerCondition::AttackPlayer(_)
                     | TriggerCondition::ControlledCreatureAttacksAlone

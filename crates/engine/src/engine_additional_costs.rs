@@ -1052,14 +1052,15 @@ impl Game {
                 })
             }) {
                 let object = group[0];
-                a.item.event_object = Some(Box::new(EventObjectView {
+                a.item.set_event_object(EventObjectView {
                     object,
                     facts: EventObjectFacts::CreatureComparison(
                         CreatureComparisonFacts::from_view(&self.object_view(object.card)),
                     ),
+                    semantic_objects: None,
                     conniver_creature: None,
                     subtype_lki: None,
-                }));
+                });
             }
             self.tap_objects(&group.iter().map(|r| r.card).collect::<Vec<_>>());
             a.additional_paid = true;

@@ -546,6 +546,7 @@ fn delayed_death_requires_exact_creature_death_and_expires_at_cleanup() {
         let source = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
         let target = put(&mut g, p, "Hill Giant", Zone::Battlefield);
         grant(&mut g, source, target);
+        let watched = g.object_ref(target);
         if mode == 0 {
             g.move_object(target, Zone::Hand);
             g.move_object(target, Zone::Battlefield);
@@ -561,6 +562,15 @@ fn delayed_death_requires_exact_creature_death_and_expires_at_cleanup() {
         }
         assert!(g.state.pending_triggers.is_empty());
         assert!(g.state.stack.is_empty());
+        if mode < 2 {
+            // CR603.7b/c: leaving by a nontriggering move makes the old exact
+            // subject inert; the turn-duration delayed ability still waits.
+            let rows = g.observe(p).delayed_target_events.unwrap();
+            assert_eq!(rows.len(), 1);
+            assert_eq!(rows[0].subject, watched);
+            assert_ne!(rows[0].subject, g.object_ref(target));
+            g.finish_cleanup();
+        }
         assert!(g.observe(p).delayed_target_events.is_none());
     }
 }

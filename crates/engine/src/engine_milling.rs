@@ -116,6 +116,7 @@ impl Game {
             .filter(|event| event.moved)
             .map(|event| event.after)
             .collect();
+        self.capture_reflexive_zone_action(&events, roles::ReflexiveAction::Mill);
         self.finish_zone_events(&events, &[]);
         events
     }
