@@ -22,6 +22,7 @@ const NEW_FIELDS: &[&str] = &[
     "chosen_source_shields",
     "stack_object",
     "stack_objects",
+    "semantic_objects",
 ];
 const NEW_VARIANTS: &[&str] = &[
     "BeginDelve",
@@ -36,6 +37,11 @@ const NEW_VARIANTS: &[&str] = &[
     "DecayedAttack",
     "SuspendTick",
     "SuspendCast",
+    "SuspendHaste",
+    "Colors",
+    "ProtectionColor",
+    "DiscardHand",
+    "Identity",
     "NamedMode",
     "NamedModes",
     "DeathCounters",
@@ -54,7 +60,6 @@ const NEW_VARIANTS: &[&str] = &[
     "cast_behold",
     "behold_cost",
     "delve",
-    "damage_source",
 ];
 
 fn bounded_number(value: &Value, maximum: u64, label: &str) -> Result<(), String> {
@@ -66,9 +71,14 @@ fn bounded_number(value: &Value, maximum: u64, label: &str) -> Result<(), String
 }
 fn check(value: &Value, context: Option<&str>) -> Result<(), String> {
     match value {
-        Value::String(text) if NEW_VARIANTS.contains(&text.as_str()) => Err(format!(
-            "new Tarkir variant {text} has no schema 199 representation"
-        )),
+        Value::String(text)
+            if NEW_VARIANTS.contains(&text.as_str())
+                || context == Some("pending") && text == "damage_source" =>
+        {
+            Err(format!(
+                "new Tarkir variant {text} has no schema 199 representation"
+            ))
+        }
         Value::Array(rows) => rows.iter().try_for_each(|row| check(row, context)),
         Value::Object(fields) => {
             if context == Some("graveyard_cast_permissions")
@@ -86,7 +96,10 @@ fn check(value: &Value, context: Option<&str>) -> Result<(), String> {
             if fields.contains_key("tokens") && fields.contains_key("own_end_step") {
                 return Err("controller-end-step token sacrifice is new to schema 200".into());
             }
-            if fields.contains_key("exiled") && fields.contains_key("ability_origin") {
+            if fields.contains_key("return_zone")
+                && fields.contains_key("exiled")
+                && fields.contains_key("ability_origin")
+            {
                 return Err("origin-qualified linked exile is new to schema 200".into());
             }
             if fields
@@ -107,7 +120,12 @@ fn check(value: &Value, context: Option<&str>) -> Result<(), String> {
                 .get("kind")
                 .is_some_and(|v| v == "AllocateTargetAmount");
             for (key, value) in fields {
-                if NEW_FIELDS.contains(&key.as_str()) || NEW_VARIANTS.contains(&key.as_str()) {
+                if NEW_FIELDS.contains(&key.as_str())
+                    || NEW_VARIANTS.contains(&key.as_str())
+                    // Old hand-choice Behold is a unit string. This externally
+                    // tagged cost clause is a distinct new serialized shape.
+                    || key == "Behold"
+                {
                     return Err(format!(
                         "new Tarkir field {key} has no schema 199 representation"
                     ));
@@ -119,6 +137,8 @@ fn check(value: &Value, context: Option<&str>) -> Result<(), String> {
                         | "granted_keywords"
                         | "gained_keywords"
                         | "keyword"
+                        | "Keyword"
+                        | "rules"
                 ) {
                     bounded_number(value, u64::from(u32::MAX), "keyword bits")?;
                 }
@@ -152,7 +172,7 @@ pub(super) fn prior_schema200_actions_supported(actions: &[Action]) -> bool {
 
 #[test]
 fn prior199_retains_inherited_bytes_and_origin_facts() {
-    let inherited = r#"[{"schema":199,"keywords":4294967295,"source_ability_origin":17,"delayed_returns":[{"own_end_step":true}],"copy":{"additional_creature_types":["Warrior"]},"target_allocations":[{"amount":4294967295}]}]"#;
+    let inherited = r#"[{"schema":199,"damage_source":null,"keywords":4294967295,"source_ability_origin":17,"delayed_returns":[{"own_end_step":true}],"copy":{"additional_creature_types":["Warrior"]},"target_allocations":[{"amount":4294967295}]}]"#;
     assert_eq!(project_prior_schema200(inherited).unwrap(), inherited);
     let changed = inherited.replace("source_ability_origin\":17", "source_ability_origin\":18");
     assert_ne!(project_prior_schema200(&changed).unwrap(), inherited);
@@ -162,12 +182,15 @@ fn prior199_retains_inherited_bytes_and_origin_facts() {
 fn prior199_refuses_new_semantics_instead_of_erasing_them() {
     for current in [
         r#"{"keywords":4294967296}"#,
+        r#"{"Keyword":4294967296}"#,
+        r#"{"rules":4294967296}"#,
+        r#"{"pending":"damage_source"}"#,
         r#"{"endure_choice":{"amount":65536}}"#,
         r#"{"target_allocations":[{"amount":4294967296}]}"#,
         r#"{"target_amount":{"remaining":4294967296}}"#,
         r#"{"kind":"AllocateTargetAmount","amount":4294967296}"#,
         r#"{"tokens":[],"own_end_step":true}"#,
-        r#"{"exiled":{"card":1,"generation":0},"ability_origin":17}"#,
+        r#"{"exiled":{"card":1,"generation":0},"ability_origin":17,"return_zone":"Battlefield"}"#,
         r#"{"additional_creature_types":true}"#,
         r#"{"kind":"ChooseDamageSource","object":{"card":1,"generation":0}}"#,
         r#"{"graveyard_cast_permissions":[{"kind":"Harmonize"}]}"#,
@@ -184,4 +207,104 @@ fn prior199_refuses_new_semantics_instead_of_erasing_them() {
             assert!(project_prior_schema200(&current).is_err(), "{current}");
         }
     }
+}
+
+#[test]
+fn prior199_distinguishes_new_origins_from_inherited_link_and_wide_values() {
+    let object = ObjectRef {
+        card: 0,
+        generation: 0,
+    };
+    let mut effect = KeywordEffectView {
+        recipient: object,
+        origin: KeywordEffectOrigin::SuspendHaste {
+            controller: Player::P0,
+        },
+        keywords: Keywords::HASTE,
+        rules: Keywords::NONE,
+        timestamp: 1,
+        expires_turn: None,
+    };
+    assert!(project_prior_schema200(&serde_json::to_string(&effect).unwrap()).is_err());
+    let mut game = scenario(Player::P0);
+    let creature = put(&mut game, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    effect.recipient = game.object_ref(creature);
+    game.state
+        .roles
+        .get_or_insert_with(Default::default)
+        .keyword_effects
+        .push(effect);
+    let saved = game.snapshot();
+    let mut child = game.clone();
+    drop(game);
+    child.restore(&saved).unwrap();
+    assert!(
+        project_prior_schema200(&serde_json::to_string(&child.observe(Player::P0)).unwrap())
+            .is_err()
+    );
+    effect.origin = KeywordEffectOrigin::Resolution { source: object };
+    let bytes = serde_json::to_string(&effect).unwrap();
+    assert_eq!(project_prior_schema200(&bytes).unwrap(), bytes);
+    let old_link = LinkedExileView {
+        source: object,
+        exiled: object,
+        ability_origin: Some(17),
+    };
+    let bytes = serde_json::to_string(&old_link).unwrap();
+    assert_eq!(project_prior_schema200(&bytes).unwrap(), bytes);
+    let new_link = ExileLink {
+        source: object,
+        exiled: object,
+        ability_origin: Some(17),
+        return_zone: Zone::Battlefield,
+    };
+    assert!(project_prior_schema200(&serde_json::to_string(&new_link).unwrap()).is_err());
+    let action = Action::ChooseDamagePrevention {
+        source: object,
+        prevention: DamagePreventionKind::ProtectionColor(rustmage_core::cards::ChoiceColor::Red),
+    };
+    assert!(!prior_schema200_actions_supported(&[action]));
+    let wide = Action::AssignDamage {
+        target: Target::Player(Player::P1),
+        amount: i128::MAX,
+    };
+    let bytes = serde_json::to_string(&wide).unwrap();
+    assert_eq!(project_prior_schema200(&bytes).unwrap(), bytes);
+    let old_behold = serde_json::to_string(&HandChoiceKind::Behold).unwrap();
+    assert_eq!(project_prior_schema200(&old_behold).unwrap(), old_behold);
+    assert!(
+        project_prior_schema200(&serde_json::to_string(&CastCostClause::Behold("Dragon")).unwrap())
+            .is_err()
+    );
+}
+
+#[test]
+fn prior199_refuses_an_ordinary_color_search_without_a_distinct_color_marker() {
+    use rustmage_core::cards::{self as card_rules, authored::CardRules};
+    const SEARCH: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::NONE,
+            &[Instruction::Search(card_rules::SearchSpec {
+                filter: card_rules::SearchFilter::Colors(1),
+                maximum: 1,
+                destination: card_rules::SearchDestination::Hand,
+                tapped: false,
+                reveal: true,
+            })],
+        ),
+        ..CardRules::EMPTY
+    };
+    let _scope = card_rules::fixture_rules::activate(&[(Card::Shock, &SEARCH)]);
+    let mut game = scenario(Player::P0);
+    put(&mut game, Player::P0, "Healer's Hawk", Zone::Library);
+    let spell = put(&mut game, Player::P0, "Shock", Zone::Hand);
+    crate::support::cast(&mut game, spell, None);
+    crate::support::act(&mut game, Action::Pass);
+    crate::support::act(&mut game, Action::Pass);
+    let own = game.observe(Player::P0);
+    let choice = own.search_choice.as_ref().expect("ordinary private search");
+    assert_eq!(choice.filter, card_rules::SearchFilter::Colors(1));
+    assert_eq!(choice.distinct_colors, 0);
+    assert!(game.observe(Player::P1).search_choice.is_none());
+    assert!(project_prior_schema200(&serde_json::to_string(&own).unwrap()).is_err());
 }

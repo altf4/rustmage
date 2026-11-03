@@ -360,7 +360,8 @@
       "description": "discard hand cost",
       "required_change": "Support discard-entire-hand as real cost (empty hand legal), combined with mana and sacrifice transactionally; existing ActivationCost.discard means one card. For Narset may discard hand then draw, verify ordinary May+DiscardHand is sufficient under discard restrictions/replacements; use explicit optional payment continuation if not. Do not demand actual discarded-card count>0.",
       "cards": [],
-      "status": "Authored in isolated remaining-world worktree; final owner validation and exact legal damage-source universe refinement are in progress. Not yet integrated or accepted."
+      "status": "Initial owner checkpoint149/149 selected focused/compatibility cases passes and is integrated at077dd9f46. Mandatory independent source-universe and simultaneous-world findings are being repaired in the isolated owner worktree; final acceptance remains open.",
+      "implementation_evidence": "docs/tdm-remaining-world-second-checkpoint.json"
     },
     {
       "id": "B:chosen_x_library_search",
@@ -436,7 +437,8 @@
       "description": "chosen source prevention",
       "required_change": "Choose a source without targeting as spell resolves; retain source exact/permitted source identity and shield through cleanup. Replace only its next positive damage event to shield controller, consuming shield once; actual prevented amount queues independent reflexive damage-to-damager-controller and draw callback. Integrate prevention prohibitions, affected-player replacement ordering, departed source LKI and owned pending state.",
       "cards": [],
-      "status": "Authored in isolated remaining-world worktree; final owner validation and exact legal damage-source universe refinement are in progress. Not yet integrated or accepted."
+      "status": "Initial owner checkpoint149/149 selected focused/compatibility cases passes and is integrated at077dd9f46. Mandatory independent source-universe and simultaneous-world findings are being repaired in the isolated owner worktree; final acceptance remains open.",
+      "implementation_evidence": "docs/tdm-remaining-world-second-checkpoint.json"
     },
     {
       "id": "B:resolution_exile_cost_success",
@@ -802,7 +804,18 @@
     "additional_implemented_tested_groups_pending_review": 30,
     "authored_audit_groups_including_aliases": 81,
     "owner_focused_passing_audit_groups_including_aliases": 79,
-    "audit_group_counts_are_unweighted": true
+    "audit_group_counts_are_unweighted": true,
+    "newer_integrated_checkpoint": {
+      "head": "7b417fcbb",
+      "report": "/home/altf4/.cache/rustmage-tdm/root-wire200-1793666910400746018",
+      "passing_cases": 84,
+      "trace_rows_completed": 3164,
+      "trace_baseline_accepted": false,
+      "compile_seconds": 139.49988077100716,
+      "execution_seconds": 6.82793541502906,
+      "source_unchanged": true,
+      "scope": "schema2+search28+firstworld17+Sidisi20+mana17; separate explicit trace candidate expected baseline drift, not complete shared engine acceptance"
+    }
   },
   "active_checkpoints": {
     "fixed_endure": {
@@ -949,7 +962,13 @@
     "schema_replay": {
       "previous": 199,
       "candidate": 200,
-      "status": "Wire migration and conservative prior-199 recording audit prepared; no baseline changes accepted yet."
+      "status": "Initial schema2 tests and82 newer integrated mechanic cases pass at7b417fcbb. Explicit3164 trace candidates all complete with unchanged journal/decisions/zones and changed observation hashes. Prior199 candidate exposed an inherited damage_source false rejection; independent review found missing variant guards and an inherited linked-exile overreach. Corrected projector and actual typed/owned regressions await guarded compilation; no trace baseline accepted."
+    },
+    "remaining_world_second": {
+      "commit": "11403d9e84ad3c899aca9d7e0dc82304ad1e98bd",
+      "integration": "077dd9f46",
+      "evidence": "docs/tdm-remaining-world-second-checkpoint.json",
+      "status": "Initial43 focused+106 compatibility cases pass; exact final repairs for mass-copy simultaneity, stack-source identity and semantic event/attachment references remain mandatory."
     }
   }
 }
