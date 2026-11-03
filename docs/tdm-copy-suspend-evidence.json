@@ -253,7 +253,10 @@
       "binaries": [
         {
           "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/tdm_copy_suspend-a39e25d9caedb9ce",
-          "sha256": "175d05bfba5b2549a82800d05cc93bb19c824f2d29b2446f122c387f88f0109e"
+          "sha256": "175d05bfba5b2549a82800d05cc93bb19c824f2d29b2446f122c387f88f0109e",
+          "artifact_role": "Transient native Rust test executable; this hash is a historical run observation, not an immutable preservation promise.",
+          "available_at_recorded_hash_at_correction": false,
+          "availability": "A later build replaced this executable at the same warm Cargo path; the old executable bytes are not claimed preserved."
         }
       ],
       "resource": {
@@ -288,7 +291,10 @@
       "binaries": [
         {
           "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/dft_permanent_cast_copy_engine-07da1f2882c32cd8",
-          "sha256": "47b4c06e7ea2078615027019072eaff823f4c82e8b23c4cb664e6ed3f098d3d4"
+          "sha256": "47b4c06e7ea2078615027019072eaff823f4c82e8b23c4cb664e6ed3f098d3d4",
+          "artifact_role": "Transient native Rust test executable; this hash is a historical run observation, not an immutable preservation promise.",
+          "available_at_recorded_hash_at_correction": false,
+          "availability": "A later build replaced this executable at the same warm Cargo path; the old executable bytes are not claimed preserved."
         }
       ],
       "resource": {
@@ -323,7 +329,10 @@
       "binaries": [
         {
           "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/legacy-49262b90621dc1a0",
-          "sha256": "073d92b4fc72d12796f6820256f8080eb04b3a44139107800421a41447cc34da"
+          "sha256": "073d92b4fc72d12796f6820256f8080eb04b3a44139107800421a41447cc34da",
+          "artifact_role": "Transient native Rust test executable; this hash is a historical run observation, not an immutable preservation promise.",
+          "available_at_recorded_hash_at_correction": false,
+          "availability": "A later build replaced this executable at the same warm Cargo path; the old executable bytes are not claimed preserved."
         }
       ],
       "resource": {
@@ -358,7 +367,10 @@
       "binaries": [
         {
           "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/legacy-49262b90621dc1a0",
-          "sha256": "073d92b4fc72d12796f6820256f8080eb04b3a44139107800421a41447cc34da"
+          "sha256": "073d92b4fc72d12796f6820256f8080eb04b3a44139107800421a41447cc34da",
+          "artifact_role": "Transient native Rust test executable; this hash is a historical run observation, not an immutable preservation promise.",
+          "available_at_recorded_hash_at_correction": false,
+          "availability": "A later build replaced this executable at the same warm Cargo path; the old executable bytes are not claimed preserved."
         }
       ],
       "resource": {
@@ -393,7 +405,10 @@
       "binaries": [
         {
           "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/legacy-49262b90621dc1a0",
-          "sha256": "073d92b4fc72d12796f6820256f8080eb04b3a44139107800421a41447cc34da"
+          "sha256": "073d92b4fc72d12796f6820256f8080eb04b3a44139107800421a41447cc34da",
+          "artifact_role": "Transient native Rust test executable; this hash is a historical run observation, not an immutable preservation promise.",
+          "available_at_recorded_hash_at_correction": false,
+          "availability": "A later build replaced this executable at the same warm Cargo path; the old executable bytes are not claimed preserved."
         }
       ],
       "resource": {
@@ -467,15 +482,92 @@
   "preserved_shared_libraries": [
     {
       "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/libserde_derive-4a3ec5018aa504ef.so",
-      "sha256": "16e56c72844cb52549aca635bf643fd0903d223d703291e366575e6900e074a7"
+      "sha256": "16e56c72844cb52549aca635bf643fd0903d223d703291e366575e6900e074a7",
+      "role": "Rust compiler proc-macro shared library; exact compile-time dependency remains present."
     },
     {
       "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/librustmage_test_access-636adfcd609bee93.so",
-      "sha256": "c009fbc5de616b8bd2e9b74040b5e3a93b47809c2a8f4c5e2a78d1a564398f6a"
-    },
+      "sha256": "c009fbc5de616b8bd2e9b74040b5e3a93b47809c2a8f4c5e2a78d1a564398f6a",
+      "role": "Rust compiler proc-macro shared library; exact compile-time dependency remains present."
+    }
+  ],
+  "transient_compilation_outputs": [
     {
       "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/librustmage.so",
-      "sha256": "3cc2dedbc03f134edad33755450fbbb1cda9e040195374fe8e361bf8fa3f64ee"
+      "sha256": "3cc2dedbc03f134edad33755450fbbb1cda9e040195374fe8e361bf8fa3f64ee",
+      "artifact_role": "Transient Cargo cdylib output emitted alongside the rlib; not a native test execution dependency.",
+      "required_for_recorded_native_test_executions": false,
+      "available_at_recorded_hash_at_correction": false,
+      "availability": "Not present at the recorded path/hash during this inspection; a later Cargo build replaced the warm output. No archived copy at the historical hash was verified. The original path and hash are retained unchanged."
     }
-  ]
+  ],
+  "artifact_availability_correction": {
+    "source_revision": "acd95191e5693c04b1a18a59a21f744f7d0662b2",
+    "original_document_sha256": "8acdad257dd0bcb88c0d8ed4637024d9d1c9465e8a76c518efa67f3bf6f106e6",
+    "checked_at_utc": "2026-11-03T00:48:28.852159+00:00",
+    "reason": "Remove the false required/preserved classification of a mutable Cargo cdylib for this native Rust test checkpoint. All historical path/hash/report/command records remain unchanged. Exact compiler proc-macro libraries are retained as compile-time dependencies.",
+    "audited_native_reports": [
+      {
+        "path": "/home/altf4/.cache/rustmage-tdm/copy-suspend-first/native.json",
+        "sha256": "3d279f926b8e3183dacf5340c2c45dc13a4c4a11bc6743c4769c08b64ca0ce47"
+      },
+      {
+        "path": "/home/altf4/.cache/rustmage-tdm/copy-suspend-fixture-fixed/native.json",
+        "sha256": "1bc2fa867e1e533dda78041959a20eb24692c81c94ca6e4c0d810085eca8a944"
+      },
+      {
+        "path": "/home/altf4/.cache/rustmage-tdm/copy-suspend-compat-permanent/native.json",
+        "sha256": "88116ca8a84cb85c90d82235ebed36e7a33189a2c7d9d748c19b49d9a18a9559"
+      },
+      {
+        "path": "/home/altf4/.cache/rustmage-tdm/copy-suspend-compat-storm/native.json",
+        "sha256": "8496f786c1ac9b5f414331d639ab4516c8149ee1e5f52d51ae49e21006e7c15f"
+      },
+      {
+        "path": "/home/altf4/.cache/rustmage-tdm/copy-suspend-compat-delayed/native.json",
+        "sha256": "c47fc32d61838399f3e07cdd9db9d88ed022daa049f0c567dec0ad454aa01a8a"
+      },
+      {
+        "path": "/home/altf4/.cache/rustmage-tdm/copy-suspend-compat-offer/native.json",
+        "sha256": "215e889081c74e727bfcf1c90fd66077f87c9431742869369f06b5b4ac33e688"
+      }
+    ],
+    "runner_and_link_configuration": [
+      {
+        "path": "scripts/run_native_tests.py",
+        "revision": "acd95191e5693c04b1a18a59a21f744f7d0662b2",
+        "sha256": "72c1d6809cb068c8e0309d3bed15e46f705ef924fb15da71bd146b052450d760"
+      },
+      {
+        "path": "Cargo.toml",
+        "revision": "acd95191e5693c04b1a18a59a21f744f7d0662b2",
+        "sha256": "fef5f68519e2da5e0eb8f781a68e151ffd4e15f1ba679b717635a292c72a1d92"
+      }
+    ],
+    "execution_mode": "The recorded reports compile Rust integration tests with cargo test -p rustmage --test TARGET --no-run --message-format=json, then directly execute the reported native ELF under the bounded native runner. That runner contains no ctypes/cffi/CDLL load. Rust integration tests consume the rlib; Cargo also emits a cdylib because the crate requests both formats. No recorded command in this checkpoint requires that cdylib.",
+    "availability_scope": "Current warm-output availability is stated only for this inspection. Replaced or changing historical bytes are not claimed preserved, and no new hashes replace the original observations. No cache restoration, deletion, rebuild or runtime edit was performed.",
+    "native_executable_pin_availability": [
+      {
+        "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/tdm_copy_suspend-a39e25d9caedb9ce",
+        "available_at_recorded_hash": false
+      },
+      {
+        "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/dft_permanent_cast_copy_engine-07da1f2882c32cd8",
+        "available_at_recorded_hash": false
+      },
+      {
+        "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/legacy-49262b90621dc1a0",
+        "available_at_recorded_hash": false
+      },
+      {
+        "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/legacy-49262b90621dc1a0",
+        "available_at_recorded_hash": false
+      },
+      {
+        "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/legacy-49262b90621dc1a0",
+        "available_at_recorded_hash": false
+      }
+    ],
+    "runtime_or_cache_changes": false
+  }
 }

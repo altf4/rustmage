@@ -311,15 +311,13 @@
   "preserved_shared_libraries": [
     {
       "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/libserde_derive-4a3ec5018aa504ef.so",
-      "sha256": "16e56c72844cb52549aca635bf643fd0903d223d703291e366575e6900e074a7"
+      "sha256": "16e56c72844cb52549aca635bf643fd0903d223d703291e366575e6900e074a7",
+      "role": "Rust compiler proc-macro shared library; exact compile-time dependency remains present."
     },
     {
       "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/librustmage_test_access-636adfcd609bee93.so",
-      "sha256": "c009fbc5de616b8bd2e9b74040b5e3a93b47809c2a8f4c5e2a78d1a564398f6a"
-    },
-    {
-      "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/librustmage.so",
-      "sha256": "dd95e33cd8fa849a0ace3f6f54e5a08f6df0796de55b833c0af5ce9c58eea828"
+      "sha256": "c009fbc5de616b8bd2e9b74040b5e3a93b47809c2a8f4c5e2a78d1a564398f6a",
+      "role": "Rust compiler proc-macro shared library; exact compile-time dependency remains present."
     }
   ],
   "verification": [
@@ -331,5 +329,63 @@
     "Two refreshed independent nonauthor reviews of the repaired published head.",
     "Root assembled validation and common schema/trace work remain open.",
     "No ordinary TDM card definitions/admissions or full release/simulation throughput claim."
-  ]
+  ],
+  "transient_compilation_outputs": [
+    {
+      "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/librustmage.so",
+      "sha256": "dd95e33cd8fa849a0ace3f6f54e5a08f6df0796de55b833c0af5ce9c58eea828",
+      "artifact_role": "Transient Cargo cdylib output emitted alongside the rlib; not a native test execution dependency.",
+      "required_for_recorded_native_test_executions": false,
+      "available_at_recorded_hash_at_correction": false,
+      "availability": "Not present at the recorded path/hash during this inspection; a later Cargo build replaced the warm output. No archived copy at the historical hash was verified. The original path and hash are retained unchanged."
+    }
+  ],
+  "artifact_availability_correction": {
+    "source_revision": "acd95191e5693c04b1a18a59a21f744f7d0662b2",
+    "original_document_sha256": "2766d1c762443ef8d17d44e281caebc3ed43335172031b31610e2cf9dffe93bc",
+    "checked_at_utc": "2026-11-03T00:48:28.869730+00:00",
+    "reason": "Remove the false required/preserved classification of a mutable Cargo cdylib for this native Rust test checkpoint. All historical path/hash/report/command records remain unchanged. Exact compiler proc-macro libraries are retained as compile-time dependencies.",
+    "audited_native_reports": [
+      {
+        "path": "/home/altf4/.cache/rustmage-tdm/combat-callbacks-cr1115-negative/native.json",
+        "sha256": "599759ff6eabe8840bc8fa8c4e2c5f9e3f608cc2dd67d311da3d98b1d26cc11f"
+      },
+      {
+        "path": "/home/altf4/.cache/rustmage-tdm/combat-callbacks-cr1115-fixed/native.json",
+        "sha256": "efa2bbcf5cebc07beda457a0ca8816a63269ab832f1dcf648259a142709bfccd"
+      },
+      {
+        "path": "/home/altf4/.cache/rustmage-tdm/combat-callbacks-cr1115-compat/0/native.json",
+        "sha256": "62e9a7213fbd6a44a5aea976e2cbdb58cf933c1cb071fe9acac74ce41fb1fbbd"
+      },
+      {
+        "path": "/home/altf4/.cache/rustmage-tdm/combat-callbacks-cr1115-compat/1/native.json",
+        "sha256": "6d5de6aac18cb8e4c14fe526592042edb35e16b2031411056cd91f588cc90ef3"
+      },
+      {
+        "path": "/home/altf4/.cache/rustmage-tdm/combat-callbacks-cr1115-compat/2/native.json",
+        "sha256": "95eb832a6fedc6d4fdb1ffe6dfbfa82d4bb4be94c3c65fc885dbb73e166e49eb"
+      },
+      {
+        "path": "/home/altf4/.cache/rustmage-tdm/combat-callbacks-cr1115-compat/3/native.json",
+        "sha256": "51c6cf6460b1d03b9bb97ab7769c7ea1fcf00a9305a6ad6a10a8d69679227819"
+      }
+    ],
+    "runner_and_link_configuration": [
+      {
+        "path": "scripts/run_native_tests.py",
+        "revision": "acd95191e5693c04b1a18a59a21f744f7d0662b2",
+        "sha256": "72c1d6809cb068c8e0309d3bed15e46f705ef924fb15da71bd146b052450d760"
+      },
+      {
+        "path": "Cargo.toml",
+        "revision": "acd95191e5693c04b1a18a59a21f744f7d0662b2",
+        "sha256": "fef5f68519e2da5e0eb8f781a68e151ffd4e15f1ba679b717635a292c72a1d92"
+      }
+    ],
+    "execution_mode": "The recorded reports compile Rust integration tests with cargo test -p rustmage --test TARGET --no-run --message-format=json, then directly execute the reported native ELF under the bounded native runner. That runner contains no ctypes/cffi/CDLL load. Rust integration tests consume the rlib; Cargo also emits a cdylib because the crate requests both formats. No recorded command in this checkpoint requires that cdylib.",
+    "availability_scope": "Current warm-output availability is stated only for this inspection. Replaced or changing historical bytes are not claimed preserved, and no new hashes replace the original observations. No cache restoration, deletion, rebuild or runtime edit was performed.",
+    "native_executable_pin_availability": [],
+    "runtime_or_cache_changes": false
+  }
 }
