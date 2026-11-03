@@ -23,6 +23,7 @@ const NEW_FIELDS: &[&str] = &[
     "stack_object",
     "stack_objects",
     "semantic_objects",
+    "source_referred",
 ];
 const NEW_VARIANTS: &[&str] = &[
     "BeginDelve",
