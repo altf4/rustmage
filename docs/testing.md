@@ -165,6 +165,11 @@ bytes after the schema number is projected. New mechanics, widened values outsid
 the old domain, and new action identities are rejected rather than erased.
 Acquisition origins and other inherited fields remain in the comparison: changes
 to those values require independent rules evidence before trace acceptance.
+For a bounded recording audit, `RUSTMAGE_RECORD_CARD_TRACE_DETAILS` may name a
+cache directory and `RUSTMAGE_RECORD_CARD_TRACE_NAMES` a JSON array of card names.
+Together with the explicit trace-recording variables above, these retain the
+selected projected observations and journals. They never update the
+committed baseline or alter the strict comparison.
 
 Power-up wire migrations can be audited with the recording-only
 `RUSTMAGE_RECORD_CARD_TRACES_PREVIOUS_SCHEMA=137` option alongside

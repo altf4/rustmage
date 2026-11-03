@@ -8012,6 +8012,39 @@ fn trace_candidate_with_prepared_observation_audit(
                 observation_bytes.replace(&format!("\"turns_started\":{count},"), "");
         }
     }
+    // Optional recording-only detail for a bounded, explicitly selected set of
+    // rows. Preserve serialized bytes so a reviewer can isolate an observation
+    // delta without weakening the committed trace comparison below.
+    if schema_projection.is_some()
+        && std::env::var_os("RUSTMAGE_RECORD_CARD_TRACES").is_some()
+        && let (Ok(directory), Ok(names)) = (
+            std::env::var("RUSTMAGE_RECORD_CARD_TRACE_DETAILS"),
+            std::env::var("RUSTMAGE_RECORD_CARD_TRACE_NAMES"),
+        )
+    {
+        let names: Vec<String> = serde_json::from_str(&names).expect("JSON array of trace names");
+        if names.iter().any(|name| name == card.identity()) {
+            let directory = std::path::PathBuf::from(directory);
+            let cache = std::path::PathBuf::from(std::env::var("HOME").unwrap()).join(".cache");
+            assert!(
+                directory.starts_with(cache),
+                "record details under ~/.cache"
+            );
+            std::fs::create_dir_all(&directory).unwrap();
+            let detail = serde_json::json!({
+                "card": card.identity(),
+                "schema_projection": schema_projection,
+                "journal_json": serde_json::to_string(&journal).unwrap(),
+                "observations_json": observation_bytes,
+                "projection_error": projection_error,
+            });
+            std::fs::write(
+                directory.join(format!("{}.json", digest(card.identity().as_bytes()))),
+                serde_json::to_string_pretty(&detail).unwrap() + "\n",
+            )
+            .unwrap();
+        }
+    }
     Trace {
         root: root.into(),
         status: projection_error.as_ref().map_or_else(
