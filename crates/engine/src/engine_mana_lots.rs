@@ -410,12 +410,26 @@ impl ManaLotSpendRange {
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct ManaState {
     pub pools: [SharedVec<Lot>; 2],
+    /// No stated duration: lost or ineligibly spent mana makes its DTA inert,
+    /// not ended. Only exact source identity remains observable (CR609.7a).
+    #[allow(clippy::box_collection)]
+    pub inert_copy_sources: Option<Box<Vec<ObjectRef>>>,
     pub prepared: Option<Vec<Vec<Mana>>>,
     pub effect_quality: Option<Quality>,
     pub announcement_quality: Option<(ObjectRef, Quality)>,
     pub trace: Option<SpendRequest>,
     pub replay: Option<Vec<Mana>>,
     pub choice: Option<Box<SpendChoice>>,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl ManaState {
+    fn retain_inert_copy_source(&mut self, source: ObjectRef) {
+        let roots = self.inert_copy_sources.get_or_insert_with(Default::default);
+        if !roots.contains(&source) {
+            roots.push(source);
+            roots.sort_unstable();
+        }
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -579,6 +593,19 @@ impl Game {
                     && lot.amounts.iter().any(|&amount| amount > 0)
             })
             .filter_map(|lot| lot.quality.copy_source.map(|source| source.object))
+            .chain(self.state.mana_lots.iter().flat_map(|state| {
+                state
+                    .inert_copy_sources
+                    .iter()
+                    .flat_map(|roots| roots.iter().copied())
+            }))
+    }
+    pub(super) fn inert_mana_copy_source_views(&self) -> Vec<ObjectRef> {
+        self.state
+            .mana_lots
+            .as_ref()
+            .and_then(|state| state.inert_copy_sources.as_deref())
+            .map_or_else(Vec::new, |roots| roots.clone())
     }
     pub(super) fn mana_lots(&self, actor: Player) -> &[Lot] {
         self.state
@@ -718,10 +745,21 @@ impl Game {
         for actor in [Player::P0, Player::P1] {
             let mut keep = [0; 6];
             if let Some(state) = self.state.mana_lots.as_mut() {
+                let mut lost_copy_sources = Vec::new();
                 state.pools[actor.index()].retain(|lot| {
-                    (lot.quality.retention == ManaRetention::Turn && keep_turn)
-                        || (lot.quality.retention == ManaRetention::Combat && keep_combat)
+                    let keep = (lot.quality.retention == ManaRetention::Turn && keep_turn)
+                        || (lot.quality.retention == ManaRetention::Combat && keep_combat);
+                    if !keep
+                        && lot.amounts.iter().any(|&amount| amount > 0)
+                        && let Some(source) = lot.quality.copy_source
+                    {
+                        lost_copy_sources.push(source.object);
+                    }
+                    keep
                 });
+                for source in lost_copy_sources {
+                    state.retain_inert_copy_source(source);
+                }
                 for lot in &state.pools[actor.index()] {
                     for (total, amount) in keep.iter_mut().zip(lot.amounts) {
                         *total += u32::try_from(amount).expect("concrete lot bound");
@@ -740,6 +778,7 @@ impl Game {
         }
         if self.state.mana_lots.as_ref().is_some_and(|state| {
             state.pools.iter().all(|pool| pool.is_empty())
+                && state.inert_copy_sources.is_none()
                 && state.choice.is_none()
                 && state.effect_quality.is_none()
                 && state.announcement_quality.is_none()
@@ -1031,6 +1070,7 @@ impl Game {
         let mut outcome = SpendOutcome::default();
         let state = self.state.mana_lots.as_mut().unwrap();
         let mut ordinary_payment = payment;
+        let mut inert_copy_sources = Vec::new();
         for ((lot, original), allocation) in state.pools[actor.index()]
             .iter_mut()
             .zip(&lots)
@@ -1050,18 +1090,28 @@ impl Game {
             }
             if allocation != [0; 6]
                 && original.quality.spell_bonus == ManaSpellBonusView::CopyRedInstantSorcery
-                && matches!(purpose, Purpose::Spell(facts) if facts.kinds & (4 | 8) != 0 && facts.card.colors() & 8 != 0)
             {
-                let amount = allocation.into_iter().map(u64::from).sum();
-                outcome.copies.get_or_insert_with(Default::default).push((
-                    original.quality.copy_source.expect("copy mana attribution"),
-                    amount,
-                ));
+                let source = original.quality.copy_source.expect("copy mana attribution");
+                if matches!(purpose, Purpose::Spell(facts) if facts.kinds & (4 | 8) != 0 && facts.card.colors() & 8 != 0)
+                {
+                    let amount = allocation.into_iter().map(u64::from).sum();
+                    outcome
+                        .copies
+                        .get_or_insert_with(Default::default)
+                        .push((source, amount));
+                } else {
+                    // No qualifying event occurred. This DTA has become inert,
+                    // but603.7a/b provides no implicit end to its lifetime.
+                    inert_copy_sources.push(source.object);
+                }
             }
             for color in 0..6 {
                 lot.amounts[color] -= u128::from(allocation[color]);
                 ordinary_payment[color] -= allocation[color];
             }
+        }
+        for source in inert_copy_sources {
+            state.retain_inert_copy_source(source);
         }
         state.pools[actor.index()].retain(|lot| lot.amounts != [0; 6]);
         // The legacy retained-red subset is contained in the ordinary residual.
@@ -1244,6 +1294,7 @@ impl Game {
     fn compact_mana_lots(&mut self) {
         if self.state.mana_lots.as_ref().is_some_and(|state| {
             state.pools.iter().all(|pool| pool.is_empty())
+                && state.inert_copy_sources.is_none()
                 && state.trace.is_none()
                 && state.prepared.is_none()
                 && state.replay.is_none()
@@ -1268,6 +1319,10 @@ impl Game {
             return 0;
         };
         std::mem::size_of::<ManaState>()
+            + state.inert_copy_sources.as_ref().map_or(0, |roots| {
+                std::mem::size_of::<Vec<ObjectRef>>()
+                    + roots.len() * std::mem::size_of::<ObjectRef>()
+            })
             + 2 * std::mem::size_of::<Vec<Lot>>()
             + state
                 .pools

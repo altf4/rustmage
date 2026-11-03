@@ -3421,6 +3421,8 @@ pub struct Observation {
     pub keep_types: Option<KeepTypesView>,
     pub linked_exile: Vec<LinkedExileView>,
     pub mana_lots: Vec<ManaLotView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub inert_mana_copy_sources: Vec<ObjectRef>,
     pub mana_lot_spend: Option<ManaLotSpendRange>,
     pub creature_damage_history: Vec<CreatureDamageHistoryView>,
     pub counter_placement_history: Vec<CounterPlacementHistoryView>,
@@ -10401,6 +10403,7 @@ impl Game {
             zone_reveals: self.zone_reveals(),
             created_token_choice: self.created_token_choice(),
             mana_lots: self.mana_lot_views(),
+            inert_mana_copy_sources: self.inert_mana_copy_source_views(),
             mana_lot_spend: owns_choice.then(|| self.mana_lot_spend_range()).flatten(),
             mana_payment: owns_choice.then(|| self.mana_payment_domain()).flatten(),
             endure_choice: if owns_choice {

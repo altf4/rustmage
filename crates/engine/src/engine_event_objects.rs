@@ -135,12 +135,12 @@ impl SpellView {
             })
     }
     pub(super) fn refer_zone_event(&mut self, event: &ZoneChange) {
-        if event.destination != Zone::Battlefield
-            && matches!(
-                event.before.zone,
-                Zone::Battlefield | Zone::Stack | Zone::Graveyard | Zone::Exile | Zone::Command
-            )
-        {
+        // This helper captures a departure condition. Ordinary ETB dispatch
+        // separately captures only its new entrant, not its previous object.
+        if matches!(
+            event.before.zone,
+            Zone::Battlefield | Zone::Stack | Zone::Graveyard | Zone::Exile | Zone::Command
+        ) {
             self.refer_objects([event.before.reference]);
         }
         if matches!(

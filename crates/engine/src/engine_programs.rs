@@ -1269,7 +1269,11 @@ impl Game {
         // object (CR400.7e); hidden pre-event hand/library identities are not
         // retained merely because they occurred in the implementation event.
         let packet = self.state.pending_triggers.last_mut().unwrap();
-        if event.destination != Zone::Battlefield
+        let departure_observer = packet.trigger_definition().triggers()[index]
+            .condition
+            .event()
+            == TriggerCondition::CreatureCardLeavesYourGraveyard;
+        if (event.destination != Zone::Battlefield || departure_observer)
             && matches!(
                 event.before.zone,
                 Zone::Battlefield | Zone::Stack | Zone::Graveyard | Zone::Exile | Zone::Command

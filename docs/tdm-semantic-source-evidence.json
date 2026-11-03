@@ -2682,5 +2682,11 @@
       "cargo_jobs": 1,
       "test_threads": 1
     }
+  },
+  "review_followup": {
+    "status": "Historical353 selected passes retained; two1119 review findings require the descendant final-boundary repair. The old mana-loss/ineligible-spend removal expectation and inference are retracted, not counted as proof of correct DTA lifetime.",
+    "base_evidence_sha256": "b8528dd5434c2dd95878c316f1820e3d02b5160c643c23011809b86ade27e751",
+    "addendum": "docs/tdm-semantic-final-boundary-evidence.json",
+    "fixture_note": "Respecting pending choices exposed the old native Battlesong contrast had bypassed its mandatory target. Descendant now chooses the nonattacking source legally and preserves the original attacker exclusion assertion."
   }
 }

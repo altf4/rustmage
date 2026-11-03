@@ -1,5 +1,5 @@
 {
-  "scope": "Finite semantic source-reference reconciliation at the frozen passing96 candidate;145-condition union plus action/reflexive/waiting holders. Independent published-head reviews and assembled schema/runtime validation remain pending. No TDM behavior definitions or admissions.",
+  "scope": "Finite semantic reference audit, updated after final1119 review found two additional confirmed boundaries. Original read-only inventories and353-pass checkpoint remain historical; final-boundary repair has104 focused and257 affected passes, pending refreshed independent reviews and assembled validation. No TDM behavior/admissions.",
   "rules": [
     "CR109.1",
     "CR400.7/400.7e",
@@ -2641,19 +2641,21 @@
     "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/crates/engine/src/cards.rs": "444df7e9d12d0693a50f349aa32b04693081219a68baee2866f1022f0d0a36e0",
     "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_source_prevention.rs": "375a18bea857e374c4db03aa3746563dfdede0eca4c5dd1293f845c00098b2e8",
     "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_roles.rs": "fd8b9c6739594ad1fdc8c7c479457134d92d613f72bf01de21ba6602e1cdcc5e",
-    "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_event_objects.rs": "7a79bd94235374ba8548b2f1132398a1d52d35199bab2fa51f1891f91aa32c45",
+    "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_event_objects.rs": "aaee556aad5e0ed788a83e8f0415fb2a26be9552ae8da3c942c542fd9904a93e",
     "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_explore.rs": "6b59edea8fa5e2d6b2d7e8cd85f0e9e0d422fae0de5b1a3bfd9a6c9f59cfd777",
     "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_draw_events.rs": "257a1334a1a491a39ebe2a377e18599d029c4fa2e03d8a47fafce7dd97579d15",
     "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/crates/engine/src/engine_entry_counter_events.rs": "a9972aa5936ec2122b907fe7662e9b00029161b02d15ffbc9f9a30695166459f",
     "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/crates/engine/src/engine_programs.rs": "c36a60ac5d0a35209417d5c31b4d690e9dafc7ec8e9de0417e640c577c5d0158",
     "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_paradigm.rs": "4ac3c865c64041fe8f26912881454dd931166a45f265da5f65cb1e9b6ee0c794",
-    "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_mana_lots.rs": "6de9c9cfbac9eb3fcbfec6e2a4cf9425152c60e0b01714a2fdd072438ce3ec27",
+    "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_mana_lots.rs": "97eb1e45bc1ca348114ab8a7bc6af62ae78bbe881acf26b8f881f73deb951546",
     "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_ability_timeline.rs": "49c04db38f3a8a183d97a9693c8d4a14eb514cbde3f5c78f3b1ec8eb55042f55",
     "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_death_exile.rs": "6e6a91355dc8bf58abd9201d335776234b56ad1de4cf6c858a46ba9b2562b998",
     "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_delayed_target_events.rs": "927e8b6cc0484723f9c759cd4fcd40d9f1dc0672198fd9aed070b65971054a0b",
     "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_earthbend.rs": "7f5070f0ad15e6f908d7e187fb836c3351e92213fc22a1af39167eba39b05c84",
-    "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/tests/tdm_remaining_world_rules.rs": "c5ee0388563b9114c5faf713e31f0eccbfb11dc13f4501a80024b732a588f1c3",
-    "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/tests/dft_trigger_facts_engine.rs": "44ed2b9ac67da6531cf070e59960090cb575083b3bf04a24d72d3feb16e493d2"
+    "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/tests/tdm_remaining_world_rules.rs": "af2b5fd3ff428164d72c34efa9cc5588e5d5f920a8535f50d6d337d78d77e409",
+    "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/tests/dft_trigger_facts_engine.rs": "44ed2b9ac67da6531cf070e59960090cb575083b3bf04a24d72d3feb16e493d2",
+    "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine.rs": "d69dd9d1e88e7a6e2be8cd316d9782a92e6a79e393b78fef48fb1dfc821f4069",
+    "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_programs.rs": "1759e35aabe300dd72e4a81c338bbaa5f4562790f5ff81938191c4e478020f7b"
   },
   "resolution_cast_boundary": "CR608.2g: casting a nonmana spell during resolution does not resolve it immediately. The current parent continues and finishes before NWF resolves. Finished parent exile/cascade rosters are excluded; no suspended-parent traversal is introduced. A real ordinary free-cast exclusion fixture is included.",
   "known_integration_work": [
@@ -7051,17 +7053,23 @@
     },
     {
       "holder": "Mana-created DTA",
-      "decision": "Only positive actual CopyRedInstantSorcery pool lots expose their already captured ManaCopySource exact object. Never proposal/replay traces or generic mana/Treasure provenance. Spending or emptying the lot removes this root.",
+      "decision": "Active actual mana lots retain per-unit triggering availability. Lost/ineligibly spent units retain an existential deduplicated exact source in cold ManaState because their DTA has no stated duration and never triggered. Qualified spending consumes those units into actual independent counterable copy packets; no additional inert root is created. Generic mana provenance remains excluded.",
       "tests": [
-        "waiting_source_boundary_unspent_goggles_mana_retains_its_exact_delayed_trigger_source",
-        "waiting_source_boundary_mana_delayed_trigger_ends_when_the_actual_lot_is_spent_or_emptied"
+        "semantic_final_boundary_goggles_mana_loss_keeps_the_untriggered_delayed_ability_source",
+        "semantic_final_boundary_goggles_nonqualifying_payment_keeps_the_untriggered_delayed_ability_source",
+        "semantic_final_boundary_inert_mana_source_is_exact_public_owned_and_not_generic_provenance",
+        "semantic_final_boundary_each_qualifying_mana_unit_triggers_once_and_leaves_no_inert_duplicate",
+        "semantic_final_boundary_mixed_ineligible_and_qualifying_units_keep_only_one_inert_exact_source"
       ],
       "rules": [
         "106.6",
         "106.6a",
+        "603.7a",
+        "603.7b",
         "603.7e",
         "609.7a"
-      ]
+      ],
+      "superseded_1119_decision": "Only positive actual CopyRedInstantSorcery pool lots expose their already captured ManaCopySource exact object. Never proposal/replay traces or generic mana/Treasure provenance. Spending or emptying the lot removes this root."
     },
     {
       "holder": "Fixed-until-cleanup prevention",
@@ -7141,17 +7149,34 @@
     }
   ],
   "final_source_freeze": {
-    "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/source-hashes.json",
-    "sha256": "4485e968666223b1629df3cfb165a9b83fccd3e20713913bb30240548e2f8480"
+    "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-semantic96-final-1793677313198956795/source-hashes.json",
+    "sha256": "ebbb44b800a3001a5b21ef62b1a7197ae5f4a1417e9f09eda7db2f865a7dc3f8"
   },
   "final_source_patch": {
-    "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/source.patch",
-    "sha256": "50a83ad35538f9e8ac546d5a835b7257ec3299965bf51ce6a3d2c298c4162e66"
+    "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-semantic96-final-1793677313198956795/source.patch",
+    "sha256": "53f29466c29dcae7700e5ee86afd3c36208ad0d60a195402db272cb5687e6a01"
   },
   "final_passing_summary": {
-    "focused": 96,
+    "focused": 104,
     "affected_compatibility": 257,
-    "total_selected_passes": 353,
+    "total_selected_passes": 361,
     "no_final_assembled_acceptance_claim": true
+  },
+  "final_review_correction": {
+    "base": "1119afcddb319d435253069eaa9870ffc4901aef",
+    "prior_audit_sha256": "e7ab016be868b46e701ff66dad7a24c859dd08f8040c0852866492455cdedd11",
+    "addendum": "docs/tdm-semantic-final-boundary-evidence.json",
+    "findings": [
+      "Losing or ineligibly spending Goggles mana makes its DTA impossible, not expired. Earlier pool-only lifetime conclusion is retracted.",
+      "A graveyard-departure condition returning a card toBF refers to oldGY plus public newBF; destinationBF alone does not make it an ETB condition."
+    ]
+  },
+  "graveyard_departure_to_battlefield_correction": {
+    "capture": "refer_zone_event is explicitly a departure-reference helper; shared queue_zone_trigger_from recognizes typed CreatureCardLeavesYourGraveyard departure role. Actual ETB clauses retain only the new entrant.",
+    "tests": [
+      "semantic_final_boundary_native_dredgers_insight_keeps_old_graveyard_and_new_battlefield_subjects",
+      "semantic_final_boundary_native_along_the_crooked_way_keeps_old_graveyard_and_new_battlefield_subjects",
+      "semantic_final_boundary_ordinary_reanimation_etb_does_not_inherit_the_old_graveyard_object"
+    ]
   }
 }

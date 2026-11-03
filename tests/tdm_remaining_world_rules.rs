@@ -1833,7 +1833,8 @@ fn source_prevention_layout_matches_the_integrated_shared_state_budget() {
             "SpellView":std::mem::size_of::<SpellView>(), "EventObjectView":std::mem::size_of::<EventObjectView>(),
             "DamageSourceRef":std::mem::size_of::<DamageSourceRef>(),
             "ReflexiveSubjectView":std::mem::size_of::<ReflexiveSubjectView>(),
-            "ExileDeathReplacementView":std::mem::size_of::<ExileDeathReplacementView>()
+            "ExileDeathReplacementView":std::mem::size_of::<ExileDeathReplacementView>(),
+            "ManaState":std::mem::size_of::<mana_lots::ManaState>()
         });
         std::fs::write(path, serde_json::to_string_pretty(&layout).unwrap()).unwrap();
     }
@@ -2217,7 +2218,10 @@ const fn event_observer(triggers: &'static [TriggeredAbility]) -> CardRules {
     CardRules { triggers, ..PLAIN }
 }
 fn stack_event_observers(g: &mut Game) {
-    g.give_priority();
+    // Preserve an already active simultaneous-trigger ordering choice.
+    if g.state.pending == Pending::Priority {
+        g.give_priority();
+    }
     for _ in 0..128 {
         if g.state.pending == Pending::Priority
             && g.state.pending_triggers.is_empty()
@@ -2582,7 +2586,7 @@ fn source_world_completion_creature_declaration_and_player_attack_are_explicitly
     for explicit in [false, true] {
         let p = Player::P0;
         let mut g = scenario(p);
-        put(
+        let observer = put(
             &mut g,
             p,
             if explicit {
@@ -2599,6 +2603,20 @@ fn source_world_completion_creature_declaration_and_player_attack_are_explicitly
         g.state.objects[attacker as usize].summoning_sick = false;
         act(&mut g, Action::Attack { card: attacker });
         act(&mut g, Action::FinishAttackers);
+        if !explicit {
+            // Battlesong's actual mandatory target is independent of the
+            // creature that attacked. Complete it legally without rebinding
+            // the attacked creature as a target.
+            wait(&mut g, |g| {
+                matches!(g.state.pending, Pending::Targets { .. })
+            });
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(observer),
+                },
+            );
+        }
         stack_event_observers(&mut g);
         g.move_object(attacker, Zone::Graveyard);
         let choices = source_candidates(&mut g);
@@ -4075,7 +4093,8 @@ fn waiting_source_boundary_plain_prevention_and_target_only_exile_do_not_refer_t
 }
 
 #[test]
-fn waiting_source_boundary_mana_delayed_trigger_ends_when_the_actual_lot_is_spent_or_emptied() {
+fn waiting_source_boundary_mana_delayed_trigger_remains_inert_after_the_actual_lot_is_spent_or_emptied()
+ {
     const SPEND: CardRules = CardRules {
         activated: &[ActivatedAbility {
             cost: ActivationCost {
@@ -4126,8 +4145,12 @@ fn waiting_source_boundary_mana_delayed_trigger_ends_when_the_actual_lot_is_spen
         assert!(g.mana_lot_views().is_empty());
         g.state.players[p.index()].mana[1] = 3;
         let choices = source_candidates(&mut g);
-        assert!(!choices.contains(&old));
-        reject(&mut g, Action::ChooseDamageSource { source: old });
+        assert!(
+            choices.contains(&old),
+            "106.6/603.7a/b: no qualifying trigger and no stated duration"
+        );
+        assert_eq!(g.observe(p).inert_mana_copy_sources, vec![old]);
+        assert_eq!(g.observe(p.other()).inert_mana_copy_sources, vec![old]);
     }
 }
 #[test]
@@ -4322,4 +4345,337 @@ fn waiting_source_boundary_paradigm_never_fabricates_an_exile_reference_when_the
     );
     assert!(waiting[0].entering_object.is_none());
     assert!(waiting[0].return_link.is_none());
+}
+
+fn final_boundary_goggles_root_after_mana_disappears(spend: bool) {
+    const SPEND: CardRules = CardRules {
+        activated: &[ActivatedAbility {
+            cost: ActivationCost {
+                generic: 1,
+                ..ActivationCost::ZERO
+            },
+            ..ability(&[])
+        }],
+        ..PLAIN
+    };
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF), (card("Bear Cub"), &SPEND)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let spender = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let goggles = put(&mut g, p, "Pyromancer's Goggles", Zone::Battlefield);
+    let old = g.object_ref(goggles);
+    g.clear_step_mana(false, false);
+    choose(
+        &mut g,
+        |a| matches!(a,Action::AnnounceMana{card,..}if *card==goggles),
+    );
+    pay(&mut g);
+    g.move_object(goggles, Zone::Graveyard);
+    if spend {
+        act(
+            &mut g,
+            Action::AnnounceActivate {
+                card: spender,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        pay(&mut g);
+        drain(&mut g);
+    } else {
+        g.clear_step_mana(false, false);
+    }
+    assert!(g.mana_lot_views().is_empty());
+    g.state.players[p.index()].mana[1] = 3;
+    let choices = source_candidates(&mut g);
+    assert!(
+        choices.contains(&old),
+        "106.6 creates a DTA with no stated duration; an impossible event does not end it under603.7a/b"
+    );
+    assert!(!choices.contains(&g.object_ref(goggles)));
+}
+#[test]
+fn semantic_final_boundary_goggles_mana_loss_keeps_the_untriggered_delayed_ability_source() {
+    final_boundary_goggles_root_after_mana_disappears(false);
+}
+#[test]
+fn semantic_final_boundary_goggles_nonqualifying_payment_keeps_the_untriggered_delayed_ability_source()
+ {
+    final_boundary_goggles_root_after_mana_disappears(true);
+}
+fn final_boundary_native_graveyard_departure_to_battlefield(observer: &str) {
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    // A reachable post-ETB state: the observer's separate entry ability is finished.
+    let source = put(&mut g, p, observer, Zone::Battlefield);
+    let bear = put(&mut g, p, "Bear Cub", Zone::Graveyard);
+    let old = g.object_ref(bear);
+    let zombify = put(&mut g, p, "Zombify", Zone::Hand);
+    cast(&mut g, zombify, Some(Target::Card(bear)));
+    wait(&mut g, |g| {
+        g.state
+            .stack
+            .iter()
+            .any(|item| item.source.is_some_and(|s| s.id == source))
+    });
+    let entered = g.object_ref(bear);
+    assert_eq!(g.object_view(bear).zone, Zone::Battlefield);
+    g.move_object(bear, Zone::Hand);
+    let choices = source_candidates(&mut g);
+    assert!(
+        choices.contains(&old),
+        "the leave-GY condition explicitly refers to the departing old graveyard object"
+    );
+    assert!(
+        choices.contains(&entered),
+        "400.7e also permits finding the resulting public object"
+    );
+    assert!(!choices.contains(&g.object_ref(bear)));
+}
+#[test]
+fn semantic_final_boundary_native_dredgers_insight_keeps_old_graveyard_and_new_battlefield_subjects()
+ {
+    final_boundary_native_graveyard_departure_to_battlefield("Dredger's Insight");
+}
+#[test]
+fn semantic_final_boundary_native_along_the_crooked_way_keeps_old_graveyard_and_new_battlefield_subjects()
+ {
+    final_boundary_native_graveyard_departure_to_battlefield("Along the Crooked Way");
+}
+#[test]
+fn semantic_final_boundary_inert_mana_source_is_exact_public_owned_and_not_generic_provenance() {
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF)]);
+    let p = Player::P1;
+    let mut parent = scenario(p);
+    let goggles = put(&mut parent, p, "Pyromancer's Goggles", Zone::Battlefield);
+    let old = parent.object_ref(goggles);
+    parent.clear_step_mana(false, false);
+    choose(
+        &mut parent,
+        |a| matches!(a,Action::AnnounceMana{card,..}if *card==goggles),
+    );
+    pay(&mut parent);
+    parent.move_object(goggles, Zone::Hand);
+    parent.clear_step_mana(false, false);
+    parent.move_object(goggles, Zone::Battlefield);
+    parent.move_object(goggles, Zone::Hand);
+    let fresh = parent.object_ref(goggles);
+    let forest = put(&mut parent, p, "Forest", Zone::Battlefield);
+    let ordinary = parent.object_ref(forest);
+    act(&mut parent, Action::TapMana { card: forest });
+    parent.move_object(forest, Zone::Hand);
+    parent.clear_step_mana(false, false);
+    parent.finish_cleanup();
+    // The inert DTA has no duration, so cleanup/new turn does not remove it.
+    parent.state.active = p;
+    parent.state.priority = p;
+    parent.state.step = Step::Main1;
+    parent.give_priority();
+    parent.state.players[p.index()].mana = [8; 6];
+    let choices = source_candidates(&mut parent);
+    assert!(choices.contains(&old));
+    assert!(!choices.contains(&fresh));
+    assert!(!choices.contains(&ordinary));
+    for viewer in [p, p.other()] {
+        assert_eq!(parent.observe(viewer).inert_mana_copy_sources, vec![old]);
+    }
+    reject(&mut parent, Action::ChooseDamageSource { source: fresh });
+    let action = Action::ChooseDamageSource { source: old };
+    let saved = parent.snapshot();
+    let revision = parent.revision();
+    let index = parent
+        .legal_actions()
+        .iter()
+        .position(|a| *a == action)
+        .unwrap();
+    let mut raw = parent.clone();
+    let mut indexed = parent.clone();
+    drop(parent);
+    assert_eq!(raw.apply(p.other(), action.clone()), Err(Error::WrongActor));
+    assert_eq!(raw.snapshot(), saved);
+    raw.apply(p, action.clone()).unwrap();
+    indexed.apply_index(p, revision, index).unwrap();
+    drain(&mut raw);
+    drain(&mut indexed);
+    assert_eq!(raw.snapshot(), indexed.snapshot());
+    indexed.restore(&saved).unwrap();
+    act(&mut indexed, action);
+    drain(&mut indexed);
+    assert_eq!(raw.snapshot(), indexed.snapshot());
+}
+const AMPLIFIED_GOGGLES: CardRules = CardRules {
+    effect: Effect::Permanent,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::ManaSpentForSpell,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::CopyCastSpell {
+            prior_spells: false,
+        }],
+    }],
+    activated: &[ActivatedAbility {
+        cost: ActivationCost {
+            tap: true,
+            ..ActivationCost::ZERO
+        },
+        ..ability(&[Instruction::AddMana(ManaProduction::Tagged {
+            production: &ManaProduction::Fixed([0, 0, 0, 3, 0, 0]),
+            quality: &ManaQuality {
+                restriction: ManaRestriction::Unrestricted,
+                spell_bonus: ManaSpellBonus::CopyRedInstantSorcery,
+                retention: ManaRetention::Step,
+            },
+        })])
+    }],
+    ..CardRules::EMPTY
+};
+#[test]
+fn semantic_final_boundary_each_qualifying_mana_unit_triggers_once_and_leaves_no_inert_duplicate() {
+    // Complete typed amplification isolates106.6a's three-mana result without
+    // introducing a new ordinary mana-doubling card definition.
+    let _scope = fixture_rules::activate(&[
+        (card("Opt"), &NWF),
+        (card("Pyromancer's Goggles"), &AMPLIFIED_GOGGLES),
+    ]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let goggles = put(&mut g, p, "Pyromancer's Goggles", Zone::Battlefield);
+    let old = g.object_ref(goggles);
+    let bear = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+    g.clear_step_mana(false, false);
+    choose(
+        &mut g,
+        |a| matches!(a,Action::AnnounceMana{card,..}if *card==goggles),
+    );
+    pay(&mut g);
+    g.move_object(goggles, Zone::Graveyard);
+    let spell = put(&mut g, p, "Fiery Annihilation", Zone::Hand);
+    cast(&mut g, spell, Some(Target::Card(bear)));
+    let original = g
+        .state
+        .stack
+        .iter()
+        .find(|item| item.kind == StackKind::Spell)
+        .unwrap()
+        .id;
+    stack_event_observers(&mut g);
+    let triggers: Vec<_> = g
+        .state
+        .stack
+        .iter()
+        .filter(|item| item.copy_event.is_some() && item.source.is_some_and(|s| s.object == old))
+        .map(|item| item.id)
+        .collect();
+    assert_eq!(triggers.len(), 3);
+    assert!(g.mana_lot_views().is_empty());
+    assert!(g.observe(p).inert_mana_copy_sources.is_empty());
+    for &id in &triggers[..2] {
+        assert!(g.counter_stack_item(id, false));
+    }
+    assert!(g.state.stack.iter().any(|item| item.id == triggers[2]));
+    assert!(g.counter_stack_item(triggers[2], false));
+    assert!(g.counter_stack_item(original, false));
+    g.state.players[p.index()].mana = [8; 6];
+    let choices = source_candidates(&mut g);
+    assert!(
+        !choices.contains(&old),
+        "all three DTAs already triggered; countered packets create no new waiting ability"
+    );
+}
+#[test]
+fn semantic_final_boundary_mixed_ineligible_and_qualifying_units_keep_only_one_inert_exact_source()
+{
+    const SPEND: CardRules = CardRules {
+        activated: &[ActivatedAbility {
+            cost: ActivationCost {
+                generic: 1,
+                ..ActivationCost::ZERO
+            },
+            ..ability(&[])
+        }],
+        ..PLAIN
+    };
+    let _scope = fixture_rules::activate(&[
+        (card("Opt"), &NWF),
+        (card("Pyromancer's Goggles"), &AMPLIFIED_GOGGLES),
+        (card("Bear Cub"), &SPEND),
+    ]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let spender = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let goggles = put(&mut g, p, "Pyromancer's Goggles", Zone::Battlefield);
+    let old = g.object_ref(goggles);
+    g.clear_step_mana(false, false);
+    choose(
+        &mut g,
+        |a| matches!(a,Action::AnnounceMana{card,..}if *card==goggles),
+    );
+    pay(&mut g);
+    g.move_object(goggles, Zone::Graveyard);
+    act(
+        &mut g,
+        Action::AnnounceActivate {
+            card: spender,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    pay(&mut g);
+    drain(&mut g);
+    let spell = put(&mut g, p, "Lightning Bolt", Zone::Hand);
+    cast(&mut g, spell, Some(Target::Player(p.other())));
+    stack_event_observers(&mut g);
+    let triggers: Vec<_> = g
+        .state
+        .stack
+        .iter()
+        .filter(|item| item.copy_event.is_some() && item.source.is_some_and(|s| s.object == old))
+        .map(|item| item.id)
+        .collect();
+    assert_eq!(triggers.len(), 1);
+    for id in triggers {
+        assert!(g.counter_stack_item(id, false));
+    }
+    let original = g
+        .state
+        .stack
+        .iter()
+        .find(|item| item.kind == StackKind::Spell)
+        .unwrap()
+        .id;
+    assert!(g.counter_stack_item(original, false));
+    g.clear_step_mana(false, false);
+    assert_eq!(
+        g.observe(p).inert_mana_copy_sources,
+        vec![old],
+        "one ineligible unit plus one lost unit are existentially deduplicated; the qualifying unit was consumed"
+    );
+    g.state.players[p.index()].mana = [8; 6];
+    assert!(source_candidates(&mut g).contains(&old));
+}
+#[test]
+fn semantic_final_boundary_ordinary_reanimation_etb_does_not_inherit_the_old_graveyard_object() {
+    let _scope = fixture_rules::activate(&[(card("Opt"), &NWF)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let observer = put(&mut g, p, "Lifecreed Duo", Zone::Battlefield);
+    let bear = put(&mut g, p, "Bear Cub", Zone::Graveyard);
+    let old = g.object_ref(bear);
+    let spell = put(&mut g, p, "Zombify", Zone::Hand);
+    cast(&mut g, spell, Some(Target::Card(bear)));
+    wait(&mut g, |g| {
+        g.state
+            .stack
+            .iter()
+            .any(|item| item.source.is_some_and(|s| s.id == observer))
+    });
+    let entered = g.object_ref(bear);
+    g.move_object(bear, Zone::Hand);
+    let choices = source_candidates(&mut g);
+    assert!(
+        !choices.contains(&old),
+        "the ETB condition names the new entrant, unlike a graveyard-departure observer"
+    );
+    assert!(choices.contains(&entered));
+    assert!(!choices.contains(&g.object_ref(bear)));
 }
