@@ -81,6 +81,16 @@ fn check(value: &Value, context: Option<&str>) -> Result<(), String> {
         }
         Value::Array(rows) => rows.iter().try_for_each(|row| check(row, context)),
         Value::Object(fields) => {
+            // The new boolean belongs to a performed-action subject, whereas
+            // inherited cost views also use an enum-valued field named action.
+            if context == Some("reflexive_subject") && fields.contains_key("action")
+                || fields.get("action").is_some_and(Value::is_boolean)
+                    && fields.get("object").is_some_and(|object| {
+                        object.get("card").is_some() && object.get("generation").is_some()
+                    })
+            {
+                return Err("performed-action subject identity is new to schema 200".into());
+            }
             if context == Some("graveyard_cast_permissions")
                 && fields.get("kind").is_some_and(|value| value == "Harmonize")
             {
@@ -172,7 +182,7 @@ pub(super) fn prior_schema200_actions_supported(actions: &[Action]) -> bool {
 
 #[test]
 fn prior199_retains_inherited_bytes_and_origin_facts() {
-    let inherited = r#"[{"schema":199,"damage_source":null,"keywords":4294967295,"source_ability_origin":17,"delayed_returns":[{"own_end_step":true}],"copy":{"additional_creature_types":["Warrior"]},"target_allocations":[{"amount":4294967295}]}]"#;
+    let inherited = r#"[{"schema":199,"damage_source":null,"keywords":4294967295,"source_ability_origin":17,"delayed_returns":[{"own_end_step":true}],"copy":{"additional_creature_types":["Warrior"]},"target_allocations":[{"amount":4294967295}],"cost":{"action":"Sacrifice"}}]"#;
     assert_eq!(project_prior_schema200(inherited).unwrap(), inherited);
     let changed = inherited.replace("source_ability_origin\":17", "source_ability_origin\":18");
     assert_ne!(project_prior_schema200(&changed).unwrap(), inherited);
@@ -185,6 +195,8 @@ fn prior199_refuses_new_semantics_instead_of_erasing_them() {
         r#"{"Keyword":4294967296}"#,
         r#"{"rules":4294967296}"#,
         r#"{"pending":"damage_source"}"#,
+        r#"{"reflexive_subject":{"object":{"card":1,"generation":0},"action":true}}"#,
+        r#"{"object":{"card":1,"generation":0},"action":true}"#,
         r#"{"endure_choice":{"amount":65536}}"#,
         r#"{"target_allocations":[{"amount":4294967296}]}"#,
         r#"{"target_amount":{"remaining":4294967296}}"#,
