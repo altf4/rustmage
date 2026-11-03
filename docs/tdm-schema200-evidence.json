@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "scope": "Tarkir schema200 and explicit prior199 trace audit; final engine acceptance remains open",
+  "scope": "Tarkir schema200 initial migration and final semantic-source trace audits; final engine acceptance remains open",
   "source_revision": "08a53fccb",
   "previous_observation_schema": 199,
   "observation_schema": 200,
@@ -61,7 +61,7 @@
     "Combat insertion, callbacks, temporary-token sacrifice and acquisition-qualified exile links",
     "Counter death facts, color-recipient choice, private search qualifiers and frozen u64 target divisions",
     "New mana restriction variants and nonmana-X sacrifice qualifiers",
-    "Chosen-source prevention private/public views and choices; final semantic-reference field/variants remain in owner repair"
+    "Chosen-source prevention exact physical/stack references, semantic event and actual action subjects, named death-replacement sources, and retained inert mana-created delayed sources"
   ],
   "projection_contract": [
     "Return compatible observation bytes unchanged after the schema number is projected, preserving all inherited fields and all existing origin values",
@@ -813,5 +813,52 @@
       "/root/tdm_engine_review_two"
     ],
     "independent_approval": "Both recomputed all row comparisons and receipt-only full observation digest recovery; no findings in this scope. Final engine approval explicitly withheld."
+  },
+  "final_semantic_trace_acceptance": {
+    "candidate_revision": "99192540d029837750574a860c8dc1d8002095d9",
+    "baseline_accepted": true,
+    "scope": "Bounded trace data acceptance only; broad native, all-target Clippy, production/performance and final engine approvals remain required",
+    "compiled_cases": {
+      "tdm_mechanics": 447,
+      "typed_schema": 5,
+      "report": "/home/altf4/.cache/rustmage-tdm/root-engine-repaired-1793677531474053474/terminal.json",
+      "source_unchanged": true
+    },
+    "trace_rows": 3164,
+    "all_completed": true,
+    "non_observation_trace_changes": 0,
+    "current200_observation_changes": 16,
+    "prior199_exact_rows": 3139,
+    "prior199_previous_native_origin_rows": 9,
+    "prior199_new_semantic_rows": 16,
+    "prior199_unrepresentable_rows": [
+      "The Eagles Are Coming!",
+      "Torch the Tower"
+    ],
+    "candidate_sha256": "c9d23737f81cb373f46ea954ae07a7c334d08eee2f6e33f67de9ef7da3befa69",
+    "initial200_baseline": "/home/altf4/.cache/rustmage-tdm/root-semantic-trace-details-1793677782155617066/committed-initial200-baseline.json",
+    "initial200_baseline_sha256": "90da52b4f440b287ee365a48826b15fbde5104506a253a112e681a1266ae6753",
+    "detail_report": "/home/altf4/.cache/rustmage-tdm/root-semantic-trace-details-1793677782155617066/semantic-observation-delta-audit.json",
+    "detail_report_sha256": "97f4ea776c4fbbd2b7b835686597ca3e191f60753b0b7861a993eace8f4ec1e8",
+    "exact_changed_paths": 32,
+    "meaningful_changes": [
+      "Thirty retained until-turn death-exile row entries across both viewers; exact old battlefield recipients now different public exile incarnations; Torch explicitly names its damage source",
+      "Two delayed Eagles actual-return group Identity payloads; exact old battlefield subjects, no hidden new hand identities"
+    ],
+    "proof": "Every actual raw observation roundtrips byte exactly and reproduces its current digest. Removing only the32 enumerated byte spans recovers every initial200 digest. This is an offline diagnostic; production prior199 projection never erases meaningful fields or values.",
+    "previous_nine_origin_traces": "All nine prior199 whole traces equal the previously accepted08a candidate; historical receipt-only proof remains applicable unchanged",
+    "new_inert_mana_wire": "Actual typed empty/nonempty Observation serializer test passes; empty omits inert_mana_copy_sources, nonempty is explicitly unrepresentable in prior199. Exact retained DTA rules/ownership are covered by104 mechanic scenarios.",
+    "independent_nonauthor_reviews": [
+      {
+        "reviewer": "/root/tdm_engine_review_one",
+        "revision": "99192540d029837750574a860c8dc1d8002095d9",
+        "status": "Scoped trace acceptance approved after complete16Oracle/typed/full pinnedJava/helper review and independent byte-span digest recovery"
+      },
+      {
+        "reviewer": "/root/tdm_engine_review_two",
+        "revision": "99192540d029837750574a860c8dc1d8002095d9",
+        "status": "Scoped trace acceptance approved after independent16raw SHA/FNV/roundtrip/recovery checks and unchanged9prior199 whole-trace comparison"
+      }
+    ]
   }
 }

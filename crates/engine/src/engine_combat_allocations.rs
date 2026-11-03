@@ -70,7 +70,7 @@ impl Game {
             .filter_map(|row| {
                 row.target
                     .object
-                    .map(|object| (object, Counters::of(kind, u64::from(row.amount))))
+                    .map(|object| (object, Counters::of(kind, row.amount)))
             })
             .collect();
         self.effect_counters(changes, replacements::ResumeMode::Program);
