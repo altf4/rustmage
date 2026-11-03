@@ -272,6 +272,28 @@ fn prior199_distinguishes_new_origins_from_inherited_link_and_wide_values() {
         return_zone: Zone::Battlefield,
     };
     assert!(project_prior_schema200(&serde_json::to_string(&new_link).unwrap()).is_err());
+    let mut subject = ReflexiveSubjectView {
+        object,
+        action: true,
+        additional_objects: Vec::new(),
+    };
+    assert!(project_prior_schema200(&serde_json::to_string(&subject).unwrap()).is_err());
+    subject.action = false;
+    let bytes = serde_json::to_string(&subject).unwrap();
+    assert_eq!(bytes, r#"{"object":{"card":0,"generation":0}}"#);
+    assert_eq!(project_prior_schema200(&bytes).unwrap(), bytes);
+    let mut replacement = ExileDeathReplacementView {
+        object,
+        source: object,
+        source_card: Card::from_name("Torch the Tower").unwrap(),
+        source_controller: Player::P0,
+        source_referred: true,
+        expires_turn: 3,
+    };
+    assert!(project_prior_schema200(&serde_json::to_string(&replacement).unwrap()).is_err());
+    replacement.source_referred = false;
+    let bytes = serde_json::to_string(&replacement).unwrap();
+    assert_eq!(project_prior_schema200(&bytes).unwrap(), bytes);
     let action = Action::ChooseDamagePrevention {
         source: object,
         prevention: DamagePreventionKind::ProtectionColor(rustmage_core::cards::ChoiceColor::Red),
