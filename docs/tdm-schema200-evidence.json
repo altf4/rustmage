@@ -4,7 +4,7 @@
   "source_revision": "08a53fccb",
   "previous_observation_schema": 199,
   "observation_schema": 200,
-  "baseline_accepted": false,
+  "baseline_accepted": true,
   "source_inputs": [
     {
       "path": "data/observation-schema.txt",
@@ -799,5 +799,19 @@
     "card_authoring_permitted": false,
     "single_set_pr_created": false
   },
-  "artifact_mode": "Guarded native Rust ELF execution; no cdylib/FFI consumer. Mutable Cargo outputs are transient, and no shared-library preservation claim is made by this report."
+  "artifact_mode": "Guarded native Rust ELF execution; no cdylib/FFI consumer. Mutable Cargo outputs are transient, and no shared-library preservation claim is made by this report.",
+  "baseline_acceptance": {
+    "scope": "Reviewed initial engine at08a53fccb only; final runtime repairs and whole-engine acceptance remain open",
+    "original_baseline": "<cache>/rustmage-tdm/root-wire200-details-1793668768135335019/committed-prior199-baseline.json",
+    "original_baseline_sha256": "1b5003d152a350245a2a5f8ae2aafb853f6352f54ea888568656fd1dc2011f2d",
+    "accepted_candidate": "<cache>/rustmage-tdm/root-wire200-details-1793668768135335019/candidate.json",
+    "accepted_candidate_sha256": "90da52b4f440b287ee365a48826b15fbde5104506a253a112e681a1266ae6753",
+    "candidate_rows": 3164,
+    "reviewed_head": "19aebd5a3",
+    "reviewers": [
+      "/root/tdm_engine_review_one",
+      "/root/tdm_engine_review_two"
+    ],
+    "independent_approval": "Both recomputed all row comparisons and receipt-only full observation digest recovery; no findings in this scope. Final engine approval explicitly withheld."
+  }
 }
