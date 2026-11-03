@@ -388,6 +388,7 @@ impl Game {
         death_sources: &[ObjectView],
     ) {
         self.refresh_enduring_stories();
+        self.advance_source_prevention_permanents(events);
         for event in events {
             if event.moved
                 && let Some(player) = event.sacrificed_by

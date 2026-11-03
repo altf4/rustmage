@@ -550,6 +550,11 @@ impl Game {
         let Some(spec) = spec else {
             return self.can_fund(goal);
         };
+        if spec.kind == EffectChoiceKind::DiscardHand {
+            // Mana abilities run before the whole-hand payment, so no current
+            // card is reserved: even an empty resulting hand is payable.
+            return self.can_fund(goal);
+        }
         if spec.kind.variable_cost_minimum().is_some() {
             let source = goal.source.as_ref().expect("activation source").0;
             let current = self.state.announcing.as_ref().filter(|a| {
@@ -848,6 +853,23 @@ impl Game {
             self.pay_variable_additional_cost(a, spec);
             return;
         }
+        if spec.kind == EffectChoiceKind::DiscardHand {
+            let hand = self
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .filter_map(|(id, object)| {
+                    (object.zone == Zone::Hand
+                        && object.owner == a.item.controller
+                        && object.is_card())
+                    .then_some(id as CardId)
+                })
+                .collect::<Vec<_>>();
+            self.discard_batch(&hand, None);
+            a.additional_paid = true;
+            return;
+        }
         // The local announcement is outside State while an external cost commits.
         // Preserve its actual pre-departure source, not a borrowed definition.
         if matches!(a.item.kind, StackKind::ActivatedAbility { .. })
@@ -1101,6 +1123,7 @@ impl Game {
             EffectChoiceKind::ColorCounter { .. }
             | EffectChoiceKind::FilteredCost { .. }
             | EffectChoiceKind::SacrificeManaValue { .. }
+            | EffectChoiceKind::DiscardHand
             | EffectChoiceKind::TargetAttackingReturn { .. }
             | EffectChoiceKind::AmassGoblins(_)
             | EffectChoiceKind::EmpowerJace(_)

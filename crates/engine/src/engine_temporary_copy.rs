@@ -273,11 +273,21 @@ impl Game {
                     && object.controller == item.controller
                     && self.is_creature(id)
                     && self.object_ref(id) != blueprint)
-                    .then(|| self.object_ref(id))
+                    .then_some(self.object_ref(id))
             })
             .collect::<Vec<_>>();
+        if recipients.is_empty() {
+            return;
+        }
+        let provider_time = self.next_role_timestamp();
+        let hand_time = self.new_copy_hand_timestamp(recipe.definition);
         for recipient in recipients {
-            self.apply_temporary_copy(recipient, recipe, CopyDeadline::EndOfTurn);
+            self.apply_temporary_copy_timestamped(
+                recipient,
+                recipe,
+                CopyDeadline::EndOfTurn,
+                Some((provider_time, hand_time)),
+            );
         }
     }
     pub(super) fn temporary_copy_row(&self, object: ObjectRef) -> Option<&Row> {
@@ -462,6 +472,15 @@ impl Game {
         recipe: CopyRecipe,
         deadline: CopyDeadline,
     ) {
+        self.apply_temporary_copy_timestamped(object, recipe, deadline, None);
+    }
+    fn apply_temporary_copy_timestamped(
+        &mut self,
+        object: ObjectRef,
+        recipe: CopyRecipe,
+        deadline: CopyDeadline,
+        shared_time: Option<(u64, Option<u64>)>,
+    ) {
         if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {
             return;
         }
@@ -499,9 +518,11 @@ impl Game {
             value: CopyLayerView {
                 recipe,
                 origin,
-                provider_timestamp: origin,
+                // One effect can acquire abilities independently on several
+                // objects while giving all their static effects one timestamp.
+                provider_timestamp: shared_time.map_or(origin, |time| time.0),
                 deadline,
-                hand_timestamp: None,
+                hand_timestamp: shared_time.and_then(|time| time.1),
                 retained_link_origin: None,
             },
             used_abilities: 0,

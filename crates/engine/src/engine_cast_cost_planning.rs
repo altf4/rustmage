@@ -1168,6 +1168,24 @@ impl FundingState<'_> {
         let Some(mut spec) = c.additional else {
             return true;
         };
+        if spec.kind == EffectChoiceKind::DiscardHand {
+            // Whole-hand costs select no individual resource and remain payable
+            // after any legal mana children. Project their actual current group
+            // before proving later ordered costs or an outer announcement.
+            let hand = self
+                .resources
+                .iter()
+                .filter_map(|resource| {
+                    (resource.object.zone == Zone::Hand
+                        && resource.object.owner == c.actor
+                        && resource.object.is_card())
+                    .then_some(self.reference(resource.id))
+                })
+                .collect::<Vec<_>>();
+            return self.cost_departures(&hand, Zone::Graveyard, &mut |world| {
+                world.complete_cost_rows(later, remaining)
+            });
+        }
         if let EffectChoiceKind::DiscardOrLife(life) = spec.kind.payment_kind() {
             if !c.exact && self.life >= i128::from(life) {
                 let mut next = self.clone();

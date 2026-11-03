@@ -1604,7 +1604,7 @@ impl Game {
             .objects
             .get(source.card as usize)
             .filter(|o| o.generation == source.generation);
-        let facts = if let Some(definition) = qualification.and_then(|q| q.spell) {
+        if let Some(definition) = qualification.and_then(|q| q.spell) {
             // A spell uses its chosen face even in preflight, before it reaches the stack.
             Some((definition.colors(), definition.kind_mask()))
         } else if let Some(current) = current {
@@ -1616,8 +1616,7 @@ impl Game {
             qualification
                 .and_then(|q| q.snapshot)
                 .map(|snapshot| (snapshot.colors(), snapshot.kinds))
-        };
-        facts
+        }
     }
     fn target_matches_without_hand(
         &self,
@@ -2487,6 +2486,13 @@ impl Game {
             return;
         }
         self.freeze_activation_total();
+        if let Some(a) = &mut self.state.announcing
+            && a.additional_cost()
+                .is_some_and(|cost| cost.kind == EffectChoiceKind::DiscardHand)
+        {
+            // The whole hand is sampled at payment, after the mana window.
+            a.additional_group_complete = true;
+        }
         if self.start_crew_payment() {
             return;
         }

@@ -1082,6 +1082,9 @@ pub enum EffectChoiceKind {
     ReturnUnblockedAttacker,
     ReturnToHand,
     Discard,
+    /// Discard the payer's entire current hand as one ordinary activation cost.
+    /// Empty hands are payable; no object selection is made.
+    DiscardHand,
     /// Choose one card to discard or pay the specified life.
     DiscardOrLife(u32),
     DiscardNamed(&'static str),
@@ -1703,6 +1706,11 @@ pub enum Instruction {
     BecomeCopy(InPlaceCopySpec),
     /// Freeze one target blueprint and every other currently controlled creature.
     CopyTargetToOtherControlledCreatures,
+    /// Choose a source now; prevent its next damage to this controller this turn,
+    /// then queue the indexed reflexive ability with the actual prevented amount.
+    PreventNextChosenSourceDamage {
+        ability: u16,
+    },
     /// Copy a chosen card from the trigger's exact exile batch onto its token target.
     CopyChosenExiledTriggerCreature,
     /// The resolving controller ignores the legend rule for the rest of this turn.

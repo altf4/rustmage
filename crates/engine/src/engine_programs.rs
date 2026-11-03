@@ -3736,6 +3736,10 @@ impl Game {
                         }
                     }
                 }
+                Instruction::PreventNextChosenSourceDamage { ability } => {
+                    self.choose_source_prevention(ability);
+                    return;
+                }
                 Instruction::CopyTargetToOtherControlledCreatures => {
                     self.copy_target_to_other_controlled_creatures(&item);
                 }

@@ -30,6 +30,7 @@ pub enum DamagePreventionKind {
     ProtectionInstantSorcery,
     ProtectionColor(crate::cards::ChoiceColor),
     SourceLinkedDamage,
+    ChosenSource(u64),
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -1118,6 +1119,14 @@ impl Game {
                 kind: DamagePreventionKind::ShieldCounter,
             });
         }
+        // CR615.12a still applies a next-instance effect once to an
+        // unpreventable event. It neither prevents damage nor consumes the
+        // shield: its event-local used key supplies termination.
+        out.extend(
+            self.source_prevention_candidates(event)
+                .into_iter()
+                .filter(|choice| !used.contains(&(choice.source, choice.kind))),
+        );
         if !event.preventable || self.damage_prevention_prohibited() {
             return out;
         }
@@ -1238,7 +1247,29 @@ impl Game {
                 mode: resume,
             })
         });
-        let mut events = events.to_vec();
+        // A single simultaneous damage batch may contain repeated rows for one
+        // exact source/recipient. They are one damage instance for "next time"
+        // prevention, rather than consuming the shield on only one fragment.
+        let mut combined: Vec<DamageEvent> = Vec::with_capacity(events.len());
+        for &event in events {
+            if event.amount > 0
+                && let Some(existing) = combined.iter_mut().find(|existing| {
+                    existing.amount > 0
+                        && existing.source == event.source
+                        && existing.target == event.target
+                        && existing.combat == event.combat
+                        && existing.preventable == event.preventable
+                })
+            {
+                existing.amount = existing
+                    .amount
+                    .checked_add(event.amount)
+                    .capacity("simultaneous damage quantity exhausted");
+            } else {
+                combined.push(event);
+            }
+        }
+        let mut events = combined;
         // Simultaneous affected-player choices are made in APNAP order.
         events.sort_by_key(|event| match event.target {
             Target::Player(p) => p != self.state.active,
@@ -3327,6 +3358,9 @@ impl Game {
             self.remove_shield(choice.source.card);
         }
         if event.preventable && !self.damage_prevention_prohibited() {
+            if let DamagePreventionKind::ChosenSource(id) = choice.kind {
+                self.consume_source_prevention(id, event);
+            }
             event.amount = 0;
         }
         used.push((choice.source, choice.kind));

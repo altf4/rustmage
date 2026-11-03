@@ -70,6 +70,7 @@ pub(super) struct RoleState {
     pub ability_removal_sources: Vec<ObjectRef>,
     pub characteristic_sources: Vec<ObjectRef>,
     pub harnessed: Vec<ObjectRef>,
+    pub source_prevention: Option<Box<source_prevention::SourcePreventionState>>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl RoleState {
@@ -111,6 +112,10 @@ impl RoleState {
             + self.ability_removal_sources.len() * std::mem::size_of::<ObjectRef>()
             + self.characteristic_sources.len() * std::mem::size_of::<ObjectRef>()
             + self.harnessed.len() * std::mem::size_of::<ObjectRef>()
+            + self
+                .source_prevention
+                .as_ref()
+                .map_or(0, |state| state.bytes())
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

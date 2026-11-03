@@ -551,6 +551,10 @@ pub use return_ability_modification::ResolvedAbilityModificationView;
 pub mod sneak;
 pub use source_linked_effects::{SourceLinkedEffectKind, SourceLinkedEffectView};
 #[doc(hidden)]
+#[path = "engine_source_prevention.rs"]
+pub mod source_prevention;
+pub use source_prevention::{ChosenSourceShieldView, DamageSourceChoiceView};
+#[doc(hidden)]
 #[path = "engine_ability_world.rs"]
 pub mod ability_world;
 pub use ability_timeline::{AbilitySourceTimestampView, KeywordEffectOrigin, KeywordEffectView};
@@ -772,6 +776,7 @@ define_actions! {
     ChooseSelfCounterReplacement { effect: u16 },
     ChooseDamagePrevention { source: ObjectRef, prevention: DamagePreventionKind },
     ChooseDamageEvent { index: u32 },
+    ChooseDamageSource { source: ObjectRef },
     ChooseCreatedToken { object: ObjectRef },
     ChooseEndure { put_counters: bool },
     BeginConvoke,
@@ -2457,6 +2462,9 @@ enum Pending {
     LinkedExile {
         player: Player,
     },
+    DamageSource {
+        player: Player,
+    },
     ForageMethod {
         player: Player,
     },
@@ -3555,6 +3563,10 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_linked_effects: Option<Vec<SourceLinkedEffectView>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub damage_source_choice: Option<DamageSourceChoiceView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub chosen_source_shields: Option<Vec<ChosenSourceShieldView>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub resolved_ability_modifications: Option<Vec<ResolvedAbilityModificationView>>,
     pub legend_choices: Vec<LegendGroupView>,
     pub stack: Vec<SpellView>,
@@ -4141,6 +4153,7 @@ impl Game {
             | Pending::TargetLibrary { player }
             | Pending::ManaValueParity { player }
             | Pending::LinkedExile { player }
+            | Pending::DamageSource { player }
             | Pending::ForageMethod { player }
             | Pending::Forage { player }
             | Pending::EffectOptional { player, .. }
@@ -4644,6 +4657,13 @@ impl Game {
             Pending::Saddle { .. } => {
                 if self.visit_saddle_actions(&mut emit) {
                     return true;
+                }
+            }
+            Pending::DamageSource { .. } => {
+                for &source in self.damage_source_choices() {
+                    if emit(Action::ChooseDamageSource { source }) {
+                        return true;
+                    }
                 }
             }
             Pending::LinkedExile { .. } => {
@@ -6612,6 +6632,7 @@ impl Game {
                 self.choose_damage_prevention(source, prevention)
             }
             Action::ChooseDamageEvent { index } => self.choose_damage_event(index),
+            Action::ChooseDamageSource { source } => self.finish_source_prevention_choice(source),
             Action::ChooseCreatedToken { object } => self.choose_created_token(object),
             Action::ChooseLibraryDestination {
                 object,
@@ -9014,6 +9035,7 @@ impl Game {
         self.forget_stack_graveyard_exile(before.reference);
         self.forget_cast_entry_counters(before.reference);
         self.capture_turn_callback_source_departure(&before);
+        self.capture_source_prevention_departure(&before);
         self.capture_source_counter_departure(&before);
         self.clear_entry_value(before.reference);
         if before.zone == Zone::Battlefield {
@@ -9754,6 +9776,7 @@ impl Game {
         }
         self.state.casting_prohibited = false;
         self.state.damage_prevention_prohibited = false;
+        self.expire_source_prevention();
         for player in &mut self.state.players {
             player.hexproof_until_end_turn = false;
             player.mountain_mana_bonus = 0;
@@ -10644,6 +10667,7 @@ impl Game {
                 Pending::TargetLibrary { .. } => "target_library",
                 Pending::ManaValueParity { .. } => "mana_value_parity",
                 Pending::LinkedExile { .. } => "linked_exile",
+                Pending::DamageSource { .. } => "damage_source",
                 Pending::ForageMethod { .. } => "forage_method",
                 Pending::Forage { .. } => "forage",
                 Pending::EffectMana { .. } => "mana_choice",
@@ -10892,6 +10916,8 @@ impl Game {
                 .map_or_else(Vec::new, |r| r.ability_timestamps.clone()),
             keyword_effects: self.keyword_effect_views(viewer),
             source_linked_effects: self.source_linked_effect_views(),
+            damage_source_choice: self.damage_source_choice(viewer),
+            chosen_source_shields: self.chosen_source_shields(),
             resolved_ability_modifications: self.resolved_ability_modification_views(),
             role_timestamps: s
                 .roles
