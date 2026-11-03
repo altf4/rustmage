@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "catalogue_version": "8a3ea4fd19b5908914f38d5a9929031deec070e1be364376b46b7863b13b1a3a",
+  "catalogue_version": "6a52723c53f5309b96eee19d1593613f91ad95599e7064f12d813b6108e978c9",
   "standard_legal_cards": 5164,
   "implemented_standard_cards": 3158,
   "implemented_total": 3164,
@@ -6995,8 +6995,8 @@
       "standard_legal": false,
       "implemented": false,
       "implementation": null,
-      "definition": "src/card_definitions/legacy/cori_steel_cutter.rs",
-      "set": "legacy"
+      "definition": "src/card_definitions/tdm/cori_steel_cutter.rs",
+      "set": "tdm"
     },
     {
       "name": "Cornered Crook",

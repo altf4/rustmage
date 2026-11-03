@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "scope": "Physical metadata, complete membership and source provenance only; Cori-Steel Cutter gameplay remains gated",
+  "accepted_engine_revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+  "metadata_author_revision": "3883b3fb88a617cac04812d0795e274e63fb43f4",
+  "metadata_integration_revision": "54b96e703",
+  "supplemental_oracle_id": "46b1a169-bc32-47bf-b379-fa0c3d13878f",
+  "facts_sha256": "a59be8cc02d5088dc5bc570e63c390b32308738da9399c1840cc9f40c40125a1",
+  "raw_oracle_response": "/home/altf4/.cache/rustmage-tdm/cori-metadata-integrated-1793681559539545159/tdm-cori-steel-cutter-oracle.json",
+  "raw_oracle_response_sha256": "0279de56f3aadb94accb87469b1718f3258dd924185b31257d324d3214166d33",
+  "catalogue_identity": 849,
+  "all_prior_ids_modules_names_categories_and_aliases_preserved": true,
+  "only_identity_metadata_changed": [
+    849
+  ],
+  "intrinsic_color_change": {
+    "index": 849,
+    "from": 0,
+    "to": 8
+  },
+  "new_owner": "tdm",
+  "printed_cost": "{1}{R}",
+  "printed_type": "Artifact \u2014 Equipment",
+  "standard_legal": false,
+  "complete_flag": false,
+  "placeholder_rust_body_unchanged": true,
+  "set_members": 276,
+  "unresolved": 0,
+  "all_275_original_members_unchanged": true,
+  "cosmetic_printings_count_once": [
+    "103",
+    "343"
+  ],
+  "standard_and_monk_inputs_byte_unchanged": {
+    "data/standard/cards.json": "6d187ee001d6284af816d4da7ef1a811f6316572616c049f492b4a96a87351c0",
+    "data/standard/xmage-inventory.json": "06a0e948e65878232f223738461a85c11e417d6a279c11ee1c38d8f971d37cc7",
+    "data/targets/standard-2026-10-15.json": "9ce06f9b15c53a7076d6db96b872c99cf5a1382ff335f999522da50d46d1dc38",
+    "src/card_definitions/synthetic/token_tdm_monk_prowess.rs": "8a468dac34ae5604a26442cc694dfc73b0ac09c36b41a3e44441e35c44beda85",
+    "src/card_definitions/synthetic/token_tdm_monk_prowess.json": "4d9577f96d25bd8812765ee8da9bfd8a996244b0bb95f72e1019b0be3c907f7e"
+  },
+  "engine_source_byte_unchanged": true,
+  "generators_used": [
+    "python3 scripts/set_status.py TDM --freeze --xmage /home/altf4/Code/mage",
+    "python3 scripts/link_catalogue.py"
+  ],
+  "generator_check": "PASS",
+  "immutable_source_check": {
+    "definitions": 5488,
+    "java_source_blobs": 2515,
+    "java_verified": true
+  },
+  "contracts": {
+    "command": "python3 scripts/resource_guard.py -- python3 scripts/test_assurance_runner.py",
+    "cases": 43,
+    "success": true,
+    "report": "/home/altf4/.cache/rustmage-tdm/root-cori-metadata-contracts-1793681367840187420/terminal.json",
+    "sha256": "4fa34c24e731facf338399df00cab14978cd7df3230a74c1f15f17a85e153f1f",
+    "seconds": 2.0704470189812128,
+    "source_unchanged": true
+  },
+  "assurance_wiring_repair": "The authored checkpoint imported the two new test classes but omitted them from its explicit suite. Integration added both classes and verified all43 cases execute; the earlier22-only report is preserved.",
+  "card_progress": {
+    "newly_complete_cards": 0,
+    "preexisting_admission_candidates": 137,
+    "gated_members": 139
+  },
+  "next": "Rewarm generated metadata in isolated author caches against frozen engine, then direct typed whole-card authoring. No new engine work or release validation is required for this metadata-only checkpoint."
+}

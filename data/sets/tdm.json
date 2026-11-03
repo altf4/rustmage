@@ -329,6 +329,15 @@
       ]
     },
     {
+      "name": "Cori-Steel Cutter",
+      "oracle_id": "46b1a169-bc32-47bf-b379-fa0c3d13878f",
+      "facts_sha256": "a59be8cc02d5088dc5bc570e63c390b32308738da9399c1840cc9f40c40125a1",
+      "printings": [
+        "103",
+        "343"
+      ]
+    },
+    {
       "name": "Corroding Dragonstorm",
       "oracle_id": "4c55ca3b-1254-4d44-96ac-1e1cadaf49f5",
       "facts_sha256": "e751daa0211a2f2f358c16a1750073728cfed2f153485939c8cf897d362fc5dd",
@@ -2366,7 +2375,5 @@
       ]
     }
   ],
-  "unresolved": [
-    "Cori-Steel Cutter"
-  ]
+  "unresolved": []
 }

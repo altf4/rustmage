@@ -5,14 +5,14 @@
   "tracking_issue": "https://github.com/altf4/rustmage/issues/570",
   "membership": {
     "full_denominator": 276,
-    "resolved_oracle_identities_audited": 275,
-    "supplemental_identity_audited": "Cori-Steel Cutter",
+    "resolved_oracle_identities_audited": 276,
+    "supplemental_identity_audited": "Cori-Steel Cutter; resolved through pinned nonlegal supplementary facts",
     "candidate_admitted": 137,
-    "gated": 138,
-    "unresolved_membership_facts": 1,
+    "gated": 139,
+    "unresolved_membership_facts": 0,
     "independently_verified_complete_set_cards": 0
   },
-  "phase": "Shared engine checkpoint accepted atb4562e25c after final integrated release validation and two independent nonauthor reviews. Metadata reconciliation/linkage/cache warming precedes full card authoring.",
+  "phase": "Engine checkpoint accepted; all276 identities resolved and metadata linkage regenerated. Guarded author-cache preparation precedes direct whole-card implementation.",
   "audit_reports": [
     "docs/tdm-audit-a-g.json",
     "docs/tdm-audit-g-s.json",
@@ -1060,5 +1060,6 @@
       "/root/tdm_engine_review_one",
       "/root/tdm_engine_review_two"
     ]
-  }
+  },
+  "metadata_reconciliation": "docs/tdm-metadata-reconciliation.json"
 }
