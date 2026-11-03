@@ -13,29 +13,37 @@
       }
     ],
     "native_use": "Soaring Stoneglider uses ExileGraveyardCards(2) as its spell additional cost; it has no activated ability or mana production. That counted spell-cost path is supported by the shared cost transaction/planner.",
-    "actual_exile_mana_examples": [
+    "native_graveyard_exile_examples": [
       {
         "path": "src/card_definitions/dft/molt_tender.rs",
         "revision": "fa54386fd73d9fcc3294f260c545cf322ad5d6a3",
-        "sha256": "b097e74b2aac8cdac0b7b881c40862af69283e84b870c6543e8cedd4b8a7f260"
+        "sha256": "b097e74b2aac8cdac0b7b881c40862af69283e84b870c6543e8cedd4b8a7f260",
+        "graveyard_exile_activation_index": 1,
+        "classification": "Mana ability: tap and exile one graveyard card, then add mana."
       },
       {
         "path": "src/card_definitions/dft/earthrumbler.rs",
         "revision": "fa54386fd73d9fcc3294f260c545cf322ad5d6a3",
-        "sha256": "9c478d521fa1f49fc996766a05fb2f82bd0f5f3b5034ded61656381334b9d0f9"
+        "sha256": "9c478d521fa1f49fc996766a05fb2f82bd0f5f3b5034ded61656381334b9d0f9",
+        "graveyard_exile_activation_index": 0,
+        "classification": "Nonmana activation: exile an artifact or creature card to animate the source; it does not produce mana."
       },
       {
         "path": "src/card_definitions/sos/rubble_rouser.rs",
         "revision": "fa54386fd73d9fcc3294f260c545cf322ad5d6a3",
-        "sha256": "faeaf1084795a5c265735c0907624c4cbc76d9adc0ab30c7a26f3bc8120b4f37"
+        "sha256": "faeaf1084795a5c265735c0907624c4cbc76d9adc0ab30c7a26f3bc8120b4f37",
+        "graveyard_exile_activation_index": 0,
+        "classification": "Mana ability: tap and exile one graveyard card, add red mana, and queue its separate reflexive ability."
       },
       {
         "path": "src/card_definitions/tdm/great_arashin_city.rs",
         "revision": "fa54386fd73d9fcc3294f260c545cf322ad5d6a3",
-        "sha256": "0956f00a3b63c9a872575710c0718dfb331a6fd14f1c4f5fa8ce65a63eb845e1"
+        "sha256": "0956f00a3b63c9a872575710c0718dfb331a6fd14f1c4f5fa8ce65a63eb845e1",
+        "graveyard_exile_activation_index": 1,
+        "classification": "Nonmana activation: pay mana, tap, and exile a creature card to create a token. Its separate index 0 activation taps for black mana and has no graveyard-exile cost."
       }
     ],
-    "supported_native_mana_shape": "Actual native graveyard-exile mana abilities use ExileGraveyard, which the shared FundingMove external-cost path supports.",
+    "supported_native_mana_shape": "Molt Tender and Rubble Rouser have actual graveyard-exile mana abilities using ExileGraveyard, which the shared FundingMove external-cost path supports. Earthrumbler and Great Arashin City demonstrate nonmana graveyard-exile activations; their exile costs are not mana-child examples.",
     "unsupported_synthetic_shape": {
       "fixture": {
         "path": "tests/tdm_cast_routes.rs",

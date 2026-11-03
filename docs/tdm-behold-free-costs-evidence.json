@@ -557,7 +557,10 @@
       "binaries": [
         {
           "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_behold_costs-bd23be18a16a81c5",
-          "sha256": "94758d2d1c7799d35a82b6f3695ea3dd2edd32b24b3a5749f99d339b1b817ac5"
+          "sha256": "94758d2d1c7799d35a82b6f3695ea3dd2edd32b24b3a5749f99d339b1b817ac5",
+          "artifact_role": "Transient Cargo native test executable; historical run-time output, not an immutable preservation claim.",
+          "available_at_recorded_hash_at_correction": false,
+          "availability": "Replaced by a later build at the same warm Cargo path. The historical executable is not preserved here; its recorded hash remains unchanged."
         }
       ],
       "execution_logs": [
@@ -609,7 +612,10 @@
       "binaries": [
         {
           "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_cast_routes-33c4c4fe109c9c78",
-          "sha256": "6efd2ae622cacf806589fa1c437213d2ce6d8b9fa81726b4353118c8bda01a5b"
+          "sha256": "6efd2ae622cacf806589fa1c437213d2ce6d8b9fa81726b4353118c8bda01a5b",
+          "artifact_role": "Transient Cargo native test executable; historical run-time output, not an immutable preservation claim.",
+          "available_at_recorded_hash_at_correction": false,
+          "availability": "Replaced by a later build at the same warm Cargo path. The historical executable is not preserved here; its recorded hash remains unchanged."
         }
       ],
       "execution_logs": [
@@ -661,7 +667,10 @@
       "binaries": [
         {
           "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_cast_permissions_engine-1d56ad5b3b4e9fbd",
-          "sha256": "9580548a333417608da5901e35f5894fe8881ae56df98953c0302b5a59d6ead7"
+          "sha256": "9580548a333417608da5901e35f5894fe8881ae56df98953c0302b5a59d6ead7",
+          "artifact_role": "Transient Cargo native test executable; historical run-time output, not an immutable preservation claim.",
+          "available_at_recorded_hash_at_correction": true,
+          "availability": "Still present at the recorded hash at this correction; the warm Cargo path remains mutable."
         }
       ],
       "execution_logs": [
@@ -713,7 +722,10 @@
       "binaries": [
         {
           "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_variable_costs_engine-4404c9cb268fc190",
-          "sha256": "c4843da85ea4741af52b7cb52e403efa2c87b9d6369e1293c7d68876b3108549"
+          "sha256": "c4843da85ea4741af52b7cb52e403efa2c87b9d6369e1293c7d68876b3108549",
+          "artifact_role": "Transient Cargo native test executable; historical run-time output, not an immutable preservation claim.",
+          "available_at_recorded_hash_at_correction": false,
+          "availability": "Replaced by a later build at the same warm Cargo path. The historical executable is not preserved here; its recorded hash remains unchanged."
         }
       ],
       "execution_logs": [
@@ -765,7 +777,10 @@
       "binaries": [
         {
           "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_mana_payment_continuations_engine-9999b14d56e1538e",
-          "sha256": "11f8569886511b4e0e5d85ce7f90ef8ed414e36c75aab18df918a525395d2000"
+          "sha256": "11f8569886511b4e0e5d85ce7f90ef8ed414e36c75aab18df918a525395d2000",
+          "artifact_role": "Transient Cargo native test executable; historical run-time output, not an immutable preservation claim.",
+          "available_at_recorded_hash_at_correction": false,
+          "availability": "Replaced by a later build at the same warm Cargo path. The historical executable is not preserved here; its recorded hash remains unchanged."
         }
       ],
       "execution_logs": [
@@ -817,7 +832,10 @@
       "binaries": [
         {
           "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
-          "sha256": "d1dbcd4751973bd7552b97cc7c8bf6e3e9153d1f953cc8bc6a3e03846a85d57d"
+          "sha256": "d1dbcd4751973bd7552b97cc7c8bf6e3e9153d1f953cc8bc6a3e03846a85d57d",
+          "artifact_role": "Transient Cargo native test executable; historical run-time output, not an immutable preservation claim.",
+          "available_at_recorded_hash_at_correction": true,
+          "availability": "Still present at the recorded hash at this correction; the warm Cargo path remains mutable."
         }
       ],
       "execution_logs": [
@@ -871,7 +889,10 @@
       "binaries": [
         {
           "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
-          "sha256": "d1dbcd4751973bd7552b97cc7c8bf6e3e9153d1f953cc8bc6a3e03846a85d57d"
+          "sha256": "d1dbcd4751973bd7552b97cc7c8bf6e3e9153d1f953cc8bc6a3e03846a85d57d",
+          "artifact_role": "Transient Cargo native test executable; historical run-time output, not an immutable preservation claim.",
+          "available_at_recorded_hash_at_correction": true,
+          "availability": "Still present at the recorded hash at this correction; the warm Cargo path remains mutable."
         }
       ],
       "execution_logs": [
@@ -925,7 +946,10 @@
       "binaries": [
         {
           "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
-          "sha256": "d1dbcd4751973bd7552b97cc7c8bf6e3e9153d1f953cc8bc6a3e03846a85d57d"
+          "sha256": "d1dbcd4751973bd7552b97cc7c8bf6e3e9153d1f953cc8bc6a3e03846a85d57d",
+          "artifact_role": "Transient Cargo native test executable; historical run-time output, not an immutable preservation claim.",
+          "available_at_recorded_hash_at_correction": true,
+          "availability": "Still present at the recorded hash at this correction; the warm Cargo path remains mutable."
         }
       ],
       "execution_logs": [
@@ -979,7 +1003,10 @@
       "binaries": [
         {
           "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
-          "sha256": "d1dbcd4751973bd7552b97cc7c8bf6e3e9153d1f953cc8bc6a3e03846a85d57d"
+          "sha256": "d1dbcd4751973bd7552b97cc7c8bf6e3e9153d1f953cc8bc6a3e03846a85d57d",
+          "artifact_role": "Transient Cargo native test executable; historical run-time output, not an immutable preservation claim.",
+          "available_at_recorded_hash_at_correction": true,
+          "availability": "Still present at the recorded hash at this correction; the warm Cargo path remains mutable."
         }
       ],
       "execution_logs": [
@@ -1063,15 +1090,332 @@
   "preserved_shared_libraries": [
     {
       "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/libserde_derive-4a3ec5018aa504ef.so",
-      "sha256": "16e56c72844cb52549aca635bf643fd0903d223d703291e366575e6900e074a7"
+      "sha256": "16e56c72844cb52549aca635bf643fd0903d223d703291e366575e6900e074a7",
+      "role": "Rust compiler proc-macro shared library; exact cached compile-time dependency remains present."
     },
     {
       "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/librustmage_test_access-636adfcd609bee93.so",
-      "sha256": "bd6062fbe485578b3a623429f4fd459a9e69d6a2fd34b4cdb884e2f83e16ad48"
-    },
+      "sha256": "bd6062fbe485578b3a623429f4fd459a9e69d6a2fd34b4cdb884e2f83e16ad48",
+      "role": "Rust compiler proc-macro shared library; exact cached compile-time dependency remains present."
+    }
+  ],
+  "transient_compilation_outputs": [
     {
       "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/librustmage.so",
-      "sha256": "d65b55a3450816f13b9ad9ef2d185fa950a71ab2a1012ef901579878fcf42ce5"
+      "sha256": "d65b55a3450816f13b9ad9ef2d185fa950a71ab2a1012ef901579878fcf42ce5",
+      "artifact_role": "Transient Cargo cdylib compilation output emitted alongside the Rust rlib.",
+      "required_for_these_native_test_executions": false,
+      "available_at_recorded_hash_at_correction": false,
+      "availability": "The old cdylib was replaced by a later build and is not preserved at this path. No historical run in this nine-run native checkpoint required or loaded it. The original recorded hash is retained unchanged."
     }
-  ]
+  ],
+  "artifact_availability_correction": {
+    "corrected_original_evidence_sha256": "65c4129094620f372230f733896964c63984243921469f106f3ad4ea71fa4ed8",
+    "original_checkpoint": "fa54386fd73d9fcc3294f260c545cf322ad5d6a3",
+    "audit_parent_revision": "3e206c0cb6987a1d05e9301242311a7879e8e95f",
+    "checked_at_utc": "2026-11-03T00:27:45.141239+00:00",
+    "reason": "The original report incorrectly grouped a mutable Cargo cdylib with preserved shared libraries and did not distinguish retained native executables from overwritten warm-cache outputs. This correction changes only evidence classification and availability; all historical source, report, log and artifact hashes are retained.",
+    "historical_runs_audited": [
+      {
+        "report": "/home/altf4/.cache/rustmage-tdm/behold-free-actual-offer36/native.json",
+        "compile_command": [
+          "cargo",
+          "test",
+          "-p",
+          "rustmage",
+          "--test",
+          "tdm_behold_costs",
+          "--no-run",
+          "--message-format=json"
+        ],
+        "binary_execution": [
+          {
+            "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_behold_costs-bd23be18a16a81c5",
+            "historical_hash_still_available": false,
+            "inspected_current_elf_needed": [
+              "libgcc_s.so.1",
+              "libc.so.6",
+              "ld-linux-x86-64.so.2"
+            ],
+            "historical_elf_bytes_directly_inspectable": false,
+            "execution_command": [
+              "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_behold_costs-bd23be18a16a81c5",
+              "",
+              "--include-ignored",
+              "--test-threads=1"
+            ]
+          }
+        ]
+      },
+      {
+        "report": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-0/native.json",
+        "compile_command": [
+          "cargo",
+          "test",
+          "-p",
+          "rustmage",
+          "--test",
+          "tdm_cast_routes",
+          "--no-run",
+          "--message-format=json"
+        ],
+        "binary_execution": [
+          {
+            "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_cast_routes-33c4c4fe109c9c78",
+            "historical_hash_still_available": false,
+            "inspected_current_elf_needed": [
+              "libgcc_s.so.1",
+              "libc.so.6",
+              "ld-linux-x86-64.so.2"
+            ],
+            "historical_elf_bytes_directly_inspectable": false,
+            "execution_command": [
+              "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_cast_routes-33c4c4fe109c9c78",
+              "",
+              "--include-ignored",
+              "--test-threads=1"
+            ]
+          }
+        ]
+      },
+      {
+        "report": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-1/native.json",
+        "compile_command": [
+          "cargo",
+          "test",
+          "-p",
+          "rustmage",
+          "--test",
+          "dft_cast_permissions_engine",
+          "--no-run",
+          "--message-format=json"
+        ],
+        "binary_execution": [
+          {
+            "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_cast_permissions_engine-1d56ad5b3b4e9fbd",
+            "historical_hash_still_available": true,
+            "inspected_current_elf_needed": [
+              "libgcc_s.so.1",
+              "libc.so.6",
+              "ld-linux-x86-64.so.2"
+            ],
+            "historical_elf_bytes_directly_inspectable": true,
+            "execution_command": [
+              "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_cast_permissions_engine-1d56ad5b3b4e9fbd",
+              "",
+              "--include-ignored",
+              "--test-threads=1"
+            ]
+          }
+        ]
+      },
+      {
+        "report": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-2/native.json",
+        "compile_command": [
+          "cargo",
+          "test",
+          "-p",
+          "rustmage",
+          "--test",
+          "dft_variable_costs_engine",
+          "--no-run",
+          "--message-format=json"
+        ],
+        "binary_execution": [
+          {
+            "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_variable_costs_engine-4404c9cb268fc190",
+            "historical_hash_still_available": false,
+            "inspected_current_elf_needed": [
+              "libgcc_s.so.1",
+              "libc.so.6",
+              "ld-linux-x86-64.so.2"
+            ],
+            "historical_elf_bytes_directly_inspectable": false,
+            "execution_command": [
+              "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_variable_costs_engine-4404c9cb268fc190",
+              "",
+              "--include-ignored",
+              "--test-threads=1"
+            ]
+          }
+        ]
+      },
+      {
+        "report": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-3/native.json",
+        "compile_command": [
+          "cargo",
+          "test",
+          "-p",
+          "rustmage",
+          "--test",
+          "dft_mana_payment_continuations_engine",
+          "--no-run",
+          "--message-format=json"
+        ],
+        "binary_execution": [
+          {
+            "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_mana_payment_continuations_engine-9999b14d56e1538e",
+            "historical_hash_still_available": false,
+            "inspected_current_elf_needed": [
+              "libgcc_s.so.1",
+              "libc.so.6",
+              "ld-linux-x86-64.so.2"
+            ],
+            "historical_elf_bytes_directly_inspectable": false,
+            "execution_command": [
+              "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_mana_payment_continuations_engine-9999b14d56e1538e",
+              "",
+              "--include-ignored",
+              "--test-threads=1"
+            ]
+          }
+        ]
+      },
+      {
+        "report": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-4/native.json",
+        "compile_command": [
+          "cargo",
+          "test",
+          "-p",
+          "rustmage",
+          "--test",
+          "legacy",
+          "--no-run",
+          "--message-format=json"
+        ],
+        "binary_execution": [
+          {
+            "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
+            "historical_hash_still_available": true,
+            "inspected_current_elf_needed": [
+              "libgcc_s.so.1",
+              "libc.so.6",
+              "ld-linux-x86-64.so.2"
+            ],
+            "historical_elf_bytes_directly_inspectable": true,
+            "execution_command": [
+              "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
+              "engine_fra_behold",
+              "--include-ignored",
+              "--test-threads=1"
+            ]
+          }
+        ]
+      },
+      {
+        "report": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-5/native.json",
+        "compile_command": [
+          "cargo",
+          "test",
+          "-p",
+          "rustmage",
+          "--test",
+          "legacy",
+          "--no-run",
+          "--message-format=json"
+        ],
+        "binary_execution": [
+          {
+            "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
+            "historical_hash_still_available": true,
+            "inspected_current_elf_needed": [
+              "libgcc_s.so.1",
+              "libc.so.6",
+              "ld-linux-x86-64.so.2"
+            ],
+            "historical_elf_bytes_directly_inspectable": true,
+            "execution_command": [
+              "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
+              "assurance::requested_wild_ride::",
+              "--include-ignored",
+              "--test-threads=1"
+            ]
+          }
+        ]
+      },
+      {
+        "report": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-6/native.json",
+        "compile_command": [
+          "cargo",
+          "test",
+          "-p",
+          "rustmage",
+          "--test",
+          "legacy",
+          "--no-run",
+          "--message-format=json"
+        ],
+        "binary_execution": [
+          {
+            "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
+            "historical_hash_still_available": true,
+            "inspected_current_elf_needed": [
+              "libgcc_s.so.1",
+              "libc.so.6",
+              "ld-linux-x86-64.so.2"
+            ],
+            "historical_elf_bytes_directly_inspectable": true,
+            "execution_command": [
+              "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
+              "assurance::msh_d::sagas_all_chapters_and_final_sacrifice",
+              "--include-ignored",
+              "--test-threads=1"
+            ]
+          }
+        ]
+      },
+      {
+        "report": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-7/native.json",
+        "compile_command": [
+          "cargo",
+          "test",
+          "-p",
+          "rustmage",
+          "--test",
+          "legacy",
+          "--no-run",
+          "--message-format=json"
+        ],
+        "binary_execution": [
+          {
+            "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
+            "historical_hash_still_available": true,
+            "inspected_current_elf_needed": [
+              "libgcc_s.so.1",
+              "libc.so.6",
+              "ld-linux-x86-64.so.2"
+            ],
+            "historical_elf_bytes_directly_inspectable": true,
+            "execution_command": [
+              "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
+              "assurance::msh_d::printed_event_boundaries_and_optional_branches",
+              "--include-ignored",
+              "--test-threads=1"
+            ]
+          }
+        ]
+      }
+    ],
+    "runner_and_link_configuration": [
+      {
+        "path": "scripts/run_native_tests.py",
+        "revision": "fa54386fd73d9fcc3294f260c545cf322ad5d6a3",
+        "sha256": "72c1d6809cb068c8e0309d3bed15e46f705ef924fb15da71bd146b052450d760"
+      },
+      {
+        "path": "scripts/resource_guard.py",
+        "revision": "fa54386fd73d9fcc3294f260c545cf322ad5d6a3",
+        "sha256": "12290c345dea484feaee456b4b2e9c190e6313f61a1ce70160d0909fa5464f44"
+      },
+      {
+        "path": "Cargo.toml",
+        "revision": "fa54386fd73d9fcc3294f260c545cf322ad5d6a3",
+        "sha256": "fef5f68519e2da5e0eb8f781a68e151ffd4e15f1ba679b717635a292c72a1d92"
+      }
+    ],
+    "execution_mode": "All nine historical reports compile Rust integration tests with Cargo --no-run and then execute the reported native ELF directly. The unchanged Python runner uses subprocess execution and contains no ctypes, cffi or cdylib loading. These Rust tests consume the rlib; Cargo also emits a cdylib because Cargo.toml requests both crate types.",
+    "elf_evidence_scope": "Five run records still match their historical executable hashes: one cast-permission binary and four uses of the same legacy binary. Their historical ELF dependencies were inspected directly. The other four historical executables were overwritten and cannot be retrospectively byte-inspected; their current replacements also require only libgcc_s, libc and the ELF loader. The runner commands, Rust integration-test link configuration and matching historical binaries establish the native execution mode without claiming the four missing executables were preserved.",
+    "availability": "Source pins, native/resource reports and execution logs remain available. The old cdylib and four overwritten native executables are not available here at their original hashes. Reproducing those exact source inputs requires rebuilding the immutable checkpoint; no rebuild, cache mutation or FFI validation was performed for this correction.",
+    "runtime_changes": false
+  }
 }

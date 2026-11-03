@@ -39,8 +39,12 @@ constructed resolution offer. The repaired fixture uses actual paid-offer parent
 spells and proves continuation exactly once. Runtime source stayed unchanged
 through those fixture corrections and all final runs.
 
-The evidence pins sources, authority, native and resource reports, binaries and
-required shared libraries. Global schema/trace review, whole-set interactions,
+The evidence retains historical source, authority, report, log and artifact
+hashes. Four native executables and the Cargo cdylib were later replaced in the
+mutable warm cache; they are not preserved at those recorded hashes. All nine
+runs executed Rust ELF tests using the rlib, without loading the cdylib through
+Python FFI. The two compiler proc-macro shared libraries still match their exact
+pins. Global schema/trace review, whole-set interactions,
 release validation and simulation throughput remain part of integration. The
 previously documented split-face mapping and counted graveyard-exile mana-child
 limitations remain explicit. Sidisi and Tersa are separate subsequent engine
