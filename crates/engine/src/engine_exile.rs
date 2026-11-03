@@ -316,6 +316,7 @@ impl Game {
     }
     /// A non-target hand choice and an ordinary bound target share the same exact
     /// movement/link transaction. Only an actual arrival in exile creates a link.
+    #[cfg(feature = "test-support")]
     pub(super) fn exile_objects_until_source_leaves(
         &mut self,
         source: ObjectRef,

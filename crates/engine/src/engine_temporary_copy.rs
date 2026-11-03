@@ -344,6 +344,7 @@ impl Game {
             object.copy_kind = row.physical_kind;
         }
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn temporary_copy_view(&self, object: ObjectRef) -> Option<TemporaryCopyView> {
         self.temporary_copy_row(object).map(Row::view)
     }

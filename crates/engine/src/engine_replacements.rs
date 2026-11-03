@@ -203,6 +203,10 @@ fn current_player_counter(
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
+#[allow(
+    clippy::large_enum_variant,
+    reason = "The completion is already boxed as a whole; keep one allocation for reflexive packets"
+)]
 enum CounterCompletion {
     Reflexive(CounterReflexiveCompletion),
     ColorRecipients { packet: u64 },

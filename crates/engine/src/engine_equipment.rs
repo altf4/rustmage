@@ -121,6 +121,7 @@ impl Game {
             .collect();
         self.order_equipment_attachments_reflexive(item, recipient, equipment, Some(ability))
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn attach_equipment_batch(
         &mut self,
         equipment: &[ObjectRef],

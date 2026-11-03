@@ -140,6 +140,10 @@ impl Game {
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[allow(
+    clippy::box_collection,
+    reason = "The optional cold collection keeps one pointer in State"
+)]
 pub(super) fn owned_bytes(rows: &Option<Box<Vec<DelayedTargetTriggerView>>>) -> usize {
     rows.as_ref().map_or(0, |rows| {
         std::mem::size_of::<Vec<DelayedTargetTriggerView>>()
