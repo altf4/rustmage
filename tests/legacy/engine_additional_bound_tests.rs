@@ -10,6 +10,7 @@ fn context(game: &Game, actor: Player, source: CardId, kind: EffectChoiceKind) -
     additional.kind = kind;
     CostContext {
         delve_selected: false,
+        mana_closed: false,
         actor,
         source: game.object_ref(source),
         source_counter_reservation: Counters::default(),

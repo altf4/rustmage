@@ -31,6 +31,14 @@ pub(super) struct FundingGoal {
     pub source: Option<(ObjectRef, u16, Counters, Card, Option<u64>)>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl FundingGoal {
+    /// CR601.2g opens a window for the locked total, not the printed cost.
+    /// Paying {0} still needs acknowledgment, but requires no mana.
+    fn requires_mana(&self) -> bool {
+        self.generic != 0 || self.required.iter().any(|&amount| amount != 0)
+    }
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone)]
 struct Resource {
     id: CardId,
@@ -397,6 +405,7 @@ struct EntryFundingKey {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Hash, PartialEq, Eq)]
 struct FundingKey {
+    mana_window_open: bool,
     life_lost: [bool; 2],
     enduring_story: [bool; 2],
     exhaust_activated: [bool; 2],
@@ -1655,6 +1664,12 @@ impl<'g> FundingState<'g> {
         late_fixed: bool,
         deferred_only: Option<bool>,
     ) -> Vec<FundingMove> {
+        // Neither an actual payment nor a proposal may invent mana activations
+        // when its final total is zero. Positive totals retain the window even
+        // when later Convoke/Delve choices can pay them without spending mana.
+        if !self.mana_window_open(goal) {
+            return Vec::new();
+        }
         let mut moves = Vec::new();
         let actual_active;
         let active_mana = if let Some(keys) = self.active_mana_keys.as_deref() {
@@ -2701,6 +2716,7 @@ impl<'g> FundingState<'g> {
             })
             .collect();
         FundingKey {
+            mana_window_open: self.mana_window_open(goal),
             enduring_story: self.enduring_story,
             exhaust_activated: self.exhaust_activated,
             payment_departures: self.payment_departures.clone(),
@@ -5227,14 +5243,10 @@ impl Game {
         {
             return true;
         }
-        // An explicit {0} still has a mana component; a pure tap/sacrifice
-        // activation cost does not open a mana-ability window.
-        if let Some((_, index, _, definition, _)) = goal.source.as_ref()
-            && !definition.activation(*index).cost.mana_component
-            && goal.generic == 0
-            && goal.required == [0; 6]
-            && announcement.activation_generic_increase == 0
-        {
+        // This also gates deferred indexed activations, which are enumerated
+        // outside FundingState::mana_moves. Printed mana components and source
+        // presence do not decide whether the locked total requires mana.
+        if !state.mana_window_open(&goal) {
             return false;
         }
         for step in state.action_moves(&goal) {
@@ -5400,14 +5412,23 @@ impl Game {
         }
         // A payment request grants a mana-ability window even if it is declined.
         // Emit the shared window once regardless of the number of hybrid choices.
-        let goal = FundingGoal {
-            reserve: None,
-            actor: request.payer,
-            required: request.cost.colored,
-            generic: request.cost.generic,
-            source: None,
+        let Some(goal) = std::iter::once(request.cost)
+            .chain(request.alternatives.iter().copied())
+            .map(|cost| FundingGoal {
+                reserve: None,
+                actor: request.payer,
+                required: cost.colored,
+                generic: cost.generic,
+                source: None,
+            })
+            .find(FundingGoal::requires_mana)
+        else {
+            return false;
         };
-        let state = FundingState::from_game(self, &goal);
+        let mut state = FundingState::from_game(self, &goal);
+        // An explicit resolution request opens its own window independently of
+        // any suspended announcement's cost-payment phase.
+        state.set_cost_context(None);
         for step in state.action_moves(&goal) {
             if emit(state.action(&step)) {
                 return true;

@@ -21,6 +21,8 @@ pub(super) struct CostContext {
     teammates: Vec<ObjectRef>,
     teamwork_exact: bool,
     delve_selected: bool,
+    /// Existing announcement phase, retained only in this private query context.
+    mana_closed: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl CostContext {
@@ -60,6 +62,7 @@ impl CostContext {
         }
         Some(Box::new(Self {
             delve_selected: a.convoke.as_ref().is_some_and(|f| !f.delved.is_empty()),
+            mana_closed: c.mana_closed,
             source_counter_reservation,
             teammates: c.teammates.clone(),
             teamwork_exact: false,
@@ -103,6 +106,9 @@ impl CostContext {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl FundingState<'_> {
+    pub(super) fn mana_window_open(&self, goal: &FundingGoal) -> bool {
+        goal.requires_mana() && self.cast_costs.as_ref().is_none_or(|c| !c.mana_closed)
+    }
     /// Reject an unpaid additional cost only if even an overestimate of the
     /// resources available after funding cannot satisfy any of its routes.
     /// Unknown costs and worlds with linked or nested state changes retain the
@@ -1475,8 +1481,10 @@ impl Game {
         let purpose = self.funding_purpose(&goal);
         let mut world = FundingState::from_game(self, &goal);
         world.set_purpose(purpose);
+        let mana_closed = world.cast_costs.as_ref().is_some_and(|c| c.mana_closed);
         world.install_cost_context(Some(Box::new(CostContext {
             delve_selected: false,
+            mana_closed,
             actor: goal.actor,
             source: *source,
             source_counter_reservation: Counters::default(),
@@ -1718,6 +1726,7 @@ impl Game {
         if world.cast_costs.is_none() {
             world.install_cost_context(Some(Box::new(CostContext {
                 delve_selected: false,
+                mana_closed: false,
                 teammates: Vec::new(),
                 teamwork_exact: false,
                 actor: goal.actor,
@@ -1886,6 +1895,9 @@ impl Game {
                 }
                 let context = CostContext {
                     delve_selected: false,
+                    mana_closed: current
+                        .and_then(|a| a.cast_costs.as_ref())
+                        .is_some_and(|c| c.mana_closed),
                     teammates: current
                         .and_then(|a| a.cast_costs.as_ref())
                         .map_or_else(Vec::new, |c| c.teammates.clone()),
@@ -1940,8 +1952,10 @@ impl Game {
     ) -> bool {
         let mut world = FundingState::from_game(self, &goal);
         world.set_purpose(purpose);
+        let mana_closed = world.cast_costs.as_ref().is_some_and(|c| c.mana_closed);
         world.install_cost_context(Some(Box::new(CostContext {
             delve_selected: false,
+            mana_closed,
             actor: goal.actor,
             source,
             source_counter_reservation: Counters::default(),
