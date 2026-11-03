@@ -31,6 +31,9 @@ fn check(before: &Observation, after: &Observation, item: &SpellView) -> usize {
         | StackKind::DelayedWarpExile
         | StackKind::DelayedManifestDread
         | StackKind::SiegeDefeat
+        | StackKind::DecayedAttack
+        | StackKind::SuspendTick
+        | StackKind::SuspendCast
         | StackKind::InherentRule { .. } => false,
         StackKind::Spell => matches!(
             name,
