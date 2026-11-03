@@ -24,6 +24,7 @@ const NEW_FIELDS: &[&str] = &[
     "stack_objects",
     "semantic_objects",
     "source_referred",
+    "inert_mana_copy_sources",
 ];
 const NEW_VARIANTS: &[&str] = &[
     "BeginDelve",
@@ -342,4 +343,24 @@ fn prior199_refuses_an_ordinary_color_search_without_a_distinct_color_marker() {
     assert_eq!(choice.distinct_colors, 0);
     assert!(game.observe(Player::P1).search_choice.is_none());
     assert!(project_prior_schema200(&serde_json::to_string(&own).unwrap()).is_err());
+}
+
+#[test]
+fn prior199_refuses_inert_mana_delayed_sources_in_an_actual_observation() {
+    let mut game = scenario(Player::P0);
+    let source = put(
+        &mut game,
+        Player::P0,
+        "Pyromancer's Goggles",
+        Zone::Battlefield,
+    );
+    let mut observation = game.observe(Player::P0);
+    let empty = serde_json::to_string(&observation).unwrap();
+    assert!(!empty.contains("inert_mana_copy_sources"));
+    assert_eq!(project_prior_schema200(&empty).unwrap(), empty);
+    observation
+        .inert_mana_copy_sources
+        .push(game.object_ref(source));
+    let bytes = serde_json::to_string(&observation).unwrap();
+    assert!(project_prior_schema200(&bytes).is_err());
 }
