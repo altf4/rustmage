@@ -13,12 +13,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             })],
         },
         TriggeredAbility {
-            condition: TriggerCondition::PermanentEntersYou {
-                kinds: 0,
-                nontoken: false,
-                subtype: Some("Dragon"),
-                include_source: false,
-            },
+            condition: TriggerCondition::SubtypeEntersYou("Dragon"),
             targets: TargetPlan::NONE,
             program: &[Instruction::ReturnSourceToHand(TargetZone::Battlefield)],
         },

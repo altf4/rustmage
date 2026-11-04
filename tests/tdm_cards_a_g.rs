@@ -3401,10 +3401,16 @@ fn candidates_dragonstorm_forecaster_searches_only_either_printed_name_reveals_a
             let mut g = scenario(p);
             let source = put(&mut g, p, "Dragonstorm Forecaster", Zone::Battlefield);
             let dragon = put(&mut g, p, "Boulderborn Dragon", Zone::Library);
-            // A gated library identity needs no source registration or rules overlay.
-            let globe = put(&mut g, p, "Plains", Zone::Hand);
-            g.state.objects[globe as usize].card = Card::from_name("Dragonstorm Globe").unwrap();
-            g.move_object(globe, Zone::Library);
+            let globe = if Card::from_name("Dragonstorm Globe").unwrap().is_supported() {
+                put(&mut g, p, "Dragonstorm Globe", Zone::Library)
+            } else {
+                // The gated fixture installs its actual identity in hand before
+                // any event. Admission switches this to the ordinary put above.
+                let id = put(&mut g, p, "Plains", Zone::Hand);
+                g.state.objects[id as usize].card = Card::from_name("Dragonstorm Globe").unwrap();
+                g.move_object(id, Zone::Library);
+                id
+            };
             let other = put(&mut g, p, "Shivan Dragon", Zone::Library);
             g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
             g.state.objects[source as usize].summoning_sick = true;
@@ -3971,51 +3977,58 @@ fn growth_dragonstorm_globe_taps_for_exactly_one_of_five_colors_without_a_stack(
 fn growth_dragonstorm_globe_adds_entry_counters_to_own_dragon_cards_and_tokens_with_each_provider()
 {
     for p in [Player::P0, Player::P1] {
-        let mut g = scenario(p);
-        let a = enter_authored(&mut g, p, "Dragonstorm Globe");
-        drain(&mut g);
-        let b = enter_authored(&mut g, p, "Dragonstorm Globe");
-        drain(&mut g);
-        let own = put(&mut g, p, "Boulderborn Dragon", Zone::Hand);
-        cast(&mut g, own, None);
-        drain(&mut g);
-        assert_eq!(g.counter_count(own, CounterKind::PlusOne), 2);
-        assert_eq!(stats(&g, own), (5, 5));
-        let enemy = put(&mut g, p.other(), "Shivan Dragon", Zone::Hand);
-        g.move_object(enemy, Zone::Battlefield);
-        assert_eq!(g.counter_count(enemy, CounterKind::PlusOne), 0);
-        let bear = put(&mut g, p, "Bear Cub", Zone::Hand);
-        cast(&mut g, bear, None);
-        drain(&mut g);
-        assert_eq!(g.counter_count(bear, CounterKind::PlusOne), 0);
-        put(&mut g, p, "Dragonback Assault", Zone::Battlefield);
-        let land = put(&mut g, p, "Forest", Zone::Hand);
-        act(&mut g, Action::PlayLand { card: land });
-        drain(&mut g);
-        let tokens = battlefield_tokens(&g);
-        assert_eq!(tokens.len(), 1);
-        let token = tokens[0];
-        assert_eq!(g.object_view(a).zone, Zone::Battlefield);
-        assert_eq!(g.object_view(b).zone, Zone::Battlefield);
-        assert!(g.has_subtype(token, "Dragon"));
-        assert_eq!(g.object_view(token).colors, 8);
-        assert!(matches!(
-            g.object_view(token).card.effect(),
-            Effect::Creature(4, 4)
-        ));
-        assert_eq!(
-            g.counter_count(token, CounterKind::PlusOne),
-            2,
-            "two live Globe providers must each add an entry counter to actual Dragonback Assault's4/4 red Dragon token"
-        );
-        assert_eq!(stats(&g, token), (6, 6));
-        g.move_object(a, Zone::Hand);
-        g.move_object(b, Zone::Hand);
-        let later = put(&mut g, p, "Shivan Dragon", Zone::Hand);
-        cast(&mut g, later, None);
-        drain(&mut g);
-        assert_eq!(g.counter_count(later, CounterKind::PlusOne), 0);
-        assert_eq!(g.counter_count(own, CounterKind::PlusOne), 2);
+        for doubled in [false, true] {
+            let mut g = scenario(p);
+            let a = enter_authored(&mut g, p, "Dragonstorm Globe");
+            drain(&mut g);
+            let b = enter_authored(&mut g, p, "Dragonstorm Globe");
+            drain(&mut g);
+            let own = put(&mut g, p, "Boulderborn Dragon", Zone::Hand);
+            cast(&mut g, own, None);
+            drain(&mut g);
+            assert_eq!(g.counter_count(own, CounterKind::PlusOne), 2);
+            assert_eq!(stats(&g, own), (5, 5));
+            let enemy = put(&mut g, p.other(), "Shivan Dragon", Zone::Hand);
+            g.move_object(enemy, Zone::Battlefield);
+            assert_eq!(g.counter_count(enemy, CounterKind::PlusOne), 0);
+            let bear = put(&mut g, p, "Bear Cub", Zone::Hand);
+            cast(&mut g, bear, None);
+            drain(&mut g);
+            assert_eq!(g.counter_count(bear, CounterKind::PlusOne), 0);
+            if doubled {
+                let elspeth = put(&mut g, p, "Elspeth, Storm Slayer", Zone::Battlefield);
+                g.add_counter(elspeth, CounterKind::Loyalty, 5);
+            }
+            put(&mut g, p, "Dragonback Assault", Zone::Battlefield);
+            let land = put(&mut g, p, "Forest", Zone::Hand);
+            act(&mut g, Action::PlayLand { card: land });
+            drain(&mut g);
+            let tokens = battlefield_tokens(&g);
+            assert_eq!(tokens.len(), if doubled { 2 } else { 1 });
+            for token in tokens {
+                assert_eq!(g.object_view(a).zone, Zone::Battlefield);
+                assert_eq!(g.object_view(b).zone, Zone::Battlefield);
+                assert!(g.has_subtype(token, "Dragon"));
+                assert_eq!(g.object_view(token).colors, 8);
+                assert!(matches!(
+                    g.object_view(token).card.effect(),
+                    Effect::Creature(4, 4)
+                ));
+                assert_eq!(
+                    g.counter_count(token, CounterKind::PlusOne),
+                    2,
+                    "two live Globe providers must each add an entry counter to actual Dragonback Assault's4/4 red Dragon token"
+                );
+                assert_eq!(stats(&g, token), (6, 6));
+            }
+            g.move_object(a, Zone::Hand);
+            g.move_object(b, Zone::Hand);
+            let later = put(&mut g, p, "Shivan Dragon", Zone::Hand);
+            cast(&mut g, later, None);
+            drain(&mut g);
+            assert_eq!(g.counter_count(later, CounterKind::PlusOne), 0);
+            assert_eq!(g.counter_count(own, CounterKind::PlusOne), 2);
+        }
     }
 }
 
@@ -4125,5 +4138,94 @@ fn growth_encroaching_private_search_owns_raw_index_siblings_and_restore() {
         act(&mut indexed, Action::FinishSearch);
         drain(&mut indexed);
         assert_eq!(raw.snapshot(), indexed.snapshot());
+    }
+}
+
+#[test]
+fn growth_dragonstorm_return_clause_includes_its_own_entry_when_it_is_a_dragon() {
+    // Only this external type provider is a generic immutable fixture. All three
+    // copied Dragonstorms execute their actual canonical definitions unchanged.
+    const DRAGON_TYPES: rustmage_core::cards::authored::CardRules =
+        rustmage_core::cards::authored::CardRules {
+            effect: Effect::Permanent,
+            static_groups: &[StaticAbilityGroup {
+                line: 0,
+                first_layer: AbilityLayer::Type,
+                fragments: &[StaticAbilityFragment::ControlledCreatureSubtype {
+                    grant: CreatureSubtypeGrant::Named("Dragon"),
+                    required_subtype: None,
+                }],
+            }],
+            ..rustmage_core::cards::authored::CardRules::EMPTY
+        };
+    let _types = fixture_rules::activate(&[(Card::from_name("Short Bow").unwrap(), &DRAGON_TYPES)]);
+    for name in [
+        "Breaching Dragonstorm",
+        "Corroding Dragonstorm",
+        "Encroaching Dragonstorm",
+    ] {
+        for own_types in [false, true] {
+            let p = Player::P0;
+            let mut g = scenario(p);
+            put(
+                &mut g,
+                if own_types { p } else { p.other() },
+                "Short Bow",
+                Zone::Battlefield,
+            );
+            let mut recipe = CopyRecipe::new(Card::from_name(name).unwrap())
+                .with_sampled_size(copies::SampledTokenSize::new(2));
+            recipe.overrides = Some(CopyOverrides {
+                kinds: Some(1 | 32),
+                ..CopyOverrides::NONE
+            });
+            g.stage_copy_creation(p, recipe, 1);
+            assert!(!g.advance_replacements(false));
+            g.advance_entries();
+            let source = g
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .find_map(|(id, object)| {
+                    (object.zone == Zone::Battlefield && object.copy_kind == CopyKind::Token)
+                        .then_some(id as CardId)
+                })
+                .unwrap();
+            assert_eq!(g.object_view(source).card, Card::from_name(name).unwrap());
+            assert_eq!(g.has_subtype(source, "Dragon"), own_types);
+            for _ in 0..64 {
+                if g.state.stack.is_empty()
+                    && g.state.pending_triggers.is_empty()
+                    && g.state.resolving.is_none()
+                    && g.state.pending == Pending::Priority
+                {
+                    break;
+                }
+                match g.state.pending {
+                    Pending::EffectLibrary { .. } => choose(&mut g, |action| {
+                        matches!(
+                            action,
+                            Action::ArrangeLibrary {
+                                destination: LibraryDestination::Top,
+                                ..
+                            }
+                        )
+                    }),
+                    Pending::EffectSearch { .. } => act(&mut g, Action::FinishSearch),
+                    _ => progress(&mut g),
+                }
+            }
+            drain(&mut g);
+            assert_eq!(
+                g.object_view(source).zone,
+                if own_types {
+                    Zone::Outside
+                } else {
+                    Zone::Battlefield
+                },
+                "{name}: 'a Dragon' includes the entering source itself; returned token then ceases to exist"
+            );
+        }
     }
 }

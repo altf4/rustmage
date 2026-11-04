@@ -2,10 +2,10 @@
   "schema": 1,
   "set": "TDM",
   "group": "a_g",
-  "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+  "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
   "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "physical_scope": 91,
-  "completion_claim": "61 locally verified whole physical cards; complete91-card ownership remains open pending remaining30, full-set acceptance and final independent reviews.",
+  "completion_claim": "61 locally verified whole physical cards, including one reverified Breaching restoration pending root integration. The9-card growth cohort is gated and uncounted; complete91-card ownership remains open with30remaining, full-set acceptance and final reviews pending.",
   "cards": [
     {
       "name": "Adorned Crocodile",
@@ -1203,10 +1203,10 @@
       "name": "Breaching Dragonstorm",
       "oracle_id": "5370ee80-0354-454f-a16e-ec133e432ecb",
       "definition": "src/card_definitions/tdm/breaching_dragonstorm.rs",
-      "definition_sha256": "4b45fa146648cb8b8d75c00fc38d6d31bc07b196f90ca1fad4d447902b2fb75a",
+      "definition_sha256": "02cafbd76185dee0c2646c0fbe967d3fc3b109e7b1b59893be449cd5639135de",
       "kind": "newly_authored",
-      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
-      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "status": "locally_reverified_whole_card_restored_once_pending_root_repair_integration",
+      "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
       "obligations": [
         {
           "face": "Breaching Dragonstorm",
@@ -1222,7 +1222,8 @@
       ],
       "tests": [
         "mechanics_breaching_dragonstorm_exiles_lands_then_casts_up_to_eight_or_puts_nonland_in_hand",
-        "mechanics_breaching_dragonstorm_returns_only_for_your_dragon_and_not_a_new_incarnation"
+        "mechanics_breaching_dragonstorm_returns_only_for_your_dragon_and_not_a_new_incarnation",
+        "growth_dragonstorm_return_clause_includes_its_own_entry_when_it_is_a_dragon"
       ],
       "shared_proofs": [
         {
@@ -1232,7 +1233,26 @@
           "engine_checkpoint": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf"
         }
       ],
-      "source_review": "Full pinned Oracle body and Java class plus listed relevant helper bodies read before direct typed authoring."
+      "source_review": "Full pinned Oracle body and Java class plus listed relevant helper bodies read before direct typed authoring.",
+      "printed_obligation_proofs": [
+        {
+          "obligation": "Exile until nonland; optional free cast MV<=8 or hand.",
+          "asserted_outcome": "Existing actual-definition cases retain lands-in-exile, <=8free cast/decline, >8hand, no nonland found, exact source-independent offer ownership.",
+          "tests": [
+            "mechanics_breaching_dragonstorm_exiles_lands_then_casts_up_to_eight_or_puts_nonland_in_hand"
+          ]
+        },
+        {
+          "obligation": "When a Dragon you control enters",
+          "asserted_outcome": "Correct SubtypeEntersYou filters source and other entrants, own/enemy and stale-source cases, including actual definition copy entering as Dragon.",
+          "tests": [
+            "mechanics_breaching_dragonstorm_returns_only_for_your_dragon_and_not_a_new_incarnation",
+            "growth_dragonstorm_return_clause_includes_its_own_entry_when_it_is_a_dragon"
+          ]
+        }
+      ],
+      "restoration_note": "Restored once after gated17 and ordinary96; source pair committed separately as ebf084495013cb8bbb300983de0e76f0f133a80f. No new growth increment.",
+      "counted_in_verified_total": true
     },
     {
       "name": "Call the Spirit Dragons",
@@ -1894,8 +1914,8 @@
       "definition": "src/card_definitions/tdm/clarion_conqueror.rs",
       "definition_sha256": "69af2d03e44d23a28c3e151c70e70200014fdd1431750afb19fedd6cee75db57",
       "kind": "newly_authored",
-      "status": "provisional_pending_focused_execution",
-      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "status": "actual_gated_outcomes_passed_parked_before_family_admission_and_integration",
+      "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
       "obligations": [
         {
           "face": "Clarion Conqueror",
@@ -1917,7 +1937,26 @@
         "growth_clarion_activation_lock_follows_live_ability_suppression_and_aura_departure"
       ],
       "shared_proofs": [],
-      "source_review": "Entire pinned Oracle/main Java including custom helpers and listed relevant helper bodies read before direct typed authoring; existing Dragonback Assault typed behavior preserved."
+      "source_review": "Entire pinned Oracle/main Java including custom helpers and listed relevant helper bodies read before direct typed authoring; existing Dragonback Assault typed behavior preserved.",
+      "printed_obligation_proofs": [
+        {
+          "obligation": "Flying",
+          "asserted_outcome": "Live flying is removed by actual Fresh Start and restored after its departure.",
+          "tests": [
+            "growth_clarion_activation_lock_follows_live_ability_suppression_and_aura_departure"
+          ]
+        },
+        {
+          "obligation": "Activated abilities of artifacts, creatures, and planeswalkers can't be activated.",
+          "asserted_outcome": "Both players cannot activate matching battlefield kinds, including mana; land/GY activations remain legal, and source suppression/departure removes the prohibition.",
+          "tests": [
+            "growth_clarion_conqueror_blocks_both_players_battlefield_kinds_including_mana_but_not_graveyard_or_lands",
+            "growth_clarion_activation_lock_follows_live_ability_suppression_and_aura_departure"
+          ]
+        }
+      ],
+      "header_proof": "growth_eight_new_definitions_cast_for_exact_printed_mana",
+      "counted_in_verified_total": false
     },
     {
       "name": "Craterhoof Behemoth",
@@ -1925,8 +1964,8 @@
       "definition": "src/card_definitions/tdm/craterhoof_behemoth.rs",
       "definition_sha256": "8180939161151160171a2badf6375e124ad70bbe6f18fa163e6d4736c419884f",
       "kind": "newly_authored",
-      "status": "provisional_pending_focused_execution",
-      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "status": "actual_gated_outcomes_passed_parked_before_family_admission_and_integration",
+      "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
       "obligations": [
         {
           "face": "Craterhoof Behemoth",
@@ -1947,7 +1986,25 @@
         "growth_craterhoof_samples_live_own_creature_count_and_freezes_boost_and_trample_until_cleanup"
       ],
       "shared_proofs": [],
-      "source_review": "Entire pinned Oracle/main Java including custom helpers and listed relevant helper bodies read before direct typed authoring; existing Dragonback Assault typed behavior preserved."
+      "source_review": "Entire pinned Oracle/main Java including custom helpers and listed relevant helper bodies read before direct typed authoring; existing Dragonback Assault typed behavior preserved.",
+      "printed_obligation_proofs": [
+        {
+          "obligation": "Haste",
+          "asserted_outcome": "Printed haste persists after the ETB trample/boost expires.",
+          "tests": [
+            "growth_craterhoof_samples_live_own_creature_count_and_freezes_boost_and_trample_until_cleanup"
+          ]
+        },
+        {
+          "obligation": "When this creature enters",
+          "asserted_outcome": "Current own creature count is sampled on resolution, current recipients gain exact boost/trample, opponent/later creatures are excluded, source departure does not stop the packet, cleanup removes only temporary effects.",
+          "tests": [
+            "growth_craterhoof_samples_live_own_creature_count_and_freezes_boost_and_trample_until_cleanup"
+          ]
+        }
+      ],
+      "header_proof": "growth_eight_new_definitions_cast_for_exact_printed_mana",
+      "counted_in_verified_total": false
     },
     {
       "name": "Delta Bloodflies",
@@ -1955,8 +2012,8 @@
       "definition": "src/card_definitions/tdm/delta_bloodflies.rs",
       "definition_sha256": "ee6e46fc519394d4192bf634c9a5a1deb6369d993fe47e78a3a17f289c38c556",
       "kind": "newly_authored",
-      "status": "provisional_pending_focused_execution",
-      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "status": "actual_gated_outcomes_passed_parked_before_family_admission_and_integration",
+      "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
       "obligations": [
         {
           "face": "Delta Bloodflies",
@@ -1977,7 +2034,25 @@
         "growth_delta_bloodflies_checks_a_counter_on_an_own_creature_at_both_trigger_and_resolution"
       ],
       "shared_proofs": [],
-      "source_review": "Entire pinned Oracle/main Java including custom helpers and listed relevant helper bodies read before direct typed authoring; existing Dragonback Assault typed behavior preserved."
+      "source_review": "Entire pinned Oracle/main Java including custom helpers and listed relevant helper bodies read before direct typed authoring; existing Dragonback Assault typed behavior preserved.",
+      "printed_obligation_proofs": [
+        {
+          "obligation": "Flying",
+          "asserted_outcome": "Actual entering source has flying.",
+          "tests": [
+            "growth_delta_bloodflies_checks_a_counter_on_an_own_creature_at_both_trigger_and_resolution"
+          ]
+        },
+        {
+          "obligation": "Whenever this creature attacks",
+          "asserted_outcome": "Any counter kind on an own creature qualifies at trigger and resolution; self qualifies, enemy/artifact does not; removal before resolution stops loss and late qualification cannot create a trigger.",
+          "tests": [
+            "growth_delta_bloodflies_checks_a_counter_on_an_own_creature_at_both_trigger_and_resolution"
+          ]
+        }
+      ],
+      "header_proof": "growth_eight_new_definitions_cast_for_exact_printed_mana",
+      "counted_in_verified_total": false
     },
     {
       "name": "Fleeting Effigy",
@@ -1985,8 +2060,8 @@
       "definition": "src/card_definitions/tdm/fleeting_effigy.rs",
       "definition_sha256": "529a5008b194a1d694a093207d30353ccd4d73822d200748ff121473c22e5f9d",
       "kind": "newly_authored",
-      "status": "provisional_pending_focused_execution",
-      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "status": "actual_gated_outcomes_passed_parked_before_family_admission_and_integration",
+      "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
       "obligations": [
         {
           "face": "Fleeting Effigy",
@@ -2009,7 +2084,34 @@
         "growth_fleeting_effigy_end_trigger_and_pump_never_rebind_after_blink"
       ],
       "shared_proofs": [],
-      "source_review": "Entire pinned Oracle/main Java including custom helpers and listed relevant helper bodies read before direct typed authoring; existing Dragonback Assault typed behavior preserved."
+      "source_review": "Entire pinned Oracle/main Java including custom helpers and listed relevant helper bodies read before direct typed authoring; existing Dragonback Assault typed behavior preserved.",
+      "printed_obligation_proofs": [
+        {
+          "obligation": "Haste",
+          "asserted_outcome": "Actual source has haste.",
+          "tests": [
+            "growth_fleeting_effigy_pumps_repeatedly_at_instant_speed_and_returns_only_on_own_end_step"
+          ]
+        },
+        {
+          "obligation": "At the beginning of your end step",
+          "asserted_outcome": "Enemy end step does not return it; own end step returns exact source, and blink prevents stale trigger rebinding.",
+          "tests": [
+            "growth_fleeting_effigy_pumps_repeatedly_at_instant_speed_and_returns_only_on_own_end_step",
+            "growth_fleeting_effigy_end_trigger_and_pump_never_rebind_after_blink"
+          ]
+        },
+        {
+          "obligation": "{2}{R}",
+          "asserted_outcome": "Each exact2R activation works at instant speed and adds2 power until cleanup; stale pump cannot bind a new incarnation.",
+          "tests": [
+            "growth_fleeting_effigy_pumps_repeatedly_at_instant_speed_and_returns_only_on_own_end_step",
+            "growth_fleeting_effigy_end_trigger_and_pump_never_rebind_after_blink"
+          ]
+        }
+      ],
+      "header_proof": "growth_eight_new_definitions_cast_for_exact_printed_mana",
+      "counted_in_verified_total": false
     },
     {
       "name": "Formation Breaker",
@@ -2017,8 +2119,8 @@
       "definition": "src/card_definitions/tdm/formation_breaker.rs",
       "definition_sha256": "07799dd0ae8f2ac8106961f5abe162b230bb1b90c869dc4f0a3e7621bfb79114",
       "kind": "newly_authored",
-      "status": "provisional_pending_focused_execution",
-      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "status": "actual_gated_outcomes_passed_parked_before_family_admission_and_integration",
+      "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
       "obligations": [
         {
           "face": "Formation Breaker",
@@ -2039,16 +2141,34 @@
         "growth_formation_breaker_live_counter_bonus_is_source_only_and_evasion_compares_current_power"
       ],
       "shared_proofs": [],
-      "source_review": "Entire pinned Oracle/main Java including custom helpers and listed relevant helper bodies read before direct typed authoring; existing Dragonback Assault typed behavior preserved."
+      "source_review": "Entire pinned Oracle/main Java including custom helpers and listed relevant helper bodies read before direct typed authoring; existing Dragonback Assault typed behavior preserved.",
+      "printed_obligation_proofs": [
+        {
+          "obligation": "Creatures with power less",
+          "asserted_outcome": "Legal blocks compare live source/blocker power; a smaller blocker is rejected, an equal blocker is allowed only without live source boost.",
+          "tests": [
+            "growth_formation_breaker_live_counter_bonus_is_source_only_and_evasion_compares_current_power"
+          ]
+        },
+        {
+          "obligation": "As long as you control",
+          "asserted_outcome": "Only a counter-bearing own creature gives the source+1/+2; artifact/enemy counters do not, and another own creature receives no bonus.",
+          "tests": [
+            "growth_formation_breaker_live_counter_bonus_is_source_only_and_evasion_compares_current_power"
+          ]
+        }
+      ],
+      "header_proof": "growth_eight_new_definitions_cast_for_exact_printed_mana",
+      "counted_in_verified_total": false
     },
     {
       "name": "Corroding Dragonstorm",
       "oracle_id": "4c55ca3b-1254-4d44-96ac-1e1cadaf49f5",
       "definition": "src/card_definitions/tdm/corroding_dragonstorm.rs",
-      "definition_sha256": "71fc230216315130ce9657eacaa154e3eba3a8246cd9275d37fe4e14840c648e",
+      "definition_sha256": "997a22366075e2191f2858d4cc57fc232884360d1b7f8997665f731a68d89fbc",
       "kind": "newly_authored",
-      "status": "provisional_pending_focused_execution",
-      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "status": "actual_gated_outcomes_passed_parked_before_family_admission_and_integration",
+      "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
       "obligations": [
         {
           "face": "Corroding Dragonstorm",
@@ -2065,19 +2185,39 @@
       "tests": [
         "growth_eight_new_definitions_cast_for_exact_printed_mana",
         "growth_corroding_dragonstorm_loses_and_gains_two_then_surveils_two_privately",
-        "growth_corroding_and_encroaching_return_only_on_an_own_dragon_entry"
+        "growth_corroding_and_encroaching_return_only_on_an_own_dragon_entry",
+        "growth_dragonstorm_return_clause_includes_its_own_entry_when_it_is_a_dragon"
       ],
       "shared_proofs": [],
-      "source_review": "Entire pinned Oracle/main Java including custom helpers and listed relevant helper bodies read before direct typed authoring; existing Dragonback Assault typed behavior preserved."
+      "source_review": "Entire pinned Oracle/main Java including custom helpers and listed relevant helper bodies read before direct typed authoring; existing Dragonback Assault typed behavior preserved.",
+      "printed_obligation_proofs": [
+        {
+          "obligation": "When this enchantment enters",
+          "asserted_outcome": "Each opponent loses2, controller gains2, then exact private Surveil2 top/GY choices; no draw.",
+          "tests": [
+            "growth_corroding_dragonstorm_loses_and_gains_two_then_surveils_two_privately"
+          ]
+        },
+        {
+          "obligation": "When a Dragon you control enters",
+          "asserted_outcome": "Own Dragon entry returns source; enemy Dragon does not; revised actual-definition copy edge includes self if it enters as a Dragon.",
+          "tests": [
+            "growth_corroding_and_encroaching_return_only_on_an_own_dragon_entry",
+            "growth_dragonstorm_return_clause_includes_its_own_entry_when_it_is_a_dragon"
+          ]
+        }
+      ],
+      "header_proof": "growth_eight_new_definitions_cast_for_exact_printed_mana",
+      "counted_in_verified_total": false
     },
     {
       "name": "Encroaching Dragonstorm",
       "oracle_id": "1e95c273-7fec-4f8d-8be9-e21ad4b93717",
       "definition": "src/card_definitions/tdm/encroaching_dragonstorm.rs",
-      "definition_sha256": "2bc574310559f1b6f3dff0eac805eed989529e68e70a6ebcea4fd489d0cd0d32",
+      "definition_sha256": "9095ae54c4733021b8f57e8d9b1a49199f5f74f16ef9d290e3e8aad2b5303c16",
       "kind": "newly_authored",
-      "status": "provisional_pending_focused_execution",
-      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "status": "actual_gated_outcomes_passed_parked_before_family_admission_and_integration",
+      "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
       "obligations": [
         {
           "face": "Encroaching Dragonstorm",
@@ -2095,10 +2235,31 @@
         "growth_eight_new_definitions_cast_for_exact_printed_mana",
         "growth_encroaching_dragonstorm_searches_zero_one_or_two_basic_lands_tapped_and_shuffles",
         "growth_corroding_and_encroaching_return_only_on_an_own_dragon_entry",
-        "growth_encroaching_private_search_owns_raw_index_siblings_and_restore"
+        "growth_encroaching_private_search_owns_raw_index_siblings_and_restore",
+        "growth_dragonstorm_return_clause_includes_its_own_entry_when_it_is_a_dragon"
       ],
       "shared_proofs": [],
-      "source_review": "Entire pinned Oracle/main Java including custom helpers and listed relevant helper bodies read before direct typed authoring; existing Dragonback Assault typed behavior preserved."
+      "source_review": "Entire pinned Oracle/main Java including custom helpers and listed relevant helper bodies read before direct typed authoring; existing Dragonback Assault typed behavior preserved.",
+      "printed_obligation_proofs": [
+        {
+          "obligation": "When this enchantment enters",
+          "asserted_outcome": "Search chooses0/1/2 basic lands only, puts them tapped onto BF, and shuffles even on failure. Private chooser owns raw/index/sibling/drop/restore and transactional failure.",
+          "tests": [
+            "growth_encroaching_dragonstorm_searches_zero_one_or_two_basic_lands_tapped_and_shuffles",
+            "growth_encroaching_private_search_owns_raw_index_siblings_and_restore"
+          ]
+        },
+        {
+          "obligation": "When a Dragon you control enters",
+          "asserted_outcome": "Own Dragon entry returns source; enemy Dragon does not; revised actual-definition copy edge includes self if it enters as a Dragon.",
+          "tests": [
+            "growth_corroding_and_encroaching_return_only_on_an_own_dragon_entry",
+            "growth_dragonstorm_return_clause_includes_its_own_entry_when_it_is_a_dragon"
+          ]
+        }
+      ],
+      "header_proof": "growth_eight_new_definitions_cast_for_exact_printed_mana",
+      "counted_in_verified_total": false
     },
     {
       "name": "Dragonstorm Globe",
@@ -2106,8 +2267,8 @@
       "definition": "src/card_definitions/tdm/dragonstorm_globe.rs",
       "definition_sha256": "bd29d6f01b3c6d80b3a95160858d15882111264a1d9784ccf89a9272f3dc303b",
       "kind": "newly_authored",
-      "status": "gated_missing_shared_token_entry_counter_integration",
-      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "status": "actual_gated_outcomes_passed_parked_before_family_admission_and_integration",
+      "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
       "obligations": [
         {
           "face": "Dragonstorm Globe",
@@ -2127,7 +2288,25 @@
         "growth_dragonstorm_globe_adds_entry_counters_to_own_dragon_cards_and_tokens_with_each_provider"
       ],
       "shared_proofs": [],
-      "source_review": "Entire pinned Oracle/main Java including custom helpers and listed relevant helper bodies read before direct typed authoring; existing Dragonback Assault typed behavior preserved."
+      "source_review": "Entire pinned Oracle/main Java including custom helpers and listed relevant helper bodies read before direct typed authoring; existing Dragonback Assault typed behavior preserved.",
+      "printed_obligation_proofs": [
+        {
+          "obligation": "Each Dragon you control enters",
+          "asserted_outcome": "Each prior live provider adds one entry counter to own Dragon cards and ordinary/doubled actual Dragonback tokens; opponent/nonDragon entrants are excluded and departure stops later bonuses.",
+          "tests": [
+            "growth_dragonstorm_globe_adds_entry_counters_to_own_dragon_cards_and_tokens_with_each_provider"
+          ]
+        },
+        {
+          "obligation": "{T}",
+          "asserted_outcome": "Taps once for exactly one of five colors, excludes colorless, and is a mana ability without stack use.",
+          "tests": [
+            "growth_dragonstorm_globe_taps_for_exactly_one_of_five_colors_without_a_stack"
+          ]
+        }
+      ],
+      "header_proof": "growth_eight_new_definitions_cast_for_exact_printed_mana",
+      "counted_in_verified_total": false
     },
     {
       "name": "Dragonback Assault",
@@ -2135,8 +2314,8 @@
       "definition": "src/card_definitions/tdm/dragonback_assault.rs",
       "definition_sha256": "1007bdc8b8faa1529a7d614d8b74dd11d2c9413c787e29e121fa9d727dce4a76",
       "kind": "previously_admitted_candidate",
-      "status": "provisional_pending_focused_execution",
-      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "status": "actual_gated_outcomes_passed_parked_before_family_admission_and_integration",
+      "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
       "obligations": [
         {
           "face": "Dragonback Assault",
@@ -2155,7 +2334,26 @@
         "growth_dragonback_assault_only_own_land_entry_creates_a_red_flying_four_four_even_after_departure"
       ],
       "shared_proofs": [],
-      "source_review": "Entire pinned Oracle/main Java including custom helpers and listed relevant helper bodies read before direct typed authoring; existing Dragonback Assault typed behavior preserved."
+      "source_review": "Entire pinned Oracle/main Java including custom helpers and listed relevant helper bodies read before direct typed authoring; existing Dragonback Assault typed behavior preserved.",
+      "printed_obligation_proofs": [
+        {
+          "obligation": "When this enchantment enters",
+          "asserted_outcome": "Paid3GUR deals exactly3 once to each creature and PW, no player/noncreature artifact damage.",
+          "tests": [
+            "growth_dragonback_assault_paid_entry_deals_three_once_to_each_creature_and_planeswalker"
+          ]
+        },
+        {
+          "obligation": "Landfall",
+          "asserted_outcome": "Only own land entry creates an untapped4/4 red flying Dragon, source-independent after trigger; actual Elspeth doubles creation, and both tokens receive Globe entry counters.",
+          "tests": [
+            "growth_dragonback_assault_only_own_land_entry_creates_a_red_flying_four_four_even_after_departure",
+            "growth_dragonstorm_globe_adds_entry_counters_to_own_dragon_cards_and_tokens_with_each_provider"
+          ]
+        }
+      ],
+      "header_proof": "growth_dragonback_assault_paid_entry_deals_three_once_to_each_creature_and_planeswalker",
+      "counted_in_verified_total": false
     }
   ],
   "validation": [
@@ -2349,6 +2547,60 @@
       "failed": 1,
       "terminal": true,
       "expected_failure": "Confirmed missing generic token entry-counter application, counter0 vs2; printed expectations retained."
+    },
+    {
+      "report": "<cache>/rustmage-tdm/engine85-final-focus-1793818257100861074/tdm_cards_a_g/native.json",
+      "sha256": "72fc094a9752adfc3c291f74d1fb472786fb606246f6bb587910eb359501d34d",
+      "test_target": "tdm_cards_a_g",
+      "filter": "growth_",
+      "passed": 16,
+      "failed": 0,
+      "compile_seconds": 1.218058190017473,
+      "execution_seconds": 0.04285216296557337,
+      "engine_reused": true,
+      "terminal": true,
+      "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
+      "gate": "All eight new definitions incomplete; actual definitions and actual doubled Dragonback token passed.",
+      "source_checkpoint": "65c1c836e plus actual test3c2600812cf27973a61f34dbc1dc9858427d375aba2c8db7c1f90fdff1c4545d",
+      "later_correction": "The two Dragonstorm source-inclusion flags and new regression require a fresh17-case gated proof before admission."
+    },
+    {
+      "report": "<cache>/rustmage-tdm/cards-a-g-growth9-engine85-self-entry-gated/native.json",
+      "sha256": "0bbef3f8831378f0bd33a00d0b98e99f7782956064e6cbeef1d4820eb00ba1cb",
+      "test_target": "tdm_cards_a_g",
+      "filter": "growth_",
+      "passed": 14,
+      "failed": 3,
+      "terminal": true,
+      "diagnosis": "Wrong typed trigger: include_source=true bypasses all filters for self. Correct existing SubtypeEntersYou primitive used for all3 owned Dragonstorms; flags remain gated until retry."
+    },
+    {
+      "report": "<cache>/rustmage-tdm/post85-gated-families-1793821082714343829/a_g/native.json",
+      "sha256": "142758c05baa58517cccc8ba55893122d06d9701f72bd17c49ada8d156ba9db8",
+      "test_target": "tdm_cards_a_g",
+      "filter": "growth_",
+      "passed": 17,
+      "failed": 0,
+      "terminal": true,
+      "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
+      "compile_seconds": 3.9234448130009696,
+      "execution_seconds": 0.03394635202130303,
+      "gate": "All8new and repaired Breaching gated; correct subtype trigger and self/nonDragon controls.",
+      "all_new_admitted": false
+    },
+    {
+      "report": "<cache>/rustmage-tdm/old-dragonstorm-restoration-1793821631385562618/a_g/native.json",
+      "sha256": "9032c9c15dfee44b18c6489e48a5d1bdcbc5227e20e39e99eae61a31528466b9",
+      "test_target": "tdm_cards_a_g",
+      "filter": "",
+      "passed": 96,
+      "failed": 0,
+      "terminal": true,
+      "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
+      "compile_seconds": 4.075709137017839,
+      "execution_seconds": 0.08575766300782561,
+      "gate": "Breaching restored to ordinary supported-card path; all8new remainfalse and use the explicitly labelled actual-definition gated fixtures.",
+      "all_new_admitted": false
     }
   ],
   "locally_verified_physical_cards": 61,
@@ -2420,20 +2672,42 @@
       "implementation_elapsed_seconds": null,
       "implementation_measurement_limit": "Source preparation and test authorship were interleaved with explicit frozen validation queues and later-card draft preparation; no isolated implementation throughput claimed.",
       "simulation_throughput": "Not measured by this family"
+    },
+    {
+      "scope": "Gated9-card growth cohort plus Breaching printed self-entry repair; execution only, no new growth completion claim while shared engine86 is open.",
+      "new_growth_cards_counted": 0,
+      "old_card_restored_once": 1,
+      "gated_cases": 17,
+      "gated_compile_seconds": 3.9234448130009696,
+      "gated_execution_seconds": 0.03394635202130303,
+      "restoration_target_cases": 96,
+      "restoration_compile_seconds": 4.075709137017839,
+      "restoration_execution_seconds": 0.08575766300782561,
+      "implementation_elapsed_seconds": null,
+      "implementation_measurement_limit": "Authoring and proof crossed engine85 and86 holds; no uninterrupted implementation throughput is claimed.",
+      "simulation_throughput": "Not measured by these bounded scenario tests."
     }
   ],
   "current_engine_checkpoint": {
-    "revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
-    "compatibility_commit": "d752c7a979271390aa13885e1ce52e3d1a3beef3",
-    "warm_receipt": "<cache>/rustmage-tdm/engine84-author-baselines-1793811712648419284/a_g/core-warm-terminal.json",
-    "warm_receipt_sha256": "3c35044397a9cf1d6db5745e33d454d8470aa79b738293940f8028bcac5fbb88",
-    "authoring_gate": "New definitions remain incomplete until actual-definition gated execution, then ordinary admitted paths are rerun."
+    "revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
+    "compatibility_commit": "ba0d2ca0bb447061b7b05966459554e676487a1a",
+    "warm_receipt": "<cache>/rustmage-tdm/engine85-author-baselines-1793819914373027092/a_g/warm-terminal.json",
+    "warm_receipt_sha256": "6a4cff096f4f9c36473b77aefc58a5e4aeaf714b68c4341275577de3bd7d8d60",
+    "warm_core_fresh": true,
+    "warm_seconds": 0.11472780699841678,
+    "accepted_engine_proof": "Root accepted9/9 validation,4482 native cases across107 targets,10 Python binding contracts,four immutable libraries and two independent pure final approvals.",
+    "authoring_gate": "PARKED by root for shared dependency86; no further card authoring/admission or A-G engine edits until accepted engine86 and cache warm. Breaching-only old-card restoration passed gated17 and ordinary96 while all8new flags remainedfalse.",
+    "next_shared_dependency": {
+      "id": 86,
+      "owner": "s_z",
+      "root_description": "Cast-spell mana-value amount recognition and selective captured quantity for LoseLifeScaled, identified by actual Teval outcomes. No A-G engine change authorized."
+    }
   },
   "mechanic_family_prepared": {
     "cards": 12,
     "new_gated": 12,
     "tests": 21,
-    "status": "locally_verified_whole_cards_pending_full_set_acceptance_and_final_reviews",
+    "status": "locally_verified_whole_cards_with_Breaching_source_subtype_restoration_pending_root_integration",
     "filter": "mechanics_",
     "new_engine_changes": false,
     "engine_dependency": {
@@ -2463,9 +2737,9 @@
     "cards": 9,
     "new_gated": 8,
     "previous_candidates": 1,
-    "tests": 16,
+    "tests": 17,
     "filter": "growth_",
-    "status": "gated_checkpoint_pending_shared_dependency85",
+    "status": "gated17_passed_parked_for_engine86_before_admission",
     "new_engine_changes": false,
     "new_flags_false": true,
     "admission_gate": "Root promotes only after positive gated outcomes then regenerates and reruns ordinary admitted paths.",
@@ -2473,7 +2747,7 @@
     "engine_dependency": {
       "id": 85,
       "name": "TOKEN_ENTRY_COUNTERS",
-      "status": "confirmed_actual_definition_regression_pending_engine_phase",
+      "status": "accepted_engine85_generic_and_actual_globe_token_outcomes_passed",
       "printed_obligation": "Each Dragon you control enters with an additional +1/+1 counter on it, including Dragon creature tokens.",
       "repro": "growth_dragonstorm_globe_adds_entry_counters_to_own_dragon_cards_and_tokens_with_each_provider: two actual Globle providers give ordinary Boulderborn2 counters, but actual Dragonback Assault4/4redDragon token gets0 instead of2.",
       "report": "<cache>/rustmage-tdm/tdm-globe-token-entry-diagnostic/native.json",
@@ -2484,7 +2758,64 @@
         "engine_tokens.rs create_token_groups_bound direct Outside-to-Battlefield path",
         "engine_entries.rs add_subtype_entry_counters currently called only for EntryBatch moves"
       ],
-      "all_new_flags_false": true
-    }
+      "all_new_flags_false": true,
+      "accepted_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
+      "resolution": "Fixed factories now use shared pre-entry transactions when needed, preserving counter replacements/prohibition/observers and deferred completion. Ordinary/doubled actual Dragonback tokens each enter with two counters under two Globes.",
+      "accepted_focus_terminal": "<cache>/rustmage-tdm/engine85-final-focus-1793818257100861074/terminal.json",
+      "accepted_focus_terminal_sha256": "9c00c7fd95de3d4f20cf735212d44e721e855414933e9f3a457d13df505ec189"
+    },
+    "actual_definition_fixture": "Every paid growth action uses the actual canonical definition. After admission authored_spell returns ordinary support::put; Forecaster library setup also uses ordinary support::put once Globe is supported. One edge case copies each real Dragonstorm with a creature form and uses only an external generic Dragon-type provider fixture.",
+    "ordinary_target_cases": 96,
+    "source_pin_rows_rechecked": 53,
+    "printed_wiring_correction": {
+      "cards": [
+        "Breaching Dragonstorm",
+        "Corroding Dragonstorm",
+        "Encroaching Dragonstorm"
+      ],
+      "printed_obligation": "A Dragon entering includes the source itself; neither Oracle nor XMage specifies another.",
+      "change": "Use existing TriggerCondition::SubtypeEntersYou(\"Dragon\"), filtering every entrant including source.",
+      "source_authority": [
+        "Mage.Sets/src/mage/cards/c/CorrodingDragonstorm.java",
+        "Mage.Sets/src/mage/cards/e/EncroachingDragonstorm.java",
+        "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+        "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java"
+      ],
+      "new_case": "growth_dragonstorm_return_clause_includes_its_own_entry_when_it_is_a_dragon",
+      "status": "all_three_actual_definition_self_and_nonDragon_control_variants_passed_gated17_and_full96",
+      "intermediate_binding_rejected": "PermanentEntersYou.include_source=true is explicitly self OR filtered-other; the self arm bypasses subtype filters, so it incorrectly returned ordinary nonDragon enchantments. Gated17 caught3 failures; no engine change was needed."
+    },
+    "admission_proposal": {
+      "promote_after_revised_gated_pass": [
+        "Clarion Conqueror",
+        "Craterhoof Behemoth",
+        "Delta Bloodflies",
+        "Fleeting Effigy",
+        "Formation Breaker",
+        "Corroding Dragonstorm",
+        "Encroaching Dragonstorm",
+        "Dragonstorm Globe"
+      ],
+      "keep_existing_admission": [
+        "Dragonback Assault"
+      ],
+      "keep_token_gated": [
+        "@token/tdm-reliquary-dragon"
+      ],
+      "count_change": "Current61 already includes one restored Breaching. Future growth admission/integration adds9 once, yielding70=28new+42existing. No growth card is newly counted in this checkpoint.",
+      "restore_after_revised_gated_pass": [],
+      "status": "parked_until_engine86_acceptance_and_warm"
+    },
+    "reopened_previous_verified_card": {
+      "name": "Breaching Dragonstorm",
+      "status": "restored_after_gated17_and_ordinary96_proofs",
+      "repair_commit": "ebf084495013cb8bbb300983de0e76f0f133a80f",
+      "restored_count": 1,
+      "readmission_is_restoration_not_new_increment": true,
+      "root_integration_pending": true
+    },
+    "gated_definitions_including_restoration": 9,
+    "physical_validation_scope_including_restoration": 10,
+    "ordinary_all_new_admitted_proof_pending": true
   }
 }

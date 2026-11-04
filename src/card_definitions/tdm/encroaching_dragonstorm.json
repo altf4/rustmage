@@ -32,9 +32,14 @@
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
       "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
       "sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+      "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
     }
   ],
   "remaining_obligations": [
-    "Direct typed printed behavior remains gated until all applicable actual-definition growth_ scenarios pass."
+    "All printed outcomes passed revised17-case gated proof on accepted engine85. Admission and ordinary supported-card rerun remain parked until shared engine86 acceptance and cache warm."
   ]
 }
