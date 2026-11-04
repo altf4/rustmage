@@ -2,9 +2,9 @@
   "schema": 1,
   "engine_revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
   "status": "whole-set acceptance pending",
-  "locally_verified_cards": 6,
-  "newly_implemented": 3,
-  "previously_admitted_verified": 3,
+  "locally_verified_cards": 19,
+  "newly_implemented": 6,
+  "previously_admitted_verified": 13,
   "integrations": [
     {
       "source_commits": [
@@ -32,6 +32,42 @@
           "cases": 7,
           "compile_seconds": 0.8169552729814313,
           "execution_seconds": 0.03352268098387867
+        }
+      ]
+    },
+    {
+      "source_commits": [
+        "3e0084176"
+      ],
+      "regenerated": true,
+      "validation": [
+        {
+          "target": "tdm_cards_s_z",
+          "report": "<cache>/rustmage-tdm/root-harmonize-integrated/native.json",
+          "sha256": "320ff44c6188c744860cb165495b8d577e380a2984a8a0442ab91f783e5b5f11",
+          "success": true,
+          "terminal": true,
+          "cases": 8,
+          "compile_seconds": 4.323964644980151,
+          "execution_seconds": 0.034320137987378985
+        }
+      ]
+    },
+    {
+      "source_commits": [
+        "b7743a469"
+      ],
+      "regenerated": true,
+      "validation": [
+        {
+          "target": "tdm_cards_a_g",
+          "report": "<cache>/rustmage-tdm/root-land-renew-integrated/native.json",
+          "sha256": "56d164c4c7070d9d5751752f51fc3c9fbdb8f947db08cd170a20813c56456e4f",
+          "success": true,
+          "terminal": true,
+          "cases": 14,
+          "compile_seconds": 3.6742664810153656,
+          "execution_seconds": 0.042874968028627336
         }
       ]
     }

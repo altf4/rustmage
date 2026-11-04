@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "240d69d435c612afac9cff2c937546ed975180de5aa60c07ab57dd299e567380",
+  "catalogue_version": "03d37f6cbfa72066ac2e7569d94ea665cafa3d779b4718c4b98806aabe06f2e3",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3160,
-  "implemented_total": 3167,
+  "implemented_standard_cards": 3163,
+  "implemented_total": 3170,
   "token_definitions": 156,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -162,8 +162,8 @@
     },
     "tdm": {
       "total": 264,
-      "complete": 129,
-      "gated": 135
+      "complete": 132,
+      "gated": 132
     },
     "tla": {
       "total": 278,
@@ -7801,8 +7801,8 @@
     {
       "name": "Dalkovan Encampment",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/dalkovan_encampment.rs",
       "set": "tdm"
     },
@@ -38409,8 +38409,8 @@
     {
       "name": "Unending Whisper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/unending_whisper.rs",
       "set": "tdm"
     },
@@ -38713,8 +38713,8 @@
     {
       "name": "Ureni's Rebuff",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/ureni_s_rebuff.rs",
       "set": "tdm"
     },
