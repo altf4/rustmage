@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+  "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
   "status": "whole-set acceptance pending",
-  "locally_verified_cards": 108,
+  "locally_verified_cards": 109,
   "newly_implemented": 61,
-  "previously_admitted_verified": 47,
+  "previously_admitted_verified": 48,
   "integrations": [
     {
       "source_commits": [
@@ -177,16 +177,22 @@
           "execution_seconds": 0.0505933910026215
         }
       ]
+    },
+    {
+      "evidence": "docs/tdm-existing-strategic-betrayal-evidence.json",
+      "previously_admitted_verified": 1,
+      "name": "Strategic Betrayal",
+      "source_change": "none; identical definition/provenance/actual tests; current engine84 full-native case PASS"
     }
   ],
-  "remaining_physical_cards": 168,
+  "remaining_physical_cards": 167,
   "source_verification": {
     "definitions": 5488,
     "source_blobs": 2625,
     "java_verified": true,
     "catalogue_version": "5aee8e6d1ab87ea03dde3f4bd41041fe0c1938d22a1c9330a156ae89cd2aa4e9"
   },
-  "active_engine_dependency": "E:HALF_LIFE_ROUND_UP (84): Betor must lose ceil(nonnegative life/2); existing floor primitive must preserve Pox Plague. General card authors held with all WIP preserved. Prior83 engine checkpoint remains accepted.",
+  "active_engine_dependency": "None currently: shared84 accepted by both independent reviewers after full release; three guarded author core caches warming before dependent Betor/family wiring.",
   "engine83_card_repair": {
     "card": "Aggressive Negotiations",
     "reason": "Restored after dedicated true nonland predicate rejects artifact/enchantment lands; mandatory reveal/exact refs/source-independent exile/counter continuation/owned branches verified.",
@@ -197,5 +203,5 @@
     "schema_report": "<cache>/rustmage-tdm/schema201-first/native.json",
     "schema_cases": 4
   },
-  "engine_acceptance": "docs/tdm-engine83-acceptance.json"
+  "engine_acceptance": "docs/tdm-engine84-acceptance.json"
 }

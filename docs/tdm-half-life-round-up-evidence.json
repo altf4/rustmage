@@ -3,7 +3,7 @@
   "set": "TDM",
   "dependency": "E:HALF_LIFE_ROUND_UP",
   "audit_group": 84,
-  "status": "5generic+2actualPox+1schema-domain focusedPASS; two pure source clearances;24trace additions independently approved and adopted. Full release and final published-engine reviews pending.",
+  "status": "Shared engine84 fully accepted at9b2812b98:9/9releasephases,4374native,10bindingcontracts,twoindependentfinalapprovals. Authorcorecachewarms inprogress before actualBetor wiring.",
   "accepted_prior_engine": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
   "source": "crates/engine/src/engine_programs.rs: Instruction::LoseHalfLife currently uses max(0)/2",
   "reproduction": {
@@ -110,5 +110,6 @@
       "success": false,
       "scope": "Source/format/cardformat/43scriptcontractsPASS;Clippyfailed3GS testlints. NoNative/release. Fixednestedif/CloneOnCopy15d6b5117; exactrequiredClippycommandpassedaftersafefix."
     }
-  ]
+  ],
+  "accepted_engine_checkpoint": "docs/tdm-engine84-acceptance.json"
 }

@@ -1,0 +1,234 @@
+{
+  "schema": 1,
+  "scope": "Shared engine checkpoint84 acceptance before dependent card authoring; not complete276-card set or final PR acceptance",
+  "status": "Accepted exact published executable inputs after full release and two independent pure nonauthor approvals",
+  "validated_published_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+  "previous_83_group_acceptance": "docs/tdm-engine83-acceptance.json",
+  "audit_groups_including_aliases": 84,
+  "audit_group_counts_are_unweighted": true,
+  "dependency": "E:HALF_LIFE_ROUND_UP",
+  "implementation": "Instruction::LoseHalfLifeRoundedUp(PlayerSet), live max(0,life)/2+life%2 using ordinary program_players/lose_life. Existing floor operation and Pox Plague unchanged.",
+  "observation_schema": 201,
+  "schema_reason": "Instruction is not Serialize; immediate arithmetic introduces no state/continuation/action/field/domain. Existing schema199 PlayerSet walker extended with inherited-domain regression.",
+  "engine_frozen": true,
+  "validation": {
+    "report": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/result.json",
+    "sha256": "90f24d6644224aeeaa078a900d82c5fea1092b47dc3c30033bf8eb6be80af9a3",
+    "terminal": true,
+    "success": true,
+    "input_sha256": "ae71f60e71219627f91aecc198d1fad5da79a548571c7b851cbce3a6e0f76559",
+    "files_verified": 12997,
+    "changed": [],
+    "active_processes": [],
+    "seconds": 392.8206318099983,
+    "phases": [
+      {
+        "name": "source pins",
+        "exit": 0,
+        "seconds": 0.9166269589914009,
+        "log": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/00.log",
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "format",
+        "exit": 0,
+        "seconds": 4.175181912956759,
+        "log": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/01.log",
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "card format",
+        "exit": 0,
+        "seconds": 1.120318033033982,
+        "log": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/02.log",
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "script contracts",
+        "exit": 0,
+        "seconds": 2.071052604005672,
+        "log": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/03.log",
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "clippy",
+        "exit": 0,
+        "seconds": 2.069646458956413,
+        "log": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/04.log",
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "native assurance",
+        "exit": 0,
+        "seconds": 187.70458826300455,
+        "log": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/05.log",
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "release build",
+        "exit": 0,
+        "seconds": 194.14330249099294,
+        "log": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/06.log",
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "simulation sample",
+        "exit": 0,
+        "seconds": 0.2657278929837048,
+        "log": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/07.log",
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "Python assurance",
+        "exit": 0,
+        "seconds": 0.16532820696011186,
+        "log": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/08.log",
+        "timed_out": false,
+        "orphaned_processes": false
+      }
+    ]
+  },
+  "native_assurance": {
+    "report": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/native.json",
+    "sha256": "4ce510b350c0220eaee7641429c6d593e41fcfe5fc96cec8b8a5b795081052e0",
+    "tests": 4374,
+    "targets": 106,
+    "compile_seconds": 87.21065030101454,
+    "execution_seconds": 100.39544855098939,
+    "terminal": true,
+    "success": true
+  },
+  "binding_assurance": {
+    "suite": "contract",
+    "requested_suite": "smoke",
+    "library": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/libraries/librustmage.so",
+    "terminal": true,
+    "tests": 10,
+    "success": true,
+    "seconds": 0.03954024502309039,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "runtime_budget_seconds": 5.0,
+    "budget_exceeded": false,
+    "timeout_seconds": 15.0
+  },
+  "resource_guard": {
+    "report": "/home/altf4/.cache/rustmage-build-reports/5ce023e69a254fcf9edaa7d094f3e2c2.json",
+    "sha256": "009b74ab3d7a7c0b125bf2460b62f60f665571dc316621a2214a788621739e56",
+    "command": [
+      "/usr/bin/python3",
+      "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/scripts/validate.py",
+      "--release",
+      "--python",
+      "smoke",
+      "--target-dir",
+      "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target",
+      "--timeout",
+      "1200"
+    ],
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 393.0365730409976,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 5249519616,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1
+  },
+  "required_immutable_shared_libraries": [
+    {
+      "path": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/libraries/librustmage.so",
+      "sha256": "c61c4e2a62e8ed9a58eec81aee83e61c622b88efcdbbf45ffef3a7dcaa315bf1",
+      "requires_preservation_at_exact_path_and_hash": true,
+      "readonly": true
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-validation-o8jjr7os/report/libraries/librustmage.so",
+      "sha256": "4aebb4867b67d084c98f12113c9eefb19e17a3c02a272e44e7f341cc15df2248",
+      "requires_preservation_at_exact_path_and_hash": true,
+      "readonly": true
+    },
+    {
+      "path": "/home/altf4/.cache/rustmage-validation-c3slnby9/report/libraries/librustmage.so",
+      "sha256": "4ee65b6abae8b89d79dfa2a87bd796882c05b3c87fb94833c9e4699ef44c5082",
+      "requires_preservation_at_exact_path_and_hash": true,
+      "readonly": true
+    }
+  ],
+  "simulation": {
+    "clone_ns": 176.64475,
+    "decisions": 4941,
+    "decisions_per_second": 27709.94872235012,
+    "deck_names": [
+      "native-smoke"
+    ],
+    "deck_rules": "Freeform",
+    "decklist_archive": null,
+    "games": 10,
+    "games_per_second": 56.081661045031616,
+    "initial_state_bytes_excluding_capacity_and_allocator": 24712,
+    "max_decisions_per_game": 655,
+    "note": "native smoke policy and observation construction included; optional named decks rotate adjacent matchups through both seats; setup and gameplay timed, archive loading excluded; no model, tensor encoding, or per-decision JSON; verify mode also times owned raw/index branch and restore checks; sampled gameplay is not complete card-interaction coverage or XMage parity",
+    "owned_raw_index_restore_checks": false,
+    "restore_ns": 187.84799,
+    "seconds": 0.178311409
+  },
+  "simulation_scope": "Ten-game generic Freeform native-smoke only; no TDM/all-Standard throughput/coverage/parity claim.52fixed TDM games still unexecuted.",
+  "trace_acceptance": "docs/tdm-24-card-trace-additions.json",
+  "focused_evidence": "docs/tdm-half-life-round-up-evidence.json",
+  "independent_nonauthor_reviews": [
+    {
+      "reviewer": "/root/tdm_engine_review_one",
+      "role": "Pure independent nonauthor, no authored ancestors",
+      "revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "status": "Approved final published engine84 checkpoint; no findings",
+      "verified": [
+        "12997 exact frozen inputs/fingerprint",
+        "9/9 phases,4374native/106targets,43infrastructure,10actualPythoncontracts",
+        "3225 accepted schema201 traces;3201oldrowsunchanged+24reviewedadditions",
+        "Exact new immutable library/path/hash and both prior required libraries preserved",
+        "6GiB/onejob/onethread,zeroOOM/timeout/orphans",
+        "Limited smoke scope; dependent Betor/card wiring and fullset/finalPR acceptance remain separate"
+      ]
+    },
+    {
+      "reviewer": "/root/tdm_engine_review_two",
+      "role": "Pure independent nonauthor, no authored ancestors",
+      "revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "status": "Approved final published engine84 checkpoint; no findings",
+      "verified": [
+        "12997 exact frozen inputs/fingerprint",
+        "9/9 phases,4374native/106targets,43infrastructure,10actualPythoncontracts",
+        "3225 accepted schema201 traces;3201oldrowsunchanged+24reviewedadditions",
+        "Exact new immutable library/path/hash and both prior required libraries preserved",
+        "6GiB/onejob/onethread,zeroOOM/timeout/orphans",
+        "Limited smoke scope; dependent Betor/card wiring and fullset/finalPR acceptance remain separate"
+      ]
+    }
+  ],
+  "author_compatibility_and_warm_receipts": "/home/altf4/.cache/rustmage-tdm/engine84-author-baselines-1793811712648419284",
+  "author_cache_status": "Serial core-only guarded test-profile/test-support warm in progress; release each author only after its terminal correct-profile PASS.",
+  "card_status": {
+    "verified": 109,
+    "scope": 276,
+    "new": 61,
+    "existing_verified": 48,
+    "whole_set_acceptance": false
+  },
+  "remaining": [
+    "Finish three author core-cache warms; wire actual gated Betor to accepted opcode, reprove12-card family",
+    "All276 printed card outcomes and13 Omen faces; remaining167",
+    "16cross-card families (F02firstscenario passes),52fixed set-only terminal games,replay,ownedsearch",
+    "Measured TDM implementation/simulation workload throughput and README reconciliation",
+    "Final complete-set release,exactlyonePR,twofreshindependentnonauthorreviews of final published PR head"
+  ]
+}

@@ -9,8 +9,8 @@
   "started_utc": "2026-11-04T14:02:30.077837+00:00",
   "full_denominator": 92,
   "currently_verified_new_complete": 4,
-  "currently_verified_existing_candidates": 18,
-  "pending_members": 70,
+  "currently_verified_existing_candidates": 19,
+  "pending_members": 69,
   "candidate_first_family_count": 4,
   "provisional_complete_flags": "New definitions remain complete=false through initial gated actual-definition PASS. Integrator then admits and repeats using normal supported put before counting. Existing baseline candidates require actual-definition evidence or accepted exact source/test/report proof reuse.",
   "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
@@ -1071,9 +1071,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "3a50f3b3c28dcb5a963bb4d77ca4076366e16b9795da79fae82a7812c7dd2772"
+      "status": "whole_card_locally_verified_by_root_exact_baseline_and_current_native_proof",
+      "verified": true,
+      "oracle_facts_sha256": "3a50f3b3c28dcb5a963bb4d77ca4076366e16b9795da79fae82a7812c7dd2772",
+      "evidence": "docs/tdm-existing-strategic-betrayal-evidence.json"
     },
     {
       "name": "Sultai Devotee",
@@ -2156,7 +2157,7 @@
       "oracle_facts_sha256": "c50c16138bb0572a1a932e5c9861f497a264e5a4b6aa78ced267b126fc8b3041"
     }
   ],
-  "remaining": "88 physical members remain for complete source reads/authorship/actual-definition verification; first4 locally verified, full set acceptance still pending.",
+  "remaining": "69 physical members remain for complete authored behavior/actual outcomes.23 locally verified (4new,19existing), including root-accepted Strategic Betrayal exact-source proof. Full set acceptance remains pending.",
   "families": [
     {
       "name": "Harmonize draw/bounce/combat spells",
@@ -2744,5 +2745,8 @@
       "test_source_sha256": "70fae199c47da942b9c1c91a407a6115c65f090bfac0a32272551a71267b4f2d"
     }
   ],
-  "first_family_finished_utc": "2026-11-04T14:05:57.547813+00:00"
+  "first_family_finished_utc": "2026-11-04T14:05:57.547813+00:00",
+  "root_accepted_existing_reuse": [
+    "docs/tdm-existing-strategic-betrayal-evidence.json"
+  ]
 }
