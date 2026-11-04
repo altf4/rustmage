@@ -2,8 +2,8 @@
   "schema": 1,
   "engine_revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
   "status": "whole-set acceptance pending",
-  "locally_verified_cards": 19,
-  "newly_implemented": 6,
+  "locally_verified_cards": 44,
+  "newly_implemented": 31,
   "previously_admitted_verified": 13,
   "integrations": [
     {
@@ -70,6 +70,31 @@
           "execution_seconds": 0.042874968028627336
         }
       ]
+    },
+    {
+      "source_commits": [
+        "18d9f5637"
+      ],
+      "regenerated": true,
+      "validation": [
+        {
+          "target": "tdm_cards_g_s",
+          "report": "<cache>/rustmage-tdm/root-g-s-25-integrated/native.json",
+          "sha256": "64eb9a3e73d308bc0b6408a1c20bd9e4b2c38f2ae8ffcb49b5431784dea00d5c",
+          "success": true,
+          "terminal": true,
+          "cases": 25,
+          "compile_seconds": 3.9253024560166523,
+          "execution_seconds": 0.03425463195890188
+        }
+      ]
     }
-  ]
+  ],
+  "remaining_physical_cards": 232,
+  "source_verification": {
+    "definitions": 5488,
+    "source_blobs": 2560,
+    "java_verified": true,
+    "catalogue_version": "73a964457b0b982380ca2c75ddce5e3c392f7b06294a8c526e49875433e119fe"
+  }
 }
