@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "adc30ead382b301caf94f9e1317d6d63a8b1aa712c0833caebc59250cadf722b",
+  "catalogue_version": "53b5932dee5dc4feaf8a58c53064806a7b09ed4b9e259c8aafd16a71e418f719",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3231,
-  "implemented_total": 3238,
+  "implemented_standard_cards": 3233,
+  "implemented_total": 3240,
   "token_definitions": 157,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -162,8 +162,8 @@
     },
     "tdm": {
       "total": 264,
-      "complete": 200,
-      "gated": 64
+      "complete": 202,
+      "gated": 62
     },
     "tla": {
       "total": 278,
@@ -4489,8 +4489,8 @@
     {
       "name": "Breaching Dragonstorm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/breaching_dragonstorm.rs",
       "set": "tdm"
     },
@@ -28825,8 +28825,8 @@
     {
       "name": "Roiling Dragonstorm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/roiling_dragonstorm.rs",
       "set": "tdm"
     },

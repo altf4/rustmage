@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "dependency": "E:CAST_EVENT_SCALAR_CAPTURE",
+  "audit_group": 86,
+  "status": "Test-first generic negative confirmed; minimal shared predicate fix authored in isolated worktree; focused lint/8generic/20actual cases running",
+  "accepted_prior_engine": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
+  "owner": "/root/tdm_audit_s_z",
+  "worktree": "/home/altf4/.codex/worktrees/tdm-cast-routes/rustmage",
+  "actual_card_failure_report": "/home/altf4/.cache/rustmage-tdm/post85-gated-families-1793821082714343829/s_z/native.json",
+  "actual_failure": "16/20 pass; four Teval loss cases stay at20 instead of17/18/16. Teval remains gated; correct typed LoseLifeScaled(CastSpellManaValue) lacks captured context.",
+  "test_first": {
+    "report": "/home/altf4/.cache/rustmage-tdm/engine86-cast-event-test-first/native.json",
+    "sha256": "912f6a7d299f084e82ea600c4751ac99d3408e6eed4698fc5198976b585faa59",
+    "terminal": true,
+    "success": false,
+    "cases": 1,
+    "compile_seconds": 0.91711427498376,
+    "execution_seconds": 0.016242521989624947,
+    "expected_failure": "CastSpellManaValue consumer must retain its cast event",
+    "old_helper_sha256": "722173f1ca5d1fe56ec6d9cd303386cd1b77e6b451d051e70a8a655e7e590c9e"
+  },
+  "source_audit": [
+    "engine_programs selective guard consults cast_symbol_quantities::selected before retaining existing CastPaymentEvent",
+    "recursive selected walker already visits LoseLifeScaled and modal/scalar wrappers, but amount recognizes symbols only",
+    "scalar evaluator defaults absent cast_event to0",
+    "Complete current typed consumers audited: Teval loss; Dancing counters; Ovika temporary tokens; Thor damage; Namor symbol count compatibility"
+  ],
+  "minimal_fix": "Recognize CastSpellManaValue alongside CastSpellManaSymbols in the existing recursive amount predicate; update doc only. Retain caller/manual allowlist and all legacy behavior.",
+  "runtime_path": "crates/engine/src/engine_cast_symbol_quantities.rs",
+  "candidate_helper_sha256": "3fe0aaaf29cc4d85ed0d63cfc7f739fc66372c3d139c386050faf69a9f481c16",
+  "generic_test_path": "tests/tdm_cast_event_scalars.rs",
+  "generic_tests": 8,
+  "focused_run": "/home/altf4/.cache/rustmage-tdm/engine86-focus-1793822314297383346",
+  "schema_audit": "Both pure preliminary reviewers confirm existing CastPaymentEvent/SpellView optional payload, scalar domain and serialized shapes unchanged; retain201 unless final patch introduces actual wire changes.",
+  "card_count_unchanged": 187,
+  "whole_set_acceptance": false
+}

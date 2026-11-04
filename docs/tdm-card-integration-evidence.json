@@ -2,8 +2,8 @@
   "schema": 1,
   "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
   "status": "whole-set acceptance pending",
-  "locally_verified_cards": 185,
-  "newly_implemented": 74,
+  "locally_verified_cards": 187,
+  "newly_implemented": 76,
   "previously_admitted_verified": 111,
   "integrations": [
     {
@@ -281,14 +281,14 @@
       ]
     }
   ],
-  "remaining_physical_cards": 91,
+  "remaining_physical_cards": 89,
   "source_verification": {
     "definitions": 5489,
     "source_blobs": 2713,
     "java_verified": true,
-    "catalogue_version": "9a8164380b9b17b4d9cacf2adef314bd9d0e33b14a6d936bc9834ba2aff8284b"
+    "catalogue_version": "53b5932dee5dc4feaf8a58c53064806a7b09ed4b9e259c8aafd16a71e418f719"
   },
-  "active_engine_dependency": null,
+  "active_engine_dependency": "E:CAST_EVENT_SCALAR_CAPTURE(86): Teval LoseLifeScaled(CastSpellManaValue) trigger omits existing cast_event capture; direct test-first repro fails, minimal recursive-collector fix in focused validation. All new card batches parked.",
   "engine83_card_repair": {
     "card": "Aggressive Negotiations",
     "reason": "Restored after dedicated true nonland predicate rejects artifact/enchantment lands; mandatory reveal/exact refs/source-independent exile/counter continuation/owned branches verified.",
@@ -301,20 +301,6 @@
   },
   "engine_acceptance": "docs/tdm-engine85-acceptance.json",
   "engine85_card_gate": "Shared fix accepted; per-author cache warms required before resumed cards. No count increase from drafted/gated cards.",
-  "reverification_holds": [
-    {
-      "name": "Breaching Dragonstorm",
-      "prior_status": "Counted in187 before expanded self-entry edge test",
-      "status": "Gated until corrected typed trigger and actual-definition proof pass",
-      "reason": "Printed a Dragon includes source when legally entering as Dragon. PermanentEntersYou is documented explicit self-OR-other; SubtypeEntersYou is the existing matching primitive. This is card wiring, not a missing engine feature.",
-      "owner": "a_g"
-    },
-    {
-      "name": "Roiling Dragonstorm",
-      "prior_status": "Counted in187 before expanded self-entry edge test",
-      "status": "Gated until corrected typed trigger and actual-definition proof pass",
-      "reason": "Printed a Dragon includes source when legally entering as Dragon. PermanentEntersYou is documented explicit self-OR-other; SubtypeEntersYou is the existing matching primitive. This is card wiring, not a missing engine feature.",
-      "owner": "g_s"
-    }
-  ]
+  "reverification_holds": [],
+  "closed_reverification_holds": "docs/tdm-dragonstorm-self-entry-restoration.json"
 }
