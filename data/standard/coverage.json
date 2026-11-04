@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "226b678f4fe388d2fbab786f5a9ffb4ccbf5fd2910311b8f48f4b5c4d20df5b4",
+  "catalogue_version": "240d69d435c612afac9cff2c937546ed975180de5aa60c07ab57dd299e567380",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3158,
-  "implemented_total": 3165,
+  "implemented_standard_cards": 3160,
+  "implemented_total": 3167,
   "token_definitions": 156,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -162,8 +162,8 @@
     },
     "tdm": {
       "total": 264,
-      "complete": 127,
-      "gated": 137
+      "complete": 129,
+      "gated": 135
     },
     "tla": {
       "total": 278,
@@ -1209,8 +1209,8 @@
     {
       "name": "Alchemist's Assistant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/alchemist_s_assistant.rs",
       "set": "tdm"
     },
@@ -5849,8 +5849,8 @@
     {
       "name": "Champion of Dusan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/champion_of_dusan.rs",
       "set": "tdm"
     },

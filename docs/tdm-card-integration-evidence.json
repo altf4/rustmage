@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "engine_revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+  "status": "whole-set acceptance pending",
+  "locally_verified_cards": 6,
+  "newly_implemented": 3,
+  "previously_admitted_verified": 3,
+  "integrations": [
+    {
+      "source_commits": [
+        "69993fa51",
+        "30a91085e"
+      ],
+      "regenerated": true,
+      "validation": [
+        {
+          "target": "tdm_cards_a_g",
+          "report": "<cache>/rustmage-tdm/root-renew-cori-integrated/a_g/native.json",
+          "sha256": "f9a6ce3be00db2206432680647c197cd381404b24db78aaee2922c74e5d4d354",
+          "success": true,
+          "terminal": true,
+          "cases": 8,
+          "compile_seconds": 3.674350560992025,
+          "execution_seconds": 0.024630543019156903
+        },
+        {
+          "target": "tdm_cori_steel_cutter",
+          "report": "<cache>/rustmage-tdm/root-renew-cori-integrated/cori/native.json",
+          "sha256": "de25d1e197622c25f39c64cfda5aa50a2a4e99a98af8a7a968e964ed540f3e03",
+          "success": true,
+          "terminal": true,
+          "cases": 7,
+          "compile_seconds": 0.8169552729814313,
+          "execution_seconds": 0.03352268098387867
+        }
+      ]
+    }
+  ]
+}
