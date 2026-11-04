@@ -1,0 +1,1927 @@
+{
+  "schema": 1,
+  "set": "TDM",
+  "group": "g_s",
+  "engine_revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+  "metadata_revision": "bd24d9f167f98308637420e3a4de461ccda1a4d0",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "scope": {
+    "physical_members": 92,
+    "implemented_with_focused_outcomes": 25,
+    "first_family_admitted_candidates": 0,
+    "second_family_gated_pending_admission_rerun": 0,
+    "existing_candidates_independently_verified": 0,
+    "remaining_physical_members": 67,
+    "admitted_locally_verified": 25
+  },
+  "cards": [
+    {
+      "name": "Gurmag Nightwatch",
+      "oracle_id": "fde50a0d-9bc6-45f4-873e-3de81a513fac",
+      "facts_sha256": "97ed8a9acc4ddf7aec08d91f40c2e14d6e42f4108b5c3aea0b810b0c57f70a3c",
+      "definition": "src/card_definitions/tdm/gurmag_nightwatch.rs",
+      "definition_sha256": "c0d06bd7da1bcbeb9143195740f36c89734bc67ab18eed5289e4e003799e9b05",
+      "provenance": "src/card_definitions/tdm/gurmag_nightwatch.json",
+      "java_source": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/g/GurmagNightwatch.java",
+        "sha256": "07ca3ea21a5cc84127432b0f7ff84b999337bbe81e969d4024979088db33c1d9",
+        "complete_class_read": true
+      },
+      "full_oracle_and_java_read": true,
+      "helper_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+          "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e",
+          "complete_body_read": true
+        }
+      ],
+      "printed_obligations": [
+        {
+          "kind": "header",
+          "oracle_text": null,
+          "printed_header": {
+            "mana_cost": "{2/B}{2/G}{2/U}",
+            "type_line": "Creature \u2014 Human Ranger",
+            "power": "3",
+            "toughness": "3"
+          },
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::gurmag_nightwatch_private_optional_top_choice_and_owned_branches",
+            "tests/tdm_cards_g_s.rs::first_family_intrinsic_headers_and_printed_keywords"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "When this creature enters, look at the top three cards of your library. You may put one of those cards back on top of your library. Put the rest into your graveyard.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::gurmag_nightwatch_private_optional_top_choice_and_owned_branches",
+            "tests/tdm_cards_g_s.rs::first_family_intrinsic_headers_and_printed_keywords"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        }
+      ],
+      "admitted": true,
+      "new_implementation": true,
+      "status": "locally whole-card verified; pending final assembled-set acceptance and two final nonauthor reviews"
+    },
+    {
+      "name": "Gurmag Rakshasa",
+      "oracle_id": "2be43acc-a815-44bc-8803-d702e553fbc1",
+      "facts_sha256": "9134e60bb1249170752671432ad6f81a522ed0c69fe6cc5e74cae3e5ccef6016",
+      "definition": "src/card_definitions/tdm/gurmag_rakshasa.rs",
+      "definition_sha256": "cb95fc23b09242e477ba64dd1038b0741675ec91add5fb1484092f47bc026f2c",
+      "provenance": "src/card_definitions/tdm/gurmag_rakshasa.json",
+      "java_source": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/g/GurmagRakshasa.java",
+        "sha256": "c5db1d8758a7d32e781814adcf9b6699e707c7fabc829d4c69d5e58f1212fbea",
+        "complete_class_read": true
+      },
+      "full_oracle_and_java_read": true,
+      "helper_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+          "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9",
+          "complete_body_read": true
+        }
+      ],
+      "printed_obligations": [
+        {
+          "kind": "header",
+          "oracle_text": null,
+          "printed_header": {
+            "mana_cost": "{4}{B}{B}",
+            "type_line": "Creature \u2014 Demon",
+            "power": "5",
+            "toughness": "5"
+          },
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::gurmag_rakshasa_opposite_target_groups_survive_partial_invalidation",
+            "tests/tdm_cards_g_s.rs::first_family_intrinsic_headers_and_printed_keywords"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::gurmag_rakshasa_opposite_target_groups_survive_partial_invalidation",
+            "tests/tdm_cards_g_s.rs::first_family_intrinsic_headers_and_printed_keywords"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "When this creature enters, target creature an opponent controls gets -2/-2 until end of turn and target creature you control gets +2/+2 until end of turn.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::gurmag_rakshasa_opposite_target_groups_survive_partial_invalidation",
+            "tests/tdm_cards_g_s.rs::first_family_intrinsic_headers_and_printed_keywords"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        }
+      ],
+      "admitted": true,
+      "new_implementation": true,
+      "status": "locally whole-card verified; pending final assembled-set acceptance and two final nonauthor reviews"
+    },
+    {
+      "name": "Herd Heirloom",
+      "oracle_id": "78b6dd40-c182-4037-a4d3-9fd012b2c584",
+      "facts_sha256": "7397636919d3567ce134fdc9d5621001613b72cfd066f295feef4ad291410fd3",
+      "definition": "src/card_definitions/tdm/herd_heirloom.rs",
+      "definition_sha256": "30dd27c21508bbcb7a7fd0060760e9977ef9e2b2e08bb20985fa1079dd7f550e",
+      "provenance": "src/card_definitions/tdm/herd_heirloom.json",
+      "java_source": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/h/HerdHeirloom.java",
+        "sha256": "72b8e237332f8be92e43643b2ff649e70955d0a95ae4e35ffe04372f64a514ca",
+        "complete_class_read": true
+      },
+      "full_oracle_and_java_read": true,
+      "helper_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/ConditionalAnyColorManaAbility.java",
+          "sha256": "2042d72737462646216eea22a1ecdd05d338f1f2b3bfbb3c19fdb273f067c736",
+          "complete_body_read": true
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/conditional/CreatureCastConditionalMana.java",
+          "sha256": "2a18d636eff2dabefb5518fd38f54fe6292d5c1697efb714ca1c44aacb0efb62",
+          "complete_body_read": true
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1",
+          "complete_body_read": true
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+          "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11",
+          "complete_body_read": true
+        }
+      ],
+      "printed_obligations": [
+        {
+          "kind": "header",
+          "oracle_text": null,
+          "printed_header": {
+            "mana_cost": "{1}{G}",
+            "type_line": "Artifact",
+            "power": null,
+            "toughness": null
+          },
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::herd_heirloom_creature_restricted_mana_and_temporary_trample_draw_ability"
+          ],
+          "applicable_shared_proofs": [
+            "tests/tdm_remaining_world_rules.rs::creature_and_dragon_or_omen_mana_filters_use_each_selected_face_and_never_fund_other_payments"
+          ],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "{T}: Add one mana of any color. Spend this mana only to cast a creature spell.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::herd_heirloom_creature_restricted_mana_and_temporary_trample_draw_ability"
+          ],
+          "applicable_shared_proofs": [
+            "tests/tdm_remaining_world_rules.rs::creature_and_dragon_or_omen_mana_filters_use_each_selected_face_and_never_fund_other_payments"
+          ],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "{T}: Until end of turn, target creature you control with power 4 or greater gains trample and \"Whenever this creature deals combat damage to a player, draw a card.\"",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::herd_heirloom_creature_restricted_mana_and_temporary_trample_draw_ability"
+          ],
+          "applicable_shared_proofs": [
+            "tests/tdm_remaining_world_rules.rs::creature_and_dragon_or_omen_mana_filters_use_each_selected_face_and_never_fund_other_payments"
+          ],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        }
+      ],
+      "admitted": true,
+      "new_implementation": true,
+      "status": "locally whole-card verified; pending final assembled-set acceptance and two final nonauthor reviews"
+    },
+    {
+      "name": "Host of the Hereafter",
+      "oracle_id": "3431338b-928a-47f2-bc2f-f3c5d8eda8d0",
+      "facts_sha256": "6a6401429ccae4afb74fbbb828be0f11405682baca9c81a660914fbeeca3d7e0",
+      "definition": "src/card_definitions/tdm/host_of_the_hereafter.rs",
+      "definition_sha256": "05f084608e56b83edb8215b578c906173fe01ace36cdd4cd239433a0f6d2abc2",
+      "provenance": "src/card_definitions/tdm/host_of_the_hereafter.json",
+      "java_source": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/h/HostOfTheHereafter.java",
+        "sha256": "606af2129cdb8f93071035700f51a4a5f6d470e1a820b5ca1137ab90c5ef560d",
+        "complete_class_read": true
+      },
+      "full_oracle_and_java_read": true,
+      "helper_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/DiesCreatureTriggeredAbility.java",
+          "sha256": "62d53cb6be7c685032f9bf3a509c9217177b4ee44ccd9a294be1d8dca7d77b81",
+          "complete_body_read": true
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldWithCountersAbility.java",
+          "sha256": "b34c7e6346705407d2a8519d8afdebd93b393745b995bbbce928753c35eacd59",
+          "complete_body_read": true
+        }
+      ],
+      "printed_obligations": [
+        {
+          "kind": "header",
+          "oracle_text": null,
+          "printed_header": {
+            "mana_cost": "{2}{B}{G}",
+            "type_line": "Creature \u2014 Zombie Warlock",
+            "power": "2",
+            "toughness": "2"
+          },
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::host_enters_with_two_and_transfers_independent_dying_creatures_counters",
+            "tests/tdm_cards_g_s.rs::first_family_intrinsic_headers_and_printed_keywords"
+          ],
+          "applicable_shared_proofs": [
+            "tests/tdm_event_contexts.rs::simultaneous_self_and_other_deaths_freeze_separate_full_counter_multisets",
+            "tests/tdm_event_contexts.rs::sba_death_snapshot_preserves_plus_minus_and_sparse_counters_before_annihilation"
+          ],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "This creature enters with two +1/+1 counters on it.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::host_enters_with_two_and_transfers_independent_dying_creatures_counters",
+            "tests/tdm_cards_g_s.rs::first_family_intrinsic_headers_and_printed_keywords"
+          ],
+          "applicable_shared_proofs": [
+            "tests/tdm_event_contexts.rs::simultaneous_self_and_other_deaths_freeze_separate_full_counter_multisets",
+            "tests/tdm_event_contexts.rs::sba_death_snapshot_preserves_plus_minus_and_sparse_counters_before_annihilation"
+          ],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "Whenever this creature or another creature you control dies, if it had counters on it, put its counters on up to one target creature you control.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::host_enters_with_two_and_transfers_independent_dying_creatures_counters",
+            "tests/tdm_cards_g_s.rs::first_family_intrinsic_headers_and_printed_keywords"
+          ],
+          "applicable_shared_proofs": [
+            "tests/tdm_event_contexts.rs::simultaneous_self_and_other_deaths_freeze_separate_full_counter_multisets",
+            "tests/tdm_event_contexts.rs::sba_death_snapshot_preserves_plus_minus_and_sparse_counters_before_annihilation"
+          ],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        }
+      ],
+      "admitted": true,
+      "new_implementation": true,
+      "status": "locally whole-card verified; pending final assembled-set acceptance and two final nonauthor reviews"
+    },
+    {
+      "name": "Hundred-Battle Veteran",
+      "oracle_id": "9ed6aa5b-4369-42f7-9853-aae1ac9b17e2",
+      "facts_sha256": "86b838882d90d6d11b5fdba8095129887dd1ec3f3514503cf1d9ab5b71e1d436",
+      "definition": "src/card_definitions/tdm/hundred_battle_veteran.rs",
+      "definition_sha256": "307fbccb68d55a9d9aed68e9d81efdd5a5a117bdf3fef79c5946f13eb26dd25d",
+      "provenance": "src/card_definitions/tdm/hundred_battle_veteran.json",
+      "java_source": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/h/HundredBattleVeteran.java",
+        "sha256": "bb243cf7bcc183101c2561b789070b1e26ada78f81e348f58778f5a9655a454a",
+        "complete_class_read": true
+      },
+      "full_oracle_and_java_read": true,
+      "helper_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/MayCastFromGraveyardSourceAbility.java",
+          "sha256": "5fabb3b07028c6709d74af5be237564ca277070effac3353b6bb847a12a76962",
+          "complete_body_read": true
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/condition/common/CastFromGraveyardSourceCondition.java",
+          "sha256": "7eed055c9671f6cc59ee3c85360ac3ceb7e5c25682b32e66a548dfe6ec801878",
+          "complete_body_read": true
+        }
+      ],
+      "printed_obligations": [
+        {
+          "kind": "header",
+          "oracle_text": null,
+          "printed_header": {
+            "mana_cost": "{3}{B}",
+            "type_line": "Creature \u2014 Zombie Warrior",
+            "power": "4",
+            "toughness": "2"
+          },
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::hundred_battle_veteran_counts_distinct_kinds_and_graveyard_cast_enters_finality",
+            "tests/tdm_cards_g_s.rs::second_family_intrinsic_creature_headers"
+          ],
+          "applicable_shared_proofs": [
+            "tests/tdm_counter_world.rs::counter_queries_count_creatures_and_union_kinds_with_live_control_and_types",
+            "tests/tdm_entry_counters.rs"
+          ],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "As long as there are three or more different kinds of counters among creatures you control, this creature gets +2/+4.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::hundred_battle_veteran_counts_distinct_kinds_and_graveyard_cast_enters_finality",
+            "tests/tdm_cards_g_s.rs::second_family_intrinsic_creature_headers"
+          ],
+          "applicable_shared_proofs": [
+            "tests/tdm_counter_world.rs::counter_queries_count_creatures_and_union_kinds_with_live_control_and_types",
+            "tests/tdm_entry_counters.rs"
+          ],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "You may cast this card from your graveyard. If you do, it enters with a finality counter on it. (If a creature with a finality counter on it would die, exile it instead.)",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::hundred_battle_veteran_counts_distinct_kinds_and_graveyard_cast_enters_finality",
+            "tests/tdm_cards_g_s.rs::second_family_intrinsic_creature_headers"
+          ],
+          "applicable_shared_proofs": [
+            "tests/tdm_counter_world.rs::counter_queries_count_creatures_and_union_kinds_with_live_control_and_types",
+            "tests/tdm_entry_counters.rs"
+          ],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        }
+      ],
+      "admitted": true,
+      "new_implementation": true,
+      "status": "locally whole-card verified; pending final assembled-set acceptance and two final nonauthor reviews"
+    },
+    {
+      "name": "Iridescent Tiger",
+      "oracle_id": "ce09c5b0-9dd4-4f73-9f3f-dfbd829813e4",
+      "facts_sha256": "64e45ad3110e929cdc904744698910b1e6cf3fec7a17b016b973ecf5de7106ff",
+      "definition": "src/card_definitions/tdm/iridescent_tiger.rs",
+      "definition_sha256": "f6ab9496f084d86c46b05eddddb64d340a41417ce21ff9a22d863e17c5a8d93a",
+      "provenance": "src/card_definitions/tdm/iridescent_tiger.json",
+      "java_source": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/i/IridescentTiger.java",
+        "sha256": "549b7dc3c943d1f11079e0ab25fc47150e2db9cef26340f91ae7c6b758738d41",
+        "complete_class_read": true
+      },
+      "full_oracle_and_java_read": true,
+      "helper_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+          "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62",
+          "complete_body_read": true
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/condition/common/CastFromEverywhereSourceCondition.java",
+          "sha256": "2d091ae95c227de0b227151a9b315cf5370e50f5e0f5177f5e50d8ab3825c4ba",
+          "complete_body_read": true
+        }
+      ],
+      "printed_obligations": [
+        {
+          "kind": "header",
+          "oracle_text": null,
+          "printed_header": {
+            "mana_cost": "{4}{R}",
+            "type_line": "Creature \u2014 Cat",
+            "power": "3",
+            "toughness": "4"
+          },
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::iridescent_tiger_cast_entry_adds_each_color_but_uncast_entry_does_not",
+            "tests/tdm_cards_g_s.rs::first_family_intrinsic_headers_and_printed_keywords"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "When this creature enters, if you cast it, add {W}{U}{B}{R}{G}.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::iridescent_tiger_cast_entry_adds_each_color_but_uncast_entry_does_not",
+            "tests/tdm_cards_g_s.rs::first_family_intrinsic_headers_and_printed_keywords"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        }
+      ],
+      "admitted": true,
+      "new_implementation": true,
+      "status": "locally whole-card verified; pending final assembled-set acceptance and two final nonauthor reviews"
+    },
+    {
+      "name": "Jeskai Monument",
+      "oracle_id": "0b2b7d04-73f3-43f6-86e0-fa00cbbc6469",
+      "facts_sha256": "085f421fffe63ef8c13621baa61e2e349ae4c63aa8175b46d1804a7954d2c210",
+      "definition": "src/card_definitions/tdm/jeskai_monument.rs",
+      "definition_sha256": "d467dcbe255982b61d662a37ec8f21bd92c36aa436a03b3c3e03400bcd590d5c",
+      "provenance": "src/card_definitions/tdm/jeskai_monument.json",
+      "java_source": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/j/JeskaiMonument.java",
+        "sha256": "f746dc93ae3a5492834401c6e56987526d35769f432636eea2435c30b82eaf1e",
+        "complete_class_read": true
+      },
+      "full_oracle_and_java_read": true,
+      "helper_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+          "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a",
+          "complete_body_read": true
+        }
+      ],
+      "printed_obligations": [
+        {
+          "kind": "header",
+          "oracle_text": null,
+          "printed_header": {
+            "mana_cost": "{2}",
+            "type_line": "Artifact",
+            "power": null,
+            "toughness": null
+          },
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::monuments_search_their_basic_subtypes_then_pay_sacrifice_and_create_exact_tokens",
+            "tests/tdm_cards_g_s.rs::monuments_each_basic_subtype_and_activation_timing_are_wired"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "When this artifact enters, search your library for a basic Island, Mountain, or Plains card, reveal it, put it into your hand, then shuffle.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::monuments_search_their_basic_subtypes_then_pay_sacrifice_and_create_exact_tokens",
+            "tests/tdm_cards_g_s.rs::monuments_each_basic_subtype_and_activation_timing_are_wired"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "{1}{U}{R}{W}, {T}, Sacrifice this artifact: Create two 1/1 white Bird creature tokens with flying. Activate only as a sorcery.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::monuments_search_their_basic_subtypes_then_pay_sacrifice_and_create_exact_tokens",
+            "tests/tdm_cards_g_s.rs::monuments_each_basic_subtype_and_activation_timing_are_wired"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        }
+      ],
+      "admitted": true,
+      "new_implementation": true,
+      "status": "locally whole-card verified; pending final assembled-set acceptance and two final nonauthor reviews"
+    },
+    {
+      "name": "Karakyk Guardian",
+      "oracle_id": "41129dc1-be88-4198-94f9-032817a79bc7",
+      "facts_sha256": "01639decfe7c7f250dc42274e0a07e86fc995283f088f769bd6a988bf043921c",
+      "definition": "src/card_definitions/tdm/karakyk_guardian.rs",
+      "definition_sha256": "a242317e82b03541ec163007a58ea7c924c38c46487167350d96c7df985277ef",
+      "provenance": "src/card_definitions/tdm/karakyk_guardian.json",
+      "java_source": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/k/KarakykGuardian.java",
+        "sha256": "a83976cb76a1a5a73da5f6c0c790414063e5ef78d2f1f4246843825bf47d183d",
+        "complete_class_read": true
+      },
+      "full_oracle_and_java_read": true,
+      "helper_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/condition/common/SourceHasntDealtDamageThisGameCondition.java",
+          "sha256": "502e27ceabdbaf963f6c2713b958307b49363692f9210a3c94a76b4d9c37e65e",
+          "complete_body_read": true
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/watchers/common/DealtDamageThisGameWatcher.java",
+          "sha256": "150b862c4e57dd30abb467012e31bae68d21e3107e171d68ae696937ec2a8e5d",
+          "complete_body_read": true
+        }
+      ],
+      "printed_obligations": [
+        {
+          "kind": "header",
+          "oracle_text": null,
+          "printed_header": {
+            "mana_cost": "{3}{G}{U}{R}",
+            "type_line": "Creature \u2014 Dragon",
+            "power": "6",
+            "toughness": "5"
+          },
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::karakyk_hexproof_tracks_all_damage_in_exact_incarnation_across_turns",
+            "tests/tdm_cards_g_s.rs::second_family_intrinsic_creature_headers"
+          ],
+          "applicable_shared_proofs": [
+            "tests/tdm_counter_world.rs::only_positive_unprevented_damage_marks_exact_incarnation_across_turn_control_and_copy"
+          ],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "Flying, vigilance, trample",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::karakyk_hexproof_tracks_all_damage_in_exact_incarnation_across_turns",
+            "tests/tdm_cards_g_s.rs::second_family_intrinsic_creature_headers"
+          ],
+          "applicable_shared_proofs": [
+            "tests/tdm_counter_world.rs::only_positive_unprevented_damage_marks_exact_incarnation_across_turn_control_and_copy"
+          ],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "This creature has hexproof as long as it hasn't dealt damage yet. (It can't be the target of spells or abilities your opponents control.)",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::karakyk_hexproof_tracks_all_damage_in_exact_incarnation_across_turns",
+            "tests/tdm_cards_g_s.rs::second_family_intrinsic_creature_headers"
+          ],
+          "applicable_shared_proofs": [
+            "tests/tdm_counter_world.rs::only_positive_unprevented_damage_marks_exact_incarnation_across_turn_control_and_copy"
+          ],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        }
+      ],
+      "admitted": true,
+      "new_implementation": true,
+      "status": "locally whole-card verified; pending final assembled-set acceptance and two final nonauthor reviews"
+    },
+    {
+      "name": "Kheru Goldkeeper",
+      "oracle_id": "aef4ab0e-c81f-428c-ab23-64504a9fb989",
+      "facts_sha256": "0233f865f4d1af45c2afe84195cf15c04b98e5b37589061072e35f20a0ba6ac0",
+      "definition": "src/card_definitions/tdm/kheru_goldkeeper.rs",
+      "definition_sha256": "300b7fe4538c59b7288cbd7596864dc80378c1134064616bd8806830445db8d0",
+      "provenance": "src/card_definitions/tdm/kheru_goldkeeper.json",
+      "java_source": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/k/KheruGoldkeeper.java",
+        "sha256": "116184cb89baf400df943163faa50745a5491d5f5a7334ab7b4e72fd432f3719",
+        "complete_class_read": true
+      },
+      "full_oracle_and_java_read": true,
+      "helper_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/RenewAbility.java",
+          "sha256": "32a1436eacfca7d3397a9bed3a949b686061d5e54d2627219e393fbe9947a02b",
+          "complete_body_read": true
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/CardsLeaveGraveyardTriggeredAbility.java",
+          "sha256": "9600c956500170fad83dd5e65083bbeb3aebbef5cbb9ef82d8ca989bdb70905b",
+          "complete_body_read": true
+        }
+      ],
+      "printed_obligations": [
+        {
+          "kind": "header",
+          "oracle_text": null,
+          "printed_header": {
+            "mana_cost": "{1}{B}{G}{U}",
+            "type_line": "Creature \u2014 Dragon",
+            "power": "3",
+            "toughness": "3"
+          },
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::renew_keyword_counter_batches_and_sage_add_before_double",
+            "tests/tdm_cards_g_s.rs::graveyard_departure_observers_use_own_turn_and_skimmer_once_per_turn",
+            "tests/tdm_cards_g_s.rs::first_family_intrinsic_headers_and_printed_keywords"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "Flying",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::renew_keyword_counter_batches_and_sage_add_before_double",
+            "tests/tdm_cards_g_s.rs::graveyard_departure_observers_use_own_turn_and_skimmer_once_per_turn",
+            "tests/tdm_cards_g_s.rs::first_family_intrinsic_headers_and_printed_keywords"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "Whenever one or more cards leave your graveyard during your turn, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::renew_keyword_counter_batches_and_sage_add_before_double",
+            "tests/tdm_cards_g_s.rs::graveyard_departure_observers_use_own_turn_and_skimmer_once_per_turn",
+            "tests/tdm_cards_g_s.rs::first_family_intrinsic_headers_and_printed_keywords"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "Renew \u2014 {2}{B}{G}{U}, Exile this card from your graveyard: Put two +1/+1 counters and a flying counter on target creature. Activate only as a sorcery.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::renew_keyword_counter_batches_and_sage_add_before_double",
+            "tests/tdm_cards_g_s.rs::graveyard_departure_observers_use_own_turn_and_skimmer_once_per_turn",
+            "tests/tdm_cards_g_s.rs::first_family_intrinsic_headers_and_printed_keywords"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        }
+      ],
+      "admitted": true,
+      "new_implementation": true,
+      "status": "locally whole-card verified; pending final assembled-set acceptance and two final nonauthor reviews"
+    },
+    {
+      "name": "Kishla Skimmer",
+      "oracle_id": "a3275d80-112b-4839-a014-e44ef48d2e6b",
+      "facts_sha256": "74eb2ff05b46aba7c20470e2c76b943552fa0543dccb84a2047d02417a0a6fed",
+      "definition": "src/card_definitions/tdm/kishla_skimmer.rs",
+      "definition_sha256": "bb774a645559488a5e7523c90ab349a09b893c3103e189d52e7039a87ad9238d",
+      "provenance": "src/card_definitions/tdm/kishla_skimmer.json",
+      "java_source": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/k/KishlaSkimmer.java",
+        "sha256": "9d3cd62380a197f70829325d8963fe5f37543abb75629e7e1054cf3107672a9b",
+        "complete_class_read": true
+      },
+      "full_oracle_and_java_read": true,
+      "helper_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/CardsLeaveGraveyardTriggeredAbility.java",
+          "sha256": "9600c956500170fad83dd5e65083bbeb3aebbef5cbb9ef82d8ca989bdb70905b",
+          "complete_body_read": true
+        }
+      ],
+      "printed_obligations": [
+        {
+          "kind": "header",
+          "oracle_text": null,
+          "printed_header": {
+            "mana_cost": "{G}{U}",
+            "type_line": "Creature \u2014 Bird Scout",
+            "power": "2",
+            "toughness": "2"
+          },
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::graveyard_departure_observers_use_own_turn_and_skimmer_once_per_turn",
+            "tests/tdm_cards_g_s.rs::first_family_intrinsic_headers_and_printed_keywords"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "Flying",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::graveyard_departure_observers_use_own_turn_and_skimmer_once_per_turn",
+            "tests/tdm_cards_g_s.rs::first_family_intrinsic_headers_and_printed_keywords"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "Whenever a card leaves your graveyard during your turn, draw a card. This ability triggers only once each turn.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::graveyard_departure_observers_use_own_turn_and_skimmer_once_per_turn",
+            "tests/tdm_cards_g_s.rs::first_family_intrinsic_headers_and_printed_keywords"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        }
+      ],
+      "admitted": true,
+      "new_implementation": true,
+      "status": "locally whole-card verified; pending final assembled-set acceptance and two final nonauthor reviews"
+    },
+    {
+      "name": "Kishla Village",
+      "oracle_id": "4eb428ab-f5b0-46ca-98dd-b3466a91ef97",
+      "facts_sha256": "5f3ec2a185c2c1da1f66f27737bff672e23075c014102d6d8d3a721f03f6c80a",
+      "definition": "src/card_definitions/tdm/kishla_village.rs",
+      "definition_sha256": "38e42bb0c6d0780207cc0ebb20ff6d743e2ca21e0f3b186f45a9fe404c13e793",
+      "provenance": "src/card_definitions/tdm/kishla_village.json",
+      "java_source": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/k/KishlaVillage.java",
+        "sha256": "773495bcc5884fa1439508bfe254ecb03b34c59be7053ae198ce78b11745dead",
+        "complete_class_read": true
+      },
+      "full_oracle_and_java_read": true,
+      "helper_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedUnlessAbility.java",
+          "sha256": "389f076d5e9c21e7e868cef5ed4d35d7a346a8a33bccaf9516e09843c1fad1f6",
+          "complete_body_read": true
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+          "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1",
+          "complete_body_read": true
+        }
+      ],
+      "printed_obligations": [
+        {
+          "kind": "header",
+          "oracle_text": null,
+          "printed_header": {
+            "mana_cost": "",
+            "type_line": "Land",
+            "power": null,
+            "toughness": null
+          },
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::villages_entry_conditions_mana_and_activated_effects",
+            "tests/tdm_cards_g_s.rs::villages_accept_either_owned_qualifier_and_ignore_opposing_qualifiers"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "This land enters tapped unless you control an Island or a Swamp.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::villages_entry_conditions_mana_and_activated_effects",
+            "tests/tdm_cards_g_s.rs::villages_accept_either_owned_qualifier_and_ignore_opposing_qualifiers"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "{T}: Add {G}.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::villages_entry_conditions_mana_and_activated_effects",
+            "tests/tdm_cards_g_s.rs::villages_accept_either_owned_qualifier_and_ignore_opposing_qualifiers"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "{3}{G}, {T}: Surveil 2. (Look at the top two cards of your library, then put any number of them into your graveyard and the rest on top of your library in any order.)",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::villages_entry_conditions_mana_and_activated_effects",
+            "tests/tdm_cards_g_s.rs::villages_accept_either_owned_qualifier_and_ignore_opposing_qualifiers"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        }
+      ],
+      "admitted": true,
+      "new_implementation": true,
+      "status": "locally whole-card verified; pending final assembled-set acceptance and two final nonauthor reviews"
+    },
+    {
+      "name": "Krotiq Nestguard",
+      "oracle_id": "33117d34-ea70-4566-92a3-5dec9bfe529a",
+      "facts_sha256": "8266a70a5c323d2d8e193433a06276f4d423bf91432a765ccf01c9de14f5a2c2",
+      "definition": "src/card_definitions/tdm/krotiq_nestguard.rs",
+      "definition_sha256": "aaf3c253b77d75d75f4ca62fc5ae75323d039ae99e1f51d97b0d2dac1504e927",
+      "provenance": "src/card_definitions/tdm/krotiq_nestguard.json",
+      "java_source": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/k/KrotiqNestguard.java",
+        "sha256": "47ff390e2efc9efd530e0e3339df2b4362971f771b5da3738566329c1805dc2f",
+        "complete_class_read": true
+      },
+      "full_oracle_and_java_read": true,
+      "helper_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CanAttackAsThoughItDidntHaveDefenderSourceEffect.java",
+          "sha256": "29941ba238616f0249236b80bfb955d545f965ec9c330299ede506dc60096dd4",
+          "complete_body_read": true
+        }
+      ],
+      "printed_obligations": [
+        {
+          "kind": "header",
+          "oracle_text": null,
+          "printed_header": {
+            "mana_cost": "{2}{G}",
+            "type_line": "Creature \u2014 Insect",
+            "power": "4",
+            "toughness": "4"
+          },
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::krotiq_paid_permission_expires_and_does_not_remove_defender",
+            "tests/tdm_cards_g_s.rs::second_family_intrinsic_creature_headers"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "Defender",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::krotiq_paid_permission_expires_and_does_not_remove_defender",
+            "tests/tdm_cards_g_s.rs::second_family_intrinsic_creature_headers"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "{2}{G}: This creature can attack this turn as though it didn't have defender.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::krotiq_paid_permission_expires_and_does_not_remove_defender",
+            "tests/tdm_cards_g_s.rs::second_family_intrinsic_creature_headers"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        }
+      ],
+      "admitted": true,
+      "new_implementation": true,
+      "status": "locally whole-card verified; pending final assembled-set acceptance and two final nonauthor reviews"
+    },
+    {
+      "name": "Krumar Initiate",
+      "oracle_id": "65a7fb13-77b9-44ea-9e0e-34daef82eb69",
+      "facts_sha256": "4af9646f7b21d53959e4a73a6fa8be4ae64698a07bbf409984f17d84967a9e07",
+      "definition": "src/card_definitions/tdm/krumar_initiate.rs",
+      "definition_sha256": "8f84b0274ecb36c5c7065e15ba8f08dd5bd63ad8dcdc31406e23f16e70d69eb3",
+      "provenance": "src/card_definitions/tdm/krumar_initiate.json",
+      "java_source": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/k/KrumarInitiate.java",
+        "sha256": "82b3aa7066a5b08fb32b1b2a0b4540630399b640cd112780a9f3a503885c4b42",
+        "complete_class_read": true
+      },
+      "full_oracle_and_java_read": true,
+      "helper_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/keyword/EndureSourceEffect.java",
+          "sha256": "b32a2eef10ea3a3f03e93398e6e5a6aeebd279daa5a95edda6aab6380e1d9dcd",
+          "complete_body_read": true
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/PayLifeCost.java",
+          "sha256": "c8f22864cdcf8fec2928294b6d19e9cc92ca303cdeee82d00f422c9ebe8350c4",
+          "complete_body_read": true
+        }
+      ],
+      "printed_obligations": [
+        {
+          "kind": "header",
+          "oracle_text": null,
+          "printed_header": {
+            "mana_cost": "{1}{B}",
+            "type_line": "Creature \u2014 Human Cleric",
+            "power": "2",
+            "toughness": "2"
+          },
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::krumar_chosen_x_pays_life_mana_and_tap_then_chooses_counters_or_sized_spirit",
+            "tests/tdm_cards_g_s.rs::second_family_intrinsic_creature_headers"
+          ],
+          "applicable_shared_proofs": [
+            "tests/tdm_behold_costs.rs::activation_x_life_uses_one_resource_world_and_real_tap_life_and_mana_payment",
+            "tests/tdm_behold_costs.rs::activation_x_life_declaration_and_unpaid_costs_are_owned_and_restore_without_parent",
+            "tests/tdm_dynamic_tokens.rs"
+          ],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "{X}{B}, {T}, Pay X life: This creature endures X. Activate only as a sorcery. (Put X +1/+1 counters on it or create an X/X white Spirit creature token.)",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::krumar_chosen_x_pays_life_mana_and_tap_then_chooses_counters_or_sized_spirit",
+            "tests/tdm_cards_g_s.rs::second_family_intrinsic_creature_headers"
+          ],
+          "applicable_shared_proofs": [
+            "tests/tdm_behold_costs.rs::activation_x_life_uses_one_resource_world_and_real_tap_life_and_mana_payment",
+            "tests/tdm_behold_costs.rs::activation_x_life_declaration_and_unpaid_costs_are_owned_and_restore_without_parent",
+            "tests/tdm_dynamic_tokens.rs"
+          ],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        }
+      ],
+      "admitted": true,
+      "new_implementation": true,
+      "status": "locally whole-card verified; pending final assembled-set acceptance and two final nonauthor reviews"
+    },
+    {
+      "name": "Lasyd Prowler",
+      "oracle_id": "f780d6f6-540b-4773-8a48-e56e95c2d39e",
+      "facts_sha256": "add910a179bf5eeb3e4e74199269d8b14c5995fafe04c349983144dec1299100",
+      "definition": "src/card_definitions/tdm/lasyd_prowler.rs",
+      "definition_sha256": "5b18048542a0a651bdad25a715054962ce919f6fccd65728e7dfa540a04150ba",
+      "provenance": "src/card_definitions/tdm/lasyd_prowler.json",
+      "java_source": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/l/LasydProwler.java",
+        "sha256": "46d8bd5d6aef2ac3f27c09cd9cd6c33ef23a340c4d1a2969f779de8370abd377",
+        "complete_class_read": true
+      },
+      "full_oracle_and_java_read": true,
+      "helper_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/LandsYouControlCount.java",
+          "sha256": "5d39300c382c862538f44ba6be1565cb60cfed952c2a95515f3d4b9daee3483e",
+          "complete_body_read": true
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CardsInControllerGraveyardCount.java",
+          "sha256": "1681b71d7aeed7c96c0e4b1963a4ebec63874299ad681fd1bf7b9f1b539ba297",
+          "complete_body_read": true
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsControllerEffect.java",
+          "sha256": "bdd3021a353e7fd6e0f5c2b829c2d9483ee6b2fa684d7e74f5b18d457c9abc9c",
+          "complete_body_read": true
+        }
+      ],
+      "printed_obligations": [
+        {
+          "kind": "header",
+          "oracle_text": null,
+          "printed_header": {
+            "mana_cost": "{2}{G}{G}",
+            "type_line": "Creature \u2014 Snake Ranger",
+            "power": "5",
+            "toughness": "5"
+          },
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::lasyd_optional_mill_counts_lands_and_renew_recounts_current_graveyard_lands",
+            "tests/tdm_cards_g_s.rs::second_family_intrinsic_creature_headers"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "When this creature enters, you may mill cards equal to the number of lands you control.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::lasyd_optional_mill_counts_lands_and_renew_recounts_current_graveyard_lands",
+            "tests/tdm_cards_g_s.rs::second_family_intrinsic_creature_headers"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "Renew \u2014 {1}{G}, Exile this card from your graveyard: Put X +1/+1 counters on target creature, where X is the number of land cards in your graveyard. Activate only as a sorcery.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::lasyd_optional_mill_counts_lands_and_renew_recounts_current_graveyard_lands",
+            "tests/tdm_cards_g_s.rs::second_family_intrinsic_creature_headers"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        }
+      ],
+      "admitted": true,
+      "new_implementation": true,
+      "status": "locally whole-card verified; pending final assembled-set acceptance and two final nonauthor reviews"
+    },
+    {
+      "name": "Lie in Wait",
+      "oracle_id": "4dc0831a-0eb1-4f7d-9591-6e670e180116",
+      "facts_sha256": "034b695cb5efbe29c66de3187bef9030a4fc083baa9a95204613a2ff797aaf86",
+      "definition": "src/card_definitions/tdm/lie_in_wait.rs",
+      "definition_sha256": "ad1d9d74597bdfe4a3f8f39800a04ac6d9e4fbf00e683f4b8e03e086b069cb1a",
+      "provenance": "src/card_definitions/tdm/lie_in_wait.json",
+      "java_source": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/l/LieInWait.java",
+        "sha256": "d46705bdc18a9ab40d92c887bc7449c6271862ce959ef84c666f556685d505a7",
+        "complete_class_read": true
+      },
+      "full_oracle_and_java_read": true,
+      "helper_sources": [],
+      "printed_obligations": [
+        {
+          "kind": "header",
+          "oracle_text": null,
+          "printed_header": {
+            "mana_cost": "{B}{G}{U}",
+            "type_line": "Sorcery",
+            "power": null,
+            "toughness": null
+          },
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::lie_in_wait_uses_graveyard_creatures_power_after_return_and_independent_targets"
+          ],
+          "applicable_shared_proofs": [
+            "tests/tdm_resolution_results.rs"
+          ],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "Return target creature card from your graveyard to your hand. Lie in Wait deals damage equal to that card's power to target creature.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::lie_in_wait_uses_graveyard_creatures_power_after_return_and_independent_targets"
+          ],
+          "applicable_shared_proofs": [
+            "tests/tdm_resolution_results.rs"
+          ],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        }
+      ],
+      "admitted": true,
+      "new_implementation": true,
+      "status": "locally whole-card verified; pending final assembled-set acceptance and two final nonauthor reviews"
+    },
+    {
+      "name": "Mammoth Bellow",
+      "oracle_id": "6f2e4607-bece-42ba-a2a3-5dc50f246793",
+      "facts_sha256": "dd7d7f2bcf761ae97b314cb5be68344885b614033f8788de8b789392bf601812",
+      "definition": "src/card_definitions/tdm/mammoth_bellow.rs",
+      "definition_sha256": "10c1163a7701d2f7b2598978261c4dfae4264113d673d673d10e86a861986ee1",
+      "provenance": "src/card_definitions/tdm/mammoth_bellow.json",
+      "java_source": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/m/MammothBellow.java",
+        "sha256": "0e7ba85a16c43dbbb23e8259f8a92c4dd54e7f2de3447433c90bc0a7421866d8",
+        "complete_class_read": true
+      },
+      "full_oracle_and_java_read": true,
+      "helper_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/HarmonizeAbility.java",
+          "sha256": "a646e202f733800900da7295d1a6886e583f76dcf25fad2be614b00e9f933f0d",
+          "complete_body_read": true
+        }
+      ],
+      "printed_obligations": [
+        {
+          "kind": "header",
+          "oracle_text": null,
+          "printed_header": {
+            "mana_cost": "{2}{G}{U}{R}",
+            "type_line": "Sorcery",
+            "power": null,
+            "toughness": null
+          },
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::harmonize_mammoth_and_routine_use_printed_alternates_and_exile"
+          ],
+          "applicable_shared_proofs": [
+            "tests/tdm_cast_routes.rs"
+          ],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "Create a 5/5 green Elephant creature token.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::harmonize_mammoth_and_routine_use_printed_alternates_and_exile"
+          ],
+          "applicable_shared_proofs": [
+            "tests/tdm_cast_routes.rs"
+          ],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "Harmonize {5}{G}{U}{R} (You may cast this card from your graveyard for its harmonize cost. You may tap a creature you control to reduce that cost by {X}, where X is its power. Then exile this spell.)",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::harmonize_mammoth_and_routine_use_printed_alternates_and_exile"
+          ],
+          "applicable_shared_proofs": [
+            "tests/tdm_cast_routes.rs"
+          ],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        }
+      ],
+      "admitted": true,
+      "new_implementation": true,
+      "status": "locally whole-card verified; pending final assembled-set acceptance and two final nonauthor reviews"
+    },
+    {
+      "name": "Mardu Monument",
+      "oracle_id": "5f662383-1684-4bd3-be05-e696d301e26c",
+      "facts_sha256": "1b704b561ff9ba8379294c5c022122234a6fdc053f32059c11dfed460adb4953",
+      "definition": "src/card_definitions/tdm/mardu_monument.rs",
+      "definition_sha256": "d38c3cbab30dcb284fb152c154fbf44a70846427b3c4a8e9b4c73952adcb34ff",
+      "provenance": "src/card_definitions/tdm/mardu_monument.json",
+      "java_source": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/m/MarduMonument.java",
+        "sha256": "cec6b2689fdacc666ae341c89ad902e5732ffa4563ab91bb0f5611616843b8fe",
+        "complete_class_read": true
+      },
+      "full_oracle_and_java_read": true,
+      "helper_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+          "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a",
+          "complete_body_read": true
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+          "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1",
+          "complete_body_read": true
+        }
+      ],
+      "printed_obligations": [
+        {
+          "kind": "header",
+          "oracle_text": null,
+          "printed_header": {
+            "mana_cost": "{2}",
+            "type_line": "Artifact",
+            "power": null,
+            "toughness": null
+          },
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::monuments_search_their_basic_subtypes_then_pay_sacrifice_and_create_exact_tokens",
+            "tests/tdm_cards_g_s.rs::monuments_each_basic_subtype_and_activation_timing_are_wired"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "When this artifact enters, search your library for a basic Mountain, Plains, or Swamp card, reveal it, put it into your hand, then shuffle.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::monuments_search_their_basic_subtypes_then_pay_sacrifice_and_create_exact_tokens",
+            "tests/tdm_cards_g_s.rs::monuments_each_basic_subtype_and_activation_timing_are_wired"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "{2}{R}{W}{B}, {T}, Sacrifice this artifact: Create three 1/1 red Warrior creature tokens. They gain menace and haste until end of turn. Activate only as a sorcery. (A creature with menace can't be blocked except by two or more creatures.)",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::monuments_search_their_basic_subtypes_then_pay_sacrifice_and_create_exact_tokens",
+            "tests/tdm_cards_g_s.rs::monuments_each_basic_subtype_and_activation_timing_are_wired"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        }
+      ],
+      "admitted": true,
+      "new_implementation": true,
+      "status": "locally whole-card verified; pending final assembled-set acceptance and two final nonauthor reviews"
+    },
+    {
+      "name": "Mistrise Village",
+      "oracle_id": "339f5334-b65a-445a-a016-20e997e0b4bb",
+      "facts_sha256": "66760c140fda5f827348f8b40d4e830040266f4a4bff5fac9e98bb08f46e07b3",
+      "definition": "src/card_definitions/tdm/mistrise_village.rs",
+      "definition_sha256": "c61e64e2881a797e25439d6605ceb20f29960cc233a4c2ef225482a42dc6be8a",
+      "provenance": "src/card_definitions/tdm/mistrise_village.json",
+      "java_source": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/m/MistriseVillage.java",
+        "sha256": "ce78d7e82916fa14ecefb8910d84470c84b50d4b4a73f1beaea712d7e639c04f",
+        "complete_class_read": true
+      },
+      "full_oracle_and_java_read": true,
+      "helper_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedUnlessAbility.java",
+          "sha256": "389f076d5e9c21e7e868cef5ed4d35d7a346a8a33bccaf9516e09843c1fad1f6",
+          "complete_body_read": true
+        }
+      ],
+      "printed_obligations": [
+        {
+          "kind": "header",
+          "oracle_text": null,
+          "printed_header": {
+            "mana_cost": "",
+            "type_line": "Land",
+            "power": null,
+            "toughness": null
+          },
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::villages_entry_conditions_mana_and_activated_effects",
+            "tests/tdm_cards_g_s.rs::villages_accept_either_owned_qualifier_and_ignore_opposing_qualifiers"
+          ],
+          "applicable_shared_proofs": [
+            "tests/tdm_cast_routes.rs"
+          ],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "This land enters tapped unless you control a Mountain or a Forest.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::villages_entry_conditions_mana_and_activated_effects",
+            "tests/tdm_cards_g_s.rs::villages_accept_either_owned_qualifier_and_ignore_opposing_qualifiers"
+          ],
+          "applicable_shared_proofs": [
+            "tests/tdm_cast_routes.rs"
+          ],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "{T}: Add {U}.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::villages_entry_conditions_mana_and_activated_effects",
+            "tests/tdm_cards_g_s.rs::villages_accept_either_owned_qualifier_and_ignore_opposing_qualifiers"
+          ],
+          "applicable_shared_proofs": [
+            "tests/tdm_cast_routes.rs"
+          ],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "{U}, {T}: The next spell you cast this turn can't be countered.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::villages_entry_conditions_mana_and_activated_effects",
+            "tests/tdm_cards_g_s.rs::villages_accept_either_owned_qualifier_and_ignore_opposing_qualifiers"
+          ],
+          "applicable_shared_proofs": [
+            "tests/tdm_cast_routes.rs"
+          ],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        }
+      ],
+      "admitted": true,
+      "new_implementation": true,
+      "status": "locally whole-card verified; pending final assembled-set acceptance and two final nonauthor reviews"
+    },
+    {
+      "name": "Monastery Messenger",
+      "oracle_id": "325b88e1-ec7f-4d22-887c-a7f18a868bb0",
+      "facts_sha256": "0bbc0c9801c50a9a13d8f2ae261bca7854aaafc092db2e31e2db5a3f64cb1126",
+      "definition": "src/card_definitions/tdm/monastery_messenger.rs",
+      "definition_sha256": "de9713d2c8374e06727caa28b4e3067e52e8c2ce13c2db9733b86209c4aa07ec",
+      "provenance": "src/card_definitions/tdm/monastery_messenger.json",
+      "java_source": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/m/MonasteryMessenger.java",
+        "sha256": "9a22870af5238f443674a9aefa2da85f47bc34d1130d7f0ca94c77cb6b18b861",
+        "complete_class_read": true
+      },
+      "full_oracle_and_java_read": true,
+      "helper_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+          "sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f",
+          "complete_body_read": true
+        }
+      ],
+      "printed_obligations": [
+        {
+          "kind": "header",
+          "oracle_text": null,
+          "printed_header": {
+            "mana_cost": "{2/U}{2/R}{2/W}",
+            "type_line": "Creature \u2014 Bird Scout",
+            "power": "2",
+            "toughness": "3"
+          },
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::monastery_messenger_optional_recovery_excludes_creatures_and_lands",
+            "tests/tdm_cards_g_s.rs::monastery_messenger_may_decline_and_pays_colored_twobrid_route",
+            "tests/tdm_cards_g_s.rs::second_family_intrinsic_creature_headers"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "Flying, vigilance",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::monastery_messenger_optional_recovery_excludes_creatures_and_lands",
+            "tests/tdm_cards_g_s.rs::monastery_messenger_may_decline_and_pays_colored_twobrid_route",
+            "tests/tdm_cards_g_s.rs::second_family_intrinsic_creature_headers"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "When this creature enters, put up to one target noncreature, nonland card from your graveyard on top of your library.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::monastery_messenger_optional_recovery_excludes_creatures_and_lands",
+            "tests/tdm_cards_g_s.rs::monastery_messenger_may_decline_and_pays_colored_twobrid_route",
+            "tests/tdm_cards_g_s.rs::second_family_intrinsic_creature_headers"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        }
+      ],
+      "admitted": true,
+      "new_implementation": true,
+      "status": "locally whole-card verified; pending final assembled-set acceptance and two final nonauthor reviews"
+    },
+    {
+      "name": "Perennation",
+      "oracle_id": "be5138fd-3e92-42b9-93c5-311e66bd443f",
+      "facts_sha256": "1f109dda82b214e06089b22368a43b683e9ef27b1227151a6310a993d4382fdc",
+      "definition": "src/card_definitions/tdm/perennation.rs",
+      "definition_sha256": "c8844fb7065a45dd0e4ba2566f81cc6049a3a0d0ffe69e7f266ee9f6afc24383",
+      "provenance": "src/card_definitions/tdm/perennation.json",
+      "java_source": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/p/Perennation.java",
+        "sha256": "8427871776b57b9bdf072fa0895a4f90a48164731f4e2c524c3e6af2a19b61f7",
+        "complete_class_read": true
+      },
+      "full_oracle_and_java_read": true,
+      "helper_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldWithCounterTargetEffect.java",
+          "sha256": "0e7f52f88746be4b6bbb9acafadcf25b3ad14633151a2868726600cb1af9434c",
+          "complete_body_read": true
+        }
+      ],
+      "printed_obligations": [
+        {
+          "kind": "header",
+          "oracle_text": null,
+          "printed_header": {
+            "mana_cost": "{3}{W}{B}{G}",
+            "type_line": "Sorcery",
+            "power": null,
+            "toughness": null
+          },
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::perennation_returns_permanent_with_both_protection_counters"
+          ],
+          "applicable_shared_proofs": [
+            "tests/tdm_entry_counters.rs"
+          ],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "Return target permanent card from your graveyard to the battlefield with a hexproof counter and an indestructible counter on it.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::perennation_returns_permanent_with_both_protection_counters"
+          ],
+          "applicable_shared_proofs": [
+            "tests/tdm_entry_counters.rs"
+          ],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        }
+      ],
+      "admitted": true,
+      "new_implementation": true,
+      "status": "locally whole-card verified; pending final assembled-set acceptance and two final nonauthor reviews"
+    },
+    {
+      "name": "Qarsi Revenant",
+      "oracle_id": "bbea79bc-71d4-4100-92f4-783c2c4b46da",
+      "facts_sha256": "7ccc9eb247aa9b8bb8a35e7dad36c0fccb5c35edd2b81e99f6b73bba8b6a52cd",
+      "definition": "src/card_definitions/tdm/qarsi_revenant.rs",
+      "definition_sha256": "8b5a651c395866e98df5cb4ce658f898ba84f91340b5000ba61d66e68abc8d09",
+      "provenance": "src/card_definitions/tdm/qarsi_revenant.json",
+      "java_source": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/q/QarsiRevenant.java",
+        "sha256": "762dc77608e2d734a83efe251f86bf64bd9ee0143ad73e0a4fbc15a9f2f0aed9",
+        "complete_class_read": true
+      },
+      "full_oracle_and_java_read": true,
+      "helper_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/RenewAbility.java",
+          "sha256": "32a1436eacfca7d3397a9bed3a949b686061d5e54d2627219e393fbe9947a02b",
+          "complete_body_read": true
+        }
+      ],
+      "printed_obligations": [
+        {
+          "kind": "header",
+          "oracle_text": null,
+          "printed_header": {
+            "mana_cost": "{1}{B}{B}",
+            "type_line": "Creature \u2014 Vampire",
+            "power": "3",
+            "toughness": "3"
+          },
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::renew_keyword_counter_batches_and_sage_add_before_double",
+            "tests/tdm_cards_g_s.rs::first_family_intrinsic_headers_and_printed_keywords"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "Flying, deathtouch, lifelink",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::renew_keyword_counter_batches_and_sage_add_before_double",
+            "tests/tdm_cards_g_s.rs::first_family_intrinsic_headers_and_printed_keywords"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "Renew \u2014 {2}{B}, Exile this card from your graveyard: Put a flying counter, a deathtouch counter, and a lifelink counter on target creature. Activate only as a sorcery.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::renew_keyword_counter_batches_and_sage_add_before_double",
+            "tests/tdm_cards_g_s.rs::first_family_intrinsic_headers_and_printed_keywords"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        }
+      ],
+      "admitted": true,
+      "new_implementation": true,
+      "status": "locally whole-card verified; pending final assembled-set acceptance and two final nonauthor reviews"
+    },
+    {
+      "name": "Rainveil Rejuvenator",
+      "oracle_id": "6ccf72ee-a86a-4b13-9e76-e308d0d28523",
+      "facts_sha256": "262db47338e23c83a2fee39a0d4c7c001b9bb2d43dfdf329739e1fa7a24b2131",
+      "definition": "src/card_definitions/tdm/rainveil_rejuvenator.rs",
+      "definition_sha256": "7075c5bc639f7fd055b9dd23f64df71d4b9bd79e1b0f5dfa7bada750dec04956",
+      "provenance": "src/card_definitions/tdm/rainveil_rejuvenator.json",
+      "java_source": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/r/RainveilRejuvenator.java",
+        "sha256": "20f0849dc665557dc88536100b34d9fb6346fecb0542049df297356d880b2fb4",
+        "complete_class_read": true
+      },
+      "full_oracle_and_java_read": true,
+      "helper_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/mana/DynamicManaAbility.java",
+          "sha256": "b3d0b50f07f8a0d751bf30a6ecaca74c91fd98a7dd4e3228f71b7543a2d108da",
+          "complete_body_read": true
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SourcePermanentPowerValue.java",
+          "sha256": "aabc6ce8b7bd68b08691830a2a45af0d886a2837c652bbca9e109b5813b0ca9a",
+          "complete_body_read": true
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsControllerEffect.java",
+          "sha256": "bdd3021a353e7fd6e0f5c2b829c2d9483ee6b2fa684d7e74f5b18d457c9abc9c",
+          "complete_body_read": true
+        }
+      ],
+      "printed_obligations": [
+        {
+          "kind": "header",
+          "oracle_text": null,
+          "printed_header": {
+            "mana_cost": "{3}{G}",
+            "type_line": "Creature \u2014 Elephant Druid",
+            "power": "2",
+            "toughness": "4"
+          },
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::rainveil_mill_optional_and_mana_uses_current_power",
+            "tests/tdm_cards_g_s.rs::first_family_intrinsic_headers_and_printed_keywords"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "When this creature enters, you may mill three cards. (You may put the top three cards of your library into your graveyard.)",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::rainveil_mill_optional_and_mana_uses_current_power",
+            "tests/tdm_cards_g_s.rs::first_family_intrinsic_headers_and_printed_keywords"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "{T}: Add an amount of {G} equal to this creature's power.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::rainveil_mill_optional_and_mana_uses_current_power",
+            "tests/tdm_cards_g_s.rs::first_family_intrinsic_headers_and_printed_keywords"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        }
+      ],
+      "admitted": true,
+      "new_implementation": true,
+      "status": "locally whole-card verified; pending final assembled-set acceptance and two final nonauthor reviews"
+    },
+    {
+      "name": "Roamer's Routine",
+      "oracle_id": "cf2355f3-11d2-4b03-b663-9fad6b07e4b2",
+      "facts_sha256": "e21cdaa91cca9bdb37cefe6ab21d80bc690bf06f363c0b56068cd9cfecf7f693",
+      "definition": "src/card_definitions/tdm/roamer_s_routine.rs",
+      "definition_sha256": "57f9c8c32e3260c800f38ebaf8286e90c7eb0320b68980f167b0482a9d933be4",
+      "provenance": "src/card_definitions/tdm/roamer_s_routine.json",
+      "java_source": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/r/RoamersRoutine.java",
+        "sha256": "02812338ecbb7ffd39d939edd93d10058ec9ce0972ab7521b6b10838a6de98bb",
+        "complete_class_read": true
+      },
+      "full_oracle_and_java_read": true,
+      "helper_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/HarmonizeAbility.java",
+          "sha256": "a646e202f733800900da7295d1a6886e583f76dcf25fad2be614b00e9f933f0d",
+          "complete_body_read": true
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayEffect.java",
+          "sha256": "0bb9a67ad4f01956cd50eb190b2086d6d070c993cccbecece569b37726129394",
+          "complete_body_read": true
+        }
+      ],
+      "printed_obligations": [
+        {
+          "kind": "header",
+          "oracle_text": null,
+          "printed_header": {
+            "mana_cost": "{2}{G}",
+            "type_line": "Sorcery",
+            "power": null,
+            "toughness": null
+          },
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::harmonize_mammoth_and_routine_use_printed_alternates_and_exile"
+          ],
+          "applicable_shared_proofs": [
+            "tests/tdm_cast_routes.rs"
+          ],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "Search your library for a basic land card, put it onto the battlefield tapped, then shuffle.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::harmonize_mammoth_and_routine_use_printed_alternates_and_exile"
+          ],
+          "applicable_shared_proofs": [
+            "tests/tdm_cast_routes.rs"
+          ],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "Harmonize {4}{G} (You may cast this card from your graveyard for its harmonize cost. You may tap a creature you control to reduce that cost by {X}, where X is its power. Then exile this spell.)",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::harmonize_mammoth_and_routine_use_printed_alternates_and_exile"
+          ],
+          "applicable_shared_proofs": [
+            "tests/tdm_cast_routes.rs"
+          ],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        }
+      ],
+      "admitted": true,
+      "new_implementation": true,
+      "status": "locally whole-card verified; pending final assembled-set acceptance and two final nonauthor reviews"
+    },
+    {
+      "name": "Roiling Dragonstorm",
+      "oracle_id": "6badc583-fabb-4d63-b70c-e7380acafc23",
+      "facts_sha256": "119f67aeb2c2bdd5747e9b49f29f8b6bbeadb7e164cbacb1767e731798eb63ab",
+      "definition": "src/card_definitions/tdm/roiling_dragonstorm.rs",
+      "definition_sha256": "3e541af86d5a29c2c4eb290da5d3aff6cc0db48f1fc8449face613f22524fd22",
+      "provenance": "src/card_definitions/tdm/roiling_dragonstorm.json",
+      "java_source": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/r/RoilingDragonstorm.java",
+        "sha256": "18051fb70c94dad03ea66b1022e3cbcfaa786c20748d6b731e5dfeb4f8fbd5cd",
+        "complete_class_read": true
+      },
+      "full_oracle_and_java_read": true,
+      "helper_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+          "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782",
+          "complete_body_read": true
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandSourceEffect.java",
+          "sha256": "3af51f033e9d30c6f946feca7948ce7ee423fdd1314a715820d3ae9d98ca7935",
+          "complete_body_read": true
+        }
+      ],
+      "printed_obligations": [
+        {
+          "kind": "header",
+          "oracle_text": null,
+          "printed_header": {
+            "mana_cost": "{1}{U}",
+            "type_line": "Enchantment",
+            "power": null,
+            "toughness": null
+          },
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::roiling_dragonstorm_loots_and_returns_only_for_own_dragon_entry"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "When this enchantment enters, draw two cards, then discard a card.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::roiling_dragonstorm_loots_and_returns_only_for_own_dragon_entry"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "When a Dragon you control enters, return this enchantment to its owner's hand.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::roiling_dragonstorm_loots_and_returns_only_for_own_dragon_entry"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        }
+      ],
+      "admitted": true,
+      "new_implementation": true,
+      "status": "locally whole-card verified; pending final assembled-set acceptance and two final nonauthor reviews"
+    },
+    {
+      "name": "Sage of the Fang",
+      "oracle_id": "d6eb2bfc-1e86-4e36-9d48-12de16955b98",
+      "facts_sha256": "3d9eed32b30449a5c3a7d3c32ca0c9a0c2ead04ce90a9bfb0d4148690f23937c",
+      "definition": "src/card_definitions/tdm/sage_of_the_fang.rs",
+      "definition_sha256": "70fa8072367327412adcc0228a7ac2afe6a6d62d3dff3e96c1511cef33476d7f",
+      "provenance": "src/card_definitions/tdm/sage_of_the_fang.json",
+      "java_source": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/s/SageOfTheFang.java",
+        "sha256": "4d941ead7c539384aa73fa611cd82c19494e58f945b4e4853fdb0b4c943e246d",
+        "complete_class_read": true
+      },
+      "full_oracle_and_java_read": true,
+      "helper_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/RenewAbility.java",
+          "sha256": "32a1436eacfca7d3397a9bed3a949b686061d5e54d2627219e393fbe9947a02b",
+          "complete_body_read": true
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+          "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0",
+          "complete_body_read": true
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/DoubleCountersTargetEffect.java",
+          "sha256": "efd6157e6d2b9be74a5eac1be3519dc1e559d574429693499fb9bb709a9e0ead",
+          "complete_body_read": true
+        }
+      ],
+      "printed_obligations": [
+        {
+          "kind": "header",
+          "oracle_text": null,
+          "printed_header": {
+            "mana_cost": "{2}{G}",
+            "type_line": "Creature \u2014 Human Druid",
+            "power": "2",
+            "toughness": "2"
+          },
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::renew_keyword_counter_batches_and_sage_add_before_double",
+            "tests/tdm_cards_g_s.rs::first_family_intrinsic_headers_and_printed_keywords"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "When this creature enters, put a +1/+1 counter on target creature.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::renew_keyword_counter_batches_and_sage_add_before_double",
+            "tests/tdm_cards_g_s.rs::first_family_intrinsic_headers_and_printed_keywords"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        },
+        {
+          "kind": "printed_rules",
+          "oracle_text": "Renew \u2014 {3}{G}, Exile this card from your graveyard: Put a +1/+1 counter on target creature, then double the number of +1/+1 counters on that creature. Activate only as a sorcery.",
+          "printed_header": {},
+          "actual_definition_tests": [
+            "tests/tdm_cards_g_s.rs::renew_keyword_counter_batches_and_sage_add_before_double",
+            "tests/tdm_cards_g_s.rs::first_family_intrinsic_headers_and_printed_keywords"
+          ],
+          "applicable_shared_proofs": [],
+          "status": "focused gated and ordinary admitted actual-definition outcomes passed"
+        }
+      ],
+      "admitted": true,
+      "new_implementation": true,
+      "status": "locally whole-card verified; pending final assembled-set acceptance and two final nonauthor reviews"
+    }
+  ],
+  "validation": {
+    "focused_target": "tdm_cards_g_s",
+    "gated_candidate_fixture": "Replace supported Grizzly Bears shell while in Hand before source registration/event; Graveyard variant explicitly registers real candidate. No behavior overrides. After admission, helper uses ordinary support::put.",
+    "latest_report": "<cache>/rustmage-tdm/cards-g-s-family2-admitted/native.json",
+    "report_sha256": "6a8b90df260d18718df385d93b5cc33e5f1a7c5ebdf3939a8bc59f93e5de2c35",
+    "success": true,
+    "tests_passed": 25,
+    "execution_seconds": 0.04685424896888435,
+    "compile_seconds": 0.9680903539992869,
+    "full_set_acceptance": false,
+    "receipts": [
+      {
+        "report": "<cache>/rustmage-tdm/cards-g-s-family2-gated-second/native.json",
+        "sha256": "9615bebff378d0b4652100ff0430d9bbb7fbf4de0ce78e8362d4d55173c52961",
+        "success": true,
+        "tests_passed": 25,
+        "compile_seconds": 0.9680903539992869,
+        "execution_seconds": 0.04685424896888435
+      },
+      {
+        "report": "<cache>/rustmage-tdm/cards-g-s-family2-admitted/native.json",
+        "sha256": "6a8b90df260d18718df385d93b5cc33e5f1a7c5ebdf3939a8bc59f93e5de2c35",
+        "success": true,
+        "tests_passed": 25,
+        "compile_seconds": 3.8252950569731183,
+        "execution_seconds": 0.034231813973747194
+      }
+    ]
+  },
+  "implementation_measurement": {
+    "scope": "25 newly implemented physical definitions, from first authored-family script creation to this evidence; excludes preceding source/API read period",
+    "start_unix": 1793800638.9614913,
+    "end_unix": 1793801801.9124315,
+    "elapsed_seconds": 1162.950940132141,
+    "cards_per_hour": 77.38933509075945,
+    "simulation_throughput": "not measured by this author; focused scenarios are not simulation benchmarks"
+  },
+  "source_discrepancies": [
+    {
+      "card": "Hundred-Battle Veteran",
+      "path": "Mage.Sets/src/mage/cards/h/HundredBattleVeteran.java",
+      "finding": "CounterTypeCount maps each controlled creature to its count of positive counter kinds and sums. Oracle requires the number of distinct kinds in their union. Three creatures each with +1/+1 counters must count as one kind, not three.",
+      "resolution": "Implement union using CounterKind::ALL and borrowed actual/speculative counter queries; test same-kind-on-three-creatures and three-kinds-on-one-creature boundaries. Oracle takes precedence."
+    }
+  ],
+  "remaining_cards": [
+    "Hardened Tactician",
+    "Heritage Reclamation",
+    "Highspire Bell-Ringer",
+    "Hollowmurk Siege",
+    "Humbling Elder",
+    "Iceridge Serpent",
+    "Inevitable Defeat",
+    "Inspirited Vanguard",
+    "Island",
+    "Jade-Cast Sentinel",
+    "Jeskai Brushmaster",
+    "Jeskai Devotee",
+    "Jeskai Revelation",
+    "Jeskai Shrinekeeper",
+    "Jungle Hollow",
+    "Kin-Tree Nurturer",
+    "Kin-Tree Severance",
+    "Kishla Trawlers",
+    "Knockout Maneuver",
+    "Kotis, the Fangkeeper",
+    "Lightfoot Technique",
+    "Lotuslight Dancers",
+    "Loxodon Battle Priest",
+    "Maelstrom of the Spirit Dragon",
+    "Magmatic Hellkite",
+    "Marang River Regent // Coil and Catch",
+    "Mardu Devotee",
+    "Mardu Siegebreaker",
+    "Marshal of the Lost",
+    "Meticulous Artisan",
+    "Molten Exhale",
+    "Mountain",
+    "Mox Jasper",
+    "Mystic Monastery",
+    "Naga Fleshcrafter",
+    "Narset's Rebuke",
+    "Narset, Jeskai Waymaster",
+    "Nature's Rhythm",
+    "Neriv, Heart of the Storm",
+    "New Way Forward",
+    "Nightblade Brigade",
+    "Nomad Outpost",
+    "Opulent Palace",
+    "Osseous Exhale",
+    "Overwhelming Surge",
+    "Piercing Exhale",
+    "Plains",
+    "Poised Practitioner",
+    "Purging Stormbrood // Absorb Essence",
+    "Rakshasa's Bargain",
+    "Rally the Monastery",
+    "Rebellious Strike",
+    "Rediscover the Way",
+    "Reigning Victor",
+    "Reputable Merchant",
+    "Rescue Leopard",
+    "Reverberating Summons",
+    "Revival of the Ancestors",
+    "Riling Dawnbreaker // Signaling Roar",
+    "Ringing Strike Mastery",
+    "Rite of Renewal",
+    "Riverwalk Technique",
+    "Riverwheel Sweep",
+    "Roar of Endless Song",
+    "Rot-Curse Rakshasa",
+    "Rugged Highlands",
+    "Runescale Stormbrood // Chilling Screech"
+  ],
+  "remaining_blockers": [],
+  "whole_set_acceptance": "pending assembled complete-set rules, complete games and final two nonauthor published-head reviews"
+}

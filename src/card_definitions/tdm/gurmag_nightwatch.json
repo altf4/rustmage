@@ -3,10 +3,21 @@
   "catalogue_id": 1910,
   "oracle_id": "fde50a0d-9bc6-45f4-873e-3de81a513fac",
   "facts_sha256": "97ed8a9acc4ddf7aec08d91f40c2e14d6e42f4108b5c3aea0b810b0c57f70a3c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c08fe108c27236b1728660fe94600ab1593ebd94799d726f95381f9c4aaee7e5"
   },
-  "physical_metadata_sha256": "85e9263f2ca4af7aec18970fafec7089ae643436fa811559292d9708a6c77fd1"
+  "physical_metadata_sha256": "85e9263f2ca4af7aec18970fafec7089ae643436fa811559292d9708a6c77fd1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GurmagNightwatch.java",
+  "java_sha256": "07ca3ea21a5cc84127432b0f7ff84b999337bbe81e969d4024979088db33c1d9",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    }
+  ]
 }

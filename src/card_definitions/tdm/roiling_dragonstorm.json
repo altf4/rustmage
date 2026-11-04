@@ -3,10 +3,26 @@
   "catalogue_id": 3578,
   "oracle_id": "6badc583-fabb-4d63-b70c-e7380acafc23",
   "facts_sha256": "119f67aeb2c2bdd5747e9b49f29f8b6bbeadb7e164cbacb1767e731798eb63ab",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2a2023131dd828de83f054cc807ccc8055fc09648f8b100db4d13fb37b5afc32"
   },
-  "physical_metadata_sha256": "295ecbfa85ae6c8ed3ed9f19ddf395f508b3cc21c11ce9b3cd35e5778f17ed6f"
+  "physical_metadata_sha256": "295ecbfa85ae6c8ed3ed9f19ddf395f508b3cc21c11ce9b3cd35e5778f17ed6f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RoilingDragonstorm.java",
+  "java_sha256": "18051fb70c94dad03ea66b1022e3cbcfaa786c20748d6b731e5dfeb4f8fbd5cd",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandSourceEffect.java",
+      "sha256": "3af51f033e9d30c6f946feca7948ce7ee423fdd1314a715820d3ae9d98ca7935"
+    }
+  ]
 }

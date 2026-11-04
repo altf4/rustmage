@@ -3,10 +3,21 @@
   "catalogue_id": 2271,
   "oracle_id": "0b2b7d04-73f3-43f6-86e0-fa00cbbc6469",
   "facts_sha256": "085f421fffe63ef8c13621baa61e2e349ae4c63aa8175b46d1804a7954d2c210",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ee79112611c7cf30cf7d1b5977ca9102f7c7a7c6902ca4baaf3e1f3defd9ff80"
   },
-  "physical_metadata_sha256": "4f0b48f83bbd49e4976d50644db1e7334cdf388e853faf2d0c376a5585889bdc"
+  "physical_metadata_sha256": "4f0b48f83bbd49e4976d50644db1e7334cdf388e853faf2d0c376a5585889bdc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/j/JeskaiMonument.java",
+  "java_sha256": "f746dc93ae3a5492834401c6e56987526d35769f432636eea2435c30b82eaf1e",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+    }
+  ]
 }

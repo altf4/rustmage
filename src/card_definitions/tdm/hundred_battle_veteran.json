@@ -3,10 +3,26 @@
   "catalogue_id": 2099,
   "oracle_id": "9ed6aa5b-4369-42f7-9853-aae1ac9b17e2",
   "facts_sha256": "86b838882d90d6d11b5fdba8095129887dd1ec3f3514503cf1d9ab5b71e1d436",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2010ff66e1bcabb00fca9e117b7cf49f8b14c06cdd7ccba4c8ded4869d828b29"
   },
-  "physical_metadata_sha256": "b53afa4107f134b09da02285b788c3e73fb20fef0fcdd9654761e2faac108570"
+  "physical_metadata_sha256": "b53afa4107f134b09da02285b788c3e73fb20fef0fcdd9654761e2faac108570",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HundredBattleVeteran.java",
+  "java_sha256": "bb243cf7bcc183101c2561b789070b1e26ada78f81e348f58778f5a9655a454a",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/MayCastFromGraveyardSourceAbility.java",
+      "sha256": "5fabb3b07028c6709d74af5be237564ca277070effac3353b6bb847a12a76962"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CastFromGraveyardSourceCondition.java",
+      "sha256": "7eed055c9671f6cc59ee3c85360ac3ceb7e5c25682b32e66a548dfe6ec801878"
+    }
+  ]
 }

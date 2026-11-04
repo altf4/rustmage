@@ -3,10 +3,21 @@
   "catalogue_id": 2829,
   "oracle_id": "325b88e1-ec7f-4d22-887c-a7f18a868bb0",
   "facts_sha256": "0bbc0c9801c50a9a13d8f2ae261bca7854aaafc092db2e31e2db5a3f64cb1126",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b24ad4c8124b6af853ab4ddb4006c34265c1758b77a6e98a5fe2999f6a1855c1"
   },
-  "physical_metadata_sha256": "bfc70be5f0bcb5f637aa54b3b1f9ab0305cf64ed198901b5b8d38c77c17e2f26"
+  "physical_metadata_sha256": "bfc70be5f0bcb5f637aa54b3b1f9ab0305cf64ed198901b5b8d38c77c17e2f26",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MonasteryMessenger.java",
+  "java_sha256": "9a22870af5238f443674a9aefa2da85f47bc34d1130d7f0ca94c77cb6b18b861",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+      "sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f"
+    }
+  ]
 }

@@ -3,10 +3,26 @@
   "catalogue_id": 2316,
   "oracle_id": "41129dc1-be88-4198-94f9-032817a79bc7",
   "facts_sha256": "01639decfe7c7f250dc42274e0a07e86fc995283f088f769bd6a988bf043921c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4fb9fd0939984dba9479ff37c3d05b677a6873953a896537933d7e343f80e9b1"
   },
-  "physical_metadata_sha256": "c5da48342941bbf4e1efd4810887782a087cdc235f627ebe7a9d6f840898e0ec"
+  "physical_metadata_sha256": "c5da48342941bbf4e1efd4810887782a087cdc235f627ebe7a9d6f840898e0ec",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KarakykGuardian.java",
+  "java_sha256": "a83976cb76a1a5a73da5f6c0c790414063e5ef78d2f1f4246843825bf47d183d",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SourceHasntDealtDamageThisGameCondition.java",
+      "sha256": "502e27ceabdbaf963f6c2713b958307b49363692f9210a3c94a76b4d9c37e65e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/DealtDamageThisGameWatcher.java",
+      "sha256": "150b862c4e57dd30abb467012e31bae68d21e3107e171d68ae696937ec2a8e5d"
+    }
+  ]
 }

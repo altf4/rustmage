@@ -3,10 +3,26 @@
   "catalogue_id": 2662,
   "oracle_id": "5f662383-1684-4bd3-be05-e696d301e26c",
   "facts_sha256": "1b704b561ff9ba8379294c5c022122234a6fdc053f32059c11dfed460adb4953",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e127a1d5608ed924892090582a3a6db96733c1b4fd7ca9be4906af9ac7d41ebf"
   },
-  "physical_metadata_sha256": "0872e8a799d2f1c63c6f898ae31ff86da80d064ec31d93de9f9296b41f54006f"
+  "physical_metadata_sha256": "0872e8a799d2f1c63c6f898ae31ff86da80d064ec31d93de9f9296b41f54006f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MarduMonument.java",
+  "java_sha256": "cec6b2689fdacc666ae341c89ad902e5732ffa4563ab91bb0f5611616843b8fe",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    }
+  ]
 }

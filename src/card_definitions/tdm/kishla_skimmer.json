@@ -3,10 +3,21 @@
   "catalogue_id": 2371,
   "oracle_id": "a3275d80-112b-4839-a014-e44ef48d2e6b",
   "facts_sha256": "74eb2ff05b46aba7c20470e2c76b943552fa0543dccb84a2047d02417a0a6fed",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5404df6127ac7a81120afb1253b28c5d20232d1e25c9aa86aceda35f3f741af5"
   },
-  "physical_metadata_sha256": "352031f72045c57879bb183904aa4b4122f560f8ebd922ffabb82897367da2be"
+  "physical_metadata_sha256": "352031f72045c57879bb183904aa4b4122f560f8ebd922ffabb82897367da2be",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KishlaSkimmer.java",
+  "java_sha256": "9d3cd62380a197f70829325d8963fe5f37543abb75629e7e1054cf3107672a9b",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CardsLeaveGraveyardTriggeredAbility.java",
+      "sha256": "9600c956500170fad83dd5e65083bbeb3aebbef5cbb9ef82d8ca989bdb70905b"
+    }
+  ]
 }

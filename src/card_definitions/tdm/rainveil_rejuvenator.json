@@ -3,10 +3,31 @@
   "catalogue_id": 3348,
   "oracle_id": "6ccf72ee-a86a-4b13-9e76-e308d0d28523",
   "facts_sha256": "262db47338e23c83a2fee39a0d4c7c001b9bb2d43dfdf329739e1fa7a24b2131",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ad2197a035d021075d5a453dc66092c113d817380f9d5afe23b71793ef6368ee"
   },
-  "physical_metadata_sha256": "77c91887c48637a7541cc6fcf9df2ec272b0adf8e27650df7789664cbd0716d6"
+  "physical_metadata_sha256": "77c91887c48637a7541cc6fcf9df2ec272b0adf8e27650df7789664cbd0716d6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RainveilRejuvenator.java",
+  "java_sha256": "20f0849dc665557dc88536100b34d9fb6346fecb0542049df297356d880b2fb4",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/DynamicManaAbility.java",
+      "sha256": "b3d0b50f07f8a0d751bf30a6ecaca74c91fd98a7dd4e3228f71b7543a2d108da"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SourcePermanentPowerValue.java",
+      "sha256": "aabc6ce8b7bd68b08691830a2a45af0d886a2837c652bbca9e109b5813b0ca9a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsControllerEffect.java",
+      "sha256": "bdd3021a353e7fd6e0f5c2b829c2d9483ee6b2fa684d7e74f5b18d457c9abc9c"
+    }
+  ]
 }

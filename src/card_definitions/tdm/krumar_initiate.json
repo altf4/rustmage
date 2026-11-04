@@ -3,10 +3,26 @@
   "catalogue_id": 2419,
   "oracle_id": "65a7fb13-77b9-44ea-9e0e-34daef82eb69",
   "facts_sha256": "4af9646f7b21d53959e4a73a6fa8be4ae64698a07bbf409984f17d84967a9e07",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "15196efd94fb2f65e10a04687dc66c09d3bf3bcf5abfea670f8bcbda67ef0be7"
   },
-  "physical_metadata_sha256": "c62c2cad63a5571797df18e041b6c2b7e882b76b90e2957e4cb86fd6a2ed5d8b"
+  "physical_metadata_sha256": "c62c2cad63a5571797df18e041b6c2b7e882b76b90e2957e4cb86fd6a2ed5d8b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KrumarInitiate.java",
+  "java_sha256": "82b3aa7066a5b08fb32b1b2a0b4540630399b640cd112780a9f3a503885c4b42",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EndureSourceEffect.java",
+      "sha256": "b32a2eef10ea3a3f03e93398e6e5a6aeebd279daa5a95edda6aab6380e1d9dcd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/PayLifeCost.java",
+      "sha256": "c8f22864cdcf8fec2928294b6d19e9cc92ca303cdeee82d00f422c9ebe8350c4"
+    }
+  ]
 }
