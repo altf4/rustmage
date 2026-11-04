@@ -10335,6 +10335,14 @@
     "journal": "7c50116fb450cf1c",
     "observations": "f9e8caa4a8e9559c"
   },
+  "Hollowmurk Siege": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Battlefield",
+    "journal": "8f7c340b412f78ee",
+    "observations": "01c463b84ad3e357"
+  },
   "Homesickness": {
     "root": "main",
     "status": "completed",
@@ -11871,6 +11879,14 @@
     "journal": "21c94e12108ffb3f",
     "observations": "a7525095837dab1a"
   },
+  "Kishla Trawlers": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "53be6c4a95e40a6b",
+    "observations": "33c9543328864984"
+  },
   "Kishla Village": {
     "root": "main",
     "status": "completed",
@@ -12022,6 +12038,14 @@
     "zone": "Battlefield",
     "journal": "543918deceb4be8c",
     "observations": "3cde0fb2d2732376"
+  },
+  "Kotis, the Fangkeeper": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "ed26400aa7245f4f",
+    "observations": "0aac43fe5e8a38bc"
   },
   "Krang, Utrom Warlord": {
     "root": "main",
@@ -12847,6 +12871,14 @@
     "journal": "adff102b3da1531c",
     "observations": "ebc5dae8dcec0cae"
   },
+  "Lotuslight Dancers": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "5f0a8e98aa98aac7",
+    "observations": "0228f7482c6368f8"
+  },
   "Loxodon Battle Priest": {
     "root": "main",
     "status": "completed",
@@ -13095,6 +13127,14 @@
     "journal": "d1e89ef846674a2c",
     "observations": "5d3d93b1dc72153c"
   },
+  "Maelstrom of the Spirit Dragon": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 1,
+    "zone": "Battlefield",
+    "journal": "1c41fdead70727d2",
+    "observations": "e86a74a5632cba82"
+  },
   "Mage Tower Referee": {
     "root": "main",
     "status": "completed",
@@ -13150,6 +13190,14 @@
     "zone": "Battlefield",
     "journal": "543918deceb4be8c",
     "observations": "7a4dbe3c70080b46"
+  },
+  "Magmatic Hellkite": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "064e0674483370ef",
+    "observations": "579b7f1d3b8710da"
   },
   "Magnificent End": {
     "root": "main",
@@ -13334,6 +13382,14 @@
     "zone": "Battlefield",
     "journal": "c9d6f23ee57cb4aa",
     "observations": "133b71b929c83947"
+  },
+  "Mardu Siegebreaker": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "1834a89065d034e6",
+    "observations": "447c988399b1d80e"
   },
   "Marketback Walker": {
     "root": "main",
@@ -14175,6 +14231,14 @@
     "journal": "e52ccec308bcae2d",
     "observations": "a069b373db9c96f1"
   },
+  "Molten Exhale": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "ffd0a2e93242e1e8",
+    "observations": "78e481aeded8f26d"
+  },
   "Molten Note": {
     "root": "main",
     "status": "completed",
@@ -14647,6 +14711,14 @@
     "journal": "fa7acc0a2d642341",
     "observations": "1eca104cb0bd786c"
   },
+  "Naga Fleshcrafter": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "01d2d8ad0d34d433",
+    "observations": "d287c080da84c9dc"
+  },
   "Namazu Trader": {
     "root": "main",
     "status": "completed",
@@ -14671,6 +14743,14 @@
     "journal": "78e29c105007a1c0",
     "observations": "ee7e6e684054b069"
   },
+  "Narset, Jeskai Waymaster": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "8813ec4e2e411a6e",
+    "observations": "f8f43e72ac78a216"
+  },
   "Nasty Little Rabbit": {
     "root": "main",
     "status": "completed",
@@ -14678,6 +14758,14 @@
     "zone": "Battlefield",
     "journal": "d96ad4ca883f316e",
     "observations": "99c65469d30017ea"
+  },
+  "Nature's Rhythm": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "3f6f4815aabacfe6",
+    "observations": "20c54b8c8e149361"
   },
   "Nebula Dragon": {
     "root": "main",
@@ -14719,6 +14807,14 @@
     "journal": "ce93789b5fa64c9f",
     "observations": "debc97e9daa22b70"
   },
+  "Neriv, Heart of the Storm": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "efeb19f507e3cbcf",
+    "observations": "5a37208ad897309a"
+  },
   "Nessian Hornbeetle": {
     "root": "main",
     "status": "completed",
@@ -14750,6 +14846,14 @@
     "zone": "Battlefield",
     "journal": "ed21a7e0e132b10a",
     "observations": "3f04bd8a22f88253"
+  },
+  "New Way Forward": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "88ff2d9a55981195",
+    "observations": "480dbe4402a22931"
   },
   "News Helicopter": {
     "root": "main",
@@ -15327,6 +15431,14 @@
     "journal": "b3f39d5b44da38ed",
     "observations": "c0f413d5a30cf0d8"
   },
+  "Osseous Exhale": {
+    "root": "combat",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "531c0a63e15b4cfc",
+    "observations": "5868e955ac522446"
+  },
   "Otter-Penguin": {
     "root": "main",
     "status": "completed",
@@ -15830,6 +15942,14 @@
     "zone": "Battlefield",
     "journal": "b6cf3749b9ab6fcf",
     "observations": "721f379b751476d6"
+  },
+  "Piercing Exhale": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Graveyard",
+    "journal": "5c69dd6004e524d0",
+    "observations": "9f70be0ccd654eb1"
   },
   "Piggy Bank": {
     "root": "main",
@@ -16895,6 +17015,14 @@
     "journal": "2cbbc7bfb5d12fad",
     "observations": "bae19cb6a866204a"
   },
+  "Rally the Monastery": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "dd4e3b6d062419a8",
+    "observations": "a3de82ad4c42991c"
+  },
   "Ramos, Dragon Engine": {
     "root": "main",
     "status": "completed",
@@ -17239,6 +17367,14 @@
     "journal": "996b3f354b3811ac",
     "observations": "4c8f4eeb61bb5726"
   },
+  "Rediscover the Way": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 10,
+    "zone": "Battlefield",
+    "journal": "952ba971ba3565a3",
+    "observations": "9b4bd6589f4da481"
+  },
   "Redrock Sentinel": {
     "root": "main",
     "status": "completed",
@@ -17535,6 +17671,14 @@
     "journal": "4b79be953ba318c7",
     "observations": "0e5341af75f98c96"
   },
+  "Reverberating Summons": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b43781f2834dd88f",
+    "observations": "08e14acc18d5ee4e"
+  },
   "Reverent Howl": {
     "root": "main",
     "status": "completed",
@@ -17542,6 +17686,14 @@
     "zone": "Graveyard",
     "journal": "7d1cb528fd49a8cd",
     "observations": "a83171f4a48e5399"
+  },
+  "Revival of the Ancestors": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "184f0106fbb0732f",
+    "observations": "a59f326c033e60d0"
   },
   "Rewrite History": {
     "root": "main",
@@ -17639,6 +17791,14 @@
     "journal": "ad0926541e55fa73",
     "observations": "9a1b7de633dd0c7d"
   },
+  "Ringing Strike Mastery": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "e53eee49954f440c",
+    "observations": "2978448735a254d7"
+  },
   "Ripchain Razorkin": {
     "root": "main",
     "status": "completed",
@@ -17719,6 +17879,14 @@
     "journal": "4324aa4c9fd9325c",
     "observations": "4a0e87f6d67c5807"
   },
+  "Rite of Renewal": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Exile",
+    "journal": "b02177e5205943df",
+    "observations": "43cb0bdd1b597f3b"
+  },
   "Rite of Replication": {
     "root": "main",
     "status": "completed",
@@ -17790,6 +17958,14 @@
     "zone": "Graveyard",
     "journal": "a8c50427938b6a1f",
     "observations": "3bce0ddf0c85bbb9"
+  },
+  "Riverwheel Sweep": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Graveyard",
+    "journal": "fb86a5e46a6e335a",
+    "observations": "14eca866ff426ecd"
   },
   "Road Rage": {
     "root": "main",
@@ -18006,6 +18182,14 @@
     "zone": "Battlefield",
     "journal": "1ee756735d2f017d",
     "observations": "40a57414786ef6ea"
+  },
+  "Rot-Curse Rakshasa": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "a4c714aeb662e85f",
+    "observations": "1482181c8767bd3a"
   },
   "Rough Rhino Cavalry": {
     "root": "main",
@@ -18302,6 +18486,14 @@
     "zone": "Battlefield",
     "journal": "d93bff198ef2a3df",
     "observations": "11163578812bba96"
+  },
+  "Sagu Pummeler": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "60609359dae9f3fd",
+    "observations": "2ab604eb7863e7d2"
   },
   "Sagu Wildling": {
     "root": "main",

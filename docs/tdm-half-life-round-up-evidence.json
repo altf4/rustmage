@@ -3,7 +3,7 @@
   "set": "TDM",
   "dependency": "E:HALF_LIFE_ROUND_UP",
   "audit_group": 84,
-  "status": "Concrete missed dependency reproduced by actual gated Betor test; shared engine implementation pending. All general card authoring held.",
+  "status": "5generic+2actualPox+1schema-domain focusedPASS; two pure source clearances;24trace additions independently approved and adopted. Full release and final published-engine reviews pending.",
   "accepted_prior_engine": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
   "source": "crates/engine/src/engine_programs.rs: Instruction::LoseHalfLife currently uses max(0)/2",
   "reproduction": {
@@ -31,5 +31,54 @@
     "Warm stable guarded core caches, then repair actual gated Betor opcode and reprove12-cardfamily"
   ],
   "card_count_unchanged_by_this_dependency": 108,
-  "author_wip": "AG12gated6b567604; GS38draft/tmp/tdm_gs_tests4.rs; SZ3gatednewspellbodies preserved; no active Cargo"
+  "author_wip": "AG12gated6b567604; GS38draft/tmp/tdm_gs_tests4.rs; SZ3gatednewspellbodies preserved; no active Cargo",
+  "implementation_revision": "bd0b08bd5e7f36f9da60d629a8c2b64e129a3472",
+  "trace_fixture_revision": "8b62faf944a4ab99bf74b1dc44752d4cf2ab1863",
+  "instruction": "Instruction::LoseHalfLifeRoundedUp(PlayerSet)",
+  "wire": "No new state, continuation, public serde field/action or widened wire domain; Instruction is not Serialize. Both pure reviewers independently agree schema201 remains correct. schema199 PlayerSet walker includes newoperand to preserve SpeedBelow prior-domain rejection.",
+  "validation": [
+    {
+      "report": "/home/altf4/.cache/rustmage-tdm/half-life-round-up-first/native.json",
+      "sha256": "976f1bcf625dd8a45e5f8eb971cf713fa64e05b8674d6cd0d3961f434ea7d1b1",
+      "terminal": true,
+      "success": true,
+      "cases": 5,
+      "compile_seconds": 118.35043567494722,
+      "execution_seconds": 0.025014174985699356
+    },
+    {
+      "report": "/home/altf4/.cache/rustmage-tdm/half-life-round-up-pox-compat/native.json",
+      "sha256": "3f3358c5795c60121429763cbe186b4589e1d428a7f133b6075189cb4fb11a44",
+      "terminal": true,
+      "success": true,
+      "cases": 2,
+      "compile_seconds": 21.72176786401542,
+      "execution_seconds": 0.03374150802846998
+    },
+    {
+      "report": "/home/altf4/.cache/rustmage-tdm/half-life-round-up-schema-domain/native.json",
+      "sha256": "87517da92f7bdeb19f0ba9080e9761536dff388c6960d53edec97d2039fe9b60",
+      "terminal": true,
+      "success": true,
+      "cases": 1,
+      "compile_seconds": 0.06523175199981779,
+      "execution_seconds": 0.03338160598650575
+    }
+  ],
+  "source_reviews": [
+    {
+      "reviewer": "/root/tdm_engine_review_one",
+      "revision": "bd0b08bd5e7f36f9da60d629a8c2b64e129a3472",
+      "status": "No concrete findings; preliminary source clearance only, final checkpoint approval pending fullvalidation"
+    },
+    {
+      "reviewer": "/root/tdm_engine_review_two",
+      "revision": "bd0b08bd5e7f36f9da60d629a8c2b64e129a3472",
+      "status": "No concrete findings; preliminary source clearance only, final checkpoint approval pending fullvalidation"
+    }
+  ],
+  "entire_tdm_simple_fixed_mana_component_audit": "All276 physical identities audited again after Nature correction; no further fixed component mismatches, including gated identities.",
+  "trace_acquisition": "/home/altf4/.cache/rustmage-tdm/engine84-traces-1793810244215438270",
+  "actual_betor_card_wiring": "Stillgated inauthorworktree; oldopcode deliberatelyretained until accepted shared engine, cachewarm,then actualprinted21->10 and full21family rerun. No newcompletecardcount fromenginefixture.",
+  "accepted_trace_additions": "docs/tdm-24-card-trace-additions.json"
 }
