@@ -3,10 +3,41 @@
   "catalogue_id": 1166,
   "oracle_id": "f6791df0-a37b-44dc-8bf3-40ac2304d188",
   "facts_sha256": "cf0cbe1c4d47641968be2daa7191c8ae05a86e4e7316fb985d4e5011808de5f9",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5493a096beabce3e306b2241219a0e65aa3fbef9d622953f9c98e95c2cb7c3ce"
   },
-  "physical_metadata_sha256": "2c44d6948f4e617e0f977e7920daa2e3b83cd1b25a4b2b59cbdcf67123af8e03"
+  "physical_metadata_sha256": "2c44d6948f4e617e0f977e7920daa2e3b83cd1b25a4b2b59cbdcf67123af8e03",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/Dragonologist.java",
+  "java_sha256": "a54b5a981762382c9e6949ec221ee83f8c9ce07ccdadb6b494469d3634408e40",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
+      "sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofAbility.java",
+      "sha256": "dd6ceb5e1dac42ece34947ba678be1057bf0f4ecc5e5eb24fc1995763954259a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    }
+  ],
+  "remaining_obligations": []
 }

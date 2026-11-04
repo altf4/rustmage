@@ -3,10 +3,46 @@
   "catalogue_id": 1493,
   "oracle_id": "fd666669-ad23-4e41-b78c-1cd7b82eb8b4",
   "facts_sha256": "7d1a0f47bfe1e8373cefb3fcf929ce8e2a86bf8c29c5d2365b50c841fdd7bb55",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c5d28174b1ff42f03ac60e6bad5e4d84d171a4c924232e475fba204d14c5d16a"
   },
-  "physical_metadata_sha256": "4f02bd357b905c39001fb7ba5d82a6ad80c60988e74dc8c2ccdf3479091f67d2"
+  "physical_metadata_sha256": "4f02bd357b905c39001fb7ba5d82a6ad80c60988e74dc8c2ccdf3479091f67d2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FelotharDawnOfTheAbzan.java",
+  "java_sha256": "ea9512985c32638e115d8d9c9bd36ebcba611119d6965fe6e00ae3d73bd5786e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldOrAttacksSourceTriggeredAbility.java",
+      "sha256": "b5c87d096aa0a689c9915ee2c8c8f8b6eb0fcd2acd4ad8c0c8696c6204f27224"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+      "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+      "sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAllEffect.java",
+      "sha256": "064c925d60c97db41aa0444db30fd482c857b12e3bf8c0635f990dfd4a7094d5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    }
+  ],
+  "remaining_obligations": []
 }

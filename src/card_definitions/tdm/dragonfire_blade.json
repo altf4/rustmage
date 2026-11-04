@@ -3,10 +3,36 @@
   "catalogue_id": 1161,
   "oracle_id": "e809b847-b712-4558-95ea-9bb7356cde91",
   "facts_sha256": "daecb2935cc94eed40794d9a4cc007d769b331b32a73f8fa8c5e19c0352cee8d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4d2253a38c5bad89a64ecbab3f8c14959d4c3fbab214d4e937d341810694c262"
   },
-  "physical_metadata_sha256": "dfb474ee68e1c69325308fe4a5e3e0eeba3f88445c28c50d4bcee84da6b5ba28"
+  "physical_metadata_sha256": "dfb474ee68e1c69325308fe4a5e3e0eeba3f88445c28c50d4bcee84da6b5ba28",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DragonfireBlade.java",
+  "java_sha256": "89f227a3a9c3fc987711790649965c10325610dc3312963cf3c00dd59e49000c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofFromMonocoloredAbility.java",
+      "sha256": "1e5d0a03fc62676faf9f0d2998f0be6685686632515bc9b0f81b4274b5fc0d5a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+      "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+      "sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+    }
+  ],
+  "remaining_obligations": []
 }

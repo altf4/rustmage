@@ -3,10 +3,51 @@
   "catalogue_id": 1639,
   "oracle_id": "e7af31ff-fa1b-4225-b3bc-fde80ac72d0a",
   "facts_sha256": "b92ece994a7a1f3c5a4548f9a211a4a97bab643dd332cb59617953db998a75e4",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "bc7a3cd004c5fbbacbf66af35a64f4f3cda9230fcba0625ce9458ecf549d7b3f"
   },
-  "physical_metadata_sha256": "353f764159636af8ab150309e844f3c1d16266d2aec8fae84b192d586396edf9"
+  "physical_metadata_sha256": "353f764159636af8ab150309e844f3c1d16266d2aec8fae84b192d586396edf9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FrostcliffSiege.java",
+  "java_sha256": "19286a944da32bd964ba420616e29fbb0c13f2d2f3f0abcbab05af844e6896be",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AsEntersBattlefieldAbility.java",
+      "sha256": "3919eac1ae9ebc0edd9decad5d293bdf0cdb4d16c516021ea3e97711f9a72ab5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/OneOrMoreCombatDamagePlayerTriggeredAbility.java",
+      "sha256": "bd049af604d636cbafb61dcbb6ef46b80207734f4f606bc6c902f017ada0a2e1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/OneOrMoreDamagePlayerTriggeredAbility.java",
+      "sha256": "6b1a39143a4330ceea86033cef9212e4ebea416fa70ee2ba30a55b3aded6b92b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseModeEffect.java",
+      "sha256": "81d0232b9335b14c2cafd7c14b0090d639f41527128e85d626db02f9597fadfa"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAnchorWordAbilitySourceEffect.java",
+      "sha256": "9469756464606dcbce7323287562980c16b0c551b2b309065d35cb322f099be6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    }
+  ],
+  "remaining_obligations": []
 }

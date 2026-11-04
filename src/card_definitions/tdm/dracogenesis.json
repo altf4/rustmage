@@ -3,10 +3,21 @@
   "catalogue_id": 1146,
   "oracle_id": "9b06f2bf-146d-4b30-b467-e16f1a942253",
   "facts_sha256": "f0d0884bd6420526f5806957361cbe89a0f0e1b75b282eae46d89d2f7a02aa14",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "702c838925a209fff852c985ee130f775c8fdb39c570b11b6d0097cd327af90f"
   },
-  "physical_metadata_sha256": "78addea4a1a3c28dc10b906b6b035e1f513c8e666819d5ef330799167d956f03"
+  "physical_metadata_sha256": "78addea4a1a3c28dc10b906b6b035e1f513c8e666819d5ef330799167d956f03",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/Dracogenesis.java",
+  "java_sha256": "801200f84b6aad6757b8c9bf9ae3893e0ed8f0503bdd31b17ecc309b19b28f75",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/CastFromHandWithoutPayingManaCostEffect.java",
+      "sha256": "21f6707d883b719f93109cf5687fe1141e7cd80c13ea464ba9bbb1b4f0f20ca8"
+    }
+  ],
+  "remaining_obligations": []
 }

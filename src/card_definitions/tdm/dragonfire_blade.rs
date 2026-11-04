@@ -1,16 +1,44 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Directly authored from the complete pinned Oracle and XMage implementation.
+const GROUPS: &[StaticAbilityGroup] = &[StaticAbilityGroup {
+    line: 0,
+    first_layer: AbilityLayer::Ability,
+    fragments: &[
+        StaticAbilityFragment::AttachmentStats(Stats {
+            power: 2,
+            toughness: 2,
+        }),
+        StaticAbilityFragment::AttachmentKeywords(Keywords::HEXPROOF_MONOCOLORED),
+    ],
+}];
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Permanent,
+    static_groups: GROUPS,
+    activated: &[ActivatedAbility {
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        origin: ActivationOrigin::Battlefield,
+        cycling: false,
+        cost: ActivationCost {
+            generic: 4,
+            mana_component: true,
+            ..ActivationCost::ZERO
+        },
+        targets: TargetPlan::Single(TargetSpec::one(TargetRule::creature_you_control())),
+        program: &[Instruction::AttachSource],
+        sorcery: true,
+        once_per_turn: false,
+    }],
+    extras: &CardExtras {
+        equipment: Some(EquipmentSpec {
+            stats: Stats {
+                power: 2,
+                toughness: 2,
+            },
+            keywords: Keywords::HEXPROOF_MONOCOLORED,
+        }),
+        static_ability_groups: GROUPS,
+        activation_target_color_discounts: &[(0, 1)],
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };
