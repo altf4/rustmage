@@ -2,7 +2,7 @@
   "schema": 1,
   "dependency": "E:TOKEN_ENTRY_COUNTERS",
   "audit_group": 85,
-  "status": "Generic fixed-token entry draft authored; focused tests and independent source reviews pending",
+  "status": "First frozen focused run:19/20 pass; one effect-layer fixture correction and an additional Role timestamp boundary repair pending",
   "accepted_prior_engine": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
   "reproduction": {
     "report": "/home/altf4/.cache/rustmage-tdm/tdm-globe-token-entry-diagnostic/native.json",
@@ -41,6 +41,7 @@
     "crates/engine/src/engine_tokens.rs",
     "crates/engine/src/engine_replacements.rs",
     "crates/engine/src/engine_mobilize.rs",
+    "crates/engine/src/engine_entries.rs",
     "tests/tdm_token_entry_counters.rs"
   ],
   "schema_audit": {
@@ -48,5 +49,36 @@
     "basis": "Work, ReplacementState, EntryBatch, State and Snapshot do not serialize; fixed tokens reuse the existing entry/replacement action and view shapes. Newly reachable gameplay choices do not themselves change the wire shape.",
     "independent_reviewer": "/root/tdm_engine_review_one",
     "owned_continuation_tests": "Still required: exact deferred completion, nested owned bytes, raw/index siblings, disposal/restore, transaction/privacy and termination."
-  }
+  },
+  "validation_attempts": [
+    {
+      "run": "/home/altf4/.cache/rustmage-tdm/engine85-focused-1793817484204920257",
+      "terminal": true,
+      "success": false,
+      "native_report": "/home/altf4/.cache/rustmage-tdm/engine85-focused-1793817484204920257/tdm_token_entry_counters/native.json",
+      "native_sha256": "f7488e1a049ed68d48c30a04a162fe6d84d68c437b484e609189ac3f25fe9929",
+      "expected_cases": 20,
+      "passed": 19,
+      "failed": 1,
+      "compile_seconds": 117.62019098404562,
+      "execution_seconds": 0.042653281008824706,
+      "inputs_unchanged": true,
+      "failed_case": "effective_types_and_copy_type_exceptions_control_dragon_eligibility",
+      "failure": "Expected0, actual1 after removing an earlier-layer type provider ability in a later layer; inspect and correct against pinned CR613.6.",
+      "later_targets_run": false
+    }
+  ],
+  "review_findings": [
+    {
+      "reviewer": "/root/tdm_engine_review_one",
+      "finding": "Slow entry path initially assigned different timestamps to simultaneous fixed Role tokens, replacing their existing survivor choice with allocation order.",
+      "status": "Scoped shared-cohort repair written; simple doubled-Role and per-recipient tests pass in first run."
+    },
+    {
+      "reviewer": "/root/tdm_engine_review_one",
+      "finding": "Mixed Role/keyword-counter entry batch can leave a fixed Role at deferred timestamp0; an older Role then incorrectly survives. A Role itself receiving keyword counters must also keep its cohort timestamp through finalization.",
+      "status": "Additional bounded regression and repair pending; first frozen inputs preserved through actual process termination."
+    }
+  ],
+  "parked_game_harness": "docs/tdm-game-harness-preflight.json; build/lint/pure-hash checks passed, zero games; source commit parked until276 printed-outcome proofs"
 }
