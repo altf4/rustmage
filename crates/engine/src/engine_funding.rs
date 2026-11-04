@@ -5895,8 +5895,45 @@ impl Game {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl FundingState<'_> {
+    /// This paid child will commit before its parent resumes. Carry only that
+    /// activation's use receipt into the virtual completion world; its costs
+    /// and output domain have already been evaluated in the post-cost world.
+    fn project_paid_mana_use(&mut self, item: &SpellView) {
+        if item.is_copy {
+            return;
+        }
+        let Some(key) = item.mana_activation_key() else {
+            return;
+        };
+        let rules = key.definition.activation(key.ability);
+        if rules.exhaust {
+            // The activation event survives departure of its exact source.
+            self.exhaust_activated[item.controller.index()] = true;
+        }
+        let Some(index) = self.resources.iter().position(|r| {
+            r.id == key.source.card
+                && r.object.generation == key.source.generation
+                && r.object.zone == rules.source_zone()
+        }) else {
+            return;
+        };
+        if let Some(timestamp) = key.self_grant {
+            if rules.exhaust || rules.once_per_turn {
+                self.self_grant_uses.push((key.source, timestamp));
+            }
+        } else if let Some(slot) = key.borrowed_slot {
+            self.borrowed_uses.push((key.source, slot));
+        } else if !item.is_retained_copy_activation()
+            && self.definition(key.source.card) == key.definition
+            && self.ability_origin(key.source.card) == key.source_origin
+        {
+            self.resources[index].object.used_abilities |=
+                1u64.checked_shl(u32::from(key.ability)).unwrap_or(0);
+        }
+    }
+
     /// Costs and entry choices already belong to this world. Add only the
-    /// actual post-cost receipt output; never replay the child payment here.
+    /// actual post-cost receipt output and completed use; never replay payment.
     pub(super) fn visit_paid_mana_output(
         &self,
         a: &Announcement,
@@ -5921,6 +5958,7 @@ impl FundingState<'_> {
             }
             let mut next = self.clone();
             next.add_completed_mana(production, quality, bonus);
+            next.project_paid_mana_use(&a.item);
             emit(&next)
         };
         if let Some(output) = &a.mana_output {
