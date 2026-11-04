@@ -1,0 +1,330 @@
+{
+  "source_revision": "89c1ea093",
+  "old200_sha256": "2ab9791cc6e3b5cf0451cd95670c4eb081437256b83b1ead1cfa15663696a579",
+  "candidate201_sha256": "2409af2b1acda3f9a048a338c3670ee82c82cccc1f8ed8f43b147011e77c9692",
+  "projected200_sha256": "2ab9791cc6e3b5cf0451cd95670c4eb081437256b83b1ead1cfa15663696a579",
+  "old_rows": 3201,
+  "current_rows": 3201,
+  "projected200_exact_old_rows": 3201,
+  "added": 0,
+  "removed": 0,
+  "non_observation_metadata_changes": 0,
+  "changed_current_observation_digests": 3201,
+  "selected37_exact_schema_only_byte_proofs": [
+    {
+      "card": "Mistrise Village",
+      "detail_sha256": "acf7e90bb023c2dda0b055b19d1180a5e112656a1fae496f49dc19793872576e",
+      "journal": "1c41fdead70727d2",
+      "old200_observations": "96d9013937e6badf",
+      "new201_observations": "2c8e66bde056863f",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Desperate Measures",
+      "detail_sha256": "66183cb1e8d72b2a5ccfa51bed8a11fa393a34475c126ec830f6f0f241f700b7",
+      "journal": "6ad262452df6dc24",
+      "old200_observations": "1e756bf932f64b2f",
+      "new201_observations": "875a4c7411d5cd87",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Gurmag Rakshasa",
+      "detail_sha256": "e38bf45f603f24edf8c0019067324ef47b8499a19ffbcee8fe728850600a0eb3",
+      "journal": "94317140de96d47a",
+      "old200_observations": "08bf0205365b54d5",
+      "new201_observations": "cc5f973b23c105d7",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Krotiq Nestguard",
+      "detail_sha256": "a8b1dad40a9c4ce90247ca15a24cc8022d3781a23a0213de67046fc92f5068d7",
+      "journal": "7c50116fb450cf1c",
+      "old200_observations": "d5a0da1b2f6b4d34",
+      "new201_observations": "bc9a5e989cebe372",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Lasyd Prowler",
+      "detail_sha256": "d058dc2d6077e53839de0392bbf8bb569b306260a1fdef03744d1cb79ed3c39d",
+      "journal": "5df23ec7356ff85c",
+      "old200_observations": "38cc850530d1eda6",
+      "new201_observations": "222675083421dc70",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Lie in Wait",
+      "detail_sha256": "932905766812204836b56959ef7f1d44601b7fe2c05b5553cdc67d6190e6bf2b",
+      "journal": "934036d5a821f067",
+      "old200_observations": "6e7881315a70c233",
+      "new201_observations": "4efd1578ff597f2f",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Kishla Village",
+      "detail_sha256": "8d7d2896388c002c5b93955c2345e84fb01b5fb3c186bdf03d23884ad5f37ff3",
+      "journal": "1c41fdead70727d2",
+      "old200_observations": "eb947f8f174be3f1",
+      "new201_observations": "d2aae715fa09134b",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Unending Whisper",
+      "detail_sha256": "d2b2e7994547e9b0706e10dac82424b47f5cd7c59e8e236aa843e1c00fb7619e",
+      "journal": "77fe8ec276f5ddde",
+      "old200_observations": "a2f55995521f8ebd",
+      "new201_observations": "527efb23d20c08ab",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Kheru Goldkeeper",
+      "detail_sha256": "4ba4eb6b3114de4c91305efd981e26adc63b5a410b8eed19020cc45248a71e99",
+      "journal": "ed26400aa7245f4f",
+      "old200_observations": "f363426be4b6804a",
+      "new201_observations": "eece9c21a50ad4da",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Channeled Dragonfire",
+      "detail_sha256": "6cac896e490638f9ca708f76c4ab62721e3d6e4516bd668c9c540e4c8e6732db",
+      "journal": "12b2606feff077c8",
+      "old200_observations": "24e6e41a7745560d",
+      "new201_observations": "b02e423455315f1d",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Monastery Messenger",
+      "detail_sha256": "66067b8cacdb550e949ac426acb12d06f2d5e64b96f5e447e3675344f1801990",
+      "journal": "8365a58f2c11027d",
+      "old200_observations": "48c1ff959bad04d2",
+      "new201_observations": "c21da1e2ba4c3b62",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Roamer's Routine",
+      "detail_sha256": "9ff1d50be09e9b4eff288b833cb7fd04c45299385485b1f87b1bb1ebc50a59ed",
+      "journal": "f101e8460af190b7",
+      "old200_observations": "32072aedadbf57bd",
+      "new201_observations": "fc5cc9ee1529a869",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Host of the Hereafter",
+      "detail_sha256": "a961e417cb7ba435fa6bcb8fdce0d91a27df126701b03d72d8abd6e8fd3c071f",
+      "journal": "b57420d067cd09ad",
+      "old200_observations": "d7d6f43580ea07ea",
+      "new201_observations": "21ab37b4d0a5fb4a",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Cori-Steel Cutter",
+      "detail_sha256": "162faa40aa31d745f20264f94be700b118b2ef5712cfd03402611cec71f3698b",
+      "journal": "b43781f2834dd88f",
+      "old200_observations": "ba73694f45a9458e",
+      "new201_observations": "460e1a75479f0032",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Dalkovan Encampment",
+      "detail_sha256": "e23cf546b2ecb263b0fe89e942c493c99f30fccb073298caada5f321201b9766",
+      "journal": "1c41fdead70727d2",
+      "old200_observations": "f4181faa380caf45",
+      "new201_observations": "5cbfd48d404d239f",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Sage of the Fang",
+      "detail_sha256": "c9d059c2bac18388525b1ba304adce88b61f69fe79779a22de0aa2ffd1ecfb97",
+      "journal": "b3e9111ecff18a9c",
+      "old200_observations": "4a9b3d7989ed6716",
+      "new201_observations": "787d86225aba96d2",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Iridescent Tiger",
+      "detail_sha256": "b992514b1c0d6885f52e361e7939ff646bee89185a7afc2eff29587746c8e386",
+      "journal": "6c22b74804ebdd32",
+      "old200_observations": "0275cf9ea1c7fda6",
+      "new201_observations": "d77aa1b6a8c92794",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Ureni's Rebuff",
+      "detail_sha256": "7ff2452ed5b842ffb4ec67268886d4ced3ff1819f28cca2e47f7a92f596ba48f",
+      "journal": "797c571123bdae8d",
+      "old200_observations": "793fab0543654d00",
+      "new201_observations": "4598dd37781139e2",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Champion of Dusan",
+      "detail_sha256": "b497c91596d8d8a7176c1cbf73a2126d9aa39ff7f6e51b76302d3ed9fa33d715",
+      "journal": "7c50116fb450cf1c",
+      "old200_observations": "02dbd283627d59b6",
+      "new201_observations": "248e2176b1a4c272",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Mammoth Bellow",
+      "detail_sha256": "2c23a7ed32566afd6b16eae6e1fbbb52d10658ca7d021e56be13c0d10184c1c4",
+      "journal": "ba6c513beddd585c",
+      "old200_observations": "ffc1cd81767655bb",
+      "new201_observations": "0851a60a08163cab",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Mardu Monument",
+      "detail_sha256": "f404afa20478ba4e0bb869e3221533718cfb87a37948308a2a7640969e45c66e",
+      "journal": "c9d6f23ee57cb4aa",
+      "old200_observations": "f19a9b24fce5ad91",
+      "new201_observations": "133b71b929c83947",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Dragon's Prey",
+      "detail_sha256": "29cb69fb49801e7151214ca0a741f639dc58b92be7cca2f16aa76d8a23292a1f",
+      "journal": "a66fbe1473c9d196",
+      "old200_observations": "ee2baa1f318ea7f7",
+      "new201_observations": "1bb37cd76997c451",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Alchemist's Assistant",
+      "detail_sha256": "a7143d166a3556c99cff25b6383ccb071e76b733434fb51aedb17222900a2bc1",
+      "journal": "a4c714aeb662e85f",
+      "old200_observations": "ec6d3b9072e0afee",
+      "new201_observations": "e152c4f1caa28e42",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Caustic Exhale",
+      "detail_sha256": "54d274cf3b4a73dce3c4fe5e180bdc6072eca1c619808ec9a8d7cfa22ca12cdd",
+      "journal": "c0ed9b02c2920910",
+      "old200_observations": "d052643f9bf23803",
+      "new201_observations": "89dd5737822d893d",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Rainveil Rejuvenator",
+      "detail_sha256": "b6e9fa648ec0db0fe9464eb272e7029f5c405325c64cc2628cca4de371183d1f",
+      "journal": "ea4a961683500a96",
+      "old200_observations": "2bf2dbab56bea890",
+      "new201_observations": "e308f7fc8976b29a",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Kishla Skimmer",
+      "detail_sha256": "fd1d9ba693ea7deb4491722d0491c8f2eeb51e07d5d624624497598490492d1a",
+      "journal": "21c94e12108ffb3f",
+      "old200_observations": "519c7cb6fa77cb52",
+      "new201_observations": "a7525095837dab1a",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Perennation",
+      "detail_sha256": "79a709a7cf116cd98eae1fd1a86113005bfc86877430be5b03a2bc135fed2aba",
+      "journal": "0b0dee20b691ec70",
+      "old200_observations": "041e0d6cde8f0d3a",
+      "new201_observations": "26c57f491b78ed58",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Roiling Dragonstorm",
+      "detail_sha256": "615bcc1faaf74dbd6e1b96667a3bbaca47e6303a812991731aa7202dec0da432",
+      "journal": "eea31da9a5e8aafc",
+      "old200_observations": "771329e5b1bff6c1",
+      "new201_observations": "ce86e8b6d0836cd7",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Sunset Strikemaster",
+      "detail_sha256": "0788999d51ec716a255989cdf8b0a920e578bb8508181eac02a50a0b4f33c944",
+      "journal": "b43781f2834dd88f",
+      "old200_observations": "7304c93bf8d4fc80",
+      "new201_observations": "e373307d1a7d8b7a",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Herd Heirloom",
+      "detail_sha256": "c71501d2b1f7d7f5b988296587b955e877b60be219bec7c508add7c3706a5f3b",
+      "journal": "100cb581dd613f1f",
+      "old200_observations": "4f86b54b64854daf",
+      "new201_observations": "2cb9264ebb7184cd",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Krumar Initiate",
+      "detail_sha256": "852949abfc27c4aadbefc80fe703d936108536723a1d7a27deacd05d236912af",
+      "journal": "a4c714aeb662e85f",
+      "old200_observations": "67c5821a1df34448",
+      "new201_observations": "dd3cf8e9c05b4b42",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Aggressive Negotiations",
+      "detail_sha256": "76137460379bd6aa7f6aaba43878a9ad7929286c2955cf4570bcfccb001c9783",
+      "journal": "bdcc535e140131fd",
+      "old200_observations": "932d90d486128aa4",
+      "new201_observations": "7f2f138e3879720a",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Karakyk Guardian",
+      "detail_sha256": "b0636354dddb737d7fee02683203a3503fce20eae3055af8276deea8ba99711f",
+      "journal": "14bfee7a9413033d",
+      "old200_observations": "9e2bb1aa9b080c26",
+      "new201_observations": "537b96b01c47806e",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Qarsi Revenant",
+      "detail_sha256": "d78c4ecc920fcc93aadba756aaddb72e1decf7fd4a700de9c881ff7d50313866",
+      "journal": "0322b5dea1560864",
+      "old200_observations": "757b282c60e53fc4",
+      "new201_observations": "30c502671d7c5a76",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Jeskai Monument",
+      "detail_sha256": "9eac301f8db008f35514371e9b3dbbdb315a59049cf5123c2185d6b0571e5b76",
+      "journal": "c9d6f23ee57cb4aa",
+      "old200_observations": "b0cf0a8f47da00f0",
+      "new201_observations": "d4d1e5637623997a",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Gurmag Nightwatch",
+      "detail_sha256": "4fe3351186c42b0f74f0971333b6aff8483c3193cac1eb9a3b3356624246e023",
+      "journal": "6f596dfccbc93ab8",
+      "old200_observations": "113f324befae5150",
+      "new201_observations": "acd17d2fd588dc4e",
+      "only_two_schema_integer_spans": true
+    },
+    {
+      "card": "Hundred-Battle Veteran",
+      "detail_sha256": "724260a39f9e8fc4fee3584c2993bd0d3767eeba531f7c7bb026c712378d6520",
+      "journal": "9d78478b460edd3d",
+      "old200_observations": "a1ea0fb1485297a0",
+      "new201_observations": "ec12a42c93e5b83a",
+      "only_two_schema_integer_spans": true
+    }
+  ],
+  "pending_kind_proof": "Actual schema201 pending-kind/ownedstate rejection and inherited positive-union/negative tests pass in schema201-first4cases and admittedallAG39; completed traces have no new pendingkind residual.",
+  "native_report_sha256": "648fe430ce5d02f73fbac50e957304283a0b4c72ec6eadad6d6239141f3423b1",
+  "native_expected_failure": "Recording compared actual201 against prior200 before adoption and failed only observation hashes; all strict prior200 projections are exact accepted bytes. Final release must pass adopted201.",
+  "schema": 1,
+  "set": "TDM",
+  "wire_version": 201,
+  "artifact_root": "<cache>/rustmage-tdm/schema201-traces-1793806775993897160",
+  "independent_migration_reviews": [
+    {
+      "reviewer": "tdm_engine_review_one",
+      "source_revision": "89c1ea09343250492fd2a511301ba1e92da9f8ac",
+      "decision": "Approved supplied3201-row migration only; independently verified all projected200 rows/exact file bytes and selected37 raw two-schema-integer substitutions; final engine/full-set acceptance remain separate."
+    },
+    {
+      "reviewer": "tdm_engine_review_two",
+      "source_revision": "89c1ea09343250492fd2a511301ba1e92da9f8ac",
+      "decision": "Approved supplied3201-row migration only; independently verified all projected200 rows/exact file bytes and selected37 raw two-schema-integer substitutions; final engine/full-set acceptance remain separate."
+    }
+  ]
+}

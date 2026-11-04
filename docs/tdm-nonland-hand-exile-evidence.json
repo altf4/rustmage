@@ -3,7 +3,7 @@
   "set": "TDM",
   "dependency": "E:NONLAND_HAND_EXILE",
   "scope": "Shared unlinked nonland hand exile plus actual Aggressive Negotiations repair; whole-set acceptance remains pending.",
-  "status": "All focused/runtime/schema contracts and workspace all-target Clippy pass; schema201 baseline acquisition, full release, final engine reviews and author-cache warm pending.",
+  "status": "Focused/runtime/schema/Clippy pass and schema201 migration independently accepted; final full release, published-engine reviews and author-cache warm pending.",
   "implementation_revision": "d704f41a7",
   "rule": "Nonland requires absence of LAND type, not presence of another card type (CR205.2b).",
   "primitive": "Instruction::RevealTargetHandExileNonland; HandChoiceKind::ExileRevealedNonland",
@@ -23,7 +23,9 @@
     "new_state": "Chooser-visible unit ExileRevealedNonland",
     "projector": "tests/legacy/assurance/schema201.rs",
     "strictness": "Reject actual new pending chooser kind and its owned continuation; an inherited-looking opponent frame alone does not prove snapshot compatibility. Return every compatible byte unchanged. Check201 before inherited200/199 projectors.",
-    "terminal_trace_rule": "Do not force residuals; terminal Aggressive may have no pending hand choice and may project exactly to prior200."
+    "terminal_trace_rule": "Do not force residuals; terminal Aggressive may have no pending hand choice and may project exactly to prior200.",
+    "accepted_migration": "docs/tdm-schema201-evidence.json",
+    "independent_migration_reviews": "Both pure reviewers approve3201 current201 rows; old200 projection byte-identical, no metadata/journal drift. Actual pending kind remains unrepresentable in200."
   },
   "validation": [
     {
