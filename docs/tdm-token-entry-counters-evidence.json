@@ -2,7 +2,7 @@
   "schema": 1,
   "dependency": "E:TOKEN_ENTRY_COUNTERS",
   "audit_group": 85,
-  "status": "First frozen focused run:19/20 pass; one effect-layer fixture correction and an additional Role timestamp boundary repair pending",
+  "status": "Integrated shared engine fix;102 focused cases and lint pass; full release acceptance and two final reviews pending",
   "accepted_prior_engine": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
   "reproduction": {
     "report": "/home/altf4/.cache/rustmage-tdm/tdm-globe-token-entry-diagnostic/native.json",
@@ -45,10 +45,14 @@
     "tests/tdm_token_entry_counters.rs"
   ],
   "schema_audit": {
-    "decision": "Retain observation schema201 unless final implementation adds an actual serialized field or action identity",
+    "decision": "Retain observation schema201: no new serialized field, action identity or view shape.",
     "basis": "Work, ReplacementState, EntryBatch, State and Snapshot do not serialize; fixed tokens reuse the existing entry/replacement action and view shapes. Newly reachable gameplay choices do not themselves change the wire shape.",
     "independent_reviewer": "/root/tdm_engine_review_one",
-    "owned_continuation_tests": "Still required: exact deferred completion, nested owned bytes, raw/index siblings, disposal/restore, transaction/privacy and termination."
+    "owned_continuation_tests": "PASS: exact deferred completion and nested bytes; raw/index siblings after disposal, restore/stale/wrong actor/invalid reference, both views, and termination. Only restored child top-level observation revision is normalized.",
+    "independent_reviewers": [
+      "/root/tdm_engine_review_one",
+      "/root/tdm_engine_review_two"
+    ]
   },
   "validation_attempts": [
     {
@@ -66,19 +70,142 @@
       "failed_case": "effective_types_and_copy_type_exceptions_control_dragon_eligibility",
       "failure": "Expected0, actual1 after removing an earlier-layer type provider ability in a later layer; inspect and correct against pinned CR613.6.",
       "later_targets_run": false
+    },
+    {
+      "run": "/home/altf4/.cache/rustmage-tdm/engine85-role-boundary-diagnostic-1793817843064375487",
+      "terminal": true,
+      "success": false,
+      "expected_cases": 1,
+      "passed": 0,
+      "failed": 1,
+      "purpose": "Test-first reproduction against unchanged old engine; new Role count0 instead of1 confirms the review finding.",
+      "inputs_unchanged": true,
+      "compile_seconds": 1.7701296409941278,
+      "execution_seconds": 0.033692594966851175
+    },
+    {
+      "run": "/home/altf4/.cache/rustmage-tdm/engine85-focused-repaired-1793817904507323663",
+      "terminal": true,
+      "success": false,
+      "expected_cases": 21,
+      "passed": 20,
+      "failed": 1,
+      "purpose": "Role4variants pass; copy subtype fixture incorrectly assumed additive GOLEM exception replaced Dragon. Repaired test now checks both additive and explicit replacement semantics without changing runtime.",
+      "inputs_unchanged": true,
+      "compile_seconds": 117.21575563203078,
+      "execution_seconds": 0.03536070202244446
     }
   ],
   "review_findings": [
     {
       "reviewer": "/root/tdm_engine_review_one",
       "finding": "Slow entry path initially assigned different timestamps to simultaneous fixed Role tokens, replacing their existing survivor choice with allocation order.",
-      "status": "Scoped shared-cohort repair written; simple doubled-Role and per-recipient tests pass in first run."
+      "status": "Repaired and passing simple doubled-Role/per-recipient cases."
     },
     {
       "reviewer": "/root/tdm_engine_review_one",
       "finding": "Mixed Role/keyword-counter entry batch can leave a fixed Role at deferred timestamp0; an older Role then incorrectly survives. A Role itself receiving keyword counters must also keep its cohort timestamp through finalization.",
-      "status": "Additional bounded regression and repair pending; first frozen inputs preserved through actual process termination."
+      "status": "Reproduced against unchanged engine, then repaired with post-finalization shared cohort timestamp; all4 positive variants pass, including Role keyword counters."
     }
   ],
-  "parked_game_harness": "docs/tdm-game-harness-preflight.json; build/lint/pure-hash checks passed, zero games; source commit parked until276 printed-outcome proofs"
+  "parked_game_harness": "docs/tdm-game-harness-preflight.json; build/lint/pure-hash checks passed, zero games; source commit parked until276 printed-outcome proofs",
+  "final_focused": {
+    "run": "/home/altf4/.cache/rustmage-tdm/engine85-final-focus-1793818257100861074",
+    "receipt_sha256": "9c00c7fd95de3d4f20cf735212d44e721e855414933e9f3a457d13df505ec189",
+    "terminal": true,
+    "success": true,
+    "inputs_unchanged": true,
+    "files": 12979,
+    "input_sha256": "3f9581cd89f337b971d5dafed3f75eeb9d7110764eac79c4596852570f2ad030",
+    "source_hashes": {
+      "crates/engine/src/engine_entries.rs": "86066da3d411e5d17ca740c47ffde41759583d584926b9542ee39128e7183f1b",
+      "crates/engine/src/engine_mobilize.rs": "532e43d9aaa74bacacb1dc42d6606f6190e0fe22ec306f636fd74c6f3707354c",
+      "crates/engine/src/engine_replacements.rs": "2c0863fc9f7c3a2692484e4c322f0c745152884fe624e809cc2bb2d05ad46f0f",
+      "crates/engine/src/engine_tokens.rs": "b317aa122a625592f010f638cd4c5b857841873f9fc70a34ed643ebe7113412d",
+      "tests/tdm_token_entry_counters.rs": "000e5da3db5bd06991d494ec10ac60e89a32aefcdf2928573a429f9a496f7ad1",
+      "tests/tdm_cards_a_g.rs": "3c2600812cf27973a61f34dbc1dc9858427d375aba2c8db7c1f90fdff1c4545d"
+    },
+    "cases": 102,
+    "clippy_seconds": 22.672089219035115,
+    "native_compile_seconds": 124.82553177105729,
+    "native_execution_seconds": 0.18638472293969244,
+    "results": [
+      {
+        "target": "tdm_token_entry_counters",
+        "filter": "",
+        "exit": 0,
+        "seconds": 120.27502648701193,
+        "report": "/home/altf4/.cache/rustmage-tdm/engine85-final-focus-1793818257100861074/tdm_token_entry_counters/native.json",
+        "success": true,
+        "terminal": true,
+        "cases": 21,
+        "compile_seconds": 120.18926008901326,
+        "execution_seconds": 0.0353259890107438
+      },
+      {
+        "target": "tdm_cards_a_g",
+        "filter": "growth_",
+        "exit": 0,
+        "seconds": 1.2928133759996854,
+        "report": "/home/altf4/.cache/rustmage-tdm/engine85-final-focus-1793818257100861074/tdm_cards_a_g/native.json",
+        "success": true,
+        "terminal": true,
+        "cases": 16,
+        "compile_seconds": 1.218058190017473,
+        "execution_seconds": 0.04285216296557337
+      },
+      {
+        "target": "tdm_entry_counters",
+        "filter": "",
+        "exit": 0,
+        "seconds": 0.9831253620213829,
+        "report": "/home/altf4/.cache/rustmage-tdm/engine85-final-focus-1793818257100861074/tdm_entry_counters/native.json",
+        "success": true,
+        "terminal": true,
+        "cases": 19,
+        "compile_seconds": 0.9169928409974091,
+        "execution_seconds": 0.024240933009423316
+      },
+      {
+        "target": "tdm_optional_attachment",
+        "filter": "",
+        "exit": 0,
+        "seconds": 0.839435386005789,
+        "report": "/home/altf4/.cache/rustmage-tdm/engine85-final-focus-1793818257100861074/tdm_optional_attachment/native.json",
+        "success": true,
+        "terminal": true,
+        "cases": 6,
+        "compile_seconds": 0.7666069230181165,
+        "execution_seconds": 0.024746248964220285
+      },
+      {
+        "target": "tdm_static_rules",
+        "filter": "",
+        "exit": 0,
+        "seconds": 0.9943655870156363,
+        "report": "/home/altf4/.cache/rustmage-tdm/engine85-final-focus-1793818257100861074/tdm_static_rules/native.json",
+        "success": true,
+        "terminal": true,
+        "cases": 28,
+        "compile_seconds": 0.9173817650298588,
+        "execution_seconds": 0.03458395699271932
+      },
+      {
+        "target": "tdm_dynamic_tokens",
+        "filter": "",
+        "exit": 0,
+        "seconds": 0.884784676018171,
+        "report": "/home/altf4/.cache/rustmage-tdm/engine85-final-focus-1793818257100861074/tdm_dynamic_tokens/native.json",
+        "success": true,
+        "terminal": true,
+        "cases": 12,
+        "compile_seconds": 0.8172319629811682,
+        "execution_seconds": 0.024635431997012347
+      }
+    ],
+    "resource_guard": "/home/altf4/.cache/rustmage-build-reports/85463a4b8ddd488a96e7370cbcaa840c.json"
+  },
+  "card_admission_changed": false,
+  "author_engine_commit": "fd3eeb5f9ba5a3d949061c2472e1d14c6904567c",
+  "integrated_engine_commit": "cf95fe4bce32669083a07c362b4e73c074a8119d"
 }
