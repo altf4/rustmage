@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "set": "TDM",
+  "dependency": "E:ATTACHED_ACTIVATION_COSTS",
+  "parent_checkpoint": "4aca40d4b5fc2b003d45994172309c262fffa60d",
+  "previous_engine_checkpoint": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+  "status": "Focused contracts pass; final published engine-head review/broad validation/cache rewarm pending; card authorship held.",
+  "printed_consumers": {
+    "Ringing Strike Mastery": "Enchanted creature has generic5: Untap this creature. No attachment or recipient tap cost; recipient controller activates under an opposing/tapped Aura.",
+    "Fishing Pole": "Preserve generic1 plus recipient tap and separate controlled attachment tap. No behavior admission change."
+  },
+  "interface": "StaticAbilityFragment::AttachmentActivation { ability, tap_attachment }; recipient template retains its own printed costs independently.",
+  "implementation": [
+    "Conditional additional-candidate check and exact grantor funding reservation",
+    "Captured immutable granting_card controls attachment tap payment; grant provenance alone creates no cost",
+    "Foreign battlefield grantors visited before ordinary source-controller filter; recipient ownership checked normally; own source action ordering unchanged",
+    "Attachment tap committed independently of recipient tap symbol",
+    "Existing ability layer, copy origin and timeline walkers migrated mechanically; no new owned state or wire schema"
+  ],
+  "focused_validation": {
+    "report": "<cache>/rustmage-tdm/attached-activation-costs-final/native.json",
+    "sha256": "61fb82afe1674db9eaa7a1c74e42bbdcd2de50dad464792609ba5e044e8e577a",
+    "cases": 9,
+    "tests": [
+      "actual_fishing_pole_retains_both_distinct_tap_costs_and_one_mana_payment",
+      "actual_fishing_pole_still_rejects_tapped_or_foreign_attachment_and_sick_recipient",
+      "aura_controller_cannot_activate_the_other_players_creatures_ability_and_cost_failure_rolls_back",
+      "departed_recipient_packet_never_untaps_its_new_incarnation",
+      "explicit_attachment_tap_cost_does_not_invent_a_recipient_tap_cost",
+      "ordinary_grant_can_fund_itself_by_sacrificing_its_own_attachment_for_mana",
+      "ordinary_grant_only_pays_five_even_with_opposing_tapped_aura_and_sick_tapped_recipient",
+      "ordinary_grant_packet_survives_aura_departure_and_keeps_its_original_recipient",
+      "ordinary_grant_payment_is_owned_raw_index_restorable_and_survives_parent_disposal"
+    ],
+    "compile_seconds": 0.7159430419560522,
+    "execution_seconds": 0.0251016229740344,
+    "success": true,
+    "terminal": true
+  },
+  "history": [
+    {
+      "report": "<cache>/rustmage-tdm/attached-activation-costs-first/native.json",
+      "result": "4/8 pass; opposite-controller grantor discovery missing in outer action loop; fixed before retry."
+    },
+    {
+      "report": "<cache>/rustmage-tdm/attached-activation-costs-second/native.json",
+      "result": "9/9 pass after foreign-giver enumeration and independent tap payment."
+    }
+  ],
+  "source_inputs": {
+    "crates/engine/src/ability_layers.rs": "0d3ecbd121051a575dd7a6af4ff59cf096ebef72efe17ad26c2058ecd45bb448",
+    "crates/engine/src/cards.rs": "e461dedef2da7e5a484d94143ca1b610cb6fdbd078b9e15fb88287796debfc37",
+    "crates/engine/src/engine.rs": "b56244cba11a6586f418a6ce39897b7d2eb293b0377daafe5514106d1ea224a2",
+    "crates/engine/src/engine_ability_evaluation.rs": "d4e15b5e0d86064c9061b4ff49d3d700eae7dee962a49cde45bce87c6dc747ca",
+    "crates/engine/src/engine_ability_timeline.rs": "cd176ea8383b2e41c60d7c3ee5dcdb417fbcf43c9a405f4734cacdc02da7544b",
+    "crates/engine/src/engine_activations.rs": "6a0eb5ebccb69f269e3d9163f077e5b3d5bedff20cd86e614be32a5f8fb8a58a",
+    "crates/engine/src/engine_copy_grant_origins.rs": "912086fdcbd71259e8dc4d1855e212bbc7b789eb655ed445fc2735478851c47f",
+    "crates/engine/src/engine_growth_cost.rs": "bafc99be6c279dd8797ae4e7628aaea7a2d9de855114e80a1c354ed28cd3c877",
+    "src/card_definitions/fdn/fishing_pole.rs": "0364c1bf50565c95572f23a070d6b9a10cc811a816472503a757fc3b514a61da"
+  },
+  "test_source": {
+    "path": "tests/tdm_attached_activation_costs.rs",
+    "sha256": "b1603fb48d52784117a73572ee87afacb6472bb96e1846ce679f1b7e92ad93b9"
+  },
+  "reviews": "Both pure nonauthor reviewers preliminary no further findings; final approval waits published frozen revision and broad validation.",
+  "preserved_whole_card_checkpoint": {
+    "locally_verified": 71,
+    "newly_implemented": 37,
+    "previously_admitted_verified": 34,
+    "set_members": 276
+  },
+  "remaining": [
+    "Bounded trace acquisition for37new supported cards preserving all3164accepted rows",
+    "Broader rules/contract and full release acceptance for changed engine",
+    "Two fresh final published-engine-head independent approvals",
+    "Rewarm and resume isolated card authors; migrate gated Ringing template to tap_attachment:false",
+    "Full276card behavior, interactions, TDM-only games/performance, README and single completed-set PR/final reviews"
+  ]
+}

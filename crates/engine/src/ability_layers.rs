@@ -308,7 +308,12 @@ pub enum StaticAbilityFragment {
         filter: CountFilter,
         ability: u16,
     },
-    AttachmentActivation(u16),
+    /// Grant a creature the indexed ordinary activation template. Tapping the
+    /// distinct attachment is an additional cost only when printed explicitly.
+    AttachmentActivation {
+        ability: u16,
+        tap_attachment: bool,
+    },
     /// Grants an independent tap mana ability to the attached permanent.
     AttachmentMana(ManaProduction),
     AttachmentSacrificeMana(ManaProduction),

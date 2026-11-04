@@ -5837,11 +5837,21 @@ impl Card {
             .self_granted_activation_templates
             .contains(&index)
     }
+    pub(crate) fn attached_activation_taps(self, index: u16) -> bool {
+        self.static_ability_groups().iter().any(|group| {
+            group.fragments.iter().any(|fragment| {
+                matches!(fragment, StaticAbilityFragment::AttachmentActivation {
+                    ability, tap_attachment: true,
+                } if *ability == index)
+            })
+        })
+    }
+
     pub(crate) fn grants_activation(self, index: u16) -> bool {
         self.static_ability_groups().iter().any(|g| {
             g.fragments
                 .iter()
-                .any(|f| matches!(f, StaticAbilityFragment::AttachmentActivation(i) | StaticAbilityFragment::ControlledPlaneswalkerActivation(i) | StaticAbilityFragment::SourceMaxSpeedActivation(i) | StaticAbilityFragment::SourceEntryModeActivation { ability: i, .. } if *i == index))
+                .any(|f| matches!(f, StaticAbilityFragment::AttachmentActivation { ability: i, .. } | StaticAbilityFragment::ControlledPlaneswalkerActivation(i) | StaticAbilityFragment::SourceMaxSpeedActivation(i) | StaticAbilityFragment::SourceEntryModeActivation { ability: i, .. } if *i == index))
         })
     }
     pub(crate) fn graveyard_activation_subtype(self) -> Option<&'static str> {

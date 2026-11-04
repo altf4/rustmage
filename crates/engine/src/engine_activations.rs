@@ -1199,9 +1199,9 @@ impl Game {
                 item.mana_tap_bonus = (bonus > 0).then_some(bonus);
             }
             self.tap_objects(&[source.id]);
-            if let Some(grantor) = item.attached_activation_tap_cost() {
-                self.tap_objects(&[grantor.card]);
-            }
+        }
+        if let Some(grantor) = item.attached_activation_tap_cost() {
+            self.tap_objects(&[grantor.card]);
         }
         if definition.exerts() {
             self.exert_source(source.object, item.controller);

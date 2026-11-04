@@ -181,7 +181,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             });
         }
         StaticAbilityFragment::AttachmentTrigger(ability)
-        | StaticAbilityFragment::AttachmentActivation(ability) => {
+        | StaticAbilityFragment::AttachmentActivation { ability, .. } => {
             if !world.attached(source, id) {
                 return None;
             }
@@ -589,7 +589,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::HarnessedTrigger(..)
                         | StaticAbilityFragment::ConditionalWard { .. }
                         | StaticAbilityFragment::AttachmentTrigger(..)
-                        | StaticAbilityFragment::AttachmentActivation(..)
+                        | StaticAbilityFragment::AttachmentActivation { .. }
                         | StaticAbilityFragment::AttachmentMana(..)
                         | StaticAbilityFragment::AttachmentSacrificeMana(..)
                         | StaticAbilityFragment::LandMana { .. }

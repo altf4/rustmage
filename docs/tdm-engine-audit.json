@@ -777,7 +777,7 @@
       "compatibility_consumers": [
         "Fishing Pole"
       ],
-      "status": "Open concrete dependency; authoring held pending implementation, focused actual/legacy costs and owned/transaction contracts, two pure independent engine reviews and cache rewarm.",
+      "status": "Implemented; focused9/9contracts pass, including opposing/tapped grantor and actual Fishing Pole compatibility. Card authors remain held pending broad validation, final published-engine reviews and cache warm.",
       "discovered_by": "tests/tdm_cards_g_s.rs::ringing_strike_taps_stops_natural_untap_and_grants_paid_untap_to_enchanted_controller",
       "failure_report": "<cache>/rustmage-tdm/cards-g-s-family3-gated-first/native.json",
       "authority": [
@@ -785,7 +785,8 @@
         "CR602.2",
         "Mage.Sets/src/mage/cards/r/RingingStrikeMastery.java",
         "Mage.Sets/src/mage/cards/f/FishingPole.java"
-      ]
+      ],
+      "implementation_evidence": "docs/tdm-attached-activation-costs-evidence.json"
     }
   ],
   "acceptance": {

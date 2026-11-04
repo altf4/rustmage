@@ -82,7 +82,7 @@ impl Card {
                             | StaticAbilityFragment::HarnessedTrigger(..)
                             | StaticAbilityFragment::ConditionalWard { .. }
                             | StaticAbilityFragment::AttachmentTrigger(..)
-                            | StaticAbilityFragment::AttachmentActivation(..)
+                            | StaticAbilityFragment::AttachmentActivation { .. }
                             | StaticAbilityFragment::AttachmentMana(..)
                             | StaticAbilityFragment::AttachmentSacrificeMana(..)
                             | StaticAbilityFragment::LandMana { .. }

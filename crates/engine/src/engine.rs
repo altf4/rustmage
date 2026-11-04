@@ -5181,6 +5181,15 @@ impl Game {
                 }
                 for (i, obj) in s.objects.iter().enumerate() {
                     let card = i as CardId;
+                    // An opposing attachment can grant an ability to this
+                    // actor's permanent. The grant checks the recipient's
+                    // controller; ordinary source actions keep their own filter.
+                    if obj.zone == Zone::Battlefield
+                        && obj.controller != actor
+                        && self.visit_attached_activations(card, actor, &mut emit)
+                    {
+                        return true;
+                    }
                     let authorized_origin = match obj.zone {
                         Zone::Battlefield => obj.controller == actor,
                         Zone::Hand | Zone::Graveyard => obj.owner == actor,

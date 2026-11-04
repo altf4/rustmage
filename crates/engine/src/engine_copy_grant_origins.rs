@@ -103,7 +103,7 @@ pub(super) fn program_grant_active<W: ability_world::CharacteristicWorld + ?Size
                         fragment,
                         F::AttachmentTrigger(_)
                             | F::SourceMaxSpeedActivation(_)
-                            | F::AttachmentActivation(_)
+                            | F::AttachmentActivation { .. }
                             | F::ControlledPlaneswalkerActivation(_)
                             | F::ControlledPlaneswalkerAttackLimit
                             | F::GrantInstantSorceryStorm { .. }

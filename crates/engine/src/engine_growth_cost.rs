@@ -319,6 +319,7 @@ impl Game {
         };
         let source = self.object_view(recipient.card);
         for (index, ability) in giver.card.activations().iter().enumerate() {
+            let tap_attachment = giver.card.attached_activation_taps(index as u16);
             let Some(readiness) = self.external_exhaust_readiness(
                 recipient,
                 grantor,
@@ -356,7 +357,13 @@ impl Game {
                     actor,
                     false,
                 )
-                || !self.additional_candidate(Self::attached_tap_spec(), actor, recipient, grantor)
+                || (tap_attachment
+                    && !self.additional_candidate(
+                        Self::attached_tap_spec(),
+                        actor,
+                        recipient,
+                        grantor,
+                    ))
             {
                 continue;
             }
@@ -367,7 +374,7 @@ impl Game {
                         actor,
                         required: cost.colored,
                         generic: cost.generic,
-                        reserve: Some((grantor, Self::attached_tap_spec())),
+                        reserve: tap_attachment.then_some((grantor, Self::attached_tap_spec())),
                         source: Some((
                             recipient,
                             index as u16,
@@ -540,8 +547,8 @@ impl Game {
     }
 }
 
-// Grant provenance alone creates no payment obligation. These legacy attached
-// templates explicitly include tapping their distinct attachment grantor.
+// Grant provenance alone creates no payment obligation. The immutable grant
+// declares whether its printed cost also taps the distinct attachment grantor.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl SpellView {
     pub(super) fn attached_activation_tap_cost(&self) -> Option<ObjectRef> {
@@ -552,16 +559,7 @@ impl SpellView {
         let grant = self.attachment_trigger.as_ref()?;
         (grant.granted
             && grant.grantor != source.object
-            && grant
-                .granting_card
-                .static_ability_groups()
-                .iter()
-                .any(|group| {
-                    group.fragments.iter().any(|fragment| {
-                        matches!(fragment,
-                    StaticAbilityFragment::AttachmentActivation(index) if *index == ability)
-                    })
-                }))
+            && grant.granting_card.attached_activation_taps(ability))
         .then_some(grant.grantor)
     }
 }
