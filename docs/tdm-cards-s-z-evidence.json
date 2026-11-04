@@ -1,0 +1,1766 @@
+{
+  "schema": 1,
+  "scope": "All92 physical S–Z TDM members plus their owned Omen/reprint definitions; whole-card results accumulate here.",
+  "engine_revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+  "metadata_baseline": "bd24d9f167f98308637420e3a4de461ccda1a4d0",
+  "tracking_issue": "https://github.com/altf4/rustmage/issues/570",
+  "owner": "s_z",
+  "first_family": "Harmonize draw/bounce/combat spells",
+  "started_utc": "2026-11-04T14:02:30.077837+00:00",
+  "full_denominator": 92,
+  "currently_verified_new_complete": 2,
+  "currently_verified_existing_candidates": 2,
+  "pending_members": 88,
+  "candidate_first_family_count": 4,
+  "provisional_complete_flags": "Candidate true flags permit integrator private linkage/testing; no whole-card verification asserted until focused actual-definition run passes.",
+  "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "source_read_complete_files": [
+    {
+      "path": "Mage.Sets/src/mage/cards/u/UnendingWhisper.java",
+      "sha256": "32cc6ccd81d50c0d80a2571022dcdd4bcd6d6dc259e1ca3ce555e4fa673a92a4",
+      "extent": "complete body reread during current whole-card authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/HarmonizeAbility.java",
+      "sha256": "a646e202f733800900da7295d1a6886e583f76dcf25fad2be614b00e9f933f0d",
+      "extent": "complete body reread during current whole-card authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/CastFromGraveyardAbility.java",
+      "sha256": "d960ebf54f87db2baf2a23785c181bdfea863a60d493eb66707ba64becc77be9",
+      "extent": "complete body reread during current whole-card authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapTargetCost.java",
+      "sha256": "50cd08137872171eb722841ac8da4a5f5fd9e834f886eabd31e61423ca0f6452",
+      "extent": "complete body reread during current whole-card authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+      "sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9",
+      "extent": "complete body reread during current whole-card authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+      "sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede",
+      "extent": "complete body reread during current whole-card authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+      "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af",
+      "extent": "complete body reread during current whole-card authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/PermanentIdPredicate.java",
+      "sha256": "6777c307e24428991b0869703189d56b35a1889c36ebb1e4735f8eb1b5793098",
+      "extent": "complete body reread during current whole-card authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/TappedPredicate.java",
+      "sha256": "71eabf46dc3838343404e9d40c88835361370549c67e42e8c694082ecd050436",
+      "extent": "complete body reread during current whole-card authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2",
+      "extent": "complete body reread during current whole-card authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+      "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36",
+      "extent": "complete body reread during current whole-card authoring"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/u/UrenisRebuff.java",
+      "sha256": "b9d909415dcc781d185b2b4ae59138389d4fe93d409c33db627906b20c81e232",
+      "extent": "complete body reread during current whole-card authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f",
+      "extent": "complete body reread during current whole-card authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/common/FilterCreaturePermanent.java",
+      "sha256": "ebef79caab4f0b7d08462e2b0d78b942871d82dfe547d22ba9851b4a744c6952",
+      "extent": "complete body reread during current whole-card authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+      "sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd",
+      "extent": "complete body reread during current whole-card authoring"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/w/WildRide.java",
+      "sha256": "d458b101a0c63fb9cd605af13a5babbee23bf0ee29d4657ebaf5be5e13fd9eaa",
+      "extent": "complete body reread during current whole-card authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9",
+      "extent": "complete body reread during current whole-card authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1",
+      "extent": "complete body reread during current whole-card authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1",
+      "extent": "complete body reread during current whole-card authoring"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/w/WinternightStories.java",
+      "sha256": "3279c8492da14629080728a168a89adf4ebb60b294ca33a91e79b1281bc0b970",
+      "extent": "complete body reread during current whole-card authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a",
+      "extent": "complete body reread during current whole-card authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardControllerEffect.java",
+      "sha256": "48291599ed7d9537f89672284579f8c07f14b4ac974a3f482efa6ef593837717",
+      "extent": "complete body reread during current whole-card authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+      "sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189",
+      "extent": "complete body reread during current whole-card authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardTargetCost.java",
+      "sha256": "003c775808c1e2c48f7c67ce1fd2f1c24d7fa905bcf61b52609e8e73b82aed01",
+      "extent": "complete body reread during current whole-card authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInHand.java",
+      "sha256": "0b88ed18c6053986dc57c50ac6363da0acacc35899724fae164813085a428f88",
+      "extent": "complete body reread during current whole-card authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/common/FilterCreatureCard.java",
+      "sha256": "ee796c20588a1c0975306824c57d1c173bfa54b4afaf8c3526aaf32e15d02739",
+      "extent": "complete body reread during current whole-card authoring"
+    }
+  ],
+  "source_read_scoped_files": [
+    {
+      "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+      "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105",
+      "extent": "exact creature-card/permanent predicates77,780,854 and controlled untapped creature declaration/initializer726-737"
+    },
+    {
+      "path": "Mage/src/main/java/mage/util/CardUtil.java",
+      "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06",
+      "extent": "complete reduceCost/adjustAbilityCost/adjustCost methods127-307; broad utility class not claimed wholly read"
+    }
+  ],
+  "authority": [
+    {
+      "path": "<temp>/tdm-release-notes.txt",
+      "sha256": "3ce1c9853c733c3ace178cdb1aac78c111107b3312bcbb683588bd5d3ebf2ea9",
+      "extent": "Harmonize definition and all bullets285-330"
+    },
+    {
+      "path": "<cache>/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
+      "extent": "702.180,601.2,608 target legality and exact incarnations from accepted engine audit"
+    }
+  ],
+  "focused_scenario_groups": 8,
+  "focused_execution": "PASS8/8 actual-definition whole-card scenarios, both seats; parent private generator; all consuming jobs terminal",
+  "shared_proofs": [
+    "docs/tdm-cast-routes-evidence.json granted/printed shared cast funding, exact-origin, colored/hybrid/X, costs, exile/owned contracts",
+    "docs/tdm-engine-acceptance.json final engine validation4235native+10FFI and two pure nonauthor reviews"
+  ],
+  "new_state_or_schema": "none; direct definitions reuse existing effects, cost clauses, choices and ownership",
+  "cards": [
+    {
+      "name": "Sage of the Skies",
+      "oracle_id": "cfc7cef7-0a95-49f8-970f-abff2cacd82d",
+      "definitions": [
+        {
+          "index": 3648,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/sage_of_the_skies.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "ad835b59fa2dfdab21ed5ac3de4531629c8d90c876e6459e4d014cae8aa63161"
+    },
+    {
+      "name": "Sagu Pummeler",
+      "oracle_id": "00f1d167-c143-471d-bd52-da2a65d087c4",
+      "definitions": [
+        {
+          "index": 3650,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/sagu_pummeler.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "8ecc1a2a6f9ea868dfd26f5dc44f2c26944f7936d1a94b92ce7309fa520f62f0"
+    },
+    {
+      "name": "Sagu Wildling // Roost Seek",
+      "oracle_id": "7cee6d43-5dec-4989-85ec-c635ec783ec7",
+      "definitions": [
+        {
+          "index": 3651,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/sagu_wildling.rs"
+        },
+        {
+          "index": 5229,
+          "category": "omen",
+          "path": "src/card_definitions/synthetic/roost_seek.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "3bd160839b257c931ac2e54fd931ade2538970941bf46d8b91b74bbf8980c931"
+    },
+    {
+      "name": "Salt Road Packbeast",
+      "oracle_id": "50261b9d-48f2-4bad-a35b-14f13b3cdd32",
+      "definitions": [
+        {
+          "index": 3658,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/salt_road_packbeast.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "ba5c1caafa23fb0b705167848e1177be6cf362d39f649abe659b7a3b073233a7"
+    },
+    {
+      "name": "Salt Road Skirmish",
+      "oracle_id": "f6e72f4e-d6e0-4537-93c1-7045385c8401",
+      "definitions": [
+        {
+          "index": 3659,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/salt_road_skirmish.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "dd50fb1d6938699dabc9566e8fe816c5c9c70de331fc796baa958c68100a320e"
+    },
+    {
+      "name": "Sandskitter Outrider",
+      "oracle_id": "eae480fe-d9fe-4dbe-8b78-b65f398b0af3",
+      "definitions": [
+        {
+          "index": 3678,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/sandskitter_outrider.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "935e0ca3f5901798d4544b65bcadcd5da1996771f7a56f8d43b0496736b9c270"
+    },
+    {
+      "name": "Sandsteppe Citadel",
+      "oracle_id": "544dbabd-cbfc-40da-a5ba-2fea9cddb453",
+      "definitions": [
+        {
+          "index": 3679,
+          "category": "physical",
+          "path": "src/card_definitions/ecc/sandsteppe_citadel.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "fd0ff010a36e91f4312441d7703f1bfa67819ba5cd26e294d8b6e3ffacb5e086"
+    },
+    {
+      "name": "Sarkhan's Resolve",
+      "oracle_id": "30f058f8-5777-4c25-b881-8f1d0ce17d3a",
+      "definitions": [
+        {
+          "index": 3689,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/sarkhan_s_resolve.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "695437c60be8d53d3703c7865de78e3f3631b5ef47dadd9d5e68a7161cf00468"
+    },
+    {
+      "name": "Sarkhan, Dragon Ascendant",
+      "oracle_id": "71cb48e2-2328-471c-a04a-7b6461f378f4",
+      "definitions": [
+        {
+          "index": 3690,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/sarkhan_dragon_ascendant.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "ccce9201d50b69451182088511dcda47db11a2c42b20deb560eef5c970a965dd"
+    },
+    {
+      "name": "Scavenger Regent // Exude Toxin",
+      "oracle_id": "7e97a242-0bac-4f18-9228-e98ecca36254",
+      "definitions": [
+        {
+          "index": 3717,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/scavenger_regent.rs"
+        },
+        {
+          "index": 5230,
+          "category": "omen",
+          "path": "src/card_definitions/synthetic/exude_toxin.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "8f30dc3a35d70620bf2a758f932114931a32b720d683ca1306167c0822e502f5"
+    },
+    {
+      "name": "Scoured Barrens",
+      "oracle_id": "d37f858e-03c8-4594-9b92-cd03699a1591",
+      "definitions": [
+        {
+          "index": 3731,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/scoured_barrens.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "4053aab61d910da51664239329dbf26b8086df47e5ea058ef58a71ecea1b14bd"
+    },
+    {
+      "name": "Seize Opportunity",
+      "oracle_id": "d0458ffe-9a61-443f-8e80-3d2dde224a4d",
+      "definitions": [
+        {
+          "index": 3774,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/seize_opportunity.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "1866f1d069c3b78fb1b8a5eb92dc1cafc7c7d83abaed76a77d5fab6e710b6422"
+    },
+    {
+      "name": "Severance Priest",
+      "oracle_id": "3a38bf69-511f-4851-870f-8a65641d832e",
+      "definitions": [
+        {
+          "index": 3801,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/severance_priest.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "ff0929de9c2bfaa17a098ece86e76859988e6aa5e13b285eb403e0f4ead0729e"
+    },
+    {
+      "name": "Shiko, Paragon of the Way",
+      "oracle_id": "d3bdd3f2-9e38-436a-93a3-f87d9f4d4f86",
+      "definitions": [
+        {
+          "index": 3830,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/shiko_paragon_of_the_way.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "00b8b3a2e2aa2b9fe6e9d341b2bb54d708d80a2f6bda479c36967b10aaac5a16"
+    },
+    {
+      "name": "Shock Brigade",
+      "oracle_id": "8676e917-17dd-4047-99c4-402f2e909e16",
+      "definitions": [
+        {
+          "index": 3839,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/shock_brigade.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "1ea078b25ce8be14058e2cb155fb954ccde5892d5e1597078882ba834baea5c6"
+    },
+    {
+      "name": "Shocking Sharpshooter",
+      "oracle_id": "fbb7735f-ec91-4ed4-b735-d94a76e68a80",
+      "definitions": [
+        {
+          "index": 3841,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/shocking_sharpshooter.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "07db6f64b9bcd46ca4244e5d1fe292cdb1edc592ce5c35faed71b66d076f3821"
+    },
+    {
+      "name": "Sibsig Appraiser",
+      "oracle_id": "5b51958d-533a-45e4-aac1-3c157670978b",
+      "definitions": [
+        {
+          "index": 3858,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/sibsig_appraiser.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "9d998ea01f4fb3e96d5357cb4f2d661969e1c6bba5dfc8dfd9efd1828961da55"
+    },
+    {
+      "name": "Sidisi, Regent of the Mire",
+      "oracle_id": "72074972-418d-4dce-83cf-ce8cf310fc42",
+      "definitions": [
+        {
+          "index": 3864,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/sidisi_regent_of_the_mire.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "f7fedf7ab4e6618ace33a5618b7dc30c84bb2c51a2c1be989f0aa0dc651c7e06"
+    },
+    {
+      "name": "Sinkhole Surveyor",
+      "oracle_id": "83a47724-b8d1-4884-9442-b62aa1510dc3",
+      "definitions": [
+        {
+          "index": 3884,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/sinkhole_surveyor.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "87adf8178ffed6409ccf425efa75f656c974016221173af222c63005110f6b18"
+    },
+    {
+      "name": "Skirmish Rhino",
+      "oracle_id": "40eb7f43-7cee-41a1-a4d1-f34ee125ccd1",
+      "definitions": [
+        {
+          "index": 3893,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/skirmish_rhino.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "fe4fb2e7dfb7e00d50336c2d159c367a3a946b8b18c5f68970e0ef9f756484d0"
+    },
+    {
+      "name": "Smile at Death",
+      "oracle_id": "9228f04c-506f-4453-a335-e66876b8ce8d",
+      "definitions": [
+        {
+          "index": 3937,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/smile_at_death.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "9e485ea8dd7b4ab94c829742d8a87f2637cf916a77edd7f29a28a2863a004a40"
+    },
+    {
+      "name": "Snakeskin Veil",
+      "oracle_id": "1e6a24be-8281-41c1-a5ba-b68f0ef1d7b8",
+      "definitions": [
+        {
+          "index": 3940,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/snakeskin_veil.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "f60c05bc8152dc4abdc25b2f35d354f3b786a659252a8aa0bef3d42c3ebe7905"
+    },
+    {
+      "name": "Snowmelt Stag",
+      "oracle_id": "b25ccb64-e114-4d54-a07a-c8cd4560b511",
+      "definitions": [
+        {
+          "index": 3947,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/snowmelt_stag.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "1fb8fd3ea1b888adccf87faafd6f797488663fcf057a80ced2cf7cb44c126b13"
+    },
+    {
+      "name": "Songcrafter Mage",
+      "oracle_id": "13f0863f-ae54-4bea-8f01-7f3891797577",
+      "definitions": [
+        {
+          "index": 3967,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/songcrafter_mage.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "2c50197e89fb00cb6f953be16210d81115a8db46b18e65f1951314ff120f4b46"
+    },
+    {
+      "name": "Sonic Shrieker",
+      "oracle_id": "d317e3f1-553f-44f6-8543-d6d4c42534ad",
+      "definitions": [
+        {
+          "index": 3968,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/sonic_shrieker.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "eca1d389735f542bf8cda2db20f3623c92aa3a95f83526bd18a603f54a4ad9d6"
+    },
+    {
+      "name": "Spectral Denial",
+      "oracle_id": "f8536726-993b-4100-918c-e3c7177d4c65",
+      "definitions": [
+        {
+          "index": 3999,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/spectral_denial.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "a2669891c70ff93c29da880c9bb5bef7e468cb51ab04ffce501849609a60d510"
+    },
+    {
+      "name": "Stadium Headliner",
+      "oracle_id": "d8cfa20a-343e-4661-9f5a-a8265f6917a8",
+      "definitions": [
+        {
+          "index": 4084,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/stadium_headliner.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "671db9b3d5a1f28ffc162dd2250b307f1f8ddae4e3fe582bf18fdc8a1fce606a"
+    },
+    {
+      "name": "Stalwart Successor",
+      "oracle_id": "45392882-e4b9-4c74-a10f-985c2b4e2be9",
+      "definitions": [
+        {
+          "index": 4092,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/stalwart_successor.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "710cb2c1f467a798d27734501b30c77152e6238976b72dcda56d99a81a1303b0"
+    },
+    {
+      "name": "Starry-Eyed Skyrider",
+      "oracle_id": "04e615e6-4088-4170-904c-f2d4bcebed59",
+      "definitions": [
+        {
+          "index": 4109,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/starry_eyed_skyrider.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "225cb8766ecea98582ca2d80641c9e9dfbe42fd892753e56580750781016a05c"
+    },
+    {
+      "name": "Static Snare",
+      "oracle_id": "b5b742d2-f19b-47c9-84bd-e85d975900e6",
+      "definitions": [
+        {
+          "index": 4118,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/static_snare.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "fd337069a7b16faf6db83030cd85c484f4de8bc08e323ec7b31a9a051b6cdb10"
+    },
+    {
+      "name": "Stillness in Motion",
+      "oracle_id": "d73913ea-44d0-408f-9f8b-8e91843f2826",
+      "definitions": [
+        {
+          "index": 4137,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/stillness_in_motion.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "56f06bfb35efadb52836bd2022a0c60f4720b856a25bd4ca3839889fa8f3e231"
+    },
+    {
+      "name": "Stormbeacon Blade",
+      "oracle_id": "f4b3ee43-fc01-425f-8322-29bf6d16cb3f",
+      "definitions": [
+        {
+          "index": 4170,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/stormbeacon_blade.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "14eebfedaa97a8f3fa3a57b3e49b0bb90d6bef87d0fce7c76810772ffe4465eb"
+    },
+    {
+      "name": "Stormplain Detainment",
+      "oracle_id": "4ad9c550-5605-4ffe-8e27-e9f2d9ada000",
+      "definitions": [
+        {
+          "index": 4176,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/stormplain_detainment.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "2d27fed13bbbdc5ffeba34da12220a65aa1b74645820360f140e452c25f23972"
+    },
+    {
+      "name": "Stormscale Scion",
+      "oracle_id": "cf37426d-b0ad-42c3-81be-79701aa4e0cf",
+      "definitions": [
+        {
+          "index": 4177,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/stormscale_scion.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "4de7e9f7da40eb0007a35eb1e21ecfd0dd6a04544323c68ad4b149449cce4747"
+    },
+    {
+      "name": "Stormshriek Feral // Flush Out",
+      "oracle_id": "e24916ff-7566-4f27-8e31-732311a4a88c",
+      "definitions": [
+        {
+          "index": 4178,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/stormshriek_feral.rs"
+        },
+        {
+          "index": 5233,
+          "category": "omen",
+          "path": "src/card_definitions/synthetic/flush_out.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "ae4bb85cb77ba5efb4a9bd6bf566c098f518489a606764afa4d39d400390e485"
+    },
+    {
+      "name": "Strategic Betrayal",
+      "oracle_id": "0127c13f-7b0f-44c3-8b35-97f306c5f239",
+      "definitions": [
+        {
+          "index": 4182,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/strategic_betrayal.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "3a50f3b3c28dcb5a963bb4d77ca4076366e16b9795da79fae82a7812c7dd2772"
+    },
+    {
+      "name": "Sultai Devotee",
+      "oracle_id": "ee7b3fc0-6128-4bf6-b3e7-7371e6f93c4b",
+      "definitions": [
+        {
+          "index": 4208,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/sultai_devotee.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "b15e50ce5f6a7c7a35bf85eb4a795757a40ef229dd5130b0e4e98e211b670e85"
+    },
+    {
+      "name": "Sultai Monument",
+      "oracle_id": "9db71b76-eda7-49dd-af5a-3de18acb8ccb",
+      "definitions": [
+        {
+          "index": 4209,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/sultai_monument.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "995d9739bc86ae71eebfb682425ac8e7f5dc9f518c5b41f87326cb9f246f3e11"
+    },
+    {
+      "name": "Summit Intimidator",
+      "oracle_id": "b772d35a-d365-47ce-b1dd-a2ba574c74ea",
+      "definitions": [
+        {
+          "index": 4211,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/summit_intimidator.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "689c309c7ae3c4be1049be1d9ad683fc3f8d21939530c38cb2848316d556feb6"
+    },
+    {
+      "name": "Sunpearl Kirin",
+      "oracle_id": "f17b9356-a329-4f89-b690-afc2eaff4977",
+      "definitions": [
+        {
+          "index": 4243,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/sunpearl_kirin.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "66b0b2d879bb013013e880c252b8bec9fb0307c79410411352d4a46b2ab7aa41"
+    },
+    {
+      "name": "Sunset Strikemaster",
+      "oracle_id": "d81ade13-e7c7-4fe3-bb0c-5007ed9f1198",
+      "definitions": [
+        {
+          "index": 4245,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/sunset_strikemaster.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "c99f2a30a45a9ddfcd27d104f4bd1d820342fecef10dc201fac8e75c3eabdc61"
+    },
+    {
+      "name": "Surrak, Elusive Hunter",
+      "oracle_id": "7a0fe73f-6e08-4c9a-80e1-c2ead6cebe06",
+      "definitions": [
+        {
+          "index": 4271,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/surrak_elusive_hunter.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "c30463b91c9ea88cd98650db3a5754880cdc9f11ae047e10a920aa4df5d8a080"
+    },
+    {
+      "name": "Swamp",
+      "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+      "definitions": [
+        {
+          "index": 2,
+          "category": "physical",
+          "path": "src/card_definitions/fra/swamp.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "0ddffcfeb10574ceab2d19fcaad90b912eb08a51601bfa0d51ceb993dcfc04e5"
+    },
+    {
+      "name": "Swiftwater Cliffs",
+      "oracle_id": "2f4ad084-2062-44c0-9975-15f100204531",
+      "definitions": [
+        {
+          "index": 4293,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/swiftwater_cliffs.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "6336b71c23cc0b2c2653de5565d259f91a9a81c0aa13274c19e580784bcf893e"
+    },
+    {
+      "name": "Synchronized Charge",
+      "oracle_id": "faa0055b-c1d2-4ce7-875f-41b4be8030bd",
+      "definitions": [
+        {
+          "index": 4303,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/synchronized_charge.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "b2158873a8abf4f850141cfb88d80cda076e8ea4022572863d82e9c107bb41a4"
+    },
+    {
+      "name": "Taigam, Master Opportunist",
+      "oracle_id": "49f2cbc3-bd03-48e6-b1c4-d7f315b8579d",
+      "definitions": [
+        {
+          "index": 4316,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/taigam_master_opportunist.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "1428cfdd25633bdac96a942cb42caa20fe3f08614e8b90b7aac7e69730a86aa6"
+    },
+    {
+      "name": "Teeming Dragonstorm",
+      "oracle_id": "2154cc68-41a4-4e88-9fe0-e0150dc0be45",
+      "definitions": [
+        {
+          "index": 4355,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/teeming_dragonstorm.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "f6d97c75b29dffe180ebf143428ff4a7f882deb6afd11f7f41cfe31aeed04e31"
+    },
+    {
+      "name": "Tempest Hawk",
+      "oracle_id": "7423b3b9-56eb-4cf2-8ada-135918219c4b",
+      "definitions": [
+        {
+          "index": 4360,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/tempest_hawk.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "f1d12e38ae5e581cb88808218491c3dbab69034fddddaad8285038c93d8f7fa9"
+    },
+    {
+      "name": "Temur Battlecrier",
+      "oracle_id": "fadf984c-c224-432a-87b9-b34f929b8409",
+      "definitions": [
+        {
+          "index": 4374,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/temur_battlecrier.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "2c6f5dca886a53fe9d6b9568138f986398036694ce760eddc78408f06e3a42b3"
+    },
+    {
+      "name": "Temur Devotee",
+      "oracle_id": "e444f072-ce24-4fd1-99eb-d20d12bc119a",
+      "definitions": [
+        {
+          "index": 4375,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/temur_devotee.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "8033f2810b7ef85916ad7690b43d5f1b2781ef0dce090a5b597ad945d74cbcef"
+    },
+    {
+      "name": "Temur Monument",
+      "oracle_id": "5464d5ae-5be5-4e52-b9d0-ddce48fd93b3",
+      "definitions": [
+        {
+          "index": 4376,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/temur_monument.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "3a960222e877870c42548c57a094b67766433d2a2cc21113661f5b1a17f351bc"
+    },
+    {
+      "name": "Temur Tawnyback",
+      "oracle_id": "889d26d6-9e6c-4cc0-8e8e-dd932f705a20",
+      "definitions": [
+        {
+          "index": 4377,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/temur_tawnyback.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "96362293448aa582f6f0fe0a081ef684fb81ed629c3b3dd2c6a8434480020863"
+    },
+    {
+      "name": "Tersa Lightshatter",
+      "oracle_id": "9918eb7b-054e-4b1c-afc7-1163ab642d50",
+      "definitions": [
+        {
+          "index": 4401,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/tersa_lightshatter.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "1f2cad003fbf54a126965a36a1fc6304dc0392623260b7c349ebbdd6afb112c6"
+    },
+    {
+      "name": "Teval, Arbiter of Virtue",
+      "oracle_id": "f6cf359a-91cb-4b3c-8837-be53e4ed9c93",
+      "definitions": [
+        {
+          "index": 4407,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/teval_arbiter_of_virtue.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "698398c195279ed4ef7cc00f374fdabaacbb0df6dc1219e0d78d283f79bd73e8"
+    },
+    {
+      "name": "The Sibsig Ceremony",
+      "oracle_id": "bbdb731d-c533-48ef-b82a-cf1a8ba36208",
+      "definitions": [
+        {
+          "index": 4498,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/the_sibsig_ceremony.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "567f612e162ce1cd0d469890f6ac92fedc50a7de177a8bbcc7b0893fe59d5d0e"
+    },
+    {
+      "name": "Thornwood Falls",
+      "oracle_id": "ec96cde2-f1e6-495c-94e2-3e8ae79e556c",
+      "definitions": [
+        {
+          "index": 4547,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/thornwood_falls.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "5ebd81c56f1f374992f7adfcf3a8310d0b5f935de2bde64169799fd60211603a"
+    },
+    {
+      "name": "Thunder of Unity",
+      "oracle_id": "8419d1d5-bb0e-4a2d-bb6f-67957d035dde",
+      "definitions": [
+        {
+          "index": 4581,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/thunder_of_unity.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "058219b4ec67a7e27d3b8ebccc2352318bfbf4185445df438ea75cb51a73d4a8"
+    },
+    {
+      "name": "Trade Route Envoy",
+      "oracle_id": "95d51048-be32-4c5f-8b75-fca3a891c9d6",
+      "definitions": [
+        {
+          "index": 4647,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/trade_route_envoy.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "0a557ca987c01559f1b6b07cfad98b59cc01e2f8f0aab06e608796fd9dd831d3"
+    },
+    {
+      "name": "Tranquil Cove",
+      "oracle_id": "5d641bf6-0f93-4189-8dc1-ec7ea446dade",
+      "definitions": [
+        {
+          "index": 4655,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/tranquil_cove.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "33707136abf946fdc5c10d480652b62b961fccec48c57a41771dfcb384edc8ab"
+    },
+    {
+      "name": "Traveling Botanist",
+      "oracle_id": "14934ab0-41ab-44f8-bb28-2b0457eb6f5f",
+      "definitions": [
+        {
+          "index": 4665,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/traveling_botanist.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "0032fff0bcde35f23afe93aa1aa91d53a8035358e921d3a1709b7ed2f6ff726b"
+    },
+    {
+      "name": "Twin Bolt",
+      "oracle_id": "970dc070-3668-4584-9904-2897b27bb806",
+      "definitions": [
+        {
+          "index": 4717,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/twin_bolt.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "9cc59ee1886796e8bad8fc68f369ace0020c480db0e4221e1badbb394eea4d27"
+    },
+    {
+      "name": "Twinmaw Stormbrood // Charring Bite",
+      "oracle_id": "ff812a78-3fe7-47bc-9984-1c2380cff5b1",
+      "definitions": [
+        {
+          "index": 4723,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/twinmaw_stormbrood.rs"
+        },
+        {
+          "index": 5235,
+          "category": "omen",
+          "path": "src/card_definitions/synthetic/charring_bite.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "f43cf19a6517664d85a9f1a2a969144362b7265ceb5de3faf8182ce7d1bd8687"
+    },
+    {
+      "name": "Ugin, Eye of the Storms",
+      "oracle_id": "5c58353a-fd60-4528-bf0d-669626cda0b2",
+      "definitions": [
+        {
+          "index": 4738,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/ugin_eye_of_the_storms.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "8d9f58967c0259e54d14f4d31538b641b7d9f53a2f2b6cf28bf30f81d780524b"
+    },
+    {
+      "name": "Unburied Earthcarver",
+      "oracle_id": "75da657e-0e36-4f2a-9b81-b7eba7d8e050",
+      "definitions": [
+        {
+          "index": 4754,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/unburied_earthcarver.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "2ec5da4762321c71b01e03acb9f99cea861ccbda14e9fd24149fcd21f79269f6"
+    },
+    {
+      "name": "Underfoot Underdogs",
+      "oracle_id": "3740b86d-b0e6-4837-b408-e7f62b95c787",
+      "definitions": [
+        {
+          "index": 4767,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/underfoot_underdogs.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "0f0401592217c821169e41e9285f382c293df263c557e6858c84f28fffe7352a"
+    },
+    {
+      "name": "Undergrowth Leopard",
+      "oracle_id": "511fa8a3-0a65-47fc-9f3b-57eaef2698cd",
+      "definitions": [
+        {
+          "index": 4769,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/undergrowth_leopard.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "b1862fb8168addcdb32368438072834077a70b34d1b9ba5321e1e4eab62c6106"
+    },
+    {
+      "name": "Unending Whisper",
+      "oracle_id": "c5da5c31-0cf1-4393-8701-eda7880ecebc",
+      "definitions": [
+        {
+          "index": 4776,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/unending_whisper.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "40b882c0a3576c4b62e938ddb0b31d44098067988552b130c2b1a764e98acb75",
+      "printed_obligations": [
+        "Draw exactly one card for the resolving controller.",
+        "Normal costU and sorcery timing.",
+        "Harmonize5U, optional one controlled untapped creature pays generic through power, then exile on any stack departure."
+      ],
+      "oracle_facts": {
+        "oracle_id": "c5da5c31-0cf1-4393-8701-eda7880ecebc",
+        "name": "Unending Whisper",
+        "layout": "normal",
+        "mana_cost": "{U}",
+        "cmc": 1.0,
+        "type_line": "Sorcery",
+        "oracle_text": "Draw a card.\nHarmonize {5}{U} (You may cast this card from your graveyard for its harmonize cost. You may tap a creature you control to reduce that cost by {X}, where X is its power. Then exile this spell.)",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [
+          "Harmonize"
+        ],
+        "reference_printing": {
+          "id": "fc48180a-ccac-469f-938d-c050821d0160",
+          "set": "tdm",
+          "collector_number": "62",
+          "released_at": "2025-04-11"
+        }
+      },
+      "source_read_complete": true,
+      "rust_behavior": "new direct typed definition",
+      "candidate_definition_sha256": "613db20b570f33043f4be90a8dafcbc45e6cb03d114b4d3acf31df4a5bd6433b",
+      "candidate_provenance_sha256": "d6eb9be679cd537f613abd645024bc91b24a6ca8f64662c3cc27565c3146c9b9",
+      "focused_test_target": "tdm_cards_s_z",
+      "focused_filter": "harmonize_",
+      "verified_receipt": "<cache>/rustmage-tdm/cards-s-z-harmonize-first/native.json"
+    },
+    {
+      "name": "United Battlefront",
+      "oracle_id": "892a83a0-a3cb-4cfb-9106-4008e4e75c0f",
+      "definitions": [
+        {
+          "index": 4785,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/united_battlefront.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "92870afcf9e98926d636deb77df3c7041ce3fec876a06be3ccc16bac7393ff12"
+    },
+    {
+      "name": "Unrooted Ancestor",
+      "oracle_id": "de5c6c9d-04a2-4287-8c6e-fdf56c411507",
+      "definitions": [
+        {
+          "index": 4793,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/unrooted_ancestor.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "4acd993c79c551b2ec324f4b788f6a96be7bd3a414306ca2c5976984835babf9"
+    },
+    {
+      "name": "Unsparing Boltcaster",
+      "oracle_id": "0a56a33b-033f-4398-8dc1-e531be059710",
+      "definitions": [
+        {
+          "index": 4798,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/unsparing_boltcaster.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "43b919e17c2a61e1eba7f98c7cbf209d463e0e477b339e6edba16a2d338ec781"
+    },
+    {
+      "name": "Ureni's Rebuff",
+      "oracle_id": "c0b7e989-8194-484c-93aa-a44df0764a77",
+      "definitions": [
+        {
+          "index": 4814,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/ureni_s_rebuff.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "487e36fa37bbd78a73ab8bb1f5ce4b7920940ebeab417da05ad2a392ebe6981a",
+      "printed_obligations": [
+        "Target any creature, return it to its owner rather than its controller.",
+        "Normal cost1U and sorcery timing.",
+        "Harmonize5U uses same exact target and exiles even if countered/fizzled."
+      ],
+      "oracle_facts": {
+        "oracle_id": "c0b7e989-8194-484c-93aa-a44df0764a77",
+        "name": "Ureni's Rebuff",
+        "layout": "normal",
+        "mana_cost": "{1}{U}",
+        "cmc": 2.0,
+        "type_line": "Sorcery",
+        "oracle_text": "Return target creature to its owner's hand.\nHarmonize {5}{U} (You may cast this card from your graveyard for its harmonize cost. You may tap a creature you control to reduce that cost by {X}, where X is its power. Then exile this spell.)",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [
+          "Harmonize"
+        ],
+        "reference_printing": {
+          "id": "722716df-9cea-40a7-924b-c28497e227e6",
+          "set": "tdm",
+          "collector_number": "63",
+          "released_at": "2025-04-11"
+        }
+      },
+      "source_read_complete": true,
+      "rust_behavior": "new direct typed definition",
+      "candidate_definition_sha256": "f286272675929bb5b84cc3ac42786fc1923eea0dbc352bbc2ecdaf8d7f5e7df1",
+      "candidate_provenance_sha256": "aac565e9b295b964f8fcd1a7f3c7700345f138edfb13abc72f126f6b8d8bc60e",
+      "focused_test_target": "tdm_cards_s_z",
+      "focused_filter": "harmonize_",
+      "verified_receipt": "<cache>/rustmage-tdm/cards-s-z-harmonize-first/native.json"
+    },
+    {
+      "name": "Ureni, the Song Unending",
+      "oracle_id": "1c995c80-3301-409b-822b-9297aa260823",
+      "definitions": [
+        {
+          "index": 4815,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/ureni_the_song_unending.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "f39be1d32dafe7c931e8cda568c3c40c89d8b5e886c80c2fed289fc216b2817a"
+    },
+    {
+      "name": "Venerated Stormsinger",
+      "oracle_id": "4aff2f31-619f-406e-b2c9-a2c733c04bc4",
+      "definitions": [
+        {
+          "index": 4861,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/venerated_stormsinger.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "52861ff14bc75293e627810c17d1f7208eea025b47857ef2b81a0a9503d360b2"
+    },
+    {
+      "name": "Veteran Ice Climber",
+      "oracle_id": "ccaadf8d-22c0-4139-b734-03ac2fcb4494",
+      "definitions": [
+        {
+          "index": 4878,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/veteran_ice_climber.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "7df847193922849196e1e67b5225d4ac99110e9b1d7aae05ebbcde0be2770bc6"
+    },
+    {
+      "name": "Voice of Victory",
+      "oracle_id": "b12cbda1-ac09-49eb-96b3-a4df27bc37ea",
+      "definitions": [
+        {
+          "index": 4927,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/voice_of_victory.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "99372a3c093a7178395adb5b1a3cb65a5879dcc8e11e01744230d3cc4612738c"
+    },
+    {
+      "name": "Wail of War",
+      "oracle_id": "fc0abdf3-3a88-4cb2-ba79-35fcaebbf7d2",
+      "definitions": [
+        {
+          "index": 4951,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/wail_of_war.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "8a6797e9c3b67c85051273b966530e72197953d6e914f416d89c4be660204d3c"
+    },
+    {
+      "name": "War Effort",
+      "oracle_id": "d9bc6841-9f71-46af-ac1f-a01caee290c1",
+      "definitions": [
+        {
+          "index": 4971,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/war_effort.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "1ffe396aa04cd32682b09c12fcbd41f047b4bbc79d492c9f445c00bdb97420a8"
+    },
+    {
+      "name": "Warden of the Grove",
+      "oracle_id": "13bf8103-3db3-4ee6-a6bb-441aabfd9e41",
+      "definitions": [
+        {
+          "index": 4974,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/warden_of_the_grove.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "8d4ccbc58faa773c46169c7915770c3d3f54250f7e9be6274ea0b11e7bb0c5f4"
+    },
+    {
+      "name": "Watcher of the Wayside",
+      "oracle_id": "b30eafed-2755-4423-9592-c8b83c68804b",
+      "definitions": [
+        {
+          "index": 4993,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/watcher_of_the_wayside.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "178cacfda6463b4fa1ff911f2ae3e42de88af161b8012cb2f6ed8db856959c9d"
+    },
+    {
+      "name": "Wayspeaker Bodyguard",
+      "oracle_id": "b93eaf66-91b3-44da-851c-79810901be0c",
+      "definitions": [
+        {
+          "index": 5018,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/wayspeaker_bodyguard.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "9fc993d8bf6e3244fbd1d8491f8fc393d06960ba327cdc234531754a5f0b5cf0"
+    },
+    {
+      "name": "Whirlwing Stormbrood // Dynamic Soar",
+      "oracle_id": "4fbfc814-df10-4d61-ada9-c96cc8ee8d8c",
+      "definitions": [
+        {
+          "index": 5039,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/whirlwing_stormbrood.rs"
+        },
+        {
+          "index": 5227,
+          "category": "omen",
+          "path": "src/card_definitions/synthetic/dynamic_soar.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "901be646c24b84f4c8850a8d3c484fc0c0f80c047c8041392fde08ecbed49727"
+    },
+    {
+      "name": "Wild Ride",
+      "oracle_id": "61978202-538b-4f92-acfc-e95f4a6ce466",
+      "definitions": [
+        {
+          "index": 5059,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/wild_ride.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "f9c99b0b7d1c6a111988ac1a01ddd66b0ee49a508e7c019e816e4272bf453e00",
+      "printed_obligations": [
+        "Target any creature gets exactly+3/+0 and haste until cleanup.",
+        "Normal costR and sorcery timing.",
+        "Harmonize4R, generic reduction and exile on stack leave."
+      ],
+      "oracle_facts": {
+        "oracle_id": "61978202-538b-4f92-acfc-e95f4a6ce466",
+        "name": "Wild Ride",
+        "layout": "normal",
+        "mana_cost": "{R}",
+        "cmc": 1.0,
+        "type_line": "Sorcery",
+        "oracle_text": "Target creature gets +3/+0 and gains haste until end of turn.\nHarmonize {4}{R} (You may cast this card from your graveyard for its harmonize cost. You may tap a creature you control to reduce that cost by {X}, where X is its power. Then exile this spell.)",
+        "colors": [
+          "R"
+        ],
+        "color_identity": [
+          "R"
+        ],
+        "keywords": [
+          "Harmonize"
+        ],
+        "reference_printing": {
+          "id": "abc8c6f5-6135-428e-8476-1751f82623f9",
+          "set": "tdm",
+          "collector_number": "132",
+          "released_at": "2025-04-11"
+        }
+      },
+      "source_read_complete": true,
+      "rust_behavior": "working typed behavior preserved; fresh whole-card verification required",
+      "candidate_definition_sha256": "ebe423594b2d5f0cfcee6526c2d7d1622315998959e76fe336ef045484496f29",
+      "candidate_provenance_sha256": "1b5cba5984e9741d984e1f544408825f54e87107242c171ab90edafc9be64203",
+      "focused_test_target": "tdm_cards_s_z",
+      "focused_filter": "harmonize_",
+      "verified_receipt": "<cache>/rustmage-tdm/cards-s-z-harmonize-first/native.json"
+    },
+    {
+      "name": "Wind-Scarred Crag",
+      "oracle_id": "b0af0c54-2a59-4075-8543-d41ff20c4c87",
+      "definitions": [
+        {
+          "index": 5075,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/wind_scarred_crag.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "2e536f6826c2b508f3d81621829d75f7dd9d5a18306a393cf97097d5c95bce9a"
+    },
+    {
+      "name": "Windcrag Siege",
+      "oracle_id": "64df560a-905f-45d1-bc70-14d99e3112d3",
+      "definitions": [
+        {
+          "index": 5076,
+          "category": "physical",
+          "path": "src/card_definitions/frc/windcrag_siege.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "f5d9bd477332957388feb672212d65e0fc8b594680bf654e679ecca69100aa82"
+    },
+    {
+      "name": "Wingblade Disciple",
+      "oracle_id": "c566317e-cd82-46c1-b506-f41256d815f6",
+      "definitions": [
+        {
+          "index": 5078,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/wingblade_disciple.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "7fa68321e9e7f14aad934dc9bbb7941814e6d0fc6cdeb9fc0efb3826c88ba4c5"
+    },
+    {
+      "name": "Wingspan Stride",
+      "oracle_id": "e75cee5d-ab02-4227-b36e-61c5d2f564a8",
+      "definitions": [
+        {
+          "index": 5080,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/wingspan_stride.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "53e4892ce8d32057efa638b83aa20307f3d02735a5239571b6c93b693c2474b3"
+    },
+    {
+      "name": "Winternight Stories",
+      "oracle_id": "d64687e4-ec37-4db2-9e60-4626c7a3b011",
+      "definitions": [
+        {
+          "index": 5088,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/winternight_stories.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "63f83f8afdf060db1604396f98532b2d817aafa8530943f7733ce35d0a7b4749",
+      "printed_obligations": [
+        "Draw three before discarding.",
+        "Either choose one creature card privately or decline and discard two cards (or all available).",
+        "Normal cost2U and sorcery timing.",
+        "Harmonize4U with exact creature tap/generic reduction/exile.",
+        "Discard choice remains private and supports independent raw/index/restore branches."
+      ],
+      "oracle_facts": {
+        "oracle_id": "d64687e4-ec37-4db2-9e60-4626c7a3b011",
+        "name": "Winternight Stories",
+        "layout": "normal",
+        "mana_cost": "{2}{U}",
+        "cmc": 3.0,
+        "type_line": "Sorcery",
+        "oracle_text": "Draw three cards. Then discard two cards unless you discard a creature card.\nHarmonize {4}{U} (You may cast this card from your graveyard for its harmonize cost. You may tap a creature you control to reduce that cost by {X}, where X is its power. Then exile this spell.)",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [
+          "Harmonize"
+        ],
+        "reference_printing": {
+          "id": "64d9367c-f50c-4568-aa63-6760c44ecaeb",
+          "set": "tdm",
+          "collector_number": "67",
+          "released_at": "2025-04-11"
+        }
+      },
+      "source_read_complete": true,
+      "rust_behavior": "working typed behavior preserved; fresh whole-card verification required",
+      "candidate_definition_sha256": "3c3c599969e48072cc66cf90442982cb753fc78d635288c68bbfd270f1013445",
+      "candidate_provenance_sha256": "a36a29aa0d958519549a125a54b84a85c6834a9fe6a7d2b44c3b572a493c0586",
+      "focused_test_target": "tdm_cards_s_z",
+      "focused_filter": "harmonize_",
+      "verified_receipt": "<cache>/rustmage-tdm/cards-s-z-harmonize-first/native.json"
+    },
+    {
+      "name": "Worthy Cost",
+      "oracle_id": "0f8ebf11-b5ec-4f21-8c49-90d569b5a4c5",
+      "definitions": [
+        {
+          "index": 5117,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/worthy_cost.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "82d7f0d3624278304111b19e236dcb46a74186f70bafa2148a253d6c65357aeb"
+    },
+    {
+      "name": "Yathan Roadwatcher",
+      "oracle_id": "0c3d86b6-5dcd-4016-9b4a-d4f66b1e963f",
+      "definitions": [
+        {
+          "index": 5134,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/yathan_roadwatcher.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "a135717cf16fc1570a9e33bf376636a231eb7a09119f2dcec03af7f3b98c27d1"
+    },
+    {
+      "name": "Yathan Tombguard",
+      "oracle_id": "2321b4fc-6b73-4d1a-84cc-13524adb0899",
+      "definitions": [
+        {
+          "index": 5135,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/yathan_tombguard.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "925cd7c6a9f929ebf8bd9e59d05fb33518bcffa86089f6eb66de8f79254d2756"
+    },
+    {
+      "name": "Zurgo's Vanguard",
+      "oracle_id": "d6fdfd94-cef5-482c-83ed-11c5ba40abe9",
+      "definitions": [
+        {
+          "index": 5180,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/zurgo_s_vanguard.rs"
+        }
+      ],
+      "baseline_complete_candidate": true,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "8bf37b9634fa8569f14aa2788934e15d15f589628d46751e44d940d6ac26a048"
+    },
+    {
+      "name": "Zurgo, Thunder's Decree",
+      "oracle_id": "393d0bf8-5f2e-4eaa-91a1-9132429a7371",
+      "definitions": [
+        {
+          "index": 5181,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/zurgo_thunder_s_decree.rs"
+        }
+      ],
+      "baseline_complete_candidate": false,
+      "status": "whole_card_authoring_pending",
+      "verified": false,
+      "oracle_facts_sha256": "c50c16138bb0572a1a932e5c9861f497a264e5a4b6aa78ced267b126fc8b3041"
+    }
+  ],
+  "remaining": "88 physical members remain for complete source reads/authorship/actual-definition verification; first4 locally verified, full set acceptance still pending.",
+  "families": [
+    {
+      "name": "Harmonize draw/bounce/combat spells",
+      "physical_cards": [
+        "Unending Whisper",
+        "Ureni's Rebuff",
+        "Wild Ride",
+        "Winternight Stories"
+      ],
+      "verified_new": 2,
+      "verified_existing_candidates": 2,
+      "receipt": {
+        "path": "<cache>/rustmage-tdm/cards-s-z-harmonize-first/native.json",
+        "sha256": "ff1d837c54ea7fc08eb9ede96ba87d8cca7da97aeae850fa0357ffdb0aeb1eef",
+        "tests": 8,
+        "terminal": true,
+        "success": true,
+        "compile_seconds": 5.22903549997136,
+        "execution_seconds": 0.03341406397521496,
+        "wall_seconds": 5.263269160990603,
+        "compile_log_sha256": "0312599ff40b8dd13281c9ee1ec74dd36d0b22862f73b062edc03f9791b60d00",
+        "execution_log_sha256": "fb1a4403e9a4c331e4ab1bbf77bbb11e9c8561fa12812bafdd3983cb259c92a6",
+        "core_fresh": true,
+        "binary": {
+          "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_cards_s_z-d6d4fa6140ef9364",
+          "sha256_at_run": "50cb909200ca9ac71c28f7d088899532473ce5912b0a834d49805ead30113be0",
+          "role": "transient native Rust test ELF; no FFI/cdylib consumer; later warm builds may replace this compilation output"
+        }
+      },
+      "throughput_note": "Four locally whole-verified cards. Native compilation/execution measured above; no implementation-time rate or simulation throughput extrapolated."
+    }
+  ],
+  "first_family_finished_utc": "2026-11-04T14:05:57.547813+00:00"
+}
