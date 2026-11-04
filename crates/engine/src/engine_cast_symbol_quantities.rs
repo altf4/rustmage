@@ -1,9 +1,9 @@
-//! Retain an existing cast event only for programs consuming printed spell symbols.
+//! Retain an existing cast event only for programs consuming its mana value or symbols.
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn amount(value: AmountValue) -> bool {
     match value {
-        AmountValue::CastSpellManaSymbols(_) => true,
+        AmountValue::CastSpellManaValue | AmountValue::CastSpellManaSymbols(_) => true,
         AmountValue::Multiple { value, .. } | AmountValue::Divided { value, .. } => amount(*value),
         AmountValue::Sum(values) => values.iter().any(|v| amount(*v)),
         _ => false,
