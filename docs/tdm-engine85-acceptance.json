@@ -12,7 +12,7 @@
   "schema_reason": "A private owned Work continuation was added, but Work, ReplacementState, EntryBatch, State and Snapshot do not serialize. Public action identities and entry/replacement view shapes are unchanged; existing shapes become reachable for fixed tokens. Both independent reviewers verified no wire change.",
   "engine_frozen": true,
   "validation": {
-    "report": "/home/altf4/.cache/rustmage-validation-g7kgj8zc/report/result.json",
+    "report": "<cache>/rustmage-validation-g7kgj8zc/report/result.json",
     "sha256": "69e1e2ccba271cef96f1a1be7f73842b96233dd28e30356354f3b527d751a0ea",
     "terminal": true,
     "success": true,
@@ -26,7 +26,7 @@
         "name": "source pins",
         "exit": 0,
         "seconds": 0.9167724620201625,
-        "log": "/home/altf4/.cache/rustmage-validation-g7kgj8zc/report/00.log",
+        "log": "<cache>/rustmage-validation-g7kgj8zc/report/00.log",
         "timed_out": false,
         "orphaned_processes": false
       },
@@ -34,7 +34,7 @@
         "name": "format",
         "exit": 0,
         "seconds": 4.327815155033022,
-        "log": "/home/altf4/.cache/rustmage-validation-g7kgj8zc/report/01.log",
+        "log": "<cache>/rustmage-validation-g7kgj8zc/report/01.log",
         "timed_out": false,
         "orphaned_processes": false
       },
@@ -42,7 +42,7 @@
         "name": "card format",
         "exit": 0,
         "seconds": 1.1183406700147316,
-        "log": "/home/altf4/.cache/rustmage-validation-g7kgj8zc/report/02.log",
+        "log": "<cache>/rustmage-validation-g7kgj8zc/report/02.log",
         "timed_out": false,
         "orphaned_processes": false
       },
@@ -50,7 +50,7 @@
         "name": "script contracts",
         "exit": 0,
         "seconds": 2.0704226900124922,
-        "log": "/home/altf4/.cache/rustmage-validation-g7kgj8zc/report/03.log",
+        "log": "<cache>/rustmage-validation-g7kgj8zc/report/03.log",
         "timed_out": false,
         "orphaned_processes": false
       },
@@ -58,7 +58,7 @@
         "name": "clippy",
         "exit": 0,
         "seconds": 39.72044131800067,
-        "log": "/home/altf4/.cache/rustmage-validation-g7kgj8zc/report/04.log",
+        "log": "<cache>/rustmage-validation-g7kgj8zc/report/04.log",
         "timed_out": false,
         "orphaned_processes": false
       },
@@ -66,7 +66,7 @@
         "name": "native assurance",
         "exit": 0,
         "seconds": 189.61728745902656,
-        "log": "/home/altf4/.cache/rustmage-validation-g7kgj8zc/report/05.log",
+        "log": "<cache>/rustmage-validation-g7kgj8zc/report/05.log",
         "timed_out": false,
         "orphaned_processes": false
       },
@@ -74,7 +74,7 @@
         "name": "release build",
         "exit": 0,
         "seconds": 188.76404429902323,
-        "log": "/home/altf4/.cache/rustmage-validation-g7kgj8zc/report/06.log",
+        "log": "<cache>/rustmage-validation-g7kgj8zc/report/06.log",
         "timed_out": false,
         "orphaned_processes": false
       },
@@ -82,7 +82,7 @@
         "name": "simulation sample",
         "exit": 0,
         "seconds": 0.26547013403614983,
-        "log": "/home/altf4/.cache/rustmage-validation-g7kgj8zc/report/07.log",
+        "log": "<cache>/rustmage-validation-g7kgj8zc/report/07.log",
         "timed_out": false,
         "orphaned_processes": false
       },
@@ -90,14 +90,14 @@
         "name": "Python assurance",
         "exit": 0,
         "seconds": 0.21517905499786139,
-        "log": "/home/altf4/.cache/rustmage-validation-g7kgj8zc/report/08.log",
+        "log": "<cache>/rustmage-validation-g7kgj8zc/report/08.log",
         "timed_out": false,
         "orphaned_processes": false
       }
     ]
   },
   "native_assurance": {
-    "report": "/home/altf4/.cache/rustmage-validation-g7kgj8zc/report/native.json",
+    "report": "<cache>/rustmage-validation-g7kgj8zc/report/native.json",
     "sha256": "f338f586b09217309660080f285d8ad71ed22d78714b57cfdf98be15289d9695",
     "tests": 4482,
     "targets": 107,
@@ -110,7 +110,7 @@
   "binding_assurance": {
     "suite": "contract",
     "requested_suite": "smoke",
-    "library": "/home/altf4/.cache/rustmage-validation-g7kgj8zc/report/libraries/librustmage.so",
+    "library": "<cache>/rustmage-validation-g7kgj8zc/report/libraries/librustmage.so",
     "terminal": true,
     "tests": 10,
     "success": true,
@@ -123,16 +123,16 @@
     "timeout_seconds": 15.0
   },
   "resource_guard": {
-    "report": "/home/altf4/.cache/rustmage-build-reports/b3ecc98cffac42839fc6b92fb8a6dd7f.json",
+    "report": "<cache>/rustmage-build-reports/b3ecc98cffac42839fc6b92fb8a6dd7f.json",
     "sha256": "e34c13cca2691eda66d89fe1664087ffc8da10d5b891d9e4243e8d4fc25b824d",
     "command": [
       "/usr/bin/python3",
-      "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/scripts/validate.py",
+      "<worktree>/tdm-complete-set/rustmage/scripts/validate.py",
       "--release",
       "--python",
       "smoke",
       "--target-dir",
-      "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target"
+      "<cache>/rustmage-authoring/tdm-complete-set/target"
     ],
     "terminal": true,
     "exit_code": 0,
@@ -145,25 +145,25 @@
   },
   "required_immutable_shared_libraries": [
     {
-      "path": "/home/altf4/.cache/rustmage-validation-g7kgj8zc/report/libraries/librustmage.so",
+      "path": "<cache>/rustmage-validation-g7kgj8zc/report/libraries/librustmage.so",
       "sha256": "59f620a0efe73896dd20113594988f9b40736294c6dfff117e590c424064dc36",
       "requires_preservation_at_exact_path_and_hash": true,
       "readonly": true
     },
     {
-      "path": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/libraries/librustmage.so",
+      "path": "<cache>/rustmage-validation-l0pzz2p2/report/libraries/librustmage.so",
       "sha256": "c61c4e2a62e8ed9a58eec81aee83e61c622b88efcdbbf45ffef3a7dcaa315bf1",
       "requires_preservation_at_exact_path_and_hash": true,
       "readonly": true
     },
     {
-      "path": "/home/altf4/.cache/rustmage-validation-o8jjr7os/report/libraries/librustmage.so",
+      "path": "<cache>/rustmage-validation-o8jjr7os/report/libraries/librustmage.so",
       "sha256": "4aebb4867b67d084c98f12113c9eefb19e17a3c02a272e44e7f341cc15df2248",
       "requires_preservation_at_exact_path_and_hash": true,
       "readonly": true
     },
     {
-      "path": "/home/altf4/.cache/rustmage-validation-c3slnby9/report/libraries/librustmage.so",
+      "path": "<cache>/rustmage-validation-c3slnby9/report/libraries/librustmage.so",
       "sha256": "4ee65b6abae8b89d79dfa2a87bd796882c05b3c87fb94833c9e4699ef44c5082",
       "requires_preservation_at_exact_path_and_hash": true,
       "readonly": true
@@ -229,7 +229,7 @@
       ]
     }
   ],
-  "author_compatibility_and_warm_receipts": "/home/altf4/.cache/rustmage-tdm/engine85-author-baselines-1793819914373027092",
+  "author_compatibility_and_warm_receipts": "<cache>/rustmage-tdm/engine85-author-baselines-1793819914373027092",
   "author_cache_status": "Allthree core-only guarded correct-profile warms passed; A-G reused exact core. All card authors released with root build leases and frozen shared engine.",
   "card_status": {
     "verified": 187,

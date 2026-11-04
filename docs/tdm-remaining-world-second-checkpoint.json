@@ -59,7 +59,7 @@
     }
   ],
   "source_freeze": {
-    "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-core-clippy-fixed/source-hashes.json",
+    "path": "<cache>/rustmage-tdm/remaining-world-core-clippy-fixed/source-hashes.json",
     "sha256": "1a69e8ef06362e3cdc75165d19d6bad6126af63b543833ed3af9d6e6bf61cf33",
     "inputs": 6530,
     "all_rehashed_after_terminal": true
@@ -68,7 +68,7 @@
     "full_oracle_java_helper_audit": "docs/tdm-remaining-world-audit.json",
     "source_pin": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
     "rules": {
-      "path": "/home/altf4/.cache/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
+      "path": "<cache>/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
       "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca"
     },
     "release_notes": "https://magic.wizards.com/en/news/feature/tarkir-dragonstorm-release-notes",
@@ -87,67 +87,67 @@
     "Mass-copy layer provider and hand-size clocks now share one creation timestamp while acquisition origins remain independent. Ordinary single-copy consumers retain their prior chronology."
   ],
   "expected_chronology_negative": {
-    "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-mass-copy-chronology-negative/native.json",
+    "path": "<cache>/rustmage-tdm/remaining-world-mass-copy-chronology-negative/native.json",
     "sha256": "13af961060800b48a9a447aee688b6a821cb7a4159e476346638f83b616b7cf0",
     "passed": 0,
     "failed": 1,
     "diagnostic": "published534 provider timestamps1 versus2 instead of one shared effect time",
     "consumed_target": {
-      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-mass-copy-chronology-negative/consumed-target.rs",
+      "path": "<cache>/rustmage-tdm/remaining-world-mass-copy-chronology-negative/consumed-target.rs",
       "sha256": "15cbedadb3199e151b536deb0ec39f5d4da6e4ec7fb06ce12b697b1a317cd4ec"
     },
     "candidate_stash": {
-      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-candidate43/stash.json",
+      "path": "<cache>/rustmage-tdm/remaining-world-second-candidate43/stash.json",
       "sha256": "5a13dd70d73f0c5334614aa318106c246003ee1736f6d58ff9637e17194d8926"
     },
     "stash_sha": "acdd128fd4ee393d15d2fcc36e3029634600f548",
     "exact_restoration": {
-      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-first43/restoration.json",
+      "path": "<cache>/rustmage-tdm/remaining-world-second-first43/restoration.json",
       "sha256": "1f73e9a0ba1549fb089219b67f9c1b2efbff1ebb42a2426a08f8ab10dd6f721e"
     }
   },
   "preserved_iteration_evidence": [
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-first43/native.json",
+      "path": "<cache>/rustmage-tdm/remaining-world-second-first43/native.json",
       "sha256": "d132eb7315b19ea6a6cbd5393daa51fca7b44280065d30ae9c357416783b06b2"
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-fixed43/native.json",
+      "path": "<cache>/rustmage-tdm/remaining-world-second-fixed43/native.json",
       "sha256": "ebdba29e665ca72ae5936a39c2d860a9586d5ddd3885e1678c367f6662d1347e"
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-fixture43/native.json",
+      "path": "<cache>/rustmage-tdm/remaining-world-second-fixture43/native.json",
       "sha256": "93cf2fc06434c456cca349986e76ccad5baa2453b94deede7f0b0cee011580c9"
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-privacy-probe/native.json",
+      "path": "<cache>/rustmage-tdm/remaining-world-privacy-probe/native.json",
       "sha256": "b74407a446ebd0d6311c88efcd0cb18e192539b322863e98c1d83e2c9ed9c8b2"
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final43/native.json",
+      "path": "<cache>/rustmage-tdm/remaining-world-second-final43/native.json",
       "sha256": "cc3d7668213c2b3a95419a6a8343fead011f2188f13be7fad91a5a340ab4518a"
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-core-clippy/report.json",
+      "path": "<cache>/rustmage-tdm/remaining-world-core-clippy/report.json",
       "sha256": "f5ea9f33522c240cba21f4cd8a2e5f691f71f42fed45cec18ed00382ea7a9054"
     }
   ],
   "clippy": {
-    "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-core-clippy-fixed/report.json",
+    "path": "<cache>/rustmage-tdm/remaining-world-core-clippy-fixed/report.json",
     "sha256": "84ad06449776dd5e1767dd3d1ca55576be2c7c0b5375a059e9189baf869a719d",
     "source_freeze": {
-      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-core-clippy-fixed/source-hashes.json",
+      "path": "<cache>/rustmage-tdm/remaining-world-core-clippy-fixed/source-hashes.json",
       "sha256": "1a69e8ef06362e3cdc75165d19d6bad6126af63b543833ed3af9d6e6bf61cf33"
     },
     "resource": {
-      "path": "/home/altf4/.cache/rustmage-build-reports/647ee4f4176a4143beaf09b12ff9c3a7.json",
+      "path": "<cache>/rustmage-build-reports/647ee4f4176a4143beaf09b12ff9c3a7.json",
       "sha256": "ad7ef22cd0ca0254b51c46eab879f610b66b72fd2a78f7f7735785668fa57935"
     },
     "status": "PASS bounded core lib test-support -Dwarnings; two new style diagnostics and one inherited authored protection let-return repaired"
   },
   "final_runs": [
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/0/native.json",
+      "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/0/native.json",
       "sha256": "2cf0b13691201befa6fa8dd0e6fe48b62e4669bbc7fb43bd6ea82c65cb5a0370",
       "cases": 43,
       "compile_seconds": 116.05845455400413,
@@ -155,17 +155,17 @@
       "success": true,
       "terminal": true,
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/dfd79845e10544be815421121b8934a5.json",
+        "path": "<cache>/rustmage-build-reports/dfd79845e10544be815421121b8934a5.json",
         "sha256": "b022fd4b5ce2bf766557be48b2e46cf19e13183c4d5f2b3f6d912b26846c12a6",
         "command": [
           "/usr/bin/python3",
-          "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
           "--test-target",
           "tdm_remaining_world_rules",
           "--target-dir",
-          "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
           "--report",
-          "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/0/native.json"
+          "<cache>/rustmage-tdm/remaining-world-second-final-compat/0/native.json"
         ],
         "terminal": true,
         "exit_code": 0,
@@ -178,21 +178,21 @@
       },
       "consumed_logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/0/native-compile.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/0/native-compile.log",
           "sha256": "84ccaec291e862aa16c9da1794ae2e91c4a4336930ed3f02b019b25412f4e775"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/0/native-list-0.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/0/native-list-0.log",
           "sha256": "7cb0cc663d8da1b1713cc2cd97debb525b09777bfdcd2c891c791ad3305a732c"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/0/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/0/native-execution-0.log",
           "sha256": "4d0c58c39dd1565c9f94b88c59c856b56ed04735fff16f4c3cde5c7def281cd3"
         }
       ]
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/1/native.json",
+      "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/1/native.json",
       "sha256": "bdc43932088b7688ee184492e77f500107325199dcdbefa6a6e4e65766920809",
       "cases": 16,
       "compile_seconds": 0.8168576499738265,
@@ -200,17 +200,17 @@
       "success": true,
       "terminal": true,
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/0b5d1242d8f54be09f2866bdff354498.json",
+        "path": "<cache>/rustmage-build-reports/0b5d1242d8f54be09f2866bdff354498.json",
         "sha256": "103da49ab9006c0f3ec7e5b66cdefadfa0818a9d05f531a55ef5e1f045d00c27",
         "command": [
           "/usr/bin/python3",
-          "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
           "--test-target",
           "tdm_protection_decayed",
           "--target-dir",
-          "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
           "--report",
-          "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/1/native.json"
+          "<cache>/rustmage-tdm/remaining-world-second-final-compat/1/native.json"
         ],
         "terminal": true,
         "exit_code": 0,
@@ -223,21 +223,21 @@
       },
       "consumed_logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/1/native-compile.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/1/native-compile.log",
           "sha256": "10087e4a2e7dbe6ad99b3b3ec27a0a8a8f3bfe9f0d08df8753312252594bf9e6"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/1/native-list-0.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/1/native-list-0.log",
           "sha256": "2d0e3c70a7aa2563b2e453ccf4258e808f1a16e7daf504b09501ae71bd8b6ca7"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/1/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/1/native-execution-0.log",
           "sha256": "f80651b315a67505dad53bb51806eeae02dfdd94be019342078a6adbae4e3ece"
         }
       ]
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/2/native.json",
+      "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/2/native.json",
       "sha256": "195b01be90fc6c1a2a91aa152d23e8efddc5f1d3eda5945e97e97cd53a3e8c09",
       "cases": 7,
       "compile_seconds": 1.4683835499745328,
@@ -245,17 +245,17 @@
       "success": true,
       "terminal": true,
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/5107f542b6cd44b399e5144d3459aa72.json",
+        "path": "<cache>/rustmage-build-reports/5107f542b6cd44b399e5144d3459aa72.json",
         "sha256": "dd39214adbd02f490ba8b7a2c208a3d977559abc50664852e3936a40a2bbcc09",
         "command": [
           "/usr/bin/python3",
-          "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
           "--test-target",
           "tdm_counter_world",
           "--target-dir",
-          "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
           "--report",
-          "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/2/native.json"
+          "<cache>/rustmage-tdm/remaining-world-second-final-compat/2/native.json"
         ],
         "terminal": true,
         "exit_code": 0,
@@ -268,21 +268,21 @@
       },
       "consumed_logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/2/native-compile.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/2/native-compile.log",
           "sha256": "19a23dd41afc47bf00fb1149de04d016326bcf90b922ad3eda0a3add4a9acb9d"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/2/native-list-0.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/2/native-list-0.log",
           "sha256": "84e63a70d43f2564a500df4a7952b14fef5c9d97949bdfb18440b19e7b3fae1b"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/2/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/2/native-execution-0.log",
           "sha256": "dc821a0d5d565691588402aa210d0208388900ed49484f62a7f46fcc2d420425"
         }
       ]
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/3/native.json",
+      "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/3/native.json",
       "sha256": "38d18a9e5d8a15de73e60d9848a3893e93defb9953da9c0f86da1600f29baa4e",
       "cases": 18,
       "compile_seconds": 1.619175494008232,
@@ -290,17 +290,17 @@
       "success": true,
       "terminal": true,
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/2ba432b185c147019688b198ebdc6d8e.json",
+        "path": "<cache>/rustmage-build-reports/2ba432b185c147019688b198ebdc6d8e.json",
         "sha256": "a706826f25039484484bdf21f400c7b5577e4ef92f0cf8c6a3681a8cb9b5ee19",
         "command": [
           "/usr/bin/python3",
-          "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
           "--test-target",
           "tdm_copy_suspend",
           "--target-dir",
-          "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
           "--report",
-          "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/3/native.json"
+          "<cache>/rustmage-tdm/remaining-world-second-final-compat/3/native.json"
         ],
         "terminal": true,
         "exit_code": 0,
@@ -313,21 +313,21 @@
       },
       "consumed_logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/3/native-compile.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/3/native-compile.log",
           "sha256": "98334a0689d9ab0ffb124a491507ac15a5dbc0dd3f7fc116152f2ba040651518"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/3/native-list-0.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/3/native-list-0.log",
           "sha256": "37153354b7287a4b250263e59a698661e6fd68072a9e3f48651b8d3da49407b1"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/3/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/3/native-execution-0.log",
           "sha256": "a45f69b7fcd41f4411b9e1374f25448f28fc81eefb044a5aa2cc32270588cb4c"
         }
       ]
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/4/native.json",
+      "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/4/native.json",
       "sha256": "449bb1e341d34521433d8bed8b181a2fb57ec46cd69ad56061e3063d517c80af",
       "cases": 16,
       "compile_seconds": 0.8169654350203928,
@@ -335,17 +335,17 @@
       "success": true,
       "terminal": true,
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/f31db9df47094064bd6660aac478a643.json",
+        "path": "<cache>/rustmage-build-reports/f31db9df47094064bd6660aac478a643.json",
         "sha256": "3bb680820a96c0fce2eb6d9b01f2137234287b7f61e31790a45b6d512aa84ce4",
         "command": [
           "/usr/bin/python3",
-          "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
           "--test-target",
           "dft_entry_copies",
           "--target-dir",
-          "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
           "--report",
-          "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/4/native.json"
+          "<cache>/rustmage-tdm/remaining-world-second-final-compat/4/native.json"
         ],
         "terminal": true,
         "exit_code": 0,
@@ -358,21 +358,21 @@
       },
       "consumed_logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/4/native-compile.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/4/native-compile.log",
           "sha256": "927d3de48a07232345e46ea0d06fbe91104a843d6a77dff77c904e5d77aa8e9f"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/4/native-list-0.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/4/native-list-0.log",
           "sha256": "192a026a1fb28f1cae5b2211dd11f04dca3c1bfbdc8e1589f4b7039663807ef1"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/4/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/4/native-execution-0.log",
           "sha256": "dd14f229b019e5b9cf003678103dd32f51611d8dd801a57fe3c58ae3a4c675b5"
         }
       ]
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/5/native.json",
+      "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/5/native.json",
       "sha256": "0f97a76eba6c5a65d6bf8debbec05d4213686c84ff631599c54e86cb4c386cd4",
       "cases": 7,
       "compile_seconds": 0.7165188600192778,
@@ -380,17 +380,17 @@
       "success": true,
       "terminal": true,
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/92efbd18a12e48d9acf9442eba0f7df5.json",
+        "path": "<cache>/rustmage-build-reports/92efbd18a12e48d9acf9442eba0f7df5.json",
         "sha256": "78c64e689651d2bc8fb292fef6f744e83ace076b8cf6b9d45da704da7d85f3f8",
         "command": [
           "/usr/bin/python3",
-          "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
           "--test-target",
           "dft_retained_copy",
           "--target-dir",
-          "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
           "--report",
-          "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/5/native.json"
+          "<cache>/rustmage-tdm/remaining-world-second-final-compat/5/native.json"
         ],
         "terminal": true,
         "exit_code": 0,
@@ -403,21 +403,21 @@
       },
       "consumed_logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/5/native-compile.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/5/native-compile.log",
           "sha256": "b9db5e0bf5ea3324b68e62f7b9ab78a059b8fe452ad417c0c5a959c601702572"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/5/native-list-0.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/5/native-list-0.log",
           "sha256": "4ad795b88703b62758b5d46e626a8fe9d230285997be332c8064a97d583482ca"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/5/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/5/native-execution-0.log",
           "sha256": "b3164bca5f32c9d848bc8c4adf328c95a4be05e1d945568aceeef1353eb48de5"
         }
       ]
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/6/native.json",
+      "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/6/native.json",
       "sha256": "9a0bcb0a411396479ae7b1c6d7caf9dceab594ccd5999a7b185e84e19aeb7b84",
       "cases": 6,
       "compile_seconds": 0.7169529449893162,
@@ -425,17 +425,17 @@
       "success": true,
       "terminal": true,
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/da7a2e764b22487d92f4450a8326b5f3.json",
+        "path": "<cache>/rustmage-build-reports/da7a2e764b22487d92f4450a8326b5f3.json",
         "sha256": "d92e07ef140ee95fa12a2b59931edd0e0a4deece8e0ae288f90222a160c34863",
         "command": [
           "/usr/bin/python3",
-          "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
           "--test-target",
           "dft_private_hand",
           "--target-dir",
-          "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
           "--report",
-          "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/6/native.json"
+          "<cache>/rustmage-tdm/remaining-world-second-final-compat/6/native.json"
         ],
         "terminal": true,
         "exit_code": 0,
@@ -448,21 +448,21 @@
       },
       "consumed_logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/6/native-compile.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/6/native-compile.log",
           "sha256": "00621a7c219e2a10980b743745f9b30ffa35ccc7af9e0e2037a7828e46885d33"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/6/native-list-0.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/6/native-list-0.log",
           "sha256": "f599321d01f0fd91fa914b724c6c9452e3b3a69cd84aadc729c81df6ea302499"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/6/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/6/native-execution-0.log",
           "sha256": "596051a8dfeaae85de26786ed9c04dd8f397ea024052937a12302c210bb69da3"
         }
       ]
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/7/native.json",
+      "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/7/native.json",
       "sha256": "51bc9297234681cdca1ed6a9623a1b7377af800c8bd928daedd2fd51cecde533",
       "cases": 11,
       "compile_seconds": 1.5183659119938966,
@@ -470,17 +470,17 @@
       "success": true,
       "terminal": true,
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/a54d3595aef44cc6a7787804eef45f96.json",
+        "path": "<cache>/rustmage-build-reports/a54d3595aef44cc6a7787804eef45f96.json",
         "sha256": "227cbeb4249099d2d6929d7d05c10ff2e244e2302ef328c5ed39697687952d05",
         "command": [
           "/usr/bin/python3",
-          "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
           "--test-target",
           "dft_variable_costs_engine",
           "--target-dir",
-          "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
           "--report",
-          "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/7/native.json"
+          "<cache>/rustmage-tdm/remaining-world-second-final-compat/7/native.json"
         ],
         "terminal": true,
         "exit_code": 0,
@@ -493,21 +493,21 @@
       },
       "consumed_logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/7/native-compile.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/7/native-compile.log",
           "sha256": "da5e6d210eb140c7ef39942800b788acb8a38ad086d0fbd0b8bdd5702137ac38"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/7/native-list-0.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/7/native-list-0.log",
           "sha256": "a432b160f0daf2b6792d74981828d4de7e3e4883df0c5afe5cba435984adad1e"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/7/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/7/native-execution-0.log",
           "sha256": "4a22cf9cec00e8388370e6964a8c421d11a5f5c677005a8d44cecf2e682d215a"
         }
       ]
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/8/native.json",
+      "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/8/native.json",
       "sha256": "c82e4dab69b7bf30c2e8aa6850daff9c10ef60936b62c64e3021fec7323b5617",
       "cases": 11,
       "compile_seconds": 0.8665801280003507,
@@ -515,17 +515,17 @@
       "success": true,
       "terminal": true,
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/eaf173414bb944978a978ae68690ff4d.json",
+        "path": "<cache>/rustmage-build-reports/eaf173414bb944978a978ae68690ff4d.json",
         "sha256": "e604d9878138ca486c5ada95f29e0144186583275c920183a1399165ff24c816",
         "command": [
           "/usr/bin/python3",
-          "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
           "--test-target",
           "dft_mana_payment_continuations_engine",
           "--target-dir",
-          "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
           "--report",
-          "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/8/native.json"
+          "<cache>/rustmage-tdm/remaining-world-second-final-compat/8/native.json"
         ],
         "terminal": true,
         "exit_code": 0,
@@ -538,21 +538,21 @@
       },
       "consumed_logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/8/native-compile.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/8/native-compile.log",
           "sha256": "2554de00e692d74aef6aadf5e213e31225e3cf80b0d1e37f6bc55f9d93c99058"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/8/native-list-0.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/8/native-list-0.log",
           "sha256": "fcf9533c4ba561939342919615534edff25fc8126620fa5be8a2408d727cdf2f"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/8/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/8/native-execution-0.log",
           "sha256": "7773836204e19fb7ace72454eacb288caa9ff0ce4951dbfd8b38c3b43508daad"
         }
       ]
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/9/native.json",
+      "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/9/native.json",
       "sha256": "e4dbba1382890e38283b43cba6edb518838e98105000de4670b6eb1565166f95",
       "cases": 2,
       "compile_seconds": 0.7668337229988538,
@@ -560,17 +560,17 @@
       "success": true,
       "terminal": true,
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/c6d3534580064210b33ff252ca2eb076.json",
+        "path": "<cache>/rustmage-build-reports/c6d3534580064210b33ff252ca2eb076.json",
         "sha256": "a3e55cddd71a69828db25e86ab09557b2e3741fa5b303d0af1052b7484b0352c",
         "command": [
           "/usr/bin/python3",
-          "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
           "--test-target",
           "dft_mana_rollback",
           "--target-dir",
-          "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
           "--report",
-          "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/9/native.json"
+          "<cache>/rustmage-tdm/remaining-world-second-final-compat/9/native.json"
         ],
         "terminal": true,
         "exit_code": 0,
@@ -583,21 +583,21 @@
       },
       "consumed_logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/9/native-compile.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/9/native-compile.log",
           "sha256": "47e23c520daff4875dc63fa1be8fa9f993f496258a88d54bbe542427fa4d04e0"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/9/native-list-0.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/9/native-list-0.log",
           "sha256": "6e54abaf1882e936a5c333158daeb4a40a78b6f71d6a090af02eabc274aaf045"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/9/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/9/native-execution-0.log",
           "sha256": "14e17999a695c5f1cf3e795c88ef50b111958988b865f7867d4bacf9c7d271c4"
         }
       ]
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/10/native.json",
+      "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/10/native.json",
       "sha256": "ebca72269ea70d3f1ebc4ab32126d93944aee8cdb1b75f710f6b069020fbfffc",
       "cases": 7,
       "compile_seconds": 0.8170558410056401,
@@ -605,17 +605,17 @@
       "success": true,
       "terminal": true,
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/118d82d96073448a873fcfbd4acba181.json",
+        "path": "<cache>/rustmage-build-reports/118d82d96073448a873fcfbd4acba181.json",
         "sha256": "47ddd151266a5ef1634df4dfeb6388131e3b0c52474dd72489b9946f4342a767",
         "command": [
           "/usr/bin/python3",
-          "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
           "--test-target",
           "dft_combat_schedule",
           "--target-dir",
-          "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
           "--report",
-          "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/10/native.json"
+          "<cache>/rustmage-tdm/remaining-world-second-final-compat/10/native.json"
         ],
         "terminal": true,
         "exit_code": 0,
@@ -628,21 +628,21 @@
       },
       "consumed_logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/10/native-compile.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/10/native-compile.log",
           "sha256": "235f711bcc437e69a495e56cd3c58905a995d6e724a68794b06828d5bd5b63e8"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/10/native-list-0.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/10/native-list-0.log",
           "sha256": "31fdb3fe0c5fa02fbc2d52111df697fd1c69e5c2ae0a2dd406291fb72af3eca8"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/10/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/10/native-execution-0.log",
           "sha256": "179e29eecb227c27b7890dc3820cc6c1712695000c633edb94c500d81a596be5"
         }
       ]
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/11/native.json",
+      "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/11/native.json",
       "sha256": "75e2e8b944c921a2c4efc39db21cee411cd073f294a33a90ecf40c86f80306dd",
       "cases": 5,
       "compile_seconds": 0.7665579250024166,
@@ -650,17 +650,17 @@
       "success": true,
       "terminal": true,
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/8e7254ddc406418e86b117f96038f550.json",
+        "path": "<cache>/rustmage-build-reports/8e7254ddc406418e86b117f96038f550.json",
         "sha256": "3b979307e1e7f157b43438e8f562cc9fa1dd12185743640cb579dd7f3e038933",
         "command": [
           "/usr/bin/python3",
-          "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
           "--test-target",
           "mandatory_loops",
           "--target-dir",
-          "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
           "--report",
-          "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/11/native.json"
+          "<cache>/rustmage-tdm/remaining-world-second-final-compat/11/native.json"
         ],
         "terminal": true,
         "exit_code": 0,
@@ -673,15 +673,15 @@
       },
       "consumed_logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/11/native-compile.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/11/native-compile.log",
           "sha256": "af510efea5d9ccb369ec460395d37a9f90af05b8d06ddaaaf10d748316623fef"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/11/native-list-0.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/11/native-list-0.log",
           "sha256": "9084519a23e743e4ccbfc0ae69bfa151c37152f1d2a05b768025c56966ba84f5"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/11/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/11/native-execution-0.log",
           "sha256": "b9108d4cb9628f0e13251408341957fb73879e0ee099c90c88b97ee272131cf6"
         }
       ]
@@ -697,7 +697,7 @@
     "lease_released_to_root_after_terminal": true
   },
   "measured_layout": {
-    "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-second-final-compat/0/layout.json",
+    "path": "<cache>/rustmage-tdm/remaining-world-second-final-compat/0/layout.json",
     "sha256": "8dcb11e249df29bc93254b5c5a5c5cca89afb3dcc0a7c1b20d33bbb5861fa88f",
     "DamagePreventionKind": 16,
     "DamagePreventionView": 40,
@@ -720,24 +720,24 @@
   "artifacts": {
     "required_compiler_proc_macros": [
       {
-        "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/librustmage_test_access-636adfcd609bee93.so",
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/librustmage_test_access-636adfcd609bee93.so",
         "sha256": "c009fbc5de616b8bd2e9b74040b5e3a93b47809c2a8f4c5e2a78d1a564398f6a"
       },
       {
-        "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/librustmage_test_access-a907bb7198a43500.so",
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/librustmage_test_access-a907bb7198a43500.so",
         "sha256": "6d187889f50cb423e82a1fc00c7febdd7d34dc1f609fdc0fb974d93688700ce3"
       },
       {
-        "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/libserde_derive-4a3ec5018aa504ef.so",
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/libserde_derive-4a3ec5018aa504ef.so",
         "sha256": "16e56c72844cb52549aca635bf643fd0903d223d703291e366575e6900e074a7"
       },
       {
-        "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/libserde_derive-504dbeab00abc8e2.so",
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/libserde_derive-504dbeab00abc8e2.so",
         "sha256": "8595c324175b5455316322066d9e63d986a54afd7bd9cd2f15389afebd130f24"
       }
     ],
     "cargo_cdylib_transient": {
-      "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/librustmage.so",
+      "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/librustmage.so",
       "sha256": "6b8f76c3356522429e99b1213904a541a40a2d5da560c8ebd66b6aa855881ca2"
     },
     "native_linkage": "Retained commands run native ELF test binaries linked from the rlib. Cargo-produced cdylib is not a required runtime artifact and may be rebuilt; its hash here records this checkpoint output only."

@@ -6,7 +6,7 @@
   "metadata_integration_revision": "54b96e703",
   "supplemental_oracle_id": "46b1a169-bc32-47bf-b379-fa0c3d13878f",
   "facts_sha256": "a59be8cc02d5088dc5bc570e63c390b32308738da9399c1840cc9f40c40125a1",
-  "raw_oracle_response": "/home/altf4/.cache/rustmage-tdm/cori-metadata-integrated-1793681559539545159/tdm-cori-steel-cutter-oracle.json",
+  "raw_oracle_response": "<cache>/rustmage-tdm/cori-metadata-integrated-1793681559539545159/tdm-cori-steel-cutter-oracle.json",
   "raw_oracle_response_sha256": "0279de56f3aadb94accb87469b1718f3258dd924185b31257d324d3214166d33",
   "catalogue_identity": 849,
   "all_prior_ids_modules_names_categories_and_aliases_preserved": true,
@@ -40,7 +40,7 @@
   },
   "engine_source_byte_unchanged": true,
   "generators_used": [
-    "python3 scripts/set_status.py TDM --freeze --xmage /home/altf4/Code/mage",
+    "python3 scripts/set_status.py TDM --freeze --xmage <xmage>",
     "python3 scripts/link_catalogue.py"
   ],
   "generator_check": "PASS",
@@ -53,7 +53,7 @@
     "command": "python3 scripts/resource_guard.py -- python3 scripts/test_assurance_runner.py",
     "cases": 43,
     "success": true,
-    "report": "/home/altf4/.cache/rustmage-tdm/root-cori-metadata-contracts-1793681367840187420/terminal.json",
+    "report": "<cache>/rustmage-tdm/root-cori-metadata-contracts-1793681367840187420/terminal.json",
     "sha256": "4fa34c24e731facf338399df00cab14978cd7df3230a74c1f15f17a85e153f1f",
     "seconds": 2.0704470189812128,
     "source_unchanged": true

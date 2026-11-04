@@ -86,7 +86,7 @@
     }
   ],
   "frozen_source_manifest": {
-    "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-final20/source-hashes.json",
+    "path": "<cache>/rustmage-tdm/sacrifice-random-final20/source-hashes.json",
     "sha256": "d84840b8a89ab5b9e9398eceb36e9e7610fbc3a4d5643f2417a13a4b2479766c"
   },
   "source_authority": {
@@ -159,99 +159,99 @@
     "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
     "complete_java_and_helper_bodies_read": [
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/s/SidisiRegentOfTheMire.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/s/SidisiRegentOfTheMire.java",
         "sha256": "203e11bde9192062a677c8d7da9c31f5a404d01e3a9b2b5777ff96c1bbceff5a",
         "read_scope": "complete file"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/t/TersaLightshatter.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/t/TersaLightshatter.java",
         "sha256": "c43203eade0c82367e5cf269574a54f15fef1de0d58c5a1dc232af085167e941",
         "read_scope": "complete file"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/costs/VariableCostImpl.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/costs/VariableCostImpl.java",
         "sha256": "f8fe24d521c3af806859208892acaa863735ce99eda1d5ceaa3c489e5cfb882c",
         "read_scope": "complete file"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/target/targetadjustment/ManaValueTargetAdjuster.java",
+        "path": "<xmage>/Mage/src/main/java/mage/target/targetadjustment/ManaValueTargetAdjuster.java",
         "sha256": "c9315bc9a46db9cfa1ae5eef49d75f50a03875683b6de3722e36314a2529bb71",
         "read_scope": "complete file"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/target/targetadjustment/GenericTargetAdjuster.java",
+        "path": "<xmage>/Mage/src/main/java/mage/target/targetadjustment/GenericTargetAdjuster.java",
         "sha256": "4ffb736a7a82f8b0abadb547d292f93b8ca04632f7f9eb2812465ca1f10a83a8",
         "read_scope": "complete file"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
         "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04",
         "read_scope": "complete file"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
         "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b",
         "read_scope": "complete file"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/target/common/TargetSacrifice.java",
+        "path": "<xmage>/Mage/src/main/java/mage/target/common/TargetSacrifice.java",
         "sha256": "24e8ec2dda0609630c60e91b1b890feebc7c8dbb0eb6002565897a07ca9113d7",
         "read_scope": "complete file"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/dynamicvalue/AdditiveDynamicValue.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/dynamicvalue/AdditiveDynamicValue.java",
         "sha256": "156c42a7450af54725bc02366bbcba4763fdbf5c7b769ddded8d615bcaa94718",
         "read_scope": "complete file"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
         "sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0",
         "read_scope": "complete file"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
         "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc",
         "read_scope": "complete file"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
         "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287",
         "read_scope": "complete file"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/condition/common/ThresholdCondition.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/condition/common/ThresholdCondition.java",
         "sha256": "f7d6ad71cd5857b9d0c127469d9b39afd84148a38001a42a309c5c218694382a",
         "read_scope": "complete file"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/discard/DiscardAndDrawThatManyEffect.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/effects/common/discard/DiscardAndDrawThatManyEffect.java",
         "sha256": "f188e2031a5963432940d75ad39ec5b881cdd84feed7c7e136bc404996e1f01d",
         "read_scope": "complete file"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/asthought/CanPlayCardControllerEffect.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/effects/common/asthought/CanPlayCardControllerEffect.java",
         "sha256": "f038661e1695132acc06c2886f17d98832360a6d92fbd59d3956fe87d4e78387",
         "read_scope": "complete file"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/util/RandomUtil.java",
+        "path": "<xmage>/Mage/src/main/java/mage/util/RandomUtil.java",
         "sha256": "fd2ea5de81baff396ddc547c6fceb3f88daa96f09c2d4499d2fbf96f428263ed",
         "read_scope": "complete file"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/util/CardUtil.java",
+        "path": "<xmage>/Mage/src/main/java/mage/util/CardUtil.java",
         "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06",
         "read_scope": "complete makeCardPlayable overloads1435-1463"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/cards/CardsImpl.java",
+        "path": "<xmage>/Mage/src/main/java/mage/cards/CardsImpl.java",
         "sha256": "e3a32dd4f367a6429bd83cb8c1a1890e314b5dfbbedf8d61f4251797646dc1e0",
         "read_scope": "complete getRandom method80-93"
       }
     ],
     "rules": {
       "file": {
-        "path": "/home/altf4/.cache/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
+        "path": "<cache>/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
         "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
         "read_scope": "107.3a,g;118;601.2b,c,f-h;602.2;603.4;701.18;701.21;733"
       },
@@ -374,7 +374,7 @@
   "final_runs": [
     {
       "report": {
-        "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-final20/native.json",
+        "path": "<cache>/rustmage-tdm/sacrifice-random-final20/native.json",
         "sha256": "174176a62125d5a13e044b62470ae96af7f8d2990865ad4c3c771166058fb062"
       },
       "terminal": true,
@@ -385,21 +385,21 @@
       "execution_seconds": 0.03472575097111985,
       "logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-final20/native-compile.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-final20/native-compile.log",
           "sha256": "844686fab53febfe7f372d7a71041d350f003953d2a9f8c70c56b05621689e14"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-final20/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-final20/native-execution-0.log",
           "sha256": "b961c09089f7a8359035c16662943ff6408684cd3d0dbb36d0ef7e78c604f9bd"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-final20/native-list-0.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-final20/native-list-0.log",
           "sha256": "6f08bb06ba4de59fe4742be81e3445762091fd9b1b6baf81e293f9aa791844a0"
         }
       ],
       "binary_pins": [
         {
-          "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_sacrifice_random_rules-c4c0200a14db10db",
+          "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_sacrifice_random_rules-c4c0200a14db10db",
           "sha256": "c335db461256a6667faffb05f6315d3afebf3c619a17b897ce1bc429ebc80c7c",
           "artifact_role": "Transient Cargo native test executable; historical run output, not an immutable preservation promise.",
           "available_at_recorded_hash_at_correction": true,
@@ -409,7 +409,7 @@
     },
     {
       "report": {
-        "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/0/native.json",
+        "path": "<cache>/rustmage-tdm/sacrifice-random-compat/0/native.json",
         "sha256": "cd3e1200c7663c02538651f7437bb1aff73cc442ccf58edf6dbdc4742440cb0a"
       },
       "terminal": true,
@@ -420,21 +420,21 @@
       "execution_seconds": 0.03473762099747546,
       "logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/0/native-compile.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/0/native-compile.log",
           "sha256": "09e2b4b3f4c4b769c5d6a772f48cc9a7118962ee944cfeaf5ea0831c606f3a46"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/0/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/0/native-execution-0.log",
           "sha256": "52ba42293580c5f303c39186ece50817428d4d3f68a1326bc86a2e6a3aeadb79"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/0/native-list-0.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/0/native-list-0.log",
           "sha256": "7942f4be56c10f214f9d9645515bbb46e46ace080e3aaaa395b1920d592725f5"
         }
       ],
       "binary_pins": [
         {
-          "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_cast_routes-33c4c4fe109c9c78",
+          "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_cast_routes-33c4c4fe109c9c78",
           "sha256": "db0885a9a7f4fa9bef0552eec0d6bbf2f1cc9b3a6b55b1f2d5c9e3f6da4f083d",
           "artifact_role": "Transient Cargo native test executable; historical run output, not an immutable preservation promise.",
           "available_at_recorded_hash_at_correction": true,
@@ -444,7 +444,7 @@
     },
     {
       "report": {
-        "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/1/native.json",
+        "path": "<cache>/rustmage-tdm/sacrifice-random-compat/1/native.json",
         "sha256": "5a8aaf01b0024d1a645d2c7a542143dbd8e49a0e76faaff320821d472583f677"
       },
       "terminal": true,
@@ -455,21 +455,21 @@
       "execution_seconds": 0.0459682310174685,
       "logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/1/native-compile.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/1/native-compile.log",
           "sha256": "b33e4cb0113e717c94c6c55e51cacb4a5d2b239445ef1ea23ff03b811b5cb0a1"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/1/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/1/native-execution-0.log",
           "sha256": "d246f99490bbe84a0dbb3d20685055bd0832a4090ad79a3feb66cc20477f73f1"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/1/native-list-0.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/1/native-list-0.log",
           "sha256": "b05a3c322af84c130fffd2279b43ec614f8dc4976d359c4b457698fbe001d214"
         }
       ],
       "binary_pins": [
         {
-          "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_behold_costs-bd23be18a16a81c5",
+          "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_behold_costs-bd23be18a16a81c5",
           "sha256": "7810d53dfc799bfbb5a86099c7203f5ee41690d2f9f2143e30eb79425eea4c89",
           "artifact_role": "Transient Cargo native test executable; historical run output, not an immutable preservation promise.",
           "available_at_recorded_hash_at_correction": true,
@@ -479,7 +479,7 @@
     },
     {
       "report": {
-        "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/2/native.json",
+        "path": "<cache>/rustmage-tdm/sacrifice-random-compat/2/native.json",
         "sha256": "6a5693a0bedc4da3a497ae9539255c98ed3c16ddd290ca8097b479a48d9450a5"
       },
       "terminal": true,
@@ -490,21 +490,21 @@
       "execution_seconds": 0.024571508984081447,
       "logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/2/native-compile.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/2/native-compile.log",
           "sha256": "9339b9147f5c7e826b3b4462c04be58f783cdfcc72152716c20f2c13a8e0db4e"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/2/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/2/native-execution-0.log",
           "sha256": "4a22cf9cec00e8388370e6964a8c421d11a5f5c677005a8d44cecf2e682d215a"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/2/native-list-0.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/2/native-list-0.log",
           "sha256": "a432b160f0daf2b6792d74981828d4de7e3e4883df0c5afe5cba435984adad1e"
         }
       ],
       "binary_pins": [
         {
-          "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_variable_costs_engine-4404c9cb268fc190",
+          "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_variable_costs_engine-4404c9cb268fc190",
           "sha256": "5363893a3f0f845170f2e0823f8f46f47853c3cb24db45f8b7366e5461b0c102",
           "artifact_role": "Transient Cargo native test executable; historical run output, not an immutable preservation promise.",
           "available_at_recorded_hash_at_correction": true,
@@ -514,7 +514,7 @@
     },
     {
       "report": {
-        "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/3/native.json",
+        "path": "<cache>/rustmage-tdm/sacrifice-random-compat/3/native.json",
         "sha256": "9ff692a2985f7aa4ec052f09a2cc7b4d70af1ee5ece41d3a76282144d3e26162"
       },
       "terminal": true,
@@ -525,21 +525,21 @@
       "execution_seconds": 0.025540582981193438,
       "logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/3/native-compile.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/3/native-compile.log",
           "sha256": "bb6d1e78fa5372f943cf7b41392b76f6405a8f14ce1e55111bab4708425fb8f2"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/3/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/3/native-execution-0.log",
           "sha256": "25e060211c1bc82d9a0b50b9e4780f3f90c1a858fa14a0accfdd284391323b53"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/3/native-list-0.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/3/native-list-0.log",
           "sha256": "c4feaabeafc29f428afb127a830b9b979cb124d660441c1f3908d8a9ecc64df1"
         }
       ],
       "binary_pins": [
         {
-          "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_acquired_activations-2c4a0cdafa589d89",
+          "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_acquired_activations-2c4a0cdafa589d89",
           "sha256": "0aaa94ceb2fcc629e349cb9702cb4c7b832e20e653d2351143615094d4119dfe",
           "artifact_role": "Transient Cargo native test executable; historical run output, not an immutable preservation promise.",
           "available_at_recorded_hash_at_correction": true,
@@ -549,7 +549,7 @@
     },
     {
       "report": {
-        "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/4/native.json",
+        "path": "<cache>/rustmage-tdm/sacrifice-random-compat/4/native.json",
         "sha256": "0109c0e3d4e8bf9ba07d60d04aa6db92149e1fecdc89bdbca9cfacc2353c1abf"
       },
       "terminal": true,
@@ -560,21 +560,21 @@
       "execution_seconds": 0.03313446801621467,
       "logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/4/native-compile.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/4/native-compile.log",
           "sha256": "3600cc8264b872d1f81620100c5d0e1f35ffa51e395c0ec641bce208027d1c2b"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/4/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/4/native-execution-0.log",
           "sha256": "b3164bca5f32c9d848bc8c4adf328c95a4be05e1d945568aceeef1353eb48de5"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/4/native-list-0.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/4/native-list-0.log",
           "sha256": "4ad795b88703b62758b5d46e626a8fe9d230285997be332c8064a97d583482ca"
         }
       ],
       "binary_pins": [
         {
-          "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_retained_copy-e670e777ae9b2f74",
+          "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_retained_copy-e670e777ae9b2f74",
           "sha256": "34551d6c4f3911e823ee822a324a1351ccf0310f85fc01b6fa9d444ef2c4f451",
           "artifact_role": "Transient Cargo native test executable; historical run output, not an immutable preservation promise.",
           "available_at_recorded_hash_at_correction": true,
@@ -584,7 +584,7 @@
     },
     {
       "report": {
-        "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/5/native.json",
+        "path": "<cache>/rustmage-tdm/sacrifice-random-compat/5/native.json",
         "sha256": "5967b12d830f96e81ef11a25b16f1c5d2805619de5d411b712db82a0915814f8"
       },
       "terminal": true,
@@ -595,21 +595,21 @@
       "execution_seconds": 0.04225829298957251,
       "logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/5/native-compile.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/5/native-compile.log",
           "sha256": "ed95a56965e14936321034532c6ffced7048ecc5197e461800db2e0b5c5bc95e"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/5/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/5/native-execution-0.log",
           "sha256": "7ede64565ff2ab8a217c14b42ddfc1ae4633941f5846edb277e676f3ce83902d"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/5/native-list-0.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/5/native-list-0.log",
           "sha256": "fcf9533c4ba561939342919615534edff25fc8126620fa5be8a2408d727cdf2f"
         }
       ],
       "binary_pins": [
         {
-          "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_mana_payment_continuations_engine-9999b14d56e1538e",
+          "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_mana_payment_continuations_engine-9999b14d56e1538e",
           "sha256": "a7792e93a61d1c2900116a73188b21d8729565c75a629e14348f49b1cbdec0d7",
           "artifact_role": "Transient Cargo native test executable; historical run output, not an immutable preservation promise.",
           "available_at_recorded_hash_at_correction": true,
@@ -619,7 +619,7 @@
     },
     {
       "report": {
-        "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/6/native.json",
+        "path": "<cache>/rustmage-tdm/sacrifice-random-compat/6/native.json",
         "sha256": "4fe21691db1b58d36e00c03d25b1c47cab82b3c35c6170eee63739bb9cfd667d"
       },
       "terminal": true,
@@ -630,21 +630,21 @@
       "execution_seconds": 0.024944169010268524,
       "logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/6/native-compile.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/6/native-compile.log",
           "sha256": "808036bf28de57861a20b543155d3114b182e14bf63e9df876f9666f540a2b2e"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/6/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/6/native-execution-0.log",
           "sha256": "733ebb4fc0e16d67018e8de962dc2dc19edcaaaac4eaacabebf91c9f772dffc9"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/6/native-list-0.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/6/native-list-0.log",
           "sha256": "65e3ce00c4e71884d917ba1c27d35de4bb8da16597c8bcfbeb420b09aa75452f"
         }
       ],
       "binary_pins": [
         {
-          "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_exile_lookback-d6267897c13d58a5",
+          "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_exile_lookback-d6267897c13d58a5",
           "sha256": "113f7fc29bc192546122ce3e86d068cb06b10d71c12d0ea32383fcc8faf37f81",
           "artifact_role": "Transient Cargo native test executable; historical run output, not an immutable preservation promise.",
           "available_at_recorded_hash_at_correction": true,
@@ -654,7 +654,7 @@
     },
     {
       "report": {
-        "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/7/native.json",
+        "path": "<cache>/rustmage-tdm/sacrifice-random-compat/7/native.json",
         "sha256": "d64ec945121631010de51bd8776512ed27d1e995e890dff10de9fcd436799c4d"
       },
       "terminal": true,
@@ -665,21 +665,21 @@
       "execution_seconds": 0.03340314599336125,
       "logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/7/native-compile.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/7/native-compile.log",
           "sha256": "4dfed2a1c7156110fa7a3a6cb44bf1fe4cd97b70910778040bceaad46f648230"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/7/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/7/native-execution-0.log",
           "sha256": "130e689801c6cc66f16e3e9d6a73f9e98277686fd2c870debd78517d93f27e4c"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/7/native-list-0.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/7/native-list-0.log",
           "sha256": "6b55fc5339e83197226a7a0325e422603c57bd88ace68bd823b8af8d815d5b80"
         }
       ],
       "binary_pins": [
         {
-          "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_conditional_graveyard-0fe3503ca426fe86",
+          "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_conditional_graveyard-0fe3503ca426fe86",
           "sha256": "e6710e308cffdf0a24386c9d2bf7c0c6146ebfee39cc87d474d8271c86ab1d1c",
           "artifact_role": "Transient Cargo native test executable; historical run output, not an immutable preservation promise.",
           "available_at_recorded_hash_at_correction": true,
@@ -691,7 +691,7 @@
   "earlier_terminal_runs": [
     {
       "report": {
-        "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-first20/native.json",
+        "path": "<cache>/rustmage-tdm/sacrifice-random-first20/native.json",
         "sha256": "670502b0f075e5fcaaca0852eeafa6c65de924e2fc998d7febddd71da3df62ff"
       },
       "terminal": true,
@@ -702,99 +702,99 @@
       "execution_seconds": 0.03448817299795337,
       "logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-first20/native-compile.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-first20/native-compile.log",
           "sha256": "df0871c6e1fa591e9ffdf5ee488d7e7dae40291a3d2f9600656385969a1c981c"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-first20/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-first20/native-execution-0.log",
           "sha256": "6cef363475c5d885ceccc127d27a371bb0cf7b8e6f1fbffaa2a5a891d0163d26"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-first20/native-list-0.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-first20/native-list-0.log",
           "sha256": "6f08bb06ba4de59fe4742be81e3445762091fd9b1b6baf81e293f9aa791844a0"
         }
       ],
       "binary_pins": [],
       "outcome": "Terminal 10/20. All eight random-graveyard groups and two Sidisi preflight groups passed. Eight actual ordered Sidisi payments hit the shared activation path eager additional-payment panic; two further fixture assertions expected a private payment receipt too early or used a token display name instead of its factory identity.",
       "source_manifest": {
-        "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-first20/source-hashes.json",
+        "path": "<cache>/rustmage-tdm/sacrifice-random-first20/source-hashes.json",
         "sha256": "3769aef0d2e10d1163a1d1863091056b4a92ca075df70ba67f0468c82b765dc2"
       },
       "retained_source_inputs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/cards.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/cards.rs",
           "sha256": "6675bb514667be194be78defb29f7899a21cba355773439bd110ea6dab4d3f2d"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine.rs",
           "sha256": "d71a993e2167818f4709b1d36bf365773dde20b9eec4249de6da4a3bee9d06e0"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_activation_target_costs.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_activation_target_costs.rs",
           "sha256": "476a4a2d8b443c1232494effea8c23e35c02f71dd4fd4c9f8f16f538a0f89bba"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_activations.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_activations.rs",
           "sha256": "9e7b22c112c8ec1067a00632a25b25b3631ffb5e6c42cdb76cd236041c1172a6"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_additional_costs.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_additional_costs.rs",
           "sha256": "5681b20114d1b4ab16cdebb18b166007a3fbd6a533ed152f944bef1622c491fe"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_borrowed_activations.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_borrowed_activations.rs",
           "sha256": "2bee414a77635a3b89d165b7ed62f3f8ab2f842a6add62ede1eea29bcd68a6a9"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_cast_cost_planning.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_cast_cost_planning.rs",
           "sha256": "9d5f0b98b4fb155f87e8a2041e6d6b4898847998671291c40ec38dda1283dfef"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_cast_costs.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_cast_costs.rs",
           "sha256": "a2701c1522cb6955a1dde5fd75e0cbc3348decf84e80d529b3b5fcf3ba3ccec6"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_combat_allocations.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_combat_allocations.rs",
           "sha256": "6ac37f94a225185697b9669f453b4f8726c61f78d4136a50b8119331a1edde92"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_exile.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_exile.rs",
           "sha256": "946956b83925470472274ab2bb1e7074e413f8a41fc2f6703e05664dd1d76eb1"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_funding.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_funding.rs",
           "sha256": "a31d1664b480abb472de76d4e73d795045ee2d0ab77a57145ce86378ff5f1776"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_growth_cost.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_growth_cost.rs",
           "sha256": "640c7f081c01e31745eaa9c2232a550474c43f5e6f3b2a84392001a705ac9f47"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_programs.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_programs.rs",
           "sha256": "d37f49edb082d1aa73e7eb2a2bee503cbd147546d77f46643ab3d920faaaa5a6"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_retained_copy_activations.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_retained_copy_activations.rs",
           "sha256": "925f4bcd9c1b7be75c092042a852d68c624d6ecfd1f980e7fbe66cb65a91ec8f"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_scalar_x.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_scalar_x.rs",
           "sha256": "c461af0b9ba6ee38085728bf990b7321bb1017f5adaf81793308032f285c4e20"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_self_granted_activations.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_self_granted_activations.rs",
           "sha256": "ab0beb6c3dbffaabe0aae42ef957635dd9be210d6800c6167dbc1054e999cde5"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_targeting.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_targeting.rs",
           "sha256": "bafa3cbca7adc24b0f89aae9b298bb2715531c23ddcece832461e95bab0f2bef"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_nonmana_x.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-first20/source-inputs/crates/engine/src/engine_nonmana_x.rs",
           "sha256": "088708af125e435c7d97a53ac55d0bfa9bd06d33213ee624c311384db2acb7d6"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-first20/source-inputs/tests/tdm_sacrifice_random_rules.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-first20/source-inputs/tests/tdm_sacrifice_random_rules.rs",
           "sha256": "cbdb368f6d99cbe859da953bead05a4eddfaee04f9f97bbbbd28d2f8b6b18357"
         }
       ],
@@ -802,7 +802,7 @@
     },
     {
       "report": {
-        "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-cost-order20/native.json",
+        "path": "<cache>/rustmage-tdm/sacrifice-random-cost-order20/native.json",
         "sha256": "c59a516407a8596669950b62d5c085d33501230d587ec7ba3bf4c2e79d2cdd60"
       },
       "terminal": true,
@@ -813,99 +813,99 @@
       "execution_seconds": 0.03492323201498948,
       "logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-cost-order20/native-compile.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-cost-order20/native-compile.log",
           "sha256": "04ba6f70f2019cda37733891985e99e47153e8663b875b4bdb084a314a265e4e"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-cost-order20/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-cost-order20/native-execution-0.log",
           "sha256": "64a7fb929f1f897e324743f197e62721bb3a3ef9d48eb89c52a5fceeedc23d17"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-cost-order20/native-list-0.log",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-cost-order20/native-list-0.log",
           "sha256": "6f08bb06ba4de59fe4742be81e3445762091fd9b1b6baf81e293f9aa791844a0"
         }
       ],
       "binary_pins": [],
       "outcome": "Terminal 19/20. The real ordered-payment correction and both payment orders passed. The remaining branch referenced unsupported Goldvein Hydra; only the physical identity was changed to supported Guiding Hydra with the same printed-X/off-stack mana-value shape.",
       "source_manifest": {
-        "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-cost-order20/source-hashes.json",
+        "path": "<cache>/rustmage-tdm/sacrifice-random-cost-order20/source-hashes.json",
         "sha256": "afb9bf0333234da1672d885f0d93caa8acb0e64e0e2f2ea5d8676523fcbe0980"
       },
       "retained_source_inputs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/cards.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/cards.rs",
           "sha256": "6675bb514667be194be78defb29f7899a21cba355773439bd110ea6dab4d3f2d"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine.rs",
           "sha256": "d71a993e2167818f4709b1d36bf365773dde20b9eec4249de6da4a3bee9d06e0"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_activation_target_costs.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_activation_target_costs.rs",
           "sha256": "476a4a2d8b443c1232494effea8c23e35c02f71dd4fd4c9f8f16f538a0f89bba"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_activations.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_activations.rs",
           "sha256": "9e7b22c112c8ec1067a00632a25b25b3631ffb5e6c42cdb76cd236041c1172a6"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_additional_costs.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_additional_costs.rs",
           "sha256": "5681b20114d1b4ab16cdebb18b166007a3fbd6a533ed152f944bef1622c491fe"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_borrowed_activations.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_borrowed_activations.rs",
           "sha256": "2bee414a77635a3b89d165b7ed62f3f8ab2f842a6add62ede1eea29bcd68a6a9"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_cast_cost_planning.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_cast_cost_planning.rs",
           "sha256": "9d5f0b98b4fb155f87e8a2041e6d6b4898847998671291c40ec38dda1283dfef"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_cast_costs.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_cast_costs.rs",
           "sha256": "a2701c1522cb6955a1dde5fd75e0cbc3348decf84e80d529b3b5fcf3ba3ccec6"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_combat_allocations.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_combat_allocations.rs",
           "sha256": "6ac37f94a225185697b9669f453b4f8726c61f78d4136a50b8119331a1edde92"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_exile.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_exile.rs",
           "sha256": "946956b83925470472274ab2bb1e7074e413f8a41fc2f6703e05664dd1d76eb1"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_funding.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_funding.rs",
           "sha256": "a31d1664b480abb472de76d4e73d795045ee2d0ab77a57145ce86378ff5f1776"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_growth_cost.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_growth_cost.rs",
           "sha256": "640c7f081c01e31745eaa9c2232a550474c43f5e6f3b2a84392001a705ac9f47"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_programs.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_programs.rs",
           "sha256": "d37f49edb082d1aa73e7eb2a2bee503cbd147546d77f46643ab3d920faaaa5a6"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_retained_copy_activations.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_retained_copy_activations.rs",
           "sha256": "925f4bcd9c1b7be75c092042a852d68c624d6ecfd1f980e7fbe66cb65a91ec8f"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_scalar_x.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_scalar_x.rs",
           "sha256": "c461af0b9ba6ee38085728bf990b7321bb1017f5adaf81793308032f285c4e20"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_self_granted_activations.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_self_granted_activations.rs",
           "sha256": "ab0beb6c3dbffaabe0aae42ef957635dd9be210d6800c6167dbc1054e999cde5"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_targeting.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_targeting.rs",
           "sha256": "8ea53f2d6df5d18199259f7daf62ad0780e1b92adaebac2c1e6d7b7aa3e54cc3"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_nonmana_x.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/crates/engine/src/engine_nonmana_x.rs",
           "sha256": "088708af125e435c7d97a53ac55d0bfa9bd06d33213ee624c311384db2acb7d6"
         },
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/tests/tdm_sacrifice_random_rules.rs",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-cost-order20/source-inputs/tests/tdm_sacrifice_random_rules.rs",
           "sha256": "f624728fdafe857b6be5fbc144d7fdc1052e00f5863297b2a40a8d92eda001b4"
         }
       ],
@@ -915,7 +915,7 @@
   "resource_guard_reports": [
     {
       "report": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/2bf1a6e56076456199eec86f51cf151f.json",
+        "path": "<cache>/rustmage-build-reports/2bf1a6e56076456199eec86f51cf151f.json",
         "sha256": "ee8a85fd9ac06e730be314b5d9f01cabec5088f611707a8009a00eff880d99e5"
       },
       "terminal": true,
@@ -929,7 +929,7 @@
     },
     {
       "report": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/5d2ff67c44554f5ba9387eea79700e01.json",
+        "path": "<cache>/rustmage-build-reports/5d2ff67c44554f5ba9387eea79700e01.json",
         "sha256": "057f6d939417db05a62ba7fb553312d0d0648b2e8bfa365e1c908a77a303d34a"
       },
       "terminal": true,
@@ -943,7 +943,7 @@
     },
     {
       "report": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/6a0b7039743a45d198f0b97957028e63.json",
+        "path": "<cache>/rustmage-build-reports/6a0b7039743a45d198f0b97957028e63.json",
         "sha256": "44d33ecf42c255a55a97f3256162cf5988869835e6e588263ad8271dab73e616"
       },
       "terminal": true,
@@ -957,7 +957,7 @@
     },
     {
       "report": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/7187967843cc4484a425cc0dd08c6b94.json",
+        "path": "<cache>/rustmage-build-reports/7187967843cc4484a425cc0dd08c6b94.json",
         "sha256": "e1fef5baa736d134c6b7269a404ab4b16033dee120317c1b5d6b6fb300890f57"
       },
       "terminal": true,
@@ -971,7 +971,7 @@
     },
     {
       "report": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/90b29243dcea47bf9e1cdb4ee0454807.json",
+        "path": "<cache>/rustmage-build-reports/90b29243dcea47bf9e1cdb4ee0454807.json",
         "sha256": "a23aeda80a1b38f8c255dcf56d0f4544872db0d0a573d1e1e91a5a669fd74c77"
       },
       "terminal": true,
@@ -985,7 +985,7 @@
     },
     {
       "report": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/b90f2e8f0e794be2a0dc68d591ee7bd1.json",
+        "path": "<cache>/rustmage-build-reports/b90f2e8f0e794be2a0dc68d591ee7bd1.json",
         "sha256": "8763f17113da4d286faf0513f6086bee465a195d24fef253cb9c1590dca9312f"
       },
       "terminal": true,
@@ -999,7 +999,7 @@
     },
     {
       "report": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/b985f842c3b3422eba7ad2b500dcff42.json",
+        "path": "<cache>/rustmage-build-reports/b985f842c3b3422eba7ad2b500dcff42.json",
         "sha256": "f5c2a84ff718fe69920444dd9bdfc581ea4b4871ad498736423b44202183ada8"
       },
       "terminal": true,
@@ -1013,7 +1013,7 @@
     },
     {
       "report": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/d03937ff7a8e43dd912632415f6cbcc0.json",
+        "path": "<cache>/rustmage-build-reports/d03937ff7a8e43dd912632415f6cbcc0.json",
         "sha256": "965addca2f94a79a39977c92b06097cd900474bc29d3c709a807b52f8eae0e11"
       },
       "terminal": true,
@@ -1027,7 +1027,7 @@
     },
     {
       "report": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/d84be05ee0574824a3ad7a32767d0340.json",
+        "path": "<cache>/rustmage-build-reports/d84be05ee0574824a3ad7a32767d0340.json",
         "sha256": "9024c9b3bb697cbb9f49036ca44cf6e4bf967f90c4e913d9fd6b5930685cbcd9"
       },
       "terminal": true,
@@ -1041,7 +1041,7 @@
     },
     {
       "report": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/f07ab6c451c84d6c9ea54afd98133150.json",
+        "path": "<cache>/rustmage-build-reports/f07ab6c451c84d6c9ea54afd98133150.json",
         "sha256": "ee09eca7277ac59ad9f48c28dbbd7589d91922000e5a6abd012586b406dc3265"
       },
       "terminal": true,
@@ -1055,7 +1055,7 @@
     },
     {
       "report": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/f9ddaebd4e064c6eb7d33c6970d2663d.json",
+        "path": "<cache>/rustmage-build-reports/f9ddaebd4e064c6eb7d33c6970d2663d.json",
         "sha256": "40b71a69fe86254ddeab06bc38373396d1a10ce89a1831f44009ab293ad9b8f4"
       },
       "terminal": true,
@@ -1075,12 +1075,12 @@
   "peak_memory_bytes_across_all_runs": 1926922240,
   "preserved_shared_libraries": [
     {
-      "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/libserde_derive-4a3ec5018aa504ef.so",
+      "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/libserde_derive-4a3ec5018aa504ef.so",
       "sha256": "16e56c72844cb52549aca635bf643fd0903d223d703291e366575e6900e074a7",
       "role": "Rust compiler proc-macro shared library; exact compile-time dependency remains present."
     },
     {
-      "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/librustmage_test_access-636adfcd609bee93.so",
+      "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/librustmage_test_access-636adfcd609bee93.so",
       "sha256": "bd6062fbe485578b3a623429f4fd459a9e69d6a2fd34b4cdb884e2f83e16ad48",
       "role": "Rust compiler proc-macro shared library; exact compile-time dependency remains present."
     }
@@ -1101,7 +1101,7 @@
   ],
   "transient_compilation_outputs": [
     {
-      "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/librustmage.so",
+      "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/librustmage.so",
       "sha256": "214cd04339445d10e099ce9d501592d7624ccf2ef54c0c6583373c6ce916505f",
       "artifact_role": "Transient Cargo cdylib output emitted alongside the Rust rlib; not a native test execution dependency.",
       "required_for_recorded_native_test_executions": false,
@@ -1118,7 +1118,7 @@
     "native_commands_audited": [
       {
         "report": {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-final20/native.json",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-final20/native.json",
           "sha256": "174176a62125d5a13e044b62470ae96af7f8d2990865ad4c3c771166058fb062"
         },
         "compile_command": [
@@ -1133,7 +1133,7 @@
         ],
         "execution_commands": [
           [
-            "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_sacrifice_random_rules-c4c0200a14db10db",
+            "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_sacrifice_random_rules-c4c0200a14db10db",
             "",
             "--include-ignored",
             "--test-threads=1"
@@ -1141,7 +1141,7 @@
         ],
         "matching_historical_elf_inspections": [
           {
-            "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_sacrifice_random_rules-c4c0200a14db10db",
+            "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_sacrifice_random_rules-c4c0200a14db10db",
             "historical_hash_still_available": true,
             "inspected_elf_needed": [
               "libgcc_s.so.1",
@@ -1153,7 +1153,7 @@
       },
       {
         "report": {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/0/native.json",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/0/native.json",
           "sha256": "cd3e1200c7663c02538651f7437bb1aff73cc442ccf58edf6dbdc4742440cb0a"
         },
         "compile_command": [
@@ -1168,7 +1168,7 @@
         ],
         "execution_commands": [
           [
-            "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_cast_routes-33c4c4fe109c9c78",
+            "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_cast_routes-33c4c4fe109c9c78",
             "",
             "--include-ignored",
             "--test-threads=1"
@@ -1176,7 +1176,7 @@
         ],
         "matching_historical_elf_inspections": [
           {
-            "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_cast_routes-33c4c4fe109c9c78",
+            "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_cast_routes-33c4c4fe109c9c78",
             "historical_hash_still_available": true,
             "inspected_elf_needed": [
               "libgcc_s.so.1",
@@ -1188,7 +1188,7 @@
       },
       {
         "report": {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/1/native.json",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/1/native.json",
           "sha256": "5a8aaf01b0024d1a645d2c7a542143dbd8e49a0e76faaff320821d472583f677"
         },
         "compile_command": [
@@ -1203,7 +1203,7 @@
         ],
         "execution_commands": [
           [
-            "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_behold_costs-bd23be18a16a81c5",
+            "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_behold_costs-bd23be18a16a81c5",
             "",
             "--include-ignored",
             "--test-threads=1"
@@ -1211,7 +1211,7 @@
         ],
         "matching_historical_elf_inspections": [
           {
-            "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_behold_costs-bd23be18a16a81c5",
+            "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_behold_costs-bd23be18a16a81c5",
             "historical_hash_still_available": true,
             "inspected_elf_needed": [
               "libgcc_s.so.1",
@@ -1223,7 +1223,7 @@
       },
       {
         "report": {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/2/native.json",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/2/native.json",
           "sha256": "6a5693a0bedc4da3a497ae9539255c98ed3c16ddd290ca8097b479a48d9450a5"
         },
         "compile_command": [
@@ -1238,7 +1238,7 @@
         ],
         "execution_commands": [
           [
-            "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_variable_costs_engine-4404c9cb268fc190",
+            "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_variable_costs_engine-4404c9cb268fc190",
             "",
             "--include-ignored",
             "--test-threads=1"
@@ -1246,7 +1246,7 @@
         ],
         "matching_historical_elf_inspections": [
           {
-            "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_variable_costs_engine-4404c9cb268fc190",
+            "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_variable_costs_engine-4404c9cb268fc190",
             "historical_hash_still_available": true,
             "inspected_elf_needed": [
               "libgcc_s.so.1",
@@ -1258,7 +1258,7 @@
       },
       {
         "report": {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/3/native.json",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/3/native.json",
           "sha256": "9ff692a2985f7aa4ec052f09a2cc7b4d70af1ee5ece41d3a76282144d3e26162"
         },
         "compile_command": [
@@ -1273,7 +1273,7 @@
         ],
         "execution_commands": [
           [
-            "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_acquired_activations-2c4a0cdafa589d89",
+            "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_acquired_activations-2c4a0cdafa589d89",
             "",
             "--include-ignored",
             "--test-threads=1"
@@ -1281,7 +1281,7 @@
         ],
         "matching_historical_elf_inspections": [
           {
-            "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_acquired_activations-2c4a0cdafa589d89",
+            "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_acquired_activations-2c4a0cdafa589d89",
             "historical_hash_still_available": true,
             "inspected_elf_needed": [
               "libgcc_s.so.1",
@@ -1293,7 +1293,7 @@
       },
       {
         "report": {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/4/native.json",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/4/native.json",
           "sha256": "0109c0e3d4e8bf9ba07d60d04aa6db92149e1fecdc89bdbca9cfacc2353c1abf"
         },
         "compile_command": [
@@ -1308,7 +1308,7 @@
         ],
         "execution_commands": [
           [
-            "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_retained_copy-e670e777ae9b2f74",
+            "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_retained_copy-e670e777ae9b2f74",
             "",
             "--include-ignored",
             "--test-threads=1"
@@ -1316,7 +1316,7 @@
         ],
         "matching_historical_elf_inspections": [
           {
-            "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_retained_copy-e670e777ae9b2f74",
+            "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_retained_copy-e670e777ae9b2f74",
             "historical_hash_still_available": true,
             "inspected_elf_needed": [
               "libgcc_s.so.1",
@@ -1328,7 +1328,7 @@
       },
       {
         "report": {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/5/native.json",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/5/native.json",
           "sha256": "5967b12d830f96e81ef11a25b16f1c5d2805619de5d411b712db82a0915814f8"
         },
         "compile_command": [
@@ -1343,7 +1343,7 @@
         ],
         "execution_commands": [
           [
-            "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_mana_payment_continuations_engine-9999b14d56e1538e",
+            "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_mana_payment_continuations_engine-9999b14d56e1538e",
             "",
             "--include-ignored",
             "--test-threads=1"
@@ -1351,7 +1351,7 @@
         ],
         "matching_historical_elf_inspections": [
           {
-            "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_mana_payment_continuations_engine-9999b14d56e1538e",
+            "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_mana_payment_continuations_engine-9999b14d56e1538e",
             "historical_hash_still_available": true,
             "inspected_elf_needed": [
               "libgcc_s.so.1",
@@ -1363,7 +1363,7 @@
       },
       {
         "report": {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/6/native.json",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/6/native.json",
           "sha256": "4fe21691db1b58d36e00c03d25b1c47cab82b3c35c6170eee63739bb9cfd667d"
         },
         "compile_command": [
@@ -1378,7 +1378,7 @@
         ],
         "execution_commands": [
           [
-            "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_exile_lookback-d6267897c13d58a5",
+            "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_exile_lookback-d6267897c13d58a5",
             "",
             "--include-ignored",
             "--test-threads=1"
@@ -1386,7 +1386,7 @@
         ],
         "matching_historical_elf_inspections": [
           {
-            "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_exile_lookback-d6267897c13d58a5",
+            "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_exile_lookback-d6267897c13d58a5",
             "historical_hash_still_available": true,
             "inspected_elf_needed": [
               "libgcc_s.so.1",
@@ -1398,7 +1398,7 @@
       },
       {
         "report": {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-compat/7/native.json",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-compat/7/native.json",
           "sha256": "d64ec945121631010de51bd8776512ed27d1e995e890dff10de9fcd436799c4d"
         },
         "compile_command": [
@@ -1413,7 +1413,7 @@
         ],
         "execution_commands": [
           [
-            "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_conditional_graveyard-0fe3503ca426fe86",
+            "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_conditional_graveyard-0fe3503ca426fe86",
             "",
             "--include-ignored",
             "--test-threads=1"
@@ -1421,7 +1421,7 @@
         ],
         "matching_historical_elf_inspections": [
           {
-            "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_conditional_graveyard-0fe3503ca426fe86",
+            "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_conditional_graveyard-0fe3503ca426fe86",
             "historical_hash_still_available": true,
             "inspected_elf_needed": [
               "libgcc_s.so.1",
@@ -1433,7 +1433,7 @@
       },
       {
         "report": {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-first20/native.json",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-first20/native.json",
           "sha256": "670502b0f075e5fcaaca0852eeafa6c65de924e2fc998d7febddd71da3df62ff"
         },
         "compile_command": [
@@ -1448,7 +1448,7 @@
         ],
         "execution_commands": [
           [
-            "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_sacrifice_random_rules-c4c0200a14db10db",
+            "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_sacrifice_random_rules-c4c0200a14db10db",
             "",
             "--include-ignored",
             "--test-threads=1"
@@ -1458,7 +1458,7 @@
       },
       {
         "report": {
-          "path": "/home/altf4/.cache/rustmage-tdm/sacrifice-random-cost-order20/native.json",
+          "path": "<cache>/rustmage-tdm/sacrifice-random-cost-order20/native.json",
           "sha256": "c59a516407a8596669950b62d5c085d33501230d587ec7ba3bf4c2e79d2cdd60"
         },
         "compile_command": [
@@ -1473,7 +1473,7 @@
         ],
         "execution_commands": [
           [
-            "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_sacrifice_random_rules-c4c0200a14db10db",
+            "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_sacrifice_random_rules-c4c0200a14db10db",
             "",
             "--include-ignored",
             "--test-threads=1"

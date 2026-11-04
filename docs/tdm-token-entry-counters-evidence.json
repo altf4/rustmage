@@ -5,7 +5,7 @@
   "status": "Accepted engine85 at11458ee5da5462a52f31224f2afc0dd74838ecbc; full9/9,4482 native and10 Python pass; two independent final approvals",
   "accepted_prior_engine": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
   "reproduction": {
-    "report": "/home/altf4/.cache/rustmage-tdm/tdm-globe-token-entry-diagnostic/native.json",
+    "report": "<cache>/rustmage-tdm/tdm-globe-token-entry-diagnostic/native.json",
     "case": "growth_dragonstorm_globe_adds_entry_counters_to_own_dragon_cards_and_tokens_with_each_provider",
     "expected_counters": 2,
     "actual_counters": 0,
@@ -56,10 +56,10 @@
   },
   "validation_attempts": [
     {
-      "run": "/home/altf4/.cache/rustmage-tdm/engine85-focused-1793817484204920257",
+      "run": "<cache>/rustmage-tdm/engine85-focused-1793817484204920257",
       "terminal": true,
       "success": false,
-      "native_report": "/home/altf4/.cache/rustmage-tdm/engine85-focused-1793817484204920257/tdm_token_entry_counters/native.json",
+      "native_report": "<cache>/rustmage-tdm/engine85-focused-1793817484204920257/tdm_token_entry_counters/native.json",
       "native_sha256": "f7488e1a049ed68d48c30a04a162fe6d84d68c437b484e609189ac3f25fe9929",
       "expected_cases": 20,
       "passed": 19,
@@ -72,7 +72,7 @@
       "later_targets_run": false
     },
     {
-      "run": "/home/altf4/.cache/rustmage-tdm/engine85-role-boundary-diagnostic-1793817843064375487",
+      "run": "<cache>/rustmage-tdm/engine85-role-boundary-diagnostic-1793817843064375487",
       "terminal": true,
       "success": false,
       "expected_cases": 1,
@@ -84,7 +84,7 @@
       "execution_seconds": 0.033692594966851175
     },
     {
-      "run": "/home/altf4/.cache/rustmage-tdm/engine85-focused-repaired-1793817904507323663",
+      "run": "<cache>/rustmage-tdm/engine85-focused-repaired-1793817904507323663",
       "terminal": true,
       "success": false,
       "expected_cases": 21,
@@ -96,7 +96,7 @@
       "execution_seconds": 0.03536070202244446
     },
     {
-      "report": "/home/altf4/.cache/rustmage-validation-jlfinkjw/report/result.json",
+      "report": "<cache>/rustmage-validation-jlfinkjw/report/result.json",
       "report_sha256": "e9df538df76d6b943fde114553546df6175d3727eb4ea2841ea9fd6eeb0d6627",
       "head": "93e3aa3f6b4c5de3003703807347919b49ccf1bf",
       "terminal": true,
@@ -132,7 +132,7 @@
   ],
   "parked_game_harness": "docs/tdm-game-harness-preflight.json; build/lint/pure-hash checks passed, zero games; source commit parked until276 printed-outcome proofs",
   "final_focused": {
-    "run": "/home/altf4/.cache/rustmage-tdm/engine85-final-focus-1793818257100861074",
+    "run": "<cache>/rustmage-tdm/engine85-final-focus-1793818257100861074",
     "receipt_sha256": "9c00c7fd95de3d4f20cf735212d44e721e855414933e9f3a457d13df505ec189",
     "terminal": true,
     "success": true,
@@ -157,7 +157,7 @@
         "filter": "",
         "exit": 0,
         "seconds": 120.27502648701193,
-        "report": "/home/altf4/.cache/rustmage-tdm/engine85-final-focus-1793818257100861074/tdm_token_entry_counters/native.json",
+        "report": "<cache>/rustmage-tdm/engine85-final-focus-1793818257100861074/tdm_token_entry_counters/native.json",
         "success": true,
         "terminal": true,
         "cases": 21,
@@ -169,7 +169,7 @@
         "filter": "growth_",
         "exit": 0,
         "seconds": 1.2928133759996854,
-        "report": "/home/altf4/.cache/rustmage-tdm/engine85-final-focus-1793818257100861074/tdm_cards_a_g/native.json",
+        "report": "<cache>/rustmage-tdm/engine85-final-focus-1793818257100861074/tdm_cards_a_g/native.json",
         "success": true,
         "terminal": true,
         "cases": 16,
@@ -181,7 +181,7 @@
         "filter": "",
         "exit": 0,
         "seconds": 0.9831253620213829,
-        "report": "/home/altf4/.cache/rustmage-tdm/engine85-final-focus-1793818257100861074/tdm_entry_counters/native.json",
+        "report": "<cache>/rustmage-tdm/engine85-final-focus-1793818257100861074/tdm_entry_counters/native.json",
         "success": true,
         "terminal": true,
         "cases": 19,
@@ -193,7 +193,7 @@
         "filter": "",
         "exit": 0,
         "seconds": 0.839435386005789,
-        "report": "/home/altf4/.cache/rustmage-tdm/engine85-final-focus-1793818257100861074/tdm_optional_attachment/native.json",
+        "report": "<cache>/rustmage-tdm/engine85-final-focus-1793818257100861074/tdm_optional_attachment/native.json",
         "success": true,
         "terminal": true,
         "cases": 6,
@@ -205,7 +205,7 @@
         "filter": "",
         "exit": 0,
         "seconds": 0.9943655870156363,
-        "report": "/home/altf4/.cache/rustmage-tdm/engine85-final-focus-1793818257100861074/tdm_static_rules/native.json",
+        "report": "<cache>/rustmage-tdm/engine85-final-focus-1793818257100861074/tdm_static_rules/native.json",
         "success": true,
         "terminal": true,
         "cases": 28,
@@ -217,7 +217,7 @@
         "filter": "",
         "exit": 0,
         "seconds": 0.884784676018171,
-        "report": "/home/altf4/.cache/rustmage-tdm/engine85-final-focus-1793818257100861074/tdm_dynamic_tokens/native.json",
+        "report": "<cache>/rustmage-tdm/engine85-final-focus-1793818257100861074/tdm_dynamic_tokens/native.json",
         "success": true,
         "terminal": true,
         "cases": 12,
@@ -225,7 +225,7 @@
         "execution_seconds": 0.024635431997012347
       }
     ],
-    "resource_guard": "/home/altf4/.cache/rustmage-build-reports/85463a4b8ddd488a96e7370cbcaa840c.json"
+    "resource_guard": "<cache>/rustmage-build-reports/85463a4b8ddd488a96e7370cbcaa840c.json"
   },
   "card_admission_changed": false,
   "author_engine_commit": "fd3eeb5f9ba5a3d949061c2472e1d14c6904567c",
@@ -239,7 +239,7 @@
       "java_verified": true,
       "catalogue_version": "9a8164380b9b17b4d9cacf2adef314bd9d0e33b14a6d936bc9834ba2aff8284b"
     },
-    "focused_report": "/home/altf4/.cache/rustmage-tdm/reliquary-token-deck-header-corrected/native.json",
+    "focused_report": "<cache>/rustmage-tdm/reliquary-token-deck-header-corrected/native.json",
     "focused_report_sha256": "529e461618632be95e942aa271a42e76444196a6d7082afea46f688fa1191048",
     "cases": 1,
     "terminal": true,

@@ -12,7 +12,7 @@
   "schema_reason": "Instruction is not Serialize; immediate arithmetic introduces no state/continuation/action/field/domain. Existing schema199 PlayerSet walker extended with inherited-domain regression.",
   "engine_frozen": true,
   "validation": {
-    "report": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/result.json",
+    "report": "<cache>/rustmage-validation-l0pzz2p2/report/result.json",
     "sha256": "90f24d6644224aeeaa078a900d82c5fea1092b47dc3c30033bf8eb6be80af9a3",
     "terminal": true,
     "success": true,
@@ -26,7 +26,7 @@
         "name": "source pins",
         "exit": 0,
         "seconds": 0.9166269589914009,
-        "log": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/00.log",
+        "log": "<cache>/rustmage-validation-l0pzz2p2/report/00.log",
         "timed_out": false,
         "orphaned_processes": false
       },
@@ -34,7 +34,7 @@
         "name": "format",
         "exit": 0,
         "seconds": 4.175181912956759,
-        "log": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/01.log",
+        "log": "<cache>/rustmage-validation-l0pzz2p2/report/01.log",
         "timed_out": false,
         "orphaned_processes": false
       },
@@ -42,7 +42,7 @@
         "name": "card format",
         "exit": 0,
         "seconds": 1.120318033033982,
-        "log": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/02.log",
+        "log": "<cache>/rustmage-validation-l0pzz2p2/report/02.log",
         "timed_out": false,
         "orphaned_processes": false
       },
@@ -50,7 +50,7 @@
         "name": "script contracts",
         "exit": 0,
         "seconds": 2.071052604005672,
-        "log": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/03.log",
+        "log": "<cache>/rustmage-validation-l0pzz2p2/report/03.log",
         "timed_out": false,
         "orphaned_processes": false
       },
@@ -58,7 +58,7 @@
         "name": "clippy",
         "exit": 0,
         "seconds": 2.069646458956413,
-        "log": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/04.log",
+        "log": "<cache>/rustmage-validation-l0pzz2p2/report/04.log",
         "timed_out": false,
         "orphaned_processes": false
       },
@@ -66,7 +66,7 @@
         "name": "native assurance",
         "exit": 0,
         "seconds": 187.70458826300455,
-        "log": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/05.log",
+        "log": "<cache>/rustmage-validation-l0pzz2p2/report/05.log",
         "timed_out": false,
         "orphaned_processes": false
       },
@@ -74,7 +74,7 @@
         "name": "release build",
         "exit": 0,
         "seconds": 194.14330249099294,
-        "log": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/06.log",
+        "log": "<cache>/rustmage-validation-l0pzz2p2/report/06.log",
         "timed_out": false,
         "orphaned_processes": false
       },
@@ -82,7 +82,7 @@
         "name": "simulation sample",
         "exit": 0,
         "seconds": 0.2657278929837048,
-        "log": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/07.log",
+        "log": "<cache>/rustmage-validation-l0pzz2p2/report/07.log",
         "timed_out": false,
         "orphaned_processes": false
       },
@@ -90,14 +90,14 @@
         "name": "Python assurance",
         "exit": 0,
         "seconds": 0.16532820696011186,
-        "log": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/08.log",
+        "log": "<cache>/rustmage-validation-l0pzz2p2/report/08.log",
         "timed_out": false,
         "orphaned_processes": false
       }
     ]
   },
   "native_assurance": {
-    "report": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/native.json",
+    "report": "<cache>/rustmage-validation-l0pzz2p2/report/native.json",
     "sha256": "4ce510b350c0220eaee7641429c6d593e41fcfe5fc96cec8b8a5b795081052e0",
     "tests": 4374,
     "targets": 106,
@@ -109,7 +109,7 @@
   "binding_assurance": {
     "suite": "contract",
     "requested_suite": "smoke",
-    "library": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/libraries/librustmage.so",
+    "library": "<cache>/rustmage-validation-l0pzz2p2/report/libraries/librustmage.so",
     "terminal": true,
     "tests": 10,
     "success": true,
@@ -122,16 +122,16 @@
     "timeout_seconds": 15.0
   },
   "resource_guard": {
-    "report": "/home/altf4/.cache/rustmage-build-reports/5ce023e69a254fcf9edaa7d094f3e2c2.json",
+    "report": "<cache>/rustmage-build-reports/5ce023e69a254fcf9edaa7d094f3e2c2.json",
     "sha256": "009b74ab3d7a7c0b125bf2460b62f60f665571dc316621a2214a788621739e56",
     "command": [
       "/usr/bin/python3",
-      "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/scripts/validate.py",
+      "<worktree>/tdm-complete-set/rustmage/scripts/validate.py",
       "--release",
       "--python",
       "smoke",
       "--target-dir",
-      "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target",
+      "<cache>/rustmage-authoring/tdm-complete-set/target",
       "--timeout",
       "1200"
     ],
@@ -146,19 +146,19 @@
   },
   "required_immutable_shared_libraries": [
     {
-      "path": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/libraries/librustmage.so",
+      "path": "<cache>/rustmage-validation-l0pzz2p2/report/libraries/librustmage.so",
       "sha256": "c61c4e2a62e8ed9a58eec81aee83e61c622b88efcdbbf45ffef3a7dcaa315bf1",
       "requires_preservation_at_exact_path_and_hash": true,
       "readonly": true
     },
     {
-      "path": "/home/altf4/.cache/rustmage-validation-o8jjr7os/report/libraries/librustmage.so",
+      "path": "<cache>/rustmage-validation-o8jjr7os/report/libraries/librustmage.so",
       "sha256": "4aebb4867b67d084c98f12113c9eefb19e17a3c02a272e44e7f341cc15df2248",
       "requires_preservation_at_exact_path_and_hash": true,
       "readonly": true
     },
     {
-      "path": "/home/altf4/.cache/rustmage-validation-c3slnby9/report/libraries/librustmage.so",
+      "path": "<cache>/rustmage-validation-c3slnby9/report/libraries/librustmage.so",
       "sha256": "4ee65b6abae8b89d79dfa2a87bd796882c05b3c87fb94833c9e4699ef44c5082",
       "requires_preservation_at_exact_path_and_hash": true,
       "readonly": true
@@ -215,7 +215,7 @@
       ]
     }
   ],
-  "author_compatibility_and_warm_receipts": "/home/altf4/.cache/rustmage-tdm/engine84-author-baselines-1793811712648419284",
+  "author_compatibility_and_warm_receipts": "<cache>/rustmage-tdm/engine84-author-baselines-1793811712648419284",
   "author_cache_status": "Allthree serialguardedcorrect-profilecorewarmspassed; authorsreleased. Noenginefinding remains.",
   "card_status": {
     "verified": 121,
@@ -235,7 +235,7 @@
   "author_cache_warms": [
     {
       "group": "a_g",
-      "report": "/home/altf4/.cache/rustmage-tdm/engine84-author-baselines-1793811712648419284/a_g/core-warm-terminal.json",
+      "report": "<cache>/rustmage-tdm/engine84-author-baselines-1793811712648419284/a_g/core-warm-terminal.json",
       "sha256": "3c35044397a9cf1d6db5745e33d454d8470aa79b738293940f8028bcac5fbb88",
       "terminal": true,
       "success": true,
@@ -243,14 +243,14 @@
       "seconds": 102.01439301599748,
       "engine_source": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
       "compatibility_commit": "d752c7a979271390aa13885e1ce52e3d1a3beef3",
-      "target_dir": "/home/altf4/.cache/rustmage-authoring/tdm-entry-modes/target",
+      "target_dir": "<cache>/rustmage-authoring/tdm-entry-modes/target",
       "matching_test_library_profile": 1,
       "source_unchanged": true,
-      "resource": "/home/altf4/.cache/rustmage-tdm/engine84-author-baselines-1793811712648419284/a_g/core-warm-resource.json"
+      "resource": "<cache>/rustmage-tdm/engine84-author-baselines-1793811712648419284/a_g/core-warm-resource.json"
     },
     {
       "group": "g_s",
-      "report": "/home/altf4/.cache/rustmage-tdm/engine84-author-baselines-1793811712648419284/g_s/core-warm-terminal.json",
+      "report": "<cache>/rustmage-tdm/engine84-author-baselines-1793811712648419284/g_s/core-warm-terminal.json",
       "sha256": "10c1f023de51a7ab023e728a00dbc5d258520088baa206f0ded0bdf95b591593",
       "terminal": true,
       "success": true,
@@ -258,14 +258,14 @@
       "seconds": 102.12224909500219,
       "engine_source": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
       "compatibility_commit": "7c468c83dab20cc0288151f405cfc8795299b0e6",
-      "target_dir": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target",
+      "target_dir": "<cache>/rustmage-authoring/tdm-counter-world/target",
       "matching_test_library_profile": 1,
       "source_unchanged": true,
-      "resource": "/home/altf4/.cache/rustmage-tdm/engine84-author-baselines-1793811712648419284/g_s/core-warm-resource.json"
+      "resource": "<cache>/rustmage-tdm/engine84-author-baselines-1793811712648419284/g_s/core-warm-resource.json"
     },
     {
       "group": "s_z",
-      "report": "/home/altf4/.cache/rustmage-tdm/engine84-author-baselines-1793811712648419284/s_z/core-warm-terminal.json",
+      "report": "<cache>/rustmage-tdm/engine84-author-baselines-1793811712648419284/s_z/core-warm-terminal.json",
       "sha256": "40be93e09080f734991dfea344a22d7c8167f89c9a65a4554b7a4b97f8999886",
       "terminal": true,
       "success": true,
@@ -273,10 +273,10 @@
       "seconds": 102.17046827997547,
       "engine_source": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
       "compatibility_commit": "3e16680a58f2161fcd1afed5fd0a422d84c9a4cb",
-      "target_dir": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target",
+      "target_dir": "<cache>/rustmage-authoring/tdm-cast-routes/target",
       "matching_test_library_profile": 1,
       "source_unchanged": true,
-      "resource": "/home/altf4/.cache/rustmage-tdm/engine84-author-baselines-1793811712648419284/s_z/core-warm-resource.json"
+      "resource": "<cache>/rustmage-tdm/engine84-author-baselines-1793811712648419284/s_z/core-warm-resource.json"
     }
   ],
   "authors_released": true

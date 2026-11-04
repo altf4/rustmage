@@ -4,7 +4,7 @@
   "identified_during": "Independent Behold/free-route review and Sidisi proposal audit before card authoring",
   "authority": {
     "current_cr": {
-      "path": "/home/altf4/.cache/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
+      "path": "<cache>/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
       "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
       "sections": [
         "117.1d",

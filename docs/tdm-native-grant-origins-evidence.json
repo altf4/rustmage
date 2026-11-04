@@ -33,7 +33,7 @@
     "affected_constructor_files_unchanged_by_later_Behold_integration": true
   },
   "final_source_manifest": {
-    "path": "/home/altf4/.cache/rustmage-tdm/native-acquisitions-fixed/source-hashes.json",
+    "path": "<cache>/rustmage-tdm/native-acquisitions-fixed/source-hashes.json",
     "sha256": "7aab32d0550cf3735898eb4b854f7beb89bfa7c522aa2b22756047393838c044",
     "all_consumed_hashes_unchanged_after_terminal": true
   },

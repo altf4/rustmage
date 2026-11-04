@@ -3,7 +3,7 @@
   "basis_head": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
   "original_group": "s_z",
   "new_author": "/root/tdm_cards_g_s",
-  "worktree": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage",
+  "worktree": "<worktree>/tdm-counter-world/rustmage",
   "test_target": "tdm_cards_s_z_additional",
   "test_path": "tests/tdm_cards_s_z_additional.rs",
   "evidence_path": "docs/tdm-cards-s-z-additional-evidence.json",

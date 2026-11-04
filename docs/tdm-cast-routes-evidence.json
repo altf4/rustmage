@@ -102,30 +102,30 @@
     "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
     "complete_classes_read": [
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/s/SongcrafterMage.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/s/SongcrafterMage.java",
         "sha256": "8a998d849e999b2e7bd97b51ab9a5761fc60fb9dbdc082e138d2eb891909e603"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/t/TevalArbiterOfVirtue.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/t/TevalArbiterOfVirtue.java",
         "sha256": "9fcf1fa50f89f3ea8c39682325eb7fd96f9fd0ff737f7a9defccd4a1be2f0f13"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/n/NaturesRhythm.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/n/NaturesRhythm.java",
         "sha256": "3a17973e60216769760b842b096d20923811633b70335237e2b34a75ddf18331"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/keyword/HarmonizeAbility.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/keyword/HarmonizeAbility.java",
         "sha256": "a646e202f733800900da7295d1a6886e583f76dcf25fad2be614b00e9f933f0d"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/keyword/DelveAbility.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/keyword/DelveAbility.java",
         "sha256": "27ff5af89ce6082ac6d9e746c13c9206a06c8a6bbe687c0ce3ae78550d7075da"
       }
     ],
     "comprehensive_rules": {
       "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
       "effective": "2026-09-25",
-      "local_path": "/home/altf4/.cache/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
+      "local_path": "<cache>/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
       "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
       "rules": [
         "107.3a-b",
@@ -190,7 +190,7 @@
   ],
   "final_runs": [
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-focused/native.json",
+      "path": "<cache>/rustmage-tdm/cast-routes-origin-fixed-focused/native.json",
       "sha256": "398439a0e370e2c297c3eb525d3b0bf4c19e1f3e44375043f498c27173c19381",
       "success": true,
       "terminal": true,
@@ -212,7 +212,7 @@
       "active_processes": []
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-0/native.json",
+      "path": "<cache>/rustmage-tdm/cast-routes-origin-fixed-compat-0/native.json",
       "sha256": "112aa66a978794051665f00b683a7e9edf03216410ddc815044407789d7db2b8",
       "success": true,
       "terminal": true,
@@ -234,7 +234,7 @@
       "active_processes": []
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-1/native.json",
+      "path": "<cache>/rustmage-tdm/cast-routes-origin-fixed-compat-1/native.json",
       "sha256": "1fb1a63fe94fe3c3b40624a7502e5a1346cc9448dec9a775db8147365091a7be",
       "success": true,
       "terminal": true,
@@ -256,7 +256,7 @@
       "active_processes": []
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-2/native.json",
+      "path": "<cache>/rustmage-tdm/cast-routes-origin-fixed-compat-2/native.json",
       "sha256": "ab2990e817f8cf52330f5a7a4cbe23e841e618da8640d103622df874222340a6",
       "success": true,
       "terminal": true,
@@ -278,7 +278,7 @@
       "active_processes": []
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-3/native.json",
+      "path": "<cache>/rustmage-tdm/cast-routes-origin-fixed-compat-3/native.json",
       "sha256": "f0ec30186850445a764e4d0e6de56e4994aa24e3f210c627668c3cb4426b0b7c",
       "success": true,
       "terminal": true,
@@ -300,7 +300,7 @@
       "active_processes": []
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-4/native.json",
+      "path": "<cache>/rustmage-tdm/cast-routes-origin-fixed-compat-4/native.json",
       "sha256": "eb9b421b8992dd05ec44e51798a52561effdad6d1ef107fef135046149a34226",
       "success": true,
       "terminal": true,
@@ -322,7 +322,7 @@
       "active_processes": []
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-5/native.json",
+      "path": "<cache>/rustmage-tdm/cast-routes-origin-fixed-compat-5/native.json",
       "sha256": "82c05f66e5235d07e85f3e8c550391a762c9869e36672f400f76ef3fc8a78cb4",
       "success": true,
       "terminal": true,
@@ -344,7 +344,7 @@
       "active_processes": []
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-6/native.json",
+      "path": "<cache>/rustmage-tdm/cast-routes-origin-fixed-compat-6/native.json",
       "sha256": "ae525dc7c5ed6d61984581bbb4ad719bd4ab261c4fe3d5efe39383891710d1dd",
       "success": true,
       "terminal": true,
@@ -366,7 +366,7 @@
       "active_processes": []
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-7/native.json",
+      "path": "<cache>/rustmage-tdm/cast-routes-origin-fixed-compat-7/native.json",
       "sha256": "54ee6b82666f823f859fc8a424cb870bbed97ac77acb68470027c0d7275d6cee",
       "success": true,
       "terminal": true,
@@ -388,7 +388,7 @@
       "active_processes": []
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-8/native.json",
+      "path": "<cache>/rustmage-tdm/cast-routes-origin-fixed-compat-8/native.json",
       "sha256": "eae45519adc36e65f6aacdfa9ec25b3466e63fff476e4f5dee318bc45a26c8d3",
       "success": true,
       "terminal": true,
@@ -410,7 +410,7 @@
       "active_processes": []
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-9/native.json",
+      "path": "<cache>/rustmage-tdm/cast-routes-origin-fixed-compat-9/native.json",
       "sha256": "eea9709c88ae0c6b1d1702ab30bef4f1fd574072da4dc0860ad9fad71dd8a869",
       "success": true,
       "terminal": true,
@@ -432,7 +432,7 @@
       "active_processes": []
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-10/native.json",
+      "path": "<cache>/rustmage-tdm/cast-routes-origin-fixed-compat-10/native.json",
       "sha256": "04683cae48bbec781c32e3943353e09fc011461ef587ec326be1f9e6b346d9ef",
       "success": true,
       "terminal": true,
@@ -454,7 +454,7 @@
       "active_processes": []
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-11/native.json",
+      "path": "<cache>/rustmage-tdm/cast-routes-origin-fixed-compat-11/native.json",
       "sha256": "f23b045de6c09aefc9dadc0456628b44b0d3b2ebb538afacca64aa41ef99d7f0",
       "success": true,
       "terminal": true,
@@ -476,7 +476,7 @@
       "active_processes": []
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-12/native.json",
+      "path": "<cache>/rustmage-tdm/cast-routes-origin-fixed-compat-12/native.json",
       "sha256": "d1cd80c986aef1acb58a74bbccadc28fc1ae9dd255ad39c626ac0a5d4054a617",
       "success": true,
       "terminal": true,
@@ -498,7 +498,7 @@
       "active_processes": []
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-13/native.json",
+      "path": "<cache>/rustmage-tdm/cast-routes-origin-fixed-compat-13/native.json",
       "sha256": "e86808db457ae55152c789b0e5b1555eb8d3fa277472b8edc89ebd9be5aea673",
       "success": true,
       "terminal": true,
@@ -520,7 +520,7 @@
       "active_processes": []
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-fixed-compat-14/native.json",
+      "path": "<cache>/rustmage-tdm/cast-routes-origin-fixed-compat-14/native.json",
       "sha256": "faceb588e6121229a8674400d6cc643d335809383820c6d18051155e8568615a",
       "success": true,
       "terminal": true,
@@ -553,32 +553,32 @@
     "timeouts": false,
     "resource_guard": "one Cargo job/test thread, shared 6442450944-byte limit; no OOM probe",
     "engine_build_peak_bytes": 1911058432,
-    "engine_resource_report": "/home/altf4/.cache/rustmage-build-reports/d844fb645dc94dbba3d7bae2b7757992.json",
+    "engine_resource_report": "<cache>/rustmage-build-reports/d844fb645dc94dbba3d7bae2b7757992.json",
     "simulation_throughput": "not measured by these bounded rules fixtures; no all-Standard performance claim"
   },
   "iteration_history": [
     {
-      "report": "/home/altf4/.cache/rustmage-tdm/cast-routes-first/native.json",
+      "report": "<cache>/rustmage-tdm/cast-routes-first/native.json",
       "result": "Compile-only failure: unsupported doc comment inside define_actions macro. Corrected to ordinary comment; no scenario executed."
     },
     {
-      "report": "/home/altf4/.cache/rustmage-tdm/cast-routes-second/native.json",
+      "report": "<cache>/rustmage-tdm/cast-routes-second/native.json",
       "result": "11/13 passed. Reducer fixture omitted CardExtras.cost_reductions; the mana child used an inherited unsupported counted-exile shape."
     },
     {
-      "report": "/home/altf4/.cache/rustmage-tdm/cast-routes-third/native.json",
+      "report": "<cache>/rustmage-tdm/cast-routes-third/native.json",
       "result": "13/13 passed after wiring reducer extras and choosing the supported single-card ExileGraveyard child cost."
     },
     {
-      "report": "/home/altf4/.cache/rustmage-tdm/cast-routes-final-focused/native.json",
+      "report": "<cache>/rustmage-tdm/cast-routes-final-focused/native.json",
       "result": "18/18 passed; this predates the final borrowed source-origin repair."
     },
     {
-      "report": "/home/altf4/.cache/rustmage-tdm/cast-routes-legacy-harmonize/native.json",
+      "report": "<cache>/rustmage-tdm/cast-routes-legacy-harmonize/native.json",
       "result": "Compile-only failure: one existing white-box CostContext literal required delve_selected:false. Mechanical initializer repair included."
     },
     {
-      "report": "/home/altf4/.cache/rustmage-tdm/cast-routes-origin-preflight-probe/native.json",
+      "report": "<cache>/rustmage-tdm/cast-routes-origin-preflight-probe/native.json",
       "result": "Independent final audit counterexample failed: a proposed graveyard spell could pay its mana child exile cost. Repaired by borrowed Stack source projection and refreshed all93 final cases."
     }
   ],

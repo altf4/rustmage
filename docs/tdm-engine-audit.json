@@ -886,7 +886,7 @@
     "simulation_benchmarks": [
       {
         "workload": "Ten-game Freeform native-smoke only",
-        "report": "/home/altf4/.cache/rustmage-validation-o8jjr7os/report/result.json",
+        "report": "<cache>/rustmage-validation-o8jjr7os/report/result.json",
         "clone_ns": 182.22161,
         "decisions": 4941,
         "decisions_per_second": 26851.116428500452,
@@ -924,7 +924,7 @@
     "audit_group_counts_are_unweighted": true,
     "newer_integrated_checkpoint": {
       "head": "7b417fcbb",
-      "report": "/home/altf4/.cache/rustmage-tdm/root-wire200-1793666910400746018",
+      "report": "<cache>/rustmage-tdm/root-wire200-1793666910400746018",
       "passing_cases": 84,
       "trace_rows_completed": 3164,
       "trace_baseline_accepted": false,
@@ -1125,8 +1125,8 @@
     },
     "assembled_semantic_review": {
       "head": "344a8caac02cc71c401dbde0509d4a15b398ae70",
-      "report": "/home/altf4/.cache/rustmage-tdm/root-semantic-final-focused-1793676290249894204/terminal.json",
-      "source_hashes": "/home/altf4/.cache/rustmage-tdm/root-semantic-final-focused-1793676290249894204/source-hashes.json",
+      "report": "<cache>/rustmage-tdm/root-semantic-final-focused-1793676290249894204/terminal.json",
+      "source_hashes": "<cache>/rustmage-tdm/root-semantic-final-focused-1793676290249894204/source-hashes.json",
       "passing_cases": 443,
       "source_unchanged": true,
       "two_confirmed_findings": [

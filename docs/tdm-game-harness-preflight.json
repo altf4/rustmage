@@ -2,13 +2,13 @@
   "schema": 1,
   "status": "Preflight only; three source files parked outside integration until276 cards verified",
   "parked_commit": "04cb04bab732b42f127c67d4749a0d39fa9d1431",
-  "worktree": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage",
+  "worktree": "<worktree>/tdm-counter-world/rustmage",
   "paths": [
     "examples/support/tdm_games.rs",
     "examples/tdm_games.rs",
     "tests/tdm_complete_games.rs"
   ],
-  "run": "/home/altf4/.cache/rustmage-tdm/game-harness-frozen-check-1793816870809632447",
+  "run": "<cache>/rustmage-tdm/game-harness-frozen-check-1793816870809632447",
   "receipt_sha256": "772f75030897d17f69fcb47ecb160b581cfc4096557ddc3fe5be8dce7b5fc92e",
   "source_inputs": {
     "examples/support/tdm_games.rs": "43924feee9725be0012cb19ef5deeb1faa44d4dda108b8dc6d55fccf22b1b53a",

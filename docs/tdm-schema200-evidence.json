@@ -821,7 +821,7 @@
     "compiled_cases": {
       "tdm_mechanics": 447,
       "typed_schema": 5,
-      "report": "/home/altf4/.cache/rustmage-tdm/root-engine-repaired-1793677531474053474/terminal.json",
+      "report": "<cache>/rustmage-tdm/root-engine-repaired-1793677531474053474/terminal.json",
       "source_unchanged": true
     },
     "trace_rows": 3164,
@@ -836,9 +836,9 @@
       "Torch the Tower"
     ],
     "candidate_sha256": "c9d23737f81cb373f46ea954ae07a7c334d08eee2f6e33f67de9ef7da3befa69",
-    "initial200_baseline": "/home/altf4/.cache/rustmage-tdm/root-semantic-trace-details-1793677782155617066/committed-initial200-baseline.json",
+    "initial200_baseline": "<cache>/rustmage-tdm/root-semantic-trace-details-1793677782155617066/committed-initial200-baseline.json",
     "initial200_baseline_sha256": "90da52b4f440b287ee365a48826b15fbde5104506a253a112e681a1266ae6753",
-    "detail_report": "/home/altf4/.cache/rustmage-tdm/root-semantic-trace-details-1793677782155617066/semantic-observation-delta-audit.json",
+    "detail_report": "<cache>/rustmage-tdm/root-semantic-trace-details-1793677782155617066/semantic-observation-delta-audit.json",
     "detail_report_sha256": "97f4ea776c4fbbd2b7b835686597ca3e191f60753b0b7861a993eace8f4ec1e8",
     "exact_changed_paths": 32,
     "meaningful_changes": [

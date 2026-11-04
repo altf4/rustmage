@@ -1840,7 +1840,7 @@
       "oracle_facts_sha256": "3a50f3b3c28dcb5a963bb4d77ca4076366e16b9795da79fae82a7812c7dd2772",
       "accepted_exact_proof_reuse": {
         "document": "docs/tdm-existing-strategic-betrayal-evidence.json",
-        "document_sha256": "2122ce0a7eeea635290603470e1b34f86142bcda162bfbbe9993e818ee4db59b",
+        "document_sha256": "04eda6cc6f348dee8d4e6332cfa19da312c04bbdfa0e5249eb35c65998f1a17b",
         "root_commit": "1e9c6375d",
         "definition_sha256": "1782494f82df4e2f2d80ecca37ff3018fdf0921ce17c2a3093c16e29f9acb529",
         "test": "engine::assurance::hartford_grave_exile::betrayal_opponent_chooses_creature_and_exiles_their_graveyard",
@@ -3612,7 +3612,7 @@
       "existing_candidates": 4,
       "accepted_strategic_betrayal_proof_reuse": {
         "document": "docs/tdm-existing-strategic-betrayal-evidence.json",
-        "document_sha256": "2122ce0a7eeea635290603470e1b34f86142bcda162bfbbe9993e818ee4db59b",
+        "document_sha256": "04eda6cc6f348dee8d4e6332cfa19da312c04bbdfa0e5249eb35c65998f1a17b",
         "root_commit": "1e9c6375d",
         "definition_sha256": "1782494f82df4e2f2d80ecca37ff3018fdf0921ce17c2a3093c16e29f9acb529",
         "test": "engine::assurance::hartford_grave_exile::betrayal_opponent_chooses_creature_and_exiles_their_graveyard",
@@ -6761,7 +6761,7 @@
             "python3",
             "/tmp/tdm-post86-clippy-worker.py",
             "tdm_cards_s_z",
-            "/home/altf4/.cache/rustmage-tdm/post86-s-z-all58-ordinary-1793828601040431189/s_z_all58_ordinary"
+            "<cache>/rustmage-tdm/post86-s-z-all58-ordinary-1793828601040431189/s_z_all58_ordinary"
           ],
           "terminal": true,
           "exit_code": 0,
@@ -6792,7 +6792,7 @@
   "first_family_finished_utc": "2026-11-04T14:05:57.547813+00:00",
   "accepted_existing_reuse": {
     "document": "docs/tdm-existing-reuse-four-evidence.json",
-    "document_sha256": "4c8a15ba02043a8dbe5390b86c62210921ce8518be58b7504e5da037e8d5fd0f",
+    "document_sha256": "3d73766fa8236203e1ace55729d9c7b3cb89a14bb034cc855f6fbd14674200fc",
     "accepted_by": "Root independent full-source/Oracle/typed body/test/helper review; exact b456 definitions and current engine84 native results.",
     "cards": [
       {
@@ -7145,7 +7145,7 @@
   },
   "additional_ownership": {
     "document": "docs/tdm-s-z-additional-ownership.json",
-    "document_sha256": "16deb7cdda71ce17add56107dddde3acd8c4dfc30e55d8bf91664521399974bd",
+    "document_sha256": "d818736127d5c0def3a78402da4a4aa75e672137f414baf665ff3f043cf38453",
     "original_denominator": 92,
     "accepted_whole_cards": 49,
     "pending_total": 18,

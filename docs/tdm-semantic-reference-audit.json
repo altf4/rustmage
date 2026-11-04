@@ -2637,25 +2637,25 @@
     "/tmp/tdm-reflexive-semantic-audit.json": "b3cc4214cd12cac99ef42fc103db5857911bc94e104448cd53ffbb2a7ffe8abe"
   },
   "current_source_pins": {
-    "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/cards.rs": "508cb9d8b58e00958438bf5301d6690a0ced8c9116cd6355847347e3de2ec08e",
-    "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/crates/engine/src/cards.rs": "444df7e9d12d0693a50f349aa32b04693081219a68baee2866f1022f0d0a36e0",
-    "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_source_prevention.rs": "375a18bea857e374c4db03aa3746563dfdede0eca4c5dd1293f845c00098b2e8",
-    "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_roles.rs": "fd8b9c6739594ad1fdc8c7c479457134d92d613f72bf01de21ba6602e1cdcc5e",
-    "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_event_objects.rs": "aaee556aad5e0ed788a83e8f0415fb2a26be9552ae8da3c942c542fd9904a93e",
-    "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_explore.rs": "6b59edea8fa5e2d6b2d7e8cd85f0e9e0d422fae0de5b1a3bfd9a6c9f59cfd777",
-    "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_draw_events.rs": "257a1334a1a491a39ebe2a377e18599d029c4fa2e03d8a47fafce7dd97579d15",
-    "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/crates/engine/src/engine_entry_counter_events.rs": "a9972aa5936ec2122b907fe7662e9b00029161b02d15ffbc9f9a30695166459f",
-    "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/crates/engine/src/engine_programs.rs": "c36a60ac5d0a35209417d5c31b4d690e9dafc7ec8e9de0417e640c577c5d0158",
-    "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_paradigm.rs": "4ac3c865c64041fe8f26912881454dd931166a45f265da5f65cb1e9b6ee0c794",
-    "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_mana_lots.rs": "97eb1e45bc1ca348114ab8a7bc6af62ae78bbe881acf26b8f881f73deb951546",
-    "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_ability_timeline.rs": "49c04db38f3a8a183d97a9693c8d4a14eb514cbde3f5c78f3b1ec8eb55042f55",
-    "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_death_exile.rs": "6e6a91355dc8bf58abd9201d335776234b56ad1de4cf6c858a46ba9b2562b998",
-    "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_delayed_target_events.rs": "927e8b6cc0484723f9c759cd4fcd40d9f1dc0672198fd9aed070b65971054a0b",
-    "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_earthbend.rs": "7f5070f0ad15e6f908d7e187fb836c3351e92213fc22a1af39167eba39b05c84",
-    "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/tests/tdm_remaining_world_rules.rs": "af2b5fd3ff428164d72c34efa9cc5588e5d5f920a8535f50d6d337d78d77e409",
-    "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/tests/dft_trigger_facts_engine.rs": "44ed2b9ac67da6531cf070e59960090cb575083b3bf04a24d72d3feb16e493d2",
-    "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine.rs": "d69dd9d1e88e7a6e2be8cd316d9782a92e6a79e393b78fef48fb1dfc821f4069",
-    "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_programs.rs": "1759e35aabe300dd72e4a81c338bbaa5f4562790f5ff81938191c4e478020f7b"
+    "<worktree>/tdm-counter-world/rustmage/crates/engine/src/cards.rs": "508cb9d8b58e00958438bf5301d6690a0ced8c9116cd6355847347e3de2ec08e",
+    "<worktree>/tdm-complete-set/rustmage/crates/engine/src/cards.rs": "444df7e9d12d0693a50f349aa32b04693081219a68baee2866f1022f0d0a36e0",
+    "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_source_prevention.rs": "375a18bea857e374c4db03aa3746563dfdede0eca4c5dd1293f845c00098b2e8",
+    "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_roles.rs": "fd8b9c6739594ad1fdc8c7c479457134d92d613f72bf01de21ba6602e1cdcc5e",
+    "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_event_objects.rs": "aaee556aad5e0ed788a83e8f0415fb2a26be9552ae8da3c942c542fd9904a93e",
+    "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_explore.rs": "6b59edea8fa5e2d6b2d7e8cd85f0e9e0d422fae0de5b1a3bfd9a6c9f59cfd777",
+    "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_draw_events.rs": "257a1334a1a491a39ebe2a377e18599d029c4fa2e03d8a47fafce7dd97579d15",
+    "<worktree>/tdm-complete-set/rustmage/crates/engine/src/engine_entry_counter_events.rs": "a9972aa5936ec2122b907fe7662e9b00029161b02d15ffbc9f9a30695166459f",
+    "<worktree>/tdm-complete-set/rustmage/crates/engine/src/engine_programs.rs": "c36a60ac5d0a35209417d5c31b4d690e9dafc7ec8e9de0417e640c577c5d0158",
+    "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_paradigm.rs": "4ac3c865c64041fe8f26912881454dd931166a45f265da5f65cb1e9b6ee0c794",
+    "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_mana_lots.rs": "97eb1e45bc1ca348114ab8a7bc6af62ae78bbe881acf26b8f881f73deb951546",
+    "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_ability_timeline.rs": "49c04db38f3a8a183d97a9693c8d4a14eb514cbde3f5c78f3b1ec8eb55042f55",
+    "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_death_exile.rs": "6e6a91355dc8bf58abd9201d335776234b56ad1de4cf6c858a46ba9b2562b998",
+    "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_delayed_target_events.rs": "927e8b6cc0484723f9c759cd4fcd40d9f1dc0672198fd9aed070b65971054a0b",
+    "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_earthbend.rs": "7f5070f0ad15e6f908d7e187fb836c3351e92213fc22a1af39167eba39b05c84",
+    "<worktree>/tdm-counter-world/rustmage/tests/tdm_remaining_world_rules.rs": "af2b5fd3ff428164d72c34efa9cc5588e5d5f920a8535f50d6d337d78d77e409",
+    "<worktree>/tdm-counter-world/rustmage/tests/dft_trigger_facts_engine.rs": "44ed2b9ac67da6531cf070e59960090cb575083b3bf04a24d72d3feb16e493d2",
+    "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine.rs": "d69dd9d1e88e7a6e2be8cd316d9782a92e6a79e393b78fef48fb1dfc821f4069",
+    "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_programs.rs": "1759e35aabe300dd72e4a81c338bbaa5f4562790f5ff81938191c4e478020f7b"
   },
   "resolution_cast_boundary": "CR608.2g: casting a nonmana spell during resolution does not resolve it immediately. The current parent continues and finishes before NWF resolves. Finished parent exile/cascade rosters are excluded; no suspended-parent traversal is introduced. A real ordinary free-cast exclusion fixture is included.",
   "known_integration_work": [
@@ -2667,7 +2667,7 @@
   "preserved_read_only_inventories": {
     "tdm-semantic-event-inventory-a-g.json": {
       "retained": {
-        "path": "/home/altf4/.cache/rustmage-tdm/semantic-source-audit-inventories/tdm-semantic-event-inventory-a-g.json",
+        "path": "<cache>/rustmage-tdm/semantic-source-audit-inventories/tdm-semantic-event-inventory-a-g.json",
         "sha256": "9ba9da3e684bf716951331e49f6ec8a44bdb66926db2b5826077f5fa905588e8"
       },
       "body": {
@@ -3384,13 +3384,13 @@
     },
     "tdm-semantic-event-references-s-z.json": {
       "retained": {
-        "path": "/home/altf4/.cache/rustmage-tdm/semantic-source-audit-inventories/tdm-semantic-event-references-s-z.json",
+        "path": "<cache>/rustmage-tdm/semantic-source-audit-inventories/tdm-semantic-event-references-s-z.json",
         "sha256": "87dfe8e871b7ce9a0971b9b98c1e4ca75663a4eb186a348a6a0b3f07c7b74a9f"
       },
       "body": {
         "scope": "Finite read-only semantic event-reference inventory: ENTRY/LEAVE/DEATH-BATCH/DISCARD/COMBAT/delayed trigger families; damage/cast/tap/counter/activation/target acquisition covered independently by a-g. No runtime/test edits and no builds.",
         "baseline": "11403d9e84ad3c899aca9d7e0dc82304ad1e98bd",
-        "worktree": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage",
+        "worktree": "<worktree>/tdm-counter-world/rustmage",
         "uncommitted_at_start": [
           "crates/engine/src/engine_temporary_copy.rs",
           "tests/tdm_remaining_world_rules.rs (four appended negative fixtures)"
@@ -3399,7 +3399,7 @@
           "CR609.7a": "All semantically referred objects, not only damage-capable sources; exact incarnation retained after departure.",
           "CR400.7e": "Zone-change trigger can find new object only in public destination; keep old matching event object too.",
           "CR603.10a": "Departure/sacrifice/GY-leave event qualification uses pre-event facts.",
-          "source": "/home/altf4/.cache/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt"
+          "source": "<cache>/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt"
         },
         "common_constraints": [
           "Effect-independent retention at actual matching dispatcher, before cloned multiplicity expansion.",
@@ -5569,187 +5569,187 @@
         },
         "source_files_read": [
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/cards.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/cards.rs",
             "sha256": "6c9a09741ca2d221291fb4d5e4c1c19b2c78f76dc60b01b14a97143d38512530",
             "read_extent": "relevant dispatchers and adjacent payload definitions; complete small files where displayed",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine.rs",
             "sha256": "b83afd726e3dfb4e489aa7045d772c24a9a26dae162ab6d8f7349e324dd519b4",
             "read_extent": "relevant dispatchers and adjacent payload definitions; complete small files where displayed",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_programs.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_programs.rs",
             "sha256": "02a14a8c855af28984f2bd6d7c09a9bc7dc48a819b9bbf1ea384c642c93968dc",
             "read_extent": "relevant dispatchers and adjacent payload definitions; complete small files where displayed",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_event_objects.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_event_objects.rs",
             "sha256": "f8ded01cbc5cace0bf847d6133a67102e01743960651609b3b84b0ff61b268c0",
             "read_extent": "relevant dispatchers and adjacent payload definitions; complete small files where displayed",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_source_prevention.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_source_prevention.rs",
             "sha256": "f091559d45f8c54326edf0d794ee3549136531a0009a31a3a25ac4d47853035d",
             "read_extent": "relevant dispatchers and adjacent payload definitions; complete small files where displayed",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_death_return.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_death_return.rs",
             "sha256": "7eaccf5086c0bde4db5e41075613356ae8a71ccde645d778617c270f591f53bf",
             "read_extent": "relevant dispatchers and adjacent payload definitions; complete small files where displayed",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_discard_events.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_discard_events.rs",
             "sha256": "6c26b2b5ed186c2ba887dd72a4596338e29e9796026f63320a5a789bbe03845f",
             "read_extent": "relevant dispatchers and adjacent payload definitions; complete small files where displayed",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_temporary_abilities.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_temporary_abilities.rs",
             "sha256": "c33f529aa6752e610b235228767fab09bc5b232b4573cf7340796d6c030a38b2",
             "read_extent": "relevant dispatchers and adjacent payload definitions; complete small files where displayed",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_sos_graveyard.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_sos_graveyard.rs",
             "sha256": "0c4a94fea742da67aa0bfee899274a136ff87bbb91f4ce541152bfe9974820ec",
             "read_extent": "relevant dispatchers and adjacent payload definitions; complete small files where displayed",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_exile.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_exile.rs",
             "sha256": "f9aed256f3279b0afc980a58be925567f8a246d4bb5be829c6442803608465f2",
             "read_extent": "relevant dispatchers and adjacent payload definitions; complete small files where displayed",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_return_events.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_return_events.rs",
             "sha256": "2c3df037113cd50b9579b2faa317d9ca01b18c2302bdb3c89311b55944e2ef06",
             "read_extent": "relevant dispatchers and adjacent payload definitions; complete small files where displayed",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_delayed_target_events.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_delayed_target_events.rs",
             "sha256": "2d64be7e6eaab598f72df50d47e5f93538b64427eaeeb9c522650b3761c70021",
             "read_extent": "relevant dispatchers and adjacent payload definitions; complete small files where displayed",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_turn_callbacks.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_turn_callbacks.rs",
             "sha256": "0bb3879d3355bd316a707ed6faf6912053ab7bd71bb3e32603762fd6b2a48841",
             "read_extent": "relevant dispatchers and adjacent payload definitions; complete small files where displayed",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_stack_copies.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_stack_copies.rs",
             "sha256": "2e285e93ba80f95141657dc843b9aa711be3f6cbbc919614f11fd5950835c48e",
             "read_extent": "relevant dispatchers and adjacent payload definitions; complete small files where displayed",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_steps.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_steps.rs",
             "sha256": "3997f20f2ca77851de4b98fe0897d4008b831b03dc696a4de6caa9c8dccb6c16",
             "read_extent": "relevant dispatchers and adjacent payload definitions; complete small files where displayed",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_mobilize.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_mobilize.rs",
             "sha256": "b47e499cc03c330a8f4f19f9ef49aa2e404ac46fa263bd4037534135d83a50ce",
             "read_extent": "relevant dispatchers and adjacent payload definitions; complete small files where displayed",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_return_links.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_return_links.rs",
             "sha256": "145833e1b360d325c5489da76693751631c3fecf32faf7eee655971ca1ea9d43",
             "read_extent": "relevant dispatchers and adjacent payload definitions; complete small files where displayed",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_upkeep_tokens.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_upkeep_tokens.rs",
             "sha256": "2872a2885b698cb73f87f76ad8a5b2ce8c3efae5246a9e062bc1aef16c4f4d63",
             "read_extent": "relevant dispatchers and adjacent payload definitions; complete small files where displayed",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_combat_schedule.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_combat_schedule.rs",
             "sha256": "793348cb3387106cfe103e8ef68294014519fb9331b02f759f9554d24a9c1d37",
             "read_extent": "relevant dispatchers and adjacent payload definitions; complete small files where displayed",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_earthbend.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_earthbend.rs",
             "sha256": "6723df5b145bff11f6721629f7c2284e2a4cf48f436cfb0220b9834667e92a41",
             "read_extent": "relevant dispatchers and adjacent payload definitions; complete small files where displayed",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_warp.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_warp.rs",
             "sha256": "b5650381aa048eb8a7061023d1b29b1b8aa127a7d0ea0213db83b57aa874b593",
             "read_extent": "relevant dispatchers and adjacent payload definitions; complete small files where displayed",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_suspend.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_suspend.rs",
             "sha256": "f698c5ce3c1582e7d294bde84336e2ee9974b535c5fe38d9282f332c0c4700f4",
             "read_extent": "relevant dispatchers and adjacent payload definitions; complete small files where displayed",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_copy_characteristics.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_copy_characteristics.rs",
             "sha256": "28c26d775bc56ddf5ceeec78c590f9bf9ff9442451469b7d4545cfc9b9e6ba78",
             "read_extent": "relevant dispatchers and adjacent payload definitions; complete small files where displayed",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_forage.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_forage.rs",
             "sha256": "f8b7bb460c5ed7fdfccb61ffc554f6ceb4fc021a984ab619c021ca5ce4d2f71f",
             "read_extent": "relevant dispatchers and adjacent payload definitions; complete small files where displayed",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_evidence.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_evidence.rs",
             "sha256": "c4b524bfcbaa425eb4683c7ff79f0ed2324ff69c8eb993e16ebeba0584db79b5",
             "read_extent": "relevant dispatchers and adjacent payload definitions; complete small files where displayed",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_manifest.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_manifest.rs",
             "sha256": "754a52d1bc14e178c8a2353ba1352102ac62956366e87524cde05f92237e35cd",
             "read_extent": "relevant dispatchers and adjacent payload definitions; complete small files where displayed",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_explore.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_explore.rs",
             "sha256": "9fabdc9862ad677452ac902ab7665b65be41a8690168735ce117fb0ee80d1ed5",
             "read_extent": "relevant dispatchers and adjacent payload definitions; complete small files where displayed",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_crew_participants.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_crew_participants.rs",
             "sha256": "c56c6ebf2da00ad85c3628240f6df47ea9929b8d367b3bd4c0ef8f86d175a979",
             "read_extent": "relevant event dispatcher and adjacent definitions",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_teamwork.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_teamwork.rs",
             "sha256": "8a140c567d52226076af22af2d46121fd84c1e8ee55927678d4997d342bb481b",
             "read_extent": "relevant event dispatcher and adjacent definitions",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_saddle.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_saddle.rs",
             "sha256": "061a40b8dc81eefd4ecaabd33f81572f73a16afdf64d3b85c648cec8d890ba5e",
             "read_extent": "relevant event dispatcher and adjacent definitions",
             "matches_requested_baseline": true
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_granted_abilities.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_granted_abilities.rs",
             "sha256": "45dbc04337d484ebb9fd6b6bb2b873e1b52f1d77514085a5db8731f0b94e372c",
             "read_extent": "relevant event dispatcher and adjacent definitions",
             "matches_requested_baseline": true
@@ -5758,7 +5758,7 @@
         "ordinary_source_choice_witnesses": "Use existing NWF fixture only for source chooser; keep native trigger and ordinary game actions for each candidate where possible. Source choice asks any reference, regardless damage capability; reject incidental refs transactionally. Compare both seats, raw/index and restore where owner fixture coverage naturally supports it.",
         "not_claimed": "No executable negative or passing evidence generated by this read-only audit. Existing appended Bloodwitch/Equip negatives were read, not run. Semantic classification of effect-free object references is a CR609.7a interpretation, not new card admission proof.",
         "oracle_source": {
-          "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/data/standard/cards.json",
+          "path": "<worktree>/tdm-counter-world/rustmage/data/standard/cards.json",
           "sha256": "6d187ee001d6284af816d4da7ef1a811f6316572616c049f492b4a96a87351c0",
           "extent": "all30 native AttackDeclared Oracle bodies plus explicitly named ordinary candidate examples and four combat-cost examples; no claim all5164 Oracle bodies reread"
         }
@@ -5767,7 +5767,7 @@
     },
     "tdm-semantic-action-inventory-a-g.json": {
       "retained": {
-        "path": "/home/altf4/.cache/rustmage-tdm/semantic-source-audit-inventories/tdm-semantic-action-inventory-a-g.json",
+        "path": "<cache>/rustmage-tdm/semantic-source-audit-inventories/tdm-semantic-action-inventory-a-g.json",
         "sha256": "1b21b9f08814c5f3fd59a7da8346d42a5c56f68b371b10e7a832b9e90c09763a"
       },
       "body": {
@@ -5775,7 +5775,7 @@
         "base": "11403d9e84ad3c899aca9d7e0dc82304ad1e98bd",
         "working_tree": "g-s owner actively authoring completion; line references describe read source, not a frozen final commit",
         "rules_source": {
-          "path": "/home/altf4/.cache/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
+          "path": "<cache>/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
           "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
           "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
           "notes": "Local complete primary CR read; web tool could not reopen txt, but ELD primary notes accessed."
@@ -5980,7 +5980,7 @@
     },
     "tdm-reflexive-semantic-audit.json": {
       "retained": {
-        "path": "/home/altf4/.cache/rustmage-tdm/semantic-source-audit-inventories/tdm-reflexive-semantic-audit.json",
+        "path": "<cache>/rustmage-tdm/semantic-source-audit-inventories/tdm-reflexive-semantic-audit.json",
         "sha256": "b3cc4214cd12cac99ef42fc103db5857911bc94e104448cd53ffbb2a7ffe8abe"
       },
       "body": {
@@ -6215,7 +6215,7 @@
         },
         "native_templates": [
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/big/generous_plunderer.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/big/generous_plunderer.rs",
             "sha256": "ba5829552e3d94ddacd641fc891c1210c227ef5a143ed895f9c3bf83e638ab7e",
             "card": "Generous Plunderer",
             "oracle": "Menace\nAt the beginning of your upkeep, you may create a Treasure token. When you do, target opponent creates a tapped Treasure token.\nWhenever this creature attacks, it deals damage to defending player equal to the number of artifacts they control.",
@@ -6224,7 +6224,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/blb/curious_forager.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/blb/curious_forager.rs",
             "sha256": "a984eff3e6e74b7776f78b5b6e4543391abc5b41629ecf5d7918cd37b8847dce",
             "card": "Curious Forager",
             "oracle": "When this creature enters, you may forage. When you do, return target permanent card from your graveyard to your hand. (To forage, exile three cards from your graveyard or sacrifice a Food.)",
@@ -6233,7 +6233,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/dft/gastal_blockbuster.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/dft/gastal_blockbuster.rs",
             "sha256": "32002b58e77c1856adf5ee2cc6fc482cfa65d5175c3a6abde7137d12413a70be",
             "card": "Gastal Blockbuster",
             "oracle": "When this creature enters, you may sacrifice a creature or Vehicle. When you do, destroy target artifact an opponent controls.",
@@ -6242,7 +6242,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/fdn/faebloom_trick.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/fdn/faebloom_trick.rs",
             "sha256": "9b651fdaa2869f5810173911c278054146000dacded05ef6738c2839074d2a83",
             "card": "Faebloom Trick",
             "oracle": "Create two 1/1 blue Faerie creature tokens with flying. When you do, tap target creature an opponent controls.",
@@ -6251,7 +6251,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/fdn/wildborn_preserver.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/fdn/wildborn_preserver.rs",
             "sha256": "758ca8dc8c55a000e684df32c6896bd98698919b2ca61f80ebde49f31f83adef",
             "card": "Wildborn Preserver",
             "oracle": "Flash (You may cast this spell any time you could cast an instant.)\nReach (This creature can block creatures with flying.)\nWhenever another non-Human creature you control enters, you may pay {X}. When you do, put X +1/+1 counters on this creature.",
@@ -6260,7 +6260,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/fra/lich_s_relic.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/fra/lich_s_relic.rs",
             "sha256": "3672280dcb1704bf893c6a6d83afdd6e8bd1dad700fcf0fe0407169d3949334f",
             "card": "Lich's Relic",
             "oracle": "When this Equipment enters, you may pay {2}. When you do, for each opponent, destroy up to one target creature or planeswalker that player controls.\nEquipped creature gets +2/+1.\nEquip {2}",
@@ -6269,7 +6269,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/fra/primal_witchstalker.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/fra/primal_witchstalker.rs",
             "sha256": "1e49cbe990910706a7d8e5468673009ee31231920842125556c42d84519bbb18",
             "card": "Primal Witchstalker",
             "oracle": "Menace (This creature can't be blocked except by two or more creatures.)\nWhen this creature enters, mill four cards. When you do, return target land card from your graveyard to the battlefield tapped. (To mill four cards, put the top four cards of your library into your graveyard.)",
@@ -6278,7 +6278,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/fra/tether_technician.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/fra/tether_technician.rs",
             "sha256": "4646afeca10091e85804efdfb54d70d809710fb5d1db35e9488b044f240a19d5",
             "card": "Tether Technician",
             "oracle": "Reach\nWhen this creature enters, you may discard a card. When you do, this creature deals 2 damage to any target.",
@@ -6287,7 +6287,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/fra/winter_tormented_loner.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/fra/winter_tormented_loner.rs",
             "sha256": "2a97a76c90afe4928306c6f82271282635822c3e43186feac31e8defc3a55d9f",
             "card": "Winter, Tormented Loner",
             "oracle": "When Winter enters, you may sacrifice a creature or planeswalker. When you do, each opponent sacrifices a creature of their choice.\nWinter gets +1/+0 for each creature and planeswalker card in your graveyard.",
@@ -6296,7 +6296,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/hob/bolg_of_the_north.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/hob/bolg_of_the_north.rs",
             "sha256": "3e0ae399af8c63135ecf14e5196af0ae0e4641d5650e2d7523e5b9fde70e669e",
             "card": "Bolg of the North",
             "oracle": "When Bolg enters, you may sacrifice another creature. When you do, Bolg deals damage equal to that creature's power to another target creature. If excess damage was dealt this way, amass Goblins X, where X is that excess damage. (Put X +1/+1 counters on an Army you control. It's also a Goblin. If you don't control an Army, create a 0/0 black Goblin Army creature token first.)",
@@ -6305,7 +6305,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/hob/dain_ironfoot.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/hob/dain_ironfoot.rs",
             "sha256": "4d5de01fc88cc2b8003e6132ff7c074c07134e46ce33c7528f978b40936a5777",
             "card": "D\u00e1in Ironfoot",
             "oracle": "When D\u00e1in enters, create a colorless Equipment artifact token named Axe with \"Equipped creature gets +1/+0\" and equip {2}. When you do, attach it to target creature you control.\nWhenever D\u00e1in attacks, each equipped attacking creature gains double strike until end of turn.",
@@ -6315,7 +6315,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/hob/thorin_mountain_king.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/hob/thorin_mountain_king.rs",
             "sha256": "c381e938b11e347d1af8d34a4b1237241b305557a3a138a6808e0a3e8ca1c761",
             "card": "Thorin, Mountain-king",
             "oracle": "Trample\nWhen Thorin enters, attach any number of target Equipment you control to target creature you control. When one or more Equipment become attached to that creature this way, that creature deals damage equal to its power to up to one target creature.",
@@ -6324,7 +6324,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/lci/inti_seneschal_of_the_sun.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/lci/inti_seneschal_of_the_sun.rs",
             "sha256": "f31113aae3340749ca4d9ba53ebfff512ab34d00512b3c13001d624df25fb7e3",
             "card": "Inti, Seneschal of the Sun",
             "oracle": "Whenever you attack, you may discard a card. When you do, put a +1/+1 counter on target attacking creature. It gains trample until end of turn.\nWhenever you discard one or more cards, exile the top card of your library. You may play that card until your next end step.",
@@ -6333,7 +6333,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/mkm/sample_collector.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/mkm/sample_collector.rs",
             "sha256": "1b6683ff09dcd9de6156c61fcc9f90ed3ce2332837c883b95631d3f28a24cf9c",
             "card": "Sample Collector",
             "oracle": "Whenever this creature attacks, you may collect evidence 3. When you do, put a +1/+1 counter on target creature you control. (To collect evidence 3, exile cards with total mana value 3 or greater from your graveyard.)",
@@ -6342,7 +6342,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/msh/ant_man_colony_commander.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/msh/ant_man_colony_commander.rs",
             "sha256": "a1875808fde860f269af3a628b75a66e7641f36e2c83cdc65b89fb8aead2f76b",
             "card": "Ant-Man, Colony Commander",
             "oracle": "Whenever Ant-Man attacks, you may pay {1}. When you do, put a +1/+1 counter on target creature.\nWhenever you put a +1/+1 counter on a creature, create a 1/1 green Insect creature token. This ability triggers only once each turn.",
@@ -6351,7 +6351,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/msh/bullseye_death_dealer.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/msh/bullseye_death_dealer.rs",
             "sha256": "6e0612aa1b2623a577c8584e3982de87e57e5cf3dab598bab828c6845e0240cd",
             "card": "Bullseye, Death Dealer",
             "oracle": "When Bullseye enters, you may sacrifice an artifact or discard a nonland card. When you do, Bullseye deals 2 damage to any target.\n{3}, {T}, Sacrifice an artifact or discard a nonland card: Bullseye deals 2 damage to any target.",
@@ -6360,7 +6360,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/msh/claim_the_kingdom.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/msh/claim_the_kingdom.rs",
             "sha256": "315b6270339d555cbe6ee79ae7def6c802bc8cfc9128043e73578d9f1dc7ffc6",
             "card": "Claim the Kingdom",
             "oracle": "Landfall \u2014 Whenever a land you control enters, put a +1/+1 counter on target creature you control and a plan counter on this enchantment.\nWhen the fourth plan counter is put on this enchantment, sacrifice it. When you do, put an indestructible counter on target creature you control.",
@@ -6369,7 +6369,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/msh/construct_a_cosmic_cube.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/msh/construct_a_cosmic_cube.rs",
             "sha256": "aa4477a3aa4bb7c37c141832ec66a2a64d0f842206189a233e9ee3673fc2d394",
             "card": "Construct a Cosmic Cube",
             "oracle": "Whenever you draw your second card each turn, create a 2/1 black Villain creature token with menace and put a plan counter on this enchantment.\nWhen the seventh plan counter is put on this enchantment, sacrifice it. When you do, you control target opponent during their next turn. (You see all cards that player could see and make all decisions for them.)",
@@ -6378,7 +6378,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/msh/death_to_our_enemies.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/msh/death_to_our_enemies.rs",
             "sha256": "56ce2d8dbf43391827ca0af100693486dc5bc0ca5a6740eda17bc8671133c58a",
             "card": "Death to Our Enemies",
             "oracle": "Whenever you cast a noncreature spell, create a tapped Treasure token and put a plan counter on this enchantment.\nWhen the fourth plan counter is put on this enchantment, sacrifice it. When you do, it deals 7 damage divided as you choose among one or two targets.",
@@ -6387,7 +6387,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/msh/doom_reigns_supreme.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/msh/doom_reigns_supreme.rs",
             "sha256": "83581999714d71fa335d0cf9897a08d7f08c938ebfce4060bff5f2e1a06594aa",
             "card": "Doom Reigns Supreme",
             "oracle": "Whenever a Villain you control enters, each opponent loses 1 life and you gain 1 life. Put a plan counter on this enchantment.\nWhen the fifth plan counter is put on this enchantment, sacrifice it. When you do, target opponent exiles the top five cards of their library. You may cast up to two spells from among the exiled cards without paying their mana costs.",
@@ -6396,7 +6396,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/msh/grim_reaper_lethal_legionnaire.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/msh/grim_reaper_lethal_legionnaire.rs",
             "sha256": "5b4f6b5f93d8c1fc4e62ce434283242e8c19502fac39a043f79b32e1723bb42b",
             "card": "Grim Reaper, Lethal Legionnaire",
             "oracle": "Whenever Grim Reaper attacks, you may pay {3}{B}. When you do, return target creature card from your graveyard to the battlefield tapped and attacking with a finality counter on it. (If a creature with a finality counter on it would die, exile it instead.)",
@@ -6405,7 +6405,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/msh/hawkeye_master_marksman.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/msh/hawkeye_master_marksman.rs",
             "sha256": "6a77bb1bc6ac627ece7d653b9d3672563c6686d3a1362905cb5dc385371c6570",
             "card": "Hawkeye, Master Marksman",
             "oracle": "Reach, first strike\nTrick Arrows \u2014 Whenever Hawkeye becomes tapped, you may pay {1} up to three times. When you do, choose up to that many \u2014\n\u2022 Net \u2014 Target creature can't block this turn.\n\u2022 Explosive \u2014 Hawkeye deals 2 damage to target player.\n\u2022 Boomerang \u2014 Discard a card, then draw a card.",
@@ -6414,7 +6414,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/msh/killmonger_scourge_of_wakanda.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/msh/killmonger_scourge_of_wakanda.rs",
             "sha256": "50027dcc95a8a747194ea0d57a0a5e3b26517fe70d8627e72415468aff399d0c",
             "card": "Killmonger, Scourge of Wakanda",
             "oracle": "When Killmonger enters, you may sacrifice another creature. When you do, destroy target nonland permanent an opponent controls.\nAs long as there are two or more creature cards in your graveyard, Killmonger gets +2/+1.",
@@ -6423,7 +6423,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/msh/red_hulk.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/msh/red_hulk.rs",
             "sha256": "4dc93bc3fff092e66430d1db6cdc333d9b0631365402529d9ca32454da614901",
             "card": "Red Hulk",
             "oracle": "Reach, trample\nEnrage \u2014 Whenever Red Hulk is dealt damage, put a +1/+1 counter on him. When you do, he deals damage equal to the number of +1/+1 counters on him to any other target.",
@@ -6432,7 +6432,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/msh/rewrite_history.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/msh/rewrite_history.rs",
             "sha256": "e446e1999ca76ae97841b8f500b29c2a18acfb13f1af5ef0d63b7ce4e91622f3",
             "card": "Rewrite History",
             "oracle": "Whenever one or more creatures you control become tapped, draw a card, then discard a card and put a plan counter on this enchantment.\nWhen the fourth plan counter is put on this enchantment, sacrifice it. When you do, return up to two target instant and/or sorcery cards from your graveyard to your hand.",
@@ -6441,7 +6441,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/msh/speed_young_avenger.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/msh/speed_young_avenger.rs",
             "sha256": "5667ba39d2d7e0ef4b99c0804d671d8c9ca7dc981e94627876bb669fa068864f",
             "card": "Speed, Young Avenger",
             "oracle": "Haste\nWhenever you cast a noncreature spell, you may pay {1}. When you do, target creature with haste can't be blocked this turn except by creatures with haste.",
@@ -6450,7 +6450,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/msh/spider_man_to_the_rescue.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/msh/spider_man_to_the_rescue.rs",
             "sha256": "6e0864fb802e1737a0fc3640ad6679e27b4eb167dab91757532984b7fbb19fe5",
             "card": "Spider-Man, To the Rescue",
             "oracle": "Flash\nReach, vigilance\nNo One Dies! \u2014 When Spider-Man enters, you may tap him. When you do, another target nonattacking creature you control gains indestructible until end of turn. (Damage and effects that say \"destroy\" don't destroy it.)",
@@ -6459,7 +6459,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/sos/rubble_rouser.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/sos/rubble_rouser.rs",
             "sha256": "faeaf1084795a5c265735c0907624c4cbc76d9adc0ab30c7a26f3bc8120b4f37",
             "card": "Rubble Rouser",
             "oracle": "When this creature enters, you may discard a card. If you do, draw a card.\n{T}, Exile a card from your graveyard: Add {R}. When you do, this creature deals 1 damage to each opponent.",
@@ -6468,7 +6468,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/sos/tester_of_the_tangential.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/sos/tester_of_the_tangential.rs",
             "sha256": "d56cb599df06dcffc2e6a58e51e47e953b757847658239d86787ecea18a454e1",
             "card": "Tester of the Tangential",
             "oracle": "Increment (Whenever you cast a spell, if the amount of mana you spent is greater than this creature's power or toughness, put a +1/+1 counter on this creature.)\nAt the beginning of combat on your turn, you may pay {X}. When you do, move X +1/+1 counters from this creature onto another target creature.",
@@ -6477,7 +6477,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/tla/earthbender_ascension.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/tla/earthbender_ascension.rs",
             "sha256": "00e542cb0e4a9090408aa90321304e32a4a544f569f6406f972f5e832d460382",
             "card": "Earthbender Ascension",
             "oracle": "When this enchantment enters, earthbend 2. Then search your library for a basic land card, put it onto the battlefield tapped, then shuffle.\nLandfall \u2014 Whenever a land you control enters, put a quest counter on this enchantment. When you do, if it has four or more quest counters on it, put a +1/+1 counter on target creature you control. It gains trample until end of turn.",
@@ -6486,7 +6486,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/tmt/leatherhead_swamp_stalker.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/tmt/leatherhead_swamp_stalker.rs",
             "sha256": "84b76e204b92a3400da5f9b1aa469ffa059fed2adf99d3cb043b21258fbe2451",
             "card": "Leatherhead, Swamp Stalker",
             "oracle": "Trample\nLeatherhead enters with a hexproof counter on her.\nWhenever Leatherhead deals combat damage to a player, you may remove a counter from her. When you do, destroy target artifact or enchantment that player controls.",
@@ -6495,7 +6495,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/woe/curse_of_the_werefox.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/woe/curse_of_the_werefox.rs",
             "sha256": "f8c8fb6f6217f76e3afcc3bb5fbe9e8569b17a26f4cb613a2c2b379ef9d3e648",
             "card": "Curse of the Werefox",
             "oracle": "Create a Monster Role token attached to target creature you control. When you do, that creature fights up to one target creature you don't control. (If you control another Role on it, put that one into the graveyard. Enchanted creature gets +1/+1 and has trample. Creatures that fight each deal damage equal to their power to the other.)",
@@ -6505,7 +6505,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/woe/merry_bards.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/woe/merry_bards.rs",
             "sha256": "8e82460e03942bd82951c9190ab049fda8a18adb3f378467c6d484932e28ac8b",
             "card": "Merry Bards",
             "oracle": "When this creature enters, you may pay {1}. When you do, create a Young Hero Role token attached to target creature you control. (If you control another Role on it, put that one into the graveyard. Enchanted creature has \"Whenever this creature attacks, if its toughness is 3 or less, put a +1/+1 counter on it.\")",
@@ -6514,7 +6514,7 @@
             ]
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/src/card_definitions/woe/spellbook_vendor.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/src/card_definitions/woe/spellbook_vendor.rs",
             "sha256": "9abf34637d3ef2d19f4fab10aeafd316cb2e50ccd5e749ccb200ddabe5f5ad0c",
             "card": "Spellbook Vendor",
             "oracle": "Vigilance\nAt the beginning of combat on your turn, you may pay {1}. When you do, create a Sorcerer Role token attached to target creature you control. (If you control another Role on it, put that one into the graveyard. Enchanted creature gets +1/+1 and has \"Whenever this creature attacks, scry 1.\")",
@@ -6530,67 +6530,67 @@
         ],
         "source_pins": [
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_roles.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_roles.rs",
             "sha256": "bf277d7e9ad1ee3ccce8d6f8d0933c048025637560be189c541ad5ad83932fb4"
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_source_prevention.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_source_prevention.rs",
             "sha256": "d3071254162d37d7cef771a9fca7e2e1d931e7f3cd3d33dbc80d74b8ca00fce1"
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_programs.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_programs.rs",
             "sha256": "94aa9f889fd8bfb663bb7b0d529ce7f565bc1b6f745442415954936103d97baa"
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_replacements.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_replacements.rs",
             "sha256": "35fe37de845353052d089214b2513e21bb0bbb6006c4c85d2d80a7df0b90fd5a"
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_resolution_mana.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_resolution_mana.rs",
             "sha256": "155221bf1bd67ec0865fb09275e8222155b974c4baca5a2919ed10ce505b7716"
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_mana_announcements.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_mana_announcements.rs",
             "sha256": "1a9c867c28bc98d82827d73a235cc2e28fec50975aadb360ced1980a80afa712"
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_return_attachment.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_return_attachment.rs",
             "sha256": "474d6fafbcf5b6597feb6531610f9bebbd965a1fb5b59b3ce545ed7ff22f32fc"
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_discard_events.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_discard_events.rs",
             "sha256": "51c4b33a541341f3975c88791e564a451278f780c6677f0318621ff5d63ef8b2"
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_effect_choices.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_effect_choices.rs",
             "sha256": "cff993f01fcdba285c5fb09a2117e29ff296d7815e1853f4a2428fefac5e6c98"
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_event_objects.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_event_objects.rs",
             "sha256": "f46ced1b3e63f4a4096ee4366f4b15f237a0b6063ce1190996d9269eda42343c"
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_fight.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_fight.rs",
             "sha256": "8e569f539e24a85dc0c3cfe95361166a928127a48120b428b5d6a2ddf7d94285"
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_growth_cost.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_growth_cost.rs",
             "sha256": "071420d086f643a86ee1e43571f1d1d4ded6d9518edf28b61c9c11c797c9fdbc"
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_damage_triggers.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_damage_triggers.rs",
             "sha256": "ef3e03aaabe4ac66ec31a05df6fed331ab8c0a9de3e09ea3ecaf415bbfea4e8a"
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_event_counter_core.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_event_counter_core.rs",
             "sha256": "a64791691b53db738ec4a30c103b7ad52259b60df6bd138eec6cf9ac9bc89ee9"
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_steps.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_steps.rs",
             "sha256": "3997f20f2ca77851de4b98fe0897d4008b831b03dc696a4de6caa9c8dccb6c16"
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/cards.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/cards.rs",
             "sha256": "508cb9d8b58e00958438bf5301d6690a0ced8c9116cd6355847347e3de2ec08e"
           }
         ]
@@ -6599,7 +6599,7 @@
     },
     "tdm-waiting-source-inventory-a-g.json": {
       "retained": {
-        "path": "/home/altf4/.cache/rustmage-tdm/semantic-source-audit-inventories/tdm-waiting-source-inventory-a-g.json",
+        "path": "<cache>/rustmage-tdm/semantic-source-audit-inventories/tdm-waiting-source-inventory-a-g.json",
         "sha256": "48c23f1cd2dddb3760e01f332a683b3342278ba198dc4d1a7df306560d28cbf8"
       },
       "body": {
@@ -6818,14 +6818,14 @@
     },
     "tdm-waiting-lifetime-audit.json": {
       "retained": {
-        "path": "/home/altf4/.cache/rustmage-tdm/semantic-source-audit-inventories/tdm-waiting-lifetime-audit.json",
+        "path": "<cache>/rustmage-tdm/semantic-source-audit-inventories/tdm-waiting-lifetime-audit.json",
         "sha256": "7eacc198b8dec61d07adfc8bf245e3dc4e03dce57c307684df464fd216dbb25e"
       },
       "body": {
         "scope": "Read-only finite waiting delayed/replacement/prevention lifetime audit requested by g-s. No runtime/test edits/builds. Existing owner-known Paradigm omission, unspent Goggles mana DTA source, and Fleeting Flight PREVENT_COMBAT_TO lifetime audited separately by root/a-g; not rediscovered or approved by this report.",
         "requested_base": "11403d9 plus g-s uncommitted semantic source checkpoint; source may advance while independent review proceeds. Pins below are hash-at-end snapshots, not fabricated negative-run provenance.",
         "rules_source": {
-          "path": "/home/altf4/.cache/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
+          "path": "<cache>/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
           "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca"
         },
         "key_distinction": "Cannot apply/trigger again is not the same as elapsed duration or triggered-and-consumed. Keep inert exact-object DTA/replacement/prevention carrier through real end. Do not bind newly returned incarnation.",
@@ -6983,51 +6983,51 @@
         ],
         "source_pins_at_audit_end": [
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_warp.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_warp.rs",
             "sha256": "b5650381aa048eb8a7061023d1b29b1b8aa127a7d0ea0213db83b57aa874b593"
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_mobilize.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_mobilize.rs",
             "sha256": "b47e499cc03c330a8f4f19f9ef49aa2e404ac46fa263bd4037534135d83a50ce"
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_return_links.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_return_links.rs",
             "sha256": "cf04ba4db2f479ec389bb118be5c136edcb714040d41215bfd91f35e3f7449f1"
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_earthbend.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_earthbend.rs",
             "sha256": "835b843c117d8e915473f85c80bb09b80ec4229a4ae426ffccaeb7b005d66469"
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_delayed_target_events.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_delayed_target_events.rs",
             "sha256": "82d75314811997f0f5e154b2c4b2658bccf7d57abd603969e7ad718091d41132"
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_source_linked_effects.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_source_linked_effects.rs",
             "sha256": "93f9c390895a8983efd3515f9240ce873d03e54f2e94dcdaabb838446288b813"
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_source_prevention.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_source_prevention.rs",
             "sha256": "bab3150f6ac7049d5d523cc7b4d2042212260fda11e308afe700d25d27b55745"
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_death_exile.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_death_exile.rs",
             "sha256": "95ce0b65b4fa95a307208a583b43f2c48f1052532c38a054f3be545732091493"
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_ability_timeline.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_ability_timeline.rs",
             "sha256": "46fc7b537a62c6afe8e63de370518b633dd053535bb02934aa6881d74b9b0ff7"
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine.rs",
             "sha256": "de681483242c33bf66feb66e6daae374a0b4da2cd4646829be233dd28b3eee49"
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_exile.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_exile.rs",
             "sha256": "fabe5b40bf417f0c0a1cbaf81f74dcd367b0650e854725513cebb2c0119eb9ab"
           },
           {
-            "path": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage/crates/engine/src/engine_steps.rs",
+            "path": "<worktree>/tdm-counter-world/rustmage/crates/engine/src/engine_steps.rs",
             "sha256": "3997f20f2ca77851de4b98fe0897d4008b831b03dc696a4de6caa9c8dccb6c16"
           }
         ],
@@ -7149,11 +7149,11 @@
     }
   ],
   "final_source_freeze": {
-    "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-semantic96-final-1793677313198956795/source-hashes.json",
+    "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793677313198956795/source-hashes.json",
     "sha256": "ebbb44b800a3001a5b21ef62b1a7197ae5f4a1417e9f09eda7db2f865a7dc3f8"
   },
   "final_source_patch": {
-    "path": "/home/altf4/.cache/rustmage-tdm/remaining-world-semantic96-final-1793677313198956795/source.patch",
+    "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793677313198956795/source.patch",
     "sha256": "53f29466c29dcae7700e5ee86afd3c36208ad0d60a195402db272cb5687e6a01"
   },
   "final_passing_summary": {

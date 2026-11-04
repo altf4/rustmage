@@ -6928,15 +6928,15 @@
   "evidence_documents": {
     "docs/tdm-behold-free-costs-evidence.json": {
       "path": "docs/tdm-behold-free-costs-evidence.json",
-      "sha256": "2de834aa9768f1e8c09b90e6cf16223fadbc89d98822fada3bf7d3b991034db1"
+      "sha256": "e33fca59a0cf379dc08969c4a500eaf036565539e09371d5f813b0046f21fa9a"
     },
     "docs/tdm-cards-a-g-evidence.json": {
       "path": "docs/tdm-cards-a-g-evidence.json",
-      "sha256": "e3dd0245f6ad5b47d25b8a42746704a2572a15b634a9c7837a603938a43ce465"
+      "sha256": "d319f06d096aa96cb9f094ededc2299461d031d05041a96764753e7821c096df"
     },
     "docs/tdm-cards-g-s-evidence.json": {
       "path": "docs/tdm-cards-g-s-evidence.json",
-      "sha256": "88db250bd9786276aa93f8a102ec347720427a109a82b8c420d1712e290e2968"
+      "sha256": "36b3bd8cf8e9591b7d1cb4688bfafdb6baaa22aa203bee36ca057bfc4fef13e0"
     },
     "docs/tdm-cards-s-z-additional-evidence.json": {
       "path": "docs/tdm-cards-s-z-additional-evidence.json",
@@ -6944,7 +6944,7 @@
     },
     "docs/tdm-cards-s-z-evidence.json": {
       "path": "docs/tdm-cards-s-z-evidence.json",
-      "sha256": "a52b47e9e51fa1d72ff3249852f6501ded80dca1fe3144e260e65c5830aa2a98"
+      "sha256": "c134f8d6f0747219632860181d4ccdd577a66b9a36f8685a506f688ec868dbc5"
     },
     "docs/tdm-cori-steel-card-evidence.json": {
       "path": "docs/tdm-cori-steel-card-evidence.json",
@@ -6956,15 +6956,15 @@
     },
     "docs/tdm-remaining-world-first-evidence.json": {
       "path": "docs/tdm-remaining-world-first-evidence.json",
-      "sha256": "03e9cda777d3528b263edb221c0cf2dbe18407661c33c4e06048168fc68d0122"
+      "sha256": "e5d7d0d8b3d4b851d79b8140f740a1f3bc5fa30dd923ee2dae3450ea93c8ee31"
     },
     "docs/tdm-semantic-final-boundary-evidence.json": {
       "path": "docs/tdm-semantic-final-boundary-evidence.json",
-      "sha256": "e6d7aadbd5bf6163e0cd5e12560d8054f20d9d19c739d62dacd93f0406b63eb0"
+      "sha256": "18e90d4fd21566f43dddaed54ad579dc35ac3dd7646cdf207e8e8ffa53b0b4f1"
     },
     "docs/tdm-set-combat-interactions-evidence.json": {
       "path": "docs/tdm-set-combat-interactions-evidence.json",
-      "sha256": "e88a31bf9f07abe5b5d52c82ff5d48d3dc458bdfca81fcc0a6d4cb5f10d0a8d0"
+      "sha256": "be984d981a394bc5adea69e9760f45496074f16e7a9731812b2db5d25277463d"
     },
     "docs/tdm-set-interactions-evidence.json": {
       "path": "docs/tdm-set-interactions-evidence.json",
@@ -6972,11 +6972,11 @@
     },
     "docs/tdm-set-prevention-interactions-evidence.json": {
       "path": "docs/tdm-set-prevention-interactions-evidence.json",
-      "sha256": "30787d8cc39488eb3d45f14e1967a5dcbf6d2494f2510b9926e7faa3c9e6a08c"
+      "sha256": "a667ac056715bbba9b32a47afd02cab9e32c829aaf55a3d00fbd5cd8a2fbdaf1"
     },
     "docs/tdm-set-search-mode-interactions-evidence.json": {
       "path": "docs/tdm-set-search-mode-interactions-evidence.json",
-      "sha256": "73d10b3a86d8d2f7e6a99b20351dbf2f7fea9fea8a6ab03708801467779f0eb5"
+      "sha256": "73c96df48b2ba7de0e722d2fe2872912de0733e8a7c61819eb1bad414df68cdb"
     }
   },
   "native_reports": {

@@ -242,114 +242,114 @@
     ],
     "complete_java_classes_read": [
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/h/HerdHeirloom.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/h/HerdHeirloom.java",
         "sha256": "72b8e237332f8be92e43643b2ff649e70955d0a95ae4e35ffe04372f64a514ca"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/m/MaelstromOfTheSpiritDragon.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/m/MaelstromOfTheSpiritDragon.java",
         "sha256": "b777e8205cff6f7d9ca57dd79dd7292f2b3f6e205d465da3364c1b476e802c93"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/n/NagaFleshcrafter.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/n/NagaFleshcrafter.java",
         "sha256": "659d4dce41274b3150197348f12cddcae6be2781e84b00b4257f4d15409e132c"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/n/NarsetJeskaiWaymaster.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/n/NarsetJeskaiWaymaster.java",
         "sha256": "3741719efcca487c0409504c6b5bfbc17f71e398b9232bbeb57132f04b604160"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/r/ReverberatingSummons.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/r/ReverberatingSummons.java",
         "sha256": "31c30eb01cad6b57c47eeea4a2a9fc56bebd27d120aaf86fbab5ea997ca1cfb3"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/r/RiteOfRenewal.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/r/RiteOfRenewal.java",
         "sha256": "579f1fb6056eb885177774da32211af16aaa2811a0994812adcd393ec0359b5f"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/n/NerivHeartOfTheStorm.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/n/NerivHeartOfTheStorm.java",
         "sha256": "374a04f821a7dbcd3880ed190199ec49f3d5f6ecaf74de494c41876952d1dfa3"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/n/NewWayForward.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/n/NewWayForward.java",
         "sha256": "4725fcd5103cb58b9510f879cfe26c315ab34f5aa33084f0f33ccb63d3dcee7d"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/k/KishlaTrawlers.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/k/KishlaTrawlers.java",
         "sha256": "f04570c1fb5ef5e441ebe495ce15a9fc4ee17fb9bba03d8e007045b3245bb1a6"
       }
     ],
     "complete_helpers_read": [
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/costs/common/DiscardHandCost.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/costs/common/DiscardHandCost.java",
         "sha256": "070e69a35af785aced9d186215f0cd304b9265775000b413252e0a635ad4d2b4"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
         "sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/costs/common/ExileFromGraveCost.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/costs/common/ExileFromGraveCost.java",
         "sha256": "0fbd76b0759d6ff66e0517af68a598d62dfd5fca5a520f4ee834132b0275166e"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/PreventNextDamageFromChosenSourceEffect.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/effects/common/PreventNextDamageFromChosenSourceEffect.java",
         "sha256": "c60e79ba1f31aa6335f34bfa9020ad515ef2321730870877af7ff43bb011aff9"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/PreventionEffectImpl.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/effects/PreventionEffectImpl.java",
         "sha256": "35c73be2ddcb40be12bc5a1ca2d11a654436c7b6b0c4ae1e37cb18383a97daf5"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/target/TargetSource.java",
+        "path": "<xmage>/Mage/src/main/java/mage/target/TargetSource.java",
         "sha256": "4138f70ecd9cf5c8eb97e257f6a74471099318bd9325a028dd0da92c2961c9ea"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/mana/conditional/CreatureCastConditionalMana.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/mana/conditional/CreatureCastConditionalMana.java",
         "sha256": "2a18d636eff2dabefb5518fd38f54fe6292d5c1697efb714ca1c44aacb0efb62"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/mana/conditional/ConditionalSpellManaBuilder.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/mana/conditional/ConditionalSpellManaBuilder.java",
         "sha256": "ce56830a429737325b5010a205e0d800b41ac7f2e4c59367598f4fa99e1d246e"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/mana/conditional/CreatureCastManaCondition.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/mana/conditional/CreatureCastManaCondition.java",
         "sha256": "2fe6eba8a8c032287e84bb56b3a9301126f3b3bc9c79ba40b63c66d7b116d47e"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/mana/ConditionalAnyColorManaAbility.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/mana/ConditionalAnyColorManaAbility.java",
         "sha256": "2042d72737462646216eea22a1ecdd05d338f1f2b3bfbb3c19fdb273f067c736"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/target/common/TargetCardInTargetPlayersGraveyard.java",
+        "path": "<xmage>/Mage/src/main/java/mage/target/common/TargetCardInTargetPlayersGraveyard.java",
         "sha256": "ed938506ad826a62a30f8cb89a55ab25388fc774f304a882244f4a727ed85366"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/TargetPlayerShufflesTargetCardsEffect.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/effects/common/TargetPlayerShufflesTargetCardsEffect.java",
         "sha256": "d10484210b65af0c396d0907271775eb9e7b31d3613782cfe357fc5df70cbbe8"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
         "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/CopyPermanentEffect.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/effects/common/CopyPermanentEffect.java",
         "sha256": "256e2224f1087a614a7e4826dcdd43873e9e5b50236b9904affb8408698fe8fe"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
         "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
         "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
         "sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
       }
     ],
     "rules": {
-      "path": "/home/altf4/.cache/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
+      "path": "<cache>/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
       "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca"
     }
   },

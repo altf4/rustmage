@@ -15,7 +15,7 @@
   "groups": {
     "a_g": {
       "source_audit": "docs/tdm-audit-a-g.json",
-      "worktree": "/home/altf4/.codex/worktrees/tdm-entry-modes/rustmage",
+      "worktree": "<worktree>/tdm-entry-modes/rustmage",
       "branch": "codex/tdm-cards-a-g",
       "test_target": "tdm_cards_a_g",
       "test_path": "tests/tdm_cards_a_g.rs",
@@ -1047,7 +1047,7 @@
     },
     "g_s": {
       "source_audit": "docs/tdm-audit-g-s.json",
-      "worktree": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage",
+      "worktree": "<worktree>/tdm-counter-world/rustmage",
       "branch": "codex/tdm-cards-g-s",
       "test_target": "tdm_cards_g_s",
       "test_path": "tests/tdm_cards_g_s.rs",
@@ -2090,7 +2090,7 @@
     },
     "s_z": {
       "source_audit": "docs/tdm-audit-s-z.json",
-      "worktree": "/home/altf4/.codex/worktrees/tdm-cast-routes/rustmage",
+      "worktree": "<worktree>/tdm-cast-routes/rustmage",
       "branch": "codex/tdm-cards-s-z",
       "test_target": "tdm_cards_s_z",
       "test_path": "tests/tdm_cards_s_z.rs",
@@ -3210,7 +3210,7 @@
   "parallel_authoring_batches": {
     "s_z_additional": {
       "owner": "/root/tdm_cards_g_s",
-      "worktree": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage",
+      "worktree": "<worktree>/tdm-counter-world/rustmage",
       "test_path": "tests/tdm_cards_s_z_additional.rs",
       "evidence_path": "docs/tdm-cards-s-z-additional-evidence.json",
       "physical_members": 25,

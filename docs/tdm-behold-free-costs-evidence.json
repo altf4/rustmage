@@ -91,7 +91,7 @@
     }
   ],
   "source_freeze": {
-    "path": "/home/altf4/.cache/rustmage-tdm/behold-free-actual-offer36/source-hashes.json",
+    "path": "<cache>/rustmage-tdm/behold-free-actual-offer36/source-hashes.json",
     "sha256": "eb2e5cb18e6cd3c7afcf1c2ba51b26adab85279ea93ed9b99686b28d4c0542d6",
     "verified_after_entire_sequence_terminated": true,
     "runtime_unchanged_since_first_engine_compile": true
@@ -290,76 +290,76 @@
     ],
     "complete_java_files_read": [
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/c/CausticExhale.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/c/CausticExhale.java",
         "sha256": "d7cfea401379866e87eb3ba1e742c981a315c35fa33027ef682a91450eb40999"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/d/DispellingExhale.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/d/DispellingExhale.java",
         "sha256": "184cf3f0addfa557558999fcf3227221f27d3375de7ace7a539c8bac37c194e6"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/m/MoltenExhale.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/m/MoltenExhale.java",
         "sha256": "2d8e680eb2e2bdc42b2874ebdf93eaecc642161b5943f056cc08ef5efe92f2f1"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/o/OsseousExhale.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/o/OsseousExhale.java",
         "sha256": "2d46615115860626decb6c89aa8e36240ac91d7a3214bb8d48af5c4b7e3fab39"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/p/PiercingExhale.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/p/PiercingExhale.java",
         "sha256": "57298c68fd4e8f1af2eb4b380aba1f041ee4e6d65354ad468cc913997cc3e0d8"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/d/Dracogenesis.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/d/Dracogenesis.java",
         "sha256": "801200f84b6aad6757b8c9bf9ae3893e0ed8f0503bdd31b17ecc309b19b28f75"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/s/SarkhanDragonAscendant.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/s/SarkhanDragonAscendant.java",
         "sha256": "af3b48503cf41d22bac4d9003352ff888ba4cd38d480196914560fb7cb26aeb0"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/keyword/BeholdAbility.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/keyword/BeholdAbility.java",
         "sha256": "1158e149cbebed05fae0649fc121f876036a49ce3ad033b1bb608b9271dc6dd2"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/costs/common/BeholdCost.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/costs/common/BeholdCost.java",
         "sha256": "bc668079587e3c3383c7d071558d165ef37aaadbf5618e3e0d9d3654bf1b34de"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/constants/BeholdType.java",
+        "path": "<xmage>/Mage/src/main/java/mage/constants/BeholdType.java",
         "sha256": "b9b6ef548969c8e1bbde48ec05adb6ae62139ab3fbdd72a91f8154817dc17c2c"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/condition/common/BeheldDragonCondition.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/condition/common/BeheldDragonCondition.java",
         "sha256": "92daf16ec33cd13cdf6a6c54634b85d4fcce199811384d18f0199ef19f02ca72"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/common/PayMoreToCastAsThoughtItHadFlashAbility.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/common/PayMoreToCastAsThoughtItHadFlashAbility.java",
         "sha256": "20557cfda122a26460aace27f5084a554bd88c1dba1f84e2c091a12684048ecb"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/continuous/CastFromHandWithoutPayingManaCostEffect.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/effects/common/continuous/CastFromHandWithoutPayingManaCostEffect.java",
         "sha256": "21f6707d883b719f93109cf5687fe1141e7cd80c13ea464ba9bbb1b4f0f20ca8"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
         "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/costs/AlternativeCostSourceAbility.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/costs/AlternativeCostSourceAbility.java",
         "sha256": "b0a55dc753a0b65f6075dd417a1cf6237599541a1e79d99c85aff3ccc0e73f98"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/condition/common/SourceIsSpellCondition.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/condition/common/SourceIsSpellCondition.java",
         "sha256": "9e5ce1e6b629d33136723fd52cb62e5e7a7270f34165234a36b2eb94cd6bffed"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/condition/common/IsBeingCastFromHandCondition.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/condition/common/IsBeingCastFromHandCondition.java",
         "sha256": "4763c76911d2a96bb5bf2944b0bf7c2743e251782983eb995fac42f31e1ba33a"
       }
     ],
     "rules": {
-      "path": "/home/altf4/.cache/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
+      "path": "<cache>/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
       "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
       "rules": [
         "107.3",
@@ -434,7 +434,7 @@
   "pre_acceptance_failures": [
     {
       "run": {
-        "path": "/home/altf4/.cache/rustmage-tdm/behold-free-first36/native.json",
+        "path": "<cache>/rustmage-tdm/behold-free-first36/native.json",
         "sha256": "b6bff2dbb034b144d859ca079084c00130a25372c46291113ee078f8fe14f429",
         "cases": 0,
         "passed": 0,
@@ -447,15 +447,15 @@
         "binaries": [],
         "execution_logs": [],
         "resource": {
-          "path": "/home/altf4/.cache/rustmage-build-reports/cad3c38210ca42ce9a3f2352661816df.json",
+          "path": "<cache>/rustmage-build-reports/cad3c38210ca42ce9a3f2352661816df.json",
           "sha256": "0a6304b6141bc074b1dd053e435d2aca6e28a3802ec904fcbb087e5c9cd0cb47",
           "command": [
             "/usr/bin/python3",
-            "/home/altf4/.codex/worktrees/tdm-cast-routes/rustmage/scripts/run_native_tests.py",
+            "<worktree>/tdm-cast-routes/rustmage/scripts/run_native_tests.py",
             "--target-dir",
-            "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target",
+            "<cache>/rustmage-authoring/tdm-cast-routes/target",
             "--report",
-            "/home/altf4/.cache/rustmage-tdm/behold-free-first36/native.json",
+            "<cache>/rustmage-tdm/behold-free-first36/native.json",
             "--test-target",
             "tdm_behold_costs",
             "--compile-timeout",
@@ -476,14 +476,14 @@
         }
       },
       "source_freeze": {
-        "path": "/home/altf4/.cache/rustmage-tdm/behold-free-first36/source-hashes.json",
+        "path": "<cache>/rustmage-tdm/behold-free-first36/source-hashes.json",
         "sha256": "fd9fe10f84e5e3d75f565586b473ae487938677a6351931801dbff468c43e623"
       },
       "reason": "Runtime engine compiled. Test compilation failed solely because two PermanentType uses lacked a fixture import; corrected import only."
     },
     {
       "run": {
-        "path": "/home/altf4/.cache/rustmage-tdm/behold-free-import-fixed36/native.json",
+        "path": "<cache>/rustmage-tdm/behold-free-import-fixed36/native.json",
         "sha256": "50166fa2654e764eccb433a50da95e28e7eb2ae456768e575c01deb1af9e20cf",
         "cases": 36,
         "passed": 35,
@@ -495,27 +495,27 @@
         "execution_seconds": 0.044073741999454796,
         "binaries": [
           {
-            "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_behold_costs-bd23be18a16a81c5",
+            "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_behold_costs-bd23be18a16a81c5",
             "sha256": null,
             "note": "Earlier fixture executable was subsequently replaced by the corrected fixture; source and execution log pins retain the failure evidence."
           }
         ],
         "execution_logs": [
           {
-            "path": "/home/altf4/.cache/rustmage-tdm/behold-free-import-fixed36/native-execution-0.log",
+            "path": "<cache>/rustmage-tdm/behold-free-import-fixed36/native-execution-0.log",
             "sha256": "8c16cc0b62ef38268ad5b310f3aae96660639d64a53a0721010b24f59fd1c323"
           }
         ],
         "resource": {
-          "path": "/home/altf4/.cache/rustmage-build-reports/c0f97383f493469089cb579c805a6ed8.json",
+          "path": "<cache>/rustmage-build-reports/c0f97383f493469089cb579c805a6ed8.json",
           "sha256": "1a94366ae4b41c2bb336dcaf0723ac708b9db3aa785537b5b8008f6fe495abc9",
           "command": [
             "/usr/bin/python3",
-            "/home/altf4/.codex/worktrees/tdm-cast-routes/rustmage/scripts/run_native_tests.py",
+            "<worktree>/tdm-cast-routes/rustmage/scripts/run_native_tests.py",
             "--target-dir",
-            "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target",
+            "<cache>/rustmage-authoring/tdm-cast-routes/target",
             "--report",
-            "/home/altf4/.cache/rustmage-tdm/behold-free-import-fixed36/native.json",
+            "<cache>/rustmage-tdm/behold-free-import-fixed36/native.json",
             "--test-target",
             "tdm_behold_costs",
             "--compile-timeout",
@@ -536,7 +536,7 @@
         }
       },
       "source_freeze": {
-        "path": "/home/altf4/.cache/rustmage-tdm/behold-free-import-fixed36/source-hashes.json",
+        "path": "<cache>/rustmage-tdm/behold-free-import-fixed36/source-hashes.json",
         "sha256": "b88d0b2f2cc8143e3ad437a11028abc9ec5d1720c42442375c358954af8ac43e"
       },
       "reason": "35/36 passed. The paid-resolution fixture manually installed an offer without a resolving parent; FinishResolutionCasts then resumed nonexistent program state. Replaced the invalid fixture with real typed ExileTopMayCastPaid and CastGraveyard parent spell programs, verifying exactly-once continuation. Runtime unchanged."
@@ -544,7 +544,7 @@
   ],
   "final_runs": [
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/behold-free-actual-offer36/native.json",
+      "path": "<cache>/rustmage-tdm/behold-free-actual-offer36/native.json",
       "sha256": "6f6486661dd04e32fa30934e854b2d9721a077659ec156a0e7c277b64b3c3649",
       "cases": 36,
       "passed": 36,
@@ -556,7 +556,7 @@
       "execution_seconds": 0.037957872002152726,
       "binaries": [
         {
-          "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_behold_costs-bd23be18a16a81c5",
+          "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_behold_costs-bd23be18a16a81c5",
           "sha256": "94758d2d1c7799d35a82b6f3695ea3dd2edd32b24b3a5749f99d339b1b817ac5",
           "artifact_role": "Transient Cargo native test executable; historical run-time output, not an immutable preservation claim.",
           "available_at_recorded_hash_at_correction": false,
@@ -565,20 +565,20 @@
       ],
       "execution_logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/behold-free-actual-offer36/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/behold-free-actual-offer36/native-execution-0.log",
           "sha256": "d246f99490bbe84a0dbb3d20685055bd0832a4090ad79a3feb66cc20477f73f1"
         }
       ],
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/88526488ed5148c5993840518a55b39f.json",
+        "path": "<cache>/rustmage-build-reports/88526488ed5148c5993840518a55b39f.json",
         "sha256": "372415c8c5a01b1093d3bdab19d53f0a52443ee04622fee7de055d75211b85d9",
         "command": [
           "/usr/bin/python3",
-          "/home/altf4/.codex/worktrees/tdm-cast-routes/rustmage/scripts/run_native_tests.py",
+          "<worktree>/tdm-cast-routes/rustmage/scripts/run_native_tests.py",
           "--target-dir",
-          "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target",
+          "<cache>/rustmage-authoring/tdm-cast-routes/target",
           "--report",
-          "/home/altf4/.cache/rustmage-tdm/behold-free-actual-offer36/native.json",
+          "<cache>/rustmage-tdm/behold-free-actual-offer36/native.json",
           "--test-target",
           "tdm_behold_costs",
           "--compile-timeout",
@@ -599,7 +599,7 @@
       }
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-0/native.json",
+      "path": "<cache>/rustmage-tdm/behold-free-compat-0/native.json",
       "sha256": "ac64040cc284bb474785cd5819d8f0a3f49d457445222264f26cda17fb66ab88",
       "cases": 20,
       "passed": 20,
@@ -611,7 +611,7 @@
       "execution_seconds": 0.05045223599881865,
       "binaries": [
         {
-          "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_cast_routes-33c4c4fe109c9c78",
+          "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_cast_routes-33c4c4fe109c9c78",
           "sha256": "6efd2ae622cacf806589fa1c437213d2ce6d8b9fa81726b4353118c8bda01a5b",
           "artifact_role": "Transient Cargo native test executable; historical run-time output, not an immutable preservation claim.",
           "available_at_recorded_hash_at_correction": false,
@@ -620,20 +620,20 @@
       ],
       "execution_logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-0/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/behold-free-compat-0/native-execution-0.log",
           "sha256": "39763a7ea57001d5534e6269a18c447c0143906b209ed23cffe3249a67dbf1ea"
         }
       ],
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/edb9f02f0c354d1db962a45d8fb30005.json",
+        "path": "<cache>/rustmage-build-reports/edb9f02f0c354d1db962a45d8fb30005.json",
         "sha256": "a8c16f482050bdf8cb24264f8b08e9642f64b1b8b44b9209eae593ec9c47b3b0",
         "command": [
           "/usr/bin/python3",
-          "/home/altf4/.codex/worktrees/tdm-cast-routes/rustmage/scripts/run_native_tests.py",
+          "<worktree>/tdm-cast-routes/rustmage/scripts/run_native_tests.py",
           "--target-dir",
-          "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target",
+          "<cache>/rustmage-authoring/tdm-cast-routes/target",
           "--report",
-          "/home/altf4/.cache/rustmage-tdm/behold-free-compat-0/native.json",
+          "<cache>/rustmage-tdm/behold-free-compat-0/native.json",
           "--test-target",
           "tdm_cast_routes",
           "--compile-timeout",
@@ -654,7 +654,7 @@
       }
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-1/native.json",
+      "path": "<cache>/rustmage-tdm/behold-free-compat-1/native.json",
       "sha256": "d732ddfca144c3b423af3bb70cd2b08cb439b51faede9dea580490ce51cc4731",
       "cases": 9,
       "passed": 9,
@@ -666,7 +666,7 @@
       "execution_seconds": 0.02476195601047948,
       "binaries": [
         {
-          "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_cast_permissions_engine-1d56ad5b3b4e9fbd",
+          "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_cast_permissions_engine-1d56ad5b3b4e9fbd",
           "sha256": "9580548a333417608da5901e35f5894fe8881ae56df98953c0302b5a59d6ead7",
           "artifact_role": "Transient Cargo native test executable; historical run-time output, not an immutable preservation claim.",
           "available_at_recorded_hash_at_correction": true,
@@ -675,20 +675,20 @@
       ],
       "execution_logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-1/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/behold-free-compat-1/native-execution-0.log",
           "sha256": "ea18fed2d30d87a6a64622f9fc51bcc7f98600086b1a917e830987869e1f6b0c"
         }
       ],
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/ea4e5df873d54fb2b80e02d68d73ff9a.json",
+        "path": "<cache>/rustmage-build-reports/ea4e5df873d54fb2b80e02d68d73ff9a.json",
         "sha256": "a50b6bb1f7ed43b131abf6ae7feb24f7d7ec73fbe1e8b059edc88511f2493f75",
         "command": [
           "/usr/bin/python3",
-          "/home/altf4/.codex/worktrees/tdm-cast-routes/rustmage/scripts/run_native_tests.py",
+          "<worktree>/tdm-cast-routes/rustmage/scripts/run_native_tests.py",
           "--target-dir",
-          "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target",
+          "<cache>/rustmage-authoring/tdm-cast-routes/target",
           "--report",
-          "/home/altf4/.cache/rustmage-tdm/behold-free-compat-1/native.json",
+          "<cache>/rustmage-tdm/behold-free-compat-1/native.json",
           "--test-target",
           "dft_cast_permissions_engine",
           "--compile-timeout",
@@ -709,7 +709,7 @@
       }
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-2/native.json",
+      "path": "<cache>/rustmage-tdm/behold-free-compat-2/native.json",
       "sha256": "2f3fe808bc7edf63e9c5f5e477baf0ddee2efcd801d5e2958067f08317c4f821",
       "cases": 11,
       "passed": 11,
@@ -721,7 +721,7 @@
       "execution_seconds": 0.032940643024630845,
       "binaries": [
         {
-          "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_variable_costs_engine-4404c9cb268fc190",
+          "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_variable_costs_engine-4404c9cb268fc190",
           "sha256": "c4843da85ea4741af52b7cb52e403efa2c87b9d6369e1293c7d68876b3108549",
           "artifact_role": "Transient Cargo native test executable; historical run-time output, not an immutable preservation claim.",
           "available_at_recorded_hash_at_correction": false,
@@ -730,20 +730,20 @@
       ],
       "execution_logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-2/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/behold-free-compat-2/native-execution-0.log",
           "sha256": "4a22cf9cec00e8388370e6964a8c421d11a5f5c677005a8d44cecf2e682d215a"
         }
       ],
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/36402bd37db64878b98d11dfeb35555a.json",
+        "path": "<cache>/rustmage-build-reports/36402bd37db64878b98d11dfeb35555a.json",
         "sha256": "276fdc39a6a7d07e1543cc7ae94ad4124d88cced48a872179838dc42184cfe96",
         "command": [
           "/usr/bin/python3",
-          "/home/altf4/.codex/worktrees/tdm-cast-routes/rustmage/scripts/run_native_tests.py",
+          "<worktree>/tdm-cast-routes/rustmage/scripts/run_native_tests.py",
           "--target-dir",
-          "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target",
+          "<cache>/rustmage-authoring/tdm-cast-routes/target",
           "--report",
-          "/home/altf4/.cache/rustmage-tdm/behold-free-compat-2/native.json",
+          "<cache>/rustmage-tdm/behold-free-compat-2/native.json",
           "--test-target",
           "dft_variable_costs_engine",
           "--compile-timeout",
@@ -764,7 +764,7 @@
       }
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-3/native.json",
+      "path": "<cache>/rustmage-tdm/behold-free-compat-3/native.json",
       "sha256": "6655e5a255ae4c1c828b57a03d85e3737c50bf18374ccfb09bd138999f6ade00",
       "cases": 11,
       "passed": 11,
@@ -776,7 +776,7 @@
       "execution_seconds": 0.058455481979763135,
       "binaries": [
         {
-          "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_mana_payment_continuations_engine-9999b14d56e1538e",
+          "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_mana_payment_continuations_engine-9999b14d56e1538e",
           "sha256": "11f8569886511b4e0e5d85ce7f90ef8ed414e36c75aab18df918a525395d2000",
           "artifact_role": "Transient Cargo native test executable; historical run-time output, not an immutable preservation claim.",
           "available_at_recorded_hash_at_correction": false,
@@ -785,20 +785,20 @@
       ],
       "execution_logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-3/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/behold-free-compat-3/native-execution-0.log",
           "sha256": "7773836204e19fb7ace72454eacb288caa9ff0ce4951dbfd8b38c3b43508daad"
         }
       ],
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/d547414518cd4695887fb3f7a5f9da6b.json",
+        "path": "<cache>/rustmage-build-reports/d547414518cd4695887fb3f7a5f9da6b.json",
         "sha256": "7141b257d15e59a21247de9acd2c71f01d377586d7020fe9851ce84ed0462c75",
         "command": [
           "/usr/bin/python3",
-          "/home/altf4/.codex/worktrees/tdm-cast-routes/rustmage/scripts/run_native_tests.py",
+          "<worktree>/tdm-cast-routes/rustmage/scripts/run_native_tests.py",
           "--target-dir",
-          "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target",
+          "<cache>/rustmage-authoring/tdm-cast-routes/target",
           "--report",
-          "/home/altf4/.cache/rustmage-tdm/behold-free-compat-3/native.json",
+          "<cache>/rustmage-tdm/behold-free-compat-3/native.json",
           "--test-target",
           "dft_mana_payment_continuations_engine",
           "--compile-timeout",
@@ -819,7 +819,7 @@
       }
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-4/native.json",
+      "path": "<cache>/rustmage-tdm/behold-free-compat-4/native.json",
       "sha256": "b93f24e3edff7826b89a80b632a9053d899e5d12ee5bd8be4a14cc93df61b3cc",
       "cases": 32,
       "passed": 32,
@@ -831,7 +831,7 @@
       "execution_seconds": 0.06818968398147263,
       "binaries": [
         {
-          "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
+          "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
           "sha256": "d1dbcd4751973bd7552b97cc7c8bf6e3e9153d1f953cc8bc6a3e03846a85d57d",
           "artifact_role": "Transient Cargo native test executable; historical run-time output, not an immutable preservation claim.",
           "available_at_recorded_hash_at_correction": true,
@@ -840,20 +840,20 @@
       ],
       "execution_logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-4/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/behold-free-compat-4/native-execution-0.log",
           "sha256": "ed64b2deeb741c463da7a3516003c4d1f6b205fe316762175bcbe243cfcf2a3f"
         }
       ],
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/2ba6ac7d8ecf441ca0c0e1532ac2fc14.json",
+        "path": "<cache>/rustmage-build-reports/2ba6ac7d8ecf441ca0c0e1532ac2fc14.json",
         "sha256": "b79e544e1feb5a759fde8cfc8722b869b5dff7b8aad2aaef01b876c872a66be8",
         "command": [
           "/usr/bin/python3",
-          "/home/altf4/.codex/worktrees/tdm-cast-routes/rustmage/scripts/run_native_tests.py",
+          "<worktree>/tdm-cast-routes/rustmage/scripts/run_native_tests.py",
           "--target-dir",
-          "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target",
+          "<cache>/rustmage-authoring/tdm-cast-routes/target",
           "--report",
-          "/home/altf4/.cache/rustmage-tdm/behold-free-compat-4/native.json",
+          "<cache>/rustmage-tdm/behold-free-compat-4/native.json",
           "--test-target",
           "legacy",
           "--compile-timeout",
@@ -876,7 +876,7 @@
       }
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-5/native.json",
+      "path": "<cache>/rustmage-tdm/behold-free-compat-5/native.json",
       "sha256": "76287717ac61f9de6cd3a238af5669c49927d14a298f94b6654eb8ed321fd2b1",
       "cases": 10,
       "passed": 10,
@@ -888,7 +888,7 @@
       "execution_seconds": 0.0504677600110881,
       "binaries": [
         {
-          "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
+          "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
           "sha256": "d1dbcd4751973bd7552b97cc7c8bf6e3e9153d1f953cc8bc6a3e03846a85d57d",
           "artifact_role": "Transient Cargo native test executable; historical run-time output, not an immutable preservation claim.",
           "available_at_recorded_hash_at_correction": true,
@@ -897,20 +897,20 @@
       ],
       "execution_logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-5/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/behold-free-compat-5/native-execution-0.log",
           "sha256": "1a8eec51fabb96eecbccabba9c04d2aa55ddc2148ae9ab505f3d8cc510616467"
         }
       ],
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/89d349b545ab442e9dd970375551a3a5.json",
+        "path": "<cache>/rustmage-build-reports/89d349b545ab442e9dd970375551a3a5.json",
         "sha256": "816b94806d12b1e887a4b93b0d2bcdb975663f70e23be8d283bd000d8beb6cc6",
         "command": [
           "/usr/bin/python3",
-          "/home/altf4/.codex/worktrees/tdm-cast-routes/rustmage/scripts/run_native_tests.py",
+          "<worktree>/tdm-cast-routes/rustmage/scripts/run_native_tests.py",
           "--target-dir",
-          "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target",
+          "<cache>/rustmage-authoring/tdm-cast-routes/target",
           "--report",
-          "/home/altf4/.cache/rustmage-tdm/behold-free-compat-5/native.json",
+          "<cache>/rustmage-tdm/behold-free-compat-5/native.json",
           "--test-target",
           "legacy",
           "--compile-timeout",
@@ -933,7 +933,7 @@
       }
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-6/native.json",
+      "path": "<cache>/rustmage-tdm/behold-free-compat-6/native.json",
       "sha256": "7a0572acf986af89c94f757affe6dde1393010c98f3b40b72cc73afcc32acbbd",
       "cases": 1,
       "passed": 1,
@@ -945,7 +945,7 @@
       "execution_seconds": 0.024454862985294312,
       "binaries": [
         {
-          "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
+          "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
           "sha256": "d1dbcd4751973bd7552b97cc7c8bf6e3e9153d1f953cc8bc6a3e03846a85d57d",
           "artifact_role": "Transient Cargo native test executable; historical run-time output, not an immutable preservation claim.",
           "available_at_recorded_hash_at_correction": true,
@@ -954,20 +954,20 @@
       ],
       "execution_logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-6/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/behold-free-compat-6/native-execution-0.log",
           "sha256": "e792519c76a3bfa1f7916821a79983c9d8fa0dc87ef531afdbae312de24c0f10"
         }
       ],
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/735de7d466fc4456894f95870f8c78f3.json",
+        "path": "<cache>/rustmage-build-reports/735de7d466fc4456894f95870f8c78f3.json",
         "sha256": "ed4aff41f4b690b056b47a08f23092069389df7701d44909bdd935df86cf8177",
         "command": [
           "/usr/bin/python3",
-          "/home/altf4/.codex/worktrees/tdm-cast-routes/rustmage/scripts/run_native_tests.py",
+          "<worktree>/tdm-cast-routes/rustmage/scripts/run_native_tests.py",
           "--target-dir",
-          "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target",
+          "<cache>/rustmage-authoring/tdm-cast-routes/target",
           "--report",
-          "/home/altf4/.cache/rustmage-tdm/behold-free-compat-6/native.json",
+          "<cache>/rustmage-tdm/behold-free-compat-6/native.json",
           "--test-target",
           "legacy",
           "--compile-timeout",
@@ -990,7 +990,7 @@
       }
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-7/native.json",
+      "path": "<cache>/rustmage-tdm/behold-free-compat-7/native.json",
       "sha256": "868f9c5aebe8ac54540bc978ff18bfe0e32fa55de144096f41de9f78ce2e7a00",
       "cases": 1,
       "passed": 1,
@@ -1002,7 +1002,7 @@
       "execution_seconds": 0.03309241699753329,
       "binaries": [
         {
-          "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
+          "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
           "sha256": "d1dbcd4751973bd7552b97cc7c8bf6e3e9153d1f953cc8bc6a3e03846a85d57d",
           "artifact_role": "Transient Cargo native test executable; historical run-time output, not an immutable preservation claim.",
           "available_at_recorded_hash_at_correction": true,
@@ -1011,20 +1011,20 @@
       ],
       "execution_logs": [
         {
-          "path": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-7/native-execution-0.log",
+          "path": "<cache>/rustmage-tdm/behold-free-compat-7/native-execution-0.log",
           "sha256": "206396cbf9ca787a3bcb403f5d92a76fe8a7174915f2cefa5c8cee735afe9f6d"
         }
       ],
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/4d2abed66bee45d19babe4c0ce55d60d.json",
+        "path": "<cache>/rustmage-build-reports/4d2abed66bee45d19babe4c0ce55d60d.json",
         "sha256": "e6c19a31314e83ae38bd9d050972634733ea7e372be58e1fcde6579e51b15375",
         "command": [
           "/usr/bin/python3",
-          "/home/altf4/.codex/worktrees/tdm-cast-routes/rustmage/scripts/run_native_tests.py",
+          "<worktree>/tdm-cast-routes/rustmage/scripts/run_native_tests.py",
           "--target-dir",
-          "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target",
+          "<cache>/rustmage-authoring/tdm-cast-routes/target",
           "--report",
-          "/home/altf4/.cache/rustmage-tdm/behold-free-compat-7/native.json",
+          "<cache>/rustmage-tdm/behold-free-compat-7/native.json",
           "--test-target",
           "legacy",
           "--compile-timeout",
@@ -1089,19 +1089,19 @@
   ],
   "preserved_shared_libraries": [
     {
-      "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/libserde_derive-4a3ec5018aa504ef.so",
+      "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/libserde_derive-4a3ec5018aa504ef.so",
       "sha256": "16e56c72844cb52549aca635bf643fd0903d223d703291e366575e6900e074a7",
       "role": "Rust compiler proc-macro shared library; exact cached compile-time dependency remains present."
     },
     {
-      "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/librustmage_test_access-636adfcd609bee93.so",
+      "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/librustmage_test_access-636adfcd609bee93.so",
       "sha256": "bd6062fbe485578b3a623429f4fd459a9e69d6a2fd34b4cdb884e2f83e16ad48",
       "role": "Rust compiler proc-macro shared library; exact cached compile-time dependency remains present."
     }
   ],
   "transient_compilation_outputs": [
     {
-      "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/librustmage.so",
+      "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/librustmage.so",
       "sha256": "d65b55a3450816f13b9ad9ef2d185fa950a71ab2a1012ef901579878fcf42ce5",
       "artifact_role": "Transient Cargo cdylib compilation output emitted alongside the Rust rlib.",
       "required_for_these_native_test_executions": false,
@@ -1117,7 +1117,7 @@
     "reason": "The original report incorrectly grouped a mutable Cargo cdylib with preserved shared libraries and did not distinguish retained native executables from overwritten warm-cache outputs. This correction changes only evidence classification and availability; all historical source, report, log and artifact hashes are retained.",
     "historical_runs_audited": [
       {
-        "report": "/home/altf4/.cache/rustmage-tdm/behold-free-actual-offer36/native.json",
+        "report": "<cache>/rustmage-tdm/behold-free-actual-offer36/native.json",
         "compile_command": [
           "cargo",
           "test",
@@ -1130,7 +1130,7 @@
         ],
         "binary_execution": [
           {
-            "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_behold_costs-bd23be18a16a81c5",
+            "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_behold_costs-bd23be18a16a81c5",
             "historical_hash_still_available": false,
             "inspected_current_elf_needed": [
               "libgcc_s.so.1",
@@ -1139,7 +1139,7 @@
             ],
             "historical_elf_bytes_directly_inspectable": false,
             "execution_command": [
-              "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_behold_costs-bd23be18a16a81c5",
+              "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_behold_costs-bd23be18a16a81c5",
               "",
               "--include-ignored",
               "--test-threads=1"
@@ -1148,7 +1148,7 @@
         ]
       },
       {
-        "report": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-0/native.json",
+        "report": "<cache>/rustmage-tdm/behold-free-compat-0/native.json",
         "compile_command": [
           "cargo",
           "test",
@@ -1161,7 +1161,7 @@
         ],
         "binary_execution": [
           {
-            "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_cast_routes-33c4c4fe109c9c78",
+            "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_cast_routes-33c4c4fe109c9c78",
             "historical_hash_still_available": false,
             "inspected_current_elf_needed": [
               "libgcc_s.so.1",
@@ -1170,7 +1170,7 @@
             ],
             "historical_elf_bytes_directly_inspectable": false,
             "execution_command": [
-              "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_cast_routes-33c4c4fe109c9c78",
+              "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_cast_routes-33c4c4fe109c9c78",
               "",
               "--include-ignored",
               "--test-threads=1"
@@ -1179,7 +1179,7 @@
         ]
       },
       {
-        "report": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-1/native.json",
+        "report": "<cache>/rustmage-tdm/behold-free-compat-1/native.json",
         "compile_command": [
           "cargo",
           "test",
@@ -1192,7 +1192,7 @@
         ],
         "binary_execution": [
           {
-            "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_cast_permissions_engine-1d56ad5b3b4e9fbd",
+            "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_cast_permissions_engine-1d56ad5b3b4e9fbd",
             "historical_hash_still_available": true,
             "inspected_current_elf_needed": [
               "libgcc_s.so.1",
@@ -1201,7 +1201,7 @@
             ],
             "historical_elf_bytes_directly_inspectable": true,
             "execution_command": [
-              "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_cast_permissions_engine-1d56ad5b3b4e9fbd",
+              "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_cast_permissions_engine-1d56ad5b3b4e9fbd",
               "",
               "--include-ignored",
               "--test-threads=1"
@@ -1210,7 +1210,7 @@
         ]
       },
       {
-        "report": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-2/native.json",
+        "report": "<cache>/rustmage-tdm/behold-free-compat-2/native.json",
         "compile_command": [
           "cargo",
           "test",
@@ -1223,7 +1223,7 @@
         ],
         "binary_execution": [
           {
-            "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_variable_costs_engine-4404c9cb268fc190",
+            "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_variable_costs_engine-4404c9cb268fc190",
             "historical_hash_still_available": false,
             "inspected_current_elf_needed": [
               "libgcc_s.so.1",
@@ -1232,7 +1232,7 @@
             ],
             "historical_elf_bytes_directly_inspectable": false,
             "execution_command": [
-              "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_variable_costs_engine-4404c9cb268fc190",
+              "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_variable_costs_engine-4404c9cb268fc190",
               "",
               "--include-ignored",
               "--test-threads=1"
@@ -1241,7 +1241,7 @@
         ]
       },
       {
-        "report": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-3/native.json",
+        "report": "<cache>/rustmage-tdm/behold-free-compat-3/native.json",
         "compile_command": [
           "cargo",
           "test",
@@ -1254,7 +1254,7 @@
         ],
         "binary_execution": [
           {
-            "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_mana_payment_continuations_engine-9999b14d56e1538e",
+            "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_mana_payment_continuations_engine-9999b14d56e1538e",
             "historical_hash_still_available": false,
             "inspected_current_elf_needed": [
               "libgcc_s.so.1",
@@ -1263,7 +1263,7 @@
             ],
             "historical_elf_bytes_directly_inspectable": false,
             "execution_command": [
-              "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_mana_payment_continuations_engine-9999b14d56e1538e",
+              "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_mana_payment_continuations_engine-9999b14d56e1538e",
               "",
               "--include-ignored",
               "--test-threads=1"
@@ -1272,7 +1272,7 @@
         ]
       },
       {
-        "report": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-4/native.json",
+        "report": "<cache>/rustmage-tdm/behold-free-compat-4/native.json",
         "compile_command": [
           "cargo",
           "test",
@@ -1285,7 +1285,7 @@
         ],
         "binary_execution": [
           {
-            "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
+            "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
             "historical_hash_still_available": true,
             "inspected_current_elf_needed": [
               "libgcc_s.so.1",
@@ -1294,7 +1294,7 @@
             ],
             "historical_elf_bytes_directly_inspectable": true,
             "execution_command": [
-              "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
+              "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
               "engine_fra_behold",
               "--include-ignored",
               "--test-threads=1"
@@ -1303,7 +1303,7 @@
         ]
       },
       {
-        "report": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-5/native.json",
+        "report": "<cache>/rustmage-tdm/behold-free-compat-5/native.json",
         "compile_command": [
           "cargo",
           "test",
@@ -1316,7 +1316,7 @@
         ],
         "binary_execution": [
           {
-            "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
+            "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
             "historical_hash_still_available": true,
             "inspected_current_elf_needed": [
               "libgcc_s.so.1",
@@ -1325,7 +1325,7 @@
             ],
             "historical_elf_bytes_directly_inspectable": true,
             "execution_command": [
-              "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
+              "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
               "assurance::requested_wild_ride::",
               "--include-ignored",
               "--test-threads=1"
@@ -1334,7 +1334,7 @@
         ]
       },
       {
-        "report": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-6/native.json",
+        "report": "<cache>/rustmage-tdm/behold-free-compat-6/native.json",
         "compile_command": [
           "cargo",
           "test",
@@ -1347,7 +1347,7 @@
         ],
         "binary_execution": [
           {
-            "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
+            "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
             "historical_hash_still_available": true,
             "inspected_current_elf_needed": [
               "libgcc_s.so.1",
@@ -1356,7 +1356,7 @@
             ],
             "historical_elf_bytes_directly_inspectable": true,
             "execution_command": [
-              "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
+              "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
               "assurance::msh_d::sagas_all_chapters_and_final_sacrifice",
               "--include-ignored",
               "--test-threads=1"
@@ -1365,7 +1365,7 @@
         ]
       },
       {
-        "report": "/home/altf4/.cache/rustmage-tdm/behold-free-compat-7/native.json",
+        "report": "<cache>/rustmage-tdm/behold-free-compat-7/native.json",
         "compile_command": [
           "cargo",
           "test",
@@ -1378,7 +1378,7 @@
         ],
         "binary_execution": [
           {
-            "path": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
+            "path": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
             "historical_hash_still_available": true,
             "inspected_current_elf_needed": [
               "libgcc_s.so.1",
@@ -1387,7 +1387,7 @@
             ],
             "historical_elf_bytes_directly_inspectable": true,
             "execution_command": [
-              "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
+              "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
               "assurance::msh_d::printed_event_boundaries_and_optional_branches",
               "--include-ignored",
               "--test-threads=1"

@@ -91,59 +91,59 @@
     "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
     "xmage_complete_reads": [
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/f/FlameholdGrappler.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/f/FlameholdGrappler.java",
         "sha256": "5c04f42f289105cd4037312d71ab2c46e129530dcac9c8b16b576baf4f239fb9",
         "read": "complete class including nested helpers"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/s/StormscaleScion.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/s/StormscaleScion.java",
         "sha256": "2037afececca2b63cf8b1572750884e6688ed897c42863f61731bb1f679d95b3",
         "read": "complete class including nested helpers"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/t/TaigamMasterOpportunist.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/t/TaigamMasterOpportunist.java",
         "sha256": "b4c45044f7c02ef37505bda8d69e197739caf1874945ae97f34e6d707ec00cea",
         "read": "complete class including nested helpers"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/common/delayed/CopyNextSpellDelayedTriggeredAbility.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/common/delayed/CopyNextSpellDelayedTriggeredAbility.java",
         "sha256": "40d1a8d8178748adf58bc8bd5bfeea6ab90afbcfe49d639a730d7ae1ed9c5a01",
         "read": "complete class including nested helpers"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/common/delayed/CastNextSpellDelayedTriggeredAbility.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/common/delayed/CastNextSpellDelayedTriggeredAbility.java",
         "sha256": "a6b2f8fcd1d6e64faa8dfa3e5c3d07e0127ffdb31f8b046b619bd04768bce4cc",
         "read": "complete class including nested helpers"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/CopyTargetStackObjectEffect.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/effects/common/CopyTargetStackObjectEffect.java",
         "sha256": "b2e6312cd63002c83d7f2a3ac9d7240f1d5691bcd77156af2c0752cb28dc1172",
         "read": "complete class including nested helpers"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/keyword/StormAbility.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/keyword/StormAbility.java",
         "sha256": "50780a61df4fcc4f08d1055021373554d896532c977990f209edf1dd3606c1fd",
         "read": "complete class including nested helpers"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/keyword/SuspendAbility.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/keyword/SuspendAbility.java",
         "sha256": "a274a7e7a0b7e2f5509691be21be5b47e04c69992c38e22a6de1081c4ba58abf",
         "read": "complete class including nested helpers"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/continuous/GainSuspendEffect.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/effects/common/continuous/GainSuspendEffect.java",
         "sha256": "f353fcbff204368f6250b56ced404b789a6c0dc4094c4bea1a86fa7048f1abbf",
         "read": "complete class including nested helpers"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/condition/common/SuspendedCondition.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/condition/common/SuspendedCondition.java",
         "sha256": "067d2abf774ac4f878ba70a7bec5c20560be3b3d0d76803ff19de5a50d51268d",
         "read": "complete class including nested helpers"
       }
     ],
     "rules": {
       "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
-      "path": "/home/altf4/.cache/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
+      "path": "<cache>/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
       "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
       "sections": [
         "112.1",
@@ -210,16 +210,16 @@
     "Paid target legality/privacy, wrong actor, raw/index/sibling/restore after parent disposal at retarget and Suspend play offer roots"
   ],
   "first_attempt": {
-    "report": "/home/altf4/.cache/rustmage-tdm/copy-suspend-first/native.json",
+    "report": "<cache>/rustmage-tdm/copy-suspend-first/native.json",
     "sha256": "3d279f926b8e3183dacf5340c2c45dc13a4c4a11bc6743c4769c08b64ca0ce47",
     "compile_seconds": 112.35043627599953,
     "execution_seconds": 0.03490057899034582,
     "result": "17/18 passed; fixture expected paid_additional_cost for an unconsumed fixed sacrifice, which correctly omits that receipt. No engine failure or repair.",
     "correction": "Use real mandatory sacrifice-range min1 so existing paid-cost receipt exists; independently assert selected/count1, original/copied receipt equality, second payment and stale/unpaid rejection.",
     "engine_inputs_unchanged": true,
-    "source_hash_manifest": "/home/altf4/.cache/rustmage-tdm/copy-suspend-first/source-hashes.json",
+    "source_hash_manifest": "<cache>/rustmage-tdm/copy-suspend-first/source-hashes.json",
     "resource": {
-      "path": "/home/altf4/.cache/rustmage-build-reports/a53bf6cbcd394a56ad05bdefda9c5932.json",
+      "path": "<cache>/rustmage-build-reports/a53bf6cbcd394a56ad05bdefda9c5932.json",
       "sha256": "212087f1ded747f70656163dbb8a91dc766ce53033e51f5aed36d9d38a0f06b2",
       "terminal": true,
       "exit_code": 1,
@@ -232,7 +232,7 @@
   },
   "final_runs": [
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/copy-suspend-fixture-fixed/native.json",
+      "path": "<cache>/rustmage-tdm/copy-suspend-fixture-fixed/native.json",
       "sha256": "1bc2fa867e1e533dda78041959a20eb24692c81c94ca6e4c0d810085eca8a944",
       "cases": 18,
       "terminal": true,
@@ -252,7 +252,7 @@
       ],
       "binaries": [
         {
-          "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/tdm_copy_suspend-a39e25d9caedb9ce",
+          "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/tdm_copy_suspend-a39e25d9caedb9ce",
           "sha256": "175d05bfba5b2549a82800d05cc93bb19c824f2d29b2446f122c387f88f0109e",
           "artifact_role": "Transient native Rust test executable; this hash is a historical run observation, not an immutable preservation promise.",
           "available_at_recorded_hash_at_correction": false,
@@ -260,7 +260,7 @@
         }
       ],
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/3a48fabd68b5443aa312d85a3f45e059.json",
+        "path": "<cache>/rustmage-build-reports/3a48fabd68b5443aa312d85a3f45e059.json",
         "sha256": "ad5fd659a9818a239f801194c95932b5c8bdca062ea32a9b578509b34d842dc2",
         "memory_max_bytes": 6442450944,
         "memory_peak_bytes": 383164416,
@@ -270,7 +270,7 @@
       }
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/copy-suspend-compat-permanent/native.json",
+      "path": "<cache>/rustmage-tdm/copy-suspend-compat-permanent/native.json",
       "sha256": "88116ca8a84cb85c90d82235ebed36e7a33189a2c7d9d748c19b49d9a18a9559",
       "cases": 10,
       "terminal": true,
@@ -290,7 +290,7 @@
       ],
       "binaries": [
         {
-          "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/dft_permanent_cast_copy_engine-07da1f2882c32cd8",
+          "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/dft_permanent_cast_copy_engine-07da1f2882c32cd8",
           "sha256": "47b4c06e7ea2078615027019072eaff823f4c82e8b23c4cb664e6ed3f098d3d4",
           "artifact_role": "Transient native Rust test executable; this hash is a historical run observation, not an immutable preservation promise.",
           "available_at_recorded_hash_at_correction": false,
@@ -298,7 +298,7 @@
         }
       ],
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/eacebbc1794040879e953288c96cbe9c.json",
+        "path": "<cache>/rustmage-build-reports/eacebbc1794040879e953288c96cbe9c.json",
         "sha256": "3a3976edf821641e932b32336f43cdb4e4600f607938f0598da3d4bc24b322bd",
         "memory_max_bytes": 6442450944,
         "memory_peak_bytes": 222613504,
@@ -308,7 +308,7 @@
       }
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/copy-suspend-compat-storm/native.json",
+      "path": "<cache>/rustmage-tdm/copy-suspend-compat-storm/native.json",
       "sha256": "8496f786c1ac9b5f414331d639ab4516c8149ee1e5f52d51ae49e21006e7c15f",
       "cases": 5,
       "terminal": true,
@@ -328,7 +328,7 @@
       ],
       "binaries": [
         {
-          "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/legacy-49262b90621dc1a0",
+          "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/legacy-49262b90621dc1a0",
           "sha256": "073d92b4fc72d12796f6820256f8080eb04b3a44139107800421a41447cc34da",
           "artifact_role": "Transient native Rust test executable; this hash is a historical run observation, not an immutable preservation promise.",
           "available_at_recorded_hash_at_correction": false,
@@ -336,7 +336,7 @@
         }
       ],
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/326ab30e40f84b2e90d008fba5a3c084.json",
+        "path": "<cache>/rustmage-build-reports/326ab30e40f84b2e90d008fba5a3c084.json",
         "sha256": "fa8cce0d6310d69fc10ffec824bc0f8cc0414cfeea40cdaec9de04c9c3dd3fd6",
         "memory_max_bytes": 6442450944,
         "memory_peak_bytes": 1884610560,
@@ -346,7 +346,7 @@
       }
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/copy-suspend-compat-delayed/native.json",
+      "path": "<cache>/rustmage-tdm/copy-suspend-compat-delayed/native.json",
       "sha256": "c47fc32d61838399f3e07cdd9db9d88ed022daa049f0c567dec0ad454aa01a8a",
       "cases": 2,
       "terminal": true,
@@ -366,7 +366,7 @@
       ],
       "binaries": [
         {
-          "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/legacy-49262b90621dc1a0",
+          "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/legacy-49262b90621dc1a0",
           "sha256": "073d92b4fc72d12796f6820256f8080eb04b3a44139107800421a41447cc34da",
           "artifact_role": "Transient native Rust test executable; this hash is a historical run observation, not an immutable preservation promise.",
           "available_at_recorded_hash_at_correction": false,
@@ -374,7 +374,7 @@
         }
       ],
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/13b2fd382f214dafab5107eaa8ecc58b.json",
+        "path": "<cache>/rustmage-build-reports/13b2fd382f214dafab5107eaa8ecc58b.json",
         "sha256": "b21c0d78ba65ba3e039c2a2a8ecf6f8d219d0474146c7e43e735a29df453ba14",
         "memory_max_bytes": 6442450944,
         "memory_peak_bytes": 36528128,
@@ -384,7 +384,7 @@
       }
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/copy-suspend-compat-offer/native.json",
+      "path": "<cache>/rustmage-tdm/copy-suspend-compat-offer/native.json",
       "sha256": "215e889081c74e727bfcf1c90fd66077f87c9431742869369f06b5b4ac33e688",
       "cases": 2,
       "terminal": true,
@@ -404,7 +404,7 @@
       ],
       "binaries": [
         {
-          "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/legacy-49262b90621dc1a0",
+          "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/legacy-49262b90621dc1a0",
           "sha256": "073d92b4fc72d12796f6820256f8080eb04b3a44139107800421a41447cc34da",
           "artifact_role": "Transient native Rust test executable; this hash is a historical run observation, not an immutable preservation promise.",
           "available_at_recorded_hash_at_correction": false,
@@ -412,7 +412,7 @@
         }
       ],
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/d263f91e74384438af22f789dedf990f.json",
+        "path": "<cache>/rustmage-build-reports/d263f91e74384438af22f789dedf990f.json",
         "sha256": "0cab13c21f312dfce0e21687cbdd20e925469df6633fb880ef166cd5fcadaba4",
         "memory_max_bytes": 6442450944,
         "memory_peak_bytes": 33783808,
@@ -435,7 +435,7 @@
     "memory_limit_bytes": 6442450944
   },
   "layout": {
-    "path": "/home/altf4/.cache/rustmage-tdm/copy-suspend-fixture-fixed/layout.txt",
+    "path": "<cache>/rustmage-tdm/copy-suspend-fixture-fixed/layout.txt",
     "sha256": "1c6a8f10dd515a784478151cb5bfea6baa9e3c2628f83425cd8a89b2b6cd3b50",
     "previous": {
       "Object": 160,
@@ -481,19 +481,19 @@
   ],
   "preserved_shared_libraries": [
     {
-      "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/libserde_derive-4a3ec5018aa504ef.so",
+      "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/libserde_derive-4a3ec5018aa504ef.so",
       "sha256": "16e56c72844cb52549aca635bf643fd0903d223d703291e366575e6900e074a7",
       "role": "Rust compiler proc-macro shared library; exact compile-time dependency remains present."
     },
     {
-      "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/librustmage_test_access-636adfcd609bee93.so",
+      "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/librustmage_test_access-636adfcd609bee93.so",
       "sha256": "c009fbc5de616b8bd2e9b74040b5e3a93b47809c2a8f4c5e2a78d1a564398f6a",
       "role": "Rust compiler proc-macro shared library; exact compile-time dependency remains present."
     }
   ],
   "transient_compilation_outputs": [
     {
-      "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/librustmage.so",
+      "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/librustmage.so",
       "sha256": "3cc2dedbc03f134edad33755450fbbb1cda9e040195374fe8e361bf8fa3f64ee",
       "artifact_role": "Transient Cargo cdylib output emitted alongside the rlib; not a native test execution dependency.",
       "required_for_recorded_native_test_executions": false,
@@ -508,27 +508,27 @@
     "reason": "Remove the false required/preserved classification of a mutable Cargo cdylib for this native Rust test checkpoint. All historical path/hash/report/command records remain unchanged. Exact compiler proc-macro libraries are retained as compile-time dependencies.",
     "audited_native_reports": [
       {
-        "path": "/home/altf4/.cache/rustmage-tdm/copy-suspend-first/native.json",
+        "path": "<cache>/rustmage-tdm/copy-suspend-first/native.json",
         "sha256": "3d279f926b8e3183dacf5340c2c45dc13a4c4a11bc6743c4769c08b64ca0ce47"
       },
       {
-        "path": "/home/altf4/.cache/rustmage-tdm/copy-suspend-fixture-fixed/native.json",
+        "path": "<cache>/rustmage-tdm/copy-suspend-fixture-fixed/native.json",
         "sha256": "1bc2fa867e1e533dda78041959a20eb24692c81c94ca6e4c0d810085eca8a944"
       },
       {
-        "path": "/home/altf4/.cache/rustmage-tdm/copy-suspend-compat-permanent/native.json",
+        "path": "<cache>/rustmage-tdm/copy-suspend-compat-permanent/native.json",
         "sha256": "88116ca8a84cb85c90d82235ebed36e7a33189a2c7d9d748c19b49d9a18a9559"
       },
       {
-        "path": "/home/altf4/.cache/rustmage-tdm/copy-suspend-compat-storm/native.json",
+        "path": "<cache>/rustmage-tdm/copy-suspend-compat-storm/native.json",
         "sha256": "8496f786c1ac9b5f414331d639ab4516c8149ee1e5f52d51ae49e21006e7c15f"
       },
       {
-        "path": "/home/altf4/.cache/rustmage-tdm/copy-suspend-compat-delayed/native.json",
+        "path": "<cache>/rustmage-tdm/copy-suspend-compat-delayed/native.json",
         "sha256": "c47fc32d61838399f3e07cdd9db9d88ed022daa049f0c567dec0ad454aa01a8a"
       },
       {
-        "path": "/home/altf4/.cache/rustmage-tdm/copy-suspend-compat-offer/native.json",
+        "path": "<cache>/rustmage-tdm/copy-suspend-compat-offer/native.json",
         "sha256": "215e889081c74e727bfcf1c90fd66077f87c9431742869369f06b5b4ac33e688"
       }
     ],
@@ -548,23 +548,23 @@
     "availability_scope": "Current warm-output availability is stated only for this inspection. Replaced or changing historical bytes are not claimed preserved, and no new hashes replace the original observations. No cache restoration, deletion, rebuild or runtime edit was performed.",
     "native_executable_pin_availability": [
       {
-        "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/tdm_copy_suspend-a39e25d9caedb9ce",
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/tdm_copy_suspend-a39e25d9caedb9ce",
         "available_at_recorded_hash": false
       },
       {
-        "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/dft_permanent_cast_copy_engine-07da1f2882c32cd8",
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/dft_permanent_cast_copy_engine-07da1f2882c32cd8",
         "available_at_recorded_hash": false
       },
       {
-        "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/legacy-49262b90621dc1a0",
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/legacy-49262b90621dc1a0",
         "available_at_recorded_hash": false
       },
       {
-        "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/legacy-49262b90621dc1a0",
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/legacy-49262b90621dc1a0",
         "available_at_recorded_hash": false
       },
       {
-        "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/legacy-49262b90621dc1a0",
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/legacy-49262b90621dc1a0",
         "available_at_recorded_hash": false
       }
     ],

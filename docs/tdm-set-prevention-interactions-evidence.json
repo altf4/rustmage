@@ -408,12 +408,12 @@
   ],
   "plan_correction": "Headliner targets only a creature. New Way Forward prevents damage to you. The positive player-damage case therefore uses actual Cori Mountain Stalwart; Headliner separately proves its printed recipient boundary and exact departed source choice. No redirection fixture or named-card behavior overlay is used.",
   "reused_shared_proofs": {
-    "ledger": "/home/altf4/.cache/rustmage-tdm/g-s-authored-acceptance-crossrefs.json",
+    "ledger": "<cache>/rustmage-tdm/g-s-authored-acceptance-crossrefs.json",
     "ledger_sha256": "19811b00bd83279ef30a8ee66e1d31c8909e57efe183e54ded51448dd3f6772d",
     "references": {
       "nwf_zero": {
         "path": "tests/tdm_remaining_world_rules.rs",
-        "absolute_path": "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
+        "absolute_path": "<worktree>/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
         "line": 1258,
         "body_sha256": "9e8704d841baa3baaaf2feb5c9c90a9479ccea3b2dba9aac120e28b43e5ec0e0",
         "file_sha256": "f1760f5c4c68ac10071201f4d3d8d8cdad071c9eb237e91f3be52c03f7c14440",
@@ -431,7 +431,7 @@
       },
       "nwf_recipients": {
         "path": "tests/tdm_remaining_world_rules.rs",
-        "absolute_path": "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
+        "absolute_path": "<worktree>/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
         "line": 1279,
         "body_sha256": "88f66de859f8a33ea8e38b3ecb410bf5958702d89cfb8b83a4373c687ae83130",
         "file_sha256": "f1760f5c4c68ac10071201f4d3d8d8cdad071c9eb237e91f3be52c03f7c14440",
@@ -449,7 +449,7 @@
       },
       "nwf_once": {
         "path": "tests/tdm_remaining_world_rules.rs",
-        "absolute_path": "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
+        "absolute_path": "<worktree>/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
         "line": 1236,
         "body_sha256": "0e46109ad9c2eb3160de6c53817eabb27c36852ea6840e356323c8840a15b621",
         "file_sha256": "f1760f5c4c68ac10071201f4d3d8d8cdad071c9eb237e91f3be52c03f7c14440",
@@ -467,7 +467,7 @@
       },
       "nwf_expiry": {
         "path": "tests/tdm_remaining_world_rules.rs",
-        "absolute_path": "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
+        "absolute_path": "<worktree>/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
         "line": 1644,
         "body_sha256": "3996cfd46c87fea8095e81f613b3b61b82e289d4f5cc6152f31f6086d8ee0018",
         "file_sha256": "f1760f5c4c68ac10071201f4d3d8d8cdad071c9eb237e91f3be52c03f7c14440",
@@ -485,7 +485,7 @@
       },
       "nwf_incarnation": {
         "path": "tests/tdm_remaining_world_rules.rs",
-        "absolute_path": "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
+        "absolute_path": "<worktree>/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
         "line": 1409,
         "body_sha256": "8a2f065d3324b1d10989edf1a85dfa426bef00ef436e87d95a3e53e0468baed0",
         "file_sha256": "f1760f5c4c68ac10071201f4d3d8d8cdad071c9eb237e91f3be52c03f7c14440",
@@ -503,7 +503,7 @@
       },
       "nwf_ability_identity": {
         "path": "tests/tdm_remaining_world_rules.rs",
-        "absolute_path": "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
+        "absolute_path": "<worktree>/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
         "line": 2256,
         "body_sha256": "c307244a6a649b7374c451f8d760217886d44157691f1b76d9b031b18c1b3363",
         "file_sha256": "f1760f5c4c68ac10071201f4d3d8d8cdad071c9eb237e91f3be52c03f7c14440",
@@ -521,7 +521,7 @@
       },
       "paradigm": {
         "path": "tests/tdm_remaining_world_rules.rs",
-        "absolute_path": "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
+        "absolute_path": "<worktree>/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
         "line": 3780,
         "body_sha256": "30eac864b509844fe1612f6fec59ca2bbf21bb02f57fd0e393e1d83c1e5a3bad",
         "file_sha256": "f1760f5c4c68ac10071201f4d3d8d8cdad071c9eb237e91f3be52c03f7c14440",
@@ -539,7 +539,7 @@
       },
       "goggles": {
         "path": "tests/tdm_remaining_world_rules.rs",
-        "absolute_path": "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
+        "absolute_path": "<worktree>/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
         "line": 3802,
         "body_sha256": "240552bb23635c7636ee624ca16756acc898e5740fac02f3a134c272aa73c5e5",
         "file_sha256": "f1760f5c4c68ac10071201f4d3d8d8cdad071c9eb237e91f3be52c03f7c14440",
@@ -557,7 +557,7 @@
       },
       "goggles_empty": {
         "path": "tests/tdm_remaining_world_rules.rs",
-        "absolute_path": "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
+        "absolute_path": "<worktree>/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
         "line": 4398,
         "body_sha256": "11014e84d4104b2e8d51e65d40604f2edab80e62992888faa99bc60efc56aa56",
         "file_sha256": "f1760f5c4c68ac10071201f4d3d8d8cdad071c9eb237e91f3be52c03f7c14440",
@@ -575,7 +575,7 @@
       },
       "goggles_spent": {
         "path": "tests/tdm_remaining_world_rules.rs",
-        "absolute_path": "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
+        "absolute_path": "<worktree>/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
         "line": 4402,
         "body_sha256": "0c02b791a468a70189704d2ac6fe143e2b62e3b75bf0b05f221782bf0cc0948f",
         "file_sha256": "f1760f5c4c68ac10071201f4d3d8d8cdad071c9eb237e91f3be52c03f7c14440",
@@ -593,7 +593,7 @@
       },
       "flight": {
         "path": "tests/tdm_remaining_world_rules.rs",
-        "absolute_path": "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
+        "absolute_path": "<worktree>/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
         "line": 3874,
         "body_sha256": "d0a281850ed9696b8a03e45e4b217c7be52ae7105087f0aad8e65cc7b673c3b5",
         "file_sha256": "f1760f5c4c68ac10071201f4d3d8d8cdad071c9eb237e91f3be52c03f7c14440",
@@ -615,7 +615,7 @@
   "verification": [
     {
       "stage": "initial fixture-only failure",
-      "report": "/home/altf4/.cache/rustmage-tdm/post86-g-s-prevention-1793828428978623053/g_s_prevention/native.json",
+      "report": "<cache>/rustmage-tdm/post86-g-s-prevention-1793828428978623053/g_s_prevention/native.json",
       "status": "2 failed before the F15 events under test: unrelated Sagu Pummeler was not admitted in this isolated checkout. Replaced passive bodies with already-supported Marang River Regent and the second paid spell with already-supported no-entry-trigger Krumar Initiate. No engine or named-card behavior change.",
       "report_sha256": "6608d96f8547206b154c08c18c6f8d410881dc7e22f8cb54f6d61d2318941485",
       "failed_tests": [
@@ -626,11 +626,11 @@
     {
       "stage": "admitted actual-definition fixture-corrected target",
       "native_report": {
-        "path": "/home/altf4/.cache/rustmage-tdm/post86-g-s-prevention-retry-1793828714028393889/g_s_prevention/native.json",
+        "path": "<cache>/rustmage-tdm/post86-g-s-prevention-retry-1793828714028393889/g_s_prevention/native.json",
         "sha256": "7ca9b36d2e3c1c58dbcd8f1d33935dfcb6cc79fa0416aa4047afd4ee6986baf7"
       },
       "terminal_report": {
-        "path": "/home/altf4/.cache/rustmage-tdm/post86-g-s-prevention-retry-1793828714028393889/terminal.json",
+        "path": "<cache>/rustmage-tdm/post86-g-s-prevention-retry-1793828714028393889/terminal.json",
         "sha256": "ee60951a3609f29836d377a1cebbb79d5c23d8be3c7ae1db51afd8996eb81591"
       },
       "success": true,
@@ -653,15 +653,15 @@
       "execution_seconds": 0.033169257978443056,
       "native_driver_seconds": 1.719631500018295,
       "compile_log": {
-        "path": "/home/altf4/.cache/rustmage-tdm/post86-g-s-prevention-retry-1793828714028393889/g_s_prevention/native-compile.log",
+        "path": "<cache>/rustmage-tdm/post86-g-s-prevention-retry-1793828714028393889/g_s_prevention/native-compile.log",
         "sha256": "a5146e4a6f088e82cdcd973b1c589d5935c29595c511d2d30083eba04eadb681"
       },
       "execution_log": {
-        "path": "/home/altf4/.cache/rustmage-tdm/post86-g-s-prevention-retry-1793828714028393889/g_s_prevention/native-execution-0.log",
+        "path": "<cache>/rustmage-tdm/post86-g-s-prevention-retry-1793828714028393889/g_s_prevention/native-execution-0.log",
         "sha256": "52e9c50b1f518e46a4085c5478e848ef97006b76fd188295a3964a316da4bda8"
       },
       "source_manifest": {
-        "path": "/home/altf4/.cache/rustmage-tdm/post86-g-s-prevention-retry-1793828714028393889/g_s_prevention/source-hashes.json",
+        "path": "<cache>/rustmage-tdm/post86-g-s-prevention-retry-1793828714028393889/g_s_prevention/source-hashes.json",
         "sha256": "4873f2f1ad41ef8deb33ac6ae4c17c8b39ebdd63399a94699371ede1070c35f0"
       },
       "tested_source_sha256": "5d8af48e198d2766fa2965c519468f31a8efe0a799257e52d5a211fd37a99bc2",
@@ -683,7 +683,7 @@
       },
       "clippy": {
         "receipt": {
-          "path": "/home/altf4/.cache/rustmage-tdm/post86-g-s-prevention-retry-1793828714028393889/g_s_prevention/clippy-terminal.json",
+          "path": "<cache>/rustmage-tdm/post86-g-s-prevention-retry-1793828714028393889/g_s_prevention/clippy-terminal.json",
           "sha256": "a40661889cf7464bb0c525da056eb957efe74b2386ff9999c4f0652842bf56f2"
         },
         "command": [
@@ -702,13 +702,13 @@
         "exit": 0,
         "seconds": 0.3160107369767502,
         "log": {
-          "path": "/home/altf4/.cache/rustmage-tdm/post86-g-s-prevention-retry-1793828714028393889/g_s_prevention/clippy.log",
+          "path": "<cache>/rustmage-tdm/post86-g-s-prevention-retry-1793828714028393889/g_s_prevention/clippy.log",
           "sha256": "79c57500eae74a74eb46987fb8b1dfa62444bab0eea0296a55ce7f73f7e78aa5"
         }
       },
       "source_check": {
         "report": {
-          "path": "/home/altf4/.cache/rustmage-tdm/post86-g-s-prevention-retry-1793828714028393889/g_s_prevention/sources-driver.log",
+          "path": "<cache>/rustmage-tdm/post86-g-s-prevention-retry-1793828714028393889/g_s_prevention/sources-driver.log",
           "sha256": "b7ddd6f0a7bfced090756b5b4251e613597b0e3f3d2f1fa72bc4829612a79844"
         },
         "result": {

@@ -17,7 +17,7 @@
     }
   ],
   "source_manifest": {
-    "path": "/home/altf4/.cache/rustmage-tdm/windcrag-gained-fixed/source-hashes.json",
+    "path": "<cache>/rustmage-tdm/windcrag-gained-fixed/source-hashes.json",
     "sha256": "6cb238e110308b8a8f209a8f831a21b6ab669e6da96ef0613f917384b10cedd7",
     "all_frozen_hashes_unchanged_after_terminal": true
   },

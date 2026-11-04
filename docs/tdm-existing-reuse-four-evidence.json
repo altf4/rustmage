@@ -3,7 +3,7 @@
   "set": "TDM",
   "scope": "Four existing whole-card proofs; no runtime/provenance/admission change",
   "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
-  "native_report": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/native.json",
+  "native_report": "<cache>/rustmage-validation-l0pzz2p2/report/native.json",
   "native_report_sha256": "4ce510b350c0220eaee7641429c6d593e41fcfe5fc96cec8b8a5b795081052e0",
   "root_review": "Full Oracle/fourcomplete Java classes includingcustomhelperbodies/fourtypeddefinitions/allcitedactualtestbodies and actionhelpers read; exact current/b456 source and fresh native cases independently verified. Typedsharedmechanics/header inspection explicitly recorded in per-card limits; not claimed as newpercard assertions.",
   "counted_existing_cards": 4,
@@ -365,7 +365,7 @@
           "test": "engine::assurance::issue_93_elspeth::elspeth_storm_slayer_full_card",
           "status": "ok",
           "exit": 0,
-          "binary": "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target/debug/deps/legacy-49262b90621dc1a0"
+          "binary": "<cache>/rustmage-authoring/tdm-complete-set/target/debug/deps/legacy-49262b90621dc1a0"
         }
       ],
       "java_source": "Mage.Sets/src/mage/cards/e/ElspethStormSlayer.java",

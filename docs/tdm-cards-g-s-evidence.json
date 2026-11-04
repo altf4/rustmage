@@ -6914,7 +6914,7 @@
   "historical_first_25_engine_revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
   "accepted_existing_proofs": {
     "evidence": "docs/tdm-existing-g-s-six-evidence.json",
-    "evidence_sha256": "986e200da71cc176b2f529f70622b5bbe0330e404eea61d860f272d10be2259e",
+    "evidence_sha256": "0c96ee61d7a95643a1c38a98dc9c90314f31ba130662545df5df56b6d75c4c87",
     "root_acceptance": "Read all six complete typed definitions and pinned XMage card bodies, actual assertion/action helper bodies; independently compare current root definition/provenance/test hashes and current native PASS receipts. Source-provenance validation also passed in full engine checkpoint. Whole printed behavior accepted.",
     "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
     "names": [

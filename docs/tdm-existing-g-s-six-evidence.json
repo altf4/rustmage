@@ -4,7 +4,7 @@
   "scope": "Six existing G\u2013S physical cards; no new implementation or admission change",
   "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
   "previous_accepted_engine": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
-  "source_ledger": "/home/altf4/.cache/rustmage-tdm/g-s-existing-candidate-proof-ledger.json",
+  "source_ledger": "<cache>/rustmage-tdm/g-s-existing-candidate-proof-ledger.json",
   "source_ledger_sha256": "763c087031ad2962061bd3bb31e045b94ba143096a6144c2398de58f859c80ae",
   "root_review": "Read all six complete typed definitions and pinned XMage card bodies, actual assertion/action helper bodies; independently compare current root definition/provenance/test hashes and current native PASS receipts. Source-provenance validation also passed in full engine checkpoint. Whole printed behavior accepted.",
   "counted_existing_cards": 6,
@@ -691,7 +691,7 @@
         "test": "basic_lands_play_untapped_have_intrinsic_abilities_and_produce_exactly_their_color",
         "status": "ok",
         "exit": 0,
-        "binary": "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target/debug/deps/dft_colorless_cards_inherited_lands-28e5c410a6c945e3"
+        "binary": "<cache>/rustmage-authoring/tdm-complete-set/target/debug/deps/dft_colorless_cards_inherited_lands-28e5c410a6c945e3"
       },
       "native_case_receipt_sha256": "3cad48aacb49edf024cba2ff4b3f977762486e8d80cc3459763e3f165b70ba1c",
       "assertions_inspected": "Both seats: real PlayLand enters untapped; intrinsic ability present; second land play rejected transactionally; TapMana produces exactly the independently hardcoded color and taps land; duplicate tap rejected.",
@@ -701,7 +701,7 @@
         "test": "basic_lands_play_untapped_have_intrinsic_abilities_and_produce_exactly_their_color",
         "status": "ok",
         "exit": 0,
-        "binary": "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target/debug/deps/dft_colorless_cards_inherited_lands-28e5c410a6c945e3"
+        "binary": "<cache>/rustmage-authoring/tdm-complete-set/target/debug/deps/dft_colorless_cards_inherited_lands-28e5c410a6c945e3"
       }
     },
     "basic_deck": {
@@ -716,7 +716,7 @@
         "test": "basic_land_deck_exemption_allows_sixty_copies_in_standard",
         "status": "ok",
         "exit": 0,
-        "binary": "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target/debug/deps/dft_colorless_cards_inherited_lands-28e5c410a6c945e3"
+        "binary": "<cache>/rustmage-authoring/tdm-complete-set/target/debug/deps/dft_colorless_cards_inherited_lands-28e5c410a6c945e3"
       },
       "native_case_receipt_sha256": "0939c1043da9a033d5f06bb6a36decf15b97bf938c36c75ade07332f44372125",
       "assertions_inspected": "Each hardcoded basic identity forms a legal sixty-copy Standard deck for both seats.",
@@ -726,7 +726,7 @@
         "test": "basic_land_deck_exemption_allows_sixty_copies_in_standard",
         "status": "ok",
         "exit": 0,
-        "binary": "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target/debug/deps/dft_colorless_cards_inherited_lands-28e5c410a6c945e3"
+        "binary": "<cache>/rustmage-authoring/tdm-complete-set/target/debug/deps/dft_colorless_cards_inherited_lands-28e5c410a6c945e3"
       }
     },
     "gainland": {
@@ -741,7 +741,7 @@
         "test": "each_gainland_enters_tapped_gains_its_controller_one_life_then_produces_either_color",
         "status": "ok",
         "exit": 0,
-        "binary": "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target/debug/deps/dft_colorless_cards_inherited_lands-28e5c410a6c945e3"
+        "binary": "<cache>/rustmage-authoring/tdm-complete-set/target/debug/deps/dft_colorless_cards_inherited_lands-28e5c410a6c945e3"
       },
       "native_case_receipt_sha256": "d45fd3ba8ed47fc9075f83252c912bff43ff47b6a7c863d81d62424b2063c052",
       "assertions_inspected": "Both seats and both hardcoded colors: real PlayLand enters tapped; life stays20 before trigger resolves then controller21/opponent20; tapped mana attempt rejected, after untap colorless rejected; actual activation produces exact chosen color/taps, second activation rejected.",
@@ -751,7 +751,7 @@
         "test": "each_gainland_enters_tapped_gains_its_controller_one_life_then_produces_either_color",
         "status": "ok",
         "exit": 0,
-        "binary": "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target/debug/deps/dft_colorless_cards_inherited_lands-28e5c410a6c945e3"
+        "binary": "<cache>/rustmage-authoring/tdm-complete-set/target/debug/deps/dft_colorless_cards_inherited_lands-28e5c410a6c945e3"
       }
     },
     "defeat_result": {
@@ -766,7 +766,7 @@
         "test": "engine::assurance::requested_inevitable_defeat::inevitable_defeat_exiles_and_uses_the_controllers_not_owners",
         "status": "ok",
         "exit": 0,
-        "binary": "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target/debug/deps/legacy-49262b90621dc1a0"
+        "binary": "<cache>/rustmage-authoring/tdm-complete-set/target/debug/deps/legacy-49262b90621dc1a0"
       },
       "native_case_receipt_sha256": "b683771489fab94f2c4578a3950c0eababdc246414ccc863247c505ac3d97460",
       "assertions_inspected": "Both seats: actual paid Inevitable Defeat exiles opponent-controlled/you-owned Bear Cub; caster gains3, target CONTROLLER loses3 independently of owner.",
@@ -776,7 +776,7 @@
         "test": "engine::assurance::requested_inevitable_defeat::inevitable_defeat_exiles_and_uses_the_controllers_not_owners",
         "status": "ok",
         "exit": 0,
-        "binary": "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target/debug/deps/legacy-49262b90621dc1a0"
+        "binary": "<cache>/rustmage-authoring/tdm-complete-set/target/debug/deps/legacy-49262b90621dc1a0"
       }
     },
     "defeat_targets": {
@@ -791,7 +791,7 @@
         "test": "engine::assurance::requested_inevitable_defeat::inevitable_defeat_rejects_land_and_fizzles_on_stale_target",
         "status": "ok",
         "exit": 0,
-        "binary": "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target/debug/deps/legacy-49262b90621dc1a0"
+        "binary": "<cache>/rustmage-authoring/tdm-complete-set/target/debug/deps/legacy-49262b90621dc1a0"
       },
       "native_case_receipt_sha256": "135ba14d6262926ce31b0ea1fe5d180baac3d2f61966532bcc3172bf23290ff0",
       "assertions_inspected": "Land target rejected with snapshot preserved; announced nonland target leaves and reenters; new incarnation remains battlefield and neither life total changes.",
@@ -801,7 +801,7 @@
         "test": "engine::assurance::requested_inevitable_defeat::inevitable_defeat_rejects_land_and_fizzles_on_stale_target",
         "status": "ok",
         "exit": 0,
-        "binary": "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target/debug/deps/legacy-49262b90621dc1a0"
+        "binary": "<cache>/rustmage-authoring/tdm-complete-set/target/debug/deps/legacy-49262b90621dc1a0"
       }
     },
     "defeat_counter": {
@@ -816,7 +816,7 @@
         "test": "engine::assurance::requested_inevitable_defeat::inevitable_defeat_resolves_through_counterspell",
         "status": "ok",
         "exit": 0,
-        "binary": "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target/debug/deps/legacy-49262b90621dc1a0"
+        "binary": "<cache>/rustmage-authoring/tdm-complete-set/target/debug/deps/legacy-49262b90621dc1a0"
       },
       "native_case_receipt_sha256": "ec625813e2baacf767f0245b1afb020d77a66cf030e37ebc8f7945cd56322403",
       "assertions_inspected": "Opponent casts actual Cancel at paid Inevitable Defeat; exile still resolves, proving uncounterability through an attempted counter.",
@@ -826,11 +826,11 @@
         "test": "engine::assurance::requested_inevitable_defeat::inevitable_defeat_resolves_through_counterspell",
         "status": "ok",
         "exit": 0,
-        "binary": "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target/debug/deps/legacy-49262b90621dc1a0"
+        "binary": "<cache>/rustmage-authoring/tdm-complete-set/target/debug/deps/legacy-49262b90621dc1a0"
       }
     }
   },
-  "current_native_report": "/home/altf4/.cache/rustmage-validation-c3slnby9/report/native.json",
+  "current_native_report": "<cache>/rustmage-validation-c3slnby9/report/native.json",
   "current_native_report_sha256": "fec913455cba78f0d7c35b236dc6d45510e05c82dfe2f8f143c4d1d831a70a88",
   "terminal": true,
   "success": true,

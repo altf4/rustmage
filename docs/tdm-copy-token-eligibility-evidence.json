@@ -24,11 +24,11 @@
   ],
   "source_freeze": {
     "negative": {
-      "path": "/home/altf4/.cache/rustmage-tdm/combat-callbacks-cr1115-negative/source-hashes.json",
+      "path": "<cache>/rustmage-tdm/combat-callbacks-cr1115-negative/source-hashes.json",
       "sha256": "5e47c5bc85bbb881a6c0bcffcf75d81b2a88af11e48b371ddca7028c0b9918d8"
     },
     "fixed_and_all_compatibility": {
-      "path": "/home/altf4/.cache/rustmage-tdm/combat-callbacks-cr1115-fixed/source-hashes.json",
+      "path": "<cache>/rustmage-tdm/combat-callbacks-cr1115-fixed/source-hashes.json",
       "sha256": "1053ca148d0f2c2b69b353a607f07f7b6c1364d88c954a71d1d688b844a52245"
     },
     "verified_unchanged_after_terminal_runs": true
@@ -82,16 +82,16 @@
     "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
     "complete_java_bodies_read": [
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/m/MarduSiegebreaker.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/m/MarduSiegebreaker.java",
         "sha256": "6775cc47006680e84f2f535f70c06ee054eb9a83181d9a0f8b521a6c2b7a40ee"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/util/functions/CopyTokenFunction.java",
+        "path": "<xmage>/Mage/src/main/java/mage/util/functions/CopyTokenFunction.java",
         "sha256": "ed8c0fe3b50030f54d3e32ddbabbdc1f7018c0da6878429821f54020c4d4ce1a"
       }
     ],
     "rules": {
-      "path": "/home/altf4/.cache/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
+      "path": "<cache>/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
       "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
       "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
       "sections": [
@@ -131,7 +131,7 @@
   ],
   "expected_negative": {
     "run": {
-      "path": "/home/altf4/.cache/rustmage-tdm/combat-callbacks-cr1115-negative/native.json",
+      "path": "<cache>/rustmage-tdm/combat-callbacks-cr1115-negative/native.json",
       "sha256": "599759ff6eabe8840bc8fa8c4e2c5f9e3f608cc2dd67d311da3d98b1d26cc11f",
       "cases": 3,
       "passed": 0,
@@ -141,7 +141,7 @@
       "execution_seconds": 0.024614171008579433,
       "compile_exit": 0,
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/da948b21f5304489854229b3c56059b4.json",
+        "path": "<cache>/rustmage-build-reports/da948b21f5304489854229b3c56059b4.json",
         "sha256": "61aca09358c9b3b1274b0e20bb07fa891830d7a003ef8a49bc149b804f87ab9d",
         "exit_code": 1,
         "seconds": 1.8758423810068052,
@@ -161,7 +161,7 @@
   },
   "final_runs": [
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/combat-callbacks-cr1115-fixed/native.json",
+      "path": "<cache>/rustmage-tdm/combat-callbacks-cr1115-fixed/native.json",
       "sha256": "efa2bbcf5cebc07beda457a0ca8816a63269ab832f1dcf648259a142709bfccd",
       "cases": 32,
       "passed": 32,
@@ -171,7 +171,7 @@
       "execution_seconds": 0.0436792139953468,
       "compile_exit": 0,
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/45d1bb85c8ae416997264929e85d98a5.json",
+        "path": "<cache>/rustmage-build-reports/45d1bb85c8ae416997264929e85d98a5.json",
         "sha256": "bc0733f4a60b0ee6e54fc065baf52eb2d7e4614c1eb8933386414a81d3645265",
         "exit_code": 0,
         "seconds": 112.83511237398488,
@@ -183,7 +183,7 @@
       }
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/combat-callbacks-cr1115-compat/0/native.json",
+      "path": "<cache>/rustmage-tdm/combat-callbacks-cr1115-compat/0/native.json",
       "sha256": "62e9a7213fbd6a44a5aea976e2cbdb58cf933c1cb071fe9acac74ce41fb1fbbd",
       "cases": 17,
       "passed": 17,
@@ -193,7 +193,7 @@
       "execution_seconds": 0.04351799099822529,
       "compile_exit": 0,
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/7db6b0d5d23e4894a776bd758674cba5.json",
+        "path": "<cache>/rustmage-build-reports/7db6b0d5d23e4894a776bd758674cba5.json",
         "sha256": "4783181734cebc5cf3c01d249a9307936fb974b36f4b12cda4aedcb9bdad23c0",
         "exit_code": 0,
         "seconds": 0.9535798710130621,
@@ -205,7 +205,7 @@
       }
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/combat-callbacks-cr1115-compat/1/native.json",
+      "path": "<cache>/rustmage-tdm/combat-callbacks-cr1115-compat/1/native.json",
       "sha256": "6d5de6aac18cb8e4c14fe526592042edb35e16b2031411056cd91f588cc90ef3",
       "cases": 16,
       "passed": 16,
@@ -215,7 +215,7 @@
       "execution_seconds": 0.0348872669856064,
       "compile_exit": 0,
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/995f428a2634461c9c8ea91a4c9434f5.json",
+        "path": "<cache>/rustmage-build-reports/995f428a2634461c9c8ea91a4c9434f5.json",
         "sha256": "90774192958e962a31a2d658140988fc777e6d7f44b617d3f2df0f25329780b6",
         "exit_code": 0,
         "seconds": 1.006786969024688,
@@ -227,7 +227,7 @@
       }
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/combat-callbacks-cr1115-compat/2/native.json",
+      "path": "<cache>/rustmage-tdm/combat-callbacks-cr1115-compat/2/native.json",
       "sha256": "95eb832a6fedc6d4fdb1ffe6dfbfa82d4bb4be94c3c65fc885dbb73e166e49eb",
       "cases": 10,
       "passed": 10,
@@ -237,7 +237,7 @@
       "execution_seconds": 0.03332942700944841,
       "compile_exit": 0,
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/3156a1ed70b9443d8183ef4036735820.json",
+        "path": "<cache>/rustmage-build-reports/3156a1ed70b9443d8183ef4036735820.json",
         "sha256": "fcf615c1018aa39a57ec4844a66a5b8e8881ed31fc883973adbb9873707d1a7a",
         "exit_code": 0,
         "seconds": 0.9491208769904915,
@@ -249,7 +249,7 @@
       }
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/combat-callbacks-cr1115-compat/3/native.json",
+      "path": "<cache>/rustmage-tdm/combat-callbacks-cr1115-compat/3/native.json",
       "sha256": "51c6cf6460b1d03b9bb97ab7769c7ea1fcf00a9305a6ad6a10a8d69679227819",
       "cases": 18,
       "passed": 18,
@@ -259,7 +259,7 @@
       "execution_seconds": 0.03439308298402466,
       "compile_exit": 0,
       "resource": {
-        "path": "/home/altf4/.cache/rustmage-build-reports/f3f9435764fb46dc9095332114ae7da9.json",
+        "path": "<cache>/rustmage-build-reports/f3f9435764fb46dc9095332114ae7da9.json",
         "sha256": "9fab9eac3f94875650876573a4008298e6268485d0636df230b783878903b202",
         "exit_code": 0,
         "seconds": 1.4959703179774806,
@@ -290,7 +290,7 @@
     "new_wire_or_action_variants": false,
     "hot_layout_change": false,
     "prior_measured_layout": {
-      "path": "/home/altf4/.cache/rustmage-tdm/combat-callbacks-fixture-fixed/layout.txt",
+      "path": "<cache>/rustmage-tdm/combat-callbacks-fixture-fixed/layout.txt",
       "sha256": "1c6a8f10dd515a784478151cb5bfea6baa9e3c2628f83425cd8a89b2b6cd3b50",
       "previous": {
         "Object": 160,
@@ -310,12 +310,12 @@
   },
   "preserved_shared_libraries": [
     {
-      "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/libserde_derive-4a3ec5018aa504ef.so",
+      "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/libserde_derive-4a3ec5018aa504ef.so",
       "sha256": "16e56c72844cb52549aca635bf643fd0903d223d703291e366575e6900e074a7",
       "role": "Rust compiler proc-macro shared library; exact compile-time dependency remains present."
     },
     {
-      "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/librustmage_test_access-636adfcd609bee93.so",
+      "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/librustmage_test_access-636adfcd609bee93.so",
       "sha256": "c009fbc5de616b8bd2e9b74040b5e3a93b47809c2a8f4c5e2a78d1a564398f6a",
       "role": "Rust compiler proc-macro shared library; exact compile-time dependency remains present."
     }
@@ -332,7 +332,7 @@
   ],
   "transient_compilation_outputs": [
     {
-      "path": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target/debug/deps/librustmage.so",
+      "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/librustmage.so",
       "sha256": "dd95e33cd8fa849a0ace3f6f54e5a08f6df0796de55b833c0af5ce9c58eea828",
       "artifact_role": "Transient Cargo cdylib output emitted alongside the rlib; not a native test execution dependency.",
       "required_for_recorded_native_test_executions": false,
@@ -347,27 +347,27 @@
     "reason": "Remove the false required/preserved classification of a mutable Cargo cdylib for this native Rust test checkpoint. All historical path/hash/report/command records remain unchanged. Exact compiler proc-macro libraries are retained as compile-time dependencies.",
     "audited_native_reports": [
       {
-        "path": "/home/altf4/.cache/rustmage-tdm/combat-callbacks-cr1115-negative/native.json",
+        "path": "<cache>/rustmage-tdm/combat-callbacks-cr1115-negative/native.json",
         "sha256": "599759ff6eabe8840bc8fa8c4e2c5f9e3f608cc2dd67d311da3d98b1d26cc11f"
       },
       {
-        "path": "/home/altf4/.cache/rustmage-tdm/combat-callbacks-cr1115-fixed/native.json",
+        "path": "<cache>/rustmage-tdm/combat-callbacks-cr1115-fixed/native.json",
         "sha256": "efa2bbcf5cebc07beda457a0ca8816a63269ab832f1dcf648259a142709bfccd"
       },
       {
-        "path": "/home/altf4/.cache/rustmage-tdm/combat-callbacks-cr1115-compat/0/native.json",
+        "path": "<cache>/rustmage-tdm/combat-callbacks-cr1115-compat/0/native.json",
         "sha256": "62e9a7213fbd6a44a5aea976e2cbdb58cf933c1cb071fe9acac74ce41fb1fbbd"
       },
       {
-        "path": "/home/altf4/.cache/rustmage-tdm/combat-callbacks-cr1115-compat/1/native.json",
+        "path": "<cache>/rustmage-tdm/combat-callbacks-cr1115-compat/1/native.json",
         "sha256": "6d5de6aac18cb8e4c14fe526592042edb35e16b2031411056cd91f588cc90ef3"
       },
       {
-        "path": "/home/altf4/.cache/rustmage-tdm/combat-callbacks-cr1115-compat/2/native.json",
+        "path": "<cache>/rustmage-tdm/combat-callbacks-cr1115-compat/2/native.json",
         "sha256": "95eb832a6fedc6d4fdb1ffe6dfbfa82d4bb4be94c3c65fc885dbb73e166e49eb"
       },
       {
-        "path": "/home/altf4/.cache/rustmage-tdm/combat-callbacks-cr1115-compat/3/native.json",
+        "path": "<cache>/rustmage-tdm/combat-callbacks-cr1115-compat/3/native.json",
         "sha256": "51c6cf6460b1d03b9bb97ab7769c7ea1fcf00a9305a6ad6a10a8d69679227819"
       }
     ],

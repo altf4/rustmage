@@ -195,44 +195,44 @@
     ],
     "complete_java_files_read": [
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/d/DragonsPrey.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/d/DragonsPrey.java",
         "sha256": "ca5b3d98bdbdf47d8e58076733b4810828f208bf303860ca77f08329eac34801"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/d/DragonfireBlade.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/d/DragonfireBlade.java",
         "sha256": "89f227a3a9c3fc987711790649965c10325610dc3312963cf3c00dd59e49000c"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/k/KrumarInitiate.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/k/KrumarInitiate.java",
         "sha256": "82b3aa7066a5b08fb32b1b2a0b4540630399b640cd112780a9f3a503885c4b42"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage.Sets/src/mage/cards/r/RotCurseRakshasa.java",
+        "path": "<xmage>/Mage.Sets/src/mage/cards/r/RotCurseRakshasa.java",
         "sha256": "4b458bef0b78f8746854cbecccfcce2f53d6402f0615cf3a32f1ad320c12d309"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/target/targetadjustment/TargetsCountAdjuster.java",
+        "path": "<xmage>/Mage/src/main/java/mage/target/targetadjustment/TargetsCountAdjuster.java",
         "sha256": "37eb71fcc39f89d8dda76a2b91d7cc3dcfa062f6149b2e82662f2ff84e8db479"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/costs/common/PayLifeCost.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/costs/common/PayLifeCost.java",
         "sha256": "c8f22864cdcf8fec2928294b6d19e9cc92ca303cdeee82d00f422c9ebe8350c4"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
         "sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/condition/common/SourceTargetsPermanentCondition.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/condition/common/SourceTargetsPermanentCondition.java",
         "sha256": "e9588b28dba4b7d15dd3a9119f75b3b6b3837213fc8004750b4d6d5bca294852"
       },
       {
-        "path": "/home/altf4/Code/mage/Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostIncreaseSourceEffect.java",
+        "path": "<xmage>/Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostIncreaseSourceEffect.java",
         "sha256": "682dbaf91df8ac7e8d6eaef50a1998ef8dbda733a037573fb3e688c5b5a2a68f"
       }
     ],
     "rules": {
-      "path": "/home/altf4/.cache/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
+      "path": "<cache>/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
       "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
       "rules": [
         "107.3",
@@ -271,7 +271,7 @@
   ],
   "wide_boundary": {
     "negative": {
-      "path": "/home/altf4/.cache/rustmage-tdm/behold-costs-wide-negative/native.json",
+      "path": "<cache>/rustmage-tdm/behold-costs-wide-negative/native.json",
       "sha256": "400af916e9663f35d314d0b310a3d2a14e110a72e167c7b1873c2b274d3cb0a0",
       "cases": 1,
       "passed": 0,
@@ -283,11 +283,11 @@
       "execution_seconds": 0.02459686601650901,
       "binaries": [
         {
-          "binary": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_behold_costs-bd23be18a16a81c5",
+          "binary": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_behold_costs-bd23be18a16a81c5",
           "expected": 1,
           "execution": {
             "command": [
-              "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_behold_costs-bd23be18a16a81c5",
+              "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_behold_costs-bd23be18a16a81c5",
               "target_color_reduction_keeps_named_tax_wide_until_the_final_payable_total",
               "--include-ignored",
               "--test-threads=1"
@@ -297,17 +297,17 @@
             "timed_out_case": null,
             "orphaned_processes": false,
             "seconds": 0.016421435022493824,
-            "log": "/home/altf4/.cache/rustmage-tdm/behold-costs-wide-negative/native-execution-0.log"
+            "log": "<cache>/rustmage-tdm/behold-costs-wide-negative/native-execution-0.log"
           }
         }
       ]
     },
     "pre_repair_sources": {
-      "path": "/home/altf4/.cache/rustmage-tdm/behold-costs-wide-boundary-pre-repair/source-hashes.json",
+      "path": "<cache>/rustmage-tdm/behold-costs-wide-boundary-pre-repair/source-hashes.json",
       "sha256": "ebdeda79fe1eb86cfd3d7c47e76650a661bd271ff33da42165400021905f742e"
     },
     "saved_repair": {
-      "path": "/home/altf4/.cache/rustmage-tdm/behold-costs-wide-repair-saved/hashes.json",
+      "path": "<cache>/rustmage-tdm/behold-costs-wide-repair-saved/hashes.json",
       "sha256": "e2665ace49db856ca540eee52a89fe43170f1a3a525e86288e75112c85057184"
     },
     "result": "Exact earlier passing68 engine with unchanged new witness compiled and failed its five-color target announcement, as expected. Saved repair and fixture hashes verified before restoring the fix.",
@@ -320,7 +320,7 @@
     },
     "cases": 68,
     "initial_compile_failure": {
-      "path": "/home/altf4/.cache/rustmage-tdm/behold-costs-first/native.json",
+      "path": "<cache>/rustmage-tdm/behold-costs-first/native.json",
       "sha256": "b1cf451b3aca4f9040f4a6ac8228058d3320ca32c117a18d3cf3a5f0ba55863a",
       "cases": 0,
       "passed": 0,
@@ -333,7 +333,7 @@
       "binaries": []
     },
     "zero_selection_report": {
-      "path": "/home/altf4/.cache/rustmage-tdm/behold-costs-compat-4/native.json",
+      "path": "<cache>/rustmage-tdm/behold-costs-compat-4/native.json",
       "sha256": "5284a496cb68e2bbb5a7dcf53b13d87c094deafd3e682e0b49f4ce6ef79b4e8d"
     },
     "notes": [
@@ -343,7 +343,7 @@
   },
   "final_runs": [
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/behold-costs-wide-fixed/native.json",
+      "path": "<cache>/rustmage-tdm/behold-costs-wide-fixed/native.json",
       "sha256": "ea78c0b0e4a8768b7e737955422e38720a1f518a4e73e35946bec4b57e31f02d",
       "cases": 14,
       "passed": 14,
@@ -355,11 +355,11 @@
       "execution_seconds": 0.0432545880030375,
       "binaries": [
         {
-          "binary": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_behold_costs-bd23be18a16a81c5",
+          "binary": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_behold_costs-bd23be18a16a81c5",
           "expected": 14,
           "execution": {
             "command": [
-              "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_behold_costs-bd23be18a16a81c5",
+              "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_behold_costs-bd23be18a16a81c5",
               "",
               "--include-ignored",
               "--test-threads=1"
@@ -369,13 +369,13 @@
             "timed_out_case": null,
             "orphaned_processes": false,
             "seconds": 0.02639156297664158,
-            "log": "/home/altf4/.cache/rustmage-tdm/behold-costs-wide-fixed/native-execution-0.log"
+            "log": "<cache>/rustmage-tdm/behold-costs-wide-fixed/native-execution-0.log"
           }
         }
       ]
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/behold-costs-wide-compat-0/native.json",
+      "path": "<cache>/rustmage-tdm/behold-costs-wide-compat-0/native.json",
       "sha256": "c316762cc895486fba6c44cc3deb88e013cc834b330cc511726fee381ffeb62d",
       "cases": 20,
       "passed": 20,
@@ -387,11 +387,11 @@
       "execution_seconds": 0.05027808400336653,
       "binaries": [
         {
-          "binary": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_cast_routes-33c4c4fe109c9c78",
+          "binary": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_cast_routes-33c4c4fe109c9c78",
           "expected": 20,
           "execution": {
             "command": [
-              "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_cast_routes-33c4c4fe109c9c78",
+              "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/tdm_cast_routes-33c4c4fe109c9c78",
               "",
               "--include-ignored",
               "--test-threads=1"
@@ -401,13 +401,13 @@
             "timed_out_case": null,
             "orphaned_processes": false,
             "seconds": 0.03348659898620099,
-            "log": "/home/altf4/.cache/rustmage-tdm/behold-costs-wide-compat-0/native-execution-0.log"
+            "log": "<cache>/rustmage-tdm/behold-costs-wide-compat-0/native-execution-0.log"
           }
         }
       ]
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/behold-costs-wide-compat-1/native.json",
+      "path": "<cache>/rustmage-tdm/behold-costs-wide-compat-1/native.json",
       "sha256": "da20e884e8100b634727225157fe50ff8a7f18bfccfa1da6ecbdae5fba5d6d5a",
       "cases": 11,
       "passed": 11,
@@ -419,11 +419,11 @@
       "execution_seconds": 0.024171855999156833,
       "binaries": [
         {
-          "binary": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_variable_costs_engine-4404c9cb268fc190",
+          "binary": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_variable_costs_engine-4404c9cb268fc190",
           "expected": 11,
           "execution": {
             "command": [
-              "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_variable_costs_engine-4404c9cb268fc190",
+              "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_variable_costs_engine-4404c9cb268fc190",
               "",
               "--include-ignored",
               "--test-threads=1"
@@ -433,13 +433,13 @@
             "timed_out_case": null,
             "orphaned_processes": false,
             "seconds": 0.016159900987986475,
-            "log": "/home/altf4/.cache/rustmage-tdm/behold-costs-wide-compat-1/native-execution-0.log"
+            "log": "<cache>/rustmage-tdm/behold-costs-wide-compat-1/native-execution-0.log"
           }
         }
       ]
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/behold-costs-wide-compat-2/native.json",
+      "path": "<cache>/rustmage-tdm/behold-costs-wide-compat-2/native.json",
       "sha256": "a9231734f3b383aac4d0a38dd8f33444fca76f8bde20eaf34e5269347b37aa3c",
       "cases": 6,
       "passed": 6,
@@ -451,11 +451,11 @@
       "execution_seconds": 0.02421289699850604,
       "binaries": [
         {
-          "binary": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_acquired_activations-2c4a0cdafa589d89",
+          "binary": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_acquired_activations-2c4a0cdafa589d89",
           "expected": 6,
           "execution": {
             "command": [
-              "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_acquired_activations-2c4a0cdafa589d89",
+              "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_acquired_activations-2c4a0cdafa589d89",
               "",
               "--include-ignored",
               "--test-threads=1"
@@ -465,13 +465,13 @@
             "timed_out_case": null,
             "orphaned_processes": false,
             "seconds": 0.016052032995503396,
-            "log": "/home/altf4/.cache/rustmage-tdm/behold-costs-wide-compat-2/native-execution-0.log"
+            "log": "<cache>/rustmage-tdm/behold-costs-wide-compat-2/native-execution-0.log"
           }
         }
       ]
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/behold-costs-wide-compat-3/native.json",
+      "path": "<cache>/rustmage-tdm/behold-costs-wide-compat-3/native.json",
       "sha256": "727aace59bb4d56b3e2debb3f5dcfa844cbfbdd55d60991b965328cff4438d72",
       "cases": 1,
       "passed": 1,
@@ -483,11 +483,11 @@
       "execution_seconds": 0.03309939301107079,
       "binaries": [
         {
-          "binary": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_green_multi_cards_search-1e93919a76d6a8c2",
+          "binary": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_green_multi_cards_search-1e93919a76d6a8c2",
           "expected": 1,
           "execution": {
             "command": [
-              "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_green_multi_cards_search-1e93919a76d6a8c2",
+              "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/dft_green_multi_cards_search-1e93919a76d6a8c2",
               "run_over_",
               "--include-ignored",
               "--test-threads=1"
@@ -497,13 +497,13 @@
             "timed_out_case": null,
             "orphaned_processes": false,
             "seconds": 0.016323359013767913,
-            "log": "/home/altf4/.cache/rustmage-tdm/behold-costs-wide-compat-3/native-execution-0.log"
+            "log": "<cache>/rustmage-tdm/behold-costs-wide-compat-3/native-execution-0.log"
           }
         }
       ]
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/behold-costs-wide-compat-4/native.json",
+      "path": "<cache>/rustmage-tdm/behold-costs-wide-compat-4/native.json",
       "sha256": "092b5a2e7ac63a6a325e0dea532765b776429371f93efbbb3001dee0db8cc89a",
       "cases": 12,
       "passed": 12,
@@ -515,11 +515,11 @@
       "execution_seconds": 0.024899559997720644,
       "binaries": [
         {
-          "binary": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
+          "binary": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
           "expected": 12,
           "execution": {
             "command": [
-              "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
+              "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
               "thalia_",
               "--include-ignored",
               "--test-threads=1"
@@ -529,13 +529,13 @@
             "timed_out_case": null,
             "orphaned_processes": false,
             "seconds": 0.016337598994141445,
-            "log": "/home/altf4/.cache/rustmage-tdm/behold-costs-wide-compat-4/native-execution-0.log"
+            "log": "<cache>/rustmage-tdm/behold-costs-wide-compat-4/native-execution-0.log"
           }
         }
       ]
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/behold-costs-wide-compat-5/native.json",
+      "path": "<cache>/rustmage-tdm/behold-costs-wide-compat-5/native.json",
       "sha256": "f3a118c4bd0c796b811f33a746f1fe09b7a8969c6b8e23835e252a334501409f",
       "cases": 4,
       "passed": 4,
@@ -547,11 +547,11 @@
       "execution_seconds": 0.05003463401226327,
       "binaries": [
         {
-          "binary": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
+          "binary": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
           "expected": 4,
           "execution": {
             "command": [
-              "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
+              "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
               "warriors_blades_",
               "--include-ignored",
               "--test-threads=1"
@@ -561,13 +561,13 @@
             "timed_out_case": null,
             "orphaned_processes": false,
             "seconds": 0.04161283897701651,
-            "log": "/home/altf4/.cache/rustmage-tdm/behold-costs-wide-compat-5/native-execution-0.log"
+            "log": "<cache>/rustmage-tdm/behold-costs-wide-compat-5/native-execution-0.log"
           }
         }
       ]
     },
     {
-      "path": "/home/altf4/.cache/rustmage-tdm/behold-costs-wide-compat-6/native.json",
+      "path": "<cache>/rustmage-tdm/behold-costs-wide-compat-6/native.json",
       "sha256": "193a79112e0a47a1805db2b834c61e53e703e2085f9c4e51b21aea52a03fdd27",
       "cases": 2,
       "passed": 2,
@@ -579,11 +579,11 @@
       "execution_seconds": 0.02482278400566429,
       "binaries": [
         {
-          "binary": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
+          "binary": "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
           "expected": 2,
           "execution": {
             "command": [
-              "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
+              "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/legacy-49262b90621dc1a0",
               "wild_ride_",
               "--include-ignored",
               "--test-threads=1"
@@ -593,7 +593,7 @@
             "timed_out_case": null,
             "orphaned_processes": false,
             "seconds": 0.01644659400335513,
-            "log": "/home/altf4/.cache/rustmage-tdm/behold-costs-wide-compat-6/native-execution-0.log"
+            "log": "<cache>/rustmage-tdm/behold-costs-wide-compat-6/native-execution-0.log"
           }
         }
       ]
@@ -612,11 +612,11 @@
   "resource": {
     "command": [
       "/usr/bin/python3",
-      "/home/altf4/.codex/worktrees/tdm-cast-routes/rustmage/scripts/run_native_tests.py",
+      "<worktree>/tdm-cast-routes/rustmage/scripts/run_native_tests.py",
       "--target-dir",
-      "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target",
+      "<cache>/rustmage-authoring/tdm-cast-routes/target",
       "--report",
-      "/home/altf4/.cache/rustmage-tdm/behold-costs-wide-fixed/native.json",
+      "<cache>/rustmage-tdm/behold-costs-wide-fixed/native.json",
       "--test-target",
       "tdm_behold_costs",
       "--compile-timeout",

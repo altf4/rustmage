@@ -50,7 +50,7 @@
         "revision": "fa54386fd73d9fcc3294f260c545cf322ad5d6a3",
         "sha256": "ab3455d4c7f921db9f274157e270182805cc9bfc2e9cedde87cba3ad375268d3"
       },
-      "historical_report": "/home/altf4/.cache/rustmage-tdm/cast-routes-second/native.json",
+      "historical_report": "<cache>/rustmage-tdm/cast-routes-second/native.json",
       "details": "The initial GRAVE_MANA fixture overrode Fanatical Firebrand with a mana ability whose additional cost was ExileGraveyardCards(1). Native Firebrand has no such cost. The inherited FundingMove external selection admits single ExileGraveyard and Sacrifice; counted external mana-child cost does not generate an incremental announcement. The retained corrected fixture uses supported ExileGraveyard and preserves both negative ancestor-reservation and positive extra-resource witnesses."
     },
     "implementation_source": {
@@ -224,7 +224,7 @@
     "count": 13,
     "mechanism": "All13 TDM Dragon/Omen parents already have typed omen_spell links to separate chosen-face definitions. CastFace::Omen is independent of split halves. Free/Harmonize routes evaluate the cast-selected virtual definition and its own printed mana symbols/X, not the physical Dragon front.",
     "qualified_face_proof": {
-      "report": "/home/altf4/.cache/rustmage-tdm/behold-free-actual-offer36/native.json",
+      "report": "<cache>/rustmage-tdm/behold-free-actual-offer36/native.json",
       "case": "filtered_free_cost_qualifies_the_selected_face_and_preserves_timing_and_controller",
       "description": "Actual announcements give a Dragon both Adventure and Omen non-Dragon faces. The Dragon main qualifies for Free; either non-Dragon spell face rejects. Generic cost machinery uses these same existing CastFace links."
     },

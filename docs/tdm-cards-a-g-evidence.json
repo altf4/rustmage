@@ -1902,7 +1902,7 @@
           "report": "<cache>/rustmage-validation-l0pzz2p2/report/native.json",
           "report_sha256": "4ce510b350c0220eaee7641429c6d593e41fcfe5fc96cec8b8a5b795081052e0",
           "root_reuse_evidence": "docs/tdm-existing-reuse-four-evidence.json",
-          "root_reuse_evidence_sha256": "4c8a15ba02043a8dbe5390b86c62210921ce8518be58b7504e5da037e8d5fd0f",
+          "root_reuse_evidence_sha256": "3d73766fa8236203e1ace55729d9c7b3cb89a14bb034cc855f6fbd14674200fc",
           "root_review": "Full Oracle/fourcomplete Java classes includingcustomhelperbodies/fourtypeddefinitions/allcitedactualtestbodies and actionhelpers read; exact current/b456 source and fresh native cases independently verified. Typedsharedmechanics/header inspection explicitly recorded in per-card limits; not claimed as newpercard assertions."
         }
       ],

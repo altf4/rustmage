@@ -33,13 +33,13 @@
   "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
   "source_ledger": "/tmp/tdm-s-z-targeted-prep/strategic-betrayal-proof-reuse.json",
   "source_ledger_sha256": "e0f4380a06bb6ffd8f23304c2056b35c7235e400818fd45ffe04baaa58aed908",
-  "current_native_report": "/home/altf4/.cache/rustmage-validation-l0pzz2p2/report/native.json",
+  "current_native_report": "<cache>/rustmage-validation-l0pzz2p2/report/native.json",
   "current_native_report_sha256": "4ce510b350c0220eaee7641429c6d593e41fcfe5fc96cec8b8a5b795081052e0",
   "current_native_receipt": {
     "test": "engine::assurance::hartford_grave_exile::betrayal_opponent_chooses_creature_and_exiles_their_graveyard",
     "status": "ok",
     "exit": 0,
-    "binary": "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target/debug/deps/legacy-49262b90621dc1a0"
+    "binary": "<cache>/rustmage-authoring/tdm-complete-set/target/debug/deps/legacy-49262b90621dc1a0"
   },
   "root_review": "Complete pinned Oracle/Java including custom effect, typed definition, actual test and checked action helper read; independently verified exact baseline/current source/test/Java hashes and actual fresh full-native PASS. No admission or executable source changed.",
   "counted_existing_cards": 1,
