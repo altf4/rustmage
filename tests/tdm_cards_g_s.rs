@@ -261,11 +261,13 @@ fn renew_keyword_counter_batches_and_sage_add_before_double() {
             assert_eq!(g.counter_count(recipient, kind), count, "{name}");
         }
         if name == "Qarsi Revenant" {
-            assert!(g.keywords(recipient).contains(
-                Keywords::FLYING
-                    .union(Keywords::DEATHTOUCH)
-                    .union(Keywords::LIFELINK)
-            ));
+            assert!(
+                g.keywords(recipient).contains(
+                    Keywords::FLYING
+                        .union(Keywords::DEATHTOUCH)
+                        .union(Keywords::LIFELINK)
+                )
+            );
         }
     }
     let p = Player::P1;
@@ -473,9 +475,10 @@ fn monuments_search_their_basic_subtypes_then_pay_sacrifice_and_create_exact_tok
             g.state.step = Step::Cleanup;
             g.finish_cleanup();
             for id in tokens {
-                assert!(!g
-                    .keywords(id)
-                    .intersects(Keywords::HASTE.union(Keywords::MENACE)));
+                assert!(
+                    !g.keywords(id)
+                        .intersects(Keywords::HASTE.union(Keywords::MENACE))
+                );
             }
         }
     }
@@ -625,17 +628,19 @@ fn villages_entry_conditions_mana_and_activated_effects() {
             g.state.players[p.index()].mana = [8; 6];
             let spell = put(&mut g, p, "Grizzly Bears", Zone::Hand);
             cast(&mut g, spell, None);
-            assert!(g
-                .observe(p)
-                .uncounterable_spell_ids
-                .contains(&g.state.stack.last().unwrap().id));
+            assert!(
+                g.observe(p)
+                    .uncounterable_spell_ids
+                    .contains(&g.state.stack.last().unwrap().id)
+            );
             drain(&mut g);
             let later = put(&mut g, p, "Grizzly Bears", Zone::Hand);
             cast(&mut g, later, None);
-            assert!(!g
-                .observe(p)
-                .uncounterable_spell_ids
-                .contains(&g.state.stack.last().unwrap().id));
+            assert!(
+                !g.observe(p)
+                    .uncounterable_spell_ids
+                    .contains(&g.state.stack.last().unwrap().id)
+            );
             drain(&mut g);
         }
     }
@@ -653,9 +658,10 @@ fn perennation_returns_permanent_with_both_protection_counters() {
         assert_eq!(g.counter_count(target, CounterKind::Hexproof), 1);
         assert_eq!(g.counter_count(target, CounterKind::Indestructible), 1);
         if name == "Grizzly Bears" {
-            assert!(g
-                .keywords(target)
-                .contains(Keywords::HEXPROOF.union(Keywords::INDESTRUCTIBLE)));
+            assert!(
+                g.keywords(target)
+                    .contains(Keywords::HEXPROOF.union(Keywords::INDESTRUCTIBLE))
+            );
         }
     }
 }
@@ -721,9 +727,10 @@ fn monastery_messenger_optional_recovery_excludes_creatures_and_lands() {
     }
     drain(&mut g);
     assert_eq!(g.top_library_card(p), Some(instant));
-    assert!(g
-        .keywords(source)
-        .contains(Keywords::FLYING.union(Keywords::VIGILANCE)));
+    assert!(
+        g.keywords(source)
+            .contains(Keywords::FLYING.union(Keywords::VIGILANCE))
+    );
 }
 #[test]
 fn roiling_dragonstorm_loots_and_returns_only_for_own_dragon_entry() {
@@ -780,12 +787,14 @@ fn karakyk_hexproof_tracks_all_damage_in_exact_incarnation_across_turns() {
     let mut g = scenario(p);
     let guardian = cast_candidate(&mut g, p, "Karakyk Guardian");
     assert_eq!(stats(&g, guardian), (6, 5));
-    assert!(g.keywords(guardian).contains(
-        Keywords::FLYING
-            .union(Keywords::VIGILANCE)
-            .union(Keywords::TRAMPLE)
-            .union(Keywords::HEXPROOF)
-    ));
+    assert!(
+        g.keywords(guardian).contains(
+            Keywords::FLYING
+                .union(Keywords::VIGILANCE)
+                .union(Keywords::TRAMPLE)
+                .union(Keywords::HEXPROOF)
+        )
+    );
     let enemy = put(&mut g, p.other(), "Shivan Dragon", Zone::Battlefield);
     let spell = put(&mut g, p, "Knockout Maneuver", Zone::Hand);
     announce(
@@ -1849,14 +1858,16 @@ fn revival_saga_makes_spirits_distributes_three_then_grants_current_creatures_ke
     drain(&mut g);
     assert_eq!(g.object_view(source).zone, Zone::Graveyard);
     for &id in &spirits {
-        assert!(g
-            .keywords(id)
-            .contains(Keywords::TRAMPLE.union(Keywords::LIFELINK)));
+        assert!(
+            g.keywords(id)
+                .contains(Keywords::TRAMPLE.union(Keywords::LIFELINK))
+        );
     }
     let later = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
-    assert!(!g
-        .keywords(later)
-        .intersects(Keywords::TRAMPLE.union(Keywords::LIFELINK)));
+    assert!(
+        !g.keywords(later)
+            .intersects(Keywords::TRAMPLE.union(Keywords::LIFELINK))
+    );
 }
 #[test]
 fn reverberating_summons_animates_each_combat_then_pays_entire_hand_and_sacrifice() {
@@ -2021,10 +2032,12 @@ fn riverwheel_taps_adds_three_stun_and_grants_only_chosen_exile_card_through_nex
     expiry.begin_turn();
     reset_main(&mut expiry, p);
     expiry.state.players[p.index()].mana = [8; 6];
-    assert!(expiry
-        .legal_actions()
-        .iter()
-        .any(|a| matches!(a,Action::AnnounceExile {card}if*card==chosen)));
+    assert!(
+        expiry
+            .legal_actions()
+            .iter()
+            .any(|a| matches!(a,Action::AnnounceExile {card}if*card==chosen))
+    );
     expiry.state.step = Step::Cleanup;
     expiry.finish_cleanup();
     reset_main(&mut expiry, p);
@@ -2038,9 +2051,10 @@ fn rot_curse_decayed_attack_sacrifices_and_renew_requires_exactly_x_creature_tar
     g.begin_turn();
     reset_main(&mut g, p);
     assert!(!g.can_be_blocker(source));
-    assert!(g
-        .keywords(source)
-        .contains(Keywords::TRAMPLE.union(Keywords::DECAYED)));
+    assert!(
+        g.keywords(source)
+            .contains(Keywords::TRAMPLE.union(Keywords::DECAYED))
+    );
     attack_one(&mut g, p, source);
     drain(&mut g);
     begin_step(&mut g, Step::EndCombat);
