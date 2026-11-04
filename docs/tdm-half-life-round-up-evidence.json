@@ -80,5 +80,35 @@
   "entire_tdm_simple_fixed_mana_component_audit": "All276 physical identities audited again after Nature correction; no further fixed component mismatches, including gated identities.",
   "trace_acquisition": "/home/altf4/.cache/rustmage-tdm/engine84-traces-1793810244215438270",
   "actual_betor_card_wiring": "Stillgated inauthorworktree; oldopcode deliberatelyretained until accepted shared engine, cachewarm,then actualprinted21->10 and full21family rerun. No newcompletecardcount fromenginefixture.",
-  "accepted_trace_additions": "docs/tdm-24-card-trace-additions.json"
+  "accepted_trace_additions": "docs/tdm-24-card-trace-additions.json",
+  "focused_all_target_clippy": {
+    "report": "/home/altf4/.cache/rustmage-tdm/engine84-clippy-1793810867524555873/terminal.json",
+    "terminal": true,
+    "success": true,
+    "seconds": 53.696748921007384,
+    "source_revision": "15d6b51179a4eb52bc600425a98366ecf99ed657",
+    "command": [
+      "cargo",
+      "clippy",
+      "--workspace",
+      "--all-targets",
+      "--",
+      "-D",
+      "warnings"
+    ]
+  },
+  "preceding_validation_attempts": [
+    {
+      "report": "/home/altf4/.cache/rustmage-validation-il06gbjf/report/result.json",
+      "terminal": true,
+      "success": false,
+      "scope": "SourcepinsPASS; workspaceformat failed GS assert-macro wrapping. No compile/native/release. Applied workspaceedition2024 formatting13a15e8c2."
+    },
+    {
+      "report": "/home/altf4/.cache/rustmage-validation-20mi48fl/report/result.json",
+      "terminal": true,
+      "success": false,
+      "scope": "Source/format/cardformat/43scriptcontractsPASS;Clippyfailed3GS testlints. NoNative/release. Fixednestedif/CloneOnCopy15d6b5117; exactrequiredClippycommandpassedaftersafefix."
+    }
+  ]
 }
