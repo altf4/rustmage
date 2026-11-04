@@ -1183,6 +1183,10 @@ impl Game {
             }
             events.push(event);
         }
+        // Defer only fixed Role cohort timestamps until the surrounding entry
+        // timestamp finalization has finished; that phase may defer to zero or
+        // retimestamp individual keyword-counter entrants.
+        let mut fixed_role_attachments = Vec::new();
         // Continuous attachment effects already exist when entry events inspect the world.
         for (source, target) in attachments {
             self.state.objects[source.card as usize].attached_to = Some(target);
@@ -1192,8 +1196,13 @@ impl Game {
                 .role()
                 .is_some()
             {
-                let timestamp = self.next_role_timestamp();
-                self.record_role(source, target, timestamp);
+                let object = &self.state.objects[source.card as usize];
+                if object.is_token() && object.copy_kind == CopyKind::None {
+                    fixed_role_attachments.push((source, target));
+                } else {
+                    let timestamp = self.next_role_timestamp();
+                    self.record_role(source, target, timestamp);
+                }
             }
         }
         if !timestamp_cards.is_empty() {
@@ -1205,6 +1214,15 @@ impl Game {
                 {
                     self.assign_static_source_timestamp(event.after);
                 }
+            }
+        }
+        // As on the direct factory path, simultaneously attached fixed Roles
+        // share their survivor-choice timestamp. Assign it after all deferred
+        // sources (including a Role's own keyword counters), before observers.
+        if !fixed_role_attachments.is_empty() {
+            let timestamp = self.next_role_timestamp();
+            for (source, target) in fixed_role_attachments {
+                self.record_role(source, target, timestamp);
             }
         }
         if !hand_cards.is_empty() {

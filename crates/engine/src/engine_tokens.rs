@@ -67,6 +67,27 @@ impl Game {
         assert!(recipients.len() <= groups.len());
         self.create_token_groups_bound(controller, groups, None, false, None, Some(recipients))
     }
+    /// Ordinary fixed factories retain the direct, allocation-light entry path.
+    /// Providers and intrinsic as-entry rules must instead use the same owned
+    /// pre-entry transaction as physical cards and copy/sized tokens.
+    pub(super) fn fixed_token_entries_required(&self, groups: &[TokenGroupView]) -> bool {
+        groups.iter().any(|group| {
+            let card = group.token;
+            group.amount != 0
+                && (self.has_entry_counter_replacements(card)
+                    || card.enters_counters().total() != 0
+                    || !card.entry_counter_rules().is_empty()
+                    || card.x_complement_entry_counters().is_some()
+                    || card.x_entry_counters()
+                    || card.entry_choice().is_some()
+                    || card.entry_copy().is_some()
+                    || card.entry_exile_counters().is_some()
+                    || card.entry_tapped() != EntryTapped::Never)
+        }) || self.state.static_sources.iter().any(|&id| {
+            let source = &self.state.objects[id as usize];
+            source.zone == Zone::Battlefield && source.card.controlled_entry_untapped() != 0
+        })
+    }
     #[allow(clippy::too_many_arguments)] // Bindings preserve the allocation-free ordinary token path.
     fn create_token_groups_bound(
         &mut self,
@@ -97,16 +118,6 @@ impl Game {
                 .collect()
         });
         let accepted = |index| valid.as_ref().is_none_or(|v| v[index]);
-        let timestamp = if (attachment.is_some() || recipients.is_some())
-            && groups
-                .iter()
-                .enumerate()
-                .any(|(index, g)| accepted(index) && g.token.role().is_some() && g.amount > 0)
-        {
-            Some(self.next_role_timestamp())
-        } else {
-            None
-        };
         let total = groups
             .iter()
             .enumerate()
@@ -132,8 +143,67 @@ impl Game {
                 .try_reserve(amount)
                 .capacity("attacking token allocation exhausted");
         }
+        // Allocate every entrant outside the battlefield before freezing provider
+        // effects. A provider created by this same batch cannot affect its siblings.
+        if self.fixed_token_entries_required(groups) {
+            let accepted_groups = groups
+                .iter()
+                .enumerate()
+                .filter(|(index, _)| accepted(*index))
+                .map(|(_, group)| *group)
+                .collect::<Vec<_>>();
+            let mut moves = self.allocate_copy_group_entries(
+                controller,
+                &accepted_groups,
+                &vec![None; accepted_groups.len()],
+            );
+            let mut index = 0;
+            for (group_index, group) in groups.iter().enumerate() {
+                if !accepted(group_index) {
+                    continue;
+                }
+                for _ in 0..group.amount {
+                    let movement = &mut moves[index];
+                    if group.token.role().is_some() {
+                        movement.attachment = Some(
+                            recipient(group_index).expect("Role creation requires an attachment"),
+                        );
+                    }
+                    movement.attacking = defenders.map(|defenders| defenders[index]);
+                    index += 1;
+                }
+            }
+            let created = if capture {
+                moves
+                    .iter()
+                    .map(|movement| ObjectRef {
+                        card: movement.before.id,
+                        generation: movement
+                            .before
+                            .reference
+                            .generation
+                            .checked_add(1)
+                            .capacity("object generation exhausted"),
+                    })
+                    .collect()
+            } else {
+                Vec::new()
+            };
+            self.stage_entries(moves, None);
+            return created;
+        }
         // Replacement effects inspect the pre-event battlefield once, before
         // any token in this simultaneous batch is installed as a new source.
+        let timestamp = if (attachment.is_some() || recipients.is_some())
+            && groups
+                .iter()
+                .enumerate()
+                .any(|(index, g)| accepted(index) && g.token.role().is_some() && g.amount > 0)
+        {
+            Some(self.next_role_timestamp())
+        } else {
+            None
+        };
 
         let mut events = Vec::new();
         events

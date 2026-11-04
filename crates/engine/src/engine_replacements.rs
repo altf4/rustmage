@@ -275,6 +275,32 @@ pub(super) enum TokenCompletion {
     Mobilize,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl TokenCompletion {
+    fn owned_bytes(&self) -> usize {
+        match self {
+            TokenCompletion::TemporaryTokens(context) => {
+                std::mem::size_of::<temporary_tokens::TokenInstructions>()
+                    + context.item.owned_bytes()
+            }
+            TokenCompletion::CounterSet(counters) => {
+                std::mem::size_of::<Counters>() + counters.owned_bytes()
+            }
+            TokenCompletion::TemporaryCopy(item)
+            | TokenCompletion::Reflexive { item, .. }
+            | TokenCompletion::ReflexiveCreated { item, .. } => {
+                std::mem::size_of::<SpellView>() + item.owned_bytes()
+            }
+            TokenCompletion::RoleReflexive(c) => {
+                std::mem::size_of::<RoleReflexiveCompletion>() + c.item.owned_bytes()
+            }
+            TokenCompletion::RoleAttachMany(recipients) => {
+                recipients.len() * std::mem::size_of::<ObjectRef>()
+            }
+            _ => 0,
+        }
+    }
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct TokenBatch {
     recipes: Vec<Option<CopyRecipe>>,
@@ -329,6 +355,12 @@ enum Work {
     SimultaneousCopyTokens {
         ready: Vec<TokenBatch>,
         remaining: VecDeque<TokenBatch>,
+    },
+    /// Exact fixed-token results; surrounding instructions wait for entry choices.
+    CreatedTokens {
+        player: Player,
+        created: Vec<ObjectRef>,
+        completion: Box<TokenCompletion>,
     },
     CreatedAttackThisCombat(Vec<ObjectRef>),
     AmassSubtype {
@@ -397,27 +429,7 @@ impl ReplacementState {
             b.groups.len() * std::mem::size_of::<TokenGroupView>()
                 + b.recipes.len() * std::mem::size_of::<Option<CopyRecipe>>()
                 + b.used.len() * std::mem::size_of::<(ObjectRef, u16)>()
-                + match &b.completion {
-                    TokenCompletion::TemporaryTokens(context) => {
-                        std::mem::size_of::<temporary_tokens::TokenInstructions>()
-                            + context.item.owned_bytes()
-                    }
-                    TokenCompletion::CounterSet(counters) => {
-                        std::mem::size_of::<Counters>() + counters.owned_bytes()
-                    }
-                    TokenCompletion::TemporaryCopy(item)
-                    | TokenCompletion::Reflexive { item, .. }
-                    | TokenCompletion::ReflexiveCreated { item, .. } => {
-                        std::mem::size_of::<SpellView>() + item.owned_bytes()
-                    }
-                    TokenCompletion::RoleReflexive(c) => {
-                        std::mem::size_of::<RoleReflexiveCompletion>() + c.item.owned_bytes()
-                    }
-                    TokenCompletion::RoleAttachMany(recipients) => {
-                        recipients.len() * std::mem::size_of::<ObjectRef>()
-                    }
-                    _ => 0,
-                }
+                + b.completion.owned_bytes()
         };
         std::mem::size_of::<Self>()
             + self.work.len() * std::mem::size_of::<Work>()
@@ -425,6 +437,15 @@ impl ReplacementState {
                 .work
                 .iter()
                 .map(|w| match w {
+                    Work::CreatedTokens {
+                        created,
+                        completion,
+                        ..
+                    } => {
+                        created.len() * std::mem::size_of::<ObjectRef>()
+                            + std::mem::size_of::<TokenCompletion>()
+                            + completion.owned_bytes()
+                    }
                     Work::CreatedAttackThisCombat(created)
                     | Work::AnimateCreated { created, .. } => {
                         created.len() * std::mem::size_of::<ObjectRef>()
@@ -2356,7 +2377,13 @@ impl Game {
         if amount == 0 {
             return;
         }
-        if self.state.replacements.is_none()
+        let entry_required = self.fixed_token_entries_required(&[TokenGroupView {
+            token,
+            amount,
+            tapped,
+        }]);
+        if !entry_required
+            && self.state.replacements.is_none()
             && matches!(completion, TokenCompletion::None)
             && !self.state.static_sources.iter().any(|&id| {
                 let o = &self.state.objects[id as usize];
@@ -2389,7 +2416,8 @@ impl Game {
             used: Vec::new(),
             completion,
         };
-        if self.state.replacements.is_none()
+        if !entry_required
+            && self.state.replacements.is_none()
             && matches!(batch.completion, TokenCompletion::None)
             && self.token_replacements(&batch).is_empty()
         {
@@ -2473,6 +2501,14 @@ impl Game {
                             }
                             continue;
                         }
+                    }
+                    Some(Work::CreatedTokens {
+                        player,
+                        created,
+                        completion,
+                    }) => {
+                        self.complete_created_tokens(&mut state, player, *completion, created);
+                        continue;
                     }
                     Some(Work::CreatedAttackThisCombat(created)) => {
                         self.require_created_attacks_this_combat(&created);
@@ -2965,6 +3001,11 @@ impl Game {
                             }
                             if matches!(batch.completion, TokenCompletion::Mobilize) {
                                 self.start_mobilize_groups(batch.groups);
+                                if let Some(entry) = self.state.entry_batch.as_mut() {
+                                    assert!(entry.replacement_resume.is_none());
+                                    entry.replacement_resume = Some(state);
+                                    return self.advance_entries();
+                                }
                             } else {
                                 let capture = matches!(
                                     batch.completion,
@@ -3008,168 +3049,22 @@ impl Game {
                                         capture,
                                     ),
                                 };
-                                if matches!(batch.completion, TokenCompletion::AttackThisCombat) {
-                                    self.require_created_attacks_this_combat(&created);
-                                }
-                                if matches!(batch.completion, TokenCompletion::CounterOtherWizards)
-                                {
-                                    let others = self
-                                        .state
-                                        .objects
-                                        .iter()
-                                        .enumerate()
-                                        .filter_map(|(id, object)| {
-                                            let id = id as CardId;
-                                            let reference = self.object_ref(id);
-                                            (object.zone == Zone::Battlefield
-                                                && object.controller == batch.player
-                                                && object.is_token()
-                                                && !created.contains(&reference)
-                                                && self.has_subtype(id, "Wizard"))
-                                            .then_some(reference)
-                                        })
-                                        .collect::<Vec<_>>();
-                                    let placements = self.created_token_counter_placements(
-                                        batch.player,
-                                        &others,
-                                        &Counters::of(CounterKind::PlusOne, 1),
-                                    );
-                                    if !placements.is_empty() {
-                                        state.work.push_front(Work::Counters(CounterBatch {
-                                            player_events:
-                                                player_counter_events::PlayerCounterEvents::default(
-                                                ),
-                                            self_effects: Vec::new(),
-                                            player_placed_by: None,
-                                            player_effect: [true; 2],
-                                            next_player: 0,
-                                            proliferated: None,
-                                            completion: None,
-                                            placements,
-                                            next: 0,
-                                            used: Vec::new(),
-                                        }));
-                                    }
-                                }
-                                let counters = match &batch.completion {
-                                    TokenCompletion::Counters { kind, amount } => {
-                                        Some(Counters::of(*kind, *amount))
-                                    }
-                                    TokenCompletion::CounterSet(counters) => {
-                                        Some(counters.as_ref().clone())
-                                    }
-                                    _ => None,
-                                };
-                                if let TokenCompletion::GraveyardGroups(group) = batch.completion {
-                                    state.work.push_front(Work::CreatedGraveyardCounters {
+                                if let Some(entry) = self.state.entry_batch.as_mut() {
+                                    state.work.push_front(Work::CreatedTokens {
                                         player: batch.player,
-                                        created: created.clone(),
-                                        group,
+                                        created,
+                                        completion: Box::new(batch.completion),
                                     });
+                                    assert!(entry.replacement_resume.is_none());
+                                    entry.replacement_resume = Some(state);
+                                    return self.advance_entries();
                                 }
-                                if let Some(counters) = counters {
-                                    let placements = self.created_token_counter_placements(
-                                        batch.player,
-                                        &created,
-                                        &counters,
-                                    );
-                                    if !placements.is_empty() {
-                                        state.work.push_front(Work::Counters(CounterBatch {
-                                            player_events:
-                                                player_counter_events::PlayerCounterEvents::default(
-                                                ),
-                                            self_effects: Vec::new(),
-                                            player_placed_by: None,
-                                            player_effect: [true; 2],
-                                            next_player: 0,
-                                            proliferated: None,
-                                            completion: None,
-                                            placements,
-                                            next: 0,
-                                            used: Vec::new(),
-                                        }));
-                                    }
-                                }
-                                if let TokenCompletion::Keywords { source, keywords } =
-                                    batch.completion
-                                {
-                                    let ids = created.iter().map(|r| r.card).collect::<Vec<_>>();
-                                    self.grant_keyword_effects(&ids, source, keywords);
-                                }
-                                if let TokenCompletion::Reflexive { item, ability } =
-                                    &batch.completion
-                                    && !created.is_empty()
-                                {
-                                    self.queue_reflexive_objects(
-                                        item,
-                                        *ability,
-                                        created.iter().copied(),
-                                    );
-                                }
-                                if let TokenCompletion::ReflexiveCreated { item, ability } =
-                                    &batch.completion
-                                    && let Some((&first, rest)) = created.split_first()
-                                {
-                                    self.queue_reflexive(item, *ability, Some(first));
-                                    self.state
-                                        .pending_triggers
-                                        .last_mut()
-                                        .unwrap()
-                                        .reflexive_subject
-                                        .as_mut()
-                                        .unwrap()
-                                        .additional_objects = rest.to_vec();
-                                }
-                                if let TokenCompletion::RoleReflexive(c) = &batch.completion
-                                    && created.iter().any(|r| {
-                                        self.object_view(r.card).card == c.token
-                                            && self.object_view(r.card).attached_to
-                                                == Some(c.recipient)
-                                    })
-                                {
-                                    let subjects: Vec<_> = std::iter::once(c.recipient)
-                                        .chain(created.iter().copied().filter(|r| {
-                                            self.object_view(r.card).card == c.token
-                                                && self.object_view(r.card).attached_to
-                                                    == Some(c.recipient)
-                                        }))
-                                        .collect();
-                                    self.queue_reflexive_objects(&c.item, c.ability, subjects);
-                                }
-                                if let TokenCompletion::AttachCreatedTo(recipient) =
-                                    batch.completion
-                                {
-                                    for &equipment in &created {
-                                        self.attach_equipment(equipment, recipient);
-                                    }
-                                }
-                                if let TokenCompletion::JobAttach(source)
-                                | TokenCompletion::OptionalAttachSource(source) =
-                                    batch.completion
-                                {
-                                    let optional = matches!(
-                                        batch.completion,
-                                        TokenCompletion::OptionalAttachSource(_)
-                                    );
-                                    let eligible = created
-                                        .into_iter()
-                                        .filter(|&recipient| {
-                                            self.equipment_can_attach(source, recipient)
-                                        })
-                                        .collect::<Vec<_>>();
-                                    match eligible.as_slice() {
-                                        [] => {}
-                                        [only] if !optional => {
-                                            self.attach_equipment(source, *only);
-                                        }
-                                        _ => {
-                                            state.attachment = Some((source, eligible, optional));
-                                            self.state.pending = Pending::CreatedToken {
-                                                player: batch.player,
-                                            };
-                                        }
-                                    }
-                                }
+                                self.complete_created_tokens(
+                                    &mut state,
+                                    batch.player,
+                                    batch.completion,
+                                    created,
+                                );
                             }
                         }
                         [only] => Self::modify_tokens(*only, batch),
@@ -3181,6 +3076,143 @@ impl Game {
                             return true;
                         }
                     }
+                }
+            }
+        }
+    }
+    fn complete_created_tokens(
+        &mut self,
+        state: &mut ReplacementState,
+        player: Player,
+        completion: TokenCompletion,
+        created: Vec<ObjectRef>,
+    ) {
+        if matches!(completion, TokenCompletion::AttackThisCombat) {
+            self.require_created_attacks_this_combat(&created);
+        }
+        if matches!(completion, TokenCompletion::CounterOtherWizards) {
+            let others = self
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .filter_map(|(id, object)| {
+                    let id = id as CardId;
+                    let reference = self.object_ref(id);
+                    (object.zone == Zone::Battlefield
+                        && object.controller == player
+                        && object.is_token()
+                        && !created.contains(&reference)
+                        && self.has_subtype(id, "Wizard"))
+                    .then_some(reference)
+                })
+                .collect::<Vec<_>>();
+            let placements = self.created_token_counter_placements(
+                player,
+                &others,
+                &Counters::of(CounterKind::PlusOne, 1),
+            );
+            if !placements.is_empty() {
+                state.work.push_front(Work::Counters(CounterBatch {
+                    player_events: player_counter_events::PlayerCounterEvents::default(),
+                    self_effects: Vec::new(),
+                    player_placed_by: None,
+                    player_effect: [true; 2],
+                    next_player: 0,
+                    proliferated: None,
+                    completion: None,
+                    placements,
+                    next: 0,
+                    used: Vec::new(),
+                }));
+            }
+        }
+        let counters = match &completion {
+            TokenCompletion::Counters { kind, amount } => Some(Counters::of(*kind, *amount)),
+            TokenCompletion::CounterSet(counters) => Some(counters.as_ref().clone()),
+            _ => None,
+        };
+        if let TokenCompletion::GraveyardGroups(group) = completion {
+            state.work.push_front(Work::CreatedGraveyardCounters {
+                player,
+                created: created.clone(),
+                group,
+            });
+        }
+        if let Some(counters) = counters {
+            let placements = self.created_token_counter_placements(player, &created, &counters);
+            if !placements.is_empty() {
+                state.work.push_front(Work::Counters(CounterBatch {
+                    player_events: player_counter_events::PlayerCounterEvents::default(),
+                    self_effects: Vec::new(),
+                    player_placed_by: None,
+                    player_effect: [true; 2],
+                    next_player: 0,
+                    proliferated: None,
+                    completion: None,
+                    placements,
+                    next: 0,
+                    used: Vec::new(),
+                }));
+            }
+        }
+        if let TokenCompletion::Keywords { source, keywords } = completion {
+            let ids = created.iter().map(|r| r.card).collect::<Vec<_>>();
+            self.grant_keyword_effects(&ids, source, keywords);
+        }
+        if let TokenCompletion::Reflexive { item, ability } = &completion
+            && !created.is_empty()
+        {
+            self.queue_reflexive_objects(item, *ability, created.iter().copied());
+        }
+        if let TokenCompletion::ReflexiveCreated { item, ability } = &completion
+            && let Some((&first, rest)) = created.split_first()
+        {
+            self.queue_reflexive(item, *ability, Some(first));
+            self.state
+                .pending_triggers
+                .last_mut()
+                .unwrap()
+                .reflexive_subject
+                .as_mut()
+                .unwrap()
+                .additional_objects = rest.to_vec();
+        }
+        if let TokenCompletion::RoleReflexive(c) = &completion
+            && created.iter().any(|r| {
+                self.object_view(r.card).card == c.token
+                    && self.object_view(r.card).attached_to == Some(c.recipient)
+            })
+        {
+            let subjects: Vec<_> = std::iter::once(c.recipient)
+                .chain(created.iter().copied().filter(|r| {
+                    self.object_view(r.card).card == c.token
+                        && self.object_view(r.card).attached_to == Some(c.recipient)
+                }))
+                .collect();
+            self.queue_reflexive_objects(&c.item, c.ability, subjects);
+        }
+        if let TokenCompletion::AttachCreatedTo(recipient) = completion {
+            for &equipment in &created {
+                self.attach_equipment(equipment, recipient);
+            }
+        }
+        if let TokenCompletion::JobAttach(source) | TokenCompletion::OptionalAttachSource(source) =
+            completion
+        {
+            let optional = matches!(completion, TokenCompletion::OptionalAttachSource(_));
+            let eligible = created
+                .into_iter()
+                .filter(|&recipient| self.equipment_can_attach(source, recipient))
+                .collect::<Vec<_>>();
+            match eligible.as_slice() {
+                [] => {}
+                [only] if !optional => {
+                    self.attach_equipment(source, *only);
+                }
+                _ => {
+                    state.attachment = Some((source, eligible, optional));
+                    self.state.pending = Pending::CreatedToken { player };
                 }
             }
         }

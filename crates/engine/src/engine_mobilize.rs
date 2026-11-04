@@ -171,7 +171,15 @@ impl Game {
         f.defenders.push(defender);
         if f.defenders.len() == f.amount {
             self.finish_mobilize();
-            self.run_program();
+            if let Some(entry) = self.state.entry_batch.as_mut()
+                && let Some(outer) = self.state.replacements.take()
+            {
+                assert!(entry.replacement_resume.is_none());
+                entry.replacement_resume = Some(outer);
+            }
+            if !self.advance_entries() && self.state.resolving.is_some() {
+                self.run_program();
+            }
         }
     }
     fn finish_mobilize(&mut self) {
