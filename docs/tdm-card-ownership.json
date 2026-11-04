@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "engine_revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+  "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
   "metadata_revision": "bdeb96113",
   "scope": "Disjoint directly authored whole-card definitions/tests; no card complete until actual printed obligations pass",
   "rules": [
@@ -3134,7 +3134,36 @@
             }
           ]
         }
-      ]
+      ],
+      "card_author_overrides": {
+        "Sage of the Skies": "/root/tdm_cards_g_s",
+        "Salt Road Skirmish": "/root/tdm_cards_g_s",
+        "Sarkhan, Dragon Ascendant": "/root/tdm_cards_g_s",
+        "Severance Priest": "/root/tdm_cards_g_s",
+        "Shiko, Paragon of the Way": "/root/tdm_cards_g_s",
+        "Shock Brigade": "/root/tdm_cards_g_s",
+        "Shocking Sharpshooter": "/root/tdm_cards_g_s",
+        "Sibsig Appraiser": "/root/tdm_cards_g_s",
+        "Sidisi, Regent of the Mire": "/root/tdm_cards_g_s",
+        "Smile at Death": "/root/tdm_cards_g_s",
+        "Snowmelt Stag": "/root/tdm_cards_g_s",
+        "Sonic Shrieker": "/root/tdm_cards_g_s",
+        "Stadium Headliner": "/root/tdm_cards_g_s",
+        "Stalwart Successor": "/root/tdm_cards_g_s",
+        "Starry-Eyed Skyrider": "/root/tdm_cards_g_s",
+        "Static Snare": "/root/tdm_cards_g_s",
+        "Stillness in Motion": "/root/tdm_cards_g_s",
+        "Stormbeacon Blade": "/root/tdm_cards_g_s",
+        "Stormplain Detainment": "/root/tdm_cards_g_s",
+        "Stormscale Scion": "/root/tdm_cards_g_s",
+        "Sultai Monument": "/root/tdm_cards_g_s",
+        "Sunpearl Kirin": "/root/tdm_cards_g_s",
+        "Synchronized Charge": "/root/tdm_cards_g_s",
+        "Taigam, Master Opportunist": "/root/tdm_cards_g_s",
+        "Teeming Dragonstorm": "/root/tdm_cards_g_s"
+      },
+      "original_author_remaining_ownership": 34,
+      "ownership_note": "Original92-card membership remains intact for set accounting;25 unverified members delegated to isolated G-S author,8 prepared cast/Omen members plus26 others retained by S-Z. Files/test targets are disjoint."
     }
   },
   "root_owned": {
@@ -3163,5 +3192,43 @@
       "parent_name": "Dragonbroods' Relic",
       "status": "Gated immutable identity reserved; typed authoring/actual creation proof pending, not a physical completion."
     }
-  ]
+  ],
+  "current_engine_acceptance": "docs/tdm-engine85-acceptance.json",
+  "parallel_authoring_batches": {
+    "s_z_additional": {
+      "owner": "/root/tdm_cards_g_s",
+      "worktree": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage",
+      "test_path": "tests/tdm_cards_s_z_additional.rs",
+      "evidence_path": "docs/tdm-cards-s-z-additional-evidence.json",
+      "physical_members": 25,
+      "ownership_detail": "docs/tdm-s-z-additional-ownership.json",
+      "source_names": [
+        "Sage of the Skies",
+        "Salt Road Skirmish",
+        "Sarkhan, Dragon Ascendant",
+        "Severance Priest",
+        "Shiko, Paragon of the Way",
+        "Shock Brigade",
+        "Shocking Sharpshooter",
+        "Sibsig Appraiser",
+        "Sidisi, Regent of the Mire",
+        "Smile at Death",
+        "Snowmelt Stag",
+        "Sonic Shrieker",
+        "Stadium Headliner",
+        "Stalwart Successor",
+        "Starry-Eyed Skyrider",
+        "Static Snare",
+        "Stillness in Motion",
+        "Stormbeacon Blade",
+        "Stormplain Detainment",
+        "Stormscale Scion",
+        "Sultai Monument",
+        "Sunpearl Kirin",
+        "Synchronized Charge",
+        "Taigam, Master Opportunist",
+        "Teeming Dragonstorm"
+      ]
+    }
+  }
 }
