@@ -167,6 +167,14 @@
     "journal": "a4c714aeb662e85f",
     "observations": "e61666cd8b77bbdf"
   },
+  "Abzan Monument": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "c9d6f23ee57cb4aa",
+    "observations": "84c7b47dfacfc602"
+  },
   "Academic Ascent": {
     "root": "main",
     "status": "completed",
@@ -278,6 +286,14 @@
     "zone": "Battlefield",
     "journal": "4324aa4c9fd9325c",
     "observations": "c49a11bd1b6015f5"
+  },
+  "Aegis Sculptor": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b3f39d5b44da38ed",
+    "observations": "81692392c7646c5a"
   },
   "Aegis Turtle": {
     "root": "main",
@@ -479,6 +495,14 @@
     "journal": "4324aa4c9fd9325c",
     "observations": "4e43d3e82a741ed3"
   },
+  "Ainok Wayfarer": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "31d5c6759a40ea32",
+    "observations": "7f523e42e56a565a"
+  },
   "Air Nomad Legacy": {
     "root": "main",
     "status": "completed",
@@ -647,6 +671,14 @@
     "journal": "903e360914c6c94c",
     "observations": "602f63d28b1c4e25"
   },
+  "All-Out Assault": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "8b1af8f338f474ec",
+    "observations": "5e82a35ee8eee507"
+  },
   "Along the Crooked Way": {
     "root": "main",
     "status": "completed",
@@ -678,6 +710,14 @@
     "zone": "Battlefield",
     "journal": "d96ad4ca883f316e",
     "observations": "1b19f1291167b322"
+  },
+  "Ambling Stormshell": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b03a6e1714d41d9e",
+    "observations": "3d6ed8f52af5553c"
   },
   "Ambush Gigapede": {
     "root": "main",
@@ -1111,6 +1151,14 @@
     "journal": "7cf9667d9239e4fd",
     "observations": "d122bfba7795b8cc"
   },
+  "Armament Dragon": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 9,
+    "zone": "Battlefield",
+    "journal": "24790eb1165acc15",
+    "observations": "03a2ab9bdf9ff232"
+  },
   "Armasaur Guide": {
     "root": "main",
     "status": "completed",
@@ -1302,6 +1350,14 @@
     "zone": "Battlefield",
     "journal": "9fb8f9361b7adf8f",
     "observations": "3822685a9b1b6e38"
+  },
+  "Attuned Hunter": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "7c50116fb450cf1c",
+    "observations": "dc5068081e39cf5e"
   },
   "Aunt May": {
     "root": "main",
@@ -1663,6 +1719,14 @@
     "journal": "ae05947724786c5e",
     "observations": "4333ac2a4c05b84c"
   },
+  "Barrensteppe Siege": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Battlefield",
+    "journal": "f495903147a8e148",
+    "observations": "95980db09959a1f9"
+  },
   "Barrow Naughty": {
     "root": "main",
     "status": "completed",
@@ -1998,6 +2062,14 @@
     "zone": "Graveyard",
     "journal": "62a1d35af4e61f16",
     "observations": "b5148cd0c2d1faad"
+  },
+  "Betor, Kin to All": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "f38833e73c15b45c",
+    "observations": "88b599b3ae5e06e2"
   },
   "Bewildering Blizzard": {
     "root": "main",
@@ -2535,6 +2607,14 @@
     "journal": "543918deceb4be8c",
     "observations": "7d5eb78cdb8f4990"
   },
+  "Bone-Cairn Butcher": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "efeb19f507e3cbcf",
+    "observations": "056c78ff059c29f2"
+  },
   "Bonebind Orator": {
     "root": "main",
     "status": "completed",
@@ -2742,6 +2822,14 @@
     "zone": "Battlefield",
     "journal": "8628206654ab4c6c",
     "observations": "d31b07de429c00c8"
+  },
+  "Breaching Dragonstorm": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "f41269df487d2285",
+    "observations": "823ec37a19dc048f"
   },
   "Break Under Pressure": {
     "root": "main",
@@ -3094,6 +3182,14 @@
     "zone": "Graveyard",
     "journal": "8fcbaae2ea05e71a",
     "observations": "f02ac50045b4ee57"
+  },
+  "Call the Spirit Dragons": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "c94a7a98a003f08e",
+    "observations": "991537f0b19c4e41"
   },
   "Callous Inspector": {
     "root": "main",
@@ -23495,6 +23591,14 @@
     "journal": "c7ee39620bfa034c",
     "observations": "85a8ec334c042783"
   },
+  "Twin Bolt": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Graveyard",
+    "journal": "989f2e4bea8e13d0",
+    "observations": "2a0b8132dbd27eab"
+  },
   "Twinblade Blessing": {
     "root": "main",
     "status": "completed",
@@ -23862,6 +23966,14 @@
     "zone": "Battlefield",
     "journal": "543918deceb4be8c",
     "observations": "cc1e19d301d4d618"
+  },
+  "Unsparing Boltcaster": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "543918deceb4be8c",
+    "observations": "a1eab4a94e831d68"
   },
   "Unstable Experiment": {
     "root": "main",
@@ -24638,6 +24750,14 @@
     "zone": "Battlefield",
     "journal": "31a081366fbc0b8c",
     "observations": "1ae1e8c5ea577a56"
+  },
+  "Wail of War": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "0a63102cd5439312",
+    "observations": "e1b47371d77d4326"
   },
   "Wakandan Drone Flock": {
     "root": "main",

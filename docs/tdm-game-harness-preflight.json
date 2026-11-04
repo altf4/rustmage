@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "status": "Preflight only; three source files parked outside integration until276 cards verified",
+  "parked_commit": "04cb04bab732b42f127c67d4749a0d39fa9d1431",
+  "worktree": "/home/altf4/.codex/worktrees/tdm-counter-world/rustmage",
+  "paths": [
+    "examples/support/tdm_games.rs",
+    "examples/tdm_games.rs",
+    "tests/tdm_complete_games.rs"
+  ],
+  "run": "/home/altf4/.cache/rustmage-tdm/game-harness-frozen-check-1793816870809632447",
+  "receipt_sha256": "772f75030897d17f69fcb47ecb160b581cfc4096557ddc3fe5be8dce7b5fc92e",
+  "source_inputs": {
+    "examples/support/tdm_games.rs": "43924feee9725be0012cb19ef5deeb1faa44d4dda108b8dc6d55fccf22b1b53a",
+    "examples/tdm_games.rs": "d5ad8e7893c4ff6b5c938fa97d806e78723f085895ba3c5a20fc5a3c5f0a07f4",
+    "tests/tdm_complete_games.rs": "c32cb72ee1eaa343fa6b4dc350fb03a2fa5401c9fc10bb3f5ff14d705cb82173",
+    "examples/support/tdm_game_decks.json": "2daf20c80bb409b7f241680b990b39a1177101dd45e35eaa48fffc913d5fb12e"
+  },
+  "actual_example_build_seconds": 2.2205967570189387,
+  "focused_test_profile_clippy_seconds": 22.77638485300122,
+  "pure_hash_integrity_tests": 1,
+  "pure_native_compile_seconds": 2.4218765319674276,
+  "pure_native_execution_seconds": 0.02450342394877225,
+  "source_inputs_unchanged": true,
+  "games_executed": 0,
+  "scope": "Not gameplay, natural terminal, replay, corpus, benchmark or complete-set acceptance. Runtime gates require all276 canonical physical identities,13 complete Omen faces and276 printed-outcome proofs; no partial-pool override.",
+  "fixed_corpus": {
+    "standard_cases": 48,
+    "freeform_cutter_cases": 4,
+    "max_actions_per_game": 4096,
+    "standard_benchmark_repetitions": 3,
+    "freeform_benchmark_repetitions": 3,
+    "deck_source_sha256": "2daf20c80bb409b7f241680b990b39a1177101dd45e35eaa48fffc913d5fb12e"
+  },
+  "whole_set_acceptance": false
+}
