@@ -1522,10 +1522,8 @@ fn narset_own_end_step_optional_hand_payment_draws_current_spell_count_even_when
                 matches!(g.state.pending, Pending::EffectOptional { .. })
             });
             act(&mut g, Action::ChooseOptional { accept });
-            if accept {
-                if let Some(card) = discarded {
-                    act(&mut g, Action::Discard { card });
-                }
+            if accept && let Some(card) = discarded {
+                act(&mut g, Action::Discard { card });
             }
             drain(&mut g);
             assert_eq!(g.hand_count(p), if accept { 2 } else { before });
@@ -1665,7 +1663,7 @@ fn new_way_forward_prevents_chosen_source_once_then_reflects_and_draws_exact_amo
         amount: 3,
         combat: false,
     };
-    g.apply_damage_batch(&[event.clone()]);
+    g.apply_damage_batch(&[event]);
     g.advance_replacements(true);
     g.give_priority();
     drain(&mut g);
