@@ -49,13 +49,7 @@ fn drain_to(g: &mut Game, targets: &[Target]) {
     advance(g, targets, idle);
 }
 fn candidate(g: &mut Game, p: Player, name: &str) -> CardId {
-    let card = Card::from_name(name).unwrap();
-    if card.is_supported() {
-        return put(g, p, name, Zone::Hand);
-    }
-    let id = put(g, p, "Grizzly Bears", Zone::Hand);
-    g.state.objects[id as usize].card = card;
-    id
+    put(g, p, name, Zone::Hand)
 }
 fn cast_candidate(g: &mut Game, p: Player, name: &str) -> CardId {
     let id = candidate(g, p, name);
@@ -187,12 +181,17 @@ fn sultai_monument_all_three_basic_filters_search_shuffle_and_exact_activation()
         });
         assert!(g.observe(p).search_choice.is_some());
         reject(&mut g, Action::ChooseSearch { card: excluded });
+        let before_shuffle = g.state.rng;
         act(&mut g, Action::ChooseSearch { card: found });
         if g.legal_actions().contains(&Action::FinishSearch) {
             act(&mut g, Action::FinishSearch);
         }
         drain(&mut g);
         assert_eq!(g.object_view(found).zone, Zone::Hand);
+        assert_ne!(
+            g.state.rng, before_shuffle,
+            "search shuffles the remaining library"
+        );
         g.state.step = Step::Upkeep;
         reject(&mut g, activation(source));
         g.state.step = Step::Main1;

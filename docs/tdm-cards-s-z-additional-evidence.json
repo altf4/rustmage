@@ -1,19 +1,19 @@
 {
   "schema": 1,
   "scope": "25 additional physical TDM S\u2013Z members; full-set acceptance remains root-owned",
-  "basis_engine": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
-  "author_baseline": "81fd5f1e4cea0f7c1136053cedab0de6700a42e1",
+  "basis_engine": "2660c86112362973c195bee4c1b85e1a968f9f3a",
+  "author_baseline": "8e0f68188497db21495595ea745760efbe7d800d",
   "test_target": "tdm_cards_s_z_additional",
-  "locally_verified_cards": 0,
-  "remaining_physical_cards": 25,
-  "status": "PARKED at shared engine86 phase: ten-card family gated12 PASS; seven newly authored definitions remain false; no new cards admitted or counted",
+  "locally_verified_cards": 10,
+  "remaining_physical_cards": 15,
+  "status": "Additional first family locally verified and admitted: 10 physical=7 newly authored+3 existing; root integration and full-set/final nonauthor acceptance pending",
   "cards": [
     {
       "name": "Sage of the Skies",
       "oracle_id": "cfc7cef7-0a95-49f8-970f-abff2cacd82d",
       "definition": "src/card_definitions/tdm/sage_of_the_skies.rs",
       "definition_sha256": "61876eece93a58417eb2cfd3f6fa1ff91ee068ee6bc33f39a625601f3b3c323c",
-      "provenance_sha256": "483014657f184704285e295f0b3d5a309476532feab94d2a6125376e2560655f",
+      "provenance_sha256": "214ca4ac150421473202b4c9729d47b9405f0d2a47e51bdc3367fac85dce96e2",
       "printed_obligations": [
         "When you cast this spell, if you've cast another spell this turn, copy this spell. (The copy becomes a token.)",
         "Flying, lifelink"
@@ -22,7 +22,7 @@
         "power": "2",
         "toughness": "3"
       },
-      "status": "gated-focused-PASS; admission and final whole-card review deferred by engine86 hold",
+      "status": "locally verified admitted; pending completed-set acceptance/final independent reviews",
       "actual_definition_tests": [
         "sage_copies_after_any_earlier_own_spell_but_not_as_first_and_copies_are_tokens"
       ],
@@ -36,7 +36,7 @@
         {
           "test": "sage_copies_after_any_earlier_own_spell_but_not_as_first_and_copies_are_tokens",
           "status": "PASS",
-          "receipt": "gated_actual_definition_family"
+          "receipt": "engine86_ordinary"
         }
       ],
       "obligation_proofs": [
@@ -85,7 +85,8 @@
           "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
           "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
         }
-      ]
+      ],
+      "behavior_body_changed": true
     },
     {
       "name": "Salt Road Skirmish",
@@ -106,7 +107,7 @@
       "oracle_id": "71cb48e2-2328-471c-a04a-7b6461f378f4",
       "definition": "src/card_definitions/tdm/sarkhan_dragon_ascendant.rs",
       "definition_sha256": "0971d1f5df06f92e3f78f5bdac235b952eacd852528cec17d6aee479e9567169",
-      "provenance_sha256": "18b2422e2353ad45b4a3a88d59f111fffb84d6f62d52facf1c6dc3d764491b20",
+      "provenance_sha256": "ccb78b250b4ee5d3462e2036b720f2ac14d0ae7a8210e1ea2070e5b925b071a8",
       "printed_obligations": [
         "When Sarkhan enters, you may behold a Dragon. If you do, create a Treasure token. (To behold a Dragon, choose a Dragon you control or reveal a Dragon card from your hand.)",
         "Whenever a Dragon you control enters, put a +1/+1 counter on Sarkhan. Until end of turn, Sarkhan becomes a Dragon in addition to his other types and gains flying."
@@ -115,7 +116,7 @@
         "power": "2",
         "toughness": "2"
       },
-      "status": "gated-focused-PASS; admission and final whole-card review deferred by engine86 hold",
+      "status": "locally verified admitted; pending completed-set acceptance/final independent reviews",
       "actual_definition_tests": [
         "sarkhan_optional_behold_hand_battlefield_or_decline_produces_actual_treasure",
         "sarkhan_dragon_entry_counter_and_additional_type_flying_expire_but_counter_remains"
@@ -131,12 +132,12 @@
         {
           "test": "sarkhan_optional_behold_hand_battlefield_or_decline_produces_actual_treasure",
           "status": "PASS",
-          "receipt": "gated_actual_definition_family"
+          "receipt": "engine86_ordinary"
         },
         {
           "test": "sarkhan_dragon_entry_counter_and_additional_type_flying_expire_but_counter_remains",
           "status": "PASS",
-          "receipt": "gated_actual_definition_family"
+          "receipt": "engine86_ordinary"
         }
       ],
       "obligation_proofs": [
@@ -208,7 +209,8 @@
           "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
           "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
         }
-      ]
+      ],
+      "behavior_body_changed": true
     },
     {
       "name": "Severance Priest",
@@ -261,7 +263,7 @@
         "power": "1",
         "toughness": "3"
       },
-      "status": "existing-candidate-focused-PASS; no new count until integration",
+      "status": "locally verified admitted; pending completed-set acceptance/final independent reviews",
       "actual_definition_tests": [
         "shock_brigade_mobilizes_actual_attacking_warrior_then_sacrifices_next_end"
       ],
@@ -275,7 +277,7 @@
         {
           "test": "shock_brigade_mobilizes_actual_attacking_warrior_then_sacrifices_next_end",
           "status": "PASS",
-          "receipt": "gated_actual_definition_family"
+          "receipt": "engine86_ordinary"
         }
       ],
       "obligation_proofs": [
@@ -324,7 +326,8 @@
           "path": "Mage/src/main/java/mage/game/permanent/token/RedWarriorToken.java",
           "sha256": "91af8e32ddafb0a605511b4fd6a3e78e00d46465b90463b47ce6c6266a38582c"
         }
-      ]
+      ],
+      "behavior_body_changed": false
     },
     {
       "name": "Shocking Sharpshooter",
@@ -340,7 +343,7 @@
         "power": "1",
         "toughness": "3"
       },
-      "status": "existing-candidate-focused-PASS; no new count until integration",
+      "status": "locally verified admitted; pending completed-set acceptance/final independent reviews",
       "actual_definition_tests": [
         "shocking_sharpshooter_other_own_creature_entries_target_opponent_and_ignore_self_enemy_land"
       ],
@@ -354,7 +357,7 @@
         {
           "test": "shocking_sharpshooter_other_own_creature_entries_target_opponent_and_ignore_self_enemy_land",
           "status": "PASS",
-          "receipt": "gated_actual_definition_family"
+          "receipt": "engine86_ordinary"
         }
       ],
       "obligation_proofs": [
@@ -388,14 +391,15 @@
           "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
           "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
         }
-      ]
+      ],
+      "behavior_body_changed": false
     },
     {
       "name": "Sibsig Appraiser",
       "oracle_id": "5b51958d-533a-45e4-aac1-3c157670978b",
       "definition": "src/card_definitions/tdm/sibsig_appraiser.rs",
       "definition_sha256": "424b4b26afd5c44ba9c38ab6ce2b3b38e60ce495bf4d8d0334dc5b8cac61f960",
-      "provenance_sha256": "8562ee5998f723b89dadf7d2c5166a8d958ac0479b875c3393bfb543b6348792",
+      "provenance_sha256": "93c55eeae6fff00c4e870884569a871e530cc2dcc256ee703213e565088f4055",
       "printed_obligations": [
         "When this creature enters, look at the top two cards of your library. Put one of them into your hand and the other into your graveyard."
       ],
@@ -403,7 +407,7 @@
         "power": "2",
         "toughness": "1"
       },
-      "status": "gated-focused-PASS; admission and final whole-card review deferred by engine86 hold",
+      "status": "locally verified admitted; pending completed-set acceptance/final independent reviews",
       "actual_definition_tests": [
         "sibsig_forced_private_pick_and_owned_raw_index_restore_leave_other_card_in_graveyard"
       ],
@@ -417,7 +421,7 @@
         {
           "test": "sibsig_forced_private_pick_and_owned_raw_index_restore_leave_other_card_in_graveyard",
           "status": "PASS",
-          "receipt": "gated_actual_definition_family"
+          "receipt": "engine86_ordinary"
         }
       ],
       "obligation_proofs": [
@@ -445,7 +449,8 @@
           "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
           "sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7"
         }
-      ]
+      ],
+      "behavior_body_changed": true
     },
     {
       "name": "Sidisi, Regent of the Mire",
@@ -626,7 +631,7 @@
         "When this enchantment enters, exile target nonland permanent an opponent controls until this enchantment leaves the battlefield."
       ],
       "intrinsic_body": {},
-      "status": "existing-candidate-focused-PASS; no new count until integration",
+      "status": "locally verified admitted; pending completed-set acceptance/final independent reviews",
       "actual_definition_tests": [
         "stormplain_detainment_exiles_only_opponent_nonland_and_returns_exact_object_on_departure"
       ],
@@ -640,7 +645,7 @@
         {
           "test": "stormplain_detainment_exiles_only_opponent_nonland_and_returns_exact_object_on_departure",
           "status": "PASS",
-          "receipt": "gated_actual_definition_family"
+          "receipt": "engine86_ordinary"
         }
       ],
       "obligation_proofs": [
@@ -657,14 +662,15 @@
           "path": "Mage/src/main/java/mage/abilities/effects/common/ExileUntilSourceLeavesEffect.java",
           "sha256": "b996095b17f25f3acb6d649beaf87d3f4abca10338c9444419cca03029d940bf"
         }
-      ]
+      ],
+      "behavior_body_changed": false
     },
     {
       "name": "Stormscale Scion",
       "oracle_id": "cf37426d-b0ad-42c3-81be-79701aa4e0cf",
       "definition": "src/card_definitions/tdm/stormscale_scion.rs",
       "definition_sha256": "b9f3fce31499496d27835ef8b8afbafa615505f0d90d113404ee8280cc7e38cb",
-      "provenance_sha256": "3e4dbd33356073305b359e58e0cfc457514c01efd407cb20386fe02b1ec5aa7e",
+      "provenance_sha256": "a90a49dcf6d3816aebe8d8bd475809078f9ef2cf0bbfb1a727bc0e8a58e0ac7c",
       "printed_obligations": [
         "Flying",
         "Other Dragons you control get +1/+1.",
@@ -674,7 +680,7 @@
         "power": "4",
         "toughness": "4"
       },
-      "status": "gated-focused-PASS; admission and final whole-card review deferred by engine86 hold",
+      "status": "locally verified admitted; pending completed-set acceptance/final independent reviews",
       "actual_definition_tests": [
         "stormscale_actual_storm_tokens_and_other_owned_dragon_anthem"
       ],
@@ -688,7 +694,7 @@
         {
           "test": "stormscale_actual_storm_tokens_and_other_owned_dragon_anthem",
           "status": "PASS",
-          "receipt": "gated_actual_definition_family"
+          "receipt": "engine86_ordinary"
         }
       ],
       "obligation_proofs": [
@@ -733,20 +739,21 @@
           "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
           "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
         }
-      ]
+      ],
+      "behavior_body_changed": true
     },
     {
       "name": "Sultai Monument",
       "oracle_id": "9db71b76-eda7-49dd-af5a-3de18acb8ccb",
       "definition": "src/card_definitions/tdm/sultai_monument.rs",
       "definition_sha256": "6bca42646829c1d7b0ef830b02c34d63f3857bf09cc8823820a7fb5e9dd46f22",
-      "provenance_sha256": "5c343ce8e1b93684c436cd5e85d2429b7bda60de5b82a3edf536f2435d5101b1",
+      "provenance_sha256": "9d2c3edd63cad563da31b9a9e1840120d853c0b3e9c4e02047f8b90ee1c62ef6",
       "printed_obligations": [
         "When this artifact enters, search your library for a basic Swamp, Forest, or Island card, reveal it, put it into your hand, then shuffle.",
         "{2}{B}{G}{U}, {T}, Sacrifice this artifact: Create two 2/2 black Zombie Druid creature tokens. Activate only as a sorcery."
       ],
       "intrinsic_body": {},
-      "status": "gated-focused-PASS; admission and final whole-card review deferred by engine86 hold",
+      "status": "locally verified admitted; pending completed-set acceptance/final independent reviews",
       "actual_definition_tests": [
         "sultai_monument_all_three_basic_filters_search_shuffle_and_exact_activation"
       ],
@@ -760,7 +767,7 @@
         {
           "test": "sultai_monument_all_three_basic_filters_search_shuffle_and_exact_activation",
           "status": "PASS",
-          "receipt": "gated_actual_definition_family"
+          "receipt": "engine86_ordinary"
         }
       ],
       "obligation_proofs": [
@@ -772,6 +779,12 @@
         },
         {
           "printed_obligation": "{2}{B}{G}{U}, {T}, Sacrifice this artifact: Create two 2/2 black Zombie Druid creature tokens. Activate only as a sorcery.",
+          "actual_definition_tests": [
+            "sultai_monument_all_three_basic_filters_search_shuffle_and_exact_activation"
+          ]
+        },
+        {
+          "printed_obligation": "Then shuffle: exact pre/post search RNG state changes for every legal printed basic subtype",
           "actual_definition_tests": [
             "sultai_monument_all_three_basic_filters_search_shuffle_and_exact_activation"
           ]
@@ -793,14 +806,15 @@
           "path": "Mage/src/main/java/mage/game/permanent/token/ZombieDruidToken.java",
           "sha256": "d0f1b3d7f23a9391f94f052843e2eeba17cbf0cbbf98bfb590621d6bc13ad918"
         }
-      ]
+      ],
+      "behavior_body_changed": true
     },
     {
       "name": "Sunpearl Kirin",
       "oracle_id": "f17b9356-a329-4f89-b690-afc2eaff4977",
       "definition": "src/card_definitions/tdm/sunpearl_kirin.rs",
       "definition_sha256": "5348b8190c060e0132c79d91d6f761d4da35598ca43e6f9aec559e39422a0fd3",
-      "provenance_sha256": "bd36c18d763b62b249f9ee4b0db614cb737e644ef0dd9caea320d2a25fec6993",
+      "provenance_sha256": "d71795205ec34f7470d23e27a9fcde3e784b27240eda5b5e5e47cca201068982",
       "printed_obligations": [
         "Flash",
         "Flying",
@@ -810,7 +824,7 @@
         "power": "2",
         "toughness": "1"
       },
-      "status": "gated-focused-PASS; admission and final whole-card review deferred by engine86 hold",
+      "status": "locally verified admitted; pending completed-set acceptance/final independent reviews",
       "actual_definition_tests": [
         "kirin_flash_optional_bounce_obeys_other_owned_nonland_and_draws_only_for_tokens"
       ],
@@ -824,7 +838,7 @@
         {
           "test": "kirin_flash_optional_bounce_obeys_other_owned_nonland_and_draws_only_for_tokens",
           "status": "PASS",
-          "receipt": "gated_actual_definition_family"
+          "receipt": "engine86_ordinary"
         }
       ],
       "obligation_proofs": [
@@ -864,7 +878,8 @@
           "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
           "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
         }
-      ]
+      ],
+      "behavior_body_changed": true
     },
     {
       "name": "Synchronized Charge",
@@ -903,13 +918,13 @@
       "oracle_id": "2154cc68-41a4-4e88-9fe0-e0150dc0be45",
       "definition": "src/card_definitions/tdm/teeming_dragonstorm.rs",
       "definition_sha256": "7e9ff1395cc9fa5bee20fd366cb64d8a5dd7d1b4f58457b33bbef25834b543e4",
-      "provenance_sha256": "6ed8d5bbccdfcb710a4943d8bcf9a844dea5dcb026e2c2124df609b9c62bcc5f",
+      "provenance_sha256": "1ec594a27358e4d974f1b48773ad3d9e97cb86ff2f26dde93af1747e70681811",
       "printed_obligations": [
         "When this enchantment enters, create two 2/2 white Soldier creature tokens.",
         "When a Dragon you control enters, return this enchantment to its owner's hand."
       ],
       "intrinsic_body": {},
-      "status": "gated-focused-PASS; admission and final whole-card review deferred by engine86 hold",
+      "status": "locally verified admitted; pending completed-set acceptance/final independent reviews",
       "actual_definition_tests": [
         "teeming_creates_two_white_soldiers_and_returns_only_for_own_dragon"
       ],
@@ -923,12 +938,12 @@
         {
           "test": "teeming_creates_two_white_soldiers_and_returns_only_for_own_dragon",
           "status": "PASS",
-          "receipt": "gated_actual_definition_family"
+          "receipt": "engine86_ordinary"
         },
         {
           "test": "actual_dragonstorm_creature_copies_trigger_for_self_only_under_their_own_dragon_provider",
           "status": "PASS",
-          "receipt": "gated_actual_definition_family"
+          "receipt": "engine86_ordinary"
         }
       ],
       "obligation_proofs": [
@@ -967,13 +982,14 @@
           "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandSourceEffect.java",
           "sha256": "3af51f033e9d30c6f946feca7948ce7ee423fdd1314a715820d3ae9d98ca7935"
         }
-      ]
+      ],
+      "behavior_body_changed": true
     }
   ],
   "authorized_auxiliary_repair": {
     "name": "Roiling Dragonstorm",
     "not_additional_membership": true,
-    "status": "gated self-entry edge PASS and original84 ordinary PASS; root restores previous92-card G\u2013S count only after integrating repair; no additional membership or count",
+    "status": "Root integrated Roiling repair and restored its existing original G\u2013S92 count. Excluded from additional10 membership and all new counts.",
     "reason": "Printed any own Dragon includes a Dragon-form self entrant. Use existing SubtypeEntersYou rather than the SELF-OR-other operator.",
     "tests": [
       "actual_dragonstorm_creature_copies_trigger_for_self_only_under_their_own_dragon_provider",
@@ -983,24 +999,19 @@
     "definition_sha256": "2af9c3ebad813f5d13c2fae4e86927206749b68a8d3ad654700ea333eb27b655",
     "provenance_sha256": "53d27f975e01e11a413ed89787aadcec91c49ed6b2f22fedc9d18d8df703c423",
     "gated_case": "actual_dragonstorm_creature_copies_trigger_for_self_only_under_their_own_dragon_provider",
-    "ordinary_case": "roiling_dragonstorm_loots_and_returns_only_for_own_dragon_entry"
+    "ordinary_case": "roiling_dragonstorm_loots_and_returns_only_for_own_dragon_entry",
+    "proof_receipts": [
+      "engine85_initial_gated_family",
+      "original_g_s_ordinary_restoration",
+      "engine86_ordinary"
+    ]
   },
   "focused_family_physical_cards": 10,
   "newly_authored_gated_cards": 7,
   "existing_candidate_cards_in_family": 3,
   "remaining_repository_candidates": 15,
-  "test_sha256": "b87ccba16831fbd93711d1603991765fd654ded54dc8f18e94081383e2f7be55",
+  "test_sha256": "38c2927a5dfdd6efc0ef13a5c9022d7c77df044e2e9f9bedc3fd8af7cc39e015",
   "validation": {
-    "gated_actual_definition_family": {
-      "path": "<cache>/rustmage-tdm/post85-gated-families-1793821082714343829/g_s_additional/native.json",
-      "sha256": "b1381b88037c327a116ee0d7f2a5936d2e47e420af1ae26831c454c148081cc4",
-      "cases": 12,
-      "pass": 12,
-      "compile_seconds": 15.751286225975491,
-      "execution_seconds": 0.03492840297985822,
-      "inputs_unchanged": true,
-      "admitted_rerun": false
-    },
     "original_g_s_ordinary_restoration": {
       "path": "<cache>/rustmage-tdm/old-dragonstorm-restoration-1793821631385562618/g_s/native.json",
       "sha256": "b0d23123e908c0dab2e145329553f90ef269645661ae9e780d486ee3a8ac537f",
@@ -1011,15 +1022,79 @@
       "scope": "Original G\u2013S regression after ordinary Roiling restoration only; does not admit any additional S\u2013Z card"
     },
     "cargo_owner": "root; author launched no Cargo",
-    "full_set_acceptance": "Not executed; complete-game harness remains parked and no game acceptance claim is made"
+    "full_set_acceptance": "Not executed; complete-game harness remains parked and no game acceptance claim is made",
+    "engine85_initial_gated_family": {
+      "path": "<cache>/rustmage-tdm/post85-gated-families-1793821082714343829/g_s_additional/native.json",
+      "sha256": "b1381b88037c327a116ee0d7f2a5936d2e47e420af1ae26831c454c148081cc4",
+      "cases": 12,
+      "pass": 12,
+      "compile_seconds": 15.751286225975491,
+      "execution_seconds": 0.03492840297985822,
+      "inputs_unchanged": true,
+      "admitted_rerun": false
+    },
+    "engine86_gated": {
+      "path": "<cache>/rustmage-tdm/post86-first-proof-1793824255100003227/g_s_gated/native.json",
+      "sha256": "8e74662e2cfb2689f7bb45c97e859d24f05ecd5e8a091edab4ec54cc3fe2632b",
+      "cases": 12,
+      "passed": 12,
+      "compile_seconds": 15.90298662299756,
+      "execution_seconds": 0.03326692897826433,
+      "test_sha256": "af67496f2499a4965cb6c8f760dab32b96b1044bd3ae6285fab2fcbdea8095ec",
+      "admission": "seven new flags false; support shell substituted in hand before events"
+    },
+    "engine86_gated_clippy": {
+      "path": "<cache>/rustmage-tdm/post86-first-proof-1793824255100003227/g_s_gated/clippy-terminal.json",
+      "sha256": "45770a91ba2d4ff8d83a3cd1d237f062be938c3ba59f846eb4a783cd271a936d",
+      "exit": 0,
+      "seconds": 20.815009721030947
+    },
+    "engine86_ordinary": {
+      "path": "<cache>/rustmage-tdm/post86-g-s-ordinary-1793824421322228641/g_s_ordinary/native.json",
+      "sha256": "bb1bd2eb578b90b5916a7114befaff4153b64bbe6badcc3f7a6c6909deabb45b",
+      "cases": 12,
+      "passed": 12,
+      "compile_seconds": 4.476660470012575,
+      "execution_seconds": 0.03464576799888164,
+      "test_sha256": "38c2927a5dfdd6efc0ef13a5c9022d7c77df044e2e9f9bedc3fd8af7cc39e015",
+      "admission": "all ten admitted; candidate calls ordinary support::put unconditionally; no definition fixture overlay"
+    },
+    "engine86_ordinary_clippy": {
+      "path": "<cache>/rustmage-tdm/post86-g-s-ordinary-1793824421322228641/g_s_ordinary/clippy-terminal.json",
+      "sha256": "1de90ffb9ab751d303c7f8532f266335128211491daebb3c98de2b68fdd55034",
+      "exit": 0,
+      "seconds": 1.8728745060507208
+    },
+    "source_checks": "root reports PASS on final ordinary inputs"
   },
   "parked_work": {
     "remaining_15": "Full Oracle/main Java read; source and scenario drafts exist only outside repository and were not compiled or executed",
     "next_refinements": [
-      "Explicit Sultai search pre/post RNG assertion",
-      "Refresh remaining-family helper pins when authoring resumes",
+      "Implement remaining15 with per-card provenance and actual outcomes",
       "Shiko copy/free cast must not add an unprinted face-mana-value budget after its MV\u22643 target restriction"
     ],
-    "hold": "No further card/source/provenance/test edits or Cargo until engine86 is accepted and exact cache warmed by root"
+    "hold": "First ten passed ordinary admission. Remaining15 may resume source authoring on accepted engine86; all Cargo/linkage leases stay root-owned"
+  },
+  "newly_implemented_cards": 7,
+  "existing_verified_cards": 3,
+  "measurement": {
+    "scope": "12 scenarios cover ten additional physical cards plus auxiliary previously-counted Roiling self-entry repair; seven new and three existing definitions. Focused tests do not certify whole-set games or general Standard performance.",
+    "measured_validation_runs": {
+      "engine86_gated": {
+        "compile_seconds": 15.90298662299756,
+        "execution_seconds": 0.03326692897826433
+      },
+      "engine86_gated_clippy": {
+        "seconds": 20.815009721030947
+      },
+      "engine86_ordinary": {
+        "compile_seconds": 4.476660470012575,
+        "execution_seconds": 0.03464576799888164
+      },
+      "engine86_ordinary_clippy": {
+        "seconds": 1.8728745060507208
+      }
+    },
+    "authoring_throughput": "No wall-clock authoring throughput claimed: source work spanned root-owned shared-engine holds. Native execution times are measured scenario throughput only."
   }
 }
