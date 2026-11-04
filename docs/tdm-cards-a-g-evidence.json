@@ -1,0 +1,198 @@
+{
+  "schema": 1,
+  "set": "TDM",
+  "group": "a_g",
+  "engine_revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "physical_scope": 91,
+  "completion_claim": "No complete-card claim until focused execution passes; set acceptance remains integrator owned.",
+  "cards": [
+    {
+      "name": "Adorned Crocodile",
+      "oracle_id": "fb49c7d2-d750-4676-b90e-76e7fae70a25",
+      "definition": "src/card_definitions/tdm/adorned_crocodile.rs",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "obligations": [
+        {
+          "face": "Adorned Crocodile",
+          "header": {
+            "mana_cost": "{4}{B}",
+            "type_line": "Creature \u2014 Crocodile",
+            "power": "5",
+            "toughness": "3"
+          },
+          "printed_lines": [
+            "When this creature dies, create a 2/2 black Zombie Druid creature token.",
+            "Renew \u2014 {B}, Exile this card from your graveyard: Put a +1/+1 counter on target creature. Activate only as a sorcery."
+          ]
+        }
+      ],
+      "tests": [
+        "renew_each_actual_definition_pays_printed_cost_exiles_source_and_places_exact_counters",
+        "renew_timing_wrong_zone_and_unaffordable_costs_are_atomic",
+        "renew_paid_cost_survives_a_blinked_target_and_never_rebinds_it",
+        "renew_adorned_crocodile_actual_death_creates_one_black_zombie_druid"
+      ],
+      "shared_proofs": [
+        "tests/legacy/assurance/msh_d.rs::adaptoid_all_keyword_counters_and_legendary_cda"
+      ],
+      "definition_sha256": "c8d49cba2bff17284ec7e3233eefc11d04bbdc87c94295259bd1dd789801f75b"
+    },
+    {
+      "name": "Agent of Kotis",
+      "oracle_id": "584fe1e4-029d-43fe-8c9e-6995dd392d65",
+      "definition": "src/card_definitions/tdm/agent_of_kotis.rs",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "obligations": [
+        {
+          "face": "Agent of Kotis",
+          "header": {
+            "mana_cost": "{1}{U}",
+            "type_line": "Creature \u2014 Human Rogue",
+            "power": "2",
+            "toughness": "1"
+          },
+          "printed_lines": [
+            "Renew \u2014 {3}{U}, Exile this card from your graveyard: Put two +1/+1 counters on target creature. Activate only as a sorcery."
+          ]
+        }
+      ],
+      "tests": [
+        "renew_each_actual_definition_pays_printed_cost_exiles_source_and_places_exact_counters",
+        "renew_timing_wrong_zone_and_unaffordable_costs_are_atomic",
+        "renew_paid_cost_survives_a_blinked_target_and_never_rebinds_it",
+        "renew_agent_of_kotis_casts_as_a_two_one"
+      ],
+      "shared_proofs": [
+        "tests/legacy/assurance/msh_d.rs::adaptoid_all_keyword_counters_and_legendary_cda"
+      ],
+      "definition_sha256": "ce1fa3afd7e61f3c840e55cd7ca88bef90c30c97540fdb8d4ca0ea8d25c86eb6"
+    },
+    {
+      "name": "Alchemist's Assistant",
+      "oracle_id": "2844d274-cb60-46c1-a73b-e763c633e496",
+      "definition": "src/card_definitions/tdm/alchemist_s_assistant.rs",
+      "kind": "newly_authored",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "obligations": [
+        {
+          "face": "Alchemist's Assistant",
+          "header": {
+            "mana_cost": "{1}{B}",
+            "type_line": "Creature \u2014 Monkey",
+            "power": "2",
+            "toughness": "1"
+          },
+          "printed_lines": [
+            "Lifelink",
+            "Renew \u2014 {1}{B}, Exile this card from your graveyard: Put a lifelink counter on target creature. Activate only as a sorcery."
+          ]
+        }
+      ],
+      "tests": [
+        "renew_each_actual_definition_pays_printed_cost_exiles_source_and_places_exact_counters",
+        "renew_timing_wrong_zone_and_unaffordable_costs_are_atomic",
+        "renew_paid_cost_survives_a_blinked_target_and_never_rebinds_it",
+        "renew_native_lifelink_trample_and_granted_lifelink_wire_actual_characteristics"
+      ],
+      "shared_proofs": [
+        "tests/legacy/assurance/msh_d.rs::adaptoid_all_keyword_counters_and_legendary_cda"
+      ],
+      "definition_sha256": "8518b3dffebfae90682e1e294451d9dcabb9f1fe62ddaef7b71696ca8a315134"
+    },
+    {
+      "name": "Champion of Dusan",
+      "oracle_id": "0a427652-9745-4802-8c8f-5ae29a29b496",
+      "definition": "src/card_definitions/tdm/champion_of_dusan.rs",
+      "kind": "newly_authored",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "obligations": [
+        {
+          "face": "Champion of Dusan",
+          "header": {
+            "mana_cost": "{2}{G}",
+            "type_line": "Creature \u2014 Human Warrior",
+            "power": "4",
+            "toughness": "2"
+          },
+          "printed_lines": [
+            "Trample",
+            "Renew \u2014 {1}{G}, Exile this card from your graveyard: Put a +1/+1 counter and a trample counter on target creature. Activate only as a sorcery."
+          ]
+        }
+      ],
+      "tests": [
+        "renew_each_actual_definition_pays_printed_cost_exiles_source_and_places_exact_counters",
+        "renew_timing_wrong_zone_and_unaffordable_costs_are_atomic",
+        "renew_paid_cost_survives_a_blinked_target_and_never_rebinds_it",
+        "renew_native_lifelink_trample_and_granted_lifelink_wire_actual_characteristics",
+        "renew_owned_pending_targets_raw_index_and_restore_remain_independent"
+      ],
+      "shared_proofs": [
+        "tests/legacy/assurance/msh_d.rs::adaptoid_all_keyword_counters_and_legendary_cda"
+      ],
+      "definition_sha256": "484bbc5c9b3615b40231269e0c4fcdbf761bb6554b1a3d47a0512a2179c8a6c2"
+    },
+    {
+      "name": "Constrictor Sage",
+      "oracle_id": "abfb7234-c5cc-4e0b-9a67-d66473f918fc",
+      "definition": "src/card_definitions/tdm/constrictor_sage.rs",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "obligations": [
+        {
+          "face": "Constrictor Sage",
+          "header": {
+            "mana_cost": "{4}{U}",
+            "type_line": "Creature \u2014 Snake Wizard",
+            "power": "4",
+            "toughness": "4"
+          },
+          "printed_lines": [
+            "When this creature enters, tap target creature an opponent controls and put a stun counter on it. (If a permanent with a stun counter would become untapped, remove one from it instead.)",
+            "Renew \u2014 {2}{U}, Exile this card from your graveyard: Tap target creature an opponent controls and put a stun counter on it. Activate only as a sorcery."
+          ]
+        }
+      ],
+      "tests": [
+        "renew_each_actual_definition_pays_printed_cost_exiles_source_and_places_exact_counters",
+        "renew_timing_wrong_zone_and_unaffordable_costs_are_atomic",
+        "renew_paid_cost_survives_a_blinked_target_and_never_rebinds_it",
+        "renew_constrictor_sage_enters_targets_only_an_opponent_and_stuns_once"
+      ],
+      "shared_proofs": [
+        "tests/legacy/assurance/msh_d.rs::adaptoid_all_keyword_counters_and_legendary_cda"
+      ],
+      "definition_sha256": "29d0d2c419881909591cc970c0f85b8a2e7052796a9f67c818495917ccfa676b"
+    }
+  ],
+  "validation": [
+    {
+      "report": "<cache>/rustmage-tdm/cards-a-g-renew-second/native.json",
+      "sha256": "cecfd5e2a6ef7790a8efad1b0b02a6df3e0dfc16524222ad70d9effad15e1610",
+      "test_target": "tdm_cards_a_g",
+      "filter": "renew_",
+      "passed": 8,
+      "failed": 0,
+      "compile_seconds": 0.724,
+      "execution_seconds": 0.025,
+      "engine_reused": true,
+      "terminal": true
+    }
+  ],
+  "locally_verified_physical_cards": 5,
+  "newly_authored_verified": 2,
+  "previously_admitted_verified": 3,
+  "remaining_physical_cards": 86,
+  "implementation_measurement": {
+    "scope": "First Renew family including full source reads, authored2 definitions/provenance and8 scenarios; all5 printed obligations locally verified",
+    "elapsed_minutes": 24.0,
+    "cards_per_minute": 0.20833333333333334,
+    "focused_runs": 2,
+    "first_run_passed": 6,
+    "first_run_failed_test_fixture": 1,
+    "simulation_throughput": "Not measured by this focused card family"
+  }
+}

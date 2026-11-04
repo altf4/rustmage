@@ -3,10 +3,36 @@
   "catalogue_id": 126,
   "oracle_id": "2844d274-cb60-46c1-a73b-e763c633e496",
   "facts_sha256": "18e2d79eab647f50e04b27520dae852909ce37f36f89cbdeea1c714776349a42",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "79151c501d38b80b1d250c6de0ed8ead6d2f7c7f37d4d92aa13d66eb594d8520"
   },
-  "physical_metadata_sha256": "9c5b58634feb42aabec1a4cb7fbdd5475a74a1f3ca571a1482425723b2e3bed4"
+  "physical_metadata_sha256": "9c5b58634feb42aabec1a4cb7fbdd5475a74a1f3ca571a1482425723b2e3bed4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AlchemistsAssistant.java",
+  "java_sha256": "0e3d71b48614dc5bc86c8d07ccd41dbe2f270b29cb60560463ba8d40bf0bc894",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/RenewAbility.java",
+      "sha256": "32a1436eacfca7d3397a9bed3a949b686061d5e54d2627219e393fbe9947a02b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+      "sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    }
+  ],
+  "remaining_obligations": []
 }
