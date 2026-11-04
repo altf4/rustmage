@@ -3,10 +3,41 @@
   "catalogue_id": 4374,
   "oracle_id": "fadf984c-c224-432a-87b9-b34f929b8409",
   "facts_sha256": "2c6f5dca886a53fe9d6b9568138f986398036694ce760eddc78408f06e3a42b3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2b86239615420470ac5d809e56e13813379adc1568dfb6e796a145854b389ed1"
   },
-  "physical_metadata_sha256": "77bdf6e581c028d29b5cc5c0d1fdbe362ad6108a07ca57c9bca840657710ac74"
+  "physical_metadata_sha256": "77bdf6e581c028d29b5cc5c0d1fdbe362ad6108a07ca57c9bca840657710ac74",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TemurBattlecrier.java",
+  "java_sha256": "38ef71f669a269c8545e9575b1232de8e1440a5ca78366a7178dbb49769e10ca",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/CostModificationEffectImpl.java",
+      "sha256": "3f852024b0b2dc3df8a95e8b8ff78dbe5a84efa4b3349b4b2609f9e6c7eae6a4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+      "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledCreaturePermanent.java",
+      "sha256": "a7080c3d66028863773c7646519f418f7003235cfe1b86cd64fd27f0d6f87ede"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/PowerPredicate.java",
+      "sha256": "909b9038e02c0653920408059e987b6ee3cfad717900e62e78c597285f137dde"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/IntComparePredicate.java",
+      "sha256": "20673535e0a40ca32ffbc361bd82155e2c2f221d87c8d037a1dd96c0229d454f"
+    }
+  ],
+  "rules_tests": "tests/tdm_cards_s_z.rs::activations_"
 }

@@ -8,9 +8,9 @@
   "first_family": "Harmonize draw/bounce/combat spells",
   "started_utc": "2026-11-04T14:02:30.077837+00:00",
   "full_denominator": 92,
-  "currently_verified_new_complete": 9,
-  "currently_verified_existing_candidates": 32,
-  "pending_members": 51,
+  "currently_verified_new_complete": 12,
+  "currently_verified_existing_candidates": 37,
+  "pending_members": 18,
   "candidate_first_family_count": 4,
   "provisional_complete_flags": "New definitions remain complete=false through initial gated actual-definition PASS. Integrator then admits and repeats using normal supported put before counting. Existing baseline candidates require actual-definition evidence or accepted exact source/test/report proof reuse.",
   "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
@@ -779,6 +779,161 @@
       "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
       "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4",
       "extent": "Complete body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/t/TemurBattlecrier.java",
+      "sha256": "38ef71f669a269c8545e9575b1232de8e1440a5ca78366a7178dbb49769e10ca",
+      "extent": "Complete direct Java body including custom classes read during current whole-card authoring."
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/u/UnburiedEarthcarver.java",
+      "sha256": "aa85654b77c60d45faef4264970d71828ff7e304d2b3e5cb0e9fcdb94c19a2cf",
+      "extent": "Complete direct Java body including custom classes read during current whole-card authoring."
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/u/UnderfootUnderdogs.java",
+      "sha256": "7910878f5d53ca420dd2b52044b6fb576430476d55d220d5f7f0e77c92d28ee8",
+      "extent": "Complete direct Java body including custom classes read during current whole-card authoring."
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/u/UndergrowthLeopard.java",
+      "sha256": "daf0189e302fc04c83f0422074377a197d01a626087aa67dc3683d98220b5b6c",
+      "extent": "Complete direct Java body including custom classes read during current whole-card authoring."
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/u/UnrootedAncestor.java",
+      "sha256": "ace259b08a2ae13c068aeb5f4d2dfce83ff7d8a8ea8ff1fd252a347219d90523",
+      "extent": "Complete direct Java body including custom classes read during current whole-card authoring."
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/w/WayspeakerBodyguard.java",
+      "sha256": "81f4a6fc169e863119a5d77f725093eec27567745c3589dda219ccf8df9a4b32",
+      "extent": "Complete direct Java body including custom classes read during current whole-card authoring."
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/w/WingbladeDisciple.java",
+      "sha256": "951fb53d297adab0551e47e3062c5352b24b11c6d5beb478b435c370f60f9928",
+      "extent": "Complete direct Java body including custom classes read during current whole-card authoring."
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/w/WingspanStride.java",
+      "sha256": "8ee4eaa0fed12e3b1ef860e7a8c52518af634678d43fc26cbce84ac48b6fd4d1",
+      "extent": "Complete direct Java body including custom classes read during current whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53",
+      "extent": "Complete reusable helper body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedTargetEffect.java",
+      "sha256": "da9a306340321c49e565ce8f33756a1a381653588f886780089b31ee236adcee",
+      "extent": "Complete reusable helper body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a",
+      "extent": "Complete reusable helper body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+      "sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400",
+      "extent": "Complete reusable helper body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+      "sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe",
+      "extent": "Complete reusable helper body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9",
+      "extent": "Complete reusable helper body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEnchantedEffect.java",
+      "sha256": "c390aae1354b298fc7d8b379f73583e2bbee3bdd13d88a082553dce6c75e1303",
+      "extent": "Complete reusable helper body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+      "sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac",
+      "extent": "Complete reusable helper body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/FlurryAbility.java",
+      "sha256": "c7fd2820826fec5fb71dc63ebaa7ebace3423c724629c164aa818c36781704cb",
+      "extent": "Complete reusable helper body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/CastSecondSpellTriggeredAbility.java",
+      "sha256": "a4e91db65304a2f0a017d34eb680d683186071207b0002b036e94fcdc773ddce",
+      "extent": "Complete reusable helper body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3",
+      "extent": "Complete reusable helper body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d",
+      "extent": "Complete reusable helper body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandSourceEffect.java",
+      "sha256": "3af51f033e9d30c6f946feca7948ce7ee423fdd1314a715820d3ae9d98ca7935",
+      "extent": "Complete reusable helper body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+      "sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb",
+      "extent": "Complete reusable helper body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/game/permanent/token/GoblinToken.java",
+      "sha256": "16e001f88ad007f0445ce679eea218189f6c226eced65a5144fe17dfe7a72131",
+      "extent": "Complete reusable helper body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/game/permanent/token/BirdToken.java",
+      "sha256": "4164e87b73f38a228ea027058ba1d4591183a1b09d4420ce944e140346b873c1",
+      "extent": "Complete reusable helper body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+      "sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a",
+      "extent": "Complete reusable helper body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/CostModificationEffectImpl.java",
+      "sha256": "3f852024b0b2dc3df8a95e8b8ff78dbe5a84efa4b3349b4b2609f9e6c7eae6a4",
+      "extent": "Complete reusable helper body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/common/FilterNonlandCard.java",
+      "sha256": "84443dc244a44b44937d5ba9e4e51ff0b34e73795c11f2e985820daaed5b46ae",
+      "extent": "Complete reusable helper body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/predicate/IntComparePredicate.java",
+      "sha256": "20673535e0a40ca32ffbc361bd82155e2c2f221d87c8d037a1dd96c0229d454f",
+      "extent": "Complete reusable helper body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/PermanentPredicate.java",
+      "sha256": "b3058a67b4c81d73f72d2c64de25d5501a16d7462278416017a7c8e13ee60d80",
+      "extent": "Complete reusable helper body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+      "sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262",
+      "extent": "Complete reusable helper body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/watchers/common/CastSpellLastTurnWatcher.java",
+      "sha256": "065a8c406c463e6b5a4fc410b932eb1784fd05f2964afc8e64c81664a518a7ce",
+      "extent": "Complete reusable helper body read during current whole-card authoring."
     }
   ],
   "source_read_scoped_files": [
@@ -833,9 +988,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
+      "status": "root_accepted_from_additional_owner",
       "verified": false,
-      "oracle_facts_sha256": "ad835b59fa2dfdab21ed5ac3de4531629c8d90c876e6459e4d014cae8aa63161"
+      "oracle_facts_sha256": "ad835b59fa2dfdab21ed5ac3de4531629c8d90c876e6459e4d014cae8aa63161",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json"
     },
     {
       "name": "Sagu Pummeler",
@@ -902,9 +1059,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
+      "status": "root_accepted_from_additional_owner",
       "verified": false,
-      "oracle_facts_sha256": "dd50fb1d6938699dabc9566e8fe816c5c9c70de331fc796baa958c68100a320e"
+      "oracle_facts_sha256": "dd50fb1d6938699dabc9566e8fe816c5c9c70de331fc796baa958c68100a320e",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json"
     },
     {
       "name": "Sandskitter Outrider",
@@ -965,9 +1124,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
+      "status": "root_accepted_from_additional_owner",
       "verified": false,
-      "oracle_facts_sha256": "ccce9201d50b69451182088511dcda47db11a2c42b20deb560eef5c970a965dd"
+      "oracle_facts_sha256": "ccce9201d50b69451182088511dcda47db11a2c42b20deb560eef5c970a965dd",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json"
     },
     {
       "name": "Scavenger Regent // Exude Toxin",
@@ -1048,9 +1209,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
+      "status": "root_accepted_from_additional_owner",
       "verified": false,
-      "oracle_facts_sha256": "ff0929de9c2bfaa17a098ece86e76859988e6aa5e13b285eb403e0f4ead0729e"
+      "oracle_facts_sha256": "ff0929de9c2bfaa17a098ece86e76859988e6aa5e13b285eb403e0f4ead0729e",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json"
     },
     {
       "name": "Shiko, Paragon of the Way",
@@ -1063,9 +1226,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
+      "status": "root_accepted_from_additional_owner",
       "verified": false,
-      "oracle_facts_sha256": "00b8b3a2e2aa2b9fe6e9d341b2bb54d708d80a2f6bda479c36967b10aaac5a16"
+      "oracle_facts_sha256": "00b8b3a2e2aa2b9fe6e9d341b2bb54d708d80a2f6bda479c36967b10aaac5a16",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json"
     },
     {
       "name": "Shock Brigade",
@@ -1078,9 +1243,11 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
+      "status": "root_accepted_from_additional_owner",
       "verified": false,
-      "oracle_facts_sha256": "1ea078b25ce8be14058e2cb155fb954ccde5892d5e1597078882ba834baea5c6"
+      "oracle_facts_sha256": "1ea078b25ce8be14058e2cb155fb954ccde5892d5e1597078882ba834baea5c6",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json"
     },
     {
       "name": "Shocking Sharpshooter",
@@ -1093,9 +1260,11 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
+      "status": "root_accepted_from_additional_owner",
       "verified": false,
-      "oracle_facts_sha256": "07db6f64b9bcd46ca4244e5d1fe292cdb1edc592ce5c35faed71b66d076f3821"
+      "oracle_facts_sha256": "07db6f64b9bcd46ca4244e5d1fe292cdb1edc592ce5c35faed71b66d076f3821",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json"
     },
     {
       "name": "Sibsig Appraiser",
@@ -1108,9 +1277,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
+      "status": "root_accepted_from_additional_owner",
       "verified": false,
-      "oracle_facts_sha256": "9d998ea01f4fb3e96d5357cb4f2d661969e1c6bba5dfc8dfd9efd1828961da55"
+      "oracle_facts_sha256": "9d998ea01f4fb3e96d5357cb4f2d661969e1c6bba5dfc8dfd9efd1828961da55",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json"
     },
     {
       "name": "Sidisi, Regent of the Mire",
@@ -1123,9 +1294,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
+      "status": "root_accepted_from_additional_owner",
       "verified": false,
-      "oracle_facts_sha256": "f7fedf7ab4e6618ace33a5618b7dc30c84bb2c51a2c1be989f0aa0dc651c7e06"
+      "oracle_facts_sha256": "f7fedf7ab4e6618ace33a5618b7dc30c84bb2c51a2c1be989f0aa0dc651c7e06",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json"
     },
     {
       "name": "Sinkhole Surveyor",
@@ -1170,9 +1343,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
+      "status": "root_accepted_from_additional_owner",
       "verified": false,
-      "oracle_facts_sha256": "9e485ea8dd7b4ab94c829742d8a87f2637cf916a77edd7f29a28a2863a004a40"
+      "oracle_facts_sha256": "9e485ea8dd7b4ab94c829742d8a87f2637cf916a77edd7f29a28a2863a004a40",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json"
     },
     {
       "name": "Snakeskin Veil",
@@ -1201,9 +1376,11 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
+      "status": "root_accepted_from_additional_owner",
       "verified": false,
-      "oracle_facts_sha256": "1fb8fd3ea1b888adccf87faafd6f797488663fcf057a80ced2cf7cb44c126b13"
+      "oracle_facts_sha256": "1fb8fd3ea1b888adccf87faafd6f797488663fcf057a80ced2cf7cb44c126b13",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json"
     },
     {
       "name": "Songcrafter Mage",
@@ -1233,9 +1410,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
+      "status": "root_accepted_from_additional_owner",
       "verified": false,
-      "oracle_facts_sha256": "eca1d389735f542bf8cda2db20f3623c92aa3a95f83526bd18a603f54a4ad9d6"
+      "oracle_facts_sha256": "eca1d389735f542bf8cda2db20f3623c92aa3a95f83526bd18a603f54a4ad9d6",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json"
     },
     {
       "name": "Spectral Denial",
@@ -1264,9 +1443,11 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
+      "status": "root_accepted_from_additional_owner",
       "verified": false,
-      "oracle_facts_sha256": "671db9b3d5a1f28ffc162dd2250b307f1f8ddae4e3fe582bf18fdc8a1fce606a"
+      "oracle_facts_sha256": "671db9b3d5a1f28ffc162dd2250b307f1f8ddae4e3fe582bf18fdc8a1fce606a",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json"
     },
     {
       "name": "Stalwart Successor",
@@ -1279,9 +1460,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
+      "status": "root_accepted_from_additional_owner",
       "verified": false,
-      "oracle_facts_sha256": "710cb2c1f467a798d27734501b30c77152e6238976b72dcda56d99a81a1303b0"
+      "oracle_facts_sha256": "710cb2c1f467a798d27734501b30c77152e6238976b72dcda56d99a81a1303b0",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json"
     },
     {
       "name": "Starry-Eyed Skyrider",
@@ -1294,9 +1477,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
+      "status": "root_accepted_from_additional_owner",
       "verified": false,
-      "oracle_facts_sha256": "225cb8766ecea98582ca2d80641c9e9dfbe42fd892753e56580750781016a05c"
+      "oracle_facts_sha256": "225cb8766ecea98582ca2d80641c9e9dfbe42fd892753e56580750781016a05c",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json"
     },
     {
       "name": "Static Snare",
@@ -1309,9 +1494,11 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
+      "status": "root_accepted_from_additional_owner",
       "verified": false,
-      "oracle_facts_sha256": "fd337069a7b16faf6db83030cd85c484f4de8bc08e323ec7b31a9a051b6cdb10"
+      "oracle_facts_sha256": "fd337069a7b16faf6db83030cd85c484f4de8bc08e323ec7b31a9a051b6cdb10",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json"
     },
     {
       "name": "Stillness in Motion",
@@ -1324,9 +1511,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
+      "status": "root_accepted_from_additional_owner",
       "verified": false,
-      "oracle_facts_sha256": "56f06bfb35efadb52836bd2022a0c60f4720b856a25bd4ca3839889fa8f3e231"
+      "oracle_facts_sha256": "56f06bfb35efadb52836bd2022a0c60f4720b856a25bd4ca3839889fa8f3e231",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json"
     },
     {
       "name": "Stormbeacon Blade",
@@ -1339,9 +1528,11 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
+      "status": "root_accepted_from_additional_owner",
       "verified": false,
-      "oracle_facts_sha256": "14eebfedaa97a8f3fa3a57b3e49b0bb90d6bef87d0fce7c76810772ffe4465eb"
+      "oracle_facts_sha256": "14eebfedaa97a8f3fa3a57b3e49b0bb90d6bef87d0fce7c76810772ffe4465eb",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json"
     },
     {
       "name": "Stormplain Detainment",
@@ -1354,9 +1545,11 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
+      "status": "root_accepted_from_additional_owner",
       "verified": false,
-      "oracle_facts_sha256": "2d27fed13bbbdc5ffeba34da12220a65aa1b74645820360f140e452c25f23972"
+      "oracle_facts_sha256": "2d27fed13bbbdc5ffeba34da12220a65aa1b74645820360f140e452c25f23972",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json"
     },
     {
       "name": "Stormscale Scion",
@@ -1369,9 +1562,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
+      "status": "root_accepted_from_additional_owner",
       "verified": false,
-      "oracle_facts_sha256": "4de7e9f7da40eb0007a35eb1e21ecfd0dd6a04544323c68ad4b149449cce4747"
+      "oracle_facts_sha256": "4de7e9f7da40eb0007a35eb1e21ecfd0dd6a04544323c68ad4b149449cce4747",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json"
     },
     {
       "name": "Stormshriek Feral // Flush Out",
@@ -1450,9 +1645,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
+      "status": "root_accepted_from_additional_owner",
       "verified": false,
-      "oracle_facts_sha256": "995d9739bc86ae71eebfb682425ac8e7f5dc9f518c5b41f87326cb9f246f3e11"
+      "oracle_facts_sha256": "995d9739bc86ae71eebfb682425ac8e7f5dc9f518c5b41f87326cb9f246f3e11",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json"
     },
     {
       "name": "Summit Intimidator",
@@ -1481,9 +1678,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
+      "status": "root_accepted_from_additional_owner",
       "verified": false,
-      "oracle_facts_sha256": "66b0b2d879bb013013e880c252b8bec9fb0307c79410411352d4a46b2ab7aa41"
+      "oracle_facts_sha256": "66b0b2d879bb013013e880c252b8bec9fb0307c79410411352d4a46b2ab7aa41",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json"
     },
     {
       "name": "Sunset Strikemaster",
@@ -1588,9 +1787,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
+      "status": "root_accepted_from_additional_owner",
       "verified": false,
-      "oracle_facts_sha256": "b2158873a8abf4f850141cfb88d80cda076e8ea4022572863d82e9c107bb41a4"
+      "oracle_facts_sha256": "b2158873a8abf4f850141cfb88d80cda076e8ea4022572863d82e9c107bb41a4",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json"
     },
     {
       "name": "Taigam, Master Opportunist",
@@ -1603,9 +1804,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
+      "status": "root_accepted_from_additional_owner",
       "verified": false,
-      "oracle_facts_sha256": "1428cfdd25633bdac96a942cb42caa20fe3f08614e8b90b7aac7e69730a86aa6"
+      "oracle_facts_sha256": "1428cfdd25633bdac96a942cb42caa20fe3f08614e8b90b7aac7e69730a86aa6",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json"
     },
     {
       "name": "Teeming Dragonstorm",
@@ -1618,9 +1821,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
+      "status": "root_accepted_from_additional_owner",
       "verified": false,
-      "oracle_facts_sha256": "f6d97c75b29dffe180ebf143428ff4a7f882deb6afd11f7f41cfe31aeed04e31"
+      "oracle_facts_sha256": "f6d97c75b29dffe180ebf143428ff4a7f882deb6afd11f7f41cfe31aeed04e31",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json"
     },
     {
       "name": "Tempest Hawk",
@@ -1633,9 +1838,10 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
+      "status": "delegated_whole_card_authoring",
       "verified": false,
-      "oracle_facts_sha256": "f1d12e38ae5e581cb88808218491c3dbab69034fddddaad8285038c93d8f7fa9"
+      "oracle_facts_sha256": "f1d12e38ae5e581cb88808218491c3dbab69034fddddaad8285038c93d8f7fa9",
+      "author": "s_z_additional"
     },
     {
       "name": "Temur Battlecrier",
@@ -1648,9 +1854,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "2c6f5dca886a53fe9d6b9568138f986398036694ce760eddc78408f06e3a42b3"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "2c6f5dca886a53fe9d6b9568138f986398036694ce760eddc78408f06e3a42b3",
+      "evidence_family": "Activated costs, small-creature limits and second-cast providers",
+      "admission": "Corrected gated71PASS whilefalse, authorizedpromotion and ordinary71PASS through support::put."
     },
     {
       "name": "Temur Devotee",
@@ -1679,9 +1887,10 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
+      "status": "delegated_whole_card_authoring",
       "verified": false,
-      "oracle_facts_sha256": "3a960222e877870c42548c57a094b67766433d2a2cc21113661f5b1a17f351bc"
+      "oracle_facts_sha256": "3a960222e877870c42548c57a094b67766433d2a2cc21113661f5b1a17f351bc",
+      "author": "s_z_additional"
     },
     {
       "name": "Temur Tawnyback",
@@ -1710,9 +1919,10 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
+      "status": "delegated_whole_card_authoring",
       "verified": false,
-      "oracle_facts_sha256": "1f2cad003fbf54a126965a36a1fc6304dc0392623260b7c349ebbdd6afb112c6"
+      "oracle_facts_sha256": "1f2cad003fbf54a126965a36a1fc6304dc0392623260b7c349ebbdd6afb112c6",
+      "author": "s_z_additional"
     },
     {
       "name": "Teval, Arbiter of Virtue",
@@ -1742,9 +1952,10 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
+      "status": "delegated_whole_card_authoring",
       "verified": false,
-      "oracle_facts_sha256": "567f612e162ce1cd0d469890f6ac92fedc50a7de177a8bbcc7b0893fe59d5d0e"
+      "oracle_facts_sha256": "567f612e162ce1cd0d469890f6ac92fedc50a7de177a8bbcc7b0893fe59d5d0e",
+      "author": "s_z_additional"
     },
     {
       "name": "Thornwood Falls",
@@ -1788,9 +1999,10 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
+      "status": "delegated_whole_card_authoring",
       "verified": false,
-      "oracle_facts_sha256": "058219b4ec67a7e27d3b8ebccc2352318bfbf4185445df438ea75cb51a73d4a8"
+      "oracle_facts_sha256": "058219b4ec67a7e27d3b8ebccc2352318bfbf4185445df438ea75cb51a73d4a8",
+      "author": "s_z_additional"
     },
     {
       "name": "Trade Route Envoy",
@@ -1803,9 +2015,10 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
+      "status": "delegated_whole_card_authoring",
       "verified": false,
-      "oracle_facts_sha256": "0a557ca987c01559f1b6b07cfad98b59cc01e2f8f0aab06e608796fd9dd831d3"
+      "oracle_facts_sha256": "0a557ca987c01559f1b6b07cfad98b59cc01e2f8f0aab06e608796fd9dd831d3",
+      "author": "s_z_additional"
     },
     {
       "name": "Tranquil Cove",
@@ -1849,9 +2062,10 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
+      "status": "delegated_whole_card_authoring",
       "verified": false,
-      "oracle_facts_sha256": "0032fff0bcde35f23afe93aa1aa91d53a8035358e921d3a1709b7ed2f6ff726b"
+      "oracle_facts_sha256": "0032fff0bcde35f23afe93aa1aa91d53a8035358e921d3a1709b7ed2f6ff726b",
+      "author": "s_z_additional"
     },
     {
       "name": "Twin Bolt",
@@ -1918,9 +2132,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "2ec5da4762321c71b01e03acb9f99cea861ccbda14e9fd24149fcd21f79269f6"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "2ec5da4762321c71b01e03acb9f99cea861ccbda14e9fd24149fcd21f79269f6",
+      "evidence_family": "Activated costs, small-creature limits and second-cast providers"
     },
     {
       "name": "Underfoot Underdogs",
@@ -1933,9 +2148,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "0f0401592217c821169e41e9285f382c293df263c557e6858c84f28fffe7352a"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "0f0401592217c821169e41e9285f382c293df263c557e6858c84f28fffe7352a",
+      "evidence_family": "Activated costs, small-creature limits and second-cast providers",
+      "admission": "Corrected gated71PASS whilefalse, authorizedpromotion and ordinary71PASS through support::put."
     },
     {
       "name": "Undergrowth Leopard",
@@ -1948,9 +2165,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "b1862fb8168addcdb32368438072834077a70b34d1b9ba5321e1e4eab62c6106"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "b1862fb8168addcdb32368438072834077a70b34d1b9ba5321e1e4eab62c6106",
+      "evidence_family": "Activated costs, small-creature limits and second-cast providers"
     },
     {
       "name": "Unending Whisper",
@@ -2030,9 +2248,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "4acd993c79c551b2ec324f4b788f6a96be7bd3a414306ca2c5976984835babf9"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "4acd993c79c551b2ec324f4b788f6a96be7bd3a414306ca2c5976984835babf9",
+      "evidence_family": "Activated costs, small-creature limits and second-cast providers"
     },
     {
       "name": "Unsparing Boltcaster",
@@ -2128,9 +2347,10 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
+      "status": "delegated_whole_card_authoring",
       "verified": false,
-      "oracle_facts_sha256": "52861ff14bc75293e627810c17d1f7208eea025b47857ef2b81a0a9503d360b2"
+      "oracle_facts_sha256": "52861ff14bc75293e627810c17d1f7208eea025b47857ef2b81a0a9503d360b2",
+      "author": "s_z_additional"
     },
     {
       "name": "Veteran Ice Climber",
@@ -2143,9 +2363,10 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
+      "status": "delegated_whole_card_authoring",
       "verified": false,
-      "oracle_facts_sha256": "7df847193922849196e1e67b5225d4ac99110e9b1d7aae05ebbcde0be2770bc6"
+      "oracle_facts_sha256": "7df847193922849196e1e67b5225d4ac99110e9b1d7aae05ebbcde0be2770bc6",
+      "author": "s_z_additional"
     },
     {
       "name": "Voice of Victory",
@@ -2236,9 +2457,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "9fc993d8bf6e3244fbd1d8491f8fc393d06960ba327cdc234531754a5f0b5cf0"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "9fc993d8bf6e3244fbd1d8491f8fc393d06960ba327cdc234531754a5f0b5cf0",
+      "evidence_family": "Activated costs, small-creature limits and second-cast providers",
+      "admission": "Corrected gated71PASS whilefalse, authorizedpromotion and ordinary71PASS through support::put."
     },
     {
       "name": "Whirlwing Stormbrood // Dynamic Soar",
@@ -2369,9 +2592,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "7fa68321e9e7f14aad934dc9bbb7941814e6d0fc6cdeb9fc0efb3826c88ba4c5"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "7fa68321e9e7f14aad934dc9bbb7941814e6d0fc6cdeb9fc0efb3826c88ba4c5",
+      "evidence_family": "Activated costs, small-creature limits and second-cast providers"
     },
     {
       "name": "Wingspan Stride",
@@ -2384,9 +2608,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "53e4892ce8d32057efa638b83aa20307f3d02735a5239571b6c93b693c2474b3"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "53e4892ce8d32057efa638b83aa20307f3d02735a5239571b6c93b693c2474b3",
+      "evidence_family": "Activated costs, small-creature limits and second-cast providers"
     },
     {
       "name": "Winternight Stories",
@@ -2518,7 +2743,7 @@
       "oracle_facts_sha256": "c50c16138bb0572a1a932e5c9861f497a264e5a4b6aa78ced267b126fc8b3041"
     }
   ],
-  "remaining": "51 of the original92 physical members are not counted in this author ledger:26 retained here and25 delegated to the disjoint additional S-Z owner. Root reconciles delegated acceptance separately. This author cohort has41 locally whole-card verified (9new/32existing); complete-set acceptance remains pending.",
+  "remaining": "Original92 partition: this author49wholeverified(12new/37existing), initial delegated25rootaccepted(18new/7existing), total74. Remaining18 are9retained finalcards and9transferred to G-S. Local verified bool covers this author49; external_root_accepted identifies the delegated25. Complete-set acceptance pending.",
   "families": [
     {
       "name": "Harmonize draw/bounce/combat spells",
@@ -4360,6 +4585,876 @@
       "elapsed_seconds_including_engine86_hold": 3784.071342,
       "verified_physical_cards_per_hour_including_hold": 7.610850165625656,
       "measurement_scope": "This eight-card family author/checkpoint interval includes the engine86 hold, full shared acceptance and rewarm. No simulation or full-set performance claim."
+    },
+    {
+      "name": "Activated costs, small-creature limits and second-cast providers",
+      "status": "locally_whole_card_verified",
+      "started_utc": "2026-11-04T20:44:21.275860+00:00",
+      "engine_revision": "2660c86112362973c195bee4c1b85e1a968f9f3a",
+      "authoring_base": "a49189555c0e7dcdb8f4586923cdd19c37f5196b",
+      "candidate_members": 8,
+      "new_candidates": 3,
+      "existing_candidates": 5,
+      "focused_filter": "activations_",
+      "focused_scenario_groups": [
+        "activations_earthcarver_requires_two_mana_and_another_own_creature_and_adds_one_counter",
+        "activations_unrooted_flashes_then_sacrifices_without_tapping_as_a_cost_and_protects_until_cleanup",
+        "activations_leopard_attacks_with_vigilance_and_sacrifices_for_artifacts_or_enchantments",
+        "activations_leopard_paid_sacrifice_survives_a_targets_departure_and_reentry",
+        "activations_underfoot_creates_exact_goblin_and_pays_tap_to_make_an_own_small_creature_unblockable",
+        "activations_underfoot_rechecks_power_control_and_incarnation_only_until_resolution",
+        "activations_wingspan_enchants_either_controller_and_its_current_controller_returns_it_to_its_owner",
+        "activations_wingspan_requires_creature_targets_and_does_not_recover_an_aura_already_in_graveyard",
+        "activations_wayspeaker_recovers_only_own_nonland_permanents_of_mana_value_at_most_two",
+        "activations_wayspeaker_can_enter_without_a_target_and_never_returns_a_new_graveyard_incarnation",
+        "activations_wayspeaker_flurry_taps_only_enemy_creatures_on_exact_second_cast_even_on_opponents_turn",
+        "activations_wingblade_flurry_creates_one_exact_bird_on_second_cast_and_excludes_third_and_opponent",
+        "activations_temur_battlecrier_reduces_only_generic_for_current_own_power_four_creatures_on_own_turn",
+        "activations_temur_discount_applies_to_creature_and_artifact_spells_and_rechecks_current_power",
+        "activations_underfoot_target_choice_is_owned_raw_index_restorable_and_keeps_siblings_independent"
+      ],
+      "test_source_sha256": "e9498a20f0973f85aa107ff6201b371d9b6978071c5b3a77238c0eb5e6086831",
+      "cards": [
+        {
+          "name": "Temur Battlecrier",
+          "oracle_id": "fadf984c-c224-432a-87b9-b34f929b8409",
+          "oracle_full_facts": {
+            "oracle_id": "fadf984c-c224-432a-87b9-b34f929b8409",
+            "name": "Temur Battlecrier",
+            "layout": "normal",
+            "mana_cost": "{G}{U}{R}",
+            "cmc": 3.0,
+            "type_line": "Creature \u2014 Orc Ranger",
+            "oracle_text": "During your turn, spells you cast cost {1} less to cast for each creature you control with power 4 or greater.",
+            "power": "4",
+            "toughness": "3",
+            "colors": [
+              "G",
+              "R",
+              "U"
+            ],
+            "color_identity": [
+              "G",
+              "R",
+              "U"
+            ],
+            "keywords": [],
+            "reference_printing": {
+              "id": "72184791-0767-4108-920c-763e92dae2d4",
+              "set": "tdm",
+              "collector_number": "228",
+              "released_at": "2025-04-11"
+            }
+          },
+          "definition": "src/card_definitions/tdm/temur_battlecrier.rs",
+          "definition_sha256": "7d616ab93a92175b5bd5c8fc78f98b7531b8deece193040fffc72299988f967a",
+          "provenance": "src/card_definitions/tdm/temur_battlecrier.json",
+          "provenance_sha256": "91da481099ae76e000da976bb21e59e8f75bc0f78d5b279c10d5a08bc43e39c1",
+          "baseline_candidate_complete": false,
+          "obligations": [
+            "GUR4/3 OrcRanger actual paid cast/body.",
+            "Own-turn only, own spells generic cost reduced by current own power>=4 creatures including source; enemy and power3 excluded, colored mana remains required.",
+            "Actual instant/artifact/creature discounts, dynamic power and source departure change subsequent legality."
+          ],
+          "native_scenarios": [
+            "activations_temur_battlecrier_reduces_only_generic_for_current_own_power_four_creatures_on_own_turn",
+            "activations_temur_discount_applies_to_creature_and_artifact_spells_and_rechecks_current_power"
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Unburied Earthcarver",
+          "oracle_id": "75da657e-0e36-4f2a-9b81-b7eba7d8e050",
+          "oracle_full_facts": {
+            "oracle_id": "75da657e-0e36-4f2a-9b81-b7eba7d8e050",
+            "name": "Unburied Earthcarver",
+            "layout": "normal",
+            "mana_cost": "{1}{B}",
+            "cmc": 2.0,
+            "type_line": "Creature \u2014 Human Warrior",
+            "oracle_text": "{2}, Sacrifice another creature: Put a +1/+1 counter on this creature.",
+            "power": "2",
+            "toughness": "2",
+            "colors": [
+              "B"
+            ],
+            "color_identity": [
+              "B"
+            ],
+            "keywords": [],
+            "reference_printing": {
+              "id": "3ab5e71e-dc8d-4ed8-bcef-6497177c4a9d",
+              "set": "tdm",
+              "collector_number": "95",
+              "released_at": "2025-04-11"
+            }
+          },
+          "definition": "src/card_definitions/tdm/unburied_earthcarver.rs",
+          "definition_sha256": "f9404c05e53b7a76ee2db15bda9c8d60c6df36971dce573c7fadf22dc0e55c51",
+          "provenance": "src/card_definitions/tdm/unburied_earthcarver.json",
+          "provenance_sha256": "681306837b872477876768c1493e03e2e291d7952b71c91e143ddff2cad5d7d8",
+          "baseline_candidate_complete": true,
+          "obligations": [
+            "1B2/2 HumanWarrior actual paid cast.",
+            "2 plus sacrifice another own creature as activation costs; source alone/foreign/noncreature or insufficient mana cannot fund.",
+            "One permanent+1counter at resolution; paid costs persist and source return incarnation receives no counter."
+          ],
+          "native_scenarios": [
+            "activations_earthcarver_requires_two_mana_and_another_own_creature_and_adds_one_counter"
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Underfoot Underdogs",
+          "oracle_id": "3740b86d-b0e6-4837-b408-e7f62b95c787",
+          "oracle_full_facts": {
+            "oracle_id": "3740b86d-b0e6-4837-b408-e7f62b95c787",
+            "name": "Underfoot Underdogs",
+            "layout": "normal",
+            "mana_cost": "{2}{R}",
+            "cmc": 3.0,
+            "type_line": "Creature \u2014 Goblin Warrior",
+            "oracle_text": "When this creature enters, create a 1/1 red Goblin creature token.\n{1}, {T}: Target creature you control with power 2 or less can't be blocked this turn.",
+            "power": "1",
+            "toughness": "2",
+            "colors": [
+              "R"
+            ],
+            "color_identity": [
+              "R"
+            ],
+            "keywords": [],
+            "all_parts": [
+              {
+                "id": "049acc79-1d68-410f-a081-88a7d40e823a",
+                "component": "combo_piece",
+                "name": "Underfoot Underdogs",
+                "type_line": "Creature \u2014 Goblin Warrior"
+              },
+              {
+                "id": "e265ca24-96c0-4654-a8f3-bbffe288970a",
+                "component": "token",
+                "name": "Goblin",
+                "type_line": "Token Creature \u2014 Goblin"
+              }
+            ],
+            "reference_printing": {
+              "id": "049acc79-1d68-410f-a081-88a7d40e823a",
+              "set": "tdm",
+              "collector_number": "129",
+              "released_at": "2025-04-11"
+            }
+          },
+          "definition": "src/card_definitions/tdm/underfoot_underdogs.rs",
+          "definition_sha256": "6719ed55373a55f4afebeeb19732acffe8fd151193e0c3ca09a7d3567d7ad993",
+          "provenance": "src/card_definitions/tdm/underfoot_underdogs.json",
+          "provenance_sha256": "4e7cf1174e2a0bac4950602f65b76fc9662830ec3a1f9fdda5d47f55277f7b5c",
+          "baseline_candidate_complete": false,
+          "obligations": [
+            "2R1/2 GoblinWarrior actual paid cast; ETB one untapped1/1redGoblin with no extra keyword.",
+            "1 and tap source, summoning sickness applies; target own creature currentpower<=2 becomes unblockable for turn; actual illegal block tested.",
+            "Resolution rechecks power/controller/incarnation; power growth after resolution does not remove effect; cleanup does.",
+            "Actual owned target pending raw/index/restore, parent disposal, independent siblings and both hand privacy observations."
+          ],
+          "native_scenarios": [
+            "activations_underfoot_creates_exact_goblin_and_pays_tap_to_make_an_own_small_creature_unblockable",
+            "activations_underfoot_rechecks_power_control_and_incarnation_only_until_resolution",
+            "activations_underfoot_target_choice_is_owned_raw_index_restorable_and_keeps_siblings_independent"
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Undergrowth Leopard",
+          "oracle_id": "511fa8a3-0a65-47fc-9f3b-57eaef2698cd",
+          "oracle_full_facts": {
+            "oracle_id": "511fa8a3-0a65-47fc-9f3b-57eaef2698cd",
+            "name": "Undergrowth Leopard",
+            "layout": "normal",
+            "mana_cost": "{1}{G}",
+            "cmc": 2.0,
+            "type_line": "Creature \u2014 Cat",
+            "oracle_text": "Vigilance\n{1}, Sacrifice this creature: Destroy target artifact or enchantment.",
+            "power": "2",
+            "toughness": "2",
+            "colors": [
+              "G"
+            ],
+            "color_identity": [
+              "G"
+            ],
+            "keywords": [
+              "Vigilance"
+            ],
+            "reference_printing": {
+              "id": "67ab8f9a-b17c-452f-b4ef-a3f91909e3de",
+              "set": "tdm",
+              "collector_number": "165",
+              "released_at": "2025-04-11"
+            }
+          },
+          "definition": "src/card_definitions/tdm/undergrowth_leopard.rs",
+          "definition_sha256": "5e049db0900141197179fc414427d40a4c1ce32683d5d36a493157e7f68f30c5",
+          "provenance": "src/card_definitions/tdm/undergrowth_leopard.json",
+          "provenance_sha256": "4ab2741ae4c85e24ce24a15f83c1e384f5a29971ffe34a58c433bc87afb9f1ab",
+          "baseline_candidate_complete": true,
+          "obligations": [
+            "1G2/2Cat vigilance; actual paid cast and attack without tapping/deal2.",
+            "1+sacrifice source, destroy artifact or enchantment either controller, reject ordinary creature.",
+            "Sacrifice occurs before resolution and persists when exact target leaves/returns; new target incarnation survives."
+          ],
+          "native_scenarios": [],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Unrooted Ancestor",
+          "oracle_id": "de5c6c9d-04a2-4287-8c6e-fdf56c411507",
+          "oracle_full_facts": {
+            "oracle_id": "de5c6c9d-04a2-4287-8c6e-fdf56c411507",
+            "name": "Unrooted Ancestor",
+            "layout": "normal",
+            "mana_cost": "{2}{B}",
+            "cmc": 3.0,
+            "type_line": "Creature \u2014 Spirit Cleric",
+            "oracle_text": "Flash\n{1}, Sacrifice another creature: This creature gains indestructible until end of turn. Tap it. (Damage and effects that say \"destroy\" don't destroy it.)",
+            "power": "3",
+            "toughness": "2",
+            "colors": [
+              "B"
+            ],
+            "color_identity": [
+              "B"
+            ],
+            "keywords": [
+              "Flash"
+            ],
+            "reference_printing": {
+              "id": "6394b125-21a8-4439-9958-94b76684138e",
+              "set": "tdm",
+              "collector_number": "96",
+              "released_at": "2025-04-11"
+            }
+          },
+          "definition": "src/card_definitions/tdm/unrooted_ancestor.rs",
+          "definition_sha256": "76d9352fde04559fa1a8c4185c60426439d559d0c0a8e05692fa7d7fc81ed7ff",
+          "provenance": "src/card_definitions/tdm/unrooted_ancestor.json",
+          "provenance_sha256": "cc2ae5361d70a218e9dd76307143af1e52f987a9612404776a4595bfdd709a82",
+          "baseline_candidate_complete": true,
+          "obligations": [
+            "2B3/2SpiritCleric flash actual off-turn paid cast.",
+            "1+sacrifice another own creature; summoning sickness and already-tapped state permit activation; tap is an effect.",
+            "Indestructible throughcleanup: actual lethalShock survives, cleanup clears keyword/damage, laterShock kills."
+          ],
+          "native_scenarios": [
+            "activations_unrooted_flashes_then_sacrifices_without_tapping_as_a_cost_and_protects_until_cleanup"
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Wayspeaker Bodyguard",
+          "oracle_id": "b93eaf66-91b3-44da-851c-79810901be0c",
+          "oracle_full_facts": {
+            "oracle_id": "b93eaf66-91b3-44da-851c-79810901be0c",
+            "name": "Wayspeaker Bodyguard",
+            "layout": "normal",
+            "mana_cost": "{3}{W}",
+            "cmc": 4.0,
+            "type_line": "Creature \u2014 Orc Monk",
+            "oracle_text": "When this creature enters, return target nonland permanent card with mana value 2 or less from your graveyard to your hand.\nFlurry \u2014 Whenever you cast your second spell each turn, tap target creature an opponent controls.",
+            "power": "3",
+            "toughness": "4",
+            "colors": [
+              "W"
+            ],
+            "color_identity": [
+              "W"
+            ],
+            "keywords": [
+              "Flurry"
+            ],
+            "reference_printing": {
+              "id": "5e5b2324-69fe-4105-b6f8-14dfbe359d59",
+              "set": "tdm",
+              "collector_number": "34",
+              "released_at": "2025-04-11"
+            }
+          },
+          "definition": "src/card_definitions/tdm/wayspeaker_bodyguard.rs",
+          "definition_sha256": "a5e833fbc3876c32e0abc4de81c73a846bcb4048e3ec567e64e7dfc122377c53",
+          "provenance": "src/card_definitions/tdm/wayspeaker_bodyguard.json",
+          "provenance_sha256": "61fd3cd2992f92983b6f5d260389916e7d21d5dba781a6436337ca09cfd19594",
+          "baseline_candidate_complete": false,
+          "obligations": [
+            "3W3/4OrcMonk actual paid cast.",
+            "ETB own nonland permanentMV<=2 tohand: creature/artifact/enchantment/offstackprintedX accepted; foreign/land/instant/expensive rejected.",
+            "No eligible target does not prevent entry; exact graveyard departure/return does not rebind.",
+            "Exact second own cast eachturn taps enemy creature only; ownsourcecast countsfirst, third excluded, actualnextopponentturn resets ordinal."
+          ],
+          "native_scenarios": [
+            "activations_wayspeaker_recovers_only_own_nonland_permanents_of_mana_value_at_most_two",
+            "activations_wayspeaker_can_enter_without_a_target_and_never_returns_a_new_graveyard_incarnation",
+            "activations_wayspeaker_flurry_taps_only_enemy_creatures_on_exact_second_cast_even_on_opponents_turn"
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Wingblade Disciple",
+          "oracle_id": "c566317e-cd82-46c1-b506-f41256d815f6",
+          "oracle_full_facts": {
+            "oracle_id": "c566317e-cd82-46c1-b506-f41256d815f6",
+            "name": "Wingblade Disciple",
+            "layout": "normal",
+            "mana_cost": "{2}{U}",
+            "cmc": 3.0,
+            "type_line": "Creature \u2014 Human Monk",
+            "oracle_text": "Flying\nFlurry \u2014 Whenever you cast your second spell each turn, create a 1/1 white Bird creature token with flying.",
+            "power": "2",
+            "toughness": "2",
+            "colors": [
+              "U"
+            ],
+            "color_identity": [
+              "U"
+            ],
+            "keywords": [
+              "Flying",
+              "Flurry"
+            ],
+            "all_parts": [
+              {
+                "id": "6105623a-ff2c-46bf-8881-e8b899d47d54",
+                "component": "token",
+                "name": "Bird",
+                "type_line": "Token Creature \u2014 Bird"
+              },
+              {
+                "id": "71de7dca-0231-4407-86a0-c7fc95f5aaa0",
+                "component": "combo_piece",
+                "name": "Wingblade Disciple",
+                "type_line": "Creature \u2014 Human Monk"
+              }
+            ],
+            "reference_printing": {
+              "id": "71de7dca-0231-4407-86a0-c7fc95f5aaa0",
+              "set": "tdm",
+              "collector_number": "65",
+              "released_at": "2025-04-11"
+            }
+          },
+          "definition": "src/card_definitions/tdm/wingblade_disciple.rs",
+          "definition_sha256": "32254fb7c927cc3ee8c5c6a87b1f4d6c717ff99a178a24a6f8093a54c0aabb68",
+          "provenance": "src/card_definitions/tdm/wingblade_disciple.json",
+          "provenance_sha256": "2397b9073f4731c4aae71bda51753e6b5326841889b6ebd14a2e67ff6fdbab55",
+          "baseline_candidate_complete": true,
+          "obligations": [
+            "2U2/2HumanMonk flying actual paid cast.",
+            "Second owncast makes one1/1whiteBird withflying underowncontrol; source initialcast, thirdspell andopponentcasts do not.",
+            "Shared Flurry exactcaster/copy-versus-cast rules reused; actual Wayspeaker nextturn reset in same family."
+          ],
+          "native_scenarios": [
+            "activations_wingblade_flurry_creates_one_exact_bird_on_second_cast_and_excludes_third_and_opponent"
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Wingspan Stride",
+          "oracle_id": "e75cee5d-ab02-4227-b36e-61c5d2f564a8",
+          "oracle_full_facts": {
+            "oracle_id": "e75cee5d-ab02-4227-b36e-61c5d2f564a8",
+            "name": "Wingspan Stride",
+            "layout": "normal",
+            "mana_cost": "{U}",
+            "cmc": 1.0,
+            "type_line": "Enchantment \u2014 Aura",
+            "oracle_text": "Enchant creature\nEnchanted creature gets +1/+1 and has flying.\n{2}{U}: Return this Aura to its owner's hand.",
+            "colors": [
+              "U"
+            ],
+            "color_identity": [
+              "U"
+            ],
+            "keywords": [
+              "Enchant"
+            ],
+            "reference_printing": {
+              "id": "339a0e24-c332-4558-bb60-f5504ddde88c",
+              "set": "tdm",
+              "collector_number": "66",
+              "released_at": "2025-04-11"
+            }
+          },
+          "definition": "src/card_definitions/tdm/wingspan_stride.rs",
+          "definition_sha256": "6567bbb8c04df943cf5b5da1ac471f13f3f18b3e699b9ef9893118e2675e0a89",
+          "provenance": "src/card_definitions/tdm/wingspan_stride.json",
+          "provenance_sha256": "d220bb73c6aae01fe86fc687525a433563e01d49f272abdfb1fd453285c89cb7",
+          "baseline_candidate_complete": true,
+          "obligations": [
+            "U Aura enchant creature eithercontroller: actual+1/+1andflying; noncreature target rejected.",
+            "2U instant activation returns exact battlefield Aura to owner hand even aftercontrolchange andwhiletapped; bearer loses continuous bonus.",
+            "Bearer departure causes AuraSBAgraveyard before activation resolves; cannot return fromgraveyard."
+          ],
+          "native_scenarios": [
+            "activations_wingspan_enchants_either_controller_and_its_current_controller_returns_it_to_its_owner",
+            "activations_wingspan_requires_creature_targets_and_does_not_recover_an_aura_already_in_graveyard"
+          ],
+          "status": "locally_whole_card_verified"
+        }
+      ],
+      "new_state_or_schema": false,
+      "shared_proofs": [
+        "Existing activation declaration/additional sacrifice participant ordering/funding, exact source/target finality, keyword layers and rollback remain unchanged; actual scenarios independently prove printed wiring.",
+        "No new hidden choice/schema. Representative actual Underfoot target root covers owned raw/index/restore, parent disposal, independent siblings and both private hand observations.",
+        "Shared Flurry exact cast count/copy-versus-cast machinery reused; actual Wayspeaker opposite-turn reset plus Wingblade exact token outcomes."
+      ],
+      "official_release_notes": {
+        "url": "https://magic.wizards.com/en/news/feature/tarkir-dragonstorm-release-notes",
+        "local": "<temp>/tdm-release-notes.txt",
+        "sha256": "3ce1c9853c733c3ace178cdb1aac78c111107b3312bcbb683588bd5d3ebf2ea9",
+        "extent": "Complete Flurry427-455,Underfoot2269-2284,Unrooted2303-2315,Wayspeaker2357-2370,Wingspan2375-2387 sections read."
+      },
+      "previous_gated_execution": [
+        {
+          "stage": "first-gated-whole71",
+          "report": "<cache>/rustmage-tdm/post86-s-z-activations-gated-1793825173735510479/s_z_activations_gated/native.json",
+          "sha256": "2281c7c7e78cecd887b36008ee1073ad31e2dcc3db04769c5b0e8d0093e31873",
+          "terminal": true,
+          "success": false,
+          "passed": 69,
+          "total": 71,
+          "failed": [
+            "activations_underfoot_rechecks_power_control_and_incarnation_only_until_resolution",
+            "activations_underfoot_target_choice_is_owned_raw_index_restorable_and_keeps_siblings_independent"
+          ],
+          "test_source_sha256": "16aedbb8388d13a5def161c693e06eb79c61f3a4370b1ee72e66e6b8e8261b01",
+          "compile_seconds": 4.979760577029083,
+          "execution_seconds": 0.068798498949036,
+          "compile_log": "<cache>/rustmage-tdm/post86-s-z-activations-gated-1793825173735510479/s_z_activations_gated/native-compile.log",
+          "compile_log_sha256": "304510ef5bfc0dd79546545d55315f09647ed6ddfc1364ef78cac40c7159b51e",
+          "execution_log": "<cache>/rustmage-tdm/post86-s-z-activations-gated-1793825173735510479/s_z_activations_gated/native-execution-0.log",
+          "execution_log_sha256": "21a17872e41fbcffed05850b413d00464029b17a501b077fb05f1e8f286d6e00"
+        },
+        {
+          "stage": "fixture-readiness-diagnostic",
+          "report": "<cache>/rustmage-tdm/post86-underfoot-diagnostic-1793825535493676171/s_z_underfoot_diagnostic/native.json",
+          "sha256": "c50d523e8271c775a58263cb5459c399fd563ace066dd2d6a60dbe83b4b8b1ce",
+          "terminal": true,
+          "success": false,
+          "passed": 0,
+          "total": 1,
+          "failed": [
+            "activations_underfoot_rechecks_power_control_and_incarnation_only_until_resolution"
+          ],
+          "test_source_sha256": "f7c86bee8fdc40ac26748940aee1973c2384cf2903b854222061d64d7a6e012e",
+          "compile_seconds": 1.8199234560015611,
+          "execution_seconds": 0.024991765967570245,
+          "compile_log": "<cache>/rustmage-tdm/post86-underfoot-diagnostic-1793825535493676171/s_z_underfoot_diagnostic/native-compile.log",
+          "compile_log_sha256": "be8b1f834564c0ce24249b38294a3580db3df65d3197a83ac6fe671d73e55996",
+          "execution_log": "<cache>/rustmage-tdm/post86-underfoot-diagnostic-1793825535493676171/s_z_underfoot_diagnostic/native-execution-0.log",
+          "execution_log_sha256": "86855c5c6a48dfaf4b78d2ed389f621143a4da0360e94893c2ac5671df9accbf"
+        }
+      ],
+      "fixture_corrections": [
+        "First whole71 ran69PASS/2FAIL, both Underfoot direct-BF fixture announcements before target choice. Actual paid-cast/summoning-sickness/unblockable-combat scenario passed.",
+        "Readiness diagnostic reproduced one failure and showed source untapped on battlefield but summoning_sick:true/entered_this_turn:true; rejection of a tap cost was correct. No card or engine runtime change.",
+        "Two direct-BF fixtures explicitly clear summoning_sick to model established permanents. Paid-cast scenario retains actual summoning-sickness rejection and subsequent ordinary activation/combat. Corrected gated71+Clippy passed before promotion; ordinary71+Clippy then passed."
+      ],
+      "corrected_gated_execution": {
+        "report": "<cache>/rustmage-tdm/post86-s-z-activations-retry-1793825678165583833/s_z_activations_gated/native.json",
+        "sha256": "1808466a08a90f32c9e6deec3fb6085ebbcefd7b5941111d8b039419d640dd13",
+        "terminal": true,
+        "success": true,
+        "total": 71,
+        "passed": 71,
+        "new_family_groups": 15,
+        "prior_groups": 56,
+        "test_source_sha256": "f9984f5712e5638cc73d60119a07a69a9c50c9236f6cab5728a85b3b4baf9833",
+        "new_flags_false": true,
+        "compile_seconds": 1.719087612000294,
+        "execution_seconds": 0.07540060696192086,
+        "wall_seconds": 1.7951305299648084,
+        "compile_log": "<cache>/rustmage-tdm/post86-s-z-activations-retry-1793825678165583833/s_z_activations_gated/native-compile.log",
+        "compile_log_sha256": "30d583c38a45370af4a5c5f85f8dd0f99d22a0730747305625bdcbfebdb0b0e8",
+        "execution_log": "<cache>/rustmage-tdm/post86-s-z-activations-retry-1793825678165583833/s_z_activations_gated/native-execution-0.log",
+        "execution_log_sha256": "bdd2b6a0ed0bfb9e2549f19cf08eae3ce7eb036890d346b08b75e1ede989482b",
+        "terminal_report": "<cache>/rustmage-tdm/post86-s-z-activations-retry-1793825678165583833/terminal.json",
+        "terminal_sha256": "0354c9569b3789784fb2c2b54a4268601b6b98e25772ccaacee293a7227b3199",
+        "inputs_unchanged": true,
+        "source_manifest": "<cache>/rustmage-tdm/post86-s-z-activations-retry-1793825678165583833/s_z_activations_gated/source-hashes.json",
+        "source_manifest_sha256": "a41ac6bd35e8420386d1f735f9e6666e09369c4b9568eab72ce3fa9fb373ee0c",
+        "clippy_report": "<cache>/rustmage-tdm/post86-s-z-activations-retry-1793825678165583833/s_z_activations_gated/clippy-terminal.json",
+        "clippy_sha256": "0b1f1d7b495834e1837f9e24063ec93155427a23e5608b054eaf70ef4d7c63b3",
+        "clippy_seconds": 1.9693866330198944,
+        "clippy_log_sha256": "9a4585db6f8c65cdbade396635d253868dc0fbff481bce212a5653b03d7866c0"
+      },
+      "ordinary_target": "tdm_cards_s_z",
+      "ordinary_expected_groups": 71,
+      "admission_transition": "Root authorized promotion of Temur/Underfoot/Wayspeaker only after corrected gated71/71 and focusedClippyPASS. Every setup site for those3 uses ordinary support::put. Ordinary71/71 and focusedClippy/sourcechecks passed before counting.",
+      "ordinary_admitted_execution": {
+        "report": "<cache>/rustmage-tdm/post86-s-z-activations-ordinary-1793825838272310383/s_z_activations_ordinary/native.json",
+        "sha256": "0fa8ff57bb0d1589f0c740f40761bcb8193d272450a8bfb46054a96b11db0df3",
+        "terminal": true,
+        "success": true,
+        "total": 71,
+        "passed": 71,
+        "new_family_groups": 15,
+        "prior_groups": 56,
+        "test_source_sha256": "e9498a20f0973f85aa107ff6201b371d9b6978071c5b3a77238c0eb5e6086831",
+        "compile_command": [
+          "cargo",
+          "test",
+          "-p",
+          "rustmage",
+          "--test",
+          "tdm_cards_s_z",
+          "--no-run",
+          "--message-format=json"
+        ],
+        "compile_seconds": 4.877152686996851,
+        "execution_seconds": 0.07569590699858963,
+        "wall_seconds": 4.953430465015117,
+        "compile_log": "<cache>/rustmage-tdm/post86-s-z-activations-ordinary-1793825838272310383/s_z_activations_ordinary/native-compile.log",
+        "compile_log_sha256": "1b1fde0cf295370b025b69a3095a51d894d4f7bd44cdfe429fa04723fc8a04dc",
+        "execution_log": "<cache>/rustmage-tdm/post86-s-z-activations-ordinary-1793825838272310383/s_z_activations_ordinary/native-execution-0.log",
+        "execution_log_sha256": "bdd2b6a0ed0bfb9e2549f19cf08eae3ce7eb036890d346b08b75e1ede989482b",
+        "core_fresh": [
+          true
+        ],
+        "tests": [
+          {
+            "test": "activations_earthcarver_requires_two_mana_and_another_own_creature_and_adds_one_counter",
+            "status": "ok"
+          },
+          {
+            "test": "activations_leopard_attacks_with_vigilance_and_sacrifices_for_artifacts_or_enchantments",
+            "status": "ok"
+          },
+          {
+            "test": "activations_leopard_paid_sacrifice_survives_a_targets_departure_and_reentry",
+            "status": "ok"
+          },
+          {
+            "test": "activations_temur_battlecrier_reduces_only_generic_for_current_own_power_four_creatures_on_own_turn",
+            "status": "ok"
+          },
+          {
+            "test": "activations_temur_discount_applies_to_creature_and_artifact_spells_and_rechecks_current_power",
+            "status": "ok"
+          },
+          {
+            "test": "activations_underfoot_creates_exact_goblin_and_pays_tap_to_make_an_own_small_creature_unblockable",
+            "status": "ok"
+          },
+          {
+            "test": "activations_underfoot_rechecks_power_control_and_incarnation_only_until_resolution",
+            "status": "ok"
+          },
+          {
+            "test": "activations_underfoot_target_choice_is_owned_raw_index_restorable_and_keeps_siblings_independent",
+            "status": "ok"
+          },
+          {
+            "test": "activations_unrooted_flashes_then_sacrifices_without_tapping_as_a_cost_and_protects_until_cleanup",
+            "status": "ok"
+          },
+          {
+            "test": "activations_wayspeaker_can_enter_without_a_target_and_never_returns_a_new_graveyard_incarnation",
+            "status": "ok"
+          },
+          {
+            "test": "activations_wayspeaker_flurry_taps_only_enemy_creatures_on_exact_second_cast_even_on_opponents_turn",
+            "status": "ok"
+          },
+          {
+            "test": "activations_wayspeaker_recovers_only_own_nonland_permanents_of_mana_value_at_most_two",
+            "status": "ok"
+          },
+          {
+            "test": "activations_wingblade_flurry_creates_one_exact_bird_on_second_cast_and_excludes_third_and_opponent",
+            "status": "ok"
+          },
+          {
+            "test": "activations_wingspan_enchants_either_controller_and_its_current_controller_returns_it_to_its_owner",
+            "status": "ok"
+          },
+          {
+            "test": "activations_wingspan_requires_creature_targets_and_does_not_recover_an_aura_already_in_graveyard",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_actual_teval_delve_selection_is_owned_raw_index_restorable_and_does_not_leak_draws",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_all_five_countered_omens_go_to_graveyard_instead_of_shuffling_or_exiling",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_charring_bite_uses_red_cost_targets_only_nonfliers_and_fizzles_to_graveyard",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_dynamic_soar_places_three_persistent_counters_only_on_own_exact_creature",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_each_omen_is_a_sorcery_even_if_its_front_creature_has_flash",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_exude_toxin_uses_x_on_the_omen_face_and_changes_only_current_non_dragons_until_cleanup",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_flush_out_discards_before_drawing_two_and_draws_nothing_with_an_empty_hand",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_roost_seek_searches_only_basic_lands_privately_reveals_the_pick_and_shuffles_the_dragon",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_sagu_and_twinmaw_normal_creatures_pay_the_front_cost_and_gain_the_printed_life",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_scavenger_regent_ward_is_a_private_discard_cost_or_counters_the_targeting_spell",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_songcrafter_grant_is_source_independent_exact_expires_and_exiles_a_countered_spell",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_songcrafter_grants_sorcery_printed_cost_but_flash_does_not_transfer_to_it",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_songcrafter_has_flash_exact_graveyard_targets_and_taps_itself_for_printed_harmonize",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_spectral_denial_and_teval_use_x_mana_value_even_when_delve_pays_the_reduced_cost",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_spectral_denial_uses_current_owned_four_power_threshold_but_counter_payment_is_chosen_x",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_stormshriek_front_has_haste_and_can_pump_while_tapped_until_cleanup",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_teval_delve_pays_only_generic_and_cast_life_loss_survives_countering",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_teval_does_not_grant_delve_or_cast_loss_from_hand_and_has_six_power_flying_lifelink",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_teval_uses_selected_omen_mana_value_instead_of_the_printed_dragon_face",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_whirlwing_front_flashes_and_grants_only_sorcery_or_dragon_timing_while_present",
+            "status": "ok"
+          },
+          {
+            "test": "creatures_outrider_and_surveyor_choose_exact_endure_sizes_and_surveyor_loses_one_on_attack",
+            "status": "ok"
+          },
+          {
+            "test": "creatures_outrider_departure_still_creates_exact_spirit_and_endure_branches_are_owned",
+            "status": "ok"
+          },
+          {
+            "test": "creatures_packbeast_affinity_counts_only_controlled_creatures_then_draws_the_actual_top_card",
+            "status": "ok"
+          },
+          {
+            "test": "creatures_sagu_pummeler_casts_four_four_reach_and_renews_two_plus_one_and_one_reach_counter",
+            "status": "ok"
+          },
+          {
+            "test": "creatures_sagu_renew_rejects_wrong_zone_timing_cost_target_and_never_rebinds_blinked_targets",
+            "status": "ok"
+          },
+          {
+            "test": "creatures_skirmish_rhino_drains_the_opponent_after_its_source_leaves",
+            "status": "ok"
+          },
+          {
+            "test": "creatures_summit_intimidator_stops_only_the_chosen_incarnation_blocking_until_cleanup",
+            "status": "ok"
+          },
+          {
+            "test": "creatures_temur_tawnyback_all_monohybrid_payments_draw_before_a_private_discard",
+            "status": "ok"
+          },
+          {
+            "test": "creatures_watcher_mills_either_player_exactly_two_or_a_short_library_and_gains_controller_two",
+            "status": "ok"
+          },
+          {
+            "test": "harmonize_all_four_require_sorcery_timing_and_exile_when_countered",
+            "status": "ok"
+          },
+          {
+            "test": "harmonize_unending_whisper_draws_actual_top_card_for_u_or_five_u_without_a_helper",
+            "status": "ok"
+          },
+          {
+            "test": "harmonize_unending_whisper_uses_current_power_but_never_pays_the_blue_symbol",
+            "status": "ok"
+          },
+          {
+            "test": "harmonize_ureni_rebuff_fizzles_on_departed_incarnation_and_still_exiles",
+            "status": "ok"
+          },
+          {
+            "test": "harmonize_ureni_rebuff_returns_a_stolen_creature_to_its_owner_from_both_routes",
+            "status": "ok"
+          },
+          {
+            "test": "harmonize_wild_ride_grants_growth_and_haste_only_until_cleanup_from_both_routes",
+            "status": "ok"
+          },
+          {
+            "test": "harmonize_winternight_discard_choice_is_owned_raw_index_restorable_and_parent_independent",
+            "status": "ok"
+          },
+          {
+            "test": "harmonize_winternight_draws_first_then_discards_one_creature_or_two_cards_privately",
+            "status": "ok"
+          },
+          {
+            "test": "mana_citadel_enters_tapped_and_offers_exactly_white_black_green_with_land_timing",
+            "status": "ok"
+          },
+          {
+            "test": "mana_devotee_color_choice_is_owned_raw_index_restorable_and_does_not_expose_a_private_hand",
+            "status": "ok"
+          },
+          {
+            "test": "mana_devotee_use_survives_control_change_and_resets_on_the_next_actual_turn",
+            "status": "ok"
+          },
+          {
+            "test": "mana_devotees_filter_one_mana_without_tapping_even_when_summoning_sick_and_only_once_each_turn",
+            "status": "ok"
+          },
+          {
+            "test": "mana_sunset_casts_as_three_one_and_taps_for_red_but_cannot_pay_both_tap_costs",
+            "status": "ok"
+          },
+          {
+            "test": "mana_sunset_pays_two_red_tap_sacrifice_and_deals_six_only_to_a_flying_creature",
+            "status": "ok"
+          },
+          {
+            "test": "mana_sunset_target_loses_flying_or_changes_incarnation_before_resolution",
+            "status": "ok"
+          },
+          {
+            "test": "spells_sarkhan_resolve_both_modes_have_distinct_targets_and_temporary_growth",
+            "status": "ok"
+          },
+          {
+            "test": "spells_seize_opportunity_boosts_zero_one_or_two_creatures_until_cleanup",
+            "status": "ok"
+          },
+          {
+            "test": "spells_seize_opportunity_exiles_exact_cards_for_ordinary_paid_play_through_next_own_turn",
+            "status": "ok"
+          },
+          {
+            "test": "spells_snakeskin_veil_restricts_control_and_keeps_counter_after_hexproof_expires",
+            "status": "ok"
+          },
+          {
+            "test": "spells_twin_bolt_owned_allocations_never_redistribute_a_departed_targets_share",
+            "status": "ok"
+          },
+          {
+            "test": "spells_twin_bolt_requires_one_or_two_targets_and_announces_exact_positive_shares",
+            "status": "ok"
+          },
+          {
+            "test": "spells_unsparing_boltcaster_can_enter_when_no_creature_is_an_eligible_entry_target",
+            "status": "ok"
+          },
+          {
+            "test": "spells_unsparing_boltcaster_requires_an_enemy_damaged_this_turn_and_freezes_exact_five_damage",
+            "status": "ok"
+          },
+          {
+            "test": "spells_wail_of_war_freezes_only_the_target_opponents_current_creatures_until_cleanup",
+            "status": "ok"
+          },
+          {
+            "test": "spells_wail_of_war_returns_zero_one_or_two_own_creatures_with_partial_target_finality",
+            "status": "ok"
+          },
+          {
+            "test": "spells_worthy_cost_exiles_creatures_or_planeswalkers_and_paid_sacrifice_survives_countering",
+            "status": "ok"
+          },
+          {
+            "test": "spells_worthy_cost_requires_own_creature_and_black_mana_and_is_sorcery_speed",
+            "status": "ok"
+          }
+        ],
+        "artifact_policy": "Native Rust ELF/rlib linkage. Cargo ELF/cdylib outputs are transient; retained reports/logs pin evidence, no required/preserved mutable cdylib claim."
+      },
+      "ordinary_terminal": {
+        "report": "<cache>/rustmage-tdm/post86-s-z-activations-ordinary-1793825838272310383/terminal.json",
+        "sha256": "ad752abdcbca37102d659ab74cf183e3115d2d93198602ff597486ff287e7148",
+        "inputs_unchanged": true,
+        "source_manifest": "<cache>/rustmage-tdm/post86-s-z-activations-ordinary-1793825838272310383/s_z_activations_ordinary/source-hashes.json",
+        "source_manifest_sha256": "5c2029c5b85a3aa453ec21a5064d912401673b631b479394bdec8ae15b03c70e",
+        "source_files": 12980
+      },
+      "clippy": {
+        "report": "<cache>/rustmage-tdm/post86-s-z-activations-ordinary-1793825838272310383/s_z_activations_ordinary/clippy-terminal.json",
+        "sha256": "2c86dc06cfb0e82f25727b1081ab8543c0a9b4030891bdf966815664b9ebf4cf",
+        "result": {
+          "command": [
+            "cargo",
+            "clippy",
+            "-p",
+            "rustmage",
+            "--profile",
+            "test",
+            "--test",
+            "tdm_cards_s_z",
+            "--",
+            "-D",
+            "warnings"
+          ],
+          "exit": 0,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 1.9702621749602258,
+          "log": "<cache>/rustmage-tdm/post86-s-z-activations-ordinary-1793825838272310383/s_z_activations_ordinary/clippy.log"
+        },
+        "log_sha256": "3da5d16d4adb184e73be138881cb232afda30f0aff897ca443a9f981a65e18a1"
+      },
+      "source_check": {
+        "report": "<cache>/rustmage-tdm/post86-s-z-activations-ordinary-1793825838272310383/s_z_activations_ordinary/sources-driver.log",
+        "sha256": "8aa65e13a76a58b99489c383248b438b25523eab8d1a236269aaf4f8d5162b0c",
+        "result": {
+          "definitions": 5488,
+          "source_blobs": 2562,
+          "java_verified": true,
+          "catalogue_version": "595d620df316f2accb36c5ce8de3f85b77f79a9f44a497a0bcfabefcb9b0b127"
+        }
+      },
+      "finished_utc": "2026-11-04T20:59:57.728959+00:00",
+      "verified_new_complete": 3,
+      "verified_existing_candidates": 5,
+      "elapsed_seconds": 936.453099,
+      "verified_physical_cards_per_hour": 30.75434320283028,
+      "measurement_scope": "This eight-card preparation/validation interval includes queued guarded runs and two fixture diagnosis/correction cycles. No simulation/all-set performance claim."
     }
   ],
   "first_family_finished_utc": "2026-11-04T14:05:57.547813+00:00",
@@ -4720,10 +5815,10 @@
     "document": "docs/tdm-s-z-additional-ownership.json",
     "document_sha256": "16deb7cdda71ce17add56107dddde3acd8c4dfc30e55d8bf91664521399974bd",
     "original_denominator": 92,
-    "accepted_whole_cards": 41,
-    "pending_total": 51,
-    "pending_delegated": 25,
-    "pending_retained": 26,
+    "accepted_whole_cards": 49,
+    "pending_total": 18,
+    "pending_delegated": 9,
+    "pending_retained": 9,
     "retained_names": [
       "Sagu Wildling // Roost Seek",
       "Scavenger Regent // Exude Toxin",
@@ -4759,6 +5854,79 @@
       "Yathan Tombguard",
       "Zurgo's Vanguard",
       "Zurgo, Thunder's Decree"
+    ],
+    "root_accepted_delegated_whole_cards": 25
+  },
+  "final_handoff_ownership": {
+    "document": "docs/tdm-s-z-final-handoff-ownership.json",
+    "sha256": "f3cebcac89d554a3b9cbd525b8b2372c2b7507938343a156b694a4c8bbd58130",
+    "root_commit": "f49e66572",
+    "transferred_physical_members": 9,
+    "retained_unverified_names": [
+      "Temur Battlecrier",
+      "Unburied Earthcarver",
+      "Underfoot Underdogs",
+      "Undergrowth Leopard",
+      "Unrooted Ancestor",
+      "Wayspeaker Bodyguard",
+      "Wingblade Disciple",
+      "Wingspan Stride",
+      "Ureni, the Song Unending",
+      "Voice of Victory",
+      "War Effort",
+      "Warden of the Grove",
+      "Windcrag Siege",
+      "Yathan Roadwatcher",
+      "Yathan Tombguard",
+      "Zurgo's Vanguard",
+      "Zurgo, Thunder's Decree"
+    ],
+    "scope": "Source ownership only. Original92 denominator unchanged; root reconciles independently accepted delegated outcomes. No transferred pair edited here."
+  },
+  "accepted_additional_owner_proofs": {
+    "document": "docs/tdm-cards-s-z-additional-evidence.json",
+    "sha256": "53fc85d53885f4b856304ab870b5d443d0cbbaa58d498c053a8cb715ebe4ca0b",
+    "accepted_physical_cards": 25,
+    "new_definitions": 18,
+    "existing_candidates": 7,
+    "root_report": "Root independently reported whole25 ordinary28PASS and final source integration. This source snapshot is reference evidence, not source definitions installed in this isolated author worktree.",
+    "scope": "25 initial additional-owner members; nine newly transferred cards are excluded.",
+    "names": [
+      "Sage of the Skies",
+      "Salt Road Skirmish",
+      "Sarkhan, Dragon Ascendant",
+      "Severance Priest",
+      "Shiko, Paragon of the Way",
+      "Shock Brigade",
+      "Shocking Sharpshooter",
+      "Sibsig Appraiser",
+      "Sidisi, Regent of the Mire",
+      "Smile at Death",
+      "Snowmelt Stag",
+      "Sonic Shrieker",
+      "Stadium Headliner",
+      "Stalwart Successor",
+      "Starry-Eyed Skyrider",
+      "Static Snare",
+      "Stillness in Motion",
+      "Stormbeacon Blade",
+      "Stormplain Detainment",
+      "Stormscale Scion",
+      "Sultai Monument",
+      "Sunpearl Kirin",
+      "Synchronized Charge",
+      "Taigam, Master Opportunist",
+      "Teeming Dragonstorm"
     ]
+  },
+  "original_partition_totals": {
+    "physical_members": 92,
+    "verified_this_author": 49,
+    "verified_additional_owner": 25,
+    "verified_total": 74,
+    "remaining_total": 18,
+    "remaining_retained": 9,
+    "remaining_delegated": 9,
+    "scope": "Root-reconciled membership counts; local verified bool continues to mean proof accepted for this author cohort."
   }
 }
