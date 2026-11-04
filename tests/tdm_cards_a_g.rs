@@ -397,7 +397,15 @@ fn authored_spell(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
             "Betor, Kin to All",
             "Bone-Cairn Butcher",
             "Breaching Dragonstorm",
-            "Call the Spirit Dragons"
+            "Call the Spirit Dragons",
+            "Clarion Conqueror",
+            "Craterhoof Behemoth",
+            "Delta Bloodflies",
+            "Fleeting Effigy",
+            "Formation Breaker",
+            "Corroding Dragonstorm",
+            "Encroaching Dragonstorm",
+            "Dragonstorm Globe"
         ]
         .contains(&name)
     );
@@ -3541,5 +3549,581 @@ fn candidates_equilibrium_adept_exile_permission_requires_mana_lasts_to_next_own
                 assert_eq!(g.object_view(top).zone, Zone::Exile);
             }
         }
+    }
+}
+#[test]
+fn growth_eight_new_definitions_cast_for_exact_printed_mana() {
+    for p in [Player::P0, Player::P1] {
+        for (name, cost, base) in [
+            ("Clarion Conqueror", [1, 0, 0, 0, 0, 2], Some((3, 3))),
+            ("Craterhoof Behemoth", [0, 0, 0, 0, 3, 5], Some((5, 5))),
+            ("Delta Bloodflies", [0, 0, 1, 0, 0, 1], Some((1, 2))),
+            ("Fleeting Effigy", [0, 0, 0, 1, 0, 0], Some((2, 2))),
+            ("Formation Breaker", [0, 0, 0, 0, 1, 1], Some((2, 1))),
+            ("Corroding Dragonstorm", [0, 0, 1, 0, 0, 1], None),
+            ("Encroaching Dragonstorm", [0, 0, 0, 0, 1, 3], None),
+            ("Dragonstorm Globe", [0, 0, 0, 0, 0, 3], None),
+        ] {
+            let mut g = scenario(p);
+            g.state.players[p.index()].mana = cost;
+            let source = enter_authored(&mut g, p, name);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6], "{name}");
+            ready(&mut g, |g| g.object_view(source).zone == Zone::Battlefield);
+            if let Some(expected) = base {
+                assert_eq!(
+                    stats(&g, source),
+                    expected,
+                    "{name}: native before ETB resolution"
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn growth_clarion_conqueror_blocks_both_players_battlefield_kinds_including_mana_but_not_graveyard_or_lands()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = enter_authored(&mut g, p, "Clarion Conqueror");
+        drain(&mut g);
+        assert!(g.keywords(source).contains(Keywords::FLYING));
+        for owner in [p, p.other()] {
+            g.state.priority = owner;
+            let elf = put(&mut g, owner, "Llanowar Elves", Zone::Battlefield);
+            let globe = authored_spell(&mut g, owner, "Dragonstorm Globe", Zone::Battlefield);
+            let elspeth = put(&mut g, owner, "Elspeth, Storm Slayer", Zone::Battlefield);
+            g.add_counter(elspeth, CounterKind::Loyalty, 5);
+            reject(&mut g, Action::TapMana { card: elf });
+            reject(&mut g, mana_action(globe, 0));
+            reject(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: elspeth,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            let land = put(&mut g, owner, "Forest", Zone::Battlefield);
+            act(&mut g, Action::TapMana { card: land });
+            assert!(g.object_view(land).tapped);
+            let dead = put(&mut g, owner, "Abzan Devotee", Zone::Graveyard);
+            activate_plain(&mut g, dead, 1);
+            drain(&mut g);
+            assert_eq!(g.object_view(dead).zone, Zone::Hand);
+            g.state.priority = owner;
+            g.move_object(source, Zone::Exile);
+            act(&mut g, Action::TapMana { card: elf });
+            act(&mut g, mana_action(globe, 0));
+            g.move_object(source, Zone::Battlefield);
+        }
+    }
+}
+
+#[test]
+fn growth_clarion_activation_lock_follows_live_ability_suppression_and_aura_departure() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = enter_authored(&mut g, p, "Clarion Conqueror");
+        drain(&mut g);
+        let elf = put(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        reject(&mut g, Action::TapMana { card: elf });
+        let aura = spell_card(&mut g, p, "Fresh Start", &[Target::Card(source)]);
+        drain(&mut g);
+        assert!(!g.keywords(source).contains(Keywords::FLYING));
+        act(&mut g, Action::TapMana { card: elf });
+        g.state.objects[elf as usize].tapped = false;
+        g.move_object(aura, Zone::Graveyard);
+        assert!(g.keywords(source).contains(Keywords::FLYING));
+        reject(&mut g, Action::TapMana { card: elf });
+        g.move_object(source, Zone::Hand);
+        act(&mut g, Action::TapMana { card: elf });
+    }
+}
+
+#[test]
+fn growth_craterhoof_samples_live_own_creature_count_and_freezes_boost_and_trample_until_cleanup() {
+    for p in [Player::P0, Player::P1] {
+        for remove_source in [false, true] {
+            let mut g = scenario(p);
+            let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let leaving = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let enemy = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+            let source = enter_authored(&mut g, p, "Craterhoof Behemoth");
+            ready(&mut g, |g| g.object_view(source).zone == Zone::Battlefield);
+            g.move_object(leaving, Zone::Hand);
+            if remove_source {
+                g.move_object(source, Zone::Hand);
+            }
+            drain(&mut g);
+            let x = if remove_source { 1 } else { 2 };
+            assert_eq!(stats(&g, own), (2 + x, 2 + x));
+            assert!(g.keywords(own).contains(Keywords::TRAMPLE));
+            assert_eq!(stats(&g, enemy), (3, 3));
+            assert!(!g.keywords(enemy).contains(Keywords::TRAMPLE));
+            let later = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            assert_eq!(stats(&g, later), (2, 2));
+            assert!(!g.keywords(later).contains(Keywords::TRAMPLE));
+            if !remove_source {
+                assert_eq!(stats(&g, source), (7, 7));
+                assert!(
+                    g.keywords(source)
+                        .contains(Keywords::HASTE.union(Keywords::TRAMPLE))
+                );
+            }
+            cleanup(&mut g);
+            assert_eq!(stats(&g, own), (2, 2));
+            assert!(!g.keywords(own).contains(Keywords::TRAMPLE));
+            if !remove_source {
+                assert_eq!(stats(&g, source), (5, 5));
+                assert_eq!(g.keywords(source), Keywords::HASTE);
+            }
+        }
+    }
+}
+
+#[test]
+fn growth_delta_bloodflies_checks_a_counter_on_an_own_creature_at_both_trigger_and_resolution() {
+    for p in [Player::P0, Player::P1] {
+        for (location, change, expected) in [
+            (0, false, 0),
+            (1, false, 1),
+            (2, false, 0),
+            (3, false, 0),
+            (4, false, 1),
+            (1, true, 0),
+            (0, true, 0),
+        ] {
+            let mut g = scenario(p);
+            let source = enter_authored(&mut g, p, "Delta Bloodflies");
+            drain(&mut g);
+            g.state.objects[source as usize].summoning_sick = false;
+            assert!(g.keywords(source).contains(Keywords::FLYING));
+            let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let artifact = put(&mut g, p, "Short Bow", Zone::Battlefield);
+            let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let countered = match location {
+                1 => Some(own),
+                2 => Some(artifact),
+                3 => Some(enemy),
+                4 => Some(source),
+                _ => None,
+            };
+            if let Some(id) = countered {
+                g.add_counter(id, CounterKind::Stun, 1);
+            }
+            attack(&mut g, source);
+            if change {
+                if location == 1 {
+                    g.move_object(own, Zone::Hand);
+                } else {
+                    g.add_counter(own, CounterKind::Lifelink, 1);
+                }
+            }
+            drain(&mut g);
+            assert_eq!(g.state.players[p.other().index()].life, 20 - expected);
+            assert_eq!(g.state.players[p.index()].life, 20);
+        }
+    }
+}
+
+#[test]
+fn growth_fleeting_effigy_pumps_repeatedly_at_instant_speed_and_returns_only_on_own_end_step() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = enter_authored(&mut g, p, "Fleeting Effigy");
+        drain(&mut g);
+        assert!(g.keywords(source).contains(Keywords::HASTE));
+        g.state.active = p.other();
+        g.state.priority = p;
+        for expected in [4, 6] {
+            g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 2];
+            activate_plain(&mut g, source, 0);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            drain(&mut g);
+            assert_eq!(stats(&g, source), (expected, 2));
+            g.state.priority = p;
+        }
+        begin_own_step(&mut g, Step::End);
+        drain(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+        cleanup(&mut g);
+        assert_eq!(stats(&g, source), (2, 2));
+        g.state.active = p;
+        g.state.turn += 1;
+        g.begin_turn();
+        begin_own_step(&mut g, Step::End);
+        drain(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Hand);
+    }
+}
+
+#[test]
+fn growth_fleeting_effigy_end_trigger_and_pump_never_rebind_after_blink() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = enter_authored(&mut g, p, "Fleeting Effigy");
+        drain(&mut g);
+        activate_plain(&mut g, source, 0);
+        g.move_object(source, Zone::Hand);
+        g.move_object(source, Zone::Battlefield);
+        drain(&mut g);
+        assert_eq!(stats(&g, source), (2, 2));
+        begin_own_step(&mut g, Step::End);
+        ready(&mut g, |g| {
+            !g.state.stack.is_empty() && g.state.pending == Pending::Priority
+        });
+        g.move_object(source, Zone::Hand);
+        g.move_object(source, Zone::Battlefield);
+        drain(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+    }
+}
+
+#[test]
+fn growth_formation_breaker_live_counter_bonus_is_source_only_and_evasion_compares_current_power() {
+    for p in [Player::P0, Player::P1] {
+        for location in 0..=3 {
+            let mut g = scenario(p);
+            let source = enter_authored(&mut g, p, "Formation Breaker");
+            drain(&mut g);
+            g.state.objects[source as usize].summoning_sick = false;
+            let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let artifact = put(&mut g, p, "Short Bow", Zone::Battlefield);
+            let small = put(&mut g, p.other(), "Llanowar Elves", Zone::Battlefield);
+            let equal = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let high = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+            if location != 0 {
+                let id = match location {
+                    1 => own,
+                    2 => artifact,
+                    _ => high,
+                };
+                g.add_counter(id, CounterKind::Lifelink, 1);
+            }
+            let boosted = location == 1;
+            assert_eq!(stats(&g, source), if boosted { (3, 3) } else { (2, 1) });
+            assert_eq!(
+                stats(&g, own),
+                (2, 2),
+                "bonus belongs only to Formation Breaker"
+            );
+            attack(&mut g, source);
+            ready(&mut g, |g| g.state.pending == Pending::Blockers);
+            reject(
+                &mut g,
+                Action::Block {
+                    blocker: small,
+                    attacker: source,
+                },
+            );
+            assert_eq!(
+                g.legal_actions().contains(&Action::Block {
+                    blocker: equal,
+                    attacker: source
+                }),
+                !boosted
+            );
+            act(
+                &mut g,
+                Action::Block {
+                    blocker: high,
+                    attacker: source,
+                },
+            );
+        }
+    }
+}
+
+#[test]
+fn growth_corroding_dragonstorm_loses_and_gains_two_then_surveils_two_privately() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let mill = put(&mut g, p, "Mountain", Zone::Library);
+        let keep = put(&mut g, p, "Plains", Zone::Library);
+        enter_authored(&mut g, p, "Corroding Dragonstorm");
+        ready(&mut g, |g| {
+            matches!(g.state.pending, Pending::EffectLibrary { .. })
+        });
+        assert_eq!(g.state.players[p.index()].life, 22);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+        assert!(g.observe(p).library_choice.is_some());
+        assert!(g.observe(p.other()).library_choice.is_none());
+        act(
+            &mut g,
+            Action::ArrangeLibrary {
+                card: mill,
+                destination: LibraryDestination::Graveyard,
+            },
+        );
+        act(
+            &mut g,
+            Action::ArrangeLibrary {
+                card: keep,
+                destination: LibraryDestination::Top,
+            },
+        );
+        drain(&mut g);
+        assert_eq!(g.object_view(mill).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].library.last(), Some(&keep));
+        assert_eq!(g.hand_count(p), 0);
+    }
+}
+
+#[test]
+fn growth_encroaching_dragonstorm_searches_zero_one_or_two_basic_lands_tapped_and_shuffles() {
+    for p in [Player::P0, Player::P1] {
+        for count in 0..=2 {
+            let mut g = scenario(p);
+            let a = put(&mut g, p, "Mountain", Zone::Library);
+            let b = put(&mut g, p, "Plains", Zone::Library);
+            let nonbasic = put(&mut g, p, "Frontier Bivouac", Zone::Library);
+            enter_authored(&mut g, p, "Encroaching Dragonstorm");
+            ready(&mut g, |g| {
+                matches!(g.state.pending, Pending::EffectSearch { .. })
+            });
+            assert!(g.observe(p).search_choice.is_some());
+            assert!(g.observe(p.other()).search_choice.is_none());
+            reject(&mut g, Action::ChooseSearch { card: nonbasic });
+            let rng = g.state.rng;
+            for card in [a, b].into_iter().take(count) {
+                act(&mut g, Action::ChooseSearch { card });
+            }
+            act(&mut g, Action::FinishSearch);
+            drain(&mut g);
+            assert_ne!(g.state.rng, rng);
+            for (i, card) in [a, b].into_iter().enumerate() {
+                assert_eq!(
+                    g.object_view(card).zone,
+                    if i < count {
+                        Zone::Battlefield
+                    } else {
+                        Zone::Library
+                    }
+                );
+                if i < count {
+                    assert!(g.object_view(card).tapped);
+                }
+            }
+        }
+    }
+}
+
+#[test]
+fn growth_corroding_and_encroaching_return_only_on_an_own_dragon_entry() {
+    for p in [Player::P0, Player::P1] {
+        for name in ["Corroding Dragonstorm", "Encroaching Dragonstorm"] {
+            let mut g = scenario(p);
+            let source = enter_authored(&mut g, p, name);
+            if name == "Corroding Dragonstorm" {
+                ready(&mut g, |g| {
+                    matches!(g.state.pending, Pending::EffectLibrary { .. })
+                });
+                for _ in 0..2 {
+                    choose(&mut g, |a| {
+                        matches!(
+                            a,
+                            Action::ArrangeLibrary {
+                                destination: LibraryDestination::Top,
+                                ..
+                            }
+                        )
+                    });
+                }
+            } else {
+                ready(&mut g, |g| {
+                    matches!(g.state.pending, Pending::EffectSearch { .. })
+                });
+                act(&mut g, Action::FinishSearch);
+            }
+            drain(&mut g);
+            let enemy = put(&mut g, p.other(), "Shivan Dragon", Zone::Hand);
+            g.move_object(enemy, Zone::Battlefield);
+            drain(&mut g);
+            assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+            let dragon = put(&mut g, p, "Shivan Dragon", Zone::Hand);
+            cast(&mut g, dragon, None);
+            drain(&mut g);
+            assert_eq!(g.object_view(source).zone, Zone::Hand);
+        }
+    }
+}
+
+#[test]
+fn growth_dragonstorm_globe_taps_for_exactly_one_of_five_colors_without_a_stack() {
+    for p in [Player::P0, Player::P1] {
+        for color in 0..5 {
+            let mut g = scenario(p);
+            let source = enter_authored(&mut g, p, "Dragonstorm Globe");
+            drain(&mut g);
+            g.state.players[p.index()].mana = [0; 6];
+            reject(&mut g, mana_action(source, 5));
+            act(&mut g, mana_action(source, color));
+            assert_eq!(g.state.players[p.index()].mana, one_mana(color));
+            assert!(g.object_view(source).tapped);
+            assert!(g.state.stack.is_empty());
+            reject(&mut g, mana_action(source, color));
+        }
+    }
+}
+
+#[test]
+fn growth_dragonstorm_globe_adds_entry_counters_to_own_dragon_cards_and_tokens_with_each_provider()
+{
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let a = enter_authored(&mut g, p, "Dragonstorm Globe");
+        drain(&mut g);
+        let b = enter_authored(&mut g, p, "Dragonstorm Globe");
+        drain(&mut g);
+        let own = put(&mut g, p, "Boulderborn Dragon", Zone::Hand);
+        cast(&mut g, own, None);
+        drain(&mut g);
+        assert_eq!(g.counter_count(own, CounterKind::PlusOne), 2);
+        assert_eq!(stats(&g, own), (5, 5));
+        let enemy = put(&mut g, p.other(), "Shivan Dragon", Zone::Hand);
+        g.move_object(enemy, Zone::Battlefield);
+        assert_eq!(g.counter_count(enemy, CounterKind::PlusOne), 0);
+        let bear = put(&mut g, p, "Bear Cub", Zone::Hand);
+        cast(&mut g, bear, None);
+        drain(&mut g);
+        assert_eq!(g.counter_count(bear, CounterKind::PlusOne), 0);
+        put(&mut g, p, "Dragonback Assault", Zone::Battlefield);
+        let land = put(&mut g, p, "Forest", Zone::Hand);
+        act(&mut g, Action::PlayLand { card: land });
+        drain(&mut g);
+        let tokens = battlefield_tokens(&g);
+        assert_eq!(tokens.len(), 1);
+        let token = tokens[0];
+        assert_eq!(g.object_view(a).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(b).zone, Zone::Battlefield);
+        assert!(g.has_subtype(token, "Dragon"));
+        assert_eq!(g.object_view(token).colors, 8);
+        assert!(matches!(
+            g.object_view(token).card.effect(),
+            Effect::Creature(4, 4)
+        ));
+        assert_eq!(
+            g.counter_count(token, CounterKind::PlusOne),
+            2,
+            "two live Globe providers must each add an entry counter to actual Dragonback Assault's4/4 red Dragon token"
+        );
+        assert_eq!(stats(&g, token), (6, 6));
+        g.move_object(a, Zone::Hand);
+        g.move_object(b, Zone::Hand);
+        let later = put(&mut g, p, "Shivan Dragon", Zone::Hand);
+        cast(&mut g, later, None);
+        drain(&mut g);
+        assert_eq!(g.counter_count(later, CounterKind::PlusOne), 0);
+        assert_eq!(g.counter_count(own, CounterKind::PlusOne), 2);
+    }
+}
+
+#[test]
+fn growth_dragonback_assault_paid_entry_deals_three_once_to_each_creature_and_planeswalker() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let enemy = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        let dragon = put(&mut g, p, "Shivan Dragon", Zone::Battlefield);
+        let walker = put(
+            &mut g,
+            p.other(),
+            "Elspeth, Storm Slayer",
+            Zone::Battlefield,
+        );
+        g.add_counter(walker, CounterKind::Loyalty, 5);
+        let equipment = put(&mut g, p, "Short Bow", Zone::Battlefield);
+        g.state.players[p.index()].mana = [0, 1, 0, 1, 1, 3];
+        let source = put(&mut g, p, "Dragonback Assault", Zone::Hand);
+        cast(&mut g, source, None);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        drain(&mut g);
+        assert_eq!(g.object_view(own).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(enemy).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(dragon).zone, Zone::Battlefield);
+        assert_eq!(g.state.objects[dragon as usize].damage, 3);
+        assert_eq!(g.counter_count(walker, CounterKind::Loyalty), 2);
+        assert_eq!(g.object_view(equipment).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+        assert_eq!(g.state.players[p.index()].life, 20);
+        assert_eq!(g.state.players[p.other().index()].life, 20);
+    }
+}
+
+#[test]
+fn growth_dragonback_assault_only_own_land_entry_creates_a_red_flying_four_four_even_after_departure()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Dragonback Assault", Zone::Hand);
+        cast(&mut g, source, None);
+        drain(&mut g);
+        let enemy = put(&mut g, p.other(), "Forest", Zone::Hand);
+        g.move_object(enemy, Zone::Battlefield);
+        drain(&mut g);
+        assert!(battlefield_tokens(&g).is_empty());
+        let own = put(&mut g, p, "Forest", Zone::Hand);
+        act(&mut g, Action::PlayLand { card: own });
+        g.move_object(source, Zone::Hand);
+        drain(&mut g);
+        let tokens = battlefield_tokens(&g);
+        assert_eq!(tokens.len(), 1);
+        let token = tokens[0];
+        assert_eq!(stats(&g, token), (4, 4));
+        assert_eq!(g.object_view(token).controller, p);
+        assert_eq!(g.object_view(token).colors, 8);
+        assert!(g.has_subtype(token, "Dragon"));
+        assert_eq!(g.keywords(token), Keywords::FLYING);
+        assert!(!g.object_view(token).tapped);
+    }
+}
+
+#[test]
+fn growth_encroaching_private_search_owns_raw_index_siblings_and_restore() {
+    for p in [Player::P0, Player::P1] {
+        let mut parent = scenario(p);
+        let a = put(&mut parent, p, "Mountain", Zone::Library);
+        let b = put(&mut parent, p, "Plains", Zone::Library);
+        enter_authored(&mut parent, p, "Encroaching Dragonstorm");
+        ready(&mut parent, |g| {
+            matches!(g.state.pending, Pending::EffectSearch { .. })
+        });
+        let action = Action::ChooseSearch { card: a };
+        let revision = parent.revision();
+        let index = parent
+            .legal_actions()
+            .iter()
+            .position(|a| *a == action)
+            .unwrap();
+        let saved = parent.snapshot();
+        let mut raw = parent.clone();
+        let mut indexed = parent.clone();
+        let mut sibling = parent.clone();
+        drop(parent);
+        assert!(raw.observe(p.other()).search_choice.is_none());
+        assert_eq!(raw.apply(p.other(), action.clone()), Err(Error::WrongActor));
+        assert_eq!(raw.snapshot(), saved);
+        act(&mut raw, action.clone());
+        indexed.apply_index(p, revision, index).unwrap();
+        act(&mut sibling, Action::ChooseSearch { card: b });
+        for child in [&mut raw, &mut indexed, &mut sibling] {
+            act(child, Action::FinishSearch);
+            drain(child);
+        }
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        assert_eq!(raw.object_view(a).zone, Zone::Battlefield);
+        assert_eq!(raw.object_view(b).zone, Zone::Library);
+        assert_eq!(sibling.object_view(a).zone, Zone::Library);
+        assert_eq!(sibling.object_view(b).zone, Zone::Battlefield);
+        indexed.restore(&saved).unwrap();
+        assert_eq!(
+            indexed.apply_index(p, revision, index),
+            Err(Error::StaleRevision)
+        );
+        act(&mut indexed, action);
+        act(&mut indexed, Action::FinishSearch);
+        drain(&mut indexed);
+        assert_eq!(raw.snapshot(), indexed.snapshot());
     }
 }

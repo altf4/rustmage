@@ -1887,6 +1887,275 @@
         }
       ],
       "source_review": "Full pinned Oracle, Java main class and listed token/replacement/flying helpers independently read; root separately accepted exact-source full-card proof. Counted once by root independently of this17-card integration."
+    },
+    {
+      "name": "Clarion Conqueror",
+      "oracle_id": "f1266a1b-bae6-4ded-b4d5-7586a5b6c5d0",
+      "definition": "src/card_definitions/tdm/clarion_conqueror.rs",
+      "definition_sha256": "69af2d03e44d23a28c3e151c70e70200014fdd1431750afb19fedd6cee75db57",
+      "kind": "newly_authored",
+      "status": "provisional_pending_focused_execution",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "obligations": [
+        {
+          "face": "Clarion Conqueror",
+          "header": {
+            "mana_cost": "{2}{W}",
+            "type_line": "Creature \u2014 Dragon",
+            "power": "3",
+            "toughness": "3"
+          },
+          "printed_lines": [
+            "Flying",
+            "Activated abilities of artifacts, creatures, and planeswalkers can't be activated."
+          ]
+        }
+      ],
+      "tests": [
+        "growth_eight_new_definitions_cast_for_exact_printed_mana",
+        "growth_clarion_conqueror_blocks_both_players_battlefield_kinds_including_mana_but_not_graveyard_or_lands",
+        "growth_clarion_activation_lock_follows_live_ability_suppression_and_aura_departure"
+      ],
+      "shared_proofs": [],
+      "source_review": "Entire pinned Oracle/main Java including custom helpers and listed relevant helper bodies read before direct typed authoring; existing Dragonback Assault typed behavior preserved."
+    },
+    {
+      "name": "Craterhoof Behemoth",
+      "oracle_id": "8c52bd39-0586-48ca-b263-17210cf9feb6",
+      "definition": "src/card_definitions/tdm/craterhoof_behemoth.rs",
+      "definition_sha256": "8180939161151160171a2badf6375e124ad70bbe6f18fa163e6d4736c419884f",
+      "kind": "newly_authored",
+      "status": "provisional_pending_focused_execution",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "obligations": [
+        {
+          "face": "Craterhoof Behemoth",
+          "header": {
+            "mana_cost": "{5}{G}{G}{G}",
+            "type_line": "Creature \u2014 Beast",
+            "power": "5",
+            "toughness": "5"
+          },
+          "printed_lines": [
+            "Haste",
+            "When this creature enters, creatures you control gain trample and get +X/+X until end of turn, where X is the number of creatures you control."
+          ]
+        }
+      ],
+      "tests": [
+        "growth_eight_new_definitions_cast_for_exact_printed_mana",
+        "growth_craterhoof_samples_live_own_creature_count_and_freezes_boost_and_trample_until_cleanup"
+      ],
+      "shared_proofs": [],
+      "source_review": "Entire pinned Oracle/main Java including custom helpers and listed relevant helper bodies read before direct typed authoring; existing Dragonback Assault typed behavior preserved."
+    },
+    {
+      "name": "Delta Bloodflies",
+      "oracle_id": "8a64cf8e-ae7f-4697-93fc-9c946eb1088b",
+      "definition": "src/card_definitions/tdm/delta_bloodflies.rs",
+      "definition_sha256": "ee6e46fc519394d4192bf634c9a5a1deb6369d993fe47e78a3a17f289c38c556",
+      "kind": "newly_authored",
+      "status": "provisional_pending_focused_execution",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "obligations": [
+        {
+          "face": "Delta Bloodflies",
+          "header": {
+            "mana_cost": "{1}{B}",
+            "type_line": "Creature \u2014 Insect",
+            "power": "1",
+            "toughness": "2"
+          },
+          "printed_lines": [
+            "Flying",
+            "Whenever this creature attacks, if you control a creature with a counter on it, each opponent loses 1 life."
+          ]
+        }
+      ],
+      "tests": [
+        "growth_eight_new_definitions_cast_for_exact_printed_mana",
+        "growth_delta_bloodflies_checks_a_counter_on_an_own_creature_at_both_trigger_and_resolution"
+      ],
+      "shared_proofs": [],
+      "source_review": "Entire pinned Oracle/main Java including custom helpers and listed relevant helper bodies read before direct typed authoring; existing Dragonback Assault typed behavior preserved."
+    },
+    {
+      "name": "Fleeting Effigy",
+      "oracle_id": "d6d9b5d2-0ab6-4637-a468-5149b7c7d0cf",
+      "definition": "src/card_definitions/tdm/fleeting_effigy.rs",
+      "definition_sha256": "529a5008b194a1d694a093207d30353ccd4d73822d200748ff121473c22e5f9d",
+      "kind": "newly_authored",
+      "status": "provisional_pending_focused_execution",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "obligations": [
+        {
+          "face": "Fleeting Effigy",
+          "header": {
+            "mana_cost": "{R}",
+            "type_line": "Creature \u2014 Elemental",
+            "power": "2",
+            "toughness": "2"
+          },
+          "printed_lines": [
+            "Haste",
+            "At the beginning of your end step, return this creature to its owner's hand. (Return it only if it's on the battlefield.)",
+            "{2}{R}: This creature gets +2/+0 until end of turn."
+          ]
+        }
+      ],
+      "tests": [
+        "growth_eight_new_definitions_cast_for_exact_printed_mana",
+        "growth_fleeting_effigy_pumps_repeatedly_at_instant_speed_and_returns_only_on_own_end_step",
+        "growth_fleeting_effigy_end_trigger_and_pump_never_rebind_after_blink"
+      ],
+      "shared_proofs": [],
+      "source_review": "Entire pinned Oracle/main Java including custom helpers and listed relevant helper bodies read before direct typed authoring; existing Dragonback Assault typed behavior preserved."
+    },
+    {
+      "name": "Formation Breaker",
+      "oracle_id": "82f59ac4-bf94-4fa2-9457-f0bec8360bd9",
+      "definition": "src/card_definitions/tdm/formation_breaker.rs",
+      "definition_sha256": "07799dd0ae8f2ac8106961f5abe162b230bb1b90c869dc4f0a3e7621bfb79114",
+      "kind": "newly_authored",
+      "status": "provisional_pending_focused_execution",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "obligations": [
+        {
+          "face": "Formation Breaker",
+          "header": {
+            "mana_cost": "{1}{G}",
+            "type_line": "Creature \u2014 Beast",
+            "power": "2",
+            "toughness": "1"
+          },
+          "printed_lines": [
+            "Creatures with power less than this creature's power can't block it.",
+            "As long as you control a creature with a counter on it, this creature gets +1/+2."
+          ]
+        }
+      ],
+      "tests": [
+        "growth_eight_new_definitions_cast_for_exact_printed_mana",
+        "growth_formation_breaker_live_counter_bonus_is_source_only_and_evasion_compares_current_power"
+      ],
+      "shared_proofs": [],
+      "source_review": "Entire pinned Oracle/main Java including custom helpers and listed relevant helper bodies read before direct typed authoring; existing Dragonback Assault typed behavior preserved."
+    },
+    {
+      "name": "Corroding Dragonstorm",
+      "oracle_id": "4c55ca3b-1254-4d44-96ac-1e1cadaf49f5",
+      "definition": "src/card_definitions/tdm/corroding_dragonstorm.rs",
+      "definition_sha256": "71fc230216315130ce9657eacaa154e3eba3a8246cd9275d37fe4e14840c648e",
+      "kind": "newly_authored",
+      "status": "provisional_pending_focused_execution",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "obligations": [
+        {
+          "face": "Corroding Dragonstorm",
+          "header": {
+            "mana_cost": "{1}{B}",
+            "type_line": "Enchantment"
+          },
+          "printed_lines": [
+            "When this enchantment enters, each opponent loses 2 life and you gain 2 life. Surveil 2. (Look at the top two cards of your library, then put any number of them into your graveyard and the rest on top of your library in any order.)",
+            "When a Dragon you control enters, return this enchantment to its owner's hand."
+          ]
+        }
+      ],
+      "tests": [
+        "growth_eight_new_definitions_cast_for_exact_printed_mana",
+        "growth_corroding_dragonstorm_loses_and_gains_two_then_surveils_two_privately",
+        "growth_corroding_and_encroaching_return_only_on_an_own_dragon_entry"
+      ],
+      "shared_proofs": [],
+      "source_review": "Entire pinned Oracle/main Java including custom helpers and listed relevant helper bodies read before direct typed authoring; existing Dragonback Assault typed behavior preserved."
+    },
+    {
+      "name": "Encroaching Dragonstorm",
+      "oracle_id": "1e95c273-7fec-4f8d-8be9-e21ad4b93717",
+      "definition": "src/card_definitions/tdm/encroaching_dragonstorm.rs",
+      "definition_sha256": "2bc574310559f1b6f3dff0eac805eed989529e68e70a6ebcea4fd489d0cd0d32",
+      "kind": "newly_authored",
+      "status": "provisional_pending_focused_execution",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "obligations": [
+        {
+          "face": "Encroaching Dragonstorm",
+          "header": {
+            "mana_cost": "{3}{G}",
+            "type_line": "Enchantment"
+          },
+          "printed_lines": [
+            "When this enchantment enters, search your library for up to two basic land cards, put them onto the battlefield tapped, then shuffle.",
+            "When a Dragon you control enters, return this enchantment to its owner's hand."
+          ]
+        }
+      ],
+      "tests": [
+        "growth_eight_new_definitions_cast_for_exact_printed_mana",
+        "growth_encroaching_dragonstorm_searches_zero_one_or_two_basic_lands_tapped_and_shuffles",
+        "growth_corroding_and_encroaching_return_only_on_an_own_dragon_entry",
+        "growth_encroaching_private_search_owns_raw_index_siblings_and_restore"
+      ],
+      "shared_proofs": [],
+      "source_review": "Entire pinned Oracle/main Java including custom helpers and listed relevant helper bodies read before direct typed authoring; existing Dragonback Assault typed behavior preserved."
+    },
+    {
+      "name": "Dragonstorm Globe",
+      "oracle_id": "f6de5bd7-7704-4a0c-a27a-9e565e49f5e9",
+      "definition": "src/card_definitions/tdm/dragonstorm_globe.rs",
+      "definition_sha256": "bd29d6f01b3c6d80b3a95160858d15882111264a1d9784ccf89a9272f3dc303b",
+      "kind": "newly_authored",
+      "status": "gated_missing_shared_token_entry_counter_integration",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "obligations": [
+        {
+          "face": "Dragonstorm Globe",
+          "header": {
+            "mana_cost": "{3}",
+            "type_line": "Artifact"
+          },
+          "printed_lines": [
+            "Each Dragon you control enters with an additional +1/+1 counter on it.",
+            "{T}: Add one mana of any color."
+          ]
+        }
+      ],
+      "tests": [
+        "growth_eight_new_definitions_cast_for_exact_printed_mana",
+        "growth_dragonstorm_globe_taps_for_exactly_one_of_five_colors_without_a_stack",
+        "growth_dragonstorm_globe_adds_entry_counters_to_own_dragon_cards_and_tokens_with_each_provider"
+      ],
+      "shared_proofs": [],
+      "source_review": "Entire pinned Oracle/main Java including custom helpers and listed relevant helper bodies read before direct typed authoring; existing Dragonback Assault typed behavior preserved."
+    },
+    {
+      "name": "Dragonback Assault",
+      "oracle_id": "413fb2db-f1a1-4d22-ac37-a52821d35ca2",
+      "definition": "src/card_definitions/tdm/dragonback_assault.rs",
+      "definition_sha256": "1007bdc8b8faa1529a7d614d8b74dd11d2c9413c787e29e121fa9d727dce4a76",
+      "kind": "previously_admitted_candidate",
+      "status": "provisional_pending_focused_execution",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "obligations": [
+        {
+          "face": "Dragonback Assault",
+          "header": {
+            "mana_cost": "{3}{G}{U}{R}",
+            "type_line": "Enchantment"
+          },
+          "printed_lines": [
+            "When this enchantment enters, it deals 3 damage to each creature and each planeswalker.",
+            "Landfall \u2014 Whenever a land you control enters, create a 4/4 red Dragon creature token with flying."
+          ]
+        }
+      ],
+      "tests": [
+        "growth_dragonback_assault_paid_entry_deals_three_once_to_each_creature_and_planeswalker",
+        "growth_dragonback_assault_only_own_land_entry_creates_a_red_flying_four_four_even_after_departure"
+      ],
+      "shared_proofs": [],
+      "source_review": "Entire pinned Oracle/main Java including custom helpers and listed relevant helper bodies read before direct typed authoring; existing Dragonback Assault typed behavior preserved."
     }
   ],
   "validation": [
@@ -2070,6 +2339,16 @@
       "terminal": true,
       "success": true,
       "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6"
+    },
+    {
+      "report": "<cache>/rustmage-tdm/tdm-globe-token-entry-diagnostic/native.json",
+      "sha256": "73bc50972d0836ed897b2289e85a344397b72d0b254bb9924cba611ccf4475b1",
+      "test_target": "tdm_cards_a_g",
+      "filter": "growth_dragonstorm_globe_adds_entry_counters_to_own_dragon_cards_and_tokens_with_each_provider",
+      "passed": 0,
+      "failed": 1,
+      "terminal": true,
+      "expected_failure": "Confirmed missing generic token entry-counter application, counter0 vs2; printed expectations retained."
     }
   ],
   "locally_verified_physical_cards": 61,
@@ -2179,5 +2458,33 @@
     "new_engine_changes": false,
     "admission_flags": "Historical true candidates preserved; none counted as verified before terminal proofs.",
     "scenario_correction": "Anafenza flash resolves on opponent turn and returns priority to active opponent; scenario legally passes priority before casting owned Shock. Printed flash and outcomes unchanged."
+  },
+  "growth_family_prepared": {
+    "cards": 9,
+    "new_gated": 8,
+    "previous_candidates": 1,
+    "tests": 16,
+    "filter": "growth_",
+    "status": "gated_checkpoint_pending_shared_dependency85",
+    "new_engine_changes": false,
+    "new_flags_false": true,
+    "admission_gate": "Root promotes only after positive gated outcomes then regenerates and reruns ordinary admitted paths.",
+    "canonical_provenance_ready_unix_ns": 1793815543909783511,
+    "engine_dependency": {
+      "id": 85,
+      "name": "TOKEN_ENTRY_COUNTERS",
+      "status": "confirmed_actual_definition_regression_pending_engine_phase",
+      "printed_obligation": "Each Dragon you control enters with an additional +1/+1 counter on it, including Dragon creature tokens.",
+      "repro": "growth_dragonstorm_globe_adds_entry_counters_to_own_dragon_cards_and_tokens_with_each_provider: two actual Globle providers give ordinary Boulderborn2 counters, but actual Dragonback Assault4/4redDragon token gets0 instead of2.",
+      "report": "<cache>/rustmage-tdm/tdm-globe-token-entry-diagnostic/native.json",
+      "report_sha256": "73bc50972d0836ed897b2289e85a344397b72d0b254bb9924cba611ccf4475b1",
+      "source_trace": [
+        "engine_replacements.rs stage_token_creation fixed-token fast paths",
+        "engine_replacements.rs replacement-bearing Work::Tokens completion",
+        "engine_tokens.rs create_token_groups_bound direct Outside-to-Battlefield path",
+        "engine_entries.rs add_subtype_entry_counters currently called only for EntryBatch moves"
+      ],
+      "all_new_flags_false": true
+    }
   }
 }

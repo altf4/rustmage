@@ -8,5 +8,28 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d71199b17cefec8165cc9bd21fc19ea08c02545ed0bf39d88eff485cda6bef93"
   },
-  "physical_metadata_sha256": "607338e870cd623b2255a6143b1e96a619d6d060404e0f5570ce9e382d571723"
+  "physical_metadata_sha256": "607338e870cd623b2255a6143b1e96a619d6d060404e0f5570ce9e382d571723",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DragonstormGlobe.java",
+  "java_sha256": "ad33b50a42350755839985f8d33009123f7903d80a1f21b92b1605060915a77a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/EntersWithCountersControlledEffect.java",
+      "sha256": "bfa7b64ddf72a842033fb29987be71155355c4d9effe7ad9dcb849906835055d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+      "sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaOfAnyColorEffect.java",
+      "sha256": "1ab49b0ed403a80a0daed4883b432e65e47e38a72d5e4ebca87894284c4fa085"
+    }
+  ],
+  "remaining_obligations": [
+    "Shared dependency85 TOKEN_ENTRY_COUNTERS: generic fixed-token creation must apply existing pre-entry provider counters before entry observers; actual two-Globe Dragonback token currently receives0 instead of2 counters."
+  ]
 }

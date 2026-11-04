@@ -8,5 +8,18 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "64ad57ca25847c4750bd6f731e8c78ff58da2019f37bdf8e295bff1e2a3d3487"
   },
-  "physical_metadata_sha256": "129186021bf3f7e402db6c2276d7764a6ead82a0830a2c7b30d7a1338c072aa2"
+  "physical_metadata_sha256": "129186021bf3f7e402db6c2276d7764a6ead82a0830a2c7b30d7a1338c072aa2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ClarionConqueror.java",
+  "java_sha256": "450d24cc885dd1b2e8f056792e0575b92e0716c5866855e1d8f97ec09f347e2f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ],
+  "remaining_obligations": [
+    "Direct typed printed behavior remains gated until all applicable actual-definition growth_ scenarios pass."
+  ]
 }
