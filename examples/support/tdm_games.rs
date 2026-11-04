@@ -5,6 +5,7 @@ use rustmage_core::cards::{ActivationOrigin, CastFilter, Instruction, TriggerCon
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
+use std::sync::OnceLock;
 use std::time::Instant;
 
 pub const WORKLOAD: &str = "TDM_FROZEN_TERMINAL_V1";
@@ -20,6 +21,104 @@ pub const REQUIRED: [&str; 8] = [
     "behold_payoff",
 ];
 const LIMIT: usize = 4096;
+const AUDITED_LEDGER_SHA256: &str =
+    "b6716c0d6f18774988997e1183caaf5b0f977d2049406f56da7dbfaecec2942a";
+const EXECUTION_INPUTS: &[u8] = include_bytes!("tdm_execution_inputs.json");
+const EXECUTION_SCOPE: &str = "Workspace library Rust, provenance and build inputs plus TDM acceptance entrypoints; shared harness is independently self-hashed.";
+static EXECUTION_VALIDATION: OnceLock<Result<(), String>> = OnceLock::new();
+static EXECUTION_DIGEST: OnceLock<String> = OnceLock::new();
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct ExecutionInputs {
+    schema: u32,
+    scope: String,
+    source_count: usize,
+    files: BTreeMap<String, String>,
+}
+fn safe_relative_path(path: &str) -> bool {
+    !path.contains(['\\', ':'])
+        && !path.chars().any(char::is_control)
+        && Path::new(path).is_relative()
+        && path
+            .split('/')
+            .all(|part| !part.is_empty() && part != "." && part != "..")
+}
+fn valid_sha256(digest: &str) -> bool {
+    digest.len() == 64
+        && digest
+            .bytes()
+            .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
+}
+fn execution_manifest() -> Result<ExecutionInputs, String> {
+    let manifest: ExecutionInputs = serde_json::from_slice(EXECUTION_INPUTS).map_err(err)?;
+    ensure(
+        manifest.schema == 1
+            && manifest.scope == EXECUTION_SCOPE
+            && manifest.source_count > 0
+            && manifest.source_count == manifest.files.len(),
+        "execution-input manifest schema/count/scope mismatch",
+    )?;
+    for (path, digest) in &manifest.files {
+        ensure(
+            safe_relative_path(path) && valid_sha256(digest),
+            "unsafe execution-input path or malformed SHA256",
+        )?;
+    }
+    for required in [
+        "Cargo.toml",
+        "Cargo.lock",
+        "crates/engine/src/policy.rs",
+        "scripts/tdm_execution_inputs.py",
+        "examples/tdm_games.rs",
+        "tests/tdm_complete_games.rs",
+        "examples/support/tdm_game_decks.json",
+    ] {
+        ensure(
+            manifest.files.contains_key(required),
+            "execution manifest lacks required engine/policy/build/acceptance input",
+        )?;
+    }
+    ensure(
+        !manifest.files.contains_key("examples/support/tdm_games.rs"),
+        "shared harness self-hash must remain separate from execution manifest",
+    )?;
+    Ok(manifest)
+}
+fn execution_inputs_sha256() -> &'static str {
+    EXECUTION_DIGEST
+        .get_or_init(|| sha256(EXECUTION_INPUTS))
+        .as_str()
+}
+fn validate_execution_inputs() -> Result<(), String> {
+    EXECUTION_VALIDATION.get_or_init(|| {
+        let manifest = execution_manifest()?;
+        let root = std::fs::canonicalize(env!("CARGO_MANIFEST_DIR")).map_err(err)?;
+        ensure(std::fs::read(root.join("examples/support/tdm_execution_inputs.json")).map_err(err)? == EXECUTION_INPUTS,
+            "execution-input gate REFUSED: current manifest differs from the compiled manifest")?;
+        ensure(sha256(&std::fs::read(root.join("examples/support/tdm_games.rs")).map_err(err)?) == harness_sha256(),
+            "execution-input gate REFUSED: current shared harness differs from compiled self-hash")?;
+        for (relative, expected) in manifest.files {
+            let path = root.join(&relative);
+            let canonical = std::fs::canonicalize(&path).map_err(|e| format!("execution-input gate REFUSED: {relative}: {e}"))?;
+            ensure(canonical.starts_with(&root), "execution-input path escapes repository")?;
+            let actual = sha256(&std::fs::read(&canonical).map_err(err)?);
+            if actual != expected {
+                return Err(format!("execution-input gate REFUSED: {relative}: expected {expected}, actual {actual}"));
+            }
+        }
+        // Metadata inventory validation runs once before workload construction,
+        // never during game rules, policy decisions or timed benchmark play.
+        let inventory = std::process::Command::new("python3")
+            .current_dir(&root).arg("scripts/tdm_execution_inputs.py").arg("--check")
+            .output().map_err(|e| format!("execution-input inventory check REFUSED: {e}"))?;
+        if !inventory.status.success() {
+            return Err(format!("execution-input inventory check REFUSED: status{}; stdout{}; stderr{}",
+                inventory.status, String::from_utf8_lossy(&inventory.stdout), String::from_utf8_lossy(&inventory.stderr)));
+        }
+        Ok(())
+    }).clone()
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Mode {
     Verify,
@@ -75,10 +174,12 @@ pub struct Workload {
     cards: BTreeMap<String, Vec<Card>>,
     pub cases: Vec<Case>,
     proof_ledger_sha256: String,
+    execution_inputs_sha256: String,
 }
 impl Workload {
     /// This is a refusal gate, never a skip or an admission override.
     pub fn load() -> Result<Self, String> {
+        validate_execution_inputs()?;
         let bytes = include_bytes!("tdm_game_decks.json");
         ensure(
             sha256(bytes) == DECKS_SHA256,
@@ -167,13 +268,17 @@ impl Workload {
                 proof_path.display()
             )
         })?;
+        let proof_ledger_sha256 = sha256(&proof_bytes);
+        ensure(
+            proof_ledger_sha256 == AUDITED_LEDGER_SHA256,
+            "TDM printed-outcome proof gate REFUSED: immutable audited ledger SHA256 mismatch",
+        )?;
         let proof: serde_json::Value = serde_json::from_slice(&proof_bytes).map_err(err)?;
         ensure(
             proof["locally_verified_cards"].as_u64() == Some(276)
                 && proof["remaining_physical_cards"].as_u64() == Some(0),
             "TDM printed-outcome proof gate REFUSED:276 locally verified physical cards and0 remaining required",
         )?;
-        let proof_ledger_sha256 = sha256(&proof_bytes);
         let cutter = Card::from_name("Cori-Steel Cutter").ok_or("Cutter missing")?;
         ensure(
             cutter.info().oracle_id == Some("46b1a169-bc32-47bf-b379-fa0c3d13878f")
@@ -261,6 +366,7 @@ impl Workload {
             cards,
             cases,
             proof_ledger_sha256,
+            execution_inputs_sha256: execution_inputs_sha256().into(),
         };
         // Real Standard validation supplies legality/deck-size/limit validation too.
         for case in &w.cases {
@@ -356,6 +462,18 @@ pub struct TerminalCause {
     pub positive_distinct_dragons: Vec<Recipient>,
 }
 #[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct OwnedRootProof {
+    pub decision: usize,
+    pub kind: String,
+    pub actor: Player,
+    pub primary_action: serde_json::Value,
+    pub sibling_action: serde_json::Value,
+    pub prefix_replayed_actions: usize,
+    pub parent_snapshot_sha256: String,
+    pub primary_snapshot_sha256: String,
+    pub sibling_snapshot_sha256: String,
+}
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct GameReport {
     pub case: Case,
     pub case_id: String,
@@ -370,6 +488,7 @@ pub struct GameReport {
     pub cast_count: usize,
     pub meaningful_interactions: usize,
     pub owned_decision_roots: Vec<String>,
+    pub owned_root_proofs: Vec<OwnedRootProof>,
     pub replayed_actions: usize,
     pub replay_seconds: f64,
     pub witnesses: BTreeMap<String, u64>,
@@ -386,6 +505,7 @@ pub struct Report {
     pub catalogue: String,
     pub deck_source_sha256: String,
     pub harness_source_sha256: String,
+    pub execution_inputs_sha256: String,
     pub printed_outcome_ledger_sha256: String,
     pub physical_manifest_sha256: String,
     pub mode: String,
@@ -412,6 +532,7 @@ impl Report {
                 && self.catalogue == CATALOGUE_VERSION
                 && self.deck_source_sha256 == DECKS_SHA256
                 && self.harness_source_sha256 == harness_sha256()
+                && self.execution_inputs_sha256 == w.execution_inputs_sha256
                 && self.printed_outcome_ledger_sha256 == w.proof_ledger_sha256
                 && self.physical_manifest_sha256 == physical_manifest_sha256(),
             "receipt belongs to different executable/workload or benchmark",
@@ -469,6 +590,7 @@ impl Report {
         }
         for game in &self.games {
             authenticate_game(w, game)?;
+            authenticate_trace(w, game)?;
             ensure(
                 game.replayed_actions == game.decisions
                     && game.cast_count > 0
@@ -509,6 +631,8 @@ struct Frame {
     life: [i128; 2],
     draws: [u64; 2],
     packets: Vec<SpellView>,
+    libraries: [Vec<CardId>; 2],
+    rng: rustmage_core::rng::Rng,
     top: Option<u64>,
     resolving: Option<u64>,
     active: Player,
@@ -550,6 +674,8 @@ impl Frame {
             life: std::array::from_fn(|i| g.state.players[i].life),
             draws: std::array::from_fn(|i| g.state.players[i].cards_drawn_this_turn),
             packets,
+            libraries: std::array::from_fn(|i| g.state.players[i].library.to_vec()),
+            rng: g.state.rng,
             top: g.state.stack.last().map(|s| s.id),
             resolving: g.state.resolving.as_ref().map(|r| r.item.id),
             active: g.state.active,
@@ -828,7 +954,7 @@ impl Tracker {
             .collect();
         for id in finished {
             let proof = self.resolving.remove(&id).unwrap();
-            self.resolved(proof, after, decision, g);
+            self.resolved(proof, before, after, decision, g);
         }
         for (&packet, call) in &mut self.calls {
             let active_resolution = before.resolving == Some(packet)
@@ -864,7 +990,14 @@ impl Tracker {
             }
         }
     }
-    fn resolved(&mut self, proof: ResolutionProof, after: &Frame, decision: usize, g: &Game) {
+    fn resolved(
+        &mut self,
+        proof: ResolutionProof,
+        before: &Frame,
+        after: &Frame,
+        decision: usize,
+        g: &Game,
+    ) {
         let item = &proof.item;
         let Some(source) = item.source() else { return };
         let baseline = &proof.before;
@@ -1028,7 +1161,30 @@ impl Tracker {
             {
                 let owner = g.state.objects[source.id as usize].owner;
                 if g.state.players[owner.index()].library.contains(&source.id) {
-                    self.hit("omen_resolution_shuffle",decision,Some(item),serde_json::json!({"selected_face":source.card.name(),"payment":cast.payment}),serde_json::json!({"physical_parent":g.state.objects[source.id as usize].card.identity(),"owner":owner,"destination":"Library","owner_library_contains_card":true}));
+                    // Distinguish owner-library return from a genuinely isolated
+                    // shuffle boundary. Compare a one-shuffle prediction using
+                    // copied pre-boundary RNG/library, never the live state.
+                    let mut expected_library = before.libraries[owner.index()].clone();
+                    if !expected_library.contains(&source.id) {
+                        expected_library.push(source.id);
+                        let mut actual_members = after.libraries[owner.index()].clone();
+                        let mut expected_members = expected_library.clone();
+                        actual_members.sort_unstable();
+                        expected_members.sort_unstable();
+                        if expected_library.len() > 1 && actual_members == expected_members {
+                            let mut expected_rng = before.rng;
+                            expected_rng.shuffle(&mut expected_library);
+                            if expected_rng != before.rng
+                                && expected_rng == after.rng
+                                && expected_library == after.libraries[owner.index()]
+                            {
+                                self.hit("omen_isolated_shuffle_rng_and_order", decision, Some(item),
+                                    serde_json::json!({"boundary":"only owner-library membership change is resolved parent insertion","prior_rng":before.rng.0,"prior_library_order":before.libraries[owner.index()]}),
+                                    serde_json::json!({"actual_rng":after.rng.0,"actual_library_order":after.libraries[owner.index()],"matches_independent_single_shuffle_prediction":true}));
+                            }
+                        }
+                    }
+                    self.hit("omen_resolution_shuffle",decision,Some(item),serde_json::json!({"selected_face":source.card.name(),"payment":cast.payment}),serde_json::json!({"physical_parent":g.state.objects[source.id as usize].card.identity(),"owner":owner,"destination":"Library","owner_library_contains_card":true,"witness_scope":"actual Omen resolution and owner-library return; shuffle is not inferred from return; see separate omen_isolated_shuffle_rng_and_order receipts"}));
                 }
             }
             if cast.beheld == Some(true)
@@ -1104,12 +1260,71 @@ fn root_kind(action: &Action) -> Option<&'static str> {
         _ => None,
     }
 }
-fn owned_root(game: &Game, actor: Player, index: usize, action: &Action) -> Result<(), String> {
-    let parent = game.clone();
+fn owned_root(
+    game: &Game,
+    config: &Config,
+    prefix: &[(Player, Action)],
+    actor: Player,
+    index: usize,
+    action: &Action,
+    kind: &str,
+) -> Result<Option<OwnedRootProof>, String> {
+    // Reconstruct an independently allocated parent. The live borrowed game is
+    // never an owner of this verification tree's backing.
+    let mut parent = Game::new(config.clone()).map_err(|e| format!("owned parent init {e:?}"))?;
+    for (who, prior) in prefix {
+        parent
+            .apply(*who, prior.clone())
+            .map_err(|e| format!("owned prefix replay {e:?}"))?;
+    }
     let saved = parent.snapshot();
     let revision = parent.revision();
     let before_views = views(&parent)?;
+    ensure(
+        saved == game.snapshot()
+            && parent.outcome() == game.outcome()
+            && revision == game.revision()
+            && before_views == views(game)?,
+        "independent verification parent does not match live root",
+    )?;
+    let legal = parent.legal_actions();
+    ensure(
+        legal.get(index) == Some(action),
+        "independent root legal-action index mismatch",
+    )?;
     let mut raw = parent.clone();
+    raw.apply(actor, action.clone())
+        .map_err(|e| format!("owned primary preview {e:?}"))?;
+    // A distinct legal action must produce different semantic state, not merely
+    // another handle for the same action. The bounded search is verification only.
+    let mut alternative = None;
+    for other in legal
+        .iter()
+        .filter(|a| *a != action && !matches!(a, Action::Concede))
+        .take(8)
+    {
+        let mut child = parent.clone();
+        child
+            .apply(actor, other.clone())
+            .map_err(|e| format!("owned sibling preview {e:?}"))?;
+        if child.snapshot() != raw.snapshot() {
+            alternative = Some((other.clone(), child));
+            break;
+        }
+    }
+    let Some((sibling_action, mut sibling)) = alternative else {
+        return Ok(None);
+    };
+    let sibling_after = sibling.snapshot();
+    let sibling_views = views(&sibling)?;
+    let primary_after = raw.snapshot();
+    let primary_views = views(&raw)?;
+    ensure(
+        parent.snapshot() == saved
+            && parent.revision() == revision
+            && views(&parent)? == before_views,
+        "different children mutated independent parent",
+    )?;
     let mut indexed = parent.clone();
     let mut restored = parent.clone();
     let mut rejected = parent.clone();
@@ -1124,7 +1339,7 @@ fn owned_root(game: &Game, actor: Player, index: usize, action: &Action) -> Resu
         target: Target::Stack(u64::MAX),
     };
     ensure(
-        !parent.legal_actions().contains(&illegal),
+        !legal.contains(&illegal),
         "illegal rollback probe accidentally legal",
     )?;
     ensure(
@@ -1134,16 +1349,29 @@ fn owned_root(game: &Game, actor: Player, index: usize, action: &Action) -> Resu
             && views(&rejected)? == before_views,
         "concrete illegal-action rollback failed",
     )?;
-    ensure(
-        parent.snapshot() == saved
-            && parent.revision() == revision
-            && views(&parent)? == before_views,
-        "branching mutated parent",
-    )?;
+    // Reset these children so all meaningful actions are continued after the
+    // independent parent, rather than merely a clone of the live game, is dropped.
+    raw = parent.clone();
+    sibling = parent.clone();
+    drop(rejected);
     drop(parent);
-    // Both owned children continue after their parent has actually been dropped.
     raw.apply(actor, action.clone())
         .map_err(|e| format!("owned raw child {e:?}"))?;
+    ensure(
+        sibling.snapshot() == saved && views(&sibling)? == before_views,
+        "raw child mutated untouched sibling",
+    )?;
+    sibling
+        .apply(actor, sibling_action.clone())
+        .map_err(|e| format!("owned distinct sibling {e:?}"))?;
+    ensure(
+        raw.snapshot() == primary_after
+            && views(&raw)? == primary_views
+            && sibling.snapshot() == sibling_after
+            && views(&sibling)? == sibling_views
+            && raw.snapshot() != sibling.snapshot(),
+        "sibling divergence or cross-child isolation failed",
+    )?;
     indexed
         .apply_index(actor, revision, index)
         .map_err(|e| format!("owned indexed child {e:?}"))?;
@@ -1154,8 +1382,8 @@ fn owned_root(game: &Game, actor: Player, index: usize, action: &Action) -> Resu
         "owned raw/index children or paired views differ",
     )?;
     restored
-        .apply(actor, action.clone())
-        .map_err(|e| format!("restore precursor {e:?}"))?;
+        .apply(actor, sibling_action.clone())
+        .map_err(|e| format!("restore sibling precursor {e:?}"))?;
     restored
         .restore(&saved)
         .map_err(|e| format!("restore {e:?}"))?;
@@ -1173,13 +1401,26 @@ fn owned_root(game: &Game, actor: Player, index: usize, action: &Action) -> Resu
     ensure(
         restored.snapshot() == raw.snapshot()
             && restored.outcome() == raw.outcome()
-            && semantic_views(&restored)? == semantic_views(&raw)?,
-        "restored raw replay or paired views differ",
+            && semantic_views(&restored)? == semantic_views(&raw)?
+            && sibling.snapshot() == sibling_after
+            && views(&sibling)? == sibling_views,
+        "restored raw replay or untouched sibling changed",
     )?;
     ensure(
         game.snapshot() == saved && game.revision() == revision && views(game)? == before_views,
         "owned verification mutated live game",
-    )
+    )?;
+    Ok(Some(OwnedRootProof {
+        decision: prefix.len(),
+        kind: kind.into(),
+        actor,
+        primary_action: serde_json::to_value(action).map_err(err)?,
+        sibling_action: serde_json::to_value(sibling_action).map_err(err)?,
+        prefix_replayed_actions: prefix.len(),
+        parent_snapshot_sha256: sha256(format!("{saved:?}").as_bytes()),
+        primary_snapshot_sha256: sha256(format!("{primary_after:?}").as_bytes()),
+        sibling_snapshot_sha256: sha256(format!("{sibling_after:?}").as_bytes()),
+    }))
 }
 fn terminal(g: &Game, tracker: Option<&Tracker>, decision: usize) -> Result<TerminalCause, String> {
     let life = std::array::from_fn(|i| g.state.players[i].life);
@@ -1268,6 +1509,8 @@ fn run_one(
     let mut pending_attack = None;
     let mut rejected_attack_attempts = 0;
     let mut roots = BTreeSet::new();
+    let mut root_attempts = BTreeSet::new();
+    let mut owned_root_proofs = Vec::new();
     let mut decisions = 0;
     let result = (|| -> Result<GameReport, String> {
         while game.outcome().is_none() {
@@ -1275,7 +1518,7 @@ fn run_one(
                 if let Some(dir) = dir {
                     write_json(
                         &dir.join(format!("{}-failure-trace.json", case.id())),
-                        &serde_json::json!({"workload":WORKLOAD,"catalogue":CATALOGUE_VERSION,"deck_source_sha256":DECKS_SHA256,"harness_source_sha256":harness_sha256(),"case":case,"ordered_config":config,"actions":trace,"failure":"4096 actions without natural terminal"}),
+                        &serde_json::json!({"workload":WORKLOAD,"catalogue":CATALOGUE_VERSION,"deck_source_sha256":DECKS_SHA256,"harness_source_sha256":harness_sha256(),"execution_inputs_sha256":w.execution_inputs_sha256,"printed_outcome_ledger_sha256":w.proof_ledger_sha256,"physical_manifest_sha256":physical_manifest_sha256(),"trace_schema":2,"case_id":case.id(),"case":case,"ordered_config":config,"actions":trace,"failure":"4096 actions without natural terminal"}),
                     )?;
                 }
                 return Err(format!(
@@ -1304,14 +1547,13 @@ fn run_one(
             let offered: Vec<_> = eligible.iter().map(|(_, a)| a.clone()).collect();
             let index = eligible[policy::smoke_index(&game, &offered)].0;
             let action = actions[index].clone();
-            ensure(
-                !matches!(action, Action::Concede),
-                &format!(
+            if matches!(action, Action::Concede) {
+                return Err(format!(
                     "{} decision{decisions}: policy selected concession; refusing artificial terminal; offered{offered:?}; observation{:?}",
                     case.id(),
                     game.observe(actor)
-                ),
-            )?;
+                ));
+            }
             match action {
                 Action::Attack { card } | Action::AttackPlaneswalker { card, .. } => {
                     pending_attack = Some(card)
@@ -1330,8 +1572,25 @@ fn run_one(
             }
             // Four ordinary root categories plus one reserved Harmonize category
             // bound *all* verification branch points to five distinct roots.
-            let sampled_root =
-                root_kind(&action).filter(|kind| roots.len() < 5 && !roots.contains(*kind));
+            let candidate = root_kind(&action).filter(|kind| {
+                mode == Mode::Verify
+                    && root_attempts.len() < 5
+                    && !root_attempts.contains(*kind)
+                    && actions
+                        .iter()
+                        .any(|other| other != &action && !matches!(other, Action::Concede))
+            });
+            let mut sampled_root = None;
+            if let Some(kind) = candidate {
+                root_attempts.insert(kind.to_owned());
+                if let Some(proof) =
+                    owned_root(&game, &config, &trace, actor, index, &action, kind)?
+                {
+                    roots.insert(kind.to_owned());
+                    owned_root_proofs.push(proof);
+                    sampled_root = Some(kind);
+                }
+            }
             let before = if let Some(t) = &mut tracker {
                 let observation = game.observe(actor);
                 t.before(
@@ -1345,10 +1604,6 @@ fn run_one(
                 None
             };
             if mode == Mode::Verify {
-                if let Some(kind) = sampled_root {
-                    owned_root(&game, actor, index, &action)?;
-                    roots.insert(kind.to_owned());
-                }
                 trace.push((actor, action.clone()));
             }
             game.apply(actor, action.clone())
@@ -1414,7 +1669,7 @@ fn run_one(
             replay_seconds = replay_started.elapsed().as_secs_f64();
             let snapshot_hash = sha256(format!("{:?}", game.snapshot()).as_bytes());
             let observations_hash = sha256(&serde_json::to_vec(&views(&game)?).map_err(err)?);
-            let payload = serde_json::json!({"workload":WORKLOAD,"catalogue":CATALOGUE_VERSION,"deck_source_sha256":DECKS_SHA256,"harness_source_sha256":harness_sha256(),"case":case,"ordered_config":config,"actions":trace,"outcome":game.outcome(),"terminal_cause":cause,"witness_receipts":t.receipts,"owned_root_kinds":roots,"final_snapshot_debug_sha256":snapshot_hash,"final_both_observations_sha256":observations_hash});
+            let payload = serde_json::json!({"workload":WORKLOAD,"catalogue":CATALOGUE_VERSION,"deck_source_sha256":DECKS_SHA256,"harness_source_sha256":harness_sha256(),"execution_inputs_sha256":w.execution_inputs_sha256,"printed_outcome_ledger_sha256":w.proof_ledger_sha256,"physical_manifest_sha256":physical_manifest_sha256(),"trace_schema":2,"case_id":case.id(),"case":case,"ordered_config":config,"actions":trace,"decisions":decisions,"repetition":repetition,"turns":game.observe(case.starting_player).turn,"outcome":game.outcome(),"terminal_cause":cause,"cards_cast":basic.cards,"spell_colors":basic.colors,"cast_count":basic.casts,"meaningful_interactions":t.meaningful,"witness_counts":t.counts,"owned_root_proofs":owned_root_proofs,"witness_receipts":t.receipts,"owned_root_kinds":roots,"final_snapshot_debug_sha256":snapshot_hash,"final_both_observations_sha256":observations_hash});
             let bytes = serde_json::to_vec(&payload).map_err(err)?;
             let digest = sha256(&bytes);
             let path = dir
@@ -1445,6 +1700,7 @@ fn run_one(
             cast_count: basic.casts,
             meaningful_interactions: tracker.as_ref().map_or(0, |t| t.meaningful),
             owned_decision_roots: roots.into_iter().collect(),
+            owned_root_proofs,
             replayed_actions: if mode == Mode::Verify { trace.len() } else { 0 },
             witnesses: tracker.map_or_else(BTreeMap::new, |t| t.counts),
             raw_trace_sha256,
@@ -1459,7 +1715,7 @@ fn run_one(
     if let Err(reason) = &result
         && let Some(dir) = dir
     {
-        let failure = serde_json::json!({"workload":WORKLOAD,"catalogue":CATALOGUE_VERSION,"deck_source_sha256":DECKS_SHA256,"harness_source_sha256":harness_sha256(),"case":case,"ordered_config":config,"attempted_primary_actions":trace,"failure":reason,"outcome":game.outcome()});
+        let failure = serde_json::json!({"workload":WORKLOAD,"catalogue":CATALOGUE_VERSION,"deck_source_sha256":DECKS_SHA256,"harness_source_sha256":harness_sha256(),"execution_inputs_sha256":w.execution_inputs_sha256,"printed_outcome_ledger_sha256":w.proof_ledger_sha256,"physical_manifest_sha256":physical_manifest_sha256(),"trace_schema":2,"case_id":case.id(),"case":case,"ordered_config":config,"attempted_primary_actions":trace,"failure":reason,"outcome":game.outcome()});
         write_json(&dir.join(format!("{}-failure.json", case.id())), &failure)?;
     }
     result
@@ -1541,7 +1797,7 @@ pub fn run(
         seconds += g.measured_seconds;
         games.push(g);
     }
-    Ok(Report{workload:WORKLOAD.into(),catalogue:CATALOGUE_VERSION.into(),deck_source_sha256:DECKS_SHA256.into(),harness_source_sha256:harness_sha256(),printed_outcome_ledger_sha256:w.proof_ledger_sha256.clone(),physical_manifest_sha256:physical_manifest_sha256(),mode:if mode==Mode::Verify{"verification"}else{"benchmark"}.into(),scope:"Exact frozen TDM-only Standard48 plus separate Cutter Freeform4;4096 actions per game; not general Standard coverage, gameplay parity, or exhaustive card proof".into(),physical_members:276,standard_cases:cases.iter().filter(|c|!c.freeform).map(|c|c.id()).collect::<BTreeSet<_>>().len(),freeform_cases:cases.iter().filter(|c|c.freeform).map(|c|c.id()).collect::<BTreeSet<_>>().len(),repetitions,decks:w.inputs.standard_decks.iter().chain(std::iter::once(&w.inputs.freeform_cutter_deck)).cloned().collect(),games_per_second:games.len()as f64/seconds,decisions_per_second:decisions as f64/seconds,decisions,measured_seconds:seconds,games,witnesses,actual_spell_colors:colors,measurement:if mode==Mode::Verify{"Sum per-game wall time includes construction, legal-action emission, shared smoke policy/actor observations, before/after verification telemetry, at most5 owned roots, complete raw replay, paired observation comparisons, SHA256 and persistent trace serialization. Not a simulation benchmark."}else{"Sum per-game construction+play time includes exact Config cloning, Game::new/shuffle, legal-action emission, generic rejected-attack memory, policy::smoke_index with its actor observation, rules apply, and lightweight committed-cast packet/card/color telemetry. Excludes workload/deck validation, replay/owned checks, detailed mechanic telemetry, trace/per-decision JSON, terminal reconciliation/report serialization, model inference/network/tensors. Same frozen cases as verified corpus, exactly3 repetitions; Freeform separately labelled."}.into()})
+    Ok(Report{workload:WORKLOAD.into(),catalogue:CATALOGUE_VERSION.into(),deck_source_sha256:DECKS_SHA256.into(),harness_source_sha256:harness_sha256(),execution_inputs_sha256:w.execution_inputs_sha256.clone(),printed_outcome_ledger_sha256:w.proof_ledger_sha256.clone(),physical_manifest_sha256:physical_manifest_sha256(),mode:if mode==Mode::Verify{"verification"}else{"benchmark"}.into(),scope:"Exact frozen TDM-only Standard48 plus separate Cutter Freeform4;4096 actions per game. omen_resolution_shuffle is the frozen legacy key for actual Omen resolution plus owner-library return; shuffle has a separate isolated RNG/order receipt when observable. Not general Standard coverage, gameplay parity, or exhaustive card proof".into(),physical_members:276,standard_cases:cases.iter().filter(|c|!c.freeform).map(|c|c.id()).collect::<BTreeSet<_>>().len(),freeform_cases:cases.iter().filter(|c|c.freeform).map(|c|c.id()).collect::<BTreeSet<_>>().len(),repetitions,decks:w.inputs.standard_decks.iter().chain(std::iter::once(&w.inputs.freeform_cutter_deck)).cloned().collect(),games_per_second:games.len()as f64/seconds,decisions_per_second:decisions as f64/seconds,decisions,measured_seconds:seconds,games,witnesses,actual_spell_colors:colors,measurement:if mode==Mode::Verify{"Sum per-game wall time includes construction, legal-action emission, shared smoke policy/actor observations, before/after verification telemetry, at most5 sampled root categories with independent Config+prefix replay parents and distinct sibling checks, complete raw replay, paired observation comparisons, SHA256 and persistent trace serialization. Omen witness records actual resolution and owner-library return only; separate isolated RNG/order receipts establish an actual shuffle when present. Not a simulation benchmark."}else{"Sum per-game construction+play time includes exact Config cloning, Game::new/shuffle, legal-action emission, generic rejected-attack memory, policy::smoke_index with its actor observation, rules apply, and lightweight committed-cast packet/card/color telemetry. Excludes workload/deck validation, replay/owned checks, detailed mechanic telemetry, trace/per-decision JSON, terminal reconciliation/report serialization, model inference/network/tensors. Same frozen cases as verified corpus, exactly3 repetitions; Freeform separately labelled."}.into()})
 }
 pub fn write_shard(report: &Report, pair: usize, dir: &Path) -> Result<(), String> {
     write_json(&dir.join(format!("pair-{pair}-report.json")), report)
@@ -1558,6 +1814,7 @@ pub fn aggregate(w: &Workload, dir: &Path) -> Result<Report, String> {
                 && r.catalogue == CATALOGUE_VERSION
                 && r.deck_source_sha256 == DECKS_SHA256
                 && r.harness_source_sha256 == harness_sha256()
+                && r.execution_inputs_sha256 == w.execution_inputs_sha256
                 && r.printed_outcome_ledger_sha256 == w.proof_ledger_sha256
                 && r.physical_manifest_sha256 == physical_manifest_sha256()
                 && r.mode == "verification"
@@ -1576,12 +1833,7 @@ pub fn aggregate(w: &Workload, dir: &Path) -> Result<Report, String> {
         )?;
         for g in &r.games {
             authenticate_game(w, g)?;
-            let path = Path::new(g.trace_file.as_deref().ok_or("shard missing raw trace")?);
-            ensure(
-                sha256(&std::fs::read(path).map_err(err)?)
-                    == g.raw_trace_sha256.as_deref().ok_or("trace digest absent")?,
-                "raw trace artifact digest mismatch",
-            )?;
+            authenticate_trace(w, g)?;
         }
         if let Some(a) = &mut all {
             merge(a, r);
@@ -1709,6 +1961,26 @@ pub fn verify_hash_vectors() -> Result<(), String> {
     ensure(
         sha256(include_bytes!("tdm_game_decks.json")) == DECKS_SHA256,
         "frozen deck SHA256 known digest",
+    )?;
+    execution_manifest()?;
+    for unsafe_path in [
+        "",
+        "../Cargo.toml",
+        "/Cargo.toml",
+        "src//lib.rs",
+        "src/./lib.rs",
+        "src/../lib.rs",
+        "src\\lib.rs",
+        "C:lib.rs",
+    ] {
+        ensure(
+            !safe_relative_path(unsafe_path),
+            "unsafe manifest path accepted",
+        )?;
+    }
+    ensure(
+        safe_relative_path("crates/engine/src/policy.rs") && valid_sha256(AUDITED_LEDGER_SHA256),
+        "manifest path/digest contract",
     )
 }
 
@@ -1733,5 +2005,124 @@ fn authenticate_game(w: &Workload, g: &GameReport) -> Result<(), String> {
             && g.owned_decision_roots.iter().collect::<BTreeSet<_>>().len()
                 == g.owned_decision_roots.len(),
         "owned decision root set must have1..5 distinct meaningful roots",
+    )?;
+    ensure(
+        g.owned_root_proofs.len() == g.owned_decision_roots.len()
+            && g.owned_root_proofs
+                .iter()
+                .map(|p| p.kind.as_str())
+                .collect::<BTreeSet<_>>()
+                == g.owned_decision_roots
+                    .iter()
+                    .map(String::as_str)
+                    .collect::<BTreeSet<_>>(),
+        "owned root receipts do not match the sampled root set",
+    )?;
+    for proof in &g.owned_root_proofs {
+        ensure(
+            proof.decision < g.decisions
+                && proof.prefix_replayed_actions == proof.decision
+                && proof.primary_action != proof.sibling_action
+                && proof.primary_snapshot_sha256 != proof.sibling_snapshot_sha256
+                && [
+                    &proof.parent_snapshot_sha256,
+                    &proof.primary_snapshot_sha256,
+                    &proof.sibling_snapshot_sha256,
+                ]
+                .iter()
+                .all(|h| valid_sha256(h)),
+            "owned root lacks independent prefix or meaningful sibling divergence",
+        )?;
+    }
+    Ok(())
+}
+
+fn authenticate_trace(w: &Workload, g: &GameReport) -> Result<(), String> {
+    let path = Path::new(
+        g.trace_file
+            .as_deref()
+            .ok_or("verification missing raw trace")?,
+    );
+    let bytes = std::fs::read(path).map_err(err)?;
+    ensure(
+        sha256(&bytes) == g.raw_trace_sha256.as_deref().ok_or("trace digest absent")?,
+        "raw trace artifact digest mismatch",
+    )?;
+    let trace: serde_json::Value = serde_json::from_slice(&bytes).map_err(err)?;
+    ensure(
+        trace["trace_schema"] == 2
+            && trace["workload"] == WORKLOAD
+            && trace["catalogue"] == CATALOGUE_VERSION
+            && trace["deck_source_sha256"] == DECKS_SHA256
+            && trace["harness_source_sha256"] == harness_sha256()
+            && trace["execution_inputs_sha256"] == w.execution_inputs_sha256
+            && trace["printed_outcome_ledger_sha256"] == AUDITED_LEDGER_SHA256
+            && trace["physical_manifest_sha256"] == physical_manifest_sha256(),
+        "trace header or execution-input binding mismatch",
+    )?;
+    ensure(
+        trace["case_id"] == g.case_id
+            && trace["case"] == serde_json::to_value(g.case).map_err(err)?
+            && trace["ordered_config"] == serde_json::to_value(w.config(g.case)?).map_err(err)?
+            && trace["outcome"] == serde_json::to_value(g.outcome).map_err(err)?
+            && trace["terminal_cause"] == serde_json::to_value(&g.cause).map_err(err)?
+            && trace["decisions"].as_u64() == Some(g.decisions as u64)
+            && trace["repetition"].as_u64() == Some(g.repetition as u64)
+            && trace["turns"].as_u64() == Some(u64::from(g.turns)),
+        "trace case/config/outcome/action metadata mismatch",
+    )?;
+    let snapshot = g
+        .final_snapshot_debug_sha256
+        .as_deref()
+        .ok_or("final snapshot digest absent")?;
+    let observations = g
+        .final_observations_sha256
+        .as_deref()
+        .ok_or("final both-view digest absent")?;
+    ensure(
+        valid_sha256(snapshot)
+            && valid_sha256(observations)
+            && trace["final_snapshot_debug_sha256"] == snapshot
+            && trace["final_both_observations_sha256"] == observations,
+        "trace final snapshot/both-view digest mismatch",
+    )?;
+    ensure(
+        trace["cards_cast"] == serde_json::to_value(&g.cards_cast).map_err(err)?
+            && trace["spell_colors"].as_u64() == Some(u64::from(g.spell_colors))
+            && trace["cast_count"].as_u64() == Some(g.cast_count as u64)
+            && trace["meaningful_interactions"].as_u64() == Some(g.meaningful_interactions as u64)
+            && trace["witness_counts"] == serde_json::to_value(&g.witnesses).map_err(err)?
+            && trace["owned_root_kinds"]
+                == serde_json::to_value(&g.owned_decision_roots).map_err(err)?
+            && trace["owned_root_proofs"]
+                == serde_json::to_value(&g.owned_root_proofs).map_err(err)?,
+        "trace payoff/owned telemetry differs from game report",
+    )?;
+    let actions = trace["actions"].as_array().ok_or("trace actions missing")?;
+    ensure(
+        actions.len() == g.decisions && actions.len() == g.replayed_actions,
+        "trace decisions/raw action count mismatch",
+    )?;
+    for proof in &g.owned_root_proofs {
+        let raw = &actions[proof.decision];
+        ensure(
+            raw[0] == serde_json::to_value(proof.actor).map_err(err)?
+                && raw[1] == proof.primary_action,
+            "owned root does not bind the actual primary trace decision",
+        )?;
+    }
+    let receipts: Vec<Witness> =
+        serde_json::from_value(trace["witness_receipts"].clone()).map_err(err)?;
+    let mut counts = BTreeMap::<String, u64>::new();
+    for receipt in receipts {
+        ensure(
+            receipt.decision < g.decisions,
+            "witness receipt decision outside game",
+        )?;
+        *counts.entry(receipt.mechanic).or_default() += 1;
+    }
+    ensure(
+        counts == g.witnesses,
+        "trace actual witness receipts do not match report counts",
     )
 }
