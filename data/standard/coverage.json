@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "53b5932dee5dc4feaf8a58c53064806a7b09ed4b9e259c8aafd16a71e418f719",
+  "catalogue_version": "f125d0b489713787353805d258f55b881c6df19f4c121aa9d8d5dfd1cb1a7c55",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3233,
-  "implemented_total": 3240,
+  "implemented_standard_cards": 3250,
+  "implemented_total": 3257,
   "token_definitions": 157,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -162,8 +162,8 @@
     },
     "tdm": {
       "total": 264,
-      "complete": 202,
-      "gated": 62
+      "complete": 219,
+      "gated": 45
     },
     "tla": {
       "total": 278,
@@ -6305,8 +6305,8 @@
     {
       "name": "Clarion Conqueror",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/clarion_conqueror.rs",
       "set": "tdm"
     },
@@ -7033,8 +7033,8 @@
     {
       "name": "Corroding Dragonstorm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/corroding_dragonstorm.rs",
       "set": "tdm"
     },
@@ -7257,8 +7257,8 @@
     {
       "name": "Craterhoof Behemoth",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/craterhoof_behemoth.rs",
       "set": "tdm"
     },
@@ -8473,8 +8473,8 @@
     {
       "name": "Delta Bloodflies",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/delta_bloodflies.rs",
       "set": "tdm"
     },
@@ -9545,8 +9545,8 @@
     {
       "name": "Dragonstorm Globe",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/dragonstorm_globe.rs",
       "set": "tdm"
     },
@@ -10817,8 +10817,8 @@
     {
       "name": "Encroaching Dragonstorm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/encroaching_dragonstorm.rs",
       "set": "tdm"
     },
@@ -12617,8 +12617,8 @@
     {
       "name": "Fleeting Effigy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/fleeting_effigy.rs",
       "set": "tdm"
     },
@@ -12977,8 +12977,8 @@
     {
       "name": "Formation Breaker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/formation_breaker.rs",
       "set": "tdm"
     },
@@ -29385,8 +29385,8 @@
     {
       "name": "Sage of the Skies",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/sage_of_the_skies.rs",
       "set": "tdm"
     },
@@ -29721,8 +29721,8 @@
     {
       "name": "Sarkhan, Dragon Ascendant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/sarkhan_dragon_ascendant.rs",
       "set": "tdm"
     },
@@ -31065,8 +31065,8 @@
     {
       "name": "Sibsig Appraiser",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/sibsig_appraiser.rs",
       "set": "tdm"
     },
@@ -31937,8 +31937,8 @@
     {
       "name": "Songcrafter Mage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/songcrafter_mage.rs",
       "set": "tdm"
     },
@@ -33617,8 +33617,8 @@
     {
       "name": "Stormscale Scion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/stormscale_scion.rs",
       "set": "tdm"
     },
@@ -33873,8 +33873,8 @@
     {
       "name": "Sultai Monument",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/sultai_monument.rs",
       "set": "tdm"
     },
@@ -34145,8 +34145,8 @@
     {
       "name": "Sunpearl Kirin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/sunpearl_kirin.rs",
       "set": "tdm"
     },
@@ -35041,8 +35041,8 @@
     {
       "name": "Teeming Dragonstorm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/teeming_dragonstorm.rs",
       "set": "tdm"
     },
@@ -35457,8 +35457,8 @@
     {
       "name": "Teval, Arbiter of Virtue",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/teval_arbiter_of_virtue.rs",
       "set": "tdm"
     },

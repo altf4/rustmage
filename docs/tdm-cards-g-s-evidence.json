@@ -6400,7 +6400,7 @@
       "oracle_id": "6badc583-fabb-4d63-b70c-e7380acafc23",
       "facts_sha256": "119f67aeb2c2bdd5747e9b49f29f8b6bbeadb7e164cbacb1767e731798eb63ab",
       "definition": "src/card_definitions/tdm/roiling_dragonstorm.rs",
-      "definition_sha256": "3e541af86d5a29c2c4eb290da5d3aff6cc0db48f1fc8449face613f22524fd22",
+      "definition_sha256": "2af9c3ebad813f5d13c2fae4e86927206749b68a8d3ad654700ea333eb27b655",
       "provenance": "src/card_definitions/tdm/roiling_dragonstorm.json",
       "java_source": {
         "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
@@ -6462,7 +6462,9 @@
       ],
       "admitted": true,
       "new_implementation": true,
-      "status": "locally whole-card verified; pending final assembled-set acceptance and two final nonauthor reviews"
+      "status": "locally whole-card verified; pending final assembled-set acceptance and two final nonauthor reviews",
+      "historical_pre_self_entry_repair_definition_sha256": "3e541af86d5a29c2c4eb290da5d3aff6cc0db48f1fc8449face613f22524fd22",
+      "root_reverification": "docs/tdm-dragonstorm-self-entry-restoration.json; original84-case ordinary proof plus expanded actual self-entry proof in additional target, now root12PASS"
     },
     {
       "name": "Rot-Curse Rakshasa",

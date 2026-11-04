@@ -362,3 +362,77 @@ fn f07_omen_shuffle_does_not_return_dragonstorm_but_later_dragon_entry_repeats_l
         assert_eq!(g.object_view(dragon).zone, Zone::Battlefield);
     }
 }
+
+#[test]
+fn f06_dragon_witness_mox_stays_locked_until_fresh_start_suppresses_clarion() {
+    for p in [Player::P0, Player::P1] {
+        for remove_aura in [false, true] {
+            let mut g = scenario(p);
+            let mox = put(&mut g, p, "Mox Jasper", Zone::Hand);
+            g.state.players[p.index()].mana = [0; 6];
+            cast(&mut g, mox, None);
+            drain(&mut g, None);
+            let produce = Action::ActivateMana {
+                card: mox,
+                ability: 0,
+                payment: [0; 6],
+                counter_payment: Counters::default(),
+                production: [0, 0, 0, 0, 1, 0],
+            };
+            reject(&mut g, produce.clone());
+            put(&mut g, p.other(), "Marang River Regent", Zone::Battlefield);
+            reject(&mut g, produce.clone());
+            let clarion = put(&mut g, p, "Clarion Conqueror", Zone::Hand);
+            g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 2];
+            cast(&mut g, clarion, None);
+            drain(&mut g, None);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            assert!(g.has_subtype(clarion, "Dragon"));
+            reject(&mut g, produce.clone());
+            assert!(!g.object_view(mox).tapped);
+            let forest = put(&mut g, p, "Forest", Zone::Battlefield);
+            g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
+            act(&mut g, Action::TapMana { card: forest });
+            assert_eq!(g.state.players[p.index()].mana, [0, 1, 0, 0, 1, 0]);
+            let aura = put(&mut g, p, "Fresh Start", Zone::Hand);
+            cast(&mut g, aura, Some(Target::Card(clarion)));
+            drain(&mut g, None);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            assert_eq!(stats(&g, clarion), (-2, 3));
+            assert!(!g.keywords(clarion).contains(Keywords::FLYING));
+            assert!(g.has_subtype(clarion, "Dragon"));
+            assert!(g.legal_actions().contains(&produce));
+            if remove_aura {
+                for _ in 0..2 {
+                    let land = put(&mut g, p, "Forest", Zone::Battlefield);
+                    act(&mut g, Action::TapMana { card: land });
+                }
+                let reclamation = put(&mut g, p, "Heritage Reclamation", Zone::Hand);
+                act(&mut g, Action::AnnounceCast { card: reclamation });
+                act(&mut g, Action::ChooseMode { mode: 1 });
+                act(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(aura),
+                    },
+                );
+                if g.legal_actions().contains(&Action::FinishTargets) {
+                    act(&mut g, Action::FinishTargets);
+                }
+                pay(&mut g);
+                drain(&mut g, None);
+                assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+                assert_eq!(g.object_view(aura).zone, Zone::Graveyard);
+                assert_eq!(g.object_view(reclamation).zone, Zone::Graveyard);
+                assert_eq!(stats(&g, clarion), (3, 3));
+                assert!(g.keywords(clarion).contains(Keywords::FLYING));
+                assert!(!g.object_view(mox).tapped);
+                reject(&mut g, produce);
+            } else {
+                checked(&mut g, produce);
+                assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 0, 1, 0]);
+                assert!(g.object_view(mox).tapped);
+            }
+        }
+    }
+}

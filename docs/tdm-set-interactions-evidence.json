@@ -2,7 +2,7 @@
   "schema": 1,
   "set": "TDM",
   "engine_revision": "2660c86112362973c195bee4c1b85e1a968f9f3a",
-  "status": "Focused F02 and representative F07 actual-card interaction outcomes pass; full matrix/whole-set/game acceptance pending",
+  "status": "Focused actual-card outcomes for F02, F06 and representative F07 pass; full matrix/whole-set/game acceptance pending",
   "new_card_completions": 0,
   "families": [
     {
@@ -30,7 +30,7 @@
         "Every helper action includes wrongactor rollback, owned indexed child after parentdrop, raw/index state+bothobservation equality, restore/stale rejection and rawreplay"
       ],
       "budget_per_drain": 96,
-      "report": "/home/altf4/.cache/rustmage-tdm/set-interactions-f02-first/native.json",
+      "report": "<cache>/rustmage-tdm/set-interactions-f02-first/native.json",
       "sha256": "14021f2ca814241c9dfb7090081e3484bfbc47daab9d2bcc3931c3f73af71400",
       "terminal": true,
       "success": true,
@@ -56,7 +56,7 @@
         "Each private discard has wrongactor/ownedraw-index/parentdrop/bothviews/restore/stale and rawreplay proof"
       ],
       "budget_per_drain": 96,
-      "report": "/home/altf4/.cache/rustmage-tdm/post86-first-proof-1793824255100003227/root_interactions/native.json",
+      "report": "<cache>/rustmage-tdm/post86-first-proof-1793824255100003227/root_interactions/native.json",
       "sha256": "fcb667b521193c51e043bee9d966059bf7d88b59db5aea436f4b30590472ab20",
       "terminal": true,
       "success": true,
@@ -68,6 +68,35 @@
         "tests/tdm_cards_a_g.rs::mechanics_breaching_dragonstorm_returns_only_for_your_dragon_and_not_a_new_incarnation",
         "tests/tdm_cards_g_s.rs::coil_and_catch_paid_omen_draws_three_then_discards_and_shuffles_physical_parent"
       ]
+    },
+    {
+      "id": "F06",
+      "related_family": "F13",
+      "target": "tests/tdm_set_interactions.rs",
+      "case": "f06_dragon_witness_mox_stays_locked_until_fresh_start_suppresses_clarion",
+      "variants": "Both seats; preserve or actually destroy suppression Aura",
+      "actual_cards": [
+        "Mox Jasper",
+        "Clarion Conqueror",
+        "Fresh Start",
+        "Heritage Reclamation",
+        "Marang River Regent",
+        "Forest"
+      ],
+      "outcomes": [
+        "No Dragon or only opposing Dragon: Mox activation rejects transactionally",
+        "Paid Clarion supplies owned Dragon witness while prohibiting Mox mana activation; no tap/output occurs",
+        "Actual Forest produces mana through prohibition and funds printed1U Fresh Start",
+        "Suppressed Clarion remains Dragon at -2/3 while losing flying/restriction; actual Mox activation taps and adds exactG",
+        "Actual1G Heritage enchantment mode destroys suppression Aura, restoring3/3 flying and Mox activation prohibition with Mox still untapped",
+        "Successful activation retains owned raw/index, parentdrop, restore/stale rejection, bothviews and replay proof"
+      ],
+      "report": "<cache>/rustmage-tdm/post86-root-integrated-1793824659238764817/tdm_set_interactions/native.json",
+      "sha256": "516b09c827583900378bf76a70488971fc0c6bf0232aa31a6a59d67e1f61ae87",
+      "terminal": true,
+      "success": true,
+      "target_cases": 3,
+      "remaining_family_scope": "Other Behold/free-origin and activation boundaries remain mapped to actual card/shared proofs; this case alone does not close F06/F13."
     }
   ],
   "remaining_families": [
