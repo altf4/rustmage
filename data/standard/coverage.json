@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "f125d0b489713787353805d258f55b881c6df19f4c121aa9d8d5dfd1cb1a7c55",
+  "catalogue_version": "3c236d3ca90ecdabb1b5563235c96c37cac082aa13379f5c50588902bf6cfda0",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3250,
-  "implemented_total": 3257,
+  "implemented_standard_cards": 3261,
+  "implemented_total": 3268,
   "token_definitions": 157,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -162,8 +162,8 @@
     },
     "tdm": {
       "total": 264,
-      "complete": 219,
-      "gated": 45
+      "complete": 230,
+      "gated": 34
     },
     "tla": {
       "total": 278,
@@ -29473,8 +29473,8 @@
     {
       "name": "Salt Road Skirmish",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/salt_road_skirmish.rs",
       "set": "tdm"
     },
@@ -30609,8 +30609,8 @@
     {
       "name": "Severance Priest",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/severance_priest.rs",
       "set": "tdm"
     },
@@ -30841,8 +30841,8 @@
     {
       "name": "Shiko, Paragon of the Way",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/shiko_paragon_of_the_way.rs",
       "set": "tdm"
     },
@@ -31113,8 +31113,8 @@
     {
       "name": "Sidisi, Regent of the Mire",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/sidisi_regent_of_the_mire.rs",
       "set": "tdm"
     },
@@ -31697,8 +31697,8 @@
     {
       "name": "Smile at Death",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/smile_at_death.rs",
       "set": "tdm"
     },
@@ -31945,8 +31945,8 @@
     {
       "name": "Sonic Shrieker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/sonic_shrieker.rs",
       "set": "tdm"
     },
@@ -32937,8 +32937,8 @@
     {
       "name": "Stalwart Successor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/stalwart_successor.rs",
       "set": "tdm"
     },
@@ -33073,8 +33073,8 @@
     {
       "name": "Starry-Eyed Skyrider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/starry_eyed_skyrider.rs",
       "set": "tdm"
     },
@@ -33297,8 +33297,8 @@
     {
       "name": "Stillness in Motion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/stillness_in_motion.rs",
       "set": "tdm"
     },
@@ -34625,8 +34625,8 @@
     {
       "name": "Synchronized Charge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/synchronized_charge.rs",
       "set": "tdm"
     },
@@ -34729,8 +34729,8 @@
     {
       "name": "Taigam, Master Opportunist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/taigam_master_opportunist.rs",
       "set": "tdm"
     },

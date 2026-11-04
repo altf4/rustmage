@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
-  "status": "218/276 physical cards locally whole-verified and integrated; full-set/game/PR acceptance remains pending",
-  "locally_verified_cards": 218,
-  "newly_implemented": 93,
-  "previously_admitted_verified": 125,
+  "status": "233/276 physical cards locally whole-verified and integrated; full-set/game/PR acceptance remains pending",
+  "locally_verified_cards": 233,
+  "newly_implemented": 104,
+  "previously_admitted_verified": 129,
   "integrations": [
     {
       "source_commits": [
@@ -414,9 +414,33 @@
         }
       ],
       "scope": "Four actual complete Omen parents and all eight faces; source bodies preserved unchanged"
+    },
+    {
+      "source_commits": [
+        "79d707d8d4c514a7a3d41fee41169dff04342496"
+      ],
+      "root_commits": [
+        "77dcd3e3e"
+      ],
+      "whole_cards": 15,
+      "newly_implemented": 11,
+      "previously_admitted_verified": 4,
+      "regenerated": true,
+      "validation": [
+        {
+          "report": "<cache>/rustmage-tdm/post86-root-additional15-1793825531887048788/root_additional25/native.json",
+          "sha256": "47ed910d161d1e5df02a47960ee780f644d84fca31c6b83c94e575d2026d9127",
+          "terminal": true,
+          "success": true,
+          "cases": 28,
+          "compile_seconds": 4.779897689004429,
+          "execution_seconds": 0.042433170950971544
+        }
+      ],
+      "scope": "Remaining15 of original25 delegated S-Z members; all25 ordinary supported-card definitions now verified"
     }
   ],
-  "remaining_physical_cards": 58,
+  "remaining_physical_cards": 43,
   "source_verification": {
     "definitions": 5489,
     "source_blobs": 2713,
@@ -1986,6 +2010,15 @@
       "new_implementation": false
     },
     {
+      "name": "Salt Road Skirmish",
+      "oracle_id": "f6e72f4e-d6e0-4537-93c1-7045385c8401",
+      "evidence": "docs/tdm-cards-s-z-additional-evidence.json",
+      "definition": "src/card_definitions/tdm/salt_road_skirmish.rs",
+      "definition_sha256": "ceafff7269217259903c029c8c05b5f93659586b0a33b8e07304d647480d2aeb",
+      "provenance_sha256": "a3cd6a4a5a0fb389930be358927da3d69638275804b545c427e91718791d1adc",
+      "new_implementation": true
+    },
+    {
       "name": "Sandskitter Outrider",
       "oracle_id": "eae480fe-d9fe-4dbe-8b78-b65f398b0af3",
       "evidence": "docs/tdm-cards-s-z-evidence.json",
@@ -2049,6 +2082,24 @@
       "new_implementation": false
     },
     {
+      "name": "Severance Priest",
+      "oracle_id": "3a38bf69-511f-4851-870f-8a65641d832e",
+      "evidence": "docs/tdm-cards-s-z-additional-evidence.json",
+      "definition": "src/card_definitions/tdm/severance_priest.rs",
+      "definition_sha256": "cdd9d8124e9923c4439701cc038f48995747c3bfff4638179d8e5ceb9f62a0f7",
+      "provenance_sha256": "44d5098c56b289f21f4fce88237eeff6e18502dbb923049eacd952a81f8ea2e3",
+      "new_implementation": true
+    },
+    {
+      "name": "Shiko, Paragon of the Way",
+      "oracle_id": "d3bdd3f2-9e38-436a-93a3-f87d9f4d4f86",
+      "evidence": "docs/tdm-cards-s-z-additional-evidence.json",
+      "definition": "src/card_definitions/tdm/shiko_paragon_of_the_way.rs",
+      "definition_sha256": "285f75ad96c4d144706043681f565d26f792f9233cd1c9e3a24d602a26152927",
+      "provenance_sha256": "35e7d5f783eb02884a1ee28791e1ffa1ef4feabf54372c3a5ee4f8626a718e82",
+      "new_implementation": true
+    },
+    {
       "name": "Shock Brigade",
       "oracle_id": "8676e917-17dd-4047-99c4-402f2e909e16",
       "evidence": "docs/tdm-cards-s-z-additional-evidence.json",
@@ -2076,6 +2127,15 @@
       "new_implementation": true
     },
     {
+      "name": "Sidisi, Regent of the Mire",
+      "oracle_id": "72074972-418d-4dce-83cf-ce8cf310fc42",
+      "evidence": "docs/tdm-cards-s-z-additional-evidence.json",
+      "definition": "src/card_definitions/tdm/sidisi_regent_of_the_mire.rs",
+      "definition_sha256": "8f6b958370484690db31c59270bb1cc602da1c4b9903f9c002c51439ebea3a5e",
+      "provenance_sha256": "3dae3e1ba3da79b029ae194aee6d111989e3136ace90fd2ef7d1f0dea078d749",
+      "new_implementation": true
+    },
+    {
       "name": "Sinkhole Surveyor",
       "oracle_id": "83a47724-b8d1-4884-9442-b62aa1510dc3",
       "evidence": "docs/tdm-cards-s-z-evidence.json",
@@ -2094,12 +2154,30 @@
       "new_implementation": false
     },
     {
+      "name": "Smile at Death",
+      "oracle_id": "9228f04c-506f-4453-a335-e66876b8ce8d",
+      "evidence": "docs/tdm-cards-s-z-additional-evidence.json",
+      "definition": "src/card_definitions/tdm/smile_at_death.rs",
+      "definition_sha256": "d708da739408438adb4d9c7faa7b6badf1dcdeaa588c025e806c564f1d8a920b",
+      "provenance_sha256": "4efa69cb2dc51c8b1f85c7c8d2815d16b376c81722c8c3a52e44d790bff5eae5",
+      "new_implementation": true
+    },
+    {
       "name": "Snakeskin Veil",
       "oracle_id": "1e6a24be-8281-41c1-a5ba-b68f0ef1d7b8",
       "evidence": "docs/tdm-cards-s-z-evidence.json",
       "definition": "src/card_definitions/tdm/snakeskin_veil.rs",
       "definition_sha256": "efae3c4ea4383c9f5afda52f7c5404b6cbe31dc30c61f0cbc8ae915dc401e67d",
       "provenance_sha256": "ba021f369b1859c510d257b5f8ac54d8101f93ae657b487317b6a76c1468721b",
+      "new_implementation": false
+    },
+    {
+      "name": "Snowmelt Stag",
+      "oracle_id": "b25ccb64-e114-4d54-a07a-c8cd4560b511",
+      "evidence": "docs/tdm-cards-s-z-additional-evidence.json",
+      "definition": "src/card_definitions/tdm/snowmelt_stag.rs",
+      "definition_sha256": "6d95f14838cadac683ec5e4f3d79b7d65d0e4b6670555e331b41dfa539b4f6c0",
+      "provenance_sha256": "e3f024c5ac80cf19fcb775258b5bf63fa084411040e94b36f9e51ea30ed23771",
       "new_implementation": false
     },
     {
@@ -2112,12 +2190,75 @@
       "new_implementation": true
     },
     {
+      "name": "Sonic Shrieker",
+      "oracle_id": "d317e3f1-553f-44f6-8543-d6d4c42534ad",
+      "evidence": "docs/tdm-cards-s-z-additional-evidence.json",
+      "definition": "src/card_definitions/tdm/sonic_shrieker.rs",
+      "definition_sha256": "239ab6bd394818b4a7c9ec2152219242077339506aaa34b1af4380bf39e48219",
+      "provenance_sha256": "964e1679216a5e9568adb8f66e3eaefbd4e773ae707f9cc6655cdcf7229a2b42",
+      "new_implementation": true
+    },
+    {
       "name": "Spectral Denial",
       "oracle_id": "f8536726-993b-4100-918c-e3c7177d4c65",
       "evidence": "docs/tdm-cards-s-z-evidence.json",
       "definition": "src/card_definitions/tdm/spectral_denial.rs",
       "definition_sha256": "24d4450a409d0556f7e7b832fd5130fa8f31a0fd913066db3d4a258dccb580f1",
       "provenance_sha256": "25906f26fbf7a667b38e2b001e83d3f74e7a082bfbc77c559fcf330f547411a3",
+      "new_implementation": false
+    },
+    {
+      "name": "Stadium Headliner",
+      "oracle_id": "d8cfa20a-343e-4661-9f5a-a8265f6917a8",
+      "evidence": "docs/tdm-cards-s-z-additional-evidence.json",
+      "definition": "src/card_definitions/tdm/stadium_headliner.rs",
+      "definition_sha256": "029b1bd9f815d16d7ee0fe2dbede3d64c228f0af5f5f7d69ddb965d934a11076",
+      "provenance_sha256": "b40c535809f6e84e84ebff74d20f04b53ab78c0172d7c37b1e9b59cb7cb41439",
+      "new_implementation": false
+    },
+    {
+      "name": "Stalwart Successor",
+      "oracle_id": "45392882-e4b9-4c74-a10f-985c2b4e2be9",
+      "evidence": "docs/tdm-cards-s-z-additional-evidence.json",
+      "definition": "src/card_definitions/tdm/stalwart_successor.rs",
+      "definition_sha256": "a57f6381400bb6a0eab8f8331f4e04f0678b1a871244ab236992995219d0c735",
+      "provenance_sha256": "cb4d623d9f71304fbffe430ca759e9d19ebfa48320ac58fb7abc30167841bd0d",
+      "new_implementation": true
+    },
+    {
+      "name": "Starry-Eyed Skyrider",
+      "oracle_id": "04e615e6-4088-4170-904c-f2d4bcebed59",
+      "evidence": "docs/tdm-cards-s-z-additional-evidence.json",
+      "definition": "src/card_definitions/tdm/starry_eyed_skyrider.rs",
+      "definition_sha256": "cf4c079fc143041dc3dda8d31df43e5f25fc0c48f9c3c705a97aed0739fbc2f0",
+      "provenance_sha256": "2add36006ddc866c7616b6fc916a688bbf6c301b5b4ea34f1daa3569c046d4b3",
+      "new_implementation": true
+    },
+    {
+      "name": "Static Snare",
+      "oracle_id": "b5b742d2-f19b-47c9-84bd-e85d975900e6",
+      "evidence": "docs/tdm-cards-s-z-additional-evidence.json",
+      "definition": "src/card_definitions/tdm/static_snare.rs",
+      "definition_sha256": "3abcf31f02177cb04209a06e93a1ef2010e225c5544eb83148afc93893ad8de5",
+      "provenance_sha256": "f576b8459022b2af857334b5a2f00e35fa159b3042ec70eebd7a269956782218",
+      "new_implementation": false
+    },
+    {
+      "name": "Stillness in Motion",
+      "oracle_id": "d73913ea-44d0-408f-9f8b-8e91843f2826",
+      "evidence": "docs/tdm-cards-s-z-additional-evidence.json",
+      "definition": "src/card_definitions/tdm/stillness_in_motion.rs",
+      "definition_sha256": "89797d45bbc21a0d2e417505bbff64a0a97bc9b9946ef08669c9e58270d0e84c",
+      "provenance_sha256": "74f92d928bb8e9469887f181a9d8da56ddd3ce9f54cc575ba023400edb0164fe",
+      "new_implementation": true
+    },
+    {
+      "name": "Stormbeacon Blade",
+      "oracle_id": "f4b3ee43-fc01-425f-8322-29bf6d16cb3f",
+      "evidence": "docs/tdm-cards-s-z-additional-evidence.json",
+      "definition": "src/card_definitions/tdm/stormbeacon_blade.rs",
+      "definition_sha256": "6cb579860822a551e015aad80b4614a7afc555e7271ceb8337095d00514dd8ab",
+      "provenance_sha256": "011affb5413ef3dedae297e6ed11435aa6b0688e6d0e5588edd64d19b02235a6",
       "new_implementation": false
     },
     {
@@ -2227,6 +2368,24 @@
       "definition_sha256": "4625307eae21cf7a51b57f25f307413ff20d5e806d3c5d860561aad508cb16f1",
       "provenance_sha256": "b6d67496e64c47fcb507eb286e5d6c6011116d993401bf0298f2a15ace3491de",
       "new_implementation": false
+    },
+    {
+      "name": "Synchronized Charge",
+      "oracle_id": "faa0055b-c1d2-4ce7-875f-41b4be8030bd",
+      "evidence": "docs/tdm-cards-s-z-additional-evidence.json",
+      "definition": "src/card_definitions/tdm/synchronized_charge.rs",
+      "definition_sha256": "2f145a6c5f8e4e6767efcc48b5a013d425c036724070fe6743eeda69990d9538",
+      "provenance_sha256": "29611eb7f124293df97a5d1f0f671cd7b431fc0053fab800ed243ba90a31e294",
+      "new_implementation": true
+    },
+    {
+      "name": "Taigam, Master Opportunist",
+      "oracle_id": "49f2cbc3-bd03-48e6-b1c4-d7f315b8579d",
+      "evidence": "docs/tdm-cards-s-z-additional-evidence.json",
+      "definition": "src/card_definitions/tdm/taigam_master_opportunist.rs",
+      "definition_sha256": "0f52c3f3651d79e1c15643e82cff6ada2e0ee0f53719f950506993c5502d878d",
+      "provenance_sha256": "f0d382f20edceb5da084371aeb66184d31d6dc6ce95b930d31587c557a3f9361",
+      "new_implementation": true
     },
     {
       "name": "Teeming Dragonstorm",
