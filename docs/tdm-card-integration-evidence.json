@@ -2864,5 +2864,255 @@
     "paired_card": "Dragonbroods\u2019 Relic",
     "evidence": "docs/tdm-cards-a-g-evidence.json",
     "rules": "Printed4/4 all-five-color Reliquary Dragon, flying/lifelink and ETB3 any target; headerNone preserved; actualpaidRelic creates it in final143-case proof"
-  }
+  },
+  "verified_omen_pairs": [
+    {
+      "name": "Bloomvine Regent // Claim Territory",
+      "oracle_id": "da1e019c-2ffb-412d-90d7-f2e5e5c44c4b",
+      "definitions": [
+        {
+          "category": "physical",
+          "path": "src/card_definitions/tdm/bloomvine_regent.rs",
+          "sha256": "2d6f51bb8a25630518426274865e6cbeab2e2ebb947e5973c5f781b2b8580516",
+          "provenance_sha256": "daf84b298d9d4230d9331f11aff801b08f207ec5d9a8ed6b9d015330c98a5ca5"
+        },
+        {
+          "category": "omen",
+          "path": "src/card_definitions/synthetic/claim_territory.rs",
+          "sha256": "b77c44b45490b78b74a84308a84350dbddc9f7b44bb9cb6ec82f4f54c6a0d0fc",
+          "provenance_sha256": "59b783db48785ca1d8048af955b6903aa065ced934f41a86c202284b06c81019"
+        }
+      ],
+      "whole_card_printed_face_evidence": "docs/tdm-cards-a-g-evidence.json"
+    },
+    {
+      "name": "Dirgur Island Dragon // Skimming Strike",
+      "oracle_id": "23cda76b-6e47-4922-a38d-93f7aae1eb00",
+      "definitions": [
+        {
+          "category": "physical",
+          "path": "src/card_definitions/tdm/dirgur_island_dragon.rs",
+          "sha256": "751383b0d2a1472032a1b39db6ad9fa444d59fe43db70b365e116b43aac54204",
+          "provenance_sha256": "119ba65944d4b09dc80fad1e098994774179667b2f8bd9f2dc8256617a726ab2"
+        },
+        {
+          "category": "omen",
+          "path": "src/card_definitions/synthetic/skimming_strike.rs",
+          "sha256": "1921c2c56f7632ed80b2910d0a407dc706257a292c986f0aac1638db39f12793",
+          "provenance_sha256": "71b2eeede9d3994551cb02539c6ddaf460b6a6ca0e5c31c8779f550117370844"
+        }
+      ],
+      "whole_card_printed_face_evidence": "docs/tdm-cards-a-g-evidence.json"
+    },
+    {
+      "name": "Disruptive Stormbrood // Petty Revenge",
+      "oracle_id": "ec74ae5d-1284-443c-9842-18954f8cf5a8",
+      "definitions": [
+        {
+          "category": "physical",
+          "path": "src/card_definitions/tdm/disruptive_stormbrood.rs",
+          "sha256": "6a42f4eb1204e3a777fcf538cec08431aae3cb329f66e2407084f0672c7d9e68",
+          "provenance_sha256": "594292aecd5b2efaf8bdc9a0446fd3f7148ebdc849b17ee1334b0b15776e9de6"
+        },
+        {
+          "category": "omen",
+          "path": "src/card_definitions/synthetic/petty_revenge.rs",
+          "sha256": "d79a6b71b90bb8c06811a1d542176fb288341be1c7bd7252c28dac73c455f08c",
+          "provenance_sha256": "3b162a0363c5f82441d84295a0867f05f2b3c81da2496d9b6ecaec6bb4875280"
+        }
+      ],
+      "whole_card_printed_face_evidence": "docs/tdm-cards-a-g-evidence.json"
+    },
+    {
+      "name": "Feral Deathgorger // Dusk Sight",
+      "oracle_id": "1722f814-2d4e-4d59-9b74-10ef8e89def9",
+      "definitions": [
+        {
+          "category": "physical",
+          "path": "src/card_definitions/tdm/feral_deathgorger.rs",
+          "sha256": "4fc56e72be7b0947addac5212f1779722c8d0ae1d0ed6ae87a07dd76ffe0526f",
+          "provenance_sha256": "8ea48a9f178df5a993039d55add2e6b99f651b8a8e1b72f83bbbac110aec655b"
+        },
+        {
+          "category": "omen",
+          "path": "src/card_definitions/synthetic/dusk_sight.rs",
+          "sha256": "b39bac4dd23bf17e536562b8092c33117c272ad199f51775851fc93eeaab3c1a",
+          "provenance_sha256": "74027cd8f6583c9e2ad3d7cfb22e764f1f15819cb38140514f8fb95e06b186d1"
+        }
+      ],
+      "whole_card_printed_face_evidence": "docs/tdm-cards-a-g-evidence.json"
+    },
+    {
+      "name": "Marang River Regent // Coil and Catch",
+      "oracle_id": "099b8d2c-b482-48dd-b6bc-dedf546d66c5",
+      "definitions": [
+        {
+          "category": "physical",
+          "path": "src/card_definitions/tdm/marang_river_regent.rs",
+          "sha256": "0c20934cd7bdfd0a4ae9bef50907cf7678e46cf4a796fe499ccbf107ea1ad699",
+          "provenance_sha256": "232d3626e51ba05bbd52a02370a8f64f2396e7afcae3df787bb9b4a7a958a663"
+        },
+        {
+          "category": "omen",
+          "path": "src/card_definitions/synthetic/coil_and_catch.rs",
+          "sha256": "d4166edcefc327ad00448b78923c7a78a5454a12570b50fec36d566f899df1f1",
+          "provenance_sha256": "ac7504bbe2d8edb8a0fb582e77e01e3531826be803fc21a4ac5f3f59a8212c5f"
+        }
+      ],
+      "whole_card_printed_face_evidence": "docs/tdm-cards-g-s-evidence.json"
+    },
+    {
+      "name": "Purging Stormbrood // Absorb Essence",
+      "oracle_id": "5e8086d5-ea48-4555-b65a-a33d08ba4afd",
+      "definitions": [
+        {
+          "category": "physical",
+          "path": "src/card_definitions/tdm/purging_stormbrood.rs",
+          "sha256": "301e65e6229c8d50382f73241a237f47f5a0646d8bdbc4aada8288ad3330e4db",
+          "provenance_sha256": "702e0b7b89a963e816c70ab73651ad75220435a019da8e92790c4e192bf7a71e"
+        },
+        {
+          "category": "omen",
+          "path": "src/card_definitions/synthetic/absorb_essence.rs",
+          "sha256": "9ef4ce36a21e37d5a60e5d06e16fd34464c76d9a6245256d80a6e75270c2646b",
+          "provenance_sha256": "1d53212c3126f2953d74565128d047bb5ed6bcec17db6fd3c049c61ceda3fdfa"
+        }
+      ],
+      "whole_card_printed_face_evidence": "docs/tdm-cards-g-s-evidence.json"
+    },
+    {
+      "name": "Riling Dawnbreaker // Signaling Roar",
+      "oracle_id": "1fc31651-70fe-4a58-9b7e-7359510bba51",
+      "definitions": [
+        {
+          "category": "physical",
+          "path": "src/card_definitions/tdm/riling_dawnbreaker.rs",
+          "sha256": "d0e853be297f54d33ee0c0b7f249db982a5f764419ff602f285700d113d9844f",
+          "provenance_sha256": "5f986d877cac7d1f17ff5b9ac3256b25938d51a00f564873fc20406ca48815db"
+        },
+        {
+          "category": "omen",
+          "path": "src/card_definitions/synthetic/signaling_roar.rs",
+          "sha256": "8713270b59e53f5c0cf85d9aebbdca2a11e0dee60a03e9268482097c9a0af0e0",
+          "provenance_sha256": "51ff84875b5946c907b5b810023884fae9615d4fee4e4837d7cbd2f0a7b0ba26"
+        }
+      ],
+      "whole_card_printed_face_evidence": "docs/tdm-cards-g-s-evidence.json"
+    },
+    {
+      "name": "Runescale Stormbrood // Chilling Screech",
+      "oracle_id": "af7db15c-93af-4c7e-a028-42181d91a923",
+      "definitions": [
+        {
+          "category": "physical",
+          "path": "src/card_definitions/tdm/runescale_stormbrood.rs",
+          "sha256": "5be7f42da5bcbb9898f44e165383cc94aad050131dd3fc574b9bd65a7c90fb27",
+          "provenance_sha256": "cc23229fb6917cdf29680078e2d922cd4b9eaa2c4895d18f8e1c6f2b921413fb"
+        },
+        {
+          "category": "omen",
+          "path": "src/card_definitions/synthetic/chilling_screech.rs",
+          "sha256": "dd80d147c769d1909bf65162bf880438843df050955210404861fbfbd01391df",
+          "provenance_sha256": "f33975cae5f1d76aa123df7b09bd9099dc46932c9acd8b4e957cba5acef3a7d8"
+        }
+      ],
+      "whole_card_printed_face_evidence": "docs/tdm-cards-g-s-evidence.json"
+    },
+    {
+      "name": "Sagu Wildling // Roost Seek",
+      "oracle_id": "7cee6d43-5dec-4989-85ec-c635ec783ec7",
+      "definitions": [
+        {
+          "category": "physical",
+          "path": "src/card_definitions/tdm/sagu_wildling.rs",
+          "sha256": "e0d9ca68ce17c16907a9956134f0444efccaed8abb0aecb62d5d9a574e81fa01",
+          "provenance_sha256": "5f0ee95bad556cb1f883170bcee8cf6607af18a02c7d528cf78135acca7554a5"
+        },
+        {
+          "category": "omen",
+          "path": "src/card_definitions/synthetic/roost_seek.rs",
+          "sha256": "b643276d2c74b6762fa6cfdd4f714d8f89e1735f3f661b392a0965bf7131e8e8",
+          "provenance_sha256": "5120e5a88ee277975cf7a0daac8cca3de4e8487ada362a165aee037d7e68e25a"
+        }
+      ],
+      "whole_card_printed_face_evidence": "docs/tdm-cards-s-z-evidence.json"
+    },
+    {
+      "name": "Scavenger Regent // Exude Toxin",
+      "oracle_id": "7e97a242-0bac-4f18-9228-e98ecca36254",
+      "definitions": [
+        {
+          "category": "physical",
+          "path": "src/card_definitions/tdm/scavenger_regent.rs",
+          "sha256": "35c5b31b759c1cc39a99e144fa9418dcecb8c9b869038b259a38e6c1407851c1",
+          "provenance_sha256": "84c81717b1f5f50f740f5ba88cef2cd3440aa9e45842bc7b74e3ac5173a6cc0b"
+        },
+        {
+          "category": "omen",
+          "path": "src/card_definitions/synthetic/exude_toxin.rs",
+          "sha256": "a090cb16793f8d3a727f788ae3e08837041a3bcf59746f258c1874b99f0f5709",
+          "provenance_sha256": "3ade379418ed01e391614b9c4a37d83177e50d8205ef02f1b9361e8eb46dc706"
+        }
+      ],
+      "whole_card_printed_face_evidence": "docs/tdm-cards-s-z-evidence.json"
+    },
+    {
+      "name": "Stormshriek Feral // Flush Out",
+      "oracle_id": "e24916ff-7566-4f27-8e31-732311a4a88c",
+      "definitions": [
+        {
+          "category": "physical",
+          "path": "src/card_definitions/tdm/stormshriek_feral.rs",
+          "sha256": "fd4432735e994934f6baa39a65ca8eafdf8ad9f451527c857653943660f4851b",
+          "provenance_sha256": "65a09bf1d95fd84e2ade6eb9daa627090a0ef77885625d62104832ba5c485747"
+        },
+        {
+          "category": "omen",
+          "path": "src/card_definitions/synthetic/flush_out.rs",
+          "sha256": "1ebc7fcde479518afb0d0b699c8636c7c9d9aa96b131b1b8369c7ef9bbe94718",
+          "provenance_sha256": "312cd738382d52070abb550d4247c27b8896fc20a314444b9bf393676c9e9203"
+        }
+      ],
+      "whole_card_printed_face_evidence": "docs/tdm-cards-s-z-evidence.json"
+    },
+    {
+      "name": "Twinmaw Stormbrood // Charring Bite",
+      "oracle_id": "ff812a78-3fe7-47bc-9984-1c2380cff5b1",
+      "definitions": [
+        {
+          "category": "physical",
+          "path": "src/card_definitions/tdm/twinmaw_stormbrood.rs",
+          "sha256": "090e199cf4904ea699734950a8183ebbb39981f718903eba14a52848ecb1ca2a",
+          "provenance_sha256": "381090074f0f83d004e2d2c1adb33414a2fbd862018ea29ba734b3f2ddc19a23"
+        },
+        {
+          "category": "omen",
+          "path": "src/card_definitions/synthetic/charring_bite.rs",
+          "sha256": "39803d91995e27f4d9f2a18d495c09b247c5706aaf112a7042e482574f5ed816",
+          "provenance_sha256": "647b59e7aa821878316eb5a1a19ee29d935131eba181a610def5937dd969a3b4"
+        }
+      ],
+      "whole_card_printed_face_evidence": "docs/tdm-cards-s-z-evidence.json"
+    },
+    {
+      "name": "Whirlwing Stormbrood // Dynamic Soar",
+      "oracle_id": "4fbfc814-df10-4d61-ada9-c96cc8ee8d8c",
+      "definitions": [
+        {
+          "category": "physical",
+          "path": "src/card_definitions/tdm/whirlwing_stormbrood.rs",
+          "sha256": "b47039e9fb1bbabafbd7b66d9377e2bb432cfcae34ec4453fad4c1158c256b12",
+          "provenance_sha256": "7b216b5a8894fc81357ef04ceed2a3322eee61564dfbf1b73dfca5c2bb1d742c"
+        },
+        {
+          "category": "omen",
+          "path": "src/card_definitions/synthetic/dynamic_soar.rs",
+          "sha256": "5a227cf8a5f741576179b1748bd48abd2594bff6d2ad29f6f836727b96b7942c",
+          "provenance_sha256": "026ec50d318e63f97af53493aab1278566a5841dafae4dcee836b31cc26ea3fe"
+        }
+      ],
+      "whole_card_printed_face_evidence": "docs/tdm-cards-s-z-evidence.json"
+    }
+  ],
+  "verified_omen_pair_count": 13
 }

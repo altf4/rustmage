@@ -111,12 +111,12 @@
         "Marang River Regent"
       ],
       "outcomes": [
-        "ActualownMoxcast0 andopposingHeritagecast1G aretwo earliercasts; Scionpays4RR andcapturedStormamountis2",
-        "Exactlytwo resolvedtokenpermanentcopies plus original; actualElspethdoubling doesnotdoublebecausetokensareputontobattlefieldasresolvedcopies,notcreated",
-        "AllthreeScionsare6/6flying, eachbuffingonlyotherownDragons; ownRegent9/10/opposingRegent6/7",
-        "SourceleavingreducesremainingScions5/5andownRegent8/9; opposingDragonunchanged",
-        "Actualcastcountsremainown2/opponent1, excludingcopies",
-        "Capturedtrigger rootownedraw/index/parentdrop/restore/stale/bothviews/replay checks pass"
+        "An actual own Mox cast and opposing Heritage cast are two earlier casts; Scion pays4RR and captures Storm count2.",
+        "Exactly two resolved permanent spell copies become tokens alongside the original. Actual Elspeth token doubling does not multiply them (CR608.3f).",
+        "Three Scions are6/6 flying and buff only other own Dragons; own Regent is9/10 and opposing Regent remains6/7.",
+        "Original Scion departure reduces remaining Scions to5/5 and own Regent to8/9.",
+        "Actual cast counts remain own2/opponent1, excluding the copies.",
+        "The captured-trigger root passes owned raw/index, parent disposal, restore/stale rejection, both observations and replay checks."
       ],
       "rules_basis": [
         "CR702.40a",
@@ -138,7 +138,38 @@
         "tests/tdm_search_color_sequences.rs::color_counter_win_respects_opponents_win_restriction",
         "tests/tdm_copy_suspend.rs::printed_storm_freezes_all_players_prior_actual_casts_including_countered_and_graveyard_spells"
       ],
-      "failure_history": "InitialsingletonPutTriggerUIassumptionfailed; no engine/card change. Actualcapturedcopyevent2rootverifiedbeforefirstPass."
+      "failure_history": "InitialsingletonPutTriggerUIassumptionfailed; no engine/card change. Actualcapturedcopyevent2rootverifiedbeforefirstPass.",
+      "additional_scenarios": [
+        {
+          "case": "f14_call_counts_five_distinct_actual_dragons_instead_of_five_colors_on_reliquary",
+          "variants": "Both seats, one paid-created five-color token versus five actual printed monocolor Dragon definitions",
+          "actual_cards": [
+            "Dragonbroods\u2019 Relic",
+            "Reliquary Dragon",
+            "Call the Spirit Dragons",
+            "Twinmaw Stormbrood",
+            "Marang River Regent",
+            "Scavenger Regent",
+            "Stormscale Scion",
+            "Sagu Wildling"
+          ],
+          "outcomes": [
+            "Actual1G Relic cast, then3WUBRG sacrifice creates one4/4 Reliquary Dragon; its ETB deals3 to opposing Regent and lifelink gains3.",
+            "Actual WUBRG Call grants indestructible only to own Dragons.",
+            "One actual five-color Dragon receives5 counters, becomes9/9, and does not win.",
+            "Five actual printed-color W/U/B/R/G Dragons each receive one counter and win in the same upkeep resolution; Scavenger\u2019s ward does not turn untargeted color selection into a target.",
+            "An opposing blue Regent is rejected during the blue selection despite matching color; it receives no counters.",
+            "The first color choice passes owned raw/index, parent disposal, restore/stale rejection, both observations and replay checks."
+          ],
+          "report": "<cache>/rustmage-tdm/post86-root-call-interaction-1793827106298253073/root_call_interaction/native.json",
+          "sha256": "511545e0320608bc26228bfb1d9379473a51af649031153e1b4ad36ce8dee7d1",
+          "terminal": true,
+          "success": true,
+          "target_cases": 5,
+          "authority": "https://media.wizards.com/2025/downloads/TDM_Release_Notes_YchagR1EZF/EN_MTGTDM_ReleaseNotes_20250107.pdf",
+          "authority_scope": "Official notes confirm multiple counters on a multicolor Dragon and require five different Dragons for the win; no new claim about counter-event grouping."
+        }
+      ]
     }
   ],
   "remaining_families": [

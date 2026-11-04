@@ -527,3 +527,132 @@ fn f14_storm_counts_both_players_actual_casts_and_permanent_copies_bypass_token_
         assert_eq!(stats(&g, enemy_dragon), (6, 7));
     }
 }
+
+#[test]
+fn f14_call_counts_five_distinct_actual_dragons_instead_of_five_colors_on_reliquary() {
+    for p in [Player::P0, Player::P1] {
+        for one_dragon in [false, true] {
+            let mut g = scenario(p);
+            let enemy = put(&mut g, p.other(), "Marang River Regent", Zone::Battlefield);
+            let dragons = if one_dragon {
+                let relic = put(&mut g, p, "Dragonbroods' Relic", Zone::Hand);
+                g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 1];
+                cast(&mut g, relic, None);
+                drain(&mut g, None);
+                assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+                g.state.players[p.index()].mana = [1, 1, 1, 1, 1, 3];
+                act(
+                    &mut g,
+                    Action::AnnounceActivate {
+                        card: relic,
+                        ability: 1,
+                        counter_payment: Counters::default(),
+                    },
+                );
+                pay(&mut g);
+                drain(&mut g, Some(enemy));
+                assert_eq!(g.object_view(relic).zone, Zone::Graveyard);
+                assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+                assert_eq!(g.state.players[p.index()].life, 23);
+                assert_eq!(g.object_view(enemy).damage, 3);
+                let tokens: Vec<_> = g
+                    .state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter_map(|(id, o)| {
+                        (o.zone == Zone::Battlefield && o.controller == p && o.is_token())
+                            .then_some(id as CardId)
+                    })
+                    .collect();
+                assert_eq!(tokens.len(), 1);
+                let token = tokens[0];
+                assert_eq!(g.object_view(token).name, "Reliquary Dragon");
+                assert_eq!(g.object_view(token).colors, 31);
+                assert_eq!(stats(&g, token), (4, 4));
+                assert!(g
+                    .keywords(token)
+                    .contains(Keywords::FLYING.union(Keywords::LIFELINK)));
+                vec![token]
+            } else {
+                [
+                    "Twinmaw Stormbrood",
+                    "Marang River Regent",
+                    "Scavenger Regent",
+                    "Stormscale Scion",
+                    "Sagu Wildling",
+                ]
+                .into_iter()
+                .enumerate()
+                .map(|(color, name)| {
+                    let id = put(&mut g, p, name, Zone::Battlefield);
+                    assert_eq!(g.object_view(id).colors, 1 << color, "{name}");
+                    id
+                })
+                .collect::<Vec<_>>()
+            };
+            let call = put(&mut g, p, "Call the Spirit Dragons", Zone::Hand);
+            g.state.players[p.index()].mana = [1, 1, 1, 1, 1, 0];
+            cast(&mut g, call, None);
+            drain(&mut g, None);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            for &dragon in &dragons {
+                assert!(g.keywords(dragon).contains(Keywords::INDESTRUCTIBLE));
+            }
+            assert!(!g.keywords(enemy).contains(Keywords::INDESTRUCTIBLE));
+            g.begin_step(Step::Upkeep);
+            g.advance_replacements(false);
+            g.give_priority();
+            for color in 0..5 {
+                let dragon = dragons[if one_dragon { 0 } else { color }];
+                let choice = Action::ChooseColorCounter {
+                    object: g.object_ref(dragon),
+                };
+                let mut selected = false;
+                for _ in 0..24 {
+                    let actions = g.legal_actions();
+                    if actions.contains(&choice) {
+                        if color == 1 {
+                            let object = g.object_ref(enemy);
+                            reject(&mut g, Action::ChooseColorCounter { object });
+                        }
+                        if color == 0 {
+                            checked(&mut g, choice.clone());
+                        } else {
+                            act(&mut g, choice.clone());
+                        }
+                        selected = true;
+                        break;
+                    }
+                    let next = actions
+                        .into_iter()
+                        .find(|a| {
+                            matches!(
+                                a,
+                                Action::Pass
+                                    | Action::PutTrigger { .. }
+                                    | Action::FinishStackTargets
+                            )
+                        })
+                        .unwrap_or_else(|| {
+                            panic!("explicit color choice required: {:?}", g.state.pending)
+                        });
+                    act(&mut g, next);
+                }
+                assert!(selected, "24-action color choice budget");
+            }
+            if one_dragon {
+                drain(&mut g, None);
+                assert_eq!(g.counter_count(dragons[0], CounterKind::PlusOne), 5);
+                assert_eq!(stats(&g, dragons[0]), (9, 9));
+                assert_eq!(g.outcome(), None);
+            } else {
+                assert_eq!(g.outcome(), Some(Outcome::Winner(p)));
+                for dragon in dragons {
+                    assert_eq!(g.counter_count(dragon, CounterKind::PlusOne), 1);
+                }
+            }
+            assert_eq!(g.counter_count(enemy, CounterKind::PlusOne), 0);
+        }
+    }
+}
