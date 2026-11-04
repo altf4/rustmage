@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+  "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
   "status": "whole-set acceptance pending",
   "locally_verified_cards": 187,
   "newly_implemented": 76,
@@ -288,7 +288,7 @@
     "java_verified": true,
     "catalogue_version": "9a8164380b9b17b4d9cacf2adef314bd9d0e33b14a6d936bc9834ba2aff8284b"
   },
-  "active_engine_dependency": "E:TOKEN_ENTRY_COUNTERS(85) repaired;102/102 focused scenarios and lint pass. First full run found new gated token stub copy-limit header; header corrected and factory rejection contract passes. Fresh release acceptance/reviews/warm pending; cards held at187.",
+  "active_engine_dependency": null,
   "engine83_card_repair": {
     "card": "Aggressive Negotiations",
     "reason": "Restored after dedicated true nonland predicate rejects artifact/enchantment lands; mandatory reveal/exact refs/source-independent exile/counter continuation/owned branches verified.",
@@ -299,5 +299,6 @@
     "schema_report": "<cache>/rustmage-tdm/schema201-first/native.json",
     "schema_cases": 4
   },
-  "engine_acceptance": "docs/tdm-engine84-acceptance.json"
+  "engine_acceptance": "docs/tdm-engine85-acceptance.json",
+  "engine85_card_gate": "Shared fix accepted; per-author cache warms required before resumed cards. No count increase from drafted/gated cards."
 }

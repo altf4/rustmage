@@ -2,7 +2,7 @@
   "schema": 1,
   "dependency": "E:TOKEN_ENTRY_COUNTERS",
   "audit_group": 85,
-  "status": "Token header contract repaired and passing;102 shared-engine focused cases and lint remain passing; fresh full release acceptance and final reviews pending",
+  "status": "Accepted engine85 at11458ee5da5462a52f31224f2afc0dd74838ecbc; full9/9,4482 native and10 Python pass; two independent final approvals",
   "accepted_prior_engine": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
   "reproduction": {
     "report": "/home/altf4/.cache/rustmage-tdm/tdm-globe-token-entry-diagnostic/native.json",
@@ -247,5 +247,6 @@
     "compile_seconds": 26.135898043983616,
     "execution_seconds": 0.03295104898279533,
     "engine_sources_unchanged": true
-  }
+  },
+  "full_acceptance": "docs/tdm-engine85-acceptance.json"
 }
