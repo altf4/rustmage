@@ -94,9 +94,9 @@ def main():
     mode.add_argument('--check', action='store_true')
     args = parser.parse_args()
     try:
-        expected = encoded(ROOT)
-        path = ROOT/MANIFEST
         if args.write:
+            expected = encoded(ROOT)
+            path = ROOT/MANIFEST
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes(expected)
         else:

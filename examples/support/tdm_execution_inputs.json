@@ -325,7 +325,7 @@
     "data/supplemental/card-oracle-facts.json": "2b307ba017fec770dca27ced96ad312d28c75f4b8ba3844ca2a69e900e4a77aa",
     "examples/support/tdm_game_decks.json": "2daf20c80bb409b7f241680b990b39a1177101dd45e35eaa48fffc913d5fb12e",
     "examples/tdm_games.rs": "d5ad8e7893c4ff6b5c938fa97d806e78723f085895ba3c5a20fc5a3c5f0a07f4",
-    "scripts/tdm_execution_inputs.py": "c4c4944f2afbac256038420c2f5e04d24f4e638138be49c4bc2b78aebd2b93fc",
+    "scripts/tdm_execution_inputs.py": "354c57b93d69a56e6443b53062da1a69a7d990a372906ea1508182753e0b044b",
     "src/bin/benchmark.rs": "132e6732f4c2c608fa220caa4f7764ce79af3a38f58e25353182fa13b8665ed2",
     "src/bin/coverage.rs": "281e3fefae34d3134bef6fa1c9a779fc364a8a11b6cef26d1f970c55e553ce45",
     "src/bin/rustmage.rs": "d3a31dac86212f72adacb2b3bd5ae0247fddc915aa4a76e052108322f116f3a2",
