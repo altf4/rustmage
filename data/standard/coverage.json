@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "ed682cc48d8f7bcf8a389f39e258f14cac781de429cee82bc4bce81858edd20d",
+  "catalogue_version": "057798ccdadbdce278288b99d131999da68e557691142f679a8ba6e81cfa5601",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3281,
-  "implemented_total": 3288,
+  "implemented_standard_cards": 3290,
+  "implemented_total": 3297,
   "token_definitions": 157,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -162,8 +162,8 @@
     },
     "tdm": {
       "total": 264,
-      "complete": 250,
-      "gated": 14
+      "complete": 259,
+      "gated": 5
     },
     "tla": {
       "total": 278,
@@ -35081,8 +35081,8 @@
     {
       "name": "Tempest Hawk",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/tempest_hawk.rs",
       "set": "tdm"
     },
@@ -35209,8 +35209,8 @@
     {
       "name": "Temur Monument",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/temur_monument.rs",
       "set": "tdm"
     },
@@ -35409,8 +35409,8 @@
     {
       "name": "Tersa Lightshatter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/tersa_lightshatter.rs",
       "set": "tdm"
     },
@@ -36185,8 +36185,8 @@
     {
       "name": "The Sibsig Ceremony",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/the_sibsig_ceremony.rs",
       "set": "tdm"
     },
@@ -36849,8 +36849,8 @@
     {
       "name": "Thunder of Unity",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/thunder_of_unity.rs",
       "set": "tdm"
     },
@@ -37377,8 +37377,8 @@
     {
       "name": "Trade Route Envoy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/trade_route_envoy.rs",
       "set": "tdm"
     },
@@ -37521,8 +37521,8 @@
     {
       "name": "Traveling Botanist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/traveling_botanist.rs",
       "set": "tdm"
     },
@@ -39089,8 +39089,8 @@
     {
       "name": "Venerated Stormsinger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/venerated_stormsinger.rs",
       "set": "tdm"
     },
@@ -39225,8 +39225,8 @@
     {
       "name": "Veteran Ice Climber",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/veteran_ice_climber.rs",
       "set": "tdm"
     },

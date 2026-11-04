@@ -1,9 +1,9 @@
 {
   "schema": 1,
   "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
-  "status": "258/276 physical cards locally whole-verified and integrated; full-set/game/PR acceptance remains pending",
-  "locally_verified_cards": 258,
-  "newly_implemented": 124,
+  "status": "267/276 physical cards locally whole-verified and integrated; full-set/game/PR acceptance remains pending",
+  "locally_verified_cards": 267,
+  "newly_implemented": 133,
   "previously_admitted_verified": 134,
   "integrations": [
     {
@@ -488,9 +488,34 @@
       ],
       "engine_core_fresh": true,
       "focused_integration_clippy": "<cache>/rustmage-tdm/post86-root-storm-interaction-1793826234671093142/root_storm_interaction/clippy-terminal.json"
+    },
+    {
+      "source_commits": [
+        "ce4a590b13814bb42e86bfd192b35e0fcd7a0cd7"
+      ],
+      "root_commits": [
+        "64903c7f5"
+      ],
+      "whole_cards": 9,
+      "newly_implemented": 9,
+      "previously_admitted_verified": 0,
+      "regenerated": true,
+      "validation": [
+        {
+          "sha256": "8481a3d847a4cf960154ecba5ea5f28d94fa5cfb2925ad0711b88ab0f4c4ef19",
+          "terminal": true,
+          "success": true,
+          "cases": 42,
+          "compile_seconds": 4.829512475000229,
+          "execution_seconds": 0.04165450902655721,
+          "report": "<cache>/rustmage-tdm/post86-root-final-additional-1793827557772888247/tdm_cards_s_z_additional/native.json"
+        }
+      ],
+      "engine_core_fresh": true,
+      "additional_assertion": "The real sixty-Hawk Standard constructor succeeds; unlimited copies are ordinary legal admission."
     }
   ],
-  "remaining_physical_cards": 18,
+  "remaining_physical_cards": 9,
   "source_verification": {
     "definitions": 5489,
     "source_blobs": 2713,
@@ -2600,6 +2625,15 @@
       "new_implementation": true
     },
     {
+      "name": "Tempest Hawk",
+      "oracle_id": "7423b3b9-56eb-4cf2-8ada-135918219c4b",
+      "evidence": "docs/tdm-cards-s-z-additional-evidence.json",
+      "definition": "src/card_definitions/tdm/tempest_hawk.rs",
+      "definition_sha256": "c4c99236a7515cdf2a875b1f61bc935baf4517781c03dd76833d0bbf41c455c8",
+      "provenance_sha256": "0d8b639ed2bc92cdb52f005891cc6a06776085b3bb82b61999e0c1aca32a19f3",
+      "new_implementation": true
+    },
+    {
       "name": "Temur Battlecrier",
       "oracle_id": "fadf984c-c224-432a-87b9-b34f929b8409",
       "evidence": "docs/tdm-cards-s-z-evidence.json",
@@ -2618,6 +2652,15 @@
       "new_implementation": false
     },
     {
+      "name": "Temur Monument",
+      "oracle_id": "5464d5ae-5be5-4e52-b9d0-ddce48fd93b3",
+      "evidence": "docs/tdm-cards-s-z-additional-evidence.json",
+      "definition": "src/card_definitions/tdm/temur_monument.rs",
+      "definition_sha256": "995b721a7e538a32fe8e3a575f594bb73f3724e64904d37c6851280ab7208e25",
+      "provenance_sha256": "b9be02755be57156b7e6fedbfcc9d9601e5a2d39c47e0689681f46b67848324e",
+      "new_implementation": true
+    },
+    {
       "name": "Temur Tawnyback",
       "oracle_id": "889d26d6-9e6c-4cc0-8e8e-dd932f705a20",
       "evidence": "docs/tdm-cards-s-z-evidence.json",
@@ -2627,12 +2670,30 @@
       "new_implementation": false
     },
     {
+      "name": "Tersa Lightshatter",
+      "oracle_id": "9918eb7b-054e-4b1c-afc7-1163ab642d50",
+      "evidence": "docs/tdm-cards-s-z-additional-evidence.json",
+      "definition": "src/card_definitions/tdm/tersa_lightshatter.rs",
+      "definition_sha256": "48ea5c21d8e8d1e8ea8c1ec75622a7399f76751c5ceb555a3be7176c81c6188d",
+      "provenance_sha256": "37329d6ca1961da66e1045157532173e8e23b5b3eb49ad111deda41283bd6256",
+      "new_implementation": true
+    },
+    {
       "name": "Teval, Arbiter of Virtue",
       "oracle_id": "f6cf359a-91cb-4b3c-8837-be53e4ed9c93",
       "evidence": "docs/tdm-cards-s-z-evidence.json",
       "definition": "src/card_definitions/tdm/teval_arbiter_of_virtue.rs",
       "definition_sha256": "eba1c160b61af988cea9c073e588c9af6479682f124006f71621592cef945aef",
       "provenance_sha256": "3b89371581cff5e9f87d3e946516f0bd8f9e25219a7da621dfc036b4aaaf77b9",
+      "new_implementation": true
+    },
+    {
+      "name": "The Sibsig Ceremony",
+      "oracle_id": "bbdb731d-c533-48ef-b82a-cf1a8ba36208",
+      "evidence": "docs/tdm-cards-s-z-additional-evidence.json",
+      "definition": "src/card_definitions/tdm/the_sibsig_ceremony.rs",
+      "definition_sha256": "a20d50bac4bffd6153c90dcc690ab859b627813dffd3e3fb02dbf5a748858e7b",
+      "provenance_sha256": "975ac72cb6c55cc67f4a68f17ff9ae31cfd331d5fd95fd4ffe7485f81379928f",
       "new_implementation": true
     },
     {
@@ -2645,6 +2706,24 @@
       "new_implementation": false
     },
     {
+      "name": "Thunder of Unity",
+      "oracle_id": "8419d1d5-bb0e-4a2d-bb6f-67957d035dde",
+      "evidence": "docs/tdm-cards-s-z-additional-evidence.json",
+      "definition": "src/card_definitions/tdm/thunder_of_unity.rs",
+      "definition_sha256": "fde6ed85229df376169b4abfa09745dac62ba8d8f959ea832af607820b24ca5b",
+      "provenance_sha256": "8c1814c848db279b12751192d555220681037bc18261e0dd378c1bf38b0d2137",
+      "new_implementation": true
+    },
+    {
+      "name": "Trade Route Envoy",
+      "oracle_id": "95d51048-be32-4c5f-8b75-fca3a891c9d6",
+      "evidence": "docs/tdm-cards-s-z-additional-evidence.json",
+      "definition": "src/card_definitions/tdm/trade_route_envoy.rs",
+      "definition_sha256": "350c061e3351e7a6e23811c7e4758f7db45dd380e3861e6c3ab29fda77249e3a",
+      "provenance_sha256": "5d38e0d1df7d4884c46cfcc30a898407068ba0fd11c558781b52320eec8863e9",
+      "new_implementation": true
+    },
+    {
       "name": "Tranquil Cove",
       "oracle_id": "5d641bf6-0f93-4189-8dc1-ec7ea446dade",
       "evidence": "docs/tdm-cards-s-z-evidence.json",
@@ -2652,6 +2731,15 @@
       "definition_sha256": "f34728a32aba77c99a7f9c4a520bc1f4792bf7fcb5cba1002fe09589c898d213",
       "provenance_sha256": "7a11798a7fc0d52ce73c0deef6b0f0d6de671f73b3854d72d74bb0fd4af755bd",
       "new_implementation": false
+    },
+    {
+      "name": "Traveling Botanist",
+      "oracle_id": "14934ab0-41ab-44f8-bb28-2b0457eb6f5f",
+      "evidence": "docs/tdm-cards-s-z-additional-evidence.json",
+      "definition": "src/card_definitions/tdm/traveling_botanist.rs",
+      "definition_sha256": "081748b5f0e8d6bb0eaebc3b0099de115315c41e4ffbb4c65ad665cd6f22e460",
+      "provenance_sha256": "8cef9d0e1b892a06540ac6f98e59aa3139107fd6ca06382bde21d315efa127d8",
+      "new_implementation": true
     },
     {
       "name": "Twin Bolt",
@@ -2753,6 +2841,24 @@
       "new_implementation": true
     },
     {
+      "name": "Venerated Stormsinger",
+      "oracle_id": "4aff2f31-619f-406e-b2c9-a2c733c04bc4",
+      "evidence": "docs/tdm-cards-s-z-additional-evidence.json",
+      "definition": "src/card_definitions/tdm/venerated_stormsinger.rs",
+      "definition_sha256": "29750a1b6804ac2bbccb0625a7b59db1f9c4542b7ed65db298a40d143641d2b7",
+      "provenance_sha256": "8f6f6e337b89155fb8352ffa616520abd1a99fb42023072ae04747df288d873c",
+      "new_implementation": true
+    },
+    {
+      "name": "Veteran Ice Climber",
+      "oracle_id": "ccaadf8d-22c0-4139-b734-03ac2fcb4494",
+      "evidence": "docs/tdm-cards-s-z-additional-evidence.json",
+      "definition": "src/card_definitions/tdm/veteran_ice_climber.rs",
+      "definition_sha256": "8660840886e2bfabbb52cc64dc1fbdb4b9945d18a63f478fd5f72858e5f9adff",
+      "provenance_sha256": "06859c44fe2085ae62c72c3465999dc5967db44db104be35f9976611c5e1206a",
+      "new_implementation": true
+    },
+    {
       "name": "Wail of War",
       "oracle_id": "fc0abdf3-3a88-4cb2-ba79-35fcaebbf7d2",
       "evidence": "docs/tdm-cards-s-z-evidence.json",
@@ -2844,15 +2950,12 @@
     }
   ],
   "latest_root_focus": {
-    "reports": [
-      "<cache>/rustmage-tdm/post86-root-final-ag-activations-1793826139821205886/terminal.json",
-      "<cache>/rustmage-tdm/post86-root-storm-interaction-1793826234671093142/terminal.json"
-    ],
-    "card_cases": 214,
-    "set_interaction_cases": 4,
+    "report": "<cache>/rustmage-tdm/post86-root-final-additional-1793827557772888247/terminal.json",
+    "sha256": "418b470b3a9b73a6d2290e0b1139353de9400ed22952880839557d705bbc4c0a",
+    "cases": 50,
     "engine_core_fresh_all_targets": true,
-    "clippy_exit": 0,
-    "failure_history": "Initial newF14 assumed a single trigger required manualPutTrigger. The singleton was already onstack; correctedtestinspectsactualcapturedamount2 andownedPass. Card143/71 remainedpassing; only4interactioncases rerun with allthree targetslint."
+    "inputs_unchanged": true,
+    "clippy_exit": 0
   },
   "additional_synthetic_completion": {
     "identity": "@token/tdm-reliquary-dragon",
@@ -3114,5 +3217,10 @@
       "whole_card_printed_face_evidence": "docs/tdm-cards-s-z-evidence.json"
     }
   ],
-  "verified_omen_pair_count": 13
+  "verified_omen_pair_count": 13,
+  "closed_acceptance_proof_gaps": {
+    "F08-trigger-copy-qualification": "docs/tdm-set-search-mode-interactions-evidence.json",
+    "F12-paired-hidden-search-frames": "docs/tdm-set-search-mode-interactions-evidence.json",
+    "root_three_case_report": "<cache>/rustmage-tdm/post86-root-final-additional-1793827557772888247/tdm_set_search_modes/native.json"
+  }
 }

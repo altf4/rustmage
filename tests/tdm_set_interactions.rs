@@ -200,9 +200,10 @@ fn f02_renew_funds_renew_mixed_kinds_and_finality_controls_host_death_transfer()
             assert_eq!(g.object_view(assistant).zone, Zone::Exile);
             assert_eq!(g.state.players[p.index()].mana, [0; 6]);
             assert_eq!(g.counter_count(veteran, CounterKind::Lifelink), 1);
-            assert!(g
-                .keywords(veteran)
-                .contains(Keywords::TRAMPLE.union(Keywords::LIFELINK)));
+            assert!(
+                g.keywords(veteran)
+                    .contains(Keywords::TRAMPLE.union(Keywords::LIFELINK))
+            );
             assert_eq!(stats(&g, veteran), (7, 7));
             assert_eq!(
                 treasures(&g).len(),
@@ -570,9 +571,10 @@ fn f14_call_counts_five_distinct_actual_dragons_instead_of_five_colors_on_reliqu
                 assert_eq!(g.object_view(token).name, "Reliquary Dragon");
                 assert_eq!(g.object_view(token).colors, 31);
                 assert_eq!(stats(&g, token), (4, 4));
-                assert!(g
-                    .keywords(token)
-                    .contains(Keywords::FLYING.union(Keywords::LIFELINK)));
+                assert!(
+                    g.keywords(token)
+                        .contains(Keywords::FLYING.union(Keywords::LIFELINK))
+                );
                 vec![token]
             } else {
                 [
@@ -654,5 +656,108 @@ fn f14_call_counts_five_distinct_actual_dragons_instead_of_five_colors_on_reliqu
             }
             assert_eq!(g.counter_count(enemy, CounterKind::PlusOne), 0);
         }
+    }
+}
+
+#[test]
+fn f16_actual_cutter_still_creates_monk_but_creature_equipment_cannot_attach() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let cutter = put(&mut g, p, "Cori-Steel Cutter", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 1];
+        cast(&mut g, cutter, None);
+        drain(&mut g, None);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        // External animation compatibility fixture. The actual Cutter definition
+        // and its printed token/attachment program are never overlaid.
+        let source = g.object_ref(cutter);
+        g.change_object_form(
+            source,
+            AnimationSpec {
+                artifact: false,
+                creature_types: AnimationCreatureTypes::Unchanged,
+                base: Some((3, 3)),
+                keywords: Keywords::NONE,
+                duration: AnimationDuration::EndOfTurn,
+            },
+            characteristic_layers::AnimationTypeMode::AddCreature,
+        );
+        assert_ne!(g.object_view(cutter).kinds & 1, 0);
+        assert!(g.has_subtype(cutter, "Equipment"));
+        let mox = put(&mut g, p, "Mox Jasper", Zone::Hand);
+        cast(&mut g, mox, None);
+        let mut complete = false;
+        for _ in 0..64 {
+            if g.state.pending == Pending::Priority
+                && g.state.stack.is_empty()
+                && g.state.resolving.is_none()
+                && g.state.pending_triggers.is_empty()
+            {
+                complete = true;
+                break;
+            }
+            let actions = g.legal_actions();
+            assert!(
+                !actions.contains(&Action::ChooseOptional { accept: true }),
+                "a creature Equipment cannot offer the impossible attachment"
+            );
+            let action = actions
+                .into_iter()
+                .find(|a| {
+                    matches!(
+                        a,
+                        Action::ChooseOptional { accept: false }
+                            | Action::Pass
+                            | Action::PutTrigger { .. }
+                            | Action::FinishTargets
+                            | Action::FinishStackTargets
+                            | Action::ChooseReplacement { .. }
+                    )
+                })
+                .unwrap_or_else(|| {
+                    panic!("explicit Cutter choice required: {:?}", g.state.pending)
+                });
+            act(&mut g, action);
+        }
+        assert!(complete, "64-action animated Equipment budget");
+        let monks: Vec<_> = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, o)| {
+                (o.zone == Zone::Battlefield
+                    && o.controller == p
+                    && o.is_token()
+                    && o.card == Card::from_name("@token/tdm-monk-prowess").unwrap())
+                .then_some(id as CardId)
+            })
+            .collect();
+        assert_eq!(monks.len(), 1);
+        let monk = monks[0];
+        assert_eq!(g.object_view(cutter).attached_to, None);
+        assert_eq!(stats(&g, cutter), (3, 3));
+        assert_eq!(stats(&g, monk), (1, 1));
+        assert_eq!(g.object_view(monk).colors, 1);
+        // Prowess is proved below by the actual third noncreature spell.
+        let whisper = put(&mut g, p, "Unending Whisper", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
+        cast(&mut g, whisper, None);
+        drain(&mut g, None);
+        assert_eq!(stats(&g, monk), (2, 2));
+        assert_eq!(stats(&g, cutter), (3, 3));
+        assert_eq!(
+            g.state
+                .objects
+                .iter()
+                .filter(|o| o.zone == Zone::Battlefield && o.controller == p && o.is_token())
+                .count(),
+            1
+        );
+        g.state.step = Step::Cleanup;
+        g.finish_cleanup();
+        assert_eq!(stats(&g, monk), (1, 1));
+        assert_eq!(g.object_view(cutter).kinds & 1, 0);
+        assert_eq!(g.object_view(cutter).attached_to, None);
     }
 }

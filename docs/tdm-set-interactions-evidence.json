@@ -2,7 +2,7 @@
   "schema": 1,
   "set": "TDM",
   "engine_revision": "2660c86112362973c195bee4c1b85e1a968f9f3a",
-  "status": "Focused actual-card cross outcomes for F02/F06/F07/F14 pass; remainingmatrix obligations and full-set/game acceptance pending",
+  "status": "Actual focused F02/F06/F07/F14 and external-animation F16 compatibility pass; F08/F12 additional target passed integration. Final matrix reconciliation/game acceptance remain pending.",
   "new_card_completions": 0,
   "families": [
     {
@@ -170,6 +170,37 @@
           "authority_scope": "Official notes confirm multiple counters on a multicolor Dragon and require five different Dragons for the win; no new claim about counter-event grouping."
         }
       ]
+    },
+    {
+      "id": "F16",
+      "target": "tests/tdm_set_interactions.rs",
+      "case": "f16_actual_cutter_still_creates_monk_but_creature_equipment_cannot_attach",
+      "variants": "Both seats; actual paid Cutter and second actual Mox cast under external animation",
+      "scope": "Actual Cutter wiring with a clearly labeled external typed animation fixture; no overlay on Cutter and no set-only game claim for animation.",
+      "outcomes": [
+        "Paid1R Cutter counts as first cast; external animation adds Creature while retaining Artifact Equipment.",
+        "Second actual zero-cost Mox cast creates one white1/1 Monk; impossible optional attachment is not offered and source stays unattached.",
+        "A third actual U-cost Unending Whisper produces prowess2/2 without another flurry token.",
+        "Cleanup removes the animation and prowess boost, leaving an unattached noncreature Equipment and1/1 Monk."
+      ],
+      "report": "<cache>/rustmage-tdm/post86-root-cutter-animation-fixed-1793828644089778021/root_cutter_compatibility/native.json",
+      "sha256": "0133b49f87a61796e7569a448ef2767078281dff93ca086600fd933c0084e631",
+      "terminal": true,
+      "success": true,
+      "target_cases": 6,
+      "related_actual_proofs": [
+        "tests/tdm_cori_steel_cutter.rs::cutter_is_playable_in_freeform_but_stays_banned_in_standard",
+        "tests/tdm_cori_steel_cutter.rs::paid_cutter_counts_as_first_spell_then_monk_has_printed_traits_and_prowess_expires",
+        "tests/tdm_cori_steel_cutter.rs::paid_equip_moves_bonuses_and_obeys_controller_timing_payment_and_incarnation",
+        "tests/tdm_cori_steel_cutter.rs::doubled_creation_accepts_exactly_one_token_or_declines_without_moving_equipment",
+        "tests/tdm_cori_steel_cutter.rs::old_flurry_packet_creates_monk_after_source_reentry_without_attaching_new_source",
+        "tests/tdm_cori_steel_cutter.rs::actual_flurry_choice_owns_raw_index_children_and_restores_after_parent_disposal"
+      ],
+      "related_shared_proofs": [
+        "tests/tdm_optional_attachment.rs::illegal_created_recipient_keeps_the_created_token_and_continues_the_program",
+        "tests/tdm_optional_attachment.rs::optional_created_attachment_pending_state_is_owned_and_restorable"
+      ],
+      "fixture_failure_history": "Initial fixture used a nonexistent Prowess bit and PreserveCardTypes, which does not add Creature. Corrected only the fixture/API assumptions; actual prowess outcome and AddCreature animation now pass. No engine/card change."
     }
   ],
   "remaining_families": [
@@ -184,9 +215,9 @@
     "F11",
     "F12",
     "F13",
-    "F15",
-    "F16"
+    "F15"
   ],
   "whole_set_acceptance": false,
-  "remaining_F07_obligations": "All13 physical Omen pairs still require their individual complete-card matrix proofs; represented cross-card sequence passed."
+  "remaining_F07_obligations": "All13 physical Omen pairs still require their individual complete-card matrix proofs; represented cross-card sequence passed.",
+  "closed_proof_gaps": "docs/tdm-set-search-mode-interactions-evidence.json"
 }
