@@ -3,10 +3,56 @@
   "catalogue_id": 4815,
   "oracle_id": "1c995c80-3301-409b-822b-9297aa260823",
   "facts_sha256": "f39be1d32dafe7c931e8cda568c3c40c89d8b5e886c80c2fed289fc216b2817a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a51d534a751df971dfc35cac0ff336acf4598273a2e5400b95f57dd03cc27f67"
   },
-  "physical_metadata_sha256": "f9f836fcd80d9c832247a23d0390ceeffda8d78aeaec5285ac54380a6c013cd4"
+  "physical_metadata_sha256": "f9f836fcd80d9c832247a23d0390ceeffda8d78aeaec5285ac54380a6c013cd4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UreniTheSongUnending.java",
+  "java_sha256": "a426d6d95e1351a4e138636275f714ecf2f5e58fe0e72269c977d49ab5adc888",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProtectionAbility.java",
+      "sha256": "9e9e989ed896c2061243d8db26a7d6a364116b654a8477bbeb52c613e9d943cd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageMultiEffect.java",
+      "sha256": "8abe9d89813203699d21532058cc5a3ffb2fc4cd247dc3cd960a076863a96818"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetPermanentAmount.java",
+      "sha256": "f70d05ef1e34e607a85ad43dc28b6c081bf696cbbbfeaaa8a26758737775b71b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetAmount.java",
+      "sha256": "46aa93db7da9ec3cbaabb36e6d5646b1202e3a88777ba26fd034f2adfa2a1732"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/LandsYouControlCount.java",
+      "sha256": "5d39300c382c862538f44ba6be1565cb60cfed952c2a95515f3d4b9daee3483e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterCreatureOrPlaneswalkerPermanent.java",
+      "sha256": "4787afd92dc502caec536204ece84bbdc7ba99acf3d243222c152bf3fa17bce2"
+    }
+  ],
+  "rules_tests": "tests/tdm_cards_s_z.rs::final_cards_"
 }

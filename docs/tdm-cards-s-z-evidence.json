@@ -8,9 +8,9 @@
   "first_family": "Harmonize draw/bounce/combat spells",
   "started_utc": "2026-11-04T14:02:30.077837+00:00",
   "full_denominator": 92,
-  "currently_verified_new_complete": 12,
-  "currently_verified_existing_candidates": 37,
-  "pending_members": 18,
+  "currently_verified_new_complete": 18,
+  "currently_verified_existing_candidates": 40,
+  "pending_members": 0,
   "candidate_first_family_count": 4,
   "provisional_complete_flags": "New definitions remain complete=false through initial gated actual-definition PASS. Integrator then admits and repeats using normal supported put before counting. Existing baseline candidates require actual-definition evidence or accepted exact source/test/report proof reuse.",
   "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
@@ -378,7 +378,7 @@
     {
       "path": "Mage/src/main/java/mage/abilities/effects/keyword/EndureSourceEffect.java",
       "sha256": "b32a2eef10ea3a3f03e93398e6e5a6aeebd279daa5a95edda6aab6380e1d9dcd",
-      "extent": "complete body reread during current creature-family authoring"
+      "extent": "Complete reusable helper body read during final whole-card authoring."
     },
     {
       "path": "Mage/src/main/java/mage/game/permanent/token/NoFlyingSpiritWhite22Token.java",
@@ -934,6 +934,241 @@
       "path": "Mage/src/main/java/mage/watchers/common/CastSpellLastTurnWatcher.java",
       "sha256": "065a8c406c463e6b5a4fc410b932eb1784fd05f2964afc8e64c81664a518a7ce",
       "extent": "Complete reusable helper body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/u/UreniTheSongUnending.java",
+      "sha256": "a426d6d95e1351a4e138636275f714ecf2f5e58fe0e72269c977d49ab5adc888",
+      "extent": "Complete direct Java body and custom classes read during final whole-card authoring."
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/v/VoiceOfVictory.java",
+      "sha256": "0386b8825e5439b5f2e32e238ba9c8c7d54e3d55d3fe43980855c785e8fc9a21",
+      "extent": "Complete direct Java body and custom classes read during final whole-card authoring."
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/w/WarEffort.java",
+      "sha256": "3e8021aa08d46a19fbaa88f542ce0c658c588541d61b58b7c36d3f182d14dc57",
+      "extent": "Complete direct Java body and custom classes read during final whole-card authoring."
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/w/WardenOfTheGrove.java",
+      "sha256": "56ce553bfa6f989e9659b26741048e1ae11c1ca25bf74407a16c16767ef36587",
+      "extent": "Complete direct Java body and custom classes read during final whole-card authoring."
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/w/WindcragSiege.java",
+      "sha256": "fca0dd40aeb3e2aa50640a738d9bc0b009bde0a02fdf90bc783ca25056417018",
+      "extent": "Complete direct Java body and custom classes read during final whole-card authoring."
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/y/YathanRoadwatcher.java",
+      "sha256": "349ae2fbd9b039219d5eb2a5de4d9457e2693b94ff1d1db21fa7e463b8938d04",
+      "extent": "Complete direct Java body and custom classes read during final whole-card authoring."
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/y/YathanTombguard.java",
+      "sha256": "1880380dae7838ece2ca7f4402c018eb37e18d41f9c8f6c0a29d7425bc1d4e28",
+      "extent": "Complete direct Java body and custom classes read during final whole-card authoring."
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/z/ZurgosVanguard.java",
+      "sha256": "46faf9259db14fb0b31e2b7882aae04d490ce68dc2a365e7cbd10e550a4369ca",
+      "extent": "Complete direct Java body and custom classes read during final whole-card authoring."
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/z/ZurgoThundersDecree.java",
+      "sha256": "79b772f4f40da0bca7f245d631fd6b3246bb79625d5e85c7ed3060427447ca0a",
+      "extent": "Complete direct Java body and custom classes read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/MobilizeAbility.java",
+      "sha256": "84ea782ab71b1b147b349c5f5ac8b2c03ae60211c95393a2e4e994da8ee5eac8",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ruleModifying/CantCastDuringYourTurnEffect.java",
+      "sha256": "eaae2c161a24b18f272dc7b26a726f1c171f68bdf2d4ee7c3a6902ea2247a276",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+      "sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/AtTheBeginOfNextEndStepDelayedTriggeredAbility.java",
+      "sha256": "9f3272690e0ade9a48526bd13165b3015a71d8bbed9d86a997af960d5f3214a5",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/game/permanent/token/RedWarriorToken.java",
+      "sha256": "91af8e32ddafb0a605511b4fd6a3e78e00d46465b90463b47ce6c6266a38582c",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/replacement/AdditionalTriggersAttackingReplacementEffect.java",
+      "sha256": "e5679ffc20c556931f06430ebbb7238f1ed2f2cd1639dcbdcb123589bd78d929",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAnchorWordAbilitySourceEffect.java",
+      "sha256": "9469756464606dcbce7323287562980c16b0c551b2b309065d35cb322f099be6",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseModeEffect.java",
+      "sha256": "81d0232b9335b14c2cafd7c14b0090d639f41527128e85d626db02f9597fadfa",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/AsEntersBattlefieldAbility.java",
+      "sha256": "3919eac1ae9ebc0edd9decad5d293bdf0cdb4d16c516021ea3e97711f9a72ab5",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/IsStepCondition.java",
+      "sha256": "b3f0092f2f07317847908a76c367c0f02462a8e8b284cebc02a1673b15c29cc4",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/TokenPredicate.java",
+      "sha256": "3213600d28e7e1f76d66cee4f781fb3eb01627759fa9306e22c42a6f6fb880da",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/CounterAnyPredicate.java",
+      "sha256": "d9b89c5d487a1c6aede3f90e5edf474311703b231441a01a3a30b10107eb9434",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProtectionAbility.java",
+      "sha256": "9e9e989ed896c2061243d8db26a7d6a364116b654a8477bbeb52c613e9d943cd",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetPermanentAmount.java",
+      "sha256": "f70d05ef1e34e607a85ad43dc28b6c081bf696cbbbfeaaa8a26758737775b71b",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/LandsYouControlCount.java",
+      "sha256": "5d39300c382c862538f44ba6be1565cb60cfed952c2a95515f3d4b9daee3483e",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CreaturesYouControlCount.java",
+      "sha256": "17e5433bd06fd2d48cf22a5c5d105fb9081c3678b21ddad78dc78bac60281acd",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerSourceEffect.java",
+      "sha256": "07d7b0ba8fdb6f3e6eeb405c2768a37677e7fded311795af1425dc2bfdb9bbd1",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+      "sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/MillCardsCost.java",
+      "sha256": "3e9c8bda67abc80b2b699e01aa13e2cdabf44ebbec4a406dccb159ebff52e302",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+      "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/DealsDamageToAPlayerAllTriggeredAbility.java",
+      "sha256": "681832895f797fe69d7a2b867b51d49337624b5060efd04ab92e38e8086c2161",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/CantBeSacrificedSourceEffect.java",
+      "sha256": "d79fde524805cc269d9af69967a3201a3632308fa20117662295f57209f8a522",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+      "sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+      "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CastFromEverywhereSourceCondition.java",
+      "sha256": "2d091ae95c227de0b227151a9b315cf5370e50f5e0f5177f5e50d8ab3825c4ba",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessSourceEffect.java",
+      "sha256": "278acb623e2d4c4db2efdc4764512cfe0a983770512e2eb2c73afb887a193fe3",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeTargetEffect.java",
+      "sha256": "c45c32e2c47bd7f62480c732af33864bcac93ec246a9cf7e292dd32a2d10917c",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfUpkeepTriggeredAbility.java",
+      "sha256": "19d54f1b78cb52ba734fba0b70e19280b8b342d8bfa9a8e49aaeb96edccd8732",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/triggers/AtStepTriggeredAbility.java",
+      "sha256": "acaebe5709a15b181c6f315684db3969eb622d6dcc45f2994bf54c05b00d22af",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/common/FilterCreatureOrPlaneswalkerPermanent.java",
+      "sha256": "4787afd92dc502caec536204ece84bbdc7ba99acf3d243222c152bf3fa17bce2",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+      "sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/game/permanent/token/SpiritXXToken.java",
+      "sha256": "4932f0d1ba9b345e349a094d413209ad21588cae39049d7076781eff34ec12e7",
+      "extent": "Complete reusable helper body read during final whole-card authoring."
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/t/TishanasTidebinder.java",
+      "sha256": "a4d6a4e1f3048102cf755615451436c8531e25b099f1cd3464be62875764f1fd",
+      "extent": "Complete supporting native fixture Java/custom effect read; unchanged definition counters the actual Yathan reflexive packet."
     }
   ],
   "source_read_scoped_files": [
@@ -1838,10 +2073,12 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "delegated_whole_card_authoring",
+      "status": "delegated_final_handoff_root_accepted",
       "verified": false,
       "oracle_facts_sha256": "f1d12e38ae5e581cb88808218491c3dbab69034fddddaad8285038c93d8f7fa9",
-      "author": "s_z_additional"
+      "author": "s_z_additional",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json (final nine handoff)"
     },
     {
       "name": "Temur Battlecrier",
@@ -1887,10 +2124,12 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "delegated_whole_card_authoring",
+      "status": "delegated_final_handoff_root_accepted",
       "verified": false,
       "oracle_facts_sha256": "3a960222e877870c42548c57a094b67766433d2a2cc21113661f5b1a17f351bc",
-      "author": "s_z_additional"
+      "author": "s_z_additional",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json (final nine handoff)"
     },
     {
       "name": "Temur Tawnyback",
@@ -1919,10 +2158,12 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "delegated_whole_card_authoring",
+      "status": "delegated_final_handoff_root_accepted",
       "verified": false,
       "oracle_facts_sha256": "1f2cad003fbf54a126965a36a1fc6304dc0392623260b7c349ebbdd6afb112c6",
-      "author": "s_z_additional"
+      "author": "s_z_additional",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json (final nine handoff)"
     },
     {
       "name": "Teval, Arbiter of Virtue",
@@ -1952,10 +2193,12 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "delegated_whole_card_authoring",
+      "status": "delegated_final_handoff_root_accepted",
       "verified": false,
       "oracle_facts_sha256": "567f612e162ce1cd0d469890f6ac92fedc50a7de177a8bbcc7b0893fe59d5d0e",
-      "author": "s_z_additional"
+      "author": "s_z_additional",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json (final nine handoff)"
     },
     {
       "name": "Thornwood Falls",
@@ -1999,10 +2242,12 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "delegated_whole_card_authoring",
+      "status": "delegated_final_handoff_root_accepted",
       "verified": false,
       "oracle_facts_sha256": "058219b4ec67a7e27d3b8ebccc2352318bfbf4185445df438ea75cb51a73d4a8",
-      "author": "s_z_additional"
+      "author": "s_z_additional",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json (final nine handoff)"
     },
     {
       "name": "Trade Route Envoy",
@@ -2015,10 +2260,12 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "delegated_whole_card_authoring",
+      "status": "delegated_final_handoff_root_accepted",
       "verified": false,
       "oracle_facts_sha256": "0a557ca987c01559f1b6b07cfad98b59cc01e2f8f0aab06e608796fd9dd831d3",
-      "author": "s_z_additional"
+      "author": "s_z_additional",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json (final nine handoff)"
     },
     {
       "name": "Tranquil Cove",
@@ -2062,10 +2309,12 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "delegated_whole_card_authoring",
+      "status": "delegated_final_handoff_root_accepted",
       "verified": false,
       "oracle_facts_sha256": "0032fff0bcde35f23afe93aa1aa91d53a8035358e921d3a1709b7ed2f6ff726b",
-      "author": "s_z_additional"
+      "author": "s_z_additional",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json (final nine handoff)"
     },
     {
       "name": "Twin Bolt",
@@ -2332,9 +2581,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "f39be1d32dafe7c931e8cda568c3c40c89d8b5e886c80c2fed289fc216b2817a"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "f39be1d32dafe7c931e8cda568c3c40c89d8b5e886c80c2fed289fc216b2817a",
+      "evidence_family": "Final retained commanders, combat providers and entry results",
+      "admission": "New6 were false through gated22PASS; authorized six promotions then ordinary93PASS. All owned physical/face fixtures use ordinary support::put; gated adapter removed."
     },
     {
       "name": "Venerated Stormsinger",
@@ -2347,10 +2598,12 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "delegated_whole_card_authoring",
+      "status": "delegated_final_handoff_root_accepted",
       "verified": false,
       "oracle_facts_sha256": "52861ff14bc75293e627810c17d1f7208eea025b47857ef2b81a0a9503d360b2",
-      "author": "s_z_additional"
+      "author": "s_z_additional",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json (final nine handoff)"
     },
     {
       "name": "Veteran Ice Climber",
@@ -2363,10 +2616,12 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "delegated_whole_card_authoring",
+      "status": "delegated_final_handoff_root_accepted",
       "verified": false,
       "oracle_facts_sha256": "7df847193922849196e1e67b5225d4ac99110e9b1d7aae05ebbcde0be2770bc6",
-      "author": "s_z_additional"
+      "author": "s_z_additional",
+      "external_root_accepted": true,
+      "external_evidence": "docs/tdm-cards-s-z-additional-evidence.json (final nine handoff)"
     },
     {
       "name": "Voice of Victory",
@@ -2379,9 +2634,11 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "99372a3c093a7178395adb5b1a3cb65a5879dcc8e11e01744230d3cc4612738c"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "99372a3c093a7178395adb5b1a3cb65a5879dcc8e11e01744230d3cc4612738c",
+      "evidence_family": "Final retained commanders, combat providers and entry results",
+      "admission": "New6 were false through gated22PASS; authorized six promotions then ordinary93PASS. All owned physical/face fixtures use ordinary support::put; gated adapter removed."
     },
     {
       "name": "Wail of War",
@@ -2411,9 +2668,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "1ffe396aa04cd32682b09c12fcbd41f047b4bbc79d492c9f445c00bdb97420a8"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "1ffe396aa04cd32682b09c12fcbd41f047b4bbc79d492c9f445c00bdb97420a8",
+      "evidence_family": "Final retained commanders, combat providers and entry results",
+      "admission": "New6 were false through gated22PASS; authorized six promotions then ordinary93PASS. All owned physical/face fixtures use ordinary support::put; gated adapter removed."
     },
     {
       "name": "Warden of the Grove",
@@ -2426,9 +2685,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "8d4ccbc58faa773c46169c7915770c3d3f54250f7e9be6274ea0b11e7bb0c5f4"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "8d4ccbc58faa773c46169c7915770c3d3f54250f7e9be6274ea0b11e7bb0c5f4",
+      "evidence_family": "Final retained commanders, combat providers and entry results",
+      "admission": "New6 were false through gated22PASS; authorized six promotions then ordinary93PASS. All owned physical/face fixtures use ordinary support::put; gated adapter removed."
     },
     {
       "name": "Watcher of the Wayside",
@@ -2577,9 +2838,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "f5d9bd477332957388feb672212d65e0fc8b594680bf654e679ecca69100aa82"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "f5d9bd477332957388feb672212d65e0fc8b594680bf654e679ecca69100aa82",
+      "evidence_family": "Final retained commanders, combat providers and entry results",
+      "admission": "New6 were false through gated22PASS; authorized six promotions then ordinary93PASS. All owned physical/face fixtures use ordinary support::put; gated adapter removed."
     },
     {
       "name": "Wingblade Disciple",
@@ -2693,9 +2956,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "a135717cf16fc1570a9e33bf376636a231eb7a09119f2dcec03af7f3b98c27d1"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "a135717cf16fc1570a9e33bf376636a231eb7a09119f2dcec03af7f3b98c27d1",
+      "evidence_family": "Final retained commanders, combat providers and entry results",
+      "admission": "New6 were false through gated22PASS; authorized six promotions then ordinary93PASS. All owned physical/face fixtures use ordinary support::put; gated adapter removed."
     },
     {
       "name": "Yathan Tombguard",
@@ -2708,9 +2973,11 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "925cd7c6a9f929ebf8bd9e59d05fb33518bcffa86089f6eb66de8f79254d2756"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "925cd7c6a9f929ebf8bd9e59d05fb33518bcffa86089f6eb66de8f79254d2756",
+      "evidence_family": "Final retained commanders, combat providers and entry results",
+      "admission": "New6 were false through gated22PASS; authorized six promotions then ordinary93PASS. All owned physical/face fixtures use ordinary support::put; gated adapter removed."
     },
     {
       "name": "Zurgo's Vanguard",
@@ -2723,9 +2990,11 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "8bf37b9634fa8569f14aa2788934e15d15f589628d46751e44d940d6ac26a048"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "8bf37b9634fa8569f14aa2788934e15d15f589628d46751e44d940d6ac26a048",
+      "evidence_family": "Final retained commanders, combat providers and entry results",
+      "admission": "New6 were false through gated22PASS; authorized six promotions then ordinary93PASS. All owned physical/face fixtures use ordinary support::put; gated adapter removed."
     },
     {
       "name": "Zurgo, Thunder's Decree",
@@ -2738,12 +3007,14 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "c50c16138bb0572a1a932e5c9861f497a264e5a4b6aa78ced267b126fc8b3041"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "c50c16138bb0572a1a932e5c9861f497a264e5a4b6aa78ced267b126fc8b3041",
+      "evidence_family": "Final retained commanders, combat providers and entry results",
+      "admission": "New6 were false through gated22PASS; authorized six promotions then ordinary93PASS. All owned physical/face fixtures use ordinary support::put; gated adapter removed."
     }
   ],
-  "remaining": "Original92 partition: this author49wholeverified(12new/37existing), initial delegated25rootaccepted(18new/7existing), total74. Remaining18 are9retained finalcards and9transferred to G-S. Local verified bool covers this author49; external_root_accepted identifies the delegated25. Complete-set acceptance pending.",
+  "remaining": "Original92 membership has58 this-author wholeverified(18new/40existing) and34 delegated rootaccepted(27new/7existing). All printed card obligations have local/coordinated evidence; root integration of final9, full-set interactions/games/performance and two independent final published reviews remain pending.",
   "families": [
     {
       "name": "Harmonize draw/bounce/combat spells",
@@ -5455,6 +5726,1067 @@
       "elapsed_seconds": 936.453099,
       "verified_physical_cards_per_hour": 30.75434320283028,
       "measurement_scope": "This eight-card preparation/validation interval includes queued guarded runs and two fixture diagnosis/correction cycles. No simulation/all-set performance claim."
+    },
+    {
+      "name": "Final retained commanders, combat providers and entry results",
+      "status": "locally_whole_card_verified",
+      "started_utc": "2026-11-04T21:32:35.581356+00:00",
+      "engine_revision": "2660c86112362973c195bee4c1b85e1a968f9f3a",
+      "authoring_base": "eb5ab905e803390270ec72b9734bf0671d92c3af",
+      "candidate_members": 9,
+      "new_candidates": 6,
+      "existing_candidates": 3,
+      "focused_filter": "final_cards_",
+      "focused_scenario_groups": [
+        "final_cards_voice_cast_restriction_follows_controller_and_turn_but_allows_abilities",
+        "final_cards_voice_mobilizes_exactly_two_tapped_attacking_red_warriors_and_sacrifices_next_end",
+        "final_cards_war_effort_buffs_current_own_creatures_and_creates_once_per_attack_declaration",
+        "final_cards_zurgo_vanguard_cda_counts_own_creatures_in_all_zones_and_updates_for_mobilize",
+        "final_cards_zurgo_decree_mobilizes_two_and_prevents_only_the_once_delayed_sacrifice_while_present",
+        "final_cards_zurgo_decree_live_grant_qualifies_token_type_controller_and_exact_end_step",
+        "final_cards_windcrag_mardu_doubles_owned_permanent_attack_triggers_at_the_event_only",
+        "final_cards_windcrag_jeskai_upkeep_creates_exact_temporary_lifelink_haste_goblin_for_current_controller",
+        "final_cards_windcrag_entry_choice_is_owned_raw_index_restorable_and_preserves_hand_privacy",
+        "final_cards_warden_grows_at_own_end_and_excludes_self_tokens_and_opponent_entries",
+        "final_cards_warden_endure_samples_all_counter_kinds_after_entry_and_uses_source_lki_and_recipient_controller",
+        "final_cards_warden_zero_counter_endure_changes_neither_entrant_nor_token_count",
+        "final_cards_yathan_roadwatcher_mills_four_before_choosing_own_small_creature_to_return",
+        "final_cards_yathan_roadwatcher_direct_entry_does_not_mill_and_short_mill_does_not_return",
+        "final_cards_yathan_reflexive_is_separately_counterable_and_never_rebinds_departed_targets",
+        "final_cards_tombguard_has_menace_and_excludes_enemy_combat_or_own_noncombat_damage",
+        "final_cards_tombguard_triggers_per_counter_bearing_creature_and_keeps_qualification_after_damage",
+        "final_cards_ureni_paid_ten_ten_flying_can_choose_zero_targets_with_zero_or_positive_lands",
+        "final_cards_ureni_locks_positive_land_shares_then_loses_only_an_illegal_targets_share",
+        "final_cards_ureni_protection_rejects_white_and_black_targets_from_either_player_but_allows_blue",
+        "final_cards_ureni_cannot_be_blocked_by_white_or_black_fliers_but_red_flying_blocker_deals_damage",
+        "final_cards_ureni_prevents_white_and_black_combat_damage_including_deathtouch_when_blocking"
+      ],
+      "test_source_sha256": "adca3d7384601f780a1062f36b1abc0eb4e8ef8501d80017413ae533b49f36f1",
+      "cards": [
+        {
+          "name": "Ureni, the Song Unending",
+          "oracle_id": "1c995c80-3301-409b-822b-9297aa260823",
+          "oracle_full_facts": {
+            "oracle_id": "1c995c80-3301-409b-822b-9297aa260823",
+            "name": "Ureni, the Song Unending",
+            "layout": "normal",
+            "mana_cost": "{5}{G}{U}{R}",
+            "cmc": 8.0,
+            "type_line": "Legendary Creature \u2014 Spirit Dragon",
+            "oracle_text": "Flying, protection from white and from black\nWhen Ureni enters, it deals X damage divided as you choose among any number of target creatures and/or planeswalkers your opponents control, where X is the number of lands you control.",
+            "power": "10",
+            "toughness": "10",
+            "colors": [
+              "G",
+              "R",
+              "U"
+            ],
+            "color_identity": [
+              "G",
+              "R",
+              "U"
+            ],
+            "keywords": [
+              "Flying",
+              "Protection"
+            ],
+            "reference_printing": {
+              "id": "227802c0-4ff6-43a8-a850-ed0f546dc5ac",
+              "set": "tdm",
+              "collector_number": "233",
+              "released_at": "2025-04-11"
+            }
+          },
+          "definition": "src/card_definitions/tdm/ureni_the_song_unending.rs",
+          "definition_sha256": "b1bdf37436546788d480e019ae369db8473db77d91e0e0843e7178ef41b45725",
+          "provenance": "src/card_definitions/tdm/ureni_the_song_unending.json",
+          "provenance_sha256": "d1e19d132624d07088290b7f3fa528cc803aeee088914bc171c3560156430de4",
+          "baseline_candidate_complete": false,
+          "obligations": [
+            "5GUR legendary10/10SpiritDragon flying/protectionwhiteandblack; exact paid cast and intrinsic masks.",
+            "ETB zero or anynumber target enemy creatures/planeswalkers; total ownlands frozen when announced, positive shares announced andneverredistributed after targetblink orland/source departure.",
+            "Actual white/black targeting fromeitherplayer rejected inclAura, blue allowed; coloredfliers cannotblock, redflyer can; white/black combatdamage/deathtouch prevented."
+          ],
+          "native_scenarios": [
+            "final_cards_ureni_paid_ten_ten_flying_can_choose_zero_targets_with_zero_or_positive_lands",
+            "final_cards_ureni_locks_positive_land_shares_then_loses_only_an_illegal_targets_share",
+            "final_cards_ureni_protection_rejects_white_and_black_targets_from_either_player_but_allows_blue",
+            "final_cards_ureni_cannot_be_blocked_by_white_or_black_fliers_but_red_flying_blocker_deals_damage",
+            "final_cards_ureni_prevents_white_and_black_combat_damage_including_deathtouch_when_blocking"
+          ],
+          "status": "locally_whole_card_verified",
+          "admission": "New6 were false through gated22PASS; authorized six promotions then ordinary93PASS. All owned physical/face fixtures use ordinary support::put; gated adapter removed."
+        },
+        {
+          "name": "Voice of Victory",
+          "oracle_id": "b12cbda1-ac09-49eb-96b3-a4df27bc37ea",
+          "oracle_full_facts": {
+            "oracle_id": "b12cbda1-ac09-49eb-96b3-a4df27bc37ea",
+            "name": "Voice of Victory",
+            "layout": "normal",
+            "mana_cost": "{1}{W}",
+            "cmc": 2.0,
+            "type_line": "Creature \u2014 Human Bard",
+            "oracle_text": "Mobilize 2 (Whenever this creature attacks, create two tapped and attacking 1/1 red Warrior creature tokens. Sacrifice them at the beginning of the next end step.)\nYour opponents can't cast spells during your turn.",
+            "power": "1",
+            "toughness": "3",
+            "colors": [
+              "W"
+            ],
+            "color_identity": [
+              "W"
+            ],
+            "keywords": [
+              "Mobilize"
+            ],
+            "all_parts": [
+              {
+                "id": "7edc0515-a130-45a7-aa09-0e23bba41587",
+                "component": "token",
+                "name": "Warrior",
+                "type_line": "Token Creature \u2014 Warrior"
+              },
+              {
+                "id": "73f24785-c7b3-46ab-833e-666af3d86c63",
+                "component": "combo_piece",
+                "name": "Voice of Victory",
+                "type_line": "Creature \u2014 Human Bard"
+              }
+            ],
+            "reference_printing": {
+              "id": "ec3de5f4-bb55-4ab9-995f-f3e0dc22c1bb",
+              "set": "tdm",
+              "collector_number": "33",
+              "released_at": "2025-04-11"
+            }
+          },
+          "definition": "src/card_definitions/tdm/voice_of_victory.rs",
+          "definition_sha256": "27d05e07c735a0890db5e60f607fbba97849dbf7c789602abfc86a0444ce9c4e",
+          "provenance": "src/card_definitions/tdm/voice_of_victory.json",
+          "provenance_sha256": "a3e9376ce7db345925480d47a6f14e5a2c90d780de83a10f8fb9baa94d09a9f6",
+          "baseline_candidate_complete": true,
+          "obligations": [
+            "1W1/3HumanBard actualpaidcast.",
+            "Mobilize2 creates exactlytwo1/1redWarriors tapped/attacking undertriggercontroller; nextendstep sacrifice.",
+            "Opponents cannotcast onsourcecontrollers turn, ownspells and activatedmana stillallowed; currentcontroller/turn qualification."
+          ],
+          "native_scenarios": [
+            "final_cards_voice_cast_restriction_follows_controller_and_turn_but_allows_abilities",
+            "final_cards_voice_mobilizes_exactly_two_tapped_attacking_red_warriors_and_sacrifices_next_end"
+          ],
+          "status": "locally_whole_card_verified",
+          "admission": "New6 were false through gated22PASS; authorized six promotions then ordinary93PASS. All owned physical/face fixtures use ordinary support::put; gated adapter removed."
+        },
+        {
+          "name": "War Effort",
+          "oracle_id": "d9bc6841-9f71-46af-ac1f-a01caee290c1",
+          "oracle_full_facts": {
+            "oracle_id": "d9bc6841-9f71-46af-ac1f-a01caee290c1",
+            "name": "War Effort",
+            "layout": "normal",
+            "mana_cost": "{3}{R}",
+            "cmc": 4.0,
+            "type_line": "Enchantment",
+            "oracle_text": "Creatures you control get +1/+0.\nWhenever you attack, create a 1/1 red Warrior creature token that's tapped and attacking. Sacrifice it at the beginning of the next end step.",
+            "colors": [
+              "R"
+            ],
+            "color_identity": [
+              "R"
+            ],
+            "keywords": [],
+            "all_parts": [
+              {
+                "id": "7edc0515-a130-45a7-aa09-0e23bba41587",
+                "component": "token",
+                "name": "Warrior",
+                "type_line": "Token Creature \u2014 Warrior"
+              },
+              {
+                "id": "dd7f0413-c009-4c08-b877-9c1b776cbf26",
+                "component": "combo_piece",
+                "name": "War Effort",
+                "type_line": "Enchantment"
+              }
+            ],
+            "reference_printing": {
+              "id": "dd7f0413-c009-4c08-b877-9c1b776cbf26",
+              "set": "tdm",
+              "collector_number": "131",
+              "released_at": "2025-04-11"
+            }
+          },
+          "definition": "src/card_definitions/tdm/war_effort.rs",
+          "definition_sha256": "ec516f1496b43bda435941363f984c7f6f99118e286463acfbc08171093ca572",
+          "provenance": "src/card_definitions/tdm/war_effort.json",
+          "provenance_sha256": "624a8c1e3381ce593eb779edf78a6503ede3ba4d066e7bcd7b6aa69f52070139",
+          "baseline_candidate_complete": false,
+          "obligations": [
+            "3R enchantment actualpaidcast.",
+            "Own currentcreatures get+1/+0 onbothplayers turns, inclnewtokens; enemy excluded andsource departure removesbonus.",
+            "Once perattackdeclaration creates one tappedattacking1/1redWarrior, nextendstepsacrifice source-independent; multipleattackers do not multiply it."
+          ],
+          "native_scenarios": [
+            "final_cards_war_effort_buffs_current_own_creatures_and_creates_once_per_attack_declaration"
+          ],
+          "status": "locally_whole_card_verified",
+          "admission": "New6 were false through gated22PASS; authorized six promotions then ordinary93PASS. All owned physical/face fixtures use ordinary support::put; gated adapter removed."
+        },
+        {
+          "name": "Warden of the Grove",
+          "oracle_id": "13bf8103-3db3-4ee6-a6bb-441aabfd9e41",
+          "oracle_full_facts": {
+            "oracle_id": "13bf8103-3db3-4ee6-a6bb-441aabfd9e41",
+            "name": "Warden of the Grove",
+            "layout": "normal",
+            "mana_cost": "{2}{G}",
+            "cmc": 3.0,
+            "type_line": "Creature \u2014 Hydra",
+            "oracle_text": "At the beginning of your end step, put a +1/+1 counter on this creature.\nWhenever another nontoken creature you control enters, it endures X, where X is the number of counters on this creature. (Put X +1/+1 counters on the creature that entered or create an X/X white Spirit creature token.)",
+            "power": "2",
+            "toughness": "2",
+            "colors": [
+              "G"
+            ],
+            "color_identity": [
+              "G"
+            ],
+            "keywords": [
+              "Endure"
+            ],
+            "all_parts": [
+              {
+                "id": "2e3d7969-5dcb-434d-8a8b-fb16da288bc4",
+                "component": "combo_piece",
+                "name": "Warden of the Grove",
+                "type_line": "Creature \u2014 Hydra"
+              },
+              {
+                "id": "8ea4fc2f-95a4-49d0-b06e-b88d19637737",
+                "component": "token",
+                "name": "Spirit",
+                "type_line": "Token Creature \u2014 Spirit"
+              }
+            ],
+            "reference_printing": {
+              "id": "2414db96-0e2b-4f7c-9b97-41f8e310b752",
+              "set": "tdm",
+              "collector_number": "166",
+              "released_at": "2025-04-11"
+            }
+          },
+          "definition": "src/card_definitions/tdm/warden_of_the_grove.rs",
+          "definition_sha256": "464a7bf8ac9b7ec7d87f0ffbe2e80a6ff7645c534b7cb799fe7c4b1e9ccecc65",
+          "provenance": "src/card_definitions/tdm/warden_of_the_grove.json",
+          "provenance_sha256": "43b472b9c82be81e8f66e7c8a96509d9e48f6ce7dea3fb4e590651a325eeea19",
+          "baseline_candidate_complete": false,
+          "obligations": [
+            "2G2/2Hydra actualpaidcast.",
+            "Ownendstep adds1permanentpluscounter; enemyendstep doesnot.",
+            "Other ownnontokencreature entry endures current all-kind sourcecountertotal, or sourcefinalLKI; self/token/enemy excluded; zero createsnothing.",
+            "Actualcounter/token branches, currentrecipientcontroller chooses/receivesSpirit, sampled9/9whiteSpirit doesnotfly, newsourceincarnation100counters doesnotrebind."
+          ],
+          "native_scenarios": [
+            "final_cards_warden_grows_at_own_end_and_excludes_self_tokens_and_opponent_entries",
+            "final_cards_warden_endure_samples_all_counter_kinds_after_entry_and_uses_source_lki_and_recipient_controller",
+            "final_cards_warden_zero_counter_endure_changes_neither_entrant_nor_token_count"
+          ],
+          "status": "locally_whole_card_verified",
+          "admission": "New6 were false through gated22PASS; authorized six promotions then ordinary93PASS. All owned physical/face fixtures use ordinary support::put; gated adapter removed."
+        },
+        {
+          "name": "Windcrag Siege",
+          "oracle_id": "64df560a-905f-45d1-bc70-14d99e3112d3",
+          "oracle_full_facts": {
+            "oracle_id": "64df560a-905f-45d1-bc70-14d99e3112d3",
+            "name": "Windcrag Siege",
+            "layout": "normal",
+            "mana_cost": "{1}{R}{W}",
+            "cmc": 3.0,
+            "type_line": "Enchantment",
+            "oracle_text": "As this enchantment enters, choose Mardu or Jeskai.\n\u2022 Mardu \u2014 If a creature attacking causes a triggered ability of a permanent you control to trigger, that ability triggers an additional time.\n\u2022 Jeskai \u2014 At the beginning of your upkeep, create a 1/1 red Goblin creature token. It gains lifelink and haste until end of turn.",
+            "colors": [
+              "R",
+              "W"
+            ],
+            "color_identity": [
+              "R",
+              "W"
+            ],
+            "keywords": [],
+            "all_parts": [
+              {
+                "id": "0c7f299e-4774-4e8b-bb0e-db27d57d2621",
+                "component": "token",
+                "name": "Goblin",
+                "type_line": "Token Creature \u2014 Goblin"
+              },
+              {
+                "id": "235f5564-0928-411f-ade8-53838890f720",
+                "component": "combo_piece",
+                "name": "Windcrag Siege",
+                "type_line": "Enchantment"
+              }
+            ],
+            "reference_printing": {
+              "id": "235f5564-0928-411f-ade8-53838890f720",
+              "set": "frc",
+              "collector_number": "52",
+              "released_at": "2026-10-02"
+            }
+          },
+          "definition": "src/card_definitions/frc/windcrag_siege.rs",
+          "definition_sha256": "c0ae67be7e40af3e34963f8ad15d47b38755019ab930f3284c624dd525da3f4b",
+          "provenance": "src/card_definitions/frc/windcrag_siege.json",
+          "provenance_sha256": "479c2ba03416719042a43b4ac7ea8ca72c47e8cc3640a1801da964f0cea9df51",
+          "baseline_candidate_complete": false,
+          "obligations": [
+            "1RW enchantment actualpaidcast, mandatory Mardu/Jeskai as-entry named choice; raw/index/restore/parentdisposal/privatehand root.",
+            "Mardu duplicates ownedpermanent attack triggers, including literalplayerAttackDeclared andselfMobilize; eventtime sourceeligibility survivesdeparture aftertriggering.",
+            "Jeskai only ownupkeep creates1/1redGoblin withlifelinkandhasteEOT; actualsicktokenattacks/lifelinks, cleanupremoveskeywords, sourcecurrentcontroller qualifies."
+          ],
+          "native_scenarios": [
+            "final_cards_windcrag_mardu_doubles_owned_permanent_attack_triggers_at_the_event_only",
+            "final_cards_windcrag_jeskai_upkeep_creates_exact_temporary_lifelink_haste_goblin_for_current_controller",
+            "final_cards_windcrag_entry_choice_is_owned_raw_index_restorable_and_preserves_hand_privacy"
+          ],
+          "status": "locally_whole_card_verified",
+          "admission": "New6 were false through gated22PASS; authorized six promotions then ordinary93PASS. All owned physical/face fixtures use ordinary support::put; gated adapter removed."
+        },
+        {
+          "name": "Yathan Roadwatcher",
+          "oracle_id": "0c3d86b6-5dcd-4016-9b4a-d4f66b1e963f",
+          "oracle_full_facts": {
+            "oracle_id": "0c3d86b6-5dcd-4016-9b4a-d4f66b1e963f",
+            "name": "Yathan Roadwatcher",
+            "layout": "normal",
+            "mana_cost": "{1}{W}{B}{G}",
+            "cmc": 4.0,
+            "type_line": "Creature \u2014 Human Scout",
+            "oracle_text": "When this creature enters, if you cast it, mill four cards. When you do, return target creature card with mana value 3 or less from your graveyard to the battlefield.",
+            "power": "3",
+            "toughness": "3",
+            "colors": [
+              "B",
+              "G",
+              "W"
+            ],
+            "color_identity": [
+              "B",
+              "G",
+              "W"
+            ],
+            "keywords": [
+              "Mill"
+            ],
+            "reference_printing": {
+              "id": "8e77339b-dd82-481c-9ee2-4156ca69ad35",
+              "set": "tdm",
+              "collector_number": "236",
+              "released_at": "2025-04-11"
+            }
+          },
+          "definition": "src/card_definitions/tdm/yathan_roadwatcher.rs",
+          "definition_sha256": "20df5c75b22287ec0d3b6798938276b38c85032dab60827c2a0354442e5aad93",
+          "provenance": "src/card_definitions/tdm/yathan_roadwatcher.json",
+          "provenance_sha256": "2e826ced53b1e5f3e5a481ef1d5bea9022879f83e509522c1bbfe8584224f0d5",
+          "baseline_candidate_complete": false,
+          "obligations": [
+            "1WBG3/3HumanScout actualpaidcast.",
+            "Onlyifcast, mill4available; separate exactfourreflexive chooses ownGYcreatureMV<=3 aftermilling; directentry excludes, short0/3millsavailable withoutreturn.",
+            "Actualnewlymilled creature returneduntapped, foreign/noncreature/MV4invalid; distinctreflexive countered byactualTishana, exacttargetdeparture invalid andsource departure independent."
+          ],
+          "native_scenarios": [
+            "final_cards_yathan_roadwatcher_mills_four_before_choosing_own_small_creature_to_return",
+            "final_cards_yathan_roadwatcher_direct_entry_does_not_mill_and_short_mill_does_not_return",
+            "final_cards_yathan_reflexive_is_separately_counterable_and_never_rebinds_departed_targets"
+          ],
+          "status": "locally_whole_card_verified",
+          "admission": "New6 were false through gated22PASS; authorized six promotions then ordinary93PASS. All owned physical/face fixtures use ordinary support::put; gated adapter removed."
+        },
+        {
+          "name": "Yathan Tombguard",
+          "oracle_id": "2321b4fc-6b73-4d1a-84cc-13524adb0899",
+          "oracle_full_facts": {
+            "oracle_id": "2321b4fc-6b73-4d1a-84cc-13524adb0899",
+            "name": "Yathan Tombguard",
+            "layout": "normal",
+            "mana_cost": "{2}{B}",
+            "cmc": 3.0,
+            "type_line": "Creature \u2014 Human Warrior",
+            "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)\nWhenever a creature you control with a counter on it deals combat damage to a player, you draw a card and you lose 1 life.",
+            "power": "2",
+            "toughness": "3",
+            "colors": [
+              "B"
+            ],
+            "color_identity": [
+              "B"
+            ],
+            "keywords": [
+              "Menace"
+            ],
+            "reference_printing": {
+              "id": "9e65d487-705a-4c3b-9bb6-69351e5dae81",
+              "set": "tdm",
+              "collector_number": "100",
+              "released_at": "2025-04-11"
+            }
+          },
+          "definition": "src/card_definitions/tdm/yathan_tombguard.rs",
+          "definition_sha256": "9ddc8dd61c178d5de0f21b27d8a32ba1044f3287178ddcb36b20cca3f367cb5f",
+          "provenance": "src/card_definitions/tdm/yathan_tombguard.json",
+          "provenance_sha256": "08fd5023f516cf2b7e1780a326019f751500cd9cfb40040e5f29c7242d5fda31",
+          "baseline_candidate_complete": true,
+          "obligations": [
+            "2B2/3HumanWarrior menace actualpaidcast; oneblocker cannotfinish, twoblockerslegal.",
+            "Owncounterbearing creature combatdamage toplayer givesdraw1/loss1 percreature; namedandkeywordcounters qualify, zero-countercreature/opponentcombat/ownnoncombat excluded.",
+            "Qualification frozenatdamage, source departure/counterremoval doesnotcancel queuedtwo triggers; actualdraws private inbothviews."
+          ],
+          "native_scenarios": [
+            "final_cards_tombguard_has_menace_and_excludes_enemy_combat_or_own_noncombat_damage",
+            "final_cards_tombguard_triggers_per_counter_bearing_creature_and_keeps_qualification_after_damage"
+          ],
+          "status": "locally_whole_card_verified",
+          "admission": "New6 were false through gated22PASS; authorized six promotions then ordinary93PASS. All owned physical/face fixtures use ordinary support::put; gated adapter removed."
+        },
+        {
+          "name": "Zurgo's Vanguard",
+          "oracle_id": "d6fdfd94-cef5-482c-83ed-11c5ba40abe9",
+          "oracle_full_facts": {
+            "oracle_id": "d6fdfd94-cef5-482c-83ed-11c5ba40abe9",
+            "name": "Zurgo's Vanguard",
+            "layout": "normal",
+            "mana_cost": "{2}{R}",
+            "cmc": 3.0,
+            "type_line": "Creature \u2014 Dog Soldier",
+            "oracle_text": "Mobilize 1 (Whenever this creature attacks, create a tapped and attacking 1/1 red Warrior creature token. Sacrifice it at the beginning of the next end step.)\nZurgo's Vanguard's power is equal to the number of creatures you control.",
+            "power": "*",
+            "toughness": "3",
+            "colors": [
+              "R"
+            ],
+            "color_identity": [
+              "R"
+            ],
+            "keywords": [
+              "Mobilize"
+            ],
+            "all_parts": [
+              {
+                "id": "7edc0515-a130-45a7-aa09-0e23bba41587",
+                "component": "token",
+                "name": "Warrior",
+                "type_line": "Token Creature \u2014 Warrior"
+              },
+              {
+                "id": "a1aa3501-5738-4063-a7f4-51d2600b0041",
+                "component": "combo_piece",
+                "name": "Zurgo's Vanguard",
+                "type_line": "Creature \u2014 Dog Soldier"
+              }
+            ],
+            "reference_printing": {
+              "id": "a1aa3501-5738-4063-a7f4-51d2600b0041",
+              "set": "tdm",
+              "collector_number": "133",
+              "released_at": "2025-04-11"
+            }
+          },
+          "definition": "src/card_definitions/tdm/zurgo_s_vanguard.rs",
+          "definition_sha256": "778c8487efe7cb3cea0a9926dd7a036d014e17925864c7ab4aabf7b94346df9c",
+          "provenance": "src/card_definitions/tdm/zurgo_s_vanguard.json",
+          "provenance_sha256": "d647547c0cc21b2ad5834afbd5536389016672699c2f531452f075bf187da843",
+          "baseline_candidate_complete": true,
+          "obligations": [
+            "2R */3DogSoldier actualpaidcast, all-zoneCDA currentowncreaturecount includesitselfonlyonBF andexcludesenemy.",
+            "Mobilize1 actualtappedattackingWarrior increasescurrentpower; actualcombatdamage andnextendstepsacrifice updateCDA."
+          ],
+          "native_scenarios": [
+            "final_cards_zurgo_vanguard_cda_counts_own_creatures_in_all_zones_and_updates_for_mobilize"
+          ],
+          "status": "locally_whole_card_verified",
+          "admission": "New6 were false through gated22PASS; authorized six promotions then ordinary93PASS. All owned physical/face fixtures use ordinary support::put; gated adapter removed."
+        },
+        {
+          "name": "Zurgo, Thunder's Decree",
+          "oracle_id": "393d0bf8-5f2e-4eaa-91a1-9132429a7371",
+          "oracle_full_facts": {
+            "oracle_id": "393d0bf8-5f2e-4eaa-91a1-9132429a7371",
+            "name": "Zurgo, Thunder's Decree",
+            "layout": "normal",
+            "mana_cost": "{R}{W}{B}",
+            "cmc": 3.0,
+            "type_line": "Legendary Creature \u2014 Orc Warrior",
+            "oracle_text": "Mobilize 2 (Whenever this creature attacks, create two tapped and attacking 1/1 red Warrior creature tokens. Sacrifice them at the beginning of the next end step.)\nDuring your end step, Warrior tokens you control have \"This token can't be sacrificed.\"",
+            "power": "2",
+            "toughness": "4",
+            "colors": [
+              "B",
+              "R",
+              "W"
+            ],
+            "color_identity": [
+              "B",
+              "R",
+              "W"
+            ],
+            "keywords": [
+              "Mobilize"
+            ],
+            "all_parts": [
+              {
+                "id": "d899dde2-68e6-4807-b0e9-3f4e28824822",
+                "component": "combo_piece",
+                "name": "Zurgo, Thunder's Decree",
+                "type_line": "Legendary Creature \u2014 Orc Warrior"
+              },
+              {
+                "id": "7edc0515-a130-45a7-aa09-0e23bba41587",
+                "component": "token",
+                "name": "Warrior",
+                "type_line": "Token Creature \u2014 Warrior"
+              }
+            ],
+            "reference_printing": {
+              "id": "bd93fb95-4268-45dc-8f0d-590c481a526d",
+              "set": "tdm",
+              "collector_number": "237",
+              "released_at": "2025-04-11"
+            }
+          },
+          "definition": "src/card_definitions/tdm/zurgo_thunder_s_decree.rs",
+          "definition_sha256": "ba8bf09642a2406b9e72ba43297987b719abde3f461ebbbd974d19b6a3067482",
+          "provenance": "src/card_definitions/tdm/zurgo_thunder_s_decree.json",
+          "provenance_sha256": "6ef54e44105040b6a6ae42472074437db5a8a75d481dce8da4df9b154c350720",
+          "baseline_candidate_complete": false,
+          "obligations": [
+            "RWB legendary2/4OrcWarrior actualpaidcast; Mobilize2.",
+            "Ownendstep currentcontrolledWarriortokens gaincannotsacrifice; nonWarrior/enemy/nontoken excluded, currentcontroller/step qualifies.",
+            "Actual once-onlydelayed sacrifice failswhileprotected andneverretries aftersourceleaves; departurebeforeend permits sacrifice."
+          ],
+          "native_scenarios": [
+            "final_cards_zurgo_decree_mobilizes_two_and_prevents_only_the_once_delayed_sacrifice_while_present",
+            "final_cards_zurgo_decree_live_grant_qualifies_token_type_controller_and_exact_end_step"
+          ],
+          "status": "locally_whole_card_verified",
+          "admission": "New6 were false through gated22PASS; authorized six promotions then ordinary93PASS. All owned physical/face fixtures use ordinary support::put; gated adapter removed."
+        }
+      ],
+      "new_state_or_schema": false,
+      "shared_proofs": [
+        "Accepted engine86 full4490native/108targets covers unchanged Mobilize defender selection inclplaneswalker/battle, controlled-only sacrifice andexactcallback lifetime, effect/cost prohibitions, protectionEquipment/noncombat/unpreventable rules and abilitysuppression. Actualcards prove exacttokenrecipe/count, coloredmask/grants anddistinctprintedoutcomes.",
+        "Accepted dynamicEndure source/recipient/LKI/copiablebase/capacity proofs reused; actualWarden samplesallkinds9 andnew100incarnation, bothrealbranches/currentrecipientcontroller.",
+        "Accepted namedentry allacquisition/reentry/copy/suppression andowned state proofs reused; actualWindcrag addsits realmode outputs andbothprivateviews.",
+        "Accepted Yathan-shaped resolution cases prove fullmillpublicexile redirection counts andRevealShuffleSelf withnolibrarydeparture doesnot. Their CR614.6/701.17c distinction is a documentedinference, not a separateofficialYathanruling. ActualYathan provesfull/short/noCast/targetafterMill/counterablewindow/finality."
+      ],
+      "source_reconciliations": [
+        "Yathan XMage models mandatorymill asMillCardsCost anddoesnotmill whenlibrary<4. Oracle instructs milling:CR609.3/701.17b requireasavailable; Rust millsavailable andqueuesexactfourreflexiveonlyaftercompletedfour, asacceptedsharedcheckpoint.",
+        "Warden Endure token/choice actor follows permanentcontroller under currentCR701.63a, including changedrecipientcontroller; sourcecontroller-default tokenfactory inXMage helper doesnotoverrideOracle/CR."
+      ],
+      "authority": {
+        "release_notes": {
+          "url": "https://magic.wizards.com/en/news/feature/tarkir-dragonstorm-release-notes",
+          "local": "<temp>/tdm-release-notes.txt",
+          "sha256": "3ce1c9853c733c3ace178cdb1aac78c111107b3312bcbb683588bd5d3ebf2ea9",
+          "extent": "GeneralMobilize, Warden2339-2351, Ureni2320-2338, Yathan2393-2404, Zurgo2410-2424 complete applicable notes read."
+        },
+        "cr": {
+          "local": "<cache>/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
+          "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+          "rules": [
+            "609.3",
+            "701.17a-c",
+            "701.63a",
+            "702.16",
+            "603.7b-c"
+          ]
+        }
+      },
+      "gated_execution": {
+        "native_report": "<cache>/rustmage-tdm/post86-s-z-final9-gated-1793828294029749305/s_z_final9_gated/native.json",
+        "native_sha256": "398bc220dd88e3c27263b3eff735e02164384524fea44c41f98e76386af94372",
+        "test_source_sha256": "0067ae4ccb35ee71f0f7db256255899c743737e247b1d7d0751a9d84fd569bd1",
+        "passed": 22,
+        "compile_seconds": 5.077008034975734,
+        "execution_seconds": 0.03611046198057011,
+        "terminal_report": "<cache>/rustmage-tdm/post86-s-z-final9-gated-1793828294029749305/terminal.json",
+        "terminal_sha256": "f5340e3bea3a203da82efb54d178e68367d9208f003209c622e670058b7c1b93",
+        "inputs_unchanged": true,
+        "clippy_report": "<cache>/rustmage-tdm/post86-s-z-final9-gated-1793828294029749305/s_z_final9_gated/clippy-terminal.json",
+        "clippy_sha256": "44cc611e0d3037343ea7b0d18eea9d0aa1de0701e7a60e7620832abd0646baa7",
+        "clippy_seconds": 2.270187343005091,
+        "clippy_exit": 0,
+        "resource_report": "<cache>/rustmage-tdm/post86-s-z-final9-gated-1793828294029749305/s_z_final9_gated/clippy-resource.json",
+        "resource_sha256": "1ea000a6f3197d6dc36b2980ec741474a937461e240041ceec82f6bebe41beeb",
+        "memory_peak_bytes": 256913408,
+        "oom_events": 0
+      },
+      "admission": {
+        "new_flags_promoted_after_gated_proof": 6,
+        "status": "ordinary_admitted_93_passed",
+        "fixture_adapter": "Removed actual_card helper and every call; all owned card and face fixtures use ordinary support::put. No unrelated unsupported fixture adapter remains."
+      },
+      "verified_new_complete": 6,
+      "verified_existing_candidates": 3,
+      "ordinary_admitted_execution": {
+        "report": "<cache>/rustmage-tdm/post86-s-z-all58-ordinary-1793828601040431189/s_z_all58_ordinary/native.json",
+        "sha256": "c4077071d907fe8e0ecf9af42c6cd3cefc7396425e59fdb8c64931d5d24f742e",
+        "terminal": true,
+        "success": true,
+        "total": 93,
+        "passed": 93,
+        "new_family_groups": 22,
+        "prior_groups": 71,
+        "test_source_sha256": "adca3d7384601f780a1062f36b1abc0eb4e8ef8501d80017413ae533b49f36f1",
+        "compile_seconds": 4.7803413640358485,
+        "execution_seconds": 0.0845114309922792,
+        "wall_seconds": 4.865631153981667,
+        "compile_log": "<cache>/rustmage-tdm/post86-s-z-all58-ordinary-1793828601040431189/s_z_all58_ordinary/native-compile.log",
+        "compile_log_sha256": "5f406d180146cd0dfaeaa4ab3e9e24c047990e20e02f477d6e618c3799c61d0b",
+        "execution_log": "<cache>/rustmage-tdm/post86-s-z-all58-ordinary-1793828601040431189/s_z_all58_ordinary/native-execution-0.log",
+        "execution_log_sha256": "8326803c7306fca3601273d3e0d94da923196f5377ec2480e31f4a31ea072ba2",
+        "tests": [
+          {
+            "test": "activations_earthcarver_requires_two_mana_and_another_own_creature_and_adds_one_counter",
+            "status": "ok"
+          },
+          {
+            "test": "activations_leopard_attacks_with_vigilance_and_sacrifices_for_artifacts_or_enchantments",
+            "status": "ok"
+          },
+          {
+            "test": "activations_leopard_paid_sacrifice_survives_a_targets_departure_and_reentry",
+            "status": "ok"
+          },
+          {
+            "test": "activations_temur_battlecrier_reduces_only_generic_for_current_own_power_four_creatures_on_own_turn",
+            "status": "ok"
+          },
+          {
+            "test": "activations_temur_discount_applies_to_creature_and_artifact_spells_and_rechecks_current_power",
+            "status": "ok"
+          },
+          {
+            "test": "activations_underfoot_creates_exact_goblin_and_pays_tap_to_make_an_own_small_creature_unblockable",
+            "status": "ok"
+          },
+          {
+            "test": "activations_underfoot_rechecks_power_control_and_incarnation_only_until_resolution",
+            "status": "ok"
+          },
+          {
+            "test": "activations_underfoot_target_choice_is_owned_raw_index_restorable_and_keeps_siblings_independent",
+            "status": "ok"
+          },
+          {
+            "test": "activations_unrooted_flashes_then_sacrifices_without_tapping_as_a_cost_and_protects_until_cleanup",
+            "status": "ok"
+          },
+          {
+            "test": "activations_wayspeaker_can_enter_without_a_target_and_never_returns_a_new_graveyard_incarnation",
+            "status": "ok"
+          },
+          {
+            "test": "activations_wayspeaker_flurry_taps_only_enemy_creatures_on_exact_second_cast_even_on_opponents_turn",
+            "status": "ok"
+          },
+          {
+            "test": "activations_wayspeaker_recovers_only_own_nonland_permanents_of_mana_value_at_most_two",
+            "status": "ok"
+          },
+          {
+            "test": "activations_wingblade_flurry_creates_one_exact_bird_on_second_cast_and_excludes_third_and_opponent",
+            "status": "ok"
+          },
+          {
+            "test": "activations_wingspan_enchants_either_controller_and_its_current_controller_returns_it_to_its_owner",
+            "status": "ok"
+          },
+          {
+            "test": "activations_wingspan_requires_creature_targets_and_does_not_recover_an_aura_already_in_graveyard",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_actual_teval_delve_selection_is_owned_raw_index_restorable_and_does_not_leak_draws",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_all_five_countered_omens_go_to_graveyard_instead_of_shuffling_or_exiling",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_charring_bite_uses_red_cost_targets_only_nonfliers_and_fizzles_to_graveyard",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_dynamic_soar_places_three_persistent_counters_only_on_own_exact_creature",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_each_omen_is_a_sorcery_even_if_its_front_creature_has_flash",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_exude_toxin_uses_x_on_the_omen_face_and_changes_only_current_non_dragons_until_cleanup",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_flush_out_discards_before_drawing_two_and_draws_nothing_with_an_empty_hand",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_roost_seek_searches_only_basic_lands_privately_reveals_the_pick_and_shuffles_the_dragon",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_sagu_and_twinmaw_normal_creatures_pay_the_front_cost_and_gain_the_printed_life",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_scavenger_regent_ward_is_a_private_discard_cost_or_counters_the_targeting_spell",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_songcrafter_grant_is_source_independent_exact_expires_and_exiles_a_countered_spell",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_songcrafter_grants_sorcery_printed_cost_but_flash_does_not_transfer_to_it",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_songcrafter_has_flash_exact_graveyard_targets_and_taps_itself_for_printed_harmonize",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_spectral_denial_and_teval_use_x_mana_value_even_when_delve_pays_the_reduced_cost",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_spectral_denial_uses_current_owned_four_power_threshold_but_counter_payment_is_chosen_x",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_stormshriek_front_has_haste_and_can_pump_while_tapped_until_cleanup",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_teval_delve_pays_only_generic_and_cast_life_loss_survives_countering",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_teval_does_not_grant_delve_or_cast_loss_from_hand_and_has_six_power_flying_lifelink",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_teval_uses_selected_omen_mana_value_instead_of_the_printed_dragon_face",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_whirlwing_front_flashes_and_grants_only_sorcery_or_dragon_timing_while_present",
+            "status": "ok"
+          },
+          {
+            "test": "creatures_outrider_and_surveyor_choose_exact_endure_sizes_and_surveyor_loses_one_on_attack",
+            "status": "ok"
+          },
+          {
+            "test": "creatures_outrider_departure_still_creates_exact_spirit_and_endure_branches_are_owned",
+            "status": "ok"
+          },
+          {
+            "test": "creatures_packbeast_affinity_counts_only_controlled_creatures_then_draws_the_actual_top_card",
+            "status": "ok"
+          },
+          {
+            "test": "creatures_sagu_pummeler_casts_four_four_reach_and_renews_two_plus_one_and_one_reach_counter",
+            "status": "ok"
+          },
+          {
+            "test": "creatures_sagu_renew_rejects_wrong_zone_timing_cost_target_and_never_rebinds_blinked_targets",
+            "status": "ok"
+          },
+          {
+            "test": "creatures_skirmish_rhino_drains_the_opponent_after_its_source_leaves",
+            "status": "ok"
+          },
+          {
+            "test": "creatures_summit_intimidator_stops_only_the_chosen_incarnation_blocking_until_cleanup",
+            "status": "ok"
+          },
+          {
+            "test": "creatures_temur_tawnyback_all_monohybrid_payments_draw_before_a_private_discard",
+            "status": "ok"
+          },
+          {
+            "test": "creatures_watcher_mills_either_player_exactly_two_or_a_short_library_and_gains_controller_two",
+            "status": "ok"
+          },
+          {
+            "test": "final_cards_tombguard_has_menace_and_excludes_enemy_combat_or_own_noncombat_damage",
+            "status": "ok"
+          },
+          {
+            "test": "final_cards_tombguard_triggers_per_counter_bearing_creature_and_keeps_qualification_after_damage",
+            "status": "ok"
+          },
+          {
+            "test": "final_cards_ureni_cannot_be_blocked_by_white_or_black_fliers_but_red_flying_blocker_deals_damage",
+            "status": "ok"
+          },
+          {
+            "test": "final_cards_ureni_locks_positive_land_shares_then_loses_only_an_illegal_targets_share",
+            "status": "ok"
+          },
+          {
+            "test": "final_cards_ureni_paid_ten_ten_flying_can_choose_zero_targets_with_zero_or_positive_lands",
+            "status": "ok"
+          },
+          {
+            "test": "final_cards_ureni_prevents_white_and_black_combat_damage_including_deathtouch_when_blocking",
+            "status": "ok"
+          },
+          {
+            "test": "final_cards_ureni_protection_rejects_white_and_black_targets_from_either_player_but_allows_blue",
+            "status": "ok"
+          },
+          {
+            "test": "final_cards_voice_cast_restriction_follows_controller_and_turn_but_allows_abilities",
+            "status": "ok"
+          },
+          {
+            "test": "final_cards_voice_mobilizes_exactly_two_tapped_attacking_red_warriors_and_sacrifices_next_end",
+            "status": "ok"
+          },
+          {
+            "test": "final_cards_war_effort_buffs_current_own_creatures_and_creates_once_per_attack_declaration",
+            "status": "ok"
+          },
+          {
+            "test": "final_cards_warden_endure_samples_all_counter_kinds_after_entry_and_uses_source_lki_and_recipient_controller",
+            "status": "ok"
+          },
+          {
+            "test": "final_cards_warden_grows_at_own_end_and_excludes_self_tokens_and_opponent_entries",
+            "status": "ok"
+          },
+          {
+            "test": "final_cards_warden_zero_counter_endure_changes_neither_entrant_nor_token_count",
+            "status": "ok"
+          },
+          {
+            "test": "final_cards_windcrag_entry_choice_is_owned_raw_index_restorable_and_preserves_hand_privacy",
+            "status": "ok"
+          },
+          {
+            "test": "final_cards_windcrag_jeskai_upkeep_creates_exact_temporary_lifelink_haste_goblin_for_current_controller",
+            "status": "ok"
+          },
+          {
+            "test": "final_cards_windcrag_mardu_doubles_owned_permanent_attack_triggers_at_the_event_only",
+            "status": "ok"
+          },
+          {
+            "test": "final_cards_yathan_reflexive_is_separately_counterable_and_never_rebinds_departed_targets",
+            "status": "ok"
+          },
+          {
+            "test": "final_cards_yathan_roadwatcher_direct_entry_does_not_mill_and_short_mill_does_not_return",
+            "status": "ok"
+          },
+          {
+            "test": "final_cards_yathan_roadwatcher_mills_four_before_choosing_own_small_creature_to_return",
+            "status": "ok"
+          },
+          {
+            "test": "final_cards_zurgo_decree_live_grant_qualifies_token_type_controller_and_exact_end_step",
+            "status": "ok"
+          },
+          {
+            "test": "final_cards_zurgo_decree_mobilizes_two_and_prevents_only_the_once_delayed_sacrifice_while_present",
+            "status": "ok"
+          },
+          {
+            "test": "final_cards_zurgo_vanguard_cda_counts_own_creatures_in_all_zones_and_updates_for_mobilize",
+            "status": "ok"
+          },
+          {
+            "test": "harmonize_all_four_require_sorcery_timing_and_exile_when_countered",
+            "status": "ok"
+          },
+          {
+            "test": "harmonize_unending_whisper_draws_actual_top_card_for_u_or_five_u_without_a_helper",
+            "status": "ok"
+          },
+          {
+            "test": "harmonize_unending_whisper_uses_current_power_but_never_pays_the_blue_symbol",
+            "status": "ok"
+          },
+          {
+            "test": "harmonize_ureni_rebuff_fizzles_on_departed_incarnation_and_still_exiles",
+            "status": "ok"
+          },
+          {
+            "test": "harmonize_ureni_rebuff_returns_a_stolen_creature_to_its_owner_from_both_routes",
+            "status": "ok"
+          },
+          {
+            "test": "harmonize_wild_ride_grants_growth_and_haste_only_until_cleanup_from_both_routes",
+            "status": "ok"
+          },
+          {
+            "test": "harmonize_winternight_discard_choice_is_owned_raw_index_restorable_and_parent_independent",
+            "status": "ok"
+          },
+          {
+            "test": "harmonize_winternight_draws_first_then_discards_one_creature_or_two_cards_privately",
+            "status": "ok"
+          },
+          {
+            "test": "mana_citadel_enters_tapped_and_offers_exactly_white_black_green_with_land_timing",
+            "status": "ok"
+          },
+          {
+            "test": "mana_devotee_color_choice_is_owned_raw_index_restorable_and_does_not_expose_a_private_hand",
+            "status": "ok"
+          },
+          {
+            "test": "mana_devotee_use_survives_control_change_and_resets_on_the_next_actual_turn",
+            "status": "ok"
+          },
+          {
+            "test": "mana_devotees_filter_one_mana_without_tapping_even_when_summoning_sick_and_only_once_each_turn",
+            "status": "ok"
+          },
+          {
+            "test": "mana_sunset_casts_as_three_one_and_taps_for_red_but_cannot_pay_both_tap_costs",
+            "status": "ok"
+          },
+          {
+            "test": "mana_sunset_pays_two_red_tap_sacrifice_and_deals_six_only_to_a_flying_creature",
+            "status": "ok"
+          },
+          {
+            "test": "mana_sunset_target_loses_flying_or_changes_incarnation_before_resolution",
+            "status": "ok"
+          },
+          {
+            "test": "spells_sarkhan_resolve_both_modes_have_distinct_targets_and_temporary_growth",
+            "status": "ok"
+          },
+          {
+            "test": "spells_seize_opportunity_boosts_zero_one_or_two_creatures_until_cleanup",
+            "status": "ok"
+          },
+          {
+            "test": "spells_seize_opportunity_exiles_exact_cards_for_ordinary_paid_play_through_next_own_turn",
+            "status": "ok"
+          },
+          {
+            "test": "spells_snakeskin_veil_restricts_control_and_keeps_counter_after_hexproof_expires",
+            "status": "ok"
+          },
+          {
+            "test": "spells_twin_bolt_owned_allocations_never_redistribute_a_departed_targets_share",
+            "status": "ok"
+          },
+          {
+            "test": "spells_twin_bolt_requires_one_or_two_targets_and_announces_exact_positive_shares",
+            "status": "ok"
+          },
+          {
+            "test": "spells_unsparing_boltcaster_can_enter_when_no_creature_is_an_eligible_entry_target",
+            "status": "ok"
+          },
+          {
+            "test": "spells_unsparing_boltcaster_requires_an_enemy_damaged_this_turn_and_freezes_exact_five_damage",
+            "status": "ok"
+          },
+          {
+            "test": "spells_wail_of_war_freezes_only_the_target_opponents_current_creatures_until_cleanup",
+            "status": "ok"
+          },
+          {
+            "test": "spells_wail_of_war_returns_zero_one_or_two_own_creatures_with_partial_target_finality",
+            "status": "ok"
+          },
+          {
+            "test": "spells_worthy_cost_exiles_creatures_or_planeswalkers_and_paid_sacrifice_survives_countering",
+            "status": "ok"
+          },
+          {
+            "test": "spells_worthy_cost_requires_own_creature_and_black_mana_and_is_sorcery_speed",
+            "status": "ok"
+          }
+        ],
+        "artifact_policy": "Native Rust ELF/rlib linkage. Cargo ELF/cdylib outputs are transient; reports/logs/source manifests pin historical evidence without asserting preserved mutable compiled artifacts."
+      },
+      "ordinary_terminal": {
+        "report": "<cache>/rustmage-tdm/post86-s-z-all58-ordinary-1793828601040431189/terminal.json",
+        "sha256": "6c8136c8abf399fcd7bd509d210b5c6fef66cacdd65a361d288c81b831e7914e",
+        "inputs_unchanged": true,
+        "source_manifest": "<cache>/rustmage-tdm/post86-s-z-all58-ordinary-1793828601040431189/s_z_all58_ordinary/source-hashes.json",
+        "source_manifest_sha256": "d7c9cd9241683ce3119ede48b3a47a5c816ca5ee744dfe36eae54ddde3b36ed7",
+        "source_files": 12980
+      },
+      "clippy": {
+        "report": "<cache>/rustmage-tdm/post86-s-z-all58-ordinary-1793828601040431189/s_z_all58_ordinary/clippy-terminal.json",
+        "sha256": "6021d4a314c1638cd4a45714f4450e2d7268bda98616ee1419b31c24d494c6d9",
+        "result": {
+          "command": [
+            "cargo",
+            "clippy",
+            "-p",
+            "rustmage",
+            "--profile",
+            "test",
+            "--test",
+            "tdm_cards_s_z",
+            "--",
+            "-D",
+            "warnings"
+          ],
+          "exit": 0,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 2.120161338010803,
+          "log": "<cache>/rustmage-tdm/post86-s-z-all58-ordinary-1793828601040431189/s_z_all58_ordinary/clippy.log"
+        },
+        "log_sha256": "7ce514990f646cdf93fcdc0172a872658f504e1a1ea29caffbbe3bb75d15c077",
+        "resource_report": "<cache>/rustmage-tdm/post86-s-z-all58-ordinary-1793828601040431189/s_z_all58_ordinary/clippy-resource.json",
+        "resource_sha256": "8cad6f945d4c925c6273d057dff0b7c5cbe5738603a2d26dd8afcc8227d3fdbb",
+        "resource_result": {
+          "command": [
+            "python3",
+            "/tmp/tdm-post86-clippy-worker.py",
+            "tdm_cards_s_z",
+            "/home/altf4/.cache/rustmage-tdm/post86-s-z-all58-ordinary-1793828601040431189/s_z_all58_ordinary"
+          ],
+          "terminal": true,
+          "exit_code": 0,
+          "seconds": 2.156398157996591,
+          "memory_max_bytes": 6442450944,
+          "memory_peak_bytes": 229171200,
+          "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+          "cargo_jobs": 1,
+          "test_threads": 1
+        }
+      },
+      "source_check": {
+        "report": "<cache>/rustmage-tdm/post86-s-z-all58-ordinary-1793828601040431189/s_z_all58_ordinary/sources-driver.log",
+        "sha256": "2ad508ad29b9737f873ddb1cc14226d246161885ea466d3872df4de4e7ed5eb2",
+        "result": {
+          "definitions": 5488,
+          "source_blobs": 2580,
+          "java_verified": true,
+          "catalogue_version": "4beb4ed6c657ca4262107f0d0fbf022227047128bc370be1d1aed3813ba6be69"
+        }
+      },
+      "finished_utc": "2026-11-04T21:47:19.552677+00:00",
+      "elapsed_seconds": 883.971321,
+      "verified_physical_cards_per_hour": 36.65277281094055,
+      "measurement_scope": "Nine-card source reading, direct authorship,22 new scenario preparation, guarded gating/admission/lint queue and evidence interval. This is author throughput, not simulation or whole-set performance."
     }
   ],
   "first_family_finished_utc": "2026-11-04T14:05:57.547813+00:00",
@@ -5921,12 +7253,31 @@
   },
   "original_partition_totals": {
     "physical_members": 92,
-    "verified_this_author": 49,
-    "verified_additional_owner": 25,
-    "verified_total": 74,
-    "remaining_total": 18,
-    "remaining_retained": 9,
-    "remaining_delegated": 9,
-    "scope": "Root-reconciled membership counts; local verified bool continues to mean proof accepted for this author cohort."
+    "verified_this_author": 58,
+    "verified_additional_owner": 34,
+    "verified_total": 92,
+    "remaining_total": 0,
+    "remaining_retained": 0,
+    "remaining_delegated": 0,
+    "scope": "Local verified bool means this author58;34 delegated accepted sources use external_root_accepted. Root full-set integration/interactions/performance/final-review acceptance remains pending."
+  },
+  "accepted_final_handoff_proofs": {
+    "document": "docs/tdm-cards-s-z-additional-evidence.json",
+    "sha256": "ad53931967f503275baf06b8f709d785d9198fd116322a1585da31c79944b6d3",
+    "accepted_physical_cards": 9,
+    "new_definitions": 9,
+    "existing_candidates": 0,
+    "names": [
+      "Tempest Hawk",
+      "Temur Monument",
+      "Tersa Lightshatter",
+      "The Sibsig Ceremony",
+      "Thunder of Unity",
+      "Trade Route Envoy",
+      "Traveling Botanist",
+      "Venerated Stormsinger",
+      "Veteran Ice Climber"
+    ],
+    "root_report": "Root reports all34 delegated additional physical cards integrated and global267 before these final9. Current source document declares all34 admitted/wholeverified; this read-only reference does not install their definitions in this private worktree."
   }
 }
