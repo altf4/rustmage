@@ -2,7 +2,7 @@
   "schema": 1,
   "set": "TDM",
   "group": "a_g",
-  "engine_revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+  "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
   "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "physical_scope": 91,
   "completion_claim": "No complete-card claim until focused execution passes; set acceptance remains integrator owned.",
@@ -871,8 +871,8 @@
       "definition": "src/card_definitions/tdm/abzan_monument.rs",
       "definition_sha256": "1a5f5971f869aa6efd23bdcd7536876f5f364faab00c4183ca5d52cf8764423f",
       "kind": "newly_authored",
-      "status": "provisional_pending_focused_execution",
-      "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
       "obligations": [
         {
           "face": "Abzan Monument",
@@ -907,8 +907,8 @@
       "definition": "src/card_definitions/tdm/aegis_sculptor.rs",
       "definition_sha256": "0557fd96a0b2cb9c5006c2d2054ef856490feff63b6acfd90513eccb39e3ac1b",
       "kind": "newly_authored",
-      "status": "provisional_pending_focused_execution",
-      "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
       "obligations": [
         {
           "face": "Aegis Sculptor",
@@ -939,8 +939,8 @@
       "definition": "src/card_definitions/tdm/ainok_wayfarer.rs",
       "definition_sha256": "b79a8f372369d9b5918013bb4c340316b8525e70f4c9d1d10ae075176042246d",
       "kind": "newly_authored",
-      "status": "provisional_pending_focused_execution",
-      "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
       "obligations": [
         {
           "face": "Ainok Wayfarer",
@@ -974,8 +974,8 @@
       "definition": "src/card_definitions/tdm/all_out_assault.rs",
       "definition_sha256": "f9fa26d1c1f5907290f92aca515c59cbe015ba8e7ae7fb334a2c33159d0c1e97",
       "kind": "newly_authored",
-      "status": "provisional_pending_focused_execution",
-      "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
       "obligations": [
         {
           "face": "All-Out Assault",
@@ -1015,8 +1015,8 @@
       "definition": "src/card_definitions/tdm/ambling_stormshell.rs",
       "definition_sha256": "ccd8c701b5c9e8fb5b8136c1b01381145b2f40bb13f4afb89d31a61a41bc8da2",
       "kind": "newly_authored",
-      "status": "provisional_pending_focused_execution",
-      "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
       "obligations": [
         {
           "face": "Ambling Stormshell",
@@ -1046,8 +1046,8 @@
       "definition": "src/card_definitions/tdm/armament_dragon.rs",
       "definition_sha256": "29f5d83186cc2fb900ecc4617fcb16f302d85577c315208d8531f63399213585",
       "kind": "newly_authored",
-      "status": "provisional_pending_focused_execution",
-      "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
       "obligations": [
         {
           "face": "Armament Dragon",
@@ -1075,8 +1075,8 @@
       "definition": "src/card_definitions/tdm/attuned_hunter.rs",
       "definition_sha256": "8a690c14c10c112b620de1b2b12ae3ccb12b20a6170d43483cede2a68e46ae3c",
       "kind": "newly_authored",
-      "status": "provisional_pending_focused_execution",
-      "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
       "obligations": [
         {
           "face": "Attuned Hunter",
@@ -1104,8 +1104,8 @@
       "definition": "src/card_definitions/tdm/barrensteppe_siege.rs",
       "definition_sha256": "06ba73f764e8405f0403fd59415207c7dbdab8463575f6be75e3e3d9fda68c27",
       "kind": "newly_authored",
-      "status": "provisional_pending_focused_execution",
-      "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
       "obligations": [
         {
           "face": "Barrensteppe Siege",
@@ -1144,10 +1144,10 @@
       "name": "Betor, Kin to All",
       "oracle_id": "826a0db6-195a-4697-9bd6-f544b279e3cf",
       "definition": "src/card_definitions/tdm/betor_kin_to_all.rs",
-      "definition_sha256": "526a669185428e998b8a94dceb44666d0092d5d9713d03ded03f2e855c118722",
+      "definition_sha256": "cdaa68cb686f2b873c5cdd7c99914eb875cc64036e293a81624a325265f2110b",
       "kind": "newly_authored",
-      "status": "gated_missing_shared_round_up_half_life_effect",
-      "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
       "obligations": [
         {
           "face": "Betor, Kin to All",
@@ -1176,8 +1176,8 @@
       "definition": "src/card_definitions/tdm/bone_cairn_butcher.rs",
       "definition_sha256": "931148058531c0366e2436ef37bbc5f05e3b658ae1bc796997821f254f4e4fea",
       "kind": "newly_authored",
-      "status": "provisional_pending_focused_execution",
-      "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
       "obligations": [
         {
           "face": "Bone-Cairn Butcher",
@@ -1205,8 +1205,8 @@
       "definition": "src/card_definitions/tdm/breaching_dragonstorm.rs",
       "definition_sha256": "4b45fa146648cb8b8d75c00fc38d6d31bc07b196f90ca1fad4d447902b2fb75a",
       "kind": "newly_authored",
-      "status": "provisional_pending_focused_execution",
-      "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
       "obligations": [
         {
           "face": "Breaching Dragonstorm",
@@ -1240,8 +1240,8 @@
       "definition": "src/card_definitions/tdm/call_the_spirit_dragons.rs",
       "definition_sha256": "2f1d5f945dfaa1d64ac5851731e4b4900b90cb6edacabcaaebf8df412dc86450",
       "kind": "newly_authored",
-      "status": "provisional_pending_focused_execution",
-      "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
       "obligations": [
         {
           "face": "Call the Spirit Dragons",
@@ -1380,12 +1380,57 @@
         "mechanics_breaching_dragonstorm_exiles_lands_then_casts_up_to_eight_or_puts_nonland_in_hand"
       ],
       "scope": "Before the Breaching finish-only-offer fixture correction. Betor failure demonstrates missing rounded-up life loss; its expected 21 to 10 remains unchanged. No new completion flags promoted."
+    },
+    {
+      "report": "<cache>/rustmage-tdm/cards-a-g-mechanics-engine84-gated/native.json",
+      "sha256": "9bab8242722cafcc2f6200478f1b7a7f59cff5d1b07cf43e0b17569752b1dc13",
+      "test_target": "tdm_cards_a_g",
+      "filter": "mechanics_",
+      "passed": 21,
+      "failed": 0,
+      "compile_seconds": 15.209708656999283,
+      "execution_seconds": 0.034909110981971025,
+      "engine_reused": true,
+      "terminal": true,
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6"
+    },
+    {
+      "report": "<cache>/rustmage-tdm/cards-a-g-mechanics-engine84-admitted-all/native.json",
+      "sha256": "667b55956be0413b52007dfc08f3a4a11709dc4006d2a69836c328fbe38ddad8",
+      "test_target": "tdm_cards_a_g",
+      "filter": "",
+      "passed": 60,
+      "failed": 0,
+      "compile_seconds": 3.87698206899222,
+      "execution_seconds": 0.06806873297318816,
+      "engine_reused": true,
+      "terminal": true,
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6"
+    },
+    {
+      "report": "<cache>/rustmage-tdm/cards-a-g-mechanics-engine84-clippy-1793812380012179648/terminal.json",
+      "sha256": "96cadae4a70308c105356e2a50cf1c8b9ffc458960e6060449c0a1f5d3e330a6",
+      "command": [
+        "cargo",
+        "clippy",
+        "-p",
+        "rustmage",
+        "--test",
+        "tdm_cards_a_g",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "seconds": 27.434470158012118,
+      "terminal": true,
+      "success": true,
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6"
     }
   ],
-  "locally_verified_physical_cards": 31,
-  "newly_authored_verified": 8,
+  "locally_verified_physical_cards": 43,
+  "newly_authored_verified": 20,
   "previously_admitted_verified": 23,
-  "remaining_physical_cards": 60,
+  "remaining_physical_cards": 48,
   "implementation_measurement": {
     "scope": "Land authoring/provenance/scenarios plus focused execution and integration coordination, elapsed from preceding Renew commit timestamp. Some read-only land source preparation preceded this interval; not a pure coding benchmark. Five unchanged exact-source baseline proofs count separately from four newly tested whole cards.",
     "elapsed_seconds": 515.2147917747498,
@@ -1421,20 +1466,35 @@
       "first_run_successful": 17,
       "first_run_scenario_interface_failures": 4,
       "simulation_throughput": "Not measured by this family"
+    },
+    {
+      "scope": "Twelve newly authored mechanic-family whole cards after accepted engine84; 21 focused cases then complete60-case A-G admitted target.",
+      "new_whole_cards_verified_by_focused_execution": 12,
+      "newly_implemented": 12,
+      "previous_candidates": 0,
+      "focused_cases": 21,
+      "admitted_target_cases": 60,
+      "implementation_elapsed_seconds": null,
+      "implementation_measurement_limit": "Authoring crossed explicitly paused engine82/83/84 checkpoints; no uninterrupted implementation throughput measurement claimed.",
+      "gated_compile_seconds": 15.209708656999283,
+      "gated_execution_seconds": 0.034909110981971025,
+      "admitted_compile_seconds": 3.87698206899222,
+      "admitted_execution_seconds": 0.06806873297318816,
+      "simulation_throughput": "Not measured by this family"
     }
   ],
   "current_engine_checkpoint": {
-    "revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
-    "compatibility_commit": "7bfcd33a924e4e43273fde845565aa8ba8dd7517",
-    "warm_receipt": "<cache>/rustmage-tdm/engine83-author-baselines-1793808271665788619/a_g/core-warm-terminal.json",
-    "warm_receipt_sha256": "565ceadb045b0c229d3448aed3c6cca83fa2bc0d9d54b56260f388512b07e8d1",
-    "authoring_gate": "new definitions remain incomplete until actual-definition execution"
+    "revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+    "compatibility_commit": "d752c7a979271390aa13885e1ce52e3d1a3beef3",
+    "warm_receipt": "<cache>/rustmage-tdm/engine84-author-baselines-1793811712648419284/a_g/core-warm-terminal.json",
+    "warm_receipt_sha256": "3c35044397a9cf1d6db5745e33d454d8470aa79b738293940f8028bcac5fbb88",
+    "authoring_gate": "New definitions remain incomplete until actual-definition gated execution, then ordinary admitted paths are rerun."
   },
   "mechanic_family_prepared": {
     "cards": 12,
     "new_gated": 12,
     "tests": 21,
-    "status": "gated_checkpoint_awaiting_shared_dependency_84_and_focused_rerun",
+    "status": "locally_verified_whole_cards_pending_full_set_acceptance_and_final_reviews",
     "filter": "mechanics_",
     "new_engine_changes": false,
     "engine_dependency": {
@@ -1444,8 +1504,9 @@
       "repro": "mechanics_betor_checks_ten_twenty_forty_live_total_toughness_and_rounds_half_life_up: opponent starts21, must lose11 and finish10; existing effect loses10 and finishes11.",
       "existing_instruction": "Instruction::LoseHalfLife is deliberately rounded down and must retain SOS Pox Plague semantics.",
       "engine_owner": "root",
-      "card_opcode_change_pending": true
+      "card_opcode_change_pending": false,
+      "status": "accepted_engine84_distinct_round_up_opcode_and_actual_card_regression_pass"
     },
-    "breaching_scenario_correction": "The over-eight discovered card still exposes a finish-only ResolutionCasts decision. Scenario now explicitly finishes, rejects its free cast, and proves eligible free casts with zero mana; corrected scenario not yet rerun."
+    "breaching_scenario_correction": "Explicit finish-only ResolutionCasts decision, over-eight cast rejection, and eligible free cast with zero mana all passed gated and admitted execution."
   }
 }

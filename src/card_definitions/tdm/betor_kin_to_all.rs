@@ -40,7 +40,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 },
                 skip: 1,
             },
-            Instruction::LoseHalfLife(PlayerSet::Opponent),
+            Instruction::LoseHalfLifeRoundedUp(PlayerSet::Opponent),
         ],
     }],
     extras: &CardExtras {

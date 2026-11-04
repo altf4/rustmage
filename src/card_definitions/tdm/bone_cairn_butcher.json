@@ -3,7 +3,7 @@
   "catalogue_id": 493,
   "oracle_id": "449db6bf-d766-4d09-a7bd-9c45b3d4c4c3",
   "facts_sha256": "21c45bd322485a650c3b553332f8eb2a5f67e691a37482a06b8eda5c386dc744",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c328de9b2e1eb7485c70ccdc9fc567ad5189f3a3f0915e924a5f133541822c82"
@@ -39,7 +39,5 @@
       "sha256": "91af8e32ddafb0a605511b4fd6a3e78e00d46465b90463b47ce6c6266a38582c"
     }
   ],
-  "remaining_obligations": [
-    "Complete authored printed behavior awaits actual-definition gated focused execution; public admission remains false."
-  ]
+  "remaining_obligations": []
 }
