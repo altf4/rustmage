@@ -2,7 +2,7 @@
   "schema": 1,
   "set": "TDM",
   "engine_revision": "2660c86112362973c195bee4c1b85e1a968f9f3a",
-  "status": "Focused actual-card outcomes for F02, F06 and representative F07 pass; full matrix/whole-set/game acceptance pending",
+  "status": "Focused actual-card cross outcomes for F02/F06/F07/F14 pass; remainingmatrix obligations and full-set/game acceptance pending",
   "new_card_completions": 0,
   "families": [
     {
@@ -97,6 +97,48 @@
       "success": true,
       "target_cases": 3,
       "remaining_family_scope": "Other Behold/free-origin and activation boundaries remain mapped to actual card/shared proofs; this case alone does not close F06/F13."
+    },
+    {
+      "id": "F14",
+      "target": "tests/tdm_set_interactions.rs",
+      "case": "f14_storm_counts_both_players_actual_casts_and_permanent_copies_bypass_token_doubling",
+      "variants": "Both seats; actual opposing Instant removes first actual spell\u2019s permanent",
+      "actual_cards": [
+        "Stormscale Scion",
+        "Mox Jasper",
+        "Heritage Reclamation",
+        "Elspeth, Storm Slayer",
+        "Marang River Regent"
+      ],
+      "outcomes": [
+        "ActualownMoxcast0 andopposingHeritagecast1G aretwo earliercasts; Scionpays4RR andcapturedStormamountis2",
+        "Exactlytwo resolvedtokenpermanentcopies plus original; actualElspethdoubling doesnotdoublebecausetokensareputontobattlefieldasresolvedcopies,notcreated",
+        "AllthreeScionsare6/6flying, eachbuffingonlyotherownDragons; ownRegent9/10/opposingRegent6/7",
+        "SourceleavingreducesremainingScions5/5andownRegent8/9; opposingDragonunchanged",
+        "Actualcastcountsremainown2/opponent1, excludingcopies",
+        "Capturedtrigger rootownedraw/index/parentdrop/restore/stale/bothviews/replay checks pass"
+      ],
+      "rules_basis": [
+        "CR702.40a",
+        "CR707.10",
+        "CR608.3f"
+      ],
+      "report": "<cache>/rustmage-tdm/post86-root-storm-interaction-1793826234671093142/root_storm_interaction/native.json",
+      "sha256": "e6d0b5d16aef040cdb31eb550d6152b7f6578434593d1531440e3a499e5771ee",
+      "terminal": true,
+      "success": true,
+      "target_cases": 4,
+      "related_actual_proofs": [
+        "tests/tdm_cards_a_g.rs::mechanics_call_the_spirit_dragons_one_five_color_dragon_gets_five_counters_without_winning",
+        "tests/tdm_cards_a_g.rs::mechanics_call_the_spirit_dragons_five_distinct_dragons_get_counters_and_win_after_source_leaves",
+        "tests/tdm_cards_s_z_additional.rs::stormscale_actual_storm_tokens_and_other_owned_dragon_anthem"
+      ],
+      "related_shared_proofs": [
+        "tests/tdm_search_color_sequences.rs::counter_replacements_do_not_turn_one_dragon_into_five_successes_and_prohibition_blocks_win",
+        "tests/tdm_search_color_sequences.rs::color_counter_win_respects_opponents_win_restriction",
+        "tests/tdm_copy_suspend.rs::printed_storm_freezes_all_players_prior_actual_casts_including_countered_and_graveyard_spells"
+      ],
+      "failure_history": "InitialsingletonPutTriggerUIassumptionfailed; no engine/card change. Actualcapturedcopyevent2rootverifiedbeforefirstPass."
     }
   ],
   "remaining_families": [
@@ -111,7 +153,6 @@
     "F11",
     "F12",
     "F13",
-    "F14",
     "F15",
     "F16"
   ],

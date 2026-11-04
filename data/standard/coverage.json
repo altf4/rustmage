@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "3c236d3ca90ecdabb1b5563235c96c37cac082aa13379f5c50588902bf6cfda0",
+  "catalogue_version": "ed682cc48d8f7bcf8a389f39e258f14cac781de429cee82bc4bce81858edd20d",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3261,
-  "implemented_total": 3268,
+  "implemented_standard_cards": 3281,
+  "implemented_total": 3288,
   "token_definitions": 157,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -162,8 +162,8 @@
     },
     "tdm": {
       "total": 264,
-      "complete": 230,
-      "gated": 34
+      "complete": 250,
+      "gated": 14
     },
     "tla": {
       "total": 278,
@@ -2505,8 +2505,8 @@
     {
       "name": "Awaken the Honored Dead",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/awaken_the_honored_dead.rs",
       "set": "tdm"
     },
@@ -8961,8 +8961,8 @@
     {
       "name": "Dispelling Exhale",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/dispelling_exhale.rs",
       "set": "tdm"
     },
@@ -9369,8 +9369,8 @@
     {
       "name": "Dracogenesis",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/dracogenesis.rs",
       "set": "tdm"
     },
@@ -9473,24 +9473,24 @@
     {
       "name": "Dragonbroods' Relic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/dragonbroods_relic.rs",
       "set": "tdm"
     },
     {
       "name": "Dragonclaw Strike",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/dragonclaw_strike.rs",
       "set": "tdm"
     },
     {
       "name": "Dragonfire Blade",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/dragonfire_blade.rs",
       "set": "tdm"
     },
@@ -9529,8 +9529,8 @@
     {
       "name": "Dragonologist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/dragonologist.rs",
       "set": "tdm"
     },
@@ -10657,8 +10657,8 @@
     {
       "name": "Embermouth Sentinel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/embermouth_sentinel.rs",
       "set": "tdm"
     },
@@ -11137,8 +11137,8 @@
     {
       "name": "Eshki Dragonclaw",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/eshki_dragonclaw.rs",
       "set": "tdm"
     },
@@ -11161,8 +11161,8 @@
     {
       "name": "Essence Anchor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/essence_anchor.rs",
       "set": "tdm"
     },
@@ -11761,8 +11761,8 @@
     {
       "name": "Fangkeeper's Familiar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/fangkeeper_s_familiar.rs",
       "set": "tdm"
     },
@@ -12145,8 +12145,8 @@
     {
       "name": "Felothar, Dawn of the Abzan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/felothar_dawn_of_the_abzan.rs",
       "set": "tdm"
     },
@@ -12553,8 +12553,8 @@
     {
       "name": "Flamehold Grappler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/flamehold_grappler.rs",
       "set": "tdm"
     },
@@ -13313,8 +13313,8 @@
     {
       "name": "Frostcliff Siege",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/frostcliff_siege.rs",
       "set": "tdm"
     },
@@ -13417,8 +13417,8 @@
     {
       "name": "Furious Forebear",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/furious_forebear.rs",
       "set": "tdm"
     },
@@ -14281,8 +14281,8 @@
     {
       "name": "Glacial Dragonhunt",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/glacial_dragonhunt.rs",
       "set": "tdm"
     },
@@ -14297,8 +14297,8 @@
     {
       "name": "Glacierwood Siege",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/glacierwood_siege.rs",
       "set": "tdm"
     },
@@ -35193,8 +35193,8 @@
     {
       "name": "Temur Battlecrier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/temur_battlecrier.rs",
       "set": "tdm"
     },
@@ -38337,8 +38337,8 @@
     {
       "name": "Underfoot Underdogs",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/underfoot_underdogs.rs",
       "set": "tdm"
     },
@@ -40345,8 +40345,8 @@
     {
       "name": "Wayspeaker Bodyguard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/wayspeaker_bodyguard.rs",
       "set": "tdm"
     },

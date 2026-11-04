@@ -436,3 +436,94 @@ fn f06_dragon_witness_mox_stays_locked_until_fresh_start_suppresses_clarion() {
         }
     }
 }
+
+#[test]
+fn f14_storm_counts_both_players_actual_casts_and_permanent_copies_bypass_token_doubling() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let elspeth = put(&mut g, p, "Elspeth, Storm Slayer", Zone::Battlefield);
+        g.set_counters(elspeth, Counters::of(CounterKind::Loyalty, 5));
+        let own_dragon = put(&mut g, p, "Marang River Regent", Zone::Battlefield);
+        let enemy_dragon = put(&mut g, p.other(), "Marang River Regent", Zone::Battlefield);
+        let mox = put(&mut g, p, "Mox Jasper", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        cast(&mut g, mox, None);
+        drain(&mut g, None);
+        act(&mut g, Action::Pass);
+        assert_eq!(g.actor(), Some(p.other()));
+        let reclamation = put(&mut g, p.other(), "Heritage Reclamation", Zone::Hand);
+        g.state.players[p.other().index()].mana = [0, 0, 0, 0, 1, 1];
+        act(&mut g, Action::AnnounceCast { card: reclamation });
+        act(&mut g, Action::ChooseMode { mode: 0 });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(mox),
+            },
+        );
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            act(&mut g, Action::FinishTargets);
+        }
+        pay(&mut g);
+        drain(&mut g, None);
+        assert_eq!(g.object_view(mox).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(reclamation).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.other().index()].mana, [0; 6]);
+        assert_eq!(g.actor(), Some(p));
+        let original = put(&mut g, p, "Stormscale Scion", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 2, 0, 4];
+        cast(&mut g, original, None);
+        let captured = g
+            .state
+            .stack
+            .iter()
+            .chain(&g.state.pending_triggers)
+            .find_map(|item| item.copy_event.as_deref())
+            .expect("actual captured Storm event");
+        assert_eq!(captured.amount, 2);
+        checked(&mut g, Action::Pass);
+        drain(&mut g, None);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        let scions: Vec<_> = g
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, o)| {
+                (o.zone == Zone::Battlefield
+                    && o.controller == p
+                    && o.card == Card::from_name("Stormscale Scion").unwrap())
+                .then_some(id as CardId)
+            })
+            .collect();
+        assert_eq!(
+            scions.len(),
+            3,
+            "two earlier actual casts, across both players"
+        );
+        assert_eq!(
+            scions
+                .iter()
+                .filter(|&&id| g.object_view(id).is_token())
+                .count(),
+            2,
+            "resolved permanent spell copies bypass actual Elspeth token doubling"
+        );
+        assert!(!g.object_view(original).is_token());
+        for &id in &scions {
+            assert_eq!(stats(&g, id), (6, 6));
+            assert!(g.keywords(id).contains(Keywords::FLYING));
+        }
+        assert_eq!(stats(&g, own_dragon), (9, 10));
+        assert_eq!(stats(&g, enemy_dragon), (6, 7));
+        assert_eq!(g.state.players[p.index()].spells_cast_this_turn, 2);
+        assert_eq!(g.state.players[p.other().index()].spells_cast_this_turn, 1);
+        assert_eq!(g.object_view(elspeth).zone, Zone::Battlefield);
+        g.move_object(original, Zone::Graveyard);
+        assert_eq!(stats(&g, own_dragon), (8, 9));
+        for id in scions.into_iter().filter(|&id| id != original) {
+            assert_eq!(stats(&g, id), (5, 5));
+        }
+        assert_eq!(stats(&g, enemy_dragon), (6, 7));
+    }
+}

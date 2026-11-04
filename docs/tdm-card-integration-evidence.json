@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
-  "status": "233/276 physical cards locally whole-verified and integrated; full-set/game/PR acceptance remains pending",
-  "locally_verified_cards": 233,
-  "newly_implemented": 104,
-  "previously_admitted_verified": 129,
+  "status": "258/276 physical cards locally whole-verified and integrated; full-set/game/PR acceptance remains pending",
+  "locally_verified_cards": 258,
+  "newly_implemented": 124,
+  "previously_admitted_verified": 134,
   "integrations": [
     {
       "source_commits": [
@@ -438,9 +438,59 @@
         }
       ],
       "scope": "Remaining15 of original25 delegated S-Z members; all25 ordinary supported-card definitions now verified"
+    },
+    {
+      "source_commits": [
+        "60901464a"
+      ],
+      "root_commits": [
+        "1527d45b8"
+      ],
+      "whole_cards": 17,
+      "newly_implemented": 17,
+      "previously_admitted_verified": 0,
+      "regenerated": true,
+      "validation": [
+        {
+          "report": "<cache>/rustmage-tdm/post86-root-final-ag-activations-1793826139821205886/tdm_cards_a_g/native.json",
+          "sha256": "76cb7e57d19096e79a51170f48c3b469cc83135ca04f94ceaad6ac47884be672",
+          "terminal": true,
+          "success": true,
+          "cases": 143,
+          "compile_seconds": 5.530488757998683,
+          "execution_seconds": 1.148206878977362
+        }
+      ],
+      "engine_core_fresh": true,
+      "focused_integration_clippy": "<cache>/rustmage-tdm/post86-root-storm-interaction-1793826234671093142/root_storm_interaction/clippy-terminal.json"
+    },
+    {
+      "source_commits": [
+        "eb5ab905e803390270ec72b9734bf0671d92c3af"
+      ],
+      "root_commits": [
+        "a718d3fa0"
+      ],
+      "whole_cards": 8,
+      "newly_implemented": 3,
+      "previously_admitted_verified": 5,
+      "regenerated": true,
+      "validation": [
+        {
+          "report": "<cache>/rustmage-tdm/post86-root-final-ag-activations-1793826139821205886/tdm_cards_s_z/native.json",
+          "sha256": "d7a03f623f990ca648382b6c204a32eded14ccf568117cbc3149f0939567c010",
+          "terminal": true,
+          "success": true,
+          "cases": 71,
+          "compile_seconds": 1.820020891027525,
+          "execution_seconds": 0.06099367298884317
+        }
+      ],
+      "engine_core_fresh": true,
+      "focused_integration_clippy": "<cache>/rustmage-tdm/post86-root-storm-interaction-1793826234671093142/root_storm_interaction/clippy-terminal.json"
     }
   ],
-  "remaining_physical_cards": 43,
+  "remaining_physical_cards": 18,
   "source_verification": {
     "definitions": 5489,
     "source_blobs": 2713,
@@ -622,6 +672,15 @@
       "definition_sha256": "626a0abc4379c5e8d5da6914abc1b478cdfc2b9e2da70dd242223bbaebc763bd",
       "provenance_sha256": "f495e7edb6d6e01e259ea998a632ace388b538bdbec79b51c4e60a55b6f0464b",
       "new_implementation": false
+    },
+    {
+      "name": "Awaken the Honored Dead",
+      "oracle_id": "5f694917-f434-4459-bc86-caf9ac1c80e7",
+      "evidence": "docs/tdm-cards-a-g-evidence.json",
+      "definition": "src/card_definitions/tdm/awaken_the_honored_dead.rs",
+      "definition_sha256": "f1703acb8bb097214bb6599410eeeed1bc7221b3e61063feff3bd095523f31e0",
+      "provenance_sha256": "789eea02dfe8e7b62ef595f4dfbd7f70dbf3771a5365dba23cc52bfb431e456f",
+      "new_implementation": true
     },
     {
       "name": "Barrensteppe Siege",
@@ -921,6 +980,15 @@
       "new_implementation": false
     },
     {
+      "name": "Dispelling Exhale",
+      "oracle_id": "dd3a4b64-0987-4e9b-a18d-c54365438857",
+      "evidence": "docs/tdm-cards-a-g-evidence.json",
+      "definition": "src/card_definitions/tdm/dispelling_exhale.rs",
+      "definition_sha256": "c74439a4a57871fe9fb26740c46777d6070d192e4a44ade9e56b3f99552918a7",
+      "provenance_sha256": "dbe39da935316b086296a77aca0c8fa1f02db591de0c766774ab3838eceebe4d",
+      "new_implementation": true
+    },
+    {
       "name": "Disruptive Stormbrood // Petty Revenge",
       "oracle_id": "ec74ae5d-1284-443c-9842-18954f8cf5a8",
       "evidence": "docs/tdm-cards-a-g-evidence.json",
@@ -928,6 +996,15 @@
       "definition_sha256": "6a42f4eb1204e3a777fcf538cec08431aae3cb329f66e2407084f0672c7d9e68",
       "provenance_sha256": "594292aecd5b2efaf8bdc9a0446fd3f7148ebdc849b17ee1334b0b15776e9de6",
       "new_implementation": false
+    },
+    {
+      "name": "Dracogenesis",
+      "oracle_id": "9b06f2bf-146d-4b30-b467-e16f1a942253",
+      "evidence": "docs/tdm-cards-a-g-evidence.json",
+      "definition": "src/card_definitions/tdm/dracogenesis.rs",
+      "definition_sha256": "8f61525aca9a067a70ed7020c9fb93009af97e95080c4e50c6c51c57a6eb47e7",
+      "provenance_sha256": "cf5a23f512ae6cc84b7bc06122e01cf680e084b08b4d9b1a1a485797529c42d6",
+      "new_implementation": true
     },
     {
       "name": "Dragon Sniper",
@@ -964,6 +1041,42 @@
       "definition_sha256": "5bb136757cd32eacba9aa681ff0e3b8461eb4a03844ef74a248b33751acf4efe",
       "provenance_sha256": "a4cfbd79bc106e0c0da3e11b83a6b21ac64027ed71bbdd36ce8426d029134491",
       "new_implementation": false
+    },
+    {
+      "name": "Dragonbroods' Relic",
+      "oracle_id": "61822bbe-0407-4425-b8d7-0263a8c521ec",
+      "evidence": "docs/tdm-cards-a-g-evidence.json",
+      "definition": "src/card_definitions/tdm/dragonbroods_relic.rs",
+      "definition_sha256": "825e346c69eb214e938a95a134b0c170ea4a8917a133f4d05b7fc8be0798bef6",
+      "provenance_sha256": "c4682d64eebd6fc9cd686dc35bd22249ad585ee4446fd2d8a57f4093788dcc68",
+      "new_implementation": true
+    },
+    {
+      "name": "Dragonclaw Strike",
+      "oracle_id": "69e0d9f1-f9dd-4614-ad9f-13e7153710ce",
+      "evidence": "docs/tdm-cards-a-g-evidence.json",
+      "definition": "src/card_definitions/tdm/dragonclaw_strike.rs",
+      "definition_sha256": "1fd5b96ec963f3faceceb07e2340ff1b3bec09e2baa62cb832987468562af374",
+      "provenance_sha256": "0c18628a2b44c1754cac04feff98dc451d78dc66b776243e8401051b5afefc4c",
+      "new_implementation": true
+    },
+    {
+      "name": "Dragonfire Blade",
+      "oracle_id": "e809b847-b712-4558-95ea-9bb7356cde91",
+      "evidence": "docs/tdm-cards-a-g-evidence.json",
+      "definition": "src/card_definitions/tdm/dragonfire_blade.rs",
+      "definition_sha256": "daae6651617c7cea78739fd619fa48bbb6df23db003bd731d23546fe872680c8",
+      "provenance_sha256": "acc59a888a2add6825bdb7c7ded85840da2ac08b52c41d7ecbfab88b44353faa",
+      "new_implementation": true
+    },
+    {
+      "name": "Dragonologist",
+      "oracle_id": "f6791df0-a37b-44dc-8bf3-40ac2304d188",
+      "evidence": "docs/tdm-cards-a-g-evidence.json",
+      "definition": "src/card_definitions/tdm/dragonologist.rs",
+      "definition_sha256": "86c004875a31e3d620ff783ebf18bd0816cb45c8ca857a95725265cab488f269",
+      "provenance_sha256": "f66540ba72a0270dd55cf96199fb81d3da010469471be4c4ace1ffa770960b71",
+      "new_implementation": true
     },
     {
       "name": "Dragonstorm Forecaster",
@@ -1020,6 +1133,15 @@
       "new_implementation": false
     },
     {
+      "name": "Embermouth Sentinel",
+      "oracle_id": "b5208c2c-b839-42f6-8717-ee4bbaf1385b",
+      "evidence": "docs/tdm-cards-a-g-evidence.json",
+      "definition": "src/card_definitions/tdm/embermouth_sentinel.rs",
+      "definition_sha256": "e1db554729a7e3ae25856a8aa74739eea730d402b7736e7f71adfce75dd7f5eb",
+      "provenance_sha256": "82e2ded6d82d1ff6a40a7d96336321c9fe793bb2b7cbccb474b22340cbb064aa",
+      "new_implementation": true
+    },
+    {
       "name": "Encroaching Dragonstorm",
       "oracle_id": "1e95c273-7fec-4f8d-8be9-e21ad4b93717",
       "evidence": "docs/tdm-cards-a-g-evidence.json",
@@ -1038,6 +1160,24 @@
       "new_implementation": false
     },
     {
+      "name": "Eshki Dragonclaw",
+      "oracle_id": "85d87087-48ee-4dc8-a1c0-9c9ccb885adc",
+      "evidence": "docs/tdm-cards-a-g-evidence.json",
+      "definition": "src/card_definitions/tdm/eshki_dragonclaw.rs",
+      "definition_sha256": "844ec874f3ff74922315bd3e3c1d4c7f6ac2cc35c29dfe2aae706bb43eaec628",
+      "provenance_sha256": "59e85a1c3ef5b7d1563dfd3633a92bad10f0bb01d9b77fbfc61e8053c6744fda",
+      "new_implementation": true
+    },
+    {
+      "name": "Essence Anchor",
+      "oracle_id": "e28a3f0e-40bd-4293-b5eb-ec9d185c1e1c",
+      "evidence": "docs/tdm-cards-a-g-evidence.json",
+      "definition": "src/card_definitions/tdm/essence_anchor.rs",
+      "definition_sha256": "608e7620ee72fe46428fc5e7034b9ea9dd166a04feaba172c2fa11f1522882e4",
+      "provenance_sha256": "58e38eb52107451b0c5b82f74227a7a358408da1051c68769601fa06c78d5cfa",
+      "new_implementation": true
+    },
+    {
       "name": "Evolving Wilds",
       "oracle_id": "a75445d3-1303-4bb5-89ad-26ea93fecd48",
       "evidence": "docs/tdm-cards-a-g-evidence.json",
@@ -1045,6 +1185,24 @@
       "definition_sha256": "cac30d7c631fd67e9421b0221ae8b87ce88268964cffefd56ffa782d559ebc11",
       "provenance_sha256": "6eb6204b5d5f90759d0d1a9937030a77646d320234935e42c1c94338953dc03e",
       "new_implementation": false
+    },
+    {
+      "name": "Fangkeeper's Familiar",
+      "oracle_id": "06343800-b555-4a13-ad4d-19e37d200138",
+      "evidence": "docs/tdm-cards-a-g-evidence.json",
+      "definition": "src/card_definitions/tdm/fangkeeper_s_familiar.rs",
+      "definition_sha256": "0107b7b8832e1e115562f281bb4542d1809f1db417c7a2bd01e92e995aefa27d",
+      "provenance_sha256": "6ff52bb31ce559cdf54f418bde66031137a79b378c1a14df8417ae6e79a25976",
+      "new_implementation": true
+    },
+    {
+      "name": "Felothar, Dawn of the Abzan",
+      "oracle_id": "fd666669-ad23-4e41-b78c-1cd7b82eb8b4",
+      "evidence": "docs/tdm-cards-a-g-evidence.json",
+      "definition": "src/card_definitions/tdm/felothar_dawn_of_the_abzan.rs",
+      "definition_sha256": "b56a7500d7abe2f55b4f27c176d8101ee0f3083eb13c5849e5cd2d46f0d0fc23",
+      "provenance_sha256": "332d2085c6b3ecceb7f334305e3c8918e985bee711070595d6aaaeda2242b978",
+      "new_implementation": true
     },
     {
       "name": "Feral Deathgorger // Dusk Sight",
@@ -1063,6 +1221,15 @@
       "definition_sha256": "8a901f6842771ec43843de92d25277b10bd42ab931eb7fbc4183ceef6a1d5b69",
       "provenance_sha256": "cd163cfce56d5fa492d29d1dd90a3cc192cf994b1a2c594fb9d2d0f7c64c2594",
       "new_implementation": false
+    },
+    {
+      "name": "Flamehold Grappler",
+      "oracle_id": "e2d21635-182f-4ebf-a6f5-d4c1fd7f9705",
+      "evidence": "docs/tdm-cards-a-g-evidence.json",
+      "definition": "src/card_definitions/tdm/flamehold_grappler.rs",
+      "definition_sha256": "5afd49e8250c5026384c9193e7067a0e747034901bacfa7c5c1d4426163a2971",
+      "provenance_sha256": "516bcc253b8de52909595fa0896802994bd91b72629908c0f111e12e8eab0b55",
+      "new_implementation": true
     },
     {
       "name": "Fleeting Effigy",
@@ -1135,6 +1302,42 @@
       "definition_sha256": "c2885dca22576fbddaf3e45f600a68112dbf46c99391b96acace712b1c6bda2d",
       "provenance_sha256": "899048789574615ad0667d723ce4e706e9509cf08ef2c6e1703e2b88d4a56cbd",
       "new_implementation": false
+    },
+    {
+      "name": "Frostcliff Siege",
+      "oracle_id": "e7af31ff-fa1b-4225-b3bc-fde80ac72d0a",
+      "evidence": "docs/tdm-cards-a-g-evidence.json",
+      "definition": "src/card_definitions/tdm/frostcliff_siege.rs",
+      "definition_sha256": "586208138fd4c8ab0272c530b41e48693644ee33bcdc49b7882abd8794438faf",
+      "provenance_sha256": "3efff0f2c5d8dceb63811bdc8e264c2fa0d911e8f41b8350eb28b63a3fbd2d17",
+      "new_implementation": true
+    },
+    {
+      "name": "Furious Forebear",
+      "oracle_id": "4fb1d33f-a87d-46cf-a73e-882c3dbcb26f",
+      "evidence": "docs/tdm-cards-a-g-evidence.json",
+      "definition": "src/card_definitions/tdm/furious_forebear.rs",
+      "definition_sha256": "0fe531aecf20115fba138684968df54d8996c72a2b44b51a662160a7a7f0755b",
+      "provenance_sha256": "88bb6aeab4ad26245ace98905f09032cacfdb451634023f726086f04d53b7dc5",
+      "new_implementation": true
+    },
+    {
+      "name": "Glacial Dragonhunt",
+      "oracle_id": "8f976399-29a9-4eb7-844d-3d3f2fdf6ea7",
+      "evidence": "docs/tdm-cards-a-g-evidence.json",
+      "definition": "src/card_definitions/tdm/glacial_dragonhunt.rs",
+      "definition_sha256": "2bc3d0c03a402e4ca369859dda013b66eb8c349b57df18d1b1377d971b7c18c9",
+      "provenance_sha256": "b5c463600128e1d44cdd574ac42aac1ee42abb564bc2a2e0545df150e3255e63",
+      "new_implementation": true
+    },
+    {
+      "name": "Glacierwood Siege",
+      "oracle_id": "295a831c-490e-42ba-afc1-dab3524a4f0c",
+      "evidence": "docs/tdm-cards-a-g-evidence.json",
+      "definition": "src/card_definitions/tdm/glacierwood_siege.rs",
+      "definition_sha256": "c58becf17442dd6cce93ae25c535a34e758f08713bee16bb83976445cd798a8e",
+      "provenance_sha256": "47c34c99a792eb53beeb114a5b83f761a837e85bc028b0f93bab27e21ed31ddd",
+      "new_implementation": true
     },
     {
       "name": "Great Arashin City",
@@ -2397,6 +2600,15 @@
       "new_implementation": true
     },
     {
+      "name": "Temur Battlecrier",
+      "oracle_id": "fadf984c-c224-432a-87b9-b34f929b8409",
+      "evidence": "docs/tdm-cards-s-z-evidence.json",
+      "definition": "src/card_definitions/tdm/temur_battlecrier.rs",
+      "definition_sha256": "7d616ab93a92175b5bd5c8fc78f98b7531b8deece193040fffc72299988f967a",
+      "provenance_sha256": "91da481099ae76e000da976bb21e59e8f75bc0f78d5b279c10d5a08bc43e39c1",
+      "new_implementation": true
+    },
+    {
       "name": "Temur Devotee",
       "oracle_id": "e444f072-ce24-4fd1-99eb-d20d12bc119a",
       "evidence": "docs/tdm-cards-s-z-evidence.json",
@@ -2469,6 +2681,33 @@
       "new_implementation": false
     },
     {
+      "name": "Unburied Earthcarver",
+      "oracle_id": "75da657e-0e36-4f2a-9b81-b7eba7d8e050",
+      "evidence": "docs/tdm-cards-s-z-evidence.json",
+      "definition": "src/card_definitions/tdm/unburied_earthcarver.rs",
+      "definition_sha256": "f9404c05e53b7a76ee2db15bda9c8d60c6df36971dce573c7fadf22dc0e55c51",
+      "provenance_sha256": "681306837b872477876768c1493e03e2e291d7952b71c91e143ddff2cad5d7d8",
+      "new_implementation": false
+    },
+    {
+      "name": "Underfoot Underdogs",
+      "oracle_id": "3740b86d-b0e6-4837-b408-e7f62b95c787",
+      "evidence": "docs/tdm-cards-s-z-evidence.json",
+      "definition": "src/card_definitions/tdm/underfoot_underdogs.rs",
+      "definition_sha256": "6719ed55373a55f4afebeeb19732acffe8fd151193e0c3ca09a7d3567d7ad993",
+      "provenance_sha256": "4e7cf1174e2a0bac4950602f65b76fc9662830ec3a1f9fdda5d47f55277f7b5c",
+      "new_implementation": true
+    },
+    {
+      "name": "Undergrowth Leopard",
+      "oracle_id": "511fa8a3-0a65-47fc-9f3b-57eaef2698cd",
+      "evidence": "docs/tdm-cards-s-z-evidence.json",
+      "definition": "src/card_definitions/tdm/undergrowth_leopard.rs",
+      "definition_sha256": "5e049db0900141197179fc414427d40a4c1ce32683d5d36a493157e7f68f30c5",
+      "provenance_sha256": "4ab2741ae4c85e24ce24a15f83c1e384f5a29971ffe34a58c433bc87afb9f1ab",
+      "new_implementation": false
+    },
+    {
       "name": "Unending Whisper",
       "oracle_id": "c5da5c31-0cf1-4393-8701-eda7880ecebc",
       "evidence": "docs/tdm-cards-s-z-evidence.json",
@@ -2484,6 +2723,15 @@
       "definition": "src/card_definitions/tdm/united_battlefront.rs",
       "definition_sha256": "960c0e95d9dcbf088a30fbfe0add77adf33f40d68a6b6a5479b60f0fa21cb1ab",
       "provenance_sha256": "471d2500684a606778e2ca4263ac501576680657072a751dc9ea784d1e43b7f0",
+      "new_implementation": false
+    },
+    {
+      "name": "Unrooted Ancestor",
+      "oracle_id": "de5c6c9d-04a2-4287-8c6e-fdf56c411507",
+      "evidence": "docs/tdm-cards-s-z-evidence.json",
+      "definition": "src/card_definitions/tdm/unrooted_ancestor.rs",
+      "definition_sha256": "76d9352fde04559fa1a8c4185c60426439d559d0c0a8e05692fa7d7fc81ed7ff",
+      "provenance_sha256": "cc2ae5361d70a218e9dd76307143af1e52f987a9612404776a4595bfdd709a82",
       "new_implementation": false
     },
     {
@@ -2523,6 +2771,15 @@
       "new_implementation": false
     },
     {
+      "name": "Wayspeaker Bodyguard",
+      "oracle_id": "b93eaf66-91b3-44da-851c-79810901be0c",
+      "evidence": "docs/tdm-cards-s-z-evidence.json",
+      "definition": "src/card_definitions/tdm/wayspeaker_bodyguard.rs",
+      "definition_sha256": "a5e833fbc3876c32e0abc4de81c73a846bcb4048e3ec567e64e7dfc122377c53",
+      "provenance_sha256": "61fd3cd2992f92983b6f5d260389916e7d21d5dba781a6436337ca09cfd19594",
+      "new_implementation": true
+    },
+    {
       "name": "Whirlwing Stormbrood // Dynamic Soar",
       "oracle_id": "4fbfc814-df10-4d61-ada9-c96cc8ee8d8c",
       "evidence": "docs/tdm-cards-s-z-evidence.json",
@@ -2550,6 +2807,24 @@
       "new_implementation": false
     },
     {
+      "name": "Wingblade Disciple",
+      "oracle_id": "c566317e-cd82-46c1-b506-f41256d815f6",
+      "evidence": "docs/tdm-cards-s-z-evidence.json",
+      "definition": "src/card_definitions/tdm/wingblade_disciple.rs",
+      "definition_sha256": "32254fb7c927cc3ee8c5c6a87b1f4d6c717ff99a178a24a6f8093a54c0aabb68",
+      "provenance_sha256": "2397b9073f4731c4aae71bda51753e6b5326841889b6ebd14a2e67ff6fdbab55",
+      "new_implementation": false
+    },
+    {
+      "name": "Wingspan Stride",
+      "oracle_id": "e75cee5d-ab02-4227-b36e-61c5d2f564a8",
+      "evidence": "docs/tdm-cards-s-z-evidence.json",
+      "definition": "src/card_definitions/tdm/wingspan_stride.rs",
+      "definition_sha256": "6567bbb8c04df943cf5b5da1ac471f13f3f18b3e699b9ef9893118e2675e0a89",
+      "provenance_sha256": "d220bb73c6aae01fe86fc687525a433563e01d49f272abdfb1fd453285c89cb7",
+      "new_implementation": false
+    },
+    {
       "name": "Winternight Stories",
       "oracle_id": "d64687e4-ec37-4db2-9e60-4626c7a3b011",
       "evidence": "docs/tdm-cards-s-z-evidence.json",
@@ -2569,11 +2844,25 @@
     }
   ],
   "latest_root_focus": {
-    "report": "<cache>/rustmage-tdm/post86-root-integrated-1793824659238764817/terminal.json",
-    "sha256": "f6e10d482cafe53c9d0ee93228f50b76a72aa852edc5b066c7d64bab4d992969",
-    "cases": 167,
-    "engine_core_fresh_all_four_targets": true,
-    "inputs_unchanged": true,
-    "clippy_exit": 0
+    "reports": [
+      "<cache>/rustmage-tdm/post86-root-final-ag-activations-1793826139821205886/terminal.json",
+      "<cache>/rustmage-tdm/post86-root-storm-interaction-1793826234671093142/terminal.json"
+    ],
+    "card_cases": 214,
+    "set_interaction_cases": 4,
+    "engine_core_fresh_all_targets": true,
+    "clippy_exit": 0,
+    "failure_history": "Initial newF14 assumed a single trigger required manualPutTrigger. The singleton was already onstack; correctedtestinspectsactualcapturedamount2 andownedPass. Card143/71 remainedpassing; only4interactioncases rerun with allthree targetslint."
+  },
+  "additional_synthetic_completion": {
+    "identity": "@token/tdm-reliquary-dragon",
+    "index": 5488,
+    "definition": "src/card_definitions/synthetic/token_tdm_reliquary_dragon.rs",
+    "definition_sha256": "a3b2f45226cba621d3b510200aaef21939d52b13a9a1bdf050a488a3ed2c2b46",
+    "provenance_sha256": "caa19139ff20513f8aa065a46d8bfbeee2fefe97f07678390732bc2d5d2ce0a3",
+    "physical_card_increment": 0,
+    "paired_card": "Dragonbroods\u2019 Relic",
+    "evidence": "docs/tdm-cards-a-g-evidence.json",
+    "rules": "Printed4/4 all-five-color Reliquary Dragon, flying/lifelink and ETB3 any target; headerNone preserved; actualpaidRelic creates it in final143-case proof"
   }
 }
