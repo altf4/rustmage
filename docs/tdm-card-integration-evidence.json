@@ -126,5 +126,15 @@
     "java_verified": true,
     "catalogue_version": "73a964457b0b982380ca2c75ddce5e3c392f7b06294a8c526e49875433e119fe"
   },
-  "active_engine_dependency": "E:ATTACHED_ACTIVATION_COSTS: Ringing Strike Mastery grants a non-tap mana-only activation; shared helper currently invents distinct-attachment tap cost. Card authorship held for shared fix, tests, reviews and cache warm."
+  "active_engine_dependency": "Engine82/83 fixes pass focused contracts/Clippy; schema201 trace migration/full release/final independent reviews/cache warm pending. General card authors held.",
+  "engine83_card_repair": {
+    "card": "Aggressive Negotiations",
+    "reason": "Restored after dedicated true nonland predicate rejects artifact/enchantment lands; mandatory reveal/exact refs/source-independent exile/counter continuation/owned branches verified.",
+    "gated_report": "<cache>/rustmage-tdm/nonland-hand-exile-gated-first/native.json",
+    "gated_cases": 6,
+    "admitted_report": "<cache>/rustmage-tdm/nonland-hand-exile-admitted-all-a-g/native.json",
+    "admitted_all_a_g_cases": 39,
+    "schema_report": "<cache>/rustmage-tdm/schema201-first/native.json",
+    "schema_cases": 4
+  }
 }

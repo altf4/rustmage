@@ -12,7 +12,7 @@
     "unresolved_membership_facts": 0,
     "independently_verified_complete_set_cards": 0
   },
-  "phase": "Returned to engine phase after actual card test proved missed attached-activation cost dependency; existing81 groups accepted, new group open;71card checkpoint preserved.",
+  "phase": "Engine82/83 focused actual/rules/schema contracts and all-target Clippy pass; schema201 trace acquisition/full release/final independent approvals/cache warm pending.71localwholecards, general authors held.",
   "audit_reports": [
     "docs/tdm-audit-a-g.json",
     "docs/tdm-audit-g-s.json",
@@ -787,6 +787,33 @@
         "Mage.Sets/src/mage/cards/f/FishingPole.java"
       ],
       "implementation_evidence": "docs/tdm-attached-activation-costs-evidence.json"
+    },
+    {
+      "id": "E:NONLAND_HAND_EXILE",
+      "description": "Unlinked revealed-hand nonland exile must reject multi-type lands",
+      "required_change": "Positive kind union u16MAX withoutLAND still admits artifact/enchantment lands through another type. Add a dedicated typed unlinked nonland hand exile using current_kinds & LAND ==0 at capture and revalidation. Preserve mandatory full-hand reveal, required one legal selection, immediate empty/all-land continuation, exact incarnations and source independence. Preserve existing positive-union DFT consumers. New public HandChoiceKind adds schema201; strict prior200 must reject actual pending new kind while preserving compatible bytes.",
+      "cards": [
+        "Aggressive Negotiations"
+      ],
+      "compatibility_consumers": [
+        "Intimidation Tactics",
+        "Gastal Raider"
+      ],
+      "status": "Implemented;6gatedactual+39admittedallAG+4schema201+1legacytap+9attached-cost cases pass, all-targetClippy pass. Final broad/published-engine reviews pending.",
+      "authority": [
+        "CR205.2b",
+        "CR701.20a",
+        "CR609.3"
+      ],
+      "regression_examples": [
+        "Scene of the Crime: Artifact Land, kind18",
+        "Valgavoths Lair: Enchantment Land, kind34"
+      ],
+      "independent_design_reviews": [
+        "tdm_engine_review_one: confirmed predicate/design and wire201 requirement",
+        "tdm_engine_review_two: confirmed predicate/design, positive-union compatibility and actual pending observation requirement"
+      ],
+      "implementation_evidence": "docs/tdm-nonland-hand-exile-evidence.json"
     }
   ],
   "acceptance": {

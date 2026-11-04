@@ -438,9 +438,9 @@
       "name": "Aggressive Negotiations",
       "oracle_id": "c469133e-174d-476b-b135-bbf15e415e72",
       "definition": "src/card_definitions/tdm/aggressive_negotiations.rs",
-      "definition_sha256": "3618b9521f0346dfb0dfaeda802fa4480d24b4992c61ccbbb1c72b06290ff0ff",
+      "definition_sha256": "fe644e0774cf52f182979d5f12dcc9a0c575e42e35ffa317193c18d1e52bb66a",
       "kind": "newly_authored",
-      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "status": "locally_verified_whole_card_after_engine83_repair_pending_full_set_acceptance_and_final_reviews",
       "obligations": [
         {
           "face": "Aggressive Negotiations",
@@ -457,7 +457,21 @@
         "spells_aggressive_negotiations_reveals_nonland_exile_and_optional_own_counter",
         "spells_aggressive_negotiations_targets_only_opponent_and_own_creature_and_groups_are_independent"
       ],
-      "source_review": "Full pinned Oracle body, complete Java class, and listed reusable Java helper bodies read; expectations derive from printed rules."
+      "source_review": "Full pinned Oracle body, complete Java class, and listed reusable Java helper bodies read; expectations derive from printed rules.",
+      "previous_definition_sha256": "3618b9521f0346dfb0dfaeda802fa4480d24b4992c61ccbbb1c72b06290ff0ff",
+      "engine83_repair": {
+        "reason": "Positive type union admits multi-type lands; dedicated current negative-land-bit operation now rejects every land.",
+        "gated_report": "<cache>/rustmage-tdm/nonland-hand-exile-gated-first/native.json",
+        "gated_cases": 6,
+        "actual_tests": [
+          "spells_aggressive_negotiations_nonland_filter_excludes_artifact_and_enchantment_lands",
+          "spells_aggressive_negotiations_all_land_hand_is_revealed_and_counter_group_resumes",
+          "spells_aggressive_negotiations_nonland_choice_is_exact_and_source_independent",
+          "spells_aggressive_negotiations_nonland_choice_owns_raw_index_siblings_and_restore"
+        ],
+        "admitted_all_a_g_report": "<cache>/rustmage-tdm/nonland-hand-exile-admitted-all-a-g/native.json",
+        "admitted_all_a_g_cases": 39
+      }
     },
     {
       "name": "Alesha's Legacy",

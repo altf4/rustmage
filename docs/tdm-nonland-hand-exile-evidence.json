@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "set": "TDM",
+  "dependency": "E:NONLAND_HAND_EXILE",
+  "scope": "Shared unlinked nonland hand exile plus actual Aggressive Negotiations repair; whole-set acceptance remains pending.",
+  "status": "All focused/runtime/schema contracts and workspace all-target Clippy pass; schema201 baseline acquisition, full release, final engine reviews and author-cache warm pending.",
+  "implementation_revision": "d704f41a7",
+  "rule": "Nonland requires absence of LAND type, not presence of another card type (CR205.2b).",
+  "primitive": "Instruction::RevealTargetHandExileNonland; HandChoiceKind::ExileRevealedNonland",
+  "guarantees": [
+    "current_kinds&2==0 at both capture and exact reference revalidation",
+    "Mandatory whole-hand reveal before zero-candidate continuation",
+    "Mandatory one legal card when available; selecting controller is source controller",
+    "Unlinked permanent exile has no source-BF or linked-return dependency",
+    "Counter target group proceeds independently, including all-land hand or invalid player group",
+    "Existing positive kind-union selection remains unchanged; actual Intimidation Tactics still selects artifact land",
+    "Owned raw/index/sibling/restore legality and chooser-only choice details preserved"
+  ],
+  "negative_fixtures": "Scene of the Crime and Valgavoths Lair use only real immutable Hand characteristics; no play/cast of their gated behavior.",
+  "wire": {
+    "version": 201,
+    "source": "data/observation-schema.txt",
+    "new_state": "Chooser-visible unit ExileRevealedNonland",
+    "projector": "tests/legacy/assurance/schema201.rs",
+    "strictness": "Reject actual new pending chooser kind and its owned continuation; an inherited-looking opponent frame alone does not prove snapshot compatibility. Return every compatible byte unchanged. Check201 before inherited200/199 projectors.",
+    "terminal_trace_rule": "Do not force residuals; terminal Aggressive may have no pending hand choice and may project exactly to prior200."
+  },
+  "validation": [
+    {
+      "report": "<cache>/rustmage-tdm/nonland-hand-exile-gated-first/native.json",
+      "sha256": "51550775063c489a6523dea506ffb682cfbeee42a769925d3585b9c0a14d2a43",
+      "cases": 6,
+      "terminal": true,
+      "success": true,
+      "compile_seconds": 116.37281360797351,
+      "execution_seconds": 0.02476706204470247
+    },
+    {
+      "report": "<cache>/rustmage-tdm/nonland-hand-exile-admitted-all-a-g/native.json",
+      "sha256": "7be3df6eb9b934e9ba37056125754e50f3cdad2ea18fa902db2593db69e49416",
+      "cases": 39,
+      "terminal": true,
+      "success": true,
+      "compile_seconds": 1.1676165409735404,
+      "execution_seconds": 0.05070133198751137
+    },
+    {
+      "report": "<cache>/rustmage-tdm/schema201-first/native.json",
+      "sha256": "e9a901c50ea970d6944fbe56f9f1ad11ff73c91f6268af2940dfb9aaee4eb966",
+      "cases": 4,
+      "terminal": true,
+      "success": true,
+      "compile_seconds": 24.53599621000467,
+      "execution_seconds": 0.03329819900682196
+    },
+    {
+      "report": "<cache>/rustmage-tdm/attached-activation-old-speed-consumer/native.json",
+      "sha256": "be3d74dd42d2a6d2e0489ba8eac7a63c69be681ced045dc1de7dbd5869445df7",
+      "cases": 1,
+      "terminal": true,
+      "success": true,
+      "compile_seconds": 0.8668341300217435,
+      "execution_seconds": 0.02419993403600529
+    },
+    {
+      "report": "<cache>/rustmage-tdm/attached-activation-after-engine83/native.json",
+      "sha256": "461d5e61e13cbf9fcfdf63dc012f5f130476ec6d537b0d897592835daf2d05f5",
+      "cases": 9,
+      "terminal": true,
+      "success": true,
+      "compile_seconds": 0.7662907160120085,
+      "execution_seconds": 0.024898709962144494
+    }
+  ],
+  "clippy": {
+    "report": "<cache>/rustmage-tdm/engine83-clippy-retry-1793806077686139751/terminal.json",
+    "sha256": "4a04dd042890dbe9fafc9dedc90d51a8c006d3175654bb5ae73396119c6cdd62",
+    "seconds": 52.605623368988745,
+    "exit": 0
+  },
+  "preliminary_reviews": "Both pure nonauthor engine reviewers inspected implementation and schema; no remaining source findings, final published-head/release approval pending.",
+  "card_progress": {
+    "local_whole_cards": 71,
+    "newly_implemented": 37,
+    "previously_admitted_verified": 34,
+    "pool": 276
+  },
+  "prior_failures": [
+    "<cache>/rustmage-validation-oo73vtoz/report/result.json: sourcepass, formatterfailure only; no native/release",
+    "<cache>/rustmage-validation-f75wpy9l/report/result.json: source/format/cardformat/43scriptpass, identity-op lint exposed nonland semantic gap; no native/release",
+    "<cache>/rustmage-tdm/engine83-clippy-1793805910167514599/terminal.json: existing DFT fixture needed mechanical AttachmentActivation struct migration; preserves tap_attachment:true, runtime regression now passes"
+  ]
+}

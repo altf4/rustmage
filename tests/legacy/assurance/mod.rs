@@ -58,6 +58,7 @@ mod requested_waterbend;
 mod schema198;
 mod schema199;
 mod schema200;
+mod schema201;
 
 #[path = "../engine_sos_black_red_tests.rs"]
 mod sos_black_red;
