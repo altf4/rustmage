@@ -1685,3 +1685,867 @@ fn spells_worthy_cost_exiles_creatures_or_planeswalkers_and_paid_sacrifice_survi
         }
     }
 }
+
+fn priority(g: &mut Game, p: Player) {
+    if g.actor() != Some(p) {
+        act(g, Action::Pass);
+    }
+    assert_eq!(g.actor(), Some(p));
+}
+fn cost_clause(g: &mut Game, wanted: CastCostClause) {
+    let clause = g
+        .state
+        .announcing
+        .as_ref()
+        .unwrap()
+        .cast_costs
+        .as_ref()
+        .unwrap()
+        .clauses
+        .iter()
+        .position(|r| r.clause == wanted && !r.paid)
+        .unwrap();
+    act(
+        g,
+        Action::ChooseCastCost {
+            clause: clause as u16,
+        },
+    );
+}
+fn granted_harmonize(g: &mut Game, spell: CardId, helper: Option<CardId>) {
+    act(
+        g,
+        Action::AnnounceGrantedHarmonize {
+            card: spell,
+            face: CastFace::Normal,
+        },
+    );
+    let object = helper.map(|id| g.object_ref(id));
+    act(g, Action::ChooseHarmonizer { object });
+    pay(g);
+    if let Some(object) = object {
+        cost_clause(g, CastCostClause::Harmonize(object));
+    }
+}
+fn begin_delve(g: &mut Game) {
+    act(g, Action::BeginDelve);
+    cost_clause(g, CastCostClause::Mana);
+}
+fn delver(g: &mut Game, id: CardId) {
+    let object = g.object_ref(id);
+    act(g, Action::ChooseDelver { object });
+}
+fn omen(g: &mut Game, id: CardId, x: Option<u32>, target: Option<Target>) {
+    act(g, Action::AnnounceOmen { card: id });
+    if let Some(value) = x {
+        act(g, Action::ChooseX { value });
+    }
+    if let Some(target) = target {
+        act(g, Action::ChooseTarget { target });
+    }
+    if g.legal_actions().contains(&Action::FinishTargets) {
+        act(g, Action::FinishTargets);
+    }
+    pay(g);
+}
+
+#[test]
+fn cast_faces_songcrafter_has_flash_exact_graveyard_targets_and_taps_itself_for_printed_harmonize()
+{
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let wanted = put(&mut g, p, "Quick Study", Zone::Graveyard);
+        let foreign = put(&mut g, p.other(), "Quick Study", Zone::Graveyard);
+        let dragon = put(&mut g, p, "Sagu Wildling // Roost Seek", Zone::Graveyard);
+        let mage = put(&mut g, p, "Songcrafter Mage", Zone::Hand);
+        g.state.active = p.other();
+        g.state.step = Step::Upkeep;
+        g.state.players[p.index()].mana = [0, 1, 0, 1, 1, 0];
+        cast(&mut g, mage, None);
+        reach(&mut g, |g| {
+            g.legal_actions().contains(&Action::ChooseTarget {
+                target: Target::Card(wanted),
+            })
+        });
+        assert_eq!(stats(&g, mage), (3, 2));
+        assert!(g.keywords(mage).contains(Keywords::FLASH));
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(foreign),
+            },
+        );
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(dragon),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(wanted),
+            },
+        );
+        settle(&mut g);
+        priority(&mut g, p);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 3];
+        reject(
+            &mut g,
+            Action::AnnounceGrantedHarmonize {
+                card: wanted,
+                face: CastFace::Normal,
+            },
+        );
+        g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
+        granted_harmonize(&mut g, wanted, Some(mage));
+        settle(&mut g);
+        assert!(g.object_view(mage).tapped);
+        assert_eq!(g.object_view(wanted).zone, Zone::Exile);
+        assert_eq!(g.hand_count(p), 2);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        assert_eq!(g.object_view(dragon).zone, Zone::Graveyard);
+    }
+}
+
+#[test]
+fn cast_faces_songcrafter_grant_is_source_independent_exact_expires_and_exiles_a_countered_spell() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let target = put(&mut g, p, "Quick Study", Zone::Graveyard);
+        let other = put(&mut g, p, "Quick Study", Zone::Graveyard);
+        let mage = put(&mut g, p, "Songcrafter Mage", Zone::Hand);
+        cast(&mut g, mage, None);
+        trigger_target(&mut g, Target::Card(target));
+        settle(&mut g);
+        g.move_object(mage, Zone::Graveyard);
+        let route = Action::AnnounceGrantedHarmonize {
+            card: target,
+            face: CastFace::Normal,
+        };
+        assert!(g.legal_actions().contains(&route));
+        reject(
+            &mut g,
+            Action::AnnounceGrantedHarmonize {
+                card: other,
+                face: CastFace::Normal,
+            },
+        );
+        let mut stale = g.clone();
+        stale.move_object(target, Zone::Exile);
+        stale.move_object(target, Zone::Graveyard);
+        reject(&mut stale, route.clone());
+        let mut expired = g.clone();
+        expired.finish_cleanup();
+        expired.state.active = p;
+        expired.state.priority = p;
+        expired.state.step = Step::Main1;
+        expired.state.players[p.index()].mana = [8; 6];
+        reject(&mut expired, route);
+        g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 2];
+        granted_harmonize(&mut g, target, None);
+        act(&mut g, Action::Pass);
+        let cancel = put(&mut g, p.other(), "Cancel", Zone::Hand);
+        cast(&mut g, cancel, Some(Target::Spell(target)));
+        settle(&mut g);
+        assert_eq!(g.object_view(target).zone, Zone::Exile);
+        assert_eq!(g.object_view(other).zone, Zone::Graveyard);
+        assert_eq!(g.hand_count(p), 0);
+    }
+}
+
+#[test]
+fn cast_faces_teval_does_not_grant_delve_or_cast_loss_from_hand_and_has_six_power_flying_lifelink()
+{
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Forest", Zone::Graveyard);
+        put(&mut g, p, "Forest", Zone::Graveyard);
+        let teval = put(&mut g, p, "Teval, Arbiter of Virtue", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 1, 1, 0, 1, 0];
+        reject(&mut g, Action::AnnounceCast { card: teval });
+        g.state.players[p.index()].mana = [0, 1, 1, 0, 1, 2];
+        cast(&mut g, teval, None);
+        settle(&mut g);
+        assert_eq!(stats(&g, teval), (6, 6));
+        assert!(
+            g.keywords(teval)
+                .contains(Keywords::FLYING.union(Keywords::LIFELINK))
+        );
+        assert_eq!(g.state.players[p.index()].life, 20);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        g.finish_cleanup();
+        g.finish_cleanup();
+        assert_eq!(g.state.active, p);
+        assert!(!g.object_view(teval).summoning_sick);
+        attack_one(&mut g, teval);
+        reach(&mut g, |g| matches!(g.state.pending, Pending::Blockers));
+        act(&mut g, Action::FinishBlockers);
+        reach(&mut g, |g| g.state.step == Step::EndCombat);
+        assert_eq!(g.state.players[p.index()].life, 26);
+        assert_eq!(g.state.players[p.other().index()].life, 14);
+    }
+}
+
+#[test]
+fn cast_faces_teval_delve_pays_only_generic_and_cast_life_loss_survives_countering() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Teval, Arbiter of Virtue", Zone::Battlefield);
+        let fuel: Vec<_> = (0..3)
+            .map(|_| put(&mut g, p, "Forest", Zone::Graveyard))
+            .collect();
+        let foreign = put(&mut g, p.other(), "Forest", Zone::Graveyard);
+        let spell = put(&mut g, p, "Quick Study", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        reject(&mut g, Action::AnnounceCast { card: spell });
+        g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
+        act(&mut g, Action::AnnounceCast { card: spell });
+        begin_delve(&mut g);
+        let object = g.object_ref(foreign);
+        reject(&mut g, Action::ChooseDelver { object });
+        delver(&mut g, fuel[0]);
+        delver(&mut g, fuel[1]);
+        pay(&mut g);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        act(&mut g, Action::Pass);
+        let cancel = put(&mut g, p.other(), "Cancel", Zone::Hand);
+        cast(&mut g, cancel, Some(Target::Spell(spell)));
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 17);
+        assert_eq!(g.state.players[p.other().index()].life, 20);
+        assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(fuel[0]).zone, Zone::Exile);
+        assert_eq!(g.object_view(fuel[1]).zone, Zone::Exile);
+        assert_eq!(g.object_view(fuel[2]).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(foreign).zone, Zone::Graveyard);
+        assert_eq!(g.hand_count(p), 0);
+    }
+}
+
+#[test]
+fn cast_faces_teval_uses_selected_omen_mana_value_instead_of_the_printed_dragon_face() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Teval, Arbiter of Virtue", Zone::Battlefield);
+        let card = put(&mut g, p, "Scavenger Regent // Exude Toxin", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 2, 0, 0, 0];
+        omen(&mut g, card, Some(0), None);
+        let spell = g
+            .state
+            .stack
+            .iter()
+            .find(|s| s.kind == StackKind::Spell && s.source.is_some_and(|v| v.id == card))
+            .unwrap();
+        assert_eq!(spell.mana_value(), 2);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 18);
+        assert_eq!(g.object_view(card).zone, Zone::Library);
+        assert_eq!(g.object_mana_value(card), 4);
+        assert!(!g.can_play_adventure(p, card));
+    }
+}
+
+#[test]
+fn cast_faces_spectral_denial_uses_current_owned_four_power_threshold_but_counter_payment_is_chosen_x()
+ {
+    for p in [Player::P0, Player::P1] {
+        for pay_tax in [false, true] {
+            for x in [0, 2] {
+                let mut g = scenario(p.other());
+                let target = put(&mut g, p.other(), "Bear Cub", Zone::Hand);
+                cast(&mut g, target, None);
+                act(&mut g, Action::Pass);
+                let qualifying = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+                g.state.objects[qualifying as usize].growth.power = 2;
+                put(&mut g, p, "Hill Giant", Zone::Battlefield);
+                put(&mut g, p.other(), "Shivan Dragon", Zone::Battlefield);
+                let mana_land = put(&mut g, p.other(), "Forest", Zone::Battlefield);
+                let denial = put(&mut g, p, "Spectral Denial", Zone::Hand);
+                g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 1];
+                act(&mut g, Action::AnnounceCast { card: denial });
+                reject(&mut g, Action::ChooseX { value: 3 });
+                act(&mut g, Action::ChooseX { value: x });
+                act(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Spell(target),
+                    },
+                );
+                pay(&mut g);
+                assert_eq!(
+                    g.state.players[p.index()].mana,
+                    [0, 0, 0, 0, 0, u32::from(x == 0)]
+                );
+                g.state.players[p.other().index()].mana = [0, 0, 0, 0, 0, x];
+                reach(&mut g, |g| {
+                    matches!(g.state.pending, Pending::ResolutionMana { .. })
+                });
+                assert_eq!(g.actor(), Some(p.other()));
+                if x == 0 {
+                    reject(&mut g, Action::TapMana { card: mana_land });
+                }
+                if pay_tax {
+                    act(
+                        &mut g,
+                        Action::PayResolutionMana {
+                            payment: [0, 0, 0, 0, 0, x],
+                        },
+                    );
+                } else {
+                    act(&mut g, Action::DeclineResolutionMana);
+                }
+                settle(&mut g);
+                assert_eq!(
+                    g.object_view(target).zone,
+                    if pay_tax {
+                        Zone::Battlefield
+                    } else {
+                        Zone::Graveyard
+                    }
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn cast_faces_spectral_denial_and_teval_use_x_mana_value_even_when_delve_pays_the_reduced_cost() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p.other());
+        let target = put(&mut g, p.other(), "Bear Cub", Zone::Hand);
+        cast(&mut g, target, None);
+        act(&mut g, Action::Pass);
+        put(&mut g, p, "Teval, Arbiter of Virtue", Zone::Battlefield);
+        let a = put(&mut g, p, "Forest", Zone::Graveyard);
+        let b = put(&mut g, p, "Forest", Zone::Graveyard);
+        let denial = put(&mut g, p, "Spectral Denial", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
+        act(&mut g, Action::AnnounceCast { card: denial });
+        act(&mut g, Action::ChooseX { value: 3 });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Spell(target),
+            },
+        );
+        begin_delve(&mut g);
+        delver(&mut g, a);
+        delver(&mut g, b);
+        pay(&mut g);
+        reach(&mut g, |g| {
+            matches!(g.state.pending, Pending::ResolutionMana { .. })
+        });
+        assert_eq!(g.state.players[p.index()].life, 16);
+        act(&mut g, Action::DeclineResolutionMana);
+        settle(&mut g);
+        assert_eq!(g.object_view(target).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+}
+
+#[test]
+fn cast_faces_scavenger_regent_ward_is_a_private_discard_cost_or_counters_the_targeting_spell() {
+    for p in [Player::P0, Player::P1] {
+        for discard in [false, true] {
+            let mut g = scenario(p);
+            let regent = put(&mut g, p, "Scavenger Regent // Exude Toxin", Zone::Hand);
+            g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 3];
+            cast(&mut g, regent, None);
+            settle(&mut g);
+            assert_eq!(stats(&g, regent), (4, 4));
+            assert!(g.keywords(regent).contains(Keywords::FLYING));
+            act(&mut g, Action::Pass);
+            let material = put(&mut g, p.other(), "Forest", Zone::Hand);
+            let mana_land = put(&mut g, p.other(), "Forest", Zone::Battlefield);
+            let shock = put(&mut g, p.other(), "Shock", Zone::Hand);
+            cast(&mut g, shock, Some(Target::Card(regent)));
+            reach(&mut g, |g| {
+                g.legal_actions()
+                    .contains(&Action::Discard { card: material })
+            });
+            assert_eq!(g.actor(), Some(p.other()));
+            assert!(!g.observe(p).objects.iter().any(|o| o.id == material));
+            reject(&mut g, Action::PayResolutionMana { payment: [0; 6] });
+            reject(&mut g, Action::TapMana { card: mana_land });
+            if discard {
+                act(&mut g, Action::Discard { card: material });
+            } else {
+                act(&mut g, Action::DeclineResolutionMana);
+            }
+            settle(&mut g);
+            assert_eq!(g.object_view(regent).damage, if discard { 2 } else { 0 });
+            assert_eq!(
+                g.object_view(material).zone,
+                if discard { Zone::Graveyard } else { Zone::Hand }
+            );
+            assert_eq!(g.object_view(shock).zone, Zone::Graveyard);
+        }
+    }
+}
+
+#[test]
+fn cast_faces_sagu_and_twinmaw_normal_creatures_pay_the_front_cost_and_gain_the_printed_life() {
+    for p in [Player::P0, Player::P1] {
+        for (name, color, generic, body, gain) in [
+            ("Sagu Wildling // Roost Seek", 4, 4, (3, 3), 3),
+            ("Twinmaw Stormbrood // Charring Bite", 0, 5, (5, 4), 5),
+        ] {
+            let mut g = scenario(p);
+            let card = put(&mut g, p, name, Zone::Hand);
+            let mut mana = [0; 6];
+            mana[color] = 1;
+            mana[5] = generic;
+            g.state.players[p.index()].mana = mana;
+            cast(&mut g, card, None);
+            settle(&mut g);
+            assert_eq!(stats(&g, card), body);
+            assert!(g.keywords(card).contains(Keywords::FLYING));
+            assert_eq!(g.state.players[p.index()].life, 20 + gain);
+            assert_eq!(g.state.players[p.other().index()].life, 20);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            assert_eq!(g.object_view(card).zone, Zone::Battlefield);
+        }
+    }
+}
+
+#[test]
+fn cast_faces_stormshriek_front_has_haste_and_can_pump_while_tapped_until_cleanup() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let feral = put(&mut g, p, "Stormshriek Feral // Flush Out", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 4];
+        cast(&mut g, feral, None);
+        settle(&mut g);
+        assert_eq!(stats(&g, feral), (3, 3));
+        assert!(
+            g.keywords(feral)
+                .contains(Keywords::FLYING.union(Keywords::HASTE))
+        );
+        attack_one(&mut g, feral);
+        assert!(g.object_view(feral).tapped);
+        g.state.players[p.index()].mana = [0, 0, 0, 2, 0, 2];
+        for _ in 0..2 {
+            act(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: feral,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            pay(&mut g);
+            settle(&mut g);
+        }
+        assert_eq!(stats(&g, feral), (5, 3));
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        reach(&mut g, |g| matches!(g.state.pending, Pending::Blockers));
+        act(&mut g, Action::FinishBlockers);
+        reach(&mut g, |g| g.state.step == Step::EndCombat);
+        assert_eq!(g.state.players[p.other().index()].life, 15);
+        g.finish_cleanup();
+        assert_eq!(stats(&g, feral), (3, 3));
+    }
+}
+
+#[test]
+fn cast_faces_whirlwing_front_flashes_and_grants_only_sorcery_or_dragon_timing_while_present() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        g.state.active = p.other();
+        g.state.step = Step::Upkeep;
+        let source = put(
+            &mut g,
+            p,
+            "Whirlwing Stormbrood // Dynamic Soar",
+            Zone::Hand,
+        );
+        cast(&mut g, source, None);
+        settle(&mut g);
+        priority(&mut g, p);
+        assert_eq!(stats(&g, source), (4, 3));
+        assert!(
+            g.keywords(source)
+                .contains(Keywords::FLYING.union(Keywords::FLASH))
+        );
+        let sorcery = put(&mut g, p, "Unending Whisper", Zone::Hand);
+        let dragon = put(&mut g, p, "Sagu Wildling // Roost Seek", Zone::Hand);
+        let ordinary = put(&mut g, p, "Bear Cub", Zone::Hand);
+        assert!(
+            g.legal_actions()
+                .contains(&Action::AnnounceCast { card: sorcery })
+        );
+        assert!(
+            g.legal_actions()
+                .contains(&Action::AnnounceCast { card: dragon })
+        );
+        assert!(
+            g.legal_actions()
+                .contains(&Action::AnnounceOmen { card: dragon })
+        );
+        reject(&mut g, Action::AnnounceCast { card: ordinary });
+        let mut cast_dragon = g.clone();
+        cast(&mut cast_dragon, dragon, None);
+        settle(&mut cast_dragon);
+        assert_eq!(cast_dragon.object_view(dragon).zone, Zone::Battlefield);
+        g.move_object(source, Zone::Graveyard);
+        reject(&mut g, Action::AnnounceCast { card: sorcery });
+        reject(&mut g, Action::AnnounceCast { card: dragon });
+        reject(&mut g, Action::AnnounceOmen { card: dragon });
+    }
+}
+
+const OMENS: &[&str] = &[
+    "Sagu Wildling // Roost Seek",
+    "Scavenger Regent // Exude Toxin",
+    "Stormshriek Feral // Flush Out",
+    "Twinmaw Stormbrood // Charring Bite",
+    "Whirlwing Stormbrood // Dynamic Soar",
+];
+#[test]
+fn cast_faces_each_omen_is_a_sorcery_even_if_its_front_creature_has_flash() {
+    for p in [Player::P0, Player::P1] {
+        for &name in OMENS {
+            let mut g = scenario(p);
+            put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let card = put(&mut g, p, name, Zone::Hand);
+            g.state.step = Step::Upkeep;
+            reject(&mut g, Action::AnnounceOmen { card });
+            g.state.step = Step::Main1;
+            g.state.active = p.other();
+            reject(&mut g, Action::AnnounceOmen { card });
+        }
+    }
+}
+
+#[test]
+fn cast_faces_roost_seek_searches_only_basic_lands_privately_reveals_the_pick_and_shuffles_the_dragon()
+ {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let chosen = put(&mut g, p, "Island", Zone::Library);
+        let nonbasic = put(&mut g, p, "Sandsteppe Citadel", Zone::Library);
+        let card = put(&mut g, p, "Sagu Wildling // Roost Seek", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 0];
+        omen(&mut g, card, None, None);
+        reach(&mut g, |g| {
+            g.legal_actions()
+                .contains(&Action::ChooseSearch { card: chosen })
+        });
+        assert!(g.observe(p.other()).search_choice.is_none());
+        reject(&mut g, Action::ChooseSearch { card: nonbasic });
+        act(&mut g, Action::ChooseSearch { card: chosen });
+        act(&mut g, Action::FinishSearch);
+        settle(&mut g);
+        assert_eq!(g.object_view(chosen).zone, Zone::Hand);
+        assert!(
+            g.observe(p.other())
+                .known_hand
+                .contains(&g.object_ref(chosen))
+        );
+        assert!(
+            !g.observe(p.other())
+                .objects
+                .iter()
+                .any(|o| o.id == nonbasic)
+        );
+        assert_eq!(g.object_view(card).zone, Zone::Library);
+        assert!(!g.can_play_adventure(p, card));
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+}
+
+#[test]
+fn cast_faces_exude_toxin_uses_x_on_the_omen_face_and_changes_only_current_non_dragons_until_cleanup()
+ {
+    for p in [Player::P0, Player::P1] {
+        for x in [0, 2] {
+            let mut g = scenario(p);
+            let own = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+            let enemy = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+            let dragon = put(&mut g, p.other(), "Shivan Dragon", Zone::Battlefield);
+            let card = put(&mut g, p, "Scavenger Regent // Exude Toxin", Zone::Hand);
+            g.state.players[p.index()].mana = [0, 0, 2, 0, 0, x];
+            omen(&mut g, card, Some(x), None);
+            let spell = g
+                .state
+                .stack
+                .iter()
+                .find(|s| s.kind == StackKind::Spell && s.source.is_some_and(|v| v.id == card))
+                .unwrap();
+            assert_eq!(spell.mana_value(), u64::from(x) + 2);
+            settle(&mut g);
+            assert_eq!(stats(&g, own), (3 - i128::from(x), 3 - i128::from(x)));
+            assert_eq!(stats(&g, enemy), (3 - i128::from(x), 3 - i128::from(x)));
+            assert_eq!(stats(&g, dragon), (5, 5));
+            assert_eq!(g.object_view(card).zone, Zone::Library);
+            assert_eq!(g.object_mana_value(card), 4);
+            let late = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            assert_eq!(stats(&g, late), (2, 2));
+            g.finish_cleanup();
+            assert_eq!(stats(&g, own), (3, 3));
+            assert_eq!(stats(&g, enemy), (3, 3));
+        }
+    }
+}
+
+#[test]
+fn cast_faces_charring_bite_uses_red_cost_targets_only_nonfliers_and_fizzles_to_graveyard() {
+    for p in [Player::P0, Player::P1] {
+        for lose_target in [false, true] {
+            let mut g = scenario(p);
+            let target = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+            g.state.objects[target as usize].growth.toughness = 3;
+            let flyer = put(&mut g, p.other(), "Shivan Dragon", Zone::Battlefield);
+            let card = put(&mut g, p, "Twinmaw Stormbrood // Charring Bite", Zone::Hand);
+            g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 1];
+            reject(&mut g, Action::AnnounceOmen { card });
+            g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 1];
+            act(&mut g, Action::AnnounceOmen { card });
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(flyer),
+                },
+            );
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            pay(&mut g);
+            if lose_target {
+                g.state.objects[target as usize].gained_keywords = Keywords::FLYING;
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(target).damage,
+                if lose_target { 0 } else { 5 }
+            );
+            assert_eq!(
+                g.object_view(card).zone,
+                if lose_target {
+                    Zone::Graveyard
+                } else {
+                    Zone::Library
+                }
+            );
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            assert!(!g.can_play_adventure(p, card));
+        }
+    }
+}
+
+#[test]
+fn cast_faces_dynamic_soar_places_three_persistent_counters_only_on_own_exact_creature() {
+    for p in [Player::P0, Player::P1] {
+        for blink in [false, true] {
+            let mut g = scenario(p);
+            let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let foreign = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let card = put(
+                &mut g,
+                p,
+                "Whirlwing Stormbrood // Dynamic Soar",
+                Zone::Hand,
+            );
+            act(&mut g, Action::AnnounceOmen { card });
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(foreign),
+                },
+            );
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(own),
+                },
+            );
+            pay(&mut g);
+            if blink {
+                g.move_object(own, Zone::Hand);
+                g.move_object(own, Zone::Battlefield);
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.counter_count(own, CounterKind::PlusOne),
+                if blink { 0 } else { 3 }
+            );
+            assert_eq!(
+                g.object_view(card).zone,
+                if blink {
+                    Zone::Graveyard
+                } else {
+                    Zone::Library
+                }
+            );
+            g.finish_cleanup();
+            assert_eq!(stats(&g, own), if blink { (2, 2) } else { (5, 5) });
+        }
+    }
+}
+
+#[test]
+fn cast_faces_flush_out_discards_before_drawing_two_and_draws_nothing_with_an_empty_hand() {
+    for p in [Player::P0, Player::P1] {
+        for has_card in [false, true] {
+            let mut g = scenario(p);
+            let top = put(&mut g, p, "Bear Cub", Zone::Library);
+            let next = put(&mut g, p, "Island", Zone::Library);
+            let material = has_card.then(|| put(&mut g, p, "Forest", Zone::Hand));
+            let card = put(&mut g, p, "Stormshriek Feral // Flush Out", Zone::Hand);
+            g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 1];
+            omen(&mut g, card, None, None);
+            if let Some(material) = material {
+                reach(&mut g, |g| {
+                    g.legal_actions()
+                        .contains(&Action::Discard { card: material })
+                });
+                assert_eq!(g.object_view(top).zone, Zone::Library);
+                assert_eq!(g.object_view(next).zone, Zone::Library);
+                assert!(g.observe(p.other()).effect_choice.is_none());
+                act(&mut g, Action::Discard { card: material });
+            }
+            settle(&mut g);
+            assert_eq!(g.hand_count(p), if has_card { 2 } else { 0 });
+            assert_eq!(
+                g.object_view(top).zone,
+                if has_card { Zone::Hand } else { Zone::Library }
+            );
+            assert_eq!(
+                g.object_view(next).zone,
+                if has_card { Zone::Hand } else { Zone::Library }
+            );
+            assert_eq!(g.object_view(card).zone, Zone::Library);
+            assert!(!g.can_play_adventure(p, card));
+        }
+    }
+}
+
+#[test]
+fn cast_faces_all_five_countered_omens_go_to_graveyard_instead_of_shuffling_or_exiling() {
+    for p in [Player::P0, Player::P1] {
+        for &name in OMENS {
+            let mut g = scenario(p);
+            let own = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+            let enemy = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+            let card = put(&mut g, p, name, Zone::Hand);
+            omen(
+                &mut g,
+                card,
+                (name == OMENS[1]).then_some(0),
+                if name == OMENS[3] {
+                    Some(Target::Card(enemy))
+                } else if name == OMENS[4] {
+                    Some(Target::Card(own))
+                } else {
+                    None
+                },
+            );
+            act(&mut g, Action::Pass);
+            let cancel = put(&mut g, p.other(), "Cancel", Zone::Hand);
+            cast(&mut g, cancel, Some(Target::Spell(card)));
+            settle(&mut g);
+            assert_eq!(g.object_view(card).zone, Zone::Graveyard, "{name}");
+            assert!(!g.can_play_adventure(p, card));
+            assert_eq!(g.counter_count(own, CounterKind::PlusOne), 0);
+            assert_eq!(g.object_view(enemy).damage, 0);
+        }
+    }
+}
+
+#[test]
+fn cast_faces_actual_teval_delve_selection_is_owned_raw_index_restorable_and_does_not_leak_draws() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Teval, Arbiter of Virtue", Zone::Battlefield);
+        let fuel: Vec<_> = (0..3)
+            .map(|_| put(&mut g, p, "Forest", Zone::Graveyard))
+            .collect();
+        let hidden = put(&mut g, p, "Cancel", Zone::Library);
+        let spell = put(&mut g, p, "Quick Study", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
+        act(&mut g, Action::AnnounceCast { card: spell });
+        begin_delve(&mut g);
+        delver(&mut g, fuel[0]);
+        let action = Action::ChooseDelver {
+            object: g.object_ref(fuel[1]),
+        };
+        let revision = g.revision();
+        let index = g.legal_actions().iter().position(|a| *a == action).unwrap();
+        let saved = g.snapshot();
+        let mut raw = g.clone();
+        let mut indexed = g.clone();
+        let mut sibling = g.clone();
+        drop(g);
+        raw.apply(p, action.clone()).unwrap();
+        indexed.apply_index(p, revision, index).unwrap();
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        delver(&mut sibling, fuel[2]);
+        for child in [&mut raw, &mut indexed, &mut sibling] {
+            pay(child);
+            settle(child);
+            assert_eq!(child.state.players[p.index()].life, 17);
+            assert_eq!(child.hand_count(p), 2);
+            assert!(
+                !child
+                    .observe(p.other())
+                    .objects
+                    .iter()
+                    .any(|o| o.id == hidden)
+            );
+        }
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        assert_eq!(sibling.object_view(fuel[1]).zone, Zone::Graveyard);
+        assert_eq!(raw.object_view(fuel[1]).zone, Zone::Exile);
+        indexed.restore(&saved).unwrap();
+        assert_eq!(
+            indexed.apply_index(p, revision, index),
+            Err(Error::StaleRevision)
+        );
+        act(&mut indexed, action);
+        pay(&mut indexed);
+        settle(&mut indexed);
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+    }
+}
+
+#[test]
+fn cast_faces_songcrafter_grants_sorcery_printed_cost_but_flash_does_not_transfer_to_it() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        g.state.active = p.other();
+        g.state.step = Step::Upkeep;
+        let spell = put(&mut g, p, "Unending Whisper", Zone::Graveyard);
+        let mage = put(&mut g, p, "Songcrafter Mage", Zone::Hand);
+        cast(&mut g, mage, None);
+        trigger_target(&mut g, Target::Card(spell));
+        settle(&mut g);
+        priority(&mut g, p);
+        g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 0];
+        reject(
+            &mut g,
+            Action::AnnounceGrantedHarmonize {
+                card: spell,
+                face: CastFace::Normal,
+            },
+        );
+        let provider = put(
+            &mut g,
+            p,
+            "Whirlwing Stormbrood // Dynamic Soar",
+            Zone::Battlefield,
+        );
+        reject(&mut g, Action::AnnounceHarmonize { card: spell });
+        granted_harmonize(&mut g, spell, None);
+        settle(&mut g);
+        assert_eq!(g.object_view(spell).zone, Zone::Exile);
+        assert_eq!(g.hand_count(p), 1);
+        assert!(!g.object_view(mage).tapped);
+        assert!(!g.object_view(provider).tapped);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+}

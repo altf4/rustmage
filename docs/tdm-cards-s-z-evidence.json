@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "scope": "All92 physical S\u2013Z TDM members plus their owned Omen/reprint definitions; whole-card results accumulate here.",
-  "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+  "engine_revision": "2660c86112362973c195bee4c1b85e1a968f9f3a",
   "metadata_baseline": "bd24d9f167f98308637420e3a4de461ccda1a4d0",
   "tracking_issue": "https://github.com/altf4/rustmage/issues/570",
   "owner": "s_z",
   "first_family": "Harmonize draw/bounce/combat spells",
   "started_utc": "2026-11-04T14:02:30.077837+00:00",
   "full_denominator": 92,
-  "currently_verified_new_complete": 7,
-  "currently_verified_existing_candidates": 23,
-  "pending_members": 62,
+  "currently_verified_new_complete": 9,
+  "currently_verified_existing_candidates": 32,
+  "pending_members": 51,
   "candidate_first_family_count": 4,
   "provisional_complete_flags": "New definitions remain complete=false through initial gated actual-definition PASS. Integrator then admits and repeats using normal supported put before counting. Existing baseline candidates require actual-definition evidence or accepted exact source/test/report proof reuse.",
   "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
@@ -624,6 +624,161 @@
       "path": "Mage/src/main/java/mage/filter/FilterOpponent.java",
       "sha256": "45813e5fd75e1b9a5401f9927d811a9ebf05ea2364938b8f7c1020da7b6f1f7f",
       "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/SongcrafterMage.java",
+      "sha256": "8a998d849e999b2e7bd97b51ab9a5761fc60fb9dbdc082e138d2eb891909e603",
+      "extent": "Complete body read during current whole-card authoring; direct custom classes included."
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/t/TevalArbiterOfVirtue.java",
+      "sha256": "9fcf1fa50f89f3ea8c39682325eb7fd96f9fd0ff737f7a9defccd4a1be2f0f13",
+      "extent": "Complete body read during current whole-card authoring; direct custom classes included."
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/SaguWildling.java",
+      "sha256": "2fc511fb2a772c8c164c0919bc686f3559d027a13c84f6c2000f9cac0deba18f",
+      "extent": "Complete body read during current whole-card authoring; direct custom classes included."
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/ScavengerRegent.java",
+      "sha256": "5bffc5cb08aac47fe16661cedbbeb02501048f20ef56f9737beaa4211978c43a",
+      "extent": "Complete body read during current whole-card authoring; direct custom classes included."
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/StormshriekFeral.java",
+      "sha256": "ff9fb245334dc2d3cef7e6bfcfb3e8d933a5bfcf9733ab055b53bcb5f377a0e1",
+      "extent": "Complete body read during current whole-card authoring; direct custom classes included."
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/t/TwinmawStormbrood.java",
+      "sha256": "02813a5921b06a87adea75cd7e7c9d21f36dff61fd8222d9af244158ab21679d",
+      "extent": "Complete body read during current whole-card authoring; direct custom classes included."
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/w/WhirlwingStormbrood.java",
+      "sha256": "3a3232054edaf9ef684006db5bb3ae2026dd6170d9f71951fcf4a3a02d8ed8bb",
+      "extent": "Complete body read during current whole-card authoring; direct custom classes included."
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/SpectralDenial.java",
+      "sha256": "6033a4165443d2e5d1ec253e387e3f56c039adddc2f8c4ad0d1e641c492f161b",
+      "extent": "Complete body read during current whole-card authoring; direct custom classes included."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549",
+      "extent": "Complete body read during current whole-card authoring; direct custom classes included."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81",
+      "extent": "Complete body read during current whole-card authoring; direct custom classes included."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/DelveAbility.java",
+      "sha256": "27ff5af89ce6082ac6d9e746c13c9206a06c8a6bbe687c0ce3ae78550d7075da",
+      "extent": "Complete body read during current whole-card authoring; direct custom classes included."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledSpellsEffect.java",
+      "sha256": "fe96f9ccb2dbf72b35b14b2fa8c2e131e1e8e4e399b9cfd55ad6d4a198741227",
+      "extent": "Complete body read during current whole-card authoring; direct custom classes included."
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4",
+      "extent": "Complete body read during current whole-card authoring; direct custom classes included."
+    },
+    {
+      "path": "Mage/src/main/java/mage/cards/OmenCard.java",
+      "sha256": "23ab5ce7824ef4ff96e68a43e16b9cc29fe9e5f03e447653d981da346fb5fcba",
+      "extent": "Complete body read during current whole-card authoring; direct custom classes included."
+    },
+    {
+      "path": "Mage/src/main/java/mage/cards/OmenSpellCard.java",
+      "sha256": "a103edc55f20408a67f69a0be9d1c5d5d08133c3b25d43fde7614bee966678ba",
+      "extent": "Complete body read during current whole-card authoring; direct custom classes included."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a",
+      "extent": "Complete body read during current whole-card authoring; direct custom classes included."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c",
+      "extent": "Complete body read during current whole-card authoring; direct custom classes included."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+      "sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0",
+      "extent": "Complete body read during current whole-card authoring; direct custom classes included."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SignInversionDynamicValue.java",
+      "sha256": "4c4175b8acbc1aeafe355bcad4f1fece8983c36ee7b506fae1de38563dde6da0",
+      "extent": "Complete body read during current whole-card authoring; direct custom classes included."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ShuffleIntoLibrarySourceEffect.java",
+      "sha256": "bbb5942769ee34f8ca0539d82c4487bc0f39bcf14787978fe588240bccf4f8d0",
+      "extent": "Complete body read during current whole-card authoring; direct custom classes included."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/SearchEffect.java",
+      "sha256": "3bd01fb726f6f76df078d7bf1f7a84fe484cc02fa0b1ca8dff89a3a2f562be96",
+      "extent": "Complete body read during current whole-card authoring; direct custom classes included."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950",
+      "extent": "Complete body read during current whole-card authoring; direct custom classes included."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/CastAsThoughItHadFlashAllEffect.java",
+      "sha256": "2e3ffc07fbe4e802fc19aec06b070c450381c4bf797a8f4458841e7df9f81cc9",
+      "extent": "Complete body read during current whole-card authoring; direct custom classes included."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileFromGraveCost.java",
+      "sha256": "0fbd76b0759d6ff66e0517af68a598d62dfd5fca5a520f4ee834132b0275166e",
+      "extent": "Complete body read during current whole-card authoring; direct custom classes included."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+      "sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4",
+      "extent": "Complete body read during current whole-card authoring; direct custom classes included."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionForEachSourceEffect.java",
+      "sha256": "47265899e05cec6a04b65519e61353b4684a7c0c1bdf6abf04af79ae4c7708eb",
+      "extent": "Complete body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+      "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d",
+      "extent": "Complete body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/PowerPredicate.java",
+      "sha256": "909b9038e02c0653920408059e987b6ee3cfad717900e62e78c597285f137dde",
+      "extent": "Complete body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetSpell.java",
+      "sha256": "349d67f29235bc2e3ad846c3b177f18dc1097e87e80327a77c852667289f94cc",
+      "extent": "Complete body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2",
+      "extent": "Complete body read during current whole-card authoring."
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4",
+      "extent": "Complete body read during current whole-card authoring."
     }
   ],
   "source_read_scoped_files": [
@@ -715,9 +870,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "3bd160839b257c931ac2e54fd931ade2538970941bf46d8b91b74bbf8980c931"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "3bd160839b257c931ac2e54fd931ade2538970941bf46d8b91b74bbf8980c931",
+      "evidence_family": "Spell grants, delve and five complete Omen cards"
     },
     {
       "name": "Salt Road Packbeast",
@@ -829,9 +985,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "8f30dc3a35d70620bf2a758f932114931a32b720d683ca1306167c0822e502f5"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "8f30dc3a35d70620bf2a758f932114931a32b720d683ca1306167c0822e502f5",
+      "evidence_family": "Spell grants, delve and five complete Omen cards"
     },
     {
       "name": "Scoured Barrens",
@@ -1059,9 +1216,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "2c50197e89fb00cb6f953be16210d81115a8db46b18e65f1951314ff120f4b46"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "2c50197e89fb00cb6f953be16210d81115a8db46b18e65f1951314ff120f4b46",
+      "evidence_family": "Spell grants, delve and five complete Omen cards",
+      "admission": "Corrected gated20PASS whilefalse, engine86 accepted/rewarmed, then authorized promotion and ordinary56PASS."
     },
     {
       "name": "Sonic Shrieker",
@@ -1089,9 +1248,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "a2669891c70ff93c29da880c9bb5bef7e468cb51ab04ffce501849609a60d510"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "a2669891c70ff93c29da880c9bb5bef7e468cb51ab04ffce501849609a60d510",
+      "evidence_family": "Spell grants, delve and five complete Omen cards"
     },
     {
       "name": "Stadium Headliner",
@@ -1229,9 +1389,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "ae4bb85cb77ba5efb4a9bd6bf566c098f518489a606764afa4d39d400390e485"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "ae4bb85cb77ba5efb4a9bd6bf566c098f518489a606764afa4d39d400390e485",
+      "evidence_family": "Spell grants, delve and five complete Omen cards"
     },
     {
       "name": "Strategic Betrayal",
@@ -1352,9 +1513,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "c30463b91c9ea88cd98650db3a5754880cdc9f11ae047e10a920aa4df5d8a080"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "c30463b91c9ea88cd98650db3a5754880cdc9f11ae047e10a920aa4df5d8a080",
+      "evidence_reuse": "docs/tdm-existing-reuse-four-evidence.json"
     },
     {
       "name": "Swamp",
@@ -1563,9 +1725,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "698398c195279ed4ef7cc00f374fdabaacbb0df6dc1219e0d78d283f79bd73e8"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "698398c195279ed4ef7cc00f374fdabaacbb0df6dc1219e0d78d283f79bd73e8",
+      "evidence_family": "Spell grants, delve and five complete Omen cards",
+      "admission": "Corrected gated20PASS whilefalse, engine86 accepted/rewarmed, then authorized promotion and ordinary56PASS."
     },
     {
       "name": "The Sibsig Ceremony",
@@ -1722,9 +1886,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "f43cf19a6517664d85a9f1a2a969144362b7265ceb5de3faf8182ce7d1bd8687"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "f43cf19a6517664d85a9f1a2a969144362b7265ceb5de3faf8182ce7d1bd8687",
+      "evidence_family": "Spell grants, delve and five complete Omen cards"
     },
     {
       "name": "Ugin, Eye of the Storms",
@@ -1737,9 +1902,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "8d9f58967c0259e54d14f4d31538b641b7d9f53a2f2b6cf28bf30f81d780524b"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "8d9f58967c0259e54d14f4d31538b641b7d9f53a2f2b6cf28bf30f81d780524b",
+      "evidence_reuse": "docs/tdm-existing-reuse-four-evidence.json"
     },
     {
       "name": "Unburied Earthcarver",
@@ -1848,9 +2014,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "92870afcf9e98926d636deb77df3c7041ce3fec876a06be3ccc16bac7393ff12"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "92870afcf9e98926d636deb77df3c7041ce3fec876a06be3ccc16bac7393ff12",
+      "evidence_reuse": "docs/tdm-existing-reuse-four-evidence.json"
     },
     {
       "name": "Unrooted Ancestor",
@@ -2089,9 +2256,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "901be646c24b84f4c8850a8d3c484fc0c0f80c047c8041392fde08ecbed49727"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "901be646c24b84f4c8850a8d3c484fc0c0f80c047c8041392fde08ecbed49727",
+      "evidence_family": "Spell grants, delve and five complete Omen cards"
     },
     {
       "name": "Wild Ride",
@@ -2350,7 +2518,7 @@
       "oracle_facts_sha256": "c50c16138bb0572a1a932e5c9861f497a264e5a4b6aa78ced267b126fc8b3041"
     }
   ],
-  "remaining": "88 physical members remain for complete source reads/authorship/actual-definition verification; first4 locally verified, full set acceptance still pending.",
+  "remaining": "51 of the original92 physical members are not counted in this author ledger:26 retained here and25 delegated to the disjoint additional S-Z owner. Root reconciles delegated acceptance separately. This author cohort has41 locally whole-card verified (9new/32existing); complete-set acceptance remains pending.",
   "families": [
     {
       "name": "Harmonize draw/bounce/combat spells",
@@ -3228,7 +3396,1369 @@
           "2209-2224 Teval delve totalcost and stackX manavalue"
         ]
       }
+    },
+    {
+      "name": "Spell grants, delve and five complete Omen cards",
+      "started_utc": "2026-11-04T19:30:15.803665+00:00",
+      "preparation": "Source/tests prepared before engine85 hold; exact four WIP pins preserved across approved compatibility install.",
+      "status": "locally_whole_card_verified",
+      "engine_revision": "2660c86112362973c195bee4c1b85e1a968f9f3a",
+      "authoring_compatibility_commit": "a649999b061906db61fddfc847e5d2614b6b8483",
+      "candidate_members": 8,
+      "new_candidates": 2,
+      "existing_candidates": 6,
+      "focused_filter": "cast_faces_",
+      "focused_scenario_groups": [
+        "cast_faces_songcrafter_has_flash_exact_graveyard_targets_and_taps_itself_for_printed_harmonize",
+        "cast_faces_songcrafter_grant_is_source_independent_exact_expires_and_exiles_a_countered_spell",
+        "cast_faces_teval_does_not_grant_delve_or_cast_loss_from_hand_and_has_six_power_flying_lifelink",
+        "cast_faces_teval_delve_pays_only_generic_and_cast_life_loss_survives_countering",
+        "cast_faces_teval_uses_selected_omen_mana_value_instead_of_the_printed_dragon_face",
+        "cast_faces_spectral_denial_uses_current_owned_four_power_threshold_but_counter_payment_is_chosen_x",
+        "cast_faces_spectral_denial_and_teval_use_x_mana_value_even_when_delve_pays_the_reduced_cost",
+        "cast_faces_scavenger_regent_ward_is_a_private_discard_cost_or_counters_the_targeting_spell",
+        "cast_faces_sagu_and_twinmaw_normal_creatures_pay_the_front_cost_and_gain_the_printed_life",
+        "cast_faces_stormshriek_front_has_haste_and_can_pump_while_tapped_until_cleanup",
+        "cast_faces_whirlwing_front_flashes_and_grants_only_sorcery_or_dragon_timing_while_present",
+        "cast_faces_each_omen_is_a_sorcery_even_if_its_front_creature_has_flash",
+        "cast_faces_roost_seek_searches_only_basic_lands_privately_reveals_the_pick_and_shuffles_the_dragon",
+        "cast_faces_exude_toxin_uses_x_on_the_omen_face_and_changes_only_current_non_dragons_until_cleanup",
+        "cast_faces_charring_bite_uses_red_cost_targets_only_nonfliers_and_fizzles_to_graveyard",
+        "cast_faces_dynamic_soar_places_three_persistent_counters_only_on_own_exact_creature",
+        "cast_faces_flush_out_discards_before_drawing_two_and_draws_nothing_with_an_empty_hand",
+        "cast_faces_all_five_countered_omens_go_to_graveyard_instead_of_shuffling_or_exiling",
+        "cast_faces_actual_teval_delve_selection_is_owned_raw_index_restorable_and_does_not_leak_draws",
+        "cast_faces_songcrafter_grants_sorcery_printed_cost_but_flash_does_not_transfer_to_it"
+      ],
+      "cards": [
+        {
+          "name": "Songcrafter Mage",
+          "oracle_id": "13f0863f-ae54-4bea-8f01-7f3891797577",
+          "oracle_full_facts": {
+            "oracle_id": "13f0863f-ae54-4bea-8f01-7f3891797577",
+            "name": "Songcrafter Mage",
+            "layout": "normal",
+            "mana_cost": "{G}{U}{R}",
+            "cmc": 3.0,
+            "type_line": "Creature \u2014 Human Bard",
+            "oracle_text": "Flash\nWhen this creature enters, target instant or sorcery card in your graveyard gains harmonize until end of turn. Its harmonize cost is equal to its mana cost. (You may cast that card from your graveyard for its harmonize cost. You may tap a creature you control to reduce that cost by {X}, where X is its power. Then exile the spell.)",
+            "power": "3",
+            "toughness": "2",
+            "colors": [
+              "G",
+              "R",
+              "U"
+            ],
+            "color_identity": [
+              "G",
+              "R",
+              "U"
+            ],
+            "keywords": [
+              "Flash"
+            ],
+            "reference_printing": {
+              "id": "9523bc07-49e5-409c-ae6b-b28e305eef36",
+              "set": "tdm",
+              "collector_number": "225",
+              "released_at": "2025-04-11"
+            }
+          },
+          "definition": "src/card_definitions/tdm/songcrafter_mage.rs",
+          "definition_sha256": "0b2d44341bcbf0ed263ab7732f175dfd68ab8d1f4019f7041bbb9990de10fca9",
+          "provenance": "src/card_definitions/tdm/songcrafter_mage.json",
+          "provenance_sha256": "80fe735df28c482173fb83bba47474cf8488e09d17f67690892c2472b8df0949",
+          "synthetic_definitions": [],
+          "obligations": [
+            "GUR 3/2 Human Bard with flash; actual off-turn paid cast and keyword/body assertions.",
+            "ETB targets exactly one instant or sorcery card in own graveyard; rejects foreign graveyard and physical Dragon/Omen card.",
+            "Temporary exact-incarnation Harmonize grants actual printed symbols, optional power reduction by tapping own creature even if summoning sick, colored mana remains required.",
+            "Grant survives source departure, expires at cleanup, does not transfer flash, and exiles the spell when countered or resolved."
+          ],
+          "native_scenarios": [
+            "cast_faces_songcrafter_has_flash_exact_graveyard_targets_and_taps_itself_for_printed_harmonize",
+            "cast_faces_songcrafter_grant_is_source_independent_exact_expires_and_exiles_a_countered_spell",
+            "cast_faces_songcrafter_grants_sorcery_printed_cost_but_flash_does_not_transfer_to_it"
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Teval, Arbiter of Virtue",
+          "oracle_id": "f6cf359a-91cb-4b3c-8837-be53e4ed9c93",
+          "oracle_full_facts": {
+            "oracle_id": "f6cf359a-91cb-4b3c-8837-be53e4ed9c93",
+            "name": "Teval, Arbiter of Virtue",
+            "layout": "normal",
+            "mana_cost": "{2}{B}{G}{U}",
+            "cmc": 5.0,
+            "type_line": "Legendary Creature \u2014 Spirit Dragon",
+            "oracle_text": "Flying, lifelink\nSpells you cast have delve. (Each card you exile from your graveyard while casting those spells pays for {1}.)\nWhenever you cast a spell, you lose life equal to its mana value.",
+            "power": "6",
+            "toughness": "6",
+            "colors": [
+              "B",
+              "G",
+              "U"
+            ],
+            "color_identity": [
+              "B",
+              "G",
+              "U"
+            ],
+            "keywords": [
+              "Flying",
+              "Lifelink"
+            ],
+            "reference_printing": {
+              "id": "27a93f5b-7b32-49f0-a179-b897828fe49a",
+              "set": "tdm",
+              "collector_number": "230",
+              "released_at": "2025-04-11"
+            }
+          },
+          "definition": "src/card_definitions/tdm/teval_arbiter_of_virtue.rs",
+          "definition_sha256": "eba1c160b61af988cea9c073e588c9af6479682f124006f71621592cef945aef",
+          "provenance": "src/card_definitions/tdm/teval_arbiter_of_virtue.json",
+          "provenance_sha256": "3b89371581cff5e9f87d3e946516f0bd8f9e25219a7da621dfc036b4aaaf77b9",
+          "synthetic_definitions": [],
+          "obligations": [
+            "2BGU legendary 6/6 Spirit Dragon with flying and lifelink; own initial cast does not receive its battlefield abilities.",
+            "Spells you cast have delve while provider is on battlefield: exact own graveyard cards pay only generic, mandatory colored symbols still paid.",
+            "Whenever you cast a spell, captured selected stack mana value causes own life loss even if spell is countered; chosen X and selected Omen cost differ from permanent face.",
+            "Actual combat proves six damage and six lifelink; representative owned delve choice raw/index/restore and private draws."
+          ],
+          "native_scenarios": [
+            "cast_faces_teval_does_not_grant_delve_or_cast_loss_from_hand_and_has_six_power_flying_lifelink",
+            "cast_faces_teval_delve_pays_only_generic_and_cast_life_loss_survives_countering",
+            "cast_faces_teval_uses_selected_omen_mana_value_instead_of_the_printed_dragon_face",
+            "cast_faces_spectral_denial_and_teval_use_x_mana_value_even_when_delve_pays_the_reduced_cost",
+            "cast_faces_actual_teval_delve_selection_is_owned_raw_index_restorable_and_does_not_leak_draws"
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Sagu Wildling // Roost Seek",
+          "oracle_id": "7cee6d43-5dec-4989-85ec-c635ec783ec7",
+          "oracle_full_facts": {
+            "oracle_id": "7cee6d43-5dec-4989-85ec-c635ec783ec7",
+            "name": "Sagu Wildling // Roost Seek",
+            "layout": "adventure",
+            "mana_cost": "{4}{G} // {G}",
+            "cmc": 5.0,
+            "type_line": "Creature \u2014 Dragon // Sorcery \u2014 Omen",
+            "power": "3",
+            "toughness": "3",
+            "colors": [
+              "G"
+            ],
+            "color_identity": [
+              "G"
+            ],
+            "keywords": [
+              "Flying"
+            ],
+            "card_faces": [
+              {
+                "name": "Sagu Wildling",
+                "mana_cost": "{4}{G}",
+                "type_line": "Creature \u2014 Dragon",
+                "oracle_text": "Flying\nWhen this creature enters, you gain 3 life.",
+                "power": "3",
+                "toughness": "3"
+              },
+              {
+                "name": "Roost Seek",
+                "mana_cost": "{G}",
+                "type_line": "Sorcery \u2014 Omen",
+                "oracle_text": "Search your library for a basic land card, reveal it, put it into your hand, then shuffle. (Also shuffle this card.)"
+              }
+            ],
+            "reference_printing": {
+              "id": "d8b43b00-f4d1-436c-bf3f-6d414cd4ce38",
+              "set": "tdm",
+              "collector_number": "157",
+              "released_at": "2025-04-11"
+            }
+          },
+          "definition": "src/card_definitions/tdm/sagu_wildling.rs",
+          "definition_sha256": "e0d9ca68ce17c16907a9956134f0444efccaed8abb0aecb62d5d9a574e81fa01",
+          "provenance": "src/card_definitions/tdm/sagu_wildling.json",
+          "provenance_sha256": "5f0ee95bad556cb1f883170bcee8cf6607af18a02c7d528cf78135acca7554a5",
+          "synthetic_definitions": [
+            {
+              "definition": "src/card_definitions/synthetic/roost_seek.rs",
+              "definition_sha256": "b643276d2c74b6762fa6cfdd4f714d8f89e1735f3f661b392a0965bf7131e8e8",
+              "provenance": "src/card_definitions/synthetic/roost_seek.json",
+              "provenance_sha256": "5120e5a88ee277975cf7a0daac8cca3de4e8487ada362a165aee037d7e68e25a"
+            }
+          ],
+          "obligations": [
+            "4G 3/3 Dragon, flying, actual ETB gains its controller three life.",
+            "Roost Seek costs G at sorcery timing: private own-library search for one basic land, reveal selected card and put into hand, then shuffle including resolved source.",
+            "Front characteristics apply outside stack; countered Omen goes to graveyard and grants no Adventure exile permission."
+          ],
+          "native_scenarios": [
+            "cast_faces_sagu_and_twinmaw_normal_creatures_pay_the_front_cost_and_gain_the_printed_life",
+            "cast_faces_each_omen_is_a_sorcery_even_if_its_front_creature_has_flash",
+            "cast_faces_roost_seek_searches_only_basic_lands_privately_reveals_the_pick_and_shuffles_the_dragon",
+            "cast_faces_all_five_countered_omens_go_to_graveyard_instead_of_shuffling_or_exiling"
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Scavenger Regent // Exude Toxin",
+          "oracle_id": "7e97a242-0bac-4f18-9228-e98ecca36254",
+          "oracle_full_facts": {
+            "oracle_id": "7e97a242-0bac-4f18-9228-e98ecca36254",
+            "name": "Scavenger Regent // Exude Toxin",
+            "layout": "adventure",
+            "mana_cost": "{3}{B} // {X}{B}{B}",
+            "cmc": 4.0,
+            "type_line": "Creature \u2014 Dragon // Sorcery \u2014 Omen",
+            "power": "4",
+            "toughness": "4",
+            "colors": [
+              "B"
+            ],
+            "color_identity": [
+              "B"
+            ],
+            "keywords": [
+              "Flying",
+              "Ward"
+            ],
+            "card_faces": [
+              {
+                "name": "Scavenger Regent",
+                "mana_cost": "{3}{B}",
+                "type_line": "Creature \u2014 Dragon",
+                "oracle_text": "Flying\nWard\u2014Discard a card.",
+                "power": "4",
+                "toughness": "4"
+              },
+              {
+                "name": "Exude Toxin",
+                "mana_cost": "{X}{B}{B}",
+                "type_line": "Sorcery \u2014 Omen",
+                "oracle_text": "Each non-Dragon creature gets -X/-X until end of turn. (Then shuffle this card into its owner's library.)"
+              }
+            ],
+            "reference_printing": {
+              "id": "0d4b46a3-847a-44a7-9f68-2cb4657cad61",
+              "set": "tdm",
+              "collector_number": "90",
+              "released_at": "2025-04-11"
+            }
+          },
+          "definition": "src/card_definitions/tdm/scavenger_regent.rs",
+          "definition_sha256": "35c5b31b759c1cc39a99e144fa9418dcecb8c9b869038b259a38e6c1407851c1",
+          "provenance": "src/card_definitions/tdm/scavenger_regent.json",
+          "provenance_sha256": "84c81717b1f5f50f740f5ba88cef2cd3440aa9e45842bc7b74e3ac5173a6cc0b",
+          "synthetic_definitions": [
+            {
+              "definition": "src/card_definitions/synthetic/exude_toxin.rs",
+              "definition_sha256": "a090cb16793f8d3a727f788ae3e08837041a3bcf59746f258c1874b99f0f5709",
+              "provenance": "src/card_definitions/synthetic/exude_toxin.json",
+              "provenance_sha256": "3ade379418ed01e391614b9c4a37d83177e50d8205ef02f1b9361e8eb46dc706"
+            }
+          ],
+          "obligations": [
+            "3B 4/4 Dragon flying; opponent targeting triggers Ward discard cost. Captured triggering player privately discards or related spell is countered; no mana window for discard-only cost.",
+            "Exude Toxin costs XBB at sorcery timing; each current non-Dragon creature gets -X/-X through cleanup, either controller. Dragons and later entrants unaffected; zero X supported.",
+            "Selected stack mana value X+2 differs from front four; source resolves into owner library, countered Omen goes to graveyard."
+          ],
+          "native_scenarios": [
+            "cast_faces_teval_uses_selected_omen_mana_value_instead_of_the_printed_dragon_face",
+            "cast_faces_scavenger_regent_ward_is_a_private_discard_cost_or_counters_the_targeting_spell",
+            "cast_faces_each_omen_is_a_sorcery_even_if_its_front_creature_has_flash",
+            "cast_faces_exude_toxin_uses_x_on_the_omen_face_and_changes_only_current_non_dragons_until_cleanup",
+            "cast_faces_all_five_countered_omens_go_to_graveyard_instead_of_shuffling_or_exiling"
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Stormshriek Feral // Flush Out",
+          "oracle_id": "e24916ff-7566-4f27-8e31-732311a4a88c",
+          "oracle_full_facts": {
+            "oracle_id": "e24916ff-7566-4f27-8e31-732311a4a88c",
+            "name": "Stormshriek Feral // Flush Out",
+            "layout": "adventure",
+            "mana_cost": "{4}{R} // {1}{R}",
+            "cmc": 5.0,
+            "type_line": "Creature \u2014 Dragon // Sorcery \u2014 Omen",
+            "power": "3",
+            "toughness": "3",
+            "colors": [
+              "R"
+            ],
+            "color_identity": [
+              "R"
+            ],
+            "keywords": [
+              "Flying",
+              "Haste"
+            ],
+            "card_faces": [
+              {
+                "name": "Stormshriek Feral",
+                "mana_cost": "{4}{R}",
+                "type_line": "Creature \u2014 Dragon",
+                "oracle_text": "Flying, haste\n{1}{R}: This creature gets +1/+0 until end of turn.",
+                "power": "3",
+                "toughness": "3"
+              },
+              {
+                "name": "Flush Out",
+                "mana_cost": "{1}{R}",
+                "type_line": "Sorcery \u2014 Omen",
+                "oracle_text": "Discard a card. If you do, draw two cards. (Then shuffle this card into its owner's library.)"
+              }
+            ],
+            "reference_printing": {
+              "id": "0ec92c44-7cf0-48a5-a3ca-bc633496d887",
+              "set": "tdm",
+              "collector_number": "124",
+              "released_at": "2025-04-11"
+            }
+          },
+          "definition": "src/card_definitions/tdm/stormshriek_feral.rs",
+          "definition_sha256": "fd4432735e994934f6baa39a65ca8eafdf8ad9f451527c857653943660f4851b",
+          "provenance": "src/card_definitions/tdm/stormshriek_feral.json",
+          "provenance_sha256": "65a09bf1d95fd84e2ade6eb9daa627090a0ef77885625d62104832ba5c485747",
+          "synthetic_definitions": [
+            {
+              "definition": "src/card_definitions/synthetic/flush_out.rs",
+              "definition_sha256": "1ebc7fcde479518afb0d0b699c8636c7c9d9aa96b131b1b8369c7ef9bbe94718",
+              "provenance": "src/card_definitions/synthetic/flush_out.json",
+              "provenance_sha256": "312cd738382d52070abb550d4247c27b8896fc20a314444b9bf393676c9e9203"
+            }
+          ],
+          "obligations": [
+            "4R 3/3 Dragon flying haste; immediate actual attack. Repeated 1R activation gives source +1/+0 until cleanup, no tap requirement.",
+            "Flush Out costs 1R at sorcery timing; mandatory discard on resolution before drawing two. Empty hand means no discard and no draw.",
+            "Discard is private while choosing; resolved Omen shuffles into owner library, countered Omen goes to graveyard."
+          ],
+          "native_scenarios": [
+            "cast_faces_stormshriek_front_has_haste_and_can_pump_while_tapped_until_cleanup",
+            "cast_faces_each_omen_is_a_sorcery_even_if_its_front_creature_has_flash",
+            "cast_faces_flush_out_discards_before_drawing_two_and_draws_nothing_with_an_empty_hand",
+            "cast_faces_all_five_countered_omens_go_to_graveyard_instead_of_shuffling_or_exiling"
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Twinmaw Stormbrood // Charring Bite",
+          "oracle_id": "ff812a78-3fe7-47bc-9984-1c2380cff5b1",
+          "oracle_full_facts": {
+            "oracle_id": "ff812a78-3fe7-47bc-9984-1c2380cff5b1",
+            "name": "Twinmaw Stormbrood // Charring Bite",
+            "layout": "adventure",
+            "mana_cost": "{5}{W} // {1}{R}",
+            "cmc": 6.0,
+            "type_line": "Creature \u2014 Dragon // Sorcery \u2014 Omen",
+            "power": "5",
+            "toughness": "4",
+            "colors": [
+              "W"
+            ],
+            "color_identity": [
+              "R",
+              "W"
+            ],
+            "keywords": [
+              "Flying"
+            ],
+            "card_faces": [
+              {
+                "name": "Twinmaw Stormbrood",
+                "mana_cost": "{5}{W}",
+                "type_line": "Creature \u2014 Dragon",
+                "oracle_text": "Flying\nWhen this creature enters, you gain 5 life.",
+                "power": "5",
+                "toughness": "4"
+              },
+              {
+                "name": "Charring Bite",
+                "mana_cost": "{1}{R}",
+                "type_line": "Sorcery \u2014 Omen",
+                "oracle_text": "Charring Bite deals 5 damage to target creature without flying. (Then shuffle this card into its owner's library.)"
+              }
+            ],
+            "reference_printing": {
+              "id": "2999e3b1-6510-42b2-9429-28c07a64a44f",
+              "set": "tdm",
+              "collector_number": "232",
+              "released_at": "2025-04-11"
+            }
+          },
+          "definition": "src/card_definitions/tdm/twinmaw_stormbrood.rs",
+          "definition_sha256": "090e199cf4904ea699734950a8183ebbb39981f718903eba14a52848ecb1ca2a",
+          "provenance": "src/card_definitions/tdm/twinmaw_stormbrood.json",
+          "provenance_sha256": "381090074f0f83d004e2d2c1adb33414a2fbd862018ea29ba734b3f2ddc19a23",
+          "synthetic_definitions": [
+            {
+              "definition": "src/card_definitions/synthetic/charring_bite.rs",
+              "definition_sha256": "39803d91995e27f4d9f2a18d495c09b247c5706aaf112a7042e482574f5ed816",
+              "provenance": "src/card_definitions/synthetic/charring_bite.json",
+              "provenance_sha256": "647b59e7aa821878316eb5a1a19ee29d935131eba181a610def5937dd969a3b4"
+            }
+          ],
+          "obligations": [
+            "5W 5/4 Dragon flying; actual ETB gains its controller five life.",
+            "Charring Bite costs 1R (not white front symbols), sorcery timing, exactly five damage to creature currently without flying of either controller.",
+            "Target gaining flying before resolution makes spell fail and source go to graveyard; valid resolution shuffles source into owner library."
+          ],
+          "native_scenarios": [
+            "cast_faces_sagu_and_twinmaw_normal_creatures_pay_the_front_cost_and_gain_the_printed_life",
+            "cast_faces_each_omen_is_a_sorcery_even_if_its_front_creature_has_flash",
+            "cast_faces_charring_bite_uses_red_cost_targets_only_nonfliers_and_fizzles_to_graveyard",
+            "cast_faces_all_five_countered_omens_go_to_graveyard_instead_of_shuffling_or_exiling"
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Whirlwing Stormbrood // Dynamic Soar",
+          "oracle_id": "4fbfc814-df10-4d61-ada9-c96cc8ee8d8c",
+          "oracle_full_facts": {
+            "oracle_id": "4fbfc814-df10-4d61-ada9-c96cc8ee8d8c",
+            "name": "Whirlwing Stormbrood // Dynamic Soar",
+            "layout": "adventure",
+            "mana_cost": "{4}{U} // {2}{G}",
+            "cmc": 5.0,
+            "type_line": "Creature \u2014 Dragon // Sorcery \u2014 Omen",
+            "power": "4",
+            "toughness": "3",
+            "colors": [
+              "U"
+            ],
+            "color_identity": [
+              "G",
+              "U"
+            ],
+            "keywords": [
+              "Flying",
+              "Flash"
+            ],
+            "card_faces": [
+              {
+                "name": "Whirlwing Stormbrood",
+                "mana_cost": "{4}{U}",
+                "type_line": "Creature \u2014 Dragon",
+                "oracle_text": "Flash\nFlying\nYou may cast sorcery spells and Dragon spells as though they had flash.",
+                "power": "4",
+                "toughness": "3"
+              },
+              {
+                "name": "Dynamic Soar",
+                "mana_cost": "{2}{G}",
+                "type_line": "Sorcery \u2014 Omen",
+                "oracle_text": "Put three +1/+1 counters on target creature you control. (Then shuffle this card into its owner's library.)"
+              }
+            ],
+            "reference_printing": {
+              "id": "56a25eb1-bdb8-4f86-8d9a-3055ad1b2a13",
+              "set": "tdm",
+              "collector_number": "234",
+              "released_at": "2025-04-11"
+            }
+          },
+          "definition": "src/card_definitions/tdm/whirlwing_stormbrood.rs",
+          "definition_sha256": "b47039e9fb1bbabafbd7b66d9377e2bb432cfcae34ec4453fad4c1158c256b12",
+          "provenance": "src/card_definitions/tdm/whirlwing_stormbrood.json",
+          "provenance_sha256": "7b216b5a8894fc81357ef04ceed2a3322eee61564dfbf1b73dfca5c2bb1d742c",
+          "synthetic_definitions": [
+            {
+              "definition": "src/card_definitions/synthetic/dynamic_soar.rs",
+              "definition_sha256": "5a227cf8a5f741576179b1748bd48abd2594bff6d2ad29f6f836727b96b7942c",
+              "provenance": "src/card_definitions/synthetic/dynamic_soar.json",
+              "provenance_sha256": "026ec50d318e63f97af53493aab1278566a5841dafae4dcee836b31cc26ea3fe"
+            }
+          ],
+          "obligations": [
+            "4U 4/3 Dragon flash flying; actual off-turn cast. While present, sorcery and Dragon spells may be cast at instant timing, ordinary non-Dragon creature excluded.",
+            "Dynamic Soar costs 2G as sorcery Omen, target creature you control receives three permanent +1/+1 counters.",
+            "Foreign target rejected; departed and returned exact target invalid. Omen source resolves to owner library or goes to graveyard when countered/all targets illegal."
+          ],
+          "native_scenarios": [
+            "cast_faces_whirlwing_front_flashes_and_grants_only_sorcery_or_dragon_timing_while_present",
+            "cast_faces_each_omen_is_a_sorcery_even_if_its_front_creature_has_flash",
+            "cast_faces_dynamic_soar_places_three_persistent_counters_only_on_own_exact_creature",
+            "cast_faces_all_five_countered_omens_go_to_graveyard_instead_of_shuffling_or_exiling"
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Spectral Denial",
+          "oracle_id": "f8536726-993b-4100-918c-e3c7177d4c65",
+          "oracle_full_facts": {
+            "oracle_id": "f8536726-993b-4100-918c-e3c7177d4c65",
+            "name": "Spectral Denial",
+            "layout": "normal",
+            "mana_cost": "{X}{U}",
+            "cmc": 1.0,
+            "type_line": "Instant",
+            "oracle_text": "This spell costs {1} less to cast for each creature you control with power 4 or greater.\nCounter target spell unless its controller pays {X}.",
+            "colors": [
+              "U"
+            ],
+            "color_identity": [
+              "U"
+            ],
+            "keywords": [],
+            "reference_printing": {
+              "id": "ee4e732a-1ffd-463d-92c2-26187659cfc3",
+              "set": "tdm",
+              "collector_number": "58",
+              "released_at": "2025-04-11"
+            }
+          },
+          "definition": "src/card_definitions/tdm/spectral_denial.rs",
+          "definition_sha256": "24d4450a409d0556f7e7b832fd5130fa8f31a0fd913066db3d4a258dccb580f1",
+          "provenance": "src/card_definitions/tdm/spectral_denial.json",
+          "provenance_sha256": "25906f26fbf7a667b38e2b001e83d3f74e7a082bfbc77c559fcf330f547411a3",
+          "synthetic_definitions": [],
+          "obligations": [
+            "XU instant: source generic cost reduced by one per currently controlled creature with power at least four, not enemy creatures or own power-three creatures; U remains required.",
+            "Counter target spell unless its controller pays chosen X, independent of paid generic cost; X zero legal and opens no mana-ability payment window.",
+            "Chosen X increases stack mana value despite cost reduction or delve; actual Teval cast trigger captures that mana value."
+          ],
+          "native_scenarios": [
+            "cast_faces_spectral_denial_uses_current_owned_four_power_threshold_but_counter_payment_is_chosen_x",
+            "cast_faces_spectral_denial_and_teval_use_x_mana_value_even_when_delve_pays_the_reduced_cost"
+          ],
+          "status": "locally_whole_card_verified"
+        }
+      ],
+      "new_state_or_schema": false,
+      "test_source_sha256": "d43a86ccbe7e54e2d1390b12b35e5ad21f0905406c542b3616223a6ed6bdeb3a",
+      "shared_proofs": [
+        "Existing exact printed-symbol Harmonize and granted delve cost ordering, source departure/locked totals, hybrid/X, taxes and source-as-own-fuel rejection are covered by the accepted shared casting checkpoint; actual cards prove provider wiring and independent outcomes.",
+        "Five real Omen cards use the accepted selected-face and resolution-shuffle engine; each body and Omen obligation is asserted in this card target. Zero search selection and deterministic random ordering use unchanged Search/Omen shared contracts."
+      ],
+      "source_notes": [
+        "Ward payer follows CR702.21a: that player refers to the triggering opponent; shared discard-only request preserves private choice and disallows mana abilities without a mana payment.",
+        "XMage OmenCard uses adventure inheritance internally; Oracle subtype Omen and dedicated native Omen route govern Rust behavior, with no Adventure exile permission."
+      ],
+      "authority": [
+        {
+          "url": "https://magic.wizards.com/en/news/feature/tarkir-dragonstorm-release-notes",
+          "local": "<temp>/tdm-release-notes.txt",
+          "sha256": "3ce1c9853c733c3ace178cdb1aac78c111107b3312bcbb683588bd5d3ebf2ea9",
+          "extent": "Full general Omen section195-263 and Teval2209-2224 read; selected-face characteristics, resolve/counter destinations, delve generic-only and X mana value."
+        },
+        {
+          "local": "<cache>/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
+          "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+          "extent": "118.12/118.12a and702.21a/b full rule entries read for Ward discard cost and captured payer."
+        }
+      ],
+      "engine_warm": {
+        "report": "<cache>/rustmage-tdm/engine86-author-baselines-1793823908179048187/s_z/warm-terminal.json",
+        "sha256": "3fed313e6d528cad961bb1692b824b50ddd066c783607d77a9c65614e12027e9",
+        "seconds": 0.06526344903977588,
+        "core_fresh": true,
+        "profile": "opt1/testfalse/features[test-support]"
+      },
+      "prepared_engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
+      "ordinary_target": "tdm_cards_s_z",
+      "ordinary_expected_groups": 56,
+      "gated_execution": [
+        {
+          "stage": "engine85-gated-first",
+          "report": "<cache>/rustmage-tdm/post85-gated-families-1793821082714343829/s_z/native.json",
+          "sha256": "d74840887e092be98c4acdd9fe93ac5989ae778f4aed0604a075902c7bf78210",
+          "terminal": true,
+          "success": false,
+          "total": 20,
+          "passed": 16,
+          "failed": [
+            "cast_faces_actual_teval_delve_selection_is_owned_raw_index_restorable_and_does_not_leak_draws",
+            "cast_faces_spectral_denial_and_teval_use_x_mana_value_even_when_delve_pays_the_reduced_cost",
+            "cast_faces_teval_delve_pays_only_generic_and_cast_life_loss_survives_countering",
+            "cast_faces_teval_uses_selected_omen_mana_value_instead_of_the_printed_dragon_face"
+          ],
+          "compile_seconds": 15.858467671030667,
+          "execution_seconds": 0.04270387900760397,
+          "wall_seconds": 15.901767449977342,
+          "compile_log": "<cache>/rustmage-tdm/post85-gated-families-1793821082714343829/s_z/native-compile.log",
+          "compile_log_sha256": "ad46d3347f13c4d8d923d7d27696bef4642feb2b2a947c50206bb7d4fed17a0d",
+          "execution_log": "<cache>/rustmage-tdm/post85-gated-families-1793821082714343829/s_z/native-execution-0.log",
+          "execution_log_sha256": "fd6136eeae3d0b3c8b7cb7f2f663ebb65ab806e2b901f5bcfa8535e6d5af13dd",
+          "core_fresh": [
+            true
+          ],
+          "test_source_sha256": "ed4273f212586199b72b3ea497268978d2075f08b98660b1af100f18ba16fd19",
+          "new_flags_false": true
+        },
+        {
+          "stage": "engine86-gated-corrected",
+          "report": "<cache>/rustmage-tdm/engine86-focus-1793822314297383346/tdm_cards_s_z/native.json",
+          "sha256": "25c6eb8e120d65ba186e7653b1f4c7982066e46fd99b450f2384f1407a3933e3",
+          "terminal": true,
+          "success": true,
+          "total": 20,
+          "passed": 20,
+          "failed": [],
+          "compile_seconds": 1.7696110400138423,
+          "execution_seconds": 0.03462678100913763,
+          "wall_seconds": 1.8047991409548558,
+          "compile_log": "<cache>/rustmage-tdm/engine86-focus-1793822314297383346/tdm_cards_s_z/native-compile.log",
+          "compile_log_sha256": "60d2aab799e6218d810c978e68bd677c089dd035cb130f734fbd5238f070895e",
+          "execution_log": "<cache>/rustmage-tdm/engine86-focus-1793822314297383346/tdm_cards_s_z/native-execution-0.log",
+          "execution_log_sha256": "2686dbc1724d2959058db6da3fde6c45ff9321f490442c0738a6737ed725cd48",
+          "core_fresh": [
+            true
+          ],
+          "test_source_sha256": "ed4273f212586199b72b3ea497268978d2075f08b98660b1af100f18ba16fd19",
+          "new_flags_false": true
+        }
+      ],
+      "engine_dependency_resolution": {
+        "checkpoint": 86,
+        "problem": "Four Teval scenarios initially lost0 life: existing capture opt-in helper recognized printed mana symbols but omitted CastSpellManaValue. Actual card LoseLifeScaled wiring was correct.",
+        "shared_fix": "Existing recursive amount predicate recognizes CastSpellManaValue; no new fields or wire schema. Fixed shared helper3fe0aaaf29cc4d85ed0d63cfc7f739fc66372c3d139c386050faf69a9f481c16.",
+        "engine_source_commit": "7270ae393b0941c85464bbdfe989258a6cd9425f",
+        "accepted_published_engine": "2660c86112362973c195bee4c1b85e1a968f9f3a",
+        "shared_evidence": "docs/tdm-cast-event-scalars-evidence.json",
+        "initial_negative_retained": true,
+        "card_changes_to_repair_engine": false,
+        "full_validation": {
+          "report": "<cache>/rustmage-validation-owsb88ts/report/result.json",
+          "sha256": "c848c8b7a2df341b1adb373365976e9401e9bf948828ed72669abb7c0e264b9d",
+          "head": "2660c86112362973c195bee4c1b85e1a968f9f3a",
+          "seconds": 506.09675945097115,
+          "input_sha256": "7ac5907fdf25131a61f84caaf13455ba5d0604cdd18fa624ba1487830a0f1a7f",
+          "scope": "Root accepted engine86 full9phase/native4490in108targets/Python10 and both independent pure final reviews before author release. Complete-set acceptance still pending."
+        }
+      },
+      "admission_transition": "Initial16/20 exposed shared engine86 capture dependency. After minimal shared fix, gated20/20 passed with Songcrafter/Tevalfalse; accepted engine86/fullvalidation/twofinalreviews/rewarm preceded explicit promotion. All eight setup sites for those two now use ordinary support::put. Ordinary full56/56 and focused Clippy passed before counting.",
+      "ordinary_expected_total": 56,
+      "ordinary_admitted_execution": {
+        "report": "<cache>/rustmage-tdm/post86-s-z-ordinary-1793824288712267639/s_z/native.json",
+        "sha256": "03b72e9290d4dce016df917eba054f5c378a96c1a9524068c5a83d24d783059a",
+        "terminal": true,
+        "success": true,
+        "total": 56,
+        "passed": 56,
+        "prior_groups": 36,
+        "new_family_groups": 20,
+        "test_source_sha256": "d43a86ccbe7e54e2d1390b12b35e5ad21f0905406c542b3616223a6ed6bdeb3a",
+        "compile_seconds": 5.329413103987463,
+        "execution_seconds": 0.06693014601478353,
+        "wall_seconds": 5.397004624013789,
+        "compile_command": [
+          "cargo",
+          "test",
+          "-p",
+          "rustmage",
+          "--test",
+          "tdm_cards_s_z",
+          "--no-run",
+          "--message-format=json"
+        ],
+        "compile_log": "<cache>/rustmage-tdm/post86-s-z-ordinary-1793824288712267639/s_z/native-compile.log",
+        "compile_log_sha256": "941ded6d3bbd7703cb679281af61bf9f2f6264f11b681485abf05fa606adbecf",
+        "execution_log": "<cache>/rustmage-tdm/post86-s-z-ordinary-1793824288712267639/s_z/native-execution-0.log",
+        "execution_log_sha256": "c4bcae266f8cecd09ccf700cc1d849bdfcf3f6dfb11f2c6f2a48b6e7f2ce5e85",
+        "core_fresh": [
+          true
+        ],
+        "tests": [
+          {
+            "test": "cast_faces_actual_teval_delve_selection_is_owned_raw_index_restorable_and_does_not_leak_draws",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_all_five_countered_omens_go_to_graveyard_instead_of_shuffling_or_exiling",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_charring_bite_uses_red_cost_targets_only_nonfliers_and_fizzles_to_graveyard",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_dynamic_soar_places_three_persistent_counters_only_on_own_exact_creature",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_each_omen_is_a_sorcery_even_if_its_front_creature_has_flash",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_exude_toxin_uses_x_on_the_omen_face_and_changes_only_current_non_dragons_until_cleanup",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_flush_out_discards_before_drawing_two_and_draws_nothing_with_an_empty_hand",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_roost_seek_searches_only_basic_lands_privately_reveals_the_pick_and_shuffles_the_dragon",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_sagu_and_twinmaw_normal_creatures_pay_the_front_cost_and_gain_the_printed_life",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_scavenger_regent_ward_is_a_private_discard_cost_or_counters_the_targeting_spell",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_songcrafter_grant_is_source_independent_exact_expires_and_exiles_a_countered_spell",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_songcrafter_grants_sorcery_printed_cost_but_flash_does_not_transfer_to_it",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_songcrafter_has_flash_exact_graveyard_targets_and_taps_itself_for_printed_harmonize",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_spectral_denial_and_teval_use_x_mana_value_even_when_delve_pays_the_reduced_cost",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_spectral_denial_uses_current_owned_four_power_threshold_but_counter_payment_is_chosen_x",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_stormshriek_front_has_haste_and_can_pump_while_tapped_until_cleanup",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_teval_delve_pays_only_generic_and_cast_life_loss_survives_countering",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_teval_does_not_grant_delve_or_cast_loss_from_hand_and_has_six_power_flying_lifelink",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_teval_uses_selected_omen_mana_value_instead_of_the_printed_dragon_face",
+            "status": "ok"
+          },
+          {
+            "test": "cast_faces_whirlwing_front_flashes_and_grants_only_sorcery_or_dragon_timing_while_present",
+            "status": "ok"
+          },
+          {
+            "test": "creatures_outrider_and_surveyor_choose_exact_endure_sizes_and_surveyor_loses_one_on_attack",
+            "status": "ok"
+          },
+          {
+            "test": "creatures_outrider_departure_still_creates_exact_spirit_and_endure_branches_are_owned",
+            "status": "ok"
+          },
+          {
+            "test": "creatures_packbeast_affinity_counts_only_controlled_creatures_then_draws_the_actual_top_card",
+            "status": "ok"
+          },
+          {
+            "test": "creatures_sagu_pummeler_casts_four_four_reach_and_renews_two_plus_one_and_one_reach_counter",
+            "status": "ok"
+          },
+          {
+            "test": "creatures_sagu_renew_rejects_wrong_zone_timing_cost_target_and_never_rebinds_blinked_targets",
+            "status": "ok"
+          },
+          {
+            "test": "creatures_skirmish_rhino_drains_the_opponent_after_its_source_leaves",
+            "status": "ok"
+          },
+          {
+            "test": "creatures_summit_intimidator_stops_only_the_chosen_incarnation_blocking_until_cleanup",
+            "status": "ok"
+          },
+          {
+            "test": "creatures_temur_tawnyback_all_monohybrid_payments_draw_before_a_private_discard",
+            "status": "ok"
+          },
+          {
+            "test": "creatures_watcher_mills_either_player_exactly_two_or_a_short_library_and_gains_controller_two",
+            "status": "ok"
+          },
+          {
+            "test": "harmonize_all_four_require_sorcery_timing_and_exile_when_countered",
+            "status": "ok"
+          },
+          {
+            "test": "harmonize_unending_whisper_draws_actual_top_card_for_u_or_five_u_without_a_helper",
+            "status": "ok"
+          },
+          {
+            "test": "harmonize_unending_whisper_uses_current_power_but_never_pays_the_blue_symbol",
+            "status": "ok"
+          },
+          {
+            "test": "harmonize_ureni_rebuff_fizzles_on_departed_incarnation_and_still_exiles",
+            "status": "ok"
+          },
+          {
+            "test": "harmonize_ureni_rebuff_returns_a_stolen_creature_to_its_owner_from_both_routes",
+            "status": "ok"
+          },
+          {
+            "test": "harmonize_wild_ride_grants_growth_and_haste_only_until_cleanup_from_both_routes",
+            "status": "ok"
+          },
+          {
+            "test": "harmonize_winternight_discard_choice_is_owned_raw_index_restorable_and_parent_independent",
+            "status": "ok"
+          },
+          {
+            "test": "harmonize_winternight_draws_first_then_discards_one_creature_or_two_cards_privately",
+            "status": "ok"
+          },
+          {
+            "test": "mana_citadel_enters_tapped_and_offers_exactly_white_black_green_with_land_timing",
+            "status": "ok"
+          },
+          {
+            "test": "mana_devotee_color_choice_is_owned_raw_index_restorable_and_does_not_expose_a_private_hand",
+            "status": "ok"
+          },
+          {
+            "test": "mana_devotee_use_survives_control_change_and_resets_on_the_next_actual_turn",
+            "status": "ok"
+          },
+          {
+            "test": "mana_devotees_filter_one_mana_without_tapping_even_when_summoning_sick_and_only_once_each_turn",
+            "status": "ok"
+          },
+          {
+            "test": "mana_sunset_casts_as_three_one_and_taps_for_red_but_cannot_pay_both_tap_costs",
+            "status": "ok"
+          },
+          {
+            "test": "mana_sunset_pays_two_red_tap_sacrifice_and_deals_six_only_to_a_flying_creature",
+            "status": "ok"
+          },
+          {
+            "test": "mana_sunset_target_loses_flying_or_changes_incarnation_before_resolution",
+            "status": "ok"
+          },
+          {
+            "test": "spells_sarkhan_resolve_both_modes_have_distinct_targets_and_temporary_growth",
+            "status": "ok"
+          },
+          {
+            "test": "spells_seize_opportunity_boosts_zero_one_or_two_creatures_until_cleanup",
+            "status": "ok"
+          },
+          {
+            "test": "spells_seize_opportunity_exiles_exact_cards_for_ordinary_paid_play_through_next_own_turn",
+            "status": "ok"
+          },
+          {
+            "test": "spells_snakeskin_veil_restricts_control_and_keeps_counter_after_hexproof_expires",
+            "status": "ok"
+          },
+          {
+            "test": "spells_twin_bolt_owned_allocations_never_redistribute_a_departed_targets_share",
+            "status": "ok"
+          },
+          {
+            "test": "spells_twin_bolt_requires_one_or_two_targets_and_announces_exact_positive_shares",
+            "status": "ok"
+          },
+          {
+            "test": "spells_unsparing_boltcaster_can_enter_when_no_creature_is_an_eligible_entry_target",
+            "status": "ok"
+          },
+          {
+            "test": "spells_unsparing_boltcaster_requires_an_enemy_damaged_this_turn_and_freezes_exact_five_damage",
+            "status": "ok"
+          },
+          {
+            "test": "spells_wail_of_war_freezes_only_the_target_opponents_current_creatures_until_cleanup",
+            "status": "ok"
+          },
+          {
+            "test": "spells_wail_of_war_returns_zero_one_or_two_own_creatures_with_partial_target_finality",
+            "status": "ok"
+          },
+          {
+            "test": "spells_worthy_cost_exiles_creatures_or_planeswalkers_and_paid_sacrifice_survives_countering",
+            "status": "ok"
+          },
+          {
+            "test": "spells_worthy_cost_requires_own_creature_and_black_mana_and_is_sorcery_speed",
+            "status": "ok"
+          }
+        ],
+        "artifact_policy": "Native Rust ELF/rlib linkage. Mutable compiler outputs are transient; retained reports/logs pin completed evidence, no preserved or required cdylib claim."
+      },
+      "ordinary_terminal": {
+        "report": "<cache>/rustmage-tdm/post86-s-z-ordinary-1793824288712267639/terminal.json",
+        "sha256": "3f2f66526c1e6a74d961b7cea62fb3034609bca8c7cf22fda731ecacbac80ea6",
+        "inputs_unchanged": true,
+        "source_manifest": "<cache>/rustmage-tdm/post86-s-z-ordinary-1793824288712267639/s_z/source-hashes.json",
+        "source_manifest_sha256": "a36d37e9bb27df0a57f7b8a31c18254662ee019bd3ad995aabecad1c85fd8ee4",
+        "source_files": 12980
+      },
+      "clippy": {
+        "report": "<cache>/rustmage-tdm/post86-s-z-ordinary-1793824288712267639/s_z/clippy-terminal.json",
+        "sha256": "b29783bea42e16525847c0d06e4a0dd835c5f188d935f7440b44f51d7df284da",
+        "result": {
+          "command": [
+            "cargo",
+            "clippy",
+            "-p",
+            "rustmage",
+            "--profile",
+            "test",
+            "--test",
+            "tdm_cards_s_z",
+            "--",
+            "-D",
+            "warnings"
+          ],
+          "exit": 0,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 2.57194544095546,
+          "log": "<cache>/rustmage-tdm/post86-s-z-ordinary-1793824288712267639/s_z/clippy.log"
+        },
+        "log_sha256": "bfe0d969d9b196994c6183dd3e9a308d3bb01b3aefc4863820504edc00f7d316",
+        "resource_report": "<cache>/rustmage-tdm/post86-s-z-ordinary-1793824288712267639/s_z/clippy-resource.json",
+        "resource_sha256": "ee36f9b5e049aee063ea99f67982b650e6f63b451f7d3e9d912c4e99bbb7a775",
+        "resource": {
+          "command": [
+            "python3",
+            "/tmp/tdm-post86-clippy-worker.py",
+            "tdm_cards_s_z",
+            "<cache>/rustmage-tdm/post86-s-z-ordinary-1793824288712267639/s_z"
+          ],
+          "terminal": true,
+          "exit_code": 0,
+          "seconds": 18.49225132103311,
+          "memory_max_bytes": 6442450944,
+          "memory_peak_bytes": 280170496,
+          "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+          "cargo_jobs": 1,
+          "test_threads": 1
+        },
+        "guarded_wall_seconds": 18.58972571400227,
+        "timing_note": "2.572s command time;18.590s guarded step includes resource queue/orchestration. No OOM events."
+      },
+      "source_check": {
+        "report": "<cache>/rustmage-tdm/post86-s-z-ordinary-1793824288712267639/s_z/sources-driver.log",
+        "sha256": "92220c002cc91ac79b6b1dea443782e4440efb670010d4f2ea746c63af089b80",
+        "result": {
+          "definitions": 5488,
+          "source_blobs": 2553,
+          "java_verified": true,
+          "catalogue_version": "2828a3261c5291b5397757362eb2a6a765f85dd5453bce175a8a71dc1127cf0e"
+        }
+      },
+      "finished_utc": "2026-11-04T20:33:19.875007+00:00",
+      "verified_new_complete": 2,
+      "verified_existing_candidates": 6,
+      "elapsed_seconds_including_engine86_hold": 3784.071342,
+      "verified_physical_cards_per_hour_including_hold": 7.610850165625656,
+      "measurement_scope": "This eight-card family author/checkpoint interval includes the engine86 hold, full shared acceptance and rewarm. No simulation or full-set performance claim."
     }
   ],
-  "first_family_finished_utc": "2026-11-04T14:05:57.547813+00:00"
+  "first_family_finished_utc": "2026-11-04T14:05:57.547813+00:00",
+  "accepted_existing_reuse": {
+    "document": "docs/tdm-existing-reuse-four-evidence.json",
+    "document_sha256": "4c8a15ba02043a8dbe5390b86c62210921ce8518be58b7504e5da037e8d5fd0f",
+    "accepted_by": "Root independent full-source/Oracle/typed body/test/helper review; exact b456 definitions and current engine84 native results.",
+    "cards": [
+      {
+        "name": "Surrak, Elusive Hunter",
+        "oracle_id": "7a0fe73f-6e08-4c9a-80e1-c2ead6cebe06",
+        "status": "Rootaccepted whole-card existing evidence from actualoutcomes plus audited shared typed primitive/header inspection",
+        "definition": "src/card_definitions/tdm/surrak_elusive_hunter.rs",
+        "definition_sha256": "643f772ab9798b4a68f215667c2a6b6b4d1ccd39d187bb6532a2d29b3d995976",
+        "test_source": "tests/legacy/assurance/requested_surrak.rs",
+        "test_source_sha256": "ffa91d1b6f79ec3f4284c33e3b9c5e0bcbdea06e7221f016070cbbe9d3dfcdf4",
+        "exact_baseline_comparison": "Definition and entire testsource byte-identical to b4562e25c; no fixture_rules overlays in these files.",
+        "current_engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+        "current_native_report": "<cache>/rustmage-validation-l0pzz2p2/report/native.json",
+        "current_native_report_sha256": "4ce510b350c0220eaee7641429c6d593e41fcfe5fc96cec8b8a5b795081052e0",
+        "test_receipts": [
+          {
+            "test": "engine::assurance::requested_surrak::surrak_copied_provider_is_registered_and_removed_with_the_copy",
+            "status": "ok",
+            "exit": 0
+          },
+          {
+            "test": "engine::assurance::requested_surrak::surrak_draws_when_opponents_target_its_controllers_creatures",
+            "status": "ok",
+            "exit": 0
+          },
+          {
+            "test": "engine::assurance::requested_surrak::surrak_loses_target_trigger_while_abilities_are_removed",
+            "status": "ok",
+            "exit": 0
+          },
+          {
+            "test": "engine::assurance::requested_surrak::surrak_retarget_event_counts_each_new_object_once",
+            "status": "ok",
+            "exit": 0
+          },
+          {
+            "test": "engine::assurance::requested_surrak::surrak_spell_cannot_be_countered",
+            "status": "ok",
+            "exit": 0
+          },
+          {
+            "test": "engine::assurance::requested_surrak::surrak_triggers_for_an_opponents_activated_ability",
+            "status": "ok",
+            "exit": 0
+          },
+          {
+            "test": "engine::assurance::requested_surrak::surrak_triggers_for_creature_spells_targeted_on_the_stack",
+            "status": "ok",
+            "exit": 0
+          }
+        ],
+        "oracle_full_facts": {
+          "oracle_id": "7a0fe73f-6e08-4c9a-80e1-c2ead6cebe06",
+          "name": "Surrak, Elusive Hunter",
+          "layout": "normal",
+          "mana_cost": "{2}{G}",
+          "cmc": 3.0,
+          "type_line": "Legendary Creature \u2014 Human Warrior",
+          "oracle_text": "This spell can't be countered.\nTrample\nWhenever a creature you control or a creature spell you control becomes the target of a spell or ability an opponent controls, draw a card.",
+          "power": "4",
+          "toughness": "3",
+          "colors": [
+            "G"
+          ],
+          "color_identity": [
+            "G"
+          ],
+          "keywords": [
+            "Trample"
+          ],
+          "reference_printing": {
+            "id": "e4775a26-0b66-40e9-8f64-41d9308ca032",
+            "set": "tdm",
+            "collector_number": "161",
+            "released_at": "2025-04-11"
+          }
+        },
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/s/SurrakElusiveHunter.java",
+        "java_sha256": "176f4be58f70a544393c38d083cda588ee3aa04ae6b78169cbc0806dd0fedf2b",
+        "dependencies": [
+          {
+            "path": "Mage/src/main/java/mage/abilities/common/CantBeCounteredSourceAbility.java",
+            "sha256": "ab592d3d97f245e6b3ca9971e1c559a7063c8717a4a5963b64564a13abd768de",
+            "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+          },
+          {
+            "path": "Mage/src/main/java/mage/abilities/effects/common/CantBeCounteredSourceEffect.java",
+            "sha256": "f682272dc5b296650d7dfffd0792fcf6508ee366cc67bf1f583d31017a94e9a2",
+            "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+          },
+          {
+            "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+            "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c",
+            "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+          },
+          {
+            "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+            "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2",
+            "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+          }
+        ],
+        "printed_obligation_mapping": [
+          "2G 4/3 legend HumanWarrior (Oracle/typedbody/metadata inspected; existing actualcast test does not separately assert stats)",
+          "Uncounterability proven by actualCancel, trample keyword asserted on castresult",
+          "Creature permanent and creature spell targeted by opponent spell/activatedability draw1",
+          "Opponent relation/source departure, copyprovider/reversion, abilityremoval, duplicate retarget acquisition covered"
+        ],
+        "shared_owned_helper": {
+          "path": "tests/legacy/assurance/big_helpers.rs",
+          "sha256": "0911d344dedd3ca7e5666fd68a4f28286537655af4a82aba11e6f586613d6ec0",
+          "proof": "checked() wrongactor atomicity, owned child/parent disposal, raw/index, restore/staleindex/replay; complete helper read and baselineequality already checked for Strategic proof."
+        },
+        "limits": "Static typed primitive/metadata inspection plus existing actualoutcome and currentnative proofs; do not count without integrator source/coverage acceptance. No repository/source/admission/build mutation.",
+        "source_ledger": "<temp>/tdm-s-z-reuse-candidates/surrak_elusive_hunter.json",
+        "source_ledger_sha256": "6bdbaf0cc398365d0d2e38acb759fe3b4ea4cd154b3a662592fcec3593df9b6a"
+      },
+      {
+        "name": "Ugin, Eye of the Storms",
+        "oracle_id": "5c58353a-fd60-4528-bf0d-669626cda0b2",
+        "status": "Rootaccepted whole-card existing evidence from actualoutcomes plus audited shared typed primitive/header inspection",
+        "definition": "src/card_definitions/tdm/ugin_eye_of_the_storms.rs",
+        "definition_sha256": "e7e65d4d3771038aacca47768c1c1917b6c0fb452ba8461c9a3b40aa6bf5184e",
+        "test_source": "tests/legacy/assurance/issue_93_ugin.rs",
+        "test_source_sha256": "ae18c56bbc80e59dc46c3ec00df2e878bee1585228b963bfd14caf30d57f3eec",
+        "exact_baseline_comparison": "Definition and entire testsource byte-identical to b4562e25c; no fixture_rules overlays in these files.",
+        "current_engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+        "current_native_report": "<cache>/rustmage-validation-l0pzz2p2/report/native.json",
+        "current_native_report_sha256": "4ce510b350c0220eaee7641429c6d593e41fcfe5fc96cec8b8a5b795081052e0",
+        "test_receipts": [
+          {
+            "test": "engine::assurance::issue_93_ugin::ugin_eye_of_the_storms_full_card",
+            "status": "ok",
+            "exit": 0
+          }
+        ],
+        "oracle_full_facts": {
+          "oracle_id": "5c58353a-fd60-4528-bf0d-669626cda0b2",
+          "name": "Ugin, Eye of the Storms",
+          "layout": "normal",
+          "mana_cost": "{7}",
+          "cmc": 7.0,
+          "type_line": "Legendary Planeswalker \u2014 Ugin",
+          "oracle_text": "When you cast this spell, exile up to one target permanent that's one or more colors.\nWhenever you cast a colorless spell, exile up to one target permanent that's one or more colors.\n+2: You gain 3 life and draw a card.\n0: Add {C}{C}{C}.\n\u221211: Search your library for any number of colorless nonland cards, exile them, then shuffle. Until end of turn, you may cast those cards without paying their mana costs.",
+          "loyalty": "7",
+          "colors": [],
+          "color_identity": [],
+          "keywords": [],
+          "produced_mana": [
+            "C"
+          ],
+          "reference_printing": {
+            "id": "64a5d494-efa1-446b-bebe-2ad36e154376",
+            "set": "tdm",
+            "collector_number": "1",
+            "released_at": "2025-04-11"
+          }
+        },
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/u/UginEyeOfTheStorms.java",
+        "java_sha256": "cb965a07de883a5842a7f39152857603aa7fb61c0095d2cc22a5a8ecaafc4389",
+        "dependencies": [
+          {
+            "path": "Mage/src/main/java/mage/abilities/LoyaltyAbility.java",
+            "sha256": "9e648c878fd77eaa324aa746254377711cf4929573ed960055ee57f342b9ce79",
+            "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+          },
+          {
+            "path": "Mage/src/main/java/mage/abilities/costs/common/PayLoyaltyCost.java",
+            "sha256": "efe5edc4c58c5a3d697a1448642d7e251141eb54f3704ffee201f6ba3ed51365",
+            "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+          },
+          {
+            "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+            "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2",
+            "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+          },
+          {
+            "path": "Mage/src/main/java/mage/abilities/effects/common/CastSourceTriggeredAbility.java",
+            "sha256": "47edf1f8fa0fea60841309f6698825a1b6da0427d3580c91c750763fbe9ae22d",
+            "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+          },
+          {
+            "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
+            "sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756",
+            "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+          },
+          {
+            "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+            "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029",
+            "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+          },
+          {
+            "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+            "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2",
+            "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+          },
+          {
+            "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+            "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62",
+            "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+          },
+          {
+            "path": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+            "sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef",
+            "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+          },
+          {
+            "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+            "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4",
+            "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+          },
+          {
+            "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+            "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb",
+            "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+          },
+          {
+            "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ColorlessPredicate.java",
+            "sha256": "558f338455e60452895d28d907ab7fc09eaca27affb8986c92bbfa0a7150e768",
+            "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+          },
+          {
+            "path": "Mage/src/main/java/mage/filter/common/FilterNonlandCard.java",
+            "sha256": "84443dc244a44b44937d5ba9e4e51ff0b34e73795c11f2e985820daaed5b46ae",
+            "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+          }
+        ],
+        "printed_obligation_mapping": [
+          "7mana cast; actual colored-permanent exilecast trigger and startingloyalty7",
+          "Actualcolorless artifactcast triggers another coloredpermanentexile",
+          "+2 actualgain3draw1/loyalty9",
+          "0 actualCCC via stackedloyalty activation (generic mana-window/loyalty rules shared)",
+          "-11 actual0loyalty source departure, privatefilteredsearch colored/land rejection, exile/shuffle, freecast aftersourcegone; EOT expiry and up-to-one/anynumber shapes inspected in exact typed primitives"
+        ],
+        "shared_owned_helper": {
+          "path": "tests/legacy/assurance/big_helpers.rs",
+          "sha256": "0911d344dedd3ca7e5666fd68a4f28286537655af4a82aba11e6f586613d6ec0",
+          "proof": "checked() wrongactor atomicity, owned child/parent disposal, raw/index, restore/staleindex/replay; complete helper read and baselineequality already checked for Strategic proof."
+        },
+        "limits": "Static typed primitive/metadata inspection plus existing actualoutcome and currentnative proofs; do not count without integrator source/coverage acceptance. No repository/source/admission/build mutation.",
+        "official_release_notes_read": {
+          "url": "https://magic.wizards.com/en/news/feature/tarkir-dragonstorm-release-notes",
+          "local": "<temp>/tdm-release-notes.txt",
+          "sha256": "3ce1c9853c733c3ace178cdb1aac78c111107b3312bcbb683588bd5d3ebf2ea9",
+          "extent": "2248-2271: normal timing, no competing alternative cost, additional costs still paid, freecastX0"
+        },
+        "source_ledger": "<temp>/tdm-s-z-reuse-candidates/ugin_eye_of_the_storms.json",
+        "source_ledger_sha256": "faadb96b1ecefe0f35f071ad603504d5d9661718d3f450817aa1fc6aa812f95c"
+      },
+      {
+        "name": "United Battlefront",
+        "oracle_id": "892a83a0-a3cb-4cfb-9106-4008e4e75c0f",
+        "status": "Rootaccepted whole-card existing evidence from actualoutcomes plus audited shared typed primitive/header inspection",
+        "definition": "src/card_definitions/tdm/united_battlefront.rs",
+        "definition_sha256": "960c0e95d9dcbf088a30fbfe0add77adf33f40d68a6b6a5479b60f0fa21cb1ab",
+        "test_source": "tests/legacy/assurance/hartford_library_selection.rs",
+        "test_source_sha256": "3013d0f932e7475b4e5f465542b48bcbdf434d1099a1180599642b34c3815b8f",
+        "exact_baseline_comparison": "Definition and entire testsource byte-identical to b4562e25c; no fixture_rules overlays in these files.",
+        "current_engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+        "current_native_report": "<cache>/rustmage-validation-l0pzz2p2/report/native.json",
+        "current_native_report_sha256": "4ce510b350c0220eaee7641429c6d593e41fcfe5fc96cec8b8a5b795081052e0",
+        "test_receipts": [
+          {
+            "test": "engine::assurance::hartford_library_selection::battlefront_privately_filters_seven_and_puts_up_to_two_eligible_permanents_into_play",
+            "status": "ok",
+            "exit": 0
+          }
+        ],
+        "oracle_full_facts": {
+          "oracle_id": "892a83a0-a3cb-4cfb-9106-4008e4e75c0f",
+          "name": "United Battlefront",
+          "layout": "normal",
+          "mana_cost": "{3}{W}",
+          "cmc": 4.0,
+          "type_line": "Sorcery",
+          "oracle_text": "Look at the top seven cards of your library. Put up to two noncreature, nonland permanent cards with mana value 3 or less from among them onto the battlefield. Put the rest on the bottom of your library in a random order.",
+          "colors": [
+            "W"
+          ],
+          "color_identity": [
+            "W"
+          ],
+          "keywords": [],
+          "reference_printing": {
+            "id": "dff398be-4ba4-4976-9acc-be99d2e07a61",
+            "set": "tdm",
+            "collector_number": "32",
+            "released_at": "2025-04-11"
+          }
+        },
+        "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "java_source": "Mage.Sets/src/mage/cards/u/UnitedBattlefront.java",
+        "java_sha256": "ac6b4fd1933c9c5e00880275cb3dfed03481bb3adb0ee5373c89c361c903b090",
+        "dependencies": [
+          {
+            "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+            "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e",
+            "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+          },
+          {
+            "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
+            "sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7",
+            "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+          },
+          {
+            "path": "Mage/src/main/java/mage/constants/PutCards.java",
+            "sha256": "6db1cb69eada87b2cc4db088d8b20fac65ced4dca5f50bdc85f1247138e45253",
+            "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+          },
+          {
+            "path": "Mage/src/main/java/mage/filter/predicate/mageobject/PermanentPredicate.java",
+            "sha256": "b3058a67b4c81d73f72d2c64de25d5501a16d7462278416017a7c8e13ee60d80",
+            "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+          },
+          {
+            "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+            "sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262",
+            "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+          },
+          {
+            "path": "Mage/src/main/java/mage/filter/predicate/IntComparePredicate.java",
+            "sha256": "20673535e0a40ca32ffbc361bd82155e2c2f221d87c8d037a1dd96c0229d454f",
+            "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+          }
+        ],
+        "printed_obligation_mapping": [
+          "Actual3W sorcery inspects exactlytop7, rejects belowwindow, rejectsland/creature/instant/sorcery/MV4artifact",
+          "Eligibleartifact+enchantment chosen0or2 actualBF control; opponent privateviewhidden",
+          "Allremaininglookedcards bottomrandom typedprimitive; nativeasserts remainder membership and checked() deterministicowned replay; no singled-out percardstatistical randomdistribution test"
+        ],
+        "shared_owned_helper": {
+          "path": "tests/legacy/assurance/big_helpers.rs",
+          "sha256": "0911d344dedd3ca7e5666fd68a4f28286537655af4a82aba11e6f586613d6ec0",
+          "proof": "checked() wrongactor atomicity, owned child/parent disposal, raw/index, restore/staleindex/replay; complete helper read and baselineequality already checked for Strategic proof."
+        },
+        "limits": "Static typed primitive/metadata inspection plus existing actualoutcome and currentnative proofs; do not count without integrator source/coverage acceptance. No repository/source/admission/build mutation.",
+        "official_release_notes_read": {
+          "url": "https://magic.wizards.com/en/news/feature/tarkir-dragonstorm-release-notes",
+          "local": "<temp>/tdm-release-notes.txt",
+          "sha256": "3ce1c9853c733c3ace178cdb1aac78c111107b3312bcbb683588bd5d3ebf2ea9",
+          "extent": "2291-2303: X is0 inlibrary mana value"
+        },
+        "source_ledger": "<temp>/tdm-s-z-reuse-candidates/united_battlefront.json",
+        "source_ledger_sha256": "f97881b50e0ef9590a21d860943891e0054925fa2a8e3d6d2a402e9455796cb1"
+      }
+    ],
+    "accepted_existing_whole_cards": 3,
+    "additional_native_cases": 0
+  },
+  "additional_ownership": {
+    "document": "docs/tdm-s-z-additional-ownership.json",
+    "document_sha256": "16deb7cdda71ce17add56107dddde3acd8c4dfc30e55d8bf91664521399974bd",
+    "original_denominator": 92,
+    "accepted_whole_cards": 41,
+    "pending_total": 51,
+    "pending_delegated": 25,
+    "pending_retained": 26,
+    "retained_names": [
+      "Sagu Wildling // Roost Seek",
+      "Scavenger Regent // Exude Toxin",
+      "Songcrafter Mage",
+      "Spectral Denial",
+      "Stormshriek Feral // Flush Out",
+      "Tempest Hawk",
+      "Temur Battlecrier",
+      "Temur Monument",
+      "Tersa Lightshatter",
+      "Teval, Arbiter of Virtue",
+      "The Sibsig Ceremony",
+      "Thunder of Unity",
+      "Trade Route Envoy",
+      "Traveling Botanist",
+      "Twinmaw Stormbrood // Charring Bite",
+      "Unburied Earthcarver",
+      "Underfoot Underdogs",
+      "Undergrowth Leopard",
+      "Unrooted Ancestor",
+      "Ureni, the Song Unending",
+      "Venerated Stormsinger",
+      "Veteran Ice Climber",
+      "Voice of Victory",
+      "War Effort",
+      "Warden of the Grove",
+      "Wayspeaker Bodyguard",
+      "Whirlwing Stormbrood // Dynamic Soar",
+      "Windcrag Siege",
+      "Wingblade Disciple",
+      "Wingspan Stride",
+      "Yathan Roadwatcher",
+      "Yathan Tombguard",
+      "Zurgo's Vanguard",
+      "Zurgo, Thunder's Decree"
+    ]
+  }
 }
