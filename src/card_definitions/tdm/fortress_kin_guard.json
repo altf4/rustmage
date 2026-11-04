@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ba9a0ab4a65f80c7d3725758fd9c136b1abe85f62d4ee4767fec721d846d9073"
   },
-  "physical_metadata_sha256": "298daa66929c8f5b0ed53b7221baee04bfeedd3c8ecb65ea519c29fc77f663c0"
+  "physical_metadata_sha256": "298daa66929c8f5b0ed53b7221baee04bfeedd3c8ecb65ea519c29fc77f663c0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FortressKinGuard.java",
+  "java_sha256": "97ef4bcc3685162d48c691809fd5b2eb254c58fdf6d52f080a96118234dac0ad",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EndureSourceEffect.java",
+      "sha256": "b32a2eef10ea3a3f03e93398e6e5a6aeebd279daa5a95edda6aab6380e1d9dcd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/NoFlyingSpiritWhite11Token.java",
+      "sha256": "ae86fa5f2d2e9df5fe94d034fe7a720d7b69c3365f9d5e79585668e94c5db558"
+    }
+  ]
 }

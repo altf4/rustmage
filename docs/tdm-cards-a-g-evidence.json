@@ -5,7 +5,7 @@
   "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
   "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "physical_scope": 91,
-  "completion_claim": "No complete-card claim until focused execution passes; set acceptance remains integrator owned.",
+  "completion_claim": "61 locally verified whole physical cards; complete91-card ownership remains open pending remaining30, full-set acceptance and final independent reviews.",
   "cards": [
     {
       "name": "Adorned Crocodile",
@@ -1274,6 +1274,619 @@
         }
       ],
       "source_review": "Full pinned Oracle body and Java class plus listed relevant helper bodies read before direct typed authoring."
+    },
+    {
+      "name": "Abzan Devotee",
+      "oracle_id": "3d02ee2f-b7bd-40b0-b9be-2420991b2be0",
+      "definition": "src/card_definitions/tdm/abzan_devotee.rs",
+      "definition_sha256": "063043c908bdd2b6e4c375aaa0ccfdf5d00e46917e0afb7bea96b619a2db8e2f",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "obligations": [
+        {
+          "face": "Abzan Devotee",
+          "header": {
+            "mana_cost": "{1}{B}",
+            "type_line": "Creature \u2014 Dog Cleric",
+            "power": "2",
+            "toughness": "1"
+          },
+          "printed_lines": [
+            "{1}: Add {W}, {B}, or {G}. Activate only once each turn.",
+            "{2}{B}: Return this card from your graveyard to your hand."
+          ]
+        }
+      ],
+      "tests": [
+        "candidates_seventeen_actual_creature_casts_pay_exact_printed_mana_and_have_native_characteristics",
+        "candidates_abzan_devotee_filters_only_wbg_once_each_turn_without_tapping",
+        "candidates_abzan_devotee_returns_only_its_exact_graveyard_incarnation_after_two_black"
+      ],
+      "shared_proofs": [],
+      "source_review": "Full pinned Oracle body, entire main Java class, and listed relevant helper bodies read; working typed definition retained unchanged."
+    },
+    {
+      "name": "Anafenza, Unyielding Lineage",
+      "oracle_id": "659bc01c-fa60-4d00-bdad-5bca1d2a978f",
+      "definition": "src/card_definitions/tdm/anafenza_unyielding_lineage.rs",
+      "definition_sha256": "c3e934255a2a32398d271d314c507c7fcd4c6cea8bcdb9e135ffe169cb7f161e",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "obligations": [
+        {
+          "face": "Anafenza, Unyielding Lineage",
+          "header": {
+            "mana_cost": "{2}{W}",
+            "type_line": "Legendary Creature \u2014 Spirit Soldier",
+            "power": "2",
+            "toughness": "2"
+          },
+          "printed_lines": [
+            "Flash",
+            "First strike",
+            "Whenever another nontoken creature you control dies, Anafenza endures 2. (Put two +1/+1 counters on it or create a 2/2 white Spirit creature token.)"
+          ]
+        }
+      ],
+      "tests": [
+        "candidates_seventeen_actual_creature_casts_pay_exact_printed_mana_and_have_native_characteristics",
+        "candidates_anafenza_flashes_during_opponents_turn_and_filters_other_nontoken_own_deaths"
+      ],
+      "shared_proofs": [
+        {
+          "source": "tests/tdm_endure.rs",
+          "function": "prohibited_endure_counters_create_the_spirit_without_an_impossible_choice",
+          "source_sha256": "00be141ef350efe51ce77862c3099388dc4c52e139564338324f18ee7383b80e",
+          "acceptance_revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+          "report": "<cache>/rustmage-validation-o8jjr7os/report/native.json",
+          "report_sha256": "23f5a30ac9df217cbd1ed4b5e1165abce2a1b548ee4cb5e066038a96689826b7",
+          "actual_definition": "Anafenza, Unyielding Lineage"
+        },
+        {
+          "source": "tests/tdm_endure.rs",
+          "function": "endure_uses_the_live_permanent_controller_for_both_outcomes",
+          "source_sha256": "00be141ef350efe51ce77862c3099388dc4c52e139564338324f18ee7383b80e",
+          "acceptance_revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+          "report": "<cache>/rustmage-validation-o8jjr7os/report/native.json",
+          "report_sha256": "23f5a30ac9df217cbd1ed4b5e1165abce2a1b548ee4cb5e066038a96689826b7",
+          "actual_definition": "Anafenza, Unyielding Lineage"
+        },
+        {
+          "source": "tests/tdm_endure.rs",
+          "function": "enduring_controller_also_places_the_counters_for_replacements",
+          "source_sha256": "00be141ef350efe51ce77862c3099388dc4c52e139564338324f18ee7383b80e",
+          "acceptance_revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+          "report": "<cache>/rustmage-validation-o8jjr7os/report/native.json",
+          "report_sha256": "23f5a30ac9df217cbd1ed4b5e1165abce2a1b548ee4cb5e066038a96689826b7",
+          "actual_definition": "Anafenza, Unyielding Lineage"
+        },
+        {
+          "source": "tests/tdm_endure.rs",
+          "function": "forced_endure_spirit_uses_its_current_controllers_token_replacements",
+          "source_sha256": "00be141ef350efe51ce77862c3099388dc4c52e139564338324f18ee7383b80e",
+          "acceptance_revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+          "report": "<cache>/rustmage-validation-o8jjr7os/report/native.json",
+          "report_sha256": "23f5a30ac9df217cbd1ed4b5e1165abce2a1b548ee4cb5e066038a96689826b7",
+          "actual_definition": "Anafenza, Unyielding Lineage"
+        },
+        {
+          "source": "tests/tdm_endure.rs",
+          "function": "departed_enduring_source_keeps_its_last_controller_and_never_rebinds",
+          "source_sha256": "00be141ef350efe51ce77862c3099388dc4c52e139564338324f18ee7383b80e",
+          "acceptance_revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+          "report": "<cache>/rustmage-validation-o8jjr7os/report/native.json",
+          "report_sha256": "23f5a30ac9df217cbd1ed4b5e1165abce2a1b548ee4cb5e066038a96689826b7",
+          "actual_definition": "Anafenza, Unyielding Lineage"
+        },
+        {
+          "source": "tests/tdm_endure.rs",
+          "function": "changed_endure_actor_survives_owned_raw_index_and_restore_branches",
+          "source_sha256": "00be141ef350efe51ce77862c3099388dc4c52e139564338324f18ee7383b80e",
+          "acceptance_revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+          "report": "<cache>/rustmage-validation-o8jjr7os/report/native.json",
+          "report_sha256": "23f5a30ac9df217cbd1ed4b5e1165abce2a1b548ee4cb5e066038a96689826b7",
+          "actual_definition": "Anafenza, Unyielding Lineage"
+        }
+      ],
+      "source_review": "Full pinned Oracle body, entire main Java class, and listed relevant helper bodies read; working typed definition retained unchanged."
+    },
+    {
+      "name": "Arashin Sunshield",
+      "oracle_id": "1175d482-d8a2-467f-bc50-2f4b241966bb",
+      "definition": "src/card_definitions/tdm/arashin_sunshield.rs",
+      "definition_sha256": "bbd7c7575d2a13d051ace8b2f1a223a41210c365e2dd2a3885c2307776328241",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "obligations": [
+        {
+          "face": "Arashin Sunshield",
+          "header": {
+            "mana_cost": "{3}{W}",
+            "type_line": "Creature \u2014 Human Warrior",
+            "power": "3",
+            "toughness": "4"
+          },
+          "printed_lines": [
+            "When this creature enters, exile up to two target cards from a single graveyard.",
+            "{W}, {T}: Tap target creature."
+          ]
+        }
+      ],
+      "tests": [
+        "candidates_seventeen_actual_creature_casts_pay_exact_printed_mana_and_have_native_characteristics",
+        "candidates_arashin_sunshield_exiles_zero_one_or_two_from_one_graveyard_and_never_rebinds",
+        "candidates_arashin_sunshield_pays_white_and_tap_to_tap_either_players_creature"
+      ],
+      "shared_proofs": [],
+      "source_review": "Full pinned Oracle body, entire main Java class, and listed relevant helper bodies read; working typed definition retained unchanged."
+    },
+    {
+      "name": "Avenger of the Fallen",
+      "oracle_id": "158d0272-a850-4399-8afa-d0caa143c3cb",
+      "definition": "src/card_definitions/tdm/avenger_of_the_fallen.rs",
+      "definition_sha256": "626a0abc4379c5e8d5da6914abc1b478cdfc2b9e2da70dd242223bbaebc763bd",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "obligations": [
+        {
+          "face": "Avenger of the Fallen",
+          "header": {
+            "mana_cost": "{2}{B}",
+            "type_line": "Creature \u2014 Human Warrior",
+            "power": "2",
+            "toughness": "4"
+          },
+          "printed_lines": [
+            "Deathtouch",
+            "Mobilize X, where X is the number of creature cards in your graveyard. (Whenever this creature attacks, create X tapped and attacking 1/1 red Warrior creature tokens. Sacrifice them at the beginning of the next end step.)"
+          ]
+        }
+      ],
+      "tests": [
+        "candidates_seventeen_actual_creature_casts_pay_exact_printed_mana_and_have_native_characteristics",
+        "candidates_packbeasts_lancer_and_avenger_mobilize_exact_live_counts_and_sacrifice_only_their_warriors"
+      ],
+      "shared_proofs": [],
+      "source_review": "Full pinned Oracle body, entire main Java class, and listed relevant helper bodies read; working typed definition retained unchanged."
+    },
+    {
+      "name": "Bearer of Glory",
+      "oracle_id": "963947d5-5fe4-49cd-be0c-0bdb5f7bcbb6",
+      "definition": "src/card_definitions/tdm/bearer_of_glory.rs",
+      "definition_sha256": "c1c91a9e76b8c868bed72856f18c549af2f72a748b11fc71ae053aa2a22fb239",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "obligations": [
+        {
+          "face": "Bearer of Glory",
+          "header": {
+            "mana_cost": "{1}{W}",
+            "type_line": "Creature \u2014 Human Soldier",
+            "power": "2",
+            "toughness": "1"
+          },
+          "printed_lines": [
+            "During your turn, this creature has first strike.",
+            "{4}{W}: Creatures you control get +1/+1 until end of turn."
+          ]
+        }
+      ],
+      "tests": [
+        "candidates_seventeen_actual_creature_casts_pay_exact_printed_mana_and_have_native_characteristics",
+        "candidates_bearer_of_glory_has_first_strike_only_own_turn_and_boosts_current_own_creatures_until_cleanup"
+      ],
+      "shared_proofs": [],
+      "source_review": "Full pinned Oracle body, entire main Java class, and listed relevant helper bodies read; working typed definition retained unchanged."
+    },
+    {
+      "name": "Boulderborn Dragon",
+      "oracle_id": "1654cab1-0697-4547-b1fe-2d0a61385199",
+      "definition": "src/card_definitions/tdm/boulderborn_dragon.rs",
+      "definition_sha256": "f6a8479d0c202b97294a00f97f5bbe68a69f3e403e51a20eec471c6a79cc372e",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "obligations": [
+        {
+          "face": "Boulderborn Dragon",
+          "header": {
+            "mana_cost": "{5}",
+            "type_line": "Artifact Creature \u2014 Dragon",
+            "power": "3",
+            "toughness": "3"
+          },
+          "printed_lines": [
+            "Flying, vigilance",
+            "Whenever this creature attacks, surveil 1. (Look at the top card of your library. You may put it into your graveyard.)"
+          ]
+        }
+      ],
+      "tests": [
+        "candidates_seventeen_actual_creature_casts_pay_exact_printed_mana_and_have_native_characteristics",
+        "candidates_boulderborn_dragon_attack_surveils_one_privately_and_does_not_tap"
+      ],
+      "shared_proofs": [],
+      "source_review": "Full pinned Oracle body, entire main Java class, and listed relevant helper bodies read; working typed definition retained unchanged."
+    },
+    {
+      "name": "Cori Mountain Stalwart",
+      "oracle_id": "322a2d97-cf71-4bfc-b52d-f642f2d0dcbd",
+      "definition": "src/card_definitions/tdm/cori_mountain_stalwart.rs",
+      "definition_sha256": "06eddd7284ba8cc9005a11bb2f9adb4fcc13adf3a05c152419a553db221ae033",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "obligations": [
+        {
+          "face": "Cori Mountain Stalwart",
+          "header": {
+            "mana_cost": "{1}{R}{W}",
+            "type_line": "Creature \u2014 Human Monk",
+            "power": "3",
+            "toughness": "3"
+          },
+          "printed_lines": [
+            "Flurry \u2014 Whenever you cast your second spell each turn, this creature deals 2 damage to each opponent and you gain 2 life."
+          ]
+        }
+      ],
+      "tests": [
+        "candidates_seventeen_actual_creature_casts_pay_exact_printed_mana_and_have_native_characteristics",
+        "candidates_flurry_triggers_only_on_own_second_cast_on_either_players_turn",
+        "candidates_flurry_ignores_opponents_second_cast_and_old_adept_incarnation",
+        "candidates_flurry_cast_ordinal_resets_for_retained_sources_on_the_next_turn"
+      ],
+      "shared_proofs": [],
+      "source_review": "Full pinned Oracle body, entire main Java class, and listed relevant helper bodies read; working typed definition retained unchanged."
+    },
+    {
+      "name": "Dalkovan Packbeasts",
+      "oracle_id": "cdd1a043-bd47-4197-be26-e2f7d3f1d209",
+      "definition": "src/card_definitions/tdm/dalkovan_packbeasts.rs",
+      "definition_sha256": "54bbe7f0763b95ea15fb9230b5803b51d2625bf49bf1961e03fd64a5ef509f17",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "obligations": [
+        {
+          "face": "Dalkovan Packbeasts",
+          "header": {
+            "mana_cost": "{2}{W}",
+            "type_line": "Creature \u2014 Ox",
+            "power": "0",
+            "toughness": "4"
+          },
+          "printed_lines": [
+            "Vigilance",
+            "Mobilize 3 (Whenever this creature attacks, create three tapped and attacking 1/1 red Warrior creature tokens. Sacrifice them at the beginning of the next end step.)"
+          ]
+        }
+      ],
+      "tests": [
+        "candidates_seventeen_actual_creature_casts_pay_exact_printed_mana_and_have_native_characteristics",
+        "candidates_packbeasts_lancer_and_avenger_mobilize_exact_live_counts_and_sacrifice_only_their_warriors"
+      ],
+      "shared_proofs": [],
+      "source_review": "Full pinned Oracle body, entire main Java class, and listed relevant helper bodies read; working typed definition retained unchanged."
+    },
+    {
+      "name": "Descendant of Storms",
+      "oracle_id": "ca773c52-ca64-463c-99cf-e71b59d2cff7",
+      "definition": "src/card_definitions/tdm/descendant_of_storms.rs",
+      "definition_sha256": "d1aecb2413a77a29015846875cca57c22fce53e20a0bbab67b0ea652804d76c4",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "obligations": [
+        {
+          "face": "Descendant of Storms",
+          "header": {
+            "mana_cost": "{W}",
+            "type_line": "Creature \u2014 Human Soldier",
+            "power": "2",
+            "toughness": "1"
+          },
+          "printed_lines": [
+            "Whenever this creature attacks, you may pay {1}{W}. If you do, it endures 1. (Put a +1/+1 counter on it or create a 1/1 white Spirit creature token.)"
+          ]
+        }
+      ],
+      "tests": [
+        "candidates_seventeen_actual_creature_casts_pay_exact_printed_mana_and_have_native_characteristics",
+        "candidates_descendant_attack_optional_one_white_payment_precedes_both_endure_branches"
+      ],
+      "shared_proofs": [],
+      "source_review": "Full pinned Oracle body, entire main Java class, and listed relevant helper bodies read; working typed definition retained unchanged."
+    },
+    {
+      "name": "Devoted Duelist",
+      "oracle_id": "f7620c46-b3d8-4694-ac7c-a43933c86c22",
+      "definition": "src/card_definitions/tdm/devoted_duelist.rs",
+      "definition_sha256": "864d761cd7a914bb51cb873580e1691e625e08b84030ff802e432b9664ca0687",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "obligations": [
+        {
+          "face": "Devoted Duelist",
+          "header": {
+            "mana_cost": "{1}{R}",
+            "type_line": "Creature \u2014 Goblin Monk",
+            "power": "2",
+            "toughness": "1"
+          },
+          "printed_lines": [
+            "Haste",
+            "Flurry \u2014 Whenever you cast your second spell each turn, this creature deals 1 damage to each opponent."
+          ]
+        }
+      ],
+      "tests": [
+        "candidates_seventeen_actual_creature_casts_pay_exact_printed_mana_and_have_native_characteristics",
+        "candidates_flurry_triggers_only_on_own_second_cast_on_either_players_turn",
+        "candidates_flurry_ignores_opponents_second_cast_and_old_adept_incarnation",
+        "candidates_flurry_cast_ordinal_resets_for_retained_sources_on_the_next_turn"
+      ],
+      "shared_proofs": [],
+      "source_review": "Full pinned Oracle body, entire main Java class, and listed relevant helper bodies read; working typed definition retained unchanged."
+    },
+    {
+      "name": "Dragon Sniper",
+      "oracle_id": "913dbce2-6805-453f-a9c3-64f1cc658627",
+      "definition": "src/card_definitions/tdm/dragon_sniper.rs",
+      "definition_sha256": "c26a1f79e0ce35c165fa9692a34da41a4e4b15e628bb7a4969781b7a92adf51b",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "obligations": [
+        {
+          "face": "Dragon Sniper",
+          "header": {
+            "mana_cost": "{G}",
+            "type_line": "Creature \u2014 Human Archer",
+            "power": "1",
+            "toughness": "1"
+          },
+          "printed_lines": [
+            "Reach, vigilance, deathtouch"
+          ]
+        }
+      ],
+      "tests": [
+        "candidates_seventeen_actual_creature_casts_pay_exact_printed_mana_and_have_native_characteristics",
+        "candidates_dragon_sniper_reaches_a_flyer_and_its_one_deathtouch_damage_kills_it"
+      ],
+      "shared_proofs": [],
+      "source_review": "Full pinned Oracle body, entire main Java class, and listed relevant helper bodies read; working typed definition retained unchanged."
+    },
+    {
+      "name": "Dragonback Lancer",
+      "oracle_id": "7875c063-19c3-4e6e-81d8-1a378a4e16e5",
+      "definition": "src/card_definitions/tdm/dragonback_lancer.rs",
+      "definition_sha256": "5bb136757cd32eacba9aa681ff0e3b8461eb4a03844ef74a248b33751acf4efe",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "obligations": [
+        {
+          "face": "Dragonback Lancer",
+          "header": {
+            "mana_cost": "{3}{W}",
+            "type_line": "Creature \u2014 Human Soldier",
+            "power": "3",
+            "toughness": "3"
+          },
+          "printed_lines": [
+            "Flying",
+            "Mobilize 1 (Whenever this creature attacks, create a tapped and attacking 1/1 red Warrior creature token. Sacrifice it at the beginning of the next end step.)"
+          ]
+        }
+      ],
+      "tests": [
+        "candidates_seventeen_actual_creature_casts_pay_exact_printed_mana_and_have_native_characteristics",
+        "candidates_packbeasts_lancer_and_avenger_mobilize_exact_live_counts_and_sacrifice_only_their_warriors"
+      ],
+      "shared_proofs": [],
+      "source_review": "Full pinned Oracle body, entire main Java class, and listed relevant helper bodies read; working typed definition retained unchanged."
+    },
+    {
+      "name": "Dragonstorm Forecaster",
+      "oracle_id": "02de8fa3-ac8d-47e5-b137-d5a0b7d8e951",
+      "definition": "src/card_definitions/tdm/dragonstorm_forecaster.rs",
+      "definition_sha256": "f16bb57b8c710acb6dc3e3098893b49aefd86188d00a5ef7dc96a75955f6452e",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "obligations": [
+        {
+          "face": "Dragonstorm Forecaster",
+          "header": {
+            "mana_cost": "{U}",
+            "type_line": "Creature \u2014 Human Scout",
+            "power": "0",
+            "toughness": "3"
+          },
+          "printed_lines": [
+            "{2}, {T}: Search your library for a card named Dragonstorm Globe or Boulderborn Dragon, reveal it, put it into your hand, then shuffle."
+          ]
+        }
+      ],
+      "tests": [
+        "candidates_seventeen_actual_creature_casts_pay_exact_printed_mana_and_have_native_characteristics",
+        "candidates_dragonstorm_forecaster_searches_only_either_printed_name_reveals_and_shuffles_even_on_failure"
+      ],
+      "shared_proofs": [],
+      "source_review": "Full pinned Oracle body, entire main Java class, and listed relevant helper bodies read; working typed definition retained unchanged."
+    },
+    {
+      "name": "Dusyut Earthcarver",
+      "oracle_id": "387b12b1-d8f5-487b-972f-5303b23eed5a",
+      "definition": "src/card_definitions/tdm/dusyut_earthcarver.rs",
+      "definition_sha256": "51e5132801f1112bf43b88a47ced74e629fbdeb870ba17f582a7fa6451a2454e",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "obligations": [
+        {
+          "face": "Dusyut Earthcarver",
+          "header": {
+            "mana_cost": "{5}{G}",
+            "type_line": "Creature \u2014 Elephant Druid",
+            "power": "4",
+            "toughness": "4"
+          },
+          "printed_lines": [
+            "Reach",
+            "When this creature enters, it endures 3. (Put three +1/+1 counters on it or create a 3/3 white Spirit creature token.)"
+          ]
+        }
+      ],
+      "tests": [
+        "candidates_seventeen_actual_creature_casts_pay_exact_printed_mana_and_have_native_characteristics",
+        "candidates_dusyut_and_fortress_enter_endure_with_exact_counter_or_white_spirit_size"
+      ],
+      "shared_proofs": [],
+      "source_review": "Full pinned Oracle body, entire main Java class, and listed relevant helper bodies read; working typed definition retained unchanged."
+    },
+    {
+      "name": "Effortless Master",
+      "oracle_id": "185e0892-194f-43ac-853f-1e142bf8476e",
+      "definition": "src/card_definitions/tdm/effortless_master.rs",
+      "definition_sha256": "22f346a637460a3c4af3e36ed1a3575571d014330c0003d330d3e39a85401bec",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "obligations": [
+        {
+          "face": "Effortless Master",
+          "header": {
+            "mana_cost": "{2}{U}{R}",
+            "type_line": "Creature \u2014 Orc Monk",
+            "power": "4",
+            "toughness": "3"
+          },
+          "printed_lines": [
+            "Vigilance",
+            "Menace (This creature can't be blocked except by two or more creatures.)",
+            "This creature enters with two +1/+1 counters on it if you've cast two or more spells this turn."
+          ]
+        }
+      ],
+      "tests": [
+        "candidates_seventeen_actual_creature_casts_pay_exact_printed_mana_and_have_native_characteristics",
+        "candidates_effortless_master_counts_its_own_cast_for_two_spell_entry_and_menace_needs_two_blockers"
+      ],
+      "shared_proofs": [],
+      "source_review": "Full pinned Oracle body, entire main Java class, and listed relevant helper bodies read; working typed definition retained unchanged."
+    },
+    {
+      "name": "Equilibrium Adept",
+      "oracle_id": "42bf9435-02e6-428f-a93c-fe4652deb4fc",
+      "definition": "src/card_definitions/tdm/equilibrium_adept.rs",
+      "definition_sha256": "b9abcd1a4a02d75583cd87e728fd5e3e3bba79dc8be2d0fe7b9030ed328c8ad1",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "obligations": [
+        {
+          "face": "Equilibrium Adept",
+          "header": {
+            "mana_cost": "{3}{R}",
+            "type_line": "Creature \u2014 Dog Monk",
+            "power": "2",
+            "toughness": "4"
+          },
+          "printed_lines": [
+            "When this creature enters, exile the top card of your library. Until the end of your next turn, you may play that card.",
+            "Flurry \u2014 Whenever you cast your second spell each turn, this creature gains double strike until end of turn."
+          ]
+        }
+      ],
+      "tests": [
+        "candidates_seventeen_actual_creature_casts_pay_exact_printed_mana_and_have_native_characteristics",
+        "candidates_flurry_triggers_only_on_own_second_cast_on_either_players_turn",
+        "candidates_flurry_ignores_opponents_second_cast_and_old_adept_incarnation",
+        "candidates_equilibrium_adept_actual_etb_authorizes_exact_exiled_land_after_source_departs",
+        "candidates_flurry_cast_ordinal_resets_for_retained_sources_on_the_next_turn",
+        "candidates_equilibrium_adept_exile_permission_requires_mana_lasts_to_next_own_cleanup_and_is_exact"
+      ],
+      "shared_proofs": [],
+      "source_review": "Full pinned Oracle body, entire main Java class, and listed relevant helper bodies read; working typed definition retained unchanged."
+    },
+    {
+      "name": "Fortress Kin-Guard",
+      "oracle_id": "fa3ed0f6-e44e-433d-80d3-824de5e6135a",
+      "definition": "src/card_definitions/tdm/fortress_kin_guard.rs",
+      "definition_sha256": "554dabf46b42a61f54db27c0af3df3da525d7b62c4bbcf398b545eda96c4eb56",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "obligations": [
+        {
+          "face": "Fortress Kin-Guard",
+          "header": {
+            "mana_cost": "{1}{W}",
+            "type_line": "Creature \u2014 Dog Soldier",
+            "power": "1",
+            "toughness": "2"
+          },
+          "printed_lines": [
+            "When this creature enters, it endures 1. (Put a +1/+1 counter on it or create a 1/1 white Spirit creature token.)"
+          ]
+        }
+      ],
+      "tests": [
+        "candidates_seventeen_actual_creature_casts_pay_exact_printed_mana_and_have_native_characteristics",
+        "candidates_dusyut_and_fortress_enter_endure_with_exact_counter_or_white_spirit_size"
+      ],
+      "shared_proofs": [],
+      "source_review": "Full pinned Oracle body, entire main Java class, and listed relevant helper bodies read; working typed definition retained unchanged."
+    },
+    {
+      "name": "Elspeth, Storm Slayer",
+      "oracle_id": "f78af825-023a-42e9-8374-5c52303a1417",
+      "definition": "src/card_definitions/tdm/elspeth_storm_slayer.rs",
+      "definition_sha256": "416c170f7fa31b15726bfc644d1a99fbb93aa2e703d77827ed12018c3de5dd16",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "obligations": [
+        {
+          "face": "Elspeth, Storm Slayer",
+          "header": {
+            "mana_cost": "{3}{W}{W}",
+            "type_line": "Legendary Planeswalker \u2014 Elspeth",
+            "loyalty": "5"
+          },
+          "printed_lines": [
+            "If one or more tokens would be created under your control, twice that many of those tokens are created instead.",
+            "+1: Create a 1/1 white Soldier creature token.",
+            "0: Put a +1/+1 counter on each creature you control. Those creatures gain flying until your next turn.",
+            "\u22123: Destroy target creature an opponent controls with mana value 3 or greater."
+          ]
+        }
+      ],
+      "tests": [
+        "engine::assurance::issue_93_elspeth::elspeth_storm_slayer_full_card"
+      ],
+      "shared_proofs": [
+        {
+          "source": "tests/legacy/assurance/issue_93_elspeth.rs",
+          "function": "elspeth_storm_slayer_full_card",
+          "source_sha256": "11ec5eed106837e1375d08d1930b35f5bf099f292d25e67c3f75bda1897a4ed6",
+          "report": "<cache>/rustmage-validation-l0pzz2p2/report/native.json",
+          "report_sha256": "4ce510b350c0220eaee7641429c6d593e41fcfe5fc96cec8b8a5b795081052e0",
+          "root_reuse_evidence": "docs/tdm-existing-reuse-four-evidence.json",
+          "root_reuse_evidence_sha256": "4c8a15ba02043a8dbe5390b86c62210921ce8518be58b7504e5da037e8d5fd0f",
+          "root_review": "Full Oracle/fourcomplete Java classes includingcustomhelperbodies/fourtypeddefinitions/allcitedactualtestbodies and actionhelpers read; exact current/b456 source and fresh native cases independently verified. Typedsharedmechanics/header inspection explicitly recorded in per-card limits; not claimed as newpercard assertions."
+        }
+      ],
+      "source_review": "Full pinned Oracle, Java main class and listed token/replacement/flying helpers independently read; root separately accepted exact-source full-card proof. Counted once by root independently of this17-card integration."
     }
   ],
   "validation": [
@@ -1425,12 +2038,44 @@
       "terminal": true,
       "success": true,
       "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6"
+    },
+    {
+      "report": "<cache>/rustmage-tdm/cards-a-g-existing17-engine84-all79/native.json",
+      "sha256": "40700379b12096939b2b8999a8d962993a1fd4ea9a7ce04a50009b07568826c7",
+      "test_target": "tdm_cards_a_g",
+      "filter": "",
+      "passed": 79,
+      "failed": 0,
+      "compile_seconds": 0.11485700297635049,
+      "execution_seconds": 0.09345656196819618,
+      "engine_reused": true,
+      "terminal": true,
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6"
+    },
+    {
+      "report": "<cache>/rustmage-tdm/cards-a-g-existing17-engine84-clippy-1793814979381955256/terminal.json",
+      "sha256": "5aeb5bf02d0c42d90a3c118d47e603379b19b99dbf379507e7c7bf5a4a3eea2d",
+      "command": [
+        "cargo",
+        "clippy",
+        "-p",
+        "rustmage",
+        "--test",
+        "tdm_cards_a_g",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "seconds": 2.170291593996808,
+      "terminal": true,
+      "success": true,
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6"
     }
   ],
-  "locally_verified_physical_cards": 43,
+  "locally_verified_physical_cards": 61,
   "newly_authored_verified": 20,
-  "previously_admitted_verified": 23,
-  "remaining_physical_cards": 48,
+  "previously_admitted_verified": 41,
+  "remaining_physical_cards": 30,
   "implementation_measurement": {
     "scope": "Land authoring/provenance/scenarios plus focused execution and integration coordination, elapsed from preceding Renew commit timestamp. Some read-only land source preparation preceded this interval; not a pure coding benchmark. Five unchanged exact-source baseline proofs count separately from four newly tested whole cards.",
     "elapsed_seconds": 515.2147917747498,
@@ -1481,6 +2126,21 @@
       "admitted_compile_seconds": 3.87698206899222,
       "admitted_execution_seconds": 0.06806873297318816,
       "simulation_throughput": "Not measured by this family"
+    },
+    {
+      "scope": "Independent actual-definition verification of17 historically admitted candidates;19 new scenarios including exact costs, choices, cast history, combat outcomes and source-incarnation failures.",
+      "new_whole_cards_verified_by_focused_execution": 17,
+      "newly_implemented": 0,
+      "previous_candidates": 17,
+      "first_run_passed": 18,
+      "first_run_failed": 1,
+      "scenario_priority_corrections": 1,
+      "admitted_target_cases": 79,
+      "admitted_compile_seconds": 0.11485700297635049,
+      "admitted_execution_seconds": 0.09345656196819618,
+      "implementation_elapsed_seconds": null,
+      "implementation_measurement_limit": "Source preparation and test authorship were interleaved with explicit frozen validation queues and later-card draft preparation; no isolated implementation throughput claimed.",
+      "simulation_throughput": "Not measured by this family"
     }
   ],
   "current_engine_checkpoint": {
@@ -1508,5 +2168,16 @@
       "status": "accepted_engine84_distinct_round_up_opcode_and_actual_card_regression_pass"
     },
     "breaching_scenario_correction": "Explicit finish-only ResolutionCasts decision, over-eight cast rejection, and eligible free cast with zero mana all passed gated and admitted execution."
+  },
+  "candidate_family_prepared": {
+    "cards": 17,
+    "previous_candidates": 17,
+    "new_gated": 0,
+    "tests": 19,
+    "filter": "candidates_",
+    "status": "locally_verified_whole_cards_pending_full_set_acceptance_and_final_reviews",
+    "new_engine_changes": false,
+    "admission_flags": "Historical true candidates preserved; none counted as verified before terminal proofs.",
+    "scenario_correction": "Anafenza flash resolves on opponent turn and returns priority to active opponent; scenario legally passes priority before casting owned Shock. Printed flash and outcomes unchanged."
   }
 }
