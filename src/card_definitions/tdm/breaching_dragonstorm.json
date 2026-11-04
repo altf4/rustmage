@@ -32,7 +32,14 @@
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
       "path": "Mage/src/main/java/mage/util/CardUtil.java",
       "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+      "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
     }
   ],
-  "remaining_obligations": []
+  "remaining_obligations": [
+    "Revised source-inclusive Dragon subtype trigger requires gated17-case proof, then ordinary supported-card rerun before readmission/completion."
+  ]
 }
