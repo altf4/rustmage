@@ -357,3 +357,283 @@ fn renew_agent_of_kotis_casts_as_a_two_one() {
         assert_eq!(stats(&g, agent), (2, 1));
     }
 }
+
+// Initial authorship runs keep the candidate out of public deck admission.
+// Install its actual immutable definition into a hand fixture before any source
+// registration; every subsequent land play and ability is the ordinary rules path.
+// Once admitted, this helper is exactly the shared supported-card fixture.
+fn authored_land_hand(g: &mut Game, p: Player, name: &str) -> CardId {
+    let card = Card::from_name(name).unwrap();
+    if card.is_supported() {
+        return put(g, p, name, Zone::Hand);
+    }
+    assert_eq!(name, "Dalkovan Encampment");
+    let id = put(g, p, "Plains", Zone::Hand);
+    g.state.objects[id as usize].card = card;
+    id
+}
+
+fn one_mana(color: usize) -> Mana {
+    let mut value = [0; 6];
+    value[color] = 1;
+    value
+}
+fn mana_action(card: CardId, color: usize) -> Action {
+    Action::ActivateMana {
+        card,
+        ability: 0,
+        payment: [0; 6],
+        counter_payment: Counters::default(),
+        production: one_mana(color),
+    }
+}
+fn activate_plain(g: &mut Game, card: CardId, ability: u16) {
+    act(
+        g,
+        Action::AnnounceActivate {
+            card,
+            ability,
+            counter_payment: Counters::default(),
+        },
+    );
+    pay(g);
+}
+fn battlefield_tokens(g: &Game) -> Vec<CardId> {
+    g.state
+        .objects
+        .iter()
+        .enumerate()
+        .filter(|(_, o)| o.zone == Zone::Battlefield && o.is_token())
+        .map(|(id, _)| id as CardId)
+        .collect()
+}
+
+#[test]
+fn lands_frontier_bivouac_enters_tapped_and_makes_exactly_each_printed_color() {
+    for p in [Player::P0, Player::P1] {
+        for color in [4, 1, 3] {
+            let mut g = scenario(p);
+            let land = put(&mut g, p, "Frontier Bivouac", Zone::Hand);
+            g.state.players[p.index()].mana = [0; 6];
+            act(&mut g, Action::PlayLand { card: land });
+            assert!(g.object_view(land).tapped);
+            reject(&mut g, mana_action(land, color));
+            drain(&mut g);
+            assert_eq!(g.state.players[p.index()].life, 20);
+            g.state.objects[land as usize].tapped = false;
+            reject(&mut g, mana_action(land, 0));
+            reject(&mut g, mana_action(land, 2));
+            act(&mut g, mana_action(land, color));
+            assert_eq!(g.state.players[p.index()].mana, one_mana(color));
+            assert!(g.object_view(land).tapped);
+        }
+    }
+}
+
+#[test]
+fn lands_evolving_wilds_pays_tap_and_sacrifice_searches_only_own_basic_and_shuffles_on_decline() {
+    for p in [Player::P0, Player::P1] {
+        for find in [false, true] {
+            let mut g = scenario(p);
+            let wilds = put(&mut g, p, "Evolving Wilds", Zone::Hand);
+            act(&mut g, Action::PlayLand { card: wilds });
+            assert!(!g.object_view(wilds).tapped);
+            let basic = put(&mut g, p, "Mountain", Zone::Library);
+            let nonbasic = put(&mut g, p, "Frontier Bivouac", Zone::Library);
+            let foreign = put(&mut g, p.other(), "Island", Zone::Library);
+            activate_plain(&mut g, wilds, 0);
+            assert_eq!(g.object_view(wilds).zone, Zone::Graveyard);
+            ready(&mut g, |g| {
+                matches!(g.state.pending, Pending::EffectSearch { .. })
+            });
+            assert!(g.observe(p).search_choice.is_some());
+            assert!(g.observe(p.other()).search_choice.is_none());
+            reject(&mut g, Action::ChooseSearch { card: nonbasic });
+            reject(&mut g, Action::ChooseSearch { card: foreign });
+            let rng_before = g.state.rng;
+            if find {
+                act(&mut g, Action::ChooseSearch { card: basic });
+            }
+            if g.legal_actions().contains(&Action::FinishSearch) {
+                act(&mut g, Action::FinishSearch);
+            }
+            drain(&mut g);
+            assert_eq!(
+                g.object_view(basic).zone,
+                if find {
+                    Zone::Battlefield
+                } else {
+                    Zone::Library
+                }
+            );
+            if find {
+                assert!(g.object_view(basic).tapped);
+            }
+            assert_ne!(
+                g.state.rng, rng_before,
+                "search shuffles even when no card is found"
+            );
+            assert_eq!(g.object_view(nonbasic).zone, Zone::Library);
+        }
+    }
+}
+
+#[test]
+fn lands_clan_entries_use_controlled_subtypes_and_each_mana_ability_is_exact() {
+    for p in [Player::P0, Player::P1] {
+        for (name, qualifiers, color) in [
+            ("Cori Mountain Monastery", ["Plains", "Island"], 3),
+            ("Dalkovan Encampment", ["Swamp", "Mountain"], 0),
+        ] {
+            for (qualifier, foreign, tapped) in [
+                (None, false, true),
+                (Some(qualifiers[0]), false, false),
+                (Some(qualifiers[1]), false, false),
+                (Some(qualifiers[0]), true, true),
+                (Some("Forest"), false, true),
+            ] {
+                let mut g = scenario(p);
+                if let Some(q) = qualifier {
+                    put(
+                        &mut g,
+                        if foreign { p.other() } else { p },
+                        q,
+                        Zone::Battlefield,
+                    );
+                }
+                let land = authored_land_hand(&mut g, p, name);
+                act(&mut g, Action::PlayLand { card: land });
+                assert_eq!(
+                    g.object_view(land).tapped,
+                    tapped,
+                    "{name} {qualifier:?} {foreign}"
+                );
+                if !tapped {
+                    g.state.players[p.index()].mana = [0; 6];
+                    act(&mut g, mana_action(land, color));
+                    assert_eq!(g.state.players[p.index()].mana, one_mana(color));
+                }
+            }
+        }
+    }
+}
+
+#[test]
+fn lands_cori_mountain_monastery_pays_three_red_taps_and_authorizes_paid_spell_or_land() {
+    for p in [Player::P0, Player::P1] {
+        for name in ["Bear Cub", "Mountain"] {
+            let mut g = scenario(p);
+            let land = put(&mut g, p, "Cori Mountain Monastery", Zone::Battlefield);
+            let top = put(&mut g, p, name, Zone::Library);
+            g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 3];
+            activate_plain(&mut g, land, 1);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            assert!(g.object_view(land).tapped);
+            g.move_object(land, Zone::Graveyard);
+            drain(&mut g);
+            assert_eq!(g.object_view(top).zone, Zone::Exile);
+            let permission = g
+                .state
+                .exile_permissions
+                .iter()
+                .find(|r| r.object.card == top)
+                .unwrap();
+            assert_eq!(permission.player, p);
+            assert_eq!(permission.expiry, ExilePlayExpiry::EndOfNextTurn);
+            if name == "Mountain" {
+                act(&mut g, Action::PlayLand { card: top });
+            } else {
+                reject(&mut g, Action::AnnounceExile { card: top });
+                g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 1];
+                act(&mut g, Action::AnnounceExile { card: top });
+                pay(&mut g);
+                drain(&mut g);
+            }
+            assert_eq!(g.object_view(top).zone, Zone::Battlefield);
+        }
+    }
+}
+
+#[test]
+fn lands_cori_permission_lasts_through_next_own_turn_then_expires_and_is_exact_incarnation() {
+    let p = Player::P1;
+    let mut g = scenario(p);
+    let land = put(&mut g, p, "Cori Mountain Monastery", Zone::Battlefield);
+    let top = put(&mut g, p, "Bear Cub", Zone::Library);
+    activate_plain(&mut g, land, 1);
+    drain(&mut g);
+    assert!(g.can_play_exiled(p, top));
+    let mut stale = g.clone();
+    stale.move_object(top, Zone::Hand);
+    stale.move_object(top, Zone::Exile);
+    assert!(!stale.can_play_exiled(p, top));
+    g.state.step = Step::Cleanup;
+    g.finish_cleanup();
+    assert!(g.can_play_exiled(p, top));
+    g.state.active = p.other();
+    g.state.turn += 1;
+    g.begin_turn();
+    assert!(g.can_play_exiled(p, top));
+    g.state.active = p;
+    g.state.turn += 1;
+    g.begin_turn();
+    assert!(g.can_play_exiled(p, top));
+    g.state.step = Step::Cleanup;
+    g.finish_cleanup();
+    assert!(!g.can_play_exiled(p, top));
+}
+
+#[test]
+fn lands_dalkovan_attack_callback_creates_two_tapped_attacking_red_warriors_after_land_departure() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Swamp", Zone::Battlefield);
+        let land = authored_land_hand(&mut g, p, "Dalkovan Encampment");
+        act(&mut g, Action::PlayLand { card: land });
+        let attacker = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 2];
+        activate_plain(&mut g, land, 1);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        assert!(g.object_view(land).tapped);
+        drain(&mut g);
+        g.move_object(land, Zone::Graveyard);
+        attack(&mut g, attacker);
+        drain(&mut g);
+        let tokens = battlefield_tokens(&g);
+        assert_eq!(tokens.len(), 2);
+        assert_eq!(g.state.attackers.len(), 3);
+        for token in &tokens {
+            assert_eq!(stats(&g, *token), (1, 1));
+            assert!(g.object_view(*token).tapped && g.object_view(*token).attacking);
+            assert_eq!(g.object_view(*token).controller, p);
+            assert_eq!(g.object_view(*token).colors, 8);
+            assert!(g.has_subtype(*token, "Warrior"));
+        }
+        // Finish this combat, then enter a second combat in the same turn.
+        ready(&mut g, |g| {
+            g.state.step == Step::Main2 && g.state.pending == Pending::Priority
+        });
+        g.state.objects[attacker as usize].tapped = false;
+        g.state.attack_declared = false;
+        g.state.attackers.clear();
+        g.state.selected_attackers.clear();
+        attack(&mut g, attacker);
+        drain(&mut g);
+        assert_eq!(
+            battlefield_tokens(&g).len(),
+            4,
+            "registration triggers on each attack this turn"
+        );
+        ready(&mut g, |g| {
+            g.state.step == Step::Main2 && g.state.pending == Pending::Priority
+        });
+        g.begin_step(Step::End);
+        g.give_priority();
+        drain(&mut g);
+        assert!(
+            battlefield_tokens(&g).is_empty(),
+            "all four exact tokens sacrificed at next end step"
+        );
+        assert_eq!(g.object_view(attacker).zone, Zone::Battlefield);
+    }
+}

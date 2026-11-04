@@ -166,6 +166,273 @@
         "tests/legacy/assurance/msh_d.rs::adaptoid_all_keyword_counters_and_legendary_cda"
       ],
       "definition_sha256": "29d0d2c419881909591cc970c0f85b8a2e7052796a9f67c818495917ccfa676b"
+    },
+    {
+      "name": "Bloodfell Caves",
+      "oracle_id": "64e29bfc-9313-4e8c-808c-bc27f6b018a6",
+      "definition": "src/card_definitions/tdm/bloodfell_caves.rs",
+      "definition_sha256": "13643c57e353757aa749e12127b12bdf982e895cc19678e089841f2dbcd064bf",
+      "kind": "previously_admitted_candidate",
+      "obligations": [
+        {
+          "face": "Bloodfell Caves",
+          "header": {
+            "mana_cost": "",
+            "type_line": "Land"
+          },
+          "printed_lines": [
+            "This land enters tapped.",
+            "When this land enters, you gain 1 life.",
+            "{T}: Add {B} or {R}."
+          ]
+        }
+      ],
+      "status": "locally_verified_whole_card_by_unchanged_exact_source_baseline_proof_pending_full_set_acceptance_and_final_reviews",
+      "tests": [
+        "each_gainland_enters_tapped_gains_its_controller_one_life_then_produces_either_color",
+        "land_play_and_mana_choices_agree_on_owned_raw_index_and_restored_branches"
+      ],
+      "existing_proof": {
+        "source": "tests/dft_colorless_cards_inherited_lands.rs",
+        "source_sha256": "1b59c57437fc93321116ec3921dd14a624cbfb7b949fbdc82246fbadda77db10",
+        "definition_unchanged_from": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+        "report": "<cache>/rustmage-validation-o8jjr7os/report/native.json",
+        "report_sha256": "23f5a30ac9df217cbd1ed4b5e1165abce2a1b548ee4cb5e066038a96689826b7",
+        "every_printed_obligation_reconciled": true
+      }
+    },
+    {
+      "name": "Blossoming Sands",
+      "oracle_id": "45429b2c-be3b-4b2e-9bab-a059ccbda8cd",
+      "definition": "src/card_definitions/tdm/blossoming_sands.rs",
+      "definition_sha256": "b4769b62445e67756dce4734c5d0ec757f9ff5fdfc17fc2b049a52c9b5ebca37",
+      "kind": "previously_admitted_candidate",
+      "obligations": [
+        {
+          "face": "Blossoming Sands",
+          "header": {
+            "mana_cost": "",
+            "type_line": "Land"
+          },
+          "printed_lines": [
+            "This land enters tapped.",
+            "When this land enters, you gain 1 life.",
+            "{T}: Add {G} or {W}."
+          ]
+        }
+      ],
+      "status": "locally_verified_whole_card_by_unchanged_exact_source_baseline_proof_pending_full_set_acceptance_and_final_reviews",
+      "tests": [
+        "each_gainland_enters_tapped_gains_its_controller_one_life_then_produces_either_color",
+        "land_play_and_mana_choices_agree_on_owned_raw_index_and_restored_branches"
+      ],
+      "existing_proof": {
+        "source": "tests/dft_colorless_cards_inherited_lands.rs",
+        "source_sha256": "1b59c57437fc93321116ec3921dd14a624cbfb7b949fbdc82246fbadda77db10",
+        "definition_unchanged_from": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+        "report": "<cache>/rustmage-validation-o8jjr7os/report/native.json",
+        "report_sha256": "23f5a30ac9df217cbd1ed4b5e1165abce2a1b548ee4cb5e066038a96689826b7",
+        "every_printed_obligation_reconciled": true
+      }
+    },
+    {
+      "name": "Cori Mountain Monastery",
+      "oracle_id": "35c60b66-8c85-432e-90fe-99c19d21ed15",
+      "definition": "src/card_definitions/tdm/cori_mountain_monastery.rs",
+      "definition_sha256": "8baef06cc862001f81686e125244a99ceca95bade0f935802858cd137370f4eb",
+      "kind": "previously_admitted_candidate",
+      "obligations": [
+        {
+          "face": "Cori Mountain Monastery",
+          "header": {
+            "mana_cost": "",
+            "type_line": "Land"
+          },
+          "printed_lines": [
+            "This land enters tapped unless you control a Plains or an Island.",
+            "{T}: Add {R}.",
+            "{3}{R}, {T}: Exile the top card of your library. Until the end of your next turn, you may play that card."
+          ]
+        }
+      ],
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "tests": [
+        "lands_clan_entries_use_controlled_subtypes_and_each_mana_ability_is_exact",
+        "lands_cori_mountain_monastery_pays_three_red_taps_and_authorizes_paid_spell_or_land",
+        "lands_cori_permission_lasts_through_next_own_turn_then_expires_and_is_exact_incarnation"
+      ]
+    },
+    {
+      "name": "Dalkovan Encampment",
+      "oracle_id": "33a90122-7280-4481-9b97-5879194cae40",
+      "definition": "src/card_definitions/tdm/dalkovan_encampment.rs",
+      "definition_sha256": "f970bdc0e73ae6b5a8bcf726145b518269acf4009afaeeb8f0dae97c4d63f72c",
+      "kind": "newly_authored",
+      "obligations": [
+        {
+          "face": "Dalkovan Encampment",
+          "header": {
+            "mana_cost": "",
+            "type_line": "Land"
+          },
+          "printed_lines": [
+            "This land enters tapped unless you control a Swamp or a Mountain.",
+            "{T}: Add {W}.",
+            "{2}{W}, {T}: Whenever you attack this turn, create two 1/1 red Warrior creature tokens that are tapped and attacking. Sacrifice them at the beginning of the next end step."
+          ]
+        }
+      ],
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "tests": [
+        "lands_clan_entries_use_controlled_subtypes_and_each_mana_ability_is_exact",
+        "lands_dalkovan_attack_callback_creates_two_tapped_attacking_red_warriors_after_land_departure"
+      ]
+    },
+    {
+      "name": "Dismal Backwater",
+      "oracle_id": "865a2194-fca0-446e-aae3-ca475cd66e00",
+      "definition": "src/card_definitions/tdm/dismal_backwater.rs",
+      "definition_sha256": "b352567aea2f331769840aa75ec3c05ad07d38958d9a51b20353d6bd156862d0",
+      "kind": "previously_admitted_candidate",
+      "obligations": [
+        {
+          "face": "Dismal Backwater",
+          "header": {
+            "mana_cost": "",
+            "type_line": "Land"
+          },
+          "printed_lines": [
+            "This land enters tapped.",
+            "When this land enters, you gain 1 life.",
+            "{T}: Add {U} or {B}."
+          ]
+        }
+      ],
+      "status": "locally_verified_whole_card_by_unchanged_exact_source_baseline_proof_pending_full_set_acceptance_and_final_reviews",
+      "tests": [
+        "each_gainland_enters_tapped_gains_its_controller_one_life_then_produces_either_color",
+        "land_play_and_mana_choices_agree_on_owned_raw_index_and_restored_branches"
+      ],
+      "existing_proof": {
+        "source": "tests/dft_colorless_cards_inherited_lands.rs",
+        "source_sha256": "1b59c57437fc93321116ec3921dd14a624cbfb7b949fbdc82246fbadda77db10",
+        "definition_unchanged_from": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+        "report": "<cache>/rustmage-validation-o8jjr7os/report/native.json",
+        "report_sha256": "23f5a30ac9df217cbd1ed4b5e1165abce2a1b548ee4cb5e066038a96689826b7",
+        "every_printed_obligation_reconciled": true
+      }
+    },
+    {
+      "name": "Evolving Wilds",
+      "oracle_id": "a75445d3-1303-4bb5-89ad-26ea93fecd48",
+      "definition": "src/card_definitions/msc/evolving_wilds.rs",
+      "definition_sha256": "cac30d7c631fd67e9421b0221ae8b87ce88268964cffefd56ffa782d559ebc11",
+      "kind": "previously_admitted_candidate",
+      "obligations": [
+        {
+          "face": "Evolving Wilds",
+          "header": {
+            "mana_cost": "",
+            "type_line": "Land"
+          },
+          "printed_lines": [
+            "{T}, Sacrifice this land: Search your library for a basic land card, put it onto the battlefield tapped, then shuffle."
+          ]
+        }
+      ],
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "tests": [
+        "lands_evolving_wilds_pays_tap_and_sacrifice_searches_only_own_basic_and_shuffles_on_decline"
+      ]
+    },
+    {
+      "name": "Forest",
+      "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+      "definition": "src/card_definitions/fra/forest.rs",
+      "definition_sha256": "ad6b97346d65b3aa292bb56be0e3874f685619a9790db24232c98212d72d933c",
+      "kind": "previously_admitted_candidate",
+      "obligations": [
+        {
+          "face": "Forest",
+          "header": {
+            "mana_cost": "",
+            "type_line": "Basic Land \u2014 Forest"
+          },
+          "printed_lines": [
+            "({T}: Add {G}.)"
+          ]
+        }
+      ],
+      "status": "locally_verified_whole_card_by_unchanged_exact_source_baseline_proof_pending_full_set_acceptance_and_final_reviews",
+      "tests": [
+        "basic_lands_play_untapped_have_intrinsic_abilities_and_produce_exactly_their_color",
+        "basic_land_deck_exemption_allows_sixty_copies_in_standard"
+      ],
+      "existing_proof": {
+        "source": "tests/dft_colorless_cards_inherited_lands.rs",
+        "source_sha256": "1b59c57437fc93321116ec3921dd14a624cbfb7b949fbdc82246fbadda77db10",
+        "definition_unchanged_from": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+        "report": "<cache>/rustmage-validation-o8jjr7os/report/native.json",
+        "report_sha256": "23f5a30ac9df217cbd1ed4b5e1165abce2a1b548ee4cb5e066038a96689826b7",
+        "every_printed_obligation_reconciled": true
+      }
+    },
+    {
+      "name": "Frontier Bivouac",
+      "oracle_id": "e4cf6c2f-0f1e-4980-9ef9-e4eabcae42a9",
+      "definition": "src/card_definitions/ecc/frontier_bivouac.rs",
+      "definition_sha256": "0333f9e84cd35d51ec8e979dec6123154c70799afe3b5398ff298acf6a19772e",
+      "kind": "previously_admitted_candidate",
+      "obligations": [
+        {
+          "face": "Frontier Bivouac",
+          "header": {
+            "mana_cost": "",
+            "type_line": "Land"
+          },
+          "printed_lines": [
+            "This land enters tapped.",
+            "{T}: Add {G}, {U}, or {R}."
+          ]
+        }
+      ],
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "tests": [
+        "lands_frontier_bivouac_enters_tapped_and_makes_exactly_each_printed_color"
+      ]
+    },
+    {
+      "name": "Great Arashin City",
+      "oracle_id": "f40f374b-acaf-459d-9ccd-b0b22d1a3f28",
+      "definition": "src/card_definitions/tdm/great_arashin_city.rs",
+      "definition_sha256": "0956f00a3b63c9a872575710c0718dfb331a6fd14f1c4f5fa8ce65a63eb845e1",
+      "kind": "previously_admitted_candidate",
+      "obligations": [
+        {
+          "face": "Great Arashin City",
+          "header": {
+            "mana_cost": "",
+            "type_line": "Land"
+          },
+          "printed_lines": [
+            "This land enters tapped unless you control a Forest or a Plains.",
+            "{T}: Add {B}.",
+            "{1}{B}, {T}, Exile a creature card from your graveyard: Create a 1/1 white Spirit creature token."
+          ]
+        }
+      ],
+      "status": "locally_verified_whole_card_by_unchanged_exact_source_baseline_proof_pending_full_set_acceptance_and_final_reviews",
+      "tests": [
+        "engine::sos_green_colorless_tests::great_arashin_city_entry_and_creature_exile_token"
+      ],
+      "existing_proof": {
+        "source": "tests/legacy/engine_sos_green_colorless_tests.rs",
+        "source_sha256": "8926f6d65f73b2b7fbdb93bdf40755b5907ba47864c7feef1802387d6c6fd49b",
+        "definition_unchanged_from": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+        "report": "<cache>/rustmage-validation-o8jjr7os/report/native.json",
+        "report_sha256": "23f5a30ac9df217cbd1ed4b5e1165abce2a1b548ee4cb5e066038a96689826b7",
+        "every_printed_obligation_reconciled": true
+      }
     }
   ],
   "validation": [
@@ -176,23 +443,49 @@
       "filter": "renew_",
       "passed": 8,
       "failed": 0,
-      "compile_seconds": 0.724,
-      "execution_seconds": 0.025,
+      "compile_seconds": 0.7165412729955278,
+      "execution_seconds": 0.024769979005213827,
       "engine_reused": true,
       "terminal": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/cards-a-g-lands-gated-second/native.json",
+      "sha256": "aee7a088441ae8f315eb406adea9f3dfd2c6f751a036e8839185ac33af785de2",
+      "test_target": "tdm_cards_a_g",
+      "filter": "lands_",
+      "passed": 6,
+      "failed": 0,
+      "compile_seconds": 0.7662523639737628,
+      "execution_seconds": 0.025066784990485758,
+      "engine_reused": true,
+      "terminal": true,
+      "gate": "Dalkovan incomplete authored definition"
+    },
+    {
+      "report": "<cache>/rustmage-tdm/cards-a-g-lands-admitted/native.json",
+      "sha256": "d51fac5200f71db0d95d91af199d8ccb5ee555d262dcb31c0f99b7c02e272d66",
+      "test_target": "tdm_cards_a_g",
+      "filter": "lands_",
+      "passed": 6,
+      "failed": 0,
+      "compile_seconds": 3.5738049410283566,
+      "execution_seconds": 0.03324855101527646,
+      "engine_reused": true,
+      "terminal": true,
+      "gate": "Dalkovan publicly admitted actual definition"
     }
   ],
-  "locally_verified_physical_cards": 5,
-  "newly_authored_verified": 2,
-  "previously_admitted_verified": 3,
-  "remaining_physical_cards": 86,
+  "locally_verified_physical_cards": 14,
+  "newly_authored_verified": 3,
+  "previously_admitted_verified": 11,
+  "remaining_physical_cards": 77,
   "implementation_measurement": {
-    "scope": "First Renew family including full source reads, authored2 definitions/provenance and8 scenarios; all5 printed obligations locally verified",
-    "elapsed_minutes": 24.0,
-    "cards_per_minute": 0.20833333333333334,
-    "focused_runs": 2,
-    "first_run_passed": 6,
-    "first_run_failed_test_fixture": 1,
-    "simulation_throughput": "Not measured by this focused card family"
+    "scope": "Land authoring/provenance/scenarios plus focused execution and integration coordination, elapsed from preceding Renew commit timestamp. Some read-only land source preparation preceded this interval; not a pure coding benchmark. Five unchanged exact-source baseline proofs count separately from four newly tested whole cards.",
+    "elapsed_seconds": 515.2147917747498,
+    "new_whole_cards_verified_by_focused_execution": 4,
+    "previous_exact_source_proofs_reconciled": 5,
+    "focused_cards_per_hour_including_coordination": 27.94950810786433,
+    "focused_runs": 3,
+    "simulation_throughput": "Not measured by this card family"
   }
 }

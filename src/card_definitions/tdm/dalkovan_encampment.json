@@ -3,10 +3,71 @@
   "catalogue_id": 950,
   "oracle_id": "33a90122-7280-4481-9b97-5879194cae40",
   "facts_sha256": "ab96821e3b47cd5fcdf4cef3fde061aebaab35917dfe22b26967a202f3718956",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "78bc6c4deb8411ddb5d3e83da6fb577505a92a9f3d4578c0c93f7598461b13f8"
   },
-  "physical_metadata_sha256": "1fc95210b23a8802dcd8c2f2342eb821cd0c53a64d3460cd0be208619c60ee1b"
+  "physical_metadata_sha256": "1fc95210b23a8802dcd8c2f2342eb821cd0c53a64d3460cd0be208619c60ee1b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DalkovanEncampment.java",
+  "java_sha256": "1024dc1ec8646ed0b32af87c5bcbcd536fdd161741956d61b603e44f05831d79",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+      "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+      "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedUnlessAbility.java",
+      "sha256": "389f076d5e9c21e7e868cef5ed4d35d7a346a8a33bccaf9516e09843c1fad1f6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/YouControlPermanentCondition.java",
+      "sha256": "850fb219ff3e25ef2abbb7d0672a728d77699fbbd358ced81cbb17e6b553372a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/WhenYouAttackDelayedTriggeredAbility.java",
+      "sha256": "1825df564f9aebab7dbb53894496a30e1e0d50b32fbbc125a10a064db7282ca1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateDelayedTriggeredAbilityEffect.java",
+      "sha256": "537fdb546ad334c8e75d07346e68cf02ee4fa38bf830cbbd041ef491234f0661"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/AtTheBeginOfNextEndStepDelayedTriggeredAbility.java",
+      "sha256": "9f3272690e0ade9a48526bd13165b3015a71d8bbed9d86a997af960d5f3214a5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeTargetEffect.java",
+      "sha256": "c45c32e2c47bd7f62480c732af33864bcac93ec246a9cf7e292dd32a2d10917c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/RedWarriorToken.java",
+      "sha256": "91af8e32ddafb0a605511b4fd6a3e78e00d46465b90463b47ce6c6266a38582c"
+    }
+  ],
+  "remaining_obligations": []
 }

@@ -8,5 +8,50 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8292c381f9b5d0aa91d1ef18f2280d84f59e1a69a0ea2bc6225d52476896614f"
   },
-  "physical_metadata_sha256": "cc76ec56e9469fa96c8d463d4ee442fbe14aeac0d0aa15765513332a8be6f552"
+  "physical_metadata_sha256": "cc76ec56e9469fa96c8d463d4ee442fbe14aeac0d0aa15765513332a8be6f552",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CoriMountainMonastery.java",
+  "java_sha256": "79d162a2c2abc7828b0409d9d63877c73c21bb0e018f972433108e09efb5d1f4",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+      "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+      "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedUnlessAbility.java",
+      "sha256": "389f076d5e9c21e7e868cef5ed4d35d7a346a8a33bccaf9516e09843c1fad1f6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/YouControlPermanentCondition.java",
+      "sha256": "850fb219ff3e25ef2abbb7d0672a728d77699fbbd358ced81cbb17e6b553372a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+      "sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+      "sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef"
+    }
+  ]
 }
