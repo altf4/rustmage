@@ -7480,6 +7480,7 @@ fn trace_candidate_with_prepared_observation_audit(
             | "Joust Through"
             | "Kellan's Lightblades"
             | "Not on My Watch"
+            | "Osseous Exhale"
             | "Protective Response"
             | "Sudden Strike" => {
                 root = "combat";
