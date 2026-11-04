@@ -4,7 +4,7 @@
   "dependency": "E:ATTACHED_ACTIVATION_COSTS",
   "parent_checkpoint": "4aca40d4b5fc2b003d45994172309c262fffa60d",
   "previous_engine_checkpoint": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
-  "status": "Focused contracts pass; final published engine-head review/broad validation/cache rewarm pending; card authorship held.",
+  "status": "Accepted at f03d4f671 after full release validation, two independent nonauthor approvals and three guarded cache warms; card authors resumed.",
   "printed_consumers": {
     "Ringing Strike Mastery": "Enchanted creature has generic5: Untap this creature. No attachment or recipient tap cost; recipient controller activates under an opposing/tapped Aura.",
     "Fishing Pole": "Preserve generic1 plus recipient tap and separate controlled attachment tap. No behavior admission change."
@@ -82,5 +82,6 @@
     "new_rows": 37,
     "total_rows": 3201,
     "two_independent_nonauthor_acquisition_reviews": "approved; final engine/full-set approvals remain pending"
-  }
+  },
+  "accepted_engine_checkpoint": "docs/tdm-engine83-acceptance.json"
 }

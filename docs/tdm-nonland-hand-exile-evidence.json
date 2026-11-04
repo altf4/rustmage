@@ -3,7 +3,7 @@
   "set": "TDM",
   "dependency": "E:NONLAND_HAND_EXILE",
   "scope": "Shared unlinked nonland hand exile plus actual Aggressive Negotiations repair; whole-set acceptance remains pending.",
-  "status": "Focused/runtime/schema/Clippy pass and schema201 migration independently accepted; final full release, published-engine reviews and author-cache warm pending.",
+  "status": "Accepted at f03d4f671 after full release validation, two independent nonauthor approvals and three guarded cache warms; card authors resumed.",
   "implementation_revision": "d704f41a7",
   "rule": "Nonland requires absence of LAND type, not presence of another card type (CR205.2b).",
   "primitive": "Instruction::RevealTargetHandExileNonland; HandChoiceKind::ExileRevealedNonland",
@@ -91,5 +91,6 @@
     "<cache>/rustmage-validation-oo73vtoz/report/result.json: sourcepass, formatterfailure only; no native/release",
     "<cache>/rustmage-validation-f75wpy9l/report/result.json: source/format/cardformat/43scriptpass, identity-op lint exposed nonland semantic gap; no native/release",
     "<cache>/rustmage-tdm/engine83-clippy-1793805910167514599/terminal.json: existing DFT fixture needed mechanical AttachmentActivation struct migration; preserves tap_attachment:true, runtime regression now passes"
-  ]
+  ],
+  "accepted_engine_checkpoint": "docs/tdm-engine83-acceptance.json"
 }

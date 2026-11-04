@@ -1,0 +1,838 @@
+{
+  "schema": 1,
+  "set": "TDM",
+  "scope": "Six existing G\u2013S physical cards; no new implementation or admission change",
+  "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+  "previous_accepted_engine": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+  "source_ledger": "/home/altf4/.cache/rustmage-tdm/g-s-existing-candidate-proof-ledger.json",
+  "source_ledger_sha256": "763c087031ad2962061bd3bb31e045b94ba143096a6144c2398de58f859c80ae",
+  "root_review": "Read all six complete typed definitions and pinned XMage card bodies, actual assertion/action helper bodies; independently compare current root definition/provenance/test hashes and current native PASS receipts. Source-provenance validation also passed in full engine checkpoint. Whole printed behavior accepted.",
+  "counted_existing_cards": 6,
+  "names": [
+    "Inevitable Defeat",
+    "Island",
+    "Jungle Hollow",
+    "Mountain",
+    "Plains",
+    "Rugged Highlands"
+  ],
+  "cards": [
+    {
+      "name": "Inevitable Defeat",
+      "oracle_id": "d68439b5-7011-4b1d-a7da-14ef0f4d9994",
+      "oracle_facts_sha256": "54e0d72b483962b5ee17d43888465c0f0f42255d0da29d73ab31f8ddf9364b67",
+      "oracle_facts": {
+        "oracle_id": "d68439b5-7011-4b1d-a7da-14ef0f4d9994",
+        "name": "Inevitable Defeat",
+        "layout": "normal",
+        "mana_cost": "{1}{R}{W}{B}",
+        "cmc": 4.0,
+        "type_line": "Instant",
+        "oracle_text": "This spell can't be countered.\nExile target nonland permanent. Its controller loses 3 life and you gain 3 life.",
+        "colors": [
+          "B",
+          "R",
+          "W"
+        ],
+        "color_identity": [
+          "B",
+          "R",
+          "W"
+        ],
+        "keywords": [],
+        "reference_printing": {
+          "id": "9d677980-b608-407e-9f17-790a81263f15",
+          "set": "tdm",
+          "collector_number": "194",
+          "released_at": "2025-04-11"
+        }
+      },
+      "java_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage.Sets/src/mage/cards/i/InevitableDefeat.java",
+          "sha256": "66c9bc8c794dec4715b14c8b05d2e8f608c0ccbb2aaa05dc4f3443cb9a11482e",
+          "complete_class_read": true,
+          "working_blob_hash_verified": true
+        }
+      ],
+      "definitions": [
+        {
+          "path": "src/card_definitions/tdm/inevitable_defeat.rs",
+          "current_sha256": "6a3213197ae9f9ea603696ecdb2a50f864ca33fe5cb4c36d59b08d838f515111",
+          "baseline_sha256": "6a3213197ae9f9ea603696ecdb2a50f864ca33fe5cb4c36d59b08d838f515111",
+          "matches_baseline": true,
+          "category": "physical",
+          "index": 2158,
+          "provenance": {
+            "path": "src/card_definitions/tdm/inevitable_defeat.json",
+            "current_sha256": "a2d5f3351d478e8f771a3b5d0172a7bda9022da6eb2aa8368b254300b0d9995b",
+            "baseline_sha256": "a2d5f3351d478e8f771a3b5d0172a7bda9022da6eb2aa8368b254300b0d9995b",
+            "matches_baseline": true
+          }
+        }
+      ],
+      "proof_status": "Accepted actual whole-card baseline proof, identical definition/provenance/tests and passing current approved engine native execution",
+      "proof_refs": [
+        "defeat_result",
+        "defeat_targets",
+        "defeat_counter"
+      ],
+      "printed_obligations": [
+        {
+          "printed": {
+            "kind": "header",
+            "face": "Inevitable Defeat",
+            "mana_cost": "{1}{R}{W}{B}",
+            "type_line": "Instant",
+            "power": null,
+            "toughness": null
+          },
+          "actual_definition_proof_refs": [
+            "defeat_result",
+            "defeat_targets",
+            "defeat_counter"
+          ],
+          "coverage": "complete_existing_baseline_outcomes",
+          "missing_outcomes": []
+        },
+        {
+          "printed": {
+            "kind": "printed_rules",
+            "face": "Inevitable Defeat",
+            "oracle_text": "This spell can't be countered.",
+            "mapped_support_and_risk": "Existing uncounterable complete Spell, nonland target Exile then LoseLifeTargetController(3), GainLife(Controller,3)",
+            "core_dependency_ids": []
+          },
+          "actual_definition_proof_refs": [
+            "defeat_counter"
+          ],
+          "coverage": "complete_existing_baseline_outcomes",
+          "missing_outcomes": []
+        },
+        {
+          "printed": {
+            "kind": "printed_rules",
+            "face": "Inevitable Defeat",
+            "oracle_text": "Exile target nonland permanent. Its controller loses 3 life and you gain 3 life.",
+            "mapped_support_and_risk": "Existing uncounterable complete Spell, nonland target Exile then LoseLifeTargetController(3), GainLife(Controller,3)",
+            "core_dependency_ids": []
+          },
+          "actual_definition_proof_refs": [
+            "defeat_result",
+            "defeat_targets"
+          ],
+          "coverage": "complete_existing_baseline_outcomes",
+          "missing_outcomes": []
+        }
+      ],
+      "concrete_missing_outcomes": [],
+      "prior_audit_scenarios": [
+        "Read tests/legacy/assurance/requested_inevitable_defeat.rs: controller-vs-owner, land rejection, stale target no life changes, Cancel cannot counter"
+      ],
+      "new_completion_counted": true
+    },
+    {
+      "name": "Island",
+      "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
+      "oracle_facts_sha256": "9663433a19f0b70520d2598600be1ddac39dd97fd02f80811dcce06dd0cbaf26",
+      "oracle_facts": {
+        "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
+        "name": "Island",
+        "layout": "normal",
+        "mana_cost": "",
+        "cmc": 0.0,
+        "type_line": "Basic Land \u2014 Island",
+        "oracle_text": "({T}: Add {U}.)",
+        "colors": [],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [],
+        "produced_mana": [
+          "U"
+        ],
+        "reference_printing": {
+          "id": "d8184e92-54e6-4ddc-86e8-67f5c5eb079d",
+          "set": "fra",
+          "collector_number": "283",
+          "released_at": "2026-10-02"
+        }
+      },
+      "java_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/cards/basiclands/Island.java",
+          "sha256": "5a9765a9f49e22aa89884834780c0cd7c8e2cc8696daab1d841fd13f40c58c96",
+          "complete_class_read": true,
+          "working_blob_hash_verified": true
+        }
+      ],
+      "definitions": [
+        {
+          "path": "src/card_definitions/fra/island.rs",
+          "current_sha256": "ad6b97346d65b3aa292bb56be0e3874f685619a9790db24232c98212d72d933c",
+          "baseline_sha256": "ad6b97346d65b3aa292bb56be0e3874f685619a9790db24232c98212d72d933c",
+          "matches_baseline": true,
+          "category": "physical",
+          "index": 1,
+          "provenance": {
+            "path": "src/card_definitions/fra/island.json",
+            "current_sha256": "74de7a41c38e24a467bbceb79124171880f66df4fcd59b88309fdb97a716e4d7",
+            "baseline_sha256": "74de7a41c38e24a467bbceb79124171880f66df4fcd59b88309fdb97a716e4d7",
+            "matches_baseline": true
+          }
+        }
+      ],
+      "proof_status": "Accepted actual whole-card baseline proof, identical definition/provenance/tests and passing current approved engine native execution",
+      "proof_refs": [
+        "basic_mana",
+        "basic_deck"
+      ],
+      "printed_obligations": [
+        {
+          "printed": {
+            "kind": "header",
+            "face": "Island",
+            "mana_cost": "",
+            "type_line": "Basic Land \u2014 Island",
+            "power": null,
+            "toughness": null
+          },
+          "actual_definition_proof_refs": [
+            "basic_mana",
+            "basic_deck"
+          ],
+          "coverage": "complete_existing_baseline_outcomes",
+          "missing_outcomes": []
+        },
+        {
+          "printed": {
+            "kind": "printed_rules",
+            "face": "Island",
+            "oracle_text": "({T}: Add {U}.)",
+            "mapped_support_and_risk": "Existing basic Island land, unlimited deck copies, intrinsic basic-land subtype mana provider; DFT inherited land tests",
+            "core_dependency_ids": []
+          },
+          "actual_definition_proof_refs": [
+            "basic_mana",
+            "basic_deck"
+          ],
+          "coverage": "complete_existing_baseline_outcomes",
+          "missing_outcomes": []
+        }
+      ],
+      "concrete_missing_outcomes": [],
+      "prior_audit_scenarios": [
+        "Play Island untapped and tap for exactly U",
+        "land-play quota",
+        "basic land text survives rules-appropriate type changes"
+      ],
+      "new_completion_counted": true
+    },
+    {
+      "name": "Jungle Hollow",
+      "oracle_id": "6de714e1-446d-4fb9-9e3d-bcd3ec6af9ca",
+      "oracle_facts_sha256": "c55f4acd0a02e4f4e57bf9b2800abc6cf6f49a36ccf82e6177936f917cb36f14",
+      "oracle_facts": {
+        "oracle_id": "6de714e1-446d-4fb9-9e3d-bcd3ec6af9ca",
+        "name": "Jungle Hollow",
+        "layout": "normal",
+        "mana_cost": "",
+        "cmc": 0.0,
+        "type_line": "Land",
+        "oracle_text": "This land enters tapped.\nWhen this land enters, you gain 1 life.\n{T}: Add {B} or {G}.",
+        "colors": [],
+        "color_identity": [
+          "B",
+          "G"
+        ],
+        "keywords": [],
+        "produced_mana": [
+          "B",
+          "G"
+        ],
+        "reference_printing": {
+          "id": "ea13440b-3f7b-4182-9541-27c1fa3121e5",
+          "set": "tdm",
+          "collector_number": "258",
+          "released_at": "2025-04-11"
+        }
+      },
+      "java_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage.Sets/src/mage/cards/j/JungleHollow.java",
+          "sha256": "231aa74231e6b0f1835e2f5508c0fa55e3d6fe8c339ebbb068888f71207b1108",
+          "complete_class_read": true,
+          "working_blob_hash_verified": true
+        }
+      ],
+      "definitions": [
+        {
+          "path": "src/card_definitions/tdm/jungle_hollow.rs",
+          "current_sha256": "3a3527eebb054ff62887f97590ec112dee2ce6e9b3950dbf6188d569e16bb1a3",
+          "baseline_sha256": "3a3527eebb054ff62887f97590ec112dee2ce6e9b3950dbf6188d569e16bb1a3",
+          "matches_baseline": true,
+          "category": "physical",
+          "index": 2299,
+          "provenance": {
+            "path": "src/card_definitions/tdm/jungle_hollow.json",
+            "current_sha256": "6ca45a8bdc2dde963bfbff38205e5b598d40ce1d5cd1b87d07745b02fb0d5428",
+            "baseline_sha256": "6ca45a8bdc2dde963bfbff38205e5b598d40ce1d5cd1b87d07745b02fb0d5428",
+            "matches_baseline": true
+          }
+        }
+      ],
+      "proof_status": "Accepted actual whole-card baseline proof, identical definition/provenance/tests and passing current approved engine native execution",
+      "proof_refs": [
+        "gainland"
+      ],
+      "printed_obligations": [
+        {
+          "printed": {
+            "kind": "header",
+            "face": "Jungle Hollow",
+            "mana_cost": "",
+            "type_line": "Land",
+            "power": null,
+            "toughness": null
+          },
+          "actual_definition_proof_refs": [
+            "gainland"
+          ],
+          "coverage": "complete_existing_baseline_outcomes",
+          "missing_outcomes": []
+        },
+        {
+          "printed": {
+            "kind": "printed_rules",
+            "face": "Jungle Hollow",
+            "oracle_text": "This land enters tapped.",
+            "mapped_support_and_risk": "Existing tapped entry, ETB Gain1, tap mana choice B/G; DFT inherited land scenarios",
+            "core_dependency_ids": []
+          },
+          "actual_definition_proof_refs": [
+            "gainland"
+          ],
+          "coverage": "complete_existing_baseline_outcomes",
+          "missing_outcomes": []
+        },
+        {
+          "printed": {
+            "kind": "printed_rules",
+            "face": "Jungle Hollow",
+            "oracle_text": "When this land enters, you gain 1 life.",
+            "mapped_support_and_risk": "Existing tapped entry, ETB Gain1, tap mana choice B/G; DFT inherited land scenarios",
+            "core_dependency_ids": []
+          },
+          "actual_definition_proof_refs": [
+            "gainland"
+          ],
+          "coverage": "complete_existing_baseline_outcomes",
+          "missing_outcomes": []
+        },
+        {
+          "printed": {
+            "kind": "printed_rules",
+            "face": "Jungle Hollow",
+            "oracle_text": "{T}: Add {B} or {G}.",
+            "mapped_support_and_risk": "Existing tapped entry, ETB Gain1, tap mana choice B/G; DFT inherited land scenarios",
+            "core_dependency_ids": []
+          },
+          "actual_definition_proof_refs": [
+            "gainland"
+          ],
+          "coverage": "complete_existing_baseline_outcomes",
+          "missing_outcomes": []
+        }
+      ],
+      "concrete_missing_outcomes": [],
+      "prior_audit_scenarios": [
+        "Actual land play enters tapped then one life",
+        "next turn chooses B or G",
+        "no double production or loss of entry trigger on future bounce/replay"
+      ],
+      "new_completion_counted": true
+    },
+    {
+      "name": "Mountain",
+      "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+      "oracle_facts_sha256": "dc8fd7c2b9340114200a1478f7e78bc91e28a0949ef1353a3bb0b2e39e65f366",
+      "oracle_facts": {
+        "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+        "name": "Mountain",
+        "layout": "normal",
+        "mana_cost": "",
+        "cmc": 0.0,
+        "type_line": "Basic Land \u2014 Mountain",
+        "oracle_text": "({T}: Add {R}.)",
+        "colors": [],
+        "color_identity": [
+          "R"
+        ],
+        "keywords": [],
+        "produced_mana": [
+          "R"
+        ],
+        "reference_printing": {
+          "id": "16671d98-6f00-477b-a010-d2905c94eb65",
+          "set": "fra",
+          "collector_number": "287",
+          "released_at": "2026-10-02"
+        }
+      },
+      "java_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/cards/basiclands/Mountain.java",
+          "sha256": "be959d0f5a3db621a31d32104ae445a033cd10907a237a4f8630b3457df13a73",
+          "complete_class_read": true,
+          "working_blob_hash_verified": true
+        }
+      ],
+      "definitions": [
+        {
+          "path": "src/card_definitions/fra/mountain.rs",
+          "current_sha256": "ad6b97346d65b3aa292bb56be0e3874f685619a9790db24232c98212d72d933c",
+          "baseline_sha256": "ad6b97346d65b3aa292bb56be0e3874f685619a9790db24232c98212d72d933c",
+          "matches_baseline": true,
+          "category": "physical",
+          "index": 3,
+          "provenance": {
+            "path": "src/card_definitions/fra/mountain.json",
+            "current_sha256": "8d43431f37447fc576e0f02398e948bea3bb502238838285907623a52a6824de",
+            "baseline_sha256": "8d43431f37447fc576e0f02398e948bea3bb502238838285907623a52a6824de",
+            "matches_baseline": true
+          }
+        }
+      ],
+      "proof_status": "Accepted actual whole-card baseline proof, identical definition/provenance/tests and passing current approved engine native execution",
+      "proof_refs": [
+        "basic_mana",
+        "basic_deck"
+      ],
+      "printed_obligations": [
+        {
+          "printed": {
+            "kind": "header",
+            "face": "Mountain",
+            "mana_cost": "",
+            "type_line": "Basic Land \u2014 Mountain",
+            "power": null,
+            "toughness": null
+          },
+          "actual_definition_proof_refs": [
+            "basic_mana",
+            "basic_deck"
+          ],
+          "coverage": "complete_existing_baseline_outcomes",
+          "missing_outcomes": []
+        },
+        {
+          "printed": {
+            "kind": "printed_rules",
+            "face": "Mountain",
+            "oracle_text": "({T}: Add {R}.)",
+            "mapped_support_and_risk": "Existing basic Mountain land and intrinsic R provider; unlimited deck copies",
+            "core_dependency_ids": []
+          },
+          "actual_definition_proof_refs": [
+            "basic_mana",
+            "basic_deck"
+          ],
+          "coverage": "complete_existing_baseline_outcomes",
+          "missing_outcomes": []
+        }
+      ],
+      "concrete_missing_outcomes": [],
+      "prior_audit_scenarios": [
+        "Land play untapped",
+        "tap exactly R",
+        "turn land quota",
+        "actual paid use"
+      ],
+      "new_completion_counted": true
+    },
+    {
+      "name": "Plains",
+      "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
+      "oracle_facts_sha256": "a46fdb7aed01739b4f3c48497e4bf8b5ded78b5a5cf67d3fe57a045f47ee35c1",
+      "oracle_facts": {
+        "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
+        "name": "Plains",
+        "layout": "normal",
+        "mana_cost": "",
+        "cmc": 0.0,
+        "type_line": "Basic Land \u2014 Plains",
+        "oracle_text": "({T}: Add {W}.)",
+        "colors": [],
+        "color_identity": [
+          "W"
+        ],
+        "keywords": [],
+        "produced_mana": [
+          "W"
+        ],
+        "reference_printing": {
+          "id": "a4eaecb8-066a-4c72-aa5d-5ed0614ba537",
+          "set": "fra",
+          "collector_number": "281",
+          "released_at": "2026-10-02"
+        }
+      },
+      "java_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/cards/basiclands/Plains.java",
+          "sha256": "da74b1b93697ec78ec2fc7665715f40c60e393e43845b88c8f5c491bc38c8eaf",
+          "complete_class_read": true,
+          "working_blob_hash_verified": true
+        }
+      ],
+      "definitions": [
+        {
+          "path": "src/card_definitions/fra/plains.rs",
+          "current_sha256": "ad6b97346d65b3aa292bb56be0e3874f685619a9790db24232c98212d72d933c",
+          "baseline_sha256": "ad6b97346d65b3aa292bb56be0e3874f685619a9790db24232c98212d72d933c",
+          "matches_baseline": true,
+          "category": "physical",
+          "index": 0,
+          "provenance": {
+            "path": "src/card_definitions/fra/plains.json",
+            "current_sha256": "fe38a2fc2a6b28075e6a3fc91bf313680348e6eb73a5d0893a7965c15ec0c2a0",
+            "baseline_sha256": "fe38a2fc2a6b28075e6a3fc91bf313680348e6eb73a5d0893a7965c15ec0c2a0",
+            "matches_baseline": true
+          }
+        }
+      ],
+      "proof_status": "Accepted actual whole-card baseline proof, identical definition/provenance/tests and passing current approved engine native execution",
+      "proof_refs": [
+        "basic_mana",
+        "basic_deck"
+      ],
+      "printed_obligations": [
+        {
+          "printed": {
+            "kind": "header",
+            "face": "Plains",
+            "mana_cost": "",
+            "type_line": "Basic Land \u2014 Plains",
+            "power": null,
+            "toughness": null
+          },
+          "actual_definition_proof_refs": [
+            "basic_mana",
+            "basic_deck"
+          ],
+          "coverage": "complete_existing_baseline_outcomes",
+          "missing_outcomes": []
+        },
+        {
+          "printed": {
+            "kind": "printed_rules",
+            "face": "Plains",
+            "oracle_text": "({T}: Add {W}.)",
+            "mapped_support_and_risk": "Existing basic Plains unlimited land and intrinsic W",
+            "core_dependency_ids": []
+          },
+          "actual_definition_proof_refs": [
+            "basic_mana",
+            "basic_deck"
+          ],
+          "coverage": "complete_existing_baseline_outcomes",
+          "missing_outcomes": []
+        }
+      ],
+      "concrete_missing_outcomes": [],
+      "prior_audit_scenarios": [
+        "Actual land entry untapped",
+        "tap exactly W",
+        "land count/deck limit"
+      ],
+      "new_completion_counted": true
+    },
+    {
+      "name": "Rugged Highlands",
+      "oracle_id": "6c922206-6e68-4dcd-9559-88da1074f2c4",
+      "oracle_facts_sha256": "229cf0320f309f152fce970274deb5cd20e5eabedf38738216ad6abefc770e3b",
+      "oracle_facts": {
+        "oracle_id": "6c922206-6e68-4dcd-9559-88da1074f2c4",
+        "name": "Rugged Highlands",
+        "layout": "normal",
+        "mana_cost": "",
+        "cmc": 0.0,
+        "type_line": "Land",
+        "oracle_text": "This land enters tapped.\nWhen this land enters, you gain 1 life.\n{T}: Add {R} or {G}.",
+        "colors": [],
+        "color_identity": [
+          "G",
+          "R"
+        ],
+        "keywords": [],
+        "produced_mana": [
+          "G",
+          "R"
+        ],
+        "reference_printing": {
+          "id": "31261eca-28ad-407c-84ef-0c124d0d7451",
+          "set": "tdm",
+          "collector_number": "265",
+          "released_at": "2025-04-11"
+        }
+      },
+      "java_sources": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage.Sets/src/mage/cards/r/RuggedHighlands.java",
+          "sha256": "e1389891d0960047285f93457773914416ae896c48a64d0b8194a95dae4b57f7",
+          "complete_class_read": true,
+          "working_blob_hash_verified": true
+        }
+      ],
+      "definitions": [
+        {
+          "path": "src/card_definitions/tdm/rugged_highlands.rs",
+          "current_sha256": "effa326ceb19584e39db1b092955154a71190ad3b008404374890d5e42ed759d",
+          "baseline_sha256": "effa326ceb19584e39db1b092955154a71190ad3b008404374890d5e42ed759d",
+          "matches_baseline": true,
+          "category": "physical",
+          "index": 3611,
+          "provenance": {
+            "path": "src/card_definitions/tdm/rugged_highlands.json",
+            "current_sha256": "7fe4fbdfc91c6be60103adf48433ab4c8bdf3b05fe666068dc5a72ad80a41060",
+            "baseline_sha256": "7fe4fbdfc91c6be60103adf48433ab4c8bdf3b05fe666068dc5a72ad80a41060",
+            "matches_baseline": true
+          }
+        }
+      ],
+      "proof_status": "Accepted actual whole-card baseline proof, identical definition/provenance/tests and passing current approved engine native execution",
+      "proof_refs": [
+        "gainland"
+      ],
+      "printed_obligations": [
+        {
+          "printed": {
+            "kind": "header",
+            "face": "Rugged Highlands",
+            "mana_cost": "",
+            "type_line": "Land",
+            "power": null,
+            "toughness": null
+          },
+          "actual_definition_proof_refs": [
+            "gainland"
+          ],
+          "coverage": "complete_existing_baseline_outcomes",
+          "missing_outcomes": []
+        },
+        {
+          "printed": {
+            "kind": "printed_rules",
+            "face": "Rugged Highlands",
+            "oracle_text": "This land enters tapped.",
+            "mapped_support_and_risk": "Existing tapped land ETB Gain1 and tap R/G mana choice; DFT inherited land scenarios",
+            "core_dependency_ids": []
+          },
+          "actual_definition_proof_refs": [
+            "gainland"
+          ],
+          "coverage": "complete_existing_baseline_outcomes",
+          "missing_outcomes": []
+        },
+        {
+          "printed": {
+            "kind": "printed_rules",
+            "face": "Rugged Highlands",
+            "oracle_text": "When this land enters, you gain 1 life.",
+            "mapped_support_and_risk": "Existing tapped land ETB Gain1 and tap R/G mana choice; DFT inherited land scenarios",
+            "core_dependency_ids": []
+          },
+          "actual_definition_proof_refs": [
+            "gainland"
+          ],
+          "coverage": "complete_existing_baseline_outcomes",
+          "missing_outcomes": []
+        },
+        {
+          "printed": {
+            "kind": "printed_rules",
+            "face": "Rugged Highlands",
+            "oracle_text": "{T}: Add {R} or {G}.",
+            "mapped_support_and_risk": "Existing tapped land ETB Gain1 and tap R/G mana choice; DFT inherited land scenarios",
+            "core_dependency_ids": []
+          },
+          "actual_definition_proof_refs": [
+            "gainland"
+          ],
+          "coverage": "complete_existing_baseline_outcomes",
+          "missing_outcomes": []
+        }
+      ],
+      "concrete_missing_outcomes": [],
+      "prior_audit_scenarios": [
+        "Land enters tapped actual ETB gains1",
+        "untap then choose exactly R or G",
+        "bounce/replay triggers independently"
+      ],
+      "new_completion_counted": true
+    }
+  ],
+  "proofs": {
+    "basic_mana": {
+      "path": "tests/dft_colorless_cards_inherited_lands.rs",
+      "current_sha256": "1b59c57437fc93321116ec3921dd14a624cbfb7b949fbdc82246fbadda77db10",
+      "baseline_sha256": "1b59c57437fc93321116ec3921dd14a624cbfb7b949fbdc82246fbadda77db10",
+      "matches_baseline": true,
+      "function": "basic_lands_play_untapped_have_intrinsic_abilities_and_produce_exactly_their_color",
+      "native_case": "basic_lands_play_untapped_have_intrinsic_abilities_and_produce_exactly_their_color",
+      "native_report_index": 128,
+      "native_case_receipt": {
+        "test": "basic_lands_play_untapped_have_intrinsic_abilities_and_produce_exactly_their_color",
+        "status": "ok",
+        "exit": 0,
+        "binary": "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target/debug/deps/dft_colorless_cards_inherited_lands-28e5c410a6c945e3"
+      },
+      "native_case_receipt_sha256": "3cad48aacb49edf024cba2ff4b3f977762486e8d80cc3459763e3f165b70ba1c",
+      "assertions_inspected": "Both seats: real PlayLand enters untapped; intrinsic ability present; second land play rejected transactionally; TapMana produces exactly the independently hardcoded color and taps land; duplicate tap rejected.",
+      "full_function_read": true,
+      "proof_quality": "actual_actions_and_outcomes",
+      "current_engine_receipt": {
+        "test": "basic_lands_play_untapped_have_intrinsic_abilities_and_produce_exactly_their_color",
+        "status": "ok",
+        "exit": 0,
+        "binary": "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target/debug/deps/dft_colorless_cards_inherited_lands-28e5c410a6c945e3"
+      }
+    },
+    "basic_deck": {
+      "path": "tests/dft_colorless_cards_inherited_lands.rs",
+      "current_sha256": "1b59c57437fc93321116ec3921dd14a624cbfb7b949fbdc82246fbadda77db10",
+      "baseline_sha256": "1b59c57437fc93321116ec3921dd14a624cbfb7b949fbdc82246fbadda77db10",
+      "matches_baseline": true,
+      "function": "basic_land_deck_exemption_allows_sixty_copies_in_standard",
+      "native_case": "basic_land_deck_exemption_allows_sixty_copies_in_standard",
+      "native_report_index": 127,
+      "native_case_receipt": {
+        "test": "basic_land_deck_exemption_allows_sixty_copies_in_standard",
+        "status": "ok",
+        "exit": 0,
+        "binary": "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target/debug/deps/dft_colorless_cards_inherited_lands-28e5c410a6c945e3"
+      },
+      "native_case_receipt_sha256": "0939c1043da9a033d5f06bb6a36decf15b97bf938c36c75ade07332f44372125",
+      "assertions_inspected": "Each hardcoded basic identity forms a legal sixty-copy Standard deck for both seats.",
+      "full_function_read": true,
+      "proof_quality": "actual_actions_and_outcomes",
+      "current_engine_receipt": {
+        "test": "basic_land_deck_exemption_allows_sixty_copies_in_standard",
+        "status": "ok",
+        "exit": 0,
+        "binary": "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target/debug/deps/dft_colorless_cards_inherited_lands-28e5c410a6c945e3"
+      }
+    },
+    "gainland": {
+      "path": "tests/dft_colorless_cards_inherited_lands.rs",
+      "current_sha256": "1b59c57437fc93321116ec3921dd14a624cbfb7b949fbdc82246fbadda77db10",
+      "baseline_sha256": "1b59c57437fc93321116ec3921dd14a624cbfb7b949fbdc82246fbadda77db10",
+      "matches_baseline": true,
+      "function": "each_gainland_enters_tapped_gains_its_controller_one_life_then_produces_either_color",
+      "native_case": "each_gainland_enters_tapped_gains_its_controller_one_life_then_produces_either_color",
+      "native_report_index": 129,
+      "native_case_receipt": {
+        "test": "each_gainland_enters_tapped_gains_its_controller_one_life_then_produces_either_color",
+        "status": "ok",
+        "exit": 0,
+        "binary": "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target/debug/deps/dft_colorless_cards_inherited_lands-28e5c410a6c945e3"
+      },
+      "native_case_receipt_sha256": "d45fd3ba8ed47fc9075f83252c912bff43ff47b6a7c863d81d62424b2063c052",
+      "assertions_inspected": "Both seats and both hardcoded colors: real PlayLand enters tapped; life stays20 before trigger resolves then controller21/opponent20; tapped mana attempt rejected, after untap colorless rejected; actual activation produces exact chosen color/taps, second activation rejected.",
+      "full_function_read": true,
+      "proof_quality": "actual_actions_and_outcomes",
+      "current_engine_receipt": {
+        "test": "each_gainland_enters_tapped_gains_its_controller_one_life_then_produces_either_color",
+        "status": "ok",
+        "exit": 0,
+        "binary": "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target/debug/deps/dft_colorless_cards_inherited_lands-28e5c410a6c945e3"
+      }
+    },
+    "defeat_result": {
+      "path": "tests/legacy/assurance/requested_inevitable_defeat.rs",
+      "current_sha256": "9d6998acf85789cfb4c9f173466090c668fca00ee11a2ebe3ad10cc0a49bfeb2",
+      "baseline_sha256": "9d6998acf85789cfb4c9f173466090c668fca00ee11a2ebe3ad10cc0a49bfeb2",
+      "matches_baseline": true,
+      "function": "inevitable_defeat_exiles_and_uses_the_controllers_not_owners",
+      "native_case": "engine::assurance::requested_inevitable_defeat::inevitable_defeat_exiles_and_uses_the_controllers_not_owners",
+      "native_report_index": 2686,
+      "native_case_receipt": {
+        "test": "engine::assurance::requested_inevitable_defeat::inevitable_defeat_exiles_and_uses_the_controllers_not_owners",
+        "status": "ok",
+        "exit": 0,
+        "binary": "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target/debug/deps/legacy-49262b90621dc1a0"
+      },
+      "native_case_receipt_sha256": "b683771489fab94f2c4578a3950c0eababdc246414ccc863247c505ac3d97460",
+      "assertions_inspected": "Both seats: actual paid Inevitable Defeat exiles opponent-controlled/you-owned Bear Cub; caster gains3, target CONTROLLER loses3 independently of owner.",
+      "full_function_read": true,
+      "proof_quality": "actual_actions_and_outcomes",
+      "current_engine_receipt": {
+        "test": "engine::assurance::requested_inevitable_defeat::inevitable_defeat_exiles_and_uses_the_controllers_not_owners",
+        "status": "ok",
+        "exit": 0,
+        "binary": "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target/debug/deps/legacy-49262b90621dc1a0"
+      }
+    },
+    "defeat_targets": {
+      "path": "tests/legacy/assurance/requested_inevitable_defeat.rs",
+      "current_sha256": "9d6998acf85789cfb4c9f173466090c668fca00ee11a2ebe3ad10cc0a49bfeb2",
+      "baseline_sha256": "9d6998acf85789cfb4c9f173466090c668fca00ee11a2ebe3ad10cc0a49bfeb2",
+      "matches_baseline": true,
+      "function": "inevitable_defeat_rejects_land_and_fizzles_on_stale_target",
+      "native_case": "engine::assurance::requested_inevitable_defeat::inevitable_defeat_rejects_land_and_fizzles_on_stale_target",
+      "native_report_index": 2687,
+      "native_case_receipt": {
+        "test": "engine::assurance::requested_inevitable_defeat::inevitable_defeat_rejects_land_and_fizzles_on_stale_target",
+        "status": "ok",
+        "exit": 0,
+        "binary": "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target/debug/deps/legacy-49262b90621dc1a0"
+      },
+      "native_case_receipt_sha256": "135ba14d6262926ce31b0ea1fe5d180baac3d2f61966532bcc3172bf23290ff0",
+      "assertions_inspected": "Land target rejected with snapshot preserved; announced nonland target leaves and reenters; new incarnation remains battlefield and neither life total changes.",
+      "full_function_read": true,
+      "proof_quality": "actual_actions_and_outcomes",
+      "current_engine_receipt": {
+        "test": "engine::assurance::requested_inevitable_defeat::inevitable_defeat_rejects_land_and_fizzles_on_stale_target",
+        "status": "ok",
+        "exit": 0,
+        "binary": "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target/debug/deps/legacy-49262b90621dc1a0"
+      }
+    },
+    "defeat_counter": {
+      "path": "tests/legacy/assurance/requested_inevitable_defeat.rs",
+      "current_sha256": "9d6998acf85789cfb4c9f173466090c668fca00ee11a2ebe3ad10cc0a49bfeb2",
+      "baseline_sha256": "9d6998acf85789cfb4c9f173466090c668fca00ee11a2ebe3ad10cc0a49bfeb2",
+      "matches_baseline": true,
+      "function": "inevitable_defeat_resolves_through_counterspell",
+      "native_case": "engine::assurance::requested_inevitable_defeat::inevitable_defeat_resolves_through_counterspell",
+      "native_report_index": 2688,
+      "native_case_receipt": {
+        "test": "engine::assurance::requested_inevitable_defeat::inevitable_defeat_resolves_through_counterspell",
+        "status": "ok",
+        "exit": 0,
+        "binary": "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target/debug/deps/legacy-49262b90621dc1a0"
+      },
+      "native_case_receipt_sha256": "ec625813e2baacf767f0245b1afb020d77a66cf030e37ebc8f7945cd56322403",
+      "assertions_inspected": "Opponent casts actual Cancel at paid Inevitable Defeat; exile still resolves, proving uncounterability through an attempted counter.",
+      "full_function_read": true,
+      "proof_quality": "actual_actions_and_outcomes",
+      "current_engine_receipt": {
+        "test": "engine::assurance::requested_inevitable_defeat::inevitable_defeat_resolves_through_counterspell",
+        "status": "ok",
+        "exit": 0,
+        "binary": "/home/altf4/.cache/rustmage-authoring/tdm-complete-set/target/debug/deps/legacy-49262b90621dc1a0"
+      }
+    }
+  },
+  "current_native_report": "/home/altf4/.cache/rustmage-validation-c3slnby9/report/native.json",
+  "current_native_report_sha256": "fec913455cba78f0d7c35b236dc6d45510e05c82dfe2f8f143c4d1d831a70a88",
+  "terminal": true,
+  "success": true,
+  "whole_set_acceptance": false
+}

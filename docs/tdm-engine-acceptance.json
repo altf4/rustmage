@@ -235,5 +235,7 @@
     "Measured set-workload throughput and final README verified progress",
     "Final full release validation on completed-set executable inputs",
     "Exactly one completed-set PR and two fresh independent nonauthor final published-PR-head reviews"
-  ]
+  ],
+  "current_engine_checkpoint": "docs/tdm-engine83-acceptance.json",
+  "historical_scope": "Original81-group accepted checkpoint retained verbatim as historical evidence; current83-group approved source is documented in current_engine_checkpoint."
 }

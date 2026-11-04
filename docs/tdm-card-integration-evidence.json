@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "engine_revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+  "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
   "status": "whole-set acceptance pending",
-  "locally_verified_cards": 71,
+  "locally_verified_cards": 77,
   "newly_implemented": 37,
-  "previously_admitted_verified": 34,
+  "previously_admitted_verified": 40,
   "integrations": [
     {
       "source_commits": [
@@ -117,16 +117,36 @@
           "execution_seconds": 0.035161960986442864
         }
       ]
+    },
+    {
+      "source_change": "none; unchanged existing definitions and source hashes",
+      "evidence": "docs/tdm-existing-g-s-six-evidence.json",
+      "previously_admitted_verified": 6,
+      "names": [
+        "Inevitable Defeat",
+        "Island",
+        "Jungle Hollow",
+        "Mountain",
+        "Plains",
+        "Rugged Highlands"
+      ],
+      "validation": {
+        "report": "/home/altf4/.cache/rustmage-validation-c3slnby9/report/native.json",
+        "sha256": "fec913455cba78f0d7c35b236dc6d45510e05c82dfe2f8f143c4d1d831a70a88",
+        "terminal": true,
+        "success": true,
+        "basis": "Reused actual definition-specific outcomes from accepted current full native run, not catalogue/admission/trace checks."
+      }
     }
   ],
-  "remaining_physical_cards": 205,
+  "remaining_physical_cards": 199,
   "source_verification": {
     "definitions": 5488,
     "source_blobs": 2560,
     "java_verified": true,
     "catalogue_version": "73a964457b0b982380ca2c75ddce5e3c392f7b06294a8c526e49875433e119fe"
   },
-  "active_engine_dependency": "Engine82/83 fixes pass focused contracts/Clippy; schema201 trace migration/full release/final independent reviews/cache warm pending. General card authors held.",
+  "active_engine_dependency": "None currently. Engine82/83 fully validated and independently approved; three guarded author caches warmed and card authors released.",
   "engine83_card_repair": {
     "card": "Aggressive Negotiations",
     "reason": "Restored after dedicated true nonland predicate rejects artifact/enchantment lands; mandatory reveal/exact refs/source-independent exile/counter continuation/owned branches verified.",
@@ -136,5 +156,6 @@
     "admitted_all_a_g_cases": 39,
     "schema_report": "<cache>/rustmage-tdm/schema201-first/native.json",
     "schema_cases": 4
-  }
+  },
+  "engine_acceptance": "docs/tdm-engine83-acceptance.json"
 }
