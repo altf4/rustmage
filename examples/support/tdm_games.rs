@@ -1306,7 +1306,11 @@ fn run_one(
             let action = actions[index].clone();
             ensure(
                 !matches!(action, Action::Concede),
-                "policy selected concession; refusing artificial terminal",
+                &format!(
+                    "{} decision{decisions}: policy selected concession; refusing artificial terminal; offered{offered:?}; observation{:?}",
+                    case.id(),
+                    game.observe(actor)
+                ),
             )?;
             match action {
                 Action::Attack { card } | Action::AttackPlaneswalker { card, .. } => {

@@ -1495,6 +1495,14 @@
     "journal": "1c41fdead70727d2",
     "observations": "1c8d8b884aac0851"
   },
+  "Awaken the Honored Dead": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "8395d2afa40bc8aa",
+    "observations": "551de89e0856d63b"
+  },
   "Awaken the Inferno": {
     "root": "main",
     "status": "completed",
@@ -3815,6 +3823,14 @@
     "journal": "fa023aad863dc9ad",
     "observations": "9be3c7049dd860d6"
   },
+  "Clarion Conqueror": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "3ad6d4893695dc9c",
+    "observations": "40509c0f6296cc10"
+  },
   "Clash of Elements": {
     "root": "main",
     "status": "completed",
@@ -4279,6 +4295,14 @@
     "journal": "c8b93c56dc817f4b",
     "observations": "ad3d68745e85180e"
   },
+  "Corroding Dragonstorm": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 8,
+    "zone": "Battlefield",
+    "journal": "e0a0cd01e53ebd22",
+    "observations": "17920cc5d05aee29"
+  },
   "Corrupt Court Official": {
     "root": "main",
     "status": "completed",
@@ -4446,6 +4470,14 @@
     "zone": "Battlefield",
     "journal": "546cd5d5184489d0",
     "observations": "de5c128622f4edf2"
+  },
+  "Craterhoof Behemoth": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "ca0416211f8c22d1",
+    "observations": "e04a6b214f17c4b8"
   },
   "Crawling Barrens": {
     "root": "main",
@@ -5127,6 +5159,14 @@
     "journal": "cae04a053f7a57f6",
     "observations": "d89a6ac338fa9dc5"
   },
+  "Delta Bloodflies": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "a4c714aeb662e85f",
+    "observations": "46efcba4471105ae"
+  },
   "Deluge Virtuoso": {
     "root": "main",
     "status": "completed",
@@ -5447,6 +5487,14 @@
     "journal": "17b1007f413b3222",
     "observations": "6a004b86658fa9ed"
   },
+  "Dispelling Exhale": {
+    "root": "stack",
+    "status": "completed",
+    "decisions": 9,
+    "zone": "Graveyard",
+    "journal": "e5ba53fdcda58277",
+    "observations": "2c2564678dbd62cb"
+  },
   "Disruptive Stormbrood": {
     "root": "main",
     "status": "completed",
@@ -5687,6 +5735,14 @@
     "journal": "6ff5f9d117732cc9",
     "observations": "12b7fca67dee5c74"
   },
+  "Dracogenesis": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "a3fc7f3dbc1cfe13",
+    "observations": "64f561b21342b873"
+  },
   "Draconautics Engineer": {
     "root": "main",
     "status": "completed",
@@ -5767,6 +5823,30 @@
     "journal": "1ee756735d2f017d",
     "observations": "58324412794f146a"
   },
+  "Dragonbroods' Relic": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "100cb581dd613f1f",
+    "observations": "5d8f0c9c3668d626"
+  },
+  "Dragonclaw Strike": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Graveyard",
+    "journal": "d20a64b693771d5d",
+    "observations": "58528cf45ee75ad1"
+  },
+  "Dragonfire Blade": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "ae05947724786c5e",
+    "observations": "0c04dec24c0cc07e"
+  },
   "Dragonlord's Servant": {
     "root": "main",
     "status": "completed",
@@ -5783,6 +5863,14 @@
     "journal": "c4b8f6d37ca7169e",
     "observations": "bb154c59467fdd38"
   },
+  "Dragonologist": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "194eeacfbdd2b41e",
+    "observations": "e3746144c75f46aa"
+  },
   "Dragonstorm Forecaster": {
     "root": "main",
     "status": "completed",
@@ -5790,6 +5878,14 @@
     "zone": "Battlefield",
     "journal": "77fe8ec276f5ddde",
     "observations": "21265a67c5ebec92"
+  },
+  "Dragonstorm Globe": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "903e360914c6c94c",
+    "observations": "72568acfef88d0bf"
   },
   "Dragoon's Lance": {
     "root": "main",
@@ -6543,6 +6639,14 @@
     "journal": "b43781f2834dd88f",
     "observations": "992d51c46adc0862"
   },
+  "Embermouth Sentinel": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 8,
+    "zone": "Battlefield",
+    "journal": "9bf7ca28b369b821",
+    "observations": "fd7d3f245546bafa"
+  },
   "Embrace Oblivion": {
     "root": "main",
     "status": "completed",
@@ -6654,6 +6758,14 @@
     "zone": "Battlefield",
     "journal": "5a37305467443acc",
     "observations": "c3e1bf070ca65c14"
+  },
+  "Encroaching Dragonstorm": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "d60ec2735f3f1a3a",
+    "observations": "b7372bd3e577bb59"
   },
   "End of the Hunt": {
     "root": "main",
@@ -6839,6 +6951,14 @@
     "journal": "90b1693d8273ac1b",
     "observations": "2a5a129bb1d1d446"
   },
+  "Eshki Dragonclaw": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "1c0ebb9e04670e5f",
+    "observations": "5c4a166de28276ea"
+  },
   "Esoteric Duplicator": {
     "root": "main",
     "status": "completed",
@@ -6854,6 +6974,14 @@
     "zone": "Graveyard",
     "journal": "c4e789204bc24d92",
     "observations": "994be032761af65f"
+  },
+  "Essence Anchor": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "5a37305467443acc",
+    "observations": "f8da1c0ebabffcfd"
   },
   "Essence Burn": {
     "root": "main",
@@ -7231,6 +7359,14 @@
     "journal": "8d00234c0048aa38",
     "observations": "31ca5fb24b83a576"
   },
+  "Fangkeeper's Familiar": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 10,
+    "zone": "Battlefield",
+    "journal": "99b6af4d50c538a2",
+    "observations": "e227f21ad14655a6"
+  },
   "Far Fortune, End Boss": {
     "root": "main",
     "status": "completed",
@@ -7446,6 +7582,14 @@
     "zone": "Graveyard",
     "journal": "4aa0aeec428dd0f1",
     "observations": "1f2b9ec57af356f6"
+  },
+  "Felothar, Dawn of the Abzan": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "c4fb72a1d9da5f3d",
+    "observations": "9a485670433caf02"
   },
   "Feral Deathgorger": {
     "root": "main",
@@ -7703,6 +7847,14 @@
     "journal": "b43781f2834dd88f",
     "observations": "b9e93c427351e57d"
   },
+  "Flamehold Grappler": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "154fbfab34ca4dbe",
+    "observations": "59fa6e3c219707a6"
+  },
   "Flamekin Gildweaver": {
     "root": "main",
     "status": "completed",
@@ -7742,6 +7894,14 @@
     "zone": "Graveyard",
     "journal": "a473b4d0d5d9886c",
     "observations": "4fcca3f1ea05901f"
+  },
+  "Fleeting Effigy": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "c4b8f6d37ca7169e",
+    "observations": "11b313a99a59f2c2"
   },
   "Fleeting Flight": {
     "root": "main",
@@ -7950,6 +8110,14 @@
     "zone": "Battlefield",
     "journal": "e3820948a05a4b31",
     "observations": "33d1d7e1a395475d"
+  },
+  "Formation Breaker": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "100cb581dd613f1f",
+    "observations": "195cd22c3054d21a"
   },
   "Formidable Commons": {
     "root": "main",
@@ -8175,6 +8343,14 @@
     "journal": "ce93789b5fa64c9f",
     "observations": "1c9976e52e8c0aa0"
   },
+  "Frostcliff Siege": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Battlefield",
+    "journal": "a8d36ee676ccc83b",
+    "observations": "f348ce4d93d2dbf5"
+  },
   "Frozen in Ice": {
     "root": "main",
     "status": "completed",
@@ -8230,6 +8406,14 @@
     "zone": "Battlefield",
     "journal": "b5aa868ba423a3c3",
     "observations": "1f423944ef31b302"
+  },
+  "Furious Forebear": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "ce93789b5fa64c9f",
+    "observations": "832e7c83d5ab3304"
   },
   "Futurist Forge": {
     "root": "main",
@@ -8847,6 +9031,14 @@
     "journal": "adcea180f71f0045",
     "observations": "29f8e88f80b9ad4f"
   },
+  "Glacial Dragonhunt": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "ba5a872384e2c94b",
+    "observations": "414bc48e0cb844bb"
+  },
   "Glacier Godmaw": {
     "root": "main",
     "status": "completed",
@@ -8854,6 +9046,14 @@
     "zone": "Battlefield",
     "journal": "65f433d327ab80a8",
     "observations": "b446b281506824cb"
+  },
+  "Glacierwood Siege": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Battlefield",
+    "journal": "4427712d6f90ebab",
+    "observations": "b5a74bb9a32377db"
   },
   "Gladiolus Amicitia": {
     "root": "main",
@@ -18575,6 +18775,14 @@
     "journal": "b3e9111ecff18a9c",
     "observations": "787d86225aba96d2"
   },
+  "Sage of the Skies": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "3ad6d4893695dc9c",
+    "observations": "55e7dc756c79dbc6"
+  },
   "Sage's Nouliths": {
     "root": "main",
     "status": "completed",
@@ -18638,6 +18846,14 @@
     "zone": "Battlefield",
     "journal": "d6009dde0ebfb23e",
     "observations": "3877fa6772407bd8"
+  },
+  "Salt Road Skirmish": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "89f55824ce2c1087",
+    "observations": "4bb147bbdabbdb66"
   },
   "Salvation Engine": {
     "root": "main",
@@ -18806,6 +19022,14 @@
     "zone": "Graveyard",
     "journal": "82ee6f4e314292fe",
     "observations": "7943af325122626d"
+  },
+  "Sarkhan, Dragon Ascendant": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "ad67e9c08e12b91b",
+    "observations": "eb290535cf5912a0"
   },
   "Savage Land Dinosaur": {
     "root": "main",
@@ -19319,6 +19543,14 @@
     "journal": "4673228c6cf0304d",
     "observations": "1f1e5dc8a6362ead"
   },
+  "Severance Priest": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 8,
+    "zone": "Battlefield",
+    "journal": "eccefb07e5a16dbd",
+    "observations": "6b56a864df04a343"
+  },
   "Shadowy Backstreet": {
     "root": "main",
     "status": "completed",
@@ -19430,6 +19662,14 @@
     "zone": "Battlefield",
     "journal": "be2da01652de6859",
     "observations": "4fe702c3f2101378"
+  },
+  "Shiko, Paragon of the Way": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 8,
+    "zone": "Battlefield",
+    "journal": "03589cf062930eaa",
+    "observations": "f3edf2ae51fdbe7c"
   },
   "Shimmercreep": {
     "root": "main",
@@ -19590,6 +19830,22 @@
     "zone": "Battlefield",
     "journal": "b6cf3749b9ab6fcf",
     "observations": "4dc90a7ad3e1adb8"
+  },
+  "Sibsig Appraiser": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 8,
+    "zone": "Battlefield",
+    "journal": "ac36c45648ed291a",
+    "observations": "767be1cf258bdc0a"
+  },
+  "Sidisi, Regent of the Mire": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "a4c714aeb662e85f",
+    "observations": "fb48abbdb42dff9e"
   },
   "Silence the Echo": {
     "root": "main",
@@ -19983,6 +20239,14 @@
     "journal": "fdec9d219b268ea0",
     "observations": "30bfc16534036dca"
   },
+  "Smile at Death": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "157c935ef8d4f416",
+    "observations": "8b8acda3de094e97"
+  },
   "Snakeskin Veil": {
     "root": "main",
     "status": "completed",
@@ -20118,6 +20382,22 @@
     "zone": "Graveyard",
     "journal": "9739756acf20ed4a",
     "observations": "c676e677226b405e"
+  },
+  "Songcrafter Mage": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "a2a4087bde754050",
+    "observations": "32d4e5054050d72c"
+  },
+  "Sonic Shrieker": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 8,
+    "zone": "Battlefield",
+    "journal": "f7bfec7c1e0ed281",
+    "observations": "4c2973576e9289a4"
   },
   "Sorcerous Spyglass": {
     "root": "main",
@@ -20647,6 +20927,14 @@
     "journal": "797c571123bdae8d",
     "observations": "12134f370dfb566d"
   },
+  "Stalwart Successor": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "802adcf65e36569e",
+    "observations": "76d0dae5ab7c7f8a"
+  },
   "Stampeding Scurryfoot": {
     "root": "main",
     "status": "completed",
@@ -20710,6 +20998,14 @@
     "zone": "Battlefield",
     "journal": "3ae5728a7b27749e",
     "observations": "6e4038245df9dda8"
+  },
+  "Starry-Eyed Skyrider": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "3ad6d4893695dc9c",
+    "observations": "fbaaca2ae26d1c7e"
   },
   "Starscape Cleric": {
     "root": "main",
@@ -20846,6 +21142,14 @@
     "zone": "Battlefield",
     "journal": "17597f5a0f41a3ff",
     "observations": "1b0286b6b6900f3a"
+  },
+  "Stillness in Motion": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b6cf3749b9ab6fcf",
+    "observations": "30925d44fed8e9d7"
   },
   "Sting, Bilbo's Sword": {
     "root": "main",
@@ -21095,6 +21399,14 @@
     "journal": "fa7acc0a2d642341",
     "observations": "be2b1f6ea59463f8"
   },
+  "Stormscale Scion": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "0653fadb625ba641",
+    "observations": "22aef938f615ad54"
+  },
   "Stormshriek Feral": {
     "root": "main",
     "status": "completed",
@@ -21255,6 +21567,14 @@
     "journal": "100cb581dd613f1f",
     "observations": "96babd64a449bd73"
   },
+  "Sultai Monument": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "c9d6f23ee57cb4aa",
+    "observations": "cbc188f2488966cf"
+  },
   "Summit Intimidator": {
     "root": "main",
     "status": "completed",
@@ -21414,6 +21734,14 @@
     "zone": "Battlefield",
     "journal": "1c41fdead70727d2",
     "observations": "794bd5fbc577ea4b"
+  },
+  "Sunpearl Kirin": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "27ecaa27c5145c96",
+    "observations": "b06aa8188611e68a"
   },
   "Sunset Saboteur": {
     "root": "main",
@@ -21719,6 +22047,14 @@
     "journal": "4324aa4c9fd9325c",
     "observations": "51771b1eab8a5098"
   },
+  "Synchronized Charge": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Graveyard",
+    "journal": "099910b5e1d19c9c",
+    "observations": "4af4944aec6c085d"
+  },
   "Syncopate": {
     "root": "stack",
     "status": "completed",
@@ -21782,6 +22118,14 @@
     "zone": "Battlefield",
     "journal": "fa023aad863dc9ad",
     "observations": "c178f6105d6e3842"
+  },
+  "Taigam, Master Opportunist": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b6cf3749b9ab6fcf",
+    "observations": "425fbcbeb2a0001e"
   },
   "Tajuru Pathwarden": {
     "root": "main",
@@ -21943,6 +22287,14 @@
     "journal": "c4b8f6d37ca7169e",
     "observations": "d5b02d011afcb3f8"
   },
+  "Teeming Dragonstorm": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "780f65636d4e504d",
+    "observations": "2290a32846439ef2"
+  },
   "Tempest Angler": {
     "root": "main",
     "status": "completed",
@@ -21966,6 +22318,14 @@
     "zone": "Battlefield",
     "journal": "60609359dae9f3fd",
     "observations": "63c70e017ed409e8"
+  },
+  "Tempest Hawk": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "3ad6d4893695dc9c",
+    "observations": "3ed287e32cc62f24"
   },
   "Temple Garden": {
     "root": "main",
@@ -22055,6 +22415,14 @@
     "journal": "bb652b9252f64f35",
     "observations": "b50a99038d432909"
   },
+  "Temur Battlecrier": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "f536a95b639bfdae",
+    "observations": "544c0456448eee65"
+  },
   "Temur Devotee": {
     "root": "main",
     "status": "completed",
@@ -22062,6 +22430,14 @@
     "zone": "Battlefield",
     "journal": "b6cf3749b9ab6fcf",
     "observations": "80ad6f4ff2dc3ca7"
+  },
+  "Temur Monument": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "c9d6f23ee57cb4aa",
+    "observations": "2e0508f85b69b430"
   },
   "Temur Tawnyback": {
     "root": "main",
@@ -22151,6 +22527,14 @@
     "journal": "609a07b0c616ce70",
     "observations": "497db0299fa19da2"
   },
+  "Tersa Lightshatter": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "27a14919057c842b",
+    "observations": "0e70c2af5b173a0e"
+  },
   "Tester of the Tangential": {
     "root": "main",
     "status": "completed",
@@ -22190,6 +22574,14 @@
     "zone": "Battlefield",
     "journal": "fa023aad863dc9ad",
     "observations": "d6c079f6cb1b4fae"
+  },
+  "Teval, Arbiter of Virtue": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "908e391554bd2a4c",
+    "observations": "f82de7411eff6bb6"
   },
   "Textbook Tabulator": {
     "root": "main",
@@ -22510,6 +22902,14 @@
     "zone": "Battlefield",
     "journal": "802adcf65e36569e",
     "observations": "7500ee808279d4aa"
+  },
+  "The Sibsig Ceremony": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "fa6e561e60f5a43c",
+    "observations": "eaef34ca09696818"
   },
   "The Speed Demon": {
     "root": "main",
@@ -22903,6 +23303,14 @@
     "journal": "c03f3f27223a383f",
     "observations": "e0dcf5cbabd13647"
   },
+  "Thunder of Unity": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "19943b03e61633ae",
+    "observations": "d81720b9af928673"
+  },
   "Thunderbolts Conspiracy": {
     "root": "main",
     "status": "completed",
@@ -23247,6 +23655,14 @@
     "journal": "6ad262452df6dc24",
     "observations": "4ec671e9c9fefca6"
   },
+  "Trade Route Envoy": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "f500b3118c2282cd",
+    "observations": "815358634b9703e2"
+  },
   "Trade the Helm": {
     "root": "main",
     "status": "completed",
@@ -23366,6 +23782,14 @@
     "zone": "Graveyard",
     "journal": "79397f3e65b5c440",
     "observations": "a0a825c47302e20e"
+  },
+  "Traveling Botanist": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "100cb581dd613f1f",
+    "observations": "857171669e81151a"
   },
   "Traxos, Academy Guardian": {
     "root": "main",
@@ -23823,6 +24247,14 @@
     "journal": "100cb581dd613f1f",
     "observations": "7719224ff5d1a646"
   },
+  "Underfoot Underdogs": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "996b3f354b3811ac",
+    "observations": "3f89b0ab62127664"
+  },
   "Underground Mortuary": {
     "root": "main",
     "status": "completed",
@@ -24038,6 +24470,14 @@
     "zone": "Graveyard",
     "journal": "797c571123bdae8d",
     "observations": "4598dd37781139e2"
+  },
+  "Ureni, the Song Unending": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "bff63e07a8590062",
+    "observations": "659cee63fd409582"
   },
   "Uthros Psionicist": {
     "root": "main",
@@ -24263,6 +24703,14 @@
     "journal": "3ad6d4893695dc9c",
     "observations": "7ca183fb4dd9df7a"
   },
+  "Venerated Stormsinger": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "9d78478b460edd3d",
+    "observations": "25902eb5ee25f23e"
+  },
   "Vengeful Bloodwitch": {
     "root": "main",
     "status": "completed",
@@ -24350,6 +24798,14 @@
     "zone": "Battlefield",
     "journal": "6bb3ab8f4d04535a",
     "observations": "6092239fad8420cc"
+  },
+  "Veteran Ice Climber": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b6cf3749b9ab6fcf",
+    "observations": "d805ff7e81c55390"
   },
   "Vial Smasher, Gleeful Grenadier": {
     "root": "main",
@@ -24823,6 +25279,14 @@
     "journal": "b3f39d5b44da38ed",
     "observations": "75642c82c28042ac"
   },
+  "War Effort": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "fa023aad863dc9ad",
+    "observations": "1071f7122f2f322d"
+  },
   "War Machine, Legacy of Iron": {
     "root": "main",
     "status": "completed",
@@ -24838,6 +25302,14 @@
     "zone": "Battlefield",
     "journal": "3dbef4bb95891e71",
     "observations": "a876d31d8f72e657"
+  },
+  "Warden of the Grove": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "7c50116fb450cf1c",
+    "observations": "9812dc885ca3af1e"
   },
   "Wardens of the Cycle": {
     "root": "main",
@@ -25086,6 +25558,14 @@
     "zone": "Battlefield",
     "journal": "bc23014968bad51a",
     "observations": "58ef4a5a1cb2260a"
+  },
+  "Wayspeaker Bodyguard": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "f06a55cef9bb45d0",
+    "observations": "9a5b74c220d80c92"
   },
   "We Say Thee Nay!": {
     "root": "stack",
@@ -25390,6 +25870,14 @@
     "zone": "Battlefield",
     "journal": "17b1007f413b3222",
     "observations": "87c6e1b51326d8ed"
+  },
+  "Windcrag Siege": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Battlefield",
+    "journal": "4e0a169657d0de4b",
+    "observations": "f71a4f9b16601d81"
   },
   "Windurst, Federation Center": {
     "root": "main",
@@ -25711,6 +26199,14 @@
     "journal": "87c199e3b586e2a2",
     "observations": "e880d89c622bd17c"
   },
+  "Yathan Roadwatcher": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 9,
+    "zone": "Battlefield",
+    "journal": "316cd403bb4b3946",
+    "observations": "13a2811bfa118dcd"
+  },
   "Yathan Tombguard": {
     "root": "main",
     "status": "completed",
@@ -25910,6 +26406,14 @@
     "zone": "Battlefield",
     "journal": "543918deceb4be8c",
     "observations": "43c662efcbbf1f66"
+  },
+  "Zurgo, Thunder's Decree": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b11a716dc52e39de",
+    "observations": "a64282d34eeccfd4"
   },
   "Óin the Brave": {
     "root": "main",
