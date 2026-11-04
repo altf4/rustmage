@@ -8,6 +8,7 @@ changes cannot retain the identity of a catalogue-only checkpoint.
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import sys
 
@@ -28,29 +29,62 @@ SCOPE = ('Workspace library Rust, provenance and build inputs plus TDM acceptanc
          'entrypoints; shared harness is independently self-hashed.')
 
 
+def regular_input(root, path):
+    relative = path.relative_to(root)
+    current = root
+    for part in relative.parts:
+        current = current/part
+        if current.is_symlink():
+            raise ValueError('missing or nonregular execution input: ' + str(relative))
+    if not path.is_file():
+        raise ValueError('missing or nonregular execution input: ' + str(relative))
+    return path
+
+
+def walk_error(error):
+    raise error
+
+
 def payload(root):
     root = Path(root)
     paths = set()
     for directory in ('src', 'crates'):
-        for pattern in ('*.rs', 'Cargo.toml'):
-            paths.update(p for p in (root/directory).rglob(pattern) if p.is_file())
-    paths.update(p for p in (root/'src/card_definitions').rglob('*.json') if p.is_file())
+        base = root/directory
+        if not base.is_dir() or base.is_symlink():
+            raise ValueError('missing or nonregular execution source root: ' + directory)
+        for parent, dirs, names in os.walk(base, followlinks=False, onerror=walk_error):
+            parent = Path(parent)
+            for name in dirs:
+                p = parent/name
+                if p.is_symlink():
+                    raise ValueError('nonregular execution source directory: ' + str(p.relative_to(root)))
+            for name in names:
+                p = parent/name
+                provenance = p.suffix == '.json' and (root/'src/card_definitions') in p.parents
+                if p.suffix == '.rs' or name == 'Cargo.toml' or provenance:
+                    paths.add(regular_input(root, p))
     for name in REQUIRED:
+        paths.add(regular_input(root, root/name))
+    for name in OPTIONAL:
         p = root/name
-        if not p.is_file() or p.is_symlink():
-            raise ValueError('missing or nonregular execution input: ' + name)
-        paths.add(p)
-    paths.update(root/name for name in OPTIONAL if (root/name).is_file())
-    files = {}
-    for p in sorted(paths):
-        if p.is_symlink():
-            raise ValueError('execution input must not be a symlink: ' + str(p.relative_to(root)))
-        files[p.relative_to(root).as_posix()] = hashlib.sha256(p.read_bytes()).hexdigest()
+        if p.exists() or p.is_symlink():
+            paths.add(regular_input(root, p))
+    files = {p.relative_to(root).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
+             for p in sorted(paths)}
     return dict(schema=1, scope=SCOPE, source_count=len(files), files=files)
 
 
 def encoded(root):
     return (json.dumps(payload(root), ensure_ascii=False, sort_keys=True, indent=2)+'\n').encode()
+
+
+def check(root):
+    root = Path(root)
+    expected = encoded(root)
+    path = regular_input(root, root/MANIFEST)
+    if path.read_bytes() != expected:
+        raise ValueError('stale TDM execution inputs; regenerate with --write before compiling games')
+    return expected
 
 
 def main():
@@ -65,8 +99,8 @@ def main():
         if args.write:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes(expected)
-        elif not path.is_file() or path.read_bytes() != expected:
-            raise ValueError('stale TDM execution inputs; regenerate with --write before compiling games')
+        else:
+            expected = check(ROOT)
         print(json.dumps(dict(source_count=json.loads(expected)['source_count'],
                               execution_inputs_sha256=hashlib.sha256(expected).hexdigest())))
     except (OSError, ValueError) as error:

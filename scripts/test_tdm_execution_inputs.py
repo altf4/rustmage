@@ -4,8 +4,9 @@ import hashlib
 import json
 from pathlib import Path
 import tempfile
+import shutil
 import unittest
-from tdm_execution_inputs import REQUIRED, encoded, payload
+from tdm_execution_inputs import MANIFEST, REQUIRED, check, encoded, payload
 
 
 class ExecutionInputs(unittest.TestCase):
@@ -89,6 +90,33 @@ class ExecutionInputs(unittest.TestCase):
             self.assertNotIn('..', Path(name).parts)
             self.assertEqual(digest, hashlib.sha256((self.root/name).read_bytes()).hexdigest())
         self.assertEqual(json.loads(encoded(self.root)), value)
+
+    def test_old_manifest_rejects_new_optional_build_input(self):
+        (self.root/MANIFEST).write_bytes(encoded(self.root))
+        check(self.root)
+        self.put('build.rs', 'fn main() {}')
+        with self.assertRaisesRegex(ValueError, 'stale TDM execution inputs'):
+            check(self.root)
+
+    def test_source_directory_symlink_fails_closed(self):
+        source = self.root/'crates/engine/src'
+        moved = source.with_name('old_src')
+        source.rename(moved)
+        source.symlink_to(moved, target_is_directory=True)
+        with self.assertRaisesRegex(ValueError, 'nonregular execution source directory'):
+            encoded(self.root)
+
+    def test_dangling_matching_input_fails_closed(self):
+        p = self.root/'crates/engine/src/policy.rs'
+        p.unlink()
+        p.symlink_to('missing-policy.rs')
+        with self.assertRaisesRegex(ValueError, 'nonregular execution input'):
+            encoded(self.root)
+
+    def test_missing_source_root_fails_closed(self):
+        shutil.rmtree(self.root/'src')
+        with self.assertRaisesRegex(ValueError, 'nonregular execution source root'):
+            encoded(self.root)
 
     def test_missing_or_symlinked_input_fails_closed(self):
         p = self.root/'Cargo.lock'
