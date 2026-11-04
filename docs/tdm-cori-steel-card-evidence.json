@@ -106,7 +106,7 @@
     }
   ],
   "tests_path": "tests/tdm_cori_steel_cutter.rs",
-  "tests_sha256": "b9017fed17cf623673254ae1b6c8339356a7afa3bf4e1bd0833aea934052d7c5",
+  "tests_sha256": "2319de21db479cd7cb5e830c7287bd5ef668f185fd1e618b676ab34f5a5bb2ea",
   "validation": [
     {
       "report": "<cache>/rustmage-tdm/cori-first-author-run/native.json",
@@ -220,5 +220,12 @@
     "Measured TDM simulation throughput and README final progress",
     "Regenerated integration metadata and full release acceptance",
     "Exactly one PR with two fresh independent nonauthor reviews of final published head"
-  ]
+  ],
+  "format_normalization": {
+    "from_source_revision": "54ff55681",
+    "previous_test_sha256": "b9017fed17cf623673254ae1b6c8339356a7afa3bf4e1bd0833aea934052d7c5",
+    "current_test_sha256": "2319de21db479cd7cb5e830c7287bd5ef668f185fd1e618b676ab34f5a5bb2ea",
+    "change": "Rustfmt edition2024 repository macro wrapping only; prior focused reports retain their original inputs, final release validates current bytes.",
+    "failed_precompile_validation": "<cache>/rustmage-validation-oo73vtoz/report/result.json"
+  }
 }

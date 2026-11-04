@@ -76,11 +76,13 @@ fn cutter_is_playable_in_freeform_but_stays_banned_in_standard() {
         Game::new(config.clone()),
         Err(Error::InvalidDeck(_))
     ));
-    assert!(Game::new(Config {
-        deck_rules: DeckRules::Freeform,
-        ..config
-    })
-    .is_ok());
+    assert!(
+        Game::new(Config {
+            deck_rules: DeckRules::Freeform,
+            ..config
+        })
+        .is_ok()
+    );
 }
 
 #[test]
@@ -119,10 +121,11 @@ fn paid_cutter_counts_as_first_spell_then_monk_has_printed_traits_and_prowess_ex
         settle(&mut g);
         assert_eq!(g.object_view(cutter).attached_to, Some(object));
         assert_eq!(stats(&g, token), (2, 2));
-        assert!(g
-            .object_view(token)
-            .keywords
-            .contains(Keywords::HASTE.union(Keywords::TRAMPLE)));
+        assert!(
+            g.object_view(token)
+                .keywords
+                .contains(Keywords::HASTE.union(Keywords::TRAMPLE))
+        );
         shock(&mut g, p);
         settle(&mut g);
         assert_eq!(monks(&g, p).len(), 1, "third spell has no flurry trigger");
@@ -180,10 +183,11 @@ fn paid_equip_moves_bonuses_and_obeys_controller_timing_payment_and_incarnation(
     settle(&mut g);
     assert_eq!(g.state.players[p.index()].mana, [0; 6]);
     assert_eq!(stats(&g, first), (3, 3));
-    assert!(g
-        .object_view(first)
-        .keywords
-        .contains(Keywords::TRAMPLE.union(Keywords::HASTE)));
+    assert!(
+        g.object_view(first)
+            .keywords
+            .contains(Keywords::TRAMPLE.union(Keywords::HASTE))
+    );
     g.state.players[p.index()].mana = [8; 6];
     equip(&mut g, cutter, second);
     reject(&mut g, announce.clone());
