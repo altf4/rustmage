@@ -2,9 +2,9 @@
   "schema": 1,
   "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
   "status": "whole-set acceptance pending",
-  "locally_verified_cards": 121,
+  "locally_verified_cards": 159,
   "newly_implemented": 73,
-  "previously_admitted_verified": 48,
+  "previously_admitted_verified": 86,
   "integrations": [
     {
       "source_commits": [
@@ -205,14 +205,36 @@
         }
       ],
       "dependency": "Actual Betor uses fully accepted engine84 ceil operation; printed21->10 retained. Gated21, admitted60, focusedClippy and root60 allpass."
+    },
+    {
+      "source_commits": [
+        "e538f2024"
+      ],
+      "whole_cards": 38,
+      "newly_implemented": 0,
+      "previously_admitted_verified": 38,
+      "scope": "Completes all92 physical G\u2013S members and associated4 Omen faces; no existing Rust behavior changed.",
+      "regenerated": true,
+      "validation": [
+        {
+          "report": "/home/altf4/.cache/rustmage-tdm/root-g-s-complete92-integrated/native.json",
+          "sha256": "cda9a8b7245b559747a7d17a9bdde4361716ed800db0e38473d2296c0c4cd515",
+          "terminal": true,
+          "success": true,
+          "cases": 84,
+          "compile_seconds": 4.179277335992083,
+          "execution_seconds": 0.06362313299905509
+        }
+      ],
+      "source_pin_and_lint": "5488private/5489rootdefinitionsverified; all84actualoutcomes and focusedClippy pass; fullper-obligation provenance/unchangedb456bodies in docs/tdm-cards-g-s-evidence.json"
     }
   ],
-  "remaining_physical_cards": 155,
+  "remaining_physical_cards": 117,
   "source_verification": {
-    "definitions": 5488,
-    "source_blobs": 2642,
+    "definitions": 5489,
+    "source_blobs": 2687,
     "java_verified": true,
-    "catalogue_version": "a734ec45a23afd3a0574b4b05420754170b63b7c166b70a1041893b73b20de08"
+    "catalogue_version": "5ac935da8447e55ff20c1f8a7f2af025943a34fa1a9dd27cb2a83edc2ee967c1"
   },
   "active_engine_dependency": "None currently. Shared84 fullyaccepted, all3guardedauthorcacheswarmed; cardauthorsresumed.",
   "engine83_card_repair": {
