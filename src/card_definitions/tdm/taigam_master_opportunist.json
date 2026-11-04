@@ -3,10 +3,31 @@
   "catalogue_id": 4316,
   "oracle_id": "49f2cbc3-bd03-48e6-b1c4-d7f315b8579d",
   "facts_sha256": "1428cfdd25633bdac96a942cb42caa20fe3f08614e8b90b7aac7e69730a86aa6",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d6f428f2f372ddbefbcede3b9908bc87ceae1bc799440399302dc51066907c87"
   },
-  "physical_metadata_sha256": "d884684ac2a2cca345d66c978b4eaff36a1dd88ec063dde7ec34b2870f4d132f"
+  "physical_metadata_sha256": "d884684ac2a2cca345d66c978b4eaff36a1dd88ec063dde7ec34b2870f4d132f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TaigamMasterOpportunist.java",
+  "java_sha256": "b4c45044f7c02ef37505bda8d69e197739caf1874945ae97f34e6d707ec00cea",
+  "rules_tests": "tests/tdm_cards_s_z_additional.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/FlurryAbility.java",
+      "sha256": "c7fd2820826fec5fb71dc63ebaa7ebace3423c724629c164aa818c36781704cb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CastSecondSpellTriggeredAbility.java",
+      "sha256": "a4e91db65304a2f0a017d34eb680d683186071207b0002b036e94fcdc773ddce"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/SuspendAbility.java",
+      "sha256": "a274a7e7a0b7e2f5509691be21be5b47e04c69992c38e22a6de1081c4ba58abf"
+    }
+  ]
 }

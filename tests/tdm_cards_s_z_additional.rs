@@ -640,3 +640,819 @@ fn actual_dragonstorm_creature_copies_trigger_for_self_only_under_their_own_drag
         }
     }
 }
+
+fn choose_targets(g: &mut Game, ids: &[CardId]) {
+    for &id in ids {
+        act(
+            g,
+            Action::ChooseTarget {
+                target: Target::Card(id),
+            },
+        );
+    }
+    if g.legal_actions().contains(&Action::FinishTargets) {
+        act(g, Action::FinishTargets);
+    }
+}
+fn attack(g: &mut Game, p: Player, ids: &[CardId]) {
+    reset_main(g, p);
+    g.state.step = Step::Attackers;
+    g.state.pending = Pending::Attackers;
+    for &card in ids {
+        act(g, Action::Attack { card });
+    }
+    act(g, Action::FinishAttackers);
+}
+fn finish_costs(g: &mut Game, material: Option<CardId>) {
+    for _ in 0..12 {
+        if g.state.announcing.is_none() {
+            return;
+        }
+        if matches!(g.state.pending, Pending::CastCosts { .. }) {
+            let slot = g
+                .state
+                .announcing
+                .as_ref()
+                .unwrap()
+                .cast_costs
+                .as_ref()
+                .unwrap()
+                .clauses
+                .iter()
+                .position(|c| !c.paid)
+                .unwrap();
+            act(
+                g,
+                Action::ChooseCastCost {
+                    clause: slot as u16,
+                },
+            );
+        } else if matches!(g.state.pending, Pending::AdditionalCost { .. }) {
+            let object = g.object_ref(material.expect("explicit sacrificed creature"));
+            act(g, Action::ChooseAdditionalCost { object });
+        } else {
+            pay(g);
+        }
+    }
+    panic!("12-step cost budget");
+}
+#[test]
+fn salt_road_destroys_creature_creates_two_hasty_warriors_and_next_end_sacrifices_only_them() {
+    for invalidated in [false, true] {
+        let p = Player::P0;
+        let mut g = scenario(p);
+        let target = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        let existing = put(
+            &mut g,
+            p,
+            Card::test_index(5255).identity(),
+            Zone::Battlefield,
+        );
+        let source = candidate(&mut g, p, "Salt Road Skirmish");
+        g.state.players[0].mana = [0, 0, 1, 0, 0, 3];
+        cast(&mut g, source, Some(Target::Card(target)));
+        assert_eq!(g.state.players[0].mana, [0; 6]);
+        if invalidated {
+            g.move_object(target, Zone::Hand);
+        }
+        drain(&mut g);
+        let warriors = tokens(&g, p, "Warrior");
+        assert_eq!(warriors.len(), if invalidated { 1 } else { 3 });
+        assert_eq!(
+            g.object_view(target).zone,
+            if invalidated {
+                Zone::Hand
+            } else {
+                Zone::Graveyard
+            }
+        );
+        for &id in warriors.iter().filter(|&&id| id != existing) {
+            assert_eq!(stats(&g, id), (1, 1));
+            assert_eq!(g.object_view(id).colors, 8);
+            assert!(g.keywords(id).contains(Keywords::HASTE));
+            assert!(!g.object_view(id).tapped);
+            assert!(!g.state.attackers.iter().any(|a| a.card == id));
+        }
+        step(&mut g, Step::End);
+        drain(&mut g);
+        assert_eq!(tokens(&g, p, "Warrior"), vec![existing]);
+    }
+}
+#[test]
+fn severance_reveals_opponent_hand_may_exile_nonland_and_its_owner_gets_sized_white_spirit() {
+    for accept in [false, true] {
+        let p = Player::P1;
+        let mut g = scenario(p);
+        let land = put(&mut g, p.other(), "Forest", Zone::Hand);
+        let card = put(&mut g, p.other(), "Hill Giant", Zone::Hand);
+        let own = put(&mut g, p, "Grizzly Bears", Zone::Hand);
+        let source = candidate(&mut g, p, "Severance Priest");
+        cast(&mut g, source, None);
+        advance(&mut g, &[Target::Player(p.other())], |g| {
+            matches!(g.state.pending, Pending::HandCardChoice { .. })
+        });
+        assert_eq!(stats(&g, source), (3, 3));
+        assert!(g.keywords(source).contains(Keywords::DEATHTOUCH));
+        for viewer in [p, p.other()] {
+            assert!(g.observe(viewer).known_hand.contains(&g.object_ref(land)));
+            assert!(g.observe(viewer).known_hand.contains(&g.object_ref(card)));
+        }
+        for id in [land, own] {
+            let object = g.object_ref(id);
+            reject(
+                &mut g,
+                Action::ChooseHandCard {
+                    object: Some(object),
+                },
+            );
+        }
+        let object = if accept {
+            Some(g.object_ref(card))
+        } else {
+            None
+        };
+        act(&mut g, Action::ChooseHandCard { object });
+        drain(&mut g);
+        assert_eq!(
+            g.object_view(card).zone,
+            if accept { Zone::Exile } else { Zone::Hand }
+        );
+        g.change_controller(g.object_ref(source), p.other());
+        g.move_object(source, Zone::Graveyard);
+        drain(&mut g);
+        assert_eq!(tokens(&g, p.other(), "Spirit").len(), usize::from(accept));
+        assert!(tokens(&g, p, "Spirit").is_empty());
+        if accept {
+            let token = tokens(&g, p.other(), "Spirit")[0];
+            assert_eq!(stats(&g, token), (4, 4));
+            assert_eq!(g.object_view(token).colors, 1);
+            assert_eq!(g.object_view(card).zone, Zone::Exile);
+        }
+    }
+}
+#[test]
+fn shiko_exiles_only_own_small_nonland_then_free_casts_real_spell_or_permanent_copy_or_declines() {
+    for mode in 0..3 {
+        let p = Player::P0;
+        let mut g = scenario(p);
+        let name = if mode == 1 {
+            "Grizzly Bears"
+        } else {
+            "Divination"
+        };
+        let target = put(&mut g, p, name, Zone::Graveyard);
+        let land = put(&mut g, p, "Forest", Zone::Graveyard);
+        let large = put(&mut g, p, "Hill Giant", Zone::Graveyard);
+        let enemy = put(&mut g, p.other(), "Grizzly Bears", Zone::Graveyard);
+        let source = candidate(&mut g, p, "Shiko, Paragon of the Way");
+        cast(&mut g, source, None);
+        advance(&mut g, &[], |g| {
+            matches!(g.state.pending, Pending::Targets { .. })
+        });
+        for id in [land, large, enemy] {
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(id),
+                },
+            );
+        }
+        choose_targets(&mut g, &[target]);
+        advance(&mut g, &[], |g| {
+            matches!(g.state.pending, Pending::ResolutionCasts { .. })
+        });
+        assert_eq!(g.object_view(target).zone, Zone::Exile);
+        let offered = g
+            .state
+            .resolution_free_casts
+            .as_ref()
+            .unwrap()
+            .remaining
+            .clone();
+        assert_eq!(offered.len(), 1);
+        let object = offered[0];
+        assert_ne!(object, g.object_ref(target));
+        let hand = g.hand_count(p);
+        g.state.players[0].mana = [0; 6];
+        if mode != 2 {
+            act(
+                &mut g,
+                Action::CastExiledDuringResolution {
+                    object,
+                    face: CastFace::Normal,
+                },
+            );
+            if g.legal_actions().contains(&Action::FinishTargets) {
+                act(&mut g, Action::FinishTargets);
+            }
+            pay(&mut g);
+        }
+        act(&mut g, Action::FinishResolutionCasts);
+        drain(&mut g);
+        assert_eq!(g.state.players[0].mana, [0; 6]);
+        assert_eq!(stats(&g, source), (4, 5));
+        assert!(
+            g.keywords(source)
+                .contains(Keywords::FLYING.union(Keywords::VIGILANCE))
+        );
+        if mode == 0 {
+            assert_eq!(g.hand_count(p), hand + 2);
+        } else if mode == 1 {
+            let copies = entrants(&g, "Grizzly Bears");
+            assert_eq!(copies.len(), 1);
+            assert!(g.object_view(copies[0]).is_token());
+            assert_eq!(stats(&g, copies[0]), (2, 2));
+        } else {
+            assert_eq!(g.hand_count(p), hand);
+        }
+    }
+}
+#[test]
+fn sidisi_nonmana_x_exact_sacrifice_and_x_plus_one_return_obey_tap_and_sorcery() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = cast_candidate(&mut g, p, "Sidisi, Regent of the Mire");
+        assert_eq!(stats(&g, source), (1, 3));
+        g.state.active = p;
+        g.begin_turn();
+        reset_main(&mut g, p);
+        let material = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let target = put(&mut g, p, "Vampire Nighthawk", Zone::Graveyard);
+        let wrong = put(&mut g, p, "Shivan Dragon", Zone::Graveyard);
+        g.state.step = Step::Upkeep;
+        reject(&mut g, activation(source));
+        g.state.step = Step::Main1;
+        g.state.players[p.index()].mana = [0; 6];
+        act(&mut g, activation(source));
+        reject(&mut g, Action::ChooseX { value: 0 });
+        act(&mut g, Action::ChooseX { value: 2 });
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(wrong),
+            },
+        );
+        choose_targets(&mut g, &[target]);
+        finish_costs(&mut g, Some(material));
+        assert!(g.object_view(source).tapped);
+        assert_eq!(g.object_view(material).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        drain(&mut g);
+        assert_eq!(g.object_view(target).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(wrong).zone, Zone::Graveyard);
+    }
+}
+#[test]
+fn smile_own_upkeep_up_to_two_power_two_or_less_return_then_counters_allow_partial_survivors() {
+    for count in [0, 1, 2] {
+        let p = Player::P1;
+        let mut g = scenario(p);
+        let source = cast_candidate(&mut g, p, "Smile at Death");
+        let a = put(&mut g, p, "Grizzly Bears", Zone::Graveyard);
+        let b = put(&mut g, p, "Llanowar Elves", Zone::Graveyard);
+        let strong = put(&mut g, p, "Hill Giant", Zone::Graveyard);
+        let enemy = put(&mut g, p.other(), "Grizzly Bears", Zone::Graveyard);
+        g.state.active = p.other();
+        step(&mut g, Step::Upkeep);
+        drain(&mut g);
+        assert_eq!(g.object_view(a).zone, Zone::Graveyard);
+        g.state.active = p;
+        step(&mut g, Step::Upkeep);
+        advance(&mut g, &[], |g| {
+            matches!(g.state.pending, Pending::Targets { .. })
+        });
+        for id in [strong, enemy] {
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(id),
+                },
+            );
+        }
+        choose_targets(&mut g, &[a, b][..count]);
+        if count == 2 {
+            g.move_object(a, Zone::Hand);
+        }
+        drain(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+        if count == 1 {
+            assert_eq!(g.object_view(a).zone, Zone::Battlefield);
+            assert_eq!(stats(&g, a), (3, 3));
+        }
+        if count == 2 {
+            assert_eq!(g.object_view(a).zone, Zone::Hand);
+            assert_eq!(g.object_view(b).zone, Zone::Battlefield);
+            assert_eq!(stats(&g, b), (2, 2));
+        }
+        if count == 0 {
+            assert_eq!(g.object_view(a).zone, Zone::Graveyard);
+            assert_eq!(g.object_view(b).zone, Zone::Graveyard);
+        }
+    }
+}
+#[test]
+fn sonic_shrieker_damage_life_and_actual_damaged_player_discard_are_separate_from_creature_hits() {
+    for player_target in [false, true] {
+        let p = Player::P0;
+        let mut g = scenario(p);
+        let victim = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        let discard = put(&mut g, p.other(), "Forest", Zone::Hand);
+        let source = candidate(&mut g, p, "Sonic Shrieker");
+        cast(&mut g, source, None);
+        let target = if player_target {
+            Target::Player(p.other())
+        } else {
+            Target::Card(victim)
+        };
+        advance(&mut g, &[target], |g| {
+            if player_target {
+                matches!(g.state.pending, Pending::EffectDiscard { .. })
+            } else {
+                idle(g)
+            }
+        });
+        if player_target {
+            assert_eq!(g.actor(), Some(p.other()));
+            act(&mut g, Action::Discard { card: discard });
+            drain(&mut g);
+        }
+        assert_eq!(g.state.players[0].life, 22);
+        assert_eq!(g.state.players[1].life, if player_target { 18 } else { 20 });
+        assert_eq!(
+            g.object_view(victim).damage,
+            if player_target { 0 } else { 2 }
+        );
+        assert_eq!(
+            g.object_view(discard).zone,
+            if player_target {
+                Zone::Graveyard
+            } else {
+                Zone::Hand
+            }
+        );
+        assert_eq!(stats(&g, source), (4, 4));
+        assert!(g.keywords(source).contains(Keywords::FLYING));
+    }
+}
+#[test]
+fn stalwart_first_any_counter_on_each_own_creature_is_extra_once_per_turn_and_tokens_enter_with_counters()
+ {
+    fn renew_keywords(g: &mut Game, p: Player, target: CardId) {
+        // add_counter is storage-only. Real paid renew enters the replacement
+        // and placement-event pipeline used by this printed trigger.
+        let renew = put(g, p, "Qarsi Revenant", Zone::Graveyard);
+        g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 2];
+        act(g, activation(renew));
+        choose_targets(g, &[target]);
+        pay(g);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        assert_eq!(g.object_view(renew).zone, Zone::Exile);
+        drain(g);
+    }
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let source = cast_candidate(&mut g, p, "Stalwart Successor");
+    assert_eq!(stats(&g, source), (3, 2));
+    assert!(g.keywords(source).contains(Keywords::MENACE));
+    let a = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+    let b = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+    let enemy = put(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+    for id in [a, b, source, enemy] {
+        renew_keywords(&mut g, p, id);
+    }
+    assert_eq!(g.counter_count(a, CounterKind::PlusOne), 1);
+    assert_eq!(g.counter_count(b, CounterKind::PlusOne), 1);
+    assert_eq!(g.counter_count(source, CounterKind::PlusOne), 1);
+    assert_eq!(g.counter_count(enemy, CounterKind::PlusOne), 0);
+    renew_keywords(&mut g, p, a);
+    assert_eq!(g.counter_count(a, CounterKind::PlusOne), 1);
+    g.state.active = p;
+    g.begin_turn();
+    reset_main(&mut g, p);
+    renew_keywords(&mut g, p, a);
+    assert_eq!(g.counter_count(a, CounterKind::PlusOne), 2);
+    g.stage_copy_creation(
+        p,
+        CopyRecipe::new(Card::from_name("Host of the Hereafter").unwrap()),
+        1,
+    );
+    g.advance_replacements(false);
+    g.give_priority();
+    drain(&mut g);
+    let copies = entrants(&g, "Host of the Hereafter");
+    let host = copies[0];
+    assert!(g.object_view(host).is_token());
+    assert_eq!(g.counter_count(host, CounterKind::PlusOne), 3);
+    assert_eq!(stats(&g, host), (5, 5));
+}
+#[test]
+fn starry_skyrider_attack_target_and_attacking_token_flying_have_distinct_durations() {
+    let p = Player::P1;
+    let mut g = scenario(p);
+    let source = cast_candidate(&mut g, p, "Starry-Eyed Skyrider");
+    let own = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+    let enemy = put(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+    let token = put(
+        &mut g,
+        p,
+        Card::test_index(5255).identity(),
+        Zone::Battlefield,
+    );
+    let idle_token = put(
+        &mut g,
+        p,
+        Card::test_index(5255).identity(),
+        Zone::Battlefield,
+    );
+    assert_eq!(stats(&g, source), (1, 3));
+    assert!(g.keywords(source).contains(Keywords::FLYING));
+    assert!(!g.keywords(token).contains(Keywords::FLYING));
+    g.state.active = p;
+    g.begin_turn();
+    reset_main(&mut g, p);
+    attack(&mut g, p, &[source, token]);
+    advance(&mut g, &[], |g| {
+        matches!(g.state.pending, Pending::Targets { .. })
+    });
+    for id in [source, enemy] {
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(id),
+            },
+        );
+    }
+    choose_targets(&mut g, &[own]);
+    drain(&mut g);
+    assert!(g.keywords(own).contains(Keywords::FLYING));
+    assert!(g.keywords(token).contains(Keywords::FLYING));
+    assert!(!g.keywords(idle_token).contains(Keywords::FLYING));
+    assert!(!g.keywords(enemy).contains(Keywords::FLYING));
+    g.state.attackers.clear();
+    assert!(!g.keywords(token).contains(Keywords::FLYING));
+    assert!(g.keywords(own).contains(Keywords::FLYING));
+    g.state.step = Step::Cleanup;
+    g.finish_cleanup();
+    assert!(!g.keywords(own).contains(Keywords::FLYING));
+    assert!(g.keywords(source).contains(Keywords::FLYING));
+}
+#[test]
+fn snowmelt_stag_turn_base_stats_and_exact_paid_unblockability_expire_independently() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let source = cast_candidate(&mut g, p, "Snowmelt Stag");
+    assert_eq!(
+        Card::from_name("Snowmelt Stag").unwrap().effect(),
+        Effect::Creature(2, 5)
+    );
+    assert_eq!(stats(&g, source), (5, 2));
+    assert!(g.keywords(source).contains(Keywords::VIGILANCE));
+    g.state.active = p.other();
+    assert_eq!(stats(&g, source), (2, 5));
+    g.state.players[0].mana = [0, 2, 0, 0, 0, 5];
+    act(&mut g, activation(source));
+    pay(&mut g);
+    drain(&mut g);
+    assert_eq!(g.state.players[0].mana, [0; 6]);
+    assert!(g.keywords(source).contains(Keywords::CANT_BE_BLOCKED));
+    g.state.step = Step::Cleanup;
+    g.finish_cleanup();
+    assert!(!g.keywords(source).contains(Keywords::CANT_BE_BLOCKED));
+    assert!(g.keywords(source).contains(Keywords::VIGILANCE));
+}
+#[test]
+fn stadium_mobilize_and_sacrifice_damage_counts_current_creatures_after_source_is_paid() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let source = cast_candidate(&mut g, p, "Stadium Headliner");
+    assert_eq!(stats(&g, source), (1, 1));
+    let ally = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+    let victim = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+    g.state.active = p;
+    g.begin_turn();
+    reset_main(&mut g, p);
+    attack(&mut g, p, &[source]);
+    advance(&mut g, &[], |g| !tokens(g, p, "Warrior").is_empty());
+    drain(&mut g);
+    let token = tokens(&g, p, "Warrior")[0];
+    assert!(g.state.attackers.iter().any(|a| a.card == token));
+    assert!(g.object_view(token).tapped);
+    assert_eq!(stats(&g, token), (1, 1));
+    g.state.players[0].mana = [0, 0, 0, 1, 0, 1];
+    act(&mut g, activation(source));
+    choose_targets(&mut g, &[victim]);
+    pay(&mut g);
+    assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+    assert_eq!(g.state.players[0].mana, [0; 6]);
+    g.move_object(ally, Zone::Hand);
+    drain(&mut g);
+    assert_eq!(
+        g.object_view(victim).damage,
+        1,
+        "only surviving Warrior counted at resolution"
+    );
+    step(&mut g, Step::End);
+    drain(&mut g);
+    assert!(tokens(&g, p, "Warrior").is_empty());
+}
+#[test]
+fn static_snare_flash_counts_attackers_from_both_players_and_exiles_artifact_or_creature_until_leaving()
+ {
+    for artifact in [false, true] {
+        let p = Player::P1;
+        let mut g = scenario(p);
+        let a = put(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+        let b = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        let target = put(
+            &mut g,
+            p.other(),
+            if artifact {
+                "Short Bow"
+            } else {
+                "Shivan Dragon"
+            },
+            Zone::Battlefield,
+        );
+        let own = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let enchant = put(&mut g, p.other(), "Roiling Dragonstorm", Zone::Battlefield);
+        attack(&mut g, p.other(), &[a, b]);
+        drain(&mut g);
+        if g.actor() != Some(p) {
+            act(&mut g, Action::Pass);
+        }
+        let source = put(&mut g, p, "Static Snare", Zone::Hand);
+        g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 2];
+        cast(&mut g, source, None);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        advance(&mut g, &[], |g| {
+            matches!(g.state.pending, Pending::Targets { .. })
+        });
+        for id in [own, enchant] {
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(id),
+                },
+            );
+        }
+        choose_targets(&mut g, &[target]);
+        drain(&mut g);
+        assert_eq!(g.object_view(target).zone, Zone::Exile);
+        g.move_object(source, Zone::Hand);
+        drain(&mut g);
+        assert_eq!(g.object_view(target).zone, Zone::Battlefield);
+        assert!(g.keywords(source).contains(Keywords::FLASH));
+    }
+}
+#[test]
+fn stormbeacon_equip_two_only_own_creature_as_sorcery_and_draw_threshold_uses_own_attackers() {
+    for attacking in [2, 3] {
+        let p = Player::P0;
+        let mut g = scenario(p);
+        let source = cast_candidate(&mut g, p, "Stormbeacon Blade");
+        let body = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let b = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+        let c = put(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        let enemy = put(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+        g.state.step = Step::Upkeep;
+        reject(&mut g, activation(source));
+        g.state.step = Step::Main1;
+        g.state.players[0].mana = [0, 0, 0, 0, 0, 2];
+        act(&mut g, activation(source));
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(enemy),
+            },
+        );
+        choose_targets(&mut g, &[body]);
+        pay(&mut g);
+        assert_eq!(g.state.players[0].mana, [0; 6]);
+        drain(&mut g);
+        assert_eq!(g.object_view(source).attached_to, Some(g.object_ref(body)));
+        assert_eq!(stats(&g, body), (5, 2));
+        let hand = g.hand_count(p);
+        attack(&mut g, p, &[body, b, c][..attacking]);
+        drain(&mut g);
+        assert_eq!(g.hand_count(p), hand + usize::from(attacking == 3));
+        g.move_object(source, Zone::Graveyard);
+        assert_eq!(stats(&g, body), (2, 2));
+    }
+}
+#[test]
+fn stillness_mills_three_then_refills_only_empty_library_with_private_ordered_five_or_all_available()
+ {
+    for (library, grave) in [(4, 0), (3, 5), (0, 2), (0, 0)] {
+        let p = Player::P0;
+        let mut g = scenario(p);
+        let source = cast_candidate(&mut g, p, "Stillness in Motion");
+        let old = g.state.players[0].library.clone();
+        for id in old {
+            g.move_object(id, Zone::Hand);
+        }
+        for _ in 0..grave {
+            put(&mut g, p, "Llanowar Elves", Zone::Graveyard);
+        }
+        for _ in 0..library {
+            put(&mut g, p, "Forest", Zone::Library);
+        }
+        g.state.active = p;
+        step(&mut g, Step::Upkeep);
+        if library <= 3 && library + grave > 0 {
+            advance(&mut g, &[], |g| {
+                matches!(g.state.pending, Pending::MilledSelection { .. })
+            });
+            assert!(g.observe(p.other()).milled_choice.is_none());
+            reject(&mut g, Action::FinishMilledSelection);
+            let candidates = g.observe(p).milled_choice.unwrap().candidates;
+            let required = (library + grave).min(5);
+            let order = candidates
+                .iter()
+                .rev()
+                .take(required)
+                .copied()
+                .collect::<Vec<_>>();
+            for &object in &order {
+                act(&mut g, Action::SelectMilled { object });
+            }
+            if g.legal_actions().contains(&Action::FinishMilledSelection) {
+                act(&mut g, Action::FinishMilledSelection);
+            }
+            drain(&mut g);
+            let actual = g.state.players[0]
+                .library
+                .iter()
+                .rev()
+                .copied()
+                .collect::<Vec<_>>();
+            assert_eq!(actual, order.iter().map(|r| r.card).collect::<Vec<_>>());
+        } else {
+            drain(&mut g);
+        }
+        assert_eq!(
+            g.object_view(source).zone,
+            if library <= 3 {
+                Zone::Exile
+            } else {
+                Zone::Battlefield
+            }
+        );
+        assert_eq!(
+            g.library_card_count(p),
+            if library <= 3 {
+                (library + grave).min(5)
+            } else {
+                library - 3
+            }
+        );
+        assert!(!g.state.players[0].attempted_empty_draw);
+    }
+}
+#[test]
+fn synchronized_distributes_two_one_or_split_then_grants_all_current_own_counter_bearers_until_cleanup()
+ {
+    for split in [false, true] {
+        let p = Player::P1;
+        let mut g = scenario(p);
+        let a = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let b = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+        let existing = put(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        let unmarked = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let enemy = put(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+        g.add_counter(existing, CounterKind::Soul, 1);
+        g.add_counter(enemy, CounterKind::Soul, 1);
+        let source = candidate(&mut g, p, "Synchronized Charge");
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 1];
+        act(&mut g, Action::AnnounceCast { card: source });
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(enemy),
+            },
+        );
+        let targets = [a, b];
+        choose_targets(&mut g, &targets[..if split { 2 } else { 1 }]);
+        reject(&mut g, Action::AllocateTargetAmount { amount: 0 });
+        for &amount in if split { &[1, 1][..] } else { &[2][..] } {
+            act(&mut g, Action::AllocateTargetAmount { amount });
+        }
+        pay(&mut g);
+        drain(&mut g);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        assert_eq!(
+            g.counter_count(a, CounterKind::PlusOne),
+            if split { 1 } else { 2 }
+        );
+        assert_eq!(g.counter_count(b, CounterKind::PlusOne), u64::from(split));
+        let k = Keywords::VIGILANCE.union(Keywords::TRAMPLE);
+        for id in [a, existing] {
+            assert!(g.keywords(id).contains(k));
+        }
+        assert_eq!(g.keywords(b).contains(k), split);
+        for id in [unmarked, enemy] {
+            assert!(!g.keywords(id).intersects(k));
+        }
+        g.state.step = Step::Cleanup;
+        g.finish_cleanup();
+        assert!(!g.keywords(a).intersects(k));
+        assert!(g.counter_count(a, CounterKind::PlusOne) > 0);
+    }
+}
+#[test]
+fn synchronized_harmonize_four_generic_green_uses_actual_power_tap_then_exiles() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let helper = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+    let target = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+    let source = candidate(&mut g, p, "Synchronized Charge");
+    g.move_object(source, Zone::Graveyard);
+    g.state.players[0].mana = [0, 0, 0, 0, 1, 1];
+    act(&mut g, Action::AnnounceHarmonize { card: source });
+    let object = g.object_ref(helper);
+    act(
+        &mut g,
+        Action::ChooseHarmonizer {
+            object: Some(object),
+        },
+    );
+    choose_targets(&mut g, &[target]);
+    act(&mut g, Action::AllocateTargetAmount { amount: 2 });
+    finish_costs(&mut g, None);
+    assert!(g.object_view(helper).tapped);
+    assert_eq!(g.state.players[0].mana, [0; 6]);
+    drain(&mut g);
+    assert_eq!(g.object_view(source).zone, Zone::Exile);
+    assert_eq!(stats(&g, target), (4, 4));
+    assert!(
+        g.keywords(target)
+            .contains(Keywords::VIGILANCE.union(Keywords::TRAMPLE))
+    );
+}
+#[test]
+fn taigam_second_cast_copy_suspend_four_owner_upkeeps_optional_free_recast_and_creature_haste() {
+    for accept in [false, true] {
+        let p = Player::P0;
+        let mut g = scenario(p);
+        let source = cast_candidate(&mut g, p, "Taigam, Master Opportunist");
+        assert_eq!(stats(&g, source), (2, 2));
+        let spell = put(&mut g, p, "Grizzly Bears", Zone::Hand);
+        cast(&mut g, spell, None);
+        drain(&mut g);
+        assert_eq!(g.object_view(spell).zone, Zone::Exile);
+        assert_eq!(g.counter_count(spell, CounterKind::Time), 4);
+        let copies = entrants(&g, "Grizzly Bears");
+        assert_eq!(copies.len(), 1);
+        assert!(g.object_view(copies[0]).is_token());
+        let third = put(&mut g, p, "Llanowar Elves", Zone::Hand);
+        cast(&mut g, third, None);
+        drain(&mut g);
+        assert_eq!(g.object_view(third).zone, Zone::Battlefield);
+        assert_eq!(g.counter_count(third, CounterKind::Time), 0);
+        g.move_object(source, Zone::Graveyard);
+        g.state.active = p.other();
+        step(&mut g, Step::Upkeep);
+        drain(&mut g);
+        assert_eq!(g.counter_count(spell, CounterKind::Time), 4);
+        g.state.active = p;
+        for remaining in [3, 2, 1] {
+            step(&mut g, Step::Upkeep);
+            drain(&mut g);
+            assert_eq!(g.counter_count(spell, CounterKind::Time), remaining);
+        }
+        step(&mut g, Step::Upkeep);
+        advance(&mut g, &[], |g| {
+            matches!(g.state.pending, Pending::ResolutionCasts { .. })
+        });
+        assert_eq!(g.counter_count(spell, CounterKind::Time), 0);
+        g.state.players[0].mana = [0; 6];
+        if accept {
+            let object = g.object_ref(spell);
+            act(
+                &mut g,
+                Action::CastExiledDuringResolution {
+                    object,
+                    face: CastFace::Normal,
+                },
+            );
+            if g.legal_actions().contains(&Action::FinishTargets) {
+                act(&mut g, Action::FinishTargets);
+            }
+            pay(&mut g);
+        }
+        act(&mut g, Action::FinishResolutionCasts);
+        drain(&mut g);
+        assert_eq!(g.state.players[0].mana, [0; 6]);
+        assert_eq!(
+            g.object_view(spell).zone,
+            if accept {
+                Zone::Battlefield
+            } else {
+                Zone::Exile
+            }
+        );
+        if accept {
+            assert!(g.keywords(spell).contains(Keywords::HASTE));
+            assert!(!g.object_view(spell).is_token());
+        }
+    }
+}

@@ -3,10 +3,31 @@
   "catalogue_id": 3801,
   "oracle_id": "3a38bf69-511f-4851-870f-8a65641d832e",
   "facts_sha256": "ff0929de9c2bfaa17a098ece86e76859988e6aa5e13b285eb403e0f4ead0729e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "122e498cfeee5124ddbec1d9fc2a28a5422c38cd1369a8cff22a20a0128d104a"
   },
-  "physical_metadata_sha256": "2e12047bfb396321fa694846b8105bd5c8b6af9164d0c98bcb5b8040fc7d9f3e"
+  "physical_metadata_sha256": "2e12047bfb396321fa694846b8105bd5c8b6af9164d0c98bcb5b8040fc7d9f3e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SeverancePriest.java",
+  "java_sha256": "c3385e804e8afe98f4714164494ffa1e96cd3efa6c2f8208438cf1fedc5c0c1d",
+  "rules_tests": "tests/tdm_cards_s_z_additional.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateXXTokenExiledEffectManaValueEffect.java",
+      "sha256": "c60d047f25a7ef928e17b02f8bac8870b508daf82469e99cad9acd1826ec6a06"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/SpiritXXToken.java",
+      "sha256": "4932f0d1ba9b345e349a094d413209ad21588cae39049d7076781eff34ec12e7"
+    }
+  ]
 }

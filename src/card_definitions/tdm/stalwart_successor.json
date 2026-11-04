@@ -3,10 +3,31 @@
   "catalogue_id": 4092,
   "oracle_id": "45392882-e4b9-4c74-a10f-985c2b4e2be9",
   "facts_sha256": "710cb2c1f467a798d27734501b30c77152e6238976b72dcda56d99a81a1303b0",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fe71ceaf58fa9944747d2d506872309e644ba985dc0aadac9540f702d9773275"
   },
-  "physical_metadata_sha256": "320be2b03011567bbe99dfe90e8cd411e56fb63a81c9467fb153f0c4809ef0b4"
+  "physical_metadata_sha256": "320be2b03011567bbe99dfe90e8cd411e56fb63a81c9467fb153f0c4809ef0b4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StalwartSuccessor.java",
+  "java_sha256": "b6831174de4246e4cd1c6c857ee30ad097ff2adcb3b87aad5f44f8658efebf9e",
+  "rules_tests": "tests/tdm_cards_s_z_additional.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/CountersAddedFirstTimeWatcher.java",
+      "sha256": "567c59325fd4d8b944eb8ec6d4e50f7b85c78c551500ef303826d8d2cceb1733"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    }
+  ]
 }

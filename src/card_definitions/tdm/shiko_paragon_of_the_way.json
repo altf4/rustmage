@@ -3,10 +3,31 @@
   "catalogue_id": 3830,
   "oracle_id": "d3bdd3f2-9e38-436a-93a3-f87d9f4d4f86",
   "facts_sha256": "00b8b3a2e2aa2b9fe6e9d341b2bb54d708d80a2f6bda479c36967b10aaac5a16",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b07d77283ffcdf3d6c73c2e4117a6b6520628903414900d2cc4d2c8e73ba82dc"
   },
-  "physical_metadata_sha256": "4c0c871206dbdec13c7e834c77c3da71ff5423f9d911d230666916880ccc6c17"
+  "physical_metadata_sha256": "4c0c871206dbdec13c7e834c77c3da71ff5423f9d911d230666916880ccc6c17",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ShikoParagonOfTheWay.java",
+  "java_sha256": "b73cfe85bfa9e5b4bded1991c41e3221a29c050b07189dc9ddcd91536d6fd3bd",
+  "rules_tests": "tests/tdm_cards_s_z_additional.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetCardCopyAndCastEffect.java",
+      "sha256": "417c2da69a4f9bc294c6ba911ad84094e8a402f97fbd7eb771f91f294563f409"
+    }
+  ]
 }
