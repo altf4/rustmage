@@ -3,10 +3,26 @@
   "catalogue_id": 2372,
   "oracle_id": "09277185-fccd-4747-aa79-f569c581022a",
   "facts_sha256": "96ff993890cfab9e3438248775cb1d813bcf19dc74ce928444defcfa8e172b5f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "be4399dbeb3006231f162f45ec25b6c8aba54082781baa6797870e864299444d"
   },
-  "physical_metadata_sha256": "0fc4f1cbd109162d04d260c1dcf2a1c79a83bcbcc35d89c2cf2c91f6ea0bac8a"
+  "physical_metadata_sha256": "0fc4f1cbd109162d04d260c1dcf2a1c79a83bcbcc35d89c2cf2c91f6ea0bac8a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KishlaTrawlers.java",
+  "java_sha256": "f04570c1fb5ef5e441ebe495ce15a9fc4ee17fb9bba03d8e007045b3245bb1a6",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+      "sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileFromGraveCost.java",
+      "sha256": "0fbd76b0759d6ff66e0517af68a598d62dfd5fca5a520f4ee834132b0275166e"
+    }
+  ]
 }

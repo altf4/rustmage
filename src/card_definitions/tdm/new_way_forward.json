@@ -3,10 +3,21 @@
   "catalogue_id": 2926,
   "oracle_id": "429368e6-3de1-4a44-a062-86cbbb73e243",
   "facts_sha256": "10a49880ddc9fd0b891e598786bd2e4f6fabb161e8da2d8bfc8c5c659c800cb9",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3f87202d61302e03c4f60f30c1bc9d55871e31d0e510895e9481cad7e1755e2e"
   },
-  "physical_metadata_sha256": "65a322aef027f07513550732d58d472e98016109212b7acf2c1b5b304a0d2e71"
+  "physical_metadata_sha256": "65a322aef027f07513550732d58d472e98016109212b7acf2c1b5b304a0d2e71",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/n/NewWayForward.java",
+  "java_sha256": "4725fcd5103cb58b9510f879cfe26c315ab34f5aa33084f0f33ccb63d3dcee7d",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PreventNextDamageFromChosenSourceEffect.java",
+      "sha256": "c60e79ba1f31aa6335f34bfa9020ad515ef2321730870877af7ff43bb011aff9"
+    }
+  ]
 }

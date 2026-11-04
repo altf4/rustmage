@@ -3,10 +3,31 @@
   "catalogue_id": 3158,
   "oracle_id": "ea96fe35-88ed-432b-a495-08e787d23d0b",
   "facts_sha256": "9fcbdb76e403d1ec465a474e5c55b71b47a57ae9be837064879983877b8b8714",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b39355fcaa9b1ff4d7354aa9a7a63decdb8117ae57b0508e33742a33dbb5f278"
   },
-  "physical_metadata_sha256": "30e9a08f046f7b317aebe2e4679ad496848a88283a2ed3dba0513520be860fd7"
+  "physical_metadata_sha256": "30e9a08f046f7b317aebe2e4679ad496848a88283a2ed3dba0513520be860fd7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PiercingExhale.java",
+  "java_sha256": "57298c68fd4e8f1af2eb4b380aba1f041ee4e6d65354ad468cc913997cc3e0d8",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/BeholdAbility.java",
+      "sha256": "1158e149cbebed05fae0649fc121f876036a49ce3ad033b1bb608b9271dc6dd2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/BeheldDragonCondition.java",
+      "sha256": "92daf16ec33cd13cdf6a6c54634b85d4fcce199811384d18f0199ef19f02ca72"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageWithPowerFromOneToAnotherTargetEffect.java",
+      "sha256": "cbe6b025fef2b13a46fcdddb02a0342eecd99af9db39d292c22b1f942d2729a3"
+    }
+  ]
 }

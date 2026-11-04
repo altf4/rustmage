@@ -3,10 +3,21 @@
   "catalogue_id": 3544,
   "oracle_id": "6512ddb8-0868-4d32-ab32-8a5250fc571b",
   "facts_sha256": "e01f8b5a46aa733767c56fa7d3185d5d9a9b4f69353497f33b7ccf36e00b6c74",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ab3abeed88d79a6556786d9be9ac84155f2bd02493de7d05392d7ee6ec48f683"
   },
-  "physical_metadata_sha256": "22a6a7059d0fc0d70244bf2d69393bca6a346018b39311a2bb663f0d9be36d4b"
+  "physical_metadata_sha256": "22a6a7059d0fc0d70244bf2d69393bca6a346018b39311a2bb663f0d9be36d4b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RiteOfRenewal.java",
+  "java_sha256": "579f1fb6056eb885177774da32211af16aaa2811a0994812adcd393ec0359b5f",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TargetPlayerShufflesTargetCardsEffect.java",
+      "sha256": "d10484210b65af0c396d0907271775eb9e7b31d3613782cfe357fc5df70cbbe8"
+    }
+  ]
 }

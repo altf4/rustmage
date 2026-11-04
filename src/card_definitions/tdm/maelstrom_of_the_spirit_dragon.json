@@ -3,10 +3,26 @@
   "catalogue_id": 2612,
   "oracle_id": "49e9fba7-8465-4bbb-95db-73a7e149f494",
   "facts_sha256": "9b0bd346726545e5ac640c85d8083e60116007d1a407a43f9d5a5e682e20c61b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b2150b83301249273e9105f0985f9541228c3309b9e50196c3768a626bedc4f4"
   },
-  "physical_metadata_sha256": "ec2debb26f08217b30287b9b24f6440f0232d9594fe09c0c247ada544d16eefb"
+  "physical_metadata_sha256": "ec2debb26f08217b30287b9b24f6440f0232d9594fe09c0c247ada544d16eefb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MaelstromOfTheSpiritDragon.java",
+  "java_sha256": "b777e8205cff6f7d9ca57dd79dd7292f2b3f6e205d465da3364c1b476e802c93",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/conditional/ConditionalSpellManaBuilder.java",
+      "sha256": "ce56830a429737325b5010a205e0d800b41ac7f2e4c59367598f4fa99e1d246e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+    }
+  ]
 }

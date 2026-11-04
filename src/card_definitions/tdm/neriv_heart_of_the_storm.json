@@ -3,10 +3,14 @@
   "catalogue_id": 2917,
   "oracle_id": "66290104-ac65-4eb5-bf00-89b944249e07",
   "facts_sha256": "dea770f0ab386200b538c40a56d70a1106d614634a9ac233b70af745ebd7863f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0b52bceb3417ab5e89d18d0da6341a028d3eb2b8ec85ef649781496e836873c7"
   },
-  "physical_metadata_sha256": "c1262f8520abb1c1453b44c23bc5fbe1240d5da922d178af855d79de92ecadb4"
+  "physical_metadata_sha256": "c1262f8520abb1c1453b44c23bc5fbe1240d5da922d178af855d79de92ecadb4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/n/NerivHeartOfTheStorm.java",
+  "java_sha256": "374a04f821a7dbcd3880ed190199ec49f3d5f6ecaf74de494c41876952d1dfa3",
+  "rules_tests": "tests/tdm_cards_g_s.rs"
 }

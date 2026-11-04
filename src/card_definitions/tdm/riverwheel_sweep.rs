@@ -1,6 +1,20 @@
 // Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
+    effect: Effect::Spell(
+        TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
+        &[
+            Instruction::Tap,
+            Instruction::PutCounters {
+                subject: Subject::Targets,
+                kind: CounterKind::Stun,
+                amount: 3,
+            },
+            Instruction::ExileTopChoosePlay {
+                amount: 2,
+                next_turn: true,
+            },
+        ],
+    ),
     triggers: &[],
     activated: &[],
     enters: Counters {

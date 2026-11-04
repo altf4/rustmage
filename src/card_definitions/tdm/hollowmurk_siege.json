@@ -3,10 +3,26 @@
   "catalogue_id": 2058,
   "oracle_id": "31061e34-042e-40c3-99ab-752795ab4324",
   "facts_sha256": "263df2cef6c48c199008d8fcfa88dc3ab0da2a6c0caf2c08d5aa37a72683eacb",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f5cc694d4bbf45d452ac5d754ccc485b6bf0834a5b83be89694fc162bf75f92a"
   },
-  "physical_metadata_sha256": "435f87750451e8eb9132f0e138c8a9cf0cfbcb0ed9fc12de305c63629aaf5dba"
+  "physical_metadata_sha256": "435f87750451e8eb9132f0e138c8a9cf0cfbcb0ed9fc12de305c63629aaf5dba",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HollowmurkSiege.java",
+  "java_sha256": "ab637f2b108590701c2d2e73ed805b1582731cf4ac1fb0d944975a20d36f251c",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseModeEffect.java",
+      "sha256": "81d0232b9335b14c2cafd7c14b0090d639f41527128e85d626db02f9597fadfa"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAnchorWordAbilitySourceEffect.java",
+      "sha256": "9469756464606dcbce7323287562980c16b0c551b2b309065d35cb322f099be6"
+    }
+  ]
 }
