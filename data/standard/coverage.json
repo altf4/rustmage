@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "6a52723c53f5309b96eee19d1593613f91ad95599e7064f12d813b6108e978c9",
+  "catalogue_version": "226b678f4fe388d2fbab786f5a9ffb4ccbf5fd2910311b8f48f4b5c4d20df5b4",
   "standard_legal_cards": 5164,
   "implemented_standard_cards": 3158,
-  "implemented_total": 3164,
+  "implemented_total": 3165,
   "token_definitions": 156,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -6993,8 +6993,8 @@
     {
       "name": "Cori-Steel Cutter",
       "standard_legal": false,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/cori_steel_cutter.rs",
       "set": "tdm"
     },
