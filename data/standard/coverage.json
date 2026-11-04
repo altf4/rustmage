@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "73a964457b0b982380ca2c75ddce5e3c392f7b06294a8c526e49875433e119fe",
+  "catalogue_version": "71c91c049034165bcc3b4bfb355bb5f3686b5085f476da1739d235332ed2f4ca",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3188,
-  "implemented_total": 3195,
+  "implemented_standard_cards": 3194,
+  "implemented_total": 3201,
   "token_definitions": 156,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -162,8 +162,8 @@
     },
     "tdm": {
       "total": 264,
-      "complete": 157,
-      "gated": 107
+      "complete": 163,
+      "gated": 101
     },
     "tla": {
       "total": 278,
@@ -977,8 +977,8 @@
     {
       "name": "Aggressive Negotiations",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/aggressive_negotiations.rs",
       "set": "tdm"
     },
@@ -5697,8 +5697,8 @@
     {
       "name": "Caustic Exhale",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/caustic_exhale.rs",
       "set": "tdm"
     },
@@ -5953,8 +5953,8 @@
     {
       "name": "Channeled Dragonfire",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/channeled_dragonfire.rs",
       "set": "tdm"
     },
@@ -8673,8 +8673,8 @@
     {
       "name": "Desperate Measures",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/desperate_measures.rs",
       "set": "tdm"
     },
@@ -9449,8 +9449,8 @@
     {
       "name": "Dragon's Prey",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/dragon_s_prey.rs",
       "set": "tdm"
     },
@@ -34161,8 +34161,8 @@
     {
       "name": "Sunset Strikemaster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/sunset_strikemaster.rs",
       "set": "tdm"
     },

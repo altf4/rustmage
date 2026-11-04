@@ -2,9 +2,9 @@
   "schema": 1,
   "engine_revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
   "status": "whole-set acceptance pending",
-  "locally_verified_cards": 44,
-  "newly_implemented": 31,
-  "previously_admitted_verified": 13,
+  "locally_verified_cards": 71,
+  "newly_implemented": 37,
+  "previously_admitted_verified": 34,
   "integrations": [
     {
       "source_commits": [
@@ -88,13 +88,43 @@
           "execution_seconds": 0.03425463195890188
         }
       ]
+    },
+    {
+      "source_commits": [
+        "9c1b5af91",
+        "0b80bbcf3"
+      ],
+      "regenerated": true,
+      "validation": [
+        {
+          "target": "tdm_cards_a_g",
+          "report": "<cache>/rustmage-tdm/root-spells-mana-integrated/a_g/native.json",
+          "sha256": "55e8b912ad770cc15abca05aa59dea409558efb9a6611b72c373d8976f98543e",
+          "success": true,
+          "terminal": true,
+          "cases": 35,
+          "compile_seconds": 3.824695946997963,
+          "execution_seconds": 0.05096619500545785
+        },
+        {
+          "target": "tdm_cards_s_z",
+          "report": "<cache>/rustmage-tdm/root-spells-mana-integrated/s_z/native.json",
+          "sha256": "b7820b8cff722042a9669dea9f1e04c308c638856f43110f873c40d30c1f1a59",
+          "success": true,
+          "terminal": true,
+          "cases": 15,
+          "compile_seconds": 1.568961295997724,
+          "execution_seconds": 0.035161960986442864
+        }
+      ]
     }
   ],
-  "remaining_physical_cards": 232,
+  "remaining_physical_cards": 205,
   "source_verification": {
     "definitions": 5488,
     "source_blobs": 2560,
     "java_verified": true,
     "catalogue_version": "73a964457b0b982380ca2c75ddce5e3c392f7b06294a8c526e49875433e119fe"
-  }
+  },
+  "active_engine_dependency": "E:ATTACHED_ACTIVATION_COSTS: Ringing Strike Mastery grants a non-tap mana-only activation; shared helper currently invents distinct-attachment tap cost. Card authorship held for shared fix, tests, reviews and cache warm."
 }
