@@ -70,10 +70,17 @@
     "set_members": 276
   },
   "remaining": [
-    "Bounded trace acquisition for37new supported cards preserving all3164accepted rows",
+    "Full native strict3201trace baseline regression in final release acceptance",
     "Broader rules/contract and full release acceptance for changed engine",
     "Two fresh final published-engine-head independent approvals",
     "Rewarm and resume isolated card authors; migrate gated Ringing template to tap_attachment:false",
     "Full276card behavior, interactions, TDM-only games/performance, README and single completed-set PR/final reviews"
-  ]
+  ],
+  "trace_extension": {
+    "evidence": "docs/tdm-37-card-trace-additions.json",
+    "old_rows_unchanged": 3164,
+    "new_rows": 37,
+    "total_rows": 3201,
+    "two_independent_nonauthor_acquisition_reviews": "approved; final engine/full-set approvals remain pending"
+  }
 }

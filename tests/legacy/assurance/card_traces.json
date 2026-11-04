@@ -447,6 +447,14 @@
     "journal": "57d053c6be1289bf",
     "observations": "37f5153908ebbb9e"
   },
+  "Aggressive Negotiations": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Graveyard",
+    "journal": "bdcc535e140131fd",
+    "observations": "932d90d486128aa4"
+  },
   "Agna Qel'a": {
     "root": "main",
     "status": "completed",
@@ -598,6 +606,14 @@
     "zone": "Battlefield",
     "journal": "b86544257bfe4a7d",
     "observations": "a6dda37db7adc2f2"
+  },
+  "Alchemist's Assistant": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "a4c714aeb662e85f",
+    "observations": "ec6d3b9072e0afee"
   },
   "Alesha's Legacy": {
     "root": "main",
@@ -3391,6 +3407,14 @@
     "journal": "802adcf65e36569e",
     "observations": "f691feef83f60cee"
   },
+  "Caustic Exhale": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "c0ed9b02c2920910",
+    "observations": "d052643f9bf23803"
+  },
   "Cautious Survivor": {
     "root": "main",
     "status": "completed",
@@ -3455,6 +3479,14 @@
     "journal": "f4f3a0080abd09e4",
     "observations": "fde71bdfad434272"
   },
+  "Champion of Dusan": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "7c50116fb450cf1c",
+    "observations": "02dbd283627d59b6"
+  },
   "Chandra's Emberling": {
     "root": "main",
     "status": "completed",
@@ -3502,6 +3534,14 @@
     "zone": "Battlefield",
     "journal": "2f212df689d192b4",
     "observations": "b8234169f140582c"
+  },
+  "Channeled Dragonfire": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "12b2606feff077c8",
+    "observations": "24e6e41a7745560d"
   },
   "Charge the Sanctum": {
     "root": "main",
@@ -4127,6 +4167,14 @@
     "journal": "f603a7ee3f8f226e",
     "observations": "362e54cde3402194"
   },
+  "Cori-Steel Cutter": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b43781f2834dd88f",
+    "observations": "ba73694f45a9458e"
+  },
   "Corpseberry Cultivator": {
     "root": "main",
     "status": "completed",
@@ -4606,6 +4654,14 @@
     "zone": "Battlefield",
     "journal": "78a585eeb3f83501",
     "observations": "1b28d90fffff5424"
+  },
+  "Dalkovan Encampment": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 1,
+    "zone": "Battlefield",
+    "journal": "1c41fdead70727d2",
+    "observations": "f4181faa380caf45"
   },
   "Dalkovan Packbeasts": {
     "root": "main",
@@ -5103,6 +5159,14 @@
     "journal": "6d1bbae7b5f6c07d",
     "observations": "dc1f3c101a494b76"
   },
+  "Desperate Measures": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "6ad262452df6dc24",
+    "observations": "1e756bf932f64b2f"
+  },
   "Detention Chariot": {
     "root": "main",
     "status": "completed",
@@ -5582,6 +5646,14 @@
     "zone": "Battlefield",
     "journal": "2cbdf799c9f712ce",
     "observations": "a632869ed3ca2d6a"
+  },
+  "Dragon's Prey": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "a66fbe1473c9d196",
+    "observations": "ee2baa1f318ea7f7"
   },
   "Dragonback Assault": {
     "root": "main",
@@ -9503,6 +9575,22 @@
     "journal": "b86544257bfe4a7d",
     "observations": "8ee6fbb207faad62"
   },
+  "Gurmag Nightwatch": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 8,
+    "zone": "Battlefield",
+    "journal": "6f596dfccbc93ab8",
+    "observations": "113f324befae5150"
+  },
+  "Gurmag Rakshasa": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 8,
+    "zone": "Battlefield",
+    "journal": "94317140de96d47a",
+    "observations": "08bf0205365b54d5"
+  },
   "Gutless Plunderer": {
     "root": "main",
     "status": "completed",
@@ -10015,6 +10103,14 @@
     "journal": "7c50116fb450cf1c",
     "observations": "541bad000e8c8667"
   },
+  "Herd Heirloom": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "100cb581dd613f1f",
+    "observations": "4f86b54b64854daf"
+  },
   "Heritage Reclamation": {
     "root": "main",
     "status": "completed",
@@ -10319,6 +10415,14 @@
     "journal": "6a00b6c7783b4dc5",
     "observations": "a56b19bb2ab7577d"
   },
+  "Host of the Hereafter": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b57420d067cd09ad",
+    "observations": "d7d6f43580ea07ea"
+  },
   "Hostile Investigator": {
     "root": "main",
     "status": "completed",
@@ -10446,6 +10550,14 @@
     "zone": "Battlefield",
     "journal": "3effe1facfce1be7",
     "observations": "279f1bdcaf8dac58"
+  },
+  "Hundred-Battle Veteran": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "9d78478b460edd3d",
+    "observations": "a1ea0fb1485297a0"
   },
   "Hungering Puppetbeast": {
     "root": "main",
@@ -11031,6 +11143,14 @@
     "journal": "996b3f354b3811ac",
     "observations": "67608d5312197026"
   },
+  "Iridescent Tiger": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Battlefield",
+    "journal": "6c22b74804ebdd32",
+    "observations": "0275cf9ea1c7fda6"
+  },
   "Iridescent Vinelasher": {
     "root": "main",
     "status": "completed",
@@ -11279,6 +11399,14 @@
     "journal": "b43781f2834dd88f",
     "observations": "2771c89f9fac2d67"
   },
+  "Jeskai Monument": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "c9d6f23ee57cb4aa",
+    "observations": "b0cf0a8f47da00f0"
+  },
   "Jeskai Revelation": {
     "root": "main",
     "status": "completed",
@@ -11479,6 +11607,14 @@
     "journal": "4aa0aeec428dd0f1",
     "observations": "7f409003bcf52244"
   },
+  "Karakyk Guardian": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "14bfee7a9413033d",
+    "observations": "9e2bb1aa9b080c26"
+  },
   "Kargan Dragonrider": {
     "root": "main",
     "status": "completed",
@@ -11582,6 +11718,14 @@
     "zone": "Battlefield",
     "journal": "ae05947724786c5e",
     "observations": "18c2fc1dae491b40"
+  },
+  "Kheru Goldkeeper": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "ed26400aa7245f4f",
+    "observations": "f363426be4b6804a"
   },
   "Kickoff Celebrations": {
     "root": "main",
@@ -11718,6 +11862,22 @@
     "zone": "Battlefield",
     "journal": "2ca588a594b1301f",
     "observations": "97f19719bf34b51c"
+  },
+  "Kishla Skimmer": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "21c94e12108ffb3f",
+    "observations": "519c7cb6fa77cb52"
+  },
+  "Kishla Village": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 1,
+    "zone": "Battlefield",
+    "journal": "1c41fdead70727d2",
+    "observations": "eb947f8f174be3f1"
   },
   "Kitesail Corsair": {
     "root": "main",
@@ -11919,6 +12079,22 @@
     "journal": "064e0674483370ef",
     "observations": "9b0da28b5ff8b7f8"
   },
+  "Krotiq Nestguard": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "7c50116fb450cf1c",
+    "observations": "d5a0da1b2f6b4d34"
+  },
+  "Krumar Initiate": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "a4c714aeb662e85f",
+    "observations": "67c5821a1df34448"
+  },
   "Kulrath Mystic": {
     "root": "main",
     "status": "completed",
@@ -12079,6 +12255,14 @@
     "journal": "b43781f2834dd88f",
     "observations": "0490ba122f1382ed"
   },
+  "Lasyd Prowler": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "5df23ec7356ff85c",
+    "observations": "38cc850530d1eda6"
+  },
   "Lathliss, Dragon Queen": {
     "root": "main",
     "status": "completed",
@@ -12222,6 +12406,14 @@
     "zone": "Battlefield",
     "journal": "b09baf7e6d26b241",
     "observations": "1f1cbd3f6aeccd4b"
+  },
+  "Lie in Wait": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 6,
+    "zone": "Graveyard",
+    "journal": "934036d5a821f067",
+    "observations": "6e7881315a70c233"
   },
   "Lifecraft Engine": {
     "root": "main",
@@ -13063,6 +13255,14 @@
     "journal": "2e812e35bf5aacc1",
     "observations": "8c351c81641311f4"
   },
+  "Mammoth Bellow": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Graveyard",
+    "journal": "ba6c513beddd585c",
+    "observations": "ffc1cd81767655bb"
+  },
   "Mana Sculpt": {
     "root": "stack",
     "status": "completed",
@@ -13126,6 +13326,14 @@
     "zone": "Battlefield",
     "journal": "58e5c5fe35386aab",
     "observations": "40b898f262bae35f"
+  },
+  "Mardu Monument": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "c9d6f23ee57cb4aa",
+    "observations": "f19a9b24fce5ad91"
   },
   "Marketback Walker": {
     "root": "main",
@@ -13855,6 +14063,14 @@
     "journal": "1707eabb445652c2",
     "observations": "e409f9db762b7a04"
   },
+  "Mistrise Village": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 1,
+    "zone": "Battlefield",
+    "journal": "1c41fdead70727d2",
+    "observations": "96d9013937e6badf"
+  },
   "Misty Knight, Hero for Hire": {
     "root": "main",
     "status": "completed",
@@ -14022,6 +14238,14 @@
     "zone": "Battlefield",
     "journal": "cb8e52ccde089acd",
     "observations": "140f07c6c0e5bde3"
+  },
+  "Monastery Messenger": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 8,
+    "zone": "Battlefield",
+    "journal": "8365a58f2c11027d",
+    "observations": "48c1ff959bad04d2"
   },
   "Mongoose Lizard": {
     "root": "main",
@@ -15447,6 +15671,14 @@
     "journal": "3fba902266e1c58c",
     "observations": "27a8eae2da5eadb2"
   },
+  "Perennation": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "0b0dee20b691ec70",
+    "observations": "041e0d6cde8f0d3a"
+  },
   "Perfected Theory": {
     "root": "main",
     "status": "completed",
@@ -16343,6 +16575,14 @@
     "journal": "76493bc5559a5f97",
     "observations": "4fba2718aca27b47"
   },
+  "Qarsi Revenant": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "0322b5dea1560864",
+    "observations": "757b282c60e53fc4"
+  },
   "Quag Feast": {
     "root": "main",
     "status": "completed",
@@ -16606,6 +16846,14 @@
     "zone": "Battlefield",
     "journal": "543918deceb4be8c",
     "observations": "1b399beb6aa1f086"
+  },
+  "Rainveil Rejuvenator": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "ea4a961683500a96",
+    "observations": "2bf2dbab56bea890"
   },
   "Raise the Past": {
     "root": "main",
@@ -17575,6 +17823,14 @@
     "journal": "84d41b26f33ca30b",
     "observations": "6ede43d1d5c56042"
   },
+  "Roamer's Routine": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "f101e8460af190b7",
+    "observations": "32072aedadbf57bd"
+  },
   "Roar of Endless Song": {
     "root": "main",
     "status": "completed",
@@ -17662,6 +17918,14 @@
     "zone": "Battlefield",
     "journal": "1c41fdead70727d2",
     "observations": "73c95be98f29b931"
+  },
+  "Roiling Dragonstorm": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "eea31da9a5e8aafc",
+    "observations": "771329e5b1bff6c1"
   },
   "Roll-Roll-Roll-Roll": {
     "root": "main",
@@ -18022,6 +18286,14 @@
     "zone": "Battlefield",
     "journal": "12e1a713ea13279c",
     "observations": "3fdc3886a0db24fb"
+  },
+  "Sage of the Fang": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 7,
+    "zone": "Battlefield",
+    "journal": "b3e9111ecff18a9c",
+    "observations": "4a9b3d7989ed6716"
   },
   "Sage's Nouliths": {
     "root": "main",
@@ -20863,6 +21135,14 @@
     "journal": "a4c714aeb662e85f",
     "observations": "5e073da98d97751e"
   },
+  "Sunset Strikemaster": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Battlefield",
+    "journal": "b43781f2834dd88f",
+    "observations": "7304c93bf8d4fc80"
+  },
   "Sunspine Lynx": {
     "root": "main",
     "status": "completed",
@@ -23287,6 +23567,14 @@
     "journal": "36445be718334408",
     "observations": "96c9095fb5d6529d"
   },
+  "Unending Whisper": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 4,
+    "zone": "Graveyard",
+    "journal": "77fe8ec276f5ddde",
+    "observations": "a2f55995521f8ebd"
+  },
   "Unexpected Assistance": {
     "root": "main",
     "status": "completed",
@@ -23438,6 +23726,14 @@
     "zone": "Battlefield",
     "journal": "b6cf3749b9ab6fcf",
     "observations": "8d4f52be1d1c6a0c"
+  },
+  "Ureni's Rebuff": {
+    "root": "main",
+    "status": "completed",
+    "decisions": 5,
+    "zone": "Graveyard",
+    "journal": "797c571123bdae8d",
+    "observations": "793fab0543654d00"
   },
   "Uthros Psionicist": {
     "root": "main",
