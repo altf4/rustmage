@@ -1,0 +1,729 @@
+{
+  "schema": 1,
+  "scope": "Authored F15 acceptance interaction proof only. No card admission, engine, generated inputs, prior partition evidence or full-game harness is modified. This is not an independent final review or whole-set acceptance.",
+  "status": "Locally verified actual-definition interactions: native2/2 and focused test-profile Clippy passed; Root integration rerun pending. Not final independent review or whole-set acceptance.",
+  "prepared_utc": "2026-11-04T21:43:57.893809+00:00",
+  "accepted_engine_revision": "2660c86112362973c195bee4c1b85e1a968f9f3a",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "target": "tdm_set_prevention",
+  "scenario_groups": 2,
+  "table_scope": "Each test uses both seats and choosing before/after the source leaves; four bounded rows per group. One representative owned source-choice root, not a repeated per-action contract suite.",
+  "test_source": "tests/tdm_set_prevention.rs",
+  "test_source_sha256": "5d8af48e198d2766fa2965c519468f31a8efe0a799257e52d5a211fd37a99bc2",
+  "tests": [
+    {
+      "name": "f15_stalwart_second_cast_damage_is_prevented_reflected_and_drawn_after_actual_severance",
+      "line": 173,
+      "body_sha256": "12e2a1a5d687b43378b29088b0b92495234c8abe2b1d796c0237dc365f461384"
+    },
+    {
+      "name": "f15_headliner_can_be_chosen_before_or_after_sacrifice_but_creature_damage_keeps_player_shield",
+      "line": 308,
+      "body_sha256": "fd7d35e16163a445fd34d615ca9f39a764653c78f9ed7bd4b7e0ce70bbecd2fd"
+    }
+  ],
+  "cards": [
+    {
+      "name": "New Way Forward",
+      "oracle_id": "429368e6-3de1-4a44-a062-86cbbb73e243",
+      "oracle_full_facts": {
+        "oracle_id": "429368e6-3de1-4a44-a062-86cbbb73e243",
+        "name": "New Way Forward",
+        "layout": "normal",
+        "mana_cost": "{2}{U}{R}{W}",
+        "cmc": 5.0,
+        "type_line": "Instant",
+        "oracle_text": "The next time a source of your choice would deal damage to you this turn, prevent that damage. When damage is prevented this way, New Way Forward deals that much damage to that source's controller and you draw that many cards.",
+        "colors": [
+          "R",
+          "U",
+          "W"
+        ],
+        "color_identity": [
+          "R",
+          "U",
+          "W"
+        ],
+        "keywords": [],
+        "reference_printing": {
+          "id": "d9d48f9e-79f0-478c-9db0-ff7ac4a8f401",
+          "set": "tdm",
+          "collector_number": "211",
+          "released_at": "2025-04-11"
+        }
+      },
+      "facts_sha256": "10a49880ddc9fd0b891e598786bd2e4f6fabb161e8da2d8bfc8c5c659c800cb9",
+      "definition": "src/card_definitions/tdm/new_way_forward.rs",
+      "definition_sha256": "876433514ae8f59bdb1fcedad0b6855ad5df32020dd57f4e369f3470177dce0a",
+      "paired_provenance": "src/card_definitions/tdm/new_way_forward.json",
+      "paired_provenance_sha256": "94390c1ef7a2c010829b3c29c6fcc06b1d54ee068f16378deb09edfe08449e5d",
+      "java_source": "Mage.Sets/src/mage/cards/n/NewWayForward.java",
+      "java_sha256": "4725fcd5103cb58b9510f879cfe26c315ab34f5aa33084f0f33ccb63d3dcee7d",
+      "read_scope": "Complete Oracle and main XMage class; relevant reusable semantic helper bodies read in full."
+    },
+    {
+      "name": "Cori Mountain Stalwart",
+      "oracle_id": "322a2d97-cf71-4bfc-b52d-f642f2d0dcbd",
+      "oracle_full_facts": {
+        "oracle_id": "322a2d97-cf71-4bfc-b52d-f642f2d0dcbd",
+        "name": "Cori Mountain Stalwart",
+        "layout": "normal",
+        "mana_cost": "{1}{R}{W}",
+        "cmc": 3.0,
+        "type_line": "Creature \u2014 Human Monk",
+        "oracle_text": "Flurry \u2014 Whenever you cast your second spell each turn, this creature deals 2 damage to each opponent and you gain 2 life.",
+        "power": "3",
+        "toughness": "3",
+        "colors": [
+          "R",
+          "W"
+        ],
+        "color_identity": [
+          "R",
+          "W"
+        ],
+        "keywords": [
+          "Flurry"
+        ],
+        "reference_printing": {
+          "id": "b6cbf54e-f30e-4e7b-b17c-217fa424971c",
+          "set": "tdm",
+          "collector_number": "175",
+          "released_at": "2025-04-11"
+        }
+      },
+      "facts_sha256": "64ea82641012785b144f6bc35f4f5fc48f2dae1b9ca7ea110e445cc9d1bcfb58",
+      "definition": "src/card_definitions/tdm/cori_mountain_stalwart.rs",
+      "definition_sha256": "06eddd7284ba8cc9005a11bb2f9adb4fcc13adf3a05c152419a553db221ae033",
+      "paired_provenance": "src/card_definitions/tdm/cori_mountain_stalwart.json",
+      "paired_provenance_sha256": "02ac7de2bd63645f728746c00b8ba23f879570c389f18601e73421b8b390e8ec",
+      "java_source": "Mage.Sets/src/mage/cards/c/CoriMountainStalwart.java",
+      "java_sha256": "1b96c7f40a4cea6c370ba026416bf1d9396cb0a144ba25e63bd86b4703fafc91",
+      "read_scope": "Complete Oracle and main XMage class; relevant reusable semantic helper bodies read in full."
+    },
+    {
+      "name": "Kin-Tree Severance",
+      "oracle_id": "211d1c59-0111-48dd-9ff6-d03e7ff2ad5c",
+      "oracle_full_facts": {
+        "oracle_id": "211d1c59-0111-48dd-9ff6-d03e7ff2ad5c",
+        "name": "Kin-Tree Severance",
+        "layout": "normal",
+        "mana_cost": "{2/W}{2/B}{2/G}",
+        "cmc": 6.0,
+        "type_line": "Instant",
+        "oracle_text": "Exile target permanent with mana value 3 or greater.",
+        "colors": [
+          "B",
+          "G",
+          "W"
+        ],
+        "color_identity": [
+          "B",
+          "G",
+          "W"
+        ],
+        "keywords": [],
+        "reference_printing": {
+          "id": "b577e246-3377-42aa-856e-b9fa89f3603a",
+          "set": "tdm",
+          "collector_number": "200",
+          "released_at": "2025-04-11"
+        }
+      },
+      "facts_sha256": "2209e22610c23094f34f8924204e88b058e86657ff38b491a572323e05ffa290",
+      "definition": "src/card_definitions/tdm/kin_tree_severance.rs",
+      "definition_sha256": "49e0ba54e7ff61b33d22d0b39b28571dbaeebb16d719ae895b2a4b48faf0ce0c",
+      "paired_provenance": "src/card_definitions/tdm/kin_tree_severance.json",
+      "paired_provenance_sha256": "1e5c69649a48a54793b902dc180e022d854d7d2b1c552228afae4ae0e855e01c",
+      "java_source": "Mage.Sets/src/mage/cards/k/KinTreeSeverance.java",
+      "java_sha256": "87f4b07704d0200e821fd18095baf8ff35c4d7b7f631671bd059817ed3c94c39",
+      "read_scope": "Complete Oracle and main XMage class; relevant reusable semantic helper bodies read in full."
+    },
+    {
+      "name": "Stadium Headliner",
+      "oracle_id": "d8cfa20a-343e-4661-9f5a-a8265f6917a8",
+      "oracle_full_facts": {
+        "oracle_id": "d8cfa20a-343e-4661-9f5a-a8265f6917a8",
+        "name": "Stadium Headliner",
+        "layout": "normal",
+        "mana_cost": "{R}",
+        "cmc": 1.0,
+        "type_line": "Creature \u2014 Goblin Warrior",
+        "oracle_text": "Mobilize 1 (Whenever this creature attacks, create a tapped and attacking 1/1 red Warrior creature token. Sacrifice it at the beginning of the next end step.)\n{1}{R}, Sacrifice this creature: It deals damage equal to the number of creatures you control to target creature.",
+        "power": "1",
+        "toughness": "1",
+        "colors": [
+          "R"
+        ],
+        "color_identity": [
+          "R"
+        ],
+        "keywords": [
+          "Mobilize"
+        ],
+        "all_parts": [
+          {
+            "id": "7edc0515-a130-45a7-aa09-0e23bba41587",
+            "component": "token",
+            "name": "Warrior",
+            "type_line": "Token Creature \u2014 Warrior"
+          },
+          {
+            "id": "ef7a1ddf-bf52-4d44-92cd-8d8127472bd9",
+            "component": "combo_piece",
+            "name": "Stadium Headliner",
+            "type_line": "Creature \u2014 Goblin Warrior"
+          }
+        ],
+        "reference_printing": {
+          "id": "37d4ab2a-a06a-4768-b5e1-e1def957d7f4",
+          "set": "tdm",
+          "collector_number": "122",
+          "released_at": "2025-04-11"
+        }
+      },
+      "facts_sha256": "671db9b3d5a1f28ffc162dd2250b307f1f8ddae4e3fe582bf18fdc8a1fce606a",
+      "definition": "src/card_definitions/tdm/stadium_headliner.rs",
+      "definition_sha256": "029b1bd9f815d16d7ee0fe2dbede3d64c228f0af5f5f7d69ddb965d934a11076",
+      "paired_provenance": "src/card_definitions/tdm/stadium_headliner.json",
+      "paired_provenance_sha256": "b40c535809f6e84e84ebff74d20f04b53ab78c0172d7c37b1e9b59cb7cb41439",
+      "java_source": "Mage.Sets/src/mage/cards/s/StadiumHeadliner.java",
+      "java_sha256": "c2c104ba003314379019213a6fc1e45aedf4c8b2b12ce30e63005bb864f84857",
+      "read_scope": "Complete Oracle and main XMage class; relevant reusable semantic helper bodies read in full."
+    },
+    {
+      "name": "Marang River Regent // Coil and Catch",
+      "oracle_id": "099b8d2c-b482-48dd-b6bc-dedf546d66c5",
+      "oracle_full_facts": {
+        "oracle_id": "099b8d2c-b482-48dd-b6bc-dedf546d66c5",
+        "name": "Marang River Regent // Coil and Catch",
+        "layout": "adventure",
+        "mana_cost": "{4}{U}{U} // {3}{U}",
+        "cmc": 6.0,
+        "type_line": "Creature \u2014 Dragon // Instant \u2014 Omen",
+        "power": "6",
+        "toughness": "7",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [
+          "Flying"
+        ],
+        "card_faces": [
+          {
+            "name": "Marang River Regent",
+            "mana_cost": "{4}{U}{U}",
+            "type_line": "Creature \u2014 Dragon",
+            "oracle_text": "Flying\nWhen this creature enters, return up to two other target nonland permanents to their owners' hands.",
+            "power": "6",
+            "toughness": "7"
+          },
+          {
+            "name": "Coil and Catch",
+            "mana_cost": "{3}{U}",
+            "type_line": "Instant \u2014 Omen",
+            "oracle_text": "Draw three cards, then discard a card. (Then shuffle this card into its owner's library.)"
+          }
+        ],
+        "reference_printing": {
+          "id": "f890bdc7-32e6-4492-bac7-7cabf54a8bfd",
+          "set": "tdm",
+          "collector_number": "51",
+          "released_at": "2025-04-11"
+        }
+      },
+      "facts_sha256": "953cf9ea45b0bf86aa0797abfa2153f8f310d37f49632b58374ca6cefeff3926",
+      "definition": "src/card_definitions/tdm/marang_river_regent.rs",
+      "definition_sha256": "0c20934cd7bdfd0a4ae9bef50907cf7678e46cf4a796fe499ccbf107ea1ad699",
+      "paired_provenance": "src/card_definitions/tdm/marang_river_regent.json",
+      "paired_provenance_sha256": "232d3626e51ba05bbd52a02370a8f64f2396e7afcae3df787bb9b4a7a958a663",
+      "java_source": "Mage.Sets/src/mage/cards/m/MarangRiverRegent.java",
+      "java_sha256": "94ad25920e5284672b8d1ed3adb4994ac690d7cff87493f4161ddf844fd86992",
+      "read_scope": "Complete Oracle and main XMage class; already-verified passive creature fixture or paid second cast. No entry, Omen or endurance ability is newly exercised or claimed here."
+    },
+    {
+      "name": "Krumar Initiate",
+      "oracle_id": "65a7fb13-77b9-44ea-9e0e-34daef82eb69",
+      "oracle_full_facts": {
+        "oracle_id": "65a7fb13-77b9-44ea-9e0e-34daef82eb69",
+        "name": "Krumar Initiate",
+        "layout": "normal",
+        "mana_cost": "{1}{B}",
+        "cmc": 2.0,
+        "type_line": "Creature \u2014 Human Cleric",
+        "oracle_text": "{X}{B}, {T}, Pay X life: This creature endures X. Activate only as a sorcery. (Put X +1/+1 counters on it or create an X/X white Spirit creature token.)",
+        "power": "2",
+        "toughness": "2",
+        "colors": [
+          "B"
+        ],
+        "color_identity": [
+          "B"
+        ],
+        "keywords": [
+          "Endure"
+        ],
+        "all_parts": [
+          {
+            "id": "bc66680f-24ab-433a-8197-feac3a174075",
+            "component": "combo_piece",
+            "name": "Krumar Initiate",
+            "type_line": "Creature \u2014 Human Cleric"
+          },
+          {
+            "id": "8ea4fc2f-95a4-49d0-b06e-b88d19637737",
+            "component": "token",
+            "name": "Spirit",
+            "type_line": "Token Creature \u2014 Spirit"
+          }
+        ],
+        "reference_printing": {
+          "id": "bc66680f-24ab-433a-8197-feac3a174075",
+          "set": "tdm",
+          "collector_number": "84",
+          "released_at": "2025-04-11"
+        }
+      },
+      "facts_sha256": "4af9646f7b21d53959e4a73a6fa8be4ae64698a07bbf409984f17d84967a9e07",
+      "definition": "src/card_definitions/tdm/krumar_initiate.rs",
+      "definition_sha256": "8f84b0274ecb36c5c7065e15ba8f08dd5bd63ad8dcdc31406e23f16e70d69eb3",
+      "paired_provenance": "src/card_definitions/tdm/krumar_initiate.json",
+      "paired_provenance_sha256": "24ce6399622b2864a65cfcb5b29b8e297fc405dc615fa5afe18e2f16c1e96332",
+      "java_source": "Mage.Sets/src/mage/cards/k/KrumarInitiate.java",
+      "java_sha256": "82b3aa7066a5b08fb32b1b2a0b4540630399b640cd112780a9f3a503885c4b42",
+      "read_scope": "Complete Oracle and main XMage class; already-verified passive creature fixture or paid second cast. No entry, Omen or endurance ability is newly exercised or claimed here."
+    }
+  ],
+  "xmage_helpers": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PreventNextDamageFromChosenSourceEffect.java",
+      "sha256": "c60e79ba1f31aa6335f34bfa9020ad515ef2321730870877af7ff43bb011aff9",
+      "read_scope": "complete file body"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/PreventionEffectImpl.java",
+      "sha256": "35c73be2ddcb40be12bc5a1ca2d11a654436c7b6b0c4ae1e37cb18383a97daf5",
+      "read_scope": "complete file body"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/PreventionEffectData.java",
+      "sha256": "5044af2a8b7132be5ac2d5acbe40b77a20f66541e72285e5e2d8440f07567b3a",
+      "read_scope": "complete file body"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetSource.java",
+      "sha256": "4138f70ecd9cf5c8eb97e257f6a74471099318bd9325a028dd0da92c2961c9ea",
+      "read_scope": "complete file body"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+      "sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd",
+      "read_scope": "complete file body"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+      "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b",
+      "read_scope": "complete file body"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25",
+      "read_scope": "complete file body"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2",
+      "read_scope": "complete file body"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/FlurryAbility.java",
+      "sha256": "c7fd2820826fec5fb71dc63ebaa7ebace3423c724629c164aa818c36781704cb",
+      "read_scope": "complete file body"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/CastSecondSpellTriggeredAbility.java",
+      "sha256": "a4e91db65304a2f0a017d34eb680d683186071207b0002b036e94fcdc773ddce",
+      "read_scope": "complete file body"
+    },
+    {
+      "path": "Mage/src/main/java/mage/watchers/common/CastSpellLastTurnWatcher.java",
+      "sha256": "065a8c406c463e6b5a4fc410b932eb1784fd05f2964afc8e64c81664a518a7ce",
+      "read_scope": "complete file body"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+      "sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe",
+      "read_scope": "complete file body"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029",
+      "read_scope": "complete file body"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CreaturesYouControlCount.java",
+      "sha256": "17e5433bd06fd2d48cf22a5c5d105fb9081c3678b21ddad78dc78bac60281acd",
+      "read_scope": "complete file body"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+      "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8",
+      "read_scope": "complete file body"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
+      "sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756",
+      "read_scope": "complete file body"
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+      "sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262",
+      "read_scope": "complete file body"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/MobilizeAbility.java",
+      "sha256": "84ea782ab71b1b147b349c5f5ac8b2c03ae60211c95393a2e4e994da8ee5eac8",
+      "read_scope": "complete file body"
+    }
+  ],
+  "obligations": [
+    {
+      "required": "Actual set-only prevention, reflection and draw from a departed printed damage source.",
+      "test": "f15_stalwart_second_cast_damage_is_prevented_reflected_and_drawn_after_actual_severance",
+      "independent_expected_outcome": "Stalwart is cast for exactly1RW, Krumar Initiate for1B as its second actual spell. New Way Forward costs exactly2URW; Kin-Tree Severance costs exactlyWBG. The real Stalwart trigger remains after actual Severance exile. Choose the exact old battlefield source before or after exile; the new exiled incarnation is not selectable. Prevent its two damage to the protected player. Stalwart controller reaches22 from the printed gain2 before the reflexive packet resolves, then20 after reflected2. Protected player stays20, draws exactly2 actual library cards, and consumes its one shield. Both instants reach graveyard and the second creature resolves as2/2."
+    },
+    {
+      "required": "One exact-source choice is public/private correctly, owned, transactional and restorable.",
+      "test": "f15_stalwart_second_cast_damage_is_prevented_reflected_and_drawn_after_actual_severance",
+      "independent_expected_outcome": "Only the chooser observes the source-choice frame. Wrong actor and the actual new exile incarnation reject with unchanged snapshot/revision. Raw and indexed children leave parent unchanged, survive parent disposal and match both observations. Restore rejects the stale old revision, then raw replay matches all fields; only the external top-level revision epoch is normalized for restored-child observation comparison, as documented by the engine/harness contract."
+    },
+    {
+      "required": "Actual Headliner may be chosen before or after sacrifice, but its creature-only damage cannot consume a player-damage shield.",
+      "test": "f15_headliner_can_be_chosen_before_or_after_sacrifice_but_creature_damage_keeps_player_shield",
+      "independent_expected_outcome": "Headliner is actually cast forR and its ability pays1R plus sacrifice; player target rejects. Source choice accepts the exact historical battlefield object while its actual activated ability waits, and rejects the new graveyard incarnation. One surviving own creature makes exactly1 damage to the actual opposing6/7 Marang River Regent. Both players remain20, no library card is drawn, and the chosen player-damage prevention remains unconsumed."
+    }
+  ],
+  "plan_correction": "Headliner targets only a creature. New Way Forward prevents damage to you. The positive player-damage case therefore uses actual Cori Mountain Stalwart; Headliner separately proves its printed recipient boundary and exact departed source choice. No redirection fixture or named-card behavior overlay is used.",
+  "reused_shared_proofs": {
+    "ledger": "/home/altf4/.cache/rustmage-tdm/g-s-authored-acceptance-crossrefs.json",
+    "ledger_sha256": "19811b00bd83279ef30a8ee66e1d31c8909e57efe183e54ded51448dd3f6772d",
+    "references": {
+      "nwf_zero": {
+        "path": "tests/tdm_remaining_world_rules.rs",
+        "absolute_path": "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
+        "line": 1258,
+        "body_sha256": "9e8704d841baa3baaaf2feb5c9c90a9479ccea3b2dba9aac120e28b43e5ec0e0",
+        "file_sha256": "f1760f5c4c68ac10071201f4d3d8d8cdad071c9eb237e91f3be52c03f7c14440",
+        "proof_kind": "shared_fixture",
+        "assertions_observed": "Zeroandunpreventablehit leave shield unconsumed/noDraw; nextpreventablehit producesonecallback.",
+        "native_cases": [
+          {
+            "receipt": "engine86",
+            "case": "zero_and_unpreventable_damage_do_not_consume_the_source_shield_or_create_a_callback",
+            "status": "ok",
+            "accepted_engine_body_equal": true
+          }
+        ],
+        "actual_definitions": []
+      },
+      "nwf_recipients": {
+        "path": "tests/tdm_remaining_world_rules.rs",
+        "absolute_path": "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
+        "line": 1279,
+        "body_sha256": "88f66de859f8a33ea8e38b3ecb410bf5958702d89cfb8b83a4373c687ae83130",
+        "file_sha256": "f1760f5c4c68ac10071201f4d3d8d8cdad071c9eb237e91f3be52c03f7c14440",
+        "proof_kind": "shared_fixture",
+        "assertions_observed": "Otherrecipient/source negative; controlchange damage-time propercontroller retained.",
+        "native_cases": [
+          {
+            "receipt": "engine86",
+            "case": "source_shield_ignores_other_recipients_and_sources_and_tracks_current_damage_controller",
+            "status": "ok",
+            "accepted_engine_body_equal": true
+          }
+        ],
+        "actual_definitions": []
+      },
+      "nwf_once": {
+        "path": "tests/tdm_remaining_world_rules.rs",
+        "absolute_path": "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
+        "line": 1236,
+        "body_sha256": "0e46109ad9c2eb3160de6c53817eabb27c36852ea6840e356323c8840a15b621",
+        "file_sha256": "f1760f5c4c68ac10071201f4d3d8d8cdad071c9eb237e91f3be52c03f7c14440",
+        "proof_kind": "shared_fixture",
+        "assertions_observed": "Prevent3reflect3draw3; secondhit2unprevented/noextraDraw.",
+        "native_cases": [
+          {
+            "receipt": "engine86",
+            "case": "chosen_source_prevents_positive_damage_once_and_reflexively_damages_its_controller_and_draws_same",
+            "status": "ok",
+            "accepted_engine_body_equal": true
+          }
+        ],
+        "actual_definitions": []
+      },
+      "nwf_expiry": {
+        "path": "tests/tdm_remaining_world_rules.rs",
+        "absolute_path": "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
+        "line": 1644,
+        "body_sha256": "3996cfd46c87fea8095e81f613b3b61b82e289d4f5cc6152f31f6086d8ee0018",
+        "file_sha256": "f1760f5c4c68ac10071201f4d3d8d8cdad071c9eb237e91f3be52c03f7c14440",
+        "proof_kind": "shared_fixture",
+        "assertions_observed": "Reflexivepacket counterable; unspentshield expirescleanupwithoutcallback.",
+        "native_cases": [
+          {
+            "receipt": "engine86",
+            "case": "source_prevention_reflexive_is_counterable_and_shield_expires_at_cleanup_without_a_callback",
+            "status": "ok",
+            "accepted_engine_body_equal": true
+          }
+        ],
+        "actual_definitions": []
+      },
+      "nwf_incarnation": {
+        "path": "tests/tdm_remaining_world_rules.rs",
+        "absolute_path": "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
+        "line": 1409,
+        "body_sha256": "8a2f065d3324b1d10989edf1a85dfa426bef00ef436e87d95a3e53e0468baed0",
+        "file_sha256": "f1760f5c4c68ac10071201f4d3d8d8cdad071c9eb237e91f3be52c03f7c14440",
+        "proof_kind": "shared_fixture",
+        "assertions_observed": "Blinknewpermanent damage doesnotconsumeoldshield; exactoldLKIhit2preventsanddraw2.",
+        "native_cases": [
+          {
+            "receipt": "engine86",
+            "case": "a_chosen_permanent_that_leaves_and_returns_is_distinct_while_its_departed_lki_still_matches",
+            "status": "ok",
+            "accepted_engine_body_equal": true
+          }
+        ],
+        "actual_definitions": []
+      },
+      "nwf_ability_identity": {
+        "path": "tests/tdm_remaining_world_rules.rs",
+        "absolute_path": "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
+        "line": 2256,
+        "body_sha256": "c307244a6a649b7374c451f8d760217886d44157691f1b76d9b031b18c1b3363",
+        "file_sha256": "f1760f5c4c68ac10071201f4d3d8d8cdad071c9eb237e91f3be52c03f7c14440",
+        "proof_kind": "shared_fixture",
+        "assertions_observed": "Referred counteredability itself legal StackObject choice, sourcepermanentnotnamed; choosingability cannot shield its creature source; illegal/wrongactor/ownedrawindex/restore andbothviews.",
+        "native_cases": [
+          {
+            "receipt": "engine86",
+            "case": "source_world_completion_referred_ability_is_a_distinct_legal_no_damage_source_owned_in_both_realms",
+            "status": "ok",
+            "accepted_engine_body_equal": true
+          }
+        ],
+        "actual_definitions": []
+      },
+      "paradigm": {
+        "path": "tests/tdm_remaining_world_rules.rs",
+        "absolute_path": "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
+        "line": 3780,
+        "body_sha256": "30eac864b509844fe1612f6fec59ca2bbf21bb02f57fd0e393e1d83c1e5a3bad",
+        "file_sha256": "f1760f5c4c68ac10071201f4d3d8d8cdad071c9eb237e91f3be52c03f7c14440",
+        "proof_kind": "cross_set_compatibility",
+        "assertions_observed": "Actual RestorationSeminar Paradigm references exactoldexiledincarnation, notnewGY nor incidentalreturnedcard. NWFchooser is fixtureOpt.",
+        "native_cases": [
+          {
+            "receipt": "engine86",
+            "case": "waiting_source_boundary_paradigm_retains_the_actual_exiled_object_after_later_departure",
+            "status": "ok",
+            "accepted_engine_body_equal": true
+          }
+        ],
+        "actual_definitions": []
+      },
+      "goggles": {
+        "path": "tests/tdm_remaining_world_rules.rs",
+        "absolute_path": "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
+        "line": 3802,
+        "body_sha256": "240552bb23635c7636ee624ca16756acc898e5740fac02f3a134c272aa73c5e5",
+        "file_sha256": "f1760f5c4c68ac10071201f4d3d8d8cdad071c9eb237e91f3be52c03f7c14440",
+        "proof_kind": "cross_set_compatibility",
+        "assertions_observed": "ActualGoggles mana lotDTA retainsoldexactsource aftersourceleaves. NWFchooser fixtureOpt.",
+        "native_cases": [
+          {
+            "receipt": "engine86",
+            "case": "waiting_source_boundary_unspent_goggles_mana_retains_its_exact_delayed_trigger_source",
+            "status": "ok",
+            "accepted_engine_body_equal": true
+          }
+        ],
+        "actual_definitions": []
+      },
+      "goggles_empty": {
+        "path": "tests/tdm_remaining_world_rules.rs",
+        "absolute_path": "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
+        "line": 4398,
+        "body_sha256": "11014e84d4104b2e8d51e65d40604f2edab80e62992888faa99bc60efc56aa56",
+        "file_sha256": "f1760f5c4c68ac10071201f4d3d8d8cdad071c9eb237e91f3be52c03f7c14440",
+        "proof_kind": "cross_set_compatibility",
+        "assertions_observed": "Calls final_boundary_goggles_root_after_mana_disappears(false): evenaftermanaemptied, durationless untriggeredDTA keepsexactoldsource.",
+        "native_cases": [
+          {
+            "receipt": "engine86",
+            "case": "semantic_final_boundary_goggles_mana_loss_keeps_the_untriggered_delayed_ability_source",
+            "status": "ok",
+            "accepted_engine_body_equal": true
+          }
+        ],
+        "actual_definitions": []
+      },
+      "goggles_spent": {
+        "path": "tests/tdm_remaining_world_rules.rs",
+        "absolute_path": "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
+        "line": 4402,
+        "body_sha256": "0c02b791a468a70189704d2ac6fe143e2b62e3b75bf0b05f221782bf0cc0948f",
+        "file_sha256": "f1760f5c4c68ac10071201f4d3d8d8cdad071c9eb237e91f3be52c03f7c14440",
+        "proof_kind": "cross_set_compatibility",
+        "assertions_observed": "Calls final_boundary_goggles_root_after_mana_disappears(true): nonqualifyingmana paymentdoesnotterminate durationlessDTA reference.",
+        "native_cases": [
+          {
+            "receipt": "engine86",
+            "case": "semantic_final_boundary_goggles_nonqualifying_payment_keeps_the_untriggered_delayed_ability_source",
+            "status": "ok",
+            "accepted_engine_body_equal": true
+          }
+        ],
+        "actual_definitions": []
+      },
+      "flight": {
+        "path": "tests/tdm_remaining_world_rules.rs",
+        "absolute_path": "/home/altf4/.codex/worktrees/tdm-complete-set/rustmage/tests/tdm_remaining_world_rules.rs",
+        "line": 3874,
+        "body_sha256": "d0a281850ed9696b8a03e45e4b217c7be52ae7105087f0aad8e65cc7b673c3b5",
+        "file_sha256": "f1760f5c4c68ac10071201f4d3d8d8cdad071c9eb237e91f3be52c03f7c14440",
+        "proof_kind": "cross_set_compatibility",
+        "assertions_observed": "ActualFleetingFlight prevention retains olddepartedrecipient untilcleanup; NWFchooser fixtureOpt.",
+        "native_cases": [
+          {
+            "receipt": "engine86",
+            "case": "waiting_source_boundary_until_cleanup_combat_prevention_retains_departed_recipient",
+            "status": "ok",
+            "accepted_engine_body_equal": true
+          }
+        ],
+        "actual_definitions": []
+      }
+    },
+    "scope": "Reviewed zero/nonpreventable/once/expiry/incarnation and ability-object source controls are reused. Goggles, Flight and Paradigm remain cross-set compatibility, never TDM-only game evidence."
+  },
+  "verification": [
+    {
+      "stage": "initial fixture-only failure",
+      "report": "/home/altf4/.cache/rustmage-tdm/post86-g-s-prevention-1793828428978623053/g_s_prevention/native.json",
+      "status": "2 failed before the F15 events under test: unrelated Sagu Pummeler was not admitted in this isolated checkout. Replaced passive bodies with already-supported Marang River Regent and the second paid spell with already-supported no-entry-trigger Krumar Initiate. No engine or named-card behavior change.",
+      "report_sha256": "6608d96f8547206b154c08c18c6f8d410881dc7e22f8cb54f6d61d2318941485",
+      "failed_tests": [
+        "f15_headliner_can_be_chosen_before_or_after_sacrifice_but_creature_damage_keeps_player_shield",
+        "f15_stalwart_second_cast_damage_is_prevented_reflected_and_drawn_after_actual_severance"
+      ]
+    },
+    {
+      "stage": "admitted actual-definition fixture-corrected target",
+      "native_report": {
+        "path": "/home/altf4/.cache/rustmage-tdm/post86-g-s-prevention-retry-1793828714028393889/g_s_prevention/native.json",
+        "sha256": "7ca9b36d2e3c1c58dbcd8f1d33935dfcb6cc79fa0416aa4047afd4ee6986baf7"
+      },
+      "terminal_report": {
+        "path": "/home/altf4/.cache/rustmage-tdm/post86-g-s-prevention-retry-1793828714028393889/terminal.json",
+        "sha256": "ee60951a3609f29836d377a1cebbb79d5c23d8be3c7ae1db51afd8996eb81591"
+      },
+      "success": true,
+      "terminal": true,
+      "tests": [
+        {
+          "test": "f15_headliner_can_be_chosen_before_or_after_sacrifice_but_creature_damage_keeps_player_shield",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "f15_stalwart_second_cast_damage_is_prevented_reflected_and_drawn_after_actual_severance",
+          "status": "ok",
+          "exit": 0
+        }
+      ],
+      "expected_groups": 2,
+      "passed_groups": 2,
+      "compile_seconds": 1.518947731005028,
+      "execution_seconds": 0.033169257978443056,
+      "native_driver_seconds": 1.719631500018295,
+      "compile_log": {
+        "path": "/home/altf4/.cache/rustmage-tdm/post86-g-s-prevention-retry-1793828714028393889/g_s_prevention/native-compile.log",
+        "sha256": "a5146e4a6f088e82cdcd973b1c589d5935c29595c511d2d30083eba04eadb681"
+      },
+      "execution_log": {
+        "path": "/home/altf4/.cache/rustmage-tdm/post86-g-s-prevention-retry-1793828714028393889/g_s_prevention/native-execution-0.log",
+        "sha256": "52e9c50b1f518e46a4085c5478e848ef97006b76fd188295a3964a316da4bda8"
+      },
+      "source_manifest": {
+        "path": "/home/altf4/.cache/rustmage-tdm/post86-g-s-prevention-retry-1793828714028393889/g_s_prevention/source-hashes.json",
+        "sha256": "4873f2f1ad41ef8deb33ac6ae4c17c8b39ebdd63399a94699371ede1070c35f0"
+      },
+      "tested_source_sha256": "5d8af48e198d2766fa2965c519468f31a8efe0a799257e52d5a211fd37a99bc2",
+      "tested_preverification_evidence_sha256": "8218aba81d259cb2ee758b2b4cb7ab919bbfceeaedeb79fc61077a471d09d73d",
+      "inputs_unchanged": true,
+      "changed": [],
+      "engine_artifact": {
+        "fresh": true,
+        "profile": {
+          "opt_level": "1",
+          "debuginfo": 0,
+          "debug_assertions": true,
+          "overflow_checks": true,
+          "test": false
+        },
+        "features": [
+          "test-support"
+        ]
+      },
+      "clippy": {
+        "receipt": {
+          "path": "/home/altf4/.cache/rustmage-tdm/post86-g-s-prevention-retry-1793828714028393889/g_s_prevention/clippy-terminal.json",
+          "sha256": "a40661889cf7464bb0c525da056eb957efe74b2386ff9999c4f0652842bf56f2"
+        },
+        "command": [
+          "cargo",
+          "clippy",
+          "-p",
+          "rustmage",
+          "--profile",
+          "test",
+          "--test",
+          "tdm_set_prevention",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "exit": 0,
+        "seconds": 0.3160107369767502,
+        "log": {
+          "path": "/home/altf4/.cache/rustmage-tdm/post86-g-s-prevention-retry-1793828714028393889/g_s_prevention/clippy.log",
+          "sha256": "79c57500eae74a74eb46987fb8b1dfa62444bab0eea0296a55ce7f73f7e78aa5"
+        }
+      },
+      "source_check": {
+        "report": {
+          "path": "/home/altf4/.cache/rustmage-tdm/post86-g-s-prevention-retry-1793828714028393889/g_s_prevention/sources-driver.log",
+          "sha256": "b7ddd6f0a7bfced090756b5b4251e613597b0e3f3d2f1fa72bc4829612a79844"
+        },
+        "result": {
+          "definitions": 5488,
+          "source_blobs": 2668,
+          "java_verified": true,
+          "catalogue_version": "333dde0a164394421c40e3c67aa396d502d29ae70bcb8783a159b39754677eae"
+        }
+      },
+      "source_finalization": "Only this evidence receipt finalization changes after consuming jobs terminated; tested Rust source and all six participating actual definitions/provenance match the frozen source manifest exactly."
+    }
+  ],
+  "completion_counts_delta": 0,
+  "game_executions": 0,
+  "performance_claim": null,
+  "verified_utc": "2026-11-04T22:08:05.661579+00:00",
+  "measurement_scope": "Compile and execution measured separately using the unchanged warmed engine. Two scenario groups cover eight small before/after, both-seat rows; no general simulation throughput or complete-game claim."
+}
