@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "5ac935da8447e55ff20c1f8a7f2af025943a34fa1a9dd27cb2a83edc2ee967c1",
+  "catalogue_version": "6c6cf09e9ebc085549e78cb8db537f0e8caee3283d0bce64ab23aaaa15ff97d6",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3230,
-  "implemented_total": 3237,
+  "implemented_standard_cards": 3233,
+  "implemented_total": 3240,
   "token_definitions": 157,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -162,8 +162,8 @@
     },
     "tdm": {
       "total": 264,
-      "complete": 199,
-      "gated": 65
+      "complete": 202,
+      "gated": 62
     },
     "tla": {
       "total": 278,
@@ -37937,8 +37937,8 @@
     {
       "name": "Twin Bolt",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/twin_bolt.rs",
       "set": "tdm"
     },
@@ -38585,8 +38585,8 @@
     {
       "name": "Unsparing Boltcaster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/unsparing_boltcaster.rs",
       "set": "tdm"
     },
@@ -39809,8 +39809,8 @@
     {
       "name": "Wail of War",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/wail_of_war.rs",
       "set": "tdm"
     },

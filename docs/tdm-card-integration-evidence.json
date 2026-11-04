@@ -2,9 +2,9 @@
   "schema": 1,
   "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
   "status": "whole-set acceptance pending",
-  "locally_verified_cards": 159,
-  "newly_implemented": 73,
-  "previously_admitted_verified": 86,
+  "locally_verified_cards": 187,
+  "newly_implemented": 76,
+  "previously_admitted_verified": 111,
   "integrations": [
     {
       "source_commits": [
@@ -227,14 +227,66 @@
         }
       ],
       "source_pin_and_lint": "5488private/5489rootdefinitionsverified; all84actualoutcomes and focusedClippy pass; fullper-obligation provenance/unchangedb456bodies in docs/tdm-cards-g-s-evidence.json"
+    },
+    {
+      "evidence": "docs/tdm-existing-reuse-four-evidence.json",
+      "previously_admitted_verified": 4,
+      "names": [
+        "Surrak, Elusive Hunter",
+        "Ugin, Eye of the Storms",
+        "United Battlefront",
+        "Elspeth, Storm Slayer"
+      ],
+      "source_change": "none; exactb456Rust/test/Java and current4374nativePASS",
+      "newly_implemented": 0
+    },
+    {
+      "source_commits": [
+        "7c957ea2b"
+      ],
+      "whole_cards": 7,
+      "newly_implemented": 3,
+      "previously_admitted_verified": 4,
+      "regenerated": true,
+      "validation": [
+        {
+          "report": "/home/altf4/.cache/rustmage-tdm/root-s-z-spells7-integrated/native.json",
+          "sha256": "326ea20869d28b47afb9f110edf87b25593737eb6f8dcb94a3f596aaa150f488",
+          "terminal": true,
+          "success": true,
+          "cases": 36,
+          "compile_seconds": 4.524146111973096,
+          "execution_seconds": 0.03787131403805688
+        }
+      ]
+    },
+    {
+      "source_commits": [
+        "3d91bcc08"
+      ],
+      "whole_cards": 17,
+      "newly_implemented": 0,
+      "previously_admitted_verified": 17,
+      "regenerated": true,
+      "validation": [
+        {
+          "report": "/home/altf4/.cache/rustmage-tdm/root-a-g-existing17-all79-integrated/native.json",
+          "sha256": "a4b36ba2fe41066c816753dab7cdd46044dd884743e39bcc6cc88809f0c50f3e",
+          "terminal": true,
+          "success": true,
+          "cases": 79,
+          "compile_seconds": 3.3738656969508156,
+          "execution_seconds": 0.07554029097082093
+        }
+      ]
     }
   ],
-  "remaining_physical_cards": 117,
+  "remaining_physical_cards": 89,
   "source_verification": {
     "definitions": 5489,
-    "source_blobs": 2687,
+    "source_blobs": 2713,
     "java_verified": true,
-    "catalogue_version": "5ac935da8447e55ff20c1f8a7f2af025943a34fa1a9dd27cb2a83edc2ee967c1"
+    "catalogue_version": "6c6cf09e9ebc085549e78cb8db537f0e8caee3283d0bce64ab23aaaa15ff97d6"
   },
   "active_engine_dependency": "None currently. Shared84 fullyaccepted, all3guardedauthorcacheswarmed; cardauthorsresumed.",
   "engine83_card_repair": {
