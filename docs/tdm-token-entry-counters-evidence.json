@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "dependency": "E:TOKEN_ENTRY_COUNTERS",
+  "audit_group": 85,
+  "status": "Actualgatedcarddiagnosticconfirmed;sharedengineaudit/implementationpending",
+  "accepted_prior_engine": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+  "reproduction": {
+    "report": "/home/altf4/.cache/rustmage-tdm/tdm-globe-token-entry-diagnostic/native.json",
+    "case": "growth_dragonstorm_globe_adds_entry_counters_to_own_dragon_cards_and_tokens_with_each_provider",
+    "expected_counters": 2,
+    "actual_counters": 0,
+    "expected_stats": [
+      6,
+      6
+    ],
+    "actual_stats": [
+      4,
+      4
+    ],
+    "token": 5293,
+    "preconditions": "BothactualGlobeproviders live; actualordinaryBoulderborn correctlygets2; Dragonbackcreatesimmutable4/4redDragon/flying; nofixtureoverlay."
+  },
+  "source_audit": [
+    "stage_token_creation fast path directlycreate_token_batch_capture",
+    "Replacement-bearing/doubledgroupsalsoendincreate_token_groups*",
+    "create_token_groups_bound allocates tokens Outside->BF andfinisheszoneeventswithoutordinaryEntryMove/add_subtype_entry_counters",
+    "OrdinarycardentrydoesapplyControlledSubtypeEntryCounters throughentrypipeline"
+  ],
+  "scope": [
+    "Reusegenericpre-entrymechanics fornormal/replacement-added/doubledtokens;retainno-providerfastpath",
+    "CorrectliveeffectiveDragontraits/controller andperprovidersuppression/control/incarnation",
+    "Counterreplacement/prohibition/order,allcountersbeforeETBobserverfacts,samebatchnewprovidersnotretroactive",
+    "Ownedraw/index/sibling/drop/restore,transaction/privacy andactualGlobetokenoutcomes",
+    "Auditwhethernewruntime/wirestateintroduced; noassumed schemabump orunprovenprojection"
+  ],
+  "owner": "/root/tdm_cards_a_g",
+  "gated_card_checkpoint": "65c1c836e",
+  "card_count_unchanged": 187,
+  "whole_set_acceptance": false
+}
