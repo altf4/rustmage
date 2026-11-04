@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "set": "TDM",
-  "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
-  "status": "Focused interaction familyF02 passing; remaining15families and whole-set/game acceptance pending",
+  "engine_revision": "2660c86112362973c195bee4c1b85e1a968f9f3a",
+  "status": "Focused F02 and representative F07 actual-card interaction outcomes pass; full matrix/whole-set/game acceptance pending",
   "new_card_completions": 0,
   "families": [
     {
@@ -36,6 +36,38 @@
       "success": true,
       "compile_seconds": 1.970019822998438,
       "execution_seconds": 0.1355512920417823
+    },
+    {
+      "id": "F07",
+      "target": "tests/tdm_set_interactions.rs",
+      "case": "f07_omen_shuffle_does_not_return_dragonstorm_but_later_dragon_entry_repeats_loot",
+      "variants": "Both seats; actual paid Omen, separate paid Dragon front, actual returned enchantment recast",
+      "actual_cards": [
+        "Roiling Dragonstorm",
+        "Marang River Regent // Coil and Catch",
+        "Forest"
+      ],
+      "outcomes": [
+        "Exact first entry draw2/discard1 and printed1U payment",
+        "Omen uses3U, Instant Omen rather than Dragon qualities; draws3/discards1 and shuffles physical parent",
+        "Omen does not trigger Dragon entry; library parent has no normal/Omen cast permission",
+        "Separate4UU Dragon front enters6/7 flying, optional zero bounce targets; exact Dragonstorm returns to hand",
+        "Recasting returned Dragonstorm repeats exact draw2/discard1; earlier Dragon presence does not retrigger return",
+        "Each private discard has wrongactor/ownedraw-index/parentdrop/bothviews/restore/stale and rawreplay proof"
+      ],
+      "budget_per_drain": 96,
+      "report": "/home/altf4/.cache/rustmage-tdm/post86-first-proof-1793824255100003227/root_interactions/native.json",
+      "sha256": "fcb667b521193c51e043bee9d966059bf7d88b59db5aea436f4b30590472ab20",
+      "terminal": true,
+      "success": true,
+      "target_cases": 2,
+      "compile_seconds": 1.8213939200504683,
+      "execution_seconds": 0.14363749301992357,
+      "related_actual_card_proofs": [
+        "tests/tdm_cards_a_g.rs::mechanics_breaching_dragonstorm_exiles_lands_then_casts_up_to_eight_or_puts_nonland_in_hand",
+        "tests/tdm_cards_a_g.rs::mechanics_breaching_dragonstorm_returns_only_for_your_dragon_and_not_a_new_incarnation",
+        "tests/tdm_cards_g_s.rs::coil_and_catch_paid_omen_draws_three_then_discards_and_shuffles_physical_parent"
+      ]
     }
   ],
   "remaining_families": [
@@ -44,7 +76,6 @@
     "F04",
     "F05",
     "F06",
-    "F07",
     "F08",
     "F09",
     "F10",
@@ -55,5 +86,6 @@
     "F15",
     "F16"
   ],
-  "whole_set_acceptance": false
+  "whole_set_acceptance": false,
+  "remaining_F07_obligations": "All13 physical Omen pairs still require their individual complete-card matrix proofs; represented cross-card sequence passed."
 }
