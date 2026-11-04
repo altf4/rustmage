@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "scope": "All92 physical S\u2013Z TDM members plus their owned Omen/reprint definitions; whole-card results accumulate here.",
-  "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+  "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
   "metadata_baseline": "bd24d9f167f98308637420e3a4de461ccda1a4d0",
   "tracking_issue": "https://github.com/altf4/rustmage/issues/570",
   "owner": "s_z",
   "first_family": "Harmonize draw/bounce/combat spells",
   "started_utc": "2026-11-04T14:02:30.077837+00:00",
   "full_denominator": 92,
-  "currently_verified_new_complete": 4,
-  "currently_verified_existing_candidates": 19,
-  "pending_members": 69,
+  "currently_verified_new_complete": 7,
+  "currently_verified_existing_candidates": 23,
+  "pending_members": 62,
   "candidate_first_family_count": 4,
   "provisional_complete_flags": "New definitions remain complete=false through initial gated actual-definition PASS. Integrator then admits and repeats using normal supported put before counting. Existing baseline candidates require actual-definition evidence or accepted exact source/test/report proof reuse.",
   "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
@@ -459,6 +459,171 @@
       "path": "Mage/src/main/java/mage/target/TargetPlayer.java",
       "sha256": "36179d4a02c9e6216c0844db52d312bde0be07181238041064691b98d92a6eba",
       "extent": "complete body reread during current creature-family authoring"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/SarkhansResolve.java",
+      "sha256": "602aa7a3a11b7ec8e3e6ac1862e36fccc109a9549620cb93979e6d793ad64e0f",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/SnakeskinVeil.java",
+      "sha256": "b056ab7e42eae6e43c2f1b4b52fb131e76da6a76fb2ac45304663f22162d9ff7",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofAbility.java",
+      "sha256": "dd6ceb5e1dac42ece34947ba678be1057bf0f4ecc5e5eb24fc1995763954259a",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofBaseAbility.java",
+      "sha256": "eb33a62a2d3a0cfd4fffee6d99691000ed3d9cadd4937b41d0b53c4e5abacdea",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/t/TwinBolt.java",
+      "sha256": "e95164e497919101c8138ec63f5ab1a0f3ae9f804fdd89d063eaf1abd0609569",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageMultiEffect.java",
+      "sha256": "8abe9d89813203699d21532058cc5a3ffb2fc4cd247dc3cd960a076863a96818",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetAnyTargetAmount.java",
+      "sha256": "94951c7cb0e4950835abd2ac318730a5a91117712814c670fce37ab9d6e9302f",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetPermanentOrPlayerAmount.java",
+      "sha256": "5492628c0ec51873378c284b4408e59ecf0a6b0c0310275e250828142e08fb70",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetAmount.java",
+      "sha256": "46aa93db7da9ec3cbaabb36e6d5646b1202e3a88777ba26fd034f2adfa2a1732",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/common/FilterAnyTarget.java",
+      "sha256": "39d309804844b705a2400ce7086858449831db75048e836f777b66d5d0af18e5",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/w/WailOfWar.java",
+      "sha256": "852c1b2ad04ab2fe929c80da701fee05694d16848deb2d41d7927480cbec9910",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+      "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllEffect.java",
+      "sha256": "207759bf847022c212e713d520d0899243c37ef89c90c19473082c0ddd03099e",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInGraveyard.java",
+      "sha256": "906e86825eed8b6d1a0e9e72c0761aa181aabdc61abbf99fd526f2d3531020b7",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage/src/main/java/mage/constants/TargetController.java",
+      "sha256": "bd1591f2b4d3613a47bd6e509f92d688fea7c10d31a19ce7601ccba62cbba7f6",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/u/UnsparingBoltcaster.java",
+      "sha256": "86b833aa013b6ec7b6a9fb48c4694510b54a03aadac462e3cd22d3f39f3deb59",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/WasDealtDamageThisTurnPredicate.java",
+      "sha256": "e49e438ca9457fc7739c9d7bff5d354e470be766ce9b61c2c0d39de2ca7fba86",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/SeizeOpportunity.java",
+      "sha256": "59ae456d4b939dab248eff8cdc6b5c9f667ca5d472d01e771abfec7d1d210079",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+      "sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+      "sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java",
+      "sha256": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/w/WorthyCost.java",
+      "sha256": "5063c8b4e18dfb958187e0be8ba3a9c6cc90748e427fa053339099dd43e14250",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetSacrifice.java",
+      "sha256": "24e8ec2dda0609630c60e91b1b890feebc7c8dbb0eb6002565897a07ca9113d7",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/CanBeSacrificedPredicate.java",
+      "sha256": "66d9ed795337db25bde47c82a196d6be997bc30a5df7d82774868b7cbcbbc592",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
+      "sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCreatureOrPlaneswalker.java",
+      "sha256": "74a515df49ac9de9bab546fb06aa877375286ce8bb4ea19113e77d811177d85f",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/StrategicBetrayal.java",
+      "sha256": "4c80f202800d40b73a29dd958b183b2eab54b1858bf0fecf8343494314b78251",
+      "extent": "complete body read during targeted-family authoring/source preparation"
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/FilterOpponent.java",
+      "sha256": "45813e5fd75e1b9a5401f9927d811a9ebf05ea2364938b8f7c1020da7b6f1f7f",
+      "extent": "complete body read during targeted-family authoring/source preparation"
     }
   ],
   "source_read_scoped_files": [
@@ -476,6 +641,11 @@
       "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
       "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105",
       "extent": "FILTER_CREATURE_FLYING declaration and full initializer, lines1212-1217; requires live FlyingAbility predicate"
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+      "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105",
+      "extent": "Full declarations/initializers for creature-own-graveyard114-118, controlled creature657-661, generic creature780-784, creature/planeswalker797-806, flying1212-1217 and opposing damaged creature1327-1333. TargetController full implementation read separately."
     }
   ],
   "authority": [
@@ -623,9 +793,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "695437c60be8d53d3703c7865de78e3f3631b5ef47dadd9d5e68a7161cf00468"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "695437c60be8d53d3703c7865de78e3f3631b5ef47dadd9d5e68a7161cf00468",
+      "evidence_family": "Targeted spells and damaged-creature entry"
     },
     {
       "name": "Sarkhan, Dragon Ascendant",
@@ -704,9 +875,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "1866f1d069c3b78fb1b8a5eb92dc1cafc7c7d83abaed76a77d5fab6e710b6422"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "1866f1d069c3b78fb1b8a5eb92dc1cafc7c7d83abaed76a77d5fab6e710b6422",
+      "evidence_family": "Targeted spells and damaged-creature entry"
     },
     {
       "name": "Severance Priest",
@@ -856,9 +1028,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "f60c05bc8152dc4abdc25b2f35d354f3b786a659252a8aa0bef3d42c3ebe7905"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "f60c05bc8152dc4abdc25b2f35d354f3b786a659252a8aa0bef3d42c3ebe7905",
+      "evidence_family": "Targeted spells and damaged-creature entry"
     },
     {
       "name": "Snowmelt Stag",
@@ -1071,10 +1244,23 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_locally_verified_by_root_exact_baseline_and_current_native_proof",
+      "status": "locally_whole_card_verified",
       "verified": true,
       "oracle_facts_sha256": "3a50f3b3c28dcb5a963bb4d77ca4076366e16b9795da79fae82a7812c7dd2772",
-      "evidence": "docs/tdm-existing-strategic-betrayal-evidence.json"
+      "accepted_exact_proof_reuse": {
+        "document": "docs/tdm-existing-strategic-betrayal-evidence.json",
+        "document_sha256": "2122ce0a7eeea635290603470e1b34f86142bcda162bfbbe9993e818ee4db59b",
+        "root_commit": "1e9c6375d",
+        "definition_sha256": "1782494f82df4e2f2d80ecca37ff3018fdf0921ce17c2a3093c16e29f9acb529",
+        "test": "engine::assurance::hartford_grave_exile::betrayal_opponent_chooses_creature_and_exiles_their_graveyard",
+        "test_source": "tests/legacy/assurance/hartford_grave_exile.rs",
+        "test_source_sha256": "85d129f16c92e2cf8148081788fdae71261f08d57342dc87dacaac6949e2ce60",
+        "current_native_report": "<cache>/rustmage-validation-l0pzz2p2/report/native.json",
+        "current_native_report_sha256": "4ce510b350c0220eaee7641429c6d593e41fcfe5fc96cec8b8a5b795081052e0",
+        "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+        "accepted_existing_whole_cards": 1,
+        "scope": "Root independent complete source/Oracle/test/helper review plus fresh approved engine84 full-native PASS; no duplicate native card scenario needed."
+      }
     },
     {
       "name": "Sultai Devotee",
@@ -1514,9 +1700,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "9cc59ee1886796e8bad8fc68f369ace0020c480db0e4221e1badbb394eea4d27"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "9cc59ee1886796e8bad8fc68f369ace0020c480db0e4221e1badbb394eea4d27",
+      "evidence_family": "Targeted spells and damaged-creature entry",
+      "admission": "Gated actual12PASS first, then integrator admitted and ordinary full36PASS."
     },
     {
       "name": "Twinmaw Stormbrood // Charring Bite",
@@ -1690,9 +1878,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "43b919e17c2a61e1eba7f98c7cbf209d463e0e477b339e6edba16a2d338ec781"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "43b919e17c2a61e1eba7f98c7cbf209d463e0e477b339e6edba16a2d338ec781",
+      "evidence_family": "Targeted spells and damaged-creature entry",
+      "admission": "Gated actual12PASS first, then integrator admitted and ordinary full36PASS."
     },
     {
       "name": "Ureni's Rebuff",
@@ -1816,9 +2006,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "8a6797e9c3b67c85051273b966530e72197953d6e914f416d89c4be660204d3c"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "8a6797e9c3b67c85051273b966530e72197953d6e914f416d89c4be660204d3c",
+      "evidence_family": "Targeted spells and damaged-creature entry",
+      "admission": "Gated actual12PASS first, then integrator admitted and ordinary full36PASS."
     },
     {
       "name": "War Effort",
@@ -2092,9 +2284,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "82d7f0d3624278304111b19e236dcb46a74186f70bafa2148a253d6c65357aeb"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "82d7f0d3624278304111b19e236dcb46a74186f70bafa2148a253d6c65357aeb",
+      "evidence_family": "Targeted spells and damaged-creature entry"
     },
     {
       "name": "Yathan Roadwatcher",
@@ -2157,7 +2350,7 @@
       "oracle_facts_sha256": "c50c16138bb0572a1a932e5c9861f497a264e5a4b6aa78ced267b126fc8b3041"
     }
   ],
-  "remaining": "69 physical members remain for complete authored behavior/actual outcomes.23 locally verified (4new,19existing), including root-accepted Strategic Betrayal exact-source proof. Full set acceptance remains pending.",
+  "remaining": "88 physical members remain for complete source reads/authorship/actual-definition verification; first4 locally verified, full set acceptance still pending.",
   "families": [
     {
       "name": "Harmonize draw/bounce/combat spells",
@@ -2743,10 +2936,299 @@
         "Corrected mixed-event gated9/9 passed while Sagu complete=false. Integrator then promoted Sagu, regenerated and checked5488definitions/2534sourceblobs, then reran all24 S\u2013Z target scenarios through ordinary admitted loading:24/24 PASS."
       ],
       "test_source_sha256": "70fae199c47da942b9c1c91a407a6115c65f090bfac0a32272551a71267b4f2d"
+    },
+    {
+      "name": "Targeted spells and damaged-creature entry",
+      "started_utc": "2026-11-04T17:13:11.689045+00:00",
+      "status": "locally_whole_card_verified",
+      "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "authoring_compatibility_commit": "3e16680a58f2161fcd1afed5fd0a422d84c9a4cb",
+      "candidate_members": 7,
+      "new_candidates": 3,
+      "existing_candidates": 4,
+      "accepted_strategic_betrayal_proof_reuse": {
+        "document": "docs/tdm-existing-strategic-betrayal-evidence.json",
+        "document_sha256": "2122ce0a7eeea635290603470e1b34f86142bcda162bfbbe9993e818ee4db59b",
+        "root_commit": "1e9c6375d",
+        "definition_sha256": "1782494f82df4e2f2d80ecca37ff3018fdf0921ce17c2a3093c16e29f9acb529",
+        "test": "engine::assurance::hartford_grave_exile::betrayal_opponent_chooses_creature_and_exiles_their_graveyard",
+        "test_source": "tests/legacy/assurance/hartford_grave_exile.rs",
+        "test_source_sha256": "85d129f16c92e2cf8148081788fdae71261f08d57342dc87dacaac6949e2ce60",
+        "current_native_report": "<cache>/rustmage-validation-l0pzz2p2/report/native.json",
+        "current_native_report_sha256": "4ce510b350c0220eaee7641429c6d593e41fcfe5fc96cec8b8a5b795081052e0",
+        "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+        "accepted_existing_whole_cards": 1,
+        "scope": "Root independent complete source/Oracle/test/helper review plus fresh approved engine84 full-native PASS; no duplicate native card scenario needed."
+      },
+      "focused_filter": "spells_",
+      "focused_scenario_groups": [
+        "spells_sarkhan_resolve_both_modes_have_distinct_targets_and_temporary_growth",
+        "spells_snakeskin_veil_restricts_control_and_keeps_counter_after_hexproof_expires",
+        "spells_twin_bolt_requires_one_or_two_targets_and_announces_exact_positive_shares",
+        "spells_twin_bolt_owned_allocations_never_redistribute_a_departed_targets_share",
+        "spells_wail_of_war_freezes_only_the_target_opponents_current_creatures_until_cleanup",
+        "spells_wail_of_war_returns_zero_one_or_two_own_creatures_with_partial_target_finality",
+        "spells_unsparing_boltcaster_requires_an_enemy_damaged_this_turn_and_freezes_exact_five_damage",
+        "spells_unsparing_boltcaster_can_enter_when_no_creature_is_an_eligible_entry_target",
+        "spells_seize_opportunity_boosts_zero_one_or_two_creatures_until_cleanup",
+        "spells_seize_opportunity_exiles_exact_cards_for_ordinary_paid_play_through_next_own_turn",
+        "spells_worthy_cost_requires_own_creature_and_black_mana_and_is_sorcery_speed",
+        "spells_worthy_cost_exiles_creatures_or_planeswalkers_and_paid_sacrifice_survives_countering"
+      ],
+      "cards": [
+        {
+          "name": "Sarkhan's Resolve",
+          "definition": "src/card_definitions/tdm/sarkhan_s_resolve.rs",
+          "definition_sha256": "bc28c9360024497c93f4394063034ea57868b0622b10a5494c0a571b4436239a",
+          "provenance": "src/card_definitions/tdm/sarkhan_s_resolve.json",
+          "provenance_sha256": "71904f42085811ba8a97539a1619ef824988f47c1ff2c69e4deffb2fc17f5039",
+          "obligations": [
+            "1G instant bothmodes",
+            "+3/+3 eithercontroller creature untilcleanup",
+            "destroy only currentlyflying creature, targetlosesflying thenfizzles"
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Snakeskin Veil",
+          "definition": "src/card_definitions/tdm/snakeskin_veil.rs",
+          "definition_sha256": "efae3c4ea4383c9f5afda52f7c5404b6cbe31dc30c61f0cbc8ae915dc401e67d",
+          "provenance": "src/card_definitions/tdm/snakeskin_veil.json",
+          "provenance_sha256": "ba021f369b1859c510d257b5f8ac54d8101f93ae657b487317b6a76c1468721b",
+          "obligations": [
+            "G instant targetowncreature only",
+            "one permanent+1 counter plushexproofEOT",
+            "opponent cannot target protected creature, ownspells can; cleanup removeshexproof butretainscounter"
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Twin Bolt",
+          "definition": "src/card_definitions/tdm/twin_bolt.rs",
+          "definition_sha256": "4eca9ee6ac78ad4727256ed28dfd382bb8849a39be09964f8e676f0cd0309df2",
+          "provenance": "src/card_definitions/tdm/twin_bolt.json",
+          "provenance_sha256": "25cae094a6e4784d2f092c820f6183134c6742caf8f50141fc19b084421f0376",
+          "obligations": [
+            "1R instant, exactly2 fixed damage",
+            "one or two anytargets, each minimum1, allocations announced before payment",
+            "one target takes2 or split1/1; no redistribution when one target becomes illegal",
+            "rejectzero allocations, duplicate/third/invalid targets; typed anytarget includes creature, player, planeswalker, battle",
+            "representative owned raw/index/restore target-allocation root"
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Wail of War",
+          "definition": "src/card_definitions/tdm/wail_of_war.rs",
+          "definition_sha256": "27f4b9b27960c0d7f818d91085c8cdf77650fc6179cd263923353442072da2a5",
+          "provenance": "src/card_definitions/tdm/wail_of_war.json",
+          "provenance_sha256": "a253327a46e23c0ab9683df344a0f0c9315e788f722216f62fceed58ac551351",
+          "obligations": [
+            "2B instant, chooseexactlyone mode",
+            "targetopponent only; freeze current controlled creatures for -1/-1 untilcleanup, own and late entrants unaffected",
+            "return0/1/2 ownGYcreatures tohand; rejectforeign/noncreature and retain partialvalidtarget after blink"
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Unsparing Boltcaster",
+          "definition": "src/card_definitions/tdm/unsparing_boltcaster.rs",
+          "definition_sha256": "388e2527c335a350977a0c7a5e1f2cefe8e5d7229ec561539c45cc0f4f23ce24",
+          "provenance": "src/card_definitions/tdm/unsparing_boltcaster.json",
+          "provenance_sha256": "4b6f9bc299b22719c0391be5eebe82398f0bac889faadf32532d18e07b35226e",
+          "obligations": [
+            "2R3/3 normalcreature",
+            "actualETBmandatory5damage to opponentcreature actuallydamagedthisturn",
+            "damagedown and undamagedenemy invalid; source departure still deals5; targetcontroller/incarnation sampled onresolution",
+            "no validtarget doesnotprevent creaturecast/entry"
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Seize Opportunity",
+          "definition": "src/card_definitions/tdm/seize_opportunity.rs",
+          "definition_sha256": "6acfed964d9f04eac8ea5069ccd078789e9fa7de475dc560d53b05745c8841c1",
+          "provenance": "src/card_definitions/tdm/seize_opportunity.json",
+          "provenance_sha256": "c4388c6a4b9f6840d063e213b81ac385d4eeb9d115afb2a33a48f332c31257f8",
+          "obligations": [
+            "2R instant bothmodes",
+            "exacttop2 faceupexile actualpaidplay andlandplay permission throughendofnextownturn",
+            "ordinarytiming/landallowance andexactincarnation/expiry; shortlibrary",
+            "0/1/2 creatures each+2/+1 untilcleanup, eithercontroller andpartialinvalidtargets"
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Worthy Cost",
+          "definition": "src/card_definitions/tdm/worthy_cost.rs",
+          "definition_sha256": "acd925582f3ec57f91f0cc6dd668dd72e3a35e5801589fe636271a71bcf579f3",
+          "provenance": "src/card_definitions/tdm/worthy_cost.json",
+          "provenance_sha256": "0d9003065fc9413089153f00d0a0dcd5cd8a929ad2f4f2e33b5ec430ca171d45",
+          "obligations": [
+            "B sorcery mandatoryowncreaturesacrifice extra",
+            "exiletargetcreatureorplaneswalker eithercontroller",
+            "no creaturematerial/noblack/timing/wrongtarget rejectedtransactionally",
+            "paid sacrifice retained if spellcountered/targetillegal; chosenmaterial may be intendedtarget, thenfinalityfizzle"
+          ],
+          "status": "locally_whole_card_verified"
+        }
+      ],
+      "shared_proofs": [
+        "Shared any-target legality includes battle permanents; this catalogue has no admitted native battle identity for a separate card-level battle recipient. Fresh actual Twin Bolt proves creature/player/planeswalker recipients and the existing exact divided-damage primitive.",
+        "Existing keyword/counter, temporary stat, private hand and cost-order engine contracts apply; native scenarios separately assert each actual definition's printed effects."
+      ],
+      "new_state_or_schema": false,
+      "finished_utc": "2026-11-04T17:45:06.412193+00:00",
+      "verified_new_complete": 3,
+      "verified_existing_candidates": 4,
+      "focused_execution": [
+        {
+          "stage": "gated-first",
+          "report": "<cache>/rustmage-tdm/cards-s-z-targetspells-engine84-gated-first/native.json",
+          "report_sha256": "7cbc3682bf466d33073e2fc217fb21b3f9c8648b32c5f50a84a7c9941771ec67",
+          "terminal": true,
+          "success": false,
+          "passed": 11,
+          "expected_groups": 12,
+          "failed": [
+            "spells_seize_opportunity_exiles_exact_cards_for_ordinary_paid_play_through_next_own_turn"
+          ],
+          "compile_seconds": 15.75735499698203,
+          "execution_seconds": 0.024772711971309036,
+          "wall_seconds": 15.782759690948296,
+          "compile_command": [
+            "cargo",
+            "test",
+            "-p",
+            "rustmage",
+            "--test",
+            "tdm_cards_s_z",
+            "--no-run",
+            "--message-format=json"
+          ],
+          "compile_log": "<cache>/rustmage-tdm/cards-s-z-targetspells-engine84-gated-first/native-compile.log",
+          "compile_log_sha256": "527f2c7a24c18364fde72ae0d3a0ee153252a471516640788a24f00771dfdb40",
+          "execution_log": "<cache>/rustmage-tdm/cards-s-z-targetspells-engine84-gated-first/native-execution-0.log",
+          "execution_log_sha256": "ac042c1c8073c99143bf2c54d79d9e66adc8c07fb2d8fd49e3c56214c42331c4",
+          "core_fresh": [
+            true
+          ],
+          "artifact_policy": "Native ELF tests use rlib linkage. Mutable Cargo outputs are transient completed artifacts; reports and logs retained, no preserved or required cdylib claim."
+        },
+        {
+          "stage": "gated-route-fix",
+          "report": "<cache>/rustmage-tdm/cards-s-z-targetspells-engine84-gated-route-fix/native.json",
+          "report_sha256": "61c1d0941e4a780f75661868009b639e7cf86286cb1bbd905869efd17afecf56",
+          "terminal": true,
+          "success": true,
+          "passed": 12,
+          "expected_groups": 12,
+          "failed": [],
+          "compile_seconds": 1.570077142037917,
+          "execution_seconds": 0.04328749398700893,
+          "wall_seconds": 1.6140319870319217,
+          "compile_command": [
+            "cargo",
+            "test",
+            "-p",
+            "rustmage",
+            "--test",
+            "tdm_cards_s_z",
+            "--no-run",
+            "--message-format=json"
+          ],
+          "compile_log": "<cache>/rustmage-tdm/cards-s-z-targetspells-engine84-gated-route-fix/native-compile.log",
+          "compile_log_sha256": "99a1e76360761051259096a63210864bbe116642ca3a0a5e0d9591dddc4e0880",
+          "execution_log": "<cache>/rustmage-tdm/cards-s-z-targetspells-engine84-gated-route-fix/native-execution-0.log",
+          "execution_log_sha256": "338bb020e9c2fd638abae8be064094fac0a4a3ff3da075aa23e81069f884facd",
+          "core_fresh": [
+            true
+          ],
+          "artifact_policy": "Native ELF tests use rlib linkage. Mutable Cargo outputs are transient completed artifacts; reports and logs retained, no preserved or required cdylib claim."
+        },
+        {
+          "stage": "admitted-all",
+          "report": "<cache>/rustmage-tdm/cards-s-z-targetspells-engine84-admitted-all/native.json",
+          "report_sha256": "bccf4fbab0dcaca4fb7b61a9aef61bdf245968d5c1ea432b0f87ea3fc662cd71",
+          "terminal": true,
+          "success": true,
+          "passed": 36,
+          "expected_groups": 36,
+          "failed": [],
+          "compile_seconds": 4.533091906982008,
+          "execution_seconds": 0.04989290802041069,
+          "wall_seconds": 4.583638287032954,
+          "compile_command": [
+            "cargo",
+            "test",
+            "-p",
+            "rustmage",
+            "--test",
+            "tdm_cards_s_z",
+            "--no-run",
+            "--message-format=json"
+          ],
+          "compile_log": "<cache>/rustmage-tdm/cards-s-z-targetspells-engine84-admitted-all/native-compile.log",
+          "compile_log_sha256": "bfb9a4cca8176cfc2124a4fe76cab771ec7043777240b7de1af0dc5e39c5b655",
+          "execution_log": "<cache>/rustmage-tdm/cards-s-z-targetspells-engine84-admitted-all/native-execution-0.log",
+          "execution_log_sha256": "8c46b1bd6a8872dff20b8f5bf8fd77c9d66ed8e6a8d7ff391497fcad9a371671",
+          "core_fresh": [
+            true
+          ],
+          "artifact_policy": "Native ELF tests use rlib linkage. Mutable Cargo outputs are transient completed artifacts; reports and logs retained, no preserved or required cdylib claim."
+        }
+      ],
+      "clippy": {
+        "report": "<cache>/rustmage-tdm/cards-s-z-targetspells-engine84-clippy-1793814096129863139/terminal.json",
+        "sha256": "a1bc46e0fa10592222fb5be8ed8960f4f3ec8859b256723b65ae470596c639a6",
+        "result": {
+          "command": [
+            "cargo",
+            "clippy",
+            "-p",
+            "rustmage",
+            "--test",
+            "tdm_cards_s_z",
+            "--",
+            "-D",
+            "warnings"
+          ],
+          "exit": 0,
+          "timed_out": false,
+          "orphaned_processes": false,
+          "seconds": 26.73974473500857,
+          "log": "<cache>/rustmage-tdm/cards-s-z-targetspells-engine84-clippy-1793814096129863139/clippy.log",
+          "terminal": true,
+          "success": true
+        },
+        "log_sha256": "c5e442149138e507bc58b0d441316aea73ac8b2152ce5fec7d46ef9f5353f4e3"
+      },
+      "engine_warm": {
+        "report": "<cache>/rustmage-tdm/engine84-author-baselines-1793811712648419284/s_z/core-warm-terminal.json",
+        "sha256": "40be93e09080f734991dfea344a22d7c8167f89c9a65a4554b7a4b97f8999886",
+        "seconds": 102.17046827997547,
+        "profile": "opt1/testfalse/features[test-support]"
+      },
+      "fixture_corrections": [
+        "Initial gated12 ran11PASS/1FAIL: the Seize fixture used support::cast, which selects the hand-only AnnounceCast route for a granted exile card. No runtime card/engine change.",
+        "Corrected actual paid Seize route to AnnounceExile then PayCosts, and corrected all three negative assertions (stale/poor/expired) to use AnnounceExile so they test the real permission boundary. Corrected gated12/12PASS while all three new completeflags werefalse.",
+        "Integrator reviewed the three new definitions, promoted them only after gatedPASS, regenerated and sourcechecked5488definitions/2542sourceblobs, then ordinary admitted full36/36PASS plus focused ClippyPASS."
+      ],
+      "test_source_sha256": "af4f1ffa1ec10b48ad5d57caf014d2425ec206d8e0efb9cb0d720e8dc7ac0e4d",
+      "official_release_notes": {
+        "url": "https://magic.wizards.com/en/news/feature/tarkir-dragonstorm-release-notes",
+        "local": "<temp>/tdm-release-notes.txt",
+        "sha256": "3ce1c9853c733c3ace178cdb1aac78c111107b3312bcbb683588bd5d3ebf2ea9",
+        "read_current_target_family": [
+          "1931-1944 Seize Opportunity normaltiming/costs/land restriction",
+          "2230-2243 Twin Bolt fixed division and no redistribution after illegal target"
+        ],
+        "read_next_cast_family": [
+          "195-263 Omen full general notes incl facequalification, counter/fizzle, copies, alternativecost distinction",
+          "2209-2224 Teval delve totalcost and stackX manavalue"
+        ]
+      }
     }
   ],
-  "first_family_finished_utc": "2026-11-04T14:05:57.547813+00:00",
-  "root_accepted_existing_reuse": [
-    "docs/tdm-existing-strategic-betrayal-evidence.json"
-  ]
+  "first_family_finished_utc": "2026-11-04T14:05:57.547813+00:00"
 }

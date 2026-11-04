@@ -1064,3 +1064,624 @@ fn creatures_watcher_mills_either_player_exactly_two_or_a_short_library_and_gain
         }
     }
 }
+
+fn modal_start(g: &mut Game, spell: CardId, mode: u16) {
+    act(g, Action::AnnounceCast { card: spell });
+    act(g, Action::ChooseMode { mode });
+}
+fn modal_cast(g: &mut Game, spell: CardId, mode: u16, targets: &[Target]) {
+    modal_start(g, spell, mode);
+    for &target in targets {
+        act(g, Action::ChooseTarget { target });
+    }
+    if g.legal_actions().contains(&Action::FinishTargets) {
+        act(g, Action::FinishTargets);
+    }
+    pay(g);
+}
+fn bolt_targets(g: &mut Game, spell: CardId, targets: &[Target]) {
+    act(g, Action::AnnounceCast { card: spell });
+    for &target in targets {
+        act(g, Action::ChooseTarget { target });
+    }
+    if g.legal_actions().contains(&Action::FinishTargets) {
+        act(g, Action::FinishTargets);
+    }
+}
+fn allocate(g: &mut Game, amounts: &[u64]) {
+    for &amount in amounts {
+        act(g, Action::AllocateTargetAmount { amount });
+    }
+    pay(g);
+}
+fn pay_sacrifice(g: &mut Game, material: CardId) {
+    for _ in 0..8 {
+        if g.state.announcing.is_none() {
+            return;
+        }
+        if matches!(g.state.pending, Pending::AdditionalCost { .. }) {
+            let object = g.object_ref(material);
+            act(g, Action::ChooseAdditionalCost { object });
+        } else if g.legal_actions().contains(&Action::BeginOrderedCosts) {
+            act(g, Action::BeginOrderedCosts);
+        } else if matches!(g.state.pending, Pending::CastCosts { .. }) {
+            let clause = g
+                .state
+                .announcing
+                .as_ref()
+                .unwrap()
+                .cast_costs
+                .as_ref()
+                .unwrap()
+                .clauses
+                .iter()
+                .position(|row| !row.paid)
+                .unwrap();
+            act(
+                g,
+                Action::ChooseCastCost {
+                    clause: clause as u16,
+                },
+            );
+        } else {
+            pay(g);
+        }
+    }
+    panic!("eight-action printed sacrifice-cost ceiling");
+}
+
+#[test]
+fn spells_sarkhan_resolve_both_modes_have_distinct_targets_and_temporary_growth() {
+    for p in [Player::P0, Player::P1] {
+        for owner in [p, p.other()] {
+            let mut g = scenario(p);
+            g.state.step = Step::Upkeep;
+            let bear = put(&mut g, owner, "Bear Cub", Zone::Battlefield);
+            let source = put(&mut g, p, "Sarkhan's Resolve", Zone::Hand);
+            modal_cast(&mut g, source, 0, &[Target::Card(bear)]);
+            settle(&mut g);
+            assert_eq!(stats(&g, bear), (5, 5));
+            g.finish_cleanup();
+            assert_eq!(stats(&g, bear), (2, 2));
+        }
+        for lose_flying in [false, true] {
+            let mut g = scenario(p);
+            let bird = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            g.state.objects[bird as usize].gained_keywords = Keywords::FLYING;
+            let ground = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let source = put(&mut g, p, "Sarkhan's Resolve", Zone::Hand);
+            modal_start(&mut g, source, 1);
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(ground),
+                },
+            );
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(bird),
+                },
+            );
+            pay(&mut g);
+            if lose_flying {
+                g.state.objects[bird as usize].gained_keywords = Keywords::NONE;
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(bird).zone,
+                if lose_flying {
+                    Zone::Battlefield
+                } else {
+                    Zone::Graveyard
+                }
+            );
+            assert_eq!(g.object_view(ground).zone, Zone::Battlefield);
+        }
+    }
+}
+
+#[test]
+fn spells_snakeskin_veil_restricts_control_and_keeps_counter_after_hexproof_expires() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let foreign = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let source = put(&mut g, p, "Snakeskin Veil", Zone::Hand);
+        act(&mut g, Action::AnnounceCast { card: source });
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(foreign),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(own),
+            },
+        );
+        pay(&mut g);
+        settle(&mut g);
+        assert_eq!(stats(&g, own), (3, 3));
+        assert_eq!(g.counter_count(own, CounterKind::PlusOne), 1);
+        assert!(g.keywords(own).contains(Keywords::HEXPROOF));
+        let mut opponent = g.clone();
+        act(&mut opponent, Action::Pass);
+        let shock = put(&mut opponent, p.other(), "Shock", Zone::Hand);
+        act(&mut opponent, Action::AnnounceCast { card: shock });
+        reject(
+            &mut opponent,
+            Action::ChooseTarget {
+                target: Target::Card(own),
+            },
+        );
+        let second = put(&mut g, p, "Snakeskin Veil", Zone::Hand);
+        cast(&mut g, second, Some(Target::Card(own)));
+        settle(&mut g);
+        assert_eq!(g.counter_count(own, CounterKind::PlusOne), 2);
+        g.finish_cleanup();
+        assert_eq!(stats(&g, own), (4, 4));
+        assert!(!g.keywords(own).contains(Keywords::HEXPROOF));
+    }
+}
+
+#[test]
+fn spells_twin_bolt_requires_one_or_two_targets_and_announces_exact_positive_shares() {
+    for p in [Player::P0, Player::P1] {
+        for split in [false, true] {
+            let mut g = scenario(p);
+            let dragon = put(&mut g, p.other(), "Shivan Dragon", Zone::Battlefield);
+            let artifact = put(&mut g, p.other(), "Short Bow", Zone::Battlefield);
+            let spell = actual_card(&mut g, p, "Twin Bolt", Zone::Hand);
+            act(&mut g, Action::AnnounceCast { card: spell });
+            reject(&mut g, Action::FinishTargets);
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(artifact),
+                },
+            );
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(dragon),
+                },
+            );
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(dragon),
+                },
+            );
+            if split {
+                act(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Player(p.other()),
+                    },
+                );
+            }
+            if g.legal_actions().contains(&Action::FinishTargets) {
+                act(&mut g, Action::FinishTargets);
+            }
+            reject(&mut g, Action::AllocateTargetAmount { amount: 0 });
+            reject(&mut g, Action::AllocateTargetAmount { amount: 3 });
+            allocate(&mut g, if split { &[1, 1] } else { &[2] });
+            settle(&mut g);
+            assert_eq!(g.object_view(dragon).damage, if split { 1 } else { 2 });
+            assert_eq!(
+                g.state.players[p.other().index()].life,
+                if split { 19 } else { 20 }
+            );
+            assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+        }
+        let mut g = scenario(p);
+        let walker = put(
+            &mut g,
+            p.other(),
+            "Ajani, Caller of the Pride",
+            Zone::Battlefield,
+        );
+        g.set_counters(walker, Counters::of(CounterKind::Loyalty, 5));
+        let spell = actual_card(&mut g, p, "Twin Bolt", Zone::Hand);
+        bolt_targets(&mut g, spell, &[Target::Card(walker)]);
+        allocate(&mut g, &[2]);
+        settle(&mut g);
+        assert_eq!(g.counter_count(walker, CounterKind::Loyalty), 3);
+    }
+}
+
+#[test]
+fn spells_twin_bolt_owned_allocations_never_redistribute_a_departed_targets_share() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let victim = put(&mut g, p.other(), "Shivan Dragon", Zone::Battlefield);
+        let spell = actual_card(&mut g, p, "Twin Bolt", Zone::Hand);
+        bolt_targets(
+            &mut g,
+            spell,
+            &[Target::Card(victim), Target::Player(p.other())],
+        );
+        let action = Action::AllocateTargetAmount { amount: 1 };
+        let rev = g.revision();
+        let index = g.legal_actions().iter().position(|a| *a == action).unwrap();
+        let saved = g.snapshot();
+        let mut raw = g.clone();
+        let mut indexed = g.clone();
+        let mut sibling = g.clone();
+        drop(g);
+        raw.apply(p, action.clone()).unwrap();
+        indexed.apply_index(p, rev, index).unwrap();
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        allocate(&mut raw, &[1]);
+        allocate(&mut indexed, &[1]);
+        for child in [&mut raw, &mut indexed] {
+            child.move_object(victim, Zone::Hand);
+            child.move_object(victim, Zone::Battlefield);
+            settle(child);
+            assert_eq!(child.object_view(victim).damage, 0);
+            assert_eq!(child.state.players[p.other().index()].life, 19);
+        }
+        allocate(&mut sibling, &[1, 1]);
+        settle(&mut sibling);
+        assert_eq!(sibling.object_view(victim).damage, 1);
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        indexed.restore(&saved).unwrap();
+        assert_eq!(
+            indexed.apply_index(p, rev, index),
+            Err(Error::StaleRevision)
+        );
+        act(&mut indexed, action);
+        allocate(&mut indexed, &[1]);
+        indexed.move_object(victim, Zone::Hand);
+        indexed.move_object(victim, Zone::Battlefield);
+        settle(&mut indexed);
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+    }
+}
+
+#[test]
+fn spells_wail_of_war_freezes_only_the_target_opponents_current_creatures_until_cleanup() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let spell = actual_card(&mut g, p, "Wail of War", Zone::Hand);
+        modal_start(&mut g, spell, 0);
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Player(p.other()),
+            },
+        );
+        pay(&mut g);
+        settle(&mut g);
+        assert_eq!(stats(&g, enemy), (1, 1));
+        assert_eq!(stats(&g, own), (2, 2));
+        let late = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        assert_eq!(stats(&g, late), (2, 2));
+        g.finish_cleanup();
+        assert_eq!(stats(&g, enemy), (2, 2));
+    }
+}
+
+#[test]
+fn spells_wail_of_war_returns_zero_one_or_two_own_creatures_with_partial_target_finality() {
+    for p in [Player::P0, Player::P1] {
+        for count in 0..=2 {
+            for blink in [false, true] {
+                let mut g = scenario(p);
+                let first = put(&mut g, p, "Bear Cub", Zone::Graveyard);
+                let second = put(&mut g, p, "Grizzly Bears", Zone::Graveyard);
+                let foreign = put(&mut g, p.other(), "Bear Cub", Zone::Graveyard);
+                let land = put(&mut g, p, "Forest", Zone::Graveyard);
+                let spell = actual_card(&mut g, p, "Wail of War", Zone::Hand);
+                g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 2];
+                modal_start(&mut g, spell, 1);
+                reject(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(foreign),
+                    },
+                );
+                reject(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(land),
+                    },
+                );
+                for &target in &[first, second][..count] {
+                    act(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Card(target),
+                        },
+                    );
+                }
+                if g.legal_actions().contains(&Action::FinishTargets) {
+                    act(&mut g, Action::FinishTargets);
+                }
+                pay(&mut g);
+                if blink {
+                    g.move_object(first, Zone::Exile);
+                    g.move_object(first, Zone::Graveyard);
+                }
+                settle(&mut g);
+                assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+                assert_eq!(
+                    g.object_view(first).zone,
+                    if count > 0 && !blink {
+                        Zone::Hand
+                    } else {
+                        Zone::Graveyard
+                    }
+                );
+                assert_eq!(
+                    g.object_view(second).zone,
+                    if count == 2 {
+                        Zone::Hand
+                    } else {
+                        Zone::Graveyard
+                    }
+                );
+                assert_eq!(g.object_view(foreign).zone, Zone::Graveyard);
+                assert_eq!(g.object_view(land).zone, Zone::Graveyard);
+            }
+        }
+    }
+}
+
+#[test]
+fn spells_unsparing_boltcaster_requires_an_enemy_damaged_this_turn_and_freezes_exact_five_damage() {
+    for p in [Player::P0, Player::P1] {
+        for response in 0..3 {
+            let mut g = scenario(p);
+            let enemy = put(&mut g, p.other(), "Shivan Dragon", Zone::Battlefield);
+            g.state.objects[enemy as usize].growth.toughness = 3;
+            let own = put(&mut g, p, "Shivan Dragon", Zone::Battlefield);
+            let clean = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+            for target in [enemy, own] {
+                let shock = put(&mut g, p, "Shock", Zone::Hand);
+                cast(&mut g, shock, Some(Target::Card(target)));
+                settle(&mut g);
+            }
+            let source = actual_card(&mut g, p, "Unsparing Boltcaster", Zone::Hand);
+            cast(&mut g, source, None);
+            reach(&mut g, |g| {
+                g.legal_actions().contains(&Action::ChooseTarget {
+                    target: Target::Card(enemy),
+                })
+            });
+            assert_eq!(stats(&g, source), (3, 3));
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(own),
+                },
+            );
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(clean),
+                },
+            );
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(enemy),
+                },
+            );
+            if g.legal_actions().contains(&Action::FinishTargets) {
+                act(&mut g, Action::FinishTargets);
+            }
+            if response == 0 {
+                g.move_object(source, Zone::Graveyard);
+            }
+            if response == 1 {
+                g.change_controller(g.object_ref(enemy), p);
+            }
+            if response == 2 {
+                g.move_object(enemy, Zone::Hand);
+                g.move_object(enemy, Zone::Battlefield);
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(enemy).damage,
+                match response {
+                    0 => 7,
+                    1 => 2,
+                    _ => 0,
+                }
+            );
+            assert_eq!(g.object_view(own).damage, 2);
+            assert_eq!(g.object_view(clean).damage, 0);
+        }
+    }
+}
+
+#[test]
+fn spells_unsparing_boltcaster_can_enter_when_no_creature_is_an_eligible_entry_target() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let clean = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let source = actual_card(&mut g, p, "Unsparing Boltcaster", Zone::Hand);
+        cast(&mut g, source, None);
+        settle(&mut g);
+        assert_eq!(stats(&g, source), (3, 3));
+        assert_eq!(g.object_view(clean).damage, 0);
+    }
+}
+
+#[test]
+fn spells_seize_opportunity_boosts_zero_one_or_two_creatures_until_cleanup() {
+    for p in [Player::P0, Player::P1] {
+        for count in 0..=2 {
+            let mut g = scenario(p);
+            let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let foreign = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let spell = put(&mut g, p, "Seize Opportunity", Zone::Hand);
+            let all = [Target::Card(own), Target::Card(foreign)];
+            modal_cast(&mut g, spell, 1, &all[..count]);
+            settle(&mut g);
+            assert_eq!(stats(&g, own), if count > 0 { (4, 3) } else { (2, 2) });
+            assert_eq!(stats(&g, foreign), if count == 2 { (4, 3) } else { (2, 2) });
+            g.finish_cleanup();
+            assert_eq!(stats(&g, own), (2, 2));
+            assert_eq!(stats(&g, foreign), (2, 2));
+        }
+    }
+}
+
+#[test]
+fn spells_seize_opportunity_exiles_exact_cards_for_ordinary_paid_play_through_next_own_turn() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let land = put(&mut g, p, "Forest", Zone::Library);
+        let bear = put(&mut g, p, "Bear Cub", Zone::Library);
+        let source = put(&mut g, p, "Seize Opportunity", Zone::Hand);
+        modal_cast(&mut g, source, 0, &[]);
+        settle(&mut g);
+        assert_eq!(g.object_view(land).zone, Zone::Exile);
+        assert_eq!(g.object_view(bear).zone, Zone::Exile);
+        let mut used = g.clone();
+        let hand_land = put(&mut used, p, "Forest", Zone::Hand);
+        act(&mut used, Action::PlayLand { card: hand_land });
+        reject(&mut used, Action::PlayLand { card: land });
+        let mut stale = g.clone();
+        stale.move_object(bear, Zone::Hand);
+        stale.move_object(bear, Zone::Exile);
+        reject(&mut stale, Action::AnnounceExile { card: bear });
+        g.finish_cleanup();
+        g.finish_cleanup();
+        assert_eq!(g.state.active, p);
+        g.state.step = Step::Main1;
+        g.state.priority = p;
+        g.state.players[p.index()].mana = [0; 6];
+        reject(&mut g, Action::AnnounceExile { card: bear });
+        let mut expired = g.clone();
+        expired.finish_cleanup();
+        expired.state.active = p;
+        expired.state.priority = p;
+        expired.state.step = Step::Main1;
+        expired.state.players[p.index()].mana = [0, 0, 0, 0, 1, 1];
+        reject(&mut expired, Action::AnnounceExile { card: bear });
+        act(&mut g, Action::PlayLand { card: land });
+        act(&mut g, Action::TapMana { card: land });
+        g.state.players[p.index()].mana[5] = 1;
+        assert!(
+            g.legal_actions()
+                .contains(&Action::AnnounceExile { card: bear }),
+            "paid exact exile route: zone {:?}, actor {:?}, step {:?}, mana {:?}",
+            g.object_view(bear).zone,
+            g.actor(),
+            g.state.step,
+            g.state.players[p.index()].mana
+        );
+        act(&mut g, Action::AnnounceExile { card: bear });
+        pay(&mut g);
+        settle(&mut g);
+        assert_eq!(g.object_view(bear).zone, Zone::Battlefield);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+}
+
+#[test]
+fn spells_worthy_cost_requires_own_creature_and_black_mana_and_is_sorcery_speed() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let foreign = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let artifact = put(&mut g, p, "Short Bow", Zone::Battlefield);
+        let spell = put(&mut g, p, "Worthy Cost", Zone::Hand);
+        reject(&mut g, Action::AnnounceCast { card: spell });
+        let material = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let mut upkeep = g.clone();
+        upkeep.state.step = Step::Upkeep;
+        reject(&mut upkeep, Action::AnnounceCast { card: spell });
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+        reject(&mut g, Action::AnnounceCast { card: spell });
+        g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 0];
+        act(&mut g, Action::AnnounceCast { card: spell });
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(artifact),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(foreign),
+            },
+        );
+        if matches!(g.state.pending, Pending::AdditionalCost { .. }) {
+            let wrong = g.object_ref(foreign);
+            reject(&mut g, Action::ChooseAdditionalCost { object: wrong });
+        }
+        pay_sacrifice(&mut g, material);
+        settle(&mut g);
+        assert_eq!(g.object_view(material).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(foreign).zone, Zone::Exile);
+        assert_eq!(g.object_view(artifact).zone, Zone::Battlefield);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
+}
+
+#[test]
+fn spells_worthy_cost_exiles_creatures_or_planeswalkers_and_paid_sacrifice_survives_countering() {
+    for p in [Player::P0, Player::P1] {
+        for route in 0..4 {
+            let mut g = scenario(p);
+            let material = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let target = if route == 0 {
+                let id = put(
+                    &mut g,
+                    p.other(),
+                    "Ajani, Caller of the Pride",
+                    Zone::Battlefield,
+                );
+                g.set_counters(id, Counters::of(CounterKind::Loyalty, 5));
+                id
+            } else if route == 3 {
+                material
+            } else {
+                put(&mut g, p.other(), "Bear Cub", Zone::Battlefield)
+            };
+            let spell = put(&mut g, p, "Worthy Cost", Zone::Hand);
+            act(&mut g, Action::AnnounceCast { card: spell });
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            pay_sacrifice(&mut g, material);
+            assert_eq!(g.object_view(material).zone, Zone::Graveyard);
+            if route == 1 {
+                act(&mut g, Action::Pass);
+                let cancel = put(&mut g, p.other(), "Cancel", Zone::Hand);
+                cast(&mut g, cancel, Some(Target::Spell(spell)));
+            }
+            if route == 2 {
+                g.move_object(target, Zone::Hand);
+                g.move_object(target, Zone::Battlefield);
+            }
+            settle(&mut g);
+            assert_eq!(
+                g.object_view(target).zone,
+                match route {
+                    0 => Zone::Exile,
+                    3 => Zone::Graveyard,
+                    _ => Zone::Battlefield,
+                }
+            );
+            assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+        }
+    }
+}
