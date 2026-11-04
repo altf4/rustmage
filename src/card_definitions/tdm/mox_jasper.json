@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1c47d3f2af3ebcbd4a75eafa66c6d61d206abffc0eef8832449e62e46fd35ecd"
   },
-  "physical_metadata_sha256": "d1dc21f1f3233cd583837796d6968512896c02e01e30a9950cb3a11adce65baf"
+  "physical_metadata_sha256": "d1dc21f1f3233cd583837796d6968512896c02e01e30a9950cb3a11adce65baf",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MoxJasper.java",
+  "java_sha256": "dff29e61bc831cd1bee6de43215a3108a163f29f59443bf9c50f36a1e90272d0",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/ActivateIfConditionManaAbility.java",
+      "sha256": "d5c9b973c6787cab3a8ba5a961f05651a55cfc971230b276ed619e23cc578132"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaOfAnyColorEffect.java",
+      "sha256": "1ab49b0ed403a80a0daed4883b432e65e47e38a72d5e4ebca87894284c4fa085"
+    }
+  ]
 }

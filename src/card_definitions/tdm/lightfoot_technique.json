@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8888c5ab0db89c81a7f8ef20fe4c0233413f258c0a6794e16aeebc983eb2003c"
   },
-  "physical_metadata_sha256": "e93ee7d0e78a531007ed89fc35fcafd1cdc70de453563b081acc3539b7c04d5f"
+  "physical_metadata_sha256": "e93ee7d0e78a531007ed89fc35fcafd1cdc70de453563b081acc3539b7c04d5f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LightfootTechnique.java",
+  "java_sha256": "412793d4cee86eb85c4fd0b6c14605ef3680f67a8d1f86bba0e13fa39f2086a1",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    }
+  ]
 }

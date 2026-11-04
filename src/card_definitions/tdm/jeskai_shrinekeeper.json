@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8501af7d4ccc0c02e13e5b89e57765a9a032f935f803e9c90465140ccf39b39a"
   },
-  "physical_metadata_sha256": "ed283a6bc82ceb9a1671475f520cc9223921c57a9cd4802f1568a7670aaefaef"
+  "physical_metadata_sha256": "ed283a6bc82ceb9a1671475f520cc9223921c57a9cd4802f1568a7670aaefaef",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/j/JeskaiShrinekeeper.java",
+  "java_sha256": "1439b3dbc4dbacbef7f29ee8879f21d1b51ebd140a5f3a3d4b3671f13e748e0f",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    }
+  ]
 }

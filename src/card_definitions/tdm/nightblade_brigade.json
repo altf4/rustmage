@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "810c84a496d795dac0a4de888d7e077a8485d2273bde37b61b28a9c75997ef1e"
   },
-  "physical_metadata_sha256": "af42a4a73e2543199e2689ccbdd8ffb97b43d82c0a27b28edbad2eae3a6afbc4"
+  "physical_metadata_sha256": "af42a4a73e2543199e2689ccbdd8ffb97b43d82c0a27b28edbad2eae3a6afbc4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/n/NightbladeBrigade.java",
+  "java_sha256": "fa971c47eaf326e5680e0d20033df3f8b0ec94aceb4ddcaaed8b1fec78df8f7c",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MobilizeAbility.java",
+      "sha256": "84ea782ab71b1b147b349c5f5ac8b2c03ae60211c95393a2e4e994da8ee5eac8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/RedWarriorToken.java",
+      "sha256": "91af8e32ddafb0a605511b4fd6a3e78e00d46465b90463b47ce6c6266a38582c"
+    }
+  ]
 }

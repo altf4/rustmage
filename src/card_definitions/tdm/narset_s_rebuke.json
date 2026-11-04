@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ee5868a9f4b3ce67f9c6dbd9cd8b3f1562fe1105698722f73466b9f3c6daf779"
   },
-  "physical_metadata_sha256": "5d2da081647f012675a7b3423b8102be45e484570157d17a90b23f67d750fcf3"
+  "physical_metadata_sha256": "5d2da081647f012675a7b3423b8102be45e484570157d17a90b23f67d750fcf3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/n/NarsetsRebuke.java",
+  "java_sha256": "021851c66fda8ff2075661736a268ed64ddc24b954502d05f0f0724cf5e46122",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetIfDiesEffect.java",
+      "sha256": "db2301f8fef9f5ce4777ebcc942f426194f6cd372156955efb846eeeed3b9c03"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+      "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    }
+  ]
 }

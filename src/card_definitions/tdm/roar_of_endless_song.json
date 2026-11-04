@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a17615375b3e93d2ddf2028c7f4a4074615aa32f50131792b23d50465f524dee"
   },
-  "physical_metadata_sha256": "7fc3e05c0f9833704e911bee7e21418eddc17706c9ca07b5b47f6e9ceff602b8"
+  "physical_metadata_sha256": "7fc3e05c0f9833704e911bee7e21418eddc17706c9ca07b5b47f6e9ceff602b8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RoarOfEndlessSong.java",
+  "java_sha256": "5d20a9b4f922dbe015e37aa0ed4917a92bba09053d8deeb73cd293bd2dca8dd8",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SagaAbility.java",
+      "sha256": "d907d96e4141a58d82f32fdb512e6426ed2cbd669544ade67f94b062dc7a8c80"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/Elephant55Token.java",
+      "sha256": "17b2df158fadb9e3a824223f808369408d4d9a9f27363db6f681d1a72cb30e40"
+    }
+  ]
 }

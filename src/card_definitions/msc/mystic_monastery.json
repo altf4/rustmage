@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "867920f6eca25c10b8b6165946f36e10fc987fa51e1e4a4542d356b41d2fecfe"
   },
-  "physical_metadata_sha256": "dbf764127f17381b37e71c799ba5d64b961c4cf3389568bfd06f5a2b2dfc61f1"
+  "physical_metadata_sha256": "dbf764127f17381b37e71c799ba5d64b961c4cf3389568bfd06f5a2b2dfc61f1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MysticMonastery.java",
+  "java_sha256": "45a3e86f91a47f7cb3b8acfc17655605fb122d19cdac509719617cfb7e5453ce",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedAbility.java",
+      "sha256": "147582b81a6ea9f26c8835600282fe7311c08dcb1ff983b26587e455c2c4514a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/BlueManaAbility.java",
+      "sha256": "8b0ffaec3d6002607e0a62e142031604a31556313e44830d9ad44026872cdf1f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/RedManaAbility.java",
+      "sha256": "1648a5c546271d42dd7cb1e3b988d6be224431812867755b96dd633593a5b8ee"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/WhiteManaAbility.java",
+      "sha256": "36c9c240bb0e9509d304d9300d0a157085253b4ab5d9a52cbdf1d051a43221b6"
+    }
+  ]
 }

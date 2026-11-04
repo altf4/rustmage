@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2a575cc1bedbbacaaab378ccd03430a710e11d5f49407e9aad54f3760a7bc165"
   },
-  "physical_metadata_sha256": "5d738979cd1a9ed112f715a5896d2f9b2852422e3566eb9fe5f11ff27fd58e61"
+  "physical_metadata_sha256": "5d738979cd1a9ed112f715a5896d2f9b2852422e3566eb9fe5f11ff27fd58e61",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MarangRiverRegent.java",
+  "java_sha256": "94ad25920e5284672b8d1ed3adb4994ac690d7cff87493f4161ddf844fd86992",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/OmenCard.java",
+      "sha256": "23ab5ce7824ef4ff96e68a43e16b9cc29fe9e5f03e447653d981da346fb5fcba"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/OmenSpellCard.java",
+      "sha256": "a103edc55f20408a67f69a0be9d1c5d5d08133c3b25d43fde7614bee966678ba"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+      "sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+    }
+  ]
 }

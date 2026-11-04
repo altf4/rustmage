@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "accf5fd81017752591c3d213949d82bb1f7cf688aaf0ef8e77a4714e4daa754d"
   },
-  "physical_metadata_sha256": "457588b0e8ce94481714ec5eb22e982823271957aa8b471468a4532021063130"
+  "physical_metadata_sha256": "457588b0e8ce94481714ec5eb22e982823271957aa8b471468a4532021063130",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MarshalOfTheLost.java",
+  "java_sha256": "bbfbaa6d222bae63dd2eea166a04cac661abb331953b945995139181ca3000e9",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+      "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    }
+  ]
 }

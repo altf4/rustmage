@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "03ccb0ceda7a7725aee2a16c5fa92c40b2739ffe73639d0b91a9bc030b29de9c"
   },
-  "physical_metadata_sha256": "7a469274b09361ef0f556015a5771a9ee2f910fca03bef1d6e24a62f524fd0bc"
+  "physical_metadata_sha256": "7a469274b09361ef0f556015a5771a9ee2f910fca03bef1d6e24a62f524fd0bc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RunescaleStormbrood.java",
+  "java_sha256": "c1fa56dbb0bd524b95ff0e038144578d1f8375a898a843908490e7f02eda48db",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/OmenCard.java",
+      "sha256": "23ab5ce7824ef4ff96e68a43e16b9cc29fe9e5f03e447653d981da346fb5fcba"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/OmenSpellCard.java",
+      "sha256": "a103edc55f20408a67f69a0be9d1c5d5d08133c3b25d43fde7614bee966678ba"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterTargetEffect.java",
+      "sha256": "49282767e8f8d631bb38ae1d35bc91a29ab2ae8173030e3a89d3da495c1cf233"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    }
+  ]
 }

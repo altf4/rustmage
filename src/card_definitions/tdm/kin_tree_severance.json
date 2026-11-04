@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "881794b01bf5561cd27c88de0725239dae2a20dbecad63d2bcb80a97159539d4"
   },
-  "physical_metadata_sha256": "b24050f66a23588e3943d18bdd79693710d5f4ef3955a237e7037c8e8824f5ea"
+  "physical_metadata_sha256": "b24050f66a23588e3943d18bdd79693710d5f4ef3955a237e7037c8e8824f5ea",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KinTreeSeverance.java",
+  "java_sha256": "87f4b07704d0200e821fd18095baf8ff35c4d7b7f631671bd059817ed3c94c39",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
+      "sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756"
+    }
+  ]
 }

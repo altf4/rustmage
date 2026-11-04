@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "301f1b0b3809a9db04b769d44af27bbb846f81f66efd09aac3a428efe3b7e143"
   },
-  "physical_metadata_sha256": "32e64fc3821013a7f73de6c16b17cf9b27f98a2c6608c67fc1c3306c88da1c67"
+  "physical_metadata_sha256": "32e64fc3821013a7f73de6c16b17cf9b27f98a2c6608c67fc1c3306c88da1c67",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MarduDevotee.java",
+  "java_sha256": "3c8a70cdff8736cb928ffb5a5120cfdf96ca77e42b887454c4a0591fcbf2ca17",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ScryEffect.java",
+      "sha256": "2b5d4d62bb612633238db872252ec41349e37180816e4a965002ee3b6f8d0b58"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/LimitedTimesPerTurnActivatedManaAbility.java",
+      "sha256": "277f02f44bf32ea4d389b21f74227491808e3fb0c30fbdb911a88918d550af23"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaFromColorChoicesEffect.java",
+      "sha256": "566cfd640a483cb992f550774635dabe582d5f0aba45283a1d7748db79bcc558"
+    }
+  ]
 }
