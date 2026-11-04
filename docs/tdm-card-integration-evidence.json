@@ -2,9 +2,9 @@
   "schema": 1,
   "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
   "status": "whole-set acceptance pending",
-  "locally_verified_cards": 77,
-  "newly_implemented": 37,
-  "previously_admitted_verified": 40,
+  "locally_verified_cards": 108,
+  "newly_implemented": 61,
+  "previously_admitted_verified": 47,
   "integrations": [
     {
       "source_commits": [
@@ -137,16 +137,56 @@
         "success": true,
         "basis": "Reused actual definition-specific outcomes from accepted current full native run, not catalogue/admission/trace checks."
       }
+    },
+    {
+      "source_commits": [
+        "472965fd9"
+      ],
+      "whole_cards": 8,
+      "newly_implemented": 1,
+      "previously_admitted_verified": 7,
+      "regenerated": true,
+      "validation": [
+        {
+          "report": "/home/altf4/.cache/rustmage-tdm/root-creatures8-integrated/native.json",
+          "sha256": "b36c99ea70e198bb965a291015a737776a73054cc2ddccf37b1763a45c8d3562",
+          "terminal": true,
+          "success": true,
+          "cases": 24,
+          "compile_seconds": 4.526216028025374,
+          "execution_seconds": 0.04322329198475927
+        }
+      ]
+    },
+    {
+      "source_commits": [
+        "75a6c2f0c"
+      ],
+      "whole_cards": 23,
+      "newly_implemented": 23,
+      "previously_admitted_verified": 0,
+      "regenerated": true,
+      "validation": [
+        {
+          "report": "/home/altf4/.cache/rustmage-tdm/root-g-s23-engine83-integrated/native.json",
+          "sha256": "7a64ca593daf7931b3714dac678b93576a9e71b1945548317423f2605fc827db",
+          "terminal": true,
+          "success": true,
+          "cases": 49,
+          "compile_seconds": 3.7741746400133707,
+          "execution_seconds": 0.0505933910026215
+        }
+      ]
     }
   ],
-  "remaining_physical_cards": 199,
+  "remaining_physical_cards": 168,
   "source_verification": {
     "definitions": 5488,
-    "source_blobs": 2560,
+    "source_blobs": 2625,
     "java_verified": true,
-    "catalogue_version": "73a964457b0b982380ca2c75ddce5e3c392f7b06294a8c526e49875433e119fe"
+    "catalogue_version": "5aee8e6d1ab87ea03dde3f4bd41041fe0c1938d22a1c9330a156ae89cd2aa4e9"
   },
-  "active_engine_dependency": "None currently. Engine82/83 fully validated and independently approved; three guarded author caches warmed and card authors released.",
+  "active_engine_dependency": "E:HALF_LIFE_ROUND_UP (84): Betor must lose ceil(nonnegative life/2); existing floor primitive must preserve Pox Plague. General card authors held with all WIP preserved. Prior83 engine checkpoint remains accepted.",
   "engine83_card_repair": {
     "card": "Aggressive Negotiations",
     "reason": "Restored after dedicated true nonland predicate rejects artifact/enchantment lands; mandatory reveal/exact refs/source-independent exile/counter continuation/owned branches verified.",

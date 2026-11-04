@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "set": "TDM",
+  "dependency": "E:HALF_LIFE_ROUND_UP",
+  "audit_group": 84,
+  "status": "Concrete missed dependency reproduced by actual gated Betor test; shared engine implementation pending. All general card authoring held.",
+  "accepted_prior_engine": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+  "source": "crates/engine/src/engine_programs.rs: Instruction::LoseHalfLife currently uses max(0)/2",
+  "reproduction": {
+    "owner_checkpoint": "6b56760458c041f60c5c9fafa582f5359d0d9fb1",
+    "gated_card": "Betor, Kin to All",
+    "report": "/home/altf4/.cache/rustmage-tdm/cards-a-g-mechanics-engine83-gated-first/native.json",
+    "case": "mechanics_betor_checks_ten_twenty_forty_live_total_toughness_and_rounds_half_life_up",
+    "opponent_initial_life": 21,
+    "expected_opponent_life": 10,
+    "actual_opponent_life": 11,
+    "test_expectation_must_remain": true
+  },
+  "required_behavior": [
+    "Distinct typed operation for round-up half-life loss; preserve existing floor operation and actual Pox Plague",
+    "Use max(0,life)/2 + max(0,life)%2 to avoid overflow at i128::MAX",
+    "Use normal lose_life pipeline and current live player-set selection",
+    "Actual even/odd/one/zero/negative/maximum arithmetic, owned raw/index/restore, wrongactor and illegal rollback compatibility",
+    "No card-name behavior or new English parser",
+    "Audit observation/wire compatibility; do not invent public state for immediate arithmetic"
+  ],
+  "pending": [
+    "Implement/test/review shared dependency",
+    "Accept24 new admitted-card trace additions, validate final engine executable inputs",
+    "Two pure independent final engine-head reviews",
+    "Warm stable guarded core caches, then repair actual gated Betor opcode and reprove12-cardfamily"
+  ],
+  "card_count_unchanged_by_this_dependency": 108,
+  "author_wip": "AG12gated6b567604; GS38draft/tmp/tdm_gs_tests4.rs; SZ3gatednewspellbodies preserved; no active Cargo"
+}

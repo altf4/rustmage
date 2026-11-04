@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "2633c0aece84f3c729b9a366f4978eca873a0ef3cb533536b20c61a69250a673",
+  "catalogue_version": "5aee8e6d1ab87ea03dde3f4bd41041fe0c1938d22a1c9330a156ae89cd2aa4e9",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3194,
-  "implemented_total": 3201,
+  "implemented_standard_cards": 3218,
+  "implemented_total": 3225,
   "token_definitions": 156,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -162,8 +162,8 @@
     },
     "tdm": {
       "total": 264,
-      "complete": 163,
-      "gated": 101
+      "complete": 187,
+      "gated": 77
     },
     "tla": {
       "total": 278,
@@ -16665,8 +16665,8 @@
     {
       "name": "Hollowmurk Siege",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/hollowmurk_siege.rs",
       "set": "tdm"
     },
@@ -19177,8 +19177,8 @@
     {
       "name": "Kishla Trawlers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/kishla_trawlers.rs",
       "set": "tdm"
     },
@@ -19409,8 +19409,8 @@
     {
       "name": "Kotis, the Fangkeeper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/kotis_the_fangkeeper.rs",
       "set": "tdm"
     },
@@ -20745,8 +20745,8 @@
     {
       "name": "Lotuslight Dancers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/lotuslight_dancers.rs",
       "set": "tdm"
     },
@@ -21097,8 +21097,8 @@
     {
       "name": "Maelstrom of the Spirit Dragon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/maelstrom_of_the_spirit_dragon.rs",
       "set": "tdm"
     },
@@ -21193,8 +21193,8 @@
     {
       "name": "Magmatic Hellkite",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/magmatic_hellkite.rs",
       "set": "tdm"
     },
@@ -21505,8 +21505,8 @@
     {
       "name": "Mardu Siegebreaker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/mardu_siegebreaker.rs",
       "set": "tdm"
     },
@@ -22729,8 +22729,8 @@
     {
       "name": "Molten Exhale",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/molten_exhale.rs",
       "set": "tdm"
     },
@@ -23417,8 +23417,8 @@
     {
       "name": "Naga Fleshcrafter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/naga_fleshcrafter.rs",
       "set": "tdm"
     },
@@ -23465,8 +23465,8 @@
     {
       "name": "Narset, Jeskai Waymaster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/narset_jeskai_waymaster.rs",
       "set": "tdm"
     },
@@ -23489,8 +23489,8 @@
     {
       "name": "Nature's Rhythm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/nature_s_rhythm.rs",
       "set": "tdm"
     },
@@ -23537,8 +23537,8 @@
     {
       "name": "Neriv, Heart of the Storm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/neriv_heart_of_the_storm.rs",
       "set": "tdm"
     },
@@ -23609,8 +23609,8 @@
     {
       "name": "New Way Forward",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/new_way_forward.rs",
       "set": "tdm"
     },
@@ -24585,8 +24585,8 @@
     {
       "name": "Osseous Exhale",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/osseous_exhale.rs",
       "set": "tdm"
     },
@@ -25465,8 +25465,8 @@
     {
       "name": "Piercing Exhale",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/piercing_exhale.rs",
       "set": "tdm"
     },
@@ -27073,8 +27073,8 @@
     {
       "name": "Rally the Monastery",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/rally_the_monastery.rs",
       "set": "tdm"
     },
@@ -27681,8 +27681,8 @@
     {
       "name": "Rediscover the Way",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/rediscover_the_way.rs",
       "set": "tdm"
     },
@@ -28265,8 +28265,8 @@
     {
       "name": "Reverberating Summons",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/reverberating_summons.rs",
       "set": "tdm"
     },
@@ -28281,8 +28281,8 @@
     {
       "name": "Revival of the Ancestors",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/revival_of_the_ancestors.rs",
       "set": "tdm"
     },
@@ -28449,8 +28449,8 @@
     {
       "name": "Ringing Strike Mastery",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/ringing_strike_mastery.rs",
       "set": "tdm"
     },
@@ -28553,8 +28553,8 @@
     {
       "name": "Rite of Renewal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/rite_of_renewal.rs",
       "set": "tdm"
     },
@@ -28641,8 +28641,8 @@
     {
       "name": "Riverwheel Sweep",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/riverwheel_sweep.rs",
       "set": "tdm"
     },
@@ -28937,8 +28937,8 @@
     {
       "name": "Rot-Curse Rakshasa",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/rot_curse_rakshasa.rs",
       "set": "tdm"
     },
@@ -29401,8 +29401,8 @@
     {
       "name": "Sagu Pummeler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/sagu_pummeler.rs",
       "set": "tdm"
     },
