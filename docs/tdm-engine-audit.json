@@ -12,7 +12,7 @@
     "unresolved_membership_facts": 0,
     "independently_verified_complete_set_cards": 0
   },
-  "phase": "Engine82/83 focused actual/rules/schema contracts and all-target Clippy pass; schema201 trace acquisition/full release/final independent approvals/cache warm pending.71localwholecards, general authors held.",
+  "phase": "All276 physical card bodies/13 Omen pairs locally whole-verified. Engine86 accepted; fixed natural-game acceptance exposed dependency87, E:PAID_MANA_USE_RECEIPT. Return to shared-engine phase before further dependent game acceptance.",
   "audit_reports": [
     "docs/tdm-audit-a-g.json",
     "docs/tdm-audit-g-s.json",
@@ -814,16 +814,62 @@
         "tdm_engine_review_two: confirmed predicate/design, positive-union compatibility and actual pending observation requirement"
       ],
       "implementation_evidence": "docs/tdm-nonland-hand-exile-evidence.json"
+    },
+    {
+      "id": "E:HALF_LIFE_ROUND_UP",
+      "description": "Instruction::LoseHalfLifeRoundedUp(PlayerSet), live max(0,life)/2+life%2 using ordinary program_players/lose_life. Existing floor operation and Pox Plague unchanged.",
+      "status": "Accepted shared-rule checkpoint after full release, two independent pure nonauthor reviews and guarded author-cache warm. Historical acceptance does not supersede later discovered dependencies.",
+      "validated_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "implementation_evidence": "docs/tdm-engine84-acceptance.json"
+    },
+    {
+      "id": "E:TOKEN_ENTRY_COUNTERS",
+      "description": "Fixed token groups reuse the existing owned EntryMove pipeline when pre-entry rules apply. Deferred CreatedTokens completion preserves post-entry counters, attachments/reflexives and Mobilize continuation. Simultaneous fixed Roles retain one fresh cohort timestamp after deferred timestamp finalization. Ordinary no-provider factories retain their direct allocation path.",
+      "status": "Accepted shared-rule checkpoint after full release, two independent pure nonauthor reviews and guarded author-cache warm. Historical acceptance does not supersede later discovered dependencies.",
+      "validated_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
+      "implementation_evidence": "docs/tdm-engine85-acceptance.json"
+    },
+    {
+      "id": "E:CAST_EVENT_SCALAR_CAPTURE",
+      "description": "The existing recursive cast-event quantity collector also recognizes CastSpellManaValue. Nested scalar consumers retain the existing captured event; nonconsumers opt out. Existing symbol behavior and legacy caller allowlist are preserved.",
+      "status": "Accepted shared-rule checkpoint after full release, two independent pure nonauthor reviews and guarded author-cache warm. Historical acceptance does not supersede later discovered dependencies.",
+      "validated_revision": "2660c86112362973c195bee4c1b85e1a968f9f3a",
+      "implementation_evidence": "docs/tdm-engine86-acceptance.json"
+    },
+    {
+      "id": "E:PAID_MANA_USE_RECEIPT",
+      "description": "Post-cost late mana output funding must project the completed child activation-use receipt",
+      "required_change": "In cloned funding worlds, project the exact completed child use/history before testing parent reachability. Preserve exact incarnation/definition/origin, borrowed/self-granted uses and exhaust history. Do not repay child costs, fire real observers, or blanket-ban genuinely repeatable converters. Preserve current activation resolution timing and public schema unless a real wire change is found.",
+      "cards": [
+        "Abzan Devotee",
+        "Jeskai Devotee",
+        "Sultai Devotee",
+        "Mardu Devotee",
+        "Temur Devotee"
+      ],
+      "discovered_by": "Fixed TDM Standard pair0 seed426000 startP0 swapfalse: legal paid Jeskai Devotee late R output strands Narset WUR parent payment with only Concede.",
+      "failure_report": "<cache>/rustmage-tdm/full276-games-1793831725159996758/native.json",
+      "diagnostic_report": "<cache>/rustmage-tdm/full276-games-payment-diagnostic-1793831843019515087/native.json",
+      "authority": [
+        "CR602.5b",
+        "CR605.3b",
+        "CR605.3c",
+        "CR733"
+      ],
+      "status": "Concrete shared-engine blocker independently confirmed by pure reviewer and isolated author. Test-first regression and minimal receipt projection repair in progress; game acceptance paused.",
+      "implementation_evidence": "docs/tdm-paid-mana-use-receipts-evidence.json (pending)"
     }
   ],
   "acceptance": {
-    "shared_rules_reviewed": true,
-    "card_authoring_permitted": true,
+    "shared_rules_reviewed": false,
+    "card_authoring_permitted": false,
     "set_only_complete_games": false,
     "full_release_acceptance": false,
     "final_two_nonauthor_reviews": false,
     "engine_release_checkpoint": true,
-    "engine_checkpoint_two_nonauthor_reviews": true
+    "engine_checkpoint_two_nonauthor_reviews": true,
+    "new_engine_dependency_pending": true,
+    "locally_verified_physical_cards": 276
   },
   "initial_checks": {
     "source_pin_check": {
@@ -1107,7 +1153,10 @@
     "reviewers": [
       "/root/tdm_engine_review_one",
       "/root/tdm_engine_review_two"
-    ]
+    ],
+    "latest_accepted_revision": "2660c86112362973c195bee4c1b85e1a968f9f3a",
+    "latest_accepted_evidence": "docs/tdm-engine86-acceptance.json",
+    "newly_discovered_dependency_pending": "E:PAID_MANA_USE_RECEIPT"
   },
   "metadata_reconciliation": "docs/tdm-metadata-reconciliation.json"
 }

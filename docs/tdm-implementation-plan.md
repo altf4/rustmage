@@ -5,78 +5,67 @@ Implementation branch: `codex/tdm-complete-set`.
 Baseline: `c87b55079c540edde1c49cc725a1e1475bebf68b`.
 Pinned XMage: `492369c7844b8d76479f0393ff9eb6b0b0cf30d7`.
 
-The frozen denominator is **276 identities**, deduplicating 432 printings.
-`data/sets/tdm.json` retains 275 pinned Oracle identities and explicitly records
-Cori-Steel Cutter as unresolved. The Standard snapshot excludes this banned card;
-complete-set work must reconcile its facts and behavior without changing Standard
-legality. The initial flags report 137 admitted candidates and 138 gated identities.
-None of those flags independently certifies all printed obligations.
+The frozen pool has **276 physical identities**, deduplicating432 printings,
+plus13 paired Omen spell faces. Cori-Steel Cutter remains banned in the frozen
+Standard snapshot; its behavior and games use separately labelled Freeform scope.
 
-## Current phase
+All276 physical definitions have local whole-card outcome evidence:139 new
+implementations and137 previously admitted definitions verified. All13 Omen pairs
+and the Reliquary Dragon token are complete. The printed proof ledger is frozen
+at SHA256 `b6716c0d6f18774988997e1183caaf5b0f977d2049406f56da7dbfaecec2942a`.
+See [the integration ledger](tdm-card-integration-evidence.json) and
+[the sixteen-family matrix](tdm-set-coverage-matrix.json), which binds265 named
+proofs to exact source and retained positive receipts. These are card/scenario
+proofs; full-set game, performance, release and published-PR acceptance remain open.
 
-Complete whole-set source and dependency audit before changing behavior. Three
-disjoint audit partitions cover all 275 resolved identities; the separate
-[Cori-Steel Cutter audit](tdm-cori-steel-audit.json) covers the final identity.
-The [complete dependency ledger](tdm-engine-audit.json) reconciles all 276 source
-audits and records 81 dependency/proof groups, including duplicate group aliases.
-Shared engine implementation is in progress. **49 of the81 audit/proof groups**, including aliases, have scoped implementation, focused evidence and two independent nonauthor reviews. Another22 groups have owner tests passing with reviews or review repairs pending. Counts are not weighted by complexity. Independent casting review identified an81st cross-cutting dependency: zero/free/reduced final totals must not open a mana-payment window or invent payment witnesses. Its primary-rule audit is in `tdm-mana-window-audit.json`; it is being fixed before card authorship. Full integrated engine acceptance remains open; card authorship stays gated until all dependencies pass and are reviewed.
+Engine86 was accepted at `2660c86112362973c195bee4c1b85e1a968f9f3a` with
+full9/9 release validation,4490 native cases across108 targets,43 infrastructure
+contracts,10 Python binding cases and two independent pure nonauthor reviews.
+All three author caches were warmed before dependent card work. No card or shared
+engine source was changed during its consuming jobs.
 
-The reviewed fixed Endure repair covers: use the exact permanent's
-current controller, retain its last battlefield controller after departure, and
-create a Spirit when counter placement is prohibited. Existing departure packets
-already preserve that controller in `StackSourceView.facts.controller`; no new
-public state is needed for this repair. Independent expected outcomes are:
+The first fixed52-game run completed three pairings and stopped four when the
+only legal action became Concede after a deferred Devotee mana-color choice.
+The harness rejected those artificial terminals. Independent review confirmed
+**E:PAID_MANA_USE_RECEIPT**, the87th unweighted audit group: a post-cost funding
+world added the chosen mana without recording the paid child's once-per-turn
+use, so it imagined a second conversion. The real committed use then made the
+parent payment impossible. This is an engine fundability defect. The wrong color
+is not intrinsically forbidden by Magic; an action API promising completion must
+preserve that promise or implement the required rollback.
 
-| Risk | Required observable result |
-| --- | --- |
-| Global or attached counter prohibition | Create the printed Spirit; no impossible counter choice |
-| Control changes after a trigger | The current controller chooses and owns the created Spirit |
-| Departure after a control change | The last battlefield controller creates the Spirit |
-| Departure followed by reentry | Never put counters on the new incarnation |
-| Suspended choice | Only its actor receives the choice; illegal/wrong-actor actions roll back |
-| Owned choice state | Raw/index children and restored snapshots resolve independently after parent disposal |
+Work has returned to the engine phase for a test-first minimal receipt projection
+repair. Cover once/exhaust, exact incarnation and acquisition, borrowed/self-granted
+use, nested parents and genuinely repeatable converters, plus representative raw,
+index, observation, transactional rejection and owned restore contracts. Preserve
+real observer timing; do not replay costs or change decks/seeds to evade the bug.
+Finish focused contracts and two independent nonauthor reviews before resuming
+dependent acceptance. Preserve every printed card definition and its provenance.
 
-## Acceptance and resource contract
+Two preliminary pure reviewers read every276 physical Rust definition, all13
+Omen bodies, complete Oracle text and all603 unique pinned primary/helper Java
+blobs; neither found a translation mismatch. They also independently approved
+exactly63 final schema201 trace additions, preserving all3240 older rows. The
+accepted regression baseline now has3303 rows; final engine acceptance must
+verify it again. [Trace evidence](tdm-final-trace-additions.json).
 
-Use `crates/engine/` for shared rules, paired files under
-`src/card_definitions/<set>/` for behavior, and separate integration test targets.
-Generate linkage with `python3 scripts/link_catalogue.py`; never hand-edit outputs.
-All Cargo commands run through `python3 scripts/resource_guard.py -- cargo ...`.
-Use one stable mutable cache outside the checkout; retain logs and immutable
-published libraries under the persistent cache. Never modify a consuming job's
-inputs until that process actually terminates.
+Remaining acceptance uses the exact frozen decks/seeds in
+`examples/support/tdm_game_decks.json`:48 Standard games and4 separate Cutter
+Freeform games,4096 actions each, natural terminal outcomes, all colors and eight
+mechanic payoffs, complete raw replay and meaningful owned search roots. The
+harness source and physical manifest/catalogue/printed-ledger hashes authenticate
+receipts. No seed search, deck mutation, partial-pool override or card-aware bot
+is permitted. Benchmark the same verified Standard48x3 and Freeform4x3 separately,
+with construction, legal actions, shared policy and actor-observation costs stated.
 
-After the complete engine checkpoint, regenerate/warm and freeze its profile and
-features. Author all remaining whole cards, validate their independent outcomes,
-then exercise set-only legal complete games across all colors, mechanics and
-interactions with replay and owned search checks. Update README only with final
-verified counts. Freeze final executable inputs and run
-`python3 scripts/validate.py --release --python smoke` before opening the single
-completed-set PR; obtain two independent nonauthor final-head reviews.
+Reconcile the README accepted-branch union without dropping previously accepted
+ECL/TMT coverage, record measured implementation throughput with elapsed interval
+and scope, regenerate linkage, freeze final inputs and run
+`python3 scripts/validate.py --release --python smoke` with the existing guarded
+cache. Open exactly one completed-set PR after full-set acceptance, then obtain
+two fresh independent pure nonauthor reviews of its final published head.
 
-## Measured status
-
-Initial source-pin verification: 5,488 definitions / 2,512 source blobs verified;
-generated-link consistency and authenticated frozen membership checks pass.
-No new complete cards, full acceptance runs or simulation throughput measurements
-have been produced. The latest validated assembled checkpoint passes376 selected
-rules scenarios. Compilation took155.727s and bounded scenario execution1.152s;
-these are rules-workload measurements, not simulation throughput. Newer cost,
-combat and event checkpoints have separate passing owner reports and still need
-integration acceptance.
-
-Reviewed scoped checkpoints include fixed and dynamic Endure, sampled copiable
-token bases and source LKI, optional attachment, named entry modes, counter-world
-queries, entry counter payloads/history, colored protection and independent
-Decayed instances, granted Harmonize/delve, copy/Suspend lifecycle, and resolving
-outcomes/private-library continuations. Reviews reproduced and repaired Decayed
-multiplicity, wide Harmonize/Bargain funding, sampled source-copy LKI and private
-top-card pacing defects. Combat review identified a further CR111.5 nonpermanent
-token-copy edge; its owner repair passes93 scenarios and awaits integration/review.
-
-The dependency ledger links exact source hashes, reports and scoped reviews.
-Remaining work includes Behold/free-origin casting, target/activation cost review,
-combat/event integration and reviews, static restrictions, search/color sequences
-and the other audited groups. Global observation-schema/trace migration, full
-shared-engine acceptance, every card's complete behavior, set-only games and the
-single final PR's acceptance/reviews remain open. The user goal stays active.
+All Cargo remains guarded: one build, one job/test thread and6GiB across worktrees.
+Retain reports under the persistent cache and preserve every required immutable
+shared library at its exact path/hash. Never change consuming inputs or delete
+active outputs. The complete-set and broader Standard goals remain open.
