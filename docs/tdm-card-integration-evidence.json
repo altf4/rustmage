@@ -2,8 +2,8 @@
   "schema": 1,
   "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
   "status": "whole-set acceptance pending",
-  "locally_verified_cards": 109,
-  "newly_implemented": 61,
+  "locally_verified_cards": 121,
+  "newly_implemented": 73,
   "previously_admitted_verified": 48,
   "integrations": [
     {
@@ -183,16 +183,38 @@
       "previously_admitted_verified": 1,
       "name": "Strategic Betrayal",
       "source_change": "none; identical definition/provenance/actual tests; current engine84 full-native case PASS"
+    },
+    {
+      "source_commits": [
+        "bf8b6a80f",
+        "e9a3bc02c"
+      ],
+      "whole_cards": 12,
+      "newly_implemented": 12,
+      "previously_admitted_verified": 0,
+      "regenerated": true,
+      "validation": [
+        {
+          "report": "/home/altf4/.cache/rustmage-tdm/root-a-g12-engine84-integrated/native.json",
+          "sha256": "a07273f1622b91034fd96f5dbae0785d58e94607920c980260a327fd876a2f33",
+          "terminal": true,
+          "success": true,
+          "cases": 60,
+          "compile_seconds": 4.477188661985565,
+          "execution_seconds": 0.06050415296340361
+        }
+      ],
+      "dependency": "Actual Betor uses fully accepted engine84 ceil operation; printed21->10 retained. Gated21, admitted60, focusedClippy and root60 allpass."
     }
   ],
-  "remaining_physical_cards": 167,
+  "remaining_physical_cards": 155,
   "source_verification": {
     "definitions": 5488,
-    "source_blobs": 2625,
+    "source_blobs": 2642,
     "java_verified": true,
-    "catalogue_version": "5aee8e6d1ab87ea03dde3f4bd41041fe0c1938d22a1c9330a156ae89cd2aa4e9"
+    "catalogue_version": "a734ec45a23afd3a0574b4b05420754170b63b7c166b70a1041893b73b20de08"
   },
-  "active_engine_dependency": "None currently: shared84 accepted by both independent reviewers after full release; three guarded author core caches warming before dependent Betor/family wiring.",
+  "active_engine_dependency": "None currently. Shared84 fullyaccepted, all3guardedauthorcacheswarmed; cardauthorsresumed.",
   "engine83_card_repair": {
     "card": "Aggressive Negotiations",
     "reason": "Restored after dedicated true nonland predicate rejects artifact/enchantment lands; mandatory reveal/exact refs/source-independent exile/counter continuation/owned branches verified.",

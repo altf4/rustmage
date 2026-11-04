@@ -3,7 +3,7 @@
   "set": "TDM",
   "dependency": "E:HALF_LIFE_ROUND_UP",
   "audit_group": 84,
-  "status": "Shared engine84 fully accepted at9b2812b98:9/9releasephases,4374native,10bindingcontracts,twoindependentfinalapprovals. Authorcorecachewarms inprogress before actualBetor wiring.",
+  "status": "Engine84 fullyaccepted; all3guardedcorewarmsPASS; actualBetor21->10 pluswhole12-cardfamily21gated/60admitted/Clippy/root60allPASS andintegrated.",
   "accepted_prior_engine": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
   "source": "crates/engine/src/engine_programs.rs: Instruction::LoseHalfLife currently uses max(0)/2",
   "reproduction": {
@@ -79,7 +79,7 @@
   ],
   "entire_tdm_simple_fixed_mana_component_audit": "All276 physical identities audited again after Nature correction; no further fixed component mismatches, including gated identities.",
   "trace_acquisition": "/home/altf4/.cache/rustmage-tdm/engine84-traces-1793810244215438270",
-  "actual_betor_card_wiring": "Stillgated inauthorworktree; oldopcode deliberatelyretained until accepted shared engine, cachewarm,then actualprinted21->10 and full21family rerun. No newcompletecardcount fromenginefixture.",
+  "actual_betor_card_wiring": "Complete actualdefinition uses accepted LoseHalfLifeRoundedUp;12newphysicalcards nowcount afterwholeprintedproof andassembled60PASS.",
   "accepted_trace_additions": "docs/tdm-24-card-trace-additions.json",
   "focused_all_target_clippy": {
     "report": "/home/altf4/.cache/rustmage-tdm/engine84-clippy-1793810867524555873/terminal.json",
@@ -111,5 +111,6 @@
       "scope": "Source/format/cardformat/43scriptcontractsPASS;Clippyfailed3GS testlints. NoNative/release. Fixednestedif/CloneOnCopy15d6b5117; exactrequiredClippycommandpassedaftersafefix."
     }
   ],
-  "accepted_engine_checkpoint": "docs/tdm-engine84-acceptance.json"
+  "accepted_engine_checkpoint": "docs/tdm-engine84-acceptance.json",
+  "actual_card_integration_report": "/home/altf4/.cache/rustmage-tdm/root-a-g12-engine84-integrated/native.json"
 }

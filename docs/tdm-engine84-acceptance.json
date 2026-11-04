@@ -216,19 +216,68 @@
     }
   ],
   "author_compatibility_and_warm_receipts": "/home/altf4/.cache/rustmage-tdm/engine84-author-baselines-1793811712648419284",
-  "author_cache_status": "Serial core-only guarded test-profile/test-support warm in progress; release each author only after its terminal correct-profile PASS.",
+  "author_cache_status": "Allthree serialguardedcorrect-profilecorewarmspassed; authorsreleased. Noenginefinding remains.",
   "card_status": {
-    "verified": 109,
+    "verified": 121,
     "scope": 276,
-    "new": 61,
+    "new": 73,
     "existing_verified": 48,
-    "whole_set_acceptance": false
+    "whole_set_acceptance": false,
+    "updated_after_engine_acceptance": true
   },
   "remaining": [
-    "Finish three author core-cache warms; wire actual gated Betor to accepted opcode, reprove12-card family",
+    "Continue cardphase againstacceptedfrozenengine;actualBetor+12-cardfamily nowgated/admitted/lint/integrationproved.",
     "All276 printed card outcomes and13 Omen faces; remaining167",
     "16cross-card families (F02firstscenario passes),52fixed set-only terminal games,replay,ownedsearch",
     "Measured TDM implementation/simulation workload throughput and README reconciliation",
     "Final complete-set release,exactlyonePR,twofreshindependentnonauthorreviews of final published PR head"
-  ]
+  ],
+  "author_cache_warms": [
+    {
+      "group": "a_g",
+      "report": "/home/altf4/.cache/rustmage-tdm/engine84-author-baselines-1793811712648419284/a_g/core-warm-terminal.json",
+      "sha256": "3c35044397a9cf1d6db5745e33d454d8470aa79b738293940f8028bcac5fbb88",
+      "terminal": true,
+      "success": true,
+      "exit_code": 0,
+      "seconds": 102.01439301599748,
+      "engine_source": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "compatibility_commit": "d752c7a979271390aa13885e1ce52e3d1a3beef3",
+      "target_dir": "/home/altf4/.cache/rustmage-authoring/tdm-entry-modes/target",
+      "matching_test_library_profile": 1,
+      "source_unchanged": true,
+      "resource": "/home/altf4/.cache/rustmage-tdm/engine84-author-baselines-1793811712648419284/a_g/core-warm-resource.json"
+    },
+    {
+      "group": "g_s",
+      "report": "/home/altf4/.cache/rustmage-tdm/engine84-author-baselines-1793811712648419284/g_s/core-warm-terminal.json",
+      "sha256": "10c1f023de51a7ab023e728a00dbc5d258520088baa206f0ded0bdf95b591593",
+      "terminal": true,
+      "success": true,
+      "exit_code": 0,
+      "seconds": 102.12224909500219,
+      "engine_source": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "compatibility_commit": "7c468c83dab20cc0288151f405cfc8795299b0e6",
+      "target_dir": "/home/altf4/.cache/rustmage-authoring/tdm-counter-world/target",
+      "matching_test_library_profile": 1,
+      "source_unchanged": true,
+      "resource": "/home/altf4/.cache/rustmage-tdm/engine84-author-baselines-1793811712648419284/g_s/core-warm-resource.json"
+    },
+    {
+      "group": "s_z",
+      "report": "/home/altf4/.cache/rustmage-tdm/engine84-author-baselines-1793811712648419284/s_z/core-warm-terminal.json",
+      "sha256": "40be93e09080f734991dfea344a22d7c8167f89c9a65a4554b7a4b97f8999886",
+      "terminal": true,
+      "success": true,
+      "exit_code": 0,
+      "seconds": 102.17046827997547,
+      "engine_source": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "compatibility_commit": "3e16680a58f2161fcd1afed5fd0a422d84c9a4cb",
+      "target_dir": "/home/altf4/.cache/rustmage-authoring/tdm-cast-routes/target",
+      "matching_test_library_profile": 1,
+      "source_unchanged": true,
+      "resource": "/home/altf4/.cache/rustmage-tdm/engine84-author-baselines-1793811712648419284/s_z/core-warm-resource.json"
+    }
+  ],
+  "authors_released": true
 }

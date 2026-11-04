@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "5aee8e6d1ab87ea03dde3f4bd41041fe0c1938d22a1c9330a156ae89cd2aa4e9",
+  "catalogue_version": "a734ec45a23afd3a0574b4b05420754170b63b7c166b70a1041893b73b20de08",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3218,
-  "implemented_total": 3225,
+  "implemented_standard_cards": 3230,
+  "implemented_total": 3237,
   "token_definitions": 156,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -162,8 +162,8 @@
     },
     "tdm": {
       "total": 264,
-      "complete": 187,
-      "gated": 77
+      "complete": 199,
+      "gated": 65
     },
     "tla": {
       "total": 278,
@@ -561,8 +561,8 @@
     {
       "name": "Abzan Monument",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/abzan_monument.rs",
       "set": "tdm"
     },
@@ -729,8 +729,8 @@
     {
       "name": "Aegis Sculptor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/aegis_sculptor.rs",
       "set": "tdm"
     },
@@ -1017,8 +1017,8 @@
     {
       "name": "Ainok Wayfarer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/ainok_wayfarer.rs",
       "set": "tdm"
     },
@@ -1265,8 +1265,8 @@
     {
       "name": "All-Out Assault",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/all_out_assault.rs",
       "set": "tdm"
     },
@@ -1361,8 +1361,8 @@
     {
       "name": "Ambling Stormshell",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/ambling_stormshell.rs",
       "set": "tdm"
     },
@@ -1985,8 +1985,8 @@
     {
       "name": "Armament Dragon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/armament_dragon.rs",
       "set": "tdm"
     },
@@ -2289,8 +2289,8 @@
     {
       "name": "Attuned Hunter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/attuned_hunter.rs",
       "set": "tdm"
     },
@@ -2897,8 +2897,8 @@
     {
       "name": "Barrensteppe Siege",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/barrensteppe_siege.rs",
       "set": "tdm"
     },
@@ -3385,8 +3385,8 @@
     {
       "name": "Betor, Kin to All",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/betor_kin_to_all.rs",
       "set": "tdm"
     },
@@ -4145,8 +4145,8 @@
     {
       "name": "Bone-Cairn Butcher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/bone_cairn_butcher.rs",
       "set": "tdm"
     },
@@ -4489,8 +4489,8 @@
     {
       "name": "Breaching Dragonstorm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/breaching_dragonstorm.rs",
       "set": "tdm"
     },
@@ -5177,8 +5177,8 @@
     {
       "name": "Call the Spirit Dragons",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/call_the_spirit_dragons.rs",
       "set": "tdm"
     },
