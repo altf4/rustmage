@@ -3,7 +3,7 @@
   "catalogue_id": 854,
   "oracle_id": "4c55ca3b-1254-4d44-96ac-1e1cadaf49f5",
   "facts_sha256": "e751daa0211a2f2f358c16a1750073728cfed2f153485939c8cf897d362fc5dd",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ecd9a440cd9323e9495aeee6fdb6b840aa11c8cdb349aa45fc4970937e56b349"
@@ -44,7 +44,5 @@
       "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
     }
   ],
-  "remaining_obligations": [
-    "All printed outcomes passed revised17-case gated proof on accepted engine85. Admission and ordinary supported-card rerun remain parked until shared engine86 acceptance and cache warm."
-  ]
+  "remaining_obligations": []
 }

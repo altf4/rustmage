@@ -398,14 +398,6 @@ fn authored_spell(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
             "Bone-Cairn Butcher",
             "Breaching Dragonstorm",
             "Call the Spirit Dragons",
-            "Clarion Conqueror",
-            "Craterhoof Behemoth",
-            "Delta Bloodflies",
-            "Fleeting Effigy",
-            "Formation Breaker",
-            "Corroding Dragonstorm",
-            "Encroaching Dragonstorm",
-            "Dragonstorm Globe"
         ]
         .contains(&name)
     );
