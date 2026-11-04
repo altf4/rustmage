@@ -1,16 +1,41 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Source-audited direct typed definition; see paired provenance.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Permanent,
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::Chapter { number: 1 },
+            targets: TargetPlan::NONE,
+            program: &[
+                Instruction::Draw(PlayerSet::Controller, 2),
+                Instruction::LoseLife(PlayerSet::Controller, 2),
+            ],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::Chapter { number: 2 },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::ScheduleTurnTrigger {
+                event: TurnCallbackEvent::CreatureEntry,
+                ability: 3,
+                once: false,
+            }],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::Chapter { number: 3 },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::ScheduleTurnTrigger {
+                event: TurnCallbackEvent::CreatureEntry,
+                ability: 3,
+                once: false,
+            }],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::DelayedTargetEvent,
+            targets: TargetPlan::NONE,
+            program: &[
+                Instruction::LoseLife(PlayerSet::Opponent, 1),
+                Instruction::GainLife(PlayerSet::Controller, 1),
+            ],
+        },
+    ],
     ..CardRules::EMPTY
 };

@@ -1,12 +1,12 @@
 {
   "schema": 1,
-  "scope": "25 additional physical TDM S\u2013Z members; full-set acceptance remains root-owned",
+  "scope": "34 additional physical TDM S\u2013Z members: original25 plus explicit final-nine handoff; original G\u2013S92 and auxiliary Roiling excluded from additional membership",
   "basis_engine": "2660c86112362973c195bee4c1b85e1a968f9f3a",
   "author_baseline": "8e0f68188497db21495595ea745760efbe7d800d",
   "test_target": "tdm_cards_s_z_additional",
-  "locally_verified_cards": 25,
+  "locally_verified_cards": 34,
   "remaining_physical_cards": 0,
-  "status": "All25 additional physical cards locally verified and admitted:18 newly authored+7 existing; root integration and whole-set/final nonauthor acceptance pending",
+  "status": "All34 additional physical cards locally verified and admitted:27 newly authored+7 existing; root integration and whole-set/final nonauthor acceptance pending",
   "cards": [
     {
       "name": "Sage of the Skies",
@@ -36,7 +36,7 @@
         {
           "test": "sage_copies_after_any_earlier_own_spell_but_not_as_first_and_copies_are_tokens",
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "obligation_proofs": [
@@ -46,7 +46,7 @@
             "sage_copies_after_any_earlier_own_spell_but_not_as_first_and_copies_are_tokens"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Flying, lifelink",
@@ -54,7 +54,7 @@
             "sage_copies_after_any_earlier_own_spell_but_not_as_first_and_copies_are_tokens"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Intrinsic power/toughness {\"power\": \"2\", \"toughness\": \"3\"}",
@@ -62,7 +62,7 @@
             "sage_copies_after_any_earlier_own_spell_but_not_as_first_and_copies_are_tokens"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "helper_pins": [
@@ -159,7 +159,7 @@
             "salt_road_destroys_creature_creates_two_hasty_warriors_and_next_end_sacrifices_only_them"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "behavior_body_changed": true,
@@ -167,7 +167,7 @@
         {
           "test": "salt_road_destroys_creature_creates_two_hasty_warriors_and_next_end_sacrifices_only_them",
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "pinned_oracle_facts_sha256": "dd50fb1d6938699dabc9566e8fe816c5c9c70de331fc796baa958c68100a320e",
@@ -207,12 +207,12 @@
         {
           "test": "sarkhan_optional_behold_hand_battlefield_or_decline_produces_actual_treasure",
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "test": "sarkhan_dragon_entry_counter_and_additional_type_flying_expire_but_counter_remains",
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "obligation_proofs": [
@@ -223,7 +223,7 @@
             "sarkhan_dragon_entry_counter_and_additional_type_flying_expire_but_counter_remains"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Whenever a Dragon you control enters, put a +1/+1 counter on Sarkhan. Until end of turn, Sarkhan becomes a Dragon in addition to his other types and gains flying.",
@@ -232,7 +232,7 @@
             "sarkhan_dragon_entry_counter_and_additional_type_flying_expire_but_counter_remains"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Intrinsic power/toughness {\"power\": \"2\", \"toughness\": \"2\"}",
@@ -241,7 +241,7 @@
             "sarkhan_dragon_entry_counter_and_additional_type_flying_expire_but_counter_remains"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "helper_pins": [
@@ -348,7 +348,7 @@
             "severance_reveals_opponent_hand_may_exile_nonland_and_its_owner_gets_sized_white_spirit"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "When this creature enters, target opponent reveals their hand. You may choose a nonland card from it. If you do, exile that card.",
@@ -356,7 +356,7 @@
             "severance_reveals_opponent_hand_may_exile_nonland_and_its_owner_gets_sized_white_spirit"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "When this creature leaves the battlefield, the exiled card's owner creates an X/X white Spirit creature token, where X is the mana value of the exiled card.",
@@ -364,7 +364,7 @@
             "severance_reveals_opponent_hand_may_exile_nonland_and_its_owner_gets_sized_white_spirit"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Intrinsic power/toughness {\"power\": \"3\", \"toughness\": \"3\"}",
@@ -372,7 +372,7 @@
             "severance_reveals_opponent_hand_may_exile_nonland_and_its_owner_gets_sized_white_spirit"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "behavior_body_changed": true,
@@ -380,7 +380,7 @@
         {
           "test": "severance_reveals_opponent_hand_may_exile_nonland_and_its_owner_gets_sized_white_spirit",
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "pinned_oracle_facts_sha256": "ff0929de9c2bfaa17a098ece86e76859988e6aa5e13b285eb403e0f4ead0729e",
@@ -438,7 +438,7 @@
             "shiko_exiles_only_own_small_nonland_then_free_casts_real_spell_or_permanent_copy_or_declines"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "When Shiko enters, exile target nonland card with mana value 3 or less from your graveyard. Copy it, then you may cast the copy without paying its mana cost. (A copy of a permanent spell becomes a token.)",
@@ -446,7 +446,7 @@
             "shiko_exiles_only_own_small_nonland_then_free_casts_real_spell_or_permanent_copy_or_declines"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Intrinsic power/toughness {\"power\": \"4\", \"toughness\": \"5\"}",
@@ -454,7 +454,7 @@
             "shiko_exiles_only_own_small_nonland_then_free_casts_real_spell_or_permanent_copy_or_declines"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "copy_cast_qualification": "MV\u22643 applies to the graveyard target only; u64::MAX generic cast budget adds no unprinted copied-face cap.",
@@ -463,7 +463,7 @@
         {
           "test": "shiko_exiles_only_own_small_nonland_then_free_casts_real_spell_or_permanent_copy_or_declines",
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "pinned_oracle_facts_sha256": "00b8b3a2e2aa2b9fe6e9d341b2bb54d708d80a2f6bda479c36967b10aaac5a16",
@@ -501,7 +501,7 @@
         {
           "test": "shock_brigade_mobilizes_actual_attacking_warrior_then_sacrifices_next_end",
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "obligation_proofs": [
@@ -511,7 +511,7 @@
             "shock_brigade_mobilizes_actual_attacking_warrior_then_sacrifices_next_end"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Mobilize 1 (Whenever this creature attacks, create a tapped and attacking 1/1 red Warrior creature token. Sacrifice it at the beginning of the next end step.)",
@@ -519,7 +519,7 @@
             "shock_brigade_mobilizes_actual_attacking_warrior_then_sacrifices_next_end"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Intrinsic power/toughness {\"power\": \"1\", \"toughness\": \"3\"}",
@@ -527,7 +527,7 @@
             "shock_brigade_mobilizes_actual_attacking_warrior_then_sacrifices_next_end"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "helper_pins": [
@@ -593,7 +593,7 @@
         {
           "test": "shocking_sharpshooter_other_own_creature_entries_target_opponent_and_ignore_self_enemy_land",
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "obligation_proofs": [
@@ -603,7 +603,7 @@
             "shocking_sharpshooter_other_own_creature_entries_target_opponent_and_ignore_self_enemy_land"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Whenever another creature you control enters, this creature deals 1 damage to target opponent.",
@@ -611,7 +611,7 @@
             "shocking_sharpshooter_other_own_creature_entries_target_opponent_and_ignore_self_enemy_land"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Intrinsic power/toughness {\"power\": \"1\", \"toughness\": \"3\"}",
@@ -619,7 +619,7 @@
             "shocking_sharpshooter_other_own_creature_entries_target_opponent_and_ignore_self_enemy_land"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "helper_pins": [
@@ -669,7 +669,7 @@
         {
           "test": "sibsig_forced_private_pick_and_owned_raw_index_restore_leave_other_card_in_graveyard",
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "obligation_proofs": [
@@ -679,7 +679,7 @@
             "sibsig_forced_private_pick_and_owned_raw_index_restore_leave_other_card_in_graveyard"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Intrinsic power/toughness {\"power\": \"2\", \"toughness\": \"1\"}",
@@ -687,7 +687,7 @@
             "sibsig_forced_private_pick_and_owned_raw_index_restore_leave_other_card_in_graveyard"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "helper_pins": [
@@ -772,7 +772,7 @@
             "sidisi_nonmana_x_exact_sacrifice_and_x_plus_one_return_obey_tap_and_sorcery"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Intrinsic power/toughness {\"power\": \"1\", \"toughness\": \"3\"}",
@@ -780,7 +780,7 @@
             "sidisi_nonmana_x_exact_sacrifice_and_x_plus_one_return_obey_tap_and_sorcery"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "behavior_body_changed": true,
@@ -788,7 +788,7 @@
         {
           "test": "sidisi_nonmana_x_exact_sacrifice_and_x_plus_one_return_obey_tap_and_sorcery",
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "pinned_oracle_facts_sha256": "f7fedf7ab4e6618ace33a5618b7dc30c84bb2c51a2c1be989f0aa0dc651c7e06",
@@ -837,7 +837,7 @@
             "smile_own_upkeep_up_to_two_power_two_or_less_return_then_counters_allow_partial_survivors"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "behavior_body_changed": true,
@@ -845,7 +845,7 @@
         {
           "test": "smile_own_upkeep_up_to_two_power_two_or_less_return_then_counters_allow_partial_survivors",
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "pinned_oracle_facts_sha256": "9e485ea8dd7b4ab94c829742d8a87f2637cf916a77edd7f29a28a2863a004a40",
@@ -914,7 +914,7 @@
             "snowmelt_stag_turn_base_stats_and_exact_paid_unblockability_expire_independently"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "During your turn, this creature has base power and toughness 5/2.",
@@ -922,7 +922,7 @@
             "snowmelt_stag_turn_base_stats_and_exact_paid_unblockability_expire_independently"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "{5}{U}{U}: This creature can't be blocked this turn.",
@@ -930,7 +930,7 @@
             "snowmelt_stag_turn_base_stats_and_exact_paid_unblockability_expire_independently"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Intrinsic power/toughness {\"power\": \"2\", \"toughness\": \"5\"}",
@@ -938,7 +938,7 @@
             "snowmelt_stag_turn_base_stats_and_exact_paid_unblockability_expire_independently"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "behavior_body_changed": false,
@@ -946,7 +946,7 @@
         {
           "test": "snowmelt_stag_turn_base_stats_and_exact_paid_unblockability_expire_independently",
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "pinned_oracle_facts_sha256": "1fb8fd3ea1b888adccf87faafd6f797488663fcf057a80ced2cf7cb44c126b13",
@@ -994,7 +994,7 @@
             "sonic_shrieker_damage_life_and_actual_damaged_player_discard_are_separate_from_creature_hits"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "When this creature enters, it deals 2 damage to any target and you gain 2 life. If a player is dealt damage this way, they discard a card.",
@@ -1002,7 +1002,7 @@
             "sonic_shrieker_damage_life_and_actual_damaged_player_discard_are_separate_from_creature_hits"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Intrinsic power/toughness {\"power\": \"4\", \"toughness\": \"4\"}",
@@ -1010,7 +1010,7 @@
             "sonic_shrieker_damage_life_and_actual_damaged_player_discard_are_separate_from_creature_hits"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "behavior_body_changed": true,
@@ -1018,7 +1018,7 @@
         {
           "test": "sonic_shrieker_damage_life_and_actual_damaged_player_discard_are_separate_from_creature_hits",
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "pinned_oracle_facts_sha256": "eca1d389735f542bf8cda2db20f3623c92aa3a95f83526bd18a603f54a4ad9d6",
@@ -1081,7 +1081,7 @@
             "stadium_mobilize_and_sacrifice_damage_counts_current_creatures_after_source_is_paid"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "{1}{R}, Sacrifice this creature: It deals damage equal to the number of creatures you control to target creature.",
@@ -1089,7 +1089,7 @@
             "stadium_mobilize_and_sacrifice_damage_counts_current_creatures_after_source_is_paid"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Intrinsic power/toughness {\"power\": \"1\", \"toughness\": \"1\"}",
@@ -1097,7 +1097,7 @@
             "stadium_mobilize_and_sacrifice_damage_counts_current_creatures_after_source_is_paid"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "behavior_body_changed": false,
@@ -1105,7 +1105,7 @@
         {
           "test": "stadium_mobilize_and_sacrifice_damage_counts_current_creatures_after_source_is_paid",
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "pinned_oracle_facts_sha256": "671db9b3d5a1f28ffc162dd2250b307f1f8ddae4e3fe582bf18fdc8a1fce606a",
@@ -1163,7 +1163,7 @@
             "stalwart_first_any_counter_on_each_own_creature_is_extra_once_per_turn_and_tokens_enter_with_counters"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Whenever one or more counters are put on a creature you control, if it's the first time counters have been put on that creature this turn, put a +1/+1 counter on that creature.",
@@ -1171,7 +1171,7 @@
             "stalwart_first_any_counter_on_each_own_creature_is_extra_once_per_turn_and_tokens_enter_with_counters"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Intrinsic power/toughness {\"power\": \"3\", \"toughness\": \"2\"}",
@@ -1179,7 +1179,7 @@
             "stalwart_first_any_counter_on_each_own_creature_is_extra_once_per_turn_and_tokens_enter_with_counters"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "behavior_body_changed": true,
@@ -1187,7 +1187,7 @@
         {
           "test": "stalwart_first_any_counter_on_each_own_creature_is_extra_once_per_turn_and_tokens_enter_with_counters",
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "placement_proof": "Six real Qarsi Revenant renew activations pay exact2B and exile their sources; mixed non-plus keyword placements qualify, own/self vs opponent recipients are checked, repeated placement does not retrigger, a new turn resets history, and an actual Host token copy receives its printed entry counters plus one.",
@@ -1247,7 +1247,7 @@
             "starry_skyrider_attack_target_and_attacking_token_flying_have_distinct_durations"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Whenever this creature attacks, another target creature you control gains flying until end of turn.",
@@ -1255,7 +1255,7 @@
             "starry_skyrider_attack_target_and_attacking_token_flying_have_distinct_durations"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Attacking tokens you control have flying.",
@@ -1263,7 +1263,7 @@
             "starry_skyrider_attack_target_and_attacking_token_flying_have_distinct_durations"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Intrinsic power/toughness {\"power\": \"1\", \"toughness\": \"3\"}",
@@ -1271,7 +1271,7 @@
             "starry_skyrider_attack_target_and_attacking_token_flying_have_distinct_durations"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "behavior_body_changed": true,
@@ -1279,7 +1279,7 @@
         {
           "test": "starry_skyrider_attack_target_and_attacking_token_flying_have_distinct_durations",
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "pinned_oracle_facts_sha256": "225cb8766ecea98582ca2d80641c9e9dfbe42fd892753e56580750781016a05c",
@@ -1340,7 +1340,7 @@
             "static_snare_flash_counts_attackers_from_both_players_and_exiles_artifact_or_creature_until_leaving"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "This spell costs {1} less to cast for each attacking creature.",
@@ -1348,7 +1348,7 @@
             "static_snare_flash_counts_attackers_from_both_players_and_exiles_artifact_or_creature_until_leaving"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "When this enchantment enters, exile target artifact or creature an opponent controls until this enchantment leaves the battlefield.",
@@ -1356,7 +1356,7 @@
             "static_snare_flash_counts_attackers_from_both_players_and_exiles_artifact_or_creature_until_leaving"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "behavior_body_changed": false,
@@ -1364,7 +1364,7 @@
         {
           "test": "static_snare_flash_counts_attackers_from_both_players_and_exiles_artifact_or_creature_until_leaving",
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "pinned_oracle_facts_sha256": "fd337069a7b16faf6db83030cd85c484f4de8bc08e323ec7b31a9a051b6cdb10",
@@ -1413,7 +1413,7 @@
             "stillness_mills_three_then_refills_only_empty_library_with_private_ordered_five_or_all_available"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "behavior_body_changed": true,
@@ -1421,7 +1421,7 @@
         {
           "test": "stillness_mills_three_then_refills_only_empty_library_with_private_ordered_five_or_all_available",
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "pinned_oracle_facts_sha256": "56f06bfb35efadb52836bd2022a0c60f4720b856a25bd4ca3839889fa8f3e231",
@@ -1492,7 +1492,7 @@
             "stormbeacon_equip_two_only_own_creature_as_sorcery_and_draw_threshold_uses_own_attackers"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Whenever equipped creature attacks, draw a card if you control three or more attacking creatures.",
@@ -1500,7 +1500,7 @@
             "stormbeacon_equip_two_only_own_creature_as_sorcery_and_draw_threshold_uses_own_attackers"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Equip {2} ({2}: Attach to target creature you control. Equip only as a sorcery.)",
@@ -1508,7 +1508,7 @@
             "stormbeacon_equip_two_only_own_creature_as_sorcery_and_draw_threshold_uses_own_attackers"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "behavior_body_changed": false,
@@ -1516,7 +1516,7 @@
         {
           "test": "stormbeacon_equip_two_only_own_creature_as_sorcery_and_draw_threshold_uses_own_attackers",
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "pinned_oracle_facts_sha256": "14eebfedaa97a8f3fa3a57b3e49b0bb90d6bef87d0fce7c76810772ffe4465eb",
@@ -1550,7 +1550,7 @@
         {
           "test": "stormplain_detainment_exiles_only_opponent_nonland_and_returns_exact_object_on_departure",
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "obligation_proofs": [
@@ -1560,7 +1560,7 @@
             "stormplain_detainment_exiles_only_opponent_nonland_and_returns_exact_object_on_departure"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "helper_pins": [
@@ -1607,7 +1607,7 @@
         {
           "test": "stormscale_actual_storm_tokens_and_other_owned_dragon_anthem",
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "obligation_proofs": [
@@ -1617,7 +1617,7 @@
             "stormscale_actual_storm_tokens_and_other_owned_dragon_anthem"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Other Dragons you control get +1/+1.",
@@ -1625,7 +1625,7 @@
             "stormscale_actual_storm_tokens_and_other_owned_dragon_anthem"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Storm (When you cast this spell, copy it for each spell cast before it this turn. Copies become tokens.)",
@@ -1633,7 +1633,7 @@
             "stormscale_actual_storm_tokens_and_other_owned_dragon_anthem"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Intrinsic power/toughness {\"power\": \"4\", \"toughness\": \"4\"}",
@@ -1641,7 +1641,7 @@
             "stormscale_actual_storm_tokens_and_other_owned_dragon_anthem"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "helper_pins": [
@@ -1694,7 +1694,7 @@
         {
           "test": "sultai_monument_all_three_basic_filters_search_shuffle_and_exact_activation",
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "obligation_proofs": [
@@ -1704,7 +1704,7 @@
             "sultai_monument_all_three_basic_filters_search_shuffle_and_exact_activation"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "{2}{B}{G}{U}, {T}, Sacrifice this artifact: Create two 2/2 black Zombie Druid creature tokens. Activate only as a sorcery.",
@@ -1712,7 +1712,7 @@
             "sultai_monument_all_three_basic_filters_search_shuffle_and_exact_activation"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Then shuffle: exact pre/post search RNG state changes for every legal printed basic subtype",
@@ -1720,7 +1720,7 @@
             "sultai_monument_all_three_basic_filters_search_shuffle_and_exact_activation"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "helper_pins": [
@@ -1777,7 +1777,7 @@
         {
           "test": "kirin_flash_optional_bounce_obeys_other_owned_nonland_and_draws_only_for_tokens",
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "obligation_proofs": [
@@ -1787,7 +1787,7 @@
             "kirin_flash_optional_bounce_obeys_other_owned_nonland_and_draws_only_for_tokens"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Flying",
@@ -1795,7 +1795,7 @@
             "kirin_flash_optional_bounce_obeys_other_owned_nonland_and_draws_only_for_tokens"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "When this creature enters, return up to one other target nonland permanent you control to its owner's hand. If it was a token, draw a card.",
@@ -1803,7 +1803,7 @@
             "kirin_flash_optional_bounce_obeys_other_owned_nonland_and_draws_only_for_tokens"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Intrinsic power/toughness {\"power\": \"2\", \"toughness\": \"1\"}",
@@ -1811,7 +1811,7 @@
             "kirin_flash_optional_bounce_obeys_other_owned_nonland_and_draws_only_for_tokens"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "helper_pins": [
@@ -1896,7 +1896,7 @@
             "synchronized_harmonize_four_generic_green_uses_actual_power_tap_then_exiles"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Harmonize {4}{G} (You may cast this card from your graveyard for its harmonize cost. You may tap a creature you control to reduce that cost by {X}, where X is its power. Then exile this spell.)",
@@ -1905,7 +1905,7 @@
             "synchronized_harmonize_four_generic_green_uses_actual_power_tap_then_exiles"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "behavior_body_changed": true,
@@ -1913,12 +1913,12 @@
         {
           "test": "synchronized_distributes_two_one_or_split_then_grants_all_current_own_counter_bearers_until_cleanup",
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "test": "synchronized_harmonize_four_generic_green_uses_actual_power_tap_then_exiles",
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "pinned_oracle_facts_sha256": "b2158873a8abf4f850141cfb88d80cda076e8ea4022572863d82e9c107bb41a4",
@@ -1975,7 +1975,7 @@
             "taigam_second_cast_copy_suspend_four_owner_upkeeps_optional_free_recast_and_creature_haste"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "Intrinsic power/toughness {\"power\": \"2\", \"toughness\": \"2\"}",
@@ -1983,7 +1983,7 @@
             "taigam_second_cast_copy_suspend_four_owner_upkeeps_optional_free_recast_and_creature_haste"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "behavior_body_changed": true,
@@ -1991,7 +1991,7 @@
         {
           "test": "taigam_second_cast_copy_suspend_four_owner_upkeeps_optional_free_recast_and_creature_haste",
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "pinned_oracle_facts_sha256": "1428cfdd25633bdac96a942cb42caa20fe3f08614e8b90b7aac7e69730a86aa6",
@@ -2026,12 +2026,12 @@
         {
           "test": "teeming_creates_two_white_soldiers_and_returns_only_for_own_dragon",
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "test": "actual_dragonstorm_creature_copies_trigger_for_self_only_under_their_own_dragon_provider",
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "obligation_proofs": [
@@ -2041,7 +2041,7 @@
             "teeming_creates_two_white_soldiers_and_returns_only_for_own_dragon"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "When a Dragon you control enters, return this enchantment to its owner's hand.",
@@ -2049,7 +2049,7 @@
             "teeming_creates_two_white_soldiers_and_returns_only_for_own_dragon"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         },
         {
           "printed_obligation": "A Dragon-form self entrant under the source controller also returns this enchantment; opposing subtype provider does not qualify",
@@ -2057,7 +2057,7 @@
             "actual_dragonstorm_creature_copies_trigger_for_self_only_under_their_own_dragon_provider"
           ],
           "status": "PASS",
-          "receipt": "engine86_all25_ordinary"
+          "receipt": "engine86_all34_ordinary"
         }
       ],
       "helper_pins": [
@@ -2084,6 +2084,834 @@
         "path": "Mage.Sets/src/mage/cards/t/TeemingDragonstorm.java",
         "sha256": "ec2f3c9b0eb3bf6b34391b0d8965c8e840a9bb1558df0cb98344a85f1e89e854"
       }
+    },
+    {
+      "name": "Tempest Hawk",
+      "oracle_id": "7423b3b9-56eb-4cf2-8ada-135918219c4b",
+      "definition": "src/card_definitions/tdm/tempest_hawk.rs",
+      "definition_sha256": "c4c99236a7515cdf2a875b1f61bc935baf4517781c03dd76833d0bbf41c455c8",
+      "provenance_sha256": "0d8b639ed2bc92cdb52f005891cc6a06776085b3bb82b61999e0c1aca32a19f3",
+      "pre_family_definition_sha256": "d6284ce08ba1fa6e9a70c4ea10d8f38a20a415082da730c7ac7cac716e944a38",
+      "behavior_body_changed": true,
+      "printed_obligations": [
+        "Flying",
+        "Whenever this creature deals combat damage to a player, you may search your library for a card named Tempest Hawk, reveal it, put it into your hand, then shuffle.",
+        "A deck can have any number of cards named Tempest Hawk."
+      ],
+      "intrinsic_body": {
+        "power": "2",
+        "toughness": "2"
+      },
+      "status": "locally verified admitted; pending completed-set acceptance/final independent reviews",
+      "actual_definition_tests": [
+        "tempest_hawk_actual_combat_hit_may_search_exact_name_reveal_and_shuffle",
+        "tempest_hawk_unlimited_deck_rule_is_wired_and_ordinary_admission_accepts_sixty_hawks"
+      ],
+      "source_read": {
+        "main_java": "full body",
+        "oracle": "complete frozen facts and all printed text",
+        "reusable_helpers": "complete relevant ability/effect/token bodies pinned before typed authoring"
+      },
+      "pinned_oracle_facts_sha256": "f1d12e38ae5e581cb88808218491c3dbab69034fddddaad8285038c93d8f7fa9",
+      "pinned_main_java": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/t/TempestHawk.java",
+        "sha256": "bc06b8c02fcd296ce5a95ab47313604acfe281a7fb57f61e48db3b2589f3d152"
+      },
+      "helper_pins": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+          "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+          "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/predicate/mageobject/NamePredicate.java",
+          "sha256": "dd549c35b34f063ea5ec3f405a726fbee961e09b9a10f1cacf821f9125db9858"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/InfoEffect.java",
+          "sha256": "48bac57c3707da691071b0fb266461819de4fbfef0608a0e1767de405a2eca4b"
+        }
+      ],
+      "obligation_proofs": [
+        {
+          "printed_obligation": "Flying",
+          "actual_definition_tests": [
+            "tempest_hawk_actual_combat_hit_may_search_exact_name_reveal_and_shuffle",
+            "tempest_hawk_unlimited_deck_rule_is_wired_and_ordinary_admission_accepts_sixty_hawks"
+          ],
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        },
+        {
+          "printed_obligation": "Whenever this creature deals combat damage to a player, you may search your library for a card named Tempest Hawk, reveal it, put it into your hand, then shuffle.",
+          "actual_definition_tests": [
+            "tempest_hawk_actual_combat_hit_may_search_exact_name_reveal_and_shuffle",
+            "tempest_hawk_unlimited_deck_rule_is_wired_and_ordinary_admission_accepts_sixty_hawks"
+          ],
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        },
+        {
+          "printed_obligation": "A deck can have any number of cards named Tempest Hawk.",
+          "actual_definition_tests": [
+            "tempest_hawk_actual_combat_hit_may_search_exact_name_reveal_and_shuffle",
+            "tempest_hawk_unlimited_deck_rule_is_wired_and_ordinary_admission_accepts_sixty_hawks"
+          ],
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        },
+        {
+          "printed_obligation": "Intrinsic power/toughness {\"power\": \"2\", \"toughness\": \"2\"}",
+          "actual_definition_tests": [
+            "tempest_hawk_actual_combat_hit_may_search_exact_name_reveal_and_shuffle",
+            "tempest_hawk_unlimited_deck_rule_is_wired_and_ordinary_admission_accepts_sixty_hawks"
+          ],
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        }
+      ],
+      "deck_rule_proof_stages": "Final ordinary test unconditionally constructs the real sixty-Hawk Standard deck with Game::new successfully. Earlier gated constructor refusal was not counted as positive admission.",
+      "proof_cases": [
+        {
+          "test": "tempest_hawk_actual_combat_hit_may_search_exact_name_reveal_and_shuffle",
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        },
+        {
+          "test": "tempest_hawk_unlimited_deck_rule_is_wired_and_ordinary_admission_accepts_sixty_hawks",
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        }
+      ]
+    },
+    {
+      "name": "Temur Monument",
+      "oracle_id": "5464d5ae-5be5-4e52-b9d0-ddce48fd93b3",
+      "definition": "src/card_definitions/tdm/temur_monument.rs",
+      "definition_sha256": "995b721a7e538a32fe8e3a575f594bb73f3724e64904d37c6851280ab7208e25",
+      "provenance_sha256": "b9be02755be57156b7e6fedbfcc9d9601e5a2d39c47e0689681f46b67848324e",
+      "pre_family_definition_sha256": "780f10447b1d2da0490ee3d99f448a835103d503c34d8bbf0b0b0de283ffdd59",
+      "behavior_body_changed": true,
+      "printed_obligations": [
+        "When this artifact enters, search your library for a basic Forest, Island, or Mountain card, reveal it, put it into your hand, then shuffle.",
+        "{3}{G}{U}{R}, {T}, Sacrifice this artifact: Create a 5/5 green Elephant creature token. Activate only as a sorcery."
+      ],
+      "intrinsic_body": {},
+      "status": "locally verified admitted; pending completed-set acceptance/final independent reviews",
+      "actual_definition_tests": [
+        "temur_monument_each_basic_search_shuffles_then_three_gur_tap_sacrifice_makes_five_five_elephant"
+      ],
+      "source_read": {
+        "main_java": "full body",
+        "oracle": "complete frozen facts and all printed text",
+        "reusable_helpers": "complete relevant ability/effect/token bodies pinned before typed authoring"
+      },
+      "pinned_oracle_facts_sha256": "3a960222e877870c42548c57a094b67766433d2a2cc21113661f5b1a17f351bc",
+      "pinned_main_java": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/t/TemurMonument.java",
+        "sha256": "c5aa8ac883e536e19ae8657c521795e21130e0a8fa8d3a050875db5bd9204557"
+      },
+      "helper_pins": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+          "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/permanent/token/Elephant55Token.java",
+          "sha256": "17b2df158fadb9e3a824223f808369408d4d9a9f27363db6f681d1a72cb30e40"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+          "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+          "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+        }
+      ],
+      "obligation_proofs": [
+        {
+          "printed_obligation": "When this artifact enters, search your library for a basic Forest, Island, or Mountain card, reveal it, put it into your hand, then shuffle.",
+          "actual_definition_tests": [
+            "temur_monument_each_basic_search_shuffles_then_three_gur_tap_sacrifice_makes_five_five_elephant"
+          ],
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        },
+        {
+          "printed_obligation": "{3}{G}{U}{R}, {T}, Sacrifice this artifact: Create a 5/5 green Elephant creature token. Activate only as a sorcery.",
+          "actual_definition_tests": [
+            "temur_monument_each_basic_search_shuffles_then_three_gur_tap_sacrifice_makes_five_five_elephant"
+          ],
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        }
+      ],
+      "proof_cases": [
+        {
+          "test": "temur_monument_each_basic_search_shuffles_then_three_gur_tap_sacrifice_makes_five_five_elephant",
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        }
+      ]
+    },
+    {
+      "name": "Tersa Lightshatter",
+      "oracle_id": "9918eb7b-054e-4b1c-afc7-1163ab642d50",
+      "definition": "src/card_definitions/tdm/tersa_lightshatter.rs",
+      "definition_sha256": "48ea5c21d8e8d1e8ea8c1ec75622a7399f76751c5ceb555a3be7176c81c6188d",
+      "provenance_sha256": "37329d6ca1961da66e1045157532173e8e23b5b3eb49ad111deda41283bd6256",
+      "pre_family_definition_sha256": "412359124aac6730561722490be7b6ef388980c12d444ecfcb9dbd3d3e4c7101",
+      "behavior_body_changed": true,
+      "printed_obligations": [
+        "Haste",
+        "When Tersa Lightshatter enters, discard up to two cards, then draw that many cards.",
+        "Whenever Tersa Lightshatter attacks, if there are seven or more cards in your graveyard, exile a card at random from your graveyard. You may play that card this turn."
+      ],
+      "intrinsic_body": {
+        "power": "3",
+        "toughness": "3"
+      },
+      "status": "locally verified admitted; pending completed-set acceptance/final independent reviews",
+      "actual_definition_tests": [
+        "tersa_entry_discards_zero_one_or_two_then_draws_only_actual_discard_count",
+        "tersa_random_permission_is_owned_deterministic_paid_and_expires_after_this_turn",
+        "tersa_threshold_is_intervening_and_six_cards_never_advance_random_state"
+      ],
+      "source_read": {
+        "main_java": "full body",
+        "oracle": "complete frozen facts and all printed text",
+        "reusable_helpers": "complete relevant ability/effect/token bodies pinned before typed authoring"
+      },
+      "pinned_oracle_facts_sha256": "1f2cad003fbf54a126965a36a1fc6304dc0392623260b7c349ebbdd6afb112c6",
+      "pinned_main_java": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/t/TersaLightshatter.java",
+        "sha256": "c43203eade0c82367e5cf269574a54f15fef1de0d58c5a1dc232af085167e941"
+      },
+      "helper_pins": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+          "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardAndDrawThatManyEffect.java",
+          "sha256": "f188e2031a5963432940d75ad39ec5b881cdd84feed7c7e136bc404996e1f01d"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/condition/common/ThresholdCondition.java",
+          "sha256": "f7d6ad71cd5857b9d0c127469d9b39afd84148a38001a42a309c5c218694382a"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/util/CardUtil.java",
+          "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/asthought/CanPlayCardControllerEffect.java",
+          "sha256": "f038661e1695132acc06c2886f17d98832360a6d92fbd59d3956fe87d4e78387"
+        }
+      ],
+      "obligation_proofs": [
+        {
+          "printed_obligation": "Haste",
+          "actual_definition_tests": [
+            "tersa_entry_discards_zero_one_or_two_then_draws_only_actual_discard_count",
+            "tersa_random_permission_is_owned_deterministic_paid_and_expires_after_this_turn",
+            "tersa_threshold_is_intervening_and_six_cards_never_advance_random_state"
+          ],
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        },
+        {
+          "printed_obligation": "When Tersa Lightshatter enters, discard up to two cards, then draw that many cards.",
+          "actual_definition_tests": [
+            "tersa_entry_discards_zero_one_or_two_then_draws_only_actual_discard_count",
+            "tersa_random_permission_is_owned_deterministic_paid_and_expires_after_this_turn",
+            "tersa_threshold_is_intervening_and_six_cards_never_advance_random_state"
+          ],
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        },
+        {
+          "printed_obligation": "Whenever Tersa Lightshatter attacks, if there are seven or more cards in your graveyard, exile a card at random from your graveyard. You may play that card this turn.",
+          "actual_definition_tests": [
+            "tersa_entry_discards_zero_one_or_two_then_draws_only_actual_discard_count",
+            "tersa_random_permission_is_owned_deterministic_paid_and_expires_after_this_turn",
+            "tersa_threshold_is_intervening_and_six_cards_never_advance_random_state"
+          ],
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        },
+        {
+          "printed_obligation": "Intrinsic power/toughness {\"power\": \"3\", \"toughness\": \"3\"}",
+          "actual_definition_tests": [
+            "tersa_entry_discards_zero_one_or_two_then_draws_only_actual_discard_count",
+            "tersa_random_permission_is_owned_deterministic_paid_and_expires_after_this_turn",
+            "tersa_threshold_is_intervening_and_six_cards_never_advance_random_state"
+          ],
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        }
+      ],
+      "utility_read_scope": {
+        "path": "Mage/src/main/java/mage/util/CardUtil.java",
+        "methods": [
+          "makeCardPlayable overloads (complete bodies)",
+          "haveSameNames overloads (complete bodies)"
+        ],
+        "note": "The utility file is hash-pinned; source-read claim is limited to these complete reusable methods, not unrelated utilities."
+      },
+      "proof_cases": [
+        {
+          "test": "tersa_entry_discards_zero_one_or_two_then_draws_only_actual_discard_count",
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        },
+        {
+          "test": "tersa_random_permission_is_owned_deterministic_paid_and_expires_after_this_turn",
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        },
+        {
+          "test": "tersa_threshold_is_intervening_and_six_cards_never_advance_random_state",
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        }
+      ]
+    },
+    {
+      "name": "The Sibsig Ceremony",
+      "oracle_id": "bbdb731d-c533-48ef-b82a-cf1a8ba36208",
+      "definition": "src/card_definitions/tdm/the_sibsig_ceremony.rs",
+      "definition_sha256": "a20d50bac4bffd6153c90dcc690ab859b627813dffd3e3fb02dbf5a748858e7b",
+      "provenance_sha256": "975ac72cb6c55cc67f4a68f17ff9ae31cfd331d5fd95fd4ffe7485f81379928f",
+      "pre_family_definition_sha256": "780f10447b1d2da0490ee3d99f448a835103d503c34d8bbf0b0b0de283ffdd59",
+      "behavior_body_changed": true,
+      "printed_obligations": [
+        "Creature spells you cast cost {2} less to cast.",
+        "Whenever a creature you control enters, if you cast it, destroy that creature, then create a 2/2 black Zombie Druid creature token."
+      ],
+      "intrinsic_body": {},
+      "status": "locally verified admitted; pending completed-set acceptance/final independent reviews",
+      "actual_definition_tests": [
+        "sibsig_ceremony_reduces_only_own_creature_generic_costs_and_direct_entries_do_not_replace",
+        "sibsig_ceremony_token_is_created_even_when_destroy_fails_or_entrant_changed_incarnation"
+      ],
+      "source_read": {
+        "main_java": "full body",
+        "oracle": "complete frozen facts and all printed text",
+        "reusable_helpers": "complete relevant ability/effect/token bodies pinned before typed authoring"
+      },
+      "pinned_oracle_facts_sha256": "567f612e162ce1cd0d469890f6ac92fedc50a7de177a8bbcc7b0893fe59d5d0e",
+      "pinned_main_java": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/t/TheSibsigCeremony.java",
+        "sha256": "3fdc04bee18c8a743d373fad0eb79606afe1cc0f1f79247df95679c01b73653a"
+      },
+      "helper_pins": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellsCostReductionControllerEffect.java",
+          "sha256": "47783fefecfbb22810317538f30e9e92302add21ebff508bc21f43683a85ad06"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+          "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/permanent/token/ZombieDruidToken.java",
+          "sha256": "d0f1b3d7f23a9391f94f052843e2eeba17cbf0cbbf98bfb590621d6bc13ad918"
+        }
+      ],
+      "obligation_proofs": [
+        {
+          "printed_obligation": "Creature spells you cast cost {2} less to cast.",
+          "actual_definition_tests": [
+            "sibsig_ceremony_reduces_only_own_creature_generic_costs_and_direct_entries_do_not_replace",
+            "sibsig_ceremony_token_is_created_even_when_destroy_fails_or_entrant_changed_incarnation"
+          ],
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        },
+        {
+          "printed_obligation": "Whenever a creature you control enters, if you cast it, destroy that creature, then create a 2/2 black Zombie Druid creature token.",
+          "actual_definition_tests": [
+            "sibsig_ceremony_reduces_only_own_creature_generic_costs_and_direct_entries_do_not_replace",
+            "sibsig_ceremony_token_is_created_even_when_destroy_fails_or_entrant_changed_incarnation"
+          ],
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        }
+      ],
+      "proof_cases": [
+        {
+          "test": "sibsig_ceremony_reduces_only_own_creature_generic_costs_and_direct_entries_do_not_replace",
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        },
+        {
+          "test": "sibsig_ceremony_token_is_created_even_when_destroy_fails_or_entrant_changed_incarnation",
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        }
+      ]
+    },
+    {
+      "name": "Thunder of Unity",
+      "oracle_id": "8419d1d5-bb0e-4a2d-bb6f-67957d035dde",
+      "definition": "src/card_definitions/tdm/thunder_of_unity.rs",
+      "definition_sha256": "fde6ed85229df376169b4abfa09745dac62ba8d8f959ea832af607820b24ca5b",
+      "provenance_sha256": "8c1814c848db279b12751192d555220681037bc18261e0dd378c1bf38b0d2137",
+      "pre_family_definition_sha256": "780f10447b1d2da0490ee3d99f448a835103d503c34d8bbf0b0b0de283ffdd59",
+      "behavior_body_changed": true,
+      "printed_obligations": [
+        "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)",
+        "I \u2014 You draw two cards and you lose 2 life.",
+        "II, III \u2014 Whenever a creature you control enters this turn, each opponent loses 1 life and you gain 1 life."
+      ],
+      "intrinsic_body": {},
+      "status": "locally verified admitted; pending completed-set acceptance/final independent reviews",
+      "actual_definition_tests": [
+        "thunder_chapters_draw_lose_then_repeat_own_entry_drains_survive_saga_sacrifice_and_expire"
+      ],
+      "source_read": {
+        "main_java": "full body",
+        "oracle": "complete frozen facts and all printed text",
+        "reusable_helpers": "complete relevant ability/effect/token bodies pinned before typed authoring"
+      },
+      "pinned_oracle_facts_sha256": "058219b4ec67a7e27d3b8ebccc2352318bfbf4185445df438ea75cb51a73d4a8",
+      "pinned_main_java": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/t/ThunderOfUnity.java",
+        "sha256": "d7e321364061860da69905702eae339ad1b7f0b29c97aeaf23df24b2c1716f3c"
+      },
+      "helper_pins": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/SagaAbility.java",
+          "sha256": "d907d96e4141a58d82f32fdb512e6426ed2cbd669544ade67f94b062dc7a8c80"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+          "sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CreateDelayedTriggeredAbilityEffect.java",
+          "sha256": "537fdb546ad334c8e75d07346e68cf02ee4fa38bf830cbbd041ef491234f0661"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeOpponentsEffect.java",
+          "sha256": "0efbab18123aec32ac502d57e9a8d9571965d09f3f4e09c448a4ed4cf10aa0e1"
+        }
+      ],
+      "obligation_proofs": [
+        {
+          "printed_obligation": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)",
+          "actual_definition_tests": [
+            "thunder_chapters_draw_lose_then_repeat_own_entry_drains_survive_saga_sacrifice_and_expire"
+          ],
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        },
+        {
+          "printed_obligation": "I \u2014 You draw two cards and you lose 2 life.",
+          "actual_definition_tests": [
+            "thunder_chapters_draw_lose_then_repeat_own_entry_drains_survive_saga_sacrifice_and_expire"
+          ],
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        },
+        {
+          "printed_obligation": "II, III \u2014 Whenever a creature you control enters this turn, each opponent loses 1 life and you gain 1 life.",
+          "actual_definition_tests": [
+            "thunder_chapters_draw_lose_then_repeat_own_entry_drains_survive_saga_sacrifice_and_expire"
+          ],
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        }
+      ],
+      "proof_cases": [
+        {
+          "test": "thunder_chapters_draw_lose_then_repeat_own_entry_drains_survive_saga_sacrifice_and_expire",
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        }
+      ]
+    },
+    {
+      "name": "Trade Route Envoy",
+      "oracle_id": "95d51048-be32-4c5f-8b75-fca3a891c9d6",
+      "definition": "src/card_definitions/tdm/trade_route_envoy.rs",
+      "definition_sha256": "350c061e3351e7a6e23811c7e4758f7db45dd380e3861e6c3ab29fda77249e3a",
+      "provenance_sha256": "5d38e0d1df7d4884c46cfcc30a898407068ba0fd11c558781b52320eec8863e9",
+      "pre_family_definition_sha256": "780f10447b1d2da0490ee3d99f448a835103d503c34d8bbf0b0b0de283ffdd59",
+      "behavior_body_changed": true,
+      "printed_obligations": [
+        "When this creature enters, draw a card if you control a creature with a counter on it. If you don't draw a card this way, put a +1/+1 counter on this creature."
+      ],
+      "intrinsic_body": {
+        "power": "4",
+        "toughness": "3"
+      },
+      "status": "locally verified admitted; pending completed-set acceptance/final independent reviews",
+      "actual_definition_tests": [
+        "trade_route_envoy_uses_actual_draw_result_and_any_own_creature_counter_else_adds_one"
+      ],
+      "source_read": {
+        "main_java": "full body",
+        "oracle": "complete frozen facts and all printed text",
+        "reusable_helpers": "complete relevant ability/effect/token bodies pinned before typed authoring"
+      },
+      "pinned_oracle_facts_sha256": "0a557ca987c01559f1b6b07cfad98b59cc01e2f8f0aab06e608796fd9dd831d3",
+      "pinned_main_java": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/t/TradeRouteEnvoy.java",
+        "sha256": "fa89bad69dadc70b3bd7b6505b0b2700f59379dd1c35be9144284cab4bac331b"
+      },
+      "helper_pins": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/filter/predicate/permanent/CounterAnyPredicate.java",
+          "sha256": "d9b89c5d487a1c6aede3f90e5edf474311703b231441a01a3a30b10107eb9434"
+        }
+      ],
+      "obligation_proofs": [
+        {
+          "printed_obligation": "When this creature enters, draw a card if you control a creature with a counter on it. If you don't draw a card this way, put a +1/+1 counter on this creature.",
+          "actual_definition_tests": [
+            "trade_route_envoy_uses_actual_draw_result_and_any_own_creature_counter_else_adds_one"
+          ],
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        },
+        {
+          "printed_obligation": "Intrinsic power/toughness {\"power\": \"4\", \"toughness\": \"3\"}",
+          "actual_definition_tests": [
+            "trade_route_envoy_uses_actual_draw_result_and_any_own_creature_counter_else_adds_one"
+          ],
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        }
+      ],
+      "proof_cases": [
+        {
+          "test": "trade_route_envoy_uses_actual_draw_result_and_any_own_creature_counter_else_adds_one",
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        }
+      ]
+    },
+    {
+      "name": "Traveling Botanist",
+      "oracle_id": "14934ab0-41ab-44f8-bb28-2b0457eb6f5f",
+      "definition": "src/card_definitions/tdm/traveling_botanist.rs",
+      "definition_sha256": "081748b5f0e8d6bb0eaebc3b0099de115315c41e4ffbb4c65ad665cd6f22e460",
+      "provenance_sha256": "8cef9d0e1b892a06540ac6f98e59aa3139107fd6ca06382bde21d315efa127d8",
+      "pre_family_definition_sha256": "780f10447b1d2da0490ee3d99f448a835103d503c34d8bbf0b0b0de283ffdd59",
+      "behavior_body_changed": true,
+      "printed_obligations": [
+        "Whenever this creature becomes tapped, look at the top card of your library. If it's a land card, you may reveal it and put it into your hand. If you don't put the card into your hand, you may put it into your graveyard."
+      ],
+      "intrinsic_body": {
+        "power": "2",
+        "toughness": "3"
+      },
+      "status": "locally verified admitted; pending completed-set acceptance/final independent reviews",
+      "actual_definition_tests": [
+        "traveling_botanist_real_attack_tap_offers_private_land_hand_or_any_card_graveyard_or_keep",
+        "traveling_botanist_empty_library_never_attempts_a_draw"
+      ],
+      "source_read": {
+        "main_java": "full body",
+        "oracle": "complete frozen facts and all printed text",
+        "reusable_helpers": "complete relevant ability/effect/token bodies pinned before typed authoring"
+      },
+      "pinned_oracle_facts_sha256": "0032fff0bcde35f23afe93aa1aa91d53a8035358e921d3a1709b7ed2f6ff726b",
+      "pinned_main_java": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/t/TravelingBotanist.java",
+        "sha256": "dae05ae371f86c0c3c7025f181be8b380392559b7c7e9470c1982d30e3b82c37"
+      },
+      "helper_pins": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java",
+          "sha256": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c"
+        }
+      ],
+      "obligation_proofs": [
+        {
+          "printed_obligation": "Whenever this creature becomes tapped, look at the top card of your library. If it's a land card, you may reveal it and put it into your hand. If you don't put the card into your hand, you may put it into your graveyard.",
+          "actual_definition_tests": [
+            "traveling_botanist_real_attack_tap_offers_private_land_hand_or_any_card_graveyard_or_keep",
+            "traveling_botanist_empty_library_never_attempts_a_draw"
+          ],
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        },
+        {
+          "printed_obligation": "Intrinsic power/toughness {\"power\": \"2\", \"toughness\": \"3\"}",
+          "actual_definition_tests": [
+            "traveling_botanist_real_attack_tap_offers_private_land_hand_or_any_card_graveyard_or_keep",
+            "traveling_botanist_empty_library_never_attempts_a_draw"
+          ],
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        }
+      ],
+      "proof_cases": [
+        {
+          "test": "traveling_botanist_real_attack_tap_offers_private_land_hand_or_any_card_graveyard_or_keep",
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        },
+        {
+          "test": "traveling_botanist_empty_library_never_attempts_a_draw",
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        }
+      ]
+    },
+    {
+      "name": "Venerated Stormsinger",
+      "oracle_id": "4aff2f31-619f-406e-b2c9-a2c733c04bc4",
+      "definition": "src/card_definitions/tdm/venerated_stormsinger.rs",
+      "definition_sha256": "29750a1b6804ac2bbccb0625a7b59db1f9c4542b7ed65db298a40d143641d2b7",
+      "provenance_sha256": "8f6f6e337b89155fb8352ffa616520abd1a99fb42023072ae04747df288d873c",
+      "pre_family_definition_sha256": "780f10447b1d2da0490ee3d99f448a835103d503c34d8bbf0b0b0de283ffdd59",
+      "behavior_body_changed": true,
+      "printed_obligations": [
+        "Mobilize 1 (Whenever this creature attacks, create a tapped and attacking 1/1 red Warrior creature token. Sacrifice it at the beginning of the next end step.)",
+        "Whenever this creature or another creature you control dies, each opponent loses 1 life and you gain 1 life."
+      ],
+      "intrinsic_body": {
+        "power": "3",
+        "toughness": "3"
+      },
+      "status": "locally verified admitted; pending completed-set acceptance/final independent reviews",
+      "actual_definition_tests": [
+        "venerated_stormsinger_mobilize_sacrifice_and_self_other_simultaneous_deaths_drain_per_creature"
+      ],
+      "source_read": {
+        "main_java": "full body",
+        "oracle": "complete frozen facts and all printed text",
+        "reusable_helpers": "complete relevant ability/effect/token bodies pinned before typed authoring"
+      },
+      "pinned_oracle_facts_sha256": "52861ff14bc75293e627810c17d1f7208eea025b47857ef2b81a0a9503d360b2",
+      "pinned_main_java": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/v/VeneratedStormsinger.java",
+        "sha256": "b642699f90c234261a4b7a495053d472089251c31be97edbc81a2bd260c558bb"
+      },
+      "helper_pins": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/MobilizeAbility.java",
+          "sha256": "84ea782ab71b1b147b349c5f5ac8b2c03ae60211c95393a2e4e994da8ee5eac8"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/common/DiesThisOrAnotherTriggeredAbility.java",
+          "sha256": "4511f11fe0c29d6984fc30bc40f6c270865b68a607f740f7247998c33b80fe01"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeOpponentsEffect.java",
+          "sha256": "0efbab18123aec32ac502d57e9a8d9571965d09f3f4e09c448a4ed4cf10aa0e1"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/permanent/token/RedWarriorToken.java",
+          "sha256": "91af8e32ddafb0a605511b4fd6a3e78e00d46465b90463b47ce6c6266a38582c"
+        }
+      ],
+      "obligation_proofs": [
+        {
+          "printed_obligation": "Mobilize 1 (Whenever this creature attacks, create a tapped and attacking 1/1 red Warrior creature token. Sacrifice it at the beginning of the next end step.)",
+          "actual_definition_tests": [
+            "venerated_stormsinger_mobilize_sacrifice_and_self_other_simultaneous_deaths_drain_per_creature"
+          ],
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        },
+        {
+          "printed_obligation": "Whenever this creature or another creature you control dies, each opponent loses 1 life and you gain 1 life.",
+          "actual_definition_tests": [
+            "venerated_stormsinger_mobilize_sacrifice_and_self_other_simultaneous_deaths_drain_per_creature"
+          ],
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        },
+        {
+          "printed_obligation": "Intrinsic power/toughness {\"power\": \"3\", \"toughness\": \"3\"}",
+          "actual_definition_tests": [
+            "venerated_stormsinger_mobilize_sacrifice_and_self_other_simultaneous_deaths_drain_per_creature"
+          ],
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        }
+      ],
+      "proof_cases": [
+        {
+          "test": "venerated_stormsinger_mobilize_sacrifice_and_self_other_simultaneous_deaths_drain_per_creature",
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        }
+      ]
+    },
+    {
+      "name": "Veteran Ice Climber",
+      "oracle_id": "ccaadf8d-22c0-4139-b734-03ac2fcb4494",
+      "definition": "src/card_definitions/tdm/veteran_ice_climber.rs",
+      "definition_sha256": "8660840886e2bfabbb52cc64dc1fbdb4b9945d18a63f478fd5f72858e5f9adff",
+      "provenance_sha256": "06859c44fe2085ae62c72c3465999dc5967db44db104be35f9976611c5e1206a",
+      "pre_family_definition_sha256": "fa68b8ced015872aafb9648a44a8b945811aedcbc0c0dcf75970fa5509a173b0",
+      "behavior_body_changed": true,
+      "printed_obligations": [
+        "Vigilance",
+        "This creature can't be blocked.",
+        "Whenever this creature attacks, up to one target player mills cards equal to this creature's power. (They put that many cards from the top of their library into their graveyard.)"
+      ],
+      "intrinsic_body": {
+        "power": "1",
+        "toughness": "3"
+      },
+      "status": "locally verified admitted; pending completed-set acceptance/final independent reviews",
+      "actual_definition_tests": [
+        "veteran_ice_climber_optional_either_player_mills_resolution_power_and_vigilance_unblockability"
+      ],
+      "source_read": {
+        "main_java": "full body",
+        "oracle": "complete frozen facts and all printed text",
+        "reusable_helpers": "complete relevant ability/effect/token bodies pinned before typed authoring"
+      },
+      "pinned_oracle_facts_sha256": "7df847193922849196e1e67b5225d4ac99110e9b1d7aae05ebbcde0be2770bc6",
+      "pinned_main_java": {
+        "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+        "path": "Mage.Sets/src/mage/cards/v/VeteranIceClimber.java",
+        "sha256": "e4154de5bffbb740775a39c1bea09a6be5c169326f3f70e2d721309fd5a5d079"
+      },
+      "helper_pins": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+          "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/CantBeBlockedSourceAbility.java",
+          "sha256": "db5a7fc24b93fadd2bb8e9fd2e03c5ac39dc413d3e35d1a532fcc53aa08fadcb"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedSourceEffect.java",
+          "sha256": "546b73507803da1667ee058a20486c5f3387357e38d1419a82f952b94ebb93d7"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SourcePermanentPowerValue.java",
+          "sha256": "aabc6ce8b7bd68b08691830a2a45af0d886a2837c652bbca9e109b5813b0ca9a"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsTargetEffect.java",
+          "sha256": "5a01d741ed0a7d1449d5d4591025205bc130e7e5eb5f861d2761b1fd64557365"
+        }
+      ],
+      "obligation_proofs": [
+        {
+          "printed_obligation": "Vigilance",
+          "actual_definition_tests": [
+            "veteran_ice_climber_optional_either_player_mills_resolution_power_and_vigilance_unblockability"
+          ],
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        },
+        {
+          "printed_obligation": "This creature can't be blocked.",
+          "actual_definition_tests": [
+            "veteran_ice_climber_optional_either_player_mills_resolution_power_and_vigilance_unblockability"
+          ],
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        },
+        {
+          "printed_obligation": "Whenever this creature attacks, up to one target player mills cards equal to this creature's power. (They put that many cards from the top of their library into their graveyard.)",
+          "actual_definition_tests": [
+            "veteran_ice_climber_optional_either_player_mills_resolution_power_and_vigilance_unblockability"
+          ],
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        },
+        {
+          "printed_obligation": "Intrinsic power/toughness {\"power\": \"1\", \"toughness\": \"3\"}",
+          "actual_definition_tests": [
+            "veteran_ice_climber_optional_either_player_mills_resolution_power_and_vigilance_unblockability"
+          ],
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        }
+      ],
+      "proof_cases": [
+        {
+          "test": "veteran_ice_climber_optional_either_player_mills_resolution_power_and_vigilance_unblockability",
+          "status": "PASS",
+          "receipt": "engine86_all34_ordinary"
+        }
+      ]
     }
   ],
   "authorized_auxiliary_repair": {
@@ -2106,11 +2934,11 @@
       "engine86_ordinary"
     ]
   },
-  "focused_family_physical_cards": 25,
+  "focused_family_physical_cards": 34,
   "newly_authored_gated_cards": 0,
   "existing_candidate_cards_in_family": 0,
   "remaining_repository_candidates": 0,
-  "test_sha256": "69a9cf0a22f29ef40ac82e9ec3fa59df4b0edc41b4130bfcf9573dfb695acf31",
+  "test_sha256": "69f4fa89589784089a8a5b1b867eb7665f40853b9badcb55f0676aee6de1d0f3",
   "validation": {
     "original_g_s_ordinary_restoration": {
       "path": "<cache>/rustmage-tdm/old-dragonstorm-restoration-1793821631385562618/g_s/native.json",
@@ -2212,6 +3040,53 @@
       "sha256": "61f9f8cb601bd94cf51cc9f1bc11234739bec1227b359f6d956fb93b14c04f70",
       "exit": 0,
       "seconds": 1.9202177980332635
+    },
+    "engine86_final9_gated": {
+      "path": "<cache>/rustmage-tdm/post86-g-s-final9-retry-1793826686009719206/g_s_final9_gated/native.json",
+      "sha256": "98a96560f2aaf77b9f1762d6c5599cc851338af36dd31988ac39157f643c8de8",
+      "cases": 42,
+      "passed": 42,
+      "compile_seconds": 1.8185838899808004,
+      "execution_seconds": 0.04991829500067979,
+      "test_sha256": "59245c8040378db291f66d1f6fd7561e5a9e869e92f6f0e4e800bccc8f506d5e",
+      "admission": "nine newly authored definitions false; supported hand shell only before any source event; Hawk deck constructor explicitly refuses unsupported admission"
+    },
+    "engine86_final9_gated_clippy": {
+      "path": "<cache>/rustmage-tdm/post86-g-s-final9-retry-1793826686009719206/g_s_final9_gated/clippy-terminal.json",
+      "sha256": "ffcf7b47dfbd59666b37621fcec540b8b4ae515b05ed0bc048094ca5d4f27de3",
+      "exit": 0,
+      "seconds": 1.9700215599732473
+    },
+    "engine86_all34_ordinary": {
+      "path": "<cache>/rustmage-tdm/post86-g-s-all34-ordinary-1793826999159787547/g_s_all34_ordinary/native.json",
+      "sha256": "e3dafd42d4454565b1e6dce9f491758064384248cb475ca8238baba045620e29",
+      "cases": 42,
+      "passed": 42,
+      "compile_seconds": 4.879408075998072,
+      "execution_seconds": 0.051263164030388,
+      "test_sha256": "69f4fa89589784089a8a5b1b867eb7665f40853b9badcb55f0676aee6de1d0f3",
+      "admission": "all34 admitted with ordinary support::put; no fallback or actual-card definition overlays; real sixty-Hawk Standard Game::new must succeed",
+      "core_artifacts": [
+        {
+          "fresh": true,
+          "profile": {
+            "opt_level": "1",
+            "debuginfo": 0,
+            "debug_assertions": true,
+            "overflow_checks": true,
+            "test": false
+          },
+          "features": [
+            "test-support"
+          ]
+        }
+      ]
+    },
+    "engine86_all34_ordinary_clippy": {
+      "path": "<cache>/rustmage-tdm/post86-g-s-all34-ordinary-1793826999159787547/g_s_all34_ordinary/clippy-terminal.json",
+      "sha256": "a5423a93d43c9a6a48fdda443636b689b181245d888849533e7b5313a3845038",
+      "exit": 0,
+      "seconds": 2.1705633340170607
     }
   },
   "parked_work": {
@@ -2219,16 +3094,16 @@
     "root_owned": [
       "integration/linkage regeneration",
       "all Cargo leases",
-      "whole-set acceptance and final nonauthor reviews",
+      "whole-set acceptance/final nonauthor reviews",
       "one completed-set PR"
     ],
-    "harness": "Separate04cb04bab732b42f127c67d4749a0d39fa9d1431 stays parked; zero complete games executed before276 physical locally verified",
-    "hold": "Read-only after final commit until root publishes any new disjoint ownership."
+    "harness": "Separate04cb remains parked; no game acceptance before276 physical cards complete",
+    "hold": "Code read-only after final commit; authored acceptance-family coverage mapping only."
   },
-  "newly_implemented_cards": 18,
+  "newly_implemented_cards": 27,
   "existing_verified_cards": 7,
   "measurement": {
-    "scope": "28 actual-definition scenarios cover all25 additional physical cards plus a separate previously-counted Roiling self-entry edge.18 newly authored and7 existing; no complete-game or general Standard performance claim.",
+    "scope": "42 actual-definition scenarios cover all34 additional physical cards and a separate already-counted Roiling self-entry edge:27 new and7 existing. No complete-game or general Standard performance claim.",
     "measured_validation_runs": {
       "engine86_gated": {
         "compile_seconds": 15.90298662299756,
@@ -2257,11 +3132,25 @@
       },
       "engine86_all25_ordinary_clippy": {
         "seconds": 1.9202177980332635
+      },
+      "engine86_final9_gated": {
+        "compile_seconds": 1.8185838899808004,
+        "execution_seconds": 0.04991829500067979
+      },
+      "engine86_final9_gated_clippy": {
+        "seconds": 1.9700215599732473
+      },
+      "engine86_all34_ordinary": {
+        "compile_seconds": 4.879408075998072,
+        "execution_seconds": 0.051263164030388
+      },
+      "engine86_all34_ordinary_clippy": {
+        "seconds": 2.1705633340170607
       }
     },
     "authoring_throughput": "No wall-clock authoring throughput claimed: source work spanned root-owned shared-engine holds. Native execution times are measured scenario throughput only."
   },
-  "current_target_cases": 28,
+  "current_target_cases": 42,
   "remaining_family_new_gated": 0,
   "remaining_family_existing_candidates": 0,
   "family_counts": [
@@ -2274,6 +3163,11 @@
       "physical": 15,
       "new": 11,
       "existing": 4
+    },
+    {
+      "physical": 9,
+      "new": 9,
+      "existing": 0
     }
   ],
   "failure_history": [
@@ -2288,6 +3182,22 @@
       "sha256": "ec3396f4595ba8d2aafead8d55469a3636134bbe91f5629aef22e747d7e958fc",
       "stage": "27PASS1FAIL",
       "diagnosis_and_repair": "Stalwart setup used raw add_counter storage writes, which do not emit placement events. Replaced with six real paid renew activations; expected outcomes unchanged; no production or engine change."
+    },
+    {
+      "path": "<cache>/rustmage-tdm/post86-g-s-final9-gated-1793826453898202927/g_s_final9_gated/native.json",
+      "sha256": "a78c97469a136c414495a42e170923bec77451e671569474350bd6875cf287b4",
+      "stage": "40PASS2FAIL",
+      "diagnosis_and_repair": "Both Ceremony fixtures: Short Bow printed{2} was given only1 mana; corrected successful pool to2 with prior zero-pool rejection retained. Truncated Kotis fixture name corrected to frozen canonical Kotis, the Fangkeeper. No card or engine change."
     }
-  ]
+  ],
+  "additional_ownership_handoff": {
+    "path": "docs/tdm-s-z-final-handoff-ownership.json",
+    "sha256": "f3cebcac89d554a3b9cbd525b8b2372c2b7507938343a156b694a4c8bbd58130",
+    "root_publish_revision": "f49e66572",
+    "private_compat_revision": "f807c27a7",
+    "new_physical_members": 9,
+    "full_scope_physical_members": 34,
+    "nine_prior_bodies_and_json": "matched exact published baseline pins before editing",
+    "source_pins_written_before_typed_bodies": true
+  }
 }
