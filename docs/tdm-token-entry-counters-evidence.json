@@ -2,7 +2,7 @@
   "schema": 1,
   "dependency": "E:TOKEN_ENTRY_COUNTERS",
   "audit_group": 85,
-  "status": "Integrated shared engine fix;102 focused cases and lint pass; full release acceptance and two final reviews pending",
+  "status": "Token header contract repaired and passing;102 shared-engine focused cases and lint remain passing; fresh full release acceptance and final reviews pending",
   "accepted_prior_engine": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
   "reproduction": {
     "report": "/home/altf4/.cache/rustmage-tdm/tdm-globe-token-entry-diagnostic/native.json",
@@ -94,6 +94,28 @@
       "inputs_unchanged": true,
       "compile_seconds": 117.21575563203078,
       "execution_seconds": 0.03536070202244446
+    },
+    {
+      "report": "/home/altf4/.cache/rustmage-validation-jlfinkjw/report/result.json",
+      "report_sha256": "e9df538df76d6b943fde114553546df6175d3727eb4ea2841ea9fd6eeb0d6627",
+      "head": "93e3aa3f6b4c5de3003703807347919b49ccf1bf",
+      "terminal": true,
+      "success": false,
+      "input_sha256": "1e6d70d2ec6de5dbd2b279884ad1567716a7863e0762da9dbaf5444756e4eed7",
+      "files_verified": 13007,
+      "changed": [],
+      "active_processes": [],
+      "seconds": 424.6096237349557,
+      "native_compile_seconds": 234.70381813700078,
+      "native_execution_seconds": 103.43212335096905,
+      "executed_cases": 3143,
+      "failed_cases": [
+        "engine::assurance::cards::token_factories_reject_deck_submission_in_every_format"
+      ],
+      "reason": "Reserved unsupported token5488 inherited default physical-card copy limit4. Constructed validation returned copy-limit error before token-specific error; deck still rejected. Correct stub header to deck_limit=None without admitting or implementing token.",
+      "release_and_python_run": false,
+      "compiled_targets": 107,
+      "executed_targets": 7
     }
   ],
   "review_findings": [
@@ -207,5 +229,23 @@
   },
   "card_admission_changed": false,
   "author_engine_commit": "fd3eeb5f9ba5a3d949061c2472e1d14c6904567c",
-  "integrated_engine_commit": "cf95fe4bce32669083a07c362b4e73c074a8119d"
+  "integrated_engine_commit": "cf95fe4bce32669083a07c362b4e73c074a8119d",
+  "token_header_correction": {
+    "path": "src/card_definitions/synthetic/token_tdm_reliquary_dragon.rs",
+    "change": "deck_limit=None, consistent with all token factories; EffectUnsupported and complete=false unchanged",
+    "source_check": {
+      "definitions": 5489,
+      "source_blobs": 2713,
+      "java_verified": true,
+      "catalogue_version": "9a8164380b9b17b4d9cacf2adef314bd9d0e33b14a6d936bc9834ba2aff8284b"
+    },
+    "focused_report": "/home/altf4/.cache/rustmage-tdm/reliquary-token-deck-header-corrected/native.json",
+    "focused_report_sha256": "529e461618632be95e942aa271a42e76444196a6d7082afea46f688fa1191048",
+    "cases": 1,
+    "terminal": true,
+    "success": true,
+    "compile_seconds": 26.135898043983616,
+    "execution_seconds": 0.03295104898279533,
+    "engine_sources_unchanged": true
+  }
 }

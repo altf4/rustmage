@@ -26,5 +26,6 @@
   "append_only": true,
   "old_ids_preserved": 5488,
   "physical_pool_count_unchanged": 276,
-  "copy_to_author_after_current_frozen_job": true
+  "copy_to_author_after_current_frozen_job": true,
+  "deck_submission": "deck_limit=None, matching every other token factory; Game::new rejects tokens in every format. This header correction leaves behavior Unsupported and complete=false."
 }

@@ -286,9 +286,9 @@
     "definitions": 5489,
     "source_blobs": 2713,
     "java_verified": true,
-    "catalogue_version": "6c6cf09e9ebc085549e78cb8db537f0e8caee3283d0bce64ab23aaaa15ff97d6"
+    "catalogue_version": "9a8164380b9b17b4d9cacf2adef314bd9d0e33b14a6d936bc9834ba2aff8284b"
   },
-  "active_engine_dependency": "E:TOKEN_ENTRY_COUNTERS(85): actualDragonbackAssault4/4Dragontoken receives0entrycounters under2liveGlobeproviders; ordinaryDragoncardcorrectlyreceives2. Generalcardauthorsheld, all8newgrowthdefinitionsfalse; engineaudit/implementation inprogress.",
+  "active_engine_dependency": "E:TOKEN_ENTRY_COUNTERS(85) repaired;102/102 focused scenarios and lint pass. First full run found new gated token stub copy-limit header; header corrected and factory rejection contract passes. Fresh release acceptance/reviews/warm pending; cards held at187.",
   "engine83_card_repair": {
     "card": "Aggressive Negotiations",
     "reason": "Restored after dedicated true nonland predicate rejects artifact/enchantment lands; mandatory reveal/exact refs/source-independent exile/counter continuation/owned branches verified.",
