@@ -3148,5 +3148,20 @@
   },
   "all_members": 276,
   "all_omen_faces_owned_with_parent": true,
-  "initial_verified_complete_cards": 0
+  "initial_verified_complete_cards": 0,
+  "supplemental_token_ownership": [
+    {
+      "catalogue_id": 5488,
+      "factory_identity": "@token/tdm-reliquary-dragon",
+      "name": "Reliquary Dragon",
+      "owner": "/root/tdm_cards_a_g",
+      "files": [
+        "src/card_definitions/synthetic/token_tdm_reliquary_dragon.rs",
+        "src/card_definitions/synthetic/token_tdm_reliquary_dragon.json"
+      ],
+      "parent_oracle_id": "61822bbe-0407-4425-b8d7-0263a8c521ec",
+      "parent_name": "Dragonbroods' Relic",
+      "status": "Gated immutable identity reserved; typed authoring/actual creation proof pending, not a physical completion."
+    }
+  ]
 }

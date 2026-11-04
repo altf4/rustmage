@@ -1,0 +1,12 @@
+{
+  "name": "@token/tdm-reliquary-dragon",
+  "catalogue_id": 5488,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "5a8d393258f00386c715a452a291a13087197888303dbeaa8b4ff5470de3f043",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/ReliquaryDragonToken.java",
+  "java_sha256": "9e2ed86af3180b862025bee5b3b9d2e0f534c382dcac4c35d13fa85f3ea14c39",
+  "xmage_dependencies": []
+}
