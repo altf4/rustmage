@@ -288,7 +288,7 @@
     "java_verified": true,
     "catalogue_version": "53b5932dee5dc4feaf8a58c53064806a7b09ed4b9e259c8aafd16a71e418f719"
   },
-  "active_engine_dependency": "E:CAST_EVENT_SCALAR_CAPTURE(86): Teval LoseLifeScaled(CastSpellManaValue) trigger omits existing cast_event capture; direct test-first repro fails, minimal recursive-collector fix in focused validation. All new card batches parked.",
+  "active_engine_dependency": null,
   "engine83_card_repair": {
     "card": "Aggressive Negotiations",
     "reason": "Restored after dedicated true nonland predicate rejects artifact/enchantment lands; mandatory reveal/exact refs/source-independent exile/counter continuation/owned branches verified.",
@@ -299,7 +299,11 @@
     "schema_report": "<cache>/rustmage-tdm/schema201-first/native.json",
     "schema_cases": 4
   },
-  "engine_acceptance": "docs/tdm-engine85-acceptance.json",
+  "engine_acceptance": {
+    "revision": "2660c86112362973c195bee4c1b85e1a968f9f3a",
+    "evidence": "docs/tdm-engine86-acceptance.json",
+    "status": "Accepted full release/two pure reviews/three guarded author warms; card authoring resumed"
+  },
   "engine85_card_gate": "Shared fix accepted; per-author cache warms required before resumed cards. No count increase from drafted/gated cards.",
   "reverification_holds": [],
   "closed_reverification_holds": "docs/tdm-dragonstorm-self-entry-restoration.json"
