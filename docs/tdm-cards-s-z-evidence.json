@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "scope": "All92 physical S–Z TDM members plus their owned Omen/reprint definitions; whole-card results accumulate here.",
+  "scope": "All92 physical S\u2013Z TDM members plus their owned Omen/reprint definitions; whole-card results accumulate here.",
   "engine_revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
   "metadata_baseline": "bd24d9f167f98308637420e3a4de461ccda1a4d0",
   "tracking_issue": "https://github.com/altf4/rustmage/issues/570",
@@ -8,11 +8,11 @@
   "first_family": "Harmonize draw/bounce/combat spells",
   "started_utc": "2026-11-04T14:02:30.077837+00:00",
   "full_denominator": 92,
-  "currently_verified_new_complete": 2,
-  "currently_verified_existing_candidates": 2,
-  "pending_members": 88,
+  "currently_verified_new_complete": 3,
+  "currently_verified_existing_candidates": 11,
+  "pending_members": 78,
   "candidate_first_family_count": 4,
-  "provisional_complete_flags": "Candidate true flags permit integrator private linkage/testing; no whole-card verification asserted until focused actual-definition run passes.",
+  "provisional_complete_flags": "New definitions remain complete=false through initial gated actual-definition PASS. Integrator then admits and repeats using normal supported put before counting. Existing baseline candidates require actual-definition evidence or accepted exact source/test/report proof reuse.",
   "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "source_read_complete_files": [
     {
@@ -144,6 +144,181 @@
       "path": "Mage/src/main/java/mage/filter/common/FilterCreatureCard.java",
       "sha256": "ee796c20588a1c0975306824c57d1c173bfa54b4afaf8c3526aaf32e15d02739",
       "extent": "complete body reread during current whole-card authoring"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/SandsteppeCitadel.java",
+      "sha256": "1050fed7c1a935de3cd5f9385cda55b227787e8ddfb904c659c510bb0c852957",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedAbility.java",
+      "sha256": "147582b81a6ea9f26c8835600282fe7311c08dcb1ff983b26587e455c2c4514a",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/EntersBattlefieldEffect.java",
+      "sha256": "992476599885ef0ca5b2187155efe9fe40b9a16e98b578b67e0dacf21b8e6e48",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapSourceEffect.java",
+      "sha256": "a912f8d2328afba2be2060a9b044621afd2d83bf48f05489962eec2ee29cff0d",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/BasicManaAbility.java",
+      "sha256": "689edd410e1e0e370f363d00c2bf38639a572b87e29475138a670e0645c6ed17",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+      "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/WhiteManaAbility.java",
+      "sha256": "36c9c240bb0e9509d304d9300d0a157085253b4ab5d9a52cbdf1d051a43221b6",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/BlackManaAbility.java",
+      "sha256": "c7c69b99a3cc42aa1be3926c5f631440e6a34cb0156dd5065ab32204e954d28f",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/GreenManaAbility.java",
+      "sha256": "77cae7fc213823ee0bdb2f8447f60c1323776dae061b5062edacc26fd304808c",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/ScouredBarrens.java",
+      "sha256": "c34c47f8a72ad7e94c01c1d9202d307bd5cd466cf6b986cb6dfea5a5a2e714bc",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/SwiftwaterCliffs.java",
+      "sha256": "ff8cb12b116402b92b76c33790b8062174e794b0b8f1df872b69f7e0f285f3c2",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/BlueManaAbility.java",
+      "sha256": "8b0ffaec3d6002607e0a62e142031604a31556313e44830d9ad44026872cdf1f",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/RedManaAbility.java",
+      "sha256": "1648a5c546271d42dd7cb1e3b988d6be224431812867755b96dd633593a5b8ee",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/t/ThornwoodFalls.java",
+      "sha256": "49342818c4d39d4bc4c69ddae94f07d461ab79c3a49782ae7b1c6f3041e24e67",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/t/TranquilCove.java",
+      "sha256": "5e133ca3c55c2e1640f4e7c24bd9ef65cc010a23cb276c276d7cb70dd3381dba",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/w/WindScarredCrag.java",
+      "sha256": "8047d44347473f07c90906a82f0c7339e7092a9150b36833c9841069ddaceef7",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/cards/basiclands/Swamp.java",
+      "sha256": "b292314acab07bf9e658419b7c2cebf25c9cf7fe0267792c1cdfb73d9ebd3855",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/cards/basiclands/BasicLand.java",
+      "sha256": "4eb89e2e86f2d29dd2bd4990f7f72089edbe07f6c17b0eb9fb48b3493ef79215",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/SultaiDevotee.java",
+      "sha256": "2d225bceba31ff7ccb88f027d1e6c7b3f445e84950e232d8ea0d629517886330",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/LimitedTimesPerTurnActivatedManaAbility.java",
+      "sha256": "277f02f44bf32ea4d389b21f74227491808e3fb0c30fbdb911a88918d550af23",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaFromColorChoicesEffect.java",
+      "sha256": "566cfd640a483cb992f550774635dabe582d5f0aba45283a1d7748db79bcc558",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/t/TemurDevotee.java",
+      "sha256": "fe87923823e205a17a6f9f288cb63487c23868e3567ec1286e1ce8dc84edf7eb",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/DefenderAbility.java",
+      "sha256": "ad5269c8613d7ef2e18e64fb3ea53099a4649870fae2cc0a54ad80a50ca0755e",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/SunsetStrikemaster.java",
+      "sha256": "b62b2bd20e20156d3e5a122c8d7d4ca8b2a0b5747888b90c06c25a6037bb0fab",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+      "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb",
+      "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AbilityPredicate.java",
+      "sha256": "6e8ecc0108fde867fbb47c3afbc24e5dd30a0e9de97efc5e06950498f0b32dda",
+      "extent": "complete body reread during current mana-family authoring"
     }
   ],
   "source_read_scoped_files": [
@@ -156,6 +331,11 @@
       "path": "Mage/src/main/java/mage/util/CardUtil.java",
       "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06",
       "extent": "complete reduceCost/adjustAbilityCost/adjustCost methods127-307; broad utility class not claimed wholly read"
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+      "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105",
+      "extent": "FILTER_CREATURE_FLYING declaration and full initializer, lines1212-1217; requires live FlyingAbility predicate"
     }
   ],
   "authority": [
@@ -283,9 +463,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "fd0ff010a36e91f4312441d7703f1bfa67819ba5cd26e294d8b6e3ffacb5e086"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "fd0ff010a36e91f4312441d7703f1bfa67819ba5cd26e294d8b6e3ffacb5e086",
+      "evidence_family": "Mana lands, Devotees and Sunset Strikemaster"
     },
     {
       "name": "Sarkhan's Resolve",
@@ -348,9 +529,25 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "4053aab61d910da51664239329dbf26b8086df47e5ea058ef58a71ecea1b14bd"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "4053aab61d910da51664239329dbf26b8086df47e5ea058ef58a71ecea1b14bd",
+      "evidence_family": "Mana lands, Devotees and Sunset Strikemaster",
+      "proof_reuse": {
+        "name": "Scoured Barrens",
+        "definition": "src/card_definitions/tdm/scoured_barrens.rs",
+        "definition_sha256": "b19b7ccb33105eec60f30e3d621cde030e13b92ee6bcb5783670a7913b9cd8b3",
+        "provenance": "src/card_definitions/tdm/scoured_barrens.json",
+        "provenance_sha256": "4edf39402fad022aa6f125ebc45c79769755d0b9c8d94b3a66711641a1776e78",
+        "obligations": [
+          "Land enters tapped",
+          "ETB stacked gain1 for entering controller",
+          "Tap for either printed color, illegal color/tapped costs rejected",
+          "Owned raw/index/restore land and mana outcomes"
+        ],
+        "status": "accepted_exact_definition_proof_reused",
+        "accepted_baseline_definition_sha256": "b19b7ccb33105eec60f30e3d621cde030e13b92ee6bcb5783670a7913b9cd8b3"
+      }
     },
     {
       "name": "Seize Opportunity",
@@ -743,9 +940,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "b15e50ce5f6a7c7a35bf85eb4a795757a40ef229dd5130b0e4e98e211b670e85"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "b15e50ce5f6a7c7a35bf85eb4a795757a40ef229dd5130b0e4e98e211b670e85",
+      "evidence_family": "Mana lands, Devotees and Sunset Strikemaster"
     },
     {
       "name": "Sultai Monument",
@@ -803,9 +1001,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "c99f2a30a45a9ddfcd27d104f4bd1d820342fecef10dc201fac8e75c3eabdc61"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "c99f2a30a45a9ddfcd27d104f4bd1d820342fecef10dc201fac8e75c3eabdc61",
+      "evidence_family": "Mana lands, Devotees and Sunset Strikemaster",
+      "admission": "Gated fullcard7 PASS, then integrator promotedcomplete and ordinary admitted7 PASS."
     },
     {
       "name": "Surrak, Elusive Hunter",
@@ -833,9 +1033,22 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "0ddffcfeb10574ceab2d19fcaad90b912eb08a51601bfa0d51ceb993dcfc04e5"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "0ddffcfeb10574ceab2d19fcaad90b912eb08a51601bfa0d51ceb993dcfc04e5",
+      "evidence_family": "Mana lands, Devotees and Sunset Strikemaster",
+      "proof_reuse": {
+        "name": "Swamp",
+        "definition": "src/card_definitions/fra/swamp.rs",
+        "definition_sha256": "ad6b97346d65b3aa292bb56be0e3874f685619a9790db24232c98212d72d933c",
+        "provenance": "src/card_definitions/fra/swamp.json",
+        "provenance_sha256": "9b33f72e68b5f214d370b9214830147563636829a307e01afc2dbe7b517c96e9",
+        "obligations": [
+          "Basic Swamp untapped intrinsic tapB plus basic deck exemption"
+        ],
+        "status": "accepted_exact_definition_proof_reused",
+        "accepted_baseline_definition_sha256": "ad6b97346d65b3aa292bb56be0e3874f685619a9790db24232c98212d72d933c"
+      }
     },
     {
       "name": "Swiftwater Cliffs",
@@ -848,9 +1061,25 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "6336b71c23cc0b2c2653de5565d259f91a9a81c0aa13274c19e580784bcf893e"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "6336b71c23cc0b2c2653de5565d259f91a9a81c0aa13274c19e580784bcf893e",
+      "evidence_family": "Mana lands, Devotees and Sunset Strikemaster",
+      "proof_reuse": {
+        "name": "Swiftwater Cliffs",
+        "definition": "src/card_definitions/tdm/swiftwater_cliffs.rs",
+        "definition_sha256": "4625307eae21cf7a51b57f25f307413ff20d5e806d3c5d860561aad508cb16f1",
+        "provenance": "src/card_definitions/tdm/swiftwater_cliffs.json",
+        "provenance_sha256": "b6d67496e64c47fcb507eb286e5d6c6011116d993401bf0298f2a15ace3491de",
+        "obligations": [
+          "Land enters tapped",
+          "ETB stacked gain1 for entering controller",
+          "Tap for either printed color, illegal color/tapped costs rejected",
+          "Owned raw/index/restore land and mana outcomes"
+        ],
+        "status": "accepted_exact_definition_proof_reused",
+        "accepted_baseline_definition_sha256": "4625307eae21cf7a51b57f25f307413ff20d5e806d3c5d860561aad508cb16f1"
+      }
     },
     {
       "name": "Synchronized Charge",
@@ -938,9 +1167,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "8033f2810b7ef85916ad7690b43d5f1b2781ef0dce090a5b597ad945d74cbcef"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "8033f2810b7ef85916ad7690b43d5f1b2781ef0dce090a5b597ad945d74cbcef",
+      "evidence_family": "Mana lands, Devotees and Sunset Strikemaster"
     },
     {
       "name": "Temur Monument",
@@ -1028,9 +1258,25 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "5ebd81c56f1f374992f7adfcf3a8310d0b5f935de2bde64169799fd60211603a"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "5ebd81c56f1f374992f7adfcf3a8310d0b5f935de2bde64169799fd60211603a",
+      "evidence_family": "Mana lands, Devotees and Sunset Strikemaster",
+      "proof_reuse": {
+        "name": "Thornwood Falls",
+        "definition": "src/card_definitions/tdm/thornwood_falls.rs",
+        "definition_sha256": "dfcb9cb7eb643a156c49ac5508d8ebb94b341040b8ab553ccfc7f8644c020894",
+        "provenance": "src/card_definitions/tdm/thornwood_falls.json",
+        "provenance_sha256": "d868191a3e584e0ff161ecd536d86c77b671ca39edd5b07c2ddb727b12d4e9b8",
+        "obligations": [
+          "Land enters tapped",
+          "ETB stacked gain1 for entering controller",
+          "Tap for either printed color, illegal color/tapped costs rejected",
+          "Owned raw/index/restore land and mana outcomes"
+        ],
+        "status": "accepted_exact_definition_proof_reused",
+        "accepted_baseline_definition_sha256": "dfcb9cb7eb643a156c49ac5508d8ebb94b341040b8ab553ccfc7f8644c020894"
+      }
     },
     {
       "name": "Thunder of Unity",
@@ -1073,9 +1319,25 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "33707136abf946fdc5c10d480652b62b961fccec48c57a41771dfcb384edc8ab"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "33707136abf946fdc5c10d480652b62b961fccec48c57a41771dfcb384edc8ab",
+      "evidence_family": "Mana lands, Devotees and Sunset Strikemaster",
+      "proof_reuse": {
+        "name": "Tranquil Cove",
+        "definition": "src/card_definitions/tdm/tranquil_cove.rs",
+        "definition_sha256": "f34728a32aba77c99a7f9c4a520bc1f4792bf7fcb5cba1002fe09589c898d213",
+        "provenance": "src/card_definitions/tdm/tranquil_cove.json",
+        "provenance_sha256": "7a11798a7fc0d52ce73c0deef6b0f0d6de671f73b3854d72d74bb0fd4af755bd",
+        "obligations": [
+          "Land enters tapped",
+          "ETB stacked gain1 for entering controller",
+          "Tap for either printed color, illegal color/tapped costs rejected",
+          "Owned raw/index/restore land and mana outcomes"
+        ],
+        "status": "accepted_exact_definition_proof_reused",
+        "accepted_baseline_definition_sha256": "f34728a32aba77c99a7f9c4a520bc1f4792bf7fcb5cba1002fe09589c898d213"
+      }
     },
     {
       "name": "Traveling Botanist",
@@ -1551,9 +1813,25 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "2e536f6826c2b508f3d81621829d75f7dd9d5a18306a393cf97097d5c95bce9a"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "2e536f6826c2b508f3d81621829d75f7dd9d5a18306a393cf97097d5c95bce9a",
+      "evidence_family": "Mana lands, Devotees and Sunset Strikemaster",
+      "proof_reuse": {
+        "name": "Wind-Scarred Crag",
+        "definition": "src/card_definitions/tdm/wind_scarred_crag.rs",
+        "definition_sha256": "d2a41a4cab074babddc490533f8c05fd3d91bdfd07e6c45b2c7150028f3d14c2",
+        "provenance": "src/card_definitions/tdm/wind_scarred_crag.json",
+        "provenance_sha256": "1976fabc6ac11ae8c16310b99136314d9b38582e0c07a68323c1ec8260e24329",
+        "obligations": [
+          "Land enters tapped",
+          "ETB stacked gain1 for entering controller",
+          "Tap for either printed color, illegal color/tapped costs rejected",
+          "Owned raw/index/restore land and mana outcomes"
+        ],
+        "status": "accepted_exact_definition_proof_reused",
+        "accepted_baseline_definition_sha256": "d2a41a4cab074babddc490533f8c05fd3d91bdfd07e6c45b2c7150028f3d14c2"
+      }
     },
     {
       "name": "Windcrag Siege",
@@ -1760,6 +2038,320 @@
         }
       },
       "throughput_note": "Four locally whole-verified cards. Native compilation/execution measured above; no implementation-time rate or simulation throughput extrapolated."
+    },
+    {
+      "name": "Mana lands, Devotees and Sunset Strikemaster",
+      "started_utc": "2026-11-04T14:15:12.716195+00:00",
+      "status": "locally_whole_card_verified",
+      "candidate_members": 10,
+      "new_candidates": 1,
+      "existing_candidates": 9,
+      "focused_filter": "mana_",
+      "focused_scenario_groups": [
+        "mana_citadel_enters_tapped_and_offers_exactly_white_black_green_with_land_timing",
+        "mana_devotees_filter_one_mana_without_tapping_even_when_summoning_sick_and_only_once_each_turn",
+        "mana_devotee_use_survives_control_change_and_resets_on_the_next_actual_turn",
+        "mana_sunset_casts_as_three_one_and_taps_for_red_but_cannot_pay_both_tap_costs",
+        "mana_sunset_pays_two_red_tap_sacrifice_and_deals_six_only_to_a_flying_creature",
+        "mana_sunset_target_loses_flying_or_changes_incarnation_before_resolution",
+        "mana_devotee_color_choice_is_owned_raw_index_restorable_and_does_not_expose_a_private_hand"
+      ],
+      "cards": [
+        {
+          "name": "Sandsteppe Citadel",
+          "definition": "src/card_definitions/ecc/sandsteppe_citadel.rs",
+          "definition_sha256": "11edc144d81b2e107049dba2fd6ee90df9dc163f3fcb8b3e7a8129292bf237e3",
+          "provenance": "src/card_definitions/ecc/sandsteppe_citadel.json",
+          "provenance_sha256": "607bd244255bff3c63cd9e245e5abea831aae997c70fdd43cec794f643ab844e",
+          "obligations": [
+            "Land entry tapped",
+            "tap for exactly W/B/G",
+            "normal land timing and allowance"
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Scoured Barrens",
+          "definition": "src/card_definitions/tdm/scoured_barrens.rs",
+          "definition_sha256": "b19b7ccb33105eec60f30e3d621cde030e13b92ee6bcb5783670a7913b9cd8b3",
+          "provenance": "src/card_definitions/tdm/scoured_barrens.json",
+          "provenance_sha256": "4edf39402fad022aa6f125ebc45c79769755d0b9c8d94b3a66711641a1776e78",
+          "obligations": [
+            "Land enters tapped",
+            "ETB stacked gain1 for entering controller",
+            "Tap for either printed color, illegal color/tapped costs rejected",
+            "Owned raw/index/restore land and mana outcomes"
+          ],
+          "status": "locally_whole_card_verified",
+          "accepted_baseline_definition_sha256": "b19b7ccb33105eec60f30e3d621cde030e13b92ee6bcb5783670a7913b9cd8b3"
+        },
+        {
+          "name": "Swiftwater Cliffs",
+          "definition": "src/card_definitions/tdm/swiftwater_cliffs.rs",
+          "definition_sha256": "4625307eae21cf7a51b57f25f307413ff20d5e806d3c5d860561aad508cb16f1",
+          "provenance": "src/card_definitions/tdm/swiftwater_cliffs.json",
+          "provenance_sha256": "b6d67496e64c47fcb507eb286e5d6c6011116d993401bf0298f2a15ace3491de",
+          "obligations": [
+            "Land enters tapped",
+            "ETB stacked gain1 for entering controller",
+            "Tap for either printed color, illegal color/tapped costs rejected",
+            "Owned raw/index/restore land and mana outcomes"
+          ],
+          "status": "locally_whole_card_verified",
+          "accepted_baseline_definition_sha256": "4625307eae21cf7a51b57f25f307413ff20d5e806d3c5d860561aad508cb16f1"
+        },
+        {
+          "name": "Thornwood Falls",
+          "definition": "src/card_definitions/tdm/thornwood_falls.rs",
+          "definition_sha256": "dfcb9cb7eb643a156c49ac5508d8ebb94b341040b8ab553ccfc7f8644c020894",
+          "provenance": "src/card_definitions/tdm/thornwood_falls.json",
+          "provenance_sha256": "d868191a3e584e0ff161ecd536d86c77b671ca39edd5b07c2ddb727b12d4e9b8",
+          "obligations": [
+            "Land enters tapped",
+            "ETB stacked gain1 for entering controller",
+            "Tap for either printed color, illegal color/tapped costs rejected",
+            "Owned raw/index/restore land and mana outcomes"
+          ],
+          "status": "locally_whole_card_verified",
+          "accepted_baseline_definition_sha256": "dfcb9cb7eb643a156c49ac5508d8ebb94b341040b8ab553ccfc7f8644c020894"
+        },
+        {
+          "name": "Tranquil Cove",
+          "definition": "src/card_definitions/tdm/tranquil_cove.rs",
+          "definition_sha256": "f34728a32aba77c99a7f9c4a520bc1f4792bf7fcb5cba1002fe09589c898d213",
+          "provenance": "src/card_definitions/tdm/tranquil_cove.json",
+          "provenance_sha256": "7a11798a7fc0d52ce73c0deef6b0f0d6de671f73b3854d72d74bb0fd4af755bd",
+          "obligations": [
+            "Land enters tapped",
+            "ETB stacked gain1 for entering controller",
+            "Tap for either printed color, illegal color/tapped costs rejected",
+            "Owned raw/index/restore land and mana outcomes"
+          ],
+          "status": "locally_whole_card_verified",
+          "accepted_baseline_definition_sha256": "f34728a32aba77c99a7f9c4a520bc1f4792bf7fcb5cba1002fe09589c898d213"
+        },
+        {
+          "name": "Wind-Scarred Crag",
+          "definition": "src/card_definitions/tdm/wind_scarred_crag.rs",
+          "definition_sha256": "d2a41a4cab074babddc490533f8c05fd3d91bdfd07e6c45b2c7150028f3d14c2",
+          "provenance": "src/card_definitions/tdm/wind_scarred_crag.json",
+          "provenance_sha256": "1976fabc6ac11ae8c16310b99136314d9b38582e0c07a68323c1ec8260e24329",
+          "obligations": [
+            "Land enters tapped",
+            "ETB stacked gain1 for entering controller",
+            "Tap for either printed color, illegal color/tapped costs rejected",
+            "Owned raw/index/restore land and mana outcomes"
+          ],
+          "status": "locally_whole_card_verified",
+          "accepted_baseline_definition_sha256": "d2a41a4cab074babddc490533f8c05fd3d91bdfd07e6c45b2c7150028f3d14c2"
+        },
+        {
+          "name": "Swamp",
+          "definition": "src/card_definitions/fra/swamp.rs",
+          "definition_sha256": "ad6b97346d65b3aa292bb56be0e3874f685619a9790db24232c98212d72d933c",
+          "provenance": "src/card_definitions/fra/swamp.json",
+          "provenance_sha256": "9b33f72e68b5f214d370b9214830147563636829a307e01afc2dbe7b517c96e9",
+          "obligations": [
+            "Basic Swamp untapped intrinsic tapB plus basic deck exemption"
+          ],
+          "status": "locally_whole_card_verified",
+          "accepted_baseline_definition_sha256": "ad6b97346d65b3aa292bb56be0e3874f685619a9790db24232c98212d72d933c"
+        },
+        {
+          "name": "Sultai Devotee",
+          "definition": "src/card_definitions/tdm/sultai_devotee.rs",
+          "definition_sha256": "0eb5ce3704e74be014322b7bb7c8894671d173389754cb074e4bb371d504606c",
+          "provenance": "src/card_definitions/tdm/sultai_devotee.json",
+          "provenance_sha256": "4103e4fd4c1e8e79b603c8a7e156aa6bd0f800349e8b45c32cf6d3e9ca238523",
+          "obligations": [
+            "Printed 2/1 deathtouch or 3/3 defender respectively",
+            "Pay1 for exactly B/G/U or G/U/R respectively",
+            "Untargeted mana ability resolves immediately, does not tap, usable summoning sick",
+            "Only once each turn; usage follows incarnation through control change and resets next turn"
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Temur Devotee",
+          "definition": "src/card_definitions/tdm/temur_devotee.rs",
+          "definition_sha256": "c6c005a95921f7f5e8a508fe62468252435acf97b40d8e3214b2ba1ef2514759",
+          "provenance": "src/card_definitions/tdm/temur_devotee.json",
+          "provenance_sha256": "cacba8a306ec32cadcd2e4851324b3713ec04f498ad063617dfffcd64c3c4ab1",
+          "obligations": [
+            "Printed 2/1 deathtouch or 3/3 defender respectively",
+            "Pay1 for exactly B/G/U or G/U/R respectively",
+            "Untargeted mana ability resolves immediately, does not tap, usable summoning sick",
+            "Only once each turn; usage follows incarnation through control change and resets next turn"
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Sunset Strikemaster",
+          "definition": "src/card_definitions/tdm/sunset_strikemaster.rs",
+          "definition_sha256": "b3188d15c45a8be2cd17d2966e50bfa671839e8726aeae1765920ecfe98b5caa",
+          "provenance": "src/card_definitions/tdm/sunset_strikemaster.json",
+          "provenance_sha256": "70dde544b20dfd26e4e5d181a9746ac0389bbecb542a32808567e04c6b34da3b",
+          "obligations": [
+            "3/1 normal1R creature",
+            "Tap adds exactlyR immediately",
+            "2R plus tap plus sacrifice deals6 to a creature with flying, either controller, at instant timing",
+            "Cannot fund both taps using same source; red symbol mandatory",
+            "All-target-illegal resolution after flying loss or new incarnation produces no damage despite paid sacrifice"
+          ],
+          "status": "locally_whole_card_verified"
+        }
+      ],
+      "shared_accepted_proof": {
+        "test_source": "tests/dft_colorless_cards_inherited_lands.rs",
+        "test_sha256": "1b59c57437fc93321116ec3921dd14a624cbfb7b949fbdc82246fbadda77db10",
+        "engine_revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+        "report": "<cache>/rustmage-validation-o8jjr7os/report/native.json",
+        "report_sha256": "23f5a30ac9df217cbd1ed4b5e1165abce2a1b548ee4cb5e066038a96689826b7",
+        "passing_cases": [
+          "basic_land_deck_exemption_allows_sixty_copies_in_standard",
+          "basic_lands_play_untapped_have_intrinsic_abilities_and_produce_exactly_their_color",
+          "each_gainland_enters_tapped_gains_its_controller_one_life_then_produces_either_color",
+          "land_play_and_mana_choices_agree_on_owned_raw_index_and_restored_branches"
+        ],
+        "basis": "Complete existing actual-definition table reread; all six own definition bytes identical to accepted engine baseline; immutable entry rules, life trigger, printed color choice and intrinsic basic ability each mapped below. No rerun or duplicate scenarios."
+      },
+      "finished_utc": "2026-11-04T14:24:33.204691+00:00",
+      "focused_execution": [
+        {
+          "stage": "gated-first",
+          "report": "<cache>/rustmage-tdm/cards-s-z-mana-gated-first/native.json",
+          "report_sha256": "85cc5779a917abae9dd303c02023530641cc01dd7bff7172a25eed491f55f055",
+          "terminal": true,
+          "success": false,
+          "passed": 5,
+          "failed": [
+            "mana_devotee_use_survives_control_change_and_resets_on_the_next_actual_turn",
+            "mana_devotees_filter_one_mana_without_tapping_even_when_summoning_sick_and_only_once_each_turn"
+          ],
+          "compile_seconds": 4.527124494023155,
+          "execution_seconds": 0.03372485004365444,
+          "wall_seconds": 4.5614521960378624,
+          "compile_command": [
+            "cargo",
+            "test",
+            "-p",
+            "rustmage",
+            "--test",
+            "tdm_cards_s_z",
+            "--no-run",
+            "--message-format=json"
+          ],
+          "compile_log": "<cache>/rustmage-tdm/cards-s-z-mana-gated-first/native-compile.log",
+          "compile_log_sha256": "4d3ae7238bbe51e68c8e2d26dbcb2465fb29b3970a2b8983ebd0d66d7ecb1ccc",
+          "execution_log": "<cache>/rustmage-tdm/cards-s-z-mana-gated-first/native-execution-0.log",
+          "execution_log_sha256": "66665f71aae7d5da183bbd943135d90cd91d0cfd963db1136e4b94ddd1969013",
+          "core_fresh": [
+            true
+          ],
+          "artifact_policy": "Native Rust ELF tests use rlib linkage. Mutable Cargo binaries are transient outputs; report/log hashes retained, no preserved cdylib requirement."
+        },
+        {
+          "stage": "gated-second",
+          "report": "<cache>/rustmage-tdm/cards-s-z-mana-gated-second/native.json",
+          "report_sha256": "cb6937600b8a15e6b9d9c0c25e3be935bec2025d71f3cffab73c657943842e5a",
+          "terminal": true,
+          "success": false,
+          "passed": 6,
+          "failed": [
+            "mana_devotees_filter_one_mana_without_tapping_even_when_summoning_sick_and_only_once_each_turn"
+          ],
+          "compile_seconds": 1.7188855069689453,
+          "execution_seconds": 0.02544680895516649,
+          "wall_seconds": 1.745154670032207,
+          "compile_command": [
+            "cargo",
+            "test",
+            "-p",
+            "rustmage",
+            "--test",
+            "tdm_cards_s_z",
+            "--no-run",
+            "--message-format=json"
+          ],
+          "compile_log": "<cache>/rustmage-tdm/cards-s-z-mana-gated-second/native-compile.log",
+          "compile_log_sha256": "0bd457aa13f1675db317e079f0a1408213d2c633bac51f64c687efcd368de7e7",
+          "execution_log": "<cache>/rustmage-tdm/cards-s-z-mana-gated-second/native-execution-0.log",
+          "execution_log_sha256": "9913f16fad1082daf9cfc821ed7b0e8919b221c1a8f9e16ec499950bebf2389d",
+          "core_fresh": [
+            true
+          ],
+          "artifact_policy": "Native Rust ELF tests use rlib linkage. Mutable Cargo binaries are transient outputs; report/log hashes retained, no preserved cdylib requirement."
+        },
+        {
+          "stage": "gated-third",
+          "report": "<cache>/rustmage-tdm/cards-s-z-mana-gated-third/native.json",
+          "report_sha256": "279da07b9d1bab8d21250d4e4648615ed0357e5721190a2c32909331f7b5010f",
+          "terminal": true,
+          "success": true,
+          "passed": 7,
+          "failed": [],
+          "compile_seconds": 1.6691643390222453,
+          "execution_seconds": 0.02506592799909413,
+          "wall_seconds": 1.694848335988354,
+          "compile_command": [
+            "cargo",
+            "test",
+            "-p",
+            "rustmage",
+            "--test",
+            "tdm_cards_s_z",
+            "--no-run",
+            "--message-format=json"
+          ],
+          "compile_log": "<cache>/rustmage-tdm/cards-s-z-mana-gated-third/native-compile.log",
+          "compile_log_sha256": "6d67b26d9d175cb939d3bae8061a26d7857919b9bb0844690776860ffe6b3b21",
+          "execution_log": "<cache>/rustmage-tdm/cards-s-z-mana-gated-third/native-execution-0.log",
+          "execution_log_sha256": "6348414dd35be2e8c5dbc55b003d8d59a2db5f86479c556a0ef7e13a0cf97c3c",
+          "core_fresh": [
+            true
+          ],
+          "artifact_policy": "Native Rust ELF tests use rlib linkage. Mutable Cargo binaries are transient outputs; report/log hashes retained, no preserved cdylib requirement."
+        },
+        {
+          "stage": "admitted",
+          "report": "<cache>/rustmage-tdm/cards-s-z-mana-admitted/native.json",
+          "report_sha256": "7ed1fa4bba05f9295343e71f1433301ffda65fe21589875e18a3dc10096f7082",
+          "terminal": true,
+          "success": true,
+          "passed": 7,
+          "failed": [],
+          "compile_seconds": 4.377224921016023,
+          "execution_seconds": 0.03303235297789797,
+          "wall_seconds": 4.41107595898211,
+          "compile_command": [
+            "cargo",
+            "test",
+            "-p",
+            "rustmage",
+            "--test",
+            "tdm_cards_s_z",
+            "--no-run",
+            "--message-format=json"
+          ],
+          "compile_log": "<cache>/rustmage-tdm/cards-s-z-mana-admitted/native-compile.log",
+          "compile_log_sha256": "569750b743e8d34df9c5a85242642de5f5bf05e1980d7771facf79380cf5e365",
+          "execution_log": "<cache>/rustmage-tdm/cards-s-z-mana-admitted/native-execution-0.log",
+          "execution_log_sha256": "6348414dd35be2e8c5dbc55b003d8d59a2db5f86479c556a0ef7e13a0cf97c3c",
+          "core_fresh": [
+            true
+          ],
+          "artifact_policy": "Native Rust ELF tests use rlib linkage. Mutable Cargo binaries are transient outputs; report/log hashes retained, no preserved cdylib requirement."
+        }
+      ],
+      "fixture_corrections": [
+        "First gated run5/7: test incorrectly treated zero deferred mana output as another produced color; next-turn test incorrectly expected mana to survive phase changes. No runtime behavior changed.",
+        "Second gated run6/7: explicitly observed zero sentinel as intentional deferred choice; final test asserts exact three nonzero Oracle colors plus one deferred route, pays generic1 before real ChooseMana, rejects invalidwhite, producesblue, and preserves once-per-turn use.",
+        "Third gated7/7 PASS while Sunset complete=false; integrator admitted Sunset only afterward, regenerated, ordinary supported-put rerun7/7 PASS."
+      ],
+      "verified_new_complete": 1,
+      "verified_existing_candidates": 9,
+      "reused_exact_baseline_cards": 6,
+      "test_source_sha256": "78e3c7aa05a9458a44304dae1fda362eb41fa15ae3b479e02c57cef62b3bb04d"
     }
   ],
   "first_family_finished_utc": "2026-11-04T14:05:57.547813+00:00"

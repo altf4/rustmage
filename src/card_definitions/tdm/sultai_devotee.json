@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6d25b52af074d05f40b3863b263538183276dcd29f28901c675a12f00cb4ba07"
   },
-  "physical_metadata_sha256": "ee5abe7590cc34ec316db4a43ad355a5cecdcb90d04d757a04bfcd0558daa953"
+  "physical_metadata_sha256": "ee5abe7590cc34ec316db4a43ad355a5cecdcb90d04d757a04bfcd0558daa953",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SultaiDevotee.java",
+  "java_sha256": "2d225bceba31ff7ccb88f027d1e6c7b3f445e84950e232d8ea0d629517886330",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/LimitedTimesPerTurnActivatedManaAbility.java",
+      "sha256": "277f02f44bf32ea4d389b21f74227491808e3fb0c30fbdb911a88918d550af23"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaFromColorChoicesEffect.java",
+      "sha256": "566cfd640a483cb992f550774635dabe582d5f0aba45283a1d7748db79bcc558"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    }
+  ],
+  "rules_tests": "tests/tdm_cards_s_z.rs::mana_"
 }

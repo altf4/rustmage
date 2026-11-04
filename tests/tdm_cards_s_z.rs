@@ -349,3 +349,367 @@ fn harmonize_winternight_discard_choice_is_owned_raw_index_restorable_and_parent
         assert_eq!(raw.snapshot(), indexed.snapshot());
     }
 }
+
+// Gated definitions compile normally. Substitute the physical card while it is
+// still in hand, before any ordinary play/cast or source-registration event.
+fn actual_card(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
+    let card = Card::from_name(name).expect("catalogue identity");
+    if card.is_supported() {
+        return put(g, p, name, zone);
+    }
+    let id = put(g, p, "Bear Cub", Zone::Hand);
+    g.state.objects[id as usize].card = card;
+    if zone != Zone::Hand {
+        g.move_object(id, zone);
+    }
+    id
+}
+fn mana_action(g: &Game, id: CardId, color: usize) -> Action {
+    let mut production = [0; 6];
+    production[color] = 1;
+    g.legal_actions()
+        .into_iter()
+        .find(|a| {
+            matches!(a, Action::ActivateMana { card, production: made, .. }
+            if *card == id && *made == production)
+                || matches!(a, Action::TapMana { card } if *card == id && color == 2)
+        })
+        .unwrap_or_else(|| panic!("no mana color {color} for {}", g.object_view(id).name()))
+}
+fn activated(g: &mut Game, id: CardId, ability: u16, target: CardId) {
+    act(
+        g,
+        Action::AnnounceActivate {
+            card: id,
+            ability,
+            counter_payment: Counters::default(),
+        },
+    );
+    act(
+        g,
+        Action::ChooseTarget {
+            target: Target::Card(target),
+        },
+    );
+    pay(g);
+}
+
+#[test]
+fn mana_citadel_enters_tapped_and_offers_exactly_white_black_green_with_land_timing() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let land = put(&mut g, p, "Sandsteppe Citadel", Zone::Hand);
+        let second = put(&mut g, p, "Forest", Zone::Hand);
+        let mut off_turn = g.clone();
+        off_turn.state.active = p.other();
+        reject(&mut off_turn, Action::PlayLand { card: land });
+        let mut upkeep = g.clone();
+        upkeep.state.step = Step::Upkeep;
+        reject(&mut upkeep, Action::PlayLand { card: land });
+        act(&mut g, Action::PlayLand { card: land });
+        assert_eq!(g.object_view(land).zone, Zone::Battlefield);
+        assert!(g.object_view(land).tapped);
+        assert_eq!(g.state.players[p.index()].life, 20);
+        reject(&mut g, Action::PlayLand { card: second });
+        g.state.players[p.index()].mana = [0; 6];
+        assert!(!g.legal_actions().iter().any(|a| matches!(a,
+            Action::ActivateMana { card, .. } if *card == land)));
+        g.state.objects[land as usize].tapped = false;
+        let offered: Vec<_> = g
+            .legal_actions()
+            .into_iter()
+            .filter_map(|a| match a {
+                Action::ActivateMana {
+                    card, production, ..
+                } if card == land => Some(production),
+                _ => None,
+            })
+            .collect();
+        assert_eq!(offered.len(), 3);
+        for color in [0, 2, 4] {
+            let mut child = g.clone();
+            let action = mana_action(&child, land, color);
+            act(&mut child, action.clone());
+            let mut expected = [0; 6];
+            expected[color] = 1;
+            assert_eq!(child.state.players[p.index()].mana, expected);
+            assert!(child.object_view(land).tapped);
+            assert!(child.state.stack.is_empty());
+            reject(&mut child, action);
+        }
+    }
+}
+
+#[test]
+fn mana_devotees_filter_one_mana_without_tapping_even_when_summoning_sick_and_only_once_each_turn()
+{
+    for p in [Player::P0, Player::P1] {
+        for (name, colors, expected_stats, keyword) in [
+            (
+                "Sultai Devotee",
+                &[1, 2, 4][..],
+                (2, 1),
+                Keywords::DEATHTOUCH,
+            ),
+            ("Temur Devotee", &[1, 3, 4][..], (3, 3), Keywords::DEFENDER),
+        ] {
+            let mut g = scenario(p);
+            let id = put(&mut g, p, name, Zone::Hand);
+            cast(&mut g, id, None);
+            settle(&mut g);
+            assert_eq!(stats(&g, id), expected_stats);
+            assert!(g.keywords(id).contains(keyword));
+            assert!(g.object_view(id).summoning_sick);
+            g.state.players[p.index()].mana = [0; 6];
+            assert!(!g.legal_actions().iter().any(|a| matches!(a,
+                Action::ActivateMana { card, .. } if *card == id)));
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+            let actions = g.legal_actions();
+            eprintln!("{name} mana offers: {actions:?}");
+            let mut offered: Vec<_> = actions
+                .into_iter()
+                .filter_map(|a| match a {
+                    Action::ActivateMana {
+                        card, production, ..
+                    } if card == id => Some(production),
+                    _ => None,
+                })
+                .collect();
+            offered.sort_unstable();
+            offered.dedup();
+            assert_eq!(
+                offered.iter().filter(|&&m| m == [0; 6]).count(),
+                1,
+                "zero is the deferred color-choice route, not a fourth color"
+            );
+            offered.retain(|&m| m != [0; 6]);
+            let mut expected_outputs: Vec<_> = colors
+                .iter()
+                .map(|&color| {
+                    let mut production = [0; 6];
+                    production[color] = 1;
+                    production
+                })
+                .collect();
+            expected_outputs.sort_unstable();
+            assert_eq!(offered, expected_outputs);
+            for &color in colors {
+                let mut child = g.clone();
+                let action = mana_action(&child, id, color);
+                act(&mut child, action.clone());
+                let mut expected = [0; 6];
+                expected[color] = 1;
+                assert_eq!(child.state.players[p.index()].mana, expected);
+                assert!(!child.object_view(id).tapped);
+                assert!(child.state.stack.is_empty());
+                reject(&mut child, action);
+            }
+            let deferred_action = g.legal_actions().into_iter().find(|a| matches!(a,
+                Action::ActivateMana { card, production, .. } if *card == id && *production == [0; 6]
+            )).expect("ordinary deferred color choice");
+            act(&mut g, deferred_action.clone());
+            assert_eq!(
+                g.state.players[p.index()].mana,
+                [0; 6],
+                "generic cost paid before color choice"
+            );
+            let mut choices: Vec<_> = g
+                .legal_actions()
+                .into_iter()
+                .filter_map(|a| match a {
+                    Action::ChooseMana { production } => Some(production),
+                    _ => None,
+                })
+                .collect();
+            choices.sort_unstable();
+            assert_eq!(choices, expected_outputs);
+            reject(
+                &mut g,
+                Action::ChooseMana {
+                    production: [1, 0, 0, 0, 0, 0],
+                },
+            );
+            act(
+                &mut g,
+                Action::ChooseMana {
+                    production: [0, 1, 0, 0, 0, 0],
+                },
+            );
+            assert_eq!(g.state.players[p.index()].mana, [0, 1, 0, 0, 0, 0]);
+            assert!(!g.object_view(id).tapped);
+            assert!(g.state.stack.is_empty());
+            reject(&mut g, deferred_action);
+        }
+    }
+}
+
+#[test]
+fn mana_devotee_use_survives_control_change_and_resets_on_the_next_actual_turn() {
+    for p in [Player::P0, Player::P1] {
+        for name in ["Sultai Devotee", "Temur Devotee"] {
+            let mut g = scenario(p);
+            let id = put(&mut g, p, name, Zone::Battlefield);
+            let action = mana_action(&g, id, 1);
+            act(&mut g, action);
+            g.change_controller(g.object_ref(id), p.other());
+            act(&mut g, Action::Pass);
+            assert_eq!(g.actor(), Some(p.other()));
+            assert!(!g.legal_actions().iter().any(|a| matches!(a,
+                Action::ActivateMana { card, .. } if *card == id)));
+            g.state.step = Step::Main2;
+            reach(&mut g, |g| {
+                g.state.turn == 4 && g.state.step == Step::Main1 && g.actor() == Some(p.other())
+            });
+            g.state.players[p.other().index()].mana = [0, 0, 0, 0, 0, 1];
+            let action = mana_action(&g, id, 1);
+            act(&mut g, action);
+            assert!(!g.object_view(id).tapped);
+        }
+    }
+}
+
+#[test]
+fn mana_sunset_casts_as_three_one_and_taps_for_red_but_cannot_pay_both_tap_costs() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let id = actual_card(&mut g, p, "Sunset Strikemaster", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 1];
+        cast(&mut g, id, None);
+        settle(&mut g);
+        assert_eq!(stats(&g, id), (3, 1));
+        assert!(g.object_view(id).summoning_sick);
+        assert!(!g.legal_actions().iter().any(|a| matches!(a,
+            Action::ActivateMana { card, .. } | Action::AnnounceActivate { card, .. } if *card == id)));
+        g.state.objects[id as usize].summoning_sick = false;
+        let action = mana_action(&g, id, 3);
+        act(&mut g, action);
+        assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 1, 0, 0]);
+        assert!(g.state.stack.is_empty());
+        assert!(g.object_view(id).tapped);
+        reject(
+            &mut g,
+            Action::AnnounceActivate {
+                card: id,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
+    }
+}
+
+#[test]
+fn mana_sunset_pays_two_red_tap_sacrifice_and_deals_six_only_to_a_flying_creature() {
+    for p in [Player::P0, Player::P1] {
+        for owner in [p, p.other()] {
+            let mut g = scenario(p);
+            let id = actual_card(&mut g, p, "Sunset Strikemaster", Zone::Battlefield);
+            g.state.objects[id as usize].summoning_sick = false;
+            let bird = put(&mut g, owner, "Serra Angel", Zone::Battlefield);
+            g.state.objects[bird as usize].growth.toughness = 3;
+            let ground = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 3];
+            let start = Action::AnnounceActivate {
+                card: id,
+                ability: 1,
+                counter_payment: Counters::default(),
+            };
+            reject(&mut g, start.clone());
+            g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 2];
+            // No sorcery restriction: announce at upkeep with priority.
+            g.state.step = Step::Upkeep;
+            act(&mut g, start);
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(ground),
+                },
+            );
+            reject(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Player(p.other()),
+                },
+            );
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(bird),
+                },
+            );
+            pay(&mut g);
+            assert_eq!(g.object_view(id).zone, Zone::Graveyard);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            assert_eq!(g.state.stack.len(), 1);
+            settle(&mut g);
+            assert_eq!(g.object_view(bird).zone, Zone::Battlefield);
+            assert_eq!(g.object_view(bird).damage, 6);
+            assert_eq!(g.object_view(ground).damage, 0);
+        }
+    }
+}
+
+#[test]
+fn mana_sunset_target_loses_flying_or_changes_incarnation_before_resolution() {
+    for p in [Player::P0, Player::P1] {
+        for blink in [false, true] {
+            let mut g = scenario(p);
+            let id = actual_card(&mut g, p, "Sunset Strikemaster", Zone::Battlefield);
+            g.state.objects[id as usize].summoning_sick = false;
+            let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            g.state.objects[target as usize].gained_keywords = Keywords::FLYING;
+            activated(&mut g, id, 1, target);
+            if blink {
+                g.move_object(target, Zone::Hand);
+                g.move_object(target, Zone::Battlefield);
+            } else {
+                g.state.objects[target as usize].gained_keywords = Keywords::NONE;
+            }
+            settle(&mut g);
+            assert_eq!(g.object_view(id).zone, Zone::Graveyard);
+            assert_eq!(g.object_view(target).zone, Zone::Battlefield);
+            assert_eq!(g.object_view(target).damage, 0);
+        }
+    }
+}
+
+#[test]
+fn mana_devotee_color_choice_is_owned_raw_index_restorable_and_does_not_expose_a_private_hand() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let id = put(&mut g, p, "Sultai Devotee", Zone::Battlefield);
+        let private = put(&mut g, p, "Cancel", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
+        let action = mana_action(&g, id, 2);
+        let revision = g.revision();
+        let index = g.legal_actions().iter().position(|a| *a == action).unwrap();
+        let root = g.snapshot();
+        let mut raw = g.clone();
+        let mut indexed = g.clone();
+        let mut sibling = g.clone();
+        drop(g);
+        raw.apply(p, action.clone()).unwrap();
+        indexed.apply_index(p, revision, index).unwrap();
+        let different = mana_action(&sibling, id, 4);
+        act(&mut sibling, different);
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        assert_eq!(raw.state.players[p.index()].mana, [0, 0, 1, 0, 0, 0]);
+        assert_eq!(sibling.state.players[p.index()].mana, [0, 0, 0, 0, 1, 0]);
+        assert!(
+            !raw.observe(p.other())
+                .objects
+                .iter()
+                .any(|o| o.id == private)
+        );
+        assert_eq!(
+            serde_json::to_value(raw.observe(p.other())).unwrap(),
+            serde_json::to_value(indexed.observe(p.other())).unwrap()
+        );
+        indexed.restore(&root).unwrap();
+        assert_eq!(
+            indexed.apply_index(p, revision, index),
+            Err(Error::StaleRevision)
+        );
+        act(&mut indexed, action);
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+    }
+}
