@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "057798ccdadbdce278288b99d131999da68e557691142f679a8ba6e81cfa5601",
+  "catalogue_version": "c777e634b56ced4ffe2fa353127767bf900c3c9be1b7e108804fe741176fbb6a",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3290,
-  "implemented_total": 3297,
+  "implemented_standard_cards": 3296,
+  "implemented_total": 3303,
   "token_definitions": 157,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -74,8 +74,8 @@
     },
     "frc": {
       "total": 6,
-      "complete": 2,
-      "gated": 4
+      "complete": 3,
+      "gated": 3
     },
     "hob": {
       "total": 188,
@@ -162,8 +162,7 @@
     },
     "tdm": {
       "total": 264,
-      "complete": 259,
-      "gated": 5
+      "complete": 264
     },
     "tla": {
       "total": 278,
@@ -38721,8 +38720,8 @@
     {
       "name": "Ureni, the Song Unending",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/ureni_the_song_unending.rs",
       "set": "tdm"
     },
@@ -39969,8 +39968,8 @@
     {
       "name": "War Effort",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/war_effort.rs",
       "set": "tdm"
     },
@@ -39993,8 +39992,8 @@
     {
       "name": "Warden of the Grove",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/warden_of_the_grove.rs",
       "set": "tdm"
     },
@@ -40809,8 +40808,8 @@
     {
       "name": "Windcrag Siege",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/frc/windcrag_siege.rs",
       "set": "frc"
     },
@@ -41273,8 +41272,8 @@
     {
       "name": "Yathan Roadwatcher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/yathan_roadwatcher.rs",
       "set": "tdm"
     },
@@ -41649,8 +41648,8 @@
     {
       "name": "Zurgo, Thunder's Decree",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdm/zurgo_thunder_s_decree.rs",
       "set": "tdm"
     },
