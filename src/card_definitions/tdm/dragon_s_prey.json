@@ -3,10 +3,31 @@
   "catalogue_id": 1156,
   "oracle_id": "86cb340f-ef06-4be9-b457-703784387dbe",
   "facts_sha256": "2051a903019a44c8bfbc11f64edf9113b52026ed0ca63a701f0957855d24ca5e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "95dcfc75f352ed4e833b4f3c322777763dd02f7df6b70a5a98175a00123e38b4"
   },
-  "physical_metadata_sha256": "550366dc46d88534a50cbfee185cf31593a36a6d418242fede1e530de18c7c14"
+  "physical_metadata_sha256": "550366dc46d88534a50cbfee185cf31593a36a6d418242fede1e530de18c7c14",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DragonsPrey.java",
+  "java_sha256": "ca5b3d98bdbdf47d8e58076733b4810828f208bf303860ca77f08329eac34801",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SourceTargetsPermanentCondition.java",
+      "sha256": "e9588b28dba4b7d15dd3a9119f75b3b6b3837213fc8004750b4d6d5bca294852"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostIncreaseSourceEffect.java",
+      "sha256": "682dbaf91df8ac7e8d6eaef50a1998ef8dbda733a037573fb3e688c5b5a2a68f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    }
+  ],
+  "remaining_obligations": []
 }

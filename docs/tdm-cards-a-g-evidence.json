@@ -433,6 +433,432 @@
         "report_sha256": "23f5a30ac9df217cbd1ed4b5e1165abce2a1b548ee4cb5e066038a96689826b7",
         "every_printed_obligation_reconciled": true
       }
+    },
+    {
+      "name": "Aggressive Negotiations",
+      "oracle_id": "c469133e-174d-476b-b135-bbf15e415e72",
+      "definition": "src/card_definitions/tdm/aggressive_negotiations.rs",
+      "definition_sha256": "3618b9521f0346dfb0dfaeda802fa4480d24b4992c61ccbbb1c72b06290ff0ff",
+      "kind": "newly_authored",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "obligations": [
+        {
+          "face": "Aggressive Negotiations",
+          "header": {
+            "mana_cost": "{2}{B}",
+            "type_line": "Sorcery"
+          },
+          "printed_lines": [
+            "Target opponent reveals their hand. You choose a nonland card from it and exile that card. Put a +1/+1 counter on up to one target creature you control."
+          ]
+        }
+      ],
+      "tests": [
+        "spells_aggressive_negotiations_reveals_nonland_exile_and_optional_own_counter",
+        "spells_aggressive_negotiations_targets_only_opponent_and_own_creature_and_groups_are_independent"
+      ],
+      "source_review": "Full pinned Oracle body, complete Java class, and listed reusable Java helper bodies read; expectations derive from printed rules."
+    },
+    {
+      "name": "Alesha's Legacy",
+      "oracle_id": "c4229cc8-11e5-4221-b00d-86969701e21b",
+      "definition": "src/card_definitions/tdm/alesha_s_legacy.rs",
+      "definition_sha256": "010cc0ddbcf5362bcafb2bdde0859b7b0c2d32aff1b120b0e120295de07674d5",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "obligations": [
+        {
+          "face": "Alesha's Legacy",
+          "header": {
+            "mana_cost": "{1}{B}",
+            "type_line": "Instant"
+          },
+          "printed_lines": [
+            "Target creature you control gains deathtouch and indestructible until end of turn. (Damage and effects that say \"destroy\" don't destroy it.)"
+          ]
+        }
+      ],
+      "tests": [
+        "spells_aleshas_legacy_only_own_target_gains_deathtouch_and_indestructible_until_cleanup"
+      ],
+      "source_review": "Full pinned Oracle body, complete Java class, and listed reusable Java helper bodies read; expectations derive from printed rules."
+    },
+    {
+      "name": "Auroral Procession",
+      "oracle_id": "511d3de9-076b-4811-bddf-00623f98993f",
+      "definition": "src/card_definitions/tdm/auroral_procession.rs",
+      "definition_sha256": "cf5201bdadc56a07815fd594311198e46de9b1785cc6ad34af4e8c293b3be1a6",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "obligations": [
+        {
+          "face": "Auroral Procession",
+          "header": {
+            "mana_cost": "{G}{U}",
+            "type_line": "Instant"
+          },
+          "printed_lines": [
+            "Return target card from your graveyard to your hand."
+          ]
+        }
+      ],
+      "tests": [
+        "spells_auroral_procession_returns_any_own_graveyard_card_and_rejects_foreign_or_stale_objects"
+      ],
+      "source_review": "Full pinned Oracle body, complete Java class, and listed reusable Java helper bodies read; expectations derive from printed rules."
+    },
+    {
+      "name": "Bewildering Blizzard",
+      "oracle_id": "84469042-d48d-409f-a2c9-047058f13bc5",
+      "definition": "src/card_definitions/tdm/bewildering_blizzard.rs",
+      "definition_sha256": "6f8e178183813b7b65b0e36a26f753ffafed005fd8571f226951794b83e1fe74",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "obligations": [
+        {
+          "face": "Bewildering Blizzard",
+          "header": {
+            "mana_cost": "{4}{U}{U}",
+            "type_line": "Instant"
+          },
+          "printed_lines": [
+            "Draw three cards. Creatures your opponents control get -3/-0 until end of turn."
+          ]
+        }
+      ],
+      "tests": [
+        "spells_bewildering_blizzard_draws_three_and_weakens_only_opponents_current_creatures_until_cleanup"
+      ],
+      "source_review": "Full pinned Oracle body, complete Java class, and listed reusable Java helper bodies read; expectations derive from printed rules."
+    },
+    {
+      "name": "Caustic Exhale",
+      "oracle_id": "c4023e1f-26e3-4225-98d0-3d33f6654616",
+      "definition": "src/card_definitions/tdm/caustic_exhale.rs",
+      "definition_sha256": "d29b38fc02d7e6d01b8a0b714248a54ead9c583636be20c2a07e252872defa18",
+      "kind": "newly_authored",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "obligations": [
+        {
+          "face": "Caustic Exhale",
+          "header": {
+            "mana_cost": "{B}",
+            "type_line": "Instant"
+          },
+          "printed_lines": [
+            "As an additional cost to cast this spell, behold a Dragon or pay {1}. (To behold a Dragon, choose a Dragon you control or reveal a Dragon card from your hand.)",
+            "Target creature gets -3/-3 until end of turn."
+          ]
+        }
+      ],
+      "tests": [
+        "spells_caustic_exhale_beholds_hand_or_permanent_or_pays_one_and_gives_minus_three"
+      ],
+      "source_review": "Full pinned Oracle body, complete Java class, and listed reusable Java helper bodies read; expectations derive from printed rules."
+    },
+    {
+      "name": "Channeled Dragonfire",
+      "oracle_id": "91179937-6f55-4d1b-8f06-2efe1c8fea7a",
+      "definition": "src/card_definitions/tdm/channeled_dragonfire.rs",
+      "definition_sha256": "d728b9029c5cbf1570c4853076e37220b6193e3e586bd860f4c36b3a981918ae",
+      "kind": "newly_authored",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "obligations": [
+        {
+          "face": "Channeled Dragonfire",
+          "header": {
+            "mana_cost": "{R}",
+            "type_line": "Sorcery"
+          },
+          "printed_lines": [
+            "Channeled Dragonfire deals 2 damage to any target.",
+            "Harmonize {5}{R}{R} (You may cast this card from your graveyard for its harmonize cost. You may tap a creature you control to reduce that cost by {X}, where X is its power. Then exile this spell.)"
+          ]
+        }
+      ],
+      "tests": [
+        "spells_channeled_dragonfire_costs_red_deals_two_to_any_creature_or_player",
+        "spells_channeled_dragonfire_harmonize_five_red_red_optional_power_discount_and_exile",
+        "spells_channeled_dragonfire_targets_planeswalker_and_both_cast_routes_are_sorcery_speed"
+      ],
+      "source_review": "Full pinned Oracle body, complete Java class, and listed reusable Java helper bodies read; expectations derive from printed rules."
+    },
+    {
+      "name": "Coordinated Maneuver",
+      "oracle_id": "6ff39311-565e-4414-b32b-eb24c70b3090",
+      "definition": "src/card_definitions/tdm/coordinated_maneuver.rs",
+      "definition_sha256": "ea1f04905953fc19e997f92ba02a4f3f07328dda069fd57beadf4ef631b083fe",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "obligations": [
+        {
+          "face": "Coordinated Maneuver",
+          "header": {
+            "mana_cost": "{1}{W}",
+            "type_line": "Instant"
+          },
+          "printed_lines": [
+            "Choose one \u2014",
+            "\u2022 Coordinated Maneuver deals damage equal to the number of creatures you control to target creature or planeswalker.",
+            "\u2022 Destroy target enchantment."
+          ]
+        }
+      ],
+      "tests": [
+        "spells_coordinated_maneuver_both_modes_use_live_count_and_destroy_enchantment"
+      ],
+      "source_review": "Full pinned Oracle body, complete Java class, and listed reusable Java helper bodies read; expectations derive from printed rules."
+    },
+    {
+      "name": "Cruel Truths",
+      "oracle_id": "2e68e3f7-b168-4541-b8a0-791a8a6ebde8",
+      "definition": "src/card_definitions/tdm/cruel_truths.rs",
+      "definition_sha256": "b4268ead7ba6892b63e9bed6bd4344d37b6a9f968f828d352d707f3674fb86d4",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "obligations": [
+        {
+          "face": "Cruel Truths",
+          "header": {
+            "mana_cost": "{3}{B}",
+            "type_line": "Instant"
+          },
+          "printed_lines": [
+            "Surveil 2, then draw two cards. You lose 2 life. (To surveil 2, look at the top two cards of your library, then put any number of them into your graveyard and the rest on top of your library in any order.)"
+          ]
+        }
+      ],
+      "tests": [
+        "spells_cruel_truths_surveils_two_privately_then_draws_two_and_loses_two_life"
+      ],
+      "source_review": "Full pinned Oracle body, complete Java class, and listed reusable Java helper bodies read; expectations derive from printed rules."
+    },
+    {
+      "name": "Death Begets Life",
+      "oracle_id": "53e86135-3b24-4618-bcc0-af4d81e672dd",
+      "definition": "src/card_definitions/tdm/death_begets_life.rs",
+      "definition_sha256": "491e55ba5ff4b5006d4c93ed61cbcbbbf161e36fae161665780cdff3a64e7968",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "obligations": [
+        {
+          "face": "Death Begets Life",
+          "header": {
+            "mana_cost": "{5}{B}{G}{U}",
+            "type_line": "Sorcery"
+          },
+          "printed_lines": [
+            "Destroy all creatures and enchantments. Draw a card for each permanent destroyed this way."
+          ]
+        }
+      ],
+      "tests": [
+        "spells_death_begets_life_destroys_creatures_and_enchantments_counts_tokens_not_indestructible"
+      ],
+      "source_review": "Full pinned Oracle body, complete Java class, and listed reusable Java helper bodies read; expectations derive from printed rules."
+    },
+    {
+      "name": "Defibrillating Current",
+      "oracle_id": "5a96b93b-bae6-48fb-87f5-05f3ffcf7ba9",
+      "definition": "src/card_definitions/tdm/defibrillating_current.rs",
+      "definition_sha256": "24a921303ff448d45b8e51667fb5f98274697427f3ff22ba0fff11d2542d5c36",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "obligations": [
+        {
+          "face": "Defibrillating Current",
+          "header": {
+            "mana_cost": "{2/R}{2/W}{2/B}",
+            "type_line": "Sorcery"
+          },
+          "printed_lines": [
+            "Defibrillating Current deals 4 damage to target creature or planeswalker and you gain 2 life."
+          ]
+        }
+      ],
+      "tests": [
+        "spells_defibrillating_current_all_eight_twobrid_payments_deal_four_and_gain_two",
+        "spells_defibrillating_current_targets_planeswalker_and_fizzles_without_life_if_target_blinks"
+      ],
+      "source_review": "Full pinned Oracle body, complete Java class, and listed reusable Java helper bodies read; expectations derive from printed rules."
+    },
+    {
+      "name": "Desperate Measures",
+      "oracle_id": "f1f3df1c-5c51-445a-b66d-eee4aab23691",
+      "definition": "src/card_definitions/tdm/desperate_measures.rs",
+      "definition_sha256": "89ecead033f3797e12236132a9131c5af5e4e9742aea43f989da4b73219eb458",
+      "kind": "newly_authored",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "obligations": [
+        {
+          "face": "Desperate Measures",
+          "header": {
+            "mana_cost": "{B}",
+            "type_line": "Instant"
+          },
+          "printed_lines": [
+            "Target creature gets +1/-1 until end of turn. When it dies under your control this turn, draw two cards."
+          ]
+        }
+      ],
+      "tests": [
+        "spells_desperate_measures_delayed_and_immediate_death_respect_controller_and_incarnation"
+      ],
+      "source_review": "Full pinned Oracle body, complete Java class, and listed reusable Java helper bodies read; expectations derive from printed rules."
+    },
+    {
+      "name": "Dragon's Prey",
+      "oracle_id": "86cb340f-ef06-4be9-b457-703784387dbe",
+      "definition": "src/card_definitions/tdm/dragon_s_prey.rs",
+      "definition_sha256": "3a56586c27e7e6860cb96b8498952bbfd077e954a291d67f4ea59fa12b0b6d91",
+      "kind": "newly_authored",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "obligations": [
+        {
+          "face": "Dragon's Prey",
+          "header": {
+            "mana_cost": "{2}{B}",
+            "type_line": "Instant"
+          },
+          "printed_lines": [
+            "This spell costs {2} more to cast if it targets a Dragon.",
+            "Destroy target creature."
+          ]
+        }
+      ],
+      "tests": [
+        "spells_dragons_prey_pays_extra_two_for_effective_dragon_and_destroys_creature"
+      ],
+      "source_review": "Full pinned Oracle body, complete Java class, and listed reusable Java helper bodies read; expectations derive from printed rules."
+    },
+    {
+      "name": "Duty Beyond Death",
+      "oracle_id": "67e6ce99-4883-4713-9822-cb2334765b5b",
+      "definition": "src/card_definitions/tdm/duty_beyond_death.rs",
+      "definition_sha256": "3dc34be10529b339658e04693fe342ef6deb16530ea105987f71a5dfa9cb3559",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "obligations": [
+        {
+          "face": "Duty Beyond Death",
+          "header": {
+            "mana_cost": "{1}{W}",
+            "type_line": "Instant"
+          },
+          "printed_lines": [
+            "As an additional cost to cast this spell, sacrifice a creature.",
+            "Creatures you control gain indestructible until end of turn. Put a +1/+1 counter on each creature you control. (Damage and effects that say \"destroy\" don't destroy those creatures.)"
+          ]
+        }
+      ],
+      "tests": [
+        "spells_duty_beyond_death_pays_creature_sacrifice_and_grants_only_survivors_indestructible_plus_counter"
+      ],
+      "source_review": "Full pinned Oracle body, complete Java class, and listed reusable Java helper bodies read; expectations derive from printed rules."
+    },
+    {
+      "name": "Fire-Rim Form",
+      "oracle_id": "89fb21dc-4cf2-4c9a-b0ae-cc6e10277fb6",
+      "definition": "src/card_definitions/tdm/fire_rim_form.rs",
+      "definition_sha256": "8a901f6842771ec43843de92d25277b10bd42ab931eb7fbc4183ceef6a1d5b69",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "obligations": [
+        {
+          "face": "Fire-Rim Form",
+          "header": {
+            "mana_cost": "{1}{R}",
+            "type_line": "Enchantment \u2014 Aura"
+          },
+          "printed_lines": [
+            "Flash",
+            "Enchant creature",
+            "When this Aura enters, enchanted creature gains first strike until end of turn.",
+            "Enchanted creature gets +2/+0."
+          ]
+        }
+      ],
+      "tests": [
+        "spells_fire_rim_form_flash_attaches_gives_plus_two_and_temporary_first_strike"
+      ],
+      "source_review": "Full pinned Oracle body, complete Java class, and listed reusable Java helper bodies read; expectations derive from printed rules."
+    },
+    {
+      "name": "Focus the Mind",
+      "oracle_id": "695a84b5-96b0-4e48-b615-15624efab3b7",
+      "definition": "src/card_definitions/tdm/focus_the_mind.rs",
+      "definition_sha256": "19a9c407ca92d487789b13d8f786d5bfd7769888960b96f5fe6450b73656daf6",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "obligations": [
+        {
+          "face": "Focus the Mind",
+          "header": {
+            "mana_cost": "{4}{U}",
+            "type_line": "Instant"
+          },
+          "printed_lines": [
+            "This spell costs {2} less to cast if you've cast another spell this turn.",
+            "Draw three cards, then discard a card."
+          ]
+        }
+      ],
+      "tests": [
+        "spells_focus_the_mind_pays_five_or_three_after_real_prior_cast_draws_three_then_discards_one"
+      ],
+      "source_review": "Full pinned Oracle body, complete Java class, and listed reusable Java helper bodies read; expectations derive from printed rules."
+    },
+    {
+      "name": "Fresh Start",
+      "oracle_id": "77f1734d-ea0b-4344-8a9e-9d1a34eb6164",
+      "definition": "src/card_definitions/tdm/fresh_start.rs",
+      "definition_sha256": "5a7dd99b309892659a9d8a15fe9d75a26212d6accb8e56e645c9daa210f79876",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "obligations": [
+        {
+          "face": "Fresh Start",
+          "header": {
+            "mana_cost": "{1}{U}",
+            "type_line": "Enchantment \u2014 Aura"
+          },
+          "printed_lines": [
+            "Flash",
+            "Enchant creature",
+            "Enchanted creature gets -5/-0 and loses all abilities."
+          ]
+        }
+      ],
+      "tests": [
+        "spells_fresh_start_flash_reduces_power_five_removes_all_abilities_and_restores_on_departure"
+      ],
+      "source_review": "Full pinned Oracle body, complete Java class, and listed reusable Java helper bodies read; expectations derive from printed rules."
+    },
+    {
+      "name": "Frontline Rush",
+      "oracle_id": "b80d21de-2ace-4e0d-92b2-6f0273512621",
+      "definition": "src/card_definitions/tdm/frontline_rush.rs",
+      "definition_sha256": "c2885dca22576fbddaf3e45f600a68112dbf46c99391b96acace712b1c6bda2d",
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
+      "obligations": [
+        {
+          "face": "Frontline Rush",
+          "header": {
+            "mana_cost": "{R}{W}",
+            "type_line": "Instant"
+          },
+          "printed_lines": [
+            "Choose one \u2014",
+            "\u2022 Create two 1/1 red Goblin creature tokens.",
+            "\u2022 Target creature gets +X/+X until end of turn, where X is the number of creatures you control."
+          ]
+        }
+      ],
+      "tests": [
+        "spells_frontline_rush_both_modes_create_red_goblins_or_grow_any_target_by_live_controlled_count"
+      ],
+      "source_review": "Full pinned Oracle body, complete Java class, and listed reusable Java helper bodies read; expectations derive from printed rules."
     }
   ],
   "validation": [
@@ -473,12 +899,38 @@
       "engine_reused": true,
       "terminal": true,
       "gate": "Dalkovan publicly admitted actual definition"
+    },
+    {
+      "report": "<cache>/rustmage-tdm/cards-a-g-spells-gated-second/native.json",
+      "sha256": "f5ca15cb6a25fe0ce31044bae631a7f89c55b2d4bf3591aa5ebe9db2824f1465",
+      "test_target": "tdm_cards_a_g",
+      "filter": "spells_",
+      "passed": 21,
+      "failed": 0,
+      "compile_seconds": 1.0180106749758124,
+      "execution_seconds": 0.03522260597674176,
+      "engine_reused": true,
+      "terminal": true,
+      "gate": "Five new definitions incomplete"
+    },
+    {
+      "report": "<cache>/rustmage-tdm/cards-a-g-spells-admitted/native.json",
+      "sha256": "104afb74f178c27c980c4539aab2cdec99dc48cf3cc857aa1ee21057cb5d1f54",
+      "test_target": "tdm_cards_a_g",
+      "filter": "spells_",
+      "passed": 21,
+      "failed": 0,
+      "compile_seconds": 3.8247982809552923,
+      "execution_seconds": 0.034733041014987975,
+      "engine_reused": true,
+      "terminal": true,
+      "gate": "All seventeen publicly admitted actual definitions"
     }
   ],
-  "locally_verified_physical_cards": 14,
-  "newly_authored_verified": 3,
-  "previously_admitted_verified": 11,
-  "remaining_physical_cards": 77,
+  "locally_verified_physical_cards": 31,
+  "newly_authored_verified": 8,
+  "previously_admitted_verified": 23,
+  "remaining_physical_cards": 60,
   "implementation_measurement": {
     "scope": "Land authoring/provenance/scenarios plus focused execution and integration coordination, elapsed from preceding Renew commit timestamp. Some read-only land source preparation preceded this interval; not a pure coding benchmark. Five unchanged exact-source baseline proofs count separately from four newly tested whole cards.",
     "elapsed_seconds": 515.2147917747498,
@@ -487,5 +939,33 @@
     "focused_cards_per_hour_including_coordination": 27.94950810786433,
     "focused_runs": 3,
     "simulation_throughput": "Not measured by this card family"
-  }
+  },
+  "spell_family_prepared": {
+    "cards": 17,
+    "new_gated": 5,
+    "existing_candidates": 12,
+    "tests": 21,
+    "actual_definition_fixture": "Only five incomplete definitions enter a supported hand slot before any source registration, followed by ordinary paid actions. After passing gated execution the integrator may admit them and rerun without the swap.",
+    "shared_contract_roots_reused": [
+      "tests/dft_revealed_hand_selection_engine.rs::positive_unions_offer_each_artifact_creature_instant_and_sorcery_once",
+      "tests/tdm_behold_costs.rs::behold_candidate_is_exact_nontargeting_and_owned_across_raw_index_restore",
+      "tests/tdm_cast_routes.rs::granted_harmonize_uses_printed_colored_cost_exact_card_and_independent_duration",
+      "tests/tdm_event_contexts.rs::delayed_departure_is_exact_expires_and_is_counterable"
+    ],
+    "status": "locally_verified_all_17_after_gated_and_admitted_execution"
+  },
+  "family_measurements": [
+    {
+      "scope": "Seventeen-card spell/Aura family: direct authoring of five missing definitions, source provenance, twenty-one actual-definition scenarios, focused test fixes and single-build-owner coordination. Full Oracle/main/helper preparation preceded this measured interval.",
+      "elapsed_seconds": 870.697,
+      "new_whole_cards_verified_by_focused_execution": 17,
+      "newly_implemented": 5,
+      "previous_candidates": 12,
+      "focused_cards_per_hour_including_coordination": 70.2885159820236,
+      "focused_runs": 3,
+      "first_run_successful": 17,
+      "first_run_scenario_interface_failures": 4,
+      "simulation_throughput": "Not measured by this family"
+    }
+  ]
 }

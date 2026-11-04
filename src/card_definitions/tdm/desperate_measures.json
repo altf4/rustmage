@@ -3,10 +3,36 @@
   "catalogue_id": 1059,
   "oracle_id": "f1f3df1c-5c51-445a-b66d-eee4aab23691",
   "facts_sha256": "375abefcda5f744eefb466635c6b2365730f34302dc6284e3344e7897a3bc264",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "983aff80763bb0f92718bf307909460afa3e5f8cc7d217dd8224a92d7c9989df"
   },
-  "physical_metadata_sha256": "c675d9e9437cad2683599f5f962ff2cab91dffcdc6cdeb72f9da7158ba16282d"
+  "physical_metadata_sha256": "c675d9e9437cad2683599f5f962ff2cab91dffcdc6cdeb72f9da7158ba16282d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DesperateMeasures.java",
+  "java_sha256": "634841830b5210f3c76581faa45349b6061891d866a181602d0219b6e294d739",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateDelayedTriggeredAbilityEffect.java",
+      "sha256": "537fdb546ad334c8e75d07346e68cf02ee4fa38bf830cbbd041ef491234f0661"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/WhenTargetDiesDelayedTriggeredAbility.java",
+      "sha256": "06ed400e2766a16d28d9e0895026249164e27f66fc03481e105d4a574c6fc137"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ],
+  "remaining_obligations": []
 }

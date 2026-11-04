@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6428f4a8e7663047d478af42bac71769b5f4ad6348fbe33ae932aabe13603dd7"
   },
-  "physical_metadata_sha256": "933ab1838f6d270d1bf84ff96da1611799be640f4aa1ba82042356227bc6752e"
+  "physical_metadata_sha256": "933ab1838f6d270d1bf84ff96da1611799be640f4aa1ba82042356227bc6752e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AuroralProcession.java",
+  "java_sha256": "aeadf010d670e1d7b5c0b99cbfa3568cf28679344509ac4c6cf6d303aa0afe63",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+      "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+    }
+  ],
+  "remaining_obligations": []
 }

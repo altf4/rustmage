@@ -1,16 +1,23 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// The delayed ability follows this exact target's graveyard departure under your control.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Spell(
+        TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
+        &[
+            Instruction::Grow {
+                subject: Subject::Targets,
+                power: 1,
+                toughness: -1,
+            },
+            Instruction::DelayTargetEvent {
+                event: DelayedTargetEvent::GraveyardUnderControllerOnce,
+                ability: 0,
+            },
+        ],
+    ),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::DelayedTargetEvent,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::Draw(PlayerSet::Controller, 2)],
+    }],
     ..CardRules::EMPTY
 };
