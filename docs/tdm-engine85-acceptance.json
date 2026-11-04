@@ -230,14 +230,20 @@
     }
   ],
   "author_compatibility_and_warm_receipts": "/home/altf4/.cache/rustmage-tdm/engine85-author-baselines-1793819914373027092",
-  "author_cache_status": "A-G terminalPASS with exact fresh core reused; G-S/S-Z serial guarded warms running. Authors receive individual release only after their warm passes.",
+  "author_cache_status": "Allthree core-only guarded correct-profile warms passed; A-G reused exact core. All card authors released with root build leases and frozen shared engine.",
   "card_status": {
-    "verified": 187,
+    "verified": 185,
     "scope": 276,
-    "new": 76,
+    "new": 74,
     "existing_verified": 111,
-    "remaining": 89,
-    "whole_set_acceptance": false
+    "remaining": 91,
+    "whole_set_acceptance": false,
+    "historical_at_engine_acceptance": 187,
+    "reverification_holds": [
+      "Breaching Dragonstorm",
+      "Roiling Dragonstorm"
+    ],
+    "note": "Post-checkpoint expanded actual card tests found two trigger-selection wiring errors; shared engine already supports the correct primitive and is unchanged."
   },
   "remaining": [
     "Warm all held author caches and finish dependent card admissions with normal supported actions",
