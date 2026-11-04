@@ -12,7 +12,7 @@
     "unresolved_membership_facts": 0,
     "independently_verified_complete_set_cards": 0
   },
-  "phase": "All276 physical card bodies/13 Omen pairs locally whole-verified. Engine86 accepted; fixed natural-game acceptance exposed dependency87, E:PAID_MANA_USE_RECEIPT. Return to shared-engine phase before further dependent game acceptance.",
+  "phase": "All276 physical card bodies/13 Omen pairs locally whole-verified. Engine87 correctness repair focused-reviewed; strengthened harness source/preflight reviewed atc91972220. Fixed games expose dependency88: generic X/Harmonize query performance from inflated same-source-tap bound. Return to shared-engine performance phase; all card definitions remain fixed.",
   "audit_reports": [
     "docs/tdm-audit-a-g.json",
     "docs/tdm-audit-g-s.json",
@@ -856,8 +856,41 @@
         "CR605.3c",
         "CR733"
       ],
-      "status": "Concrete shared-engine blocker independently confirmed by pure reviewer and isolated author. Test-first regression and minimal receipt projection repair in progress; game acceptance paused.",
-      "implementation_evidence": "docs/tdm-paid-mana-use-receipts-evidence.json (pending)"
+      "status": "Focused repair published65e21d876 with9new+32inherited positive contracts, Clippy and two pure independent focused-checkpoint approvals. Actual first24 fixed set games now pass. Final full shared/set release remains separate.",
+      "implementation_evidence": "docs/tdm-paid-mana-use-receipts-evidence.json",
+      "focused_reviewed_revision": "65e21d87686009a73679fcd7abe1de98cf39218e"
+    },
+    {
+      "id": "E:TAP_RESOURCE_QUANTITY_BOUND",
+      "description": "Mutually exclusive intrinsic/printed mana taps of one resource must not inflate the conservative quantity bound",
+      "required_change": "Tighten only the speculative quantity upper bound: maximum of intrinsic/printed gains sharing one source tap; keep non-tap gains additive, genuine repeatable positive mana unbounded, other future-grant/contribution overestimates and existing unsafe-world bypasses conservative. Exact search, legal domains/order, observations, costs, privacy and owned state must remain unchanged. No card-specific branches, cache/state/API or wire addition.",
+      "cards": [
+        "Nature's Rhythm"
+      ],
+      "compatibility_scope": [
+        "Other scalar-X and Harmonize declarations",
+        "Intrinsic/printed/borrowed/copied mana alternatives",
+        "Tap followed by non-tap sacrifice",
+        "Dynamic production and positive repeatable engines",
+        "Linked-return, restored-grant and source-zone opt-outs"
+      ],
+      "discovered_by": "Fixed Mardu/Temur seed426300,startP0,swapped deck corpus case:830actions; ChooseX11 after actual Nature's Rhythm Harmonize.",
+      "measured_profile": {
+        "scope": "Generic recorded-trace diagnostic, optimized test core1/test-support; not a simulation throughput claim",
+        "run": "<cache>/rustmage-tdm/trace-profile-1793835402682679013",
+        "terminal": true,
+        "decisions": 830,
+        "seconds": 17.524960706999998,
+        "legal_seconds": 5.167788286,
+        "policy_seconds": 8.717026842999996,
+        "checked_apply_seconds": 3.637861079,
+        "single_x_query_legal_seconds": 3.48360912,
+        "same_recorded_outcome": true
+      },
+      "captured_root": "<cache>/rustmage-tdm/trace-root-capture-1793835901269812706/decision536-observation.json",
+      "root_facts": "Seven untapped mana lands (twoForest,twoFrontierBivouac,Island,twoMountain), two4/3 TemurBattlecriers, unused TemurDevotee, zero pools; actual X domain0..11. Existing bound counts the two Bivouac tap alternatives twice, giving9 instead of physical7.",
+      "status": "Read-only source audit and bounded trace evidence complete. Isolated owner authorized tests-first only; two independent conservative-bound design reviews requested before any core edit.",
+      "implementation_evidence": "docs/tdm-harmonize-x-pruning-evidence.json (pending)"
     }
   ],
   "acceptance": {
@@ -869,7 +902,8 @@
     "engine_release_checkpoint": true,
     "engine_checkpoint_two_nonauthor_reviews": true,
     "new_engine_dependency_pending": true,
-    "locally_verified_physical_cards": 276
+    "locally_verified_physical_cards": 276,
+    "current_dependency": "E:TAP_RESOURCE_QUANTITY_BOUND"
   },
   "initial_checks": {
     "source_pin_check": {
@@ -1156,7 +1190,9 @@
     ],
     "latest_accepted_revision": "2660c86112362973c195bee4c1b85e1a968f9f3a",
     "latest_accepted_evidence": "docs/tdm-engine86-acceptance.json",
-    "newly_discovered_dependency_pending": "E:PAID_MANA_USE_RECEIPT"
+    "newly_discovered_dependency_pending": "E:TAP_RESOURCE_QUANTITY_BOUND",
+    "latest_focused_reviewed_revision": "65e21d87686009a73679fcd7abe1de98cf39218e",
+    "latest_full_release_revision": "2660c86112362973c195bee4c1b85e1a968f9f3a"
   },
   "metadata_reconciliation": "docs/tdm-metadata-reconciliation.json"
 }

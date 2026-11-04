@@ -34,13 +34,39 @@ parent payment impossible. This is an engine fundability defect. The wrong color
 is not intrinsically forbidden by Magic; an action API promising completion must
 preserve that promise or implement the required rollback.
 
-Work has returned to the engine phase for a test-first minimal receipt projection
-repair. Cover once/exhaust, exact incarnation and acquisition, borrowed/self-granted
-use, nested parents and genuinely repeatable converters, plus representative raw,
-index, observation, transactional rejection and owned restore contracts. Preserve
-real observer timing; do not replay costs or change decks/seeds to evade the bug.
-Finish focused contracts and two independent nonauthor reviews before resuming
-dependent acceptance. Preserve every printed card definition and its provenance.
+Engine87's minimal virtual-use repair is published at
+`65e21d87686009a73679fcd7abe1de98cf39218e`, with9 new and32 inherited contracts,
+Clippy and two independent pure focused-checkpoint approvals. No wire or card
+change was needed. Full release remains pending.
+
+Independent game-harness review then repaired four acceptance gaps: lazy error
+diagnostics, verified runtime-input identity and strict trace payload binding,
+immutable printed-ledger refusal, and meaningful divergent owned siblings with
+actual parent disposal. Source/preflight is independently approved at
+`c919722207c403a33cf3ca910ab568e00969a1e4`. A compiled manifest pins11312 actual
+Rust/provenance/build inputs, including schema and rules-name tables; current
+helper/manifest bytes and source hashes plus inventory validation fail closed.
+Twelve adversarial metadata contracts pass. No input override is permitted.
+
+The stronger fixed run completes the first24 games, but Mardu/Temur still reaches
+the45-second scenario bound. A completed830-action case was profiled without
+changing its seed, deck, actions or rules. One actual Nature's Rhythm Harmonize
+X-choice query takes3.484 seconds in the optimized test-core profile; the generic
+policy observation and checked apply repeat that query. The captured root has
+seven untapped mana lands, but the conservative quantity bound counts each
+Frontier Bivouac's single tap twice, giving9 instead of7 and expanding impossible
+X/helper probes. **E:TAP_RESOURCE_QUANTITY_BOUND** is the88th unweighted audit
+group. This is a measured generic performance dependency, not a new card body.
+
+The isolated owner is writing a test-first conservation/domain regression while
+two pure reviewers assess a narrowly tighter bound: same-source tap alternatives
+use a maximum, non-tap gains stay additive, and all future-world opt-outs and
+repeatable positive engines remain conservative. Preserve exact legal choices,
+ordering, observations, costs and owned state; add no card-specific engine data,
+new cache/state/API or wire shape. Finish focused tests/reviews before dependent
+full acceptance. The accepted game harness, all276 card files and frozen decks,
+seeds, ledger and limits stay fixed. The temporary diagnostic source was removed
+after its exact source and reports were retained under the persistent cache.
 
 Two preliminary pure reviewers read every276 physical Rust definition, all13
 Omen bodies, complete Oracle text and all603 unique pinned primary/helper Java
