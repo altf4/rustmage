@@ -8,5 +8,53 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1da7e91cf9eeb6045e10af54cfdfd508cd25216f8d9a6be4611a282a765e53b0"
   },
-  "physical_metadata_sha256": "e0b870d61f0d6d76c5791b175e4ee9d1e6e95eaf24166f2767ca06d5816f705a"
+  "physical_metadata_sha256": "e0b870d61f0d6d76c5791b175e4ee9d1e6e95eaf24166f2767ca06d5816f705a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BarrensteppeSiege.java",
+  "java_sha256": "9373e6ce02f6d257a2418e67ff6199ed14d30ee62f24170c8da505b4152b404f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AsEntersBattlefieldAbility.java",
+      "sha256": "3919eac1ae9ebc0edd9decad5d293bdf0cdb4d16c516021ea3e97711f9a72ab5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseModeEffect.java",
+      "sha256": "81d0232b9335b14c2cafd7c14b0090d639f41527128e85d626db02f9597fadfa"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAnchorWordAbilitySourceEffect.java",
+      "sha256": "9469756464606dcbce7323287562980c16b0c551b2b309065d35cb322f099be6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAllEffect.java",
+      "sha256": "064c925d60c97db41aa0444db30fd482c857b12e3bf8c0635f990dfd4a7094d5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CreatureDiedControlledCondition.java",
+      "sha256": "bb0b5e31a706566d373a186da842d6f9410c5b5411bd966dc19ccfd548260990"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeOpponentsEffect.java",
+      "sha256": "87271d2cfbecbfa5595745bae8136f2a9d23002b394f5583e5bec3c24842d759"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeAllEffect.java",
+      "sha256": "edfea847c85bbbee218fd9e81bc9c2d310ce3bc2221d31eef237e9c66accfc62"
+    }
+  ],
+  "remaining_obligations": [
+    "Complete authored printed behavior awaits actual-definition gated focused execution; public admission remains false."
+  ]
 }

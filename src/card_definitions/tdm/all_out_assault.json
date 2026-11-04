@@ -8,5 +8,58 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f774e8a6a420386aaf049968021c72ea34709af4af6be6dd6ec8fd6b182adda1"
   },
-  "physical_metadata_sha256": "b8c03850e9e005899d39fdc475694d783151881237e47dd3c7ce1ba2e942c987"
+  "physical_metadata_sha256": "b8c03850e9e005899d39fdc475694d783151881237e47dd3c7ce1ba2e942c987",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AllOutAssault.java",
+  "java_sha256": "bb3d2b95ac18c927dcd5ef49760b02425fee308fd8d0e7b29be14da661ed460d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AddCombatAndMainPhaseEffect.java",
+      "sha256": "bb14e336f945fc9f461f3294fdb906156aa83bee8feeb8f7f3180ef76573a427"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/WhenYouAttackDelayedTriggeredAbility.java",
+      "sha256": "1825df564f9aebab7dbb53894496a30e1e0d50b32fbbc125a10a064db7282ca1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateDelayedTriggeredAbilityEffect.java",
+      "sha256": "537fdb546ad334c8e75d07346e68cf02ee4fa38bf830cbbd041ef491234f0661"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapAllControllerEffect.java",
+      "sha256": "664d70dc64894ba9e46838bace1e88036662b3daee12d0914aa7d8e02c975cc4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/IsMainPhaseCondition.java",
+      "sha256": "1f51ca4d57de6ff57f3419ef5c06e3d707ba380008a86759a0f3d9dcd58b1403"
+    }
+  ],
+  "remaining_obligations": [
+    "Complete authored printed behavior awaits actual-definition gated focused execution; public admission remains false."
+  ]
 }

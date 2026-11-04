@@ -8,5 +8,28 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b4899ae7d6d063a35e07c9737c59fb147b1fc94c2aba8bfcff716065afbabec3"
   },
-  "physical_metadata_sha256": "26d895aa4352ab314fafee862f66a2746ed0b69120285e7668925e6e75195bdf"
+  "physical_metadata_sha256": "26d895aa4352ab314fafee862f66a2746ed0b69120285e7668925e6e75195bdf",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AttunedHunter.java",
+  "java_sha256": "be1b7cb5cc7f2e4bbba779251b2241c89d99e321616d458fedff65bed865efcb",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CardsLeaveGraveyardTriggeredAbility.java",
+      "sha256": "9600c956500170fad83dd5e65083bbeb3aebbef5cbb9ef82d8ca989bdb70905b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    }
+  ],
+  "remaining_obligations": [
+    "Complete authored printed behavior awaits actual-definition gated focused execution; public admission remains false."
+  ]
 }

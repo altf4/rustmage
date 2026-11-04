@@ -8,5 +8,48 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f5931d4abc6e3d3a48270452d66b63b187e8a071b3a4c52809a328c1b401c57e"
   },
-  "physical_metadata_sha256": "629806ff4ba761cc482d7d882b1871a4dc6686bb0c2d12f1f0b4a3eb16146f71"
+  "physical_metadata_sha256": "629806ff4ba761cc482d7d882b1871a4dc6686bb0c2d12f1f0b4a3eb16146f71",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AmblingStormshell.java",
+  "java_sha256": "210286a1e618888b7af42422645a4d438366497e85d4f5dd250c7045619a0f4a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapSourceEffect.java",
+      "sha256": "8c7620af194cc7b4085783cc6bc7d8644e670a0c96931c087ecb4a3b7bd6ac71"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+      "sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+    }
+  ],
+  "remaining_obligations": [
+    "Complete authored printed behavior awaits actual-definition gated focused execution; public admission remains false."
+  ]
 }

@@ -8,5 +8,38 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a6871c6feca744dc89c1068fe1aa66e8c662fb9a9f207d1200b5a17dccea1def"
   },
-  "physical_metadata_sha256": "d61ec58702d6414e88b0be98d7a8eb53c1996b257a8bd7ba4663bb20ddac64fe"
+  "physical_metadata_sha256": "d61ec58702d6414e88b0be98d7a8eb53c1996b257a8bd7ba4663bb20ddac64fe",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BetorKinToAll.java",
+  "java_sha256": "fd32137022e24537e272aa11d90dee75729b575134d10a73444adeb307e4fc02",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapAllEffect.java",
+      "sha256": "47ebd67f929a1ed625874e7efc4fa26009e074822875002bac26772575136f3c"
+    }
+  ],
+  "remaining_obligations": [
+    "Shared dependency84: a distinct rounded-up half-life loss effect is required; preserve existing rounded-down LoseHalfLife for Pox Plague. Actual Betor21-to10 regression intentionally remains failing until the engine checkpoint and card opcode update."
+  ]
 }

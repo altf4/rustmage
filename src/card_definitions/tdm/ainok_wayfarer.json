@@ -8,5 +8,28 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0da6bfca31f312b2fc8728bbbb2295e8bd72cb0a5115f49e9c5b6ed87fbab4dd"
   },
-  "physical_metadata_sha256": "b07ea9ccdb1877870abff9260fac31d8911ac61b9b557ddde67cff451709cb59"
+  "physical_metadata_sha256": "b07ea9ccdb1877870abff9260fac31d8911ac61b9b557ddde67cff451709cb59",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AinokWayfarer.java",
+  "java_sha256": "d48ed556c26d728e0bccb1c95d849738816192ed2053d3f4c9b1baae55b9f514",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillThenPutInHandEffect.java",
+      "sha256": "15051b0e2d1701dd51f83164acfa0c4dcfc0b17d5bd6646c43209d90553d821d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    }
+  ],
+  "remaining_obligations": [
+    "Complete authored printed behavior awaits actual-definition gated focused execution; public admission remains false."
+  ]
 }

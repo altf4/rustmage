@@ -8,5 +8,28 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3998ac158b318feb7bb17343bfc81abc4fa4042724e0386993e42b262189fe52"
   },
-  "physical_metadata_sha256": "73e16df03d6fd576d8d5ff7bcffd5afb08865067119fe38ab526f13409e2fe97"
+  "physical_metadata_sha256": "73e16df03d6fd576d8d5ff7bcffd5afb08865067119fe38ab526f13409e2fe97",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CallTheSpiritDragons.java",
+  "java_sha256": "058c98c87f283039d91d1a3558c189207fd76b43757da8a8d055fdb15b75a258",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+      "sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfUpkeepTriggeredAbility.java",
+      "sha256": "19d54f1b78cb52ba734fba0b70e19280b8b342d8bfa9a8e49aaeb96edccd8732"
+    }
+  ],
+  "remaining_obligations": [
+    "Complete authored printed behavior awaits actual-definition gated focused execution; public admission remains false."
+  ]
 }

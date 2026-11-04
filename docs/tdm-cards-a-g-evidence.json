@@ -440,7 +440,7 @@
       "definition": "src/card_definitions/tdm/aggressive_negotiations.rs",
       "definition_sha256": "fe644e0774cf52f182979d5f12dcc9a0c575e42e35ffa317193c18d1e52bb66a",
       "kind": "newly_authored",
-      "status": "locally_verified_whole_card_after_engine83_repair_pending_full_set_acceptance_and_final_reviews",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
       "obligations": [
         {
           "face": "Aggressive Negotiations",
@@ -455,23 +455,14 @@
       ],
       "tests": [
         "spells_aggressive_negotiations_reveals_nonland_exile_and_optional_own_counter",
-        "spells_aggressive_negotiations_targets_only_opponent_and_own_creature_and_groups_are_independent"
+        "spells_aggressive_negotiations_targets_only_opponent_and_own_creature_and_groups_are_independent",
+        "spells_aggressive_negotiations_nonland_filter_excludes_artifact_and_enchantment_lands",
+        "spells_aggressive_negotiations_all_land_hand_is_revealed_and_counter_group_resumes",
+        "spells_aggressive_negotiations_nonland_choice_is_exact_and_source_independent",
+        "spells_aggressive_negotiations_nonland_choice_owns_raw_index_siblings_and_restore"
       ],
       "source_review": "Full pinned Oracle body, complete Java class, and listed reusable Java helper bodies read; expectations derive from printed rules.",
-      "previous_definition_sha256": "3618b9521f0346dfb0dfaeda802fa4480d24b4992c61ccbbb1c72b06290ff0ff",
-      "engine83_repair": {
-        "reason": "Positive type union admits multi-type lands; dedicated current negative-land-bit operation now rejects every land.",
-        "gated_report": "<cache>/rustmage-tdm/nonland-hand-exile-gated-first/native.json",
-        "gated_cases": 6,
-        "actual_tests": [
-          "spells_aggressive_negotiations_nonland_filter_excludes_artifact_and_enchantment_lands",
-          "spells_aggressive_negotiations_all_land_hand_is_revealed_and_counter_group_resumes",
-          "spells_aggressive_negotiations_nonland_choice_is_exact_and_source_independent",
-          "spells_aggressive_negotiations_nonland_choice_owns_raw_index_siblings_and_restore"
-        ],
-        "admitted_all_a_g_report": "<cache>/rustmage-tdm/nonland-hand-exile-admitted-all-a-g/native.json",
-        "admitted_all_a_g_cases": 39
-      }
+      "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf"
     },
     {
       "name": "Alesha's Legacy",
@@ -873,6 +864,416 @@
         "spells_frontline_rush_both_modes_create_red_goblins_or_grow_any_target_by_live_controlled_count"
       ],
       "source_review": "Full pinned Oracle body, complete Java class, and listed reusable Java helper bodies read; expectations derive from printed rules."
+    },
+    {
+      "name": "Abzan Monument",
+      "oracle_id": "93563b7b-5685-4832-b164-0701dbf3cf18",
+      "definition": "src/card_definitions/tdm/abzan_monument.rs",
+      "definition_sha256": "1a5f5971f869aa6efd23bdcd7536876f5f364faab00c4183ca5d52cf8764423f",
+      "kind": "newly_authored",
+      "status": "provisional_pending_focused_execution",
+      "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "obligations": [
+        {
+          "face": "Abzan Monument",
+          "header": {
+            "mana_cost": "{2}",
+            "type_line": "Artifact"
+          },
+          "printed_lines": [
+            "When this artifact enters, search your library for a basic Plains, Swamp, or Forest card, reveal it, put it into your hand, then shuffle.",
+            "{1}{W}{B}{G}, {T}, Sacrifice this artifact: Create an X/X white Spirit creature token, where X is the greatest toughness among creatures you control. Activate only as a sorcery."
+          ]
+        }
+      ],
+      "tests": [
+        "mechanics_abzan_monument_searches_only_basic_clan_lands_and_reveals_or_fails_to_find",
+        "mechanics_abzan_monument_pays_sorcery_tap_sacrifice_and_samples_greatest_current_toughness",
+        "mechanics_abzan_monument_without_creatures_creates_a_zero_zero_token_that_dies"
+      ],
+      "shared_proofs": [
+        {
+          "source": "tests/tdm_dynamic_tokens.rs",
+          "function": "sacrificed_activation_samples_live_greatest_toughness_as_a_copiable_large_base",
+          "source_sha256": "34ec238cc88c05a1eeba24f5618545eca97e1e056b086cb1b4620e7a5fd18de7",
+          "engine_checkpoint": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf"
+        }
+      ],
+      "source_review": "Full pinned Oracle body and Java class plus listed relevant helper bodies read before direct typed authoring."
+    },
+    {
+      "name": "Aegis Sculptor",
+      "oracle_id": "3a75c56a-bdf7-490d-aa41-51d5eb8be46c",
+      "definition": "src/card_definitions/tdm/aegis_sculptor.rs",
+      "definition_sha256": "0557fd96a0b2cb9c5006c2d2054ef856490feff63b6acfd90513eccb39e3ac1b",
+      "kind": "newly_authored",
+      "status": "provisional_pending_focused_execution",
+      "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "obligations": [
+        {
+          "face": "Aegis Sculptor",
+          "header": {
+            "mana_cost": "{3}{U}",
+            "type_line": "Creature \u2014 Bird Wizard",
+            "power": "2",
+            "toughness": "3"
+          },
+          "printed_lines": [
+            "Flying",
+            "Ward {2} (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)",
+            "At the beginning of your upkeep, you may exile two cards from your graveyard. If you do, put a +1/+1 counter on this creature."
+          ]
+        }
+      ],
+      "tests": [
+        "mechanics_aegis_sculptor_upkeep_exiles_exactly_two_own_cards_or_places_no_counter",
+        "mechanics_aegis_sculptor_paid_upkeep_does_not_counter_a_new_source_incarnation",
+        "mechanics_aegis_and_stormshell_actual_ward_two_is_paid_or_counters_only_the_opponents_spell"
+      ],
+      "shared_proofs": [],
+      "source_review": "Full pinned Oracle body and Java class plus listed relevant helper bodies read before direct typed authoring."
+    },
+    {
+      "name": "Ainok Wayfarer",
+      "oracle_id": "8134f3fd-197a-4b44-a370-311cc955dea3",
+      "definition": "src/card_definitions/tdm/ainok_wayfarer.rs",
+      "definition_sha256": "b79a8f372369d9b5918013bb4c340316b8525e70f4c9d1d10ae075176042246d",
+      "kind": "newly_authored",
+      "status": "provisional_pending_focused_execution",
+      "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "obligations": [
+        {
+          "face": "Ainok Wayfarer",
+          "header": {
+            "mana_cost": "{1}{G}",
+            "type_line": "Creature \u2014 Dog Scout",
+            "power": "1",
+            "toughness": "1"
+          },
+          "printed_lines": [
+            "When this creature enters, mill three cards. You may put a land card from among them into your hand. If you don't, put a +1/+1 counter on this creature. (To mill three cards, put the top three cards of your library into your graveyard.)"
+          ]
+        }
+      ],
+      "tests": [
+        "mechanics_ainok_wayfarer_mills_three_recovers_only_that_land_or_gets_a_counter"
+      ],
+      "shared_proofs": [
+        {
+          "source": "tests/tdm_resolution_results.rs",
+          "function": "ainok_owned_recovery_rejects_stale_and_preserves_branch_restore",
+          "source_sha256": "74cc3e9112172ad880b83c6fdac6427d2b2d071a198a53fe57cd511926288478",
+          "engine_checkpoint": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf"
+        }
+      ],
+      "source_review": "Full pinned Oracle body and Java class plus listed relevant helper bodies read before direct typed authoring."
+    },
+    {
+      "name": "All-Out Assault",
+      "oracle_id": "de8c0e2d-3207-4bc6-83ef-91e33b26a981",
+      "definition": "src/card_definitions/tdm/all_out_assault.rs",
+      "definition_sha256": "f9fa26d1c1f5907290f92aca515c59cbe015ba8e7ae7fb334a2c33159d0c1e97",
+      "kind": "newly_authored",
+      "status": "provisional_pending_focused_execution",
+      "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "obligations": [
+        {
+          "face": "All-Out Assault",
+          "header": {
+            "mana_cost": "{2}{R}{W}{B}",
+            "type_line": "Enchantment"
+          },
+          "printed_lines": [
+            "Creatures you control get +1/+1 and have deathtouch.",
+            "When this enchantment enters, if it's your main phase, there is an additional combat phase after this phase followed by an additional main phase. When you next attack this turn, untap each creature you control."
+          ]
+        }
+      ],
+      "tests": [
+        "mechanics_all_out_assault_anthem_extra_combat_main_pair_and_only_next_attack_untap",
+        "mechanics_all_out_assault_off_main_entry_gives_anthem_without_extra_phases"
+      ],
+      "shared_proofs": [
+        {
+          "source": "tests/tdm_combat_callbacks.rs",
+          "function": "assault_intervening_main_guard_and_source_independent_next_nonempty_attack",
+          "source_sha256": "e2ebb69df37a2382dff9e97d6ebe5c09e3add09c3f26e9fdf49ac7660f523100",
+          "engine_checkpoint": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf"
+        },
+        {
+          "source": "tests/tdm_combat_callbacks.rs",
+          "function": "phase_continuations_are_owned_raw_index_and_restorable_after_parent_disposal",
+          "source_sha256": "e2ebb69df37a2382dff9e97d6ebe5c09e3add09c3f26e9fdf49ac7660f523100",
+          "engine_checkpoint": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf"
+        }
+      ],
+      "source_review": "Full pinned Oracle body and Java class plus listed relevant helper bodies read before direct typed authoring."
+    },
+    {
+      "name": "Ambling Stormshell",
+      "oracle_id": "75070eaf-c931-46e5-9aa1-b849e33580c6",
+      "definition": "src/card_definitions/tdm/ambling_stormshell.rs",
+      "definition_sha256": "ccd8c701b5c9e8fb5b8136c1b01381145b2f40bb13f4afb89d31a61a41bc8da2",
+      "kind": "newly_authored",
+      "status": "provisional_pending_focused_execution",
+      "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "obligations": [
+        {
+          "face": "Ambling Stormshell",
+          "header": {
+            "mana_cost": "{3}{U}{U}",
+            "type_line": "Creature \u2014 Turtle",
+            "power": "5",
+            "toughness": "9"
+          },
+          "printed_lines": [
+            "Ward {2}",
+            "Whenever this creature attacks, put three stun counters on it and draw three cards. (If a permanent with a stun counter would become untapped, remove one from it instead.)",
+            "Whenever you cast a Turtle spell, untap this creature."
+          ]
+        }
+      ],
+      "tests": [
+        "mechanics_aegis_and_stormshell_actual_ward_two_is_paid_or_counters_only_the_opponents_spell",
+        "mechanics_ambling_stormshell_attack_draws_three_stuns_and_each_turtle_cast_attempts_untap"
+      ],
+      "shared_proofs": [],
+      "source_review": "Full pinned Oracle body and Java class plus listed relevant helper bodies read before direct typed authoring."
+    },
+    {
+      "name": "Armament Dragon",
+      "oracle_id": "23c75386-8011-4ee4-97e2-eaafeb20b788",
+      "definition": "src/card_definitions/tdm/armament_dragon.rs",
+      "definition_sha256": "29f5d83186cc2fb900ecc4617fcb16f302d85577c315208d8531f63399213585",
+      "kind": "newly_authored",
+      "status": "provisional_pending_focused_execution",
+      "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "obligations": [
+        {
+          "face": "Armament Dragon",
+          "header": {
+            "mana_cost": "{3}{W}{B}{G}",
+            "type_line": "Creature \u2014 Dragon",
+            "power": "3",
+            "toughness": "4"
+          },
+          "printed_lines": [
+            "Flying",
+            "When this creature enters, distribute three +1/+1 counters among one, two, or three target creatures you control."
+          ]
+        }
+      ],
+      "tests": [
+        "mechanics_armament_dragon_distributes_three_among_one_two_or_three_own_targets_without_reallocation"
+      ],
+      "shared_proofs": [],
+      "source_review": "Full pinned Oracle body and Java class plus listed relevant helper bodies read before direct typed authoring."
+    },
+    {
+      "name": "Attuned Hunter",
+      "oracle_id": "f652c593-e8fa-42ff-a8b4-206556b273de",
+      "definition": "src/card_definitions/tdm/attuned_hunter.rs",
+      "definition_sha256": "8a690c14c10c112b620de1b2b12ae3ccb12b20a6170d43483cede2a68e46ae3c",
+      "kind": "newly_authored",
+      "status": "provisional_pending_focused_execution",
+      "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "obligations": [
+        {
+          "face": "Attuned Hunter",
+          "header": {
+            "mana_cost": "{2}{G}",
+            "type_line": "Creature \u2014 Human Ranger",
+            "power": "3",
+            "toughness": "3"
+          },
+          "printed_lines": [
+            "Trample",
+            "Whenever one or more cards leave your graveyard during your turn, put a +1/+1 counter on this creature."
+          ]
+        }
+      ],
+      "tests": [
+        "mechanics_attuned_hunter_counts_one_owned_graveyard_batch_only_during_your_turn"
+      ],
+      "shared_proofs": [],
+      "source_review": "Full pinned Oracle body and Java class plus listed relevant helper bodies read before direct typed authoring."
+    },
+    {
+      "name": "Barrensteppe Siege",
+      "oracle_id": "228d3307-69a9-45ce-a610-77754ed50877",
+      "definition": "src/card_definitions/tdm/barrensteppe_siege.rs",
+      "definition_sha256": "06ba73f764e8405f0403fd59415207c7dbdab8463575f6be75e3e3d9fda68c27",
+      "kind": "newly_authored",
+      "status": "provisional_pending_focused_execution",
+      "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "obligations": [
+        {
+          "face": "Barrensteppe Siege",
+          "header": {
+            "mana_cost": "{2}{W}{B}",
+            "type_line": "Enchantment"
+          },
+          "printed_lines": [
+            "As this enchantment enters, choose Abzan or Mardu.",
+            "\u2022 Abzan \u2014 At the beginning of your end step, put a +1/+1 counter on each creature you control.",
+            "\u2022 Mardu \u2014 At the beginning of your end step, if a creature died under your control this turn, each opponent sacrifices a creature of their choice."
+          ]
+        }
+      ],
+      "tests": [
+        "mechanics_barrensteppe_siege_abzan_gives_each_own_creature_a_counter_only_on_own_end_step",
+        "mechanics_barrensteppe_siege_mardu_requires_own_creature_death_and_opponent_chooses_sacrifice"
+      ],
+      "shared_proofs": [
+        {
+          "source": "tests/tdm_entry_modes.rs",
+          "function": "pending_entry_mode_survives_raw_index_restore_and_parent_disposal",
+          "source_sha256": "8a3ad52ec74c489cafe2676b81faca7d3e1c5b352b3950e69d0e7b45b5e0bc5a",
+          "engine_checkpoint": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf"
+        },
+        {
+          "source": "tests/tdm_entry_modes.rs",
+          "function": "changing_control_keeps_the_choice_and_changes_its_live_recipients",
+          "source_sha256": "8a3ad52ec74c489cafe2676b81faca7d3e1c5b352b3950e69d0e7b45b5e0bc5a",
+          "engine_checkpoint": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf"
+        }
+      ],
+      "source_review": "Full pinned Oracle body and Java class plus listed relevant helper bodies read before direct typed authoring."
+    },
+    {
+      "name": "Betor, Kin to All",
+      "oracle_id": "826a0db6-195a-4697-9bd6-f544b279e3cf",
+      "definition": "src/card_definitions/tdm/betor_kin_to_all.rs",
+      "definition_sha256": "526a669185428e998b8a94dceb44666d0092d5d9713d03ded03f2e855c118722",
+      "kind": "newly_authored",
+      "status": "gated_missing_shared_round_up_half_life_effect",
+      "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "obligations": [
+        {
+          "face": "Betor, Kin to All",
+          "header": {
+            "mana_cost": "{2}{W}{B}{G}",
+            "type_line": "Legendary Creature \u2014 Spirit Dragon",
+            "power": "5",
+            "toughness": "7"
+          },
+          "printed_lines": [
+            "Flying",
+            "At the beginning of your end step, if creatures you control have total toughness 10 or greater, draw a card. Then if creatures you control have total toughness 20 or greater, untap each creature you control. Then if creatures you control have total toughness 40 or greater, each opponent loses half their life, rounded up."
+          ]
+        }
+      ],
+      "tests": [
+        "mechanics_betor_checks_ten_twenty_forty_live_total_toughness_and_rounds_half_life_up",
+        "mechanics_betor_rechecks_intervening_threshold_and_later_thresholds_at_resolution"
+      ],
+      "shared_proofs": [],
+      "source_review": "Full pinned Oracle body and Java class plus listed relevant helper bodies read before direct typed authoring."
+    },
+    {
+      "name": "Bone-Cairn Butcher",
+      "oracle_id": "449db6bf-d766-4d09-a7bd-9c45b3d4c4c3",
+      "definition": "src/card_definitions/tdm/bone_cairn_butcher.rs",
+      "definition_sha256": "931148058531c0366e2436ef37bbc5f05e3b658ae1bc796997821f254f4e4fea",
+      "kind": "newly_authored",
+      "status": "provisional_pending_focused_execution",
+      "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "obligations": [
+        {
+          "face": "Bone-Cairn Butcher",
+          "header": {
+            "mana_cost": "{1}{R}{W}{B}",
+            "type_line": "Creature \u2014 Demon",
+            "power": "4",
+            "toughness": "4"
+          },
+          "printed_lines": [
+            "Mobilize 2 (Whenever this creature attacks, create two tapped and attacking 1/1 red Warrior creature tokens. Sacrifice them at the beginning of the next end step.)",
+            "Attacking tokens you control have deathtouch."
+          ]
+        }
+      ],
+      "tests": [
+        "mechanics_bone_cairn_butcher_mobilizes_two_and_grants_deathtouch_only_to_attacking_own_tokens"
+      ],
+      "shared_proofs": [],
+      "source_review": "Full pinned Oracle body and Java class plus listed relevant helper bodies read before direct typed authoring."
+    },
+    {
+      "name": "Breaching Dragonstorm",
+      "oracle_id": "5370ee80-0354-454f-a16e-ec133e432ecb",
+      "definition": "src/card_definitions/tdm/breaching_dragonstorm.rs",
+      "definition_sha256": "4b45fa146648cb8b8d75c00fc38d6d31bc07b196f90ca1fad4d447902b2fb75a",
+      "kind": "newly_authored",
+      "status": "provisional_pending_focused_execution",
+      "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "obligations": [
+        {
+          "face": "Breaching Dragonstorm",
+          "header": {
+            "mana_cost": "{4}{R}",
+            "type_line": "Enchantment"
+          },
+          "printed_lines": [
+            "When this enchantment enters, exile cards from the top of your library until you exile a nonland card. You may cast it without paying its mana cost if that spell's mana value is 8 or less. If you don't, put that card into your hand.",
+            "When a Dragon you control enters, return this enchantment to its owner's hand."
+          ]
+        }
+      ],
+      "tests": [
+        "mechanics_breaching_dragonstorm_exiles_lands_then_casts_up_to_eight_or_puts_nonland_in_hand",
+        "mechanics_breaching_dragonstorm_returns_only_for_your_dragon_and_not_a_new_incarnation"
+      ],
+      "shared_proofs": [
+        {
+          "source": "tests/tdm_search_color_sequences.rs",
+          "function": "breaching_free_or_hand_offer_is_owned_raw_index_restore_and_source_can_leave",
+          "source_sha256": "9bd6f52179c8956c1eee96eb5942f4ef427badc2e79b81348aa68ca2813ebcd1",
+          "engine_checkpoint": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf"
+        }
+      ],
+      "source_review": "Full pinned Oracle body and Java class plus listed relevant helper bodies read before direct typed authoring."
+    },
+    {
+      "name": "Call the Spirit Dragons",
+      "oracle_id": "3ceb23f5-abb1-4569-a1e4-1eed9a9babcf",
+      "definition": "src/card_definitions/tdm/call_the_spirit_dragons.rs",
+      "definition_sha256": "2f1d5f945dfaa1d64ac5851731e4b4900b90cb6edacabcaaebf8df412dc86450",
+      "kind": "newly_authored",
+      "status": "provisional_pending_focused_execution",
+      "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "obligations": [
+        {
+          "face": "Call the Spirit Dragons",
+          "header": {
+            "mana_cost": "{W}{U}{B}{R}{G}",
+            "type_line": "Enchantment"
+          },
+          "printed_lines": [
+            "Dragons you control have indestructible.",
+            "At the beginning of your upkeep, for each color, put a +1/+1 counter on a Dragon you control of that color. If you put +1/+1 counters on five Dragons this way, you win the game."
+          ]
+        }
+      ],
+      "tests": [
+        "mechanics_call_the_spirit_dragons_one_five_color_dragon_gets_five_counters_without_winning",
+        "mechanics_call_the_spirit_dragons_five_distinct_dragons_get_counters_and_win_after_source_leaves"
+      ],
+      "shared_proofs": [
+        {
+          "source": "tests/tdm_search_color_sequences.rs",
+          "function": "counter_replacements_do_not_turn_one_dragon_into_five_successes_and_prohibition_blocks_win",
+          "source_sha256": "9bd6f52179c8956c1eee96eb5942f4ef427badc2e79b81348aa68ca2813ebcd1",
+          "engine_checkpoint": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf"
+        },
+        {
+          "source": "tests/tdm_search_color_sequences.rs",
+          "function": "partial_public_color_choices_and_replacement_receipts_are_owned_raw_index_restore",
+          "source_sha256": "9bd6f52179c8956c1eee96eb5942f4ef427badc2e79b81348aa68ca2813ebcd1",
+          "engine_checkpoint": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf"
+        }
+      ],
+      "source_review": "Full pinned Oracle body and Java class plus listed relevant helper bodies read before direct typed authoring."
     }
   ],
   "validation": [
@@ -939,6 +1340,46 @@
       "engine_reused": true,
       "terminal": true,
       "gate": "All seventeen publicly admitted actual definitions"
+    },
+    {
+      "report": "<cache>/rustmage-tdm/nonland-hand-exile-gated-first/native.json",
+      "sha256": "51550775063c489a6523dea506ffb682cfbeee42a769925d3585b9c0a14d2a43",
+      "test_target": "tdm_cards_a_g",
+      "filter": "spells_aggressive_negotiations",
+      "passed": 6,
+      "failed": 0,
+      "compile_seconds": 116.37281360797351,
+      "execution_seconds": 0.02476706204470247,
+      "terminal": true,
+      "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf"
+    },
+    {
+      "report": "<cache>/rustmage-tdm/nonland-hand-exile-admitted-all-a-g/native.json",
+      "sha256": "7be3df6eb9b934e9ba37056125754e50f3cdad2ea18fa902db2593db69e49416",
+      "test_target": "tdm_cards_a_g",
+      "filter": "",
+      "passed": 39,
+      "failed": 0,
+      "compile_seconds": 1.1676165409735404,
+      "execution_seconds": 0.05070133198751137,
+      "terminal": true,
+      "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf"
+    },
+    {
+      "report": "<cache>/rustmage-tdm/cards-a-g-mechanics-engine83-gated-first/native.json",
+      "sha256": "1495dc5bcf43a4fc7060eae3982ef49f1248522a1103749c53cf1fc9f8d46d07",
+      "test_target": "tdm_cards_a_g",
+      "filter": "mechanics_",
+      "passed": 19,
+      "failed": 2,
+      "terminal": true,
+      "compile_seconds": 15.203379425976891,
+      "execution_seconds": 0.034545181959401816,
+      "failed_tests": [
+        "mechanics_betor_checks_ten_twenty_forty_live_total_toughness_and_rounds_half_life_up",
+        "mechanics_breaching_dragonstorm_exiles_lands_then_casts_up_to_eight_or_puts_nonland_in_hand"
+      ],
+      "scope": "Before the Breaching finish-only-offer fixture correction. Betor failure demonstrates missing rounded-up life loss; its expected 21 to 10 remains unchanged. No new completion flags promoted."
     }
   ],
   "locally_verified_physical_cards": 31,
@@ -981,5 +1422,30 @@
       "first_run_scenario_interface_failures": 4,
       "simulation_throughput": "Not measured by this family"
     }
-  ]
+  ],
+  "current_engine_checkpoint": {
+    "revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+    "compatibility_commit": "7bfcd33a924e4e43273fde845565aa8ba8dd7517",
+    "warm_receipt": "<cache>/rustmage-tdm/engine83-author-baselines-1793808271665788619/a_g/core-warm-terminal.json",
+    "warm_receipt_sha256": "565ceadb045b0c229d3448aed3c6cca83fa2bc0d9d54b56260f388512b07e8d1",
+    "authoring_gate": "new definitions remain incomplete until actual-definition execution"
+  },
+  "mechanic_family_prepared": {
+    "cards": 12,
+    "new_gated": 12,
+    "tests": 21,
+    "status": "gated_checkpoint_awaiting_shared_dependency_84_and_focused_rerun",
+    "filter": "mechanics_",
+    "new_engine_changes": false,
+    "engine_dependency": {
+      "id": 84,
+      "card": "Betor, Kin to All",
+      "printed_obligation": "Each opponent loses half their life, rounded up, at total controlled toughness forty or greater.",
+      "repro": "mechanics_betor_checks_ten_twenty_forty_live_total_toughness_and_rounds_half_life_up: opponent starts21, must lose11 and finish10; existing effect loses10 and finishes11.",
+      "existing_instruction": "Instruction::LoseHalfLife is deliberately rounded down and must retain SOS Pox Plague semantics.",
+      "engine_owner": "root",
+      "card_opcode_change_pending": true
+    },
+    "breaching_scenario_correction": "The over-eight discovered card still exposes a finish-only ResolutionCasts decision. Scenario now explicitly finishes, rejects its free cast, and proves eligible free casts with zero mana; corrected scenario not yet rerun."
+  }
 }

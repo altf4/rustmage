@@ -8,5 +8,33 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f6519f644a34cfd7a69d8458b9acb6842addee138a26cbd0d275f246a41b5833"
   },
-  "physical_metadata_sha256": "76f15addd37e9e408159a8447846bd67c94725358c1a7ace89f58aa5de60b319"
+  "physical_metadata_sha256": "76f15addd37e9e408159a8447846bd67c94725358c1a7ace89f58aa5de60b319",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BreachingDragonstorm.java",
+  "java_sha256": "7df4b752ce383bb8dd63e22119a732d5119b7dab6b5432db98e9aa4162a3d710",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+      "sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandSourceEffect.java",
+      "sha256": "3af51f033e9d30c6f946feca7948ce7ee423fdd1314a715820d3ae9d98ca7935"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/CardUtil.java",
+      "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+    }
+  ],
+  "remaining_obligations": [
+    "Complete authored printed behavior awaits actual-definition gated focused execution; public admission remains false."
+  ]
 }
