@@ -713,3 +713,354 @@ fn mana_devotee_color_choice_is_owned_raw_index_restorable_and_does_not_expose_a
         assert_eq!(raw.snapshot(), indexed.snapshot());
     }
 }
+
+fn trigger_target(g: &mut Game, target: Target) {
+    for _ in 0..40 {
+        let action = Action::ChooseTarget { target };
+        if g.legal_actions().contains(&action) {
+            act(g, action);
+            if g.legal_actions().contains(&Action::FinishTargets) {
+                act(g, Action::FinishTargets);
+            }
+            return;
+        }
+        choose(g, |a| matches!(a, Action::Pass | Action::PutTrigger { .. }));
+    }
+    panic!("40-action entry-target ceiling");
+}
+fn spirits(g: &Game, p: Player) -> Vec<CardId> {
+    g.state
+        .objects
+        .iter()
+        .enumerate()
+        .filter_map(|(id, o)| {
+            (o.zone == Zone::Battlefield
+                && o.controller == p
+                && o.is_token()
+                && g.has_subtype(id as CardId, "Spirit"))
+            .then_some(id as CardId)
+        })
+        .collect()
+}
+fn attack_one(g: &mut Game, id: CardId) {
+    g.state.step = Step::Attackers;
+    g.state.pending = Pending::Attackers;
+    g.state.priority = g.state.active;
+    act(g, Action::Attack { card: id });
+    act(g, Action::FinishAttackers);
+}
+
+#[test]
+fn creatures_sagu_pummeler_casts_four_four_reach_and_renews_two_plus_one_and_one_reach_counter() {
+    for p in [Player::P0, Player::P1] {
+        for owner in [p, p.other()] {
+            let mut g = scenario(p);
+            let source = actual_card(&mut g, p, "Sagu Pummeler", Zone::Hand);
+            let target = put(&mut g, owner, "Bear Cub", Zone::Battlefield);
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 3];
+            cast(&mut g, source, None);
+            settle(&mut g);
+            assert_eq!(stats(&g, source), (4, 4));
+            assert!(g.keywords(source).contains(Keywords::REACH));
+            g.move_object(source, Zone::Graveyard);
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 4];
+            activated(&mut g, source, 0, target);
+            assert_eq!(g.object_view(source).zone, Zone::Exile);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            settle(&mut g);
+            assert_eq!(g.counter_count(target, CounterKind::PlusOne), 2);
+            assert_eq!(g.counter_count(target, CounterKind::Reach), 1);
+            assert_eq!(stats(&g, target), (4, 4));
+            assert!(g.keywords(target).contains(Keywords::REACH));
+            g.finish_cleanup();
+            assert!(g.keywords(target).contains(Keywords::REACH));
+            assert_eq!(g.counter_count(target, CounterKind::Reach), 1);
+        }
+    }
+}
+
+#[test]
+fn creatures_sagu_renew_rejects_wrong_zone_timing_cost_target_and_never_rebinds_blinked_targets() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = actual_card(&mut g, p, "Sagu Pummeler", Zone::Hand);
+        let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let artifact = put(&mut g, p.other(), "Short Bow", Zone::Battlefield);
+        let start = Action::AnnounceActivate {
+            card: source,
+            ability: 0,
+            counter_payment: Counters::default(),
+        };
+        reject(&mut g, start.clone());
+        g.move_object(source, Zone::Graveyard);
+        let mut upkeep = g.clone();
+        upkeep.state.step = Step::Upkeep;
+        reject(&mut upkeep, start.clone());
+        let mut off_turn = g.clone();
+        off_turn.state.active = p.other();
+        reject(&mut off_turn, start.clone());
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 5];
+        reject(&mut g, start.clone());
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 4];
+        act(&mut g, start);
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(artifact),
+            },
+        );
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        pay(&mut g);
+        g.move_object(target, Zone::Hand);
+        g.move_object(target, Zone::Battlefield);
+        settle(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Exile);
+        assert_eq!(g.counter_count(target, CounterKind::PlusOne), 0);
+        assert_eq!(g.counter_count(target, CounterKind::Reach), 0);
+    }
+}
+
+#[test]
+fn creatures_packbeast_affinity_counts_only_controlled_creatures_then_draws_the_actual_top_card() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        put(&mut g, p, "Short Bow", Zone::Battlefield);
+        let top = put(&mut g, p, "Cancel", Zone::Library);
+        let source = put(&mut g, p, "Salt Road Packbeast", Zone::Hand);
+        g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 2];
+        reject(&mut g, Action::AnnounceCast { card: source });
+        g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 3];
+        cast(&mut g, source, None);
+        settle(&mut g);
+        assert_eq!(stats(&g, source), (4, 3));
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        assert_eq!(g.object_view(top).zone, Zone::Hand);
+        assert_eq!(g.hand_count(p), 1);
+        assert!(!g.observe(p.other()).objects.iter().any(|o| o.id == top));
+    }
+}
+
+#[test]
+fn creatures_outrider_and_surveyor_choose_exact_endure_sizes_and_surveyor_loses_one_on_attack() {
+    for p in [Player::P0, Player::P1] {
+        for (name, amount, base, keyword) in [
+            ("Sandskitter Outrider", 2, (2, 1), Keywords::MENACE),
+            ("Sinkhole Surveyor", 1, (1, 3), Keywords::FLYING),
+        ] {
+            for counters in [false, true] {
+                let mut g = scenario(p);
+                let id = put(&mut g, p, name, Zone::Hand);
+                cast(&mut g, id, None);
+                if name == "Sinkhole Surveyor" {
+                    settle(&mut g);
+                    assert_eq!(g.state.players[p.index()].life, 20);
+                    g.state.objects[id as usize].summoning_sick = false;
+                    attack_one(&mut g, id);
+                }
+                reach(&mut g, |g| {
+                    matches!(g.state.pending, Pending::Endure { .. })
+                });
+                assert_eq!(stats(&g, id), base);
+                assert!(g.keywords(id).contains(keyword));
+                assert_eq!(
+                    g.state.players[p.index()].life,
+                    if name == "Sinkhole Surveyor" { 19 } else { 20 }
+                );
+                assert_eq!(g.state.players[p.other().index()].life, 20);
+                act(
+                    &mut g,
+                    Action::ChooseEndure {
+                        put_counters: counters,
+                    },
+                );
+                settle(&mut g);
+                assert_eq!(
+                    g.counter_count(id, CounterKind::PlusOne),
+                    if counters { amount } else { 0 }
+                );
+                let made = spirits(&g, p);
+                assert_eq!(made.len(), usize::from(!counters));
+                if let Some(&spirit) = made.first() {
+                    assert_eq!(stats(&g, spirit), (amount as i128, amount as i128));
+                    assert_eq!(g.object_view(spirit).colors, 1);
+                    assert!(!g.keywords(spirit).contains(Keywords::FLYING));
+                }
+            }
+        }
+    }
+}
+
+#[test]
+fn creatures_outrider_departure_still_creates_exact_spirit_and_endure_branches_are_owned() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Sandskitter Outrider", Zone::Hand);
+        cast(&mut g, source, None);
+        reach(&mut g, |g| {
+            matches!(g.state.pending, Pending::Endure { .. })
+        });
+        let saved = g.snapshot();
+        let revision = g.revision();
+        let action = Action::ChooseEndure {
+            put_counters: false,
+        };
+        let index = g.legal_actions().iter().position(|a| *a == action).unwrap();
+        let mut raw = g.clone();
+        let mut indexed = g.clone();
+        let mut sibling = g.clone();
+        drop(g);
+        raw.apply(p, action.clone()).unwrap();
+        indexed.apply_index(p, revision, index).unwrap();
+        act(&mut sibling, Action::ChooseEndure { put_counters: true });
+        for child in [&mut raw, &mut indexed, &mut sibling] {
+            settle(child);
+        }
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        assert_eq!(spirits(&raw, p).len(), 1);
+        assert_eq!(stats(&sibling, source), (4, 3));
+        let mut departed = scenario(p);
+        let left = put(&mut departed, p, "Sandskitter Outrider", Zone::Hand);
+        cast(&mut departed, left, None);
+        reach(&mut departed, |g| {
+            g.object_view(left).zone == Zone::Battlefield
+        });
+        // Depart at the priority boundary before the trigger resolves. No
+        // player can interleave an action inside the later Endure choice.
+        departed.move_object(left, Zone::Graveyard);
+        settle(&mut departed);
+        assert_eq!(spirits(&departed, p).len(), 1);
+        assert_eq!(stats(&departed, spirits(&departed, p)[0]), (2, 2));
+        assert_eq!(departed.object_view(left).zone, Zone::Graveyard);
+        indexed.restore(&saved).unwrap();
+        assert_eq!(
+            indexed.apply_index(p, revision, index),
+            Err(Error::StaleRevision)
+        );
+        act(&mut indexed, action);
+        settle(&mut indexed);
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+    }
+}
+
+#[test]
+fn creatures_skirmish_rhino_drains_the_opponent_after_its_source_leaves() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Skirmish Rhino", Zone::Hand);
+        g.state.players[p.index()].mana = [1, 0, 1, 0, 1, 0];
+        cast(&mut g, source, None);
+        reach(&mut g, |g| g.object_view(source).zone == Zone::Battlefield);
+        assert_eq!(stats(&g, source), (3, 4));
+        assert!(g.keywords(source).contains(Keywords::TRAMPLE));
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        g.move_object(source, Zone::Graveyard);
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 22);
+        assert_eq!(g.state.players[p.other().index()].life, 18);
+    }
+}
+
+#[test]
+fn creatures_summit_intimidator_stops_only_the_chosen_incarnation_blocking_until_cleanup() {
+    for p in [Player::P0, Player::P1] {
+        for owner in [p, p.other()] {
+            for blink in [false, true] {
+                let mut g = scenario(p);
+                let target = put(&mut g, owner, "Bear Cub", Zone::Battlefield);
+                let untouched = put(&mut g, owner, "Bear Cub", Zone::Battlefield);
+                let attacker = put(&mut g, owner.other(), "Bear Cub", Zone::Battlefield);
+                let source = put(&mut g, p, "Summit Intimidator", Zone::Hand);
+                cast(&mut g, source, None);
+                trigger_target(&mut g, Target::Card(target));
+                assert_eq!(stats(&g, source), (4, 3));
+                assert!(g.keywords(source).contains(Keywords::REACH));
+                if blink {
+                    g.move_object(target, Zone::Hand);
+                    g.move_object(target, Zone::Battlefield);
+                }
+                settle(&mut g);
+                g.state.active = owner.other();
+                assert_eq!(g.can_block_pair(target, attacker), blink);
+                assert!(g.can_block_pair(untouched, attacker));
+                g.finish_cleanup();
+                assert!(!g.keywords(target).contains(Keywords::CANT_BLOCK));
+                g.state.active = owner.other();
+                assert!(g.can_block_pair(target, attacker));
+            }
+        }
+    }
+}
+
+#[test]
+fn creatures_temur_tawnyback_all_monohybrid_payments_draw_before_a_private_discard() {
+    for p in [Player::P0, Player::P1] {
+        for mask in 0..8u8 {
+            let mut g = scenario(p);
+            let top = put(&mut g, p, "Cancel", Zone::Library);
+            let source = put(&mut g, p, "Temur Tawnyback", Zone::Hand);
+            let mut payment = [0; 6];
+            for (bit, color) in [4, 1, 3].into_iter().enumerate() {
+                if mask & (1 << bit) != 0 {
+                    payment[color] = 1;
+                } else {
+                    payment[5] += 2;
+                }
+            }
+            g.state.players[p.index()].mana = payment;
+            cast(&mut g, source, None);
+            reach(&mut g, |g| {
+                g.legal_actions().contains(&Action::Discard { card: top })
+            });
+            assert_eq!(stats(&g, source), (4, 3));
+            assert_eq!(g.object_view(top).zone, Zone::Hand);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            assert!(!g.observe(p.other()).objects.iter().any(|o| o.id == top));
+            act(&mut g, Action::Discard { card: top });
+            settle(&mut g);
+            assert_eq!(g.object_view(top).zone, Zone::Graveyard);
+            assert_eq!(g.hand_count(p), 0);
+        }
+    }
+}
+
+#[test]
+fn creatures_watcher_mills_either_player_exactly_two_or_a_short_library_and_gains_controller_two() {
+    for p in [Player::P0, Player::P1] {
+        for target in [p, p.other()] {
+            for short in [false, true] {
+                let mut g = scenario(p);
+                if short {
+                    for id in g.state.players[target.index()].library.clone() {
+                        g.move_object(id, Zone::Exile);
+                    }
+                }
+                let first = put(&mut g, target, "Bear Cub", Zone::Library);
+                let second = if short {
+                    None
+                } else {
+                    Some(put(&mut g, target, "Cancel", Zone::Library))
+                };
+                let source = put(&mut g, p, "Watcher of the Wayside", Zone::Hand);
+                cast(&mut g, source, None);
+                trigger_target(&mut g, Target::Player(target));
+                settle(&mut g);
+                assert_eq!(stats(&g, source), (3, 2));
+                assert_eq!(g.object_view(source).kinds & 17, 17);
+                assert_eq!(g.object_view(first).zone, Zone::Graveyard);
+                if let Some(second) = second {
+                    assert_eq!(g.object_view(second).zone, Zone::Graveyard);
+                }
+                assert_eq!(g.state.players[p.index()].life, 22);
+                assert_eq!(g.state.players[p.other().index()].life, 20);
+            }
+        }
+    }
+}

@@ -1,16 +1,16 @@
 {
   "schema": 1,
   "scope": "All92 physical S\u2013Z TDM members plus their owned Omen/reprint definitions; whole-card results accumulate here.",
-  "engine_revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+  "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
   "metadata_baseline": "bd24d9f167f98308637420e3a4de461ccda1a4d0",
   "tracking_issue": "https://github.com/altf4/rustmage/issues/570",
   "owner": "s_z",
   "first_family": "Harmonize draw/bounce/combat spells",
   "started_utc": "2026-11-04T14:02:30.077837+00:00",
   "full_denominator": 92,
-  "currently_verified_new_complete": 3,
-  "currently_verified_existing_candidates": 11,
-  "pending_members": 78,
+  "currently_verified_new_complete": 4,
+  "currently_verified_existing_candidates": 18,
+  "pending_members": 70,
   "candidate_first_family_count": 4,
   "provisional_complete_flags": "New definitions remain complete=false through initial gated actual-definition PASS. Integrator then admits and repeats using normal supported put before counting. Existing baseline candidates require actual-definition evidence or accepted exact source/test/report proof reuse.",
   "source_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
@@ -319,6 +319,146 @@
       "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AbilityPredicate.java",
       "sha256": "6e8ecc0108fde867fbb47c3afbc24e5dd30a0e9de97efc5e06950498f0b32dda",
       "extent": "complete body reread during current mana-family authoring"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/SaguPummeler.java",
+      "sha256": "061a82e80de0df0932a1425c992db08ab87c40a62bc7e934dedc876da835569f",
+      "extent": "complete body reread during current creature-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/RenewAbility.java",
+      "sha256": "32a1436eacfca7d3397a9bed3a949b686061d5e54d2627219e393fbe9947a02b",
+      "extent": "complete body reread during current creature-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc",
+      "extent": "complete body reread during current creature-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+      "sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d",
+      "extent": "complete body reread during current creature-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559",
+      "extent": "complete body reread during current creature-family authoring"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/SaltRoadPackbeast.java",
+      "sha256": "e6a05401ef286b37c600e89831f956038d0a5a18466ced1439deb0f22b74056d",
+      "extent": "complete body reread during current creature-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/AffinityAbility.java",
+      "sha256": "b1b523671266f687df90eb3003d186bb0f68f9ca99ccaffe675f25ed11f40547",
+      "extent": "complete body reread during current creature-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/constants/AffinityType.java",
+      "sha256": "eca2c84794fab5e694c45df079ecf553e13433f38dbf122d75579c3a591c215d",
+      "extent": "complete body reread during current creature-family authoring"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/SandskitterOutrider.java",
+      "sha256": "a9a42565b9eada3e9ef6701e67a12fed7939d0820cece645998817ee27b834b9",
+      "extent": "complete body reread during current creature-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2",
+      "extent": "complete body reread during current creature-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByOneEffect.java",
+      "sha256": "e0bd814caa3d5758863c4230d3ac88a4361337d3459b13d4f0b309559520434e",
+      "extent": "complete body reread during current creature-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EndureSourceEffect.java",
+      "sha256": "b32a2eef10ea3a3f03e93398e6e5a6aeebd279daa5a95edda6aab6380e1d9dcd",
+      "extent": "complete body reread during current creature-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/game/permanent/token/NoFlyingSpiritWhite22Token.java",
+      "sha256": "9600c4dca746b3607b1e9096ea55a01c0b23be5009f02c036374ac6a85f4e9b7",
+      "extent": "complete body reread during current creature-family authoring"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/SinkholeSurveyor.java",
+      "sha256": "c87b9a505e8c27129f1dbbdb4cd63c7315a0dff2ebf180fc0047787632aa1803",
+      "extent": "complete body reread during current creature-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb",
+      "extent": "complete body reread during current creature-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3",
+      "extent": "complete body reread during current creature-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+      "sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be",
+      "extent": "complete body reread during current creature-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/game/permanent/token/NoFlyingSpiritWhite11Token.java",
+      "sha256": "ae86fa5f2d2e9df5fe94d034fe7a720d7b69c3365f9d5e79585668e94c5db558",
+      "extent": "complete body reread during current creature-family authoring"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/SkirmishRhino.java",
+      "sha256": "b03dcf833fdc76a94984c1c27f99c732388bc506fe95bd995a72703079f70ef6",
+      "extent": "complete body reread during current creature-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c",
+      "extent": "complete body reread during current creature-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeOpponentsEffect.java",
+      "sha256": "0efbab18123aec32ac502d57e9a8d9571965d09f3f4e09c448a4ed4cf10aa0e1",
+      "extent": "complete body reread during current creature-family authoring"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/SummitIntimidator.java",
+      "sha256": "f6be918b5186107394e55d2e7437332a22004f33adf57d1e84452836b3f393f0",
+      "extent": "complete body reread during current creature-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBlockTargetEffect.java",
+      "sha256": "a8b1a9a047746f0ea70d42f8847828d3334cfe9c33dfb6af870717e1aec0ae5f",
+      "extent": "complete body reread during current creature-family authoring"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/t/TemurTawnyback.java",
+      "sha256": "caed60cbea0d32cf14ea135ef1af11b76f8402c95e8e914db70e7d121cb21dc4",
+      "extent": "complete body reread during current creature-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782",
+      "extent": "complete body reread during current creature-family authoring"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/w/WatcherOfTheWayside.java",
+      "sha256": "b8f79bc98e5495b7b2615e51b1ffaaa3831692e1471ee052146375249fdcd29e",
+      "extent": "complete body reread during current creature-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsTargetEffect.java",
+      "sha256": "5a01d741ed0a7d1449d5d4591025205bc130e7e5eb5f861d2761b1fd64557365",
+      "extent": "complete body reread during current creature-family authoring"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetPlayer.java",
+      "sha256": "36179d4a02c9e6216c0844db52d312bde0be07181238041064691b98d92a6eba",
+      "extent": "complete body reread during current creature-family authoring"
     }
   ],
   "source_read_scoped_files": [
@@ -383,9 +523,11 @@
         }
       ],
       "baseline_complete_candidate": false,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "8ecc1a2a6f9ea868dfd26f5dc44f2c26944f7936d1a94b92ce7309fa520f62f0"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "8ecc1a2a6f9ea868dfd26f5dc44f2c26944f7936d1a94b92ce7309fa520f62f0",
+      "evidence_family": "ETB, Endure and Renew creatures",
+      "admission": "Corrected simultaneous-counter gated9PASS first; integrator then admitted and ordinary full24PASS."
     },
     {
       "name": "Sagu Wildling // Roost Seek",
@@ -418,9 +560,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "ba5c1caafa23fb0b705167848e1177be6cf362d39f649abe659b7a3b073233a7"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "ba5c1caafa23fb0b705167848e1177be6cf362d39f649abe659b7a3b073233a7",
+      "evidence_family": "ETB, Endure and Renew creatures"
     },
     {
       "name": "Salt Road Skirmish",
@@ -448,9 +591,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "935e0ca3f5901798d4544b65bcadcd5da1996771f7a56f8d43b0496736b9c270"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "935e0ca3f5901798d4544b65bcadcd5da1996771f7a56f8d43b0496736b9c270",
+      "evidence_family": "ETB, Endure and Renew creatures"
     },
     {
       "name": "Sandsteppe Citadel",
@@ -665,9 +809,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "87adf8178ffed6409ccf425efa75f656c974016221173af222c63005110f6b18"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "87adf8178ffed6409ccf425efa75f656c974016221173af222c63005110f6b18",
+      "evidence_family": "ETB, Endure and Renew creatures"
     },
     {
       "name": "Skirmish Rhino",
@@ -680,9 +825,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "fe4fb2e7dfb7e00d50336c2d159c367a3a946b8b18c5f68970e0ef9f756484d0"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "fe4fb2e7dfb7e00d50336c2d159c367a3a946b8b18c5f68970e0ef9f756484d0",
+      "evidence_family": "ETB, Endure and Renew creatures"
     },
     {
       "name": "Smile at Death",
@@ -971,9 +1117,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "689c309c7ae3c4be1049be1d9ad683fc3f8d21939530c38cb2848316d556feb6"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "689c309c7ae3c4be1049be1d9ad683fc3f8d21939530c38cb2848316d556feb6",
+      "evidence_family": "ETB, Endure and Renew creatures"
     },
     {
       "name": "Sunpearl Kirin",
@@ -1198,9 +1345,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "96362293448aa582f6f0fe0a081ef684fb81ed629c3b3dd2c6a8434480020863"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "96362293448aa582f6f0fe0a081ef684fb81ed629c3b3dd2c6a8434480020863",
+      "evidence_family": "ETB, Endure and Renew creatures"
     },
     {
       "name": "Tersa Lightshatter",
@@ -1712,9 +1860,10 @@
         }
       ],
       "baseline_complete_candidate": true,
-      "status": "whole_card_authoring_pending",
-      "verified": false,
-      "oracle_facts_sha256": "178cacfda6463b4fa1ff911f2ae3e42de88af161b8012cb2f6ed8db856959c9d"
+      "status": "locally_whole_card_verified",
+      "verified": true,
+      "oracle_facts_sha256": "178cacfda6463b4fa1ff911f2ae3e42de88af161b8012cb2f6ed8db856959c9d",
+      "evidence_family": "ETB, Endure and Renew creatures"
     },
     {
       "name": "Wayspeaker Bodyguard",
@@ -2037,7 +2186,8 @@
           "role": "transient native Rust test ELF; no FFI/cdylib consumer; later warm builds may replace this compilation output"
         }
       },
-      "throughput_note": "Four locally whole-verified cards. Native compilation/execution measured above; no implementation-time rate or simulation throughput extrapolated."
+      "throughput_note": "Four locally whole-verified cards. Native compilation/execution measured above; no implementation-time rate or simulation throughput extrapolated.",
+      "engine_revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485"
     },
     {
       "name": "Mana lands, Devotees and Sunset Strikemaster",
@@ -2351,7 +2501,247 @@
       "verified_new_complete": 1,
       "verified_existing_candidates": 9,
       "reused_exact_baseline_cards": 6,
-      "test_source_sha256": "78e3c7aa05a9458a44304dae1fda362eb41fa15ae3b479e02c57cef62b3bb04d"
+      "test_source_sha256": "78e3c7aa05a9458a44304dae1fda362eb41fa15ae3b479e02c57cef62b3bb04d",
+      "engine_revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485"
+    },
+    {
+      "name": "ETB, Endure and Renew creatures",
+      "started_utc": "2026-11-04T14:28:15.255792+00:00",
+      "status": "locally_whole_card_verified",
+      "candidate_members": 8,
+      "new_candidates": 1,
+      "existing_candidates": 7,
+      "focused_filter": "creatures_",
+      "cards": [
+        {
+          "name": "Sagu Pummeler",
+          "definition": "src/card_definitions/tdm/sagu_pummeler.rs",
+          "definition_sha256": "62f80ac5a730c48d2c9a25155ca69c9b1488652800416cec5f967e86959ba2fd",
+          "provenance": "src/card_definitions/tdm/sagu_pummeler.json",
+          "provenance_sha256": "02e90b99b362f97514b97227949afd46ed0e87c83e65a4783a3a42d8c92e632c",
+          "obligations": [
+            "normal3G 4/4 reach",
+            "4G graveyard exile-source sorcery renewal",
+            "two+1 and one permanent reach counter on either creature controller",
+            "wrong zone/timing/cost/target rollback; paid source exile persists on target blink",
+            "Both counter kinds are placed in one mixed event; persistent reach counter survives cleanup."
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Salt Road Packbeast",
+          "definition": "src/card_definitions/tdm/salt_road_packbeast.rs",
+          "definition_sha256": "402837b35c245a78b7014f2e99a4d2c253bb7fcef98384d65c11343d12c3e40b",
+          "provenance": "src/card_definitions/tdm/salt_road_packbeast.json",
+          "provenance_sha256": "117e2e958d7aa80d370c0d689dba62c47ab2d492478520d8ed492c9cd96064d0",
+          "obligations": [
+            "5W affinity own creatures only; exclude source on stack, foreign creatures, noncreatures",
+            "4/3 actual ETB draw exact private top card"
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Sandskitter Outrider",
+          "definition": "src/card_definitions/tdm/sandskitter_outrider.rs",
+          "definition_sha256": "0f8f372961494afac90e92d51c45865ae1ed3579bcfd095ee0b5b65a7260880a",
+          "provenance": "src/card_definitions/tdm/sandskitter_outrider.json",
+          "provenance_sha256": "2ad9fa00727a6cb681879c2d9f3812b22e67ffd7a9d9c590263b21d8c75239a8",
+          "obligations": [
+            "3B2/1 menace",
+            "actualETB Endure2 both choices; white2/2 Spirit noflying",
+            "source departure automatic token"
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Sinkhole Surveyor",
+          "definition": "src/card_definitions/tdm/sinkhole_surveyor.rs",
+          "definition_sha256": "a7266e620d0f81bae4e949be603a2bfc08e3dbc590c6e430ff64badfcbe84c27",
+          "provenance": "src/card_definitions/tdm/sinkhole_surveyor.json",
+          "provenance_sha256": "71ee2e387a5a28c8d83c4b8610cee1aeb62a0f91d401de619d2e89794ff07898",
+          "obligations": [
+            "1B1/3 flying",
+            "actual attack lose1 then Endure1 bothchoices; white1/1 Spirit noflying"
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Skirmish Rhino",
+          "definition": "src/card_definitions/tdm/skirmish_rhino.rs",
+          "definition_sha256": "40a1120ac678afd989b8e3cf49252d179fafdbfd2fe44620fec5136c0fc38b0e",
+          "provenance": "src/card_definitions/tdm/skirmish_rhino.json",
+          "provenance_sha256": "272e150d92cb82bf4177bd614e526a49b0b83df1df322238155d209e790922ed",
+          "obligations": [
+            "WBG3/4 trample",
+            "actualETB opponentlose2 controllergain2; departure independence"
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Summit Intimidator",
+          "definition": "src/card_definitions/tdm/summit_intimidator.rs",
+          "definition_sha256": "cab1ebfb247b206914879999e70484326e86c55d6ee84eefd06b106cdfcaaa41",
+          "provenance": "src/card_definitions/tdm/summit_intimidator.json",
+          "provenance_sha256": "ee68acbc94c47dca55a4b73cd76ac0dc657c350a7355b4770006ebeacbb9d3e0",
+          "obligations": [
+            "3R4/3 reach",
+            "actualETB targets either creature controller; cannotblock exactrecipient EOT; newincarnation unaffected"
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Temur Tawnyback",
+          "definition": "src/card_definitions/tdm/temur_tawnyback.rs",
+          "definition_sha256": "6d9e9d6b946ee9ba75314d7feaa51b890d6ec1ee6bad8e72ad02d1241cfef616",
+          "provenance": "src/card_definitions/tdm/temur_tawnyback.json",
+          "provenance_sha256": "e4b638bd0700c82bf4a2f50ab825811068c209589215c7f97fc8173d87e168c2",
+          "obligations": [
+            "all8 monohybrid payment variants for2/G2/U2/R",
+            "4/3 actualETB exact draw before discard; actorprivacy and raw/index/restore root"
+          ],
+          "status": "locally_whole_card_verified"
+        },
+        {
+          "name": "Watcher of the Wayside",
+          "definition": "src/card_definitions/tdm/watcher_of_the_wayside.rs",
+          "definition_sha256": "0ab8223e4261661147820f5bff26537e42d80a829009e02e804e8833d416bf8e",
+          "provenance": "src/card_definitions/tdm/watcher_of_the_wayside.json",
+          "provenance_sha256": "c23230aab91b5f3e7eaf13c7ff32dc98b961aba2a3ccbd8b567b3fa3a32370ee",
+          "obligations": [
+            "3 colorless artifact3/2",
+            "actualETB targeteitherplayer mills2 exactcards then controllergain2; shortlibrary actualavailable"
+          ],
+          "status": "locally_whole_card_verified"
+        }
+      ],
+      "focused_scenario_groups": [
+        "creatures_sagu_pummeler_casts_four_four_reach_and_renews_two_plus_one_and_one_reach_counter",
+        "creatures_sagu_renew_rejects_wrong_zone_timing_cost_target_and_never_rebinds_blinked_targets",
+        "creatures_packbeast_affinity_counts_only_controlled_creatures_then_draws_the_actual_top_card",
+        "creatures_outrider_and_surveyor_choose_exact_endure_sizes_and_surveyor_loses_one_on_attack",
+        "creatures_outrider_departure_still_creates_exact_spirit_and_endure_branches_are_owned",
+        "creatures_skirmish_rhino_drains_the_opponent_after_its_source_leaves",
+        "creatures_summit_intimidator_stops_only_the_chosen_incarnation_blocking_until_cleanup",
+        "creatures_temur_tawnyback_all_monohybrid_payments_draw_before_a_private_discard",
+        "creatures_watcher_mills_either_player_exactly_two_or_a_short_library_and_gains_controller_two"
+      ],
+      "shared_proofs": [
+        "Accepted shared Renew/counter placement and keyword engine semantics; actual Sagu places both counter kinds and pays exact source-exile/4G sorcery cost.",
+        "Accepted fixed Endure current-controller/LKI and exact token recipe behavior; actual Outrider/Surveyor trigger and amounts have separate fresh outcomes.",
+        "Private discard and owned raw/index/restore machinery already witnessed by actual Winternight Stories; Tawnyback separately proves actual draw-before-discard and all printed monohybrid payment combinations."
+      ],
+      "new_state_or_schema": false,
+      "engine_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "authoring_compatibility_commit": "95a6acbc9e69d7e838b5b18004ecd3ebe97f6d18",
+      "engine_warm": {
+        "report": "<cache>/rustmage-tdm/engine83-author-baselines-1793808271665788619/s_z/core-warm-terminal.json",
+        "sha256": "b0e035b4b430a31f9d5cce4da06bcdb7e1ae678372f58f0fcde2220cb1eeff31",
+        "seconds": 102.67623348295456,
+        "profile": "opt1/testfalse/features[test-support]"
+      },
+      "finished_utc": "2026-11-04T16:24:53.203600+00:00",
+      "focused_execution": [
+        {
+          "stage": "gated-first",
+          "report": "<cache>/rustmage-tdm/cards-s-z-creatures-engine83-gated-first/native.json",
+          "report_sha256": "6d1d76fe16a27eb6cdbf6d74c0c946e986f77ed4dee80ab89a213a69d085f590",
+          "terminal": true,
+          "success": true,
+          "passed": 9,
+          "expected_groups": 9,
+          "failed": [],
+          "compile_seconds": 15.707040843961295,
+          "execution_seconds": 0.024361463962122798,
+          "wall_seconds": 15.73205367900664,
+          "compile_command": [
+            "cargo",
+            "test",
+            "-p",
+            "rustmage",
+            "--test",
+            "tdm_cards_s_z",
+            "--no-run",
+            "--message-format=json"
+          ],
+          "compile_log": "<cache>/rustmage-tdm/cards-s-z-creatures-engine83-gated-first/native-compile.log",
+          "compile_log_sha256": "5003974b51e147a7007e3304bf4effb236a9a7ed0cff88b27eb10553846ddb24",
+          "execution_log": "<cache>/rustmage-tdm/cards-s-z-creatures-engine83-gated-first/native-execution-0.log",
+          "execution_log_sha256": "8c92a9b7ff0babf9f5aea9e2a4810c5ff6149678234b59a6553a4d7b13525190",
+          "core_fresh": [
+            true
+          ],
+          "artifact_policy": "Native Rust ELF/rlib mode. Mutable Cargo ELFs are transient completed compilation outputs; immutable report/log hashes retained, no preserved/required cdylib claim."
+        },
+        {
+          "stage": "mixed-gated",
+          "report": "<cache>/rustmage-tdm/cards-s-z-creatures-engine83-mixed-gated/native.json",
+          "report_sha256": "c0c02df4e92e58dd85319757890c7448188d5b32b9817449f53a1b1571b616c7",
+          "terminal": true,
+          "success": true,
+          "passed": 9,
+          "expected_groups": 9,
+          "failed": [],
+          "compile_seconds": 4.379155631992035,
+          "execution_seconds": 0.04296825302299112,
+          "wall_seconds": 4.422716537024826,
+          "compile_command": [
+            "cargo",
+            "test",
+            "-p",
+            "rustmage",
+            "--test",
+            "tdm_cards_s_z",
+            "--no-run",
+            "--message-format=json"
+          ],
+          "compile_log": "<cache>/rustmage-tdm/cards-s-z-creatures-engine83-mixed-gated/native-compile.log",
+          "compile_log_sha256": "d79df3100fa9ea8aae7d186521460242b18862b647688a3201dfa06581e0f476",
+          "execution_log": "<cache>/rustmage-tdm/cards-s-z-creatures-engine83-mixed-gated/native-execution-0.log",
+          "execution_log_sha256": "8c92a9b7ff0babf9f5aea9e2a4810c5ff6149678234b59a6553a4d7b13525190",
+          "core_fresh": [
+            true
+          ],
+          "artifact_policy": "Native Rust ELF/rlib mode. Mutable Cargo ELFs are transient completed compilation outputs; immutable report/log hashes retained, no preserved/required cdylib claim."
+        },
+        {
+          "stage": "admitted-all",
+          "report": "<cache>/rustmage-tdm/cards-s-z-creatures-engine83-admitted-all/native.json",
+          "report_sha256": "c41c23d386e65ac218c7dfebefabb0a520fd1370ece098d2e5ee511d1c1dff86",
+          "terminal": true,
+          "success": true,
+          "passed": 24,
+          "expected_groups": 24,
+          "failed": [],
+          "compile_seconds": 4.275453057023697,
+          "execution_seconds": 0.03845840098802,
+          "wall_seconds": 4.314878918987233,
+          "compile_command": [
+            "cargo",
+            "test",
+            "-p",
+            "rustmage",
+            "--test",
+            "tdm_cards_s_z",
+            "--no-run",
+            "--message-format=json"
+          ],
+          "compile_log": "<cache>/rustmage-tdm/cards-s-z-creatures-engine83-admitted-all/native-compile.log",
+          "compile_log_sha256": "fac8b87528c23986fb21d4efc646ae7a5849529755d071f02064abbb5bbe55fa",
+          "execution_log": "<cache>/rustmage-tdm/cards-s-z-creatures-engine83-admitted-all/native-execution-0.log",
+          "execution_log_sha256": "1ce595ff0aeb28a000fd37e9231f7d975d0b4101ffd461fccb76f7c22691ce02",
+          "core_fresh": [
+            true
+          ],
+          "artifact_policy": "Native Rust ELF/rlib mode. Mutable Cargo ELFs are transient completed compilation outputs; immutable report/log hashes retained, no preserved/required cdylib claim."
+        }
+      ],
+      "verified_new_complete": 1,
+      "verified_existing_candidates": 7,
+      "review_corrections": [
+        "Initial gated9/9 passed distinct counter amounts, but integrator review found Sagu should use the existing mixed counter-placement primitive for one event. Replaced two PutCounters instructions with one PutCountersMixed [(PlusOne,2),(Reach,1)] before admission. Existing accepted mixed-placement/first-recipient engine contracts apply; no engine change.",
+        "Corrected mixed-event gated9/9 passed while Sagu complete=false. Integrator then promoted Sagu, regenerated and checked5488definitions/2534sourceblobs, then reran all24 S\u2013Z target scenarios through ordinary admitted loading:24/24 PASS."
+      ],
+      "test_source_sha256": "70fae199c47da942b9c1c91a407a6115c65f090bfac0a32272551a71267b4f2d"
     }
   ],
   "first_family_finished_utc": "2026-11-04T14:05:57.547813+00:00"

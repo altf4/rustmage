@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fdc806d8d1b444db5893c4c69cb815c94fc657d3c61c22cab717eaba339ef3b0"
   },
-  "physical_metadata_sha256": "080353426b9160704c0d3173daee835f5ca07d80be7046957c8f04034a4f8482"
+  "physical_metadata_sha256": "080353426b9160704c0d3173daee835f5ca07d80be7046957c8f04034a4f8482",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TemurTawnyback.java",
+  "java_sha256": "caed60cbea0d32cf14ea135ef1af11b76f8402c95e8e914db70e7d121cb21dc4",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    }
+  ],
+  "rules_tests": "tests/tdm_cards_s_z.rs::creatures_"
 }
