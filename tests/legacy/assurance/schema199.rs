@@ -451,6 +451,7 @@ fn instruction_players_supported(instruction: Instruction) -> bool {
         Instruction::EnsureGoblinArmyFor(player)
         | Instruction::LoseLifeTargetCardManaValue(player)
         | Instruction::LoseHalfLife(player)
+        | Instruction::LoseHalfLifeRoundedUp(player)
         | Instruction::LoseGame(player)
         | Instruction::LoseGainedLife(player)
         | Instruction::DamageDiscardAmount(player)
@@ -2367,4 +2368,20 @@ fn prior_198_keeps_real_burglars_plot_single_group_capture_eligible() {
     assert!(matches!(packet.program().unwrap().0, TargetPlan::Single(_)));
     assert!(packet_supported(packet));
     assert!(prior_schema199_state_supported(&game.state));
+}
+
+#[test]
+fn half_life_round_up_retains_the_existing_player_set_compatibility_domain() {
+    use card_rules::PlayerSet;
+    for player in [PlayerSet::Controller, PlayerSet::Opponent, PlayerSet::Each] {
+        assert!(instruction_players_supported(
+            Instruction::LoseHalfLifeRoundedUp(player)
+        ));
+    }
+    assert!(!instruction_players_supported(
+        Instruction::LoseHalfLifeRoundedUp(PlayerSet::SpeedBelow(4))
+    ));
+    assert!(!instruction_players_supported(Instruction::LoseHalfLife(
+        PlayerSet::SpeedBelow(4)
+    )));
 }

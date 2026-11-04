@@ -5834,6 +5834,14 @@ impl Game {
                         self.lose_life(player, self.state.players[player.index()].life.max(0) / 2);
                     }
                 }
+                Instruction::LoseHalfLifeRoundedUp(players) => {
+                    for player in self.program_players(players, &item) {
+                        // CR107.1b: negative calculated loss is zero. Avoid
+                        // overflowing at i128::MAX when rounding an odd half up.
+                        let life = self.state.players[player.index()].life.max(0);
+                        self.lose_life(player, life / 2 + life % 2);
+                    }
+                }
                 Instruction::ChooseHalf { kind } => {
                     if self.start_half_choice(&item, kind) {
                         return;

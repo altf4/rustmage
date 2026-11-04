@@ -1963,6 +1963,8 @@ pub enum Instruction {
     },
     DamageCannotBePreventedThisTurn,
     LoseHalfLife(PlayerSet),
+    /// Lose half of each selected player's nonnegative life total, rounded up.
+    LoseHalfLifeRoundedUp(PlayerSet),
     CopyTargetSpell {
         group: u16,
         retarget: bool,
