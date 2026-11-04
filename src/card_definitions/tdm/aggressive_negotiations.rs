@@ -12,10 +12,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             },
         ]),
         &[
-            Instruction::RevealTargetHandChoose {
-                kinds: u16::MAX & !2,
-                exile: true,
-            },
+            Instruction::RevealTargetHandExileNonland,
             Instruction::SelectGroup(1),
             Instruction::PutCounters {
                 subject: Subject::Targets,

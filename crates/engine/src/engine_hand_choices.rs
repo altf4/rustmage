@@ -16,6 +16,8 @@ pub enum HandChoiceKind {
     ExileRevealedKinds {
         kinds: u16,
     },
+    /// Mandatory permanent unlinked exile of a card with no land type.
+    ExileRevealedNonland,
     ExileRevealedOrCreature,
     ExileRevealedLinked,
     ExileRevealedLinkedOptional,
@@ -360,6 +362,35 @@ impl Game {
         });
         true
     }
+    pub(super) fn start_revealed_hand_exile_nonland(&mut self, item: &SpellView) -> bool {
+        let Some(victim) = self.program_players(PlayerSet::Targeted, item).next() else {
+            return false;
+        };
+        let hand = self.exact_hand(victim);
+        // A hand containing only lands must still be revealed in its entirety.
+        self.reveal_hand_refs(&hand);
+        let candidates: Vec<_> = hand
+            .into_iter()
+            .filter(|r| self.current_kinds(r.card) & 2 == 0)
+            .collect();
+        if candidates.is_empty() {
+            return false;
+        }
+        self.set_hand_interaction(HandInteraction {
+            kind: HandChoiceKind::ExileRevealedNonland,
+            actor: item.controller,
+            controller: item.controller,
+            victim: Some(victim),
+            source: item
+                .source
+                .expect("object-backed revealed hand choice")
+                .object,
+            required: 1,
+            selected: Vec::new(),
+            candidates,
+        });
+        true
+    }
     fn hand_choice_candidate(&self, interaction: &HandInteraction, reference: ObjectRef) -> bool {
         if !interaction.candidates.contains(&reference)
             || interaction.selected.contains(&reference)
@@ -382,6 +413,12 @@ impl Game {
                     && Some(o.owner) == interaction.victim
                     && o.is_card()
                     && self.current_kinds(reference.card) & kinds != 0
+            }
+            HandChoiceKind::ExileRevealedNonland => {
+                o.zone == Zone::Hand
+                    && Some(o.owner) == interaction.victim
+                    && o.is_card()
+                    && self.current_kinds(reference.card) & 2 == 0
             }
             HandChoiceKind::ExileRevealedLinked | HandChoiceKind::ExileRevealedLinkedOptional => {
                 o.zone == Zone::Hand
@@ -500,7 +537,8 @@ impl Game {
                 HandChoiceKind::DiscardRevealed | HandChoiceKind::DiscardRevealedKinds { .. } => {
                     self.discard_batch_caused(&[object.card], None, Some(interaction.controller))
                 }
-                HandChoiceKind::ExileRevealedKinds { .. } => {
+                HandChoiceKind::ExileRevealedKinds { .. }
+                | HandChoiceKind::ExileRevealedNonland => {
                     self.move_object(object.card, Zone::Exile);
                 }
                 HandChoiceKind::ExileRevealedOrCreature => {

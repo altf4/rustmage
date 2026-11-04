@@ -1474,3 +1474,232 @@ fn spells_channeled_dragonfire_targets_planeswalker_and_both_cast_routes_are_sor
         );
     }
 }
+
+// These unrelated land definitions may remain gated. Only their real printed
+// hand types are needed: install each into a hand fixture before any rules event,
+// and never play it or invoke its abilities.
+fn nonland_negative_hand_fixture(g: &mut Game, p: Player, name: &str) -> CardId {
+    assert!(["Scene of the Crime", "Valgavoth's Lair"].contains(&name));
+    let id = put(g, p, "Bear Cub", Zone::Hand);
+    g.state.objects[id as usize].card = Card::from_name(name).unwrap();
+    assert_ne!(g.current_kinds(id) & 2, 0);
+    id
+}
+fn nonland_negative_lands(g: &mut Game, p: Player) -> [CardId; 3] {
+    let ordinary = put(g, p, "Mountain", Zone::Hand);
+    let artifact = nonland_negative_hand_fixture(g, p, "Scene of the Crime");
+    let enchantment = nonland_negative_hand_fixture(g, p, "Valgavoth's Lair");
+    assert_ne!(g.current_kinds(artifact) & 16, 0);
+    assert_ne!(g.current_kinds(enchantment) & 32, 0);
+    [ordinary, artifact, enchantment]
+}
+fn assert_revealed_hand_to_both(g: &Game, cards: &[CardId]) {
+    for viewer in [Player::P0, Player::P1] {
+        let observation = g.observe(viewer);
+        for &card in cards {
+            let reference = g.object_ref(card);
+            assert!(observation.known_hand.contains(&reference));
+            assert!(observation.objects.iter().any(|o| o.reference == reference));
+        }
+    }
+}
+
+#[test]
+fn spells_aggressive_negotiations_nonland_filter_excludes_artifact_and_enchantment_lands() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let lands = nonland_negative_lands(&mut g, p.other());
+        let nonland = put(&mut g, p.other(), "Shock", Zone::Hand);
+        for &id in lands.iter().chain([&nonland]) {
+            assert!(!g.observe(p).objects.iter().any(|o| o.id == id));
+        }
+        spell_card(
+            &mut g,
+            p,
+            "Aggressive Negotiations",
+            &[Target::Player(p.other()), Target::Card(own)],
+        );
+        ready(&mut g, |g| {
+            matches!(g.state.pending, Pending::HandCardChoice { .. })
+        });
+        let mut hand = lands.to_vec();
+        hand.push(nonland);
+        assert_revealed_hand_to_both(&g, &hand);
+        let view = g.observe(p).hand_choice.unwrap();
+        assert_eq!(view.kind, HandChoiceKind::ExileRevealedNonland);
+        assert_eq!(view.actor, p);
+        assert_eq!(view.victim, Some(p.other()));
+        assert_eq!(view.required, 1);
+        assert!(!view.optional);
+        assert!(view.inspected_cards.is_none());
+        assert_eq!(view.candidates, vec![g.object_ref(nonland)]);
+        assert!(g.observe(p.other()).hand_choice.is_none());
+        reject(&mut g, Action::ChooseHandCard { object: None });
+        for &id in &lands {
+            let object = g.object_ref(id);
+            reject(
+                &mut g,
+                Action::ChooseHandCard {
+                    object: Some(object),
+                },
+            );
+        }
+        let before = g.snapshot();
+        let revision = g.revision();
+        let object = g.object_ref(nonland);
+        assert_eq!(
+            g.apply(
+                p.other(),
+                Action::ChooseHandCard {
+                    object: Some(object)
+                }
+            ),
+            Err(Error::WrongActor)
+        );
+        assert_eq!(g.snapshot(), before);
+        assert_eq!(g.revision(), revision);
+        hand_pick(&mut g, nonland);
+        drain(&mut g);
+        assert_eq!(g.object_view(nonland).zone, Zone::Exile);
+        for &id in &lands {
+            assert_eq!(g.object_view(id).zone, Zone::Hand);
+        }
+        assert_eq!(g.counter_count(own, CounterKind::PlusOne), 1);
+        assert_eq!(
+            g.state.players[p.other().index()].cards_discarded_this_turn,
+            0
+        );
+    }
+}
+
+#[test]
+fn spells_aggressive_negotiations_all_land_hand_is_revealed_and_counter_group_resumes() {
+    for p in [Player::P0, Player::P1] {
+        for counter in [false, true] {
+            let mut g = scenario(p);
+            let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let lands = nonland_negative_lands(&mut g, p.other());
+            let targets = if counter {
+                vec![Target::Player(p.other()), Target::Card(own)]
+            } else {
+                vec![Target::Player(p.other())]
+            };
+            let spell = spell_card(&mut g, p, "Aggressive Negotiations", &targets);
+            drain(&mut g);
+            assert_revealed_hand_to_both(&g, &lands);
+            for viewer in [p, p.other()] {
+                assert!(g.observe(viewer).hand_choice.is_none());
+            }
+            for id in lands {
+                assert_eq!(g.object_view(id).zone, Zone::Hand);
+            }
+            assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+            assert_eq!(
+                g.counter_count(own, CounterKind::PlusOne),
+                u64::from(counter)
+            );
+        }
+    }
+}
+
+#[test]
+fn spells_aggressive_negotiations_nonland_choice_is_exact_and_source_independent() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let own = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let stale = put(&mut g, p.other(), "Shock", Zone::Hand);
+        let survivor = put(&mut g, p.other(), "Divination", Zone::Hand);
+        let spell = spell_card(
+            &mut g,
+            p,
+            "Aggressive Negotiations",
+            &[Target::Player(p.other()), Target::Card(own)],
+        );
+        ready(&mut g, |g| {
+            matches!(g.state.pending, Pending::HandCardChoice { .. })
+        });
+        let old = g.object_ref(stale);
+        g.move_object(stale, Zone::Graveyard);
+        g.move_object(stale, Zone::Hand);
+        let new = g.object_ref(stale);
+        assert_ne!(old, new);
+        for object in [old, new] {
+            reject(
+                &mut g,
+                Action::ChooseHandCard {
+                    object: Some(object),
+                },
+            );
+        }
+        // The pending packet owns its chooser and continuation even if the source
+        // incarnation departs while this owned resolving state is suspended.
+        g.move_object(spell, Zone::Exile);
+        g.move_object(spell, Zone::Hand);
+        assert_eq!(
+            g.observe(p).hand_choice.unwrap().candidates,
+            vec![g.object_ref(survivor)]
+        );
+        hand_pick(&mut g, survivor);
+        drain(&mut g);
+        assert_eq!(g.object_view(survivor).zone, Zone::Exile);
+        assert_eq!(g.object_view(stale).zone, Zone::Hand);
+        assert_eq!(g.object_view(spell).zone, Zone::Hand);
+        assert_eq!(g.counter_count(own, CounterKind::PlusOne), 1);
+    }
+}
+
+#[test]
+fn spells_aggressive_negotiations_nonland_choice_owns_raw_index_siblings_and_restore() {
+    for p in [Player::P0, Player::P1] {
+        let mut parent = scenario(p);
+        let own = put(&mut parent, p, "Bear Cub", Zone::Battlefield);
+        let lands = nonland_negative_lands(&mut parent, p.other());
+        let first = put(&mut parent, p.other(), "Shock", Zone::Hand);
+        let second = put(&mut parent, p.other(), "Divination", Zone::Hand);
+        spell_card(
+            &mut parent,
+            p,
+            "Aggressive Negotiations",
+            &[Target::Player(p.other()), Target::Card(own)],
+        );
+        ready(&mut parent, |g| {
+            matches!(g.state.pending, Pending::HandCardChoice { .. })
+        });
+        let action = Action::ChooseHandCard {
+            object: Some(parent.object_ref(first)),
+        };
+        let index = parent
+            .legal_actions()
+            .iter()
+            .position(|a| *a == action)
+            .unwrap();
+        let saved = parent.snapshot();
+        let revision = parent.revision();
+        let mut raw = parent.clone();
+        let mut indexed = parent.clone();
+        let mut sibling = parent.clone();
+        drop(parent);
+        act(&mut raw, action.clone());
+        indexed.apply_index(p, revision, index).unwrap();
+        hand_pick(&mut sibling, second);
+        for child in [&mut raw, &mut indexed, &mut sibling] {
+            drain(child);
+        }
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        assert_eq!(raw.object_view(first).zone, Zone::Exile);
+        assert_eq!(raw.object_view(second).zone, Zone::Hand);
+        assert_eq!(sibling.object_view(first).zone, Zone::Hand);
+        assert_eq!(sibling.object_view(second).zone, Zone::Exile);
+        for child in [&raw, &indexed, &sibling] {
+            assert_eq!(child.counter_count(own, CounterKind::PlusOne), 1);
+            for id in lands {
+                assert_eq!(child.object_view(id).zone, Zone::Hand);
+            }
+        }
+        indexed.restore(&saved).unwrap();
+        act(&mut indexed, action);
+        drain(&mut indexed);
+        assert_eq!(indexed.snapshot(), raw.snapshot());
+    }
+}

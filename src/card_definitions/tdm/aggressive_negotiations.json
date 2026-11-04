@@ -3,7 +3,7 @@
   "catalogue_id": 97,
   "oracle_id": "c469133e-174d-476b-b135-bbf15e415e72",
   "facts_sha256": "c16cd881646b9a0dbd415759f2b39e118bf6acae0fecff0f3000087817c9baf1",
-  "complete": true,
+  "complete": false,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7bd275767edfe0381970ac4815f081011841164f3d1475413a979c4795d05195"
@@ -24,5 +24,7 @@
       "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
     }
   ],
-  "remaining_obligations": []
+  "remaining_obligations": [
+    "Shared nonland hand-exile eligibility must reject artifact lands and enchantment lands; focused gated execution of the repair is pending."
+  ]
 }

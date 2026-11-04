@@ -5320,6 +5320,11 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::RevealTargetHandExileNonland => {
+                    if self.start_revealed_hand_exile_nonland(&item) {
+                        return;
+                    }
+                }
                 Instruction::RevealHandDiscard { excluded_kinds } => {
                     let Some(victim) = self.program_players(PlayerSet::Targeted, &item).next()
                     else {

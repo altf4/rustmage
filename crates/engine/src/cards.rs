@@ -2375,6 +2375,9 @@ pub enum Instruction {
         kinds: u16,
         exile: bool,
     },
+    /// Reveal the targeted player's entire hand, then exile one nonland if able.
+    /// The packet controller chooses; any land type excludes a card from selection.
+    RevealTargetHandExileNonland,
     RevealHandDiscard {
         excluded_kinds: u16,
     },
