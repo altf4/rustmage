@@ -18,7 +18,9 @@ REQUIRED = (
     'examples/tdm_games.rs', 'tests/tdm_complete_games.rs',
     'examples/support/tdm_game_decks.json', 'data/catalogue-identities.json',
     'data/standard/cards.json', 'data/supplemental/card-oracle-facts.json',
-    'data/sets/tdm.json',
+    'data/sets/tdm.json', 'data/observation-schema.txt',
+    'data/card-names.txt', 'data/land-card-names.txt',
+    'data/interchangeable-card-names.tsv', 'data/outside-card-names.tsv',
 )
 OPTIONAL = ('build.rs', '.cargo/config.toml', '.cargo/config',
             'rust-toolchain', 'rust-toolchain.toml')

@@ -314,13 +314,18 @@
     "crates/engine/src/shared_vec.rs": "066bd048a0be11c390708f7554a5ea6809ec52d4e493662df11b1d241404d808",
     "crates/test-access/Cargo.toml": "ee562becafc036579dfad483a4744c49906ba19e4cab4d240b295f86cbe87060",
     "crates/test-access/src/lib.rs": "e16cd827145a2a4758824d82a56f8aba2a12a788f520af6bfcc6c135433fc2a4",
+    "data/card-names.txt": "885dcb75ced43678c01a69b231eb0e9fe91a13a643734882619486b396739ae8",
     "data/catalogue-identities.json": "34173dc989315ac5a886ebf67728311b4509fa2bdd0be8979e04c5beb8103d9c",
+    "data/interchangeable-card-names.tsv": "1ae09acb7ba69f6cea08dd643c98142e460b551aff16548a6f64fcc0420870e5",
+    "data/land-card-names.txt": "c82ae9370eea240218eb677f0500448b3222edb4df7806698e6df0fd65d41f6c",
+    "data/observation-schema.txt": "14993db977ff54ff86b0c447cbf330d1718c108468ea0f0fe2ec1fbfdb73af2b",
+    "data/outside-card-names.tsv": "092306b92528fc2549e99f121934d56db5a5ab9071d2ec637e7ba09715ef78c8",
     "data/sets/tdm.json": "33f623432f83fa678b7ca5e08868c1511b54bff807d7a65fbb45624ebfec8cf9",
     "data/standard/cards.json": "6d187ee001d6284af816d4da7ef1a811f6316572616c049f492b4a96a87351c0",
     "data/supplemental/card-oracle-facts.json": "2b307ba017fec770dca27ced96ad312d28c75f4b8ba3844ca2a69e900e4a77aa",
     "examples/support/tdm_game_decks.json": "2daf20c80bb409b7f241680b990b39a1177101dd45e35eaa48fffc913d5fb12e",
     "examples/tdm_games.rs": "d5ad8e7893c4ff6b5c938fa97d806e78723f085895ba3c5a20fc5a3c5f0a07f4",
-    "scripts/tdm_execution_inputs.py": "58aeaeab56cf80b64ae9c62de9e57f87e3028e412f403a9884c04048c402d074",
+    "scripts/tdm_execution_inputs.py": "adc52d58da8ca58c1528238a4cd6585ece9e686eb1bf6044c0afd66b6d7d7768",
     "src/bin/benchmark.rs": "132e6732f4c2c608fa220caa4f7764ce79af3a38f58e25353182fa13b8665ed2",
     "src/bin/coverage.rs": "281e3fefae34d3134bef6fa1c9a779fc364a8a11b6cef26d1f970c55e553ce45",
     "src/bin/rustmage.rs": "d3a31dac86212f72adacb2b3bd5ae0247fddc915aa4a76e052108322f116f3a2",
@@ -11310,5 +11315,5 @@
   },
   "schema": 1,
   "scope": "Workspace library Rust, provenance and build inputs plus TDM acceptance entrypoints; shared harness is independently self-hashed.",
-  "source_count": 11307
+  "source_count": 11312
 }

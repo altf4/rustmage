@@ -34,6 +34,28 @@ class ExecutionInputs(unittest.TestCase):
         self.assertNotEqual(before, encoded(self.root))
         self.assertEqual(catalogue, (self.root/'src/generated/catalogue.rs').read_bytes())
 
+    def test_schema_only_change_invalidates_identity_with_same_catalogue(self):
+        self.put('data/observation-schema.txt', '201\n')
+        before = encoded(self.root)
+        catalogue = (self.root/'src/generated/catalogue.rs').read_bytes()
+        self.put('data/observation-schema.txt', '202\n')
+        self.assertNotEqual(before, encoded(self.root))
+        self.assertEqual(catalogue, (self.root/'src/generated/catalogue.rs').read_bytes())
+
+    def test_every_current_external_compiled_data_input_is_bound(self):
+        names = ('data/observation-schema.txt', 'data/card-names.txt',
+                 'data/land-card-names.txt', 'data/interchangeable-card-names.tsv',
+                 'data/outside-card-names.tsv')
+        files = payload(self.root)['files']
+        for name in names:
+            with self.subTest(name=name):
+                self.assertIn(name, files)
+                before = encoded(self.root)
+                old = (self.root/name).read_text()
+                self.put(name, old+' changed')
+                self.assertNotEqual(before, encoded(self.root))
+                self.put(name, old)
+
     def test_pair_provenance_and_build_profile_are_bound(self):
         before = encoded(self.root)
         self.put('src/card_definitions/tdm/example.json', '{"complete":false}')
