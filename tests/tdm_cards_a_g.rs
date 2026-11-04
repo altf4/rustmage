@@ -4221,3 +4221,533 @@ fn growth_dragonstorm_return_clause_includes_its_own_entry_when_it_is_a_dragon()
         }
     }
 }
+
+fn announce_omen(g: &mut Game, p: Player, name: &str, targets: &[Target]) -> CardId {
+    let source = put(g, p, name, Zone::Hand);
+    act(g, Action::AnnounceOmen { card: source });
+    for &target in targets {
+        act(g, Action::ChooseTarget { target });
+    }
+    if g.legal_actions().contains(&Action::FinishTargets) {
+        act(g, Action::FinishTargets);
+    }
+    pay(g);
+    source
+}
+
+#[test]
+fn omens_bloomvine_actual_creature_self_other_own_dragon_and_token_entries_each_gain_three() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Bloomvine Regent // Claim Territory", Zone::Hand);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 2, 3];
+        cast(&mut g, source, None);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        drain(&mut g);
+        assert_eq!(stats(&g, source), (4, 5));
+        assert_eq!(g.keywords(source), Keywords::FLYING);
+        assert_eq!(g.state.players[p.index()].life, 23);
+        let enemy = put(&mut g, p.other(), "Shivan Dragon", Zone::Hand);
+        g.move_object(enemy, Zone::Battlefield);
+        let not_dragon = put(&mut g, p, "Bear Cub", Zone::Hand);
+        g.move_object(not_dragon, Zone::Battlefield);
+        drain(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 23);
+        let dragon = put(&mut g, p, "Shivan Dragon", Zone::Hand);
+        g.state.players[p.index()].mana = [8; 6];
+        cast(&mut g, dragon, None);
+        drain(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 26);
+        put(&mut g, p, "Dragonback Assault", Zone::Battlefield);
+        let land = put(&mut g, p, "Forest", Zone::Hand);
+        act(&mut g, Action::PlayLand { card: land });
+        drain(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 29);
+        assert_eq!(g.state.players[p.other().index()].life, 20);
+    }
+}
+
+#[test]
+fn omens_dirgur_actual_creature_cost_flying_and_ward_two_payment_or_counter() {
+    for p in [Player::P0, Player::P1] {
+        for paid in [false, true] {
+            let mut g = scenario(p);
+            let source = put(
+                &mut g,
+                p,
+                "Dirgur Island Dragon // Skimming Strike",
+                Zone::Hand,
+            );
+            g.state.players[p.index()].mana = [0, 1, 0, 0, 0, 5];
+            cast(&mut g, source, None);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            drain(&mut g);
+            assert_eq!(stats(&g, source), (4, 4));
+            assert_eq!(g.keywords(source), Keywords::FLYING);
+            act(&mut g, Action::Pass);
+            let spell = put(&mut g, p.other(), "Unsummon", Zone::Hand);
+            cast(&mut g, spell, Some(Target::Card(source)));
+            ready(&mut g, |g| {
+                matches!(g.state.pending, Pending::ResolutionMana { .. })
+            });
+            assert_eq!(g.actor(), Some(p.other()));
+            g.state.players[p.other().index()].mana = [0, 0, 0, 0, 0, 2];
+            if paid {
+                choose(&mut g, |a| matches!(a, Action::PayResolutionMana { .. }));
+                assert_eq!(g.state.players[p.other().index()].mana, [0; 6]);
+            } else {
+                act(&mut g, Action::DeclineResolutionMana);
+            }
+            drain(&mut g);
+            assert_eq!(
+                g.object_view(source).zone,
+                if paid { Zone::Hand } else { Zone::Battlefield }
+            );
+        }
+    }
+}
+
+#[test]
+fn omens_disruptive_actual_creature_optionally_destroys_any_artifact_or_enchantment() {
+    for p in [Player::P0, Player::P1] {
+        for (target_name, destroy) in [
+            (None, false),
+            (Some("Short Bow"), false),
+            (Some("Short Bow"), true),
+            (Some("Anthem of Champions"), true),
+        ] {
+            let mut g = scenario(p);
+            let target = target_name.map(|name| put(&mut g, p.other(), name, Zone::Battlefield));
+            let invalid = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let source = put(
+                &mut g,
+                p,
+                "Disruptive Stormbrood // Petty Revenge",
+                Zone::Hand,
+            );
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 4];
+            cast(&mut g, source, None);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            if let Some(id) = target {
+                ready(&mut g, |g| {
+                    matches!(g.state.pending, Pending::Targets { .. })
+                });
+                reject(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(invalid),
+                    },
+                );
+                if destroy {
+                    act(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Card(id),
+                        },
+                    );
+                }
+                if g.legal_actions().contains(&Action::FinishTargets) {
+                    act(&mut g, Action::FinishTargets);
+                }
+            }
+            drain(&mut g);
+            assert_eq!(stats(&g, source), (3, 3));
+            assert_eq!(g.keywords(source), Keywords::FLYING);
+            if let Some(id) = target {
+                assert_eq!(
+                    g.object_view(id).zone,
+                    if destroy {
+                        Zone::Graveyard
+                    } else {
+                        Zone::Battlefield
+                    }
+                );
+            }
+            assert_eq!(g.object_view(invalid).zone, Zone::Battlefield);
+        }
+    }
+}
+
+#[test]
+fn omens_feral_actual_creature_exiles_up_to_two_from_one_graveyard_with_native_flying_deathtouch() {
+    for p in [Player::P0, Player::P1] {
+        for count in 0..=2 {
+            let mut g = scenario(p);
+            let a = put(&mut g, p.other(), "Forest", Zone::Graveyard);
+            let b = put(&mut g, p.other(), "Bear Cub", Zone::Graveyard);
+            let other = put(&mut g, p, "Forest", Zone::Graveyard);
+            let source = put(&mut g, p, "Feral Deathgorger // Dusk Sight", Zone::Hand);
+            g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 5];
+            cast(&mut g, source, None);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            ready(&mut g, |g| {
+                matches!(g.state.pending, Pending::Targets { .. })
+            });
+            if count > 0 {
+                act(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(a),
+                    },
+                );
+                reject(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(other),
+                    },
+                );
+                if count == 2 {
+                    act(
+                        &mut g,
+                        Action::ChooseTarget {
+                            target: Target::Card(b),
+                        },
+                    );
+                }
+            }
+            if g.legal_actions().contains(&Action::FinishTargets) {
+                act(&mut g, Action::FinishTargets);
+            }
+            drain(&mut g);
+            assert_eq!(stats(&g, source), (3, 5));
+            assert_eq!(
+                g.keywords(source),
+                Keywords::FLYING.union(Keywords::DEATHTOUCH)
+            );
+            assert_eq!(
+                g.object_view(a).zone,
+                if count > 0 {
+                    Zone::Exile
+                } else {
+                    Zone::Graveyard
+                }
+            );
+            assert_eq!(
+                g.object_view(b).zone,
+                if count == 2 {
+                    Zone::Exile
+                } else {
+                    Zone::Graveyard
+                }
+            );
+        }
+    }
+}
+
+#[test]
+fn omens_claim_territory_searches_only_basic_forests_and_assigns_one_tapped_then_hand_before_shuffling_parent()
+ {
+    for p in [Player::P0, Player::P1] {
+        for count in 0..=2 {
+            let mut g = scenario(p);
+            let a = put(&mut g, p, "Forest", Zone::Library);
+            let b = put(&mut g, p, "Forest", Zone::Library);
+            let wrong_basic = put(&mut g, p, "Plains", Zone::Library);
+            let nonbasic = put(&mut g, p, "Lush Portico", Zone::Library);
+            g.state.players[p.index()].mana = [0, 0, 0, 0, 1, 2];
+            let source = announce_omen(&mut g, p, "Bloomvine Regent // Claim Territory", &[]);
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+            ready(&mut g, |g| {
+                matches!(g.state.pending, Pending::EffectSearch { .. })
+            });
+            assert!(g.observe(p).search_choice.is_some());
+            assert!(g.observe(p.other()).search_choice.is_none());
+            for card in [wrong_basic, nonbasic] {
+                reject(&mut g, Action::ChooseSearch { card });
+            }
+            for card in [a, b].into_iter().take(count) {
+                act(&mut g, Action::ChooseSearch { card });
+            }
+            let rng = g.state.rng;
+            act(&mut g, Action::FinishSearch);
+            if count == 2 {
+                assert!(
+                    g.observe(p.other()).search_distribution.is_some(),
+                    "both selected identities are public at destination choice"
+                );
+                act(&mut g, Action::ChooseSearchBattlefield { card: b });
+            }
+            drain(&mut g);
+            assert_ne!(g.state.rng, rng);
+            assert_eq!(g.object_view(source).zone, Zone::Library);
+            assert_eq!(
+                g.object_view(source).card,
+                Card::from_name("Bloomvine Regent").unwrap()
+            );
+            assert!(!g.can_play_adventure(p, source));
+            match count {
+                0 => {
+                    assert_eq!(g.object_view(a).zone, Zone::Library);
+                    assert_eq!(g.object_view(b).zone, Zone::Library);
+                }
+                1 => {
+                    assert_eq!(g.object_view(a).zone, Zone::Battlefield);
+                    assert!(g.object_view(a).tapped);
+                    assert_eq!(g.object_view(b).zone, Zone::Library);
+                }
+                _ => {
+                    assert_eq!(g.object_view(a).zone, Zone::Hand);
+                    assert_eq!(g.object_view(b).zone, Zone::Battlefield);
+                    assert!(g.object_view(b).tapped);
+                }
+            }
+        }
+    }
+}
+
+#[test]
+fn omens_skimming_and_dusk_sight_allow_no_target_or_either_players_creature_then_draw_and_shuffle()
+{
+    for p in [Player::P0, Player::P1] {
+        for (name, color, tap) in [
+            ("Dirgur Island Dragon // Skimming Strike", 1, true),
+            ("Feral Deathgorger // Dusk Sight", 2, false),
+        ] {
+            for relation in [None, Some(p), Some(p.other())] {
+                let mut g = scenario(p);
+                let target =
+                    relation.map(|owner| put(&mut g, owner, "Bear Cub", Zone::Battlefield));
+                let mut mana = one_mana(color);
+                mana[5] = 1;
+                g.state.players[p.index()].mana = mana;
+                let source = announce_omen(
+                    &mut g,
+                    p,
+                    name,
+                    &target.map(Target::Card).into_iter().collect::<Vec<_>>(),
+                );
+                assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+                let rng = g.state.rng;
+                drain(&mut g);
+                assert_eq!(g.hand_count(p), 1);
+                assert_eq!(g.object_view(source).zone, Zone::Library);
+                assert_ne!(g.state.rng, rng);
+                assert!(!g.can_play_adventure(p, source));
+                if let Some(id) = target {
+                    assert_eq!(g.object_view(id).tapped, tap);
+                    assert_eq!(g.counter_count(id, CounterKind::PlusOne), u64::from(!tap));
+                }
+            }
+        }
+    }
+}
+
+#[test]
+fn omens_all_illegal_optional_targets_prevent_draw_and_shuffle_while_zero_targets_resolve_normally()
+{
+    for p in [Player::P0, Player::P1] {
+        for name in [
+            "Dirgur Island Dragon // Skimming Strike",
+            "Feral Deathgorger // Dusk Sight",
+        ] {
+            let mut g = scenario(p);
+            let target = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let source = announce_omen(&mut g, p, name, &[Target::Card(target)]);
+            g.move_object(target, Zone::Hand);
+            g.move_object(target, Zone::Battlefield);
+            let rng = g.state.rng;
+            drain(&mut g);
+            assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+            assert_eq!(g.hand_count(p), 0);
+            assert_eq!(g.counter_count(target, CounterKind::PlusOne), 0);
+            assert!(!g.object_view(target).tapped);
+            assert_eq!(g.state.rng, rng);
+        }
+    }
+}
+
+#[test]
+fn omens_petty_revenge_uses_live_power_at_most_three_on_either_players_creature() {
+    for p in [Player::P0, Player::P1] {
+        for owner in [p, p.other()] {
+            for grow in [false, true] {
+                let mut g = scenario(p);
+                let target = put(&mut g, owner, "Hill Giant", Zone::Battlefield);
+                let too_large = put(&mut g, owner, "Shivan Dragon", Zone::Battlefield);
+                let source = put(
+                    &mut g,
+                    p,
+                    "Disruptive Stormbrood // Petty Revenge",
+                    Zone::Hand,
+                );
+                g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 1];
+                act(&mut g, Action::AnnounceOmen { card: source });
+                reject(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(too_large),
+                    },
+                );
+                act(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(target),
+                    },
+                );
+                pay(&mut g);
+                assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+                if grow {
+                    g.state.objects[target as usize].growth.power = 1;
+                }
+                drain(&mut g);
+                assert_eq!(
+                    g.object_view(target).zone,
+                    if grow {
+                        Zone::Battlefield
+                    } else {
+                        Zone::Graveyard
+                    }
+                );
+                assert_eq!(
+                    g.object_view(source).zone,
+                    if grow { Zone::Graveyard } else { Zone::Library }
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn omens_selected_face_has_its_own_spell_type_colors_value_and_timing() {
+    for p in [Player::P0, Player::P1] {
+        for (name, face, mana_value, colors, instant) in [
+            (
+                "Bloomvine Regent // Claim Territory",
+                "Claim Territory",
+                3,
+                16,
+                false,
+            ),
+            (
+                "Dirgur Island Dragon // Skimming Strike",
+                "Skimming Strike",
+                2,
+                2,
+                true,
+            ),
+            (
+                "Disruptive Stormbrood // Petty Revenge",
+                "Petty Revenge",
+                2,
+                4,
+                false,
+            ),
+            ("Feral Deathgorger // Dusk Sight", "Dusk Sight", 2, 4, false),
+        ] {
+            let mut g = scenario(p);
+            let source = put(&mut g, p, name, Zone::Hand);
+            let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            g.state.active = p.other();
+            g.state.priority = p;
+            if !instant {
+                reject(&mut g, Action::AnnounceOmen { card: source });
+                g.state.active = p;
+            }
+            act(&mut g, Action::AnnounceOmen { card: source });
+            if face == "Petty Revenge" {
+                act(
+                    &mut g,
+                    Action::ChooseTarget {
+                        target: Target::Card(target),
+                    },
+                );
+            }
+            if g.legal_actions().contains(&Action::FinishTargets) {
+                act(&mut g, Action::FinishTargets);
+            }
+            pay(&mut g);
+            let traits = g.spell_characteristics();
+            assert_eq!(traits.len(), 1);
+            assert_eq!(traits[0].face, CastFace::Omen);
+            assert_eq!(traits[0].name, face);
+            assert_eq!(traits[0].physical_card, Card::from_name(name).unwrap());
+            assert_eq!(traits[0].mana_value, mana_value);
+            assert_eq!(traits[0].colors, colors);
+            assert!(traits[0].type_line.contains("Omen"));
+            assert_eq!(traits[0].type_line.contains("Instant"), instant);
+        }
+    }
+}
+
+#[test]
+fn omens_countered_spell_faces_go_to_graveyard_without_effect_or_library_shuffle() {
+    for p in [Player::P0, Player::P1] {
+        for name in [
+            "Bloomvine Regent // Claim Territory",
+            "Dirgur Island Dragon // Skimming Strike",
+            "Disruptive Stormbrood // Petty Revenge",
+            "Feral Deathgorger // Dusk Sight",
+        ] {
+            let mut g = scenario(p);
+            let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+            let targets = if name.starts_with("Disruptive") {
+                vec![Target::Card(target)]
+            } else {
+                vec![]
+            };
+            let source = announce_omen(&mut g, p, name, &targets);
+            if g.actor() != Some(p.other()) {
+                act(&mut g, Action::Pass);
+            }
+            let negate = put(&mut g, p.other(), "Negate", Zone::Hand);
+            cast(&mut g, negate, Some(Target::Spell(source)));
+            let rng = g.state.rng;
+            drain(&mut g);
+            assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+            assert_eq!(g.object_view(target).zone, Zone::Battlefield);
+            assert_eq!(g.hand_count(p), 0);
+            assert_eq!(g.state.rng, rng);
+            assert!(!g.can_play_adventure(p, source));
+        }
+    }
+}
+
+#[test]
+fn omens_claim_split_search_owns_raw_index_siblings_and_restore_after_parent_disposal() {
+    for p in [Player::P0, Player::P1] {
+        let mut parent = scenario(p);
+        let a = put(&mut parent, p, "Forest", Zone::Library);
+        let b = put(&mut parent, p, "Forest", Zone::Library);
+        let source = announce_omen(&mut parent, p, "Bloomvine Regent // Claim Territory", &[]);
+        ready(&mut parent, |g| {
+            matches!(g.state.pending, Pending::EffectSearch { .. })
+        });
+        act(&mut parent, Action::ChooseSearch { card: a });
+        act(&mut parent, Action::ChooseSearch { card: b });
+        act(&mut parent, Action::FinishSearch);
+        let action = Action::ChooseSearchBattlefield { card: a };
+        let revision = parent.revision();
+        let index = parent
+            .legal_actions()
+            .iter()
+            .position(|a| *a == action)
+            .unwrap();
+        let saved = parent.snapshot();
+        let mut raw = parent.clone();
+        let mut indexed = parent.clone();
+        let mut sibling = parent.clone();
+        drop(parent);
+        assert_eq!(raw.apply(p.other(), action.clone()), Err(Error::WrongActor));
+        assert_eq!(raw.snapshot(), saved);
+        act(&mut raw, action.clone());
+        indexed.apply_index(p, revision, index).unwrap();
+        act(&mut sibling, Action::ChooseSearchBattlefield { card: b });
+        for child in [&mut raw, &mut indexed, &mut sibling] {
+            drain(child);
+            assert_eq!(child.object_view(source).zone, Zone::Library);
+        }
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        assert_eq!(raw.object_view(a).zone, Zone::Battlefield);
+        assert_eq!(raw.object_view(b).zone, Zone::Hand);
+        assert_eq!(sibling.object_view(a).zone, Zone::Hand);
+        assert_eq!(sibling.object_view(b).zone, Zone::Battlefield);
+        indexed.restore(&saved).unwrap();
+        assert_eq!(
+            indexed.apply_index(p, revision, index),
+            Err(Error::StaleRevision)
+        );
+        act(&mut indexed, action);
+        drain(&mut indexed);
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+    }
+}

@@ -5,7 +5,7 @@
   "engine_revision": "2660c86112362973c195bee4c1b85e1a968f9f3a",
   "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "physical_scope": 91,
-  "completion_claim": "70 locally verified whole physical cards:28 newly authored and42 previously admitted candidates independently verified. The9-card growth cohort passed17 gated cases and all96 ordinary supported-card scenarios on accepted engine86. Complete91-card ownership remains open with21remaining; full-set acceptance and final reviews pending.",
+  "completion_claim": "74 locally verified whole physical cards:28 newly authored and46 previously admitted candidates independently verified. Four Omen physical candidates including all8 faces passed11 new scenarios and full107 ordinary cases on accepted engine86. Complete91-card ownership remains open with17remaining; full-set acceptance and final reviews pending.",
   "cards": [
     {
       "name": "Adorned Crocodile",
@@ -1914,7 +1914,7 @@
       "definition": "src/card_definitions/tdm/clarion_conqueror.rs",
       "definition_sha256": "69af2d03e44d23a28c3e151c70e70200014fdd1431750afb19fedd6cee75db57",
       "kind": "newly_authored",
-      "status": "locally_verified_whole_card_pending_root_integration_full_set_acceptance_and_final_reviews",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
       "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
       "obligations": [
         {
@@ -1965,7 +1965,7 @@
       "definition": "src/card_definitions/tdm/craterhoof_behemoth.rs",
       "definition_sha256": "8180939161151160171a2badf6375e124ad70bbe6f18fa163e6d4736c419884f",
       "kind": "newly_authored",
-      "status": "locally_verified_whole_card_pending_root_integration_full_set_acceptance_and_final_reviews",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
       "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
       "obligations": [
         {
@@ -2014,7 +2014,7 @@
       "definition": "src/card_definitions/tdm/delta_bloodflies.rs",
       "definition_sha256": "ee6e46fc519394d4192bf634c9a5a1deb6369d993fe47e78a3a17f289c38c556",
       "kind": "newly_authored",
-      "status": "locally_verified_whole_card_pending_root_integration_full_set_acceptance_and_final_reviews",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
       "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
       "obligations": [
         {
@@ -2063,7 +2063,7 @@
       "definition": "src/card_definitions/tdm/fleeting_effigy.rs",
       "definition_sha256": "529a5008b194a1d694a093207d30353ccd4d73822d200748ff121473c22e5f9d",
       "kind": "newly_authored",
-      "status": "locally_verified_whole_card_pending_root_integration_full_set_acceptance_and_final_reviews",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
       "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
       "obligations": [
         {
@@ -2123,7 +2123,7 @@
       "definition": "src/card_definitions/tdm/formation_breaker.rs",
       "definition_sha256": "07799dd0ae8f2ac8106961f5abe162b230bb1b90c869dc4f0a3e7621bfb79114",
       "kind": "newly_authored",
-      "status": "locally_verified_whole_card_pending_root_integration_full_set_acceptance_and_final_reviews",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
       "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
       "obligations": [
         {
@@ -2172,7 +2172,7 @@
       "definition": "src/card_definitions/tdm/corroding_dragonstorm.rs",
       "definition_sha256": "997a22366075e2191f2858d4cc57fc232884360d1b7f8997665f731a68d89fbc",
       "kind": "newly_authored",
-      "status": "locally_verified_whole_card_pending_root_integration_full_set_acceptance_and_final_reviews",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
       "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
       "obligations": [
         {
@@ -2222,7 +2222,7 @@
       "definition": "src/card_definitions/tdm/encroaching_dragonstorm.rs",
       "definition_sha256": "9095ae54c4733021b8f57e8d9b1a49199f5f74f16ef9d290e3e8aad2b5303c16",
       "kind": "newly_authored",
-      "status": "locally_verified_whole_card_pending_root_integration_full_set_acceptance_and_final_reviews",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
       "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
       "obligations": [
         {
@@ -2274,7 +2274,7 @@
       "definition": "src/card_definitions/tdm/dragonstorm_globe.rs",
       "definition_sha256": "bd29d6f01b3c6d80b3a95160858d15882111264a1d9784ccf89a9272f3dc303b",
       "kind": "newly_authored",
-      "status": "locally_verified_whole_card_pending_root_integration_full_set_acceptance_and_final_reviews",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
       "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
       "obligations": [
         {
@@ -2322,7 +2322,7 @@
       "definition": "src/card_definitions/tdm/dragonback_assault.rs",
       "definition_sha256": "1007bdc8b8faa1529a7d614d8b74dd11d2c9413c787e29e121fa9d727dce4a76",
       "kind": "previously_admitted_candidate",
-      "status": "locally_verified_whole_card_pending_root_integration_full_set_acceptance_and_final_reviews",
+      "status": "locally_verified_whole_card_pending_full_set_acceptance_and_final_reviews",
       "engine_revision": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
       "obligations": [
         {
@@ -2363,6 +2363,197 @@
       "header_proof": "growth_dragonback_assault_paid_entry_deals_three_once_to_each_creature_and_planeswalker",
       "counted_in_verified_total": true,
       "ordinary_actual_definition_proof": "<cache>/rustmage-tdm/post86-first-proof-1793824255100003227/a_g/native.json"
+    },
+    {
+      "name": "Bloomvine Regent // Claim Territory",
+      "oracle_id": "da1e019c-2ffb-412d-90d7-f2e5e5c44c4b",
+      "definition": "src/card_definitions/tdm/bloomvine_regent.rs",
+      "definition_sha256": "2d6f51bb8a25630518426274865e6cbeab2e2ebb947e5973c5f781b2b8580516",
+      "owned_spell_face": {
+        "name": "Claim Territory",
+        "definition": "src/card_definitions/synthetic/claim_territory.rs",
+        "definition_sha256": "b77c44b45490b78b74a84308a84350dbddc9f7b44bb9cb6ec82f4f54c6a0d0fc"
+      },
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_root_integration_full_set_acceptance_and_final_reviews",
+      "counted_in_verified_total": true,
+      "obligations": [
+        {
+          "face": "Bloomvine Regent",
+          "header": {
+            "mana_cost": "{3}{G}{G}",
+            "type_line": "Creature \u2014 Dragon",
+            "power": "4",
+            "toughness": "5"
+          },
+          "printed_lines": [
+            "Flying",
+            "Whenever this creature or another Dragon you control enters, you gain 3 life."
+          ]
+        },
+        {
+          "face": "Claim Territory",
+          "header": {
+            "mana_cost": "{2}{G}",
+            "type_line": "Sorcery \u2014 Omen"
+          },
+          "printed_lines": [
+            "Search your library for up to two basic Forest cards, reveal them, put one onto the battlefield tapped and the other into your hand, then shuffle. (Also shuffle this card.)"
+          ]
+        }
+      ],
+      "tests": [
+        "omens_bloomvine_actual_creature_self_other_own_dragon_and_token_entries_each_gain_three",
+        "omens_claim_territory_searches_only_basic_forests_and_assigns_one_tapped_then_hand_before_shuffling_parent",
+        "omens_selected_face_has_its_own_spell_type_colors_value_and_timing",
+        "omens_countered_spell_faces_go_to_graveyard_without_effect_or_library_shuffle",
+        "omens_claim_split_search_owns_raw_index_siblings_and_restore_after_parent_disposal"
+      ],
+      "source_reconciliation": "Complete pinned Oracle body, both owned typed faces, entire main Java and referenced Omen/trigger/effect/helper bodies read. Existing typed behavior preserved; all cited independent outcomes passed terminal ordinary107-case proof.",
+      "ordinary_actual_definition_proof": "<cache>/rustmage-tdm/post86-next-private-1793824763620276696/a_g_omens4_retry/native.json"
+    },
+    {
+      "name": "Dirgur Island Dragon // Skimming Strike",
+      "oracle_id": "23cda76b-6e47-4922-a38d-93f7aae1eb00",
+      "definition": "src/card_definitions/tdm/dirgur_island_dragon.rs",
+      "definition_sha256": "751383b0d2a1472032a1b39db6ad9fa444d59fe43db70b365e116b43aac54204",
+      "owned_spell_face": {
+        "name": "Skimming Strike",
+        "definition": "src/card_definitions/synthetic/skimming_strike.rs",
+        "definition_sha256": "1921c2c56f7632ed80b2910d0a407dc706257a292c986f0aac1638db39f12793"
+      },
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_root_integration_full_set_acceptance_and_final_reviews",
+      "counted_in_verified_total": true,
+      "obligations": [
+        {
+          "face": "Dirgur Island Dragon",
+          "header": {
+            "mana_cost": "{5}{U}",
+            "type_line": "Creature \u2014 Dragon",
+            "power": "4",
+            "toughness": "4"
+          },
+          "printed_lines": [
+            "Flying",
+            "Ward {2} (Whenever this creature becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)"
+          ]
+        },
+        {
+          "face": "Skimming Strike",
+          "header": {
+            "mana_cost": "{1}{U}",
+            "type_line": "Instant \u2014 Omen"
+          },
+          "printed_lines": [
+            "Tap up to one target creature. Draw a card. (Then shuffle this card into its owner's library.)"
+          ]
+        }
+      ],
+      "tests": [
+        "omens_dirgur_actual_creature_cost_flying_and_ward_two_payment_or_counter",
+        "omens_skimming_and_dusk_sight_allow_no_target_or_either_players_creature_then_draw_and_shuffle",
+        "omens_all_illegal_optional_targets_prevent_draw_and_shuffle_while_zero_targets_resolve_normally",
+        "omens_selected_face_has_its_own_spell_type_colors_value_and_timing",
+        "omens_countered_spell_faces_go_to_graveyard_without_effect_or_library_shuffle"
+      ],
+      "source_reconciliation": "Complete pinned Oracle body, both owned typed faces, entire main Java and referenced Omen/trigger/effect/helper bodies read. Existing typed behavior preserved; all cited independent outcomes passed terminal ordinary107-case proof.",
+      "ordinary_actual_definition_proof": "<cache>/rustmage-tdm/post86-next-private-1793824763620276696/a_g_omens4_retry/native.json"
+    },
+    {
+      "name": "Disruptive Stormbrood // Petty Revenge",
+      "oracle_id": "ec74ae5d-1284-443c-9842-18954f8cf5a8",
+      "definition": "src/card_definitions/tdm/disruptive_stormbrood.rs",
+      "definition_sha256": "6a42f4eb1204e3a777fcf538cec08431aae3cb329f66e2407084f0672c7d9e68",
+      "owned_spell_face": {
+        "name": "Petty Revenge",
+        "definition": "src/card_definitions/synthetic/petty_revenge.rs",
+        "definition_sha256": "d79a6b71b90bb8c06811a1d542176fb288341be1c7bd7252c28dac73c455f08c"
+      },
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_root_integration_full_set_acceptance_and_final_reviews",
+      "counted_in_verified_total": true,
+      "obligations": [
+        {
+          "face": "Disruptive Stormbrood",
+          "header": {
+            "mana_cost": "{4}{G}",
+            "type_line": "Creature \u2014 Dragon",
+            "power": "3",
+            "toughness": "3"
+          },
+          "printed_lines": [
+            "Flying",
+            "When this creature enters, destroy up to one target artifact or enchantment."
+          ]
+        },
+        {
+          "face": "Petty Revenge",
+          "header": {
+            "mana_cost": "{1}{B}",
+            "type_line": "Sorcery \u2014 Omen"
+          },
+          "printed_lines": [
+            "Destroy target creature with power 3 or less. (Then shuffle this card into its owner's library.)"
+          ]
+        }
+      ],
+      "tests": [
+        "omens_disruptive_actual_creature_optionally_destroys_any_artifact_or_enchantment",
+        "omens_petty_revenge_uses_live_power_at_most_three_on_either_players_creature",
+        "omens_selected_face_has_its_own_spell_type_colors_value_and_timing",
+        "omens_countered_spell_faces_go_to_graveyard_without_effect_or_library_shuffle"
+      ],
+      "source_reconciliation": "Complete pinned Oracle body, both owned typed faces, entire main Java and referenced Omen/trigger/effect/helper bodies read. Existing typed behavior preserved; all cited independent outcomes passed terminal ordinary107-case proof.",
+      "ordinary_actual_definition_proof": "<cache>/rustmage-tdm/post86-next-private-1793824763620276696/a_g_omens4_retry/native.json"
+    },
+    {
+      "name": "Feral Deathgorger // Dusk Sight",
+      "oracle_id": "1722f814-2d4e-4d59-9b74-10ef8e89def9",
+      "definition": "src/card_definitions/tdm/feral_deathgorger.rs",
+      "definition_sha256": "4fc56e72be7b0947addac5212f1779722c8d0ae1d0ed6ae87a07dd76ffe0526f",
+      "owned_spell_face": {
+        "name": "Dusk Sight",
+        "definition": "src/card_definitions/synthetic/dusk_sight.rs",
+        "definition_sha256": "b39bac4dd23bf17e536562b8092c33117c272ad199f51775851fc93eeaab3c1a"
+      },
+      "kind": "previously_admitted_candidate",
+      "status": "locally_verified_whole_card_pending_root_integration_full_set_acceptance_and_final_reviews",
+      "counted_in_verified_total": true,
+      "obligations": [
+        {
+          "face": "Feral Deathgorger",
+          "header": {
+            "mana_cost": "{5}{B}",
+            "type_line": "Creature \u2014 Dragon",
+            "power": "3",
+            "toughness": "5"
+          },
+          "printed_lines": [
+            "Flying, deathtouch",
+            "When this creature enters, exile up to two target cards from a single graveyard."
+          ]
+        },
+        {
+          "face": "Dusk Sight",
+          "header": {
+            "mana_cost": "{1}{B}",
+            "type_line": "Sorcery \u2014 Omen"
+          },
+          "printed_lines": [
+            "Put a +1/+1 counter on up to one target creature. Draw a card. (Then shuffle this card into its owner's library.)"
+          ]
+        }
+      ],
+      "tests": [
+        "omens_feral_actual_creature_exiles_up_to_two_from_one_graveyard_with_native_flying_deathtouch",
+        "omens_skimming_and_dusk_sight_allow_no_target_or_either_players_creature_then_draw_and_shuffle",
+        "omens_all_illegal_optional_targets_prevent_draw_and_shuffle_while_zero_targets_resolve_normally",
+        "omens_selected_face_has_its_own_spell_type_colors_value_and_timing",
+        "omens_countered_spell_faces_go_to_graveyard_without_effect_or_library_shuffle"
+      ],
+      "source_reconciliation": "Complete pinned Oracle body, both owned typed faces, entire main Java and referenced Omen/trigger/effect/helper bodies read. Existing typed behavior preserved; all cited independent outcomes passed terminal ordinary107-case proof.",
+      "ordinary_actual_definition_proof": "<cache>/rustmage-tdm/post86-next-private-1793824763620276696/a_g_omens4_retry/native.json"
     }
   ],
   "validation": [
@@ -2634,12 +2825,47 @@
       "seconds": 21.520656234992202,
       "terminal": true,
       "source_inputs_unchanged": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/post86-a-g-omens4-1793824539219860002/a_g_omens4/native.json",
+      "sha256": "f249e5d437e9054484f0fd4859cc29d94df754fff668eb67168486abe566ed69",
+      "test_target": "tdm_cards_a_g",
+      "filter": "",
+      "passed": 105,
+      "failed": 2,
+      "terminal": true,
+      "diagnosis": "Scenario API corrections only: original physical spell canonical target is Target::Spell(source), while Target::Stack is emitted for spell copies and abilities. Optional Disruptive ETB automatically has zero targets when no valid candidate; test now handles that and separately declines with a valid artifact available. No source behavior or expected printed outcome changed."
+    },
+    {
+      "report": "<cache>/rustmage-tdm/post86-next-private-1793824763620276696/a_g_omens4_retry/native.json",
+      "sha256": "1d74b5d98b0f55e07284e92c705c8ca65ec2c64bf68c96ca28fe84a87899ab30",
+      "test_target": "tdm_cards_a_g",
+      "filter": "",
+      "passed": 107,
+      "failed": 0,
+      "terminal": true,
+      "engine_revision": "2660c86112362973c195bee4c1b85e1a968f9f3a",
+      "compile_seconds": 1.2680085100000724,
+      "execution_seconds": 0.1104284210014157,
+      "test_source_sha256": "eb99350e559efa4dd037cc7e4f92e50a6c6fcb15c629bd34abd8f8947f4de8e5",
+      "source_inputs_unchanged": true,
+      "all_new_admitted": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/post86-next-private-1793824763620276696/a_g_omens4_retry/clippy-terminal.json",
+      "sha256": "28fb50a7909c4e239a22288374a7bd20deef06278080116c33a3f1029fe08912",
+      "test_target": "tdm_cards_a_g",
+      "exit": 0,
+      "seconds": 1.5682141000288539,
+      "terminal": true,
+      "warnings_denied": true,
+      "source_inputs_unchanged": true
     }
   ],
-  "locally_verified_physical_cards": 70,
+  "locally_verified_physical_cards": 74,
   "newly_authored_verified": 28,
-  "previously_admitted_verified": 42,
-  "remaining_physical_cards": 21,
+  "previously_admitted_verified": 46,
+  "remaining_physical_cards": 17,
   "implementation_measurement": {
     "scope": "Land authoring/provenance/scenarios plus focused execution and integration coordination, elapsed from preceding Renew commit timestamp. Some read-only land source preparation preceded this interval; not a pure coding benchmark. Five unchanged exact-source baseline proofs count separately from four newly tested whole cards.",
     "elapsed_seconds": 515.2147917747498,
@@ -2733,6 +2959,21 @@
       "implementation_elapsed_seconds": null,
       "implementation_measurement_limit": "Source work and proof crossed engine85/86 holds; no uninterrupted implementation throughput is claimed.",
       "simulation_throughput": "Not measured by these bounded scenario tests."
+    },
+    {
+      "scope": "Four historically admitted Omen physical cards including all8faces, independent11-case actual scenario family and full107-case regression target.",
+      "new_whole_cards_verified_by_focused_execution": 4,
+      "newly_implemented": 0,
+      "previous_candidates": 4,
+      "admitted_target_cases": 107,
+      "admitted_compile_seconds": 1.2680085100000724,
+      "admitted_execution_seconds": 0.1104284210014157,
+      "focused_clippy_seconds": 1.5682141000288539,
+      "first_run_passed": 105,
+      "first_run_scenario_interface_failures": 2,
+      "implementation_elapsed_seconds": null,
+      "implementation_measurement_limit": "Oracle/Java preparation and /tmp scenario drafts preceded this author interval and were interleaved with explicit engine holds; no uninterrupted implementation throughput claimed.",
+      "simulation_throughput": "Not measured by these bounded scenario tests."
     }
   ],
   "current_engine_checkpoint": {
@@ -2787,7 +3028,7 @@
     "previous_candidates": 1,
     "tests": 17,
     "filter": "growth_",
-    "status": "locally_verified_all9_after_gated17_ordinary96_and_focused_clippy",
+    "status": "root_integrated_all9_locally_verified_pending_full_set_acceptance_and_final_reviews",
     "new_engine_changes": false,
     "new_flags_false": false,
     "admission_gate": "Eight new flags promoted only after corrected17-case gated PASS, accepted engine86 and private warm; ordinary96 and focused lint then passed. Root integration pending.",
@@ -2874,5 +3115,28 @@
       "whole_new_physical_cards": 9,
       "source_check_passed": true
     }
+  },
+  "omen_family_prepared": {
+    "physical_cards": 4,
+    "owned_faces": 8,
+    "previous_candidates": 4,
+    "new_gated": 0,
+    "test_target": "tdm_cards_a_g",
+    "filter": "omens_",
+    "tests": 11,
+    "ordinary_target_cases": 107,
+    "status": "locally_verified_all4_physical_both_faces_pending_root_integration",
+    "engine_revision": "2660c86112362973c195bee4c1b85e1a968f9f3a",
+    "new_engine_changes": false,
+    "source_definitions_changed": false,
+    "scenario_scope": [
+      "Each actual creature: exact printed cost/stats/keywords and distinct ETB or Ward result.",
+      "Omen spell faces: exact cost, selected traits/timing, optional zero/one targets, countered/all-illegal-target failure destinations, normal physical-card shuffle without Adventure permission.",
+      "Claim Territory0/1/2 basic Forest selection, revealed split battlefield tapped versus hand, reject nonbasic/wrongbasic; both observations and representative owned raw/index/sibling/drop/restore root.",
+      "Petty Revenge live power threshold and both-seat controller relations; Feral up-to-two same-graveyard targets."
+    ],
+    "completion_claim": "Four historical candidates independently verified after full107 ordinary scenarios and focused lint; no typed body changes required.",
+    "scenario_corrections": "Use canonical Target::Spell for countering original Omen; no-candidate optional ETB auto-zero and available-candidate optional decline are separate explicit cases.",
+    "source_check_passed": true
   }
 }

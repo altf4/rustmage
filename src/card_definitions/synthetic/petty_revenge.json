@@ -8,5 +8,40 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e94585c066db6106ad9931bf00c0ec42c282ddfb57f286d9a9d2c6a617dc79e1"
   },
-  "physical_metadata_sha256": "98a2c6691a99477da374a8636513b2c60bee07c4806dc53b0d30ef9a70f7dbfb"
+  "physical_metadata_sha256": "98a2c6691a99477da374a8636513b2c60bee07c4806dc53b0d30ef9a70f7dbfb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DisruptiveStormbrood.java",
+  "java_sha256": "ccfe1e86ddbfcb236c3d2f88fd97a47ae8c7d7375dd8ddf5353279a3f4e03241",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/OmenCard.java",
+      "sha256": "23ab5ce7824ef4ff96e68a43e16b9cc29fe9e5f03e447653d981da346fb5fcba"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/OmenSpellCard.java",
+      "sha256": "a103edc55f20408a67f69a0be9d1c5d5d08133c3b25d43fde7614bee966678ba"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ShuffleIntoLibrarySourceEffect.java",
+      "sha256": "bbb5942769ee34f8ca0539d82c4487bc0f39bcf14787978fe588240bccf4f8d0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    }
+  ]
 }
