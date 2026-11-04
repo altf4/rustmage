@@ -1,0 +1,1025 @@
+{
+  "schema": 1,
+  "scope": "25 additional physical TDM S\u2013Z members; full-set acceptance remains root-owned",
+  "basis_engine": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
+  "author_baseline": "81fd5f1e4cea0f7c1136053cedab0de6700a42e1",
+  "test_target": "tdm_cards_s_z_additional",
+  "locally_verified_cards": 0,
+  "remaining_physical_cards": 25,
+  "status": "PARKED at shared engine86 phase: ten-card family gated12 PASS; seven newly authored definitions remain false; no new cards admitted or counted",
+  "cards": [
+    {
+      "name": "Sage of the Skies",
+      "oracle_id": "cfc7cef7-0a95-49f8-970f-abff2cacd82d",
+      "definition": "src/card_definitions/tdm/sage_of_the_skies.rs",
+      "definition_sha256": "61876eece93a58417eb2cfd3f6fa1ff91ee068ee6bc33f39a625601f3b3c323c",
+      "provenance_sha256": "483014657f184704285e295f0b3d5a309476532feab94d2a6125376e2560655f",
+      "printed_obligations": [
+        "When you cast this spell, if you've cast another spell this turn, copy this spell. (The copy becomes a token.)",
+        "Flying, lifelink"
+      ],
+      "intrinsic_body": {
+        "power": "2",
+        "toughness": "3"
+      },
+      "status": "gated-focused-PASS; admission and final whole-card review deferred by engine86 hold",
+      "actual_definition_tests": [
+        "sage_copies_after_any_earlier_own_spell_but_not_as_first_and_copies_are_tokens"
+      ],
+      "source_read": {
+        "main_java": "full",
+        "oracle": "full",
+        "helpers": "full bodies pinned in paired JSON"
+      },
+      "pre_family_definition_sha256": "0deda7321373160c7bd8f7ba72586297f19c99188d0da9c71d64bf218e7e3da5",
+      "proof_cases": [
+        {
+          "test": "sage_copies_after_any_earlier_own_spell_but_not_as_first_and_copies_are_tokens",
+          "status": "PASS",
+          "receipt": "gated_actual_definition_family"
+        }
+      ],
+      "obligation_proofs": [
+        {
+          "printed_obligation": "When you cast this spell, if you've cast another spell this turn, copy this spell. (The copy becomes a token.)",
+          "actual_definition_tests": [
+            "sage_copies_after_any_earlier_own_spell_but_not_as_first_and_copies_are_tokens"
+          ]
+        },
+        {
+          "printed_obligation": "Flying, lifelink",
+          "actual_definition_tests": [
+            "sage_copies_after_any_earlier_own_spell_but_not_as_first_and_copies_are_tokens"
+          ]
+        },
+        {
+          "printed_obligation": "Intrinsic power/toughness {\"power\": \"2\", \"toughness\": \"3\"}",
+          "actual_definition_tests": [
+            "sage_copies_after_any_earlier_own_spell_but_not_as_first_and_copies_are_tokens"
+          ]
+        }
+      ],
+      "helper_pins": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/condition/common/CastAnotherSpellThisTurnCondition.java",
+          "sha256": "8cacb7cbc8fb2f4cdacf147b16e4cd9972a6532c381c6e115901871d611b0eb4"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CastSourceTriggeredAbility.java",
+          "sha256": "47edf1f8fa0fea60841309f6698825a1b6da0427d3580c91c750763fbe9ae22d"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CopySourceSpellEffect.java",
+          "sha256": "5bd130232d8dd64f8aa8049cf78c1f87a4d877c2ff4b02668e5b3c6b85e4bc95"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+          "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+        }
+      ]
+    },
+    {
+      "name": "Salt Road Skirmish",
+      "oracle_id": "f6e72f4e-d6e0-4537-93c1-7045385c8401",
+      "definition": "src/card_definitions/tdm/salt_road_skirmish.rs",
+      "definition_sha256": "780f10447b1d2da0490ee3d99f448a835103d503c34d8bbf0b0b0de283ffdd59",
+      "provenance_sha256": "8de265138e2ce4f25f3fa940ffb86dfc82d4868b3c66dfc863d5b8cf4aed97b4",
+      "printed_obligations": [
+        "Destroy target creature. Create two 1/1 red Warrior creature tokens. They gain haste until end of turn. Sacrifice them at the beginning of the next end step."
+      ],
+      "intrinsic_body": {},
+      "status": "remaining-not-yet-authored-or-verified",
+      "actual_definition_tests": [],
+      "pre_family_definition_sha256": "780f10447b1d2da0490ee3d99f448a835103d503c34d8bbf0b0b0de283ffdd59"
+    },
+    {
+      "name": "Sarkhan, Dragon Ascendant",
+      "oracle_id": "71cb48e2-2328-471c-a04a-7b6461f378f4",
+      "definition": "src/card_definitions/tdm/sarkhan_dragon_ascendant.rs",
+      "definition_sha256": "0971d1f5df06f92e3f78f5bdac235b952eacd852528cec17d6aee479e9567169",
+      "provenance_sha256": "18b2422e2353ad45b4a3a88d59f111fffb84d6f62d52facf1c6dc3d764491b20",
+      "printed_obligations": [
+        "When Sarkhan enters, you may behold a Dragon. If you do, create a Treasure token. (To behold a Dragon, choose a Dragon you control or reveal a Dragon card from your hand.)",
+        "Whenever a Dragon you control enters, put a +1/+1 counter on Sarkhan. Until end of turn, Sarkhan becomes a Dragon in addition to his other types and gains flying."
+      ],
+      "intrinsic_body": {
+        "power": "2",
+        "toughness": "2"
+      },
+      "status": "gated-focused-PASS; admission and final whole-card review deferred by engine86 hold",
+      "actual_definition_tests": [
+        "sarkhan_optional_behold_hand_battlefield_or_decline_produces_actual_treasure",
+        "sarkhan_dragon_entry_counter_and_additional_type_flying_expire_but_counter_remains"
+      ],
+      "source_read": {
+        "main_java": "full",
+        "oracle": "full",
+        "helpers": "full bodies pinned in paired JSON"
+      },
+      "oracle_discrepancy": "XMage AddCardSubTypeSourceEffect default removes creature types; printed Oracle explicitly adds Dragon. Typed Additional preserves Human and Druid; actual assertion covers all three.",
+      "pre_family_definition_sha256": "780f10447b1d2da0490ee3d99f448a835103d503c34d8bbf0b0b0de283ffdd59",
+      "proof_cases": [
+        {
+          "test": "sarkhan_optional_behold_hand_battlefield_or_decline_produces_actual_treasure",
+          "status": "PASS",
+          "receipt": "gated_actual_definition_family"
+        },
+        {
+          "test": "sarkhan_dragon_entry_counter_and_additional_type_flying_expire_but_counter_remains",
+          "status": "PASS",
+          "receipt": "gated_actual_definition_family"
+        }
+      ],
+      "obligation_proofs": [
+        {
+          "printed_obligation": "When Sarkhan enters, you may behold a Dragon. If you do, create a Treasure token. (To behold a Dragon, choose a Dragon you control or reveal a Dragon card from your hand.)",
+          "actual_definition_tests": [
+            "sarkhan_optional_behold_hand_battlefield_or_decline_produces_actual_treasure",
+            "sarkhan_dragon_entry_counter_and_additional_type_flying_expire_but_counter_remains"
+          ]
+        },
+        {
+          "printed_obligation": "Whenever a Dragon you control enters, put a +1/+1 counter on Sarkhan. Until end of turn, Sarkhan becomes a Dragon in addition to his other types and gains flying.",
+          "actual_definition_tests": [
+            "sarkhan_optional_behold_hand_battlefield_or_decline_produces_actual_treasure",
+            "sarkhan_dragon_entry_counter_and_additional_type_flying_expire_but_counter_remains"
+          ]
+        },
+        {
+          "printed_obligation": "Intrinsic power/toughness {\"power\": \"2\", \"toughness\": \"2\"}",
+          "actual_definition_tests": [
+            "sarkhan_optional_behold_hand_battlefield_or_decline_produces_actual_treasure",
+            "sarkhan_dragon_entry_counter_and_additional_type_flying_expire_but_counter_remains"
+          ]
+        }
+      ],
+      "helper_pins": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/costs/common/BeholdCost.java",
+          "sha256": "bc668079587e3c3383c7d071558d165ef37aaadbf5618e3e0d9d3654bf1b34de"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/constants/BeholdType.java",
+          "sha256": "b9b6ef548969c8e1bbde48ec05adb6ae62139ab3fbdd72a91f8154817dc17c2c"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+          "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/permanent/token/TreasureToken.java",
+          "sha256": "76bcec2847fbc47566c41b561b5bf8890073a94cc1da9cda19b369ff69782d2e"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+          "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardSubTypeSourceEffect.java",
+          "sha256": "7f49c9464a917091481b5f7636bbfbaf7f90041be840b2da070c57ca0214a765"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+          "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        }
+      ]
+    },
+    {
+      "name": "Severance Priest",
+      "oracle_id": "3a38bf69-511f-4851-870f-8a65641d832e",
+      "definition": "src/card_definitions/tdm/severance_priest.rs",
+      "definition_sha256": "dd88d89de2b27666625aff48a8e3dec36f1e7395f6f50bc7c708b40fb66c125a",
+      "provenance_sha256": "80954976c92ec0e18e8e63797fd58fd7fd954b108a7639890d161b35a9606649",
+      "printed_obligations": [
+        "Deathtouch",
+        "When this creature enters, target opponent reveals their hand. You may choose a nonland card from it. If you do, exile that card.",
+        "When this creature leaves the battlefield, the exiled card's owner creates an X/X white Spirit creature token, where X is the mana value of the exiled card."
+      ],
+      "intrinsic_body": {
+        "power": "3",
+        "toughness": "3"
+      },
+      "status": "remaining-not-yet-authored-or-verified",
+      "actual_definition_tests": [],
+      "pre_family_definition_sha256": "dd88d89de2b27666625aff48a8e3dec36f1e7395f6f50bc7c708b40fb66c125a"
+    },
+    {
+      "name": "Shiko, Paragon of the Way",
+      "oracle_id": "d3bdd3f2-9e38-436a-93a3-f87d9f4d4f86",
+      "definition": "src/card_definitions/tdm/shiko_paragon_of_the_way.rs",
+      "definition_sha256": "13ce5a5e35050d4a4e3884932db2bc561aa4dde76140bfd66cea0c0bd38782fd",
+      "provenance_sha256": "c590ebd4b8b41e0a331e74db30dd7f535eeb1d6024c6315de6ac3768c7b173e8",
+      "printed_obligations": [
+        "Flying, vigilance",
+        "When Shiko enters, exile target nonland card with mana value 3 or less from your graveyard. Copy it, then you may cast the copy without paying its mana cost. (A copy of a permanent spell becomes a token.)"
+      ],
+      "intrinsic_body": {
+        "power": "4",
+        "toughness": "5"
+      },
+      "status": "remaining-not-yet-authored-or-verified",
+      "actual_definition_tests": [],
+      "pre_family_definition_sha256": "13ce5a5e35050d4a4e3884932db2bc561aa4dde76140bfd66cea0c0bd38782fd"
+    },
+    {
+      "name": "Shock Brigade",
+      "oracle_id": "8676e917-17dd-4047-99c4-402f2e909e16",
+      "definition": "src/card_definitions/tdm/shock_brigade.rs",
+      "definition_sha256": "1de9fdc93f3f62e0b5cb4868adbedad52cf432d70e1dc4e55daa40a179bbce6b",
+      "provenance_sha256": "1501cbd98f35493a02560fa5756c1c068c4594a881b8bcb92eec4cd68df07877",
+      "printed_obligations": [
+        "Menace (This creature can't be blocked except by two or more creatures.)",
+        "Mobilize 1 (Whenever this creature attacks, create a tapped and attacking 1/1 red Warrior creature token. Sacrifice it at the beginning of the next end step.)"
+      ],
+      "intrinsic_body": {
+        "power": "1",
+        "toughness": "3"
+      },
+      "status": "existing-candidate-focused-PASS; no new count until integration",
+      "actual_definition_tests": [
+        "shock_brigade_mobilizes_actual_attacking_warrior_then_sacrifices_next_end"
+      ],
+      "source_read": {
+        "main_java": "full",
+        "oracle": "full",
+        "helpers": "full bodies pinned in paired JSON"
+      },
+      "pre_family_definition_sha256": "1de9fdc93f3f62e0b5cb4868adbedad52cf432d70e1dc4e55daa40a179bbce6b",
+      "proof_cases": [
+        {
+          "test": "shock_brigade_mobilizes_actual_attacking_warrior_then_sacrifices_next_end",
+          "status": "PASS",
+          "receipt": "gated_actual_definition_family"
+        }
+      ],
+      "obligation_proofs": [
+        {
+          "printed_obligation": "Menace (This creature can't be blocked except by two or more creatures.)",
+          "actual_definition_tests": [
+            "shock_brigade_mobilizes_actual_attacking_warrior_then_sacrifices_next_end"
+          ]
+        },
+        {
+          "printed_obligation": "Mobilize 1 (Whenever this creature attacks, create a tapped and attacking 1/1 red Warrior creature token. Sacrifice it at the beginning of the next end step.)",
+          "actual_definition_tests": [
+            "shock_brigade_mobilizes_actual_attacking_warrior_then_sacrifices_next_end"
+          ]
+        },
+        {
+          "printed_obligation": "Intrinsic power/toughness {\"power\": \"1\", \"toughness\": \"3\"}",
+          "actual_definition_tests": [
+            "shock_brigade_mobilizes_actual_attacking_warrior_then_sacrifices_next_end"
+          ]
+        }
+      ],
+      "helper_pins": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/MobilizeAbility.java",
+          "sha256": "84ea782ab71b1b147b349c5f5ac8b2c03ae60211c95393a2e4e994da8ee5eac8"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+          "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByOneEffect.java",
+          "sha256": "e0bd814caa3d5758863c4230d3ac88a4361337d3459b13d4f0b309559520434e"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/permanent/token/RedWarriorToken.java",
+          "sha256": "91af8e32ddafb0a605511b4fd6a3e78e00d46465b90463b47ce6c6266a38582c"
+        }
+      ]
+    },
+    {
+      "name": "Shocking Sharpshooter",
+      "oracle_id": "fbb7735f-ec91-4ed4-b735-d94a76e68a80",
+      "definition": "src/card_definitions/tdm/shocking_sharpshooter.rs",
+      "definition_sha256": "18b616bd1b2fc98672a0029078b58b0fb318ec0d2411b9171727402eb0b47d81",
+      "provenance_sha256": "d598809fbd4178eaaaebfbbf1a68c7b149a4883b921543d2aa34884fb8b4ffc2",
+      "printed_obligations": [
+        "Reach",
+        "Whenever another creature you control enters, this creature deals 1 damage to target opponent."
+      ],
+      "intrinsic_body": {
+        "power": "1",
+        "toughness": "3"
+      },
+      "status": "existing-candidate-focused-PASS; no new count until integration",
+      "actual_definition_tests": [
+        "shocking_sharpshooter_other_own_creature_entries_target_opponent_and_ignore_self_enemy_land"
+      ],
+      "source_read": {
+        "main_java": "full",
+        "oracle": "full",
+        "helpers": "full bodies pinned in paired JSON"
+      },
+      "pre_family_definition_sha256": "18b616bd1b2fc98672a0029078b58b0fb318ec0d2411b9171727402eb0b47d81",
+      "proof_cases": [
+        {
+          "test": "shocking_sharpshooter_other_own_creature_entries_target_opponent_and_ignore_self_enemy_land",
+          "status": "PASS",
+          "receipt": "gated_actual_definition_family"
+        }
+      ],
+      "obligation_proofs": [
+        {
+          "printed_obligation": "Reach",
+          "actual_definition_tests": [
+            "shocking_sharpshooter_other_own_creature_entries_target_opponent_and_ignore_self_enemy_land"
+          ]
+        },
+        {
+          "printed_obligation": "Whenever another creature you control enters, this creature deals 1 damage to target opponent.",
+          "actual_definition_tests": [
+            "shocking_sharpshooter_other_own_creature_entries_target_opponent_and_ignore_self_enemy_land"
+          ]
+        },
+        {
+          "printed_obligation": "Intrinsic power/toughness {\"power\": \"1\", \"toughness\": \"3\"}",
+          "actual_definition_tests": [
+            "shocking_sharpshooter_other_own_creature_entries_target_opponent_and_ignore_self_enemy_land"
+          ]
+        }
+      ],
+      "helper_pins": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+          "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+          "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+        }
+      ]
+    },
+    {
+      "name": "Sibsig Appraiser",
+      "oracle_id": "5b51958d-533a-45e4-aac1-3c157670978b",
+      "definition": "src/card_definitions/tdm/sibsig_appraiser.rs",
+      "definition_sha256": "424b4b26afd5c44ba9c38ab6ce2b3b38e60ce495bf4d8d0334dc5b8cac61f960",
+      "provenance_sha256": "8562ee5998f723b89dadf7d2c5166a8d958ac0479b875c3393bfb543b6348792",
+      "printed_obligations": [
+        "When this creature enters, look at the top two cards of your library. Put one of them into your hand and the other into your graveyard."
+      ],
+      "intrinsic_body": {
+        "power": "2",
+        "toughness": "1"
+      },
+      "status": "gated-focused-PASS; admission and final whole-card review deferred by engine86 hold",
+      "actual_definition_tests": [
+        "sibsig_forced_private_pick_and_owned_raw_index_restore_leave_other_card_in_graveyard"
+      ],
+      "source_read": {
+        "main_java": "full",
+        "oracle": "full",
+        "helpers": "full bodies pinned in paired JSON"
+      },
+      "pre_family_definition_sha256": "780f10447b1d2da0490ee3d99f448a835103d503c34d8bbf0b0b0de283ffdd59",
+      "proof_cases": [
+        {
+          "test": "sibsig_forced_private_pick_and_owned_raw_index_restore_leave_other_card_in_graveyard",
+          "status": "PASS",
+          "receipt": "gated_actual_definition_family"
+        }
+      ],
+      "obligation_proofs": [
+        {
+          "printed_obligation": "When this creature enters, look at the top two cards of your library. Put one of them into your hand and the other into your graveyard.",
+          "actual_definition_tests": [
+            "sibsig_forced_private_pick_and_owned_raw_index_restore_leave_other_card_in_graveyard"
+          ]
+        },
+        {
+          "printed_obligation": "Intrinsic power/toughness {\"power\": \"2\", \"toughness\": \"1\"}",
+          "actual_definition_tests": [
+            "sibsig_forced_private_pick_and_owned_raw_index_restore_leave_other_card_in_graveyard"
+          ]
+        }
+      ],
+      "helper_pins": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+          "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
+          "sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7"
+        }
+      ]
+    },
+    {
+      "name": "Sidisi, Regent of the Mire",
+      "oracle_id": "72074972-418d-4dce-83cf-ce8cf310fc42",
+      "definition": "src/card_definitions/tdm/sidisi_regent_of_the_mire.rs",
+      "definition_sha256": "780f10447b1d2da0490ee3d99f448a835103d503c34d8bbf0b0b0de283ffdd59",
+      "provenance_sha256": "997ca477d766551258b720a450ee79632d517c15adcb17301b3f194568962f68",
+      "printed_obligations": [
+        "{T}, Sacrifice a creature you control with mana value X other than Sidisi: Return target creature card with mana value X plus 1 from your graveyard to the battlefield. Activate only as a sorcery."
+      ],
+      "intrinsic_body": {
+        "power": "1",
+        "toughness": "3"
+      },
+      "status": "remaining-not-yet-authored-or-verified",
+      "actual_definition_tests": [],
+      "pre_family_definition_sha256": "780f10447b1d2da0490ee3d99f448a835103d503c34d8bbf0b0b0de283ffdd59"
+    },
+    {
+      "name": "Smile at Death",
+      "oracle_id": "9228f04c-506f-4453-a335-e66876b8ce8d",
+      "definition": "src/card_definitions/tdm/smile_at_death.rs",
+      "definition_sha256": "780f10447b1d2da0490ee3d99f448a835103d503c34d8bbf0b0b0de283ffdd59",
+      "provenance_sha256": "72a24e2009ca304688af2b50241a94e731c3db7322d417317925cf717e3a31ae",
+      "printed_obligations": [
+        "At the beginning of your upkeep, return up to two target creature cards with power 2 or less from your graveyard to the battlefield. Put a +1/+1 counter on each of those creatures."
+      ],
+      "intrinsic_body": {},
+      "status": "remaining-not-yet-authored-or-verified",
+      "actual_definition_tests": [],
+      "pre_family_definition_sha256": "780f10447b1d2da0490ee3d99f448a835103d503c34d8bbf0b0b0de283ffdd59"
+    },
+    {
+      "name": "Snowmelt Stag",
+      "oracle_id": "b25ccb64-e114-4d54-a07a-c8cd4560b511",
+      "definition": "src/card_definitions/tdm/snowmelt_stag.rs",
+      "definition_sha256": "6d95f14838cadac683ec5e4f3d79b7d65d0e4b6670555e331b41dfa539b4f6c0",
+      "provenance_sha256": "933865f10117d59bcf5abac75259bf242740c339eb0e54748b284a13c04d0ad9",
+      "printed_obligations": [
+        "Vigilance",
+        "During your turn, this creature has base power and toughness 5/2.",
+        "{5}{U}{U}: This creature can't be blocked this turn."
+      ],
+      "intrinsic_body": {
+        "power": "2",
+        "toughness": "5"
+      },
+      "status": "remaining-not-yet-authored-or-verified",
+      "actual_definition_tests": [],
+      "pre_family_definition_sha256": "6d95f14838cadac683ec5e4f3d79b7d65d0e4b6670555e331b41dfa539b4f6c0"
+    },
+    {
+      "name": "Sonic Shrieker",
+      "oracle_id": "d317e3f1-553f-44f6-8543-d6d4c42534ad",
+      "definition": "src/card_definitions/tdm/sonic_shrieker.rs",
+      "definition_sha256": "0dada0d98306dbd1266a06745df3d9ecb416b1502bfbccaae9d836daeb4f2fbf",
+      "provenance_sha256": "acce39f2fb62dfa75271af1aa73753dd8bb81186529d23bb898d13e705a362ef",
+      "printed_obligations": [
+        "Flying",
+        "When this creature enters, it deals 2 damage to any target and you gain 2 life. If a player is dealt damage this way, they discard a card."
+      ],
+      "intrinsic_body": {
+        "power": "4",
+        "toughness": "4"
+      },
+      "status": "remaining-not-yet-authored-or-verified",
+      "actual_definition_tests": [],
+      "pre_family_definition_sha256": "0dada0d98306dbd1266a06745df3d9ecb416b1502bfbccaae9d836daeb4f2fbf"
+    },
+    {
+      "name": "Stadium Headliner",
+      "oracle_id": "d8cfa20a-343e-4661-9f5a-a8265f6917a8",
+      "definition": "src/card_definitions/tdm/stadium_headliner.rs",
+      "definition_sha256": "029b1bd9f815d16d7ee0fe2dbede3d64c228f0af5f5f7d69ddb965d934a11076",
+      "provenance_sha256": "e7064d3cb0a1c55889d0ebe1e49fd7c44b10f92f7c6a4b890200e483afb7c8bf",
+      "printed_obligations": [
+        "Mobilize 1 (Whenever this creature attacks, create a tapped and attacking 1/1 red Warrior creature token. Sacrifice it at the beginning of the next end step.)",
+        "{1}{R}, Sacrifice this creature: It deals damage equal to the number of creatures you control to target creature."
+      ],
+      "intrinsic_body": {
+        "power": "1",
+        "toughness": "1"
+      },
+      "status": "remaining-not-yet-authored-or-verified",
+      "actual_definition_tests": [],
+      "pre_family_definition_sha256": "029b1bd9f815d16d7ee0fe2dbede3d64c228f0af5f5f7d69ddb965d934a11076"
+    },
+    {
+      "name": "Stalwart Successor",
+      "oracle_id": "45392882-e4b9-4c74-a10f-985c2b4e2be9",
+      "definition": "src/card_definitions/tdm/stalwart_successor.rs",
+      "definition_sha256": "ba59d9dc3ae38a9dea163b94a5354e24e772560dc3b218bb3ea7b4f23813f24e",
+      "provenance_sha256": "275252e14deac3f217f5db66c92c439372c15757aff177415596379f8c6b96de",
+      "printed_obligations": [
+        "Menace (This creature can't be blocked except by two or more creatures.)",
+        "Whenever one or more counters are put on a creature you control, if it's the first time counters have been put on that creature this turn, put a +1/+1 counter on that creature."
+      ],
+      "intrinsic_body": {
+        "power": "3",
+        "toughness": "2"
+      },
+      "status": "remaining-not-yet-authored-or-verified",
+      "actual_definition_tests": [],
+      "pre_family_definition_sha256": "ba59d9dc3ae38a9dea163b94a5354e24e772560dc3b218bb3ea7b4f23813f24e"
+    },
+    {
+      "name": "Starry-Eyed Skyrider",
+      "oracle_id": "04e615e6-4088-4170-904c-f2d4bcebed59",
+      "definition": "src/card_definitions/tdm/starry_eyed_skyrider.rs",
+      "definition_sha256": "0dada0d98306dbd1266a06745df3d9ecb416b1502bfbccaae9d836daeb4f2fbf",
+      "provenance_sha256": "c333b336b2b194f3e6ea9ab46ab135bdf29bbb7257eea497985d04c72cb68dcc",
+      "printed_obligations": [
+        "Flying",
+        "Whenever this creature attacks, another target creature you control gains flying until end of turn.",
+        "Attacking tokens you control have flying."
+      ],
+      "intrinsic_body": {
+        "power": "1",
+        "toughness": "3"
+      },
+      "status": "remaining-not-yet-authored-or-verified",
+      "actual_definition_tests": [],
+      "pre_family_definition_sha256": "0dada0d98306dbd1266a06745df3d9ecb416b1502bfbccaae9d836daeb4f2fbf"
+    },
+    {
+      "name": "Static Snare",
+      "oracle_id": "b5b742d2-f19b-47c9-84bd-e85d975900e6",
+      "definition": "src/card_definitions/tdm/static_snare.rs",
+      "definition_sha256": "3abcf31f02177cb04209a06e93a1ef2010e225c5544eb83148afc93893ad8de5",
+      "provenance_sha256": "0d77f464fc472f4bd5febf11e2bfd4a878cfad93e9b05625a6b6349ccbdcf339",
+      "printed_obligations": [
+        "Flash",
+        "This spell costs {1} less to cast for each attacking creature.",
+        "When this enchantment enters, exile target artifact or creature an opponent controls until this enchantment leaves the battlefield."
+      ],
+      "intrinsic_body": {},
+      "status": "remaining-not-yet-authored-or-verified",
+      "actual_definition_tests": [],
+      "pre_family_definition_sha256": "3abcf31f02177cb04209a06e93a1ef2010e225c5544eb83148afc93893ad8de5"
+    },
+    {
+      "name": "Stillness in Motion",
+      "oracle_id": "d73913ea-44d0-408f-9f8b-8e91843f2826",
+      "definition": "src/card_definitions/tdm/stillness_in_motion.rs",
+      "definition_sha256": "780f10447b1d2da0490ee3d99f448a835103d503c34d8bbf0b0b0de283ffdd59",
+      "provenance_sha256": "b605cb4b82246549fad8716affa327cbe2f860b7e461f7e9505c26a34fe2e2a8",
+      "printed_obligations": [
+        "At the beginning of your upkeep, mill three cards. Then if your library has no cards in it, exile this enchantment and put five cards from your graveyard on top of your library in any order."
+      ],
+      "intrinsic_body": {},
+      "status": "remaining-not-yet-authored-or-verified",
+      "actual_definition_tests": [],
+      "pre_family_definition_sha256": "780f10447b1d2da0490ee3d99f448a835103d503c34d8bbf0b0b0de283ffdd59"
+    },
+    {
+      "name": "Stormbeacon Blade",
+      "oracle_id": "f4b3ee43-fc01-425f-8322-29bf6d16cb3f",
+      "definition": "src/card_definitions/tdm/stormbeacon_blade.rs",
+      "definition_sha256": "6cb579860822a551e015aad80b4614a7afc555e7271ceb8337095d00514dd8ab",
+      "provenance_sha256": "c1dd96a310e3beba38f34f7a227532d18471a906dae07de9bbddb7c288f25d35",
+      "printed_obligations": [
+        "Equipped creature gets +3/+0.",
+        "Whenever equipped creature attacks, draw a card if you control three or more attacking creatures.",
+        "Equip {2} ({2}: Attach to target creature you control. Equip only as a sorcery.)"
+      ],
+      "intrinsic_body": {},
+      "status": "remaining-not-yet-authored-or-verified",
+      "actual_definition_tests": [],
+      "pre_family_definition_sha256": "6cb579860822a551e015aad80b4614a7afc555e7271ceb8337095d00514dd8ab"
+    },
+    {
+      "name": "Stormplain Detainment",
+      "oracle_id": "4ad9c550-5605-4ffe-8e27-e9f2d9ada000",
+      "definition": "src/card_definitions/tdm/stormplain_detainment.rs",
+      "definition_sha256": "75eb5b3596507e1f06d8d5407b4d5dda8c52079dab202f236432679f5c7bd4be",
+      "provenance_sha256": "933ad8f3a03c8352da1a5000b02a29d3a0eedc85ebf6586f1a4bdb9c57f58894",
+      "printed_obligations": [
+        "When this enchantment enters, exile target nonland permanent an opponent controls until this enchantment leaves the battlefield."
+      ],
+      "intrinsic_body": {},
+      "status": "existing-candidate-focused-PASS; no new count until integration",
+      "actual_definition_tests": [
+        "stormplain_detainment_exiles_only_opponent_nonland_and_returns_exact_object_on_departure"
+      ],
+      "source_read": {
+        "main_java": "full",
+        "oracle": "full",
+        "helpers": "full bodies pinned in paired JSON"
+      },
+      "pre_family_definition_sha256": "75eb5b3596507e1f06d8d5407b4d5dda8c52079dab202f236432679f5c7bd4be",
+      "proof_cases": [
+        {
+          "test": "stormplain_detainment_exiles_only_opponent_nonland_and_returns_exact_object_on_departure",
+          "status": "PASS",
+          "receipt": "gated_actual_definition_family"
+        }
+      ],
+      "obligation_proofs": [
+        {
+          "printed_obligation": "When this enchantment enters, exile target nonland permanent an opponent controls until this enchantment leaves the battlefield.",
+          "actual_definition_tests": [
+            "stormplain_detainment_exiles_only_opponent_nonland_and_returns_exact_object_on_departure"
+          ]
+        }
+      ],
+      "helper_pins": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/ExileUntilSourceLeavesEffect.java",
+          "sha256": "b996095b17f25f3acb6d649beaf87d3f4abca10338c9444419cca03029d940bf"
+        }
+      ]
+    },
+    {
+      "name": "Stormscale Scion",
+      "oracle_id": "cf37426d-b0ad-42c3-81be-79701aa4e0cf",
+      "definition": "src/card_definitions/tdm/stormscale_scion.rs",
+      "definition_sha256": "b9f3fce31499496d27835ef8b8afbafa615505f0d90d113404ee8280cc7e38cb",
+      "provenance_sha256": "3e4dbd33356073305b359e58e0cfc457514c01efd407cb20386fe02b1ec5aa7e",
+      "printed_obligations": [
+        "Flying",
+        "Other Dragons you control get +1/+1.",
+        "Storm (When you cast this spell, copy it for each spell cast before it this turn. Copies become tokens.)"
+      ],
+      "intrinsic_body": {
+        "power": "4",
+        "toughness": "4"
+      },
+      "status": "gated-focused-PASS; admission and final whole-card review deferred by engine86 hold",
+      "actual_definition_tests": [
+        "stormscale_actual_storm_tokens_and_other_owned_dragon_anthem"
+      ],
+      "source_read": {
+        "main_java": "full",
+        "oracle": "full",
+        "helpers": "full bodies pinned in paired JSON"
+      },
+      "pre_family_definition_sha256": "0dada0d98306dbd1266a06745df3d9ecb416b1502bfbccaae9d836daeb4f2fbf",
+      "proof_cases": [
+        {
+          "test": "stormscale_actual_storm_tokens_and_other_owned_dragon_anthem",
+          "status": "PASS",
+          "receipt": "gated_actual_definition_family"
+        }
+      ],
+      "obligation_proofs": [
+        {
+          "printed_obligation": "Flying",
+          "actual_definition_tests": [
+            "stormscale_actual_storm_tokens_and_other_owned_dragon_anthem"
+          ]
+        },
+        {
+          "printed_obligation": "Other Dragons you control get +1/+1.",
+          "actual_definition_tests": [
+            "stormscale_actual_storm_tokens_and_other_owned_dragon_anthem"
+          ]
+        },
+        {
+          "printed_obligation": "Storm (When you cast this spell, copy it for each spell cast before it this turn. Copies become tokens.)",
+          "actual_definition_tests": [
+            "stormscale_actual_storm_tokens_and_other_owned_dragon_anthem"
+          ]
+        },
+        {
+          "printed_obligation": "Intrinsic power/toughness {\"power\": \"4\", \"toughness\": \"4\"}",
+          "actual_definition_tests": [
+            "stormscale_actual_storm_tokens_and_other_owned_dragon_anthem"
+          ]
+        }
+      ],
+      "helper_pins": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/StormAbility.java",
+          "sha256": "50780a61df4fcc4f08d1055021373554d896532c977990f209edf1dd3606c1fd"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+          "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+        }
+      ]
+    },
+    {
+      "name": "Sultai Monument",
+      "oracle_id": "9db71b76-eda7-49dd-af5a-3de18acb8ccb",
+      "definition": "src/card_definitions/tdm/sultai_monument.rs",
+      "definition_sha256": "6bca42646829c1d7b0ef830b02c34d63f3857bf09cc8823820a7fb5e9dd46f22",
+      "provenance_sha256": "5c343ce8e1b93684c436cd5e85d2429b7bda60de5b82a3edf536f2435d5101b1",
+      "printed_obligations": [
+        "When this artifact enters, search your library for a basic Swamp, Forest, or Island card, reveal it, put it into your hand, then shuffle.",
+        "{2}{B}{G}{U}, {T}, Sacrifice this artifact: Create two 2/2 black Zombie Druid creature tokens. Activate only as a sorcery."
+      ],
+      "intrinsic_body": {},
+      "status": "gated-focused-PASS; admission and final whole-card review deferred by engine86 hold",
+      "actual_definition_tests": [
+        "sultai_monument_all_three_basic_filters_search_shuffle_and_exact_activation"
+      ],
+      "source_read": {
+        "main_java": "full",
+        "oracle": "full",
+        "helpers": "full bodies pinned in paired JSON"
+      },
+      "pre_family_definition_sha256": "780f10447b1d2da0490ee3d99f448a835103d503c34d8bbf0b0b0de283ffdd59",
+      "proof_cases": [
+        {
+          "test": "sultai_monument_all_three_basic_filters_search_shuffle_and_exact_activation",
+          "status": "PASS",
+          "receipt": "gated_actual_definition_family"
+        }
+      ],
+      "obligation_proofs": [
+        {
+          "printed_obligation": "When this artifact enters, search your library for a basic Swamp, Forest, or Island card, reveal it, put it into your hand, then shuffle.",
+          "actual_definition_tests": [
+            "sultai_monument_all_three_basic_filters_search_shuffle_and_exact_activation"
+          ]
+        },
+        {
+          "printed_obligation": "{2}{B}{G}{U}, {T}, Sacrifice this artifact: Create two 2/2 black Zombie Druid creature tokens. Activate only as a sorcery.",
+          "actual_definition_tests": [
+            "sultai_monument_all_three_basic_filters_search_shuffle_and_exact_activation"
+          ]
+        }
+      ],
+      "helper_pins": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+          "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/permanent/token/ZombieDruidToken.java",
+          "sha256": "d0f1b3d7f23a9391f94f052843e2eeba17cbf0cbbf98bfb590621d6bc13ad918"
+        }
+      ]
+    },
+    {
+      "name": "Sunpearl Kirin",
+      "oracle_id": "f17b9356-a329-4f89-b690-afc2eaff4977",
+      "definition": "src/card_definitions/tdm/sunpearl_kirin.rs",
+      "definition_sha256": "5348b8190c060e0132c79d91d6f761d4da35598ca43e6f9aec559e39422a0fd3",
+      "provenance_sha256": "bd36c18d763b62b249f9ee4b0db614cb737e644ef0dd9caea320d2a25fec6993",
+      "printed_obligations": [
+        "Flash",
+        "Flying",
+        "When this creature enters, return up to one other target nonland permanent you control to its owner's hand. If it was a token, draw a card."
+      ],
+      "intrinsic_body": {
+        "power": "2",
+        "toughness": "1"
+      },
+      "status": "gated-focused-PASS; admission and final whole-card review deferred by engine86 hold",
+      "actual_definition_tests": [
+        "kirin_flash_optional_bounce_obeys_other_owned_nonland_and_draws_only_for_tokens"
+      ],
+      "source_read": {
+        "main_java": "full",
+        "oracle": "full",
+        "helpers": "full bodies pinned in paired JSON"
+      },
+      "pre_family_definition_sha256": "948f97f998f8fcb02f0151dc6d6b80e8d2caa52de409c9b83966db4cdfbc0fde",
+      "proof_cases": [
+        {
+          "test": "kirin_flash_optional_bounce_obeys_other_owned_nonland_and_draws_only_for_tokens",
+          "status": "PASS",
+          "receipt": "gated_actual_definition_family"
+        }
+      ],
+      "obligation_proofs": [
+        {
+          "printed_obligation": "Flash",
+          "actual_definition_tests": [
+            "kirin_flash_optional_bounce_obeys_other_owned_nonland_and_draws_only_for_tokens"
+          ]
+        },
+        {
+          "printed_obligation": "Flying",
+          "actual_definition_tests": [
+            "kirin_flash_optional_bounce_obeys_other_owned_nonland_and_draws_only_for_tokens"
+          ]
+        },
+        {
+          "printed_obligation": "When this creature enters, return up to one other target nonland permanent you control to its owner's hand. If it was a token, draw a card.",
+          "actual_definition_tests": [
+            "kirin_flash_optional_bounce_obeys_other_owned_nonland_and_draws_only_for_tokens"
+          ]
+        },
+        {
+          "printed_obligation": "Intrinsic power/toughness {\"power\": \"2\", \"toughness\": \"1\"}",
+          "actual_definition_tests": [
+            "kirin_flash_optional_bounce_obeys_other_owned_nonland_and_draws_only_for_tokens"
+          ]
+        }
+      ],
+      "helper_pins": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+          "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+          "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+        }
+      ]
+    },
+    {
+      "name": "Synchronized Charge",
+      "oracle_id": "faa0055b-c1d2-4ce7-875f-41b4be8030bd",
+      "definition": "src/card_definitions/tdm/synchronized_charge.rs",
+      "definition_sha256": "780f10447b1d2da0490ee3d99f448a835103d503c34d8bbf0b0b0de283ffdd59",
+      "provenance_sha256": "c6793f0db629c5bcfba6db986084d283c9c82d437b8671f55febbb6147bfad29",
+      "printed_obligations": [
+        "Distribute two +1/+1 counters among one or two target creatures you control. Creatures you control with counters on them gain vigilance and trample until end of turn.",
+        "Harmonize {4}{G} (You may cast this card from your graveyard for its harmonize cost. You may tap a creature you control to reduce that cost by {X}, where X is its power. Then exile this spell.)"
+      ],
+      "intrinsic_body": {},
+      "status": "remaining-not-yet-authored-or-verified",
+      "actual_definition_tests": [],
+      "pre_family_definition_sha256": "780f10447b1d2da0490ee3d99f448a835103d503c34d8bbf0b0b0de283ffdd59"
+    },
+    {
+      "name": "Taigam, Master Opportunist",
+      "oracle_id": "49f2cbc3-bd03-48e6-b1c4-d7f315b8579d",
+      "definition": "src/card_definitions/tdm/taigam_master_opportunist.rs",
+      "definition_sha256": "780f10447b1d2da0490ee3d99f448a835103d503c34d8bbf0b0b0de283ffdd59",
+      "provenance_sha256": "6d1d72ce53c8ac337c9943d9b023bb94dd35f96918d16de10d339b750d393432",
+      "printed_obligations": [
+        "Flurry \u2014 Whenever you cast your second spell each turn, copy it, then exile the spell you cast with four time counters on it. If it doesn't have suspend, it gains suspend. (At the beginning of its owner's upkeep, they remove a time counter. When the last is removed, they may play it without paying its mana cost. If it's a creature, it has haste.)"
+      ],
+      "intrinsic_body": {
+        "power": "2",
+        "toughness": "2"
+      },
+      "status": "remaining-not-yet-authored-or-verified",
+      "actual_definition_tests": [],
+      "pre_family_definition_sha256": "780f10447b1d2da0490ee3d99f448a835103d503c34d8bbf0b0b0de283ffdd59"
+    },
+    {
+      "name": "Teeming Dragonstorm",
+      "oracle_id": "2154cc68-41a4-4e88-9fe0-e0150dc0be45",
+      "definition": "src/card_definitions/tdm/teeming_dragonstorm.rs",
+      "definition_sha256": "7e9ff1395cc9fa5bee20fd366cb64d8a5dd7d1b4f58457b33bbef25834b543e4",
+      "provenance_sha256": "6ed8d5bbccdfcb710a4943d8bcf9a844dea5dcb026e2c2124df609b9c62bcc5f",
+      "printed_obligations": [
+        "When this enchantment enters, create two 2/2 white Soldier creature tokens.",
+        "When a Dragon you control enters, return this enchantment to its owner's hand."
+      ],
+      "intrinsic_body": {},
+      "status": "gated-focused-PASS; admission and final whole-card review deferred by engine86 hold",
+      "actual_definition_tests": [
+        "teeming_creates_two_white_soldiers_and_returns_only_for_own_dragon"
+      ],
+      "source_read": {
+        "main_java": "full",
+        "oracle": "full",
+        "helpers": "full bodies pinned in paired JSON"
+      },
+      "pre_family_definition_sha256": "780f10447b1d2da0490ee3d99f448a835103d503c34d8bbf0b0b0de283ffdd59",
+      "proof_cases": [
+        {
+          "test": "teeming_creates_two_white_soldiers_and_returns_only_for_own_dragon",
+          "status": "PASS",
+          "receipt": "gated_actual_definition_family"
+        },
+        {
+          "test": "actual_dragonstorm_creature_copies_trigger_for_self_only_under_their_own_dragon_provider",
+          "status": "PASS",
+          "receipt": "gated_actual_definition_family"
+        }
+      ],
+      "obligation_proofs": [
+        {
+          "printed_obligation": "When this enchantment enters, create two 2/2 white Soldier creature tokens.",
+          "actual_definition_tests": [
+            "teeming_creates_two_white_soldiers_and_returns_only_for_own_dragon"
+          ]
+        },
+        {
+          "printed_obligation": "When a Dragon you control enters, return this enchantment to its owner's hand.",
+          "actual_definition_tests": [
+            "teeming_creates_two_white_soldiers_and_returns_only_for_own_dragon"
+          ]
+        },
+        {
+          "printed_obligation": "A Dragon-form self entrant under the source controller also returns this enchantment; opposing subtype provider does not qualify",
+          "actual_definition_tests": [
+            "actual_dragonstorm_creature_copies_trigger_for_self_only_under_their_own_dragon_provider"
+          ]
+        }
+      ],
+      "helper_pins": [
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+          "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/game/permanent/token/Soldier22Token.java",
+          "sha256": "b9e82c3d87d8984cc4e5db9d9f7b3ecd37cfe6537ecac5bc5dca76952499570d"
+        },
+        {
+          "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+          "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandSourceEffect.java",
+          "sha256": "3af51f033e9d30c6f946feca7948ce7ee423fdd1314a715820d3ae9d98ca7935"
+        }
+      ]
+    }
+  ],
+  "authorized_auxiliary_repair": {
+    "name": "Roiling Dragonstorm",
+    "not_additional_membership": true,
+    "status": "gated self-entry edge PASS and original84 ordinary PASS; root restores previous92-card G\u2013S count only after integrating repair; no additional membership or count",
+    "reason": "Printed any own Dragon includes a Dragon-form self entrant. Use existing SubtypeEntersYou rather than the SELF-OR-other operator.",
+    "tests": [
+      "actual_dragonstorm_creature_copies_trigger_for_self_only_under_their_own_dragon_provider",
+      "roiling_dragonstorm_loots_and_returns_only_for_own_dragon_entry"
+    ],
+    "repair_commit": "4ee982d5533d4337fa2fefba3692f8438c73bb98",
+    "definition_sha256": "2af9c3ebad813f5d13c2fae4e86927206749b68a8d3ad654700ea333eb27b655",
+    "provenance_sha256": "53d27f975e01e11a413ed89787aadcec91c49ed6b2f22fedc9d18d8df703c423",
+    "gated_case": "actual_dragonstorm_creature_copies_trigger_for_self_only_under_their_own_dragon_provider",
+    "ordinary_case": "roiling_dragonstorm_loots_and_returns_only_for_own_dragon_entry"
+  },
+  "focused_family_physical_cards": 10,
+  "newly_authored_gated_cards": 7,
+  "existing_candidate_cards_in_family": 3,
+  "remaining_repository_candidates": 15,
+  "test_sha256": "b87ccba16831fbd93711d1603991765fd654ded54dc8f18e94081383e2f7be55",
+  "validation": {
+    "gated_actual_definition_family": {
+      "path": "<cache>/rustmage-tdm/post85-gated-families-1793821082714343829/g_s_additional/native.json",
+      "sha256": "b1381b88037c327a116ee0d7f2a5936d2e47e420af1ae26831c454c148081cc4",
+      "cases": 12,
+      "pass": 12,
+      "compile_seconds": 15.751286225975491,
+      "execution_seconds": 0.03492840297985822,
+      "inputs_unchanged": true,
+      "admitted_rerun": false
+    },
+    "original_g_s_ordinary_restoration": {
+      "path": "<cache>/rustmage-tdm/old-dragonstorm-restoration-1793821631385562618/g_s/native.json",
+      "sha256": "b0d23123e908c0dab2e145329553f90ef269645661ae9e780d486ee3a8ac537f",
+      "cases": 84,
+      "pass": 84,
+      "compile_seconds": 4.02555315796053,
+      "execution_seconds": 0.05008147103944793,
+      "scope": "Original G\u2013S regression after ordinary Roiling restoration only; does not admit any additional S\u2013Z card"
+    },
+    "cargo_owner": "root; author launched no Cargo",
+    "full_set_acceptance": "Not executed; complete-game harness remains parked and no game acceptance claim is made"
+  },
+  "parked_work": {
+    "remaining_15": "Full Oracle/main Java read; source and scenario drafts exist only outside repository and were not compiled or executed",
+    "next_refinements": [
+      "Explicit Sultai search pre/post RNG assertion",
+      "Refresh remaining-family helper pins when authoring resumes",
+      "Shiko copy/free cast must not add an unprinted face-mana-value budget after its MV\u22643 target restriction"
+    ],
+    "hold": "No further card/source/provenance/test edits or Cargo until engine86 is accepted and exact cache warmed by root"
+  }
+}

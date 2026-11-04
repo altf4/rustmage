@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "90a3830edab078ea3b08ccaf8942979de21cab6926e14deebb03f2277d114f8b"
   },
-  "physical_metadata_sha256": "fc6794236583a2945637419a0411f19541e85635eee41e5eb36f6344a9c448a5"
+  "physical_metadata_sha256": "fc6794236583a2945637419a0411f19541e85635eee41e5eb36f6344a9c448a5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StormscaleScion.java",
+  "java_sha256": "2037afececca2b63cf8b1572750884e6688ed897c42863f61731bb1f679d95b3",
+  "rules_tests": "tests/tdm_cards_s_z_additional.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StormAbility.java",
+      "sha256": "50780a61df4fcc4f08d1055021373554d896532c977990f209edf1dd3606c1fd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    }
+  ]
 }

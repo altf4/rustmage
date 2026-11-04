@@ -8,5 +8,56 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b21e42145cf3028068298207adbba533a63ebba75a1cc32ad1facb6707601607"
   },
-  "physical_metadata_sha256": "b930a99e704d7147a07d9c7e82ee20a0b1efa4a81be5c02a62902c52e4749534"
+  "physical_metadata_sha256": "b930a99e704d7147a07d9c7e82ee20a0b1efa4a81be5c02a62902c52e4749534",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SarkhanDragonAscendant.java",
+  "java_sha256": "af3b48503cf41d22bac4d9003352ff888ba4cd38d480196914560fb7cb26aeb0",
+  "rules_tests": "tests/tdm_cards_s_z_additional.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/BeholdCost.java",
+      "sha256": "bc668079587e3c3383c7d071558d165ef37aaadbf5618e3e0d9d3654bf1b34de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/constants/BeholdType.java",
+      "sha256": "b9b6ef548969c8e1bbde48ec05adb6ae62139ab3fbdd72a91f8154817dc17c2c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/TreasureToken.java",
+      "sha256": "76bcec2847fbc47566c41b561b5bf8890073a94cc1da9cda19b369ff69782d2e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardSubTypeSourceEffect.java",
+      "sha256": "7f49c9464a917091481b5f7636bbfbaf7f90041be840b2da070c57ca0214a765"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ]
 }

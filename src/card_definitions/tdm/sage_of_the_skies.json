@@ -8,5 +8,36 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d4bc9220fdfdd53b4b097865f1380d0518305409d66781ced30570483cf6ef0c"
   },
-  "physical_metadata_sha256": "f1de5f025284e4313264dfe4efef804dbc0a501a94609a38eb1d50c1cbb360bf"
+  "physical_metadata_sha256": "f1de5f025284e4313264dfe4efef804dbc0a501a94609a38eb1d50c1cbb360bf",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SageOfTheSkies.java",
+  "java_sha256": "bba9ac4d8fe8efe13c181c59193136b84eaf01a4c07d74c4189e19e1890238c5",
+  "rules_tests": "tests/tdm_cards_s_z_additional.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CastAnotherSpellThisTurnCondition.java",
+      "sha256": "8cacb7cbc8fb2f4cdacf147b16e4cd9972a6532c381c6e115901871d611b0eb4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CastSourceTriggeredAbility.java",
+      "sha256": "47edf1f8fa0fea60841309f6698825a1b6da0427d3580c91c750763fbe9ae22d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopySourceSpellEffect.java",
+      "sha256": "5bd130232d8dd64f8aa8049cf78c1f87a4d877c2ff4b02668e5b3c6b85e4bc95"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    }
+  ]
 }

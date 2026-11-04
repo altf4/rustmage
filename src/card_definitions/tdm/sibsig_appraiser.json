@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "45e0e10465618cec654b942b886ac6d4e2aa8d359bde2aac67e78987f6110291"
   },
-  "physical_metadata_sha256": "fc2e1fd7ebfeae9cafef119dee39b6d990b95f62430ec8423fa939790419e71d"
+  "physical_metadata_sha256": "fc2e1fd7ebfeae9cafef119dee39b6d990b95f62430ec8423fa939790419e71d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SibsigAppraiser.java",
+  "java_sha256": "49c41dd749559a85e5b1cf60245cf7d7b8cb419f3ff6876457fe4fc43828ec80",
+  "rules_tests": "tests/tdm_cards_s_z_additional.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
+      "sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7"
+    }
+  ]
 }

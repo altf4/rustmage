@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3b72f1c0ddec376319ece20f9caf8e3e71e593e249a01e958352495ecee7d31a"
   },
-  "physical_metadata_sha256": "1d4ac9cc92b48f5797ffa11b8288c8f13e0205e3e257f96b91bdea880c8cf1d1"
+  "physical_metadata_sha256": "1d4ac9cc92b48f5797ffa11b8288c8f13e0205e3e257f96b91bdea880c8cf1d1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TeemingDragonstorm.java",
+  "java_sha256": "ec2f3c9b0eb3bf6b34391b0d8965c8e840a9bb1558df0cb98344a85f1e89e854",
+  "rules_tests": "tests/tdm_cards_s_z_additional.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/Soldier22Token.java",
+      "sha256": "b9e82c3d87d8984cc4e5db9d9f7b3ecd37cfe6537ecac5bc5dca76952499570d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandSourceEffect.java",
+      "sha256": "3af51f033e9d30c6f946feca7948ce7ee423fdd1314a715820d3ae9d98ca7935"
+    }
+  ]
 }

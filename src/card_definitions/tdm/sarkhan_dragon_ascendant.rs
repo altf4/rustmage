@@ -1,16 +1,40 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Source-audited direct typed definition; see paired provenance.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Creature(2, 2),
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::SelfEnters,
+            targets: TargetPlan::NONE,
+            program: &[
+                Instruction::MayBehold {
+                    subtype: "Dragon",
+                    skip: 1,
+                },
+                Instruction::CreateTokens {
+                    token: Card(5302),
+                    amount: 1,
+                    tapped: false,
+                },
+            ],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::SubtypeEntersYou("Dragon"),
+            targets: TargetPlan::NONE,
+            program: &[
+                Instruction::PutCounters {
+                    subject: Subject::Source,
+                    kind: CounterKind::PlusOne,
+                    amount: 1,
+                },
+                Instruction::AnimateSource(AnimationSpec {
+                    artifact: false,
+                    creature_types: AnimationCreatureTypes::Additional(&["Dragon"]),
+                    base: None,
+                    keywords: Keywords::FLYING,
+                    duration: AnimationDuration::EndOfTurn,
+                }),
+            ],
+        },
+    ],
     ..CardRules::EMPTY
 };

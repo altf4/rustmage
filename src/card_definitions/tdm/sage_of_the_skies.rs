@@ -1,16 +1,21 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Source-audited direct typed definition; see paired provenance.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(2, 3),
     keywords: Keywords::FLYING.union(Keywords::LIFELINK),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::InterveningIf {
+            event: &TriggerCondition::SelfCast,
+            guard: StepGuard::Threshold {
+                value: StepValue::SpellsCast,
+                minimum: Some(2),
+                maximum: None,
+            },
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::CopyCapturedSpell {
+            count: SpellCopyCount::One,
+            retarget: false,
+        }],
+    }],
     ..CardRules::EMPTY
 };
