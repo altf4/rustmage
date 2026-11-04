@@ -2,7 +2,7 @@
   "schema": 1,
   "dependency": "E:TOKEN_ENTRY_COUNTERS",
   "audit_group": 85,
-  "status": "Actualgatedcarddiagnosticconfirmed;sharedengineaudit/implementationpending",
+  "status": "Generic fixed-token entry draft authored; focused tests and independent source reviews pending",
   "accepted_prior_engine": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
   "reproduction": {
     "report": "/home/altf4/.cache/rustmage-tdm/tdm-globe-token-entry-diagnostic/native.json",
@@ -36,5 +36,17 @@
   "owner": "/root/tdm_cards_a_g",
   "gated_card_checkpoint": "65c1c836e",
   "card_count_unchanged": 187,
-  "whole_set_acceptance": false
+  "whole_set_acceptance": false,
+  "planned_paths": [
+    "crates/engine/src/engine_tokens.rs",
+    "crates/engine/src/engine_replacements.rs",
+    "crates/engine/src/engine_mobilize.rs",
+    "tests/tdm_token_entry_counters.rs"
+  ],
+  "schema_audit": {
+    "decision": "Retain observation schema201 unless final implementation adds an actual serialized field or action identity",
+    "basis": "Work, ReplacementState, EntryBatch, State and Snapshot do not serialize; fixed tokens reuse the existing entry/replacement action and view shapes. Newly reachable gameplay choices do not themselves change the wire shape.",
+    "independent_reviewer": "/root/tdm_engine_review_one",
+    "owned_continuation_tests": "Still required: exact deferred completion, nested owned bytes, raw/index siblings, disposal/restore, transaction/privacy and termination."
+  }
 }
