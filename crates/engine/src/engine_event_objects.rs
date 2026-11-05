@@ -33,7 +33,7 @@ pub enum EventObjectFacts {
     /// Identity only; no private or unused event characteristics are captured.
     Identity,
     DamageActor(DamageSource),
-    /// Current or latest battlefield controller of an exact untargeted recipient.
+    /// Current or last-known controller of an exact untargeted object.
     Controller(Player),
     /// Exact untargeted entrant's current or latest battlefield copiable values.
     Copiable(CopyRecipe),
@@ -222,7 +222,7 @@ impl Game {
                     .map(|f| &f.announcement.item),
             )
     }
-    /// All callers pass the intact pre-event battlefield, before ANY commit.
+    /// All callers pass intact pre-move views before committing any moves.
     pub(super) fn capture_event_object_facts<'a>(
         &mut self,
         before: impl IntoIterator<Item = &'a ObjectView>,
@@ -237,7 +237,7 @@ impl Game {
         }
         let facts: Vec<_> = before
             .into_iter()
-            .filter(|v| v.zone == Zone::Battlefield)
+            .filter(|v| matches!(v.zone, Zone::Battlefield | Zone::Stack))
             .filter(|v| {
                 self.event_fact_packets().any(|p| {
                     p.event_object
@@ -549,18 +549,27 @@ impl Game {
             .collect();
         self.apply_damage_batch(&events);
     }
+    pub(super) fn event_object_controller(&self, item: &SpellView) -> Option<Player> {
+        let event = item.event_object.as_ref()?;
+        let saved = match event.facts {
+            EventObjectFacts::Controller(controller) => controller,
+            EventObjectFacts::DamageActor(source) => source.controller,
+            _ => return None,
+        };
+        let current = self
+            .state
+            .objects
+            .get(event.object.card as usize)
+            .filter(|object| {
+                matches!(object.zone, Zone::Battlefield | Zone::Stack)
+                    && object.generation == event.object.generation
+            });
+        Some(current.map_or(saved, |object| object.controller))
+    }
     pub(super) fn damage_event_object_controller(&mut self, item: &SpellView, amount: i32) {
-        let event = item.event_object.as_ref().expect("blocker event object");
-        let EventObjectFacts::Controller(saved) = event.facts else {
-            unreachable!("blocker controller facts")
-        };
-        let controller = if self.on_battlefield(event.object.card)
-            && self.object_ref(event.object.card) == event.object
-        {
-            self.state.objects[event.object.card as usize].controller
-        } else {
-            saved
-        };
+        let controller = self
+            .event_object_controller(item)
+            .expect("blocker controller facts");
         self.apply_damage_batch(&[DamageEvent {
             source: self.program_damage_source(item),
             target: Target::Player(controller),

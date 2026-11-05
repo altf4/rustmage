@@ -9,7 +9,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         targets: TargetPlan::NONE,
         program: &[
             Instruction::DamagePlayersScaled(
-                PlayerSet::EventPlayer,
+                PlayerSet::EventObjectController,
                 AmountValue::DamageEventAmount,
             ),
             Instruction::DrawScaled(PlayerSet::Controller, AmountValue::DamageEventAmount),
