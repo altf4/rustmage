@@ -4321,14 +4321,30 @@ impl Game {
                     }
                 }
                 Instruction::If { guard, skip } => {
-                    if !self.step_guard(
-                        guard,
-                        item.controller,
-                        item.source
-                            .expect("instruction requires an object source")
-                            .object,
-                        item.source_tapped,
-                    ) {
+                    let source = item.source.expect("instruction requires an object source");
+                    let holds = match guard {
+                        StepGuard::Expression {
+                            value: StatValue::SourceAttacking,
+                            minimum,
+                            maximum,
+                        } if source.facts.battlefield
+                            && (!self.on_battlefield(source.id)
+                                || self.object_ref(source.id) != source.object) =>
+                        {
+                            // A departed source keeps the combat status captured
+                            // at its last battlefield incarnation.
+                            let attacking = i128::from(source.facts.attacking);
+                            minimum.is_none_or(|min| attacking >= min)
+                                && maximum.is_none_or(|max| attacking <= max)
+                        }
+                        _ => self.step_guard(
+                            guard,
+                            item.controller,
+                            source.object,
+                            item.source_tapped,
+                        ),
+                    };
+                    if !holds {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
