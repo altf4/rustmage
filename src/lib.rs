@@ -69,7 +69,8 @@ pub use rustmage_core::engine::{
     TemporaryAbilityView, TemporaryControlView, TemporaryCopyView, TokenGroupView,
     TriggerSourceMoveView, TriggerUse, TurnFactsView, TurnScheduleView, UntilNextTurnStatsView,
     WarpedCard, WaterbendChoiceView, XChoiceView, XInterval, Zone, ZoneChange,
-    ZoneReplacementChoiceView, ZoneReplacementKind, ZoneRevealView, ZoneSearchView,
+    ZoneReplacementChoiceView, ZoneReplacementKind, ZoneReplacementPickView, ZoneRevealView,
+    ZoneSearchView,
 };
 pub use rustmage_core::policy;
 pub use rustmage_core::protocol;

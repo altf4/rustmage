@@ -33,12 +33,21 @@ pub struct ZoneRevealView {
     pub from: Zone,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct ZoneReplacementPickView {
+    pub object: ObjectRef,
+    pub player: Player,
+    pub effect: ZoneReplacementKind,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ZoneReplacementChoiceView {
     pub card: Card,
     pub owner: Player,
     pub from: Zone,
     pub choices: Vec<ZoneReplacementKind>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub prior_public_choices: Vec<ZoneReplacementPickView>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -46,6 +55,7 @@ pub(super) struct Request {
     object: ObjectRef,
     requested: Zone,
     affected: Player,
+    public: bool,
     view: ZoneReplacementChoiceView,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -54,6 +64,8 @@ struct Pick {
     object: ObjectRef,
     requested: Zone,
     effect: ZoneReplacementKind,
+    player: Player,
+    public: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -101,11 +113,13 @@ pub(super) fn test_checkpoint(state: State, object: ObjectRef, owner: Player) ->
                 object,
                 requested: Zone::Graveyard,
                 affected: owner,
+                public: false,
                 view: ZoneReplacementChoiceView {
                     card: Card::Forest,
                     owner,
                     from: Zone::Hand,
                     choices: vec![ZoneReplacementKind::Prevent],
+                    prior_public_choices: Vec::new(),
                 },
             },
         })),
@@ -276,16 +290,27 @@ impl Game {
             return None;
         };
         self.shares_information(viewer, player).then(|| {
-            self.state
+            let choice = self
+                .state
                 .zone_rules
                 .as_ref()
                 .unwrap()
                 .choice
                 .as_ref()
-                .unwrap()
-                .request
-                .view
-                .clone()
+                .unwrap();
+            let mut view = choice.request.view.clone();
+            view.prior_public_choices = choice
+                .base
+                .picks
+                .iter()
+                .filter(|pick| pick.public)
+                .map(|pick| ZoneReplacementPickView {
+                    object: pick.object,
+                    player: pick.player,
+                    effect: pick.effect,
+                })
+                .collect();
+            view
         })
     }
     pub(super) fn zone_choice_actions(&self, mut emit: impl FnMut(Action) -> bool) -> bool {
@@ -367,6 +392,58 @@ impl Game {
                 && discard_cause.is_some_and(|cause| cause != before.owner),
         }
     }
+    /// CR 616.1: ask affected players in APNAP order. Retain the original
+    /// movement order for commit, including explicit library positions.
+    pub(super) fn plan_zone_batch<T>(
+        &mut self,
+        mut frozen: Vec<(ObjectView, Zone, FrozenRules, T)>,
+    ) -> Vec<(ObjectView, Plan, T)> {
+        let active = self.state.active;
+        let requires_apnap = frozen.len() > 1
+            && frozen.iter().any(|(_, _, rules, _)| {
+                // All other effects collapse to a single exile option.
+                rules.prevent
+                    || rules.shuffle_self
+                    || rules.discard_to_battlefield
+                    || !rules.reflexive_exiles.is_empty()
+            })
+            && {
+                let mut order = frozen
+                    .iter()
+                    .map(|(before, _, _, _)| affected_player(before));
+                order.any(|player| player != active) && order.any(|player| player == active)
+            };
+        if requires_apnap {
+            let mut plans = vec![None; frozen.len()];
+            for player in [active, active.other()] {
+                for ((before, requested, rules, _), plan) in frozen.iter_mut().zip(&mut plans) {
+                    if affected_player(before) == player {
+                        *plan =
+                            Some(self.plan_zone_move(before, *requested, std::mem::take(rules)));
+                    }
+                }
+            }
+            return frozen
+                .into_iter()
+                .zip(plans)
+                .map(|((before, _, _, data), plan)| {
+                    (
+                        before,
+                        plan.expect("every affected player was considered"),
+                        data,
+                    )
+                })
+                .collect();
+        }
+        frozen
+            .into_iter()
+            .map(|(before, requested, rules, data)| {
+                let plan = self.plan_zone_move(&before, requested, rules);
+                (before, plan, data)
+            })
+            .collect()
+    }
+
     pub(super) fn plan_zone_move(
         &mut self,
         before: &ObjectView,
@@ -473,11 +550,22 @@ impl Game {
                     object: before.reference,
                     requested,
                     affected: affected_player(before),
+                    public: match before.zone {
+                        Zone::Battlefield | Zone::Stack | Zone::Graveyard | Zone::Command => true,
+                        Zone::Exile => self.state.linked_choices.as_ref().is_none_or(|choices| {
+                            !choices
+                                .hidden
+                                .iter()
+                                .any(|&(_, exiled, _)| exiled == before.reference)
+                        }),
+                        _ => false,
+                    },
                     view: ZoneReplacementChoiceView {
                         card: before.card,
                         owner: before.owner,
                         from: before.zone,
                         choices,
+                        prior_public_choices: Vec::new(),
                     },
                 };
                 // Private typed unwind uses the existing action checkpoint and never calls the panic hook.
@@ -588,6 +676,8 @@ impl Game {
             object: choice.request.object,
             requested: choice.request.requested,
             effect,
+            player: choice.request.affected,
+            public: choice.request.public,
         });
         let actor = base.actor;
         let action = base.action.clone();
