@@ -5950,6 +5950,7 @@ impl Game {
                                     spec.rule,
                                     actor,
                                     self.object_ref(card),
+                                    obj.card,
                                     |t| offer(Some(t)),
                                 )
                             {
@@ -6017,6 +6018,7 @@ impl Game {
                                         spec.rule,
                                         actor,
                                         source,
+                                        obj.card,
                                         |target| {
                                             emit(Action::Cast {
                                                 card,

@@ -36,7 +36,7 @@ impl Game {
                 } != source)
             && (!filter.cards_only || o.is_card())
             && (filter.kind == 0 || kinds(id, o) & filter.kind != 0)
-            && kinds(id, o) & filter.exclude == 0
+            && (filter.exclude == 0 || kinds(id, o) & filter.exclude == 0)
             && filter.subtype.is_none_or(|s| subtypes(id).has(o.card, s))
             && (!filter.basic || (kinds(id, o) & 2 != 0 && o.card.is_basic_land()))
     }
@@ -522,20 +522,8 @@ impl Game {
                 .filter(|&(id, o)| {
                     Self::count_object_matches(filter, source, owner, id, o, subtypes, kinds)
                 })
-                .try_fold(0i128, |total, (id, object)| {
-                    // Face-down cards in exile have no mana cost, even when
-                    // their owner is permitted to look at the underlying face.
-                    let hidden = object.zone == Zone::Exile
-                        && self.state.linked_choices.as_ref().is_some_and(|choices| {
-                            choices.hidden.iter().any(|(_, reference, _)| {
-                                reference.card == id && reference.generation == object.generation
-                            })
-                        });
-                    total.checked_add(if hidden {
-                        0
-                    } else {
-                        i128::from(mana_value(id))
-                    })
+                .try_fold(0i128, |total, (id, _)| {
+                    total.checked_add(i128::from(mana_value(id)))
                 })
                 .capacity("total mana value exhausted"),
             StatValue::GraveyardCardTypes => objects()

@@ -228,6 +228,7 @@ fn colored_protection_targeting_checks_all_five_colors_for_both_controllers_befo
                             TargetRule::Creature,
                             p,
                             g.object_ref(source),
+                            Card::from_name(name).unwrap(),
                             Target::Card(recipient)
                         ),
                         protected_color != source_color,
@@ -335,7 +336,7 @@ fn ability_targeting_rechecks_current_source_color_and_uses_exact_departure_lki_
     let source = put(&mut g, Player::P0, "Savannah Lions", Zone::Battlefield);
     let recipient = put(&mut g, Player::P1, "Hill Giant", Zone::Battlefield);
     paint(&mut g, source, 2 | 4); // any matching component of a multicolor source is enough
-    assert!(!g.cast_target_matches(
+    assert!(!g.activation_target_matches(
         TargetRule::Creature,
         Player::P0,
         g.object_ref(source),

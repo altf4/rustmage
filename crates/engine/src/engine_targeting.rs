@@ -723,6 +723,14 @@ struct TargetSourceCharacteristics<'a> {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl<'a> TargetSourceCharacteristics<'a> {
+    fn for_spell(reference: ObjectRef, definition: Card) -> Self {
+        Self {
+            reference,
+            snapshot: None,
+            attachment: None,
+            spell: Some(definition),
+        }
+    }
     fn from_item(item: &'a SpellView) -> Self {
         let source = item
             .source
@@ -906,12 +914,7 @@ impl Game {
         source: ObjectRef,
         definition: Card,
     ) -> bool {
-        let qualification = Some(TargetSourceCharacteristics {
-            reference: source,
-            snapshot: None,
-            attachment: None,
-            spell: Some(definition),
-        });
+        let qualification = Some(TargetSourceCharacteristics::for_spell(source, definition));
         let available = |spec: TargetSpec| {
             if spec.min == 0 {
                 return true;
@@ -1598,12 +1601,14 @@ impl Game {
         rule: TargetRule,
         controller: Player,
         source: ObjectRef,
+        definition: Card,
         target: Target,
     ) -> bool {
+        let qualification = Some(TargetSourceCharacteristics::for_spell(source, definition));
         if let Some(world) = self.cast_departure(source, controller) {
-            self.target_matches_in_world(&world, rule, controller, source, target, None)
+            self.target_matches_in_world(&world, rule, controller, source, target, qualification)
         } else {
-            self.target_matches_in_world(self, rule, controller, source, target, None)
+            self.target_matches_in_world(self, rule, controller, source, target, qualification)
         }
     }
     fn target_source_qualities(
@@ -1676,7 +1681,7 @@ impl Game {
             }
             TargetRule::LinkedExileCreature { ability_origin } => {
                 return matches!(target,Target::Card(id) if lookup(id).is_some_and(|o|
-                    o.zone==Zone::Exile && o.is_card() && o.card.is_creature()
+                    o.zone==Zone::Exile && o.is_card() && world.kinds(id) & 1 != 0
                     && self.linked_exile_for_origin(source,ability_origin.unwrap_or_else(||self.copy_ability_origin(source))).contains(&self.object_ref(id))));
             }
             TargetRule::GraveCreatureEnteredThisTurn => {
@@ -2000,12 +2005,14 @@ impl Game {
         rule: TargetRule,
         controller: Player,
         source: ObjectRef,
+        definition: Card,
         emit: impl FnMut(Target) -> bool,
     ) -> bool {
+        let qualification = Some(TargetSourceCharacteristics::for_spell(source, definition));
         if let Some(world) = self.cast_departure(source, controller) {
-            self.visit_targets_in_world(&world, rule, controller, source, None, emit)
+            self.visit_targets_in_world(&world, rule, controller, source, qualification, emit)
         } else {
-            self.visit_targets_in_world(self, rule, controller, source, None, emit)
+            self.visit_targets_in_world(self, rule, controller, source, qualification, emit)
         }
     }
     fn visit_targets_in_world<W: CharacteristicWorld + ?Sized>(

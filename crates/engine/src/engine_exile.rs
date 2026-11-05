@@ -759,7 +759,7 @@ impl Game {
                 .linked_choices
                 .get_or_insert_default()
                 .hidden
-                .push((source.object, event.after, 1 << item.controller.index()));
+                .insert(event.after, (source.object, 1 << item.controller.index()));
             self.grant_exile_play_permission(item.controller, event.after, false);
             if let Some(permission) = self
                 .state
@@ -794,7 +794,7 @@ impl Game {
                 .linked_choices
                 .get_or_insert_default()
                 .hidden
-                .push((source.object, event.after, 1 << item.controller.index()));
+                .insert(event.after, (source.object, 1 << item.controller.index()));
             let at = self
                 .state
                 .exile_permissions

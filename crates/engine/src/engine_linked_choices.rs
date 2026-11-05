@@ -1,6 +1,7 @@
 //! Owned pile/type choices and exact links shared by the Foundations choice batch.
 use super::*;
 use crate::PermanentType;
+use std::collections::BTreeMap;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -71,7 +72,7 @@ pub(super) struct ChoiceState {
     sacrifice: Option<Option<ObjectRef>>,
     pub links: Vec<LinkedExileView>,
     pub null_cast_links: Vec<NullCastLink>,
-    pub hidden: Vec<(ObjectRef, ObjectRef, u8)>,
+    pub hidden: BTreeMap<ObjectRef, (ObjectRef, u8)>,
     pub hideaway_controllers: Vec<(ObjectRef, u8)>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -416,15 +417,21 @@ impl Game {
     }
     pub(super) fn reveal_hideaway_object(&mut self, object: ObjectRef) {
         if let Some(data) = self.state.linked_choices.as_mut() {
-            data.hidden.retain(|&(_, exiled, _)| exiled != object);
+            data.hidden.remove(&object);
         }
     }
+    pub(super) fn exiled_face_down(&self, object: ObjectRef) -> bool {
+        self.state
+            .linked_choices
+            .as_ref()
+            .is_some_and(|data| data.hidden.contains_key(&object))
+    }
     pub(super) fn can_view_hideaway(&self, viewer: Player, object: ObjectRef) -> bool {
-        self.state.linked_choices.as_ref().is_none_or(|data| {
-            data.hidden.iter().all(|&(_, exiled, viewers)| {
-                exiled != object || viewers & self.information_mask(viewer) != 0
-            })
-        })
+        self.state
+            .linked_choices
+            .as_ref()
+            .and_then(|data| data.hidden.get(&object))
+            .is_none_or(|&(_, viewers)| viewers & self.information_mask(viewer) != 0)
     }
     pub(super) fn remember_hideaway_controller(&mut self, source: ObjectRef, player: Player) {
         let has_hideaway = self.state.objects[source.card as usize].card.triggers().iter().any(|ability| ability.program.iter().any(|instruction| matches!(instruction, Instruction::SelectLibraryTo(effect) if effect.destination == crate::cards::LibraryPickDestination::Hideaway)));
@@ -442,7 +449,7 @@ impl Game {
             data.hideaway_controllers
                 .push((source, 1 << player.index()));
         }
-        for (linked, _, viewers) in &mut data.hidden {
+        for (linked, viewers) in data.hidden.values_mut() {
             if *linked == source {
                 *viewers |= 1 << player.index();
             }
@@ -665,7 +672,7 @@ impl Game {
             let o = &objects[source.card as usize];
             (o.zone == Zone::Battlefield && o.generation == source.generation) || waiting(source)
         });
-        data.hidden.retain(|&(_, exiled, _)| {
+        data.hidden.retain(|exiled, _| {
             let o = &objects[exiled.card as usize];
             o.zone == Zone::Exile && o.generation == exiled.generation
         });

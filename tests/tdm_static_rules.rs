@@ -542,7 +542,7 @@ fn equipped_hexproof_blocks_only_opposing_exactly_one_color_sources_with_live_co
             for colors in [0, 1, 2, 4, 8, 16, 3, 31] {
                 paint(&mut g, source, colors);
                 assert_eq!(
-                    g.cast_target_matches(
+                    g.activation_target_matches(
                         TargetRule::Creature,
                         owner,
                         g.object_ref(source),

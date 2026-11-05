@@ -58,9 +58,10 @@ fn cast_target_preflight_projects_the_departure_for_a_live_power_filter() {
         predicate: &TargetPredicate::PowerAtMost(0),
     };
 
+    let definition = game.object_view(flashback).card;
     assert!(!game.activation_target_matches(rule, p, source, target));
-    assert!(game.cast_target_matches(rule, p, source, target));
-    assert!(game.visit_cast_targets(rule, p, source, |candidate| candidate == target));
+    assert!(game.cast_target_matches(rule, p, source, definition, target));
+    assert!(game.visit_cast_targets(rule, p, source, definition, |candidate| candidate == target));
     assert_eq!(game.object_view(drake).power, 1);
 }
 

@@ -485,7 +485,7 @@ impl Game {
                         .iter()
                         .find(|(r, _)| *r == source)
                         .map_or(1 << owner.index(), |(_, mask)| *mask | (1 << owner.index()));
-                    data.hidden.push((source, event.after, viewers));
+                    data.hidden.insert(event.after, (source, viewers));
                 }
             }
             self.finish_zone_events(&events, &[]);

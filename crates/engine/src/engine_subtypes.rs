@@ -575,6 +575,12 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
     id: CardId,
 ) -> GrantedSubtypes {
     let target = world.object(id);
+    if target.zone == Zone::Exile && world.game().exiled_face_down(world.reference(id)) {
+        return GrantedSubtypes {
+            added: SUPPRESS_PRINTED,
+            ..GrantedSubtypes::default()
+        };
+    }
     let lookup = |source| Some(world.object(source));
     let counter_count = |source, kind| world.counter_count(source, kind);
     let kinds = |id, _: &Object| world.kinds(id);
