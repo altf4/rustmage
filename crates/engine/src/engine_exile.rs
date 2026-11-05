@@ -740,9 +740,9 @@ impl Game {
         })
     }
     pub(super) fn exile_opponent_top_face_down_play_x(&mut self, item: &SpellView) {
-        let Some(source) = item.source else {
+        if item.source.is_none() {
             return;
-        };
+        }
         let Some(opponent) = item.targets.iter().find_map(|target| match target.target {
             Target::Player(player) => Some(player),
             _ => None,
@@ -755,11 +755,7 @@ impl Game {
             if !event.moved || event.destination != Zone::Exile {
                 continue;
             }
-            self.state
-                .linked_choices
-                .get_or_insert_default()
-                .hidden
-                .insert(event.after, (source.object, 1 << item.controller.index()));
+            self.remember_face_down_exile(event.after, 1 << item.controller.index(), None);
             self.grant_exile_play_permission(item.controller, event.after, false);
             if let Some(permission) = self
                 .state
@@ -779,9 +775,9 @@ impl Game {
         amount: u16,
         subtype: &'static str,
     ) {
-        let Some(source) = item.source else {
+        if item.source.is_none() {
             return;
-        };
+        }
         let ids = top_library_cards(self, item.controller, u128::from(amount));
         let events = self.move_objects_raw(&ids, Zone::Exile);
         for event in &events {
@@ -790,11 +786,7 @@ impl Game {
             }
             // Look access belongs to the captured player, independently of the
             // source and the condition on future plays. Reuse exact hidden rows.
-            self.state
-                .linked_choices
-                .get_or_insert_default()
-                .hidden
-                .insert(event.after, (source.object, 1 << item.controller.index()));
+            self.remember_face_down_exile(event.after, 1 << item.controller.index(), None);
             let at = self
                 .state
                 .exile_permissions

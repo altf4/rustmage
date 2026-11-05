@@ -1301,7 +1301,6 @@ impl Game {
         index: usize,
         event: Option<Box<AttachmentTriggerView>>,
     ) -> bool {
-        self.remember_hideaway_controller(source.reference, source.controller);
         if let Some(grant) = event.as_ref().filter(|grant| grant.granted) {
             if !source.grant_available(
                 grant.grantor,

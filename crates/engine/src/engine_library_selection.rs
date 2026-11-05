@@ -479,13 +479,7 @@ impl Game {
                 .object;
             for event in &events {
                 if event.moved && event.destination == Zone::Exile {
-                    let data = self.state.linked_choices.get_or_insert_default();
-                    let viewers = data
-                        .hideaway_controllers
-                        .iter()
-                        .find(|(r, _)| *r == source)
-                        .map_or(1 << owner.index(), |(_, mask)| *mask | (1 << owner.index()));
-                    data.hidden.insert(event.after, (source, viewers));
+                    self.remember_face_down_exile(event.after, 1 << owner.index(), Some(source));
                 }
             }
             self.finish_zone_events(&events, &[]);
