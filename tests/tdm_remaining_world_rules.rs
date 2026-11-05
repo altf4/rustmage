@@ -3978,8 +3978,7 @@ fn waiting_source_boundary_earthbend_remains_waiting_after_nontriggering_departu
     assert!(!choices.contains(&g.object_ref(land)));
 }
 #[test]
-fn waiting_source_boundary_earthbend_noncreature_land_does_not_die_but_its_delayed_ability_still_waits()
- {
+fn earthbend_returns_a_land_that_lost_creature_type() {
     const LAND: CardRules = CardRules {
         effect: Effect::Permanent,
         activated: &[ability(&[Instruction::BecomeSourceLandUntilNextTurn])],
@@ -4009,16 +4008,20 @@ fn waiting_source_boundary_earthbend_noncreature_land_does_not_die_but_its_delay
     drain(&mut g);
     assert!(!g.is_creature(land));
     g.move_object(land, Zone::Graveyard);
-    assert!(
-        !g.state
-            .pending_triggers
-            .iter()
-            .any(|item| item.kind == StackKind::DelayedReturn),
-        "only a creature dies; this land did not"
-    );
-    let choices = source_candidates(&mut g);
-    assert!(choices.contains(&old));
-    assert!(!choices.contains(&g.object_ref(land)));
+    let departed = g.object_ref(land);
+    let trigger = g
+        .state
+        .pending_triggers
+        .iter()
+        .find(|item| item.kind == StackKind::DelayedReturn)
+        .expect("the exact land moved from the battlefield to the graveyard");
+    assert_eq!(trigger.return_link.as_ref().unwrap().object, departed);
+    g.give_priority();
+    drain(&mut g);
+    assert!(g.on_battlefield(land));
+    assert!(g.object_view(land).tapped);
+    assert_ne!(g.object_ref(land), old);
+    assert_ne!(g.object_ref(land), departed);
 }
 #[test]
 fn waiting_source_boundary_earthbend_returns_under_the_effect_controllers_control_even_for_an_opponents_land()

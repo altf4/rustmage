@@ -63,8 +63,7 @@ impl Game {
                 continue;
             };
             if event.before.zone != Zone::Battlefield
-                || !(event.destination == Zone::Exile
-                    || (event.destination == Zone::Graveyard && event.before.is_creature()))
+                || !matches!(event.destination, Zone::Graveyard | Zone::Exile)
             {
                 // Earthbend has no stated duration. A different zone movement
                 // cannot trigger it or erase its reference to the old land.
