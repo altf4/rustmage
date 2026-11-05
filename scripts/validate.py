@@ -104,6 +104,8 @@ def main(argv=None):
     report_dir = run_dir/'report'
     report_dir.mkdir()
     env = dict(os.environ, CARGO_TARGET_DIR=str(target), PYTHONDONTWRITEBYTECODE='1')
+    # Game receipts belong to this immutable report, never the reusable Cargo cache.
+    env.setdefault('RUSTMAGE_TDM_EVIDENCE_DIR', str(report_dir/'tdm-games'))
     files = source_files()
     head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
     commands = [
@@ -129,6 +131,7 @@ def main(argv=None):
                                                '--report', str(report_dir/'python.json')], 30))
     report = dict(head=head, terminal=False, target=str(target), phases=[], timeout_seconds=args.timeout,
                   fresh_target=args.fresh, target_preexisting=target_preexisting, shared_libraries={},
+                  game_evidence_directory=env['RUSTMAGE_TDM_EVIDENCE_DIR'],
                   input_sha256=hashlib.sha256(json.dumps(files, sort_keys=True).encode()).hexdigest())
     started = time.monotonic()
     ok = False

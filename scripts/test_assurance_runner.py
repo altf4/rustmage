@@ -1,4 +1,7 @@
 """Fast infrastructure contracts; never allocate to provoke a cgroup kill."""
+import contextlib
+import io
+import json
 import os
 from pathlib import Path
 import subprocess
@@ -6,6 +9,8 @@ import sys
 import tempfile
 import unittest
 from unittest.mock import patch
+
+import run_native_tests as native
 
 from run_native_tests import active_peers, descendants, process_running, run_command, run_suite, suite_results
 from resource_limits import MAX_MEMORY, bounded_group
@@ -18,6 +23,65 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class AssuranceRunnerTests(unittest.TestCase):
+    def test_native_cli_retains_distinct_evidence_for_reports_sharing_a_parent(self):
+        with tempfile.TemporaryDirectory() as temporary, patch.dict(os.environ):
+            directory = Path(temporary)
+            target = directory/'target'
+            report_parent = directory/'reports'
+            binary = target/'debug/deps/fixture'
+            consumed = []
+            os.environ.pop('RUSTMAGE_TDM_EVIDENCE_DIR', None)
+
+            def run_fixture(command, *, env, log, timeout):
+                if command[0] == 'cargo':
+                    log.write_text(json.dumps(dict(reason='compiler-artifact',
+                        executable=str(binary), profile=dict(test=True),
+                        target=dict(kind=['test']))) + '\n')
+                else:
+                    log.write_text('fixture_case: test\n')
+                return dict(exit=0, seconds=0.001, log=str(log),
+                            timed_out=False, orphaned_processes=False)
+
+            def execute_fixture(command, *, env, log, timeout, test_timeout):
+                evidence = Path(env['RUSTMAGE_TDM_EVIDENCE_DIR'])
+                evidence.mkdir(parents=True, exist_ok=True)
+                (evidence/'receipt.json').write_text(f'receipt-{len(consumed)}')
+                consumed.append(evidence)
+                log.write_text('test fixture_case ... ok\n'
+                               'test result: ok. 1 passed; 0 failed; 0 ignored;\n')
+                return dict(exit=0, seconds=0.001, log=str(log),
+                            timed_out=False, orphaned_processes=False)
+
+            with patch.object(native, 'bounded_group', return_value=Path('/fixture-cgroup')), \
+                    patch.object(native, 'active_peers', return_value=set()), \
+                    patch.object(native.signal, 'signal'), \
+                    patch.object(native, 'run_command', side_effect=run_fixture), \
+                    patch.object(native, 'run_suite', side_effect=execute_fixture), \
+                    contextlib.redirect_stdout(io.StringIO()):
+                for index in range(2):
+                    report = report_parent/f'native-{index}.json'
+                    arguments = ['run_native_tests.py', '--target-dir', str(target),
+                                 '--report', str(report)]
+                    with patch.object(sys, 'argv', arguments):
+                        self.assertEqual(native.main(), 0)
+                    result = json.loads(report.read_text())
+                    self.assertEqual(result['game_evidence_directory'], str(consumed[-1]))
+                    self.assertTrue(consumed[-1].is_relative_to(report_parent))
+                    self.assertFalse(consumed[-1].is_relative_to(target))
+                self.assertNotEqual(consumed[0], consumed[1])
+                for index, evidence in enumerate(consumed):
+                    self.assertEqual((evidence/'receipt.json').read_text(), f'receipt-{index}')
+
+                explicit = directory/'explicit-evidence'
+                explicit.mkdir()
+                sentinel = explicit/'old-receipt.json'
+                sentinel.write_text('preserve previous evidence')
+                os.environ['RUSTMAGE_TDM_EVIDENCE_DIR'] = str(explicit)
+                with patch.object(sys, 'argv', arguments):
+                    self.assertEqual(native.main(), 0)
+                self.assertEqual(consumed[-1], explicit)
+                self.assertEqual(sentinel.read_text(), 'preserve previous evidence')
+
     def test_suite_requires_every_selected_case_to_execute_and_pass(self):
         names = ['first', 'second']
         passing = ('test first ... ok\ntest second ... ok\n'

@@ -9,6 +9,7 @@ from pathlib import Path
 import signal
 import subprocess
 import sys
+import tempfile
 import time
 
 if __package__:
@@ -204,7 +205,11 @@ def main():
     args.report.parent.mkdir(parents=True, exist_ok=True)
     target = args.target_dir.resolve()
     env = dict(os.environ, CARGO_TARGET_DIR=str(target), RUST_TEST_THREADS='1')
-    result = dict(success=False, terminal=False, tests=[])
+    if 'RUSTMAGE_TDM_EVIDENCE_DIR' not in env:
+        env['RUSTMAGE_TDM_EVIDENCE_DIR'] = tempfile.mkdtemp(
+            prefix='tdm-games-', dir=args.report.resolve().parent)
+    result = dict(success=False, terminal=False, tests=[],
+                  game_evidence_directory=env['RUSTMAGE_TDM_EVIDENCE_DIR'])
     started = time.monotonic()
     try:
         compile_log = args.report.with_name('native-compile.log')
