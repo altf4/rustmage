@@ -3292,6 +3292,9 @@ pub struct TriggerUse {
     pub ability: u16,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub origin: Option<u64>,
+    /// "Do this only once each turn" is tracked per resolving controller.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub controller: Option<Player>,
 }
 
 /// Every integer in this inclusive range is a legal damage assignment.

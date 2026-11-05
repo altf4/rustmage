@@ -11,6 +11,7 @@ impl Game {
             source: item.source.expect("triggered ability has source").object,
             ability,
             origin: item.source_ability_origin,
+            controller: Some(item.controller),
         }
     }
     pub(super) fn optional_ability_used(&self, item: &SpellView) -> bool {
