@@ -7255,13 +7255,12 @@ impl Game {
                         Some(discard_events::DiscardAfter::Recruit(player, token));
                 }
                 Instruction::DrawThenDiscardIfDrew { amount, discard } => {
-                    let player = item.controller;
-                    let before = self.state.players[player.index()].cards_drawn_this_turn;
-                    self.draw_many(player, self.item_amount(amount, &item));
-                    if self.state.players[player.index()].cards_drawn_this_turn > before {
-                        self.state.resolving.as_mut().unwrap().discards[player.index()] =
-                            usize::from(discard);
-                    }
+                    self.draw_then_discard_if_drew(
+                        item.controller,
+                        self.item_amount(amount, &item),
+                        item.id,
+                        discard,
+                    );
                 }
                 Instruction::DrawPowerOfTwoChosenX(set) => {
                     let amount = 1u128.checked_shl(item.x.unwrap_or(0)).unwrap_or(u128::MAX);

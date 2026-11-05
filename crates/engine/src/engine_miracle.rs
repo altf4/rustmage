@@ -38,8 +38,14 @@ struct DrawRequest {
     replaced: bool,
     batch_checked: bool,
     excluded_doublers: Vec<ObjectRef>,
-    /// Resolving spell which owns this request, if it remembers actual draws.
-    remembering: Option<u64>,
+    /// The owning resolution and what an actual draw contributes to it.
+    followup: Option<(u64, DrawFollowup)>,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum DrawFollowup {
+    Remember,
+    Discard(u16),
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -167,23 +173,35 @@ impl Game {
         }
     }
     pub(super) fn draw_many_interruptible(&mut self, player: Player, amount: u128) {
-        self.draw_requests(player, amount, false, None);
+        self.draw_requests(player, amount, None);
     }
     pub(super) fn draw_many_recording(&mut self, player: Player, amount: u128, item_id: u64) {
-        self.draw_requests(player, amount, false, Some(item_id));
+        self.draw_requests(player, amount, Some((item_id, DrawFollowup::Remember)));
+    }
+    pub(super) fn draw_then_discard_if_drew(
+        &mut self,
+        player: Player,
+        amount: u128,
+        item_id: u64,
+        discard: u16,
+    ) {
+        self.draw_requests(
+            player,
+            amount,
+            Some((item_id, DrawFollowup::Discard(discard))),
+        );
     }
     fn draw_requests(
         &mut self,
         player: Player,
         amount: u128,
-        replaced: bool,
-        remembering: Option<u64>,
+        followup: Option<(u64, DrawFollowup)>,
     ) {
         self.perform_draw_request(DrawRequest {
             player,
             amount,
-            replaced,
-            remembering,
+            replaced: false,
+            followup,
             batch_checked: false,
             excluded_doublers: Vec::new(),
         });
@@ -236,24 +254,33 @@ impl Game {
             let count = count.min(self.library_card_count(player) as u128 + 1);
             for child in 0..count {
                 if self.draw_one_unreplaced(player)
-                    && let Some(id) = request.remembering
+                    && let Some((id, followup)) = request.followup
                 {
                     let resolving = self
                         .state
                         .resolving
                         .as_mut()
-                        .expect("remembered draw must have its resolution");
+                        .expect("draw followup must have its resolution");
                     assert_eq!(
                         resolving.item.id, id,
                         "draw request belongs to a different resolution"
                     );
-                    let count = resolving
-                        .remembered_draws
-                        .as_mut()
-                        .expect("remembered draw counter");
-                    *count = count
-                        .checked_add(1)
-                        .capacity("remembered draw count exhausted");
+                    match followup {
+                        DrawFollowup::Remember => {
+                            let count = resolving
+                                .remembered_draws
+                                .as_mut()
+                                .expect("remembered draw counter");
+                            *count = count
+                                .checked_add(1)
+                                .capacity("remembered draw count exhausted");
+                        }
+                        DrawFollowup::Discard(count) => {
+                            resolving.discards[player.index()] = usize::from(count);
+                            // Further draws from this request need no followup.
+                            request.followup = None;
+                        }
+                    }
                 }
                 if self.miracle_choice_pending() {
                     let remaining = attempts - index - 1;
