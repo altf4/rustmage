@@ -246,7 +246,7 @@
     "crates/engine/src/engine_prepared.rs": "a7f517ca852d5c001a604db83ac33ceca49ad274d097d2c461ade7fec7e8cbbe",
     "crates/engine/src/engine_programs.rs": "aae2ecf17fe7ac0e04249c88ae4a6dfbd51f691cfe78bd82a5a9c6b7823afe10",
     "crates/engine/src/engine_proliferate.rs": "7bc285cf7a40aebddf5830599f8b0fa062c235c6012f45cff3c917ea6539f2e9",
-    "crates/engine/src/engine_replacements.rs": "2c0863fc9f7c3a2692484e4c322f0c745152884fe624e809cc2bb2d05ad46f0f",
+    "crates/engine/src/engine_replacements.rs": "08477709ea2b94ac19eb93ffb34e37f65a22b7c8dba1ace27aef18d6aceb6ef6",
     "crates/engine/src/engine_resolution_mana.rs": "155221bf1bd67ec0865fb09275e8222155b974c4baca5a2919ed10ce505b7716",
     "crates/engine/src/engine_retained_copy_activations.rs": "925f4bcd9c1b7be75c092042a852d68c624d6ecfd1f980e7fbe66cb65a91ec8f",
     "crates/engine/src/engine_return_ability_modification.rs": "2e9c5cd84f9730712cf88c36a8cd1d8bc0a67f5d5c27ea18e0f0f1eb2642c682",
