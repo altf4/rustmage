@@ -241,7 +241,7 @@
     "crates/engine/src/engine_paradigm.rs": "4ac3c865c64041fe8f26912881454dd931166a45f265da5f65cb1e9b6ee0c794",
     "crates/engine/src/engine_player_control.rs": "35f8891663f5ebcc405d8ede87b4d00c36a72a585462061bdf8952ba8cc45dfa",
     "crates/engine/src/engine_player_counter_events.rs": "065bce4211b62f3f90c8d82ed3e2c99b864ba0ca85e9a046864537aabcfc94b6",
-    "crates/engine/src/engine_plot.rs": "134e33b23c60d6b2aded35427f4440b92802ec2ceec9bc0d6d1faac7aef3c199",
+    "crates/engine/src/engine_plot.rs": "8515833830f62a280b8e099a90be2a34143f9e325bf8e54da48d7912980e00c5",
     "crates/engine/src/engine_power_up.rs": "c78eea9b2731e7a7c51ae54bdbbbdffbb682317c4a5cdf1c61121687ed394edc",
     "crates/engine/src/engine_prepared.rs": "a7f517ca852d5c001a604db83ac33ceca49ad274d097d2c461ade7fec7e8cbbe",
     "crates/engine/src/engine_programs.rs": "aae2ecf17fe7ac0e04249c88ae4a6dfbd51f691cfe78bd82a5a9c6b7823afe10",
