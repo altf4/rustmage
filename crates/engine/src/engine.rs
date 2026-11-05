@@ -928,6 +928,7 @@ define_actions! {
     ChooseCastBehold { pay: bool },
     ChooseBeholdCost { object: ObjectRef },
     PlayGraveyardPermanent { card: CardId, permission: ObjectRef, permanent_type: PermanentType },
+    AnnounceGraveyardBack { card: CardId, permission: ObjectRef, permanent_type: PermanentType },
     AnnounceFree { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceFreeCounterGraveyard { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceFreeGraveyardAdditionalCosts { card: CardId, face: CastFace, flash_surcharge: bool },
@@ -6613,6 +6614,11 @@ impl Game {
             permanent_type,
             ..
         }
+        | Action::AnnounceGraveyardBack {
+            permission,
+            permanent_type,
+            ..
+        }
         | Action::AnnounceFreeGraveyardPermanent {
             permission,
             permanent_type,
@@ -7090,7 +7096,7 @@ impl Game {
                 }
                 self.open_payment_announcement(item, Counters::default(), None);
             }
-            Action::AnnounceBack { card } => {
+            Action::AnnounceBack { card } | Action::AnnounceGraveyardBack { card, .. } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 self.set_cast_face(&mut item, CastFace::Back);
                 self.open_payment_announcement(item, Counters::default(), None);

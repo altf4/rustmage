@@ -494,7 +494,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 permanent_type: crate::PermanentType::Land,
                 ..
             } => 90,
-            Action::PlayGraveyardPermanent { .. } => 79,
+            Action::PlayGraveyardPermanent { .. } | Action::AnnounceGraveyardBack { .. } => 79,
             Action::CastExiledDuringResolution { .. } | Action::CastFreeDuringResolution { .. } => {
                 81
             }
