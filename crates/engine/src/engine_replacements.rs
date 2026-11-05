@@ -3584,37 +3584,38 @@ impl Game {
                 heals_before_damage: Vec::new(),
                 damage_event_order: Vec::new(),
             }),
-            Event::Damage(batch) => Some(ReplacementChoiceView {
-                self_counter_effects: Vec::new(),
-                kind: if self.damage_event_order(batch).is_empty() {
-                    "Damage"
-                } else {
-                    "DamageEvent"
-                },
-                object: None,
-                counters: None,
-                player_counters: None,
-                proliferate: None,
-                tokens: Vec::new(),
-                copy_recipes: Vec::new(),
-                role_attachments: Vec::new(),
-                effects: if self.damage_event_order(batch).is_empty() {
-                    self.damage_replacements(&batch.events[batch.next], &batch.used)
-                } else {
-                    Vec::new()
-                },
-                damage: self
-                    .damage_event_order(batch)
-                    .is_empty()
-                    .then_some(batch.events[batch.next]),
-                damage_preventions: if self.damage_event_order(batch).is_empty() {
-                    self.damage_preventions(&batch.events[batch.next], &batch.used_preventions)
-                } else {
-                    Vec::new()
-                },
-                heals_before_damage: batch.heals.clone(),
-                damage_event_order: self.damage_event_order(batch),
-            }),
+            Event::Damage(batch) => {
+                let damage_event_order = self.damage_event_order(batch);
+                let choosing_replacement = damage_event_order.is_empty();
+                Some(ReplacementChoiceView {
+                    self_counter_effects: Vec::new(),
+                    kind: if choosing_replacement {
+                        "Damage"
+                    } else {
+                        "DamageEvent"
+                    },
+                    object: None,
+                    counters: None,
+                    player_counters: None,
+                    proliferate: None,
+                    tokens: Vec::new(),
+                    copy_recipes: Vec::new(),
+                    role_attachments: Vec::new(),
+                    effects: if choosing_replacement {
+                        self.damage_replacements(&batch.events[batch.next], &batch.used)
+                    } else {
+                        Vec::new()
+                    },
+                    damage: choosing_replacement.then_some(batch.events[batch.next]),
+                    damage_preventions: if choosing_replacement {
+                        self.damage_preventions(&batch.events[batch.next], &batch.used_preventions)
+                    } else {
+                        Vec::new()
+                    },
+                    heals_before_damage: batch.heals.clone(),
+                    damage_event_order,
+                })
+            }
             Event::Counters(batch)
                 if current_player_counter(batch, self.state.active).is_some() =>
             {

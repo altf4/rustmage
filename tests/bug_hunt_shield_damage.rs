@@ -123,3 +123,38 @@ fn shield_is_spent_once_per_recipient_even_with_unpreventable_hits() {
         assert_eq!(branch.object_view(a).damage, 2);
     }
 }
+
+#[test]
+fn competing_combat_prevention_can_preserve_a_shield() {
+    let p = Player::P0;
+    let mut game = scenario(p);
+    let bank = put(&mut game, p.other(), "Fog Bank", Zone::Battlefield);
+    let first = put(&mut game, p, "Bear Cub", Zone::Battlefield);
+    let second = put(&mut game, p, "Hill Giant", Zone::Battlefield);
+    game.add_counter(bank, CounterKind::Shield, 1);
+    game.apply_damage_batch(&[first, second].map(|id| DamageEvent {
+        source: game.damage_source(id),
+        target: Target::Card(bank),
+        amount: 1,
+        combat: true,
+        preventable: true,
+    }));
+    assert!(game.advance_replacements(false));
+    assert_eq!(game.actor(), Some(p.other()));
+    let view = game.observe(p.other()).replacement_choice.unwrap();
+    assert_eq!(view.damage_event_order.len(), 2);
+    act(
+        &mut game,
+        Action::ChooseDamageEvent {
+            index: view.damage_event_order[1].index,
+        },
+    );
+    let prevent_combat = Action::ChooseDamagePrevention {
+        source: game.object_ref(bank),
+        prevention: DamagePreventionKind::CombatToRecipient,
+    };
+    act(&mut game, prevent_combat.clone());
+    act(&mut game, prevent_combat);
+    assert_eq!(game.counter_count(bank, CounterKind::Shield), 1);
+    assert_eq!(game.object_view(bank).damage, 0);
+}
