@@ -1,5 +1,4 @@
-// Pinned Oracle/XMage provenance is recorded in the paired JSON. Remains gated
-// pending validation of ninjutsu and the conditional layered creature form.
+// Pinned Oracle/XMage provenance is recorded in the paired JSON.
 const BASE: BaseStatSetter = BaseStatSetter {
     power: Some(3),
     toughness: Some(4),
@@ -14,6 +13,7 @@ const GROUPS: &[StaticAbilityGroup] = &[StaticAbilityGroup {
             own_turn: true,
             kind: CounterKind::Loyalty,
             minimum: 1,
+            form: SourceCreatureForm::Creature,
             subtypes: &["Ninja"],
             keywords: Keywords::HEXPROOF,
         },
