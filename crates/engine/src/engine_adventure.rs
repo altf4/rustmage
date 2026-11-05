@@ -79,11 +79,7 @@ impl Game {
         }
     }
     /// A popped/resolving packet still owns the last stack characteristics.
-    pub(super) fn move_adventure_spell(
-        &mut self,
-        item: &SpellView,
-        destination: Zone,
-    ) -> ZoneChange {
+    fn chosen_spell_before(&self, item: &SpellView) -> ObjectView {
         let source = item.source.expect("adventure spell has a source");
         let mut before = self.object_view(source.id);
         if before.zone == Zone::Stack && before.reference == source.object {
@@ -94,6 +90,14 @@ impl Game {
             before.power = 0;
             before.toughness = 0;
         }
+        before
+    }
+    pub(super) fn move_adventure_spell(
+        &mut self,
+        item: &SpellView,
+        destination: Zone,
+    ) -> ZoneChange {
+        let before = self.chosen_spell_before(item);
         let event = self.transition_object(before, destination, false);
         self.finish_zone_events(std::slice::from_ref(&event), &[]);
         event
@@ -130,12 +134,16 @@ impl Game {
         {
             return;
         }
-        let owner = self.state.objects[source.id as usize].owner;
-        let event = self.move_adventure_spell(item, Zone::Library);
-        if event.moved && event.destination == Zone::Library {
-            self.forget_library_top(owner);
-            self.shuffle_library_cards(owner);
-        }
+        let before = self.chosen_spell_before(item);
+        let event = self.transition_object_under_control(
+            before,
+            Zone::Graveyard,
+            false,
+            Counters::default(),
+            None,
+            true,
+        );
+        self.finish_zone_events(std::slice::from_ref(&event), &[]);
     }
     /// Real stack and announcement packets carry the chosen immutable definition.
     pub(super) fn effective_spell_card(&self, id: CardId) -> Card {

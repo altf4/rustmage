@@ -45,7 +45,12 @@ pub(super) struct ManaEvent {
     pub counter_costs: Vec<Vec<replacements::CounterPlacement>>,
     pub entries: Vec<entries::EntryBatch>,
     pub life_payments: Vec<LifePaymentReceipt>,
-    pub moves: Vec<(ObjectRef, Zone, bool, bool)>,
+    pub moves: Vec<(
+        ObjectRef,
+        Zone,
+        Option<zone_replacements::ZoneShuffle>,
+        bool,
+    )>,
     pub allocations: Vec<(CardId, u64)>,
     pub triggers: Vec<SpellView>,
     pub irreversible: bool,
@@ -74,7 +79,13 @@ impl ManaEvent {
                         + batch.iter().map(|p| p.amount.owned_bytes()).sum::<usize>()
                 })
                 .sum::<usize>()
-            + self.moves.len() * std::mem::size_of::<(ObjectRef, Zone, bool, bool)>()
+            + self.moves.len()
+                * std::mem::size_of::<(
+                    ObjectRef,
+                    Zone,
+                    Option<zone_replacements::ZoneShuffle>,
+                    bool,
+                )>()
             + self
                 .life_payments
                 .iter()
@@ -115,7 +126,12 @@ struct ActiveManaReplay {
     entries: VecDeque<entries::EntryBatch>,
     life_payments: VecDeque<LifePaymentReceipt>,
     entries_seen: usize,
-    moves: VecDeque<(ObjectRef, Zone, bool, bool)>,
+    moves: VecDeque<(
+        ObjectRef,
+        Zone,
+        Option<zone_replacements::ZoneShuffle>,
+        bool,
+    )>,
     allocations: VecDeque<(CardId, u64)>,
     failed: bool,
 }
@@ -139,7 +155,13 @@ impl ManaReplay {
                         .iter()
                         .map(entries::EntryBatch::bytes)
                         .sum::<usize>()
-                    + active.moves.len() * std::mem::size_of::<(ObjectRef, Zone, bool, bool)>()
+                    + active.moves.len()
+                        * std::mem::size_of::<(
+                            ObjectRef,
+                            Zone,
+                            Option<zone_replacements::ZoneShuffle>,
+                            bool,
+                        )>()
                     + active
                         .life_payments
                         .iter()

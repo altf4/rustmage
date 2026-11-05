@@ -24,6 +24,7 @@ pub enum ZoneReplacementKind {
         ability: u16,
     },
     Battlefield,
+    Shuffle,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -131,16 +132,23 @@ pub(super) fn test_checkpoint(state: State, object: ObjectRef, owner: Player) ->
 pub(super) struct FrozenRules {
     pub prevent: bool,
     pub shuffle_self: bool,
+    pub shuffle_spell: bool,
     pub exile_spell: bool,
     pub discard_to_battlefield: bool,
     pub reflexive_exiles: Vec<(u16, ObjectView)>,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum ZoneShuffle {
+    Plain,
+    Reveal,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Plan {
     pub destination: Zone,
     pub prevented: bool,
-    pub shuffle: bool,
+    pub shuffle: Option<ZoneShuffle>,
     pub reflexive: Option<(u16, Box<ObjectView>)>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -369,6 +377,7 @@ impl Game {
         FrozenRules {
             prevent,
             reflexive_exiles,
+            shuffle_spell: false,
             shuffle_self: own_available && own == Some(ZoneReplacementRule::RevealShuffleSelf),
             exile_spell: (before.zone == Zone::Stack
                 && self.stack_graveyard_exile(before.reference))
@@ -404,6 +413,7 @@ impl Game {
                 // All other effects collapse to a single exile option.
                 rules.prevent
                     || rules.shuffle_self
+                    || rules.shuffle_spell
                     || rules.discard_to_battlefield
                     || !rules.reflexive_exiles.is_empty()
             })
@@ -469,7 +479,7 @@ impl Game {
             return Plan {
                 destination: requested,
                 prevented: true,
-                shuffle: false,
+                shuffle: None,
                 reflexive: None,
             };
         }
@@ -479,15 +489,14 @@ impl Game {
                 .with(|target| target.get() == Some(before.reference));
         #[cfg(not(feature = "test-support"))]
         let test_redirect = false;
-        if !rules.prevent
-            && !test_redirect
-            && requested != Zone::Graveyard
-            && !(before.zone == Zone::Stack && self.state.objects[before.id as usize].flashback)
+        let exile_on_stack_exit =
+            before.zone == Zone::Stack && self.state.objects[before.id as usize].flashback;
+        if !rules.prevent && !test_redirect && requested != Zone::Graveyard && !exile_on_stack_exit
         {
             return Plan {
                 destination: requested,
                 prevented: false,
-                shuffle: false,
+                shuffle: None,
                 reflexive: None,
             };
         }
@@ -498,7 +507,7 @@ impl Game {
         if test_redirect {
             choices.push(ZoneReplacementKind::Battlefield);
         }
-        if before.zone == Zone::Stack && self.state.objects[before.id as usize].flashback
+        if exile_on_stack_exit
             || rules.exile_spell
             || self.death_exile_destination(before, requested) != requested
         {
@@ -513,6 +522,9 @@ impl Game {
         if requested == Zone::Graveyard && rules.shuffle_self {
             choices.push(ZoneReplacementKind::RevealShuffle);
         }
+        if requested == Zone::Graveyard && rules.shuffle_spell {
+            choices.push(ZoneReplacementKind::Shuffle);
+        }
         if requested == Zone::Graveyard && rules.discard_to_battlefield {
             choices.push(ZoneReplacementKind::Battlefield);
         }
@@ -521,7 +533,7 @@ impl Game {
                 return Plan {
                     destination: requested,
                     prevented: false,
-                    shuffle: false,
+                    shuffle: None,
                     reflexive: None,
                 };
             }
@@ -544,7 +556,7 @@ impl Game {
                         "live zone replacement choice"
                     );
                     replay.next += 1;
-                    return Self::zone_plan(pick.effect, &rules);
+                    return Self::zone_plan(pick.effect, &rules, exile_on_stack_exit);
                 }
                 let request = Request {
                     object: before.reference,
@@ -567,20 +579,37 @@ impl Game {
                 std::panic::resume_unwind(Box::new(request));
             }
         };
-        Self::zone_plan(effect, &rules)
+        Self::zone_plan(effect, &rules, exile_on_stack_exit)
     }
-    fn zone_plan(effect: ZoneReplacementKind, rules: &FrozenRules) -> Plan {
+    fn zone_plan(
+        effect: ZoneReplacementKind,
+        rules: &FrozenRules,
+        exile_on_stack_exit: bool,
+    ) -> Plan {
+        let shuffle = match effect {
+            ZoneReplacementKind::Shuffle => Some(ZoneShuffle::Plain),
+            ZoneReplacementKind::RevealShuffle => Some(ZoneShuffle::Reveal),
+            _ => None,
+        };
         Plan {
             destination: match effect {
                 ZoneReplacementKind::Prevent => Zone::Graveyard,
-                ZoneReplacementKind::RevealShuffle => Zone::Library,
+                ZoneReplacementKind::Shuffle | ZoneReplacementKind::RevealShuffle => {
+                    // An exile-on-stack-exit replacement still applies to the
+                    // move within the shuffle. CR 701.24c retains the shuffle.
+                    if exile_on_stack_exit {
+                        Zone::Exile
+                    } else {
+                        Zone::Library
+                    }
+                }
                 ZoneReplacementKind::Exile | ZoneReplacementKind::ExileReflexive { .. } => {
                     Zone::Exile
                 }
                 ZoneReplacementKind::Battlefield => Zone::Battlefield,
             },
             prevented: effect == ZoneReplacementKind::Prevent,
-            shuffle: effect == ZoneReplacementKind::RevealShuffle,
+            shuffle,
             reflexive: if let ZoneReplacementKind::ExileReflexive { source, ability } = effect {
                 Some((
                     ability,
@@ -599,16 +628,10 @@ impl Game {
             },
         }
     }
-    pub(super) fn reveal_and_shuffle_zone_card(&mut self, before: &ObjectView) {
-        self.state
-            .zone_rules
-            .get_or_insert_default()
-            .reveals
-            .push(ZoneRevealView {
-                card: before.card,
-                owner: before.owner,
-                from: before.zone,
-            });
+    pub(super) fn shuffle_zone_card(&mut self, before: &ObjectView, shuffle: ZoneShuffle) {
+        if shuffle == ZoneShuffle::Reveal {
+            self.record_zone_reveal(before.card, before.owner, before.zone);
+        }
         self.forget_library_top(before.owner);
         self.shuffle_library_cards(before.owner);
     }

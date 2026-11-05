@@ -140,7 +140,7 @@ impl Game {
             let mut context = context;
             for (before, plan, ()) in self.plan_zone_batch(frozen) {
                 let mut movement = self.entry_move(before.id, plan.destination, false);
-                if plan.shuffle {
+                if plan.shuffle == Some(zone_replacements::ZoneShuffle::Reveal) {
                     context.shuffles.push(before.reference);
                 }
                 movement.controller = before.owner;
@@ -163,7 +163,7 @@ impl Game {
         } = context;
         for event in events {
             if event.destination == Zone::Library && shuffles.contains(&event.before.reference) {
-                self.reveal_and_shuffle_zone_card(&event.before);
+                self.shuffle_zone_card(&event.before, zone_replacements::ZoneShuffle::Reveal);
             }
         }
         let mut counts = [0u32; 2];

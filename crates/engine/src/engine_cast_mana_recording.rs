@@ -306,7 +306,7 @@ impl Game {
                 plan.shuffle,
                 plan.prevented,
             ));
-            capture.event.irreversible |= plan.shuffle
+            capture.event.irreversible |= plan.shuffle.is_some()
                 || plan.destination == Zone::Library
                 || before.zone == Zone::Library && plan.destination != Zone::Stack;
         }
