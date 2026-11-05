@@ -1495,9 +1495,7 @@ impl Game {
             object: match target {
                 Target::Player(_) => None,
                 Target::Stack(id) => self
-                    .state
-                    .stack
-                    .iter()
+                    .stack_items_for_targets()
                     .find(|item| item.id == id)
                     .filter(|item| item.kind == StackKind::Spell)
                     .and_then(|item| item.source)

@@ -15,9 +15,14 @@ fn cancel_can_be_redirected_to_a_spell_that_is_resolving() {
     cast(&mut g, cancel, Some(Target::Spell(shock)));
     act(&mut g, Action::Pass);
     cast(&mut g, bend, Some(Target::Spell(cancel)));
+    let bend_id = g.state.stack.last().unwrap().id;
     act(&mut g, Action::Pass);
     act(&mut g, Action::Pass);
     assert_eq!(g.object_view(bend).zone, Zone::Stack);
+    assert_eq!(
+        g.bind_target(Target::Stack(bend_id)).object,
+        Some(g.object_ref(bend))
+    );
     reject(&mut g, Action::FinishStackTargets);
     reject(
         &mut g,
