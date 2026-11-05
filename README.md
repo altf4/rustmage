@@ -21,10 +21,10 @@ The engine is available through a native Rust API and in-process Python bindings
 Your application supplies the bot, learning algorithm, and reward function;
 Rustmage supplies the game rules and state transitions.
 
-Nine full sets are implemented across accepted branches: **Foundations**,
+Ten full sets are implemented across accepted branches: **Foundations**,
 **Lorwyn Eclipsed**, **Teenage Mutant Ninja Turtles**, **The Big Score**,
 **Secrets of Strixhaven**, **Marvel Super Heroes**, **The Hobbit**,
-**Reality Fracture**, and **Aetherdrift**, with
+**Reality Fracture**, **Aetherdrift**, and **Tarkir: Dragonstorm**, with
 accepted rules and interaction assurance.
 The long-term goal is complete Standard coverage; implementation of the wider
 card pool is still in progress. Standard games reject cards whose rules have not
@@ -48,13 +48,13 @@ To explore the project:
 
 ## Standard set tracker
 
-**9 / 20 sets complete · 45%**
+**10 / 20 sets complete · 50%**
 
-`█████████░░░░░░░░░░░`
+`██████████░░░░░░░░░░`
 
-**3,438 / 5,164 unique Standard cards implemented across accepted branches · 67%**
+**3,576 / 5,164 unique Standard cards implemented across accepted branches · 69%**
 
-`█████████████░░░░░░░`
+`██████████████░░░░░░`
 
 Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
 ([inventory](data/standard/xmage-inventory.json)), rather than live format legality.
@@ -85,7 +85,7 @@ establish set completion. Set completion is separate from integration into `main
 | Outlaws of Thunder Junction | OTJ | 106/276 (38%) | ⏳ Partial |
 | Reality Fracture | FRA | 285/285 (100%) | ✅ Complete |
 | Secrets of Strixhaven | SOS | 271/271 (100%) | ✅ Complete |
-| Tarkir: Dragonstorm | TDM | 137/276 (50%) | ⏳ Partial |
+| Tarkir: Dragonstorm | TDM | 276/276 (100%) | ✅ Complete |
 | The Big Score | BIG | 30/30 (100%) | ✅ Complete |
 | The Hobbit | HOB | 193/193 (100%) | ✅ Complete |
 | The Lost Caverns of Ixalan | LCI | 117/291 (40%) | ⏳ Partial |

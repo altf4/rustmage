@@ -12,7 +12,7 @@
     "unresolved_membership_facts": 0,
     "independently_verified_complete_set_cards": 0
   },
-  "phase": "All276 physical card bodies/13 Omen pairs locally whole-verified. Engine87 correctness repair focused-reviewed; strengthened harness source/preflight reviewed atc91972220. Fixed games expose dependency88: generic X/Harmonize query performance from inflated same-source-tap bound. Return to shared-engine performance phase; all card definitions remain fixed.",
+  "phase": "All276 physical cards/13 Omen pairs,16 interaction families,52 fixed natural complete games, replay/owned/privacy and labelled throughput verified.88 shared groups focused-reviewed. Final assembled release/Python validation and single published PR/two final reviews remain.",
   "audit_reports": [
     "docs/tdm-audit-a-g.json",
     "docs/tdm-audit-g-s.json",
@@ -889,21 +889,22 @@
       },
       "captured_root": "<cache>/rustmage-tdm/trace-root-capture-1793835901269812706/decision536-observation.json",
       "root_facts": "Seven untapped mana lands (twoForest,twoFrontierBivouac,Island,twoMountain), two4/3 TemurBattlecriers, unused TemurDevotee, zero pools; actual X domain0..11. Existing bound counts the two Bivouac tap alternatives twice, giving9 instead of physical7.",
-      "status": "Read-only source audit and bounded trace evidence complete. Isolated owner authorized tests-first only; two independent conservative-bound design reviews requested before any core edit.",
-      "implementation_evidence": "docs/tdm-harmonize-x-pruning-evidence.json (pending)"
+      "status": "Focused67/67+Clippy and two pure published-checkpoint approvals; Root final-source10 pass; actual536 byte-identical observations and830-action final snapshot/both views/outcome parity; all52 fixed set games and labelled144Standard+12Freeform benchmark games pass. Final combined release/PR acceptance pending.",
+      "implementation_evidence": "docs/tdm-harmonize-x-pruning-evidence.json",
+      "focused_reviewed_revision": "2fcd64aa7106a27b74735a035f261a292d7bc335"
     }
   ],
   "acceptance": {
-    "shared_rules_reviewed": false,
+    "shared_rules_reviewed": true,
     "card_authoring_permitted": false,
-    "set_only_complete_games": false,
+    "set_only_complete_games": true,
     "full_release_acceptance": false,
     "final_two_nonauthor_reviews": false,
     "engine_release_checkpoint": true,
     "engine_checkpoint_two_nonauthor_reviews": true,
-    "new_engine_dependency_pending": true,
+    "new_engine_dependency_pending": false,
     "locally_verified_physical_cards": 276,
-    "current_dependency": "E:TAP_RESOURCE_QUANTITY_BOUND"
+    "current_dependency": null
   },
   "initial_checks": {
     "source_pin_check": {
@@ -1190,8 +1191,8 @@
     ],
     "latest_accepted_revision": "2660c86112362973c195bee4c1b85e1a968f9f3a",
     "latest_accepted_evidence": "docs/tdm-engine86-acceptance.json",
-    "newly_discovered_dependency_pending": "E:TAP_RESOURCE_QUANTITY_BOUND",
-    "latest_focused_reviewed_revision": "65e21d87686009a73679fcd7abe1de98cf39218e",
+    "newly_discovered_dependency_pending": null,
+    "latest_focused_reviewed_revision": "2fcd64aa7106a27b74735a035f261a292d7bc335",
     "latest_full_release_revision": "2660c86112362973c195bee4c1b85e1a968f9f3a"
   },
   "metadata_reconciliation": "docs/tdm-metadata-reconciliation.json"

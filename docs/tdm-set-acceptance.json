@@ -1,0 +1,281 @@
+{
+  "schema": 1,
+  "set": "TDM",
+  "status": "All276 printed card proofs,16 interaction families,52 fixed games and labelled benchmarks verified; final assembled release/Python and published-PR reviews pending.",
+  "complete_set_accepted": false,
+  "card_scope": {
+    "physical_members": 276,
+    "standard_legal_members": 275,
+    "banned_separate_freeform_members": [
+      "Cori-Steel Cutter"
+    ],
+    "new_physical_implementations": 139,
+    "existing_physical_implementations_whole_verified": 137,
+    "omen_parent_face_pairs": 13,
+    "required_reliquary_factory": 5488,
+    "remaining_printed_obligations": 0,
+    "printed_ledger": {
+      "path": "docs/tdm-card-integration-evidence.json",
+      "sha256": "b6716c0d6f18774988997e1183caaf5b0f977d2049406f56da7dbfaecec2942a"
+    },
+    "whole_pool_source_review_head": "88db6c676f22a42fe1f921eed681f48e552b6e08",
+    "pure_preliminary_translation_reviewers": [
+      "/root/tdm_engine_review_one",
+      "/root/tdm_engine_review_two"
+    ],
+    "pinned_xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "unique_primary_and_helper_java_blobs_reviewed": 603
+  },
+  "runtime_identity": {
+    "source_head": "2fcd64aa7106a27b74735a035f261a292d7bc335",
+    "catalogue": "c777e634b56ced4ffe2fa353127767bf900c3c9be1b7e108804fe741176fbb6a",
+    "engine_funding_sha256": "5d15ccb7daff0790c8de372c49f6dd797c8f154754c5df5ebb152647ef22b2db",
+    "execution_inputs_manifest": {
+      "path": "examples/support/tdm_execution_inputs.json",
+      "sha256": "7fdfb239ae193cea2ba29f37120bb0f5a2eabd8137bc043ed5c06dc2212ee20e",
+      "files": 11312
+    },
+    "harness": {
+      "path": "examples/support/tdm_games.rs",
+      "sha256": "9fb40dcbb96c1a438f499b51149cb8801a5c017c6aab20ee4af6a4999dfad278"
+    },
+    "decks": {
+      "path": "examples/support/tdm_game_decks.json",
+      "sha256": "2daf20c80bb409b7f241680b990b39a1177101dd45e35eaa48fffc913d5fb12e"
+    },
+    "observation_schema": 201,
+    "source_binding_contracts": {
+      "path": "<cache>/rustmage-tdm/execution-input-contracts-1793834225052790899/terminal.json",
+      "sha256": "573fab797ed8d700dc98283d10736ce39f1f027a6fee75a36ea07ad85e908db1"
+    },
+    "source_binding_contract_count": 12
+  },
+  "interaction_matrix": {
+    "path": "docs/tdm-set-coverage-matrix.json",
+    "sha256": "d34a57525ede3553c50fd8a8273106e1e368a6a2aa9bb10800e720458a9b4d09",
+    "families": 16,
+    "named_source_bound_proofs": 265,
+    "source_gaps": 0,
+    "historical_focused_engine_basis": "2660c86112362973c195bee4c1b85e1a968f9f3a",
+    "final_native_reexecution": "required by pending final release"
+  },
+  "shared_engine": {
+    "audited_groups_including_aliases": 88,
+    "group_counts_are_unweighted": true,
+    "latest_full_historical_checkpoint": "docs/tdm-engine86-acceptance.json",
+    "engine87_focused_evidence": "docs/tdm-paid-mana-use-receipts-evidence.json",
+    "engine87_positive_cases": 41,
+    "engine88_focused_evidence": "docs/tdm-harmonize-x-pruning-evidence.json",
+    "engine88_positive_cases": 67,
+    "engine88_integration": "docs/tdm-engine88-integration.json",
+    "current_focused_published_head": "2fcd64aa7106a27b74735a035f261a292d7bc335",
+    "two_pure_focused_approvals": true,
+    "root_final_source_focus": {
+      "path": "<cache>/rustmage-tdm/root-engine88-focus-1793837825735762711/driver-terminal.json",
+      "sha256": "5a68cf22ecab81ed5033e369ab83bfb2038a48c1cb1f7d39288ce54a12d4df89"
+    },
+    "actual_old_new_trace_parity": {
+      "path": "<cache>/rustmage-tdm/engine88-root-final-parity-1793838190499333360/terminal.json",
+      "sha256": "d241e4ab680d795945733423903d2b235fe6a0f050ad4ef208e5fcfca2175c4c"
+    },
+    "actual_trace_observation_final_snapshot_both_views_and_outcome_equal": true
+  },
+  "games": {
+    "driver": {
+      "path": "<cache>/rustmage-tdm/full276-games-1793838265896691561/driver-terminal.json",
+      "sha256": "a4ab2ed5fee86d4adde5ae9f8e14e44beb6f421de775f48c1a3d8b38d2da96cb"
+    },
+    "native_report": {
+      "path": "<cache>/rustmage-tdm/full276-games-1793838265896691561/native.json",
+      "sha256": "932ae82202994ebf1cd95618b829b0d0a276892d76ee1bcf27ddb9317aa8ab92"
+    },
+    "verified_corpus": {
+      "path": "<cache>/rustmage-tdm/full276-games-1793838265896691561/games/corpus-verification.json",
+      "sha256": "3d55838310b44e705ce1097546e79b6113b9945cf87a57b289f3cccbbef344f4"
+    },
+    "standard": 48,
+    "separate_cutter_freeform": 4,
+    "unique_cases": 52,
+    "all_natural_terminal": "life_at_or_below_zero",
+    "action_ceiling": 4096,
+    "actual_decision_range": [
+      286,
+      1026
+    ],
+    "decisions": 29332,
+    "replayed_actions": 29332,
+    "owned_roots_per_game_range": [
+      3,
+      5
+    ],
+    "independent_parent_replay_divergent_sibling_drop_restore_raw_index_and_atomic_rejection": true,
+    "paired_full_observations": true,
+    "standard_actual_color_mask": 31,
+    "required_mechanic_payoffs": [
+      "actual_rules_payoff",
+      "behold_payoff",
+      "endure",
+      "flurry_or_prowess",
+      "harmonize_cast_and_exile",
+      "harmonize_power_contribution",
+      "mobilize",
+      "omen_resolution_shuffle",
+      "renew"
+    ],
+    "witness_counts": {
+      "actual_rules_payoff": 1335,
+      "behold_payoff": 12,
+      "endure": 45,
+      "flurry_or_prowess": 53,
+      "harmonize_cast_and_exile": 67,
+      "harmonize_power_contribution": 14,
+      "mobilize": 77,
+      "omen_resolution_shuffle": 17,
+      "renew": 14
+    },
+    "omen_witness_scope": "Legacy omen_resolution_shuffle key requires actual resolution+owner Library return. Optional isolated RNG/order receipts substantiate a shuffle boundary; shared/card lifecycle tests establish printed shuffle semantics.",
+    "compile_seconds": 2.4219271969632246,
+    "native_execution_seconds": 47.44477586902212,
+    "inputs_unchanged": true
+  },
+  "benchmark": {
+    "driver": {
+      "path": "<cache>/rustmage-tdm/full276-benchmark-1793838471252962172/terminal.json",
+      "sha256": "8d5e00facf5293b6d4223e25db36c7a3c88fd8d9613e7977ab851f9fcc965e1c"
+    },
+    "profile": "test; optimized core/dependencies1, example0, test-support feature enabled",
+    "core_artifact": {
+      "fresh": true,
+      "features": [
+        "test-support"
+      ],
+      "profile": {
+        "opt_level": "1",
+        "debuginfo": 0,
+        "debug_assertions": true,
+        "overflow_checks": true,
+        "test": false
+      }
+    },
+    "standard_report": {
+      "path": "<cache>/rustmage-tdm/full276-benchmark-1793838471252962172/benchmark.json",
+      "sha256": "01196c7c7912fbf1e4fd9d9cfee1491e3ad50cb19c36123397f0b26c783b2d30"
+    },
+    "standard": {
+      "standard_cases": 48,
+      "freeform_cases": 0,
+      "repetitions": 3,
+      "decisions": 82167,
+      "measured_seconds": 52.244279696,
+      "games_per_second": 2.756282617693457,
+      "decisions_per_second": 1572.7463461667935,
+      "measurement": "Sum per-game construction+play time includes exact Config cloning, Game::new/shuffle, legal-action emission, generic rejected-attack memory, policy::smoke_index with its actor observation, rules apply, and lightweight committed-cast packet/card/color telemetry. Excludes workload/deck validation, replay/owned checks, detailed mechanic telemetry, trace/per-decision JSON, terminal reconciliation/report serialization, model inference/network/tensors. Same frozen cases as verified corpus, exactly3 repetitions; Freeform separately labelled.",
+      "report_sha256": "01196c7c7912fbf1e4fd9d9cfee1491e3ad50cb19c36123397f0b26c783b2d30",
+      "games": 144
+    },
+    "separate_freeform_report": {
+      "path": "<cache>/rustmage-tdm/full276-benchmark-1793838471252962172/benchmark-freeform.json",
+      "sha256": "6c152d97feb90343981a8cdc60e43f2bcd0d5814867039fac805e1a0d9be48d0"
+    },
+    "separate_freeform": {
+      "standard_cases": 0,
+      "freeform_cases": 4,
+      "repetitions": 3,
+      "decisions": 5829,
+      "measured_seconds": 0.889226977,
+      "games_per_second": 13.494867239053635,
+      "decisions_per_second": 6555.131761370303,
+      "measurement": "Sum per-game construction+play time includes exact Config cloning, Game::new/shuffle, legal-action emission, generic rejected-attack memory, policy::smoke_index with its actor observation, rules apply, and lightweight committed-cast packet/card/color telemetry. Excludes workload/deck validation, replay/owned checks, detailed mechanic telemetry, trace/per-decision JSON, terminal reconciliation/report serialization, model inference/network/tensors. Same frozen cases as verified corpus, exactly3 repetitions; Freeform separately labelled.",
+      "report_sha256": "6c152d97feb90343981a8cdc60e43f2bcd0d5814867039fac805e1a0d9be48d0",
+      "games": 12
+    },
+    "inputs_unchanged": true,
+    "measurement_scope": "Sum per-game construction+play time includes exact Config cloning, Game::new/shuffle, legal-action emission, generic rejected-attack memory, policy::smoke_index with its actor observation, rules apply, and lightweight committed-cast packet/card/color telemetry. Excludes workload/deck validation, replay/owned checks, detailed mechanic telemetry, trace/per-decision JSON, terminal reconciliation/report serialization, model inference/network/tensors. Same frozen cases as verified corpus, exactly3 repetitions; Freeform separately labelled."
+  },
+  "receipt_adversarial_contracts": {
+    "report": {
+      "path": "<cache>/rustmage-tdm/receipt-negative-contracts-1793838808350769705/terminal.json",
+      "sha256": "a28e8b769a834a3b56e127bf83649e680dc5377b0ba495d104c3bb7289cfb95a"
+    },
+    "contracts": 2,
+    "expected_denials": [
+      "stale execution identity with otherwise unchanged catalogue/harness",
+      "changed trace config after recomputing raw trace digest"
+    ],
+    "original_52_trace_hashes_and_corpus_reverified_unchanged": true
+  },
+  "trace_baseline": {
+    "path": "tests/legacy/assurance/card_traces.json",
+    "sha256": "c35167e69b6dd05b4cbe96b29f509065f37246cde8552fdcdf1db1cf3cabf240",
+    "rows": 3303,
+    "schema": 201,
+    "old_unchanged": 3240,
+    "new_independently_reviewed_additions": 63,
+    "evidence": "docs/tdm-final-trace-additions.json",
+    "final_native_recheck": "pending final release"
+  },
+  "readme_accounting": {
+    "evidence": "docs/tdm-readme-count-audit.json",
+    "accepted_sets": 10,
+    "set_denominator": 20,
+    "accepted_union_standard": 3576,
+    "standard_denominator": 5164,
+    "current_checkout_total_supported": 3303,
+    "current_checkout_standard_supported": 3296
+  },
+  "implementation_throughput": {
+    "interval_start_utc": "2026-11-02T19:25:19+00:00",
+    "interval_end_utc": "2026-11-05T00:37:31+00:00",
+    "elapsed_hours": 53.20333333333333,
+    "new_physical_cards": 139,
+    "new_physical_cards_per_elapsed_hour": 2.612618257001441,
+    "whole_verified_physical_cards": 276,
+    "whole_verified_cards_per_elapsed_hour": 5.187644884405739,
+    "scope": "Goal start through prepared fixed-game/benchmark acceptance; includes whole-set source audit, shared-engine work, authoring/integration, reviews, validation and waiting. Final release/PR steps follow this recorded interval."
+  },
+  "required_existing_immutable_libraries_verified": [
+    {
+      "path": "<cache>/rustmage-validation-o8jjr7os/report/libraries/librustmage.so",
+      "sha256": "4aebb4867b67d084c98f12113c9eefb19e17a3c02a272e44e7f341cc15df2248"
+    },
+    {
+      "path": "<cache>/rustmage-validation-c3slnby9/report/libraries/librustmage.so",
+      "sha256": "4ee65b6abae8b89d79dfa2a87bd796882c05b3c87fb94833c9e4699ef44c5082"
+    },
+    {
+      "path": "<cache>/rustmage-validation-l0pzz2p2/report/libraries/librustmage.so",
+      "sha256": "c61c4e2a62e8ed9a58eec81aee83e61c622b88efcdbbf45ffef3a7dcaa315bf1"
+    },
+    {
+      "path": "<cache>/rustmage-validation-g7kgj8zc/report/libraries/librustmage.so",
+      "sha256": "59f620a0efe73896dd20113594988f9b40736294c6dfff117e590c424064dc36"
+    },
+    {
+      "path": "<cache>/rustmage-validation-owsb88ts/report/libraries/librustmage.so",
+      "sha256": "87d4e2efd1104b701f0b45a00a4c8c098cd30f0d3fef7f93df419e50e8de965c"
+    }
+  ],
+  "final_release": {
+    "status": "pending",
+    "required_command": "python3 scripts/validate.py --release --python smoke --target-dir <cache>/rustmage-authoring/tdm-complete-set/target",
+    "required_native_caps": {
+      "per_case_seconds": 45,
+      "suite_seconds": 240
+    },
+    "required_resources": {
+      "memory_bytes": 6442450944,
+      "cargo_jobs": 1,
+      "test_threads": 1
+    }
+  },
+  "published_pr": {
+    "status": "pending full release",
+    "exactly_one": true,
+    "two_fresh_pure_nonauthor_final_head_reviews": "required after publication"
+  },
+  "remaining": [
+    "Final assembled release and actual Python binding checks with all native cases",
+    "One completed-set PR",
+    "Two fresh independent pure nonauthor reviews of its final published head"
+  ]
+}
