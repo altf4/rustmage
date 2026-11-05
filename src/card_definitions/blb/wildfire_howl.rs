@@ -1,15 +1,11 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// One simultaneous damage event after the optional gift draw.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Spell(
         TargetPlan::Single(TargetSpec::NONE),
         &[
             Instruction::GiveGift,
-            Instruction::IfGift {
-                promised: true,
-                skip: 1,
-            },
-            Instruction::Damage(1),
-            Instruction::DamageBattlefield {
+            Instruction::DamageBattlefieldAndTargets {
+                target_amount: 1,
                 filters: &[BattlefieldFilter {
                     kinds: 1,
                     relation: -1,

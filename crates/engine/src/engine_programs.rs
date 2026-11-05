@@ -4873,9 +4873,20 @@ impl Game {
                     filters,
                     players,
                     amount,
-                } => {
-                    self.damage_battlefield_group(&item, filters, players, amount);
-                }
+                } => self.damage_battlefield_group(&item, filters, players, amount, None, None),
+                Instruction::DamageBattlefieldAndTargets {
+                    filters,
+                    players,
+                    amount,
+                    target_amount,
+                } => self.damage_battlefield_group(
+                    &item,
+                    filters,
+                    players,
+                    amount,
+                    None,
+                    Some(target_amount),
+                ),
                 Instruction::DamageCreaturesExceptControlledTokens(amount) => {
                     self.damage_creatures_except_controlled_tokens(&item, amount);
                 }
@@ -4884,12 +4895,13 @@ impl Game {
                     excluded_subtype,
                     players,
                     amount,
-                } => self.damage_battlefield_group_excluding(
+                } => self.damage_battlefield_group(
                     &item,
                     filters,
                     players,
                     amount,
                     Some(excluded_subtype),
+                    None,
                 ),
                 Instruction::DrawMoved | Instruction::GainLifeMoved => {
                     let count = self
