@@ -8360,22 +8360,20 @@ impl Game {
         }) {
             return None;
         }
-        let views: Vec<_> = moves
+        let frozen = moves
             .iter()
             .map(|&(reference, destination)| {
                 let view = self.object_view(reference.card);
                 let rules = self.freeze_zone_rules(&view, destination, None);
-                (view, destination, rules)
+                (view, destination, rules, ())
             })
             .collect();
-        let plans: Vec<_> = views
-            .into_iter()
-            .map(|(view, destination, rules)| {
-                let plan = self.plan_zone_move(&view, destination, rules);
-                (view, plan)
-            })
-            .collect();
-        Some(plans)
+        Some(
+            self.plan_zone_batch(frozen)
+                .into_iter()
+                .map(|(view, plan, ())| (view, plan))
+                .collect(),
+        )
     }
 
     /// Commit a previously planned nonbattlefield cost batch and return its
@@ -8639,24 +8637,14 @@ impl Game {
                 );
                 let view = self.object_view(id);
                 let counters = self.pre_entry_counters(&view, destination);
-                (
-                    self.freeze_zone_rules(&view, destination, None),
-                    view,
-                    destination == Zone::Battlefield && self.enters_tapped(id),
-                    counters,
-                )
+                let rules = self.freeze_zone_rules(&view, destination, None);
+                let tapped = destination == Zone::Battlefield && self.enters_tapped(id);
+                (view, destination, rules, (tapped, counters))
             })
             .collect();
-        self.capture_event_object_facts(before.iter().map(|(_, view, _, _)| view));
-        self.capture_source_quantities(before.iter().map(|(_, view, _, _)| view));
-        // Replacement decisions precede the entire simultaneous commit.
-        let planned: Vec<_> = before
-            .into_iter()
-            .map(|(rules, before, tapped, counters)| {
-                let plan = self.plan_zone_move(&before, destination, rules);
-                (before, plan, tapped, counters)
-            })
-            .collect();
+        self.capture_event_object_facts(before.iter().map(|(view, _, _, _)| view));
+        self.capture_source_quantities(before.iter().map(|(view, _, _, _)| view));
+        let planned = self.plan_zone_batch(before);
         if let Some((player, top, bottom)) = positions {
             self.state.players[player.index()]
                 .library
@@ -8664,7 +8652,7 @@ impl Game {
         }
         let events = planned
             .into_iter()
-            .map(|(before, plan, tapped, counters)| {
+            .map(|(before, plan, (tapped, counters))| {
                 self.commit_planned_zone_move(
                     before,
                     plan,

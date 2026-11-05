@@ -128,20 +128,17 @@ impl Game {
                 && cause.is_some_and(|source| source != o.owner)
         });
         if redirected_entry {
-            let frozen: Vec<_> = cards
+            let frozen = cards
                 .iter()
                 .map(|&id| {
                     let before = self.object_view(id);
-                    (
-                        self.freeze_zone_rules(&before, Zone::Graveyard, cause),
-                        before,
-                    )
+                    let rules = self.freeze_zone_rules(&before, Zone::Graveyard, cause);
+                    (before, Zone::Graveyard, rules, ())
                 })
                 .collect();
             let mut moves = Vec::new();
             let mut context = context;
-            for (rules, before) in frozen {
-                let plan = self.plan_zone_move(&before, Zone::Graveyard, rules);
+            for (before, plan, ()) in self.plan_zone_batch(frozen) {
                 let mut movement = self.entry_move(before.id, plan.destination, false);
                 if plan.shuffle {
                     context.shuffles.push(before.reference);

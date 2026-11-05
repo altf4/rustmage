@@ -367,6 +367,58 @@ impl Game {
                 && discard_cause.is_some_and(|cause| cause != before.owner),
         }
     }
+    /// CR 616.1: ask affected players in APNAP order. Retain the original
+    /// movement order for commit, including explicit library positions.
+    pub(super) fn plan_zone_batch<T>(
+        &mut self,
+        mut frozen: Vec<(ObjectView, Zone, FrozenRules, T)>,
+    ) -> Vec<(ObjectView, Plan, T)> {
+        let active = self.state.active;
+        let requires_apnap = frozen.len() > 1
+            && frozen.iter().any(|(_, _, rules, _)| {
+                // All other effects collapse to a single exile option.
+                rules.prevent
+                    || rules.shuffle_self
+                    || rules.discard_to_battlefield
+                    || !rules.reflexive_exiles.is_empty()
+            })
+            && {
+                let mut order = frozen
+                    .iter()
+                    .map(|(before, _, _, _)| affected_player(before));
+                order.any(|player| player != active) && order.any(|player| player == active)
+            };
+        if requires_apnap {
+            let mut plans = vec![None; frozen.len()];
+            for player in [active, active.other()] {
+                for ((before, requested, rules, _), plan) in frozen.iter_mut().zip(&mut plans) {
+                    if affected_player(before) == player {
+                        *plan =
+                            Some(self.plan_zone_move(before, *requested, std::mem::take(rules)));
+                    }
+                }
+            }
+            return frozen
+                .into_iter()
+                .zip(plans)
+                .map(|((before, _, _, data), plan)| {
+                    (
+                        before,
+                        plan.expect("every affected player was considered"),
+                        data,
+                    )
+                })
+                .collect();
+        }
+        frozen
+            .into_iter()
+            .map(|(before, requested, rules, data)| {
+                let plan = self.plan_zone_move(&before, requested, rules);
+                (before, plan, data)
+            })
+            .collect()
+    }
+
     pub(super) fn plan_zone_move(
         &mut self,
         before: &ObjectView,
