@@ -5,7 +5,7 @@ pub mod ability_layers;
 pub use ability_layers::{
     AbilityLayer, AdditionalTriggerScope, AnimationCreatureTypes, AnimationDuration, AnimationSpec,
     AttachedCharacteristics, CreatureSubtypeGrant, LandManaRecipients, PermanentForm,
-    StaticAbilityFragment, StaticAbilityGroup, UntapRestriction,
+    SourceCreatureForm, StaticAbilityFragment, StaticAbilityGroup, UntapRestriction,
 };
 
 #[doc(hidden)]

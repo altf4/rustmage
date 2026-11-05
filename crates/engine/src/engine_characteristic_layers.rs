@@ -3,7 +3,7 @@ use super::ability_world::CharacteristicWorld;
 use super::*;
 use crate::cards::{
     AnimationCreatureTypes, AnimationDuration, AnimationSpec, AttachedCharacteristics,
-    PermanentForm, StaticAbilityFragment,
+    PermanentForm, SourceCreatureForm, StaticAbilityFragment,
 };
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -114,15 +114,24 @@ fn land_forms<W: CharacteristicWorld + ?Sized>(
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+struct SourceCreatureChange {
+    timestamp: u64,
+    kinds: u16,
+    additive: bool,
+    subtypes: &'static [&'static str],
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn source_conditional_creature<W: CharacteristicWorld + ?Sized>(
     world: &W,
     id: CardId,
-) -> Option<(u64, u16, &'static [&'static str])> {
+) -> Option<SourceCreatureChange> {
     let object = world.object(id);
     if object.zone != Zone::Battlefield {
         return None;
     }
-    let (kinds, types) = object
+    let roles = world.roles()?;
+    let (form, subtypes) = object
         .card
         .static_ability_groups()
         .iter()
@@ -132,27 +141,36 @@ fn source_conditional_creature<W: CharacteristicWorld + ?Sized>(
                 own_turn,
                 kind,
                 minimum,
+                form,
                 subtypes,
                 ..
             } if (!own_turn || object.controller == world.game().state.active)
                 && world.counter_count(id, kind) >= minimum =>
             {
-                Some((1, subtypes))
+                Some((form, subtypes))
             }
             StaticAbilityFragment::SourceOffTurnCreature
                 if object.controller != world.game().state.active =>
             {
-                Some((17, &[]))
+                Some((SourceCreatureForm::ArtifactCreature, &[]))
             }
             _ => None,
         })?;
-    let timestamp = world
-        .roles()?
+    let timestamp = roles
         .ability_timestamps
         .iter()
         .find(|row| row.source == world.reference(id))?
         .timestamp;
-    Some((timestamp, kinds, types))
+    let (kinds, additive) = match form {
+        SourceCreatureForm::Creature => (1, false),
+        SourceCreatureForm::ArtifactCreature => (17, true),
+    };
+    Some(SourceCreatureChange {
+        timestamp,
+        kinds,
+        additive,
+        subtypes,
+    })
 }
 /// Layer-four changes to the presence of the land card type. Other card-type
 /// additions do not affect existing land types and need no timeline entry.
@@ -168,6 +186,11 @@ pub(super) fn land_kind_events<W: CharacteristicWorld + ?Sized>(
             form => Some((time, matches!(form, PermanentForm::Land))),
         })
         .collect();
+    if let Some(change) = source_conditional_creature(world, id)
+        && !change.additive
+    {
+        events.push((change.timestamp, false));
+    }
     events.extend(animations(world, id).filter_map(|row| {
         if row.food_only || row.artifact_noncreature || row.enchantment_noncreature {
             Some((row.timestamp, false))
@@ -246,8 +269,13 @@ fn kind_timeline<W: CharacteristicWorld + ?Sized>(
             )
         })
         .collect();
-    if let Some((timestamp, kinds, _)) = source_conditional_creature(world, id) {
-        changes.push((timestamp, kinds, true));
+    if let Some(change) = source_conditional_creature(world, id) {
+        let kinds = if change.additive {
+            change.kinds
+        } else {
+            change.kinds | (result & (4 | 8))
+        };
+        changes.push((change.timestamp, kinds, change.additive));
     }
     changes.extend(land_forms(world, id).map(|row| (row.timestamp, 2, false)));
     for row in animations(world, id) {
@@ -471,10 +499,13 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
             )
         })
         .collect();
-    if let Some((timestamp, _, types)) = source_conditional_creature(world, id)
-        && !types.is_empty()
+    if let Some(change) = source_conditional_creature(world, id)
+        && (!change.additive || !change.subtypes.is_empty())
     {
-        changes.push((timestamp, SubtypeChange::Named(types, false)));
+        changes.push((
+            change.timestamp,
+            SubtypeChange::Named(change.subtypes, !change.additive),
+        ));
     }
     changes.extend(land_forms(world, id).map(|row| (row.timestamp, SubtypeChange::LandOnly)));
     changes.extend(animations(world, id).filter_map(|row| {

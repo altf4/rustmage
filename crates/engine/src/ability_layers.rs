@@ -280,6 +280,7 @@ pub enum StaticAbilityFragment {
         own_turn: bool,
         kind: CounterKind,
         minimum: u64,
+        form: SourceCreatureForm,
         subtypes: &'static [&'static str],
         keywords: Keywords,
     },
@@ -409,6 +410,14 @@ pub enum PermanentForm {
     Land,
     /// Add creature type without removing other card or creature types.
     AddCreature,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug)]
+pub enum SourceCreatureForm {
+    /// Set the card type and creature subtypes for a plain creature form.
+    Creature,
+    /// Becoming an artifact creature retains other card types (CR 205.1b).
+    ArtifactCreature,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug)]
