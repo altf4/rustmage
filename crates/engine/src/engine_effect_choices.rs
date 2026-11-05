@@ -1259,6 +1259,9 @@ impl Game {
                 .iter()
                 .map(|r| r.card)
                 .collect();
+            if !ids.is_empty() {
+                self.obscure_private_hand_selection(player);
+            }
             self.forget_library_top(player);
             let events = self.move_objects_raw(&ids, Zone::Library);
             self.finish_zone_events(&events, &[]);

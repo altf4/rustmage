@@ -161,6 +161,32 @@ impl Game {
             }
         }
     }
+    // A private choice may move any of the choosing player's hand cards.
+    // Keeping a public reference for an unchosen card would disclose that choice.
+    pub(super) fn obscure_private_hand_selection(&mut self, player: Player) {
+        if self.state.cast_rollback.is_some() {
+            let candidates: Vec<_> = self
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .filter_map(|(id, object)| {
+                    (object.zone == Zone::Hand && object.owner == player && object.is_card())
+                        .then_some(id as CardId)
+                })
+                .collect();
+            for id in candidates {
+                self.obscure_rollback_hand_card(id);
+            }
+        }
+        let objects = &self.state.objects;
+        self.state.known_hand.retain(|reference| {
+            objects.get(reference.card as usize).is_some_and(|object| {
+                object.owner != player && object.generation == reference.generation
+            })
+        });
+    }
+
     // Once an original hand card enters a hidden library, its physical ID is
     // no longer public evidence that later objects are the same card.
     pub(super) fn obscure_rollback_hand_card(&mut self, id: CardId) {
