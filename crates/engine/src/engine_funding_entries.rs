@@ -1010,35 +1010,30 @@ impl FundingState<'_> {
                     })
             });
         if applies {
-            let cards = self.game.state.players[player.index()]
+            let library = self.game.state.players[player.index()]
                 .library
                 .iter()
                 .rev()
                 .copied()
                 .filter(|&id| {
                     let object = self.object(id);
-                    object.zone == Zone::Library
-                        && object.is_card()
-                        && !entering.iter().any(|m| {
-                            !m.skipped
-                                && m.destination == Zone::Battlefield
-                                && m.before.zone == Zone::Library
-                                && m.before.reference == self.reference(id)
-                        })
+                    object.zone == Zone::Library && object.is_card()
                 })
-                .take(n as usize)
-                .map(|id| self.reference(id))
-                .collect::<Vec<_>>();
-            if cards.len() == n as usize {
-                let mut result = None;
-                self.cost_departures(&cards, Zone::Exile, &mut |world| {
-                    result = Some(world.clone());
-                    true
-                });
-                if let Some(world) = result {
-                    *self = world;
-                    return;
+                .map(|id| self.reference(id));
+            if let Some(cards) =
+                entries::life_replacement_exile_cards(library, n as usize, entering)
+            {
+                if !cards.is_empty() {
+                    let mut result = None;
+                    self.cost_departures(&cards, Zone::Exile, &mut |world| {
+                        result = Some(world.clone());
+                        true
+                    });
+                    if let Some(world) = result {
+                        *self = world;
+                    }
                 }
+                return;
             }
         }
         self.life_lost[player.index()] |= n > 0;

@@ -79,6 +79,34 @@ pub(super) struct EntryMove {
     /// Frozen before replacement choices; payments in this event cannot enable it.
     pub counters: Counters,
 }
+/// Test the full library for eligibility, then skip cards already entering
+/// from it while collecting as much of the replaced payment as possible.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn life_replacement_exile_cards(
+    library: impl Iterator<Item = ObjectRef>,
+    amount: usize,
+    entering: &[EntryMove],
+) -> Option<Vec<ObjectRef>> {
+    let mut seen = 0;
+    let mut cards = Vec::new();
+    for reference in library {
+        seen += 1;
+        if entering.iter().any(|movement| {
+            !movement.skipped
+                && movement.destination == Zone::Battlefield
+                && movement.before.zone == Zone::Library
+                && movement.before.reference == reference
+        }) {
+            continue;
+        }
+        cards.push(reference);
+        if cards.len() == amount {
+            return Some(cards);
+        }
+    }
+    (seen >= amount).then_some(cards)
+}
+
 /// Owned prepayment state and explicit unpaid-program continuation. The
 /// checkpoint is captured before zone replacement planning starts.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
