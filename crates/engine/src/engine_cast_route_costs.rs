@@ -69,9 +69,9 @@ impl Game {
         amount: u16,
         spend_any_mana: bool,
     ) {
-        let Some(source) = item.source else {
+        if item.source.is_none() {
             return;
-        };
+        }
         let libraries = self.program_players(libraries, item).collect::<Vec<_>>();
         let beneficiaries = self
             .program_players(beneficiaries, item)
@@ -97,11 +97,7 @@ impl Game {
                 if !event.moved || event.destination != Zone::Exile {
                     continue;
                 }
-                self.state
-                    .linked_choices
-                    .get_or_insert_default()
-                    .hidden
-                    .insert(event.after, (source.object, viewers));
+                self.remember_face_down_exile(event.after, viewers, None);
                 for &player in &beneficiaries {
                     self.grant_exile_play_permission(player, event.after, false);
                     let permission = self

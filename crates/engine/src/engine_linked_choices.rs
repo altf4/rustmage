@@ -59,6 +59,13 @@ pub(super) struct NullCastLink {
     pub ability_origin: Option<u64>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct HiddenExile {
+    viewers: u8,
+    /// Only hideaway extends look permission to future controllers of the source.
+    hideaway_source: Option<ObjectRef>,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct ChoiceState {
     pub hand: Option<Box<super::hand_choices::HandInteraction>>,
@@ -72,8 +79,7 @@ pub(super) struct ChoiceState {
     sacrifice: Option<Option<ObjectRef>>,
     pub links: Vec<LinkedExileView>,
     pub null_cast_links: Vec<NullCastLink>,
-    pub hidden: BTreeMap<ObjectRef, (ObjectRef, u8)>,
-    pub hideaway_controllers: Vec<(ObjectRef, u8)>,
+    hidden: BTreeMap<ObjectRef, HiddenExile>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ChoiceState {
@@ -98,8 +104,7 @@ impl ChoiceState {
             + self.hand.as_ref().map_or(0, |h| h.bytes())
             + self.library_cast.as_ref().map_or(0, |h| h.bytes())
             + self.deployment.as_ref().map_or(0, |h| h.bytes())
-            + self.hideaway_controllers.len() * std::mem::size_of::<(ObjectRef, u8)>()
-            + self.hidden.len() * std::mem::size_of::<(ObjectRef, ObjectRef, u8)>()
+            + self.hidden.len() * std::mem::size_of::<(ObjectRef, HiddenExile)>()
             + self.links.len() * std::mem::size_of::<LinkedExileView>()
             + self.null_cast_links.len() * std::mem::size_of::<NullCastLink>()
             + self.piles.as_ref().map_or(0, |p| {
@@ -122,11 +127,7 @@ impl Game {
             data.piles = None;
             data.keep_types = None;
             data.sacrifice = None;
-            if data.links.is_empty()
-                && data.null_cast_links.is_empty()
-                && data.hideaway_controllers.is_empty()
-                && data.hidden.is_empty()
-            {
+            if data.links.is_empty() && data.null_cast_links.is_empty() && data.hidden.is_empty() {
                 self.state.linked_choices = None;
             }
         }
@@ -431,27 +432,49 @@ impl Game {
             .linked_choices
             .as_ref()
             .and_then(|data| data.hidden.get(&object))
-            .is_none_or(|&(_, viewers)| viewers & self.information_mask(viewer) != 0)
+            .is_none_or(|row| row.viewers & self.information_mask(viewer) != 0)
+    }
+    pub(super) fn remember_face_down_exile(
+        &mut self,
+        object: ObjectRef,
+        mut viewers: u8,
+        hideaway_source: Option<ObjectRef>,
+    ) {
+        // CR 702.75a grants the current controller access as the card is exiled.
+        // CR 406.3 preserves access already granted for that exact exile object.
+        if let Some(source) = hideaway_source
+            && self.on_battlefield(source.card)
+            && self.object_ref(source.card) == source
+        {
+            let controller = self.state.objects[source.card as usize].controller;
+            viewers |= 1 << controller.index();
+        }
+        self.state
+            .linked_choices
+            .get_or_insert_default()
+            .hidden
+            .insert(
+                object,
+                HiddenExile {
+                    viewers,
+                    hideaway_source,
+                },
+            );
     }
     pub(super) fn remember_hideaway_controller(&mut self, source: ObjectRef, player: Player) {
-        let has_hideaway = self.state.objects[source.card as usize].card.triggers().iter().any(|ability| ability.program.iter().any(|instruction| matches!(instruction, Instruction::SelectLibraryTo(effect) if effect.destination == crate::cards::LibraryPickDestination::Hideaway)));
-        if !has_hideaway {
-            return;
-        }
-        let data = self.state.linked_choices.get_or_insert_default();
-        if let Some((_, viewers)) = data
-            .hideaway_controllers
-            .iter_mut()
-            .find(|(r, _)| *r == source)
+        if let Some(data) = self
+            .state
+            .linked_choices
+            .as_mut()
+            .filter(|data| !data.hidden.is_empty())
         {
-            *viewers |= 1 << player.index();
-        } else {
-            data.hideaway_controllers
-                .push((source, 1 << player.index()));
-        }
-        for (linked, viewers) in data.hidden.values_mut() {
-            if *linked == source {
-                *viewers |= 1 << player.index();
+            for link in &data.links {
+                if link.source == source
+                    && let Some(row) = data.hidden.get_mut(&link.exiled)
+                    && row.hideaway_source == Some(source)
+                {
+                    row.viewers |= 1 << player.index();
+                }
             }
         }
     }
@@ -647,31 +670,6 @@ impl Game {
             return;
         };
         let objects = &self.state.objects;
-        let waiting = |source| {
-            self.state
-                .stack
-                .iter()
-                .chain(&self.state.pending_triggers)
-                .chain(&self.state.ordering_triggers)
-                .any(|item| {
-                    item.source
-                        .is_some_and(|identity| identity.object == source)
-                })
-                || self.state.resolving.as_ref().is_some_and(|r| {
-                    r.item
-                        .source
-                        .is_some_and(|identity| identity.object == source)
-                })
-                || self.state.announcing.as_ref().is_some_and(|a| {
-                    a.item
-                        .source
-                        .is_some_and(|identity| identity.object == source)
-                })
-        };
-        data.hideaway_controllers.retain(|&(source, _)| {
-            let o = &objects[source.card as usize];
-            (o.zone == Zone::Battlefield && o.generation == source.generation) || waiting(source)
-        });
         data.hidden.retain(|exiled, _| {
             let o = &objects[exiled.card as usize];
             o.zone == Zone::Exile && o.generation == exiled.generation
