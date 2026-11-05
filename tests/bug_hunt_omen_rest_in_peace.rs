@@ -4,10 +4,9 @@ use rustmage as _;
 use rustmage_core::engine::*;
 use support::*;
 
-fn announce_omen(game: &mut Game, player: Player, card: CardId) {
+fn start_omen(game: &mut Game, player: Player, card: CardId) {
     game.state.players[player.index()].mana = [1, 0, 0, 0, 0, 1];
     act(game, Action::AnnounceOmen { card });
-    pay(game);
 }
 
 #[test]
@@ -17,7 +16,8 @@ fn resolving_omen_lets_its_controller_choose_between_exile_and_shuffle() {
     let card = put(&mut game, player, "Riling Dawnbreaker", Zone::Hand);
     let initial_rng = game.state.rng;
     let mut ordinary = game.clone();
-    announce_omen(&mut ordinary, player, card);
+    start_omen(&mut ordinary, player, card);
+    pay(&mut ordinary);
     settle(&mut ordinary);
     assert_eq!(ordinary.object_view(card).zone, Zone::Library);
     assert_ne!(ordinary.state.rng, initial_rng);
@@ -29,7 +29,8 @@ fn resolving_omen_lets_its_controller_choose_between_exile_and_shuffle() {
         "Rest in Peace",
         Zone::Battlefield,
     );
-    announce_omen(&mut game, player, card);
+    start_omen(&mut game, player, card);
+    pay(&mut game);
     act(&mut game, Action::Pass);
     act(&mut game, Action::Pass);
     assert_eq!(game.actor(), Some(player));
@@ -77,15 +78,10 @@ fn a_stack_exit_replacement_can_apply_inside_the_omen_shuffle() {
     let player = Player::P0;
     let mut game = scenario(player);
     let card = put(&mut game, player, "Riling Dawnbreaker", Zone::Hand);
-    put(
-        &mut game,
-        player.other(),
-        "Rest in Peace",
-        Zone::Battlefield,
-    );
-    announce_omen(&mut game, player, card);
+    start_omen(&mut game, player, card);
     // Exercise the generic stack-exit replacement on the announced Omen.
     game.state.objects[card as usize].flashback = true;
+    pay(&mut game);
     let initial_rng = game.state.rng;
     act(&mut game, Action::Pass);
     act(&mut game, Action::Pass);

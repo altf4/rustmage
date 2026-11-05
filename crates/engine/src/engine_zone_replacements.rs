@@ -238,12 +238,14 @@ pub(super) fn card_provides_prevention(card: Card) -> bool {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    pub(super) fn register_stack_graveyard_exile(&mut self, item: &SpellView) {
-        if item.kind == StackKind::Spell
-            && !item.is_copy
-            && item.cast.is_some_and(|cast| cast.exile_on_graveyard)
-            && let Some(source) = item.source
-        {
+    pub(super) fn register_stack_zone_replacements(&mut self, item: &SpellView) {
+        if item.kind != StackKind::Spell || item.is_copy {
+            return;
+        }
+        let (Some(cast), Some(source)) = (item.cast, item.source) else {
+            return;
+        };
+        if cast.exile_on_graveyard {
             let rows = &mut self
                 .state
                 .zone_rules
@@ -252,6 +254,9 @@ impl Game {
             if !rows.contains(&source.object) {
                 rows.push(source.object);
             }
+        } else if cast.face == CastFace::Omen && self.state.objects[source.id as usize].flashback {
+            // Competing stack-exit and Omen replacements need action replay.
+            self.state.zone_rules.get_or_insert_default();
         }
     }
     pub(super) fn forget_stack_graveyard_exile(&mut self, object: ObjectRef) {

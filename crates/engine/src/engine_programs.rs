@@ -1598,7 +1598,7 @@ impl Game {
         if let Some((_, _, object)) = cast {
             self.complete_prepared_cast(object);
         }
-        self.register_stack_graveyard_exile(&item);
+        self.register_stack_zone_replacements(&item);
         self.record_committed_crime(&item);
         self.committed_activation_observers(&item);
         self.state.stack.push(item);

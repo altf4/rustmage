@@ -3,6 +3,7 @@
 use super::*;
 use cast_rollback::CastRollback;
 use std::collections::VecDeque;
+use zone_replacements::ZoneShuffle;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -45,12 +46,7 @@ pub(super) struct ManaEvent {
     pub counter_costs: Vec<Vec<replacements::CounterPlacement>>,
     pub entries: Vec<entries::EntryBatch>,
     pub life_payments: Vec<LifePaymentReceipt>,
-    pub moves: Vec<(
-        ObjectRef,
-        Zone,
-        Option<zone_replacements::ZoneShuffle>,
-        bool,
-    )>,
+    pub moves: Vec<(ObjectRef, Zone, Option<ZoneShuffle>, bool)>,
     pub allocations: Vec<(CardId, u64)>,
     pub triggers: Vec<SpellView>,
     pub irreversible: bool,
@@ -79,13 +75,7 @@ impl ManaEvent {
                         + batch.iter().map(|p| p.amount.owned_bytes()).sum::<usize>()
                 })
                 .sum::<usize>()
-            + self.moves.len()
-                * std::mem::size_of::<(
-                    ObjectRef,
-                    Zone,
-                    Option<zone_replacements::ZoneShuffle>,
-                    bool,
-                )>()
+            + self.moves.len() * std::mem::size_of::<(ObjectRef, Zone, Option<ZoneShuffle>, bool)>()
             + self
                 .life_payments
                 .iter()
@@ -126,12 +116,7 @@ struct ActiveManaReplay {
     entries: VecDeque<entries::EntryBatch>,
     life_payments: VecDeque<LifePaymentReceipt>,
     entries_seen: usize,
-    moves: VecDeque<(
-        ObjectRef,
-        Zone,
-        Option<zone_replacements::ZoneShuffle>,
-        bool,
-    )>,
+    moves: VecDeque<(ObjectRef, Zone, Option<ZoneShuffle>, bool)>,
     allocations: VecDeque<(CardId, u64)>,
     failed: bool,
 }
@@ -156,12 +141,7 @@ impl ManaReplay {
                         .map(entries::EntryBatch::bytes)
                         .sum::<usize>()
                     + active.moves.len()
-                        * std::mem::size_of::<(
-                            ObjectRef,
-                            Zone,
-                            Option<zone_replacements::ZoneShuffle>,
-                            bool,
-                        )>()
+                        * std::mem::size_of::<(ObjectRef, Zone, Option<ZoneShuffle>, bool)>()
                     + active
                         .life_payments
                         .iter()
