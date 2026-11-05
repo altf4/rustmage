@@ -40,11 +40,11 @@ impl Game {
             && (!filter.basic || (kinds(id, o) & 2 != 0 && o.card.is_basic_land()))
     }
     pub(super) fn stat_value(&self, value: StatValue, source: ObjectRef, owner: Player) -> i128 {
-        self.stat_value_without_hand(value, source, owner, None)
+        self.stat_value_excluding(value, source, owner, None)
     }
-    /// CR601.2a preflight removes only the exact proposed Hand spell. Plot and
-    /// activation queries retain their real current objects until costs commit.
-    pub(super) fn stat_value_without_hand(
+    /// CR601.2a preflight removes the exact proposed spell from its origin.
+    /// Queries without a cast departure evaluate the current objects.
+    pub(super) fn stat_value_excluding(
         &self,
         value: StatValue,
         source: ObjectRef,
@@ -60,7 +60,7 @@ impl Game {
                     .objects
                     .iter()
                     .enumerate()
-                    .filter(move |(id, o)| departing != Some(*id as CardId) || o.zone != Zone::Hand)
+                    .filter(move |(id, _)| departing != Some(*id as CardId))
                     .map(|(id, o)| (id as CardId, o))
             },
             &|id| self.granted_subtypes(id),

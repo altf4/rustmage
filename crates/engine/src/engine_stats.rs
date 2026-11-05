@@ -396,16 +396,15 @@ impl Game {
     }
     // CR208.4b: characteristic definitions and setters, before modifiers/counters.
 
-    pub(super) fn stats_without_hand(&self, id: CardId, departing: Option<CardId>) -> Stats {
-        self.characteristic_query()
-            .stats_without_hand(id, departing)
+    pub(super) fn stats_excluding(&self, id: CardId, departing: Option<CardId>) -> Stats {
+        self.characteristic_query().stats_excluding(id, departing)
     }
-    pub(super) fn layered_stats_without_hand(
+    pub(super) fn layered_stats_excluding(
         &self,
         id: CardId,
         departing: Option<CardId>,
     ) -> (Stats, Stats) {
         self.characteristic_query()
-            .layered_stats_without_hand(id, departing)
+            .layered_stats_excluding(id, departing)
     }
 }

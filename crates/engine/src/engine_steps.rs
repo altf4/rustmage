@@ -332,9 +332,9 @@ impl Game {
         source: ObjectRef,
         source_tapped: bool,
     ) -> bool {
-        self.step_guard_without_hand(guard, player, source, source_tapped, None)
+        self.step_guard_excluding(guard, player, source, source_tapped, None)
     }
-    pub(super) fn step_guard_without_hand(
+    pub(super) fn step_guard_excluding(
         &self,
         guard: StepGuard,
         player: Player,
@@ -412,13 +412,12 @@ impl Game {
             StepGuard::SourcePowerAtLeast(minimum) => {
                 return self.on_battlefield(source.card)
                     && self.object_ref(source.card) == source
-                    && self.stats_without_hand(source.card, departing).power
-                        >= i128::from(minimum);
+                    && self.stats_excluding(source.card, departing).power >= i128::from(minimum);
             }
             StepGuard::SourceToughnessAtMost(maximum) => {
                 return self.on_battlefield(source.card)
                     && self.object_ref(source.card) == source
-                    && self.stats_without_hand(source.card, departing).toughness
+                    && self.stats_excluding(source.card, departing).toughness
                         <= i128::from(maximum);
             }
             StepGuard::Outlaw => {
@@ -435,7 +434,7 @@ impl Game {
                 minimum,
                 maximum,
             } => {
-                let value = self.stat_value_without_hand(value, source, player, departing);
+                let value = self.stat_value_excluding(value, source, player, departing);
                 return minimum.is_none_or(|min| value >= min)
                     && maximum.is_none_or(|max| value <= max);
             }
@@ -511,21 +510,21 @@ impl Game {
                     .count() as i128,
             ),
             StepValue::GreatestCreaturePower => creatures()
-                .map(|(id, _)| self.stats_without_hand(id as CardId, departing).power)
+                .map(|(id, _)| self.stats_excluding(id as CardId, departing).power)
                 .max(),
             StepValue::GreatestOtherCreaturePower => creatures()
                 .filter(|(id, _)| self.object_ref(*id as CardId) != source)
-                .map(|(id, _)| self.stats_without_hand(id as CardId, departing).power)
+                .map(|(id, _)| self.stats_excluding(id as CardId, departing).power)
                 .max(),
             StepValue::TotalCreaturePower => Some(
                 creatures()
-                    .map(|(id, _)| self.stats_without_hand(id as CardId, departing).power)
+                    .map(|(id, _)| self.stats_excluding(id as CardId, departing).power)
                     .try_fold(0i128, i128::checked_add)
                     .capacity("step aggregate exhausted"),
             ),
             StepValue::TotalCreatureToughness => Some(
                 creatures()
-                    .map(|(id, _)| self.stats_without_hand(id as CardId, departing).toughness)
+                    .map(|(id, _)| self.stats_excluding(id as CardId, departing).toughness)
                     .try_fold(0i128, i128::checked_add)
                     .capacity("step aggregate exhausted"),
             ),

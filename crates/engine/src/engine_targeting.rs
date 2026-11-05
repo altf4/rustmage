@@ -893,15 +893,14 @@ impl Game {
             attachment: None,
             spell: Some(definition),
         });
-        let departing =
-            (self.state.objects[source.card as usize].zone == Zone::Hand).then_some(source.card);
+        let departing = self.cast_departing_card(source);
         let available = |spec: TargetSpec| {
             if spec.min == 0 {
                 return true;
             }
             let mut count = [0usize; 2];
             let mut seen_kinds = 0u16;
-            self.visit_targets_without_hand(
+            self.visit_targets_excluding(
                 spec.rule,
                 actor,
                 source,
@@ -995,56 +994,49 @@ impl Game {
             }
             let mut count = [0usize; 2];
             let mut seen_kinds = 0u16;
-            self.visit_targets_without_hand(
-                spec.rule,
-                actor,
-                source,
-                None,
-                qualification,
-                |target| {
-                    if matches!(
-                        spec.rule,
-                        TargetRule::Grouped {
-                            constraint: TargetGroupConstraint::SharedCardType,
-                            ..
-                        }
-                    ) {
-                        let Target::Card(id) = target else {
-                            return false;
-                        };
-                        let kinds = self.current_kinds(id);
-                        let available = seen_kinds & kinds != 0;
-                        seen_kinds |= kinds;
-                        return available;
+            self.visit_targets_excluding(spec.rule, actor, source, None, qualification, |target| {
+                if matches!(
+                    spec.rule,
+                    TargetRule::Grouped {
+                        constraint: TargetGroupConstraint::SharedCardType,
+                        ..
                     }
-                    let distinct = matches!(
-                        spec.rule,
-                        TargetRule::Grouped {
-                            constraint: TargetGroupConstraint::DifferentControllers,
-                            ..
-                        }
-                    );
-                    let bucket = if matches!(spec.rule, TargetRule::Grouped { .. }) {
-                        let Target::Card(id) = target else {
-                            return false;
-                        };
-                        let object = &self.state.objects[id as usize];
-                        if distinct {
-                            object.controller.index()
-                        } else {
-                            object.owner.index()
-                        }
-                    } else {
-                        0
+                ) {
+                    let Target::Card(id) = target else {
+                        return false;
                     };
-                    count[bucket] += 1;
-                    if distinct {
-                        spec.min <= 1 || spec.min <= 2 && count[0] > 0 && count[1] > 0
-                    } else {
-                        count[bucket] >= usize::from(spec.min)
+                    let kinds = self.current_kinds(id);
+                    let available = seen_kinds & kinds != 0;
+                    seen_kinds |= kinds;
+                    return available;
+                }
+                let distinct = matches!(
+                    spec.rule,
+                    TargetRule::Grouped {
+                        constraint: TargetGroupConstraint::DifferentControllers,
+                        ..
                     }
-                },
-            )
+                );
+                let bucket = if matches!(spec.rule, TargetRule::Grouped { .. }) {
+                    let Target::Card(id) = target else {
+                        return false;
+                    };
+                    let object = &self.state.objects[id as usize];
+                    if distinct {
+                        object.controller.index()
+                    } else {
+                        object.owner.index()
+                    }
+                } else {
+                    0
+                };
+                count[bucket] += 1;
+                if distinct {
+                    spec.min <= 1 || spec.min <= 2 && count[0] > 0 && count[1] > 0
+                } else {
+                    count[bucket] >= usize::from(spec.min)
+                }
+            })
         };
         match plan {
             TargetPlan::Single(spec) => available(spec),
@@ -1570,7 +1562,7 @@ impl Game {
         target: Target,
     ) -> bool {
         target != Target::Stack(item.id)
-            && self.target_matches_without_hand(
+            && self.target_matches_excluding(
                 rule,
                 item.controller,
                 item.target_source(),
@@ -1580,6 +1572,20 @@ impl Game {
             )
     }
 
+    fn cast_departing_card(&self, source: ObjectRef) -> Option<CardId> {
+        let object = self.state.objects.get(source.card as usize)?;
+        (object.zone != Zone::Stack && object.generation == source.generation)
+            .then_some(source.card)
+    }
+    pub(super) fn activation_target_matches(
+        &self,
+        rule: TargetRule,
+        controller: Player,
+        source: ObjectRef,
+        target: Target,
+    ) -> bool {
+        self.target_matches_excluding(rule, controller, source, target, None, None)
+    }
     pub(super) fn cast_target_matches(
         &self,
         rule: TargetRule,
@@ -1587,13 +1593,8 @@ impl Game {
         source: ObjectRef,
         target: Target,
     ) -> bool {
-        let departing = self
-            .state
-            .objects
-            .get(source.card as usize)
-            .filter(|o| o.zone == Zone::Hand && o.generation == source.generation)
-            .map(|_| source.card);
-        self.target_matches_without_hand(rule, controller, source, target, departing, None)
+        let departing = self.cast_departing_card(source);
+        self.target_matches_excluding(rule, controller, source, target, departing, None)
     }
     fn target_source_qualities(
         &self,
@@ -1637,7 +1638,7 @@ impl Game {
                 .map(|snapshot| (snapshot.colors(), snapshot.kinds))
         }
     }
-    fn target_matches_without_hand(
+    fn target_matches_excluding(
         &self,
         rule: TargetRule,
         controller: Player,
@@ -1649,11 +1650,11 @@ impl Game {
         match rule {
             TargetRule::ManaValueExactly { base, value, .. } => {
                 return value.is_some_and(|value| matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|_o| self.object_mana_value(id) == value)))
-                    && self.target_matches_without_hand(*base, controller, source, target, departing, qualification);
+                    && self.target_matches_excluding(*base, controller, source, target, departing, qualification);
             }
             TargetRule::ManaValueAtMost { base, maximum, .. } => {
                 return maximum.is_some_and(|maximum| matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|_o| self.object_mana_value(id) <= maximum)))
-                    && self.target_matches_without_hand(*base, controller, source, target, departing, qualification);
+                    && self.target_matches_excluding(*base, controller, source, target, departing, qualification);
             }
             TargetRule::LinkedExileCreature { ability_origin } => {
                 return matches!(target,Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o|
@@ -1713,7 +1714,7 @@ impl Game {
                     | TargetGroupConstraint::TotalManaValueAtMost(_) => None,
                 };
                 return zone.is_none_or(|zone| matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o| o.zone == zone)))
-                    && self.target_matches_without_hand(
+                    && self.target_matches_excluding(
                         *base,
                         controller,
                         source,
@@ -1724,7 +1725,7 @@ impl Game {
             }
             TargetRule::Union(rules) => {
                 return rules.iter().any(|&rule| {
-                    self.target_matches_without_hand(
+                    self.target_matches_excluding(
                         rule,
                         controller,
                         source,
@@ -1735,7 +1736,7 @@ impl Game {
                 });
             }
             TargetRule::Filtered { base, predicate } => {
-                if !self.target_matches_without_hand(
+                if !self.target_matches_excluding(
                     *base,
                     controller,
                     source,
@@ -1797,16 +1798,16 @@ impl Game {
                     TargetPredicate::DealtDamage => object.dealt_damage_this_turn,
                     TargetPredicate::HasCounter(kind) => self.counter_count(id, kind) > 0,
                     TargetPredicate::PowerAtLeast(n) => {
-                        self.stats_without_hand(id, departing).power >= i128::from(n)
+                        self.stats_excluding(id, departing).power >= i128::from(n)
                     }
                     TargetPredicate::PowerAtMost(n) => {
-                        self.stats_without_hand(id, departing).power <= i128::from(n)
+                        self.stats_excluding(id, departing).power <= i128::from(n)
                     }
                     TargetPredicate::ToughnessAtLeast(n) => {
-                        self.stats_without_hand(id, departing).toughness >= i128::from(n)
+                        self.stats_excluding(id, departing).toughness >= i128::from(n)
                     }
                     TargetPredicate::PowerOrToughnessAtLeast(n) => {
-                        let stats = self.stats_without_hand(id, departing);
+                        let stats = self.stats_excluding(id, departing);
                         stats.power >= i128::from(n) || stats.toughness >= i128::from(n)
                     }
                     TargetPredicate::Colors(mask) => {
@@ -1959,7 +1960,7 @@ impl Game {
         rule: TargetRule,
         mut emit: impl FnMut(Target) -> bool,
     ) -> bool {
-        self.visit_targets_without_hand(
+        self.visit_targets_excluding(
             rule,
             item.controller,
             item.target_source(),
@@ -1975,7 +1976,7 @@ impl Game {
         source: ObjectRef,
         emit: impl FnMut(Target) -> bool,
     ) -> bool {
-        self.visit_targets_without_hand(rule, controller, source, None, None, emit)
+        self.visit_targets_excluding(rule, controller, source, None, None, emit)
     }
     pub(super) fn visit_cast_targets(
         &self,
@@ -1984,15 +1985,10 @@ impl Game {
         source: ObjectRef,
         emit: impl FnMut(Target) -> bool,
     ) -> bool {
-        let departing = self
-            .state
-            .objects
-            .get(source.card as usize)
-            .filter(|o| o.zone == Zone::Hand && o.generation == source.generation)
-            .map(|_| source.card);
-        self.visit_targets_without_hand(rule, controller, source, departing, None, emit)
+        let departing = self.cast_departing_card(source);
+        self.visit_targets_excluding(rule, controller, source, departing, None, emit)
     }
-    fn visit_targets_without_hand(
+    fn visit_targets_excluding(
         &self,
         rule: TargetRule,
         controller: Player,
@@ -2006,7 +2002,7 @@ impl Game {
         }
         for player in [Player::P0, Player::P1] {
             let target = Target::Player(player);
-            if self.target_matches_without_hand(
+            if self.target_matches_excluding(
                 rule,
                 controller,
                 source,
@@ -2020,7 +2016,7 @@ impl Game {
         }
         for id in 0..self.state.objects.len() {
             let target = Target::Card(id as CardId);
-            if self.target_matches_without_hand(
+            if self.target_matches_excluding(
                 rule,
                 controller,
                 source,
@@ -2042,7 +2038,7 @@ impl Game {
                 } else {
                     Target::Stack(item.id)
                 };
-                if self.target_matches_without_hand(
+                if self.target_matches_excluding(
                     rule,
                     controller,
                     source,
