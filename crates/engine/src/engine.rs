@@ -9151,8 +9151,8 @@ impl Game {
             self.forget_live_static_source(before.reference);
             self.forget_ability_source(before.reference);
             self.forget_hand_size_source(before.reference);
-            // Abilities use the source's actual last-known keywords if it leaves,
-            // including gains made after that ability was announced.
+            // Pending abilities use their source's actual departure facts, including
+            // changes after announcement or registration of a delayed attack trigger.
             for item in self
                 .state
                 .stack
@@ -9161,6 +9161,12 @@ impl Game {
                 .chain(&mut self.state.ordering_triggers)
                 .chain(self.state.resolving.iter_mut().map(|r| &mut r.item))
                 .chain(self.state.announcing.iter_mut().map(|a| &mut a.item))
+                .chain(
+                    self.state
+                        .delayed_attack_this_turn
+                        .iter_mut()
+                        .flat_map(|items| items.iter_mut()),
+                )
                 .chain(
                     self.state
                         .activation_payment
