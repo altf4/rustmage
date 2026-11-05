@@ -23,6 +23,16 @@ pub(super) struct SbaBatch {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl SbaBatch {
+    fn changes_state(&self) -> bool {
+        !self.deaths.is_empty()
+            || !self.detached.is_empty()
+            || !self.ceased.is_empty()
+            || !self.pairs.is_empty()
+            || !self.groups.is_empty()
+            || !self.roles.is_empty()
+            || self.lost.iter().any(|&lost| lost)
+    }
+
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + self.resume.owned_bytes()
@@ -291,15 +301,62 @@ impl Game {
         batch
     }
 
+    fn needs_start_engines(&self, player: Player) -> bool {
+        self.state.players[player.index()].speed == 0
+            && self.state.static_sources.iter().copied().any(|id| {
+                let object = &self.state.objects[id as usize];
+                object.zone == Zone::Battlefield
+                    && object.controller == player
+                    && object.card.static_ability_groups().iter().any(|group| {
+                        group.fragments.iter().any(|fragment| {
+                            matches!(
+                                fragment,
+                                crate::cards::StaticAbilityFragment::StartYourEngines
+                            )
+                        })
+                    })
+                    && self.continuous_fragment_available(id, |fragment| {
+                        matches!(
+                            fragment,
+                            crate::cards::StaticAbilityFragment::StartYourEngines
+                        )
+                    })
+            })
+    }
+
+    fn battle_protector_update(&self, id: CardId, object: &Object) -> Option<(ObjectRef, Player)> {
+        if object.zone != Zone::Battlefield
+            || self.current_kinds(id) & crate::cards::BATTLE_KIND == 0
+        {
+            return None;
+        }
+        let reference = self.object_ref(id);
+        let expected = if self.has_subtype(id, "Siege") {
+            object.controller.other()
+        } else {
+            object.controller
+        };
+        let prior = self.battle_protector(reference);
+        let attacking = self.state.attackers.iter().any(|a| {
+            matches!(a.defender, Some(CombatDefender::Battle(r) | CombatDefender::Planeswalker(r)) if r == reference)
+        });
+        // Replace an ineligible protector even during combat. Choose a missing
+        // protector only while no creature is attacking the Battle.
+        ((prior.is_some() && prior != Some(expected)) || (prior.is_none() && !attacking))
+            .then_some((reference, expected))
+    }
+
     pub(super) fn sba_required(&self) -> bool {
-        let b = self.collect_sba_batch();
-        !b.deaths.is_empty()
-            || !b.detached.is_empty()
-            || !b.ceased.is_empty()
-            || !b.pairs.is_empty()
-            || !b.groups.is_empty()
-            || !b.roles.is_empty()
-            || b.lost.iter().any(|&lost| lost)
+        [Player::P0, Player::P1]
+            .into_iter()
+            .any(|player| self.needs_start_engines(player))
+            || self
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .any(|(id, object)| self.battle_protector_update(id as CardId, object).is_some())
+            || self.collect_sba_batch().changes_state()
     }
     pub(super) fn state_based_actions(&mut self) {
         if self.state.step == Step::Pregame
@@ -312,54 +369,16 @@ impl Game {
         loop {
             self.refresh_controllers();
             for player in [Player::P0, Player::P1] {
-                if self.state.players[player.index()].speed == 0
-                    && self.state.static_sources.iter().copied().any(|id| {
-                        let object = &self.state.objects[id as usize];
-                        object.zone == Zone::Battlefield
-                            && object.controller == player
-                            && object.card.static_ability_groups().iter().any(|g| {
-                                g.fragments.iter().any(|f| {
-                                    matches!(
-                                        f,
-                                        crate::cards::StaticAbilityFragment::StartYourEngines
-                                    )
-                                })
-                            })
-                            && self.continuous_fragment_available(id, |f| {
-                                matches!(f, crate::cards::StaticAbilityFragment::StartYourEngines)
-                            })
-                    })
-                {
+                if self.needs_start_engines(player) {
                     self.state.players[player.index()].speed = 1;
                 }
             }
-            // An ineligible protector is replaced even during combat. A missing
-            // protector is chosen only while no creature is attacking the Battle.
             let protectors: Vec<_> = self
                 .state
                 .objects
                 .iter()
                 .enumerate()
-                .filter_map(|(id, o)| {
-                    let id = id as CardId;
-                    if o.zone != Zone::Battlefield
-                        || self.current_kinds(id) & crate::cards::BATTLE_KIND == 0
-                    {
-                        return None;
-                    }
-                    let reference = self.object_ref(id);
-                    let expected = if self.has_subtype(id, "Siege") {
-                        o.controller.other()
-                    } else {
-                        o.controller
-                    };
-                    let prior = self.battle_protector(reference);
-                    let attacking = self.state.attackers.iter().any(|a| {
-                        matches!(a.defender, Some(CombatDefender::Battle(r) | CombatDefender::Planeswalker(r)) if r == reference)
-                    });
-                    ((prior.is_some() && prior != Some(expected)) || (prior.is_none() && !attacking))
-                        .then_some((reference, expected))
-                })
+                .filter_map(|(id, object)| self.battle_protector_update(id as CardId, object))
                 .collect();
             for (reference, player) in protectors {
                 self.set_battle_protector(reference, player);
@@ -424,13 +443,6 @@ impl Game {
                     self.state.players[p.index()].attempted_empty_draw = false;
                 }
             }
-            let changed = !batch.deaths.is_empty()
-                || !batch.detached.is_empty()
-                || !batch.ceased.is_empty()
-                || !batch.pairs.is_empty()
-                || !batch.groups.is_empty()
-                || !batch.roles.is_empty()
-                || batch.lost.iter().any(|&lost| lost);
             // The check consumes this interval's deathtouch history, even when
             // indestructible prevents destruction. New entrants start clear.
             // Preserve shared hot rows when there is no history to consume.
@@ -444,7 +456,7 @@ impl Game {
                     object.deathtouch_since_sba = false;
                 }
             }
-            if !changed {
+            if !batch.changes_state() {
                 return;
             }
             if !batch.groups.is_empty() || !batch.roles.is_empty() {

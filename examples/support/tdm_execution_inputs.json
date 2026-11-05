@@ -256,7 +256,7 @@
     "crates/engine/src/engine_roles.rs": "fd8b9c6739594ad1fdc8c7c479457134d92d613f72bf01de21ba6602e1cdcc5e",
     "crates/engine/src/engine_saddle.rs": "061a40b8dc81eefd4ecaabd33f81572f73a16afdf64d3b85c648cec8d890ba5e",
     "crates/engine/src/engine_sagas.rs": "a4236bdfa82fed28364ff484b4b395cea65277aa460aeb9d78dd9413bfa73330",
-    "crates/engine/src/engine_sba.rs": "72cc47da7e12abda4b72be6fe6df755ecea55bcfac8e0c59bdd7cdf756f78d4c",
+    "crates/engine/src/engine_sba.rs": "9e0c20bea042acaa24510012eec6b75f1c404f218e9b3dcdbd619dc690674c20",
     "crates/engine/src/engine_scalar_x.rs": "c461af0b9ba6ee38085728bf990b7321bb1017f5adaf81793308032f285c4e20",
     "crates/engine/src/engine_search.rs": "c62de29c506dae324517b827310916a74b82231f0bd881cdf1a74f40ee8705e4",
     "crates/engine/src/engine_self_granted.rs": "b01783bedce8a2a6a7ae2896d34b98e00f14ec07560491914f6657c96087fb22",

@@ -73,3 +73,72 @@ fn sheltered_by_ghosts_falling_off_grants_cleanup_priority() {
     act(&mut game, Action::Pass);
     assert_eq!((game.state.turn, game.state.step), (turn + 1, Step::Upkeep));
 }
+
+#[test]
+fn returning_a_speed_provider_starts_engines_during_cleanup() {
+    let p = Player::P0;
+    let mut game = scenario(p);
+    let taskmaster = put(
+        &mut game,
+        p.other(),
+        "Taskmaster, Mercenary Mimic",
+        Zone::Battlefield,
+    );
+    put(&mut game, p, "Roxxon Brutes", Zone::Battlefield);
+    let guzzler = put(&mut game, p, "Gas Guzzler", Zone::Battlefield);
+    let thrall = put(&mut game, p, "Evil's Thrall", Zone::Hand);
+    cast(&mut game, thrall, Some(Target::Card(taskmaster)));
+    settle(&mut game);
+    assert_eq!(game.object_view(taskmaster).controller, p);
+
+    let turn = game.state.turn + 2;
+    let copy_target = Action::ChooseTarget {
+        target: Target::Card(guzzler),
+    };
+    for _ in 0..64 {
+        if game.legal_actions().contains(&copy_target) {
+            break;
+        }
+        choose(&mut game, |action| {
+            matches!(
+                action,
+                Action::Pass
+                    | Action::FinishAttackers
+                    | Action::FinishBlockers
+                    | Action::PutTrigger { .. }
+            )
+        });
+    }
+    assert_eq!(game.state.turn, turn);
+    act(&mut game, copy_target);
+    if game.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut game, Action::FinishTargets);
+    }
+    settle(&mut game);
+    assert_eq!(
+        game.object_view(taskmaster).card,
+        game.object_view(guzzler).card
+    );
+    assert_eq!(game.state.players[p.other().index()].speed, 0);
+
+    for _ in 0..24 {
+        if game.state.step == Step::End {
+            break;
+        }
+        choose(&mut game, |action| {
+            matches!(
+                action,
+                Action::Pass | Action::FinishAttackers | Action::FinishBlockers
+            )
+        });
+    }
+    assert_eq!(game.state.step, Step::End);
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    assert_eq!(game.object_view(taskmaster).controller, p.other());
+    assert_eq!(game.state.players[p.other().index()].speed, 1);
+    assert_eq!(
+        (game.state.turn, game.state.step, game.actor()),
+        (turn, Step::Cleanup, Some(p))
+    );
+}
