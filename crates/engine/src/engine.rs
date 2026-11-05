@@ -1635,6 +1635,17 @@ pub struct SpellView {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl SpellView {
+    pub(super) fn remember_source_kinds_at_departure(&mut self, before: &ObjectView) -> bool {
+        if let Some(source) = &mut self.source
+            && source.object == before.reference
+        {
+            source.facts.kinds = before.kinds;
+            true
+        } else {
+            false
+        }
+    }
+
     /// Keep uncommitted target declarations private in viewer projections.
     pub(super) fn redact_uncommitted_targets(&mut self) {
         self.targets.clear();
@@ -8819,6 +8830,68 @@ impl Game {
         self.transition_object_under_control(before, destination, tapped, counters, None, false)
     }
 
+    /// Waiting abilities may reach the stack after their exact sources leave.
+    /// Preserve their event facts while retaining the source types used in targeting.
+    fn capture_waiting_source_kinds(&mut self, before: &ObjectView) {
+        let state = &mut self.state;
+        for item in [
+            state.delayed_artifact_copies.as_deref_mut(),
+            state.delayed_attack_this_turn.as_deref_mut(),
+            state.delayed_opponent_attack_until_next_turn.as_deref_mut(),
+            state.delayed_main_mana.as_deref_mut(),
+            state.delayed_upkeep_tokens.as_deref_mut(),
+            state
+                .combat_rules
+                .as_mut()
+                .and_then(|rules| rules.begin_combat_this_turn.as_deref_mut()),
+        ]
+        .into_iter()
+        .flatten()
+        .flatten()
+        {
+            item.remember_source_kinds_at_departure(before);
+        }
+        for item in state
+            .delayed_target_events
+            .as_deref_mut()
+            .into_iter()
+            .flatten()
+            .map(|row| &mut row.packet)
+            .chain(
+                state
+                    .delayed_returns
+                    .as_deref_mut()
+                    .into_iter()
+                    .flatten()
+                    .map(|row| &mut row.item),
+            )
+            .chain(
+                state
+                    .earthbend_returns
+                    .as_deref_mut()
+                    .into_iter()
+                    .flatten()
+                    .map(|row| &mut row.item),
+            )
+            .chain(
+                state
+                    .manifest
+                    .iter_mut()
+                    .flat_map(|data| &mut data.deaths)
+                    .map(|row| &mut row.source),
+            )
+        {
+            item.remember_source_kinds_at_departure(before);
+        }
+        if let Some(batches) = &mut state.delayed_sacrifices {
+            for batch in batches.iter_mut() {
+                if batch.view.source == before.reference {
+                    batch.facts.kinds = before.kinds;
+                }
+            }
+        }
+    }
+
     fn transition_object_under_control(
         &mut self,
         before: ObjectView,
@@ -9143,6 +9216,7 @@ impl Game {
         }
         if before.zone == Zone::Battlefield {
             self.capture_delayed_copy_source_departure(&before);
+            self.capture_waiting_source_kinds(&before);
             self.forget_temporary_control(before.reference);
             self.forget_role(before.reference);
             self.forget_base_stats(before.reference);
@@ -9151,8 +9225,8 @@ impl Game {
             self.forget_live_static_source(before.reference);
             self.forget_ability_source(before.reference);
             self.forget_hand_size_source(before.reference);
-            // Pending abilities use their source's actual departure facts, including
-            // changes after announcement or registration of a delayed attack trigger.
+            // Abilities use the source's actual last-known keywords if it leaves,
+            // including gains made after that ability was announced.
             for item in self
                 .state
                 .stack
@@ -9161,12 +9235,6 @@ impl Game {
                 .chain(&mut self.state.ordering_triggers)
                 .chain(self.state.resolving.iter_mut().map(|r| &mut r.item))
                 .chain(self.state.announcing.iter_mut().map(|a| &mut a.item))
-                .chain(
-                    self.state
-                        .delayed_attack_this_turn
-                        .iter_mut()
-                        .flat_map(|items| items.iter_mut()),
-                )
                 .chain(
                     self.state
                         .activation_payment
