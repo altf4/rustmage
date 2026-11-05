@@ -2514,6 +2514,7 @@ pub enum Instruction {
     ChangeSourceCreatureForm(AnimationSpec),
     /// Change targets' creature form without adding a card type.
     ChangeTargetCreatureForm(AnimationSpec),
+    /// Set target colors, creature subtypes and scaled base stats, retaining card types.
     SetCreatureForm {
         types: &'static [&'static str],
         colors: u8,
