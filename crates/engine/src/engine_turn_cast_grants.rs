@@ -257,16 +257,10 @@ impl Game {
                     // The permanent type belongs to the selected spell face, and the
                     // allowance belongs to this exact permission source incarnation.
                     let permission = self.object_ref(id);
+                    let spent_types = self.spent_graveyard_types(permission);
                     for permanent_type in PermanentType::ALL {
                         if permanent_type == PermanentType::Land
-                            || definition.kind_mask() & permanent_type.mask() == 0
-                            || self.state.graveyard_type_uses.as_ref().is_some_and(|rows| {
-                                rows.iter().any(|row| {
-                                    row.source == permission
-                                        && row.turn == self.state.turn
-                                        && row.permanent_type == permanent_type
-                                })
-                            })
+                            || definition.kind_mask() & !spent_types & permanent_type.mask() == 0
                         {
                             continue;
                         }

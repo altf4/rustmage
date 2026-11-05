@@ -206,21 +206,15 @@ impl Game {
                 continue;
             }
             let permission = self.object_ref(id);
+            let spent_types = self.spent_graveyard_types(permission);
             for (i, object) in self.state.objects.iter().enumerate() {
                 if object.zone != Zone::Graveyard || object.owner != actor || !object.is_card() {
                     continue;
                 }
                 let card = i as CardId;
+                let front_types = object.card.kind_mask() & !spent_types;
                 for permanent_type in PermanentType::ALL {
-                    if object.card.kind_mask() & permanent_type.mask() == 0
-                        || self.state.graveyard_type_uses.as_ref().is_some_and(|rows| {
-                            rows.iter().any(|row| {
-                                row.source == permission
-                                    && row.turn == self.state.turn
-                                    && row.permanent_type == permanent_type
-                            })
-                        })
-                    {
+                    if front_types & permanent_type.mask() == 0 {
                         continue;
                     }
                     let available = if permanent_type == PermanentType::Land {
@@ -292,9 +286,45 @@ impl Game {
                         return true;
                     }
                 }
+                if !casting_prohibited
+                    && let Some(back) = object.card.back_face().filter(|back| !back.is_land())
+                {
+                    let back_types = back.kind_mask() & !spent_types;
+                    let mut types = PermanentType::ALL
+                        .into_iter()
+                        .filter(|ty| back_types & ty.mask() != 0)
+                        .peekable();
+                    if types.peek().is_some()
+                        && self.permitted_cast_available(
+                            actor,
+                            card,
+                            CastMethod::Normal,
+                            CastFace::Back,
+                            sorcery,
+                            false,
+                        )
+                    {
+                        for permanent_type in types {
+                            if emit(Action::AnnounceGraveyardBack {
+                                card,
+                                permission,
+                                permanent_type,
+                            }) {
+                                return true;
+                            }
+                        }
+                    }
+                }
             }
         }
         false
+    }
+    pub(super) fn spent_graveyard_types(&self, source: ObjectRef) -> u16 {
+        self.state.graveyard_type_uses.as_deref().map_or(0, |rows| {
+            rows.iter()
+                .filter(|row| row.source == source && row.turn == self.state.turn)
+                .fold(0, |mask, row| mask | row.permanent_type.mask())
+        })
     }
     pub(super) fn consume_graveyard_type(
         &mut self,

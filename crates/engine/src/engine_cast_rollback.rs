@@ -232,6 +232,7 @@ impl Game {
             | Action::AnnounceAdventure { card }
             | Action::AnnounceOmen { card }
             | Action::AnnounceBack { card }
+            | Action::AnnounceGraveyardBack { card, .. }
             | Action::AnnouncePlotted { card }
             | Action::AnnounceHarmonize { card }
             | Action::AnnounceGrantedHarmonize { card, .. }
