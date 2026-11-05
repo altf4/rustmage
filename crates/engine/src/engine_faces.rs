@@ -57,11 +57,15 @@ impl Game {
         recipe.face_structure()
     }
     pub(super) fn capture_transform_stack_serial(&self, item: &mut SpellView) {
-        if !item.is_copy
-            && item
-                .program()
+        let tracks_transform = if item.is_copy {
+            // A copied ability inherits the tracked source, but gets a fresh
+            // timestamp when this packet is put on the stack (CR 701.27f).
+            item.kind != StackKind::Spell && item.source_transform.is_some()
+        } else {
+            item.program()
                 .is_some_and(|(_, program)| program.contains(&Instruction::TransformSource))
-        {
+        };
+        if tracks_transform {
             item.source_transform = item
                 .source
                 .map(|source| self.transform_serial(source.object));

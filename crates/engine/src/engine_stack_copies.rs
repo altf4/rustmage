@@ -1125,8 +1125,10 @@ impl Game {
                 self.state.stack[index] = r.item.clone();
             }
         } else {
-            self.acquire_stack_target_set(&r.item, &[]);
-            self.state.stack.push(r.item.clone());
+            let mut copy = r.item.clone();
+            self.capture_transform_stack_serial(&mut copy);
+            self.acquire_stack_target_set(&copy, &[]);
+            self.state.stack.push(copy);
         }
         let state = self.state.stack_copy_data.as_mut().unwrap();
         if r.remaining == 0 {
