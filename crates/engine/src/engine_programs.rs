@@ -1384,6 +1384,7 @@ impl Game {
             source: source.reference,
             ability: u16::try_from(index).expect("ability index"),
             origin: ability_origin,
+            controller: Some(source.controller),
         }) {
             return false;
         }
@@ -1392,6 +1393,7 @@ impl Game {
                 source: source.reference,
                 ability: u16::try_from(index).expect("ability index"),
                 origin: ability_origin,
+                controller: None,
             };
             if self.state.triggered_this_turn.contains(&used) {
                 return false;

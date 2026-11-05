@@ -227,6 +227,7 @@ impl Game {
                 source: identity.object,
                 ability,
                 origin: item.source_ability_origin,
+                controller: None,
             };
             if !self.state.triggered_this_turn.contains(&used) {
                 self.state.triggered_this_turn.push(used);
