@@ -71,6 +71,70 @@ fn pure_exiler(card: Card) -> bool {
         })
 }
 
+// An entry damage trigger with a mandatory creature target can commute with
+// the exile cycle only when it has no legal target. Actual availability is
+// checked on each probe state; no counter/optional/entry replacement programs.
+fn inert_entry_damage(card: Card) -> bool {
+    let triggers = card.triggers();
+    !card.is_creature()
+        && triggers.len() == 1
+        && triggers[0].condition == TriggerCondition::SelfEnters
+        && matches!(triggers[0].program, [Instruction::Damage(_)])
+        && matches!(
+            triggers[0].targets,
+            TargetPlan::Single(TargetSpec {
+                rule: TargetRule::Object {
+                    zone: TargetZone::Battlefield,
+                    kinds: 1,
+                    ..
+                },
+                min: 1,
+                max: 1
+            })
+        )
+        && card.entry_tapped() == crate::cards::EntryTapped::Never
+        && card.entry_counter_rules().is_empty()
+        && card.entry_choice().is_none()
+        && card.chosen_entry_counters().is_none()
+        && card.static_ability_groups().is_empty()
+        && card.activations().iter().all(|ability| {
+            use crate::cards::{ActivationGuard, ActivationOrigin, EffectChoiceKind};
+            ability.guard == ActivationGuard::Always
+                && ability.origin == ActivationOrigin::Battlefield
+                && !ability.cycling
+                && !ability.exhaust
+                && ability.sorcery
+                && !ability.once_per_turn
+                && ability.targets == TargetPlan::NONE
+                && matches!(
+                    ability.program,
+                    [Instruction::ReturnCraftedSourceTransformed]
+                )
+                && ability.cost.colored == [1, 0, 0, 0, 0, 0]
+                && ability.cost.generic == 3
+                && ability.cost.alternatives.is_empty()
+                && ability.cost.mana_component
+                && !ability.cost.tap
+                && !ability.cost.sacrifice
+                && ability.cost.exile_self
+                && !ability.cost.discard
+                && ability.cost.life == 0
+                && ability.cost.remove.is_none()
+                && ability.cost.loyalty.is_none()
+                && ability.cost.additional.is_some_and(|cost| {
+                    cost.kind == EffectChoiceKind::ExileControlledOrGraveyard
+                        && cost.filter.kinds == 16
+                        && cost.filter.other
+                        && !cost.filter.source_only
+                        && !cost.filter.nonland
+                        && cost.filter.tokens.is_none()
+                        && cost.filter.keywords == Keywords::NONE
+                        && !cost.filter.artifact_enchantment_or_token
+                        && cost.filter.subtype.is_none()
+                })
+        })
+}
+
 fn map_reference(r: ObjectRef, before: &State, after: &State, ids: &[CardId]) -> Option<ObjectRef> {
     if !ids.contains(&r.card) {
         return Some(r);
@@ -194,6 +258,27 @@ fn normalized(mut after: State, before: &State, ids: &[CardId]) -> Option<State>
 }
 
 impl Game {
+    fn printed_entry_packet(item: &SpellView) -> bool {
+        !item.is_copy
+            && item.attachment_trigger.is_none()
+            && item.borrowed_slot.is_none()
+            && item.copy_event.is_none()
+            && item.mode.is_none()
+            && matches!(item.kind, StackKind::TriggeredAbility { ability: 0 })
+            && item.source.is_some_and(|source| {
+                item.entering_object == Some(source.object)
+                    && item.trigger_definition() == source.card
+            })
+    }
+
+    fn unplaceable_entry_damage(&self, item: &SpellView) -> bool {
+        Self::printed_entry_packet(item)
+            && item
+                .source
+                .is_some_and(|source| inert_entry_damage(source.card))
+            && !self.item_targets_available(item, self.target_spec(item))
+    }
+
     pub(super) fn prove_mandatory_exile_loop(&self) -> bool {
         if !matches!(self.state.pending, Pending::Targets { .. })
             || self.state.outcome.is_some()
@@ -259,7 +344,7 @@ impl Game {
                 {
                     continue;
                 }
-                if !pure_exiler(object.card)
+                if !(pure_exiler(object.card) || inert_entry_damage(object.card))
                     || object.is_token()
                     || object.is_spell_copy()
                     || object.attached_to.is_some()
@@ -272,7 +357,7 @@ impl Game {
         for link in &self.state.exile_links {
             for id in [link.source.card, link.exiled.card] {
                 let object = &self.state.objects[id as usize];
-                if !pure_exiler(object.card)
+                if !(pure_exiler(object.card) || inert_entry_damage(object.card))
                     || !matches!(object.zone, Zone::Battlefield | Zone::Exile)
                     || object.is_token()
                     || object.is_spell_copy()
@@ -284,23 +369,74 @@ impl Game {
                 }
             }
         }
-        if ids.len() != 3 {
+        let observers = ids
+            .iter()
+            .filter(|&&id| inert_entry_damage(self.state.objects[id as usize].card))
+            .count();
+        if ids.len() != 3 + observers || observers > 1 {
             return false;
         }
-        let mut probe = self.clone();
+        let mut baseline = self.clone();
+        // CR603.3d: an unplaceable trigger is removed without going on the
+        // stack. At this target-choice checkpoint it may still be waiting only
+        // because the player ordered the live exile trigger first. Removing
+        // this provably unplaceable packet cannot change any target choice.
+        baseline
+            .state
+            .ordering_triggers
+            .retain(|item| !self.unplaceable_entry_damage(item));
+        let mut probe = baseline.clone();
         for _ in 0..32 {
-            let mut actions = probe
+            let actions: Vec<_> = probe
                 .legal_actions()
                 .into_iter()
-                .filter(|a| *a != Action::Concede);
-            let Some(action) = actions.next() else {
+                .filter(|a| *a != Action::Concede)
+                .collect();
+            let action = if actions.len() == 1
+                && matches!(actions[0], Action::Pass | Action::ChooseTarget { .. })
+            {
+                actions[0].clone()
+            } else if actions.len() == 2
+                && actions
+                    .iter()
+                    .all(|a| matches!(a, Action::PutTrigger { .. }))
+            {
+                // Exactly one unplaceable damage trigger and one live exile
+                // trigger: either ordering has the same stack/targets. Choose
+                // the unplaceable packet first on the disposable proof branch.
+                let items: Vec<_> = actions
+                    .iter()
+                    .filter_map(|action| {
+                        let Action::PutTrigger { id } = action else {
+                            return None;
+                        };
+                        probe
+                            .state
+                            .ordering_triggers
+                            .iter()
+                            .find(|item| item.id == *id)
+                    })
+                    .collect();
+                if items.len() != 2 {
+                    return false;
+                }
+                let Some(index) = items
+                    .iter()
+                    .position(|item| probe.unplaceable_entry_damage(item))
+                else {
+                    return false;
+                };
+                let other = items[1 - index];
+                if !Self::printed_entry_packet(other)
+                    || !other.source.is_some_and(|source| pure_exiler(source.card))
+                    || !probe.item_targets_available(other, probe.target_spec(other))
+                {
+                    return false;
+                }
+                actions[index].clone()
+            } else {
                 return false;
             };
-            if actions.next().is_some()
-                || !matches!(action, Action::Pass | Action::ChooseTarget { .. })
-            {
-                return false;
-            }
             let Some(actor) = probe.semantic_actor() else {
                 return false;
             };
@@ -313,8 +449,8 @@ impl Game {
                 return false;
             }
             if matches!(probe.state.pending, Pending::Targets { .. })
-                && normalized(probe.state.clone(), &self.state, &ids)
-                    .is_some_and(|s| s == self.state)
+                && normalized(probe.state.clone(), &baseline.state, &ids)
+                    .is_some_and(|s| s == baseline.state)
             {
                 return true;
             }
