@@ -19,17 +19,16 @@ impl AttackPayment {
         std::mem::size_of::<Self>() + self.attackers.len() * std::mem::size_of::<ObjectRef>()
     }
 }
-/// Cardinality of a capacity-one defender assignment. Distinct edge sets are
-/// necessary when separate restrictions affect different attackers.
+/// Total requirement weight of a capacity-one defender assignment.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-pub(super) fn maximum_attack_matching(edges: &[Vec<usize>], slots: usize) -> usize {
+pub(super) fn maximum_attack_matching(edges: &mut [(usize, Vec<usize>)], slots: usize) -> usize {
     fn augment(
         i: usize,
-        edges: &[Vec<usize>],
+        edges: &[(usize, Vec<usize>)],
         seen: &mut [bool],
         owners: &mut [Option<usize>],
     ) -> bool {
-        for &slot in &edges[i] {
+        for &slot in &edges[i].1 {
             if seen[slot] {
                 continue;
             }
@@ -41,11 +40,22 @@ pub(super) fn maximum_attack_matching(edges: &[Vec<usize>], slots: usize) -> usi
         }
         false
     }
-    let mut owners = vec![None; slots];
-    for i in 0..edges.len() {
-        augment(i, edges, &mut vec![false; slots], &mut owners);
+    if edges.is_empty() {
+        return 0;
     }
-    owners.iter().filter(|owner| owner.is_some()).count()
+    // Matchable attackers form a transversal matroid. Each augmentation
+    // retains the previously matched attackers, so greedy weight order is exact.
+    edges.sort_unstable_by_key(|(weight, _)| std::cmp::Reverse(*weight));
+    let mut owners = vec![None; slots];
+    let mut seen = vec![false; slots];
+    let mut total = 0;
+    for (i, (weight, _)) in edges.iter().enumerate() {
+        seen.fill(false);
+        if augment(i, edges, &mut seen, &mut owners) {
+            total += weight;
+        }
+    }
+    total
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
@@ -167,52 +177,61 @@ impl Game {
     }
 
     pub(super) fn attacks_each_combat(&self, id: CardId) -> bool {
-        if self.on_battlefield(id)
-            && self
-                .state
+        self.attack_requirement_count::<1>(id) != 0
+    }
+
+    fn attack_requirement_count<const LIMIT: usize>(&self, id: CardId) -> usize {
+        if !self.on_battlefield(id) {
+            return 0;
+        }
+        let recipient = self.object_ref(id);
+        let this_combat = usize::from(
+            self.state
                 .combat_rules
                 .as_ref()
-                .is_some_and(|rules| rules.must_attack_this_combat.contains(&self.object_ref(id)))
-        {
-            return true;
+                .is_some_and(|rules| rules.must_attack_this_combat.contains(&recipient)),
+        );
+        if this_combat == LIMIT {
+            return this_combat;
         }
-        if self.on_battlefield(id)
-            && self
-                .state
-                .self_granted_abilities
-                .as_ref()
-                .is_some_and(|rows| {
-                    rows.iter().any(|row| {
-                        row.recipient == self.object_ref(id)
-                            && row.kind == SelfGrantedAbilityKind::AttacksEachCombat
-                            && row.expires_turn.is_none_or(|turn| turn == self.state.turn)
-                            && self
-                                .characteristic_query()
-                                .self_grant_available(row.recipient, row.timestamp)
-                    })
-                })
-        {
-            return true;
-        }
-        self.on_battlefield(id)
-            && self.state.objects[id as usize]
-                .card
-                .static_ability_groups()
-                .iter()
-                .any(|group| {
-                    group.fragments.iter().any(|fragment| {
-                        matches!(
-                            fragment,
-                            crate::cards::StaticAbilityFragment::AttacksEachCombat
-                        )
-                    })
-                })
-            && self.continuous_fragment_available(id, |fragment| {
-                matches!(
-                    fragment,
-                    crate::cards::StaticAbilityFragment::AttacksEachCombat
-                )
+        let query = std::cell::OnceCell::new();
+        let granted = self
+            .state
+            .self_granted_abilities
+            .iter()
+            .flat_map(|rows| rows.iter())
+            .filter(|row| {
+                row.recipient == recipient
+                    && row.kind == SelfGrantedAbilityKind::AttacksEachCombat
+                    && row.expires_turn.is_none_or(|turn| turn == self.state.turn)
+                    && query
+                        .get_or_init(|| self.characteristic_query())
+                        .self_grant_available(recipient, row.timestamp)
             })
+            .take(LIMIT - this_combat)
+            .count();
+        let found = this_combat + granted;
+        if found == LIMIT {
+            return found;
+        }
+        let printed = self.state.objects[id as usize]
+            .card
+            .static_ability_groups()
+            .iter()
+            .enumerate()
+            .filter(|(index, group)| {
+                group.fragments.iter().any(|fragment| {
+                    matches!(
+                        fragment,
+                        crate::cards::StaticAbilityFragment::AttacksEachCombat
+                    )
+                }) && query
+                    .get_or_init(|| self.characteristic_query())
+                    .continuous_group_available(recipient, *index, group)
+            })
+            .take(LIMIT - found)
+            .count();
+        found + printed
     }
 
     /// A partial declaration may need to be revised after consuming a limited slot.
@@ -306,7 +325,17 @@ impl Game {
     }
     /// Maximum number of simultaneously satisfiable attack requirements. Unlimited
     /// defenders need no matching; limited planeswalkers are capacity-one slots.
-    fn maximum_mandatory_attackers(&self, actor: Player) -> usize {
+    fn maximum_attack_requirements(&self, actor: Player) -> usize {
+        let mut eligible = self
+            .attack_requirement_sources()
+            .filter_map(|id| {
+                let count = self.attack_requirement_count::<{ usize::MAX }>(id);
+                (count > 0 && self.can_declare_attacker(actor, id)).then_some((id, count))
+            })
+            .peekable();
+        if eligible.peek().is_none() {
+            return 0;
+        }
         let walkers: Vec<_> = self
             .state
             .objects
@@ -317,51 +346,50 @@ impl Game {
                 (o.zone == Zone::Battlefield
                     && o.controller == actor.other()
                     && self.current_kinds(id) & 64 != 0)
-                    .then_some(self.object_ref(id))
+                    .then(|| {
+                        let reference = self.object_ref(id);
+                        (reference, self.planeswalker_attack_limited(reference))
+                    })
             })
             .collect();
+        let taxed = self.attack_controller_tax(actor.other()) != 0;
         let mut free = 0;
         let mut edges = Vec::new();
-        for id in self.attack_requirement_sources() {
-            if !self.attacks_each_combat(id) || !self.can_declare_attacker(actor, id) {
-                continue;
-            }
+        for (id, requirements) in eligible {
             // A voluntarily selected taxable attack is already paid for purposes
             // of maximizing the remaining requirements; no unchosen attacker is
             // compelled to pay the tax.
-            let selected_paid = self.attack_controller_tax(actor.other()) != 0
+            let selected_paid = taxed
                 && self.state.selected_attackers.iter().any(|a| {
                     a.card == id && a.defender == Some(CombatDefender::Player(actor.other()))
                 });
             let player_free = selected_paid
-                || self.attack_controller_tax(actor.other()) == 0
-                    && self.can_attack_defender(id, CombatDefender::Player(actor.other()));
+                || !taxed && self.can_attack_defender(id, CombatDefender::Player(actor.other()));
             let battle_free = self.state.objects.iter().enumerate().any(|(n, _)| {
                 let r = self.object_ref(n as CardId);
                 self.battle_can_be_attacked_by(r, actor)
                     && self.can_attack_defender(id, CombatDefender::Battle(r))
             });
-            let walker_free = walkers.iter().any(|&r| {
-                !self.planeswalker_attack_limited(r)
-                    && self.can_attack_defender(id, CombatDefender::Planeswalker(r))
+            let walker_free = walkers.iter().any(|&(r, limited)| {
+                !limited && self.can_attack_defender(id, CombatDefender::Planeswalker(r))
             });
             if player_free || battle_free || walker_free {
-                free += 1;
+                free += requirements;
                 continue;
             }
-            edges.push(
-                walkers
-                    .iter()
-                    .enumerate()
-                    .filter_map(|(n, &r)| {
-                        (self.planeswalker_attack_limited(r)
-                            && self.can_attack_defender(id, CombatDefender::Planeswalker(r)))
+            let slots: Vec<_> = walkers
+                .iter()
+                .enumerate()
+                .filter_map(|(n, &(r, limited))| {
+                    (limited && self.can_attack_defender(id, CombatDefender::Planeswalker(r)))
                         .then_some(n)
-                    })
-                    .collect::<Vec<_>>(),
-            );
+                })
+                .collect();
+            if !slots.is_empty() {
+                edges.push((requirements, slots));
+            }
         }
-        free + maximum_attack_matching(&edges, walkers.len())
+        free + maximum_attack_matching(&mut edges, walkers.len())
     }
 
     /// Every mandatory attacker must attack if at least one legal defender exists.
@@ -424,9 +452,9 @@ impl Game {
         }
         let fulfilled = chosen
             .iter()
-            .filter(|attack| self.attacks_each_combat(attack.card))
-            .count();
-        fulfilled >= self.maximum_mandatory_attackers(actor)
+            .map(|attack| self.attack_requirement_count::<{ usize::MAX }>(attack.card))
+            .sum::<usize>();
+        fulfilled >= self.maximum_attack_requirements(actor)
     }
 
     fn combat_restriction_from(&self, source: CardId, subject: CardId, attack: bool) -> bool {
