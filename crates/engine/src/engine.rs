@@ -6544,8 +6544,8 @@ impl Game {
                     }
                 }
             }
-            Pending::EquipmentAttachment { .. } => {
-                return self.visit_return_attachment_actions(emit);
+            Pending::EquipmentAttachment { player } => {
+                return self.visit_return_attachment_actions(player, emit);
             }
             Pending::EffectLibrarySelection { .. } => {
                 let f = s.resolving.as_ref().unwrap().selection.as_ref().unwrap();
@@ -8062,7 +8062,7 @@ impl Game {
             }
             Action::SelectLibrary { card } => self.choose_library_selection(card),
             Action::ChooseEquipmentAttachment { equipment } => {
-                self.choose_equipment_attachment(equipment)
+                self.choose_equipment_attachment(actor, equipment)
             }
             Action::FinishLibrarySelection => self.finish_library_selection(actor),
             Action::OrderLibraryBottom { card } => self.order_library_bottom(actor, card),
