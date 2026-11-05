@@ -565,6 +565,7 @@ impl Game {
         {
             return false;
         }
+        let paid_graveyard = free.paid.is_some() && free.origin == Zone::Graveyard;
         for &object in &free.remaining {
             if self.object_ref(object.card) != object
                 || self.state.objects[object.card as usize].zone != free.origin
@@ -603,6 +604,8 @@ impl Game {
             {
                 return true;
             }
+            let granted_harmonize = paid_graveyard
+                && self.has_graveyard_cast(player, object.card, GraveyardCastKind::Harmonize);
             for face in [
                 CastFace::Normal,
                 CastFace::Adventure,
@@ -651,6 +654,38 @@ impl Game {
                 {
                     return true;
                 }
+                if paid_graveyard
+                    && face == CastFace::Normal
+                    && physical.harmonize_cost().is_some()
+                    && self.state.objects[object.card as usize].owner == player
+                    && self.permitted_cast_available(
+                        player,
+                        object.card,
+                        CastMethod::Harmonize,
+                        face,
+                        true,
+                        false,
+                    )
+                    && emit(Action::AnnounceHarmonize { card: object.card })
+                {
+                    return true;
+                }
+                if granted_harmonize
+                    && self.permitted_cast_available(
+                        player,
+                        object.card,
+                        CastMethod::GrantedHarmonize,
+                        face,
+                        true,
+                        false,
+                    )
+                    && emit(Action::AnnounceGrantedHarmonize {
+                        card: object.card,
+                        face,
+                    })
+                {
+                    return true;
+                }
                 if free.paid.is_some()
                     && definition.is_some_and(|definition| {
                         self.filtered_free_cast_available(player, definition)
@@ -672,20 +707,12 @@ impl Game {
         }
         false
     }
-    pub(super) fn cast_exiled_during_resolution(
-        &mut self,
-        player: Player,
-        object: ObjectRef,
-        face: CastFace,
-    ) {
-        self.cast_during_resolution_with_cost(player, object, face, false);
-    }
     pub(super) fn cast_during_resolution_with_cost(
         &mut self,
         player: Player,
         object: ObjectRef,
         face: CastFace,
-        force_free: bool,
+        method_override: Option<CastMethod>,
     ) {
         let paid = self.state.resolution_free_casts.as_ref().unwrap().paid;
         let alternative_cost = self
@@ -714,21 +741,25 @@ impl Game {
             free.pending_cast = Some(item.id);
         }
         self.set_cast_face(&mut item, face);
-        item.cast.as_mut().unwrap().method = if force_free {
-            CastMethod::Free
-        } else if paid.is_some() {
-            CastMethod::Normal
-        } else if alternative_cost.is_some() {
-            CastMethod::Miracle
-        } else {
-            CastMethod::Free
-        };
+        let method = method_override.unwrap_or_else(|| {
+            if paid.is_some() {
+                CastMethod::Normal
+            } else if alternative_cost.is_some() {
+                CastMethod::Miracle
+            } else {
+                CastMethod::Free
+            }
+        });
+        item.cast.as_mut().unwrap().method = method;
+        if method.is_harmonize() {
+            self.configure_harmonize_cast(&mut item, method);
+        }
         item.cast.as_mut().unwrap().exile_on_graveyard = exile_on_graveyard
             || paid.is_some_and(|p| {
                 p.exile_instants_sorceries
                     && item.source.expect("cast spell has source").card.kind_mask() & (4 | 8) != 0
             });
-        if (force_free || paid.is_none())
+        if matches!(method, CastMethod::Free | CastMethod::Miracle)
             && item.source.expect("cast spell has source").card.x_symbols() > 0
         {
             item.x = Some(0);
