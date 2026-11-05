@@ -1425,7 +1425,6 @@ impl Game {
             borrowed_slot: None,
             self_granted_activation: None,
             target_controller_lki: None,
-            crime_qualifying_target: false,
             target_kinds_lki: None,
             target_type_slots: None,
             reflexive_subject: None,
@@ -1568,7 +1567,6 @@ impl Game {
         slot.mana_tap_bonus = item.mana_tap_bonus;
         slot.source_move = item.source_move;
         slot.paid_additional_cost = item.paid_additional_cost;
-        slot.crime_qualifying_target = item.crime_qualifying_target;
         if source_still_exact {
             slot.source_counter_lki = item.source_counter_lki;
         }
@@ -3484,7 +3482,6 @@ impl Game {
                     delayed.kind = StackKind::TriggeredAbility { ability };
                     delayed.targets.clear();
                     delayed.clear_initiating_event_references();
-                    delayed.crime_qualifying_target = false;
                     delayed.target_type_slots = None;
                     delayed.mode = None;
                     delayed.cast = None;
@@ -3565,7 +3562,6 @@ impl Game {
                     delayed.kind = StackKind::TriggeredAbility { ability };
                     delayed.targets.clear();
                     delayed.clear_initiating_event_references();
-                    delayed.crime_qualifying_target = false;
                     delayed.target_type_slots = None;
                     delayed.mode = None;
                     delayed.cast = None;
@@ -3582,7 +3578,6 @@ impl Game {
                     delayed.id = self.next_stack_id();
                     delayed.kind = StackKind::TriggeredAbility { ability };
                     delayed.targets.clear();
-                    delayed.crime_qualifying_target = false;
                     delayed.target_type_slots = None;
                     self.state
                         .delayed_artifact_copies
@@ -3824,7 +3819,6 @@ impl Game {
                             delayed.kind = StackKind::TriggeredAbility { ability };
                             delayed.targets.clear();
                             delayed.clear_initiating_event_references();
-                            delayed.crime_qualifying_target = false;
                             delayed.target_type_slots = None;
                             delayed.mode = None;
                             delayed.cast = None;

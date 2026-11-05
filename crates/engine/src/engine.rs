@@ -1526,10 +1526,6 @@ pub struct SpellView {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[allow(clippy::box_collection)]
     pub target_controller_lki: Option<Box<Vec<(ObjectRef, Player)>>>,
-    /// Qualification captured at initial target selection, committed only
-    /// after the spell is cast or the ability is put on the stack.
-    #[serde(skip)]
-    pub(crate) crime_qualifying_target: bool,
     /// Internal exact departure facts for a relational card-type target constraint.
     #[serde(skip)]
     #[allow(clippy::box_collection)]
@@ -1642,7 +1638,6 @@ impl SpellView {
     /// Keep uncommitted target declarations private in viewer projections.
     pub(super) fn redact_uncommitted_targets(&mut self) {
         self.targets.clear();
-        self.crime_qualifying_target = false;
         self.target_type_slots = None;
         self.target_allocations = None;
         self.target_controller_lki = None;
@@ -7395,7 +7390,6 @@ impl Game {
                 let mut item = self.cast_item(actor, card, payment);
                 if let Some(target) = target {
                     let bound = self.bind_target(target);
-                    item.crime_qualifying_target |= self.crime_target(item.controller, bound);
                     self.target_becomes_bound(&item, bound);
                     item.targets.push(bound);
                 }
@@ -7413,7 +7407,6 @@ impl Game {
                 self.begin_direct_activation_on_stack(&mut item);
                 if let Some(target) = target {
                     let bound = self.bind_target(target);
-                    item.crime_qualifying_target |= self.crime_target(item.controller, bound);
                     self.state
                         .stack
                         .iter_mut()
@@ -7738,10 +7731,8 @@ impl Game {
             Action::ChooseTargetCardType { target, type_mask } => {
                 let mut bound = self.bind_target(target);
                 let item = self.state.announcing.as_ref().unwrap().item.clone();
-                let crime = self.crime_target(item.controller, bound);
                 self.target_becomes_bound(&item, bound);
                 let announcement = self.state.announcing.as_mut().unwrap();
-                announcement.item.crime_qualifying_target |= crime;
                 bound.group = announcement.group;
                 announcement
                     .item
@@ -7763,10 +7754,8 @@ impl Game {
             Action::ChooseTarget { target } => {
                 let mut bound = self.bind_target(target);
                 let item = self.state.announcing.as_ref().unwrap().item.clone();
-                let crime = self.crime_target(item.controller, bound);
                 self.target_becomes_bound(&item, bound);
                 let announcement = self.state.announcing.as_mut().unwrap();
-                announcement.item.crime_qualifying_target |= crime;
                 bound.group = announcement.group;
                 announcement.item.targets.push(bound);
                 if announcement

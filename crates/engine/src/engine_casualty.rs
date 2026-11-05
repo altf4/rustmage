@@ -138,7 +138,6 @@ impl Game {
             trigger.kind = StackKind::CasualtyCopy;
             trigger.mode = None;
             trigger.targets.clear();
-            trigger.crime_qualifying_target = false;
             trigger.target_type_slots = None;
             trigger.cast = None;
             trigger.is_copy = false;
