@@ -112,7 +112,9 @@ pub mod linked_choices;
 #[path = "engine_zone_replacements.rs"]
 pub mod zone_replacements;
 pub use linked_choices::{KeepTypesView, LibraryPile, LibraryPilesView, LinkedExileView};
-pub use zone_replacements::{ZoneReplacementChoiceView, ZoneReplacementKind, ZoneRevealView};
+pub use zone_replacements::{
+    ZoneReplacementChoiceView, ZoneReplacementKind, ZoneReplacementPickView, ZoneRevealView,
+};
 #[doc(hidden)]
 #[path = "engine_mana_lots.rs"]
 pub mod mana_lots;

@@ -31,6 +31,13 @@ fn active_player_has_the_first_simultaneous_death_replacement_choice() {
         effect: ZoneReplacementKind::ExileReflexive { source, ability: 0 },
     };
     let before_choices = game.snapshot();
+    let mut plain_exile = game.clone();
+    act(
+        &mut plain_exile,
+        Action::ChooseZoneReplacement {
+            effect: ZoneReplacementKind::Exile,
+        },
+    );
     let index = game
         .legal_actions()
         .iter()
@@ -43,6 +50,26 @@ fn active_player_has_the_first_simultaneous_death_replacement_choice() {
     assert_eq!(game.actor(), Some(nonactive));
     assert_eq!(game.object_view(active_head).zone, Zone::Battlefield);
     assert_eq!(game.object_view(nonactive_head).zone, Zone::Battlefield);
+    for (branch, effect) in [
+        (
+            &game,
+            ZoneReplacementKind::ExileReflexive { source, ability: 0 },
+        ),
+        (&plain_exile, ZoneReplacementKind::Exile),
+    ] {
+        assert_eq!(
+            branch
+                .observe(nonactive)
+                .zone_replacement_choice
+                .unwrap()
+                .prior_public_choices,
+            [ZoneReplacementPickView {
+                object: branch.object_ref(active_head),
+                player: active,
+                effect,
+            }]
+        );
+    }
 
     act(
         &mut game,
@@ -63,4 +90,60 @@ fn active_player_has_the_first_simultaneous_death_replacement_choice() {
     assert_eq!(wolves[0].controller, nonactive);
     indexed.restore(&before_choices).unwrap();
     assert_eq!(indexed.actor(), Some(active));
+}
+
+#[test]
+fn simultaneous_private_discards_do_not_reveal_prior_card_choices() {
+    let active = Player::P1;
+    let nonactive = active.other();
+    let mut game = scenario(active);
+    let private = put(&mut game, active, "Darksteel Colossus", Zone::Hand);
+    let other = put(&mut game, nonactive, "Darksteel Colossus", Zone::Hand);
+    let mage = put(&mut game, active, "Dragon Mage", Zone::Battlefield);
+    put(&mut game, active, "Rest in Peace", Zone::Battlefield);
+    game.state.step = Step::Attackers;
+    game.state.pending = Pending::Attackers;
+    act(&mut game, Action::Attack { card: mage });
+    act(&mut game, Action::FinishAttackers);
+    for _ in 0..20 {
+        let action = match game.state.pending {
+            Pending::Blockers => Action::FinishBlockers,
+            Pending::EffectDiscard { player, .. } => Action::Discard {
+                card: if player == active { private } else { other },
+            },
+            Pending::Priority => Action::Pass,
+            Pending::ZoneReplacement { .. } => break,
+            ref pending => panic!("unexpected Dragon Mage decision {pending:?}"),
+        };
+        act(&mut game, action);
+    }
+    assert_eq!(
+        game.state.pending,
+        Pending::ZoneReplacement { player: active }
+    );
+    act(
+        &mut game,
+        Action::ChooseZoneReplacement {
+            effect: ZoneReplacementKind::RevealShuffle,
+        },
+    );
+    assert_eq!(
+        game.state.pending,
+        Pending::ZoneReplacement { player: nonactive }
+    );
+    let view = game.observe(nonactive);
+    assert!(
+        view.zone_replacement_choice
+            .unwrap()
+            .prior_public_choices
+            .is_empty()
+    );
+    assert!(!view.objects.iter().any(|o| o.id == private));
+    act(
+        &mut game,
+        Action::ChooseZoneReplacement {
+            effect: ZoneReplacementKind::Exile,
+        },
+    );
+    assert_eq!(game.object_view(other).zone, Zone::Exile);
 }
