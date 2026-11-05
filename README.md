@@ -36,15 +36,15 @@ Oracle text guide that work. Gameplay executes deterministic Rust code.
 
 The Cargo workspace keeps the shared engine, per-set definitions and integration
 tests in separate compilation units. Applications still use one `rustmage`
-dependency. See [the build architecture](docs/build-architecture.md) for cached
-card-development workflows and engine-first set implementation.
+dependency. See the repository's [authoring and validation instructions](AGENTS.md).
 
-To explore the project:
+## Examples and bindings
 
 - [Rust examples](examples/) show how to drive games and branch game state.
 - [Python bindings](python/rustmage.py) expose the engine to Python applications.
-- [Card implementation guide](docs/direct-card-authoring.md) explains how to add card behavior.
-- [Foundations validation](docs/foundations-acceptance.md) describes the coverage and testing process.
+
+Card provenance that cites a path under `docs/` refers to evidence retained in
+[the repository history](https://github.com/altf4/rustmage/tree/b072c7932fc363b51938d429b99cb1b43d4beca7/docs).
 
 ## Standard set tracker
 
