@@ -552,12 +552,7 @@ impl Game {
                     affected: affected_player(before),
                     public: match before.zone {
                         Zone::Battlefield | Zone::Stack | Zone::Graveyard | Zone::Command => true,
-                        Zone::Exile => self.state.linked_choices.as_ref().is_none_or(|choices| {
-                            !choices
-                                .hidden
-                                .iter()
-                                .any(|&(_, exiled, _)| exiled == before.reference)
-                        }),
+                        Zone::Exile => !self.exiled_face_down(before.reference),
                         _ => false,
                     },
                     view: ZoneReplacementChoiceView {

@@ -419,6 +419,12 @@ impl Game {
             data.hidden.retain(|&(_, exiled, _)| exiled != object);
         }
     }
+    pub(super) fn exiled_face_down(&self, object: ObjectRef) -> bool {
+        self.state
+            .linked_choices
+            .as_ref()
+            .is_some_and(|data| data.hidden.iter().any(|&(_, exiled, _)| exiled == object))
+    }
     pub(super) fn can_view_hideaway(&self, viewer: Player, object: ObjectRef) -> bool {
         self.state.linked_choices.as_ref().is_none_or(|data| {
             data.hidden.iter().all(|&(_, exiled, viewers)| {

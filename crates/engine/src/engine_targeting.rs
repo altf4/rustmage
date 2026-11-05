@@ -1676,7 +1676,7 @@ impl Game {
             }
             TargetRule::LinkedExileCreature { ability_origin } => {
                 return matches!(target,Target::Card(id) if lookup(id).is_some_and(|o|
-                    o.zone==Zone::Exile && o.is_card() && o.card.is_creature()
+                    o.zone==Zone::Exile && o.is_card() && world.kinds(id) & 1 != 0
                     && self.linked_exile_for_origin(source,ability_origin.unwrap_or_else(||self.copy_ability_origin(source))).contains(&self.object_ref(id))));
             }
             TargetRule::GraveCreatureEnteredThisTurn => {

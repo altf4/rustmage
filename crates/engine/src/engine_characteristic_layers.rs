@@ -237,6 +237,11 @@ pub(super) fn kinds<W: CharacteristicWorld + ?Sized>(
     changed_kinds(world, id, result)
 }
 fn original_kinds<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId, object: &Object) -> u16 {
+    // CR406.3a: permission to look at a face-down exiled card does not
+    // give that card characteristics in exile.
+    if object.zone == Zone::Exile && world.game().exiled_face_down(world.reference(id)) {
+        return 0;
+    }
     let mut result = if object.zone == Zone::Stack {
         world.game().effective_spell_card(id).kind_mask()
     } else {

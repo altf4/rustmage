@@ -364,10 +364,12 @@ pub(super) trait CharacteristicWorld {
         self.kinds(id) & 16 != 0 && self.subtypes(id).has(self.definition(id), "Equipment")
     }
     fn mana_value(&self, id: CardId) -> u64 {
-        if self.recipe(id).exceptions.embalm {
+        let object = self.object(id);
+        if object.zone == Zone::Exile && self.game().exiled_face_down(self.reference(id))
+            || self.recipe(id).exceptions.embalm
+        {
             return 0;
         }
-        let object = self.object(id);
         let Some(front) = object.card.face_parent() else {
             return object.card.fixed_mana_value();
         };
