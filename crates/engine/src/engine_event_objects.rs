@@ -551,8 +551,10 @@ impl Game {
     }
     pub(super) fn event_object_controller(&self, item: &SpellView) -> Option<Player> {
         let event = item.event_object.as_ref()?;
-        let EventObjectFacts::Controller(saved) = event.facts else {
-            return None;
+        let saved = match event.facts {
+            EventObjectFacts::Controller(controller) => controller,
+            EventObjectFacts::DamageActor(source) => source.controller,
+            _ => return None,
         };
         let current = self
             .state

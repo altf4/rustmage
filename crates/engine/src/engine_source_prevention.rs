@@ -665,7 +665,9 @@ impl Game {
         // read when it resolves. The damage amount remains an event-time fact.
         let pending = self.state.pending_triggers.len();
         self.queue_reflexive(&item, shield.ability, Some(event.source.reference));
-        if let Some(packet) = self.state.pending_triggers.get_mut(pending) {
+        if let Some(packet) = self.state.pending_triggers.get_mut(pending)
+            && packet.event_object.is_none()
+        {
             packet.set_event_object(EventObjectView {
                 object: event.source.reference,
                 facts: EventObjectFacts::Controller(event.source.controller),
