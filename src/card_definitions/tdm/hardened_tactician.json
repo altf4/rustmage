@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "78454eba6a81c8b8364a7fa07ee6f416386dc7097fe80f3531a60a6b105d2b6a"
   },
-  "physical_metadata_sha256": "24eb41f3c9fdad7c02eb20364dfc7a8e1370b5bf980c7f8956f2ab4c8e3cf326"
+  "physical_metadata_sha256": "24eb41f3c9fdad7c02eb20364dfc7a8e1370b5bf980c7f8956f2ab4c8e3cf326",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HardenedTactician.java",
+  "java_sha256": "7154fa3a9811cfb95c030d03b4307b1d98c0cd4ada07322d1378779913324efc",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    }
+  ]
 }

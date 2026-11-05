@@ -3,10 +3,41 @@
   "catalogue_id": 4878,
   "oracle_id": "ccaadf8d-22c0-4139-b734-03ac2fcb4494",
   "facts_sha256": "7df847193922849196e1e67b5225d4ac99110e9b1d7aae05ebbcde0be2770bc6",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "94778c0e03dc8e5f28d7d7ea6d495c5ee66450fcc21faeba0d8828beb5c0b5db"
   },
-  "physical_metadata_sha256": "37ba0e568e9c572d783ce59345d66c38ce031210d701280bf2bdb25082bcfcee"
+  "physical_metadata_sha256": "37ba0e568e9c572d783ce59345d66c38ce031210d701280bf2bdb25082bcfcee",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VeteranIceClimber.java",
+  "java_sha256": "e4154de5bffbb740775a39c1bea09a6be5c169326f3f70e2d721309fd5a5d079",
+  "rules_tests": "tests/tdm_cards_s_z_additional.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CantBeBlockedSourceAbility.java",
+      "sha256": "db5a7fc24b93fadd2bb8e9fd2e03c5ac39dc413d3e35d1a532fcc53aa08fadcb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedSourceEffect.java",
+      "sha256": "546b73507803da1667ee058a20486c5f3387357e38d1419a82f952b94ebb93d7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SourcePermanentPowerValue.java",
+      "sha256": "aabc6ce8b7bd68b08691830a2a45af0d886a2837c652bbca9e109b5813b0ca9a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsTargetEffect.java",
+      "sha256": "5a01d741ed0a7d1449d5d4591025205bc130e7e5eb5f861d2761b1fd64557365"
+    }
+  ]
 }

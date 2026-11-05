@@ -234,16 +234,21 @@ impl Game {
             | Action::AnnounceBack { card }
             | Action::AnnouncePlotted { card }
             | Action::AnnounceHarmonize { card }
+            | Action::AnnounceGrantedHarmonize { card, .. }
             | Action::AnnounceMayhem { card }
             | Action::AnnounceFlashback { card }
             | Action::AnnounceGrantedFlashback { card, .. }
             | Action::AnnounceFree { card, .. }
+            | Action::AnnounceFreeCounterGraveyard { card, .. }
+            | Action::AnnounceFreeGraveyardPermanent { card, .. }
+            | Action::AnnounceFreeGraveyardAdditionalCosts { card, .. }
             | Action::AnnounceFreeFromPermission { card, .. }
             | Action::AnnounceCounterGraveyard { card }
             | Action::AnnounceGraveyardAdditionalCosts { card }
             | Action::Cast { card, .. }
             | Action::BeginCast { card, .. } => card,
-            Action::CastExiledDuringResolution { object, .. } => object.card,
+            Action::CastExiledDuringResolution { object, .. }
+            | Action::CastFreeDuringResolution { object, .. } => object.card,
             Action::PlayGraveyardPermanent { card, .. }
                 if !self.state.objects[card as usize].card.is_land() =>
             {

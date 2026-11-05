@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6b8b8da9e089f330fbba57ef9b87595f036fc6486b6ddd7083f949a0bb487c83"
   },
-  "physical_metadata_sha256": "4d21cc8a18b44facb758411136a9bfae3d7e360a490a7823313c56247fedb993"
+  "physical_metadata_sha256": "4d21cc8a18b44facb758411136a9bfae3d7e360a490a7823313c56247fedb993",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RakshasasBargain.java",
+  "java_sha256": "ea823fc11bef1c7fa90f5f10f597b6b11b3f2fe7a08127c49c61b2f2e723653b",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    }
+  ]
 }

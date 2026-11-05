@@ -227,21 +227,32 @@ impl Game {
             actor,
             o,
             self.current_kinds(object.card),
+            ability_world::CharacteristicWorld::mana_value(self, object.card),
             self.keywords(object.card),
             self.granted_subtypes(object.card),
             self.object_name(object.card),
         )
     }
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "Live and borrowed cost predicates share explicit characteristics"
+    )]
     pub(super) fn additional_object_matches(
         spec: AdditionalCost,
         actor: Player,
         o: &Object,
         kinds: u16,
+        mana_value: u64,
         keywords: Keywords,
         subtypes: GrantedSubtypes,
         name: &str,
     ) -> bool {
         let spec = spec.in_zone(o.zone);
+        if let EffectChoiceKind::SacrificeManaValue { value } = spec.kind
+            && value != Some(mana_value)
+        {
+            return false;
+        }
         if !spec.kind.cost_matches_any(o.card, kinds, subtypes) {
             return false;
         }
@@ -539,6 +550,11 @@ impl Game {
         let Some(spec) = spec else {
             return self.can_fund(goal);
         };
+        if spec.kind == EffectChoiceKind::DiscardHand {
+            // Mana abilities run before the whole-hand payment, so no current
+            // card is reserved: even an empty resulting hand is payable.
+            return self.can_fund(goal);
+        }
         if spec.kind.variable_cost_minimum().is_some() {
             let source = goal.source.as_ref().expect("activation source").0;
             let current = self.state.announcing.as_ref().filter(|a| {
@@ -837,6 +853,23 @@ impl Game {
             self.pay_variable_additional_cost(a, spec);
             return;
         }
+        if spec.kind == EffectChoiceKind::DiscardHand {
+            let hand = self
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .filter_map(|(id, object)| {
+                    (object.zone == Zone::Hand
+                        && object.owner == a.item.controller
+                        && object.is_card())
+                    .then_some(id as CardId)
+                })
+                .collect::<Vec<_>>();
+            self.discard_batch(&hand, None);
+            a.additional_paid = true;
+            return;
+        }
         // The local announcement is outside State while an external cost commits.
         // Preserve its actual pre-departure source, not a borrowed definition.
         if matches!(a.item.kind, StackKind::ActivatedAbility { .. })
@@ -1019,14 +1052,15 @@ impl Game {
                 })
             }) {
                 let object = group[0];
-                a.item.event_object = Some(Box::new(EventObjectView {
+                a.item.set_event_object(EventObjectView {
                     object,
                     facts: EventObjectFacts::CreatureComparison(
                         CreatureComparisonFacts::from_view(&self.object_view(object.card)),
                     ),
+                    semantic_objects: None,
                     conniver_creature: None,
                     subtype_lki: None,
-                }));
+                });
             }
             self.tap_objects(&group.iter().map(|r| r.card).collect::<Vec<_>>());
             a.additional_paid = true;
@@ -1087,7 +1121,10 @@ impl Game {
                     self.remember_public_hand(object);
                 }
             }
-            EffectChoiceKind::FilteredCost { .. }
+            EffectChoiceKind::ColorCounter { .. }
+            | EffectChoiceKind::FilteredCost { .. }
+            | EffectChoiceKind::SacrificeManaValue { .. }
+            | EffectChoiceKind::DiscardHand
             | EffectChoiceKind::TargetAttackingReturn { .. }
             | EffectChoiceKind::AmassGoblins(_)
             | EffectChoiceKind::EmpowerJace(_)

@@ -1,0 +1,534 @@
+{
+  "schema": 1,
+  "scope": "TDM six-group search, color-recipient and frozen damage-division engine checkpoint",
+  "base_revision": "81a729a8c9a76648b4d48989b60985ef16787526",
+  "branch": "codex/tdm-search-color-sequences",
+  "dependency_policy": "Integrate only this new descendant checkpoint; its 81a729a8 ancestors are already present in root integration.",
+  "source_pin": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "source_inputs": [
+    {
+      "path": "crates/engine/src/cards.rs",
+      "sha256": "9634264ef7e16984a222c808f73288f0e7b63d20ef7f55f0f05aa95e40fc744e"
+    },
+    {
+      "path": "crates/engine/src/engine.rs",
+      "sha256": "2849a116634316481d92c651d5038da80d186da0627b36d6877076aaaef46f9b"
+    },
+    {
+      "path": "crates/engine/src/engine_activations.rs",
+      "sha256": "fd7a535c8e7e88097ffee9cfbf4c975e725708af8fb51c24c7dc12a79e884a62"
+    },
+    {
+      "path": "crates/engine/src/engine_additional_costs.rs",
+      "sha256": "2c06138c672fa6fc2f6556a14cb367387d0d81649da065c307c9170a39af6df3"
+    },
+    {
+      "path": "crates/engine/src/engine_battles.rs",
+      "sha256": "6cab89f0aea6d03c27122493caf529d8d760ea40c9f1ab298280440c3f1669aa"
+    },
+    {
+      "path": "crates/engine/src/engine_cascade.rs",
+      "sha256": "70d1645fa7a477d3e64e621819fd8fc8e9e537daa1a86d3b503a3d271e723058"
+    },
+    {
+      "path": "crates/engine/src/engine_color_sequences.rs",
+      "sha256": "e18128aa6fb4d81aac85c87251a037f809fc61db6e1b0cab61fa42132f25e81b"
+    },
+    {
+      "path": "crates/engine/src/engine_effect_choices.rs",
+      "sha256": "53ae9673cde6366a0767a0ea867feb3f0195e0518aa9392770840d093ef5ecd3"
+    },
+    {
+      "path": "crates/engine/src/engine_hand_choices.rs",
+      "sha256": "20275afdc73b89515f9d4c6a440700e4b2e39bf754fde7d26520eded21e1c53e"
+    },
+    {
+      "path": "crates/engine/src/engine_mobilize.rs",
+      "sha256": "0c4ae08ff739cdd393941211fe931bf2ac685188797435cb9dd1a2aa3a9f005c"
+    },
+    {
+      "path": "crates/engine/src/engine_programs.rs",
+      "sha256": "f460f2b6d5145acb9936d76f51c03b1b7e00de2449a61b5b158be6cfade233c1"
+    },
+    {
+      "path": "crates/engine/src/engine_replacements.rs",
+      "sha256": "d192f99709283e67605a4c208713c4657ca70e503023793f14394e1f93019531"
+    },
+    {
+      "path": "crates/engine/src/engine_search.rs",
+      "sha256": "c62de29c506dae324517b827310916a74b82231f0bd881cdf1a74f40ee8705e4"
+    },
+    {
+      "path": "crates/engine/src/engine_steps.rs",
+      "sha256": "ba441eb1eb21111dbb7e3c47c88f1052dd74af4a1985d55f1831730ec562b7ed"
+    },
+    {
+      "path": "crates/engine/src/engine_target_allocations.rs",
+      "sha256": "daee8fae357f05a03219a24e639f57112f94709d8dfc67269c5824e8a226c0e7"
+    },
+    {
+      "path": "crates/engine/src/engine_targeting.rs",
+      "sha256": "efc17971a460bacfd01744e5f2f3215ec185239105e655e7fd5f5f342923dd7d"
+    },
+    {
+      "path": "crates/engine/src/engine_warp.rs",
+      "sha256": "51430f4c8dada03a0c8c10afac665ef9d2202b5da8cf4685cca1055d234d2b6a"
+    },
+    {
+      "path": "crates/engine/src/policy.rs",
+      "sha256": "eaa0341ac02b29fd75c3fe77f994ebb08de7c01fc72bf42f8620bf1949615b32"
+    },
+    {
+      "path": "tests/legacy/assurance/hob_spark_letters.rs",
+      "sha256": "8b4679cd48ae04f6cc7746edbf6138e9b8548f37ea554165549aa7320e7af898"
+    },
+    {
+      "path": "tests/legacy/assurance/hob_storied.rs",
+      "sha256": "02a505609cc7c82df1104574b6f9cd570a61bf046dbfc5aafa73909ad7ed7421"
+    },
+    {
+      "path": "tests/legacy/engine_fra_chandra_chill_tests.rs",
+      "sha256": "a24333eddd4890ebd42a4aadb9c6723005a320b242cf5b9a9bd2d20b5bdfa645"
+    },
+    {
+      "path": "tests/legacy/engine_fra_emrakul_exigent_tests.rs",
+      "sha256": "7d2aad0276a91a94c1c40bebdb20f66dd95cf4e51a55fd212a5ef70855332482"
+    },
+    {
+      "path": "tests/legacy/engine_fra_garruk_veiled_tests.rs",
+      "sha256": "fe4c18fd84d397224bf3aa6eae5ed49911d59ffd896c1965d897291a4beb2e8f"
+    },
+    {
+      "path": "tests/legacy/engine_fra_proliferate_batch_tests.rs",
+      "sha256": "d8cad3566dfd463b7e5f0fc9f4394a1799d440efdd23c491ea8062b4be4686c7"
+    },
+    {
+      "path": "tests/legacy/engine_fra_seasoned_cryomancer_independent_tests.rs",
+      "sha256": "2d6e1bc1bc45d1ed53cd03dd94bd9077845e29bf53e51307cdd3bedc959ba6db"
+    },
+    {
+      "path": "tests/legacy/engine_fra_seasoned_cryomancer_tests.rs",
+      "sha256": "d01805ba19239fd22929edfeefed97602dc4126cdf0a516ad6eb6d7f330b0418"
+    },
+    {
+      "path": "tests/legacy/engine_fra_self_replacement_tests.rs",
+      "sha256": "d809ee73ff22b4164ab6faa9af234e0e2c70c1cf6192469225bc2687355c1c41"
+    },
+    {
+      "path": "tests/legacy/engine_sos_multicolor_tests.rs",
+      "sha256": "d9c11dd323205396d6aeba66fae08e83e3496f8e9b407e1ae25071031e0bdcad"
+    },
+    {
+      "path": "tests/tdm_search_color_sequences.rs",
+      "sha256": "9bd6f52179c8956c1eee96eb5942f4ef427badc2e79b81348aa68ca2813ebcd1"
+    }
+  ],
+  "oracle_inputs": [
+    {
+      "name": "Breaching Dragonstorm",
+      "oracle_id": "5370ee80-0354-454f-a16e-ec133e432ecb",
+      "record_sha256": "ceec149b59bdd24b416020760b8ee21733a6eac319c6c84b5bc28f11c4cee577"
+    },
+    {
+      "name": "Call the Spirit Dragons",
+      "oracle_id": "3ceb23f5-abb1-4569-a1e4-1eed9a9babcf",
+      "record_sha256": "72c656ebbb4251d5c10385dae9e173fed6f41fe16faa3d4e194ad2891380b44b"
+    },
+    {
+      "name": "Glacial Dragonhunt",
+      "oracle_id": "8f976399-29a9-4eb7-844d-3d3f2fdf6ea7",
+      "record_sha256": "6b545fb1d8869e0cb0f96314822bc129a2e7e1d3e2ce6a9418cf3b176ae71c56"
+    },
+    {
+      "name": "Lotuslight Dancers",
+      "oracle_id": "83c8f1ca-194e-4cb6-9d5f-029133c1edbc",
+      "record_sha256": "803fd615a5e816e91e256d46ce8b03b6a54a51144531e212b1b5f1d817f36065"
+    },
+    {
+      "name": "Nature's Rhythm",
+      "oracle_id": "0259f063-3e3f-4e07-9066-f748d4819829",
+      "record_sha256": "06f5f8b1b6ba36b6507a72b79710074ab692160327386d02e8ab54dbe19a6308"
+    },
+    {
+      "name": "Ureni, the Song Unending",
+      "oracle_id": "1c995c80-3301-409b-822b-9297aa260823",
+      "record_sha256": "7a811fa83c8126f7e4a8719ea6c815fb14d2e8d70141d0807eeb76d856b2748c"
+    }
+  ],
+  "oracle_record_hash_format": "SHA256 of json.dumps(record,sort_keys=True,separators=(comma,colon)) with default ensure_ascii=True, encoded UTF8",
+  "source_classes_and_helpers_read": [
+    {
+      "path": "Mage.Sets/src/mage/cards/b/BreachingDragonstorm.java",
+      "sha256": "7df4b752ce383bb8dd63e22119a732d5119b7dab6b5432db98e9aa4162a3d710",
+      "read_scope": "complete class"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/c/CallTheSpiritDragons.java",
+      "sha256": "058c98c87f283039d91d1a3558c189207fd76b43757da8a8d055fdb15b75a258",
+      "read_scope": "complete class"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/g/GlacialDragonhunt.java",
+      "sha256": "898a10c1983c399faa1f624fc13a9b37ede4b0412bd8b2126a538eceeb1b993e",
+      "read_scope": "complete class"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/l/LotuslightDancers.java",
+      "sha256": "76475d57c9a5367f9f747d3c29d582f70df7ccbc5900373533bc0bc798f8f88d",
+      "read_scope": "complete class"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/n/NaturesRhythm.java",
+      "sha256": "3a17973e60216769760b842b096d20923811633b70335237e2b34a75ddf18331",
+      "read_scope": "complete class"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/u/UreniTheSongUnending.java",
+      "sha256": "a426d6d95e1351a4e138636275f714ecf2f5e58fe0e72269c977d49ab5adc888",
+      "read_scope": "complete class"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/assignment/common/ColorAssignment.java",
+      "sha256": "c84a1836b8958913167e8db1d75fc2961370dd235dddad88e83c679a5275af69",
+      "read_scope": "complete class"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/assignment/RoleAssignment.java",
+      "sha256": "7b8e9145af672e13d0970346d5602bc16c7b434f7db9040b9a7a2d4a0d05478f",
+      "read_scope": "complete class"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayEffect.java",
+      "sha256": "0bb9a67ad4f01956cd50eb190b2086d6d070c993cccbecece569b37726129394",
+      "read_scope": "complete class"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/SearchEffect.java",
+      "sha256": "3bd01fb726f6f76df078d7bf1f7a84fe484cc02fa0b1ca8dff89a3a2f562be96",
+      "read_scope": "complete class"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4",
+      "read_scope": "complete class"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetPermanentAmount.java",
+      "sha256": "f70d05ef1e34e607a85ad43dc28b6c081bf696cbbbfeaaa8a26758737775b71b",
+      "read_scope": "complete class"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetAmount.java",
+      "sha256": "46aa93db7da9ec3cbaabb36e6d5646b1202e3a88777ba26fd034f2adfa2a1732",
+      "read_scope": "complete class"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageMultiEffect.java",
+      "sha256": "8abe9d89813203699d21532058cc5a3ffb2fc4cd247dc3cd960a076863a96818",
+      "read_scope": "complete class"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandSourceEffect.java",
+      "sha256": "3af51f033e9d30c6f946feca7948ce7ee423fdd1314a715820d3ae9d98ca7935",
+      "read_scope": "complete class"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+      "sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065",
+      "read_scope": "complete class"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+      "sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0",
+      "read_scope": "complete class"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/LandsYouControlCount.java",
+      "sha256": "5d39300c382c862538f44ba6be1565cb60cfed952c2a95515f3d4b9daee3483e",
+      "read_scope": "complete class"
+    },
+    {
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ColorPredicate.java",
+      "sha256": "b62ced1f121575b7737a20875425334d7bf61e018a809548805d14f38d71e82b",
+      "read_scope": "complete class"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+      "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b",
+      "read_scope": "complete class"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59",
+      "read_scope": "complete class"
+    },
+    {
+      "path": "Mage/src/main/java/mage/players/PlayerImpl.java",
+      "sha256": "cf703a3906b14381001e910e7213046262224d76fd6c3f1289537f77f1a49ff3",
+      "read_scope": "discard/getToDiscard/doDiscard full method bodies"
+    },
+    {
+      "path": "Mage/src/main/java/mage/util/CardUtil.java",
+      "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06",
+      "read_scope": "free-cast helper family full method bodies"
+    }
+  ],
+  "groups": [
+    {
+      "id": "A06",
+      "card": "Breaching Dragonstorm",
+      "support": "ExileUntilNonlandCastOrHand: sequential actual library exiles, first actual nonland stops independently of mana value; chosen spell face must meet inclusive 8 bound for immediate free cast, otherwise that exact remaining incarnation goes to owner hand. Other exiles remain exiled. Existing own-Dragon-entry return uses exact independent source incarnation.",
+      "focused_cases": 6
+    },
+    {
+      "id": "A07",
+      "card": "Call the Spirit Dragons",
+      "support": "PutColorCountersAndWin: mandatory-if-possible nontarget WUBRG choices use actual controlled subtype/color; same multicolor permanent may fill several roles. All choices aggregate into one simultaneous explicit-player replacement-aware counter batch. Freeze distinct actual positive successful recipients and invoke existing win rules at five; quantities/selections do not inflate recipients. Existing controlled keyword provider supplies printed Dragon indestructible during card authorship.",
+      "focused_cases": 6
+    },
+    {
+      "id": "A21",
+      "card": "Glacial Dragonhunt",
+      "support": "MayDiscardNonlandReflexive: draw instruction precedes optional private one-card hand choice. Actual nonland discard events queue a counterable targeted reflexive packet; redirected public exile still discarded, prevention is not. Existing Harmonize retains facts/source identity after source exile.",
+      "focused_cases": 5
+    },
+    {
+      "id": "B:distinct_color_search",
+      "card": "Lotuslight Dancers",
+      "support": "SearchDistinctColors reuses one optional private search with one shuffle; bounded 32-mask matching reassigns multicolor roles without greedy commitment. Any subset may fail to find, but one physical card fills only one distinct black/green/blue role.",
+      "focused_cases": 3
+    },
+    {
+      "id": "B:chosen_x_library_search",
+      "card": "Nature's Rhythm",
+      "support": "SearchCreaturesUpToChosenX binds creature mana value to locked spellX independently of one-card cardinality. Existing search entry batch handles chosen exact card and normal entry/SBAs. Existing symbol-X/Harmonize machinery is composed through a paid physical fixture, including X=0.",
+      "focused_cases": 2
+    },
+    {
+      "id": "C:SCALED_DAMAGE_DIVISION",
+      "card": "Ureni, the Song Unending",
+      "support": "DamageDividedScaled samples quantity once at target announcement into rare boxed packet data, bounds recipients by positive shares and supportszero targets. Announced exact targets/shares survive source departure, library/land changes and ability copies; illegal/blinked targets lose only their own shares. Creature and planeswalker legality remains ordinary targeting. Existing flying/color protection providers cover other printed lines during card authorship.",
+      "focused_cases": 6
+    }
+  ],
+  "rules_sources": [
+    {
+      "url": "https://magic.wizards.com/en/news/feature/tarkir-dragonstorm-release-notes",
+      "local_input": "/tmp/tdm-release-notes.txt",
+      "sha256": "3ce1c9853c733c3ace178cdb1aac78c111107b3312bcbb683588bd5d3ebf2ea9",
+      "scope": "Complete relevant six card sections read; paraphrased outcomes only."
+    },
+    {
+      "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+      "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+      "sections": [
+        "608.2f",
+        "700.1",
+        "601.2d",
+        "603.3d"
+      ],
+      "scope": "Call simultaneity is a reasoned inference from general resolution/event rules; Ureni division is fixed when targets and shares are announced."
+    }
+  ],
+  "rules_inference": {
+    "Call_simultaneity": "The printed single instruction acts on several objects. All applicable choices are made before one simultaneous placement batch, aggregating repeated recipients. This follows the general 608.2f multiple-object resolution rule and 700.1 event semantics. No card-specific contrary official note was found. Pinned XMage loops addCounters sequentially; that implementation is not used as authority to split this event. Parent accepted this design pending independent rules review.",
+    "proof": "One five-color Dragon receives five counters; controlled-recipient observer triggers once and batch observer triggers once. Five distinct successful recipients win; doubling one recipient does not. Prohibition clears a recipient before receipts and prevents a win."
+  },
+  "owned_state_and_legality": [
+    "Private search and optional hand candidates remain actor-private; stale cards, wrong owner/controller, duplicate roles, wrong actors and invalid choices reject transactionally.",
+    "Partial public color choices, queued counter replacement choices, optional free casts, private searches and wide division amounts are cloned after parent disposal and compared through raw/index actions and restore.",
+    "CounterCompletion reuses one owned replacement batch continuation, records actual positive exact recipients before trigger dispatch, and counts distinct refs rather than counters.",
+    "Color sequence vectors are bounded by five roles; reachable search states use one 32-bit mask. New rare packet/resolution allocations are included in owned-byte accounting. Normal empty data stays absent."
+  ],
+  "wire_and_layout_changes": [
+    "New public Action::ChooseColorCounter{object}, EffectChoiceKind::ColorCounter metadata and HandChoiceKind::DiscardNonlandReflexive metadata for new choice domains.",
+    "AllocateTargetAmount.amount, TargetAllocation.amount and TargetAmountChoiceView amount bounds widen losslessly from u32 to u64. Prior small serialized numeric values remain equal; raw action serde roundtrip covers greater than u32 values.",
+    "SpellView.announced_division is Option<Box<u64>>, omitted when None and initializedNone in every ordinary packet constructor; copied packets retain it. It adds one rare pointer slot per stack packet, not per permanent.",
+    "SearchChoiceView.distinct_colors omits zero; CascadeView.keep_exiled omits false. Existing generic search and cascade/discover values remain unchanged.",
+    "Resolution.color_sequence is private optional boxed owned state; all inherited literal constructors explicitly initialize None. CounterCompletion broadens the existing boxed completion enum without an additional CounterBatch pointer.",
+    "Root owns common observation schema and inherited trace acceptance; this checkpoint deliberately does not bump shared schema independently."
+  ],
+  "final_source_manifest": {
+    "path": "<cache>/rustmage-tdm/search-color-legacy/source-hashes.json",
+    "sha256": "6fa1723124fa215b1dace370523b8e11e01943b53a15609e613d07c901e10c3d",
+    "files": 11912,
+    "unchanged_after_terminal": true
+  },
+  "final_runs": [
+    {
+      "report": "<cache>/rustmage-tdm/search-color-expanded28-fixtures/native.json",
+      "sha256": "1f3fab2e242add0472787afbc689575eec8ea7f97637fd4bb754ad7de137c7a5",
+      "terminal": true,
+      "success": true,
+      "cases": 28,
+      "compile_seconds": 0.9172813829791266,
+      "execution_seconds": 0.03485750299296342
+    },
+    {
+      "report": "<cache>/rustmage-tdm/search-color-compat/0/native.json",
+      "sha256": "d7f1f3c9fafd8b14071865eeb4cf89c3e05bca7e9d753c18e3d03588cf231cdb",
+      "terminal": true,
+      "success": true,
+      "cases": 19,
+      "compile_seconds": 0.9166796439967584,
+      "execution_seconds": 0.02457513299304992
+    },
+    {
+      "report": "<cache>/rustmage-tdm/search-color-compat/1/native.json",
+      "sha256": "8ed29a81de168ff50918dcd85d313f82c6d0c337543725a90d1419aea9c222bf",
+      "terminal": true,
+      "success": true,
+      "cases": 18,
+      "compile_seconds": 1.5705565059906803,
+      "execution_seconds": 0.04285883001284674
+    },
+    {
+      "report": "<cache>/rustmage-tdm/search-color-compat/2/native.json",
+      "sha256": "181ec46c89e6e51e0835995e3ef1a4bd899f279164d31e3b4fc5f545dcc6b5a7",
+      "terminal": true,
+      "success": true,
+      "cases": 11,
+      "compile_seconds": 0.7166782889980823,
+      "execution_seconds": 0.0327115039981436
+    },
+    {
+      "report": "<cache>/rustmage-tdm/search-color-compat/3/native.json",
+      "sha256": "0ec07a8cfb8464dbe304ffd1a7309df46d7f17bf9e645391de86fa4f5cab4954",
+      "terminal": true,
+      "success": true,
+      "cases": 8,
+      "compile_seconds": 0.7667854870087467,
+      "execution_seconds": 0.042577778978738934
+    },
+    {
+      "report": "<cache>/rustmage-tdm/search-color-compat/4/native.json",
+      "sha256": "3297cf6c57880999a89aa08f7e51530be6bcc47f17f13bac67f2e1634d29c931",
+      "terminal": true,
+      "success": true,
+      "cases": 8,
+      "compile_seconds": 0.7161524480034132,
+      "execution_seconds": 0.03374754899414256
+    },
+    {
+      "report": "<cache>/rustmage-tdm/search-color-compat/5/native.json",
+      "sha256": "d7b610d922286d026179a20edb24cec7a30191502b3c13df882e517ddeeb8b5a",
+      "terminal": true,
+      "success": true,
+      "cases": 13,
+      "compile_seconds": 0.7673110580071807,
+      "execution_seconds": 0.034395241003949195
+    },
+    {
+      "report": "<cache>/rustmage-tdm/search-color-legacy/0/native.json",
+      "sha256": "ebc9f34470718625233635a7e06ed9db256ad98aedf6f92dbd3b3343bd68b54c",
+      "terminal": true,
+      "success": true,
+      "cases": 6,
+      "compile_seconds": 21.972616779006785,
+      "execution_seconds": 0.04363645499688573
+    },
+    {
+      "report": "<cache>/rustmage-tdm/search-color-legacy/1/native.json",
+      "sha256": "e0393a88e131501a505ea2f7d30e459e74afefdc3f9a234c8d922147e0a9157f",
+      "terminal": true,
+      "success": true,
+      "cases": 1,
+      "compile_seconds": 0.06468990698340349,
+      "execution_seconds": 0.025118132994975895
+    },
+    {
+      "report": "<cache>/rustmage-tdm/search-color-legacy/2/native.json",
+      "sha256": "af6fe0c3b74d5b015ece76fb3bba502b3dafa270f9c583825247e0990c74fe09",
+      "terminal": true,
+      "success": true,
+      "cases": 7,
+      "compile_seconds": 0.06481647500186227,
+      "execution_seconds": 0.04301703299279325
+    },
+    {
+      "report": "<cache>/rustmage-tdm/search-color-legacy/3/native.json",
+      "sha256": "c538c39d19e820e6e982afb036203252a5a992f35851b811b5c8209a64cec062",
+      "terminal": true,
+      "success": true,
+      "cases": 10,
+      "compile_seconds": 0.06473104399628937,
+      "execution_seconds": 0.037935931992251426
+    }
+  ],
+  "final_cases": 129,
+  "compile_seconds": 28.538299019972328,
+  "execution_seconds": 0.39543109195074067,
+  "retained_terminal_failures": [
+    {
+      "report": "<cache>/rustmage-tdm/search-color-first16/native.json",
+      "sha256": "e55ff1910dceca5d4d6539f4a7b6ee2c4241795126e073bbb5bf60deff1b51c7",
+      "terminal": true,
+      "success": false,
+      "cases": 16,
+      "compile_seconds": 113.30250516100205,
+      "execution_seconds": 0.033216960000572726
+    },
+    {
+      "report": "<cache>/rustmage-tdm/search-color-expanded28/native.json",
+      "sha256": "a74bfce09eadb2bd634805c2a5032810ea7b6f0d8c72bb072e8d28982d0c19ad",
+      "terminal": true,
+      "success": false,
+      "cases": 0,
+      "compile_seconds": 6.531551627005683,
+      "execution_seconds": 0
+    },
+    {
+      "report": "<cache>/rustmage-tdm/search-color-expanded28-cost-arm/native.json",
+      "sha256": "0557dde9f9b364a4c8b2a51274c26b198e880d41b72b762283a86eb61eabf46a",
+      "terminal": true,
+      "success": false,
+      "cases": 0,
+      "compile_seconds": 113.04962410198641,
+      "execution_seconds": 0
+    },
+    {
+      "report": "<cache>/rustmage-tdm/search-color-expanded28-choice-action/native.json",
+      "sha256": "c8a7f504ae64d289d504545ac9199fbbd53b2e73a7e7bc205c51fc52aa54dccd",
+      "terminal": true,
+      "success": false,
+      "cases": 0,
+      "compile_seconds": 6.632096137007466,
+      "execution_seconds": 0
+    },
+    {
+      "report": "<cache>/rustmage-tdm/search-color-expanded28-policy/native.json",
+      "sha256": "2a8e08513c2b75858b7b37f88551362b0af9fbfbfc8fff2fee86a897770246c4",
+      "terminal": true,
+      "success": false,
+      "cases": 28,
+      "compile_seconds": 113.85061383398715,
+      "execution_seconds": 0.03461356399930082
+    },
+    {
+      "report": "<cache>/rustmage-tdm/search-color-compat/6/native.json",
+      "sha256": "8c7d36443b6153c76813173cc030d80a051271df9b2d692dabc18c4eff619500",
+      "terminal": true,
+      "success": false,
+      "cases": 0,
+      "compile_seconds": 9.341280317021301,
+      "execution_seconds": 0
+    }
+  ],
+  "failure_resolution": [
+    "First16 reached 14/16; hand-choice zone-replacement and paid Harmonize ordered-cost fixture stepping was corrected.",
+    "Expanded compile reports exposed exhaustive mandatory-color choice cost rejection, catalogue/keyword fixture APIs, explicit action visitation/apply integration, and policy exhaustive scoring. All are integrated in final sources.",
+    "First complete expanded runtime reached 24/28. An actual Equipment fixture replaced nonattachment Ghost Vacuum for counter prohibition; target helpers stopped issuing FinishTargets after reaching the limit auto-advanced to TargetAmount. Engine unchanged for final 28 rerun.",
+    "Initial directly affected modern compatibility passed 77/77. Legacy compile required one lossless fixture conversion from u32::from to u64::from. Final legacy all constructors compile and 24 selected cases pass; no runtime input changed."
+  ],
+  "validation": [
+    "All Cargo through resource_guard under shared 6 GiB cap; stable entry-modes target; each consuming job frozen through actual termination.",
+    "rustfmt and git diff --check; 11 final terminal positive reports, 129 cases; all retained failures preserved under cache.",
+    "Full release validation, set games and simulation throughput intentionally remain in the parent whole-set checkpoint."
+  ],
+  "limitations": [
+    "No ordinary card definitions/admissions changed. These primitives are ready for independent engine review, not full card completion.",
+    "Global search prohibitions/limits have no existing generic engine API in this base; this checkpoint preserves the current qualified-search contract and does not claim universal unsupported restriction interactions.",
+    "Call simultaneous-event inference and public wire changes require independent/common acceptance.",
+    "No full validator or simulation benchmark run for this isolated checkpoint."
+  ]
+}

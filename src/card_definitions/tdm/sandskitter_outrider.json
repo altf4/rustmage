@@ -8,5 +8,36 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0282bb6ce48ff2fa5cfbfae3030cbaaf47d2b91fb2156a9cb87b24cae5eee3f2"
   },
-  "physical_metadata_sha256": "e82d9204e7b471ad51378e4bee2e68b613ba119db13c7faab54b5773dcaed93f"
+  "physical_metadata_sha256": "e82d9204e7b471ad51378e4bee2e68b613ba119db13c7faab54b5773dcaed93f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SandskitterOutrider.java",
+  "java_sha256": "a9a42565b9eada3e9ef6701e67a12fed7939d0820cece645998817ee27b834b9",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByOneEffect.java",
+      "sha256": "e0bd814caa3d5758863c4230d3ac88a4361337d3459b13d4f0b309559520434e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EndureSourceEffect.java",
+      "sha256": "b32a2eef10ea3a3f03e93398e6e5a6aeebd279daa5a95edda6aab6380e1d9dcd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/NoFlyingSpiritWhite22Token.java",
+      "sha256": "9600c4dca746b3607b1e9096ea55a01c0b23be5009f02c036374ac6a85f4e9b7"
+    }
+  ],
+  "rules_tests": "tests/tdm_cards_s_z.rs::creatures_"
 }

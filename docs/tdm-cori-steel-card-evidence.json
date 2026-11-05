@@ -1,0 +1,231 @@
+{
+  "schema": 1,
+  "set": "TDM",
+  "name": "Cori-Steel Cutter",
+  "oracle_id": "46b1a169-bc32-47bf-b379-fa0c3d13878f",
+  "catalogue_id": 849,
+  "engine_revision": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+  "base_revision": "bd24d9f167f98308637420e3a4de461ccda1a4d0",
+  "definition": "src/card_definitions/tdm/cori_steel_cutter.rs",
+  "definition_sha256": "c282bbe8cf2bf4d3f1629d8d11edc1841cc6aa993966b056c92a578b9c837f11",
+  "provenance": "src/card_definitions/tdm/cori_steel_cutter.json",
+  "status": "locally_verified_whole_card; final published set reviews and full-set acceptance pending",
+  "newly_implemented_cards": 1,
+  "standard_legal": false,
+  "full_sources_read": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/FlurryAbility.java",
+      "sha256": "c7fd2820826fec5fb71dc63ebaa7ebace3423c724629c164aa818c36781704cb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CastSecondSpellTriggeredAbility.java",
+      "sha256": "a4e91db65304a2f0a017d34eb680d683186071207b0002b036e94fcdc773ddce"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenAttachSourceEffect.java",
+      "sha256": "84a5d669cabd468eb41ca13d77f05eb715b6a25d2c0b19bea64e9e48efaed3cd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+      "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+      "sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProwessAbility.java",
+      "sha256": "4841a6c5a32b09d6a63e326d29c8ce04f2fdad3575e1897f202cae110718c8a4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/MonasteryMentorToken.java",
+      "sha256": "17f351653e6eb95a81c392eea5bdcbd5c565da86e07cef75fdb2548dfb5a4b29"
+    }
+  ],
+  "obligations": [
+    {
+      "printed": "Equipped creature gets +1/+1 and has trample and haste.",
+      "actual_definition_proofs": [
+        "paid_cutter_counts_as_first_spell_then_monk_has_printed_traits_and_prowess_expires",
+        "paid_equip_moves_bonuses_and_obeys_controller_timing_payment_and_incarnation"
+      ],
+      "outcome": "Exact 2/2 equipped Monk and 3/3 Bear; both keywords; bonuses move to actual live recipient and vanish on Equipment departure."
+    },
+    {
+      "printed": "Whenever you cast your second spell each turn, create a 1/1 white Monk creature token with prowess.",
+      "actual_definition_proofs": [
+        "paid_cutter_counts_as_first_spell_then_monk_has_printed_traits_and_prowess_expires",
+        "flurry_can_trigger_during_opponents_turn_and_ignores_opponents_spells",
+        "old_flurry_packet_creates_monk_after_source_reentry_without_attaching_new_source"
+      ],
+      "outcome": "Paid Cutter itself counts first; exact second own spell triggers above spell, third/opponent spells do not; own second on opposing turn works; token traits and later noncreature growth/creature exclusion/cleanup checked."
+    },
+    {
+      "printed": "You may attach this Equipment to it.",
+      "actual_definition_proofs": [
+        "doubled_creation_accepts_exactly_one_token_or_declines_without_moving_equipment",
+        "old_flurry_packet_creates_monk_after_source_reentry_without_attaching_new_source",
+        "actual_flurry_choice_owns_raw_index_children_and_restores_after_parent_disposal"
+      ],
+      "outcome": "Public exact created candidates enter before bonus/attachment; optional decline preserves prior recipient, doubler selects one, noncreated/wrongactor/stale revision roll back, old packet cannot bind reentered Equipment; independent raw/index/restore children survive parent disposal.",
+      "applicable_shared_proofs": [
+        "tests/tdm_optional_attachment.rs::illegal_created_recipient_keeps_the_created_token_and_continues_the_program",
+        "tests/tdm_optional_attachment.rs::existing_job_selection_remains_mandatory_after_doubling"
+      ]
+    },
+    {
+      "printed": "Equip {1}{R}.",
+      "actual_definition_proofs": [
+        "paid_equip_moves_bonuses_and_obeys_controller_timing_payment_and_incarnation"
+      ],
+      "outcome": "Exact red plus generic mana consumed; all-colorless payment unavailable, opposing recipient rejected, sorcery timing and nonempty-stack restriction enforced, stale paid target cannot rebind."
+    },
+    {
+      "printed": "Physical full-set member, banned in frozen Standard.",
+      "actual_definition_proofs": [
+        "cutter_is_playable_in_freeform_but_stays_banned_in_standard"
+      ],
+      "outcome": "Actual 60-card Standard deck with4Cutter rejects, identical Freeform deck accepts."
+    }
+  ],
+  "tests_path": "tests/tdm_cori_steel_cutter.rs",
+  "tests_sha256": "2319de21db479cd7cb5e830c7287bd5ef668f185fd1e618b676ab34f5a5bb2ea",
+  "validation": [
+    {
+      "report": "<cache>/rustmage-tdm/cori-first-author-run/native.json",
+      "report_sha256": "aaeddbf9b671c2ea10077185fb0019a541a26dd280f1936409171151f4e1368c",
+      "success": false,
+      "terminal": true,
+      "executed_cases": 0,
+      "passing_cases": 0,
+      "compile_seconds": 4.427649479999673,
+      "execution_seconds": null,
+      "engine_artifacts": [
+        {
+          "fresh": true,
+          "features": [
+            "test-support"
+          ],
+          "profile": {
+            "opt_level": "1",
+            "debuginfo": 0,
+            "debug_assertions": true,
+            "overflow_checks": true,
+            "test": false
+          }
+        }
+      ]
+    },
+    {
+      "report": "<cache>/rustmage-tdm/cori-second-author-run/native.json",
+      "report_sha256": "39903530fb1b7388a5cfe3076533b3eb3070d899d7f6f1696de4b52f317fc703",
+      "success": false,
+      "terminal": true,
+      "executed_cases": 7,
+      "passing_cases": 6,
+      "compile_seconds": 1.8202492880518548,
+      "execution_seconds": 0.03361856599804014,
+      "engine_artifacts": [
+        {
+          "fresh": true,
+          "features": [
+            "test-support"
+          ],
+          "profile": {
+            "opt_level": "1",
+            "debuginfo": 0,
+            "debug_assertions": true,
+            "overflow_checks": true,
+            "test": false
+          }
+        }
+      ]
+    },
+    {
+      "report": "<cache>/rustmage-tdm/cori-third-author-run/native.json",
+      "report_sha256": "bf4964c99bb454c18d2dc63a9c7cb11cbf9d2ab2114e56e5c012a0c2b22073a4",
+      "success": true,
+      "terminal": true,
+      "executed_cases": 7,
+      "passing_cases": 7,
+      "compile_seconds": 0.8176297289901413,
+      "execution_seconds": 0.025243590003810823,
+      "engine_artifacts": [
+        {
+          "fresh": true,
+          "features": [
+            "test-support"
+          ],
+          "profile": {
+            "opt_level": "1",
+            "debuginfo": 0,
+            "debug_assertions": true,
+            "overflow_checks": true,
+            "test": false
+          }
+        }
+      ]
+    },
+    {
+      "report": "<cache>/rustmage-tdm/cori-optional-attachment-regression/native.json",
+      "report_sha256": "96695d934204a762a2a6d66674525182e0685d740fda27ded63ab69973a004dc",
+      "success": true,
+      "terminal": true,
+      "executed_cases": 6,
+      "passing_cases": 6,
+      "compile_seconds": 0.7166797009995207,
+      "execution_seconds": 0.024150523997377604,
+      "engine_artifacts": [
+        {
+          "fresh": true,
+          "features": [
+            "test-support"
+          ],
+          "profile": {
+            "opt_level": "1",
+            "debuginfo": 0,
+            "debug_assertions": true,
+            "overflow_checks": true,
+            "test": false
+          }
+        }
+      ]
+    }
+  ],
+  "engine_changes": [],
+  "initial_author_failures": [
+    "Test enum BeginningCombat corrected to existing BeginCombat API.",
+    "Inactive-player second instant scenario now receives actual priority after each resolution."
+  ],
+  "remaining_set_acceptance": [
+    "All276 physical cards and13Omen faces complete printed-obligation evidence",
+    "Cross-card interactions and TDM-only complete terminal games/replay/owned checks",
+    "Measured TDM simulation throughput and README final progress",
+    "Regenerated integration metadata and full release acceptance",
+    "Exactly one PR with two fresh independent nonauthor reviews of final published head"
+  ],
+  "format_normalization": {
+    "from_source_revision": "54ff55681",
+    "previous_test_sha256": "b9017fed17cf623673254ae1b6c8339356a7afa3bf4e1bd0833aea934052d7c5",
+    "current_test_sha256": "2319de21db479cd7cb5e830c7287bd5ef668f185fd1e618b676ab34f5a5bb2ea",
+    "change": "Rustfmt edition2024 repository macro wrapping only; prior focused reports retain their original inputs, final release validates current bytes.",
+    "failed_precompile_validation": "<cache>/rustmage-validation-oo73vtoz/report/result.json"
+  }
+}

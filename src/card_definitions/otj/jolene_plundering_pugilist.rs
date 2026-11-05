@@ -2,7 +2,7 @@
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(4, 2),
     triggers: &[TriggeredAbility {
-        condition: TriggerCondition::AttackDeclared {
+        condition: TriggerCondition::CreaturesAttackDeclared {
             minimum: 1,
             power_min: Some(4),
             guard: StepGuard::Always,

@@ -3,10 +3,31 @@
   "catalogue_id": 4109,
   "oracle_id": "04e615e6-4088-4170-904c-f2d4bcebed59",
   "facts_sha256": "225cb8766ecea98582ca2d80641c9e9dfbe42fd892753e56580750781016a05c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a2d9b9825a8075c718015891ea2c1965b7ba43968bad722299be020c9fe403c1"
   },
-  "physical_metadata_sha256": "e988c9dfbc269d1a143ef4384c34858b8b6186db5441b91b2bacc8f7b5a3a535"
+  "physical_metadata_sha256": "e988c9dfbc269d1a143ef4384c34858b8b6186db5441b91b2bacc8f7b5a3a535",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StarryEyedSkyrider.java",
+  "java_sha256": "f53b3bfe99b2d4c99e13564e4c0f922ffed267ceba88025e36d06f8db4a08881",
+  "rules_tests": "tests/tdm_cards_s_z_additional.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    }
+  ]
 }

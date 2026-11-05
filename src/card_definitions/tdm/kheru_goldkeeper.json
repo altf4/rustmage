@@ -3,10 +3,26 @@
   "catalogue_id": 2347,
   "oracle_id": "aef4ab0e-c81f-428c-ab23-64504a9fb989",
   "facts_sha256": "0233f865f4d1af45c2afe84195cf15c04b98e5b37589061072e35f20a0ba6ac0",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "56967292b8f1a40c01f8fb28c15ec97121055732599cd13b7eecb607455e2819"
   },
-  "physical_metadata_sha256": "2061a16fc46400870cb641dc0025af8f27d4b47a045fe2059686bd77e8a68e2a"
+  "physical_metadata_sha256": "2061a16fc46400870cb641dc0025af8f27d4b47a045fe2059686bd77e8a68e2a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KheruGoldkeeper.java",
+  "java_sha256": "116184cb89baf400df943163faa50745a5491d5f5a7334ab7b4e72fd432f3719",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/RenewAbility.java",
+      "sha256": "32a1436eacfca7d3397a9bed3a949b686061d5e54d2627219e393fbe9947a02b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CardsLeaveGraveyardTriggeredAbility.java",
+      "sha256": "9600c956500170fad83dd5e65083bbeb3aebbef5cbb9ef82d8ca989bdb70905b"
+    }
+  ]
 }

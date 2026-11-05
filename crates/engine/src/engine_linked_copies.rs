@@ -38,6 +38,7 @@ impl Game {
             .find(|e| e.moved && e.destination == Zone::Exile)
         {
             self.state.exile_links.push(ExileLink {
+                ability_origin: item.source_ability_origin,
                 source: source.object,
                 exiled: event.after,
                 return_zone: event.before.zone,

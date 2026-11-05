@@ -3,10 +3,41 @@
   "catalogue_id": 4401,
   "oracle_id": "9918eb7b-054e-4b1c-afc7-1163ab642d50",
   "facts_sha256": "1f2cad003fbf54a126965a36a1fc6304dc0392623260b7c349ebbdd6afb112c6",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f6a827c3dd27e4d736dbdef07088e178b2803549a37c45285b684160d3b580a8"
   },
-  "physical_metadata_sha256": "1134f8bd2d908ec38c2877daa3cb27bf79c4495e25206ae43ec55f0bc9bf5b8e"
+  "physical_metadata_sha256": "1134f8bd2d908ec38c2877daa3cb27bf79c4495e25206ae43ec55f0bc9bf5b8e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TersaLightshatter.java",
+  "java_sha256": "c43203eade0c82367e5cf269574a54f15fef1de0d58c5a1dc232af085167e941",
+  "rules_tests": "tests/tdm_cards_s_z_additional.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardAndDrawThatManyEffect.java",
+      "sha256": "f188e2031a5963432940d75ad39ec5b881cdd84feed7c7e136bc404996e1f01d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/ThresholdCondition.java",
+      "sha256": "f7d6ad71cd5857b9d0c127469d9b39afd84148a38001a42a309c5c218694382a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/CardUtil.java",
+      "sha256": "02831d3dfba658e0c87bc2111df8e0bc7ec6f56a52305a12ff12809da536fb06"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/asthought/CanPlayCardControllerEffect.java",
+      "sha256": "f038661e1695132acc06c2886f17d98832360a6d92fbd59d3956fe87d4e78387"
+    }
+  ]
 }

@@ -1,0 +1,707 @@
+{
+  "schema": 1,
+  "scope": "Engine88 conservative same-source tap capacity and X/Harmonize query performance",
+  "status": "focused_rules_and_affected_compatibility_verified_root_acceptance_pending",
+  "engine_basis": "c3e1dd67e33cff3d33bea458c0a697760b19c4c5dad55b6bec1c068e8b81a417",
+  "test_target": "tdm_harmonize_x_pruning",
+  "test_source_sha256": "9573aae267a1b7e51d8d4cb5b1d2c0a1705ea555d0fd33c7d86ffd9bf89d612b",
+  "scenario_groups": [
+    "pruning_root_shape_seven_physical_taps_have_capacity_seven",
+    "pruning_root_shape_keeps_full_x_domain_and_exact_helper_frontier",
+    "pruning_intrinsic_and_printed_tap_options_share_one_capacity_and_still_pay_three",
+    "pruning_non_tap_sacrifice_can_follow_intrinsic_tap_and_remains_additive",
+    "pruning_real_repeatable_positive_engine_retains_its_unbounded_upper",
+    "pruning_linked_return_paths_keep_the_existing_optimistic_escape",
+    "pruning_owned_x_root_preserves_exact_actions_privacy_rollback_and_branches",
+    "restoration_hidden_printed_producer_is_not_pruned_before_its_blanker_can_be_sacrificed",
+    "restoration_future_exhaust_discount_keeps_tap_capacity_conservative",
+    "restoration_source_bound_copy_can_expose_a_larger_tap_output"
+  ],
+  "root_observation": {
+    "path": "<cache>/rustmage-tdm/trace-root-capture-1793835901269812706/decision536-observation.json",
+    "sha256": "efb4736a7cadf44252465b4a4aba32b1c415214cb3c70f1158ff28c39b19d065",
+    "facts": "P0 turn17 Main1;0pool;7untappedlands incl2tri-lands;2power4providers and unusedpower3one-to-oneconverter; actual Xdomain0..11."
+  },
+  "constraints": [
+    "No card/deck/seed/corpus-bound/harness edits; no runtime names/IDs/data branches.",
+    "No X-domain narrowing, action-order or public-state/schema changes.",
+    "Same-source tap maximum must retain conservative future-world capacity, including removal restoration and discounts. Non-tap gains additive; repeatable positive engine unbounded."
+  ],
+  "review_boundaries": [
+    "PURE1 hidden printed Tap4 producer restored by sacrificing ability-removal provider; diagnose whether old quantity bound already rejects.",
+    "PURE2 intrinsic1 plus generic1/tap/exhaust:Add3, blanked BoomScholar and once sacrifice-aura:Add1; future discount restores legal4, so naive current-net max is unsafe."
+  ],
+  "test_first_filters": [
+    "pruning_root_shape_seven_physical_taps_have_capacity_seven",
+    "restoration_",
+    "pruning_root_shape_keeps_full_x_domain_and_exact_helper_frontier"
+  ],
+  "performance_method": "Exact fixed root shape both seats; report Instant timings but assert deterministic bounds/domain/helper rules, not brittle wall thresholds. Root full830action trace and52fixedcorpus remain acceptance workload.",
+  "validation": [
+    {
+      "stage": "fixed_focused",
+      "report": {
+        "path": "<cache>/rustmage-tdm/engine88-focus-corrected/native.json",
+        "sha256": "782c15ef588174353d46969fe9b6084fb85f255bad15b2ad99355b85986b7fdf"
+      },
+      "terminal": true,
+      "success": true,
+      "passed": 10,
+      "total": 10,
+      "compile_seconds": 116.27644450496882,
+      "execution_seconds": 0.733561536995694,
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/engine88-focus-corrected/native-compile.log",
+        "sha256": "0b27efa082b807a614ab1b2220263e14affbf9157eaf7cf4a07ea7702ebb4231"
+      },
+      "execution_log": {
+        "path": "<cache>/rustmage-tdm/engine88-focus-corrected/native-execution-0.log",
+        "sha256": "690986fb7e4ef471270910b5fbacf9734dce95a70e17bd5ffaf2d5e45d2fef20"
+      },
+      "tests": [
+        {
+          "test": "pruning_intrinsic_and_printed_tap_options_share_one_capacity_and_still_pay_three",
+          "status": "ok"
+        },
+        {
+          "test": "pruning_linked_return_paths_keep_the_existing_optimistic_escape",
+          "status": "ok"
+        },
+        {
+          "test": "pruning_non_tap_sacrifice_can_follow_intrinsic_tap_and_remains_additive",
+          "status": "ok"
+        },
+        {
+          "test": "pruning_owned_x_root_preserves_exact_actions_privacy_rollback_and_branches",
+          "status": "ok"
+        },
+        {
+          "test": "pruning_real_repeatable_positive_engine_retains_its_unbounded_upper",
+          "status": "ok"
+        },
+        {
+          "test": "pruning_root_shape_keeps_full_x_domain_and_exact_helper_frontier",
+          "status": "ok"
+        },
+        {
+          "test": "pruning_root_shape_seven_physical_taps_have_capacity_seven",
+          "status": "ok"
+        },
+        {
+          "test": "restoration_future_exhaust_discount_keeps_tap_capacity_conservative",
+          "status": "ok"
+        },
+        {
+          "test": "restoration_hidden_printed_producer_is_not_pruned_before_its_blanker_can_be_sacrificed",
+          "status": "ok"
+        },
+        {
+          "test": "restoration_source_bound_copy_can_expose_a_larger_tap_output",
+          "status": "ok"
+        }
+      ],
+      "terminal_receipt": {
+        "path": "<cache>/rustmage-tdm/engine88-focus-corrected/terminal.json",
+        "sha256": "bc524eff311d45a7ef4a02360fce8d3e96f1f8b1f61be43e3f10451afa4515c5"
+      },
+      "resource_receipt": {
+        "path": "<cache>/rustmage-tdm/engine88-focus-corrected/resource.json",
+        "sha256": "5905edd8bff8d4dedf821eeeec9ae8864d1caacd96e722390f3511f2def2f95f"
+      },
+      "source_manifest": {
+        "path": "<cache>/rustmage-tdm/engine88-focus-corrected/source-hashes.json",
+        "sha256": "72c80e5c410df0607101e3d5c3ea6d85427fe00544518d4e0db4fcc065bd4253"
+      },
+      "inputs_unchanged": true,
+      "runtime_snapshot": {
+        "path": "<cache>/rustmage-tdm/engine88-focus-corrected/inputs/crates/engine/src/engine_funding.rs",
+        "sha256": "2ecfb1d0f45113c3146f408530101b73e8de7c179f46dc0bfeb3958904ed4f96"
+      },
+      "test_snapshot": {
+        "path": "<cache>/rustmage-tdm/engine88-focus-corrected/inputs/tests/tdm_harmonize_x_pruning.rs",
+        "sha256": "9573aae267a1b7e51d8d4cb5b1d2c0a1705ea555d0fd33c7d86ffd9bf89d612b"
+      }
+    },
+    {
+      "stage": "tdm_cast_routes",
+      "report": {
+        "path": "<cache>/rustmage-tdm/engine88-compat/tdm_cast_routes/native.json",
+        "sha256": "1b9fcbca54e8d85b3662337d802423081fd560ddc6cb8bc8565ab35a83d4f9cd"
+      },
+      "terminal": true,
+      "success": true,
+      "passed": 20,
+      "total": 20,
+      "compile_seconds": 1.6188979370053858,
+      "execution_seconds": 0.03847453300841153,
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/engine88-compat/tdm_cast_routes/native-compile.log",
+        "sha256": "9d503d35c12b54c1aef45e6322167f2ebd18b06bf0b2436e95a4677cdb955e8b"
+      },
+      "execution_log": {
+        "path": "<cache>/rustmage-tdm/engine88-compat/tdm_cast_routes/native-execution-0.log",
+        "sha256": "39763a7ea57001d5534e6269a18c447c0143906b209ed23cffe3249a67dbf1ea"
+      },
+      "tests": [
+        {
+          "test": "a_proposed_graveyard_spell_cannot_pay_a_mana_childs_graveyard_cost",
+          "status": "ok"
+        },
+        {
+          "test": "additional_graveyard_cost_and_delve_reserve_distinct_cards_in_either_order",
+          "status": "ok"
+        },
+        {
+          "test": "delve_cannot_pay_a_required_colorless_symbol",
+          "status": "ok"
+        },
+        {
+          "test": "delve_obeys_a_live_graveyard_exile_prohibition",
+          "status": "ok"
+        },
+        {
+          "test": "delve_pays_only_generic_and_commits_exact_graveyard_cards",
+          "status": "ok"
+        },
+        {
+          "test": "delve_provider_can_leave_in_a_later_cost_after_mana_is_paid",
+          "status": "ok"
+        },
+        {
+          "test": "delve_respects_locked_taxes_reductions_and_harmonize_stack_origin",
+          "status": "ok"
+        },
+        {
+          "test": "delve_selection_is_owned_raw_index_restorable_and_private",
+          "status": "ok"
+        },
+        {
+          "test": "delve_shares_one_locked_payment_with_convoke_and_improvise",
+          "status": "ok"
+        },
+        {
+          "test": "delve_uses_the_same_total_from_hand_exile_and_permitted_library_top",
+          "status": "ok"
+        },
+        {
+          "test": "granted_and_intrinsic_harmonize_costs_remain_separate_and_countered_spell_is_exiled",
+          "status": "ok"
+        },
+        {
+          "test": "granted_harmonize_preserves_hybrid_and_twobrid_symbols",
+          "status": "ok"
+        },
+        {
+          "test": "granted_harmonize_recomputes_the_cost_of_an_existing_selected_spell_face",
+          "status": "ok"
+        },
+        {
+          "test": "granted_harmonize_uses_printed_colored_cost_exact_card_and_independent_duration",
+          "status": "ok"
+        },
+        {
+          "test": "harmonize_exiles_on_a_stack_departure_that_would_return_the_spell_to_hand",
+          "status": "ok"
+        },
+        {
+          "test": "harmonize_grant_expires_and_does_not_follow_a_new_graveyard_incarnation",
+          "status": "ok"
+        },
+        {
+          "test": "harmonize_keeps_power_wide_until_tax_and_x_costs_are_reduced",
+          "status": "ok"
+        },
+        {
+          "test": "mana_child_must_preserve_its_ancestors_distinct_delve_resources",
+          "status": "ok"
+        },
+        {
+          "test": "sacrificed_mana_producer_can_be_delved_but_a_departed_grant_cannot_supply_delve",
+          "status": "ok"
+        },
+        {
+          "test": "x_in_printed_or_harmonize_cost_is_chosen_paid_and_does_not_change_printed_value_rules",
+          "status": "ok"
+        }
+      ]
+    },
+    {
+      "stage": "dft_mana_output",
+      "report": {
+        "path": "<cache>/rustmage-tdm/engine88-compat/dft_mana_output/native.json",
+        "sha256": "709bd20f0fd8f3277621b7ad720bcf77537dfe9e5aa1d0796aba1f4c0c1f973c"
+      },
+      "terminal": true,
+      "success": true,
+      "passed": 12,
+      "total": 12,
+      "compile_seconds": 0.9172010390320793,
+      "execution_seconds": 0.043661413015797734,
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/engine88-compat/dft_mana_output/native-compile.log",
+        "sha256": "559eb89ec597c331038eabb75c33c5f1240dc243928f4bb35fa931982e931305"
+      },
+      "execution_log": {
+        "path": "<cache>/rustmage-tdm/engine88-compat/dft_mana_output/native-execution-0.log",
+        "sha256": "b329e2786843ac4f1318eddd5853cc8e46a4ed75410e2e79cdcc14be38a10998"
+      },
+      "tests": [
+        {
+          "test": "a_fixed_combination_can_be_chosen_late_without_losing_its_exact_allocation",
+          "status": "ok"
+        },
+        {
+          "test": "a_real_forge_borrowing_gilded_lotus_offers_each_exact_mana_announcement_once",
+          "status": "ok"
+        },
+        {
+          "test": "a_retained_late_choice_replays_its_concrete_output_and_quality_exactly_once",
+          "status": "ok"
+        },
+        {
+          "test": "a_silent_fixed_choice_retains_the_original_concrete_domain_in_a_parent_payment",
+          "status": "ok"
+        },
+        {
+          "test": "a_taxed_subtype_quantity_changes_when_another_mana_cost_sacrifices_a_counted_creature",
+          "status": "ok"
+        },
+        {
+          "test": "an_all_zero_preview_keeps_the_color_unselected_until_the_post_cost_quantity_is_known",
+          "status": "ok"
+        },
+        {
+          "test": "departure_uses_the_latest_exact_power_instead_of_the_announcement_or_a_new_incarnation",
+          "status": "ok"
+        },
+        {
+          "test": "granted_dynamic_mana_uses_conservative_bounds_and_exact_post_cost_search",
+          "status": "ok"
+        },
+        {
+          "test": "parent_cast_funding_uses_the_post_cost_amount_and_rejects_a_stale_larger_preview",
+          "status": "ok"
+        },
+        {
+          "test": "power_mana_samples_after_counter_cost_and_uses_its_actual_departure_power",
+          "status": "ok"
+        },
+        {
+          "test": "removing_a_negative_counter_can_raise_power_mana_enough_to_fund_the_parent",
+          "status": "ok"
+        },
+        {
+          "test": "source_departure_and_new_control_do_not_change_the_original_mana_controller",
+          "status": "ok"
+        }
+      ]
+    },
+    {
+      "stage": "dft_deferred_mana",
+      "report": {
+        "path": "<cache>/rustmage-tdm/engine88-compat/dft_deferred_mana/native.json",
+        "sha256": "4129657f9011e6b109f0905c281f7173f426eed8b9385b467f92011145d59c9c"
+      },
+      "terminal": true,
+      "success": true,
+      "passed": 9,
+      "total": 9,
+      "compile_seconds": 1.5211702869855799,
+      "execution_seconds": 0.03470768500119448,
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/engine88-compat/dft_deferred_mana/native-compile.log",
+        "sha256": "cb8e59089a6d81823c4c23c02297786489f01982e293a30720386619e0fe13be"
+      },
+      "execution_log": {
+        "path": "<cache>/rustmage-tdm/engine88-compat/dft_deferred_mana/native-execution-0.log",
+        "sha256": "8b3db7c151f7ff6b105a2b6cfab469aaafe4e881627fa78064b832a5715944fa"
+      },
+      "tests": [
+        {
+          "test": "a_basic_land_with_an_acquired_mana_template_is_not_interchanged_with_a_plain_basic",
+          "status": "ok"
+        },
+        {
+          "test": "a_nonmana_food_parent_keeps_its_source_through_native_and_borrowed_mana_payments",
+          "status": "ok"
+        },
+        {
+          "test": "a_resolved_child_can_be_activated_again_while_funding_its_restored_parent",
+          "status": "ok"
+        },
+        {
+          "test": "an_outer_discard_receipt_is_retained_without_overwriting_projected_departures",
+          "status": "ok"
+        },
+        {
+          "test": "fundable_child_is_rejected_when_its_completion_would_strand_the_parent",
+          "status": "ok"
+        },
+        {
+          "test": "immutable_copy_profiles_preserve_exact_recipients_and_allow_only_scoped_reuse",
+          "status": "ok"
+        },
+        {
+          "test": "nested_costed_mana_announcements_reject_all_active_ancestor_instances",
+          "status": "ok"
+        },
+        {
+          "test": "nested_parent_tap_cost_keeps_its_exact_source_distinct_from_an_identical_mana_source",
+          "status": "ok"
+        },
+        {
+          "test": "payable_parent_does_not_authorize_a_child_with_an_unpayable_color",
+          "status": "ok"
+        }
+      ]
+    },
+    {
+      "stage": "dft_retained_copy",
+      "report": {
+        "path": "<cache>/rustmage-tdm/engine88-compat/dft_retained_copy/native.json",
+        "sha256": "7ba687d3baf43d7f99276c6486a5ed70baa1027777fb4f22d8bd80d0cb6f4ff9"
+      },
+      "terminal": true,
+      "success": true,
+      "passed": 7,
+      "total": 7,
+      "compile_seconds": 0.7672221050015651,
+      "execution_seconds": 0.025495529000181705,
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/engine88-compat/dft_retained_copy/native-compile.log",
+        "sha256": "216ce124c7ccf29a2f251bdbca1c7dc5227a1bb3a1a0bdb1caeececb6eef37d7"
+      },
+      "execution_log": {
+        "path": "<cache>/rustmage-tdm/engine88-compat/dft_retained_copy/native-execution-0.log",
+        "sha256": "b3164bca5f32c9d848bc8c4adf328c95a4be05e1d945568aceeef1353eb48de5"
+      },
+      "tests": [
+        {
+          "test": "a_new_controller_can_use_the_same_retained_linked_ability",
+          "status": "ok"
+        },
+        {
+          "test": "another_copier_and_a_later_overwriting_copy_get_fresh_unlinked_abilities",
+          "status": "ok"
+        },
+        {
+          "test": "linked_copy_targets_reject_unlinked_cards_and_stale_exile_incarnations",
+          "status": "ok"
+        },
+        {
+          "test": "repeated_permanent_copies_keep_counters_and_the_original_immutable_linked_activation",
+          "status": "ok"
+        },
+        {
+          "test": "retained_activation_announcement_and_targeting_are_owned_across_raw_index_and_restore",
+          "status": "ok"
+        },
+        {
+          "test": "retained_activation_is_a_real_ability_and_layer_six_removal_suppresses_it",
+          "status": "ok"
+        },
+        {
+          "test": "retained_activation_target_binding_survives_a_later_copy_but_never_rebinds_a_departed_source",
+          "status": "ok"
+        }
+      ]
+    },
+    {
+      "stage": "tdm_paid_mana_use_receipts",
+      "report": {
+        "path": "<cache>/rustmage-tdm/engine88-compat/tdm_paid_mana_use_receipts/native.json",
+        "sha256": "7fdf98af4720b563a2db8c8788cd027ea459fae429c4de1177e3bc6df965ff98"
+      },
+      "terminal": true,
+      "success": true,
+      "passed": 9,
+      "total": 9,
+      "compile_seconds": 0.8178952170419507,
+      "execution_seconds": 0.0343123700004071,
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/engine88-compat/tdm_paid_mana_use_receipts/native-compile.log",
+        "sha256": "39266671434df48a620711aaba6c77f26fee0fea0dd0f621cc83a1f06f03743c"
+      },
+      "execution_log": {
+        "path": "<cache>/rustmage-tdm/engine88-compat/tdm_paid_mana_use_receipts/native-execution-0.log",
+        "sha256": "7a030d0a5fad74b7e751decfc4d3dbac099c4cdfa17e0757392c63d75de1d2d4"
+      },
+      "tests": [
+        {
+          "test": "paid_choice_actual_jeskai_devotee_preserves_parent_completion_and_commit_timing",
+          "status": "ok"
+        },
+        {
+          "test": "paid_choice_borrowed_use_belongs_to_the_exact_borrowed_slot",
+          "status": "ok"
+        },
+        {
+          "test": "paid_choice_exhaust_rejects_fictitious_second_use_including_autarch_reuse",
+          "status": "ok"
+        },
+        {
+          "test": "paid_choice_nested_ancestor_uses_distinct_resources_instead_of_reusing_the_child",
+          "status": "ok"
+        },
+        {
+          "test": "paid_choice_once_rejects_fictitious_second_conversion",
+          "status": "ok"
+        },
+        {
+          "test": "paid_choice_owned_root_shares_one_legal_domain_and_restores_private_branches",
+          "status": "ok"
+        },
+        {
+          "test": "paid_choice_receipt_distinguishes_native_copy_origin_and_departed_incarnation",
+          "status": "ok"
+        },
+        {
+          "test": "paid_choice_repeatable_converter_can_complete_a_real_second_conversion",
+          "status": "ok"
+        },
+        {
+          "test": "paid_choice_self_grant_receipts_are_independent_per_acquisition",
+          "status": "ok"
+        }
+      ]
+    }
+  ],
+  "artifact_policy": "Native Rust ELF/rlib tests; mutable compilation outputs are transient. Retain reports/logs/source snapshots with exact hashes; no preserved/required cdylib claim.",
+  "runtime_before_fix": {
+    "crates/engine/src/engine_funding.rs": "c3e1dd67e33cff3d33bea458c0a697760b19c4c5dad55b6bec1c068e8b81a417",
+    "crates/engine/src/engine_scalar_x.rs": "c461af0b9ba6ee38085728bf990b7321bb1017f5adaf81793308032f285c4e20",
+    "crates/engine/src/engine_harmonize.rs": "b56cc428e2aea19780aa0ff72ed6d9ab45079ef5e10d8e2db90fb882b72b6790"
+  },
+  "runtime_files": {
+    "crates/engine/src/engine_funding.rs": "2ecfb1d0f45113c3146f408530101b73e8de7c179f46dc0bfeb3958904ed4f96"
+  },
+  "implemented_plan": [
+    "Per exact-source intrinsic/printed tap maximum uses conservative gross production_upper; input costs ignored because discounts may be restored.",
+    "Non-tap activation_gain_upper net gains remain additive, genuine positive repeatables unbounded; all other grant/contribution/Mountain overcounts unchanged.",
+    "Early optimistic escape before quantity for ability removal and live CURRENT projected temporary-copy rows containing any source-bound layer, including hidden layers. Fixed/EOT/NextTurn-only copies retain tightened bound.",
+    "Existing Delve/source-zone/linked-return/graveyard-acquisition/control escapes and exact reachability/domain ordering unchanged. No X algorithm/cache/state/API/wire/card change; schema201."
+  ],
+  "baseline_results": [
+    {
+      "stage": "first_compile",
+      "report": "<cache>/rustmage-tdm/engine88-test-first-capacity/native.json",
+      "sha256": "814e701b4ed94528f745edc22baab08a6a06b3bdc39247e04272c1d744578509",
+      "result": "compile-only missing explicit funding imports and SacrificeFilter.subtype; no gameplay executed",
+      "test_source_sha256": "f61493cd9449a3c6424eaf8d1630fd792a2fd1032bc7bc45d0650a120c19dea5",
+      "source_snapshot": {
+        "path": "<cache>/rustmage-tdm/engine88-preserved-inputs/first-compile-fixture.rs",
+        "sha256": "f61493cd9449a3c6424eaf8d1630fd792a2fd1032bc7bc45d0650a120c19dea5"
+      }
+    },
+    {
+      "stage": "intended_capacity_negative",
+      "report": "<cache>/rustmage-tdm/engine88-test-first-capacity-corrected/native.json",
+      "sha256": "7975b148f88a84cdfb5b948e2ac7a0acc26b70da897d8682c05e106feb979463",
+      "result": "intended0/1 failure: current bound9 vs physicalcapacity7",
+      "test_source_sha256": "b92bc78b1505d802a292089a84d3acbd62184379622f523595b468bfe89ceb0b",
+      "source_snapshot": {
+        "path": "<cache>/rustmage-tdm/engine88-preserved-inputs/capacity-negative-fixture.rs",
+        "sha256": "b92bc78b1505d802a292089a84d3acbd62184379622f523595b468bfe89ceb0b"
+      }
+    },
+    {
+      "stage": "restoration_diagnostics",
+      "report": "<cache>/rustmage-tdm/engine88-test-first-restoration/native.json",
+      "sha256": "4aa9815c5fe807e7d2f3202ff67192ac9419f98adb5f4da642256db42815c2fc",
+      "result": "2/3PASS: futurediscount and sourceboundcopy ordinary payment witnesses succeed old; hiddenprintedproducer false-negative inherited before tightening",
+      "test_source_sha256": "9573aae267a1b7e51d8d4cb5b1d2c0a1705ea555d0fd33c7d86ffd9bf89d612b"
+    },
+    {
+      "stage": "old_exact_root_domain",
+      "report": "<cache>/rustmage-tdm/engine88-old-root-domain/terminal.json",
+      "sha256": "513b1a6a4db6527f3f581c6516b5308352388fa9a1938d746131a2326eb60015",
+      "execution_log": "<cache>/rustmage-tdm/engine88-old-root-domain/execution.log",
+      "execution_sha256": "ecb22052acdd886971f6cf2a711af6f6e63b5eb2da90a5200cb4e46c06aee378",
+      "result": "PASS bothseats X0..11/helperfrontiersX10and11 unchanged",
+      "seconds": 3.323246366053354,
+      "domain_seconds": [
+        1.234991968,
+        1.226110719
+      ],
+      "helper_x11_seconds": [
+        0.417283329,
+        0.417205384
+      ]
+    }
+  ],
+  "expected_focused_groups": 10,
+  "schema_unchanged": 201,
+  "first_fixed_compile": {
+    "terminal": {
+      "path": "<cache>/rustmage-tdm/engine88-focus-first/terminal.json",
+      "sha256": "389d3079c186edb242ba636117fe6e1e25ebdc214af5f79939c11dc02760ec75"
+    },
+    "clippy": {
+      "path": "<cache>/rustmage-tdm/engine88-focus-first/clippy-terminal.json",
+      "sha256": "de7158fefc83d2384d8632c258d2bd5b73860cb6d6daf80e1e8a0bfc1d66e585"
+    },
+    "log": {
+      "path": "<cache>/rustmage-tdm/engine88-focus-first/clippy.log",
+      "sha256": "2962c2c7de2d999880cafc6787894f6f822c2189d8fd5a6479700f20509d6625"
+    },
+    "resource": {
+      "path": "<cache>/rustmage-tdm/engine88-focus-first/resource.json",
+      "sha256": "8b90bf813c80262e78e50d4c43ade15c7debfd2554b7c354ec6f417dca177d2a"
+    },
+    "runtime_snapshot": {
+      "path": "<cache>/rustmage-tdm/engine88-focus-first/inputs/crates/engine/src/engine_funding.rs",
+      "sha256": "eb0afd31e4553e7d66d32c5018772fdcc573f1d635cdd1ad8c86b22a617808d4"
+    },
+    "result": "compile-only E0507 borrowing &Option<SharedVec>; .as_ref() added without changing approved logic; no gameplay executed"
+  },
+  "baseline_runtime_snapshot": {
+    "path": "<cache>/rustmage-tdm/engine88-old-root-domain/inputs/crates/engine/src/engine_funding.rs",
+    "sha256": "c3e1dd67e33cff3d33bea458c0a697760b19c4c5dad55b6bec1c068e8b81a417"
+  },
+  "baseline_final_test_snapshot": {
+    "path": "<cache>/rustmage-tdm/engine88-old-root-domain/inputs/tests/tdm_harmonize_x_pruning.rs",
+    "sha256": "9573aae267a1b7e51d8d4cb5b1d2c0a1705ea555d0fd33c7d86ffd9bf89d612b"
+  },
+  "compatibility_terminal": {
+    "report": {
+      "path": "<cache>/rustmage-tdm/engine88-compat/terminal.json",
+      "sha256": "4a5d078d3fb0c2c0a7ca94bc38eeae1a666601e28ea814de7865fd56e076a5a6"
+    },
+    "source_manifest": {
+      "path": "<cache>/rustmage-tdm/engine88-compat/source-hashes.json",
+      "sha256": "72c80e5c410df0607101e3d5c3ea6d85427fe00544518d4e0db4fcc065bd4253"
+    },
+    "resource": {
+      "path": "<cache>/rustmage-tdm/engine88-compat/resource.json",
+      "sha256": "36a691c52d08dfdf1d9cdb513d5ed569c73ec01aca48f8b0d5e8cb19cc72341f"
+    },
+    "driver": {
+      "path": "<cache>/rustmage-tdm/engine88-compat/driver.py",
+      "sha256": "20bd9d8448af6758aed4c9e5cbade6740ccc2dbd7451b95ba6e5c57663e545a6"
+    },
+    "inputs_unchanged": true
+  },
+  "positive_groups": 67,
+  "clippy": {
+    "report": {
+      "path": "<cache>/rustmage-tdm/engine88-focus-corrected/clippy-terminal.json",
+      "sha256": "f5414fdf27690388aaabbced4b32e9ea64d86d3eb17f5c8811927ab26248e54e"
+    },
+    "log": {
+      "path": "<cache>/rustmage-tdm/engine88-focus-corrected/clippy.log",
+      "sha256": "9352cd94efbc5031ec434fd8845e03d3d360f40d4bed4868286520e062b07b93"
+    },
+    "result": {
+      "command": [
+        "cargo",
+        "clippy",
+        "-p",
+        "rustmage",
+        "--profile",
+        "test",
+        "--test",
+        "tdm_harmonize_x_pruning",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "timed_out": false,
+      "orphaned_processes": false,
+      "seconds": 20.66983208997408,
+      "log": "<cache>/rustmage-tdm/engine88-focus-corrected/clippy.log"
+    }
+  },
+  "deterministic_results": {
+    "physical_capacity_before": 9,
+    "physical_capacity_after": 7,
+    "shared_intrinsic_and_tap_three_after": 3,
+    "tap_then_once_nontap_sacrifice_capacity": 3,
+    "repeatable_positive_capacity": "u128::MAX",
+    "x_intervals_before_and_after": [
+      {
+        "minimum": 0,
+        "maximum": 11
+      }
+    ],
+    "helper_frontiers_before_and_after": {
+      "x10": [
+        "power4_provider_A",
+        "power4_provider_B",
+        "power3_converter"
+      ],
+      "x11": [
+        "power4_provider_A",
+        "power4_provider_B"
+      ]
+    },
+    "restoration_old": "discount and sourceboundcopy paid witnesses passed; hiddenproducer cast refused incorrectly",
+    "restoration_fixed": "all3 actual restoration/payment witnesses pass bothseats",
+    "owned_contract": "Exact ordered ChooseX0..11 actions+domain, actor/opponent privacy, illegal X and wrongactor atomicity, raw/index equality, parent disposal, different tapped-helper sibling and restored replay all pass."
+  },
+  "isolated_performance": {
+    "old_report": {
+      "path": "<cache>/rustmage-tdm/engine88-old-root-domain/terminal.json",
+      "sha256": "513b1a6a4db6527f3f581c6516b5308352388fa9a1938d746131a2326eb60015"
+    },
+    "old_log": {
+      "path": "<cache>/rustmage-tdm/engine88-old-root-domain/execution.log",
+      "sha256": "ecb22052acdd886971f6cf2a711af6f6e63b5eb2da90a5200cb4e46c06aee378"
+    },
+    "old_resource": {
+      "path": "<cache>/rustmage-tdm/engine88-old-root-domain/resource.json",
+      "sha256": "96d0ce71d2ca70544fd33ae8c850b76f04d5668e02675017b435add5ba684a22"
+    },
+    "fixed_report": {
+      "path": "<cache>/rustmage-tdm/engine88-fixed-root-domain/terminal.json",
+      "sha256": "81adffcba07531fe17f03efa0874499f3c8f9aa7c20a69d80523276fc45980e6"
+    },
+    "fixed_log": {
+      "path": "<cache>/rustmage-tdm/engine88-fixed-root-domain/execution.log",
+      "sha256": "f1190797014f6c5a70ebe097a327a5818e6482de3f23b649ebdea46272a6440f"
+    },
+    "fixed_resource": {
+      "path": "<cache>/rustmage-tdm/engine88-fixed-root-domain/resource.json",
+      "sha256": "8200728f2d7f33ccc1a580809b905e6f785a40403692f1d0676959740cff7ddc"
+    },
+    "same_test_source": "9573aae267a1b7e51d8d4cb5b1d2c0a1705ea555d0fd33c7d86ffd9bf89d612b",
+    "old_domain_seconds": [
+      1.234991968,
+      1.226110719
+    ],
+    "fixed_domain_seconds": [
+      0.002451177,
+      0.002336021
+    ],
+    "domain_speedup_by_seat": [
+      503.8363072107808,
+      524.8714455049848
+    ],
+    "old_helper_x11_seconds": [
+      0.417283329,
+      0.417205384
+    ],
+    "fixed_helper_x11_seconds": [
+      0.000764009,
+      0.000729306
+    ],
+    "helper_speedup_by_seat": [
+      546.1759337913559,
+      572.0580716461952
+    ],
+    "old_test_seconds": 3.323246366053354,
+    "fixed_test_seconds": 0.03285331802908331,
+    "scope": "One generic fixed-cost-shape root in each seat, same domain/helper assertions before/after. Instant query measurements exclude compilation; whole test time includes process/startup. No full-game throughput claim. Root full public536 observation/830action trace and unchanged52 corpus acceptance pending."
+  },
+  "resource_contract": {
+    "memory_max_bytes": 6442450944,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "focused_peak_bytes": 2145902592,
+    "compatibility_peak_bytes": 409464832,
+    "oom_events": 0
+  },
+  "header_comment_followup": "Root authorized leaving exact tested owner source2ecfb unchanged through owner compatibility. Root may clarify preexisting total_mana_upper header net\u2192gross/net at integration as a separately authenticated comment-only delta before its already-required compile/full validation. No runtime semantic delta implied.",
+  "review_status": "Both independent nonauthor design/source reviewers found no remaining concrete source issue. Exact published focused approval and Root captured-root/full-trace/full-corpus/full-validation final approval remain required.",
+  "finished_utc": "2026-11-05T00:11:49.353853+00:00"
+}

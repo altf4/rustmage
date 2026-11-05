@@ -28,7 +28,7 @@ fn divide(g: &mut Game, targets: &[Target], shares: &[u16]) {
             act(
                 g,
                 Action::AllocateTargetAmount {
-                    amount: u32::from(amount),
+                    amount: u64::from(amount),
                 },
             );
         }

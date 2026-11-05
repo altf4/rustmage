@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "400448dfd9ff009a718eaded0a82c72914eb60e45047101f0aad64bd829e190e"
   },
-  "physical_metadata_sha256": "544e280f8c6a56c5b9507a92ccf8beca359c0f5ab67e8d9bfbb67e183afcf86e"
+  "physical_metadata_sha256": "544e280f8c6a56c5b9507a92ccf8beca359c0f5ab67e8d9bfbb67e183afcf86e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TemurDevotee.java",
+  "java_sha256": "fe87923823e205a17a6f9f288cb63487c23868e3567ec1286e1ce8dc84edf7eb",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/LimitedTimesPerTurnActivatedManaAbility.java",
+      "sha256": "277f02f44bf32ea4d389b21f74227491808e3fb0c30fbdb911a88918d550af23"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaFromColorChoicesEffect.java",
+      "sha256": "566cfd640a483cb992f550774635dabe582d5f0aba45283a1d7748db79bcc558"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DefenderAbility.java",
+      "sha256": "ad5269c8613d7ef2e18e64fb3ea53099a4649870fae2cc0a54ad80a50ca0755e"
+    }
+  ],
+  "rules_tests": "tests/tdm_cards_s_z.rs::mana_"
 }

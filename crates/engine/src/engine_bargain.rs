@@ -77,6 +77,27 @@ impl Game {
         a: &Announcement,
         sacrifice: Option<ObjectRef>,
     ) -> bool {
+        if a.item.cast.is_some_and(|cast| cast.method.is_harmonize())
+            || a.item
+                .source
+                .expect("cost source")
+                .card
+                .behold_cast()
+                .is_some()
+        {
+            let source = a.item.source.expect("Harmonize source");
+            if sacrifice.is_some_and(|object| {
+                !self.additional_candidate(COST, a.item.controller, source.object, object)
+            }) {
+                return false;
+            }
+            let mut proposal = a.clone();
+            proposal.item.cast.as_mut().unwrap().bargain = Some(sacrifice.is_some());
+            proposal.additional = sacrifice;
+            return proposal
+                .cost_options()
+                .any(|cost| self.announcement_cost_fundable(&proposal, cost));
+        }
         a.cost_options().any(|cost| {
             self.bargain_cost_fundable(
                 a.item.controller,

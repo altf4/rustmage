@@ -76,6 +76,11 @@ impl Game {
         let batch = self.state.entry_batch.as_ref().unwrap();
         let movement = &batch.moves[self.current_entry_value_index().unwrap()];
         match movement.before.card.entry_choice().unwrap() {
+            EntryChoiceKind::NamedModes(names) => names.iter().enumerate().any(|(index, _)| {
+                emit(EntryChoiceValue::NamedMode(
+                    u16::try_from(index).expect("bounded entry modes"),
+                ))
+            }),
             EntryChoiceKind::LandCardName => {
                 crate::CardName::lands().any(|name| emit(EntryChoiceValue::CardName(name)))
             }

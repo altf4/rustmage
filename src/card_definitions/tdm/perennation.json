@@ -3,10 +3,21 @@
   "catalogue_id": 3125,
   "oracle_id": "be5138fd-3e92-42b9-93c5-311e66bd443f",
   "facts_sha256": "1f109dda82b214e06089b22368a43b683e9ef27b1227151a6310a993d4382fdc",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "96609068b2ea6a19d95cb18509ea70c2fe92675cee682a74ad1d88e23b1cf6a0"
   },
-  "physical_metadata_sha256": "8f20d4942eecccd19c0e36fc1427cf76c505ddd8736a6c881aac0f9c4a49bb55"
+  "physical_metadata_sha256": "8f20d4942eecccd19c0e36fc1427cf76c505ddd8736a6c881aac0f9c4a49bb55",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/Perennation.java",
+  "java_sha256": "8427871776b57b9bdf072fa0895a4f90a48164731f4e2c524c3e6af2a19b61f7",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldWithCounterTargetEffect.java",
+      "sha256": "0e7f52f88746be4b6bbb9acafadcf25b3ad14633151a2868726600cb1af9434c"
+    }
+  ]
 }

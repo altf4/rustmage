@@ -158,13 +158,13 @@ impl Game {
             controller: item.controller,
             returning,
         };
+        let mut packet = item.clone();
+        packet.targets.clear();
+        packet.clear_initiating_event_references();
         self.state
             .delayed_returns
             .get_or_insert_with(Default::default)
-            .push(DelayedReturn {
-                view,
-                item: item.clone(),
-            });
+            .push(DelayedReturn { view, item: packet });
     }
     pub(super) fn exile_small_return_until_end_step(&mut self, item: &SpellView) {
         let target = item.targets.iter().find_map(|bound| match bound.target {

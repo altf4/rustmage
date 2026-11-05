@@ -45,7 +45,7 @@ impl Game {
                 expires_turn: self.state.turn,
                 permanent: true,
                 timestamp,
-                origin: item.source_ability_origin.map(|_| timestamp),
+                origin: Some(timestamp),
             });
     }
     /// Each stored grant identifies one ability. Scanning its definition's whole
@@ -141,7 +141,21 @@ impl Game {
             });
             if self.queue_trigger_from(&source, usize::from(grant.ability), Some(context)) {
                 let chosen_x = stack.and_then(|i| self.state.stack[i].x);
+                let objects = stack.map_or_else(Vec::new, |i| {
+                    self.cast_semantic_targets(
+                        self.state.stack[i]
+                            .source
+                            .map(|s| self.state.objects[s.id as usize].owner),
+                        filter,
+                        card,
+                        event.map_or_else(|| card.fixed_mana_value(), |e| e.mana_value),
+                        caster,
+                        &source,
+                        &self.state.stack[i].targets,
+                    )
+                });
                 let item = self.state.pending_triggers.last_mut().unwrap();
+                item.refer_objects(objects);
                 item.x = chosen_x;
                 item.cast_event = event.map(Box::new);
             }
@@ -188,7 +202,7 @@ impl Game {
                 expires_turn: self.state.turn,
                 permanent: false,
                 timestamp,
-                origin: item.source_ability_origin.map(|_| timestamp),
+                origin: Some(timestamp),
             };
             self.state
                 .temporary_abilities
@@ -282,7 +296,7 @@ impl Game {
             ) {
                 continue;
             }
-            self.queue_trigger_from(
+            self.queue_attack_trigger_from(
                 &source,
                 usize::from(grant.ability),
                 Some(Box::new(AttachmentTriggerView {

@@ -3,10 +3,36 @@
   "catalogue_id": 4498,
   "oracle_id": "bbdb731d-c533-48ef-b82a-cf1a8ba36208",
   "facts_sha256": "567f612e162ce1cd0d469890f6ac92fedc50a7de177a8bbcc7b0893fe59d5d0e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6c87f0cd52b29f314d241ff8b284fb33096dfd6c3dce3ed1b2fa0837ed6b450f"
   },
-  "physical_metadata_sha256": "a2a1a2a6ed7e08204e3c2eb27d818cc8a7c316891784c39e15cf7f1a5998e6f6"
+  "physical_metadata_sha256": "a2a1a2a6ed7e08204e3c2eb27d818cc8a7c316891784c39e15cf7f1a5998e6f6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheSibsigCeremony.java",
+  "java_sha256": "3fdc04bee18c8a743d373fad0eb79606afe1cc0f1f79247df95679c01b73653a",
+  "rules_tests": "tests/tdm_cards_s_z_additional.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellsCostReductionControllerEffect.java",
+      "sha256": "47783fefecfbb22810317538f30e9e92302add21ebff508bc21f43683a85ad06"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/ZombieDruidToken.java",
+      "sha256": "d0f1b3d7f23a9391f94f052843e2eeba17cbf0cbbf98bfb590621d6bc13ad918"
+    }
+  ]
 }

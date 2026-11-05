@@ -2,6 +2,27 @@
 use super::*;
 use ability_world::CharacteristicWorld;
 
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl CastMethod {
+    pub(super) fn is_harmonize(self) -> bool {
+        matches!(self, Self::Harmonize | Self::GrantedHarmonize)
+    }
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Announcement {
+    pub(super) fn payment_x_symbols(&self) -> u32 {
+        let card = self.item.source.expect("object-backed cost").card;
+        match self.item.cast.map(|cast| cast.method) {
+            Some(CastMethod::Harmonize) => u32::from(card.harmonize_x_symbols()),
+            Some(CastMethod::GrantedHarmonize) => {
+                crate::cards::mana_symbols::printed_cost(card.info().mana_cost)
+                    .map_or(0, |cost| cost.x_symbols)
+            }
+            _ => u32::from(card.x_symbols()),
+        }
+    }
+}
+
 /// One untapped controlled creature may be tapped; its power is sampled as the
 /// total spell cost is determined, before mana abilities or payment alter it.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -9,7 +30,7 @@ pub(super) fn contribution<W: CharacteristicWorld + ?Sized>(
     world: &W,
     player: Player,
     object: ObjectRef,
-) -> Option<u32> {
+) -> Option<u64> {
     world.game().state.objects.get(object.card as usize)?;
     let permanent = world.object(object.card);
     if world.reference(object.card) != object
@@ -20,7 +41,7 @@ pub(super) fn contribution<W: CharacteristicWorld + ?Sized>(
     {
         return None;
     }
-    Some(u32::try_from(world.power(object.card).max(0)).unwrap_or(u32::MAX))
+    Some(u64::try_from(world.power(object.card).max(0)).unwrap_or(u64::MAX))
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -45,17 +66,29 @@ impl Game {
             None => 0,
         };
         let base = Self::announcement_base_cost(a);
-        let extra = Self::announcement_optional_reduction(a) + u64::from(discount);
-        let Some(total) = self.target_spell_cost_with_extra(
-            a.item.controller,
-            a.item
-                .source
-                .expect("cost announcement has object source")
-                .id,
-            base,
-            &a.item.targets,
-            extra,
-        ) else {
+        let extra = Self::announcement_optional_reduction(a).saturating_add(discount);
+        let source = a.item.source.expect("harmonize has a source");
+        let x = a.item.x.unwrap_or(0);
+        let total = if source.card.has_target_cost_modifier() {
+            let plan = if a.plan == TargetPlan::NONE {
+                self.target_spec(&a.item)
+            } else {
+                a.plan
+            };
+            self.target_proposal_total(a, base, plan, None, false, extra)
+        } else {
+            self.scalar_x_total_with_symbols(
+                a.item.controller,
+                source.id,
+                base,
+                x,
+                source.card,
+                a.payment_x_symbols(),
+                &a.item.targets,
+                extra,
+            )
+        };
+        let Some(total) = total else {
             return false;
         };
         self.harmonize_proposal_fundable(a, object, total)

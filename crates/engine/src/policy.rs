@@ -177,6 +177,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::ChooseReplacement { .. }
             | Action::ChooseSelfCounterReplacement { .. }
             | Action::ChooseDamagePrevention { .. }
+            | Action::ChooseDamageSource { .. }
+            | Action::ChooseStackDamageSource { .. }
             | Action::ChooseDamageEvent { .. } => 120,
             Action::ChooseCreatedToken { .. } => 120,
             Action::ChooseEndure { put_counters } => {
@@ -188,16 +190,19 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             }
             Action::BeginConvoke
             | Action::BeginImprovise
+            | Action::BeginDelve
             | Action::BeginWaterbend
             | Action::BeginOrderedCosts => 40,
             Action::ChooseConvoker { .. }
             | Action::ChooseImproviser { .. }
+            | Action::ChooseDelver { .. }
             | Action::ChooseWaterbender { .. }
             | Action::ChooseHarmonizer { .. } => 50,
             Action::ChooseMobilizeDefender { .. } | Action::ChooseHandDefender { .. } => 50,
             Action::PutHandCreature { .. }
             | Action::PutHandPermanent { .. }
             | Action::PutHandLand { .. }
+            | Action::ChooseColorCounter { .. }
             | Action::ChooseArmy { .. }
             | Action::ChooseJace { .. }
             | Action::SelectGraveyardReturn { .. }
@@ -283,6 +288,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::SelectMilled { .. }
             | Action::ChooseRevealedDiscard { .. } => 60,
             Action::ChooseHandCard { object: None } => -1,
+            Action::ChooseCastBehold { pay: true } | Action::ChooseBeholdCost { .. } => 70,
+            Action::ChooseCastBehold { pay: false } => 0,
             Action::FinishMilledSelection => 0,
             Action::SelectTargetCounter { .. } => 1,
             Action::FinishTargetCounterRemoval => 0,
@@ -306,6 +313,10 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 flash_surcharge: false,
                 ..
             }
+            | Action::AnnounceFreeGraveyardAdditionalCosts {
+                flash_surcharge: false,
+                ..
+            }
             | Action::AnnounceFreeFromPermission {
                 flash_surcharge: false,
                 ..
@@ -316,9 +327,11 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             } => 81,
             Action::AnnounceFreeCounterGraveyard { .. }
             | Action::AnnounceFreeGraveyardPermanent { .. }
+            | Action::AnnounceFreeGraveyardAdditionalCosts { .. }
             | Action::AnnounceFreeFromPermission { .. }
             | Action::AnnounceFree { .. }
             | Action::AnnounceGrantedFlashback { .. }
+            | Action::AnnounceGrantedHarmonize { .. }
             | Action::AnnounceCounterGraveyard { .. }
             | Action::AnnounceGraveyardAdditionalCosts { .. }
             | Action::AnnounceCast { .. }
@@ -482,7 +495,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 ..
             } => 90,
             Action::PlayGraveyardPermanent { .. } => 79,
-            Action::CastExiledDuringResolution { .. } => 81,
+            Action::CastExiledDuringResolution { .. } | Action::CastFreeDuringResolution { .. } => {
+                81
+            }
             Action::FinishResolutionCasts => -1,
             Action::RevealMiracle => 82,
             Action::DeclineMiracle => -1,

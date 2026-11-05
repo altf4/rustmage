@@ -3,10 +3,36 @@
   "catalogue_id": 2010,
   "oracle_id": "78b6dd40-c182-4037-a4d3-9fd012b2c584",
   "facts_sha256": "7397636919d3567ce134fdc9d5621001613b72cfd066f295feef4ad291410fd3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4b87f385072f7217fb24143da68310b21e90f79a648463f9c1578dc179c7690a"
   },
-  "physical_metadata_sha256": "3a34ec5a90860d5dda0483b415810c0bb4079026c48d66b7cb6bcb75fd53dd1b"
+  "physical_metadata_sha256": "3a34ec5a90860d5dda0483b415810c0bb4079026c48d66b7cb6bcb75fd53dd1b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HerdHeirloom.java",
+  "java_sha256": "72b8e237332f8be92e43643b2ff649e70955d0a95ae4e35ffe04372f64a514ca",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/ConditionalAnyColorManaAbility.java",
+      "sha256": "2042d72737462646216eea22a1ecdd05d338f1f2b3bfbb3c19fdb273f067c736"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/conditional/CreatureCastConditionalMana.java",
+      "sha256": "2a18d636eff2dabefb5518fd38f54fe6292d5c1697efb714ca1c44aacb0efb62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    }
+  ]
 }

@@ -249,10 +249,11 @@ impl Game {
                 .as_ref()
                 .is_some_and(|rows| !rows.is_empty())
             || self.state.combat_rules.as_ref().is_some_and(|rules| {
-                rules
-                    .begin_combat_this_turn
-                    .as_ref()
-                    .is_some_and(|rows| !rows.is_empty())
+                !rules.turn_callbacks.is_empty()
+                    || rules
+                        .begin_combat_this_turn
+                        .as_ref()
+                        .is_some_and(|rows| !rows.is_empty())
             })
             || self
                 .state

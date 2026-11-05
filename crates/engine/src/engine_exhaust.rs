@@ -278,8 +278,14 @@ impl Game {
             .collect();
         for observer in observers {
             for (index, trigger) in observer.card.triggers().iter().enumerate() {
-                if trigger.condition.event() == TriggerCondition::ExhaustAbilityActivated {
-                    self.queue_trigger(&observer, index);
+                if trigger.condition.event() == TriggerCondition::ExhaustAbilityActivated
+                    && self.queue_trigger(&observer, index)
+                {
+                    self.state
+                        .pending_triggers
+                        .last_mut()
+                        .unwrap()
+                        .refer_sources(item.semantic_stack_reference());
                 }
             }
         }

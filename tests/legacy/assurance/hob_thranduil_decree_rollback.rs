@@ -5,6 +5,9 @@ fn hob_decree_failed_free_cast_restores_exact_permission_and_retained_or_reverse
     for p in [Player::P0, Player::P1] {
         for keep in [false, true] {
             let (mut g, silver, enemy, prison) = setup(p);
+            // Free casting retains this real noncreature tax, so the cast has
+            // a positive mana cost and owns the mana event being rolled back.
+            put(&mut g, p.other(), "Thalia, the Survivor", Zone::Battlefield);
             let spell = put(&mut g, p.other(), "Candy Grapple", Zone::Exile);
             let original = g.object_ref(spell);
             g.grant_exile_free_permission(p, original);

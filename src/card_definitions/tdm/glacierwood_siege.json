@@ -3,10 +3,46 @@
   "catalogue_id": 1762,
   "oracle_id": "295a831c-490e-42ba-afc1-dab3524a4f0c",
   "facts_sha256": "ac9aac1c4a13dbe00f9a46c0d7be0c023c18ff24e765e83ecffe51aa6090ba1b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "abbb1672cabb18e9f72b169557954d84029095ae3f06ec3a1d0955417e8db245"
   },
-  "physical_metadata_sha256": "cc5e0b4862ff17fb9ab7b035af73025a1d1fe8245f43bba02b8e7932b92c9df2"
+  "physical_metadata_sha256": "cc5e0b4862ff17fb9ab7b035af73025a1d1fe8245f43bba02b8e7932b92c9df2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GlacierwoodSiege.java",
+  "java_sha256": "3cf0a1c29a3f8df49a33dba89cc732766d6708cbcd54f6b1f0089e2e6f29ed55",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AsEntersBattlefieldAbility.java",
+      "sha256": "3919eac1ae9ebc0edd9decad5d293bdf0cdb4d16c516021ea3e97711f9a72ab5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseModeEffect.java",
+      "sha256": "81d0232b9335b14c2cafd7c14b0090d639f41527128e85d626db02f9597fadfa"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsTargetEffect.java",
+      "sha256": "5a01d741ed0a7d1449d5d4591025205bc130e7e5eb5f861d2761b1fd64557365"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAnchorWordAbilitySourceEffect.java",
+      "sha256": "9469756464606dcbce7323287562980c16b0c551b2b309065d35cb322f099be6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ruleModifying/PlayFromGraveyardControllerEffect.java",
+      "sha256": "72cc948dd1f65f347eb25cc2f8b19dab87326c3aa0ae77945c2fd4b6e142c6a4"
+    }
+  ],
+  "remaining_obligations": []
 }

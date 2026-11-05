@@ -113,7 +113,15 @@ impl Game {
                 }
                 _ => false,
             };
-            if matched && self.queue_trigger(&source, index) && event == TriggerCondition::Ward {
+            if matched && self.queue_trigger(&source, index) {
+                self.state
+                    .pending_triggers
+                    .last_mut()
+                    .unwrap()
+                    .refer_sources(item.semantic_stack_reference());
+                if event != TriggerCondition::Ward {
+                    continue;
+                }
                 self.state
                     .pending_triggers
                     .last_mut()
@@ -170,6 +178,11 @@ impl Game {
                         .pending_triggers
                         .last_mut()
                         .unwrap()
+                        .refer_sources(item.semantic_stack_reference());
+                    self.state
+                        .pending_triggers
+                        .last_mut()
+                        .unwrap()
                         .related_stack = Some(StackLink {
                         id: item.id,
                         controller: item.controller,
@@ -197,6 +210,11 @@ impl Game {
                             origin: giver.copied_grant_origin(),
                         });
                         if self.queue_trigger_from(&source, index, Some(grant)) {
+                            self.state
+                                .pending_triggers
+                                .last_mut()
+                                .unwrap()
+                                .refer_sources(item.semantic_stack_reference());
                             self.state
                                 .pending_triggers
                                 .last_mut()

@@ -3,10 +3,31 @@
   "catalogue_id": 2452,
   "oracle_id": "f780d6f6-540b-4773-8a48-e56e95c2d39e",
   "facts_sha256": "add910a179bf5eeb3e4e74199269d8b14c5995fafe04c349983144dec1299100",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ff9d62a169a5bd802343fa1ba102d4e257fc8f676da8818c9dd750b3aa3eb742"
   },
-  "physical_metadata_sha256": "6b4d483ec5e053f7257e7adf568d343fb94beb91d070dde15ac9df29b06c748c"
+  "physical_metadata_sha256": "6b4d483ec5e053f7257e7adf568d343fb94beb91d070dde15ac9df29b06c748c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LasydProwler.java",
+  "java_sha256": "46d8bd5d6aef2ac3f27c09cd9cd6c33ef23a340c4d1a2969f779de8370abd377",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/LandsYouControlCount.java",
+      "sha256": "5d39300c382c862538f44ba6be1565cb60cfed952c2a95515f3d4b9daee3483e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CardsInControllerGraveyardCount.java",
+      "sha256": "1681b71d7aeed7c96c0e4b1963a4ebec63874299ad681fd1bf7b9f1b539ba297"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsControllerEffect.java",
+      "sha256": "bdd3021a353e7fd6e0f5c2b829c2d9483ee6b2fa684d7e74f5b18d457c9abc9c"
+    }
+  ]
 }

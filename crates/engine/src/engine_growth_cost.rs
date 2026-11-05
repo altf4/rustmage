@@ -35,7 +35,11 @@ impl Game {
         if controller != actor
             || !object.card.static_ability_groups().iter().any(|group| {
                 group.fragments.iter().any(|fragment| {
-                    matches!(fragment, StaticAbilityFragment::SourceMaxSpeedActivation(_))
+                    matches!(
+                        fragment,
+                        StaticAbilityFragment::SourceMaxSpeedActivation(_)
+                            | StaticAbilityFragment::SourceEntryModeActivation { .. }
+                    )
                 })
             })
             || ability_world::CharacteristicWorld::activation_prohibited(self, actor, card)
@@ -69,7 +73,7 @@ impl Game {
                     actor,
                     self.loyalty_timing(card, ability, actor, sorcery),
                 )
-                || !self.targets_available(ability.targets, actor, source)
+                || (!ability.nonmana_x() && !self.targets_available(ability.targets, actor, source))
                 || !self
                     .activation_mana_costs(card, object.card, index, 0)
                     .any(|cost| {
@@ -156,7 +160,8 @@ impl Game {
                         actor,
                         self.loyalty_timing(card, ability, actor, sorcery),
                     )
-                    || !self.targets_available(ability.targets, actor, source)
+                    || (!ability.nonmana_x()
+                        && !self.targets_available(ability.targets, actor, source))
                     || !self
                         .activation_mana_costs(card, giver.card, index, 0)
                         .any(|cost| {
@@ -278,7 +283,7 @@ impl Game {
                     expires_turn: self.state.turn,
                     permanent: true,
                     timestamp,
-                    origin: item.source_ability_origin.map(|_| timestamp),
+                    origin: Some(timestamp),
                 });
         }
     }
@@ -314,6 +319,7 @@ impl Game {
         };
         let source = self.object_view(recipient.card);
         for (index, ability) in giver.card.activations().iter().enumerate() {
+            let tap_attachment = giver.card.attached_activation_taps(index as u16);
             let Some(readiness) = self.external_exhaust_readiness(
                 recipient,
                 grantor,
@@ -351,7 +357,13 @@ impl Game {
                     actor,
                     false,
                 )
-                || !self.additional_candidate(Self::attached_tap_spec(), actor, recipient, grantor)
+                || (tap_attachment
+                    && !self.additional_candidate(
+                        Self::attached_tap_spec(),
+                        actor,
+                        recipient,
+                        grantor,
+                    ))
             {
                 continue;
             }
@@ -362,7 +374,7 @@ impl Game {
                         actor,
                         required: cost.colored,
                         generic: cost.generic,
-                        reserve: Some((grantor, Self::attached_tap_spec())),
+                        reserve: tap_attachment.then_some((grantor, Self::attached_tap_spec())),
                         source: Some((
                             recipient,
                             index as u16,
@@ -410,8 +422,15 @@ impl Game {
             }
             let source = self.object_view(id);
             for (index, ability) in source.card.triggers().iter().enumerate() {
-                if ability.condition.event() == TriggerCondition::AttachedBecomesUntapped {
-                    self.queue_trigger(&source, index);
+                if ability.condition.event() == TriggerCondition::AttachedBecomesUntapped
+                    && let Some(recipient) = source.attached_to
+                    && self.queue_trigger(&source, index)
+                {
+                    self.state
+                        .pending_triggers
+                        .last_mut()
+                        .unwrap()
+                        .refer_objects([recipient]);
                 }
             }
         }
@@ -528,8 +547,8 @@ impl Game {
     }
 }
 
-// Grant provenance alone creates no payment obligation. These legacy attached
-// templates explicitly include tapping their distinct attachment grantor.
+// Grant provenance alone creates no payment obligation. The immutable grant
+// declares whether its printed cost also taps the distinct attachment grantor.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl SpellView {
     pub(super) fn attached_activation_tap_cost(&self) -> Option<ObjectRef> {
@@ -540,16 +559,7 @@ impl SpellView {
         let grant = self.attachment_trigger.as_ref()?;
         (grant.granted
             && grant.grantor != source.object
-            && grant
-                .granting_card
-                .static_ability_groups()
-                .iter()
-                .any(|group| {
-                    group.fragments.iter().any(|fragment| {
-                        matches!(fragment,
-                    StaticAbilityFragment::AttachmentActivation(index) if *index == ability)
-                    })
-                }))
+            && grant.granting_card.attached_activation_taps(ability))
         .then_some(grant.grantor)
     }
 }

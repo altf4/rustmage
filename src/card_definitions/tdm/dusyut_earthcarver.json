@@ -8,5 +8,25 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5468fd8b6a48aaa615c27dd7b5ddf4a3c6cf7de48ce6f2b58eb6db7d0482ab4e"
   },
-  "physical_metadata_sha256": "79e8b7ec1003d32156e60e3d2308c7816b440deb5ba9e7c9cf58bd44c7c686ec"
+  "physical_metadata_sha256": "79e8b7ec1003d32156e60e3d2308c7816b440deb5ba9e7c9cf58bd44c7c686ec",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DusyutEarthcarver.java",
+  "java_sha256": "c4fde54a716eeda6bd86a6ff0825f34f4014c7cd0647a513b2a02b5eeae9559b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EndureSourceEffect.java",
+      "sha256": "b32a2eef10ea3a3f03e93398e6e5a6aeebd279daa5a95edda6aab6380e1d9dcd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/NoFlyingSpiritWhite33Token.java",
+      "sha256": "a201a7d69d8317c37c1b10b2129368bdca4a81420f4f870fbc41c85413f430a1"
+    }
+  ]
 }

@@ -23,6 +23,9 @@ pub(super) fn attached_controller_turn<W: ability_world::CharacteristicWorld + ?
 impl Game {
     pub(super) fn begin_step(&mut self, step: Step) {
         self.state.step = step;
+        if step == Step::Upkeep {
+            self.queue_suspend_upkeep();
+        }
         if step == Step::BeginCombat {
             self.queue_begin_combat_this_turn();
         }
@@ -50,12 +53,15 @@ impl Game {
             self.queue_paradigm_triggers();
             self.precombat_lore_counters();
         }
+        if step == Step::EndCombat {
+            self.queue_delayed_sacrifices(true);
+        }
         if step == Step::End {
             self.state
                 .exile_permissions
                 .retain(|row| row.expiry != ExilePlayExpiry::StartOfNextEndStep(self.state.active));
             self.queue_copy_end_step_abilities();
-            self.queue_delayed_sacrifices();
+            self.queue_delayed_sacrifices(false);
             if let Some(items) = self.state.delayed_artifact_copies.take() {
                 self.state.pending_triggers.extend(*items);
             }
@@ -137,6 +143,7 @@ impl Game {
             source_copy_recipe: None,
             source_ability_origin: None,
             target_allocations: None,
+            announced_division: None,
             mana_copy_sources: None,
             is_copy: false,
             ninjutsu_defender: None,

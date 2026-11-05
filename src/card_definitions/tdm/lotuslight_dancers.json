@@ -3,10 +3,26 @@
   "catalogue_id": 2568,
   "oracle_id": "83c8f1ca-194e-4cb6-9d5f-029133c1edbc",
   "facts_sha256": "ca6d1256d7b1b0cf5c578b4903e5407eb673fd2497a173897af0fc4a4fb6c5dd",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d1a9d65febdb6726b7d386b9a9596f2c7e11c9d9806303839ec19b8a0adb2b95"
   },
-  "physical_metadata_sha256": "9a473fdd96b7be116c47c58f15587acc4045301aaddf090fba8416cd3e477b59"
+  "physical_metadata_sha256": "9a473fdd96b7be116c47c58f15587acc4045301aaddf090fba8416cd3e477b59",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LotuslightDancers.java",
+  "java_sha256": "76475d57c9a5367f9f747d3c29d582f70df7ccbc5900373533bc0bc798f8f88d",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/assignment/common/ColorAssignment.java",
+      "sha256": "c84a1836b8958913167e8db1d75fc2961370dd235dddad88e83c679a5275af69"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/assignment/RoleAssignment.java",
+      "sha256": "7b8e9145af672e13d0970346d5602bc16c7b434f7db9040b9a7a2d4a0d05478f"
+    }
+  ]
 }

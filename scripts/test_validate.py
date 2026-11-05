@@ -50,6 +50,7 @@ class ValidatorTests(unittest.TestCase):
             self.addCleanup(mocked.stop)
         os.environ.pop('CARGO_TARGET_DIR', None)
         os.environ.pop('RUSTMAGE_LIBRARY', None)
+        os.environ.pop('RUSTMAGE_TDM_EVIDENCE_DIR', None)
 
     def source_files(self):
         return {'src/lib.rs': hashlib.sha256(self.source.read_bytes()).hexdigest()}
@@ -159,6 +160,43 @@ class ValidatorTests(unittest.TestCase):
         self.assertNotEqual(original_snapshot, second_snapshot)
         self.assertEqual(hashlib.sha256(original_snapshot.read_bytes()).hexdigest(), original_digest)
         self.assertEqual(json.loads(first_path.read_text()), first)
+
+    def test_native_game_evidence_is_unique_retained_and_outside_disposable_targets(self):
+        consumed = []
+
+        def record_game_evidence(command):
+            if 'scripts/run_native_tests.py' in command:
+                directory = Path(self.commands[-1][1]['RUSTMAGE_TDM_EVIDENCE_DIR'])
+                directory.mkdir(parents=True)
+                (directory/'receipt.json').write_text('retained game evidence')
+                consumed.append(directory)
+
+        self.on_command = record_game_evidence
+        for arguments in [(), ('--fresh',)]:
+            status, path, report, commands = self.invoke(*arguments)
+            self.assertEqual(status, 0)
+            directory = consumed[-1]
+            self.assertEqual(directory, path.parent/'tdm-games')
+            self.assertEqual(report['game_evidence_directory'], str(directory))
+            self.assertFalse(directory.is_relative_to(Path(report['target'])))
+            self.assertTrue(all(env['RUSTMAGE_TDM_EVIDENCE_DIR'] == str(directory)
+                                for _, env in commands))
+        self.assertNotEqual(consumed[0], consumed[1])
+        for directory in consumed:
+            self.assertEqual((directory/'receipt.json').read_text(), 'retained game evidence')
+
+    def test_explicit_game_evidence_location_is_preserved_without_touching_existing_files(self):
+        directory = self.directory/'explicit-game-evidence'
+        directory.mkdir()
+        receipt = directory/'existing-receipt.json'
+        receipt.write_text('previous evidence')
+        os.environ['RUSTMAGE_TDM_EVIDENCE_DIR'] = str(directory)
+        status, _, report, commands = self.invoke()
+        self.assertEqual(status, 0)
+        self.assertEqual(report['game_evidence_directory'], str(directory))
+        self.assertTrue(all(env['RUSTMAGE_TDM_EVIDENCE_DIR'] == str(directory)
+                            for _, env in commands))
+        self.assertEqual(receipt.read_text(), 'previous evidence')
 
     def test_native_compile_budget_fits_inside_parent_deadline(self):
         status, _, report, commands = self.invoke('--timeout', '1800')

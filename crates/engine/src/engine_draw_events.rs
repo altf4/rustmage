@@ -65,7 +65,7 @@ impl Game {
             })
     }
 
-    pub(super) fn card_drawn(&mut self, player: Player) {
+    pub(super) fn card_drawn(&mut self, player: Player, object: ObjectRef) {
         if self.state.step == Step::Draw && self.state.active == player {
             self.state.players[player.index()].drew_in_own_draw_step = true;
         }
@@ -91,7 +91,9 @@ impl Game {
                     }
                     && self.queue_trigger_from(&source, index, grant.map(Box::new))
                 {
-                    self.state.pending_triggers.last_mut().unwrap().draw_event = Some(event);
+                    let packet = self.state.pending_triggers.last_mut().unwrap();
+                    packet.draw_event = Some(event);
+                    packet.refer_objects([object]);
                 }
             }
         }

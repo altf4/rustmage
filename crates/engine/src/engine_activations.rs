@@ -308,6 +308,10 @@ impl Game {
                 self.state.players[actor.index()].life >= STARTING_LIFE + i128::from(extra)
             }
             ActivationGuard::OwnTurn => self.state.active == actor,
+            ActivationGuard::OwnTurnAfterGraveyardDeparture => {
+                self.state.active == actor
+                    && ability_world::CharacteristicWorld::card_left_graveyard(self, actor)
+            }
             ActivationGuard::ControlledPlaneswalkerSubtypeLoyaltyAtLeast { subtype, minimum } => {
                 let world = self.characteristic_query();
                 self.state
@@ -679,14 +683,25 @@ impl Game {
                         Some(Instruction::Modal(modes)) => Some(*modes),
                         _ => None,
                     };
-                    let targets_available = modes.map_or_else(
-                        || self.targets_available(ability.targets, actor, self.object_ref(card)),
-                        |modes| {
-                            modes.iter().any(|mode| {
-                                self.targets_available(mode.targets, actor, self.object_ref(card))
-                            })
-                        },
-                    );
+                    let targets_available = ability.nonmana_x()
+                        || modes.map_or_else(
+                            || {
+                                self.targets_available(
+                                    ability.targets,
+                                    actor,
+                                    self.object_ref(card),
+                                )
+                            },
+                            |modes| {
+                                modes.iter().any(|mode| {
+                                    self.targets_available(
+                                        mode.targets,
+                                        actor,
+                                        self.object_ref(card),
+                                    )
+                                })
+                            },
+                        );
                     if targets_available && fundable() {
                         let done = if let Some(production) = ability.mana_production() {
                             self.visit_activation_mana_outputs(
@@ -730,6 +745,7 @@ impl Game {
                             .card
                             .activation_target_counter_discount(index as u16)
                             .is_some()
+                        || object.card.activation_target_color_discount(index as u16) != 0
                         || self.active_target_equip_reducer(actor, object.card, index as u16)
                     {
                         return self.visit_target_cost_direct_actions(
@@ -894,14 +910,11 @@ impl Game {
             cast_creature_subjects: None,
             copy_event: None,
             target_allocations: None,
+            announced_division: None,
             captured_artifact_copy: None,
             source_copy_recipe: self
                 .copy_recipe(self.object_ref(card))
-                .filter(|r| {
-                    r.exceptions != CopyExceptions::NONE
-                        || r.overrides.is_some()
-                        || r.faces.is_some()
-                })
+                .filter(|r| r.needs_source_snapshot())
                 .map(Box::new),
             source_ability_origin: self.copy_ability_origin(self.object_ref(card)),
             mana_copy_sources: None,
@@ -1186,9 +1199,9 @@ impl Game {
                 item.mana_tap_bonus = (bonus > 0).then_some(bonus);
             }
             self.tap_objects(&[source.id]);
-            if let Some(grantor) = item.attached_activation_tap_cost() {
-                self.tap_objects(&[grantor.card]);
-            }
+        }
+        if let Some(grantor) = item.attached_activation_tap_cost() {
+            self.tap_objects(&[grantor.card]);
         }
         if definition.exerts() {
             self.exert_source(source.object, item.controller);

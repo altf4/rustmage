@@ -1,0 +1,478 @@
+{
+  "checkpoint": 86,
+  "scope": "Shared opt-in capture of existing cast mana-value facts. TDM card work and admission remain parked.",
+  "status": "Focused checkpoint PASS: eight generic groups, twenty actual gated card groups, focused Clippy. Root integration/full release validation and two independent final reviews remain pending; no card admission.",
+  "accepted_engine_baseline": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
+  "authoring_compatibility_commit": "e8c671a6d4fc9e15d484886d30b0409487cedbdd",
+  "tracking_issue": "https://github.com/altf4/rustmage/issues/570",
+  "started_utc": "2026-11-04T19:56:56.974131+00:00",
+  "problem": "CastSpellManaValue evaluation reads item.cast_event, but the existing recursive capture walker recognized only CastSpellManaSymbols. LoseLifeScaled therefore captured no event and evaluated to zero; four actual Teval cases failed with life20 versus17/18/16.",
+  "change": "Recognize CastSpellManaValue alongside CastSpellManaSymbols in the existing amount predicate; clarify its stale symbols-only module comment. Reuse all existing amount recursion and instruction/modal traversal. Keep record_cast legacy manual allowlist intact.",
+  "runtime_delta": "One match arm plus module documentation. No new field, amount variant, capture subsystem, card/name branch or English parsing.",
+  "public_state": "Existing optional SpellView.cast_event and CastPaymentEvent fields/serialization unchanged. Admitted direct MV consumers already captured this same payload. No schema bump assumed; integrator owns final trace acceptance.",
+  "source_pins": [
+    {
+      "path": "crates/engine/src/engine_cast_symbol_quantities.rs",
+      "sha256": "3fe0aaaf29cc4d85ed0d63cfc7f739fc66372c3d139c386050faf69a9f481c16"
+    },
+    {
+      "path": "tests/tdm_cast_event_scalars.rs",
+      "sha256": "aecf3d8666a17e0a48caf021765cf9ac25d0e9faebd804642fc4031c6d2d5904"
+    }
+  ],
+  "read_only_dependency_audit": {
+    "engine_checkpoint": 86,
+    "status": "Historical approved design/audit before runtime edits; source pins are pre-edit.",
+    "runtime_change": "Recognize CastSpellManaValue together with CastSpellManaSymbols in existing recursive amount() helper; update stale symbol-only module documentation. Keep record_cast manual legacy captures intact.",
+    "existing_capture": "record_cast freezes selected stack mana_value, object/incarnation/stack_id/card/controller/payment in existing CastPaymentEvent; opted-in observer packet clones that event.",
+    "cause": "LoseLifeScaled is already a recognized consumer in selected(), but amount(CastSpellManaValue) currently returns false. Legacy manual allowlist only covers direct DamageScaled and PutCountersScaled plus Ovika temporary-token instruction.",
+    "recursive_amount_variants": [
+      "Multiple",
+      "Divided",
+      "Sum"
+    ],
+    "modal_variants": [
+      "Modal",
+      "ModalOnce",
+      "ModalOncePerTurn",
+      "ModalUpToX"
+    ],
+    "unchanged_public_wire": "Existing SpellView.cast_event optional boxed CastPaymentEvent retains existing fields, widths and serialization; no new field/schema assumption. Integrator owns final trace contract decision.",
+    "consumers": {
+      "Teval": "LoseLifeScaled(Controller, CastSpellManaValue) missing capture; actual four failures life20 vs17/18/16",
+      "Dancing": "PutCountersScaled amount CastSpellManaValue direct legacy manual arm already captures",
+      "Ovika": "CreateTokensWithTemporaryKeywords direct manual arm already captures",
+      "Thor": "DamageScaled(CastSpellManaValue) direct manual arm already captures",
+      "Namor": "CastSpellManaSymbols(Blue) existing recursive helper remains recognized"
+    },
+    "scope_exclusions": [
+      "No capture-all allocation",
+      "No English parsing or definition/name branches",
+      "No field/layout change",
+      "No unrelated scalar event collectors",
+      "No TDM card authoring/admission"
+    ],
+    "read_paths": [
+      {
+        "path": "crates/engine/src/engine_programs.rs",
+        "sha256": "aae2ecf17fe7ac0e04249c88ae4a6dfbd51f691cfe78bd82a5a9c6b7823afe10",
+        "extent": "Complete helper/card body or complete relevant capture/evaluator section as described in read_extent"
+      },
+      {
+        "path": "crates/engine/src/engine_cast_symbol_quantities.rs",
+        "sha256": "722173f1ca5d1fe56ec6d9cd303386cd1b77e6b451d051e70a8a655e7e590c9e",
+        "extent": "Complete helper/card body or complete relevant capture/evaluator section as described in read_extent"
+      },
+      {
+        "path": "crates/engine/src/engine_scalar_x.rs",
+        "sha256": "c461af0b9ba6ee38085728bf990b7321bb1017f5adaf81793308032f285c4e20",
+        "extent": "Complete helper/card body or complete relevant capture/evaluator section as described in read_extent"
+      },
+      {
+        "path": "crates/engine/src/engine_cast_payments.rs",
+        "sha256": "f52b66c8d31d6b3d02e1c05a77117ccb7360e52571138a76100c4f666ecd7028",
+        "extent": "Complete helper/card body or complete relevant capture/evaluator section as described in read_extent"
+      },
+      {
+        "path": "crates/engine/src/cards.rs",
+        "sha256": "558a6e40defd99ee99b44b090e562f1825a6422d69e2eaa31098710fcb4ff115",
+        "extent": "Complete helper/card body or complete relevant capture/evaluator section as described in read_extent"
+      },
+      {
+        "path": "src/card_definitions/tdm/teval_arbiter_of_virtue.rs",
+        "sha256": "eba1c160b61af988cea9c073e588c9af6479682f124006f71621592cef945aef",
+        "extent": "Complete helper/card body or complete relevant capture/evaluator section as described in read_extent"
+      },
+      {
+        "path": "src/card_definitions/hob/dancing_from_dark_to_dawn.rs",
+        "sha256": "fb945044f39308a1b449739fbf46f9edb00a6732e6284ecb929de9e051cf78e9",
+        "extent": "Complete helper/card body or complete relevant capture/evaluator section as described in read_extent"
+      },
+      {
+        "path": "src/card_definitions/fdn/ovika_enigma_goliath.rs",
+        "sha256": "3eef19da4b477891e7c54e34f1cbe38dff659a43a436946f88c143edd5485635",
+        "extent": "Complete helper/card body or complete relevant capture/evaluator section as described in read_extent"
+      },
+      {
+        "path": "src/card_definitions/msh/thor_god_of_thunder.rs",
+        "sha256": "d57c2eda42ef9af47e27a44baa6061c59e582170bccb5fe1fe522a77e14d7bac",
+        "extent": "Complete helper/card body or complete relevant capture/evaluator section as described in read_extent"
+      },
+      {
+        "path": "src/card_definitions/msh/namor_the_sub_mariner.rs",
+        "sha256": "7c2ff7f8dda4caea0ddefbf165fec38e40eccd09564c92d6c547e6b56abd7294",
+        "extent": "Complete helper/card body or complete relevant capture/evaluator section as described in read_extent"
+      }
+    ],
+    "read_extent": {
+      "engine_programs": "record_cast full setup/matching/capture/continuation block1850-2045",
+      "engine_cast_symbol_quantities": "Complete module",
+      "engine_scalar_x": "Scalar evaluation actual_cast_event-related match arms + recursive wrappers inspected",
+      "cards": "Complete AmountValue enum; all Instruction AmountValue fields and modal forms inventoried",
+      "engine_cast_payments": "Complete CastPaymentEvent and SpellView.actual_cast_event/item_cast_payment relevant body",
+      "typed_definitions": "Complete all four current CastSpellManaValue definitions plus Namor symbol consumer"
+    },
+    "authority": {
+      "local_cr": "<cache>/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
+      "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+      "rules": [
+        "202.3",
+        "202.3e",
+        "202.4",
+        "601.2a-f",
+        "603.3a"
+      ]
+    },
+    "new_test_target": "tests/tdm_cast_event_scalars.rs",
+    "planned_groups": [
+      "Direct loss and opt-out nonconsumer plus opponent scope",
+      "Nested Multiple/Divided/Sum expected values",
+      "Actual triggered modal consumers capture before choice",
+      "Chosen X and selected Omen mana value",
+      "Countered triggering spell and source departure/incarnation/controller continuity",
+      "Owned raw/index/restore and private unrelated hand/draw facts",
+      "Existing direct MV consumers actual counters/token/damage outcomes",
+      "Existing printed-symbol consumer remains counted by symbols rather than MV"
+    ]
+  },
+  "focused_target": "tdm_cast_event_scalars",
+  "focused_groups": [
+    "direct_cast_mana_value_event_is_retained_and_lose_life_uses_it",
+    "cast_event_allocation_stays_opt_in_and_opponent_casts_do_not_trigger_you",
+    "composed_multiple_divided_and_sum_quantities_retain_the_same_cast_fact",
+    "selected_stack_x_and_omen_cost_determine_captured_mana_value",
+    "countered_spell_and_departed_reentered_source_keep_captured_value_and_controller",
+    "modal_cast_fact_is_owned_raw_index_restorable_and_reveals_no_private_cards",
+    "legacy_direct_mana_value_consumers_keep_counter_token_and_damage_results",
+    "legacy_printed_symbol_consumer_still_uses_symbols_instead_of_mana_value"
+  ],
+  "group_obligations": {
+    "direct_cast_mana_value_event_is_retained_and_lose_life_uses_it": "Actual paid Quick Study capturesMV3/exactobject/card/controller/payment before resolution; loss3 anddraw2 bothseats.",
+    "cast_event_allocation_stays_opt_in_and_opponent_casts_do_not_trigger_you": "Fixed nonconsumer keeps cast_eventNone; opponent casts do not trigger controlled You observer.",
+    "composed_multiple_divided_and_sum_quantities_retain_the_same_cast_fact": "MV3 produces losses6,1,8 through Multiple,Divided and nested Sum.",
+    "selected_stack_x_and_omen_cost_determine_captured_mana_value": "X=0/3 on printedXU gives1/4, independent of offstackX0. Actual Exude Toxin Omen selectedMV2 differs from frontMV4.",
+    "countered_spell_and_departed_reentered_source_keep_captured_value_and_controller": "Original triggering spell countered; source departs/returns under othercontroller; original loss3 and exactcaptured event persist.",
+    "modal_cast_fact_is_owned_raw_index_restorable_and_reveals_no_private_cards": "Modal pending owns prior castfact before choice; raw/index children and independentgain/loss sibling survive parent disposal; rollback/wrongactor, restore/staleindex/replay and bothprivateviews.",
+    "legacy_direct_mana_value_consumers_keep_counter_token_and_damage_results": "Actual Dancing owncounters2, Ovika three1/1redPhyrexianGoblinswithhaste, Thor damage3 preserve legacy direct consumers.",
+    "legacy_printed_symbol_consumer_still_uses_symbols_instead_of_mana_value": "Actual Namor sees CancelUU as two blue symbols rather thanMV3, creates exactly2blue1/1Merfolk."
+  },
+  "test_first_negative": {
+    "report": "<cache>/rustmage-tdm/engine86-cast-event-test-first/native.json",
+    "sha256": "912f6a7d299f084e82ea600c4751ac99d3408e6eed4698fc5198976b585faa59",
+    "terminal": true,
+    "success": false,
+    "compiled": true,
+    "selected": 1,
+    "passed": 0,
+    "intended_failure": "CastSpellManaValue consumer must retain its cast event",
+    "old_helper_sha256": "722173f1ca5d1fe56ec6d9cd303386cd1b77e6b451d051e70a8a655e7e590c9e",
+    "test_sha256": "aecf3d8666a17e0a48caf021765cf9ac25d0e9faebd804642fc4031c6d2d5904",
+    "compile_seconds": 0.91711427498376,
+    "execution_seconds": 0.016242521989624947,
+    "wall_seconds": 0.9338717919890769,
+    "compile_command": [
+      "cargo",
+      "test",
+      "-p",
+      "rustmage",
+      "--test",
+      "tdm_cast_event_scalars",
+      "--no-run",
+      "--message-format=json"
+    ],
+    "compile_log": "<cache>/rustmage-tdm/engine86-cast-event-test-first/native-compile.log",
+    "compile_log_sha256": "d2265e3bc32bb2d02e7d3b4e108b757b75b1f5d87c1a8661e78151e69a7eb5da",
+    "execution_log": "<cache>/rustmage-tdm/engine86-cast-event-test-first/native-execution-0.log",
+    "execution_log_sha256": "fa21f83fcb0a2dca34619b1bef64640d5db11a2e5ed3fa814db2222bbcebc42e",
+    "acceptance": false
+  },
+  "initial_actual_card_failure": {
+    "report": "<cache>/rustmage-tdm/post85-gated-families-1793821082714343829/s_z/native.json",
+    "sha256": "d74840887e092be98c4acdd9fe93ac5989ae778f4aed0604a075902c7bf78210",
+    "passed": 16,
+    "total": 20,
+    "new_admissions": 0
+  },
+  "parked_card_checkpoint": {
+    "directory": "<cache>/rustmage-tdm/engine86-s-z-parked-1793821921066015208",
+    "checkpoint_sha256": "367c29c616c253793e16eadf0a1ff9c5b4ada5f1952939219bbc990dc79fd75c",
+    "new_flags_false": [
+      "Songcrafter Mage",
+      "Teval, Arbiter of Virtue"
+    ],
+    "verified_card_count_unchanged": 33
+  },
+  "artifact_policy": "Native ELF tests link through rlib. Mutable Cargo binaries and cdylib are transient compilation outputs; no required/preserved exact cdylib claim. Persistent run reports/logs and parked source snapshots retain exact hashes.",
+  "full_set_acceptance": false,
+  "focused_finished_utc": "2026-11-04T20:05:29.006232+00:00",
+  "focused_terminal": {
+    "report": "<cache>/rustmage-tdm/engine86-focus-1793822314297383346/terminal.json",
+    "sha256": "e56a64e4342c670277137a40cd019d35d4f4d615c6338733e2dbe1dcf930bd22",
+    "inputs_unchanged": true,
+    "files": 12979,
+    "input_sha256": "5cc589138425bd334fe98fa44ecab2994dd3eb9b4c1d305986a31f5af8aeafbc",
+    "source_manifest": "<cache>/rustmage-tdm/engine86-focus-1793822314297383346/source-inputs.json",
+    "source_manifest_sha256": "0ddefbe6b83e2df438c9d7fe0f1406b42b1759f63b9ec945e22a5bbeadc8900b",
+    "pins": {
+      "crates/engine/src/engine_cast_symbol_quantities.rs": "3fe0aaaf29cc4d85ed0d63cfc7f739fc66372c3d139c386050faf69a9f481c16",
+      "tests/tdm_cast_event_scalars.rs": "aecf3d8666a17e0a48caf021765cf9ac25d0e9faebd804642fc4031c6d2d5904",
+      "tests/tdm_cards_s_z.rs": "ed4273f212586199b72b3ea497268978d2075f08b98660b1af100f18ba16fd19"
+    }
+  },
+  "focused_execution": [
+    {
+      "target": "tdm_cast_event_scalars",
+      "filter": "",
+      "report": "<cache>/rustmage-tdm/engine86-focus-1793822314297383346/tdm_cast_event_scalars/native.json",
+      "sha256": "9f8f3b39ffe82977c27b446baa62d88cf7e0bc44a4c58d54625e9652d7d55f5a",
+      "terminal": true,
+      "success": true,
+      "total": 8,
+      "passed": 8,
+      "tests": [
+        {
+          "test": "cast_event_allocation_stays_opt_in_and_opponent_casts_do_not_trigger_you",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "composed_multiple_divided_and_sum_quantities_retain_the_same_cast_fact",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "countered_spell_and_departed_reentered_source_keep_captured_value_and_controller",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "direct_cast_mana_value_event_is_retained_and_lose_life_uses_it",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "legacy_direct_mana_value_consumers_keep_counter_token_and_damage_results",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "legacy_printed_symbol_consumer_still_uses_symbols_instead_of_mana_value",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "modal_cast_fact_is_owned_raw_index_restorable_and_reveals_no_private_cards",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "selected_stack_x_and_omen_cost_determine_captured_mana_value",
+          "status": "ok",
+          "exit": 0
+        }
+      ],
+      "compile_seconds": 116.62780167203164,
+      "execution_seconds": 0.032415985013358295,
+      "wall_seconds": 116.6608948240173,
+      "compile_command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "tdm_cast_event_scalars",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_log": "<cache>/rustmage-tdm/engine86-focus-1793822314297383346/tdm_cast_event_scalars/native-compile.log",
+      "compile_log_sha256": "2e32aa383f4c35055afcae631b4e5f6581abd9703d5b216b53b5a403754d42df",
+      "execution_log": "<cache>/rustmage-tdm/engine86-focus-1793822314297383346/tdm_cast_event_scalars/native-execution-0.log",
+      "execution_log_sha256": "67fa2c930be6e126d5889599d1b5e3deb601c4776dbb5d45f49f35a21b6a9418",
+      "core_fresh": [
+        false
+      ],
+      "active_processes": []
+    },
+    {
+      "target": "tdm_cards_s_z",
+      "filter": "cast_faces_",
+      "report": "<cache>/rustmage-tdm/engine86-focus-1793822314297383346/tdm_cards_s_z/native.json",
+      "sha256": "25c6eb8e120d65ba186e7653b1f4c7982066e46fd99b450f2384f1407a3933e3",
+      "terminal": true,
+      "success": true,
+      "total": 20,
+      "passed": 20,
+      "tests": [
+        {
+          "test": "cast_faces_actual_teval_delve_selection_is_owned_raw_index_restorable_and_does_not_leak_draws",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "cast_faces_all_five_countered_omens_go_to_graveyard_instead_of_shuffling_or_exiling",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "cast_faces_charring_bite_uses_red_cost_targets_only_nonfliers_and_fizzles_to_graveyard",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "cast_faces_dynamic_soar_places_three_persistent_counters_only_on_own_exact_creature",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "cast_faces_each_omen_is_a_sorcery_even_if_its_front_creature_has_flash",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "cast_faces_exude_toxin_uses_x_on_the_omen_face_and_changes_only_current_non_dragons_until_cleanup",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "cast_faces_flush_out_discards_before_drawing_two_and_draws_nothing_with_an_empty_hand",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "cast_faces_roost_seek_searches_only_basic_lands_privately_reveals_the_pick_and_shuffles_the_dragon",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "cast_faces_sagu_and_twinmaw_normal_creatures_pay_the_front_cost_and_gain_the_printed_life",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "cast_faces_scavenger_regent_ward_is_a_private_discard_cost_or_counters_the_targeting_spell",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "cast_faces_songcrafter_grant_is_source_independent_exact_expires_and_exiles_a_countered_spell",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "cast_faces_songcrafter_grants_sorcery_printed_cost_but_flash_does_not_transfer_to_it",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "cast_faces_songcrafter_has_flash_exact_graveyard_targets_and_taps_itself_for_printed_harmonize",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "cast_faces_spectral_denial_and_teval_use_x_mana_value_even_when_delve_pays_the_reduced_cost",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "cast_faces_spectral_denial_uses_current_owned_four_power_threshold_but_counter_payment_is_chosen_x",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "cast_faces_stormshriek_front_has_haste_and_can_pump_while_tapped_until_cleanup",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "cast_faces_teval_delve_pays_only_generic_and_cast_life_loss_survives_countering",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "cast_faces_teval_does_not_grant_delve_or_cast_loss_from_hand_and_has_six_power_flying_lifelink",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "cast_faces_teval_uses_selected_omen_mana_value_instead_of_the_printed_dragon_face",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "cast_faces_whirlwing_front_flashes_and_grants_only_sorcery_or_dragon_timing_while_present",
+          "status": "ok",
+          "exit": 0
+        }
+      ],
+      "compile_seconds": 1.7696110400138423,
+      "execution_seconds": 0.03462678100913763,
+      "wall_seconds": 1.8047991409548558,
+      "compile_command": [
+        "cargo",
+        "test",
+        "-p",
+        "rustmage",
+        "--test",
+        "tdm_cards_s_z",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "compile_log": "<cache>/rustmage-tdm/engine86-focus-1793822314297383346/tdm_cards_s_z/native-compile.log",
+      "compile_log_sha256": "60d2aab799e6218d810c978e68bd677c089dd035cb130f734fbd5238f070895e",
+      "execution_log": "<cache>/rustmage-tdm/engine86-focus-1793822314297383346/tdm_cards_s_z/native-execution-0.log",
+      "execution_log_sha256": "2686dbc1724d2959058db6da3fde6c45ff9321f490442c0738a6737ed725cd48",
+      "core_fresh": [
+        true
+      ],
+      "active_processes": []
+    }
+  ],
+  "focused_clippy": {
+    "result": {
+      "command": [
+        "cargo",
+        "clippy",
+        "-p",
+        "rustmage",
+        "--profile",
+        "test",
+        "--test",
+        "tdm_cast_event_scalars",
+        "--test",
+        "tdm_cards_s_z",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "timed_out": false,
+      "orphaned_processes": false,
+      "seconds": 22.37330194399692,
+      "log": "<cache>/rustmage-tdm/engine86-focus-1793822314297383346/clippy.log"
+    },
+    "log_sha256": "c61f2e7a12f479d5e677e4f87004d4b4e65f76bbec9fa9bd1a2d7678926c3f5e"
+  },
+  "resource_guard": {
+    "report": "<cache>/rustmage-build-reports/83016232dab247218864381e1ce987ef.json",
+    "sha256": "312910e2c02025da759cb6c905e88c81a84b738931332913bc997a387d6cc7db",
+    "result": {
+      "command": [
+        "python3",
+        "/tmp/tdm-engine86-focus-driver.py"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 141.20726782997372,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 2158825472,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    }
+  },
+  "focused_whole_card_groups_still_unadmitted": 20,
+  "review_status": "Both independent preliminary read-only reviews report no findings on exact source/test design. Published exact final source/full acceptance reviews pending.",
+  "named_legacy_consumers": "All four current mana-value consumers and the existing printed-symbol consumer were read in full. The generic8 target includes actual Dancing, Ovika, Thor and Namor observable outcome compatibility. No separate legacy-family execution is claimed here; root full native acceptance remains pending.",
+  "public_schema": "Existing201 retained: no public field or wire-shape change; existing cast-event payload is populated when a scalar consumer requests it.",
+  "schema": 1
+}

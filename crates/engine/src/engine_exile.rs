@@ -165,6 +165,33 @@ impl Game {
     pub(super) fn exile_top_play(&mut self, player: Player, amount: u128, next_turn: bool) {
         self.exile_top_play_from(player, player, amount, next_turn);
     }
+    pub(super) fn exile_random_graveyard_play(&mut self, player: Player) {
+        let candidates: Vec<_> = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, object)| {
+                (object.zone == Zone::Graveyard && object.owner == player && object.is_card())
+                    .then_some(id as CardId)
+            })
+            .collect();
+        if candidates.is_empty() {
+            return;
+        }
+        let index = if candidates.len() == 1 {
+            0
+        } else {
+            self.state.rng.below(candidates.len() as u64) as usize
+        };
+        let events = self.move_objects_raw(&[candidates[index]], Zone::Exile);
+        for event in &events {
+            if event.moved && event.destination == Zone::Exile {
+                self.grant_exile_play_permission(player, event.after, false);
+            }
+        }
+        self.finish_zone_events(&events, &[]);
+    }
 
     pub(super) fn exile_top_play_from(
         &mut self,
@@ -281,14 +308,31 @@ impl Game {
             .filter(|&b| self.same_target_object(b))
             .filter_map(|b| b.object)
             .collect::<Vec<_>>();
-        self.exile_objects_until_source_leaves(source.object, &objects);
+        self.exile_objects_until_source_leaves_origin(
+            source.object,
+            &objects,
+            item.source_ability_origin,
+        );
     }
     /// A non-target hand choice and an ordinary bound target share the same exact
     /// movement/link transaction. Only an actual arrival in exile creates a link.
+    #[cfg(feature = "test-support")]
     pub(super) fn exile_objects_until_source_leaves(
         &mut self,
         source: ObjectRef,
         objects: &[ObjectRef],
+    ) {
+        self.exile_objects_until_source_leaves_origin(
+            source,
+            objects,
+            self.copy_ability_origin(source),
+        );
+    }
+    pub(super) fn exile_objects_until_source_leaves_origin(
+        &mut self,
+        source: ObjectRef,
+        objects: &[ObjectRef],
+        ability_origin: Option<u64>,
     ) {
         if !self.on_battlefield(source.card) || self.object_ref(source.card) != source {
             return;
@@ -302,6 +346,7 @@ impl Game {
         for event in &events {
             if event.moved && event.destination == Zone::Exile {
                 self.state.exile_links.push(ExileLink {
+                    ability_origin,
                     source,
                     exiled: event.after,
                     return_zone: event.before.zone,
@@ -344,6 +389,7 @@ impl Game {
         death_sources: &[ObjectView],
     ) {
         self.refresh_enduring_stories();
+        self.advance_source_prevention_permanents(events);
         for event in events {
             if event.moved
                 && let Some(player) = event.sacrificed_by
@@ -408,7 +454,10 @@ impl Game {
         };
         // Static sources are already registered for every member of the batch.
         // No moves occur during dispatch, so compute this union just once.
-        let entry_suppression = if sources.is_empty() {
+        let entry_suppression = if !events
+            .iter()
+            .any(|event| event.moved && event.destination == Zone::Battlefield)
+        {
             0
         } else {
             self.state.static_sources.iter().fold(0, |mask, &id| {
@@ -422,22 +471,30 @@ impl Game {
             })
         };
         // One trigger per observing source for the entire simultaneous entry event.
-        let mut token_entered = [false; 2];
+        let mut token_entered = [Vec::new(), Vec::new()];
         for event in events {
             if event.moved && event.destination == Zone::Battlefield {
                 let entered = self.object_view(event.after.card);
                 if entered.is_token() && entered.kinds & entry_suppression == 0 {
-                    token_entered[entered.controller.index()] = true;
+                    token_entered[entered.controller.index()].push(entered.reference);
                 }
             }
         }
         for source in &sources {
-            if source.zone != Zone::Battlefield || !token_entered[source.controller.index()] {
+            if source.zone != Zone::Battlefield
+                || token_entered[source.controller.index()].is_empty()
+            {
                 continue;
             }
             for (index, ability) in source.card.triggers().iter().enumerate() {
-                if ability.condition.event() == TriggerCondition::TokensEnterYou {
-                    self.queue_trigger(source, index);
+                if ability.condition.event() == TriggerCondition::TokensEnterYou
+                    && self.queue_trigger(source, index)
+                {
+                    self.state
+                        .pending_triggers
+                        .last_mut()
+                        .unwrap()
+                        .refer_objects(token_entered[source.controller.index()].iter().copied());
                 }
             }
         }
@@ -460,12 +517,25 @@ impl Game {
             }
             self.zone_triggers(event, death_sources, &sources, entry_suppression);
             if event.moved && event.destination == Zone::Battlefield {
+                let entrant = self.object_view(event.after.card);
+                if entrant.kinds & 1 != 0 && entrant.kinds & entry_suppression == 0 {
+                    self.queue_turn_callbacks(
+                        crate::cards::TurnCallbackEvent::CreatureEntry,
+                        entrant.controller,
+                        Some(event.after),
+                    );
+                }
                 // Entering with counters is a placement event on every entry path,
                 // including raw returns and tokens, exactly once after the whole batch.
                 let placed_by = event
                     .entry_counter_player
                     .expect("battlefield entry controller");
                 let counters = self.counter_amounts(event.after.card).to_owned();
+                // A successful true zone entry has a fresh exact incarnation.
+                self.controlled_creature_counter_events(
+                    std::iter::once((event.after, &counters, placed_by)),
+                    true,
+                );
                 for kind in CounterKind::ALL {
                     self.self_counters_added(event.after, kind, counters.get(kind), placed_by);
                 }

@@ -8,5 +8,36 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "37d8e26462fc265ea09575eef0e9aa2fae9f664b6ea95ee77390be3ab662c7d5"
   },
-  "physical_metadata_sha256": "70a83f3c7a52b1c5c9afc8b00584b763afd59eb90de77e7e1c470dd722bd352b"
+  "physical_metadata_sha256": "70a83f3c7a52b1c5c9afc8b00584b763afd59eb90de77e7e1c470dd722bd352b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PurgingStormbrood.java",
+  "java_sha256": "418e347baeadfc0f82b0adee281f9ea8b47a164dd4abd41e2a24b0996978c8aa",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/OmenCard.java",
+      "sha256": "23ab5ce7824ef4ff96e68a43e16b9cc29fe9e5f03e447653d981da346fb5fcba"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/OmenSpellCard.java",
+      "sha256": "a103edc55f20408a67f69a0be9d1c5d5d08133c3b25d43fde7614bee966678ba"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+      "sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/RemoveAllCountersPermanentTargetEffect.java",
+      "sha256": "9fa7d62e59c42dfb50663d177a111dfc82d85de36acf1413ffde01beb7aba8c1"
+    }
+  ]
 }

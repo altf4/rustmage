@@ -173,6 +173,9 @@ fn classify(s: &SpellView) -> Option<usize> {
         | StackKind::DelayedWarpExile
         | StackKind::DelayedManifestDread
         | StackKind::SiegeDefeat
+        | StackKind::DecayedAttack
+        | StackKind::SuspendTick
+        | StackKind::SuspendCast
         | StackKind::InherentRule { .. } => {
             panic!("no delayed producer in this fixture")
         }

@@ -1,0 +1,391 @@
+{
+  "schema": 1,
+  "scope": "CR111.5 pre-event copy-token eligibility repair for B:linked_exile_attacking_copies and shared copy creation",
+  "base_revision": "d6eb0889e1a455dc390525d9925272aeb74fc02b",
+  "tracking_issue": "https://github.com/altf4/rustmage/issues/570",
+  "card_authorship_or_admission_changes": false,
+  "source_inputs": [
+    {
+      "path": "crates/engine/src/engine_copies.rs",
+      "sha256": "fcd838fc8efc492ae662e2d5493718159d5510ba849763d2f69607aa84d27ea6"
+    },
+    {
+      "path": "crates/engine/src/engine_replacements.rs",
+      "sha256": "23603fbeb90aa765f7039d815d9a8514ae19158fbf3a09b5cccb1604f0f21421"
+    },
+    {
+      "path": "crates/engine/src/engine_temporary_tokens.rs",
+      "sha256": "700efad21dc14aa200ff0f0c16d60e29283f3965afc8496b5bd58df6b2dc1641"
+    },
+    {
+      "path": "tests/tdm_combat_callbacks.rs",
+      "sha256": "e2ebb69df37a2382dff9e97d6ebe5c09e3add09c3f26e9fdf49ac7660f523100"
+    }
+  ],
+  "source_freeze": {
+    "negative": {
+      "path": "<cache>/rustmage-tdm/combat-callbacks-cr1115-negative/source-hashes.json",
+      "sha256": "5e47c5bc85bbb881a6c0bcffcf75d81b2a88af11e48b371ddca7028c0b9918d8"
+    },
+    "fixed_and_all_compatibility": {
+      "path": "<cache>/rustmage-tdm/combat-callbacks-cr1115-fixed/source-hashes.json",
+      "sha256": "1053ca148d0f2c2b69b353a607f07f7b6c1364d88c954a71d1d688b844a52245"
+    },
+    "verified_unchanged_after_terminal_runs": true
+  },
+  "authority": {
+    "oracle": {
+      "oracle_id": "1f82e4b9-e67f-4f34-ac4c-57b0b300ee42",
+      "name": "Mardu Siegebreaker",
+      "layout": "normal",
+      "mana_cost": "{1}{R}{W}{B}",
+      "cmc": 4.0,
+      "type_line": "Creature \u2014 Human Warrior",
+      "oracle_text": "Deathtouch, haste\nWhen this creature enters, exile up to one other target creature you control until this creature leaves the battlefield.\nWhenever this creature attacks, for each opponent, create a tapped token that's a copy of the exiled card attacking that opponent. At the beginning of your next end step, sacrifice those tokens.",
+      "power": "4",
+      "toughness": "4",
+      "colors": [
+        "B",
+        "R",
+        "W"
+      ],
+      "color_identity": [
+        "B",
+        "R",
+        "W"
+      ],
+      "keywords": [
+        "Haste",
+        "Deathtouch"
+      ],
+      "all_parts": [
+        {
+          "id": "4fa10a98-1d1f-4e66-b81d-615ffaf43ca1",
+          "component": "combo_piece",
+          "name": "Mardu Siegebreaker",
+          "type_line": "Creature \u2014 Human Warrior"
+        },
+        {
+          "id": "45364163-62b7-4641-b2c9-c2e46d61335c",
+          "component": "token",
+          "name": "Copy",
+          "type_line": "Token"
+        }
+      ],
+      "reference_printing": {
+        "id": "3044b232-edf4-4000-9273-cc4653ad653a",
+        "set": "tdm",
+        "collector_number": "206",
+        "released_at": "2025-04-11"
+      }
+    },
+    "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "complete_java_bodies_read": [
+      {
+        "path": "<xmage>/Mage.Sets/src/mage/cards/m/MarduSiegebreaker.java",
+        "sha256": "6775cc47006680e84f2f535f70c06ee054eb9a83181d9a0f8b521a6c2b7a40ee"
+      },
+      {
+        "path": "<xmage>/Mage/src/main/java/mage/util/functions/CopyTokenFunction.java",
+        "sha256": "ed8c0fe3b50030f54d3e32ddbabbdc1f7018c0da6878429821f54020c4d4ce1a"
+      }
+    ],
+    "rules": {
+      "path": "<cache>/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
+      "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+      "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+      "sections": [
+        "111.5",
+        "607.3",
+        "607.5",
+        "707.2",
+        "707.8",
+        "712.8a"
+      ]
+    },
+    "release_notes": "https://magic.wizards.com/en/news/feature/tarkir-dragonstorm-release-notes"
+  },
+  "implementation": [
+    "CopyRecipe::can_create_token checks selected copiable kinds, rejecting instant/sorcery copies. It retains noncreature permanent recipes and existing type exceptions.",
+    "stage_copy_token_batch stably removes rejected parallel recipe/group pairs before replacement applicability, token allocation or entry scheduling. An empty retained event returns immediately. Retains require no new allocation and preserve valid group/recipe alignment.",
+    "Linked physical cards still use the printed front face and exact exile/source/acquired-ability origin. CopyRecipe::new constructs that recipe, so inherited fields retain canonical defaults."
+  ],
+  "focused_proofs": [
+    {
+      "test": "linked_nonpermanent_manifested_cards_create_no_tokens_or_replacement_event",
+      "result": "Both seats, actual manifested Opt and Divination are legally exiled by the Mardu fixture and linked by exact source/exiled identity and native ability origin. Attack produces no token, AddToken Food, replacement continuation, delayed sacrifice or token allocation; the physical card stays linked in exile."
+    },
+    {
+      "test": "linked_nonpermanent_double_face_front_cannot_use_its_creature_back_to_create_a_token",
+      "result": "A complete Double front-Opt/back-Bear-Cub copy recipe at the same shared creation boundary is rejected without any snapshot or replacement-state change, on both seats.",
+      "catalogue_limitation": "Pinned catalogue has ten modal double-faced identities, all creature-front Spider-Man cards. No nonpermanent-front modal DFC exists in the pool, so this boundary uses explicit typed CopyFaces::Double and makes no new metadata/admission claim."
+    },
+    {
+      "test": "linked_nonpermanent_filter_preserves_valid_recipe_alignment_and_ability_origin",
+      "result": "Matching native Opt is removed, matching native Bear Cub remains aligned, and a valid Hill Giant link from a distinct copied ability origin stays dormant. Exactly Bear Cub plus one replacement-added Food is created and owned-end sacrifice tracks both."
+    },
+    {
+      "test": "exiled_noncreature_physical_card_makes_tapped_nonattacking_copy_even_if_previously_animated",
+      "result": "Enhanced positive control: animated Short Bow is exiled as a creature, then its unanimated artifact recipe remains eligible and AddToken Food really applies. Both tokens enter tapped/nonattacking, both are tracked and sacrificed."
+    }
+  ],
+  "expected_negative": {
+    "run": {
+      "path": "<cache>/rustmage-tdm/combat-callbacks-cr1115-negative/native.json",
+      "sha256": "599759ff6eabe8840bc8fa8c4e2c5f9e3f608cc2dd67d311da3d98b1d26cc11f",
+      "cases": 3,
+      "passed": 0,
+      "success": false,
+      "terminal": true,
+      "compile_seconds": 1.8192798599775415,
+      "execution_seconds": 0.024614171008579433,
+      "compile_exit": 0,
+      "resource": {
+        "path": "<cache>/rustmage-build-reports/da948b21f5304489854229b3c56059b4.json",
+        "sha256": "61aca09358c9b3b1274b0e20bb07fa891830d7a003ef8a49bc149b804f87ab9d",
+        "exit_code": 1,
+        "seconds": 1.8758423810068052,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 318816256,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "engine": "Exact old d6 engine, new fixture target only; compile succeeded and all three linked_nonpermanent groups failed at the intended behavior boundaries.",
+    "failures": [
+      "MDFC recipe opened creation replacement state.",
+      "Mixed-origin/mixed-type batch created3 tokens instead of required2.",
+      "Actual manifested Opt produced token creation/AddToken."
+    ]
+  },
+  "final_runs": [
+    {
+      "path": "<cache>/rustmage-tdm/combat-callbacks-cr1115-fixed/native.json",
+      "sha256": "efa2bbcf5cebc07beda457a0ca8816a63269ab832f1dcf648259a142709bfccd",
+      "cases": 32,
+      "passed": 32,
+      "success": true,
+      "terminal": true,
+      "compile_seconds": 112.74551657200209,
+      "execution_seconds": 0.0436792139953468,
+      "compile_exit": 0,
+      "resource": {
+        "path": "<cache>/rustmage-build-reports/45d1bb85c8ae416997264929e85d98a5.json",
+        "sha256": "bc0733f4a60b0ee6e54fc065baf52eb2d7e4614c1eb8933386414a81d3645265",
+        "exit_code": 0,
+        "seconds": 112.83511237398488,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 1926533120,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    {
+      "path": "<cache>/rustmage-tdm/combat-callbacks-cr1115-compat/0/native.json",
+      "sha256": "62e9a7213fbd6a44a5aea976e2cbdb58cf933c1cb071fe9acac74ce41fb1fbbd",
+      "cases": 17,
+      "passed": 17,
+      "success": true,
+      "terminal": true,
+      "compile_seconds": 0.8668861030018888,
+      "execution_seconds": 0.04351799099822529,
+      "compile_exit": 0,
+      "resource": {
+        "path": "<cache>/rustmage-build-reports/7db6b0d5d23e4894a776bd758674cba5.json",
+        "sha256": "4783181734cebc5cf3c01d249a9307936fb974b36f4b12cda4aedcb9bdad23c0",
+        "exit_code": 0,
+        "seconds": 0.9535798710130621,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 224808960,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    {
+      "path": "<cache>/rustmage-tdm/combat-callbacks-cr1115-compat/1/native.json",
+      "sha256": "6d5de6aac18cb8e4c14fe526592042edb35e16b2031411056cd91f588cc90ef3",
+      "cases": 16,
+      "passed": 16,
+      "success": true,
+      "terminal": true,
+      "compile_seconds": 0.9196676879946608,
+      "execution_seconds": 0.0348872669856064,
+      "compile_exit": 0,
+      "resource": {
+        "path": "<cache>/rustmage-build-reports/995f428a2634461c9c8ea91a4c9434f5.json",
+        "sha256": "90774192958e962a31a2d658140988fc777e6d7f44b617d3f2df0f25329780b6",
+        "exit_code": 0,
+        "seconds": 1.006786969024688,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 221777920,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    {
+      "path": "<cache>/rustmage-tdm/combat-callbacks-cr1115-compat/2/native.json",
+      "sha256": "95eb832a6fedc6d4fdb1ffe6dfbfa82d4bb4be94c3c65fc885dbb73e166e49eb",
+      "cases": 10,
+      "passed": 10,
+      "success": true,
+      "terminal": true,
+      "compile_seconds": 0.8667431669891812,
+      "execution_seconds": 0.03332942700944841,
+      "compile_exit": 0,
+      "resource": {
+        "path": "<cache>/rustmage-build-reports/3156a1ed70b9443d8183ef4036735820.json",
+        "sha256": "fcf615c1018aa39a57ec4844a66a5b8e8881ed31fc883973adbb9873707d1a7a",
+        "exit_code": 0,
+        "seconds": 0.9491208769904915,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 222691328,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    {
+      "path": "<cache>/rustmage-tdm/combat-callbacks-cr1115-compat/3/native.json",
+      "sha256": "51c6cf6460b1d03b9bb97ab7769c7ea1fcf00a9305a6ad6a10a8d69679227819",
+      "cases": 18,
+      "passed": 18,
+      "success": true,
+      "terminal": true,
+      "compile_seconds": 1.4191034059913363,
+      "execution_seconds": 0.03439308298402466,
+      "compile_exit": 0,
+      "resource": {
+        "path": "<cache>/rustmage-build-reports/f3f9435764fb46dc9095332114ae7da9.json",
+        "sha256": "9fab9eac3f94875650876573a4008298e6268485d0636df230b783878903b202",
+        "exit_code": 0,
+        "seconds": 1.4959703179774806,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 291106816,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    }
+  ],
+  "summary": {
+    "focused": 32,
+    "compatibility": 61,
+    "total_passes": 93,
+    "all_final_runs_terminal_success": true,
+    "compile_seconds": 116.81791693597916,
+    "execution_seconds": 0.18980698197265156,
+    "compatibility_targets": [
+      "dft_embalm17: copy recipes, exceptions and replacement continuation",
+      "dft_entry_copies16: ordinary entry-copy continuation",
+      "dft_permanent_cast_copy_engine10: permanent spell copies remain separate from creation replacements",
+      "tdm_copy_suspend18: existing copy policy and suspend contracts"
+    ]
+  },
+  "state_and_wire": {
+    "new_state_or_object_fields": false,
+    "new_wire_or_action_variants": false,
+    "hot_layout_change": false,
+    "prior_measured_layout": {
+      "path": "<cache>/rustmage-tdm/combat-callbacks-fixture-fixed/layout.txt",
+      "sha256": "1c6a8f10dd515a784478151cb5bfea6baa9e3c2628f83425cd8a89b2b6cd3b50",
+      "previous": {
+        "Object": 160,
+        "ObjectView": 528,
+        "State": 4960,
+        "DamageSource": 160
+      },
+      "current": {
+        "Object": 160,
+        "ObjectView": 528,
+        "State": 4960,
+        "DamageSource": 160
+      },
+      "note": "No hot Object/State field. New vectors are cold members of the existing CombatRulesState; link origins enlarge sparse links only."
+    },
+    "note": "Repair changes methods and local stable filtering only; no object fields or enum representations changed."
+  },
+  "preserved_shared_libraries": [
+    {
+      "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/libserde_derive-4a3ec5018aa504ef.so",
+      "sha256": "16e56c72844cb52549aca635bf643fd0903d223d703291e366575e6900e074a7",
+      "role": "Rust compiler proc-macro shared library; exact compile-time dependency remains present."
+    },
+    {
+      "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/librustmage_test_access-636adfcd609bee93.so",
+      "sha256": "c009fbc5de616b8bd2e9b74040b5e3a93b47809c2a8f4c5e2a78d1a564398f6a",
+      "role": "Rust compiler proc-macro shared library; exact compile-time dependency remains present."
+    }
+  ],
+  "verification": [
+    "All six guarded processes terminated; no active or queued Cargo remains. Inputs were fixed through each consuming process and source pins verified after final compatibility.",
+    "One Cargo job, one test thread, 6GiB cgroup; no memory events/OOM.",
+    "rustfmt --edition2024 on all four changed Rust files; git diff --check."
+  ],
+  "remaining_acceptance": [
+    "Two refreshed independent nonauthor reviews of the repaired published head.",
+    "Root assembled validation and common schema/trace work remain open.",
+    "No ordinary TDM card definitions/admissions or full release/simulation throughput claim."
+  ],
+  "transient_compilation_outputs": [
+    {
+      "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/librustmage.so",
+      "sha256": "dd95e33cd8fa849a0ace3f6f54e5a08f6df0796de55b833c0af5ce9c58eea828",
+      "artifact_role": "Transient Cargo cdylib output emitted alongside the rlib; not a native test execution dependency.",
+      "required_for_recorded_native_test_executions": false,
+      "available_at_recorded_hash_at_correction": false,
+      "availability": "Not present at the recorded path/hash during this inspection; a later Cargo build replaced the warm output. No archived copy at the historical hash was verified. The original path and hash are retained unchanged."
+    }
+  ],
+  "artifact_availability_correction": {
+    "source_revision": "acd95191e5693c04b1a18a59a21f744f7d0662b2",
+    "original_document_sha256": "2766d1c762443ef8d17d44e281caebc3ed43335172031b31610e2cf9dffe93bc",
+    "checked_at_utc": "2026-11-03T00:48:28.869730+00:00",
+    "reason": "Remove the false required/preserved classification of a mutable Cargo cdylib for this native Rust test checkpoint. All historical path/hash/report/command records remain unchanged. Exact compiler proc-macro libraries are retained as compile-time dependencies.",
+    "audited_native_reports": [
+      {
+        "path": "<cache>/rustmage-tdm/combat-callbacks-cr1115-negative/native.json",
+        "sha256": "599759ff6eabe8840bc8fa8c4e2c5f9e3f608cc2dd67d311da3d98b1d26cc11f"
+      },
+      {
+        "path": "<cache>/rustmage-tdm/combat-callbacks-cr1115-fixed/native.json",
+        "sha256": "efa2bbcf5cebc07beda457a0ca8816a63269ab832f1dcf648259a142709bfccd"
+      },
+      {
+        "path": "<cache>/rustmage-tdm/combat-callbacks-cr1115-compat/0/native.json",
+        "sha256": "62e9a7213fbd6a44a5aea976e2cbdb58cf933c1cb071fe9acac74ce41fb1fbbd"
+      },
+      {
+        "path": "<cache>/rustmage-tdm/combat-callbacks-cr1115-compat/1/native.json",
+        "sha256": "6d5de6aac18cb8e4c14fe526592042edb35e16b2031411056cd91f588cc90ef3"
+      },
+      {
+        "path": "<cache>/rustmage-tdm/combat-callbacks-cr1115-compat/2/native.json",
+        "sha256": "95eb832a6fedc6d4fdb1ffe6dfbfa82d4bb4be94c3c65fc885dbb73e166e49eb"
+      },
+      {
+        "path": "<cache>/rustmage-tdm/combat-callbacks-cr1115-compat/3/native.json",
+        "sha256": "51c6cf6460b1d03b9bb97ab7769c7ea1fcf00a9305a6ad6a10a8d69679227819"
+      }
+    ],
+    "runner_and_link_configuration": [
+      {
+        "path": "scripts/run_native_tests.py",
+        "revision": "acd95191e5693c04b1a18a59a21f744f7d0662b2",
+        "sha256": "72c1d6809cb068c8e0309d3bed15e46f705ef924fb15da71bd146b052450d760"
+      },
+      {
+        "path": "Cargo.toml",
+        "revision": "acd95191e5693c04b1a18a59a21f744f7d0662b2",
+        "sha256": "fef5f68519e2da5e0eb8f781a68e151ffd4e15f1ba679b717635a292c72a1d92"
+      }
+    ],
+    "execution_mode": "The recorded reports compile Rust integration tests with cargo test -p rustmage --test TARGET --no-run --message-format=json, then directly execute the reported native ELF under the bounded native runner. That runner contains no ctypes/cffi/CDLL load. Rust integration tests consume the rlib; Cargo also emits a cdylib because the crate requests both formats. No recorded command in this checkpoint requires that cdylib.",
+    "availability_scope": "Current warm-output availability is stated only for this inspection. Replaced or changing historical bytes are not claimed preserved, and no new hashes replace the original observations. No cache restoration, deletion, rebuild or runtime edit was performed.",
+    "native_executable_pin_availability": [],
+    "runtime_or_cache_changes": false
+  }
+}

@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "87b447e6b4c466c040552210003b05b577e6b8ecd9c971876d695483dd8cec2c"
   },
-  "physical_metadata_sha256": "8269d7fe775c59a3f5e3e7c92320946b90b973b23225fb522654a4a9424e2f62"
+  "physical_metadata_sha256": "8269d7fe775c59a3f5e3e7c92320946b90b973b23225fb522654a4a9424e2f62",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LoxodonBattlePriest.java",
+  "java_sha256": "57e64fae57e2ec6a0bdbacbe799fb3ac0420447ef5b1c9a7650e54fb46b93655",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfCombatTriggeredAbility.java",
+      "sha256": "c8f16a3b46db04f428d1bebc9c1ee8171d14dc9879ff0f6f825a2b49909f2f41"
+    }
+  ]
 }

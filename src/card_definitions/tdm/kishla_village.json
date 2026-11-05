@@ -3,10 +3,26 @@
   "catalogue_id": 2373,
   "oracle_id": "4eb428ab-f5b0-46ca-98dd-b3466a91ef97",
   "facts_sha256": "5f3ec2a185c2c1da1f66f27737bff672e23075c014102d6d8d3a721f03f6c80a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4d96bc27c21cde90b34964e5487d625c00e20e646881cd434b275c36f6d45c70"
   },
-  "physical_metadata_sha256": "25cb475ca9f190272eef441bf8af38873aeb6b7ad74f01dce34612c1724b3b12"
+  "physical_metadata_sha256": "25cb475ca9f190272eef441bf8af38873aeb6b7ad74f01dce34612c1724b3b12",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KishlaVillage.java",
+  "java_sha256": "773495bcc5884fa1439508bfe254ecb03b34c59be7053ae198ce78b11745dead",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedUnlessAbility.java",
+      "sha256": "389f076d5e9c21e7e868cef5ed4d35d7a346a8a33bccaf9516e09843c1fad1f6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    }
+  ]
 }

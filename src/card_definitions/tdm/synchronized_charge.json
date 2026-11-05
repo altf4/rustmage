@@ -3,10 +3,46 @@
   "catalogue_id": 4303,
   "oracle_id": "faa0055b-c1d2-4ce7-875f-41b4be8030bd",
   "facts_sha256": "b2158873a8abf4f850141cfb88d80cda076e8ea4022572863d82e9c107bb41a4",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "06fe1b1697207c6b93912642ee5f62c7826a25ccfb019cb4939c666582521f50"
   },
-  "physical_metadata_sha256": "16f99e27047bad3aec390534a373df80117064310ce2fdc3c35b46166261f3e0"
+  "physical_metadata_sha256": "16f99e27047bad3aec390534a373df80117064310ce2fdc3c35b46166261f3e0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SynchronizedCharge.java",
+  "java_sha256": "6bc604c5fcc38f4d475e4f6f0a69c21b1f6c49ee920b5feb831f5895518d61ab",
+  "rules_tests": "tests/tdm_cards_s_z_additional.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/DistributeCountersEffect.java",
+      "sha256": "745e7d5d527b57c5dd4a8b5e477a62c2d856ae9731d1d575ec29891351978e62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/CounterAnyPredicate.java",
+      "sha256": "d9b89c5d487a1c6aede3f90e5edf474311703b231441a01a3a30b10107eb9434"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HarmonizeAbility.java",
+      "sha256": "a646e202f733800900da7295d1a6886e583f76dcf25fad2be614b00e9f933f0d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    }
+  ]
 }

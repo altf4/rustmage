@@ -1,16 +1,27 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Directly authored from the complete pinned Oracle and XMage implementation.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Creature(3, 1),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::InZone {
+            zone: TargetZone::Graveyard,
+            event: &TriggerCondition::CreatureDies {
+                relation: CastRelation::You,
+                other: false,
+                nontoken: false,
+                subtype: None,
+            },
+        },
+        targets: TargetPlan::NONE,
+        program: &[
+            Instruction::MayPayMana {
+                cost: ManaCost {
+                    colored: [1, 0, 0, 0, 0, 0],
+                    generic: 1,
+                },
+                skip: 1,
+            },
+            Instruction::ReturnSourceToHand(TargetZone::Graveyard),
+        ],
+    }],
     ..CardRules::EMPTY
 };

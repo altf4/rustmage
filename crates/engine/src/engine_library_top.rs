@@ -19,12 +19,15 @@ pub(super) struct VisibilityOperation {
     pub land: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+type PrivateKnownTop = [Option<(ObjectRef, u8)>; 2];
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct LibraryTopState {
     pub operation: Option<VisibilityOperation>,
     pub reveal: Option<LibraryRevealEvent>,
     /// Private exact current-top knowledge, indexed by library owner.
-    pub private_known_top: Option<Box<[Option<(ObjectRef, u8)>; 2]>>,
+    pub private_known_top: Option<Box<PrivateKnownTop>>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {

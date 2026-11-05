@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b8568337df72b77a9aec4134de9e9e5508560c194f3fa1bb8935d732c159404b"
   },
-  "physical_metadata_sha256": "44db58fe3492062ad2d0cd8b901a7b86fcda8195c044473c5b219571b64a2ffc"
+  "physical_metadata_sha256": "44db58fe3492062ad2d0cd8b901a7b86fcda8195c044473c5b219571b64a2ffc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FocusTheMind.java",
+  "java_sha256": "b68b1431d5d032eebd3043d11bc8266ca3fe210b10bf82a81b6ecf938f2ebe38",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionSourceEffect.java",
+      "sha256": "c877e6d5d339d0c8a602f1c16190e62f1dd0a5e1c11ba333a698b6dfee367304"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CastAnotherSpellThisTurnCondition.java",
+      "sha256": "8cacb7cbc8fb2f4cdacf147b16e4cd9972a6532c381c6e115901871d611b0eb4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    }
+  ],
+  "remaining_obligations": []
 }

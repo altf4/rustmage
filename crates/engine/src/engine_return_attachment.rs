@@ -88,10 +88,15 @@ impl Game {
         reflexive: Option<u16>,
     ) -> bool {
         if equipment.len() < 2 {
-            if self.attach_equipment_batch(&equipment, recipient) != 0
+            let attached = self.attach_equipment_batch_objects(&equipment, recipient);
+            if !attached.is_empty()
                 && let Some(ability) = reflexive
             {
-                self.queue_reflexive(item, ability, Some(recipient));
+                self.queue_reflexive_objects(
+                    item,
+                    ability,
+                    std::iter::once(recipient).chain(attached),
+                );
             }
             return false;
         }
@@ -290,11 +295,16 @@ impl Game {
                 .into_iter()
                 .filter(|r| self.state.objects[r.card as usize].controller == frame.player)
                 .collect();
-            if self.attach_equipment_batch(&equipment, recipient) != 0
+            let attached = self.attach_equipment_batch_objects(&equipment, recipient);
+            if !attached.is_empty()
                 && let Some(ability) = frame.reflexive
             {
                 let item = self.state.resolving.as_ref().unwrap().item.clone();
-                self.queue_reflexive(&item, ability, Some(recipient));
+                self.queue_reflexive_objects(
+                    &item,
+                    ability,
+                    std::iter::once(recipient).chain(attached),
+                );
             }
             self.run_program();
             return;

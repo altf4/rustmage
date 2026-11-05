@@ -3,10 +3,26 @@
   "catalogue_id": 3048,
   "oracle_id": "8d84a706-080c-4fb2-b1b9-3dbb3294fb7b",
   "facts_sha256": "b8f6a4265e3d4cf18a58762795472621cf3051eadb853ac6e19a1a2521d422f6",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a1e45331847e5c2f89230bcc3f21cb2dfe4f08763ffd7b301eedd11874f9cf47"
   },
-  "physical_metadata_sha256": "74cfcd6ab3d8310b2d9137428aef319b6280e9a165311ab8ba49e23b355acd4e"
+  "physical_metadata_sha256": "74cfcd6ab3d8310b2d9137428aef319b6280e9a165311ab8ba49e23b355acd4e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OsseousExhale.java",
+  "java_sha256": "2d46615115860626decb6c89aa8e36240ac91d7a3214bb8d48af5c4b7e3fab39",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/BeholdAbility.java",
+      "sha256": "1158e149cbebed05fae0649fc121f876036a49ce3ad033b1bb608b9271dc6dd2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/BeheldDragonCondition.java",
+      "sha256": "92daf16ec33cd13cdf6a6c54634b85d4fcce199811384d18f0199ef19f02ca72"
+    }
+  ]
 }

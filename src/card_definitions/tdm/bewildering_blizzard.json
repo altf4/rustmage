@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f397300e4f050311b1122bd46fc311960d366a2b2eea31e5fe560076ae3975db"
   },
-  "physical_metadata_sha256": "7ebc8356da040b9c828284e2aa28495b56b1de27923baaf5c2f8a70ba21ce1b8"
+  "physical_metadata_sha256": "7ebc8356da040b9c828284e2aa28495b56b1de27923baaf5c2f8a70ba21ce1b8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BewilderingBlizzard.java",
+  "java_sha256": "df51221138f8e1e8c81b6a0ae67926b62a738c0c275488c692658e535cf06a0d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllEffect.java",
+      "sha256": "207759bf847022c212e713d520d0899243c37ef89c90c19473082c0ddd03099e"
+    }
+  ],
+  "remaining_obligations": []
 }

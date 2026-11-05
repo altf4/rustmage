@@ -26,6 +26,22 @@ pub(super) trait CharacteristicWorld {
             .stats(id)
             .power
     }
+    /// Derived toughness is sampled only by resolving quantities and costs, never
+    /// as an earlier-layer StatValue that could recursively define its own stats.
+    fn greatest_creature_toughness(&self, player: Player) -> i128 {
+        let query = characteristic_query::CharacteristicQuery::in_world(self);
+        (0..self.game().state.objects.len())
+            .map(|id| id as CardId)
+            .filter(|&id| {
+                let object = self.object(id);
+                object.zone == Zone::Battlefield
+                    && object.controller == player
+                    && self.kinds(id) & 1 != 0
+            })
+            .map(|id| query.stats(id).toughness)
+            .max()
+            .unwrap_or(0)
+    }
     fn game(&self) -> &Game;
     fn borrowed_slots_state(&self) -> &borrowed_activations::SlotRows {
         &self.game().state.borrowed_slots
@@ -623,7 +639,8 @@ pub(super) trait CharacteristicWorld {
                 matches!(
                     f,
                     crate::cards::StaticAbilityFragment::ControlledPermanentsCannotBeSacrificed
-                )
+                ) || matches!(f, crate::cards::StaticAbilityFragment::KeywordGrant(_, grant)
+                    if grant.keywords.contains(Keywords::CANT_BE_SACRIFICED))
             })
         });
         #[cfg(feature = "test-support")]
@@ -645,6 +662,9 @@ pub(super) trait CharacteristicWorld {
             return true;
         }
         let query = characteristic_query::CharacteristicQuery::in_world(self);
+        if query.keywords(id).contains(Keywords::CANT_BE_SACRIFICED) {
+            return true;
+        }
         (0..self.game().state.objects.len()).any(|index| {
             let source = index as CardId;
             let provider = self.object(source);
@@ -707,13 +727,35 @@ pub(super) trait CharacteristicWorld {
     fn activation_prohibited(&self, actor: Player, id: CardId) -> bool {
         let target = self.object(id);
         (target.zone == Zone::Battlefield
-            && self.roles().is_some_and(|roles| {
-                roles.source_linked_effects.iter().any(|row| {
-                    row.kind == SourceLinkedEffectKind::PreventActivationsUntilUntapped
-                        && row.recipient == self.reference(id)
-                        && source_linked_effects::active(self, row)
+            && self.static_sources().iter().any(|&source| {
+                let provider = self.object(source);
+                if provider.zone != Zone::Battlefield {
+                    return false;
+                }
+                provider.card.static_ability_groups().iter().any(|group| {
+                    group.fragments.iter().any(|fragment| {
+                        let crate::cards::StaticAbilityFragment::ActivatedPermanentKindsProhibited(
+                            kinds,
+                        ) = *fragment
+                        else {
+                            return false;
+                        };
+                        self.kinds(id) & kinds != 0
+                            && characteristic_query::CharacteristicQuery::in_world(self)
+                                .continuous_fragment_available(source, |found| {
+                                    std::ptr::eq(found, fragment)
+                                })
+                    })
                 })
             }))
+            || (target.zone == Zone::Battlefield
+                && self.roles().is_some_and(|roles| {
+                    roles.source_linked_effects.iter().any(|row| {
+                        row.kind == SourceLinkedEffectKind::PreventActivationsUntilUntapped
+                            && row.recipient == self.reference(id)
+                            && source_linked_effects::active(self, row)
+                    })
+                }))
             || target.zone == Zone::Battlefield
                 && self.kinds(id) & (1 | 16 | 32) != 0
                 && self.static_sources().iter().any(|&source| {
@@ -903,9 +945,15 @@ pub(super) trait CharacteristicWorld {
         if self.object(id).zone != Zone::Battlefield {
             return true;
         }
-        let Some(evaluation) = ability_evaluation::evaluate_if_needed(self) else {
+        let evaluation = ability_evaluation::evaluate_if_needed(self);
+        if evaluation.is_none()
+            && !matches!(
+                self.object(id).card.entry_choice(),
+                Some(EntryChoiceKind::NamedModes(_))
+            )
+        {
             return true;
-        };
+        }
         self.object(id)
             .card
             .static_ability_groups()
@@ -913,7 +961,10 @@ pub(super) trait CharacteristicWorld {
             .enumerate()
             .any(|(index, group)| {
                 group.fragments.iter().any(&matches)
-                    && evaluation.group_available(self.reference(id), index)
+                    && entry_modes::group_enabled(self, self.reference(id), group)
+                    && evaluation.as_ref().is_none_or(|evaluation| {
+                        evaluation.group_available(self.reference(id), index)
+                    })
             })
     }
     fn printed_abilities_available(&self, id: CardId) -> bool {
@@ -1080,7 +1131,7 @@ pub(super) trait CharacteristicWorld {
         if object.zone != ability.source_zone()
             || !object.card.static_ability_groups().iter().any(|group| {
                 group.fragments.iter().any(|fragment| matches!(fragment,
-                    crate::cards::StaticAbilityFragment::SourceMaxSpeedActivation(slot) if *slot == index))
+                    crate::cards::StaticAbilityFragment::SourceMaxSpeedActivation(slot) | crate::cards::StaticAbilityFragment::SourceEntryModeActivation { ability: slot, .. } if *slot == index))
             })
         {
             return false;
@@ -1090,13 +1141,29 @@ pub(super) trait CharacteristicWorld {
         } else {
             object.owner
         };
-        if self.game().state.players[controller.index()].speed < 4 {
+        let eligible = object.card.static_ability_groups().iter().any(|group| {
+            entry_modes::group_enabled(self, self.reference(id), group)
+                && group.fragments.iter().any(|fragment| match *fragment {
+                    crate::cards::StaticAbilityFragment::SourceMaxSpeedActivation(slot) => {
+                        slot == index && self.game().state.players[controller.index()].speed >= 4
+                    }
+                    crate::cards::StaticAbilityFragment::SourceEntryModeActivation {
+                        mode,
+                        ability,
+                    } => {
+                        ability == index
+                            && entry_modes::active_mode(self, self.reference(id)) == Some(mode)
+                    }
+                    _ => false,
+                })
+        });
+        if !eligible {
             return false;
         }
         match object.zone {
             Zone::Battlefield => {
-                // The evaluator itself uses only the immutable template +
-                // speed predicate, never this query, so evaluation is acyclic.
+                // The evaluator itself uses only the immutable template and
+                // earlier-layer predicates, never this query, so it is acyclic.
                 ability_evaluation::evaluate_abilities(self).result.objects[id as usize]
                     .grants
                     .iter()
@@ -1106,7 +1173,13 @@ pub(super) trait CharacteristicWorld {
                             && grant.kind == ability_order::GrantedAbilityKind::Template(index)
                     })
             }
-            Zone::Hand | Zone::Graveyard => true,
+            Zone::Hand | Zone::Graveyard => {
+                self.game().state.players[controller.index()].speed >= 4
+                    && object.card.static_ability_groups().iter().any(|group| {
+                        group.fragments.iter().any(|fragment| matches!(fragment,
+                            crate::cards::StaticAbilityFragment::SourceMaxSpeedActivation(slot) if *slot == index))
+                    })
+            }
             _ => false,
         }
     }

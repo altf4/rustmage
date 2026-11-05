@@ -5,6 +5,9 @@ use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CopyRecipe {
+    /// A creation-time copiable X/X base, not a layer-seven modifier or counters.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(super) sampled_size: Option<SampledTokenSize>,
     /// The complete immutable copiable definition, including fixed token exceptions.
     pub definition: Card,
     pub exceptions: CopyExceptions,
@@ -15,6 +18,32 @@ pub struct CopyRecipe {
     #[serde(skip)]
     pub(super) faces: Option<CopyFaces>,
 }
+/// A nonzero upper limb keeps None compact without increasing recipe alignment.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct SampledTokenSize {
+    upper: std::num::NonZeroU64,
+    lower: u64,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl SampledTokenSize {
+    pub(super) fn new(size: u128) -> Self {
+        assert!(size <= i128::MAX as u128, "validated token size");
+        Self {
+            upper: std::num::NonZeroU64::new(((size >> 64) as u64) + 1).unwrap(),
+            lower: size as u64,
+        }
+    }
+    pub fn value(self) -> u128 {
+        (u128::from(self.upper.get() - 1) << 64) | u128::from(self.lower)
+    }
+}
+impl Serialize for SampledTokenSize {
+    fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        serializer.serialize_u128(self.value())
+    }
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) enum CopyFaces {
@@ -108,6 +137,11 @@ impl CopyRecipe {
             .and_then(|value| value.kinds)
             .unwrap_or(kinds)
     }
+    /// CR111.5: an instant/sorcery copy cannot be created as a token.
+    /// Use the selected copiable definition, including its type exceptions.
+    pub(super) fn can_create_token(self) -> bool {
+        self.kinds() & (4 | 8) == 0
+    }
     pub(super) fn copy_types(self) -> CopyTypes {
         self.overrides
             .and_then(|value| value.types)
@@ -141,12 +175,39 @@ impl CopyRecipe {
                 types.zombie |= exceptions.embalm;
             }
         }
+        if exceptions.base.is_some() {
+            self.sampled_size = None;
+        }
         self.exceptions = self.exceptions.union(exceptions);
         self
+    }
+    pub(super) fn with_sampled_size(mut self, size: SampledTokenSize) -> Self {
+        self.sampled_size = Some(size);
+        self.exceptions.base = None;
+        self
+    }
+    pub(super) fn copiable_base(self) -> Option<Stats> {
+        self.sampled_size
+            .map(|size| Stats {
+                power: size.value() as i128,
+                toughness: size.value() as i128,
+            })
+            .or_else(|| {
+                self.exceptions.base.map(|(power, toughness)| Stats {
+                    power: i128::from(power),
+                    toughness: i128::from(toughness),
+                })
+            })
+    }
+    /// Preserve every nondefault copiable field for an ability's source LKI.
+    /// Comparing with the constructor includes future recipe extensions too.
+    pub(super) fn needs_source_snapshot(self) -> bool {
+        self != Self::new(self.definition)
     }
     pub const fn new(definition: Card) -> Self {
         Self {
             definition,
+            sampled_size: None,
             exceptions: CopyExceptions::NONE,
             overrides: None,
             faces: None,
@@ -258,13 +319,21 @@ impl Game {
             .capacity("object generation exhausted");
         self.state.free_tokens.push(object.card);
     }
-    pub(super) fn create_copy_groups_inner(
+    pub(super) fn allocate_copy_group_entries(
         &mut self,
         player: Player,
         groups: &[TokenGroupView],
         recipes: &[Option<CopyRecipe>],
-        temporary: Option<&SpellView>,
-    ) -> Vec<ObjectRef> {
+    ) -> Vec<entries::EntryMove> {
+        self.allocate_copy_group_entries_with_instructions(player, groups, recipes, None)
+    }
+    fn allocate_copy_group_entries_with_instructions(
+        &mut self,
+        player: Player,
+        groups: &[TokenGroupView],
+        recipes: &[Option<CopyRecipe>],
+        instructions: Option<&temporary_tokens::TokenInstructions>,
+    ) -> Vec<entries::EntryMove> {
         assert_eq!(groups.len(), recipes.len());
         let total = groups
             .iter()
@@ -319,6 +388,7 @@ impl Game {
                     damage: 0,
                     damaged_this_turn: false,
                     dealt_damage_this_turn: false,
+                    dealt_damage_this_incarnation: false,
                     dealt_combat_damage_this_incarnation: false,
                     deathtouch_since_sba: false,
                     growth: Stats::default(),
@@ -348,9 +418,46 @@ impl Game {
                         },
                     );
                 }
-                moves.push(self.entry_move(id, Zone::Battlefield, group.tapped));
+                let mut movement = self.entry_move(id, Zone::Battlefield, group.tapped);
+                if let Some(context) = instructions {
+                    if context.attacking {
+                        movement.attacking = Some(CombatDefender::Player(player.other()));
+                    }
+                    if context.keywords != Keywords::NONE {
+                        movement.keywords_after = context
+                            .item
+                            .source
+                            .map(|source| (source.object, context.keywords));
+                    }
+                }
+                moves.push(movement);
             }
         }
+        moves
+    }
+    pub(super) fn create_copy_groups_inner(
+        &mut self,
+        player: Player,
+        groups: &[TokenGroupView],
+        recipes: &[Option<CopyRecipe>],
+        temporary: Option<&SpellView>,
+    ) -> Vec<ObjectRef> {
+        self.create_copy_groups_with_instructions(player, groups, recipes, temporary, None)
+    }
+    pub(super) fn create_copy_groups_with_instructions(
+        &mut self,
+        player: Player,
+        groups: &[TokenGroupView],
+        recipes: &[Option<CopyRecipe>],
+        temporary: Option<&SpellView>,
+        instructions: Option<&temporary_tokens::TokenInstructions>,
+    ) -> Vec<ObjectRef> {
+        let moves = self.allocate_copy_group_entries_with_instructions(
+            player,
+            groups,
+            recipes,
+            instructions,
+        );
         let created = moves
             .iter()
             .map(|m| ObjectRef {
@@ -365,7 +472,9 @@ impl Game {
             .collect();
         if !moves.is_empty() {
             self.track_nightmare_copy_entries(&moves);
-            if let Some(item) = temporary {
+            if let Some(context) = instructions {
+                self.stage_temporary_token_entries(moves, &context.item, context.own_end_step);
+            } else if let Some(item) = temporary {
                 self.stage_temporary_copy_entries(moves, item);
             } else {
                 self.stage_entries(moves, None);

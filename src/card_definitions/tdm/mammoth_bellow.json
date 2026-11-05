@@ -3,10 +3,21 @@
   "catalogue_id": 2647,
   "oracle_id": "6f2e4607-bece-42ba-a2a3-5dc50f246793",
   "facts_sha256": "dd7d7f2bcf761ae97b314cb5be68344885b614033f8788de8b789392bf601812",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3a28d45fc91c3e21f292f18667f65e7e5bc2fa448ac65f03c25aba627ed6c1cf"
   },
-  "physical_metadata_sha256": "e175190866d524cb4047d856de7605b7c0c0ee01f5684022ff9958389753118d"
+  "physical_metadata_sha256": "e175190866d524cb4047d856de7605b7c0c0ee01f5684022ff9958389753118d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MammothBellow.java",
+  "java_sha256": "0e7ba85a16c43dbbb23e8259f8a92c4dd54e7f2de3447433c90bc0a7421866d8",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HarmonizeAbility.java",
+      "sha256": "a646e202f733800900da7295d1a6886e583f76dcf25fad2be614b00e9f933f0d"
+    }
+  ]
 }

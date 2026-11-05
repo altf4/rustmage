@@ -252,6 +252,57 @@ impl Game {
         };
         self.apply_temporary_copy(recipient, recipe, deadline);
     }
+    pub(super) fn copy_target_to_other_controlled_creatures(&mut self, item: &SpellView) {
+        let Some(blueprint) = item.targets.iter().find_map(|bound| {
+            bound.object.filter(|reference| {
+                self.same_target_object(*bound) && self.on_battlefield(reference.card)
+            })
+        }) else {
+            return;
+        };
+        let recipe = self.copiable_recipe(blueprint);
+        // Both the recipe and recipients precede any copy/provider changes.
+        let recipients = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, object)| {
+                let id = id as CardId;
+                (object.zone == Zone::Battlefield
+                    && object.controller == item.controller
+                    && self.is_creature(id)
+                    && self.object_ref(id) != blueprint)
+                    .then_some(self.object_ref(id))
+            })
+            .collect::<Vec<_>>();
+        if recipients.is_empty() {
+            return;
+        }
+        let provider_time = self.next_role_timestamp();
+        let hand_time = self.new_copy_hand_timestamp(recipe.definition);
+        for &recipient in &recipients {
+            self.apply_temporary_copy_timestamped(
+                recipient,
+                recipe,
+                CopyDeadline::EndOfTurn,
+                Some((provider_time, hand_time)),
+                false,
+            );
+        }
+        // No intermediate recipient prefix is a game world. In particular,
+        // control changes, enduring designations and ability acquisitions can
+        // have irreversible consequences, so project only the complete cohort.
+        self.refresh_controllers();
+        for recipient in recipients {
+            if !self.is_face_down(recipient) {
+                self.renew_copy_grant_origin(recipient, true);
+            }
+        }
+        // The final controller/story projection may enable other providers too.
+        self.refresh_copy_grant_availability();
+        self.refresh_combat_battle_types();
+    }
     pub(super) fn temporary_copy_row(&self, object: ObjectRef) -> Option<&Row> {
         self.state
             .temporary_copies
@@ -293,6 +344,7 @@ impl Game {
             object.copy_kind = row.physical_kind;
         }
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn temporary_copy_view(&self, object: ObjectRef) -> Option<TemporaryCopyView> {
         self.temporary_copy_row(object).map(Row::view)
     }
@@ -434,6 +486,16 @@ impl Game {
         recipe: CopyRecipe,
         deadline: CopyDeadline,
     ) {
+        self.apply_temporary_copy_timestamped(object, recipe, deadline, None, true);
+    }
+    fn apply_temporary_copy_timestamped(
+        &mut self,
+        object: ObjectRef,
+        recipe: CopyRecipe,
+        deadline: CopyDeadline,
+        shared_time: Option<(u64, Option<u64>)>,
+        project_world: bool,
+    ) {
         if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {
             return;
         }
@@ -471,9 +533,11 @@ impl Game {
             value: CopyLayerView {
                 recipe,
                 origin,
-                provider_timestamp: origin,
+                // One effect can acquire abilities independently on several
+                // objects while giving all their static effects one timestamp.
+                provider_timestamp: shared_time.map_or(origin, |time| time.0),
                 deadline,
-                hand_timestamp: None,
+                hand_timestamp: shared_time.and_then(|time| time.1),
                 retained_link_origin: None,
             },
             used_abilities: 0,
@@ -495,11 +559,13 @@ impl Game {
             .unwrap()
             .value
             .hand_timestamp = hand_time;
-        if !self.is_face_down(object) {
-            self.renew_copy_grant_origin(object, true);
+        if project_world {
+            if !self.is_face_down(object) {
+                self.renew_copy_grant_origin(object, true);
+            }
+            self.refresh_controllers();
+            self.refresh_combat_battle_types();
         }
-        self.refresh_controllers();
-        self.refresh_combat_battle_types();
     }
     pub(super) fn reveal_temporary_copy(&mut self, object: ObjectRef, physical: Card) -> bool {
         let Some(row) = self

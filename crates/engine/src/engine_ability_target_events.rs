@@ -106,8 +106,11 @@ impl Game {
             for (index, ability) in source.card.triggers().iter().enumerate() {
                 if ability.condition.event()
                     == TriggerCondition::ControlledAbilityTargetsPlayerOrPermanent
+                    && self.queue_trigger(&source, index)
                 {
-                    self.queue_trigger(&source, index);
+                    let packet = self.state.pending_triggers.last_mut().unwrap();
+                    packet.refer_sources(item.semantic_stack_reference());
+                    packet.refer_objects(bound.object);
                 }
             }
         }
@@ -162,8 +165,11 @@ impl Game {
             for (index, ability) in source.card.triggers().iter().enumerate() {
                 if ability.condition.event()
                     == TriggerCondition::OpponentTargetsControlledCreatureOrSpell
+                    && self.queue_trigger(&source, index)
                 {
-                    self.queue_trigger(&source, index);
+                    let packet = self.state.pending_triggers.last_mut().unwrap();
+                    packet.refer_sources(item.semantic_stack_reference());
+                    packet.refer_objects(bound.object);
                 }
             }
         }

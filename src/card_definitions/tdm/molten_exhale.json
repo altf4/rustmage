@@ -3,10 +3,26 @@
   "catalogue_id": 2816,
   "oracle_id": "82aa1402-4b1c-4343-aba5-dd3271cc1ac5",
   "facts_sha256": "6715e70c77dafe545b04a3e7576fb3e2fb71a303614fa32597205c8e13f11a4b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "82f591519e5ec27f70745652bcc28c72d9bf2a8ae6317a620c76c877ea8b2fa5"
   },
-  "physical_metadata_sha256": "d09b4a8bc9a81a961ac12e826c9c15a8f5beb3b646c3f91578db61f3bd00f44a"
+  "physical_metadata_sha256": "d09b4a8bc9a81a961ac12e826c9c15a8f5beb3b646c3f91578db61f3bd00f44a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MoltenExhale.java",
+  "java_sha256": "2d8e680eb2e2bdc42b2874ebdf93eaecc642161b5943f056cc08ef5efe92f2f1",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/PayMoreToCastAsThoughtItHadFlashAbility.java",
+      "sha256": "20557cfda122a26460aace27f5084a554bd88c1dba1f84e2c091a12684048ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/BeholdCost.java",
+      "sha256": "bc668079587e3c3383c7d071558d165ef37aaadbf5618e3e0d9d3654bf1b34de"
+    }
+  ]
 }

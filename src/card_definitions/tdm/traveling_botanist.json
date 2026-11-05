@@ -3,10 +3,21 @@
   "catalogue_id": 4665,
   "oracle_id": "14934ab0-41ab-44f8-bb28-2b0457eb6f5f",
   "facts_sha256": "0032fff0bcde35f23afe93aa1aa91d53a8035358e921d3a1709b7ed2f6ff726b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "564a6ac274b991a8dc841dc168c6d42780196e8004bf7451a513043154e1e575"
   },
-  "physical_metadata_sha256": "ed8088e71788579c48a5b6c1fb8332149fa29ea660a9cdd19a9b60ad254a44f8"
+  "physical_metadata_sha256": "ed8088e71788579c48a5b6c1fb8332149fa29ea660a9cdd19a9b60ad254a44f8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TravelingBotanist.java",
+  "java_sha256": "dae05ae371f86c0c3c7025f181be8b380392559b7c7e9470c1982d30e3b82c37",
+  "rules_tests": "tests/tdm_cards_s_z_additional.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java",
+      "sha256": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c"
+    }
+  ]
 }

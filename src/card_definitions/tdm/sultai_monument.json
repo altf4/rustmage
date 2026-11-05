@@ -3,10 +3,31 @@
   "catalogue_id": 4209,
   "oracle_id": "9db71b76-eda7-49dd-af5a-3de18acb8ccb",
   "facts_sha256": "995d9739bc86ae71eebfb682425ac8e7f5dc9f518c5b41f87326cb9f246f3e11",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "01037b4f335c7f531b60e444c3db091caff80de0a7f6be855044bde92dac34cd"
   },
-  "physical_metadata_sha256": "22934cd26534c840dc794bef9b975a1763fe0213f5f891e74edab0df5444bc2e"
+  "physical_metadata_sha256": "22934cd26534c840dc794bef9b975a1763fe0213f5f891e74edab0df5444bc2e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SultaiMonument.java",
+  "java_sha256": "df844306686f0b1dd480eb1e08da2893d047ecb6e397580538cbc631a5c77fbf",
+  "rules_tests": "tests/tdm_cards_s_z_additional.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/ZombieDruidToken.java",
+      "sha256": "d0f1b3d7f23a9391f94f052843e2eeba17cbf0cbbf98bfb590621d6bc13ad918"
+    }
+  ]
 }

@@ -8,5 +8,25 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "25583b9d92b1ecfb450be647de05970b5ca061c82b237fb2c60d273251a74079"
   },
-  "physical_metadata_sha256": "4c3f2b6ba339e90d18c00fcb1fbc3e812ba3332ee0e0ffcf18e974fa93005670"
+  "physical_metadata_sha256": "4c3f2b6ba339e90d18c00fcb1fbc3e812ba3332ee0e0ffcf18e974fa93005670",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DragonbackLancer.java",
+  "java_sha256": "09404d2417cb76045d155b6de8a15631d48a206d0c74d3deed5990cf3b083be8",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MobilizeAbility.java",
+      "sha256": "84ea782ab71b1b147b349c5f5ac8b2c03ae60211c95393a2e4e994da8ee5eac8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/RedWarriorToken.java",
+      "sha256": "91af8e32ddafb0a605511b4fd6a3e78e00d46465b90463b47ce6c6266a38582c"
+    }
+  ]
 }

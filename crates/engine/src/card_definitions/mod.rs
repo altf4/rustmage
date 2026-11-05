@@ -39,6 +39,99 @@ impl CardRules {
         static_groups: &[],
     };
     pub const fn checked_effect(&self) -> Effect {
+        let mode_count = match self.extras.entry_choice {
+            Some(EntryChoiceKind::NamedModes(names)) => {
+                assert!(!names.is_empty(), "named entry modes cannot be empty");
+                assert!(
+                    names.len() <= u16::MAX as usize + 1,
+                    "too many named entry modes"
+                );
+                let mut index = 0;
+                while index < names.len() {
+                    assert!(!names[index].is_empty(), "named entry mode needs a label");
+                    index += 1;
+                }
+                names.len()
+            }
+            _ => 0,
+        };
+        let mut index = 0;
+        while index < self.extras.entry_mode_triggers.len() {
+            let (slot, mode) = self.extras.entry_mode_triggers[index];
+            assert!(
+                (slot as usize) < self.triggers.len(),
+                "entry mode lacks trigger slot"
+            );
+            assert!((mode as usize) < mode_count, "invalid trigger entry mode");
+            let mut previous = 0;
+            while previous < index {
+                assert!(
+                    self.extras.entry_mode_triggers[previous].0 != slot,
+                    "duplicate trigger entry mode"
+                );
+                previous += 1;
+            }
+            index += 1;
+        }
+        let mut group = 0;
+        while group < self.static_groups.len() {
+            let mut has_mode_gate = false;
+            let mut fragment = 0;
+            while fragment < self.static_groups[group].fragments.len() {
+                if matches!(
+                    self.static_groups[group].fragments[fragment],
+                    StaticAbilityFragment::EntryMode(_)
+                ) {
+                    has_mode_gate = true;
+                }
+                fragment += 1;
+            }
+            let mut fragment = 0;
+            while fragment < self.static_groups[group].fragments.len() {
+                // Only these consumers currently consult group availability in
+                // both real and speculative worlds. New families require their
+                // own consumer integration and focused evidence before use.
+                assert!(
+                    !has_mode_gate
+                        || matches!(
+                            self.static_groups[group].fragments[fragment],
+                            StaticAbilityFragment::EntryMode(_)
+                                | StaticAbilityFragment::SourceEntryModeActivation { .. }
+                                | StaticAbilityFragment::StaticModifier(..)
+                                | StaticAbilityFragment::KeywordGrant(..)
+                                | StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                                | StaticAbilityFragment::PlayLandFromGraveyard
+                                | StaticAbilityFragment::AdditionalTriggers { .. }
+                        ),
+                    "entry mode fragment consumer is not integrated"
+                );
+                match self.static_groups[group].fragments[fragment] {
+                    StaticAbilityFragment::EntryMode(mode) => {
+                        assert!((mode as usize) < mode_count, "invalid static entry mode");
+                    }
+                    StaticAbilityFragment::SourceEntryModeActivation { mode, ability } => {
+                        assert!(
+                            (mode as usize) < mode_count,
+                            "invalid activation entry mode"
+                        );
+                        assert!(
+                            (ability as usize) < self.activated.len(),
+                            "entry mode lacks activation slot"
+                        );
+                        assert!(
+                            matches!(
+                                self.activated[ability as usize].origin,
+                                ActivationOrigin::Battlefield
+                            ),
+                            "mode activation needs battlefield source"
+                        );
+                    }
+                    _ => {}
+                }
+                fragment += 1;
+            }
+            group += 1;
+        }
         assert!(
             self.activated.len() <= activation_slots::FIRST_RESERVED as usize,
             "authored activation slots overlap reserved engine templates"
@@ -107,6 +200,22 @@ impl CardRules {
                 _ => panic!("target counter reduction requires one target group"),
             }
             counter_reduction_index += 1;
+        }
+        let mut color_reduction_index = 0;
+        while color_reduction_index < self.extras.activation_target_color_discounts.len() {
+            let (slot, _) = self.extras.activation_target_color_discounts[color_reduction_index];
+            assert!(
+                (slot as usize) < self.activated.len(),
+                "target color reduction lacks activated slot"
+            );
+            match self.activated[slot as usize].targets {
+                TargetPlan::Single(spec) => assert!(
+                    spec.min == 1 && spec.max == 1,
+                    "target color reduction requires one mandatory target"
+                ),
+                _ => panic!("target color reduction requires one target group"),
+            }
+            color_reduction_index += 1;
         }
         // A printed mana component opens the mana-ability payment window.
         // Reject zero-mana template flags copied into newly authored paid abilities.
@@ -214,6 +323,8 @@ pub struct CardExtras {
     pub activation_target_reductions: &'static [(u16, TargetActivationReduction)],
     /// Generic cost reduced by the chosen target's counters of this kind.
     pub activation_target_counter_discounts: &'static [(u16, CounterKind)],
+    /// Generic reduction per distinct color of the chosen permanent target.
+    pub activation_target_color_discounts: &'static [(u16, u32)],
     pub activation_counter_discounts: &'static [(u16, CounterKind)],
     /// Reduce generic activation cost once per controlled permanent of this subtype.
     pub activation_subtype_discounts: &'static [(u16, &'static str)],
@@ -222,6 +333,8 @@ pub struct CardExtras {
     pub battle_defense: u64,
     pub as_turned_face_up_counters: &'static [(CounterKind, u64)],
     pub entry_choice: Option<EntryChoiceKind>,
+    /// (trigger slot, named-mode index), checked only at the triggering event.
+    pub entry_mode_triggers: &'static [(u16, u16)],
     pub entry_copy: Option<EntryCopySpec>,
     pub entry_exile_counters: Option<EntryExileCountersSpec>,
     pub chosen_entry_counters: Option<CounterKind>,
@@ -245,6 +358,8 @@ pub struct CardExtras {
     pub sneak_cost: Option<ManaCost>,
     /// Graveyard alternative with an optional power-based creature tap.
     pub harmonize_cost: Option<ManaCost>,
+    /// Variable symbols in the printed harmonize alternative (independent of the mana cost).
+    pub harmonize_x_symbols: u8,
     pub mayhem_cost: Option<ManaCost>,
     pub vehicle_stats: Option<Stats>,
     pub replacement_effects: &'static [ReplacementSpec],
@@ -275,6 +390,8 @@ pub struct CardExtras {
     pub flashback_cost_alternatives: &'static [ManaCost],
     pub flashback_additional: Option<AdditionalCost>,
     pub target_cost_reduction: Option<&'static TargetSpellReduction>,
+    pub target_cost_increase: Option<&'static TargetSpellIncrease>,
+    pub behold_cast: Option<BeholdCastSpec>,
     pub cast_timing_grants: &'static [CastFilter],
     pub cast_timing_requires_opponent_spell: bool,
     pub self_cast_timing: Option<SelfCastTiming>,
@@ -289,6 +406,7 @@ pub struct CardExtras {
     pub legacy_subtype_mana_activation: Option<u16>,
     pub kicked_targets: Option<TargetPlan>,
     pub cast_entry_counters: &'static [(CounterKind, u64)],
+    pub graveyard_cast_entry_counters: &'static [(CounterKind, u64)],
     pub hand_cast_entry_counters: &'static [(CounterKind, u64)],
     pub entry_counter_rules: &'static [EntryCounterRule],
     pub starting_loyalty: u64,
@@ -327,6 +445,7 @@ impl CardExtras {
         power_up_mana_cost_alternatives: &[],
         activation_target_reductions: &[],
         activation_target_counter_discounts: &[],
+        activation_target_color_discounts: &[],
         activation_counter_discounts: &[],
         activation_subtype_discounts: &[],
         activation_put_counters: &[],
@@ -334,9 +453,11 @@ impl CardExtras {
         battle_defense: 0,
         as_turned_face_up_counters: &[],
         cast_entry_counters: &[],
+        graveyard_cast_entry_counters: &[],
         hand_cast_entry_counters: &[],
         named_activation_lock: false,
         entry_choice: None,
+        entry_mode_triggers: &[],
         entry_copy: None,
         entry_exile_counters: None,
         chosen_entry_counters: None,
@@ -359,6 +480,7 @@ impl CardExtras {
         disguise_cost: None,
         sneak_cost: None,
         harmonize_cost: None,
+        harmonize_x_symbols: 0,
         mayhem_cost: None,
         vehicle_stats: None,
         replacement_effects: &[],
@@ -389,6 +511,8 @@ impl CardExtras {
         flashback_cost_alternatives: &[],
         flashback_additional: None,
         target_cost_reduction: None,
+        target_cost_increase: None,
+        behold_cast: None,
         cast_timing_grants: &[],
         cast_timing_requires_opponent_spell: false,
         self_cast_timing: None,

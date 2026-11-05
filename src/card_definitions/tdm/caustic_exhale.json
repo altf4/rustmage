@@ -3,10 +3,36 @@
   "catalogue_id": 687,
   "oracle_id": "c4023e1f-26e3-4225-98d0-3d33f6654616",
   "facts_sha256": "b6cb476034e48a2877b95fd6c271c2bda8eb8b1f8e465182b86ca02c3ba7a78c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "365cbe450558f89ed23bc85f4acb22de9b8f25f178f19064662d2fb7ac7d1ed8"
   },
-  "physical_metadata_sha256": "8fc136e3fc5aab0e13d3a17bef2623c5ed88f96d7a138494bda6c09d4e3a5cff"
+  "physical_metadata_sha256": "8fc136e3fc5aab0e13d3a17bef2623c5ed88f96d7a138494bda6c09d4e3a5cff",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CausticExhale.java",
+  "java_sha256": "d7cfea401379866e87eb3ba1e742c981a315c35fa33027ef682a91450eb40999",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/BeholdCost.java",
+      "sha256": "bc668079587e3c3383c7d071558d165ef37aaadbf5618e3e0d9d3654bf1b34de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/constants/BeholdType.java",
+      "sha256": "b9b6ef548969c8e1bbde48ec05adb6ae62139ab3fbdd72a91f8154817dc17c2c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/OrCost.java",
+      "sha256": "a36fc6c29c41ef6d0673a6e40c9992c8f5b6c9bb64f9559d4011d0b9593fcf10"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    }
+  ],
+  "remaining_obligations": []
 }

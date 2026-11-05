@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d98a79a7e9354d0315a43b1a800b59476071241619e5668bc7d369745202d728"
   },
-  "physical_metadata_sha256": "198d680a3d0affc95bcf4e11c1266d60898f79968e8a7de23893d9074facdef1"
+  "physical_metadata_sha256": "198d680a3d0affc95bcf4e11c1266d60898f79968e8a7de23893d9074facdef1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RiverwalkTechnique.java",
+  "java_sha256": "e42f7325bc043b76ee8ff2708843ec2227d81aed284a49d5f3a5da085ea82eec",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutOnTopOrBottomLibraryTargetEffect.java",
+      "sha256": "95bb260b732c9424cbbd22d60f7904ae468ce3b0277707decdeef4466034be30"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterTargetEffect.java",
+      "sha256": "49282767e8f8d631bb38ae1d35bc91a29ab2ae8173030e3a89d3da495c1cf233"
+    }
+  ]
 }

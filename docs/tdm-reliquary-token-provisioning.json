@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "catalogue_id": 5488,
+  "factory_identity": "@token/tdm-reliquary-dragon",
+  "status": "Gated identity only; complete=false until authored token and actual Dragonbroods Relic outcomes pass. No physical card counted.",
+  "metadata": {
+    "name": "Reliquary Dragon",
+    "type_line": "Creature \u2014 Dragon",
+    "power": 4,
+    "toughness": 4,
+    "colors": 31,
+    "keywords": [
+      "Flying",
+      "Lifelink"
+    ],
+    "trigger": "When this token enters, it deals3damage to any target; damage uses source lifelink."
+  },
+  "source": {
+    "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "path": "Mage/src/main/java/mage/game/permanent/token/ReliquaryDragonToken.java",
+    "sha256": "9e2ed86af3180b862025bee5b3b9d2e0f534c382dcac4c35d13fa85f3ea14c39",
+    "complete_body_read_by_root_and_owner": true
+  },
+  "owner": "/root/tdm_cards_a_g",
+  "engine_change": false,
+  "append_only": true,
+  "old_ids_preserved": 5488,
+  "physical_pool_count_unchanged": 276,
+  "copy_to_author_after_current_frozen_job": true,
+  "deck_submission": "deck_limit=None, matching every other token factory; Game::new rejects tokens in every format. This header correction leaves behavior Unsupported and complete=false.",
+  "current_status": "Complete authored token admitted after gated36 and ordinary143 actualpaidRelic/card proofs, root143PASS; not a physicalcard increment",
+  "complete": true,
+  "completion_evidence": "docs/tdm-cards-a-g-evidence.json",
+  "current_definition_sha256": "a3b2f45226cba621d3b510200aaef21939d52b13a9a1bdf050a488a3ed2c2b46",
+  "deck_limit": null
+}

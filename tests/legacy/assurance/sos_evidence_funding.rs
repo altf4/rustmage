@@ -124,6 +124,7 @@ fn sos_evidence_funding_returned_courtyard_uses_projected_chosen_type_quality() 
         let prison = put(&mut g, p, "Dusk Rose Reliquary", Zone::Battlefield);
         let land = put(&mut g, p, "Secluded Courtyard", Zone::Exile);
         g.state.exile_links.push(ExileLink {
+            ability_origin: None,
             source: g.object_ref(prison),
             exiled: g.object_ref(land),
             return_zone: Zone::Battlefield,

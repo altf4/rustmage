@@ -1,16 +1,14 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Source-audited direct typed definition; see the paired provenance record.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(2, 2),
     keywords: Keywords::FLYING,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::OncePerTurn(&TriggerCondition::When {
+            guard: StepGuard::YourTurn,
+            event: &TriggerCondition::CardsLeaveGraveyard,
+        }),
+        targets: TargetPlan::NONE,
+        program: &[Instruction::Draw(PlayerSet::Controller, 1)],
+    }],
     ..CardRules::EMPTY
 };

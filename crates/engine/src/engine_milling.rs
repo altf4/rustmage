@@ -25,7 +25,7 @@ impl Game {
                         .count()
                 })
                 .iter()
-                .filter(|event| event.moved || event.shuffled_in_place)
+                .filter(|event| event.moved)
                 .count();
         }
         let maximum = match amount {
@@ -47,6 +47,10 @@ impl Game {
                 usize::try_from(self.state.resolving.as_ref().unwrap().item.x.unwrap_or(0))
                     .unwrap_or(usize::MAX)
             }
+            MillAmount::Amount(value) => usize::try_from(
+                self.item_amount(value, &self.state.resolving.as_ref().unwrap().item),
+            )
+            .unwrap_or(usize::MAX),
             MillAmount::ControllerLife => {
                 usize::try_from(self.state.players[controller.index()].life.max(0))
                     .unwrap_or(usize::MAX)
@@ -54,7 +58,7 @@ impl Game {
         };
         self.mill_batch_up_to(players, maximum)
             .iter()
-            .filter(|event| event.moved || event.shuffled_in_place)
+            .filter(|event| event.moved)
             .count()
     }
 
@@ -112,8 +116,48 @@ impl Game {
             .filter(|event| event.moved)
             .map(|event| event.after)
             .collect();
+        self.capture_reflexive_zone_action(&events, roles::ReflexiveAction::Mill);
         self.finish_zone_events(&events, &[]);
         events
+    }
+
+    pub(super) fn refill_empty_library_from_graveyard(
+        &mut self,
+        item: &SpellView,
+        amount: u16,
+    ) -> bool {
+        if self.library_card_count(item.controller) != 0 {
+            return false;
+        }
+        if let Some(source) = item.source
+            && self.on_battlefield(source.id)
+            && self.object_ref(source.id) == source.object
+        {
+            self.move_object(source.id, Zone::Exile);
+        }
+        if amount == 0 {
+            return false;
+        }
+        self.state.resolving.as_mut().unwrap().milled = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(_, object)| {
+                object.owner == item.controller
+                    && object.zone == Zone::Graveyard
+                    && object.is_card()
+            })
+            .map(|(id, _)| self.object_ref(id as CardId))
+            .collect();
+        self.start_milled_selection(MilledSelectionSpec {
+            filter: MilledFilter::Any,
+            count: MilledCount::Range {
+                minimum: amount,
+                maximum: amount,
+            },
+            destination: MilledDestination::LibraryTop,
+        })
     }
 
     pub(super) fn can_recover_milled(
@@ -140,6 +184,12 @@ impl Game {
         if let Some(object) = object {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
             self.move_milled_selection(player, &[object], MilledDestination::Hand);
+            let resolution = self.state.resolving.as_mut().unwrap();
+            if let Instruction::RecoverMilledOrSkip { skip, .. } =
+                resolution.program[resolution.pc - 1]
+            {
+                resolution.pc += skip;
+            }
         }
         self.run_program();
     }

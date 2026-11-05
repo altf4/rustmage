@@ -1,0 +1,47 @@
+{
+  "name": "Strategic Betrayal",
+  "oracle_id": "0127c13f-7b0f-44c3-8b35-97f306c5f239",
+  "status": "Accepted by root as complete existing whole-card proof on current approved engine84",
+  "definition": "src/card_definitions/tdm/strategic_betrayal.rs",
+  "definition_sha256": "1782494f82df4e2f2d80ecca37ff3018fdf0921ce17c2a3093c16e29f9acb529",
+  "test_source": "tests/legacy/assurance/hartford_grave_exile.rs",
+  "test_source_sha256": "85d129f16c92e2cf8148081788fdae71261f08d57342dc87dacaac6949e2ce60",
+  "test": "engine::assurance::hartford_grave_exile::betrayal_opponent_chooses_creature_and_exiles_their_graveyard",
+  "report": "<cache>/rustmage-validation-o8jjr7os/report/native.json",
+  "report_sha256": "23f5a30ac9df217cbd1ed4b5e1165abce2a1b548ee4cb5e066038a96689826b7",
+  "receipt": {
+    "test": "engine::assurance::hartford_grave_exile::betrayal_opponent_chooses_creature_and_exiles_their_graveyard",
+    "status": "ok",
+    "exit": 0
+  },
+  "baseline": "b4562e25cbd0017368c9a57c265e8ec7a5f1f485",
+  "source_checks": "Definition and complete source file compared byte-identical with git show baseline versions; full actual-card test read. No fixture_rules overlays in test.",
+  "outcomes": [
+    "Both controller seats",
+    "Creature absent still exiles opponent entire graveyard",
+    "Creature present is selected by opponent without targeting it",
+    "Controlled creature and opponent graveyard end in exile",
+    "Casting player graveyard stays untouched",
+    "checked helper checks meaningful owned raw/index/restore action contracts"
+  ],
+  "scope_limit": "Normal mana cost/sorcery timing/target restriction additionally mapped to unchanged printed metadata and generic cast/target machinery. Full set validation/reviews remain required.",
+  "helper_proof": {
+    "path": "tests/legacy/assurance/big_helpers.rs",
+    "sha256": "0911d344dedd3ca7e5666fd68a4f28286537655af4a82aba11e6f586613d6ec0",
+    "extent": "Complete checked helper plus surrounding cast/settle/next_turn bodies reread. checked compares wrong-actor rejection snapshot, owned child after parent-disposal, raw/index equality, restore and stale index before replay."
+  },
+  "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+  "source_ledger": "/tmp/tdm-s-z-targeted-prep/strategic-betrayal-proof-reuse.json",
+  "source_ledger_sha256": "e0f4380a06bb6ffd8f23304c2056b35c7235e400818fd45ffe04baaa58aed908",
+  "current_native_report": "<cache>/rustmage-validation-l0pzz2p2/report/native.json",
+  "current_native_report_sha256": "4ce510b350c0220eaee7641429c6d593e41fcfe5fc96cec8b8a5b795081052e0",
+  "current_native_receipt": {
+    "test": "engine::assurance::hartford_grave_exile::betrayal_opponent_chooses_creature_and_exiles_their_graveyard",
+    "status": "ok",
+    "exit": 0,
+    "binary": "<cache>/rustmage-authoring/tdm-complete-set/target/debug/deps/legacy-49262b90621dc1a0"
+  },
+  "root_review": "Complete pinned Oracle/Java including custom effect, typed definition, actual test and checked action helper read; independently verified exact baseline/current source/test/Java hashes and actual fresh full-native PASS. No admission or executable source changed.",
+  "counted_existing_cards": 1,
+  "whole_set_acceptance": false
+}

@@ -4803,7 +4803,7 @@ fn prior_schema184_state_supported(state: &State) -> bool {
 
 #[test]
 fn schema184_preserves_old_bytes_and_rejects_changed_card_and_paid_offer() {
-    assert_eq!(OBSERVATION_SCHEMA, 199);
+    assert_eq!(OBSERVATION_SCHEMA, 201);
     let old = r#"[{"resolution_free_casts":{"paid":null},"other":true}]"#;
     assert_eq!(project_prior_schema184(old).unwrap(), old);
     for card in ["Chandra, Torch of Defiance", "@emblem/fra-chandra-torch"] {
@@ -7480,6 +7480,7 @@ fn trace_candidate_with_prepared_observation_audit(
             | "Joust Through"
             | "Kellan's Lightblades"
             | "Not on My Watch"
+            | "Osseous Exhale"
             | "Protective Response"
             | "Sudden Strike" => {
                 root = "combat";
@@ -7517,6 +7518,7 @@ fn trace_candidate_with_prepared_observation_audit(
 
     let mut journal = Vec::new();
     let mut prior199_journal_supported = true;
+    let mut prior200_journal_supported = true;
     let offered = g.legal_actions().contains(&opening);
     assert!(
         offered,
@@ -7524,6 +7526,10 @@ fn trace_candidate_with_prepared_observation_audit(
         card.identity()
     );
     let status = if offered {
+        if schema_projection.is_some_and(|schema| schema < 200) {
+            prior200_journal_supported &=
+                super::schema200::prior_schema200_actions_supported(std::slice::from_ref(&opening));
+        }
         if schema_projection.is_some_and(|schema| schema < 199) {
             prior199_journal_supported &= super::schema199::prior_schema199_actions_supported(
                 &g,
@@ -7572,6 +7578,11 @@ fn trace_candidate_with_prepared_observation_audit(
                     })
                     .clone()
             };
+            if schema_projection.is_some_and(|schema| schema < 200) {
+                prior200_journal_supported &= super::schema200::prior_schema200_actions_supported(
+                    std::slice::from_ref(&action),
+                );
+            }
             if schema_projection.is_some_and(|schema| schema < 199) {
                 // Validate while the exact source/borrowed definition still
                 // exists, before a paid sacrifice or later copy can replace it.
@@ -7619,7 +7630,34 @@ fn trace_candidate_with_prepared_observation_audit(
     }
     let mut observation_bytes = serde_json::to_string(&views).unwrap();
     let mut projection_error = None;
-    if schema_projection.is_some_and(|schema| schema < 199) {
+    if schema_projection.is_some_and(|schema| schema < 201) {
+        if !super::schema201::prior_schema201_state_supported(&g.state) {
+            projection_error = Some(
+                "new unlinked nonland hand choice cannot be projected to schema 200".to_owned(),
+            );
+        } else {
+            match super::schema201::project_prior_schema201(&observation_bytes) {
+                Ok(projected) => observation_bytes = projected,
+                Err(reason) => projection_error = Some(reason),
+            }
+        }
+    }
+    if projection_error.is_none() && schema_projection.is_some_and(|schema| schema < 200) {
+        if !prior200_journal_supported
+            || views
+                .iter()
+                .any(|view| !super::schema200::prior_schema200_actions_supported(&view.actions))
+        {
+            projection_error =
+                Some("new Tarkir action cannot be projected to schema 199".to_owned());
+        } else {
+            match super::schema200::project_prior_schema200(&observation_bytes) {
+                Ok(projected) => observation_bytes = projected,
+                Err(reason) => projection_error = Some(reason),
+            }
+        }
+    }
+    if projection_error.is_none() && schema_projection.is_some_and(|schema| schema < 199) {
         if !prior199_journal_supported
             || !super::schema199::prior_schema199_state_supported(&g.state)
             || views
@@ -7985,6 +8023,39 @@ fn trace_candidate_with_prepared_observation_audit(
         for count in 0..=4 {
             observation_bytes =
                 observation_bytes.replace(&format!("\"turns_started\":{count},"), "");
+        }
+    }
+    // Optional recording-only detail for a bounded, explicitly selected set of
+    // rows. Preserve serialized bytes so a reviewer can isolate an observation
+    // delta without weakening the committed trace comparison below.
+    if schema_projection.is_some()
+        && std::env::var_os("RUSTMAGE_RECORD_CARD_TRACES").is_some()
+        && let (Ok(directory), Ok(names)) = (
+            std::env::var("RUSTMAGE_RECORD_CARD_TRACE_DETAILS"),
+            std::env::var("RUSTMAGE_RECORD_CARD_TRACE_NAMES"),
+        )
+    {
+        let names: Vec<String> = serde_json::from_str(&names).expect("JSON array of trace names");
+        if names.iter().any(|name| name == card.identity()) {
+            let directory = std::path::PathBuf::from(directory);
+            let cache = std::path::PathBuf::from(std::env::var("HOME").unwrap()).join(".cache");
+            assert!(
+                directory.starts_with(cache),
+                "record details under ~/.cache"
+            );
+            std::fs::create_dir_all(&directory).unwrap();
+            let detail = serde_json::json!({
+                "card": card.identity(),
+                "schema_projection": schema_projection,
+                "journal_json": serde_json::to_string(&journal).unwrap(),
+                "observations_json": observation_bytes,
+                "projection_error": projection_error,
+            });
+            std::fs::write(
+                directory.join(format!("{}.json", digest(card.identity().as_bytes()))),
+                serde_json::to_string_pretty(&detail).unwrap() + "\n",
+            )
+            .unwrap();
         }
     }
     Trace {
@@ -9374,6 +9445,7 @@ fn prior_schema192_rejects_outside_replacement_wire_and_owned_continuations() {
             })),
             temporary_copy: None,
             delayed_sacrifice: None,
+            delayed_sacrifice_own_end: false,
             captures_result: false,
             copying: false,
             discard_context: None,

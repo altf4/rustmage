@@ -8,5 +8,10 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a974463a673324d90eb6dffe051bfc814f34234ee48041516e732dabd9422373"
   },
-  "physical_metadata_sha256": "cd85b5263f39391b18571bd9a37a0433d5ac6d76a93f5d48a3b466906c07f74e"
+  "physical_metadata_sha256": "cd85b5263f39391b18571bd9a37a0433d5ac6d76a93f5d48a3b466906c07f74e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DeathBegetsLife.java",
+  "java_sha256": "e0ff90a80a96e1e63896c911ad5bb78f353b8ef8f12cc47066bea1a4fb36bca0",
+  "xmage_dependencies": [],
+  "remaining_obligations": []
 }

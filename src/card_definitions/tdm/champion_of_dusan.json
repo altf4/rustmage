@@ -3,10 +3,36 @@
   "catalogue_id": 706,
   "oracle_id": "0a427652-9745-4802-8c8f-5ae29a29b496",
   "facts_sha256": "c70c8be8a71a666274e307c042484b5a5598ec54432f57d8260723ebf69eda91",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9030b45d4d9089f60e62238383a4c2282123a89c2e9e26052cf441caa50301c0"
   },
-  "physical_metadata_sha256": "b3cc52e2abd35368d3447b39e016734806183d11f3349c88baa940d39256bef1"
+  "physical_metadata_sha256": "b3cc52e2abd35368d3447b39e016734806183d11f3349c88baa940d39256bef1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ChampionOfDusan.java",
+  "java_sha256": "3010cb3b8b4191326fdf667870f2c8daf14142f174ab7c818bc22a28a9418744",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/RenewAbility.java",
+      "sha256": "32a1436eacfca7d3397a9bed3a949b686061d5e54d2627219e393fbe9947a02b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+      "sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    }
+  ],
+  "remaining_obligations": []
 }

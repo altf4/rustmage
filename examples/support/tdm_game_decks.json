@@ -1,0 +1,212 @@
+{
+  "schema": 1,
+  "scope": "Frozen TDM-only complete-game workload; actual gameplay acceptance pending full card implementation.",
+  "standard_decks": [
+    {
+      "name": "Abzan",
+      "cards": {
+        "Forest": 8,
+        "Swamp": 6,
+        "Plains": 6,
+        "Sandsteppe Citadel": 4,
+        "Evolving Wilds": 4,
+        "Descendant of Storms": 4,
+        "Abzan Devotee": 4,
+        "Sinkhole Surveyor": 4,
+        "Champion of Dusan": 4,
+        "Stalwart Successor": 4,
+        "Warden of the Grove": 4,
+        "Hollowmurk Siege": 2,
+        "Revival of the Ancestors": 2,
+        "Felothar, Dawn of the Abzan": 2,
+        "Betor, Kin to All": 2
+      }
+    },
+    {
+      "name": "Jeskai",
+      "cards": {
+        "Mountain": 8,
+        "Plains": 6,
+        "Island": 6,
+        "Mystic Monastery": 4,
+        "Evolving Wilds": 4,
+        "Jeskai Devotee": 4,
+        "Devoted Duelist": 4,
+        "Rebellious Strike": 4,
+        "Glacial Dragonhunt": 4,
+        "Cori Mountain Stalwart": 4,
+        "Sage of the Skies": 4,
+        "Flamehold Grappler": 2,
+        "Taigam, Master Opportunist": 2,
+        "Narset, Jeskai Waymaster": 2,
+        "Jeskai Monument": 2
+      }
+    },
+    {
+      "name": "Sultai",
+      "cards": {
+        "Swamp": 8,
+        "Forest": 6,
+        "Island": 6,
+        "Opulent Palace": 4,
+        "Evolving Wilds": 4,
+        "Sultai Devotee": 4,
+        "Sibsig Appraiser": 4,
+        "Rakshasa's Bargain": 4,
+        "Hundred-Battle Veteran": 4,
+        "Sage of the Fang": 4,
+        "Rot-Curse Rakshasa": 4,
+        "Lotuslight Dancers": 2,
+        "Awaken the Honored Dead": 2,
+        "Teval, Arbiter of Virtue": 2,
+        "Sidisi, Regent of the Mire": 2
+      }
+    },
+    {
+      "name": "Mardu",
+      "cards": {
+        "Mountain": 8,
+        "Plains": 6,
+        "Swamp": 6,
+        "Nomad Outpost": 4,
+        "Evolving Wilds": 4,
+        "Mardu Devotee": 4,
+        "Stadium Headliner": 4,
+        "Shock Brigade": 4,
+        "Frontline Rush": 4,
+        "Bone-Cairn Butcher": 4,
+        "Inevitable Defeat": 4,
+        "Windcrag Siege": 2,
+        "Zurgo, Thunder's Decree": 2,
+        "All-Out Assault": 2,
+        "Dalkovan Packbeasts": 2
+      }
+    },
+    {
+      "name": "Temur",
+      "cards": {
+        "Forest": 8,
+        "Island": 6,
+        "Mountain": 6,
+        "Frontier Bivouac": 4,
+        "Evolving Wilds": 4,
+        "Temur Devotee": 4,
+        "Temur Battlecrier": 4,
+        "Roamer's Routine": 4,
+        "Ureni's Rebuff": 4,
+        "Mammoth Bellow": 4,
+        "Temur Tawnyback": 4,
+        "Songcrafter Mage": 2,
+        "Frostcliff Siege": 2,
+        "Nature's Rhythm": 2,
+        "Eshki Dragonclaw": 2
+      }
+    },
+    {
+      "name": "Dragons",
+      "cards": {
+        "Forest": 8,
+        "Mountain": 4,
+        "Island": 3,
+        "Plains": 3,
+        "Swamp": 2,
+        "Maelstrom of the Spirit Dragon": 4,
+        "Evolving Wilds": 4,
+        "Dragonstorm Globe": 4,
+        "Sagu Wildling // Roost Seek": 4,
+        "Bloomvine Regent // Claim Territory": 4,
+        "Sarkhan, Dragon Ascendant": 4,
+        "Molten Exhale": 4,
+        "Dragonbroods' Relic": 4,
+        "Breaching Dragonstorm": 2,
+        "Stormscale Scion": 2,
+        "Dracogenesis": 2,
+        "Call the Spirit Dragons": 2
+      }
+    }
+  ],
+  "freeform_cutter_deck": {
+    "name": "Cutter Freeform",
+    "cards": {
+      "Mountain": 8,
+      "Plains": 6,
+      "Island": 6,
+      "Mystic Monastery": 4,
+      "Evolving Wilds": 4,
+      "Devoted Duelist": 4,
+      "Rebellious Strike": 4,
+      "Glacial Dragonhunt": 4,
+      "Cori Mountain Stalwart": 4,
+      "Sage of the Skies": 4,
+      "Flamehold Grappler": 2,
+      "Taigam, Master Opportunist": 2,
+      "Narset, Jeskai Waymaster": 2,
+      "Jeskai Monument": 2,
+      "Cori-Steel Cutter": 4
+    }
+  },
+  "standard_pairings": [
+    [
+      "Abzan",
+      "Jeskai"
+    ],
+    [
+      "Jeskai",
+      "Sultai"
+    ],
+    [
+      "Sultai",
+      "Mardu"
+    ],
+    [
+      "Mardu",
+      "Temur"
+    ],
+    [
+      "Temur",
+      "Abzan"
+    ],
+    [
+      "Dragons",
+      "Jeskai"
+    ]
+  ],
+  "standard_seeds": [
+    426000,
+    426001,
+    426100,
+    426101,
+    426200,
+    426201,
+    426300,
+    426301,
+    426400,
+    426401,
+    426500,
+    426501
+  ],
+  "starting_players": [
+    "P0",
+    "P1"
+  ],
+  "deck_swaps": [
+    false,
+    true
+  ],
+  "standard_games": 48,
+  "freeform_seed": 426900,
+  "freeform_opponent": "Mardu",
+  "freeform_games": 4,
+  "max_actions_per_game": 4096,
+  "required_natural_mechanics": [
+    "endure",
+    "flurry_or_prowess",
+    "mobilize",
+    "harmonize_cast_and_exile",
+    "harmonize_power_contribution",
+    "renew",
+    "omen_resolution_shuffle",
+    "behold_payoff"
+  ],
+  "gameplay_status": "unexecuted; not proof of card or set acceptance"
+}

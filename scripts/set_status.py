@@ -5,9 +5,11 @@ import hashlib
 import json
 from pathlib import Path
 if __package__:
+    from . import oracle_facts
     from .inventory_standard import name_key, set_entries
     from .source_paths import xmage_source
 else:
+    import oracle_facts
     from inventory_standard import name_key, set_entries
     from source_paths import xmage_source
 
@@ -18,13 +20,13 @@ def digest(value):
 
 def freeze(root, xmage, code):
     inventory = json.loads((root / 'data/standard/xmage-inventory.json').read_text())
-    oracle = json.loads((root / 'data/standard/cards.json').read_text())
+    oracle, _ = oracle_facts.load(root)
     table = inventory['set_tables'][code]
     raw = (xmage / table['source']).read_bytes()
     if hashlib.sha256(raw).hexdigest() != table['sha256']:
         raise ValueError('set table differs from pinned source')
     facts = {}
-    for card in oracle['cards']:
+    for card in oracle.values():
         for alias in {card['name'], card['name'].split(' // ')[0]}:
             key = name_key(alias)
             if key in facts and facts[key]['oracle_id'] != card['oracle_id']:
@@ -43,7 +45,7 @@ def freeze(root, xmage, code):
         row = members.setdefault(card['oracle_id'], dict(name=card['name'], oracle_id=card['oracle_id'], facts_sha256=digest(card), printings=[]))
         row['printings'].append(number)
     # A missing XMage table entry must not shrink a set that has pinned Oracle facts.
-    for card in oracle['cards']:
+    for card in oracle.values():
         if card['reference_printing']['set'].upper() == code:
             members.setdefault(card['oracle_id'], dict(name=card['name'], oracle_id=card['oracle_id'], facts_sha256=digest(card), printings=[]))
     return dict(schema=1, set=code, xmage_revision=inventory['xmage_source_commit'], table=table,
@@ -53,7 +55,7 @@ def freeze(root, xmage, code):
 def status(root, manifest):
     if manifest['card_count'] != len(manifest['cards'])+len(manifest['unresolved']):
         raise ValueError('incomplete set manifest')
-    facts = {c['oracle_id']: c for c in json.loads((root / 'data/standard/cards.json').read_text())['cards']}
+    facts, _ = oracle_facts.load(root)
     coverage = {c['name']: c for c in json.loads((root / 'data/standard/coverage.json').read_text())['cards']}
     seen = set()
     admitted, gated = [], []
@@ -61,6 +63,8 @@ def status(root, manifest):
         if row['oracle_id'] in seen:
             raise ValueError('duplicate set Oracle identity')
         seen.add(row['oracle_id'])
+        if row['oracle_id'] not in facts:
+            raise ValueError('missing set Oracle facts: ' + row['name'])
         card = facts[row['oracle_id']]
         if digest(card) != row['facts_sha256'] or card['name'] != row['name']:
             raise ValueError('set facts changed: ' + row['name'])

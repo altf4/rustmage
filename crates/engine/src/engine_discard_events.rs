@@ -183,6 +183,7 @@ impl Game {
                 .checked_add(u64::from(count))
                 .capacity("cards discarded this turn representation exhausted");
         }
+        self.capture_reflexive_zone_action(events, roles::ReflexiveAction::Discard);
         self.record_mayhem_discards(events);
         self.finish_zone_events(events, &[]);
         for event in events.iter().filter(|event| event.moved) {
@@ -204,6 +205,11 @@ impl Game {
                             cycling,
                         },
                     );
+                    if self.state.pending_triggers.len() > before {
+                        let packet = self.state.pending_triggers.last_mut().unwrap();
+                        packet.refer_objects([event.before.reference]);
+                        packet.refer_zone_event(event);
+                    }
                     if cycling
                         && ability.condition.event() == TriggerCondition::SelfCycled
                         && self.state.pending_triggers.len() > before
@@ -258,19 +264,28 @@ impl Game {
                                 },
                             );
                             if self.state.pending_triggers.len() > prior {
+                                let packet = self.state.pending_triggers.last_mut().unwrap();
+                                packet.refer_objects([discarded.before.reference]);
+                                packet.refer_zone_event(discarded);
                                 self.state
                                     .pending_triggers
                                     .last_mut()
                                     .unwrap()
                                     .reflexive_subject = Some(Box::new(ReflexiveSubjectView {
                                     object: discarded.after,
+                                    action: false,
                                     additional_objects: Vec::new(),
                                 }));
                             }
                         }
                         continue;
                     }
-                    for _ in 0..if one_or_more { 1 } else { count } {
+                    let matching: Vec<_> = events
+                        .iter()
+                        .filter(|event| event.moved && event.before.owner == player)
+                        .collect();
+                    for position in 0..if one_or_more { 1 } else { count } {
+                        let prior = self.state.pending_triggers.len();
                         self.queue_discard_trigger(
                             &source,
                             index,
@@ -280,6 +295,18 @@ impl Game {
                                 cycling,
                             },
                         );
+                        if self.state.pending_triggers.len() > prior {
+                            let packet = self.state.pending_triggers.last_mut().unwrap();
+                            let group = if one_or_more {
+                                matching.as_slice()
+                            } else {
+                                &matching[position as usize..position as usize + 1]
+                            };
+                            for event in group {
+                                packet.refer_objects([event.before.reference]);
+                                packet.refer_zone_event(event);
+                            }
+                        }
                     }
                 }
             }
@@ -308,7 +335,25 @@ impl Game {
                 if count > 0 {
                     let item = self.state.resolving.as_ref().unwrap().item.clone();
                     let before = self.state.pending_triggers.len();
-                    self.queue_reflexive(&item, ability, None);
+                    let objects = events
+                        .iter()
+                        .filter(|e| {
+                            e.moved && e.before.owner == controller && e.before.kinds & 2 == 0
+                        })
+                        .flat_map(|e| {
+                            std::iter::once(e.before.reference).chain(
+                                matches!(
+                                    e.destination,
+                                    Zone::Battlefield
+                                        | Zone::Stack
+                                        | Zone::Graveyard
+                                        | Zone::Exile
+                                        | Zone::Command
+                                )
+                                .then_some(e.after),
+                            )
+                        });
+                    self.queue_reflexive_objects(&item, ability, objects);
                     if self.state.pending_triggers.len() > before {
                         let trigger = self.state.pending_triggers.last_mut().unwrap();
                         trigger.reflexive_target_limit =

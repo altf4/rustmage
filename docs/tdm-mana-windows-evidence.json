@@ -1,0 +1,560 @@
+{
+  "schema": 1,
+  "scope": "D:MANA_PAYMENT_WINDOW: final-total and cost-phase mana ability windows",
+  "base_revision": "faa37f6f35d0f8395d259cfe7da43b7ce2e3434c",
+  "branch": "codex/tdm-final-mana-windows",
+  "preserved_draft": "85fdd7c4f on codex/tdm-mana-windows preserves the earlier 4fc-based draft; it is not an integration dependency.",
+  "source_inputs": [
+    {
+      "path": "crates/engine/src/engine_funding.rs",
+      "sha256": "64579de57072acb618818e3770caec49b506fc4ace2e4c803343d9f75121ac56"
+    },
+    {
+      "path": "crates/engine/src/engine_cast_cost_planning.rs",
+      "sha256": "a16bb8b89e2b2a5e96ad5d098b0d08bf1500c0c531cfbfd137d5c33ab9819abf"
+    },
+    {
+      "path": "tests/tdm_mana_windows.rs",
+      "sha256": "87a3e4d4f1edf15f6a744b0baf8b6dabb481a7581cb9109830269c8fb9d5c7e3"
+    },
+    {
+      "path": "tests/legacy/engine_additional_bound_tests.rs",
+      "sha256": "3832f54b070e25b33d18db0e20dc52e7a5686e0ed0e3532e3b1927d04134fd7c"
+    },
+    {
+      "path": "tests/legacy/assurance/hob_equip_cost_history.rs",
+      "sha256": "2051f2d6a986b52e20142fcf69e6290e1818a187c7ecf2a572d7840f261e3b54"
+    }
+  ],
+  "source_pin": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "oracle_inputs": [
+    {
+      "name": "Dracogenesis",
+      "oracle_id": "9b06f2bf-146d-4b30-b467-e16f1a942253",
+      "record_sha256": "f0d0884bd6420526f5806957361cbe89a0f0e1b75b282eae46d89d2f7a02aa14"
+    },
+    {
+      "name": "Mox Jasper",
+      "oracle_id": "d5fca77c-377f-41b4-a9e9-e91a89d351cc",
+      "record_sha256": "1145563b27b060bb75c1822f863f5312f0cb4105cbe25f264898f323bf46cbb8"
+    },
+    {
+      "name": "Short Bow",
+      "oracle_id": "ce5f5ff9-13f7-41eb-ada0-7f73de42acef",
+      "record_sha256": "57cf7bc9764fd525d1ca763490d29a9340e232c3c283ea02f94db335d0c2d7e9"
+    },
+    {
+      "name": "Sidisi, Regent of the Mire",
+      "oracle_id": "72074972-418d-4dce-83cf-ce8cf310fc42",
+      "record_sha256": "b1e058ce5f3dcb518f92615d0f8f921fc7b65fd8675437c73c5705ebc80e382e"
+    },
+    {
+      "name": "Skyseer's Chariot",
+      "oracle_id": "92d28545-4403-4c24-8547-efab4dde6a53",
+      "record_sha256": "3707403c57094ed34650632a002aff287305ff7cdbe10b4c45904e83c0fd9633"
+    }
+  ],
+  "source_classes_and_helpers_read": [
+    {
+      "path": "Mage.Sets/src/mage/cards/m/MoxJasper.java",
+      "sha256": "dff29e61bc831cd1bee6de43215a3108a163f29f59443bf9c50f36a1e90272d0",
+      "read_scope": "complete file, including helper effect/cost bodies"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/d/Dracogenesis.java",
+      "sha256": "801200f84b6aad6757b8c9bf9ae3893e0ed8f0503bdd31b17ecc309b19b28f75",
+      "read_scope": "complete file, including helper effect/cost bodies"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/SidisiRegentOfTheMire.java",
+      "sha256": "203e11bde9192062a677c8d7da9c31f5a404d01e3a9b2b5777ff96c1bbceff5a",
+      "read_scope": "complete file, including helper effect/cost bodies"
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/s/SkyseersChariot.java",
+      "sha256": "2018997694a4827146adf0f5c93d54b4b5da5cf7a9e873e2b5a8aa543a8c8ce6",
+      "read_scope": "complete file, including helper effect/cost bodies"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/ActivateIfConditionManaAbility.java",
+      "sha256": "d5c9b973c6787cab3a8ba5a961f05651a55cfc971230b276ed619e23cc578132",
+      "read_scope": "complete file, including helper effect/cost bodies"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/CastFromHandWithoutPayingManaCostEffect.java",
+      "sha256": "21f6707d883b719f93109cf5687fe1141e7cd80c13ea464ba9bbb1b4f0f20ca8",
+      "read_scope": "complete file, including helper effect/cost bodies"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b",
+      "read_scope": "complete file, including helper effect/cost bodies"
+    }
+  ],
+  "rules_sources": [
+    {
+      "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+      "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+      "sections": [
+        "117.1d",
+        "118.5",
+        "601.2f",
+        "601.2g",
+        "605.3a"
+      ],
+      "outcome": "A zero total still requires acknowledgment but no mana; a casting/activation mana window depends on the locked final total and precedes any cost payment."
+    },
+    {
+      "url": "https://apps.magicjudges.org/forum/topic/42243/?page=1",
+      "author": "Nathan Long, Magic Rules NetRep",
+      "published": "2018-03-26",
+      "outcome": "Primary rules answer confirms that casting a zero-cost Mox does not open the casting mana-ability window. Current CR text was checked independently."
+    }
+  ],
+  "repair": [
+    "FundingGoal::requires_mana reads all six required mana components and generic total; printed mana_component, source presence and current pool shortfall do not decide the window.",
+    "FundingState::mana_window_open combines that positive total with the existing closed-cost phase. One mana_moves gate covers ordinary, deferred and complete-proposal searches; actual visit_cost_payment uses it before deferred indexed actions too.",
+    "Private CostContext retains Announcement.cast_costs.mana_closed. Fresh standalone contexts begin open; current/overwritten craft, symbol and optional-cost contexts preserve the inherited phase. The query memo key includes its derived window bit.",
+    "PayCosts acknowledgment and nonmana/contributor choices remain separate from mana activations. Already funded positive costs and positive totals later paid entirely by Convoke/Delve keep their initial window.",
+    "Explicit resolution requests inspect all hybrid alternatives for a positive mana option, and establish their own request context independently of a suspended announcement.",
+    "Priority action visitation is unchanged; basic, native intrinsic, granted and explicit-zero mana abilities remain available at priority. A zero-cost mana ability itself cannot open a nested zero-cost payment window."
+  ],
+  "caller_audit": {
+    "FundingState::moves": "ordinary proposal reachability; requires positive final goal",
+    "FundingState::deferred_moves": "nested proposal reachability; same predicate",
+    "FundingState::action_moves": "actual guided payment actions; same predicate",
+    "visit_cost_payment": "emits nonmana/acknowledgment options first, then rejects zero before both ordinary and indexed deferred mana paths",
+    "visit_face_up_payment": "zero PayFaceUp acknowledgment retained; no mana moves for zero request",
+    "visit_plot_payment": "zero PayPlot acknowledgment retained; no mana moves for zero request",
+    "visit_resolution_payment": "checks all hybrid alternatives; no zero-only window; positive alternative opens a request window even if zero option chosen later",
+    "prepare_mana_allocations": "reuses only already validated actual mana actions through same action_moves",
+    "fund_creature_counter_cost": "counter-cost proposal walks ordinary/deferred moves through same gate",
+    "visit_attack_tax_payment": "zero PayAttackTax acknowledgment retained; no zero mana window",
+    "Priority visitation": "separate basic/intrinsic/granted/borrowed/self-granted emitters; unchanged; their own zero payment completion remains valid"
+  },
+  "negative_witnesses": [
+    {
+      "report": "<cache>/rustmage-tdm/mana-windows-baseline14-fixtures/native.json",
+      "sha256": "a302ebaac68910ae251686c10287d9c8bfb4c86047e354b8f49b14bd9a9f16ab",
+      "terminal": true,
+      "success": false,
+      "cases": 14,
+      "passed": 4,
+      "compile_seconds": 0.7671742739912588,
+      "execution_seconds": 0.02509374899091199
+    },
+    {
+      "report": "<cache>/rustmage-tdm/mana-windows-phase-negative/native.json",
+      "sha256": "974d9c08d3319f50a79d6f6e8df17b1acf7b42e59dadbfc3be125f270fab2e9b",
+      "terminal": true,
+      "success": false,
+      "cases": 2,
+      "passed": 0,
+      "compile_seconds": 0.8666976199892815,
+      "execution_seconds": 0.02531817101407796
+    },
+    {
+      "report": "<cache>/rustmage-tdm/mana-windows-symbol-phase-negative/native.json",
+      "sha256": "86c464840217d4df7512adc45987d1c85f64d340135c6182b07c91527f839b5a",
+      "terminal": true,
+      "success": false,
+      "cases": 1,
+      "passed": 0,
+      "compile_seconds": 0.8670655940077268,
+      "execution_seconds": 0.03344816400203854
+    }
+  ],
+  "negative_outcomes": [
+    "Original exact base runtime with corrected 14-case fixture gives4 pass and10 intended failures: native Mox Jasper at {0}, free Dragon, explicit {0} activation, future sacrifice/Behold witnesses, nested {0} mana ability, zero resolution request, reduced spell/equip and owned acknowledgment. Four positive controls pass.",
+    "The first zero-total repair passes 14/14, but a warm two-case phase reproduction fails 0/2: after paying Behold first, mana actions reopen; an empty-pool remaining-cost proposal invents late Island activations.",
+    "The first phase repair passes 16/16, but a warm symbol-context reproduction fails 0/1 because replacing its private context reset the closed phase."
+  ],
+  "intermediate_positive_runs": [
+    {
+      "report": "<cache>/rustmage-tdm/mana-windows-fixed14/native.json",
+      "sha256": "6d481c231795c756f57be37fc20ebf7e7995ced4848b167979cb0e14bb54fc19",
+      "terminal": true,
+      "success": true,
+      "cases": 14,
+      "passed": 14,
+      "compile_seconds": 117.95237298298161,
+      "execution_seconds": 0.03501483899890445
+    },
+    {
+      "report": "<cache>/rustmage-tdm/mana-windows-phase-fixed16/native.json",
+      "sha256": "4d34099b22888409729074480bf239142b546924faae2fe991b13defd3a544ea",
+      "terminal": true,
+      "success": true,
+      "cases": 16,
+      "passed": 16,
+      "compile_seconds": 121.16663643202628,
+      "execution_seconds": 0.03439086498110555
+    }
+  ],
+  "final_runs": [
+    {
+      "report": "<cache>/rustmage-tdm/mana-windows-final17/native.json",
+      "sha256": "599005128650cc8bb3b0c8ec9e45ffc2ad4f0ba041a9ba94e8924432cac1f95c",
+      "terminal": true,
+      "success": true,
+      "cases": 17,
+      "passed": 17,
+      "compile_seconds": 115.85179977698135,
+      "execution_seconds": 0.052417712984606624
+    },
+    {
+      "report": "<cache>/rustmage-tdm/mana-windows-compat/0/native.json",
+      "sha256": "69099e11ce7cc028d6d0c19c616a948a0068953aec861a17f95d7d498f8109ea",
+      "terminal": true,
+      "success": true,
+      "cases": 36,
+      "passed": 36,
+      "compile_seconds": 1.6190585840085987,
+      "execution_seconds": 0.03616620399407111
+    },
+    {
+      "report": "<cache>/rustmage-tdm/mana-windows-compat/1/native.json",
+      "sha256": "3fa62f2e50018fb4c910b00e353fc1a27028ed1a0cea761d5b8da0be15c817ab",
+      "terminal": true,
+      "success": true,
+      "cases": 20,
+      "passed": 20,
+      "compile_seconds": 1.5685304810176603,
+      "execution_seconds": 0.0379664079810027
+    },
+    {
+      "report": "<cache>/rustmage-tdm/mana-windows-compat/2/native.json",
+      "sha256": "1f2a0c1f187945d4c188a16adfcb1d98a5a07c5ed8ac83976dcf19dea039766d",
+      "terminal": true,
+      "success": true,
+      "cases": 9,
+      "passed": 9,
+      "compile_seconds": 1.4180628350004554,
+      "execution_seconds": 0.046543712000129744
+    },
+    {
+      "report": "<cache>/rustmage-tdm/mana-windows-compat/3/native.json",
+      "sha256": "98177e41c140d17693e73627a946aa5e373bacc3794aee30b7244a5ca1fb23cd",
+      "terminal": true,
+      "success": true,
+      "cases": 11,
+      "passed": 11,
+      "compile_seconds": 0.9166110460064374,
+      "execution_seconds": 0.05073575201095082
+    },
+    {
+      "report": "<cache>/rustmage-tdm/mana-windows-compat/4/native.json",
+      "sha256": "4649df721d10ecc7185b2f34e0314db8d53d907a2a1445f81d30930214b2f3a8",
+      "terminal": true,
+      "success": true,
+      "cases": 12,
+      "passed": 12,
+      "compile_seconds": 0.917253734980477,
+      "execution_seconds": 0.03456153400475159
+    },
+    {
+      "report": "<cache>/rustmage-tdm/mana-windows-compat/5/native.json",
+      "sha256": "562da052f59f67ee97fa75831806aa63b6c101faa587f3ca34f7073874024b3f",
+      "terminal": true,
+      "success": true,
+      "cases": 18,
+      "passed": 18,
+      "compile_seconds": 0.8167165340273641,
+      "execution_seconds": 0.034457353001926094
+    },
+    {
+      "report": "<cache>/rustmage-tdm/mana-windows-compat/6/native.json",
+      "sha256": "4fa798113c9e06ae505b190181b144dc931516f3d322f211eed88db507f355ef",
+      "terminal": true,
+      "success": true,
+      "cases": 11,
+      "passed": 11,
+      "compile_seconds": 1.519088384025963,
+      "execution_seconds": 0.02496610998059623
+    },
+    {
+      "report": "<cache>/rustmage-tdm/mana-windows-compat/7/native.json",
+      "sha256": "f24163a705189abed89bd5481c6513b9e36e2371c5c21225f285bd8b15ce5a1d",
+      "terminal": true,
+      "success": true,
+      "cases": 9,
+      "passed": 9,
+      "compile_seconds": 0.867182642017724,
+      "execution_seconds": 0.0247965200105682
+    },
+    {
+      "report": "<cache>/rustmage-tdm/mana-windows-legacy-equip-taxed/native.json",
+      "sha256": "4f27e527a0ff47c700f6f59bfd92b9984c2608a6abebb9c395806b7b347094bc",
+      "terminal": true,
+      "success": true,
+      "cases": 16,
+      "passed": 16,
+      "compile_seconds": 22.117193343990948,
+      "execution_seconds": 0.05820522501016967
+    },
+    {
+      "report": "<cache>/rustmage-tdm/mana-windows-legacy-final/0/native.json",
+      "sha256": "700363c896b1e2bfc365eaaa5dba1145eb26096740b513f1afd3f897fae860cc",
+      "terminal": true,
+      "success": true,
+      "cases": 3,
+      "passed": 3,
+      "compile_seconds": 0.06503067500307225,
+      "execution_seconds": 0.032905858010053635
+    },
+    {
+      "report": "<cache>/rustmage-tdm/mana-windows-additional-bound/native.json",
+      "sha256": "416909d3b0e26f517551dbebe38d569b9dc41e2ec019f3ad961f8748ded03773",
+      "terminal": true,
+      "success": true,
+      "cases": 7,
+      "passed": 7,
+      "compile_seconds": 0.11453629998140968,
+      "execution_seconds": 0.05807781100156717
+    }
+  ],
+  "final_cases": 169,
+  "compile_seconds": 147.79106433704146,
+  "execution_seconds": 0.4918001999903936,
+  "final_source_manifest": {
+    "path": "<cache>/rustmage-tdm/mana-windows-legacy-final/source-hashes.json",
+    "sha256": "9aff0fa7d810db2f7fe40ee1e5a79851c2b6396715e85d9d5e171022c9c27dc7",
+    "files": 11917,
+    "unchanged_after_terminal": true
+  },
+  "other_retained_terminal_failures": [
+    {
+      "report": "<cache>/rustmage-tdm/mana-windows-baseline14/native.json",
+      "sha256": "353e7c2baae6a6215111f9dbbbd9846aa49e9d6e612f58ccbcb2e40e1daca9b1",
+      "terminal": true,
+      "success": false,
+      "cases": 14,
+      "passed": 2,
+      "compile_seconds": 113.91293630300788,
+      "execution_seconds": 0.033682239009067416
+    },
+    {
+      "report": "<cache>/rustmage-tdm/mana-windows-compat/8/native.json",
+      "sha256": "2b402cc4437b36f75e0d3213d324f45c8822f758913625dc06ca5cb85858e233",
+      "terminal": true,
+      "success": false,
+      "cases": 0,
+      "passed": 0,
+      "compile_seconds": 9.492982041003415,
+      "execution_seconds": 0
+    },
+    {
+      "report": "<cache>/rustmage-tdm/mana-windows-legacy-equip/native.json",
+      "sha256": "013c2423ca0f05a64a8a8ff81c6ebc1bfe85740fd6e6938620b2faee802eeb8a",
+      "terminal": true,
+      "success": false,
+      "cases": 16,
+      "passed": 15,
+      "compile_seconds": 22.46941773101571,
+      "execution_seconds": 0.042580541979987174
+    },
+    {
+      "report": "<cache>/rustmage-tdm/mana-windows-legacy-final/1/native.json",
+      "sha256": "14b85eeb5e84c6931b61c4f2fe9404f14fa91f084e6914a49890a4fa743f042e",
+      "terminal": true,
+      "success": false,
+      "cases": 0,
+      "passed": 0,
+      "compile_seconds": 0.06476998698781244,
+      "execution_seconds": 0
+    }
+  ],
+  "failure_resolution": [
+    "Initial baseline had two fixture errors: Short Bow costs {2}, so full Convoke/Delve controls need two contributors/fuel; Delve requires an already-present provider. Corrected baseline is retained separately.",
+    "An inherited private CostContext literal needed mana_closed:false; all legacy constructors now compile.",
+    "An inherited Kili test activated Bolg inside a final-zero equip announcement. It now uses actual Skyseer's Chariot naming My Precious to impose tax {2}, making a legal mana window while still proving the locked free equip alternative survives sacrificing its provider. Life remains 20; the generated black/red mana pays the tax.",
+    "One additional-bound selection used a filename prefix instead of its module filter and reported zero selected tests. Corrected module selection passes 7/7; both reports retained."
+  ],
+  "ownership_privacy_transaction": [
+    "Zero acknowledgment and already-funded nonmana-first payment use raw/index/restore after parent disposal; wrong actors and forbidden mana actions reject without state mutation.",
+    "No new public state, actions, serialization fields or wire schema. The existing public mana_closed state is only retained in private ephemeral query context; private memo identity now distinguishes it.",
+    "The stranded remaining-cost scenario deliberately removes pooled mana in an owned test fork to verify its proposal cannot invent a forbidden late mana child. It is not claimed as an independently reachable public payment sequence.",
+    "Dracogenesis keeps its exact immutable physical identity under a scoped typed provider fixture; native Shivan Dragon is cast through the existing filtered free permission. No gated definition is admitted."
+  ],
+  "resource_reports": [
+    {
+      "report": "<cache>/rustmage-build-reports/dbf838c8748242e287a753b1cd2ca1a4.json",
+      "sha256": "1c5b5c43cd7acf2d06283ef561c2fab8d069e1b2bfa4195b6905a72f20d78b4f",
+      "exit_code": 0,
+      "seconds": 0.9952565199928358,
+      "memory_peak_bytes": 238297088,
+      "memory_max_bytes": 6442450944
+    },
+    {
+      "report": "<cache>/rustmage-build-reports/c55d1b2d21724a2f84b0107e2c5da941.json",
+      "sha256": "8017c0b75918c23f7b7c82d83a027a78ee95052681a6553dab6e2483a4208226",
+      "exit_code": 0,
+      "seconds": 0.8967748039867729,
+      "memory_peak_bytes": 237096960,
+      "memory_max_bytes": 6442450944
+    },
+    {
+      "report": "<cache>/rustmage-build-reports/2f8d567800c94bc08ebbc5e25aa66b18.json",
+      "sha256": "8316b0323b7f41a0a4ae1531e091aae3cbd583d088a8f08f2897ea12b178c07d",
+      "exit_code": 1,
+      "seconds": 0.9246519430016633,
+      "memory_peak_bytes": 229904384,
+      "memory_max_bytes": 6442450944
+    },
+    {
+      "report": "<cache>/rustmage-build-reports/e3e976f9eafd4602a63cffdd6d5c92ed.json",
+      "sha256": "a7cbd97469d4800bce1cb4076d1e0346150c1933e34affc831b8f6aa3c0cc1c3",
+      "exit_code": 1,
+      "seconds": 22.562369806983043,
+      "memory_peak_bytes": 1886588928,
+      "memory_max_bytes": 6442450944
+    },
+    {
+      "report": "<cache>/rustmage-build-reports/5c9e11fb7259447e93a2a98d369ba27e.json",
+      "sha256": "df311ef499957b72df707688c545a07d0a9ec801fbe4ff80cadaef79c15c1f58",
+      "exit_code": 0,
+      "seconds": 0.9342833269911353,
+      "memory_peak_bytes": 226975744,
+      "memory_max_bytes": 6442450944
+    },
+    {
+      "report": "<cache>/rustmage-build-reports/cdfc29dc6a25421fbc281eb23a264630.json",
+      "sha256": "9b5caf44c34f96a2dc7a5b1bcedfe8d99813a06274efcd891467d2624f519cb3",
+      "exit_code": 1,
+      "seconds": 9.537903165008174,
+      "memory_peak_bytes": 1322782720,
+      "memory_max_bytes": 6442450944
+    },
+    {
+      "report": "<cache>/rustmage-build-reports/e644efbb936c492bb7c533876acaf29d.json",
+      "sha256": "70e9b0ab90a5bfa4a490d637b0f1fdd151e804128209a9a14edc284f3746d8ae",
+      "exit_code": 0,
+      "seconds": 0.2186808770056814,
+      "memory_peak_bytes": 35381248,
+      "memory_max_bytes": 6442450944
+    },
+    {
+      "report": "<cache>/rustmage-build-reports/66036f74e83a437fb6d1a87cff19ba26.json",
+      "sha256": "d34a44a9efd49bad1f414457e8425f9d93f7d100c8c65bf565eb0031efb29b55",
+      "exit_code": 0,
+      "seconds": 1.6519747620041016,
+      "memory_peak_bytes": 292360192,
+      "memory_max_bytes": 6442450944
+    },
+    {
+      "report": "<cache>/rustmage-build-reports/9d1aaabb48b94b42bbbe76c94985836c.json",
+      "sha256": "ef711d7db73d0471f0e29a0e7c1e257e0acecd52cf0ce76b27d63a468fadaa62",
+      "exit_code": 0,
+      "seconds": 115.95449302700581,
+      "memory_peak_bytes": 1971007488,
+      "memory_max_bytes": 6442450944
+    },
+    {
+      "report": "<cache>/rustmage-build-reports/113e0870b97d41deb4bdd35c317d0a5f.json",
+      "sha256": "b33bee4c72e900c589e1a6c663bb4737317e4d6eecafe7f9a7e399bfbf575252",
+      "exit_code": 0,
+      "seconds": 0.1373588020214811,
+      "memory_peak_bytes": 33845248,
+      "memory_max_bytes": 6442450944
+    },
+    {
+      "report": "<cache>/rustmage-build-reports/67201004a698455f86fdf8269c23a25f.json",
+      "sha256": "4f9da65c47a4acf3bd699f3a4409fc1498108a7227fc60631b1b98959a085994",
+      "exit_code": 1,
+      "seconds": 0.8429050720005762,
+      "memory_peak_bytes": 227979264,
+      "memory_max_bytes": 6442450944
+    },
+    {
+      "report": "<cache>/rustmage-build-reports/939539e04d34417fa7a84cb2ebb6c2e5.json",
+      "sha256": "058a212c2cfc8ee55521d8c894ad764d1f6f92918c3653d4c64073890e4c3baa",
+      "exit_code": 0,
+      "seconds": 121.24533598602284,
+      "memory_peak_bytes": 1973735424,
+      "memory_max_bytes": 6442450944
+    },
+    {
+      "report": "<cache>/rustmage-build-reports/51976203b8c0438e9331707e699b7a17.json",
+      "sha256": "1db23895f0ee7491ca9c5cba6fb4e8d80512e77bfe41afee7f404d90b39833b6",
+      "exit_code": 0,
+      "seconds": 1.5948709410149604,
+      "memory_peak_bytes": 294109184,
+      "memory_max_bytes": 6442450944
+    },
+    {
+      "report": "<cache>/rustmage-build-reports/cc73bdaf35094e9ba234aa149846597e.json",
+      "sha256": "c54592950e8e7d06cd4ba5ab2830748389ea8ea36aa4c33fe5032489ab162fb1",
+      "exit_code": 1,
+      "seconds": 0.14672208699630573,
+      "memory_peak_bytes": 33624064,
+      "memory_max_bytes": 6442450944
+    },
+    {
+      "report": "<cache>/rustmage-build-reports/35d020c2d53c48b1b5ac0bb971a3fc67.json",
+      "sha256": "0836dc5d0fe90ac9c58b5126615e2a079bf3ce473afff85377e0ac5559ba4937",
+      "exit_code": 1,
+      "seconds": 113.99804956399021,
+      "memory_peak_bytes": 1969250304,
+      "memory_max_bytes": 6442450944
+    },
+    {
+      "report": "<cache>/rustmage-build-reports/f06bddc2aeb74390bd6769080b69e947.json",
+      "sha256": "de56da3e9b09e18d77e279c34d457b5dbdc8cc87c8b316ba47ef1dcb61b5e5ca",
+      "exit_code": 0,
+      "seconds": 118.03125880198786,
+      "memory_peak_bytes": 1974865920,
+      "memory_max_bytes": 6442450944
+    },
+    {
+      "report": "<cache>/rustmage-build-reports/c5d66f962b764812b83fdc926ab5bcc4.json",
+      "sha256": "aabeabaa5248de8a3037a24cee0d671c5ce32917bf1d568a6a6c3037fa34d39a",
+      "exit_code": 0,
+      "seconds": 1.7070589890063275,
+      "memory_peak_bytes": 309538816,
+      "memory_max_bytes": 6442450944
+    },
+    {
+      "report": "<cache>/rustmage-build-reports/a6cef6b76d564fba80ca894f50c96001.json",
+      "sha256": "825a701268917e0081c885ce4a4e239c74714e00f3babfc0efa02679458db05a",
+      "exit_code": 1,
+      "seconds": 0.9494982209871523,
+      "memory_peak_bytes": 228913152,
+      "memory_max_bytes": 6442450944
+    },
+    {
+      "report": "<cache>/rustmage-build-reports/306e839ac69e48b0b6ab73ee9b870b58.json",
+      "sha256": "d335f275b028316254a0469454a578605f4b5835720654a7e1b22264d98da2a0",
+      "exit_code": 0,
+      "seconds": 1.0165821799892,
+      "memory_peak_bytes": 222011392,
+      "memory_max_bytes": 6442450944
+    },
+    {
+      "report": "<cache>/rustmage-build-reports/6482fe4dce1b430c85a96aa88210a6d2.json",
+      "sha256": "af65a20f55f34d069fd885846d15d1fabaef2135fe88aa98036be3fadd1fc052",
+      "exit_code": 0,
+      "seconds": 1.5113773500197567,
+      "memory_peak_bytes": 296243200,
+      "memory_max_bytes": 6442450944
+    },
+    {
+      "report": "<cache>/rustmage-build-reports/7fcd7144032e4a4c9866f1a303e5708e.json",
+      "sha256": "1241503730ac99fac6790b467dcecbf3cb8e4a862f26c2f2daf532be4365f438",
+      "exit_code": 0,
+      "seconds": 22.208713223983068,
+      "memory_peak_bytes": 1904676864,
+      "memory_max_bytes": 6442450944
+    }
+  ],
+  "validation": [
+    "All Cargo through resource_guard; one build/test at a time under shared 6 GiB cap with stable entry-modes cache.",
+    "Every consuming input held fixed until actual terminal; runtime stayed unchanged through all compatibility jobs. Only isolated legacy fixture corrections followed terminal failures.",
+    "rustfmt and git diff --check;12 final successful reports, 169 cases; no active children."
+  ],
+  "limitations": [
+    "This new shared repair needs two independent nonauthor exact-head reviews. It does not approve unrelated authored ancestors.",
+    "Root owns removing the now-redundant narrow Sidisi shortcut during integration.",
+    "No card definitions/admissions/generated linkage changed.",
+    "Whole-set release validation, global schema/trace acceptance and simulation performance remain with the parent checkpoint."
+  ]
+}

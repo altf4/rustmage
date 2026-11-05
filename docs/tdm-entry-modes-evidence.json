@@ -1,0 +1,199 @@
+{
+  "scope": [
+    "A01",
+    "B:entry_modes",
+    "C:NAMED_ENTRY_MODE"
+  ],
+  "baseline": "53f44068468385f16b5594c2472a8742bed14241",
+  "source_inputs": [
+    {
+      "path": "crates/engine/src/ability_layers.rs",
+      "sha256": "28ab47447d74c85c99268d31326d0c1e50a938180d1d093a80ad84f0fd8eb082"
+    },
+    {
+      "path": "crates/engine/src/card_definitions/mod.rs",
+      "sha256": "0d1c4cfc45f38a3d31506bd9494f8d496e8e71a03962c89b9a5da08920194a1c"
+    },
+    {
+      "path": "crates/engine/src/cards.rs",
+      "sha256": "f07ef16bffe610361c60e555799e8ad5b6ed3b34c1d70a405eb467983f56d20f"
+    },
+    {
+      "path": "crates/engine/src/engine.rs",
+      "sha256": "bd1f9191bf1aa3829c0836f669abff39e82529d3920b048630320d46cc5dcf9c"
+    },
+    {
+      "path": "crates/engine/src/engine_ability_evaluation.rs",
+      "sha256": "606ee09f00918687f8d50bc37370cf768b0a4bdcb22914cbaec069790ca83912"
+    },
+    {
+      "path": "crates/engine/src/engine_ability_timeline.rs",
+      "sha256": "2980e3deb50a78cb283e0e8cece5afbf9518a15a354feea91dec60f8000cefb5"
+    },
+    {
+      "path": "crates/engine/src/engine_ability_world.rs",
+      "sha256": "b9f50ee48a268f8163e8f0a75c5189ab6669ed73b73a03aad350bfc7207c5694"
+    },
+    {
+      "path": "crates/engine/src/engine_cast_origins.rs",
+      "sha256": "406aed9340ba3ba797155b74faf7e550746372db04f7160b3199f5f175c2da2c"
+    },
+    {
+      "path": "crates/engine/src/engine_characteristic_query.rs",
+      "sha256": "8f8d8e4ca94d3db4aa7295eeb48f2e94a3d237d1a40a4f254701ec8dbef299ef"
+    },
+    {
+      "path": "crates/engine/src/engine_copy_grant_origins.rs",
+      "sha256": "bd11bd19705393c4754016691020c5271c09a5a280e54ac14274155a8932929c"
+    },
+    {
+      "path": "crates/engine/src/engine_entry_choices.rs",
+      "sha256": "e3c5e1b12d8edc1bdd2f4b3e7e708bc9d2a9b317d62f34f02d771abfc4aaf48e"
+    },
+    {
+      "path": "crates/engine/src/engine_entry_modes.rs",
+      "sha256": "d39177093ad5b26f04f6addbe1a0de7a6d7a7e5f937af76da44d194fc3d77058"
+    },
+    {
+      "path": "crates/engine/src/engine_funding_entries.rs",
+      "sha256": "77c46941b8d20ef7507b12ef772087160bf10a8e7e08b002921bb20e59a729f3"
+    },
+    {
+      "path": "crates/engine/src/engine_growth_cost.rs",
+      "sha256": "a600d27c75e2a506f4714b74daf8d5f77c60a0c2ffe1269e9af5170c3e912b61"
+    },
+    {
+      "path": "crates/engine/src/engine_programs.rs",
+      "sha256": "fcac6f8bec0ce2c87ec48c2e06420d4c84d290c4b3d3f1a66318a631fb9439f9"
+    },
+    {
+      "path": "crates/engine/src/engine_stats.rs",
+      "sha256": "837df43ae4adf502531e7baf7ce97c2db552e004ec3a2f2fe045e1f6f8360829"
+    },
+    {
+      "path": "tests/tdm_entry_modes.rs",
+      "sha256": "8a3ad52ec74c489cafe2676b81faca7d3e1c5b352b3950e69d0e7b45b5e0bc5a"
+    }
+  ],
+  "changes": [
+    "Extend the existing owned entry-choice transaction with finite named labels and validated u16 source-local indices.",
+    "Bind the saved value to exact incarnation and copied-ability acquisition; retain control changes, clear true departures, and make entering copies choose freshly.",
+    "Gate supported immutable static groups, printed event-time triggers and conditional self-owned activated templates through real and speculative characteristic worlds.",
+    "Freeze a serde-skipped ObjectView mode witness at trigger events; already queued abilities do not recalculate dormant choices.",
+    "Reject unsupported mode-marker/static-fragment combinations rather than permitting raw legacy consumers to leak inactive abilities."
+  ],
+  "supported_marker_fragments": [
+    "EntryMode",
+    "SourceEntryModeActivation",
+    "StaticModifier",
+    "KeywordGrant",
+    "ControlledPermanentKeywords",
+    "PlayLandFromGraveyard"
+  ],
+  "outcome_evidence": [
+    "Twelve focused scenarios cover mandatory public bounded choice, invalid kind/index transactionality, metadata rejection, mode-specific own-creature bonus/keywords and end-step/departure triggers in both seats.",
+    "Both nonmana source-grant cost payment and tap-green mana availability/funding are mode-specific; suppression removes and later restores selected providers while retaining the choice.",
+    "Graveyard land permission obeys ordinary land timing and allowance and ends on source departure.",
+    "Control changes preserve the choice and change live recipients. In-place copies get no chosen value, activation or conditional trigger; original acquisitions restore dormant choices; true reentry and entering copies make fresh choices.",
+    "A queued trigger still resolves after an in-place copy and simultaneous departures use frozen source modes after live choices clear.",
+    "Projected entry choices match committed bonuses and mana templates without mutating the parent. Raw/index children agree, siblings remain independent after parent disposal, wrong actors and stale revisions preserve state, and restore reproduces the outcome.",
+    "Thirty-seven existing max-speed grants, copied entry choices, named-entry privacy and owned-state regressions remain passing."
+  ],
+  "runs": [
+    {
+      "target": "tdm_entry_modes",
+      "report": "<cache>/rustmage-tdm/entry-modes-consumers-fixed/native.json",
+      "resource_report": "<cache>/rustmage-build-reports/4c861faf48ab4bdcbe5680a345959195.json",
+      "terminal": true,
+      "success": true,
+      "cases": 12,
+      "passed": 12,
+      "compile_seconds": 112.96844683401287,
+      "execution_seconds": 0.024476731981849298,
+      "total_seconds": 112.99361883100937,
+      "memory_peak_bytes": 1913262080,
+      "timeouts": false,
+      "orphaned_processes": false
+    },
+    {
+      "target": "dft_speed_grants",
+      "report": "<cache>/rustmage-tdm/entry-modes-compat-speed/native.json",
+      "resource_report": "<cache>/rustmage-build-reports/a1924c3904224dd3adc4e9ba0edb17dc.json",
+      "terminal": true,
+      "success": true,
+      "cases": 13,
+      "passed": 13,
+      "compile_seconds": 0.8168988779943902,
+      "execution_seconds": 0.04315286400378682,
+      "total_seconds": 0.8607124080008361,
+      "memory_peak_bytes": 221241344,
+      "timeouts": false,
+      "orphaned_processes": false
+    },
+    {
+      "target": "dft_entry_copies",
+      "report": "<cache>/rustmage-tdm/entry-modes-compat-copies/native.json",
+      "resource_report": "<cache>/rustmage-build-reports/387e10cd125e44439e2a8b970be0931c.json",
+      "terminal": true,
+      "success": true,
+      "cases": 16,
+      "passed": 16,
+      "compile_seconds": 3.9255624010111205,
+      "execution_seconds": 0.035143454995704815,
+      "total_seconds": 3.961316332977731,
+      "memory_peak_bytes": 226873344,
+      "timeouts": false,
+      "orphaned_processes": false
+    },
+    {
+      "target": "dft_named_search",
+      "report": "<cache>/rustmage-tdm/entry-modes-compat-names/native.json",
+      "resource_report": "<cache>/rustmage-build-reports/962bd9bcaf964d96aaa769704bb3e04e.json",
+      "terminal": true,
+      "success": true,
+      "cases": 8,
+      "passed": 8,
+      "compile_seconds": 0.8166010020067915,
+      "execution_seconds": 0.04339517198968679,
+      "total_seconds": 0.8606406409817282,
+      "memory_peak_bytes": 218460160,
+      "timeouts": false,
+      "orphaned_processes": false
+    }
+  ],
+  "resource_contract": {
+    "runner": "scripts/run_native_tests.py delegates to scripts/resource_guard.py",
+    "memory_max_bytes": 6442450944,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "inputs_frozen_until_terminal": true,
+    "no_oom_probe": true
+  },
+  "diagnostic_history": [
+    {
+      "report": "<cache>/rustmage-tdm/entry-modes-first/native.json",
+      "result": "Compile failed before scenarios; mode witness accidentally inserted on SpellView. Moved to ObjectView, with serde skip."
+    },
+    {
+      "report": "<cache>/rustmage-tdm/entry-modes-witness-fixed/native.json",
+      "result": "Engine compiled; two test-fixture borrow/lifetime errors corrected."
+    },
+    {
+      "report": "<cache>/rustmage-tdm/entry-modes-fixtures-fixed/native.json",
+      "result": "Seven of twelve passed; corrected source-grant enumeration and graveyard permission availability consumers, and three fixture API assumptions. Final source inputs are the hashes above."
+    }
+  ],
+  "integration_obligations": [
+    "Integrator must bump observation schema for NamedModes and NamedMode wire enum extensions and account for inherited traces/prior-schema rejection. No new serialized ObjectView field was added.",
+    "Attack-trigger duplication remains a separate engine dependency. Its consumer must consult group availability and extend the checked marker allowlist with focused tests before Siege card authorship.",
+    "Final committed inputs require two independent nonauthor reviews. Full release validation, regenerated linkage and set acceptance belong to the set integrator."
+  ],
+  "review_status": "pending two independent nonauthor reviews of final committed inputs",
+  "acceptance": {
+    "focused_rules_complete": true,
+    "all_shared_rules_complete": false,
+    "full_release_validation_run": false,
+    "newly_complete_cards": 0,
+    "simulation_benchmarks_run": 0
+  }
+}

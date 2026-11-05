@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "73fa03e4c23f7f9515a346f40be09e0c834f6ac51ac895983b8aaa9ae3f3a042"
   },
-  "physical_metadata_sha256": "00a7b27551fd3f91a2aa7ef15c284bc8c52e4ba3054e16711ff4f00247d9ddeb"
+  "physical_metadata_sha256": "00a7b27551fd3f91a2aa7ef15c284bc8c52e4ba3054e16711ff4f00247d9ddeb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/InspiritedVanguard.java",
+  "java_sha256": "a12724301b83d1924a4fd30b21006a8418cc83089887bae6b41dcc447c83a879",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EndureSourceEffect.java",
+      "sha256": "b32a2eef10ea3a3f03e93398e6e5a6aeebd279daa5a95edda6aab6380e1d9dcd"
+    }
+  ]
 }

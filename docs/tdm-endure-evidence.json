@@ -1,0 +1,130 @@
+{
+  "schema": 1,
+  "scope": "Existing fixed Endure rules repair, not dynamic Endure or complete-set acceptance",
+  "authority": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt#701.63",
+  "baseline_revision": "53f440684",
+  "source_inputs": [
+    {
+      "path": "crates/engine/src/engine_endure.rs",
+      "sha256": "16c3faf80d58d506d8bf20ae51315efb0c5b4647f403612562ff80e46af24455"
+    },
+    {
+      "path": "crates/engine/src/engine_programs.rs",
+      "sha256": "0ab6aa069b611a6416cbd58ea059602d0f29e8814d776c3e787df8471df3cd83"
+    },
+    {
+      "path": "tests/tdm_endure.rs",
+      "sha256": "00be141ef350efe51ce77862c3099388dc4c52e139564338324f18ee7383b80e"
+    }
+  ],
+  "changes": [
+    "Use exact live enduring permanent controller, and frozen last battlefield controller after departure.",
+    "Create the Spirit automatically when counter placement is prohibited.",
+    "Reuse existing source facts, owned Pending and counter/token replacement pipelines; no public wire fields.",
+    "Attribute the counter placement itself to the enduring permanent controller, including placing-player counter replacements/observers."
+  ],
+  "outcome_evidence": [
+    "Five focused regression groups cover actual Anafenza death triggers in both seats, live counter/token choices after theft, departure and reentry, current-controller Elspeth token doubling, counter-prohibition fallback and owned raw/index/restore plus wrong-actor transactionality.",
+    "Actual Doc Samson under current vs previous controller proves the Endure counter placing player, independently of choice ownership."
+  ],
+  "runs": [
+    {
+      "report": "<cache>/rustmage-tdm/endure-before/native.json",
+      "interpretation": "Expected negative regression baseline; unchanged engine fails all five groups.",
+      "success": false,
+      "terminal": true,
+      "cases": 5,
+      "passed": 0,
+      "failed": 5,
+      "compile_seconds": 133.5985573590151,
+      "execution_seconds": 0.02508837598725222,
+      "total_seconds": 133.62423859501723,
+      "timeouts": false,
+      "orphaned_processes": false
+    },
+    {
+      "report": "<cache>/rustmage-tdm/endure-fixed/native.json",
+      "interpretation": "Four engine groups pass; token-doubling group failed because direct Elspeth fixture lacked starting loyalty.",
+      "success": false,
+      "terminal": true,
+      "cases": 5,
+      "passed": 4,
+      "failed": 1,
+      "compile_seconds": 112.35357789800037,
+      "execution_seconds": 0.02466570498654619,
+      "total_seconds": 112.37882400499075,
+      "timeouts": false,
+      "orphaned_processes": false
+    },
+    {
+      "report": "<cache>/rustmage-tdm/endure-fixed-fixture/native.json",
+      "interpretation": "Corrected setup; all five groups pass without another engine change.",
+      "success": true,
+      "terminal": true,
+      "cases": 5,
+      "passed": 5,
+      "failed": 0,
+      "compile_seconds": 3.123758137022378,
+      "execution_seconds": 0.025941908999811858,
+      "total_seconds": 3.150251950020902,
+      "timeouts": false,
+      "orphaned_processes": false
+    },
+    {
+      "report": "<cache>/rustmage-tdm/endure-placer-before/native.json",
+      "interpretation": "Independent review reproduction: actual current-controller Doc Samson receives two counters instead of required three.",
+      "success": false,
+      "terminal": true,
+      "cases": 1,
+      "passed": 0,
+      "failed": 1,
+      "compile_seconds": 0.9182404429884627,
+      "execution_seconds": 0.03307342200423591,
+      "total_seconds": 0.9519148929975927,
+      "timeouts": false,
+      "orphaned_processes": false
+    },
+    {
+      "report": "<cache>/rustmage-tdm/endure-placer-fixed/native.json",
+      "interpretation": "Explicit enduring-controller placing player: all six groups pass on integrated counter-query engine.",
+      "success": true,
+      "terminal": true,
+      "cases": 6,
+      "passed": 6,
+      "failed": 0,
+      "compile_seconds": 110.94229219300905,
+      "execution_seconds": 0.025130284018814564,
+      "total_seconds": 110.97040499400464,
+      "timeouts": false,
+      "orphaned_processes": false
+    }
+  ],
+  "resource_contract": {
+    "guarded": true,
+    "memory_cap_bytes": 6442450944,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "no_oom_probe": true
+  },
+  "review_status": "Two refreshed independent nonauthor scoped reviews approve c68e647c5 after placing-player finding was fixed.",
+  "acceptance": {
+    "dynamic_endure_complete": false,
+    "all_shared_rules_complete": false,
+    "full_release_validation_run": false,
+    "newly_complete_cards": 0,
+    "simulation_benchmarks_run": 0
+  },
+  "integration_base_revision": "e36436996",
+  "reviews": [
+    {
+      "reviewer": "entry-mode engine owner (nonauthor of Endure)",
+      "commit": "c68e647c5",
+      "result": "approved; found initial placing-player defect and verified explicit Pending.player correction plus actual Doc Samson scenarios and source hashes"
+    },
+    {
+      "reviewer": "counter/protection engine owner (nonauthor of Endure)",
+      "commit": "c68e647c5",
+      "result": "approved; original approval withdrawn after finding, then refreshed on complete corrected inputs"
+    }
+  ]
+}

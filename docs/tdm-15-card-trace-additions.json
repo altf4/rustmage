@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "status": "Adopted after two independent pure nonauthor approvals",
+  "source": "548f6952f524d95b36e5a9d1d42758894b20cb37",
+  "run": "<cache>/rustmage-tdm/tdm-15-card-traces-1793817051785093641",
+  "previous_rows": 3225,
+  "added_rows": 15,
+  "current_rows": 3240,
+  "observation_schema": 201,
+  "previous_baseline_sha256": "31d5feef11b32fc1dbe162578c8d44f299eaeb5c1ffd737ad7d92a0b83f201ea",
+  "adopted_baseline_sha256": "cb7997d66260ee7435b1a0e22f77cb19083b1ab2dab640cde3f3dbf78687fceb",
+  "all_prior_rows_exact": true,
+  "same_schema201_projection_byte_identical": true,
+  "new_rows": [
+    "Abzan Monument",
+    "Aegis Sculptor",
+    "Ainok Wayfarer",
+    "All-Out Assault",
+    "Ambling Stormshell",
+    "Armament Dragon",
+    "Attuned Hunter",
+    "Barrensteppe Siege",
+    "Betor, Kin to All",
+    "Bone-Cairn Butcher",
+    "Breaching Dragonstorm",
+    "Call the Spirit Dragons",
+    "Twin Bolt",
+    "Unsparing Boltcaster",
+    "Wail of War"
+  ],
+  "root_proof": "<cache>/rustmage-tdm/tdm-15-card-traces-1793817051785093641/root-acquisition-proof.json",
+  "root_proof_sha256": "ee773c3d1313cca66fa07fc5fa5ecb2e8ae9a2afecb89c241a23db349637314e",
+  "reviews": [
+    {
+      "reviewer": "/root/tdm_engine_review_one",
+      "decision": "APPROVE15 only; independently recomputed all old rows, new names, raw digests/journals, both frames, exact source final zones and paid actions"
+    },
+    {
+      "reviewer": "/root/tdm_engine_review_two",
+      "decision": "APPROVE15 only; independently recomputed old rows, raw hashes/digests, physical identities, both frames and final source zones"
+    }
+  ],
+  "native_report": "<cache>/rustmage-tdm/tdm-15-card-traces-1793817051785093641/native.json",
+  "native_report_sha256": "c9290f03ea1fa2802f410ae047769807d0d08026bcb2f04330af552b0b846e32",
+  "compile_seconds": 22.027217063005082,
+  "execution_seconds": 4.642144403012935,
+  "acquisition_status": "Expected sole cardinality failure before adoption3240vs3225; no active process, orphan or timeout. Ordinary baseline assertions remained enabled.",
+  "scope": "Already verified card admissions only. No new whole-card count, engine85 approval or whole-set acceptance is implied. Existing201 schema/wire untouched."
+}

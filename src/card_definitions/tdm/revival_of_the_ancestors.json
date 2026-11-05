@@ -3,10 +3,26 @@
   "catalogue_id": 3510,
   "oracle_id": "5a848c1f-d11a-42fb-b9ce-663901fc9555",
   "facts_sha256": "0142569173ceb65bc37729e95247377ce2aa65ab30c8cf46f2a768e0adac0b6d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "06187f3c02d235daa7d4d302a99648e0a392b459855792ddca8e5a19b970e168"
   },
-  "physical_metadata_sha256": "c73c9aebadd730c6a966d1ef46ce88e199553edde2d07df373de04a14786d74f"
+  "physical_metadata_sha256": "c73c9aebadd730c6a966d1ef46ce88e199553edde2d07df373de04a14786d74f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RevivalOfTheAncestors.java",
+  "java_sha256": "c198a07cf913abd488131b50f7638c69c6d38de3b67a89e75d4067c87fe1fe65",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SagaAbility.java",
+      "sha256": "d907d96e4141a58d82f32fdb512e6426ed2cbd669544ade67f94b062dc7a8c80"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/DistributeCountersEffect.java",
+      "sha256": "745e7d5d527b57c5dd4a8b5e477a62c2d856ae9731d1d575ec29891351978e62"
+    }
+  ]
 }

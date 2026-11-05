@@ -63,6 +63,9 @@ fn selected(program: &[Instruction]) -> (bool, bool) {
             | Instruction::MoveCountersFromSource { amount: value, .. }
             | Instruction::RevealTargetHandSubsetDiscard(value)
             | Instruction::DrawScaled(_, value)
+            | Instruction::DrawRemembered(value)
+            | Instruction::MayMillAmount(value)
+            | Instruction::Mill(_, MillAmount::Amount(value))
             | Instruction::GainLifeScaled(_, value)
             | Instruction::LoseLifeScaled(_, value)
             | Instruction::DrainLifeScaled(value)
@@ -81,6 +84,8 @@ fn selected(program: &[Instruction]) -> (bool, bool) {
             | Instruction::GrowCreaturesScaled { amount: value, .. }
             | Instruction::GrowPermanentGroupScaled { amount: value, .. }
             | Instruction::CreateTokensScaled { amount: value, .. }
+            | Instruction::EndureScaled { amount: value, .. }
+            | Instruction::CreateSizedToken { size: value, .. }
             | Instruction::CreateTokensWithCounters {
                 counters: value, ..
             } => amount(value, &mut result),

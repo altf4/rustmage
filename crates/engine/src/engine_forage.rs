@@ -66,17 +66,28 @@ pub(super) fn food_cost() -> AdditionalCost {
 impl Game {
     pub(super) fn food_sacrifice_triggers(
         &mut self,
-        sacrifices: &[(Player, CardId)],
+        events: &[ZoneChange],
         sources: &[ObjectView],
     ) {
         for source in sources {
-            if sacrifices
+            let matching: Vec<_> = events
                 .iter()
-                .any(|&(player, id)| player == source.controller && self.has_subtype(id, "Food"))
-            {
-                for (index, a) in source.card.triggers().iter().enumerate() {
-                    if a.condition.event() == TriggerCondition::FoodsSacrificed {
-                        self.queue_trigger(source, index);
+                .filter(|event| {
+                    event.sacrificed_by == Some(source.controller)
+                        && event.moved
+                        && event.before.has_subtype("Food")
+                })
+                .collect();
+            if matching.is_empty() {
+                continue;
+            }
+            for (index, a) in source.card.triggers().iter().enumerate() {
+                if a.condition.event() == TriggerCondition::FoodsSacrificed
+                    && self.queue_trigger(source, index)
+                {
+                    let packet = self.state.pending_triggers.last_mut().unwrap();
+                    for event in &matching {
+                        packet.refer_zone_event(event);
                     }
                 }
             }

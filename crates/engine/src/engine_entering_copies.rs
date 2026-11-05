@@ -8,13 +8,18 @@ impl Game {
             .iter()
             .any(|i| matches!(i, Instruction::CopyEnteringPermanentThenAnimate(_)))
         {
-            self.state.pending_triggers.last_mut().unwrap().event_object =
-                Some(Box::new(EventObjectView {
+            let recipe = self.copiable_recipe(entering.reference);
+            self.state
+                .pending_triggers
+                .last_mut()
+                .unwrap()
+                .set_event_object(EventObjectView {
                     object: entering.reference,
-                    facts: EventObjectFacts::Copiable(self.copiable_recipe(entering.reference)),
+                    facts: EventObjectFacts::Copiable(recipe),
+                    semantic_objects: None,
                     conniver_creature: None,
                     subtype_lki: None,
-                }));
+                });
         }
     }
     pub(super) fn copy_entering_then_animate(&mut self, item: &SpellView, spec: AnimationSpec) {

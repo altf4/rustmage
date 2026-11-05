@@ -3,10 +3,21 @@
   "catalogue_id": 3359,
   "oracle_id": "3f6101a5-3038-45b0-8302-b2e4127b9510",
   "facts_sha256": "1ddbb138b07e5b000aba8b4b4d902078fdc464f4c6611ca6e61f88030d534faf",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8017d8b6bfd22bd8c15c0137ebd3ad8afda1a14bd7ecaf3db656b3e39fe7eb72"
   },
-  "physical_metadata_sha256": "270e513c176b12c0f8573aac446cbb059d18c375d34ed1bb04cf2025472fafe2"
+  "physical_metadata_sha256": "270e513c176b12c0f8573aac446cbb059d18c375d34ed1bb04cf2025472fafe2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RallyTheMonastery.java",
+  "java_sha256": "40243f3b355bd997588953a23ea8da8a55158d156c97751ac6a44369a48a8dd3",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionSourceEffect.java",
+      "sha256": "c877e6d5d339d0c8a602f1c16190e62f1dd0a5e1c11ba333a698b6dfee367304"
+    }
+  ]
 }

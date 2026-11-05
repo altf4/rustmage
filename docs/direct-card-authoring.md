@@ -148,6 +148,14 @@ changes, and clear on zone changes. `ObjectView.entry_choice` exposes the saved
 value for visible objects; `Observation.entry_value` describes a pending visible
 choice. Submit `Action::ChooseEntryValue` through the normal legal-action API.
 
+For bounded printed choices such as clan names, use
+`EntryChoiceKind::NamedModes` and `EntryChoiceValue::NamedMode`. Qualify a whole
+static group with `StaticAbilityFragment::EntryMode`, map conditional printed
+trigger slots in `CardExtras::entry_mode_triggers`, and expose conditional
+activated templates with `SourceEntryModeActivation`. These choices are scoped
+to an exact ability acquisition, so an in-place copy inherits no choice. See
+[named entry modes](tdm-entry-modes.md) for the interfaces and focused contracts.
+
 Reuse `ManaProduction::ChosenColor`, `CastFilter::SourceChosenColor` and typed
 chosen static fragments rather than branching on card names. Chosen creature
 subtypes participate in layer four; chosen stat bonuses use the shared actual

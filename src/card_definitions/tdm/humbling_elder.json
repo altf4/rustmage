@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "230a006107c6e8698d77d6685a3eebfdabd5d2e2634dfc0f0a5487fa025216a7"
   },
-  "physical_metadata_sha256": "25aa72b899caee8a663340c3563bec796f6452c8839b5f76b9fd950eda1f3b67"
+  "physical_metadata_sha256": "25aa72b899caee8a663340c3563bec796f6452c8839b5f76b9fd950eda1f3b67",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HumblingElder.java",
+  "java_sha256": "68e23fd64c48123ff317716048dfbae53793bd6ab7b7128dc62d6ec4e6d82760",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    }
+  ]
 }

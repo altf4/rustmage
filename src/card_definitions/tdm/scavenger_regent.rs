@@ -1,29 +1,10 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Full Oracle/XMage reviewed; Ward uses the shared resolution-cost route.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(4, 4),
     triggers: &[TriggeredAbility {
         condition: TriggerCondition::Ward,
         targets: TargetPlan::Single(TargetSpec::NONE),
-        program: &[
-            Instruction::ChooseObjects {
-                kind: EffectChoiceKind::Discard,
-                players: PlayerSet::Opponent,
-                filter: SacrificeFilter {
-                    artifact_enchantment_or_token: false,
-                    keywords: Keywords::NONE,
-                    source_only: false,
-                    kinds: 0,
-                    nonland: false,
-                    other: false,
-                    tokens: None,
-                    subtype: None,
-                },
-                amount: 1,
-                optional_skip: Some(1),
-            },
-            Instruction::Skip(1),
-            Instruction::CounterRelated,
-        ],
+        program: &[Instruction::CounterRelatedUnlessDiscard],
     }],
     activated: &[],
     enters: Counters {

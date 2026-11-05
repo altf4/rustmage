@@ -3,10 +3,26 @@
   "catalogue_id": 2908,
   "oracle_id": "1a2a74b8-0689-4959-9348-02cc832194cf",
   "facts_sha256": "22baebf2826574b262298964ce677ddfe0ccd1bc7f66762cbc0ecd768068fbe0",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f196a811dcb1ae7a06ea6717b10fcbbff0328de4a66fe040e16a0fc9d1d10940"
   },
-  "physical_metadata_sha256": "0e9a8e864a3c3713332a94ea8feca4d37ca5bd562f42ad24249a20009be6f747"
+  "physical_metadata_sha256": "0e9a8e864a3c3713332a94ea8feca4d37ca5bd562f42ad24249a20009be6f747",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/n/NarsetJeskaiWaymaster.java",
+  "java_sha256": "3741719efcca487c0409504c6b5bfbc17f71e398b9232bbeb57132f04b604160",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardHandCost.java",
+      "sha256": "070e69a35af785aced9d186215f0cd304b9265775000b413252e0a635ad4d2b4"
+    }
+  ]
 }

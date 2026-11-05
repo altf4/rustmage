@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2bf4bf423ad41fb984835680cf8b20e8ece5985be41121126401bf21fb9a7a85"
   },
-  "physical_metadata_sha256": "cdade380f812ba16aaa4fea1bb56b7cf2923c4594adbb374efa0a3b2f78d5887"
+  "physical_metadata_sha256": "cdade380f812ba16aaa4fea1bb56b7cf2923c4594adbb374efa0a3b2f78d5887",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HeritageReclamation.java",
+  "java_sha256": "56f989df860e918500eaf70adff4dfc98306b3220650ecb732017b5b7344e66f",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
+      "sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756"
+    }
+  ]
 }

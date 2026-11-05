@@ -1,0 +1,282 @@
+{
+  "schema": 1,
+  "scope": [
+    "A03",
+    "B:dynamic_exact_optional_mill",
+    "B:graveyard_power_damage",
+    "C:DAMAGE_PLAYER_RESULT",
+    "C:RETURN_TOKEN_DRAW_RESULT",
+    "C:DRAW_RESULT_FALLBACK",
+    "C:SOURCE_POWER_MILL",
+    "C:YATHAN_MILL_SEMANTICS_REVIEW"
+  ],
+  "base_revision": "78c4c7cbb75d69ff178f1695662873ffb7b13ea9",
+  "explicit_non_authored_dependency": "c5d2f06ee8bfba174514bab52e9f8794221ea15f",
+  "local_dependency_cherry_pick": "ee21148d3c0f02bf28233f0fbb66627971a28821",
+  "card_authorship_or_admission_changes": false,
+  "source_inputs": [
+    {
+      "path": "crates/engine/src/cards.rs",
+      "sha256": "693d56b017d2ca2d549ef43820b46e75552d09efa99503cbe57d444d3287894b"
+    },
+    {
+      "path": "crates/engine/src/engine.rs",
+      "sha256": "685ccece284674919c7dd01492236ff49fe88d73cef918f15d6a43749e827856"
+    },
+    {
+      "path": "crates/engine/src/engine_card_quantities.rs",
+      "sha256": "ada1be538ea42ac498717b249d04a6830b0cbd37c4100dcc454f653ac7d6c69a"
+    },
+    {
+      "path": "crates/engine/src/engine_cast_symbol_quantities.rs",
+      "sha256": "420a94b39837438278e503c05a8ed1e318f1009bf730682ee70c9db81283353c"
+    },
+    {
+      "path": "crates/engine/src/engine_milling.rs",
+      "sha256": "92f241a27f181ac8afcd784c19f4b4f8a2c9f4760deb9807aeb0dbc631943712"
+    },
+    {
+      "path": "crates/engine/src/engine_programs.rs",
+      "sha256": "15f4e9307653ecaa1db1911f0275477aad9b24125a62ab22edd747a54458e32b"
+    },
+    {
+      "path": "crates/engine/src/engine_replacements.rs",
+      "sha256": "41808c3cd603494ff9421f26bfe93c42c271b78943349ca67cfd9daed917f069"
+    },
+    {
+      "path": "crates/engine/src/engine_source_quantities.rs",
+      "sha256": "f7252b1cd7f930161f062544dc5d19cb839bfea60444661ef3ff7a5c5900413e"
+    },
+    {
+      "path": "tests/legacy/assurance/hob_storied.rs",
+      "sha256": "6c322dfcee0ab42a7b663f23b7faaff60739cb3df79223d8f260310d2cfe71b7"
+    },
+    {
+      "path": "tests/legacy/engine_fra_chandra_chill_tests.rs",
+      "sha256": "206922b1ca43d094265159c713e3cf50622ed1af133da0d632a0ba91ddf35603"
+    },
+    {
+      "path": "tests/legacy/engine_fra_emrakul_exigent_tests.rs",
+      "sha256": "698c66633a206f0d9cafeec1c88075fb68889996a6f54bc4d468f7510a9fbabb"
+    },
+    {
+      "path": "tests/legacy/engine_fra_garruk_veiled_tests.rs",
+      "sha256": "7cc0cbb41f04e2555d3e3523851febd23f847c604718014f3215b70c502cc1c0"
+    },
+    {
+      "path": "tests/legacy/engine_fra_proliferate_batch_tests.rs",
+      "sha256": "d26e4bc9f9a8f241d22c0037d677d187d3fe251d16a8e02dc996babddc3b2be1"
+    },
+    {
+      "path": "tests/legacy/engine_fra_seasoned_cryomancer_independent_tests.rs",
+      "sha256": "bd9361656c20d823b8029f6406fe2452d40258dc21934e6b08fcd1ab60407016"
+    },
+    {
+      "path": "tests/legacy/engine_fra_seasoned_cryomancer_tests.rs",
+      "sha256": "d7af93a7f00ad914ca79f99236a18e1db717ac9ec79630341f08c59164baa533"
+    },
+    {
+      "path": "tests/legacy/engine_fra_self_replacement_tests.rs",
+      "sha256": "24c6c79765ea0ad98b614ad62ea00a963976f2bf572ddc3a61c3025fd16c1460"
+    },
+    {
+      "path": "tests/legacy/engine_sos_multicolor_tests.rs",
+      "sha256": "986f2af963c05a104632d205fcdebdf4f501f5f86e82ca23a57ac3fac579de41"
+    },
+    {
+      "path": "tests/tdm_resolution_results.rs",
+      "sha256": "575566542229cc7043faf0f312146add23a8399c87e8bc7cbeb5ab40d0309fe9"
+    }
+  ],
+  "source_authority": {
+    "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "complete_java_bodies_read": [
+      {
+        "path": "Mage.Sets/src/mage/cards/a/AinokWayfarer.java",
+        "sha256": "d48ed556c26d728e0bccb1c95d849738816192ed2053d3f4c9b1baae55b9f514"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/l/LasydProwler.java",
+        "sha256": "46d8bd5d6aef2ac3f27c09cd9cd6c33ef23a340c4d1a2969f779de8370abd377"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/l/LieInWait.java",
+        "sha256": "d46705bdc18a9ab40d92c887bc7449c6271862ce959ef84c666f556685d505a7"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/s/SonicShrieker.java",
+        "sha256": "e032694cc36142d77886fcdccba6f9a1bf48b5ea62ac7cad6e1033599348fdf8"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/s/SunpearlKirin.java",
+        "sha256": "3acd745f693e2cfc672597dfac87f6b43ba1bc6a78d7e0cd88a46b9290b01610"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/t/TradeRouteEnvoy.java",
+        "sha256": "fa89bad69dadc70b3bd7b6505b0b2700f59379dd1c35be9144284cab4bac331b"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/v/VeteranIceClimber.java",
+        "sha256": "e4154de5bffbb740775a39c1bea09a6be5c169326f3f70e2d721309fd5a5d079"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/y/YathanRoadwatcher.java",
+        "sha256": "349ae2fbd9b039219d5eb2a5de4d9457e2693b94ff1d1db21fa7e463b8938d04"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/MillThenPutInHandEffect.java",
+        "sha256": "15051b0e2d1701dd51f83164acfa0c4dcfc0b17d5bd6646c43209d90553d821d"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/costs/common/MillCardsCost.java",
+        "sha256": "3e9c8bda67abc80b2b699e01aa13e2cdabf44ebbec4a406dccb159ebff52e302"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+        "sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsControllerEffect.java",
+        "sha256": "bdd3021a353e7fd6e0f5c2b829c2d9483ee6b2fa684d7e74f5b18d457c9abc9c"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsTargetEffect.java",
+        "sha256": "5a01d741ed0a7d1449d5d4591025205bc130e7e5eb5f861d2761b1fd64557365"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SourcePermanentPowerValue.java",
+        "sha256": "aabc6ce8b7bd68b08691830a2a45af0d886a2837c652bbca9e109b5813b0ca9a"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/LandsYouControlCount.java",
+        "sha256": "5d39300c382c862538f44ba6be1565cb60cfed952c2a95515f3d4b9daee3483e"
+      }
+    ],
+    "oracle_records": [
+      {
+        "name": "Ainok Wayfarer",
+        "oracle_id": "8134f3fd-197a-4b44-a370-311cc955dea3",
+        "record_sha256": "a067f556f43073ad7b956e1aa1ce1fbd81305079ecd2b7076530f44496ff25a3"
+      },
+      {
+        "name": "Lasyd Prowler",
+        "oracle_id": "f780d6f6-540b-4773-8a48-e56e95c2d39e",
+        "record_sha256": "0e765455f083d45927966e5d57d8d891afab90db48e36a6dea0e1a404cc9c859"
+      },
+      {
+        "name": "Lie in Wait",
+        "oracle_id": "4dc0831a-0eb1-4f7d-9591-6e670e180116",
+        "record_sha256": "034b695cb5efbe29c66de3187bef9030a4fc083baa9a95204613a2ff797aaf86"
+      },
+      {
+        "name": "Sonic Shrieker",
+        "oracle_id": "d317e3f1-553f-44f6-8543-d6d4c42534ad",
+        "record_sha256": "da6651769d7f42b4107f6e12527ce98e96b201f76efaaf9dd835de959c91c94f"
+      },
+      {
+        "name": "Sunpearl Kirin",
+        "oracle_id": "f17b9356-a329-4f89-b690-afc2eaff4977",
+        "record_sha256": "cccad9ecceef43b1232ca4df074b43a18917547bd7f3157a55167e9e25cf0460"
+      },
+      {
+        "name": "Trade Route Envoy",
+        "oracle_id": "95d51048-be32-4c5f-8b75-fca3a891c9d6",
+        "record_sha256": "e241e00282da0ed38bd6bb1fa82d38501215f66c4c43e0d52bc489439f2b63cd"
+      },
+      {
+        "name": "Veteran Ice Climber",
+        "oracle_id": "ccaadf8d-22c0-4139-b734-03ac2fcb4494",
+        "record_sha256": "62036be190ac3fd56ffa303fd1baf080f2912e1782fe38ce861e1f1a32051f50"
+      },
+      {
+        "name": "Yathan Roadwatcher",
+        "oracle_id": "0c3d86b6-5dcd-4016-9b4a-d4f66b1e963f",
+        "record_sha256": "e93499f1f399fac71ff6d67b9578893ebc9e1e641d5879b53f64730e3cf7aa6a"
+      }
+    ],
+    "oracle_record_hash_encoding": "UTF-8 JSON sorted keys and separators comma/colon",
+    "rules": {
+      "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+      "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+      "sections": [
+        "118.12",
+        "603.12",
+        "608.2b,h",
+        "614.6",
+        "701.17a-c"
+      ]
+    },
+    "release_notes": "https://magic.wizards.com/en/news/feature/tarkir-dragonstorm-release-notes"
+  },
+  "outcomes": [
+    "Optional mill validates the complete sampled nonnegative land count; insufficient libraries cannot accept, zero is legal, and quantities sample at resolution. Source-power attack mill uses current exact-source power or final departure LKI, floored at zero; optional target omission mills nobody.",
+    "Ainok-shaped mill/recovery uses exact public post-mill incarnations, including exile redirection. Choosing recovery skips the fallback under CR118.12; decline or no eligible land puts a counter on the exact live source.",
+    "Independent legal creature targets retain their separate effects. Graveyard creature power is captured before return changes a CDA; illegal graveyard targets supply no damage amount. Both targets remain mandatory at announcement.",
+    "Token-qualified bounce captures legal token status before movement, draws for tokens only, and respects optional omission/stale incarnation. Ordinary token creation uses the exact-recipe staged entry path.",
+    "Actual remembered draws use the existing packet-owned DrawRequest continuation, including private miracle interruptions; a qualifying any-kind counter permits the draw, and no completed draw runs the fallback independently of earlier turn draws.",
+    "One explicit damage batch carries its owning packet id through replacements. Only actual positive player damage marks discard recipients; permanent damage and prevented damage do not discard, while life gain remains independent. Replacement order and recipient discard choices survive raw/index branching and restore.",
+    "Yathan-shaped mandatory mill always mills available cards. Its exact-four reflexive packet is queued after completed milling, so targets are selected after the event. Public exile redirection counts as milling; RevealShuffleSelf with no library departure is excluded under CR614.6/701.17c. This replacement distinction is a reasoned CR inference; official Yathan notes explicitly say mill four but do not separately address Progenitus."
+  ],
+  "final_runs": [
+    {
+      "report": "<cache>/rustmage-tdm/resolution-results-fixtures-fixed/native.json",
+      "sha256": "a8637482837ed2f009bff84da745bcffc770cb2787012aba581941ab626c36d6",
+      "cases": 22,
+      "compile_seconds": 0.9172859380196314,
+      "execution_seconds": 0.02578287699725479,
+      "success": true,
+      "terminal": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/resolution-results-compat/0/native.json",
+      "sha256": "06f7ebd2b1d065530b574e29691035e034cfef10daeffed9e656ecc9bdee36bc",
+      "cases": 5,
+      "compile_seconds": 21.67063370300457,
+      "execution_seconds": 0.03537261800374836,
+      "success": true,
+      "terminal": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/resolution-results-compat/1/native.json",
+      "sha256": "3e09717a22d9897c8dcc437221f9a677cf79e80d3bfcfe322949da1c20a39c78",
+      "cases": 1,
+      "compile_seconds": 0.11520964800729416,
+      "execution_seconds": 0.03312404701136984,
+      "success": true,
+      "terminal": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/resolution-results-compat/2/native.json",
+      "sha256": "460a394c1ee563a9b042285d3824841e47d61120cf00f81c6eecb80670e86494",
+      "cases": 1,
+      "compile_seconds": 0.0651214599783998,
+      "execution_seconds": 0.033169739006552845,
+      "success": true,
+      "terminal": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/resolution-results-compat/3/native.json",
+      "sha256": "79a4bddc190cdc34924bdc7338818ab61f40a55d5b851e06980c3d61c1a19df1",
+      "cases": 4,
+      "compile_seconds": 0.06438676998368464,
+      "execution_seconds": 0.03268566000042483,
+      "success": true,
+      "terminal": true
+    }
+  ],
+  "earlier_runs": [
+    {
+      "report": "<cache>/rustmage-tdm/resolution-results-first/native.json",
+      "result": "Terminal19/22. Three fixture failures: physical announcement expected Hand rather than Stack; manually marked tokens omitted exact CopyRecipe. No engine correction was required."
+    }
+  ],
+  "state_contracts": {
+    "wire_changes": false,
+    "new_owned_state": "Resolution remembered_damage_players Option<u8>; private DamageBatch remembering Option<u64>. Existing draw-result state and optional/recovery protocols reused. Clone/equality/state-size accounting preserve owned continuations; nine inherited white-box Resolution constructors initialize the new private field to None.",
+    "scalar_fact_walkers": "New amount consumers participate in source-counter, source-quantity and selected cast-symbol capture."
+  },
+  "limitations": [
+    "Private library continuation checkpoint remains separate.",
+    "These shared engine proofs do not admit any TDM card. Card wiring, complete-engine review, whole-set games, release acceptance, simulation throughput and final two independent nonauthor PR-head reviews remain pending."
+  ]
+}

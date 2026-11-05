@@ -159,6 +159,18 @@ back. Compare all inherited full traces with the committed baseline before accep
 wire-only fingerprint changes. The recording run still asserts the ordinary current
 baseline and fails on drift; this option does not weaken normal validation.
 
+Tarkir schema 200 exports a prior-199 candidate without stripping inherited facts.
+All new observations are sparse, so representable values retain their original
+bytes after the schema number is projected. New mechanics, widened values outside
+the old domain, and new action identities are rejected rather than erased.
+Acquisition origins and other inherited fields remain in the comparison: changes
+to those values require independent rules evidence before trace acceptance.
+For a bounded recording audit, `RUSTMAGE_RECORD_CARD_TRACE_DETAILS` may name a
+cache directory and `RUSTMAGE_RECORD_CARD_TRACE_NAMES` a JSON array of card names.
+Together with the explicit trace-recording variables above, these retain the
+selected projected observations and journals. They never update the
+committed baseline or alter the strict comparison.
+
 Power-up wire migrations can be audited with the recording-only
 `RUSTMAGE_RECORD_CARD_TRACES_PREVIOUS_SCHEMA=137` option alongside
 `RUSTMAGE_RECORD_CARD_TRACES=<cache>/candidate.json`. The previous-wire export

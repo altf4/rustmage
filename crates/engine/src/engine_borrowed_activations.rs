@@ -578,14 +578,15 @@ impl Game {
                         Some(Instruction::Modal(modes)) => Some(*modes),
                         _ => None,
                     };
-                    let targets_available = modes.map_or_else(
-                        || self.targets_available(ability.targets, actor, descriptor.source),
-                        |modes| {
-                            modes.iter().any(|mode| {
-                                self.targets_available(mode.targets, actor, descriptor.source)
-                            })
-                        },
-                    );
+                    let targets_available = ability.nonmana_x()
+                        || modes.map_or_else(
+                            || self.targets_available(ability.targets, actor, descriptor.source),
+                            |modes| {
+                                modes.iter().any(|mode| {
+                                    self.targets_available(mode.targets, actor, descriptor.source)
+                                })
+                            },
+                        );
                     if !fundable || !targets_available {
                         return false;
                     }

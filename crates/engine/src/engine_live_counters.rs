@@ -100,6 +100,7 @@ impl Game {
         self.counter_amounts(id).get(kind)
     }
     pub(super) fn set_counters(&mut self, id: CardId, counters: Counters) {
+        let before_time = self.counter_count(id, CounterKind::Time);
         let before_defense = self.counter_count(id, CounterKind::Defense);
         let before = self.counter_amounts(id).keyword_amounts();
         let after = CounterAmounts::from(&counters).keyword_amounts();
@@ -117,6 +118,9 @@ impl Game {
                 after,
                 None,
             );
+        }
+        if before_time > 0 && self.counter_count(id, CounterKind::Time) == 0 {
+            self.queue_suspend_cast(object);
         }
         if before_defense > 0 && self.counter_count(id, CounterKind::Defense) == 0 {
             self.queue_siege_defeat(object);

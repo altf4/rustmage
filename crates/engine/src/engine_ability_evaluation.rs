@@ -15,6 +15,7 @@ pub(super) struct EvaluatedAbilityGroup {
     pub group: usize,
     pub first_layer: AbilityLayer,
     pub effect: Option<usize>,
+    pub enabled: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) struct AbilityEvaluation {
@@ -29,9 +30,10 @@ impl AbilityEvaluation {
             .iter()
             .find(|r| r.source == source && r.group == group)
             .expect("bound immutable static-effect group");
-        row.first_layer < AbilityLayer::Ability
-            || row.effect.is_some_and(|i| self.result.started[i])
-            || (row.effect.is_none() && self.result.objects[source.card as usize].printed)
+        row.enabled
+            && (row.first_layer < AbilityLayer::Ability
+                || row.effect.is_some_and(|i| self.result.started[i])
+                || (row.effect.is_none() && self.result.objects[source.card as usize].printed))
     }
 }
 
@@ -139,6 +141,20 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 mana: Vec::new(),
             });
         }
+        StaticAbilityFragment::SourceEntryModeActivation { mode, ability } => {
+            if id != source.card
+                || provider.zone != Zone::Battlefield
+                || entry_modes::active_mode(world, source) != Some(mode)
+            {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: vec![key(ability)],
+                mana: Vec::new(),
+            });
+        }
         StaticAbilityFragment::SourceMaxSpeedActivation(ability) => {
             if id != source.card
                 || provider.card.activation(ability).source_zone() != provider.zone
@@ -165,7 +181,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             });
         }
         StaticAbilityFragment::AttachmentTrigger(ability)
-        | StaticAbilityFragment::AttachmentActivation(ability) => {
+        | StaticAbilityFragment::AttachmentActivation { ability, .. } => {
             if !world.attached(source, id) {
                 return None;
             }
@@ -221,6 +237,12 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
         }
         StaticAbilityFragment::ControlledSubtypeKeywords { subtype, keywords } => {
             if !own || !world.subtypes(id).has(world.definition(id), subtype) {
+                return None;
+            }
+            keywords
+        }
+        StaticAbilityFragment::ControlledUntappedSubtypeKeywords { subtype, keywords } => {
+            if !own || target.tapped || !world.subtypes(id).has(world.definition(id), subtype) {
                 return None;
             }
             keywords
@@ -379,8 +401,8 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
             source.zone == Zone::Battlefield
                 && source.card.static_ability_groups().iter().any(|group| {
                     group.fragments.iter().any(|fragment| matches!(
-                        fragment, StaticAbilityFragment::SourceMaxSpeedActivation(_) | StaticAbilityFragment::ControlledPlaneswalkerActivation(_) | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit | StaticAbilityFragment::OpponentPlayerAttackerKeywords(_)
-                    ))
+                        fragment, StaticAbilityFragment::SourceEntryModeActivation { .. } | StaticAbilityFragment::SourceMaxSpeedActivation(_) | StaticAbilityFragment::ControlledPlaneswalkerActivation(_) | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit | StaticAbilityFragment::OpponentPlayerAttackerKeywords(_)
+                    ) || (matches!(fragment, StaticAbilityFragment::EntryMode(_)) && source.card.has_layer6_provider()))
                 })
         })
         // External attachment rules must participate even without ability removal.
@@ -448,16 +470,23 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
         .enumerate()
         .map(|(i, _)| {
             let object = world.object(i as CardId);
+            let intrinsic = if object.zone == Zone::Stack {
+                game.effective_spell_card(i as CardId).keywords()
+            } else {
+                world.intrinsic_keywords(i as CardId)
+            };
+            let copied = if object.zone == Zone::Stack {
+                Keywords::NONE
+            } else {
+                world.copied_keywords(i as CardId)
+            };
             LayerSixObject {
                 printed: true,
                 granted_keywords: Keywords::NONE,
-                keywords: if object.zone == Zone::Stack {
-                    game.effective_spell_card(i as CardId).keywords()
-                } else {
-                    world
-                        .intrinsic_keywords(i as CardId)
-                        .union(world.copied_keywords(i as CardId))
-                },
+                keywords: intrinsic.union(copied),
+                decayed_instances: usize::from(intrinsic.contains(Keywords::DECAYED))
+                    + usize::from(copied.contains(Keywords::DECAYED)),
+                granted_decayed_instances: 0,
                 grants: Vec::new(),
                 self_grants: Vec::new(),
                 // Native land subtypes exist before any later layer-six removal.
@@ -539,6 +568,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
             }
         }
         for (group, origin) in object.card.static_ability_groups().iter().enumerate() {
+            let enabled = entry_modes::group_enabled(world, source, origin);
             let removes = origin
                 .fragments
                 .iter()
@@ -555,10 +585,11 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::AttachmentKeywords(..)
                         | StaticAbilityFragment::AttachedTurnKeywords(..)
                         | StaticAbilityFragment::SourceMaxSpeedActivation(..)
+                        | StaticAbilityFragment::SourceEntryModeActivation { .. }
                         | StaticAbilityFragment::HarnessedTrigger(..)
                         | StaticAbilityFragment::ConditionalWard { .. }
                         | StaticAbilityFragment::AttachmentTrigger(..)
-                        | StaticAbilityFragment::AttachmentActivation(..)
+                        | StaticAbilityFragment::AttachmentActivation { .. }
                         | StaticAbilityFragment::AttachmentMana(..)
                         | StaticAbilityFragment::AttachmentSacrificeMana(..)
                         | StaticAbilityFragment::LandMana { .. }
@@ -573,10 +604,11 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::ControlledPlaneswalkerActivation(..)
                         | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
                         | StaticAbilityFragment::ControlledSubtypeKeywords { .. }
+                        | StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. }
                         | StaticAbilityFragment::LiveKeywords(..)
                 )
             });
-            let effect = if removes || provides {
+            let effect = if enabled && (removes || provides) {
                 let time = timestamp(world, source);
                 let recipients: Vec<_> = if removes {
                     object
@@ -625,6 +657,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                 group,
                 first_layer: origin.first_layer,
                 effect,
+                enabled,
             });
         }
     }

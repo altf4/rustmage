@@ -281,6 +281,7 @@ fn emrakul_hand_ability_fizzles_when_target_loses_land_type() {
                 colors: None,
                 creature_types: None,
                 all_creature_types: false,
+                additional_creature_types: false,
                 base: None,
                 keywords: Keywords::NONE,
                 expires_turn: None,

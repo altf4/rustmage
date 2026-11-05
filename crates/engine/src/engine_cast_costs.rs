@@ -13,6 +13,7 @@ pub enum CastCostClause {
     /// Exile the activated craft source as its own ordered cost component.
     CraftSource,
     Harmonize(ObjectRef),
+    Behold(&'static str),
     Mana,
     Life(u32),
     AlternativeLife(u32),
@@ -102,6 +103,21 @@ impl Announcement {
     }
     pub(super) fn initialize_cast_costs(&mut self, improvise: bool) {
         self.initialize_alternative_life();
+        if self.nonmana_x() {
+            self.add_cast_cost_clause(CastCostClause::Mana);
+        }
+        if self.item.cast.is_some_and(|cast| cast.beheld == Some(true)) {
+            let subtype = self
+                .item
+                .source
+                .expect("cast source")
+                .card
+                .behold_cast()
+                .expect("behold recipe")
+                .subtype;
+            self.add_cast_cost_clause(CastCostClause::Mana);
+            self.add_cast_cost_clause(CastCostClause::Behold(subtype));
+        }
         if self.item.kind == StackKind::Spell
             && ((self
                 .item
@@ -172,7 +188,7 @@ impl Announcement {
                 || self
                     .item
                     .cast
-                    .is_some_and(|c| c.method == CastMethod::Harmonize || c.blight == Some(true)))
+                    .is_some_and(|c| c.method.is_harmonize() || c.blight == Some(true)))
         {
             self.add_cast_cost_clause(CastCostClause::Mana);
         }
@@ -218,9 +234,7 @@ impl Game {
             costs.active = None;
             if clause == CastCostClause::Mana {
                 costs.mana_paid = true;
-                if let Some(frame) = &a.convoke {
-                    self.tap_objects(&frame.objects().iter().map(|s| s.card).collect::<Vec<_>>());
-                }
+                self.pay_mana_contributors(a);
             }
             if clause == CastCostClause::Additional {
                 a.additional_paid = true;
@@ -263,6 +277,19 @@ impl Game {
                 self.state.announcing = Some(a);
             }
             CastCostClause::Mana => {
+                let delving = self.item_delve(&a.item);
+                let contributors = a.item.kind == StackKind::Spell
+                    && (a.item.source.unwrap().card.has_convoke()
+                        || self.item_improvise(&a.item)
+                        || delving);
+                if contributors && a.convoke.is_none() {
+                    a.convoke = Some(Box::new(convoke::ConvokeSelection {
+                        remaining: a.total_cost.expect("locked mana cost"),
+                        selected: Vec::new(),
+                        improvised: Vec::new(),
+                        delved: Vec::new(),
+                    }));
+                }
                 self.state.pending = if a
                     .item
                     .source
@@ -281,6 +308,10 @@ impl Game {
                         .card,
                 ) {
                     Pending::Improvise {
+                        player: a.item.controller,
+                    }
+                } else if delving {
+                    Pending::Delve {
                         player: a.item.controller,
                     }
                 } else {
@@ -318,6 +349,12 @@ impl Game {
                 self.state.announcing = Some(a);
                 self.tap_objects(&[object.card]);
                 self.finish_announcement();
+            }
+            CastCostClause::Behold(_) => {
+                self.state.pending = Pending::BeholdCost {
+                    player: a.item.controller,
+                };
+                self.state.announcing = Some(a);
             }
             CastCostClause::Life(amount) | CastCostClause::AlternativeLife(amount) => {
                 self.pay_life(a.item.controller, i128::from(amount));

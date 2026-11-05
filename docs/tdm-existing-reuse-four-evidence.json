@@ -1,0 +1,421 @@
+{
+  "schema": 1,
+  "set": "TDM",
+  "scope": "Four existing whole-card proofs; no runtime/provenance/admission change",
+  "engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+  "native_report": "<cache>/rustmage-validation-l0pzz2p2/report/native.json",
+  "native_report_sha256": "4ce510b350c0220eaee7641429c6d593e41fcfe5fc96cec8b8a5b795081052e0",
+  "root_review": "Full Oracle/fourcomplete Java classes includingcustomhelperbodies/fourtypeddefinitions/allcitedactualtestbodies and actionhelpers read; exact current/b456 source and fresh native cases independently verified. Typedsharedmechanics/header inspection explicitly recorded in per-card limits; not claimed as newpercard assertions.",
+  "counted_existing_cards": 4,
+  "proofs": [
+    {
+      "name": "Surrak, Elusive Hunter",
+      "oracle_id": "7a0fe73f-6e08-4c9a-80e1-c2ead6cebe06",
+      "status": "Rootaccepted whole-card existing evidence from actualoutcomes plus audited shared typed primitive/header inspection",
+      "definition": "src/card_definitions/tdm/surrak_elusive_hunter.rs",
+      "definition_sha256": "643f772ab9798b4a68f215667c2a6b6b4d1ccd39d187bb6532a2d29b3d995976",
+      "test_source": "tests/legacy/assurance/requested_surrak.rs",
+      "test_source_sha256": "ffa91d1b6f79ec3f4284c33e3b9c5e0bcbdea06e7221f016070cbbe9d3dfcdf4",
+      "exact_baseline_comparison": "Definition and entire testsource byte-identical to b4562e25c; no fixture_rules overlays in these files.",
+      "current_engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "current_native_report": "<cache>/rustmage-validation-l0pzz2p2/report/native.json",
+      "current_native_report_sha256": "4ce510b350c0220eaee7641429c6d593e41fcfe5fc96cec8b8a5b795081052e0",
+      "test_receipts": [
+        {
+          "test": "engine::assurance::requested_surrak::surrak_copied_provider_is_registered_and_removed_with_the_copy",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "engine::assurance::requested_surrak::surrak_draws_when_opponents_target_its_controllers_creatures",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "engine::assurance::requested_surrak::surrak_loses_target_trigger_while_abilities_are_removed",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "engine::assurance::requested_surrak::surrak_retarget_event_counts_each_new_object_once",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "engine::assurance::requested_surrak::surrak_spell_cannot_be_countered",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "engine::assurance::requested_surrak::surrak_triggers_for_an_opponents_activated_ability",
+          "status": "ok",
+          "exit": 0
+        },
+        {
+          "test": "engine::assurance::requested_surrak::surrak_triggers_for_creature_spells_targeted_on_the_stack",
+          "status": "ok",
+          "exit": 0
+        }
+      ],
+      "oracle_full_facts": {
+        "oracle_id": "7a0fe73f-6e08-4c9a-80e1-c2ead6cebe06",
+        "name": "Surrak, Elusive Hunter",
+        "layout": "normal",
+        "mana_cost": "{2}{G}",
+        "cmc": 3.0,
+        "type_line": "Legendary Creature \u2014 Human Warrior",
+        "oracle_text": "This spell can't be countered.\nTrample\nWhenever a creature you control or a creature spell you control becomes the target of a spell or ability an opponent controls, draw a card.",
+        "power": "4",
+        "toughness": "3",
+        "colors": [
+          "G"
+        ],
+        "color_identity": [
+          "G"
+        ],
+        "keywords": [
+          "Trample"
+        ],
+        "reference_printing": {
+          "id": "e4775a26-0b66-40e9-8f64-41d9308ca032",
+          "set": "tdm",
+          "collector_number": "161",
+          "released_at": "2025-04-11"
+        }
+      },
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/s/SurrakElusiveHunter.java",
+      "java_sha256": "176f4be58f70a544393c38d083cda588ee3aa04ae6b78169cbc0806dd0fedf2b",
+      "dependencies": [
+        {
+          "path": "Mage/src/main/java/mage/abilities/common/CantBeCounteredSourceAbility.java",
+          "sha256": "ab592d3d97f245e6b3ca9971e1c559a7063c8717a4a5963b64564a13abd768de",
+          "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+        },
+        {
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CantBeCounteredSourceEffect.java",
+          "sha256": "f682272dc5b296650d7dfffd0792fcf6508ee366cc67bf1f583d31017a94e9a2",
+          "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+        },
+        {
+          "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+          "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c",
+          "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+        },
+        {
+          "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2",
+          "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+        }
+      ],
+      "printed_obligation_mapping": [
+        "2G 4/3 legend HumanWarrior (Oracle/typedbody/metadata inspected; existing actualcast test does not separately assert stats)",
+        "Uncounterability proven by actualCancel, trample keyword asserted on castresult",
+        "Creature permanent and creature spell targeted by opponent spell/activatedability draw1",
+        "Opponent relation/source departure, copyprovider/reversion, abilityremoval, duplicate retarget acquisition covered"
+      ],
+      "shared_owned_helper": {
+        "path": "tests/legacy/assurance/big_helpers.rs",
+        "sha256": "0911d344dedd3ca7e5666fd68a4f28286537655af4a82aba11e6f586613d6ec0",
+        "proof": "checked() wrongactor atomicity, owned child/parent disposal, raw/index, restore/staleindex/replay; complete helper read and baselineequality already checked for Strategic proof."
+      },
+      "limits": "Static typed primitive/metadata inspection plus existing actualoutcome and currentnative proofs; do not count without integrator source/coverage acceptance. No repository/source/admission/build mutation.",
+      "source_ledger": "/tmp/tdm-s-z-reuse-candidates/surrak_elusive_hunter.json",
+      "source_ledger_sha256": "6bdbaf0cc398365d0d2e38acb759fe3b4ea4cd154b3a662592fcec3593df9b6a"
+    },
+    {
+      "name": "Ugin, Eye of the Storms",
+      "oracle_id": "5c58353a-fd60-4528-bf0d-669626cda0b2",
+      "status": "Rootaccepted whole-card existing evidence from actualoutcomes plus audited shared typed primitive/header inspection",
+      "definition": "src/card_definitions/tdm/ugin_eye_of_the_storms.rs",
+      "definition_sha256": "e7e65d4d3771038aacca47768c1c1917b6c0fb452ba8461c9a3b40aa6bf5184e",
+      "test_source": "tests/legacy/assurance/issue_93_ugin.rs",
+      "test_source_sha256": "ae18c56bbc80e59dc46c3ec00df2e878bee1585228b963bfd14caf30d57f3eec",
+      "exact_baseline_comparison": "Definition and entire testsource byte-identical to b4562e25c; no fixture_rules overlays in these files.",
+      "current_engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "current_native_report": "<cache>/rustmage-validation-l0pzz2p2/report/native.json",
+      "current_native_report_sha256": "4ce510b350c0220eaee7641429c6d593e41fcfe5fc96cec8b8a5b795081052e0",
+      "test_receipts": [
+        {
+          "test": "engine::assurance::issue_93_ugin::ugin_eye_of_the_storms_full_card",
+          "status": "ok",
+          "exit": 0
+        }
+      ],
+      "oracle_full_facts": {
+        "oracle_id": "5c58353a-fd60-4528-bf0d-669626cda0b2",
+        "name": "Ugin, Eye of the Storms",
+        "layout": "normal",
+        "mana_cost": "{7}",
+        "cmc": 7.0,
+        "type_line": "Legendary Planeswalker \u2014 Ugin",
+        "oracle_text": "When you cast this spell, exile up to one target permanent that's one or more colors.\nWhenever you cast a colorless spell, exile up to one target permanent that's one or more colors.\n+2: You gain 3 life and draw a card.\n0: Add {C}{C}{C}.\n\u221211: Search your library for any number of colorless nonland cards, exile them, then shuffle. Until end of turn, you may cast those cards without paying their mana costs.",
+        "loyalty": "7",
+        "colors": [],
+        "color_identity": [],
+        "keywords": [],
+        "produced_mana": [
+          "C"
+        ],
+        "reference_printing": {
+          "id": "64a5d494-efa1-446b-bebe-2ad36e154376",
+          "set": "tdm",
+          "collector_number": "1",
+          "released_at": "2025-04-11"
+        }
+      },
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/u/UginEyeOfTheStorms.java",
+      "java_sha256": "cb965a07de883a5842a7f39152857603aa7fb61c0095d2cc22a5a8ecaafc4389",
+      "dependencies": [
+        {
+          "path": "Mage/src/main/java/mage/abilities/LoyaltyAbility.java",
+          "sha256": "9e648c878fd77eaa324aa746254377711cf4929573ed960055ee57f342b9ce79",
+          "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+        },
+        {
+          "path": "Mage/src/main/java/mage/abilities/costs/common/PayLoyaltyCost.java",
+          "sha256": "efe5edc4c58c5a3d697a1448642d7e251141eb54f3704ffee201f6ba3ed51365",
+          "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+        },
+        {
+          "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+          "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2",
+          "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+        },
+        {
+          "path": "Mage/src/main/java/mage/abilities/effects/common/CastSourceTriggeredAbility.java",
+          "sha256": "47edf1f8fa0fea60841309f6698825a1b6da0427d3580c91c750763fbe9ae22d",
+          "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+        },
+        {
+          "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
+          "sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756",
+          "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+        },
+        {
+          "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+          "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029",
+          "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+        },
+        {
+          "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+          "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2",
+          "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+        },
+        {
+          "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+          "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62",
+          "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+        },
+        {
+          "path": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+          "sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef",
+          "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+        },
+        {
+          "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+          "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4",
+          "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+        },
+        {
+          "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+          "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb",
+          "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+        },
+        {
+          "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ColorlessPredicate.java",
+          "sha256": "558f338455e60452895d28d907ab7fc09eaca27affb8986c92bbfa0a7150e768",
+          "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+        },
+        {
+          "path": "Mage/src/main/java/mage/filter/common/FilterNonlandCard.java",
+          "sha256": "84443dc244a44b44937d5ba9e4e51ff0b34e73795c11f2e985820daaed5b46ae",
+          "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+        }
+      ],
+      "printed_obligation_mapping": [
+        "7mana cast; actual colored-permanent exilecast trigger and startingloyalty7",
+        "Actualcolorless artifactcast triggers another coloredpermanentexile",
+        "+2 actualgain3draw1/loyalty9",
+        "0 actualCCC via stackedloyalty activation (generic mana-window/loyalty rules shared)",
+        "-11 actual0loyalty source departure, privatefilteredsearch colored/land rejection, exile/shuffle, freecast aftersourcegone; EOT expiry and up-to-one/anynumber shapes inspected in exact typed primitives"
+      ],
+      "shared_owned_helper": {
+        "path": "tests/legacy/assurance/big_helpers.rs",
+        "sha256": "0911d344dedd3ca7e5666fd68a4f28286537655af4a82aba11e6f586613d6ec0",
+        "proof": "checked() wrongactor atomicity, owned child/parent disposal, raw/index, restore/staleindex/replay; complete helper read and baselineequality already checked for Strategic proof."
+      },
+      "limits": "Static typed primitive/metadata inspection plus existing actualoutcome and currentnative proofs; do not count without integrator source/coverage acceptance. No repository/source/admission/build mutation.",
+      "official_release_notes_read": {
+        "url": "https://magic.wizards.com/en/news/feature/tarkir-dragonstorm-release-notes",
+        "local": "<temp>/tdm-release-notes.txt",
+        "sha256": "3ce1c9853c733c3ace178cdb1aac78c111107b3312bcbb683588bd5d3ebf2ea9",
+        "extent": "2248-2271: normal timing, no competing alternative cost, additional costs still paid, freecastX0"
+      },
+      "source_ledger": "/tmp/tdm-s-z-reuse-candidates/ugin_eye_of_the_storms.json",
+      "source_ledger_sha256": "faadb96b1ecefe0f35f071ad603504d5d9661718d3f450817aa1fc6aa812f95c"
+    },
+    {
+      "name": "United Battlefront",
+      "oracle_id": "892a83a0-a3cb-4cfb-9106-4008e4e75c0f",
+      "status": "Rootaccepted whole-card existing evidence from actualoutcomes plus audited shared typed primitive/header inspection",
+      "definition": "src/card_definitions/tdm/united_battlefront.rs",
+      "definition_sha256": "960c0e95d9dcbf088a30fbfe0add77adf33f40d68a6b6a5479b60f0fa21cb1ab",
+      "test_source": "tests/legacy/assurance/hartford_library_selection.rs",
+      "test_source_sha256": "3013d0f932e7475b4e5f465542b48bcbdf434d1099a1180599642b34c3815b8f",
+      "exact_baseline_comparison": "Definition and entire testsource byte-identical to b4562e25c; no fixture_rules overlays in these files.",
+      "current_engine_revision": "9b2812b9824be723aedabcc22b5bfbeca78b2ec6",
+      "current_native_report": "<cache>/rustmage-validation-l0pzz2p2/report/native.json",
+      "current_native_report_sha256": "4ce510b350c0220eaee7641429c6d593e41fcfe5fc96cec8b8a5b795081052e0",
+      "test_receipts": [
+        {
+          "test": "engine::assurance::hartford_library_selection::battlefront_privately_filters_seven_and_puts_up_to_two_eligible_permanents_into_play",
+          "status": "ok",
+          "exit": 0
+        }
+      ],
+      "oracle_full_facts": {
+        "oracle_id": "892a83a0-a3cb-4cfb-9106-4008e4e75c0f",
+        "name": "United Battlefront",
+        "layout": "normal",
+        "mana_cost": "{3}{W}",
+        "cmc": 4.0,
+        "type_line": "Sorcery",
+        "oracle_text": "Look at the top seven cards of your library. Put up to two noncreature, nonland permanent cards with mana value 3 or less from among them onto the battlefield. Put the rest on the bottom of your library in a random order.",
+        "colors": [
+          "W"
+        ],
+        "color_identity": [
+          "W"
+        ],
+        "keywords": [],
+        "reference_printing": {
+          "id": "dff398be-4ba4-4976-9acc-be99d2e07a61",
+          "set": "tdm",
+          "collector_number": "32",
+          "released_at": "2025-04-11"
+        }
+      },
+      "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "java_source": "Mage.Sets/src/mage/cards/u/UnitedBattlefront.java",
+      "java_sha256": "ac6b4fd1933c9c5e00880275cb3dfed03481bb3adb0ee5373c89c361c903b090",
+      "dependencies": [
+        {
+          "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+          "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e",
+          "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+        },
+        {
+          "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
+          "sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7",
+          "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+        },
+        {
+          "path": "Mage/src/main/java/mage/constants/PutCards.java",
+          "sha256": "6db1cb69eada87b2cc4db088d8b20fac65ced4dca5f50bdc85f1247138e45253",
+          "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+        },
+        {
+          "path": "Mage/src/main/java/mage/filter/predicate/mageobject/PermanentPredicate.java",
+          "sha256": "b3058a67b4c81d73f72d2c64de25d5501a16d7462278416017a7c8e13ee60d80",
+          "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+        },
+        {
+          "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+          "sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262",
+          "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+        },
+        {
+          "path": "Mage/src/main/java/mage/filter/predicate/IntComparePredicate.java",
+          "sha256": "20673535e0a40ca32ffbc361bd82155e2c2f221d87c8d037a1dd96c0229d454f",
+          "extent": "Complete helper body read in this source review or prior pinned wholecard authoring; shared unchanged source reused."
+        }
+      ],
+      "printed_obligation_mapping": [
+        "Actual3W sorcery inspects exactlytop7, rejects belowwindow, rejectsland/creature/instant/sorcery/MV4artifact",
+        "Eligibleartifact+enchantment chosen0or2 actualBF control; opponent privateviewhidden",
+        "Allremaininglookedcards bottomrandom typedprimitive; nativeasserts remainder membership and checked() deterministicowned replay; no singled-out percardstatistical randomdistribution test"
+      ],
+      "shared_owned_helper": {
+        "path": "tests/legacy/assurance/big_helpers.rs",
+        "sha256": "0911d344dedd3ca7e5666fd68a4f28286537655af4a82aba11e6f586613d6ec0",
+        "proof": "checked() wrongactor atomicity, owned child/parent disposal, raw/index, restore/staleindex/replay; complete helper read and baselineequality already checked for Strategic proof."
+      },
+      "limits": "Static typed primitive/metadata inspection plus existing actualoutcome and currentnative proofs; do not count without integrator source/coverage acceptance. No repository/source/admission/build mutation.",
+      "official_release_notes_read": {
+        "url": "https://magic.wizards.com/en/news/feature/tarkir-dragonstorm-release-notes",
+        "local": "<temp>/tdm-release-notes.txt",
+        "sha256": "3ce1c9853c733c3ace178cdb1aac78c111107b3312bcbb683588bd5d3ebf2ea9",
+        "extent": "2291-2303: X is0 inlibrary mana value"
+      },
+      "source_ledger": "/tmp/tdm-s-z-reuse-candidates/united_battlefront.json",
+      "source_ledger_sha256": "f97881b50e0ef9590a21d860943891e0054925fa2a8e3d6d2a402e9455796cb1"
+    },
+    {
+      "name": "Elspeth, Storm Slayer",
+      "oracle_id": "f78af825-023a-42e9-8374-5c52303a1417",
+      "status": "Rootaccepted existing full-card actual outcomes and audited typed replacement/header",
+      "definition": "src/card_definitions/tdm/elspeth_storm_slayer.rs",
+      "definition_sha256": "416c170f7fa31b15726bfc644d1a99fbb93aa2e703d77827ed12018c3de5dd16",
+      "test_source": "tests/legacy/assurance/issue_93_elspeth.rs",
+      "test_source_sha256": "11ec5eed106837e1375d08d1930b35f5bf099f292d25e67c3f75bda1897a4ed6",
+      "test_receipts": [
+        {
+          "test": "engine::assurance::issue_93_elspeth::elspeth_storm_slayer_full_card",
+          "status": "ok",
+          "exit": 0,
+          "binary": "<cache>/rustmage-authoring/tdm-complete-set/target/debug/deps/legacy-49262b90621dc1a0"
+        }
+      ],
+      "java_source": "Mage.Sets/src/mage/cards/e/ElspethStormSlayer.java",
+      "java_sha256": "4da6366c832b938decfdd785a90f4a0122ee21e70f937dfabe2724c527064f10",
+      "oracle_full_facts": {
+        "oracle_id": "f78af825-023a-42e9-8374-5c52303a1417",
+        "name": "Elspeth, Storm Slayer",
+        "layout": "normal",
+        "mana_cost": "{3}{W}{W}",
+        "cmc": 5.0,
+        "type_line": "Legendary Planeswalker \u2014 Elspeth",
+        "oracle_text": "If one or more tokens would be created under your control, twice that many of those tokens are created instead.\n+1: Create a 1/1 white Soldier creature token.\n0: Put a +1/+1 counter on each creature you control. Those creatures gain flying until your next turn.\n\u22123: Destroy target creature an opponent controls with mana value 3 or greater.",
+        "loyalty": "5",
+        "colors": [
+          "W"
+        ],
+        "color_identity": [
+          "W"
+        ],
+        "keywords": [],
+        "all_parts": [
+          {
+            "id": "6455d903-6996-448f-9148-9068febecb00",
+            "component": "token",
+            "name": "Soldier",
+            "type_line": "Token Creature \u2014 Soldier"
+          },
+          {
+            "id": "89b98fd0-e2e5-4533-af2b-5230af2c88bd",
+            "component": "combo_piece",
+            "name": "Elspeth, Storm Slayer",
+            "type_line": "Legendary Planeswalker \u2014 Elspeth"
+          }
+        ],
+        "reference_printing": {
+          "id": "73a065e3-b530-4e62-ab3c-4f6f908184ec",
+          "set": "tdm",
+          "collector_number": "11",
+          "released_at": "2025-04-11"
+        }
+      },
+      "printed_obligation_mapping": [
+        "Printed3WW/legendaryPlaneswalker/starting5 fromexactmetadata and paidactualcast",
+        "Actualownreplacementdoubles+1Soldier from1to2white1/1s; generic DoubleTokens effects_only=false appliesalltoken kinds",
+        "0 addsown+1counters,rememberedcreaturesfly throughopponentturn thenexpire,excludesenemy/laterentrants",
+        "-3 excludesown/MV2creatures,killsopponentMV3+,loyalty5to2"
+      ],
+      "shared_owned_helper": "tests/legacy/assurance/big_helpers.rs::checked; fullbodyrootread, exactb456source",
+      "limits": "Staticheader/sharedtypedprimitive inspections supplement actualactions; no duplicatepercardstatistical/bespoke tests."
+    }
+  ],
+  "whole_set_acceptance": false
+}

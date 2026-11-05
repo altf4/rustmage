@@ -29,6 +29,18 @@ impl Game {
         delayed.id = self.next_stack_id();
         delayed.kind = StackKind::DelayedTokenCreation { token, amount };
         delayed.targets.clear();
+        delayed.clear_initiating_event_references();
+        delayed.refer_objects(
+            events
+                .iter()
+                .filter(|e| {
+                    e.moved
+                        && e.destination == Zone::Hand
+                        && e.before.owner == item.controller
+                        && e.before.is_creature()
+                })
+                .map(|e| e.before.reference),
+        );
         delayed.crime_qualifying_target = false;
         delayed.target_type_slots = None;
         delayed.mode = None;

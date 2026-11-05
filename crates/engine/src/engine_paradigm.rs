@@ -25,7 +25,6 @@ pub(super) struct ParadigmState {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ParadigmState {
-    #[cfg(feature = "test-support")]
     pub(super) fn packets(&self) -> impl Iterator<Item = &SpellView> {
         self.delayed.iter()
     }
@@ -113,8 +112,14 @@ impl Game {
                 row.player == item.controller && crate::card_names::same_name(row.name, name)
             })
         });
+        let mut installed = None;
         if !already_resolved {
             let mut delayed = item.clone();
+            delayed.clear_initiating_event_references();
+            delayed.return_link = None;
+            delayed.exiled_trigger_cards = None;
+            delayed.exiled_symbol_cards = None;
+            delayed.craft_materials = None;
             delayed.kind = StackKind::TriggeredAbility { ability };
             delayed.cast = None;
             delayed.is_copy = false;
@@ -131,16 +136,21 @@ impl Game {
             delayed.cast_event = None;
             delayed.gift = None;
             delayed.mana_copy_sources = None;
-            self.state
-                .paradigm
-                .get_or_insert_with(Default::default)
-                .delayed
-                .push(delayed);
+            let data = self.state.paradigm.get_or_insert_with(Default::default);
+            installed = Some(data.delayed.len());
+            data.delayed.push(delayed);
         }
         if self.object_ref(source.id) == source.object
             && self.state.objects[source.id as usize].zone == Zone::Stack
         {
-            self.move_object(source.id, Zone::Exile);
+            let movement = self.move_object(source.id, Zone::Exile);
+            if movement.moved
+                && movement.destination == Zone::Exile
+                && let Some(index) = installed
+            {
+                self.state.paradigm.as_mut().unwrap().delayed[index]
+                    .refer_objects([movement.after]);
+            }
         }
     }
     pub(super) fn queue_paradigm_triggers(&mut self) {

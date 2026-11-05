@@ -1,0 +1,254 @@
+{
+  "schema": 1,
+  "scope": "Reopened shared engine checkpoints82/83; complete276-card set acceptance remains pending",
+  "status": "Accepted exact published executable inputs after full release validation and two independent pure nonauthor approvals",
+  "validated_published_revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+  "previous_81_group_acceptance": "docs/tdm-engine-acceptance.json",
+  "groups": [
+    "E:ATTACHED_ACTIVATION_COSTS",
+    "E:NONLAND_HAND_EXILE"
+  ],
+  "audit_groups_including_aliases": 83,
+  "audit_group_counts_are_unweighted": true,
+  "observation_schema": 201,
+  "engine_frozen": true,
+  "validation": {
+    "report": "<cache>/rustmage-validation-c3slnby9/report/result.json",
+    "sha256": "c45b18ea0104a2fb45a6f7dc6300c29209a9f55a2ed6ce807a858f51045643fd",
+    "terminal": true,
+    "success": true,
+    "input_sha256": "aed818703c293dc755eb1d66161333896906b1105aa942dc0eec52121f3b16d3",
+    "files_verified": 12990,
+    "changed": [],
+    "active_processes": [],
+    "seconds": 404.5075723109767,
+    "phases": [
+      {
+        "name": "source pins",
+        "exit": 0,
+        "seconds": 0.8665665870066732,
+        "log": "<cache>/rustmage-validation-c3slnby9/report/00.log",
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "format",
+        "exit": 0,
+        "seconds": 4.375948183005676,
+        "log": "<cache>/rustmage-validation-c3slnby9/report/01.log",
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "card format",
+        "exit": 0,
+        "seconds": 1.1190473539754748,
+        "log": "<cache>/rustmage-validation-c3slnby9/report/02.log",
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "script contracts",
+        "exit": 0,
+        "seconds": 2.0708878230070695,
+        "log": "<cache>/rustmage-validation-c3slnby9/report/03.log",
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "clippy",
+        "exit": 0,
+        "seconds": 2.2198744600173086,
+        "log": "<cache>/rustmage-validation-c3slnby9/report/04.log",
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "native assurance",
+        "exit": 0,
+        "seconds": 199.6951265860116,
+        "log": "<cache>/rustmage-validation-c3slnby9/report/05.log",
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "release build",
+        "exit": 0,
+        "seconds": 193.49909151502652,
+        "log": "<cache>/rustmage-validation-c3slnby9/report/06.log",
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "simulation sample",
+        "exit": 0,
+        "seconds": 0.26582845201482996,
+        "log": "<cache>/rustmage-validation-c3slnby9/report/07.log",
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "Python assurance",
+        "exit": 0,
+        "seconds": 0.1648277339991182,
+        "log": "<cache>/rustmage-validation-c3slnby9/report/08.log",
+        "timed_out": false,
+        "orphaned_processes": false
+      }
+    ]
+  },
+  "native_assurance": {
+    "report": "<cache>/rustmage-validation-c3slnby9/report/native.json",
+    "sha256": "fec913455cba78f0d7c35b236dc6d45510e05c82dfe2f8f143c4d1d831a70a88",
+    "tests": 4334,
+    "targets": 104,
+    "compile_seconds": 98.31000879703788,
+    "execution_seconds": 101.28524566901615,
+    "terminal": true,
+    "success": true
+  },
+  "resource_guard": {
+    "report": "<cache>/rustmage-build-reports/e5a1f4c4c19e44b3b2616afa54b50243.json",
+    "sha256": "3c7afaf229104950eda6d9304551cebfdfab80ee4273b27e0bf2efaf3a9ac073",
+    "command": [
+      "/usr/bin/python3",
+      "<worktree>/tdm-complete-set/rustmage/scripts/validate.py",
+      "--release",
+      "--python",
+      "smoke",
+      "--target-dir",
+      "<cache>/rustmage-authoring/tdm-complete-set/target",
+      "--timeout",
+      "1200"
+    ],
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 404.74441398802446,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 5298077696,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1
+  },
+  "required_immutable_shared_libraries": [
+    {
+      "path": "<cache>/rustmage-validation-c3slnby9/report/libraries/librustmage.so",
+      "sha256": "4ee65b6abae8b89d79dfa2a87bd796882c05b3c87fb94833c9e4699ef44c5082",
+      "requires_preservation_at_exact_path_and_hash": true,
+      "readonly": true,
+      "consumer": "10 actual Python binding contracts in this accepted run"
+    }
+  ],
+  "preserve_previous_required_library": "See docs/tdm-engine-acceptance.json; previous immutable library remains required at its original exact path/hash",
+  "simulation": {
+    "clone_ns": 177.56396,
+    "decisions": 4941,
+    "decisions_per_second": 28308.221612777765,
+    "deck_names": [
+      "native-smoke"
+    ],
+    "deck_rules": "Freeform",
+    "decklist_archive": null,
+    "games": 10,
+    "games_per_second": 57.2924946625739,
+    "initial_state_bytes_excluding_capacity_and_allocator": 24712,
+    "max_decisions_per_game": 655,
+    "note": "native smoke policy and observation construction included; optional named decks rotate adjacent matchups through both seats; setup and gameplay timed, archive loading excluded; no model, tensor encoding, or per-decision JSON; verify mode also times owned raw/index branch and restore checks; sampled gameplay is not complete card-interaction coverage or XMage parity",
+    "owned_raw_index_restore_checks": false,
+    "restore_ns": 183.18022,
+    "seconds": 0.174542932
+  },
+  "simulation_scope": "Ten-game generic Freeform smoke only. This is not completed-TDM or all-Standard acceptance, throughput, parity or coverage. Actual set-only52-game acceptance is still unexecuted.",
+  "trace_acceptance": [
+    "docs/tdm-37-card-trace-additions.json",
+    "docs/tdm-schema201-evidence.json"
+  ],
+  "independent_nonauthor_reviews": [
+    {
+      "reviewer": "/root/tdm_engine_review_one",
+      "role": "Pure independent nonauthor; no authored ancestors in checkpoint",
+      "revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "status": "Approved; no remaining concrete findings",
+      "verified": [
+        "All12990 frozen input hashes and accepted3201-row schema201 trace migration",
+        "9/9 phases;4334/4334 native cases and10 binding contracts",
+        "Exact immutable library path/hash;6GiB/one job/one test thread;no OOM",
+        "General card authoring may resume after guarded cache warm; final set acceptance and fresh published-PR reviews remain separate"
+      ]
+    },
+    {
+      "reviewer": "/root/tdm_engine_review_two",
+      "role": "Pure independent nonauthor; no authored ancestors in checkpoint",
+      "revision": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "status": "Approved; no remaining concrete findings",
+      "verified": [
+        "All12990 frozen input hashes and accepted3201-row schema201 trace migration",
+        "9/9 phases;4334/4334 native cases and10 binding contracts",
+        "Exact immutable library path/hash;6GiB/one job/one test thread;no OOM",
+        "General card authoring may resume after guarded cache warm; final set acceptance and fresh published-PR reviews remain separate"
+      ]
+    }
+  ],
+  "author_compatibility_and_warm_receipts": "<cache>/rustmage-tdm/engine83-author-baselines-1793808271665788619",
+  "card_status": {
+    "verified": 77,
+    "scope": 276,
+    "new": 37,
+    "existing_verified": 40,
+    "whole_set_acceptance": false
+  },
+  "remaining": [
+    "Complete and prove all276 physical cards and13 parent-owned Omen faces",
+    "Actual cross-card interactions and52 fixed set-only legal terminal games, deterministic replay and owned raw/index/restore",
+    "Measure set-only simulation/implementation throughput, reconcile README",
+    "Final completed-set release acceptance, exactly one PR, two fresh independent nonauthor reviews of final published head"
+  ],
+  "author_cache_warms": [
+    {
+      "group": "a_g",
+      "report": "<cache>/rustmage-tdm/engine83-author-baselines-1793808271665788619/a_g/core-warm-terminal.json",
+      "sha256": "565ceadb045b0c229d3448aed3c6cca83fa2bc0d9d54b56260f388512b07e8d1",
+      "terminal": true,
+      "success": true,
+      "exit_code": 0,
+      "seconds": 103.30605674203252,
+      "engine_source": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "compatibility_commit": "7bfcd33a924e4e43273fde845565aa8ba8dd7517",
+      "target_dir": "<cache>/rustmage-authoring/tdm-entry-modes/target",
+      "matching_test_library_profile": 1,
+      "source_unchanged": true,
+      "resource": "<cache>/rustmage-tdm/engine83-author-baselines-1793808271665788619/a_g/core-warm-resource.json"
+    },
+    {
+      "group": "g_s",
+      "report": "<cache>/rustmage-tdm/engine83-author-baselines-1793808271665788619/g_s/core-warm-terminal.json",
+      "sha256": "baaa7f1e643a44c60ed528ce54870fc7713f873a25304a5fd1fa52433f1dc349",
+      "terminal": true,
+      "success": true,
+      "exit_code": 0,
+      "seconds": 102.6574227049714,
+      "engine_source": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "compatibility_commit": "51785352eeea24e04a990a07f48e1b1444c27041",
+      "target_dir": "<cache>/rustmage-authoring/tdm-counter-world/target",
+      "matching_test_library_profile": 1,
+      "source_unchanged": true,
+      "resource": "<cache>/rustmage-tdm/engine83-author-baselines-1793808271665788619/g_s/core-warm-resource.json"
+    },
+    {
+      "group": "s_z",
+      "report": "<cache>/rustmage-tdm/engine83-author-baselines-1793808271665788619/s_z/core-warm-terminal.json",
+      "sha256": "b0e035b4b430a31f9d5cce4da06bcdb7e1ae678372f58f0fcde2220cb1eeff31",
+      "terminal": true,
+      "success": true,
+      "exit_code": 0,
+      "seconds": 102.67623348295456,
+      "engine_source": "f03d4f671121396ce1fd1a8c4b3dd2d7b68e03bf",
+      "compatibility_commit": "95a6acbc9e69d7e838b5b18004ecd3ebe97f6d18",
+      "target_dir": "<cache>/rustmage-authoring/tdm-cast-routes/target",
+      "matching_test_library_profile": 1,
+      "source_unchanged": true,
+      "resource": "<cache>/rustmage-tdm/engine83-author-baselines-1793808271665788619/s_z/core-warm-resource.json"
+    }
+  ],
+  "authors_released": true
+}

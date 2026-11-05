@@ -148,6 +148,10 @@ impl Game {
                     continue;
                 };
                 let mut aggregate = std::collections::BTreeMap::new();
+                let names_dealer = !matches!(
+                    subject,
+                    DamageSubject::AnySources | DamageSubject::AnyNoncombatSources
+                );
                 for (&(dealer, player, combat), &amount) in &hits {
                     if (matches!(
                         subject,
@@ -161,12 +165,15 @@ impl Game {
                         continue;
                     }
                     if one_or_more {
-                        let total = aggregate.entry(player).or_insert((0u128, true));
+                        let total = aggregate.entry(player).or_insert((0u128, true, Vec::new()));
                         total.0 = total
                             .0
                             .checked_add(amount)
                             .capacity("damage amount exhausted");
                         total.1 &= combat;
+                        if names_dealer && !total.2.contains(&dealer.reference) {
+                            total.2.push(dealer.reference);
+                        }
                     } else {
                         self.queue_damage_trigger(
                             &source,
@@ -179,10 +186,15 @@ impl Game {
                                 combat,
                             },
                             Some(dealer.controller),
+                            if names_dealer {
+                                vec![dealer.reference]
+                            } else {
+                                Vec::new()
+                            },
                         );
                     }
                 }
-                for (player, (amount, combat)) in aggregate {
+                for (player, (amount, combat, objects)) in aggregate {
                     self.queue_damage_trigger(
                         &source,
                         index,
@@ -194,6 +206,7 @@ impl Game {
                             combat,
                         },
                         None,
+                        objects,
                     );
                 }
             }
@@ -276,6 +289,7 @@ impl Game {
         grant: Option<AttachmentTriggerView>,
         event: DamageTriggerView,
         dealer_controller: Option<Player>,
+        semantic_dealers: Vec<ObjectRef>,
     ) {
         if !self.queue_trigger_from(source, index, grant.map(Box::new)) {
             return;
@@ -294,6 +308,7 @@ impl Game {
                 )
             });
         packet.damage_event = Some(event);
+        packet.refer_objects(semantic_dealers);
         if retain_dealer_controller {
             packet.event_player = dealer_controller;
         }

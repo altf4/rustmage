@@ -43,6 +43,8 @@ impl Game {
             packet.id = self.next_stack_id();
             packet.kind = StackKind::TriggeredAbility { ability };
             packet.targets.clear();
+            packet.clear_initiating_event_references();
+            packet.refer_objects([subject]);
             packet.crime_qualifying_target = false;
             packet.target_type_slots = None;
             packet.mode = None;
@@ -78,13 +80,25 @@ impl Game {
                 retained.push(row);
                 continue;
             }
-            if row.event == DelayedTargetEvent::DiesOnce && dies {
+            let matches = match row.event {
+                DelayedTargetEvent::DiesOnce => dies,
+                DelayedTargetEvent::GraveyardUnderControllerOnce => {
+                    event.destination == Zone::Graveyard
+                        && event.before.controller == row.packet.controller
+                }
+                DelayedTargetEvent::CombatDamageToPlayer => false,
+            };
+            if matches {
                 let mut packet = row.packet;
                 packet.id = self.next_stack_id();
+                packet.refer_zone_event(event);
                 self.state.pending_triggers.push(packet);
+            } else {
+                // CR603.7b/c: now-inert exact subjects are still referred to by
+                // this turn-duration delayed ability; a new incarnation cannot
+                // match it, and cleanup ends its lifetime.
+                retained.push(row);
             }
-            // Every departure ends tracking this exact incarnation. Neither a
-            // returned card nor a token's brief graveyard interval can retrigger it.
         }
         if !retained.is_empty() {
             self.state.delayed_target_events = Some(Box::new(retained));
@@ -126,6 +140,10 @@ impl Game {
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[allow(
+    clippy::box_collection,
+    reason = "The optional cold collection keeps one pointer in State"
+)]
 pub(super) fn owned_bytes(rows: &Option<Box<Vec<DelayedTargetTriggerView>>>) -> usize {
     rows.as_ref().map_or(0, |rows| {
         std::mem::size_of::<Vec<DelayedTargetTriggerView>>()

@@ -3,10 +3,26 @@
   "catalogue_id": 1160,
   "oracle_id": "69e0d9f1-f9dd-4614-ad9f-13e7153710ce",
   "facts_sha256": "aa13a1e69cbad2f8e33eb0effd706ed2d67a0e7c5dd569738b9ca133d50cecc3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "66ce99d17c0468baa897424730c0b485e26eff6785f72cd662c4229c84f13484"
   },
-  "physical_metadata_sha256": "d9efbdc3edfd97d33d053cf53585c439929d7a496eef7abce566b51f08903cc6"
+  "physical_metadata_sha256": "d9efbdc3edfd97d33d053cf53585c439929d7a496eef7abce566b51f08903cc6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DragonclawStrike.java",
+  "java_sha256": "ef6432e60375dc9981c49e1db09e5d7977fc2977cbe836fa95fe24db57be5a9c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/FightTargetsEffect.java",
+      "sha256": "e562370eb9b15a7fc0db16f44b32e8dce627719fc405b2bc09eb8dad21f8edc2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    }
+  ],
+  "remaining_obligations": []
 }

@@ -1,0 +1,388 @@
+{
+  "status": "Authorized source authoring after accepted engine85 and G-S core warm; Cargo stays held while S-Z warm consumes the global build lease",
+  "basis_head": "11458ee5da5462a52f31224f2afc0dd74838ecbc",
+  "original_group": "s_z",
+  "new_author": "/root/tdm_cards_g_s",
+  "worktree": "<worktree>/tdm-counter-world/rustmage",
+  "test_target": "tdm_cards_s_z_additional",
+  "test_path": "tests/tdm_cards_s_z_additional.rs",
+  "evidence_path": "docs/tdm-cards-s-z-additional-evidence.json",
+  "physical_members": 25,
+  "cards": [
+    {
+      "name": "Sage of the Skies",
+      "oracle_id": "cfc7cef7-0a95-49f8-970f-abff2cacd82d",
+      "definitions": [
+        {
+          "index": 3648,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/sage_of_the_skies.rs"
+        }
+      ]
+    },
+    {
+      "name": "Salt Road Skirmish",
+      "oracle_id": "f6e72f4e-d6e0-4537-93c1-7045385c8401",
+      "definitions": [
+        {
+          "index": 3659,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/salt_road_skirmish.rs"
+        }
+      ]
+    },
+    {
+      "name": "Sarkhan, Dragon Ascendant",
+      "oracle_id": "71cb48e2-2328-471c-a04a-7b6461f378f4",
+      "definitions": [
+        {
+          "index": 3690,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/sarkhan_dragon_ascendant.rs"
+        }
+      ]
+    },
+    {
+      "name": "Severance Priest",
+      "oracle_id": "3a38bf69-511f-4851-870f-8a65641d832e",
+      "definitions": [
+        {
+          "index": 3801,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/severance_priest.rs"
+        }
+      ]
+    },
+    {
+      "name": "Shiko, Paragon of the Way",
+      "oracle_id": "d3bdd3f2-9e38-436a-93a3-f87d9f4d4f86",
+      "definitions": [
+        {
+          "index": 3830,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/shiko_paragon_of_the_way.rs"
+        }
+      ]
+    },
+    {
+      "name": "Shock Brigade",
+      "oracle_id": "8676e917-17dd-4047-99c4-402f2e909e16",
+      "definitions": [
+        {
+          "index": 3839,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/shock_brigade.rs"
+        }
+      ]
+    },
+    {
+      "name": "Shocking Sharpshooter",
+      "oracle_id": "fbb7735f-ec91-4ed4-b735-d94a76e68a80",
+      "definitions": [
+        {
+          "index": 3841,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/shocking_sharpshooter.rs"
+        }
+      ]
+    },
+    {
+      "name": "Sibsig Appraiser",
+      "oracle_id": "5b51958d-533a-45e4-aac1-3c157670978b",
+      "definitions": [
+        {
+          "index": 3858,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/sibsig_appraiser.rs"
+        }
+      ]
+    },
+    {
+      "name": "Sidisi, Regent of the Mire",
+      "oracle_id": "72074972-418d-4dce-83cf-ce8cf310fc42",
+      "definitions": [
+        {
+          "index": 3864,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/sidisi_regent_of_the_mire.rs"
+        }
+      ]
+    },
+    {
+      "name": "Smile at Death",
+      "oracle_id": "9228f04c-506f-4453-a335-e66876b8ce8d",
+      "definitions": [
+        {
+          "index": 3937,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/smile_at_death.rs"
+        }
+      ]
+    },
+    {
+      "name": "Snowmelt Stag",
+      "oracle_id": "b25ccb64-e114-4d54-a07a-c8cd4560b511",
+      "definitions": [
+        {
+          "index": 3947,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/snowmelt_stag.rs"
+        }
+      ]
+    },
+    {
+      "name": "Sonic Shrieker",
+      "oracle_id": "d317e3f1-553f-44f6-8543-d6d4c42534ad",
+      "definitions": [
+        {
+          "index": 3968,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/sonic_shrieker.rs"
+        }
+      ]
+    },
+    {
+      "name": "Stadium Headliner",
+      "oracle_id": "d8cfa20a-343e-4661-9f5a-a8265f6917a8",
+      "definitions": [
+        {
+          "index": 4084,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/stadium_headliner.rs"
+        }
+      ]
+    },
+    {
+      "name": "Stalwart Successor",
+      "oracle_id": "45392882-e4b9-4c74-a10f-985c2b4e2be9",
+      "definitions": [
+        {
+          "index": 4092,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/stalwart_successor.rs"
+        }
+      ]
+    },
+    {
+      "name": "Starry-Eyed Skyrider",
+      "oracle_id": "04e615e6-4088-4170-904c-f2d4bcebed59",
+      "definitions": [
+        {
+          "index": 4109,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/starry_eyed_skyrider.rs"
+        }
+      ]
+    },
+    {
+      "name": "Static Snare",
+      "oracle_id": "b5b742d2-f19b-47c9-84bd-e85d975900e6",
+      "definitions": [
+        {
+          "index": 4118,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/static_snare.rs"
+        }
+      ]
+    },
+    {
+      "name": "Stillness in Motion",
+      "oracle_id": "d73913ea-44d0-408f-9f8b-8e91843f2826",
+      "definitions": [
+        {
+          "index": 4137,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/stillness_in_motion.rs"
+        }
+      ]
+    },
+    {
+      "name": "Stormbeacon Blade",
+      "oracle_id": "f4b3ee43-fc01-425f-8322-29bf6d16cb3f",
+      "definitions": [
+        {
+          "index": 4170,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/stormbeacon_blade.rs"
+        }
+      ]
+    },
+    {
+      "name": "Stormplain Detainment",
+      "oracle_id": "4ad9c550-5605-4ffe-8e27-e9f2d9ada000",
+      "definitions": [
+        {
+          "index": 4176,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/stormplain_detainment.rs"
+        }
+      ]
+    },
+    {
+      "name": "Stormscale Scion",
+      "oracle_id": "cf37426d-b0ad-42c3-81be-79701aa4e0cf",
+      "definitions": [
+        {
+          "index": 4177,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/stormscale_scion.rs"
+        }
+      ]
+    },
+    {
+      "name": "Sultai Monument",
+      "oracle_id": "9db71b76-eda7-49dd-af5a-3de18acb8ccb",
+      "definitions": [
+        {
+          "index": 4209,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/sultai_monument.rs"
+        }
+      ]
+    },
+    {
+      "name": "Sunpearl Kirin",
+      "oracle_id": "f17b9356-a329-4f89-b690-afc2eaff4977",
+      "definitions": [
+        {
+          "index": 4243,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/sunpearl_kirin.rs"
+        }
+      ]
+    },
+    {
+      "name": "Synchronized Charge",
+      "oracle_id": "faa0055b-c1d2-4ce7-875f-41b4be8030bd",
+      "definitions": [
+        {
+          "index": 4303,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/synchronized_charge.rs"
+        }
+      ]
+    },
+    {
+      "name": "Taigam, Master Opportunist",
+      "oracle_id": "49f2cbc3-bd03-48e6-b1c4-d7f315b8579d",
+      "definitions": [
+        {
+          "index": 4316,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/taigam_master_opportunist.rs"
+        }
+      ]
+    },
+    {
+      "name": "Teeming Dragonstorm",
+      "oracle_id": "2154cc68-41a4-4e88-9fe0-e0150dc0be45",
+      "definitions": [
+        {
+          "index": 4355,
+          "category": "physical",
+          "path": "src/card_definitions/tdm/teeming_dragonstorm.rs"
+        }
+      ]
+    }
+  ],
+  "original_author_retains": 34,
+  "retained_names": [
+    "Sagu Wildling // Roost Seek",
+    "Scavenger Regent // Exude Toxin",
+    "Songcrafter Mage",
+    "Spectral Denial",
+    "Stormshriek Feral // Flush Out",
+    "Tempest Hawk",
+    "Temur Battlecrier",
+    "Temur Monument",
+    "Tersa Lightshatter",
+    "Teval, Arbiter of Virtue",
+    "The Sibsig Ceremony",
+    "Thunder of Unity",
+    "Trade Route Envoy",
+    "Traveling Botanist",
+    "Twinmaw Stormbrood // Charring Bite",
+    "Unburied Earthcarver",
+    "Underfoot Underdogs",
+    "Undergrowth Leopard",
+    "Unrooted Ancestor",
+    "Ureni, the Song Unending",
+    "Venerated Stormsinger",
+    "Veteran Ice Climber",
+    "Voice of Victory",
+    "War Effort",
+    "Warden of the Grove",
+    "Wayspeaker Bodyguard",
+    "Whirlwing Stormbrood // Dynamic Soar",
+    "Windcrag Siege",
+    "Wingblade Disciple",
+    "Wingspan Stride",
+    "Yathan Roadwatcher",
+    "Yathan Tombguard",
+    "Zurgo's Vanguard",
+    "Zurgo, Thunder's Decree"
+  ],
+  "preserved_existing_wip_names": [
+    "Sagu Wildling // Roost Seek",
+    "Scavenger Regent // Exude Toxin",
+    "Songcrafter Mage",
+    "Spectral Denial",
+    "Stormshriek Feral // Flush Out",
+    "Teval, Arbiter of Virtue",
+    "Twinmaw Stormbrood // Charring Bite",
+    "Whirlwing Stormbrood // Dynamic Soar"
+  ],
+  "warm_compat_commit": "81fd5f1e4cea0f7c1136053cedab0de6700a42e1",
+  "definition_and_provenance_paths": [
+    "src/card_definitions/tdm/sage_of_the_skies.rs",
+    "src/card_definitions/tdm/sage_of_the_skies.json",
+    "src/card_definitions/tdm/salt_road_skirmish.rs",
+    "src/card_definitions/tdm/salt_road_skirmish.json",
+    "src/card_definitions/tdm/sarkhan_dragon_ascendant.rs",
+    "src/card_definitions/tdm/sarkhan_dragon_ascendant.json",
+    "src/card_definitions/tdm/severance_priest.rs",
+    "src/card_definitions/tdm/severance_priest.json",
+    "src/card_definitions/tdm/shiko_paragon_of_the_way.rs",
+    "src/card_definitions/tdm/shiko_paragon_of_the_way.json",
+    "src/card_definitions/tdm/shock_brigade.rs",
+    "src/card_definitions/tdm/shock_brigade.json",
+    "src/card_definitions/tdm/shocking_sharpshooter.rs",
+    "src/card_definitions/tdm/shocking_sharpshooter.json",
+    "src/card_definitions/tdm/sibsig_appraiser.rs",
+    "src/card_definitions/tdm/sibsig_appraiser.json",
+    "src/card_definitions/tdm/sidisi_regent_of_the_mire.rs",
+    "src/card_definitions/tdm/sidisi_regent_of_the_mire.json",
+    "src/card_definitions/tdm/smile_at_death.rs",
+    "src/card_definitions/tdm/smile_at_death.json",
+    "src/card_definitions/tdm/snowmelt_stag.rs",
+    "src/card_definitions/tdm/snowmelt_stag.json",
+    "src/card_definitions/tdm/sonic_shrieker.rs",
+    "src/card_definitions/tdm/sonic_shrieker.json",
+    "src/card_definitions/tdm/stadium_headliner.rs",
+    "src/card_definitions/tdm/stadium_headliner.json",
+    "src/card_definitions/tdm/stalwart_successor.rs",
+    "src/card_definitions/tdm/stalwart_successor.json",
+    "src/card_definitions/tdm/starry_eyed_skyrider.rs",
+    "src/card_definitions/tdm/starry_eyed_skyrider.json",
+    "src/card_definitions/tdm/static_snare.rs",
+    "src/card_definitions/tdm/static_snare.json",
+    "src/card_definitions/tdm/stillness_in_motion.rs",
+    "src/card_definitions/tdm/stillness_in_motion.json",
+    "src/card_definitions/tdm/stormbeacon_blade.rs",
+    "src/card_definitions/tdm/stormbeacon_blade.json",
+    "src/card_definitions/tdm/stormplain_detainment.rs",
+    "src/card_definitions/tdm/stormplain_detainment.json",
+    "src/card_definitions/tdm/stormscale_scion.rs",
+    "src/card_definitions/tdm/stormscale_scion.json",
+    "src/card_definitions/tdm/sultai_monument.rs",
+    "src/card_definitions/tdm/sultai_monument.json",
+    "src/card_definitions/tdm/sunpearl_kirin.rs",
+    "src/card_definitions/tdm/sunpearl_kirin.json",
+    "src/card_definitions/tdm/synchronized_charge.rs",
+    "src/card_definitions/tdm/synchronized_charge.json",
+    "src/card_definitions/tdm/taigam_master_opportunist.rs",
+    "src/card_definitions/tdm/taigam_master_opportunist.json",
+    "src/card_definitions/tdm/teeming_dragonstorm.rs",
+    "src/card_definitions/tdm/teeming_dragonstorm.json"
+  ]
+}

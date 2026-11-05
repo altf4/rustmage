@@ -34,6 +34,7 @@ impl Game {
             damage: 0,
             damaged_this_turn: false,
             dealt_damage_this_turn: false,
+            dealt_damage_this_incarnation: false,
             dealt_combat_damage_this_incarnation: false,
             deathtouch_since_sba: false,
             growth: Stats::default(),
@@ -70,6 +71,9 @@ impl Game {
             self.state.players[object.owner.index()]
                 .library
                 .retain(|&id| id != reference.card);
+        }
+        if self.state.objects[reference.card as usize].zone == Zone::Graveyard {
+            self.unregister_graveyard_sources(reference.card);
         }
         self.state
             .exile_permissions

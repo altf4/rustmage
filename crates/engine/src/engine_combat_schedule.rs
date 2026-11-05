@@ -54,6 +54,12 @@ impl Game {
             _ => return,
         };
         let rules = self.state.combat_rules.get_or_insert_with(Default::default);
+        if !rules.inserted_phases.is_empty() {
+            rules
+                .inserted_phases
+                .extend(std::iter::repeat_n(Step::BeginCombat, usize::from(count)));
+            return;
+        }
         let schedule = rules.after_main.get_or_insert(MainPhaseCombatView {
             remaining: 0,
             resume,
@@ -66,6 +72,48 @@ impl Game {
             .remaining
             .checked_add(u64::from(count))
             .capacity("main-phase combat count exhausted");
+    }
+    /// Each pair is inserted after this main, before its older successor (CR500.8).
+    pub(super) fn add_combat_main_pairs(&mut self, count: u16) {
+        if count == 0 || !matches!(self.state.step, Step::Main1 | Step::Main2) {
+            return;
+        }
+        let natural = if self.state.step == Step::Main1 {
+            Step::BeginCombat
+        } else {
+            Step::End
+        };
+        let rules = self.state.combat_rules.get_or_insert_with(Default::default);
+        if rules.inserted_phases.is_empty() {
+            if let Some(old) = rules.after_main.take() {
+                rules.inserted_phases.push(old.resume);
+                for _ in 0..old.remaining {
+                    rules.inserted_phases.push(Step::BeginCombat);
+                }
+            } else {
+                rules.inserted_phases.push(natural);
+            }
+        }
+        for _ in 0..count {
+            rules
+                .inserted_phases
+                .extend([Step::Main2, Step::BeginCombat]);
+        }
+    }
+    pub(super) fn step_after_main(&mut self) -> Step {
+        if let Some(step) = self
+            .state
+            .combat_rules
+            .as_mut()
+            .and_then(|rules| rules.inserted_phases.pop())
+        {
+            return step;
+        }
+        if self.take_main_phase_combat() || self.state.step == Step::Main1 {
+            Step::BeginCombat
+        } else {
+            Step::End
+        }
     }
     pub(super) fn take_main_phase_combat(&mut self) -> bool {
         if let Some(schedule) = self
@@ -84,7 +132,18 @@ impl Game {
     pub(super) fn step_after_combat(&mut self) -> Step {
         // An ability creating a combat during the current combat inserts it
         // before the previously scheduled successors, without losing their return.
-        if self.take_additional_combat() || self.take_main_phase_combat() {
+        if self.take_additional_combat() {
+            return Step::BeginCombat;
+        }
+        if let Some(step) = self
+            .state
+            .combat_rules
+            .as_mut()
+            .and_then(|rules| rules.inserted_phases.pop())
+        {
+            return step;
+        }
+        if self.take_main_phase_combat() {
             return Step::BeginCombat;
         }
         self.state
@@ -98,6 +157,7 @@ impl Game {
         packet.id = self.next_stack_id();
         packet.kind = StackKind::TriggeredAbility { ability };
         packet.targets.clear();
+        packet.clear_initiating_event_references();
         packet.crime_qualifying_target = false;
         packet.target_type_slots = None;
         packet.mode = None;

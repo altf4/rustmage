@@ -121,11 +121,20 @@ impl Game {
             .collect();
         self.order_equipment_attachments_reflexive(item, recipient, equipment, Some(ability))
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn attach_equipment_batch(
         &mut self,
         equipment: &[ObjectRef],
         recipient: ObjectRef,
     ) -> usize {
+        self.attach_equipment_batch_objects(equipment, recipient)
+            .len()
+    }
+    pub(super) fn attach_equipment_batch_objects(
+        &mut self,
+        equipment: &[ObjectRef],
+        recipient: ObjectRef,
+    ) -> Vec<ObjectRef> {
         // Recheck the complete final set before any attachment changes. No
         // partial batch is exposed while choosing relative timestamps.
         let equipment: Vec<_> = equipment
@@ -139,13 +148,12 @@ impl Game {
         for &source in &equipment {
             self.state.objects[source.card as usize].attached_to = Some(recipient);
         }
-        let attached = equipment.len();
-        for source in equipment {
+        for &source in &equipment {
             self.retimestamp_live_static_source(source);
             self.retimestamp_hand_size_source(source);
             self.renew_copy_grant_origin(source, false);
         }
-        attached
+        equipment
     }
 }
 
@@ -166,5 +174,5 @@ pub(super) fn can_attach<W: ability_world::CharacteristicWorld + ?Sized>(
         && world.kinds(target.card) & 1 != 0
         && !characteristic_query::CharacteristicQuery::in_world(world)
             .keywords(target.card)
-            .contains(Keywords::PROTECTION_EVERYTHING)
+            .protects_from(world.colors(source.card), world.kinds(source.card))
 }

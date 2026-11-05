@@ -22,6 +22,10 @@ pub enum KeywordEffectOrigin {
         source: ObjectRef,
         controller: Player,
     },
+    /// This external haste effect ends permanently on the first actual control loss.
+    SuspendHaste {
+        controller: Player,
+    },
     Suspected,
     Counter {
         kind: CounterKind,
@@ -68,15 +72,17 @@ impl Card {
                             | StaticAbilityFragment::ControlledPermanentKeywords { .. }
                             | StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                             | StaticAbilityFragment::SourceMaxSpeedActivation(..)
+                            | StaticAbilityFragment::SourceEntryModeActivation { .. }
                             | StaticAbilityFragment::ControlledPlaneswalkerActivation(..)
                             | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
                             | StaticAbilityFragment::ControlledSubtypeKeywords { .. }
+                            | StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. }
                             | StaticAbilityFragment::AttachmentKeywords(..)
                             | StaticAbilityFragment::AttachedTurnKeywords(..)
                             | StaticAbilityFragment::HarnessedTrigger(..)
                             | StaticAbilityFragment::ConditionalWard { .. }
                             | StaticAbilityFragment::AttachmentTrigger(..)
-                            | StaticAbilityFragment::AttachmentActivation(..)
+                            | StaticAbilityFragment::AttachmentActivation { .. }
                             | StaticAbilityFragment::AttachmentMana(..)
                             | StaticAbilityFragment::AttachmentSacrificeMana(..)
                             | StaticAbilityFragment::LandMana { .. }
@@ -160,9 +166,9 @@ impl Game {
             state
                 .characteristic_sources
                 .retain(|&source| source != reference);
-            state
-                .keyword_effects
-                .retain(|row| row.recipient != reference);
+            state.keyword_effects.retain(|row| {
+                row.recipient != reference || row.rules.contains(Keywords::PREVENT_COMBAT_TO)
+            });
         }
     }
     /// A cast-spending effect follows only this spell's actual stack-to-battlefield move.

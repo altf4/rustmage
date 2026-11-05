@@ -60,6 +60,8 @@ pub struct ConvokePaymentView {
 pub(super) struct ConvokeSelection {
     pub selected: Vec<ConvokePaymentView>,
     pub improvised: Vec<ObjectRef>,
+    /// Exact graveyard cards reserved for the same locked mana payment.
+    pub delved: Vec<ObjectRef>,
     pub remaining: ManaCost,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -72,12 +74,15 @@ impl ConvokeSelection {
             .collect()
     }
     pub(super) fn contains(&self, r: ObjectRef) -> bool {
-        self.selected.iter().any(|s| s.object == r) || self.improvised.contains(&r)
+        self.selected.iter().any(|s| s.object == r)
+            || self.improvised.contains(&r)
+            || self.delved.contains(&r)
     }
     pub(super) fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + self.selected.len() * std::mem::size_of::<ConvokePaymentView>()
             + self.improvised.len() * std::mem::size_of::<ObjectRef>()
+            + self.delved.len() * std::mem::size_of::<ObjectRef>()
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -185,7 +190,7 @@ impl Game {
     pub fn convoke_choice(&self) -> Option<ConvokeChoiceView> {
         if !matches!(
             self.state.pending,
-            Pending::Convoke { .. } | Pending::Improvise { .. }
+            Pending::Convoke { .. } | Pending::Improvise { .. } | Pending::Delve { .. }
         ) {
             return None;
         }
@@ -228,6 +233,12 @@ impl Game {
     pub(super) fn begin_improvise(&mut self) {
         self.begin_contributors(true);
     }
+    pub(super) fn begin_delve(&mut self) {
+        self.begin_contributors(false);
+        if let Pending::Convoke { player } = self.state.pending {
+            self.state.pending = Pending::Delve { player };
+        }
+    }
     fn begin_contributors(&mut self, artifact: bool) {
         let a = self.state.announcing.as_mut().unwrap();
         assert!(a.item.kind == StackKind::Spell && a.convoke.is_none());
@@ -236,6 +247,7 @@ impl Game {
             remaining: a.total_cost.expect("locked total"),
             selected: Vec::new(),
             improvised: Vec::new(),
+            delved: Vec::new(),
         }));
         self.state.pending = if let Some(c) = &mut a.cast_costs {
             c.mana_closed = true;
@@ -291,6 +303,18 @@ impl Game {
             let object = self.object_ref(id as CardId);
             if f.contains(object) {
                 continue;
+            }
+            if self.item_delve(&a.item)
+                && delve::eligible(
+                    self,
+                    a.item.controller,
+                    object,
+                    a.item.source.map(|s| s.object),
+                )
+                && self.delver_fundable(object)
+                && emit(Action::ChooseDelver { object })
+            {
+                return true;
             }
             if self.item_waterbend(&a.item) != 0
                 && f.improvised.len() < usize::from(self.item_waterbend(&a.item))

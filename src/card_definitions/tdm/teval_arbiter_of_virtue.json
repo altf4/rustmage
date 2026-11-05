@@ -3,10 +3,51 @@
   "catalogue_id": 4407,
   "oracle_id": "f6cf359a-91cb-4b3c-8837-be53e4ed9c93",
   "facts_sha256": "698398c195279ed4ef7cc00f374fdabaacbb0df6dc1219e0d78d283f79bd73e8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7e3544a018fe8b26e11731c71c240d34ac07676202db4b35f4b7102738fff30b"
   },
-  "physical_metadata_sha256": "92f8783d43aa704778474c92e3b86870e473a004f5436ca7abdf8601302eb75e"
+  "physical_metadata_sha256": "92f8783d43aa704778474c92e3b86870e473a004f5436ca7abdf8601302eb75e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TevalArbiterOfVirtue.java",
+  "java_sha256": "9fcf1fa50f89f3ea8c39682325eb7fd96f9fd0ff737f7a9defccd4a1be2f0f13",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DelveAbility.java",
+      "sha256": "27ff5af89ce6082ac6d9e746c13c9206a06c8a6bbe687c0ce3ae78550d7075da"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledSpellsEffect.java",
+      "sha256": "fe96f9ccb2dbf72b35b14b2fa8c2e131e1e8e4e399b9cfd55ad6d4a198741227"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+      "sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileFromGraveCost.java",
+      "sha256": "0fbd76b0759d6ff66e0517af68a598d62dfd5fca5a520f4ee834132b0275166e"
+    }
+  ],
+  "rules_tests": "tests/tdm_cards_s_z.rs::cast_faces_"
 }

@@ -1,0 +1,329 @@
+{
+  "schema": 1,
+  "scope": "Portable display locations in historical TDM evidence; repository artifact hash references refreshed transitively. No runtime/card/provenance/native artifact or immutable shared library changed.",
+  "location_conventions": [
+    "<cache> retains the original cache artifact suffix.",
+    "<worktree> retains the original worktree and repository suffix.",
+    "<checkout> denotes the primary Rustmage checkout.",
+    "<xmage> denotes the pinned XMage source checkout."
+  ],
+  "required_artifact_preservation": "All original cache reports and required shared libraries remain at their exact existing paths and hashes. Only checked-in location notation changed.",
+  "frozen_printed_ledger_sha256": "b6716c0d6f18774988997e1183caaf5b0f977d2049406f56da7dbfaecec2942a",
+  "changed_documents": [
+    {
+      "path": "docs/tdm-15-card-trace-additions.json",
+      "original_content_sha256": "c9ed29c33b5d574ed43535e7a648e474a1a5d1bcb4c170df2b6999abe7337893",
+      "portable_content_sha256": "600fc62f92a2153383157e7552843fcdd8bd9d94176279add09382ffeb01b654",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-24-card-trace-additions.json",
+      "original_content_sha256": "e4edf57bc6244f9a37e4d5f4078fd4c78773aebcbc099dec5f07e5909b7ee47f",
+      "portable_content_sha256": "2ff8cf8ccf69b54c2eabc122a541ee64df7939683027d860387def4ec7358fa0",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-behold-free-costs-evidence.json",
+      "original_content_sha256": "2de834aa9768f1e8c09b90e6cf16223fadbc89d98822fada3bf7d3b991034db1",
+      "portable_content_sha256": "e33fca59a0cf379dc08969c4a500eaf036565539e09371d5f813b0046f21fa9a",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-card-ownership.json",
+      "original_content_sha256": "9b0347f59c632479a5472be03c39f497177135c5766ffbd6a2b8dd87fafc8e86",
+      "portable_content_sha256": "2088b676c2fbfdec464f65950d6f2638fdc746f14dce3bd9c54146b77eb2a9ee",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-existing-reuse-four-evidence.json",
+      "original_content_sha256": "4c8a15ba02043a8dbe5390b86c62210921ce8518be58b7504e5da037e8d5fd0f",
+      "portable_content_sha256": "3d73766fa8236203e1ace55729d9c7b3cb89a14bb034cc855f6fbd14674200fc",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-cards-a-g-evidence.json",
+      "original_content_sha256": "e3dd0245f6ad5b47d25b8a42746704a2572a15b634a9c7837a603938a43ce465",
+      "portable_content_sha256": "d319f06d096aa96cb9f094ededc2299461d031d05041a96764753e7821c096df",
+      "location_display_changed": false,
+      "dependent_document_hash_bindings_refreshed": true
+    },
+    {
+      "path": "docs/tdm-existing-g-s-six-evidence.json",
+      "original_content_sha256": "986e200da71cc176b2f529f70622b5bbe0330e404eea61d860f272d10be2259e",
+      "portable_content_sha256": "0c96ee61d7a95643a1c38a98dc9c90314f31ba130662545df5df56b6d75c4c87",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-cards-g-s-evidence.json",
+      "original_content_sha256": "88db250bd9786276aa93f8a102ec347720427a109a82b8c420d1712e290e2968",
+      "portable_content_sha256": "36b3bd8cf8e9591b7d1cb4688bfafdb6baaa22aa203bee36ca057bfc4fef13e0",
+      "location_display_changed": false,
+      "dependent_document_hash_bindings_refreshed": true
+    },
+    {
+      "path": "docs/tdm-existing-strategic-betrayal-evidence.json",
+      "original_content_sha256": "2122ce0a7eeea635290603470e1b34f86142bcda162bfbbe9993e818ee4db59b",
+      "portable_content_sha256": "04eda6cc6f348dee8d4e6332cfa19da312c04bbdfa0e5249eb35c65998f1a17b",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-s-z-additional-ownership.json",
+      "original_content_sha256": "16deb7cdda71ce17add56107dddde3acd8c4dfc30e55d8bf91664521399974bd",
+      "portable_content_sha256": "d818736127d5c0def3a78402da4a4aa75e672137f414baf665ff3f043cf38453",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-cards-s-z-evidence.json",
+      "original_content_sha256": "a52b47e9e51fa1d72ff3249852f6501ded80dca1fe3144e260e65c5830aa2a98",
+      "portable_content_sha256": "c134f8d6f0747219632860181d4ccdd577a66b9a36f8685a506f688ec868dbc5",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": true
+    },
+    {
+      "path": "docs/tdm-cast-event-scalar-capture-evidence.json",
+      "original_content_sha256": "49261eaa629740aff82c738a39f47ad35afcf3df78c814bfc439e821b9727f05",
+      "portable_content_sha256": "008aa5920ee210258ee39d11e60d9f52db80964eb0ea46d3896b821faa5de981",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-cast-routes-evidence.json",
+      "original_content_sha256": "d50d8c9075073a1ebaf7ccb49f465331be7657f33fd448cd3fd453b103fda9c0",
+      "portable_content_sha256": "417f41b3eaf824e9998578140bbcdb0e4977abfd8c6212ea2c57212090715ff8",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-combat-callbacks-evidence.json",
+      "original_content_sha256": "12f5284c68f47fcb33149b2a5d71522a01f193683a445920ebcb7bd622b96ee3",
+      "portable_content_sha256": "f4212cc2899e442380e207ff97b8d94cc43ff412e57323cb7e9e9e8551f4475a",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-copy-suspend-evidence.json",
+      "original_content_sha256": "888fdb10a6b4007acdc6b0a0dbc4436f91fa08426e1061ec906d4ba1633a5533",
+      "portable_content_sha256": "c4434ae8fce20c041091b98a03bdc762f49dd215060378891f3506b2d6f38440",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-copy-token-eligibility-evidence.json",
+      "original_content_sha256": "c1625ccb84af3df0cd1b53144b1c05ef5274f95d5d70b98e36977e8fe750f9ca",
+      "portable_content_sha256": "d79c55b56d7ffc776ac06ba2b19799c4381af9db4fbe8429bc2a4696debf9f88",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-cost-limitations-reconciliation.json",
+      "original_content_sha256": "1b108191b4dc2b5e41726cdb7cf682ddad0f44f82a2fa8ad61832cab0105119a",
+      "portable_content_sha256": "2e71b8784a793bb4f8a429862b1433f37c35fd9fff5adb9569c4cf29c2cea807",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-dragonstorm-self-entry-restoration.json",
+      "original_content_sha256": "b9fa91fa080720945c6598e92c956a5faab3774227941738edef241604b89911",
+      "portable_content_sha256": "1fdad323e7e35aa374e4fe0ed327c279c52a6b31ed8f4f65511be6faa44777ff",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-engine-acceptance.json",
+      "original_content_sha256": "b2968ca02d2721784a2e9cba01f0dba2f8576481c1a7d2faeb4290dc4f2eee83",
+      "portable_content_sha256": "782790766f2edefb8ee082352018652dd9e3be0882d230b5cfbca0a78b1bca25",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-engine-audit.json",
+      "original_content_sha256": "265b479524198173495a948a025a02bd7c03ab232595ff522cc7ff4adc68bede",
+      "portable_content_sha256": "465ba8bb31c738375e4851354dbe62b41a5f544e269d4e77ae1f0e270973b12e",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-engine83-acceptance.json",
+      "original_content_sha256": "d19f29f38bda84470e6c89547036a990859345c02d7dc0b47e9a211503a64993",
+      "portable_content_sha256": "8c1415dd1c3af8e766c944b8240def8506ade0f3e9bd4c35d7f4b58129c18d81",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-engine84-acceptance.json",
+      "original_content_sha256": "f88433c30f04836d7979ded50afcdad552b9a42c0577d3bd82a6601d118d7fda",
+      "portable_content_sha256": "de3513951e2bd164a9bc9c272ff7a838998dedd04cb3956adfa6159a0fc6b67b",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-engine85-acceptance.json",
+      "original_content_sha256": "b2532706e669344746bda1ecd78517db44dac1f454337388acd9e8ab509f7082",
+      "portable_content_sha256": "012a2171366c421259bea7a373f1bc2766c7675c55f8ca8ff58ee5a77a911901",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-gained-attack-evidence.json",
+      "original_content_sha256": "fb3cbc969123ef0f6fcfd62bc48d650fdaaccac242498f4432c9d5d5cb644ea5",
+      "portable_content_sha256": "b5960a7793f18ffe925dcf6596ef8563236528a994a502910ccae40b9110c7a5",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-game-harness-preflight.json",
+      "original_content_sha256": "5c6e10aa6e6e5af41359ce5cd7b9c0efb3d028714050767b91f9535a2be7b9c2",
+      "portable_content_sha256": "a05b08dba3e012faebaa929e01f307f94b4cc13cf91294dd447f0e74e92a0cdf",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-half-life-round-up-evidence.json",
+      "original_content_sha256": "d093894de644cf96493b45be29b8b3d199cf690c37259556f171c0f452368eb7",
+      "portable_content_sha256": "c0f5188ff2df1a1e534783e429a682a0cbebe42b717d42012442f7247fb6a0bc",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-harmonize-wide-evidence.json",
+      "original_content_sha256": "2987c573db29339c186b62bec6731249b036aab7f1481b100d52406f4ee69cc8",
+      "portable_content_sha256": "707b396d6a0a0e0b35cf87c1f2246b88d52205ec1853bd12bf0d7ac55fc43c82",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-mana-window-audit.json",
+      "original_content_sha256": "22a32a7c15b84c0a88f544f54425cb9349d95c100504b0e9c0892b40471bc71f",
+      "portable_content_sha256": "5024a216bfb0f80de1a05b0dc50567bdb05d22b65ad896f7362d155ad88f60da",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-metadata-reconciliation.json",
+      "original_content_sha256": "e5d35c8ebf78345bd1c73346083c5d8a86d6c0b4756c2d2035041a537404a104",
+      "portable_content_sha256": "1517ddfc063c3f5780fc9dcadd346ffd3ba346bedbfb6f1a90e8a0fe4f7d28d9",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-native-grant-origins-evidence.json",
+      "original_content_sha256": "3229c45a06240c6934344695660e9a24a8067073169a9424d2175966937d5942",
+      "portable_content_sha256": "4817ef6a9273c23a029ca932a3b2a011c3f21b59305a63c77bb163d924ef0caa",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-remaining-world-audit.json",
+      "original_content_sha256": "8d8af4d103ffbb1b06be41373cc819567155f255b4e4d80af60ec2c7a3adb449",
+      "portable_content_sha256": "f1f6bc2693ebdaf851ae2ece82f838853ab703f96a177f2fa1ca3bd4bd8cd57e",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-remaining-world-first-evidence.json",
+      "original_content_sha256": "03e9cda777d3528b263edb221c0cf2dbe18407661c33c4e06048168fc68d0122",
+      "portable_content_sha256": "e5d7d0d8b3d4b851d79b8140f740a1f3bc5fa30dd923ee2dae3450ea93c8ee31",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": true
+    },
+    {
+      "path": "docs/tdm-remaining-world-second-checkpoint.json",
+      "original_content_sha256": "28b42fdc3d8912a9f1c764e56323ce3b830263db0133b67ce12c6046a10083b6",
+      "portable_content_sha256": "02b98ba4cb603f102b3e116aeded6ccc3fe6d833cdc8ee1c065bda1a79bf94f2",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-sacrifice-random-evidence.json",
+      "original_content_sha256": "3ef4599895b2399ef3527f0128d4f45b4632c1b4b7d00a1db62ef411987f843f",
+      "portable_content_sha256": "a1f07a4c801690c57c424b84c2ba3f9bb390c283c24e0f4d135f7b64f59904f8",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-sampled-source-lki-evidence.json",
+      "original_content_sha256": "0b9faaed96d4de3bba55b9b3aadc66feeec2209d3f525382bd0ff4fb4d50735f",
+      "portable_content_sha256": "eef39050669570993541a6b18e2fa162f26d6b474f81c68a3681917cc1a9d4ea",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-schema200-evidence.json",
+      "original_content_sha256": "a4f8fc45d83207f5703c7639afbe07ad17e9fc5cba2bf63ab4e92de671636aa6",
+      "portable_content_sha256": "8ed326f0b2d5e41b45d44e5fc0cdc907094beade6abd6eef5b89946391ba9910",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-semantic-reference-audit.json",
+      "original_content_sha256": "f5456346c8c8ebc820037e3401ddaae90c8dd9dc81f4eb4e0a14a4e5dbe00e66",
+      "portable_content_sha256": "265c65c0ff3170e93177bf297fa26487fbba287dcc6bc7e6600bb8e7500e193d",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-semantic-final-boundary-evidence.json",
+      "original_content_sha256": "e6d7aadbd5bf6163e0cd5e12560d8054f20d9d19c739d62dacd93f0406b63eb0",
+      "portable_content_sha256": "18e90d4fd21566f43dddaed54ad579dc35ac3dd7646cdf207e8e8ffa53b0b4f1",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": true
+    },
+    {
+      "path": "docs/tdm-semantic-source-evidence.json",
+      "original_content_sha256": "290562498a679cf0c1f7e8cc477e11f3818828b99b83b2ac4326b7cc66ad71f8",
+      "portable_content_sha256": "39b1e3c4b4671a731b36d692b8be26c3063448c10e4e0386ac96ae4564e1e20d",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-set-combat-interactions-evidence.json",
+      "original_content_sha256": "e88a31bf9f07abe5b5d52c82ff5d48d3dc458bdfca81fcc0a6d4cb5f10d0a8d0",
+      "portable_content_sha256": "be984d981a394bc5adea69e9760f45496074f16e7a9731812b2db5d25277463d",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": true
+    },
+    {
+      "path": "docs/tdm-set-prevention-interactions-evidence.json",
+      "original_content_sha256": "30787d8cc39488eb3d45f14e1967a5dcbf6d2494f2510b9926e7faa3c9e6a08c",
+      "portable_content_sha256": "a667ac056715bbba9b32a47afd02cab9e32c829aaf55a3d00fbd5cd8a2fbdaf1",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-set-search-mode-interactions-evidence.json",
+      "original_content_sha256": "73d10b3a86d8d2f7e6a99b20351dbf2f7fea9fea8a6ab03708801467779f0eb5",
+      "portable_content_sha256": "73c96df48b2ba7de0e722d2fe2872912de0733e8a7c61819eb1bad414df68cdb",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-set-coverage-matrix.json",
+      "original_content_sha256": "71aac2ca5d9e025b48a9457a6be0aa7cd9d04da743a1cdb9d4f03a3684f2a68b",
+      "portable_content_sha256": "d34a57525ede3553c50fd8a8273106e1e368a6a2aa9bb10800e720458a9b4d09",
+      "location_display_changed": false,
+      "dependent_document_hash_bindings_refreshed": true
+    },
+    {
+      "path": "docs/tdm-target-activation-costs-evidence.json",
+      "original_content_sha256": "8d88e94c3de8c164680b8af0b2c03e11934121b0d149f277e2a2f8574c722a54",
+      "portable_content_sha256": "ab6594c413be866a8d2f2bf0d4d8fa12b8c3bba24c602e347ff18ff179ff945c",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    },
+    {
+      "path": "docs/tdm-token-entry-counters-evidence.json",
+      "original_content_sha256": "bf0c8a2dbc95dad0625749cbc8e8445d1eb4fa5064c935f1a24aa4a3abfce70f",
+      "portable_content_sha256": "4b09160cae201b0b8eef4bba6416f3800a7097ec7dd278f89ccb8b83b73519d3",
+      "location_display_changed": true,
+      "dependent_document_hash_bindings_refreshed": false
+    }
+  ]
+}

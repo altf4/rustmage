@@ -3,10 +3,26 @@
   "catalogue_id": 2075,
   "oracle_id": "3431338b-928a-47f2-bc2f-f3c5d8eda8d0",
   "facts_sha256": "6a6401429ccae4afb74fbbb828be0f11405682baca9c81a660914fbeeca3d7e0",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4cb506d50641822474605f8e6bfa4b9261f61568d1f0bcee1a4e70e2349ade75"
   },
-  "physical_metadata_sha256": "5561b5be011849070addb9c93ab6301d8877447604b1a4771e6a826b839a9436"
+  "physical_metadata_sha256": "5561b5be011849070addb9c93ab6301d8877447604b1a4771e6a826b839a9436",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HostOfTheHereafter.java",
+  "java_sha256": "606af2129cdb8f93071035700f51a4a5f6d470e1a820b5ca1137ab90c5ef560d",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesCreatureTriggeredAbility.java",
+      "sha256": "62d53cb6be7c685032f9bf3a509c9217177b4ee44ccd9a294be1d8dca7d77b81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldWithCountersAbility.java",
+      "sha256": "b34c7e6346705407d2a8519d8afdebd93b393745b995bbbce928753c35eacd59"
+    }
+  ]
 }

@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "57af9866441ec97cd11462e113367de27dd65c76724a096899ab2af27d1d9edc"
   },
-  "physical_metadata_sha256": "dca13f181d4c57bc8c90af8d9dc2e2353e8a37b5ed9bd8c40eb1471cf26383bb"
+  "physical_metadata_sha256": "dca13f181d4c57bc8c90af8d9dc2e2353e8a37b5ed9bd8c40eb1471cf26383bb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/j/JeskaiBrushmaster.java",
+  "java_sha256": "8434e44facf25b4110c9094568a242b24d180855b00ec80f8850e4333f796231",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProwessAbility.java",
+      "sha256": "4841a6c5a32b09d6a63e326d29c8ce04f2fdad3575e1897f202cae110718c8a4"
+    }
+  ]
 }

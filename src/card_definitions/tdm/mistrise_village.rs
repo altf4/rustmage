@@ -1,16 +1,40 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Source-audited direct typed definition; see paired provenance.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Land,
+    entry: EntryTapped::UnlessControlsEitherSubtype("Mountain", "Forest"),
+    activated: &[
+        ActivatedAbility {
+            exhaust: false,
+            guard: ActivationGuard::Always,
+            origin: ActivationOrigin::Battlefield,
+            cycling: false,
+            cost: ActivationCost {
+                tap: true,
+                ..ActivationCost::ZERO
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::AddMana(ManaProduction::Fixed([
+                0, 1, 0, 0, 0, 0,
+            ]))],
+            sorcery: false,
+            once_per_turn: false,
+        },
+        ActivatedAbility {
+            exhaust: false,
+            guard: ActivationGuard::Always,
+            origin: ActivationOrigin::Battlefield,
+            cycling: false,
+            cost: ActivationCost {
+                tap: true,
+                colored: [0, 1, 0, 0, 0, 0],
+                mana_component: true,
+                ..ActivationCost::ZERO
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::GrantNextSpellUncounterable],
+            sorcery: false,
+            once_per_turn: false,
+        },
+    ],
     ..CardRules::EMPTY
 };

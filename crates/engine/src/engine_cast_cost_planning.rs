@@ -20,6 +20,9 @@ pub(super) struct CostContext {
     mana: Option<ManaCost>,
     teammates: Vec<ObjectRef>,
     teamwork_exact: bool,
+    delve_selected: bool,
+    /// Existing announcement phase, retained only in this private query context.
+    mana_closed: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl CostContext {
@@ -58,6 +61,8 @@ impl CostContext {
             }
         }
         Some(Box::new(Self {
+            delve_selected: a.convoke.as_ref().is_some_and(|f| !f.delved.is_empty()),
+            mana_closed: c.mana_closed,
             source_counter_reservation,
             teammates: c.teammates.clone(),
             teamwork_exact: false,
@@ -101,6 +106,9 @@ impl CostContext {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl FundingState<'_> {
+    pub(super) fn mana_window_open(&self, goal: &FundingGoal) -> bool {
+        goal.requires_mana() && self.cast_costs.as_ref().is_none_or(|c| !c.mana_closed)
+    }
     /// Reject an unpaid additional cost only if even an overestimate of the
     /// resources available after funding cannot satisfy any of its routes.
     /// Unknown costs and worlds with linked or nested state changes retain the
@@ -138,6 +146,7 @@ impl FundingState<'_> {
                 | CastCostClause::Blight { .. }
                 | CastCostClause::Casualty(_)
                 | CastCostClause::Harmonize(_) => {}
+                CastCostClause::Behold(_) => {}
             }
         }
         let mut hand = 0usize;
@@ -213,6 +222,12 @@ impl FundingState<'_> {
             });
         self.power_sensitive |= self.contributors.is_some();
         self.install_cost_context(a.and_then(CostContext::from_announcement));
+        if let Some(source) = a.and_then(|a| a.item.source) {
+            self.payment_source = Some(source.object);
+            if a.is_some_and(|a| a.item.kind == StackKind::Spell) {
+                self.project_cost_spell_source(source.object);
+            }
+        }
         if let Some(a) = a.filter(|a| a.cast_costs.is_some())
             && let Some(frame) = &a.convoke
         {
@@ -225,6 +240,16 @@ impl FundingState<'_> {
                     .find(|r| r.id == selected.card && r.object.generation == selected.generation)
                 {
                     r.object.tapped = true;
+                }
+            }
+            if !frame.delved.is_empty() {
+                let mut projected = None;
+                self.cost_departures(&frame.delved, Zone::Exile, &mut |next| {
+                    projected = Some(next.clone());
+                    true
+                });
+                if let Some(next) = projected {
+                    *self = next;
                 }
             }
         }
@@ -243,6 +268,9 @@ impl FundingState<'_> {
         }
     }
     fn install_cost_context(&mut self, context: Option<Box<CostContext>>) {
+        if let Some(context) = &context {
+            self.payment_source = Some(context.source);
+        }
         self.cast_costs = context;
         if self.cast_costs.is_some() {
             self.power_sensitive = true;
@@ -262,6 +290,46 @@ impl FundingState<'_> {
                     });
                 }
             }
+        }
+        if let Some(source) = self.cast_costs.as_ref().map(|context| context.source) {
+            self.project_cost_spell_source(source);
+        }
+    }
+    fn project_cost_spell_source(&mut self, source: ObjectRef) {
+        // CR601.2a precedes mana abilities and every cost payment. A borrowed
+        // proposal has already left its origin, even before the real card has
+        // moved. Excluding it only from Delve leaves it available to a mana
+        // child's external graveyard cost. Keep the bound proposal reference;
+        // this shadow move does not allocate a new live incarnation.
+        if !matches!(self.purpose, mana_lots::Purpose::Spell(_))
+            || self.game.state.objects.get(source.card as usize).is_none()
+            || self.reference(source.card) != source
+        {
+            return;
+        }
+        let index = self
+            .resources
+            .iter()
+            .position(|resource| resource.id == source.card)
+            .unwrap_or_else(|| {
+                let object = self.object(source.card).clone();
+                self.resources.push(Resource {
+                    id: source.card,
+                    object,
+                    attacking: false,
+                });
+                self.resources.len() - 1
+            });
+        let object = &mut self.resources[index].object;
+        if matches!(
+            object.zone,
+            Zone::Hand | Zone::Graveyard | Zone::Exile | Zone::Library
+        ) {
+            if object.zone == Zone::Graveyard {
+                self.graveyard_left[object.owner.index()] = true;
+            }
+            object.zone = Zone::Stack;
+            object.controller = self.actor;
         }
     }
     pub(super) fn cost_object(
@@ -319,6 +387,7 @@ impl FundingState<'_> {
                 self.actor,
                 o,
                 CharacteristicWorld::kinds(self, r.card),
+                CharacteristicWorld::mana_value(self, r.card),
                 self.keywords_for_cost(r.card),
                 self.subtypes(r.card),
                 self.name(r.card),
@@ -494,6 +563,7 @@ impl FundingState<'_> {
                     n.resources[i].object.damage = 0;
                     n.resources[i].object.damaged_this_turn = false;
                     n.resources[i].object.dealt_damage_this_turn = false;
+                    n.resources[i].object.dealt_damage_this_incarnation = false;
                     n.resources[i].object.dealt_combat_damage_this_incarnation = false;
                     n.resources[i].object.deathtouch_since_sba = false;
                     n.resources[i].object.gained_keywords = Keywords::NONE;
@@ -609,6 +679,13 @@ impl FundingState<'_> {
                         if next.complete_cost_rows(&later, &rest) {
                             return true;
                         }
+                    }
+                }
+                CastCostClause::Behold(subtype) => {
+                    if hand_choices::visit_behold_candidates(self, c.actor, subtype, &[], |_| true)
+                        && self.complete_cost_rows(&later, &rest)
+                    {
+                        return true;
                     }
                 }
                 CastCostClause::Casualty(instance) => {
@@ -893,6 +970,9 @@ impl FundingState<'_> {
             && matches!(a.program, [Instruction::AddMana(_)])
     }
     fn mana_clause_payable(&self, c: &CostContext) -> bool {
+        if c.delve_selected && !self.delve_available() {
+            return false;
+        }
         let Some(cost) = c.mana else {
             return false;
         };
@@ -936,6 +1016,20 @@ impl FundingState<'_> {
             return true;
         }
         for resource in &self.resources {
+            let object = self.reference(resource.id);
+            if self.delve_available()
+                && delve::eligible(self, c.actor, object, self.payment_source)
+                && cost.generic > 0
+            {
+                let mut context = c.clone();
+                context.mana.as_mut().unwrap().generic -= 1;
+                context.delve_selected = true;
+                if self.cost_departures(&[object], Zone::Exile, &mut |next| {
+                    next.complete_convoke_clause(&context, later, rest)
+                }) {
+                    return true;
+                }
+            }
             if resource.object.zone != Zone::Battlefield
                 || resource.object.controller != c.actor
                 || resource.object.tapped
@@ -1036,6 +1130,35 @@ impl FundingState<'_> {
         self.resources[index].object.tapped = true;
         true
     }
+    pub(in crate::engine) fn project_delver(&mut self, object: ObjectRef) -> bool {
+        if !self.delve_available()
+            || !delve::eligible(self, self.actor, object, self.payment_source)
+        {
+            return false;
+        }
+        let Some(context) = self.cast_costs.as_mut() else {
+            return false;
+        };
+        let Some(cost) = context.mana.as_mut() else {
+            return false;
+        };
+        let Some(remaining) = cost.generic.checked_sub(1) else {
+            return false;
+        };
+        cost.generic = remaining;
+        context.delve_selected = true;
+        let mut projected = None;
+        self.cost_departures(&[object], Zone::Exile, &mut |next| {
+            projected = Some(next.clone());
+            true
+        });
+        if let Some(next) = projected {
+            *self = next;
+            true
+        } else {
+            false
+        }
+    }
     fn complete_additional(
         &self,
         c: &CostContext,
@@ -1045,6 +1168,24 @@ impl FundingState<'_> {
         let Some(mut spec) = c.additional else {
             return true;
         };
+        if spec.kind == EffectChoiceKind::DiscardHand {
+            // Whole-hand costs select no individual resource and remain payable
+            // after any legal mana children. Project their actual current group
+            // before proving later ordered costs or an outer announcement.
+            let hand = self
+                .resources
+                .iter()
+                .filter_map(|resource| {
+                    (resource.object.zone == Zone::Hand
+                        && resource.object.owner == c.actor
+                        && resource.object.is_card())
+                    .then_some(self.reference(resource.id))
+                })
+                .collect::<Vec<_>>();
+            return self.cost_departures(&hand, Zone::Graveyard, &mut |world| {
+                world.complete_cost_rows(later, remaining)
+            });
+        }
         if let EffectChoiceKind::DiscardOrLife(life) = spec.kind.payment_kind() {
             if !c.exact && self.life >= i128::from(life) {
                 let mut next = self.clone();
@@ -1358,7 +1499,10 @@ impl Game {
         let purpose = self.funding_purpose(&goal);
         let mut world = FundingState::from_game(self, &goal);
         world.set_purpose(purpose);
+        let mana_closed = world.cast_costs.as_ref().is_some_and(|c| c.mana_closed);
         world.install_cost_context(Some(Box::new(CostContext {
+            delve_selected: false,
+            mana_closed,
             actor: goal.actor,
             source: *source,
             source_counter_reservation: Counters::default(),
@@ -1563,10 +1707,7 @@ impl Game {
                     .card,
             ));
         }
-        if a.item
-            .cast
-            .is_some_and(|c| c.method == CastMethod::Harmonize)
-        {
+        if a.item.cast.is_some_and(|c| c.method.is_harmonize()) {
             return self.harmonize_choice_fundable(&a, None)
                 || (0..self.state.objects.len()).any(|id| {
                     self.harmonize_choice_fundable(&a, Some(self.object_ref(id as CardId)))
@@ -1602,6 +1743,8 @@ impl Game {
         world.set_purpose(purpose);
         if world.cast_costs.is_none() {
             world.install_cost_context(Some(Box::new(CostContext {
+                delve_selected: false,
+                mana_closed: false,
                 teammates: Vec::new(),
                 teamwork_exact: false,
                 actor: goal.actor,
@@ -1665,10 +1808,12 @@ impl Game {
                     .card
                     == spell.card
         });
-        let ordered_additional = additional
-            .is_some_and(|a| matches!(a.kind, EffectChoiceKind::DiscardOrLife(_)))
+        let ordered_additional = delve::potential(self)
+            || additional.is_some_and(|a| matches!(a.kind, EffectChoiceKind::DiscardOrLife(_)))
             || additional.is_some()
-                && (spell.card.has_convoke() || improvise::potential(self, spell.card));
+                && (spell.card.has_convoke()
+                    || improvise::potential(self, spell.card)
+                    || delve::potential(self));
         if !ordered_additional
             && extra.is_empty()
             && current.is_none_or(|a| a.casualty.is_none() && a.cast_costs.is_none())
@@ -1749,7 +1894,10 @@ impl Game {
                         paid: false,
                     });
                 }
-                if spell.card.has_convoke() || improvise::potential(self, spell.card) {
+                if spell.card.has_convoke()
+                    || improvise::potential(self, spell.card)
+                    || delve::potential(self)
+                {
                     clauses.push(CastCostRow {
                         clause: CastCostClause::Mana,
                         paid: false,
@@ -1764,16 +1912,22 @@ impl Game {
                     }
                 }
                 let context = CostContext {
+                    delve_selected: false,
+                    mana_closed: current
+                        .and_then(|a| a.cast_costs.as_ref())
+                        .is_some_and(|c| c.mana_closed),
                     teammates: current
                         .and_then(|a| a.cast_costs.as_ref())
                         .map_or_else(Vec::new, |c| c.teammates.clone()),
                     teamwork_exact: false,
                     actor: goal.actor,
-                    mana: (spell.card.has_convoke() || improvise::potential(self, spell.card))
-                        .then_some(ManaCost {
-                            colored: attempt.required,
-                            generic: attempt.generic,
-                        }),
+                    mana: (spell.card.has_convoke()
+                        || improvise::potential(self, spell.card)
+                        || delve::potential(self))
+                    .then_some(ManaCost {
+                        colored: attempt.required,
+                        generic: attempt.generic,
+                    }),
                     source,
                     source_counter_reservation: Counters::default(),
                     clauses,
@@ -1816,7 +1970,10 @@ impl Game {
     ) -> bool {
         let mut world = FundingState::from_game(self, &goal);
         world.set_purpose(purpose);
+        let mana_closed = world.cast_costs.as_ref().is_some_and(|c| c.mana_closed);
         world.install_cost_context(Some(Box::new(CostContext {
+            delve_selected: false,
+            mana_closed,
             actor: goal.actor,
             source,
             source_counter_reservation: Counters::default(),

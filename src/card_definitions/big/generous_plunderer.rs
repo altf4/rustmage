@@ -11,13 +11,12 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             },
             targets: TargetPlan::NONE,
             program: &[
-                Instruction::May { skip: 2 },
-                Instruction::CreateTokens {
+                Instruction::May { skip: 1 },
+                Instruction::CreateTokensReflexive {
                     token: Card(5302),
                     amount: 1,
-                    tapped: false,
+                    ability: 1,
                 },
-                Instruction::Reflexive { ability: 1 },
             ],
         },
         TriggeredAbility {

@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "status": "Two previously counted cards repaired and restored after actual edge and ordinary source proofs; no net new card completion",
+  "cards": [
+    {
+      "name": "Breaching Dragonstorm",
+      "definition": "src/card_definitions/tdm/breaching_dragonstorm.rs",
+      "definition_sha256": "02cafbd76185dee0c2646c0fbe967d3fc3b109e7b1b59893be449cd5639135de",
+      "root_report": "<cache>/rustmage-tdm/root-dragonstorm-restorations/breaching/native.json",
+      "root_report_sha256": "971301b2dcb0b871475ae33d3456bea37853fa7b236310267e4f61bed241eaa3",
+      "root_cases": 2,
+      "compile_seconds": 4.52585606998764,
+      "execution_seconds": 0.0331195070175454
+    },
+    {
+      "name": "Roiling Dragonstorm",
+      "definition": "src/card_definitions/tdm/roiling_dragonstorm.rs",
+      "definition_sha256": "2af9c3ebad813f5d13c2fae4e86927206749b68a8d3ad654700ea333eb27b655",
+      "root_report": "<cache>/rustmage-tdm/root-dragonstorm-restorations/roiling/native.json",
+      "root_report_sha256": "678897b609bcaf8bccd44e9f22ff7b56c78ca2bb7719f254fe11638936fbca74",
+      "root_cases": 1,
+      "compile_seconds": 1.2193454559892416,
+      "execution_seconds": 0.03440280299400911
+    }
+  ],
+  "typed_change": "Use existing SubtypeEntersYou(\"Dragon\"), which filters every entrant including the source. PermanentEntersYou intentionally means explicit self OR another matching entrant and must retain its old engine semantics.",
+  "engine_change": false,
+  "gated_actual_edge_reports": [
+    "<cache>/rustmage-tdm/post85-gated-families-1793821082714343829/a_g/native.json",
+    "<cache>/rustmage-tdm/post85-gated-families-1793821082714343829/g_s_additional/native.json"
+  ],
+  "ordinary_author_reports": [
+    "<cache>/rustmage-tdm/old-dragonstorm-restoration-1793821631385562618/a_g/native.json",
+    "<cache>/rustmage-tdm/old-dragonstorm-restoration-1793821631385562618/g_s/native.json"
+  ],
+  "actual_edge_scope": "Copy each actual definition with an explicit creature form; only an external typed subtype provider changes whether it is a Dragon. Own-provider positive versus opponent-provider negative proves exact self-return, without overlaying actual card behavior.",
+  "count_history": {
+    "before_hold": 187,
+    "during_hold": 185,
+    "after_restoration": 187,
+    "new_cards_added": 0
+  },
+  "new_prepared_cards": "Remain gated while engine86 captures cast-event mana value correctly."
+}

@@ -142,6 +142,7 @@ fn bitter_triumph_funding_preserves_returned_discard_and_branching() {
         // Sacrificing the linked Goblin for Bolg's mana returns a card to hand.
         // Funding must explore that line before rejecting the additional cost.
         g.state.exile_links.push(ExileLink {
+            ability_origin: None,
             source: g.object_ref(goblin),
             exiled: g.object_ref(discard),
             return_zone: Zone::Hand,

@@ -37,6 +37,9 @@ pub(super) struct EntryMove {
     pub life_bonus: Option<(Player, &'static str, u16)>,
     /// Counters put on this object as part of entering by the surrounding effect.
     pub effect_counter: Option<(CounterKind, u64)>,
+    pub effect_counters: &'static [(CounterKind, u64)],
+    /// A subsequent placement event after successful entry observers have frozen facts.
+    pub post_entry_counters: Option<(Player, &'static [(CounterKind, u64)])>,
     /// Timestamped ability grant after only this move actually enters.
     pub keywords_after: Option<(ObjectRef, Keywords)>,
     /// Source-independent abilities granted only after this actual successful return.
@@ -93,6 +96,7 @@ pub(super) struct EntryBatch {
     pub atomic_cost: Option<Box<AtomicCostCheckpoint>>,
     pub temporary_copy: Option<Box<SpellView>>,
     pub delayed_sacrifice: Option<Box<SpellView>>,
+    pub delayed_sacrifice_own_end: bool,
     pub captures_result: bool,
     pub copying: bool,
     pub discard_context: Option<discard_events::DiscardContext>,
@@ -185,6 +189,8 @@ impl EntryMove {
             suspect_after: false,
             life_bonus: None,
             effect_counter: None,
+            effect_counters: &[],
+            post_entry_counters: None,
             keywords_after: None,
             attack_trigger_after: None,
             equipment_after: false,
@@ -365,6 +371,15 @@ impl Game {
         controller: Player,
         target: ObjectRef,
     ) -> bool {
+        self.aura_can_enchant_with_colors(aura, controller, aura.colors(), target)
+    }
+    pub(super) fn aura_can_enchant_with_colors(
+        &self,
+        aura: Card,
+        controller: Player,
+        colors: u8,
+        target: ObjectRef,
+    ) -> bool {
         let Some(spec) = aura.aura() else {
             return false;
         };
@@ -372,7 +387,7 @@ impl Game {
             && self.object_ref(target.card) == target
             && !self
                 .keywords(target.card)
-                .contains(Keywords::PROTECTION_EVERYTHING)
+                .protects_from(colors, aura.kind_mask())
             && ability_world::aura_kind_matches(self, aura, target.card)
             && match spec.relation {
                 0 => self.state.objects[target.card as usize].controller == controller,
@@ -384,32 +399,76 @@ impl Game {
         EntryMove::from_view(self.object_view(id), destination, tapped)
     }
     pub(super) fn stage_entries(&mut self, moves: Vec<EntryMove>, shuffle_after: Option<Player>) {
-        self.stage_entries_inner(moves, shuffle_after, None, None, None, None);
+        self.stage_entries_inner(moves, shuffle_after, None, None, None, None, false);
     }
     pub(super) fn stage_discard_entries(
         &mut self,
         moves: Vec<EntryMove>,
         context: discard_events::DiscardContext,
     ) {
-        self.stage_entries_inner(moves, None, Some(context), None, None, None);
+        self.stage_entries_inner(moves, None, Some(context), None, None, None, false);
     }
     pub(super) fn stage_temporary_copy_entries(&mut self, moves: Vec<EntryMove>, item: &SpellView) {
-        self.stage_entries_inner(moves, None, None, Some(Box::new(item.clone())), None, None);
+        self.stage_entries_inner(
+            moves,
+            None,
+            None,
+            Some(Box::new(item.clone())),
+            None,
+            None,
+            false,
+        );
     }
     pub(super) fn stage_atomic_cost_entries(
         &mut self,
         moves: Vec<EntryMove>,
         checkpoint: AtomicCostCheckpoint,
     ) {
-        self.stage_entries_inner(moves, None, None, None, Some(Box::new(checkpoint)), None);
+        self.stage_entries_inner(
+            moves,
+            None,
+            None,
+            None,
+            Some(Box::new(checkpoint)),
+            None,
+            false,
+        );
     }
     pub(super) fn stage_entries_with_delayed_sacrifice(
         &mut self,
         moves: Vec<EntryMove>,
         item: &SpellView,
     ) {
-        self.stage_entries_inner(moves, None, None, None, None, Some(Box::new(item.clone())));
+        self.stage_entries_inner(
+            moves,
+            None,
+            None,
+            None,
+            None,
+            Some(Box::new(item.clone())),
+            false,
+        );
     }
+    pub(super) fn stage_temporary_token_entries(
+        &mut self,
+        moves: Vec<EntryMove>,
+        item: &SpellView,
+        own_end: bool,
+    ) {
+        self.stage_entries_inner(
+            moves,
+            None,
+            None,
+            None,
+            None,
+            Some(Box::new(item.clone())),
+            own_end,
+        );
+    }
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "Cold entry transactions retain independent optional contexts and one explicit sacrifice timing flag"
+    )]
     fn stage_entries_inner(
         &mut self,
         moves: Vec<EntryMove>,
@@ -418,6 +477,7 @@ impl Game {
         temporary_copy: Option<Box<SpellView>>,
         atomic_cost: Option<Box<AtomicCostCheckpoint>>,
         delayed_sacrifice: Option<Box<SpellView>>,
+        delayed_sacrifice_own_end: bool,
     ) {
         if atomic_cost.is_none() && self.replay_frozen_mana_entries() {
             return;
@@ -448,6 +508,7 @@ impl Game {
             atomic_cost,
             temporary_copy,
             delayed_sacrifice,
+            delayed_sacrifice_own_end,
             captures_result,
             copying: true,
             discard_context,
@@ -660,6 +721,18 @@ impl Game {
                 movement.counters.add(kind, amount);
             }
         }
+        if movement.destination == Zone::Battlefield
+            && movement.cast_origin == Some(Zone::Graveyard)
+        {
+            for &(kind, amount) in movement.before.card.graveyard_cast_entry_counters() {
+                movement.counters.add(kind, amount);
+            }
+        }
+        if movement.destination == Zone::Battlefield {
+            for &(kind, amount) in movement.effect_counters {
+                movement.counters.add(kind, amount);
+            }
+        }
         if movement.destination == Zone::Battlefield && movement.cast_origin == Some(Zone::Hand) {
             for &(kind, amount) in movement.before.card.hand_cast_entry_counters() {
                 movement.counters.add(kind, amount);
@@ -859,6 +932,7 @@ impl Game {
                 .unwrap_or(&movement.before)
         }));
         let mut events = Vec::new();
+        let mut post_counter_results = Vec::new();
         let mut attachments = Vec::new();
         let mut role_results = Vec::new();
         let mut suspect_results = Vec::new();
@@ -965,6 +1039,16 @@ impl Game {
                 } else if before_battle {
                     self.clear_battle_protector(event.after);
                 }
+            }
+            if event.moved
+                && event.destination == Zone::Battlefield
+                && let Some((player, amounts)) = movement.post_entry_counters
+            {
+                let mut amount = Counters::default();
+                for &(kind, n) in amounts {
+                    amount.add(kind, n);
+                }
+                post_counter_results.push((event.after, amount, player));
             }
             if event.moved
                 && event.destination == Zone::Battlefield
@@ -1099,6 +1183,10 @@ impl Game {
             }
             events.push(event);
         }
+        // Defer only fixed Role cohort timestamps until the surrounding entry
+        // timestamp finalization has finished; that phase may defer to zero or
+        // retimestamp individual keyword-counter entrants.
+        let mut fixed_role_attachments = Vec::new();
         // Continuous attachment effects already exist when entry events inspect the world.
         for (source, target) in attachments {
             self.state.objects[source.card as usize].attached_to = Some(target);
@@ -1108,8 +1196,13 @@ impl Game {
                 .role()
                 .is_some()
             {
-                let timestamp = self.next_role_timestamp();
-                self.record_role(source, target, timestamp);
+                let object = &self.state.objects[source.card as usize];
+                if object.is_token() && object.copy_kind == CopyKind::None {
+                    fixed_role_attachments.push((source, target));
+                } else {
+                    let timestamp = self.next_role_timestamp();
+                    self.record_role(source, target, timestamp);
+                }
             }
         }
         if !timestamp_cards.is_empty() {
@@ -1121,6 +1214,15 @@ impl Game {
                 {
                     self.assign_static_source_timestamp(event.after);
                 }
+            }
+        }
+        // As on the direct factory path, simultaneously attached fixed Roles
+        // share their survivor-choice timestamp. Assign it after all deferred
+        // sources (including a Role's own keyword counters), before observers.
+        if !fixed_role_attachments.is_empty() {
+            let timestamp = self.next_role_timestamp();
+            for (source, target) in fixed_role_attachments {
+                self.record_role(source, target, timestamp);
             }
         }
         if !hand_cards.is_empty() {
@@ -1203,7 +1305,12 @@ impl Game {
                 .filter(|event| event.moved && event.destination == Zone::Battlefield)
                 .map(|event| event.after)
                 .collect();
-            self.register_delayed_sacrifice(item, recipients);
+            self.register_delayed_sacrifice_when(
+                item,
+                recipients,
+                false,
+                batch.delayed_sacrifice_own_end,
+            );
         }
         if let Some(context) = batch.discard_context {
             self.finish_discard_events(&events, context);
@@ -1255,6 +1362,35 @@ impl Game {
                 self.forget_library_top(player);
             }
             self.shuffle_library_cards(player);
+        }
+        // A separate counter event starts only after all entry observers retained
+        // their pre-counter facts. The exact successful results survive choices.
+        if !post_counter_results.is_empty() {
+            let placements = post_counter_results
+                .into_iter()
+                .filter_map(|(object, amount, placed_by)| {
+                    if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {
+                        return None;
+                    }
+                    let o = &self.state.objects[object.card as usize];
+                    Some(replacements::CounterPlacement {
+                        object,
+                        amount,
+                        placed_by,
+                        card: o.card,
+                        owner: o.owner,
+                        controller: o.controller,
+                        protector: self.battle_protector(object),
+                        subtypes: self.granted_subtypes(object.card),
+                        kind: self.current_kinds(object.card),
+                        power: self.stats(object.card).power,
+                        effect: true,
+                        entry_index: None,
+                        private: false,
+                    })
+                })
+                .collect();
+            self.stage_counter_placements(placements, replacements::ResumeMode::Program);
         }
     }
     /// Settle transactions until an actual player choice blocks. Call at the outer
@@ -1765,6 +1901,7 @@ impl Game {
                             matches!(
                                 f,
                                 crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(_)
+                                    | crate::cards::StaticAbilityFragment::ControlledSubtypeEntryCounters { .. }
                                     | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. }
                             )
                         })
@@ -1806,6 +1943,23 @@ impl Game {
                                 && movement.controller == source.controller
                                 && movement.before.reference != self.object_ref(id)
                                 && let Some(amount) = self.entry_counter_bonus_by_mana_value(movement, filter, maximum, at_most, above)
+                            {
+                                movement.counters.add(kind, amount);
+                            }
+                        }
+                    }
+                    if let crate::cards::StaticAbilityFragment::ControlledSubtypeEntryCounters {
+                        subtype,
+                        kind,
+                        amount,
+                    } = *fragment
+                        && self.continuous_fragment_available(id, |f| std::ptr::eq(f, fragment))
+                    {
+                        for movement in moves.iter_mut() {
+                            if !movement.skipped
+                                && movement.destination == Zone::Battlefield
+                                && movement.controller == source.controller
+                                && self.entry_replacement_has_subtype(movement, subtype)
                             {
                                 movement.counters.add(kind, amount);
                             }

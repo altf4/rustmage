@@ -1,0 +1,2692 @@
+{
+  "schema": 1,
+  "status": "Focused candidate passes; requires two independent published-head nonauthor reviews and assembled integration/schema/release validation.",
+  "scope": [
+    "B:chosen_source_prevention complete finite semantic source universe",
+    "B:mass_in_place_copy simultaneous world projection",
+    "Generic reflexive action subjects and waiting-effect exact lifetimes required by CR609.7a"
+  ],
+  "base": "11403d9e84ad3c899aca9d7e0dc82304ad1e98bd",
+  "tracking_issue": "https://github.com/altf4/rustmage/issues/570",
+  "tdm_card_behavior_or_admission_changes": false,
+  "existing_typed_compatibility_consumers": [
+    "Ancestor Dragon",
+    "Armasaur Guide",
+    "Seasoned Consultant",
+    "Meddling Youths",
+    "Jolene, Plundering Pugilist",
+    "Generous Plunderer"
+  ],
+  "source_inputs": [
+    {
+      "path": "crates/engine/src/cards.rs",
+      "sha256": "508cb9d8b58e00958438bf5301d6690a0ced8c9116cd6355847347e3de2ec08e"
+    },
+    {
+      "path": "crates/engine/src/engine.rs",
+      "sha256": "921306c0b61dc6226fa2d04862649bfe0fff55f7973479f4a575e5a91ca6b37b"
+    },
+    {
+      "path": "crates/engine/src/engine_ability_target_events.rs",
+      "sha256": "2c240e851e0239d46d1821f9c9141df09d780b5b92f238624b200456d3179275"
+    },
+    {
+      "path": "crates/engine/src/engine_ability_timeline.rs",
+      "sha256": "49c04db38f3a8a183d97a9693c8d4a14eb514cbde3f5c78f3b1ec8eb55042f55"
+    },
+    {
+      "path": "crates/engine/src/engine_activation_observers.rs",
+      "sha256": "72579f1f7e396d5bcd040f1b5f4d1718c525f31b3f77ffd472418b93eec6bdf7"
+    },
+    {
+      "path": "crates/engine/src/engine_additional_costs.rs",
+      "sha256": "e171f835f2bc44abc9ca7af3dbac533fba6a21042055b51cb1cf6c4c11b9a54e"
+    },
+    {
+      "path": "crates/engine/src/engine_combat_schedule.rs",
+      "sha256": "7d709be873cf50e559987080914f7f6cf39b87ea408b8b02cbfa7c00375ef48c"
+    },
+    {
+      "path": "crates/engine/src/engine_damage_triggers.rs",
+      "sha256": "ef3e03aaabe4ac66ec31a05df6fed331ab8c0a9de3e09ea3ecaf415bbfea4e8a"
+    },
+    {
+      "path": "crates/engine/src/engine_death_exile.rs",
+      "sha256": "6e6a91355dc8bf58abd9201d335776234b56ad1de4cf6c858a46ba9b2562b998"
+    },
+    {
+      "path": "crates/engine/src/engine_death_return.rs",
+      "sha256": "01e99a5c2f4de3cdacf8c3e982700c321da9b488931e6bf4103de6e4e7497e89"
+    },
+    {
+      "path": "crates/engine/src/engine_delayed_target_events.rs",
+      "sha256": "927e8b6cc0484723f9c759cd4fcd40d9f1dc0672198fd9aed070b65971054a0b"
+    },
+    {
+      "path": "crates/engine/src/engine_discard_events.rs",
+      "sha256": "1821214ee1a4a6f369845c12482e1cf855bd885b48d18487f781befbc6f181ad"
+    },
+    {
+      "path": "crates/engine/src/engine_draw_events.rs",
+      "sha256": "257a1334a1a491a39ebe2a377e18599d029c4fa2e03d8a47fafce7dd97579d15"
+    },
+    {
+      "path": "crates/engine/src/engine_earthbend.rs",
+      "sha256": "7f5070f0ad15e6f908d7e187fb836c3351e92213fc22a1af39167eba39b05c84"
+    },
+    {
+      "path": "crates/engine/src/engine_entering_copies.rs",
+      "sha256": "2e6b409d593ac64df9cfb227ec03df5b0e854729a00a4cd2427d4634fd065aff"
+    },
+    {
+      "path": "crates/engine/src/engine_equipment.rs",
+      "sha256": "242cc106b3e6414e8334c9ea1a39a02c63f5c93161c032e09b09e3ffdd38c593"
+    },
+    {
+      "path": "crates/engine/src/engine_event_counter_core.rs",
+      "sha256": "a64791691b53db738ec4a30c103b7ad52259b60df6bd138eec6cf9ac9bc89ee9"
+    },
+    {
+      "path": "crates/engine/src/engine_event_objects.rs",
+      "sha256": "7a79bd94235374ba8548b2f1132398a1d52d35199bab2fa51f1891f91aa32c45"
+    },
+    {
+      "path": "crates/engine/src/engine_exhaust.rs",
+      "sha256": "519db2e7d85de8b8c7b6e1ae4c43123fce66697189f86d284a22a1ee674a178d"
+    },
+    {
+      "path": "crates/engine/src/engine_exile.rs",
+      "sha256": "fabe5b40bf417f0c0a1cbaf81f74dcd367b0650e854725513cebb2c0119eb9ab"
+    },
+    {
+      "path": "crates/engine/src/engine_explore.rs",
+      "sha256": "6b59edea8fa5e2d6b2d7e8cd85f0e9e0d422fae0de5b1a3bfd9a6c9f59cfd777"
+    },
+    {
+      "path": "crates/engine/src/engine_forage.rs",
+      "sha256": "0d3615afbaecbf5b5d6d7c6101be8124eb677560844a70a753fb405ffc3615c5"
+    },
+    {
+      "path": "crates/engine/src/engine_growth_cost.rs",
+      "sha256": "071420d086f643a86ee1e43571f1d1d4ded6d9518edf28b61c9c11c797c9fdbc"
+    },
+    {
+      "path": "crates/engine/src/engine_mana_lots.rs",
+      "sha256": "6de9c9cfbac9eb3fcbfec6e2a4cf9425152c60e0b01714a2fdd072438ce3ec27"
+    },
+    {
+      "path": "crates/engine/src/engine_mandatory_loops.rs",
+      "sha256": "9acf4273b1f3b82f0ad2f416638d987d3e181552ad3fcbb73b163d046e4d938b"
+    },
+    {
+      "path": "crates/engine/src/engine_manifest.rs",
+      "sha256": "46e7cc2fb94214c8145501343e3e1b6645b4de623c4219908c7e6376e227ebe8"
+    },
+    {
+      "path": "crates/engine/src/engine_milling.rs",
+      "sha256": "02e648fe6b1a31c913c3a1d6a72234cd2e4b0657d1afb5c9c468be79959b039a"
+    },
+    {
+      "path": "crates/engine/src/engine_paradigm.rs",
+      "sha256": "4ac3c865c64041fe8f26912881454dd931166a45f265da5f65cb1e9b6ee0c794"
+    },
+    {
+      "path": "crates/engine/src/engine_programs.rs",
+      "sha256": "6efa69952c6e8e932c34ae36db4075ee0ea7abea215e6976b1d85b371519abad"
+    },
+    {
+      "path": "crates/engine/src/engine_replacements.rs",
+      "sha256": "c71987c2a58b036d1f47833b6ca151b91f12a3fd28ab37ac893915f594b48c2f"
+    },
+    {
+      "path": "crates/engine/src/engine_resolution_mana.rs",
+      "sha256": "155221bf1bd67ec0865fb09275e8222155b974c4baca5a2919ed10ce505b7716"
+    },
+    {
+      "path": "crates/engine/src/engine_return_attachment.rs",
+      "sha256": "29ffcf8a686b73c42d567d98ca674ff9aae4389429fb48e5a4b9c50830662e54"
+    },
+    {
+      "path": "crates/engine/src/engine_return_links.rs",
+      "sha256": "cf04ba4db2f479ec389bb118be5c136edcb714040d41215bfd91f35e3f7449f1"
+    },
+    {
+      "path": "crates/engine/src/engine_roles.rs",
+      "sha256": "fd8b9c6739594ad1fdc8c7c479457134d92d613f72bf01de21ba6602e1cdcc5e"
+    },
+    {
+      "path": "crates/engine/src/engine_sba.rs",
+      "sha256": "72cc47da7e12abda4b72be6fe6df755ecea55bcfac8e0c59bdd7cdf756f78d4c"
+    },
+    {
+      "path": "crates/engine/src/engine_sos_graveyard.rs",
+      "sha256": "d6b9d598a469e5600ebaf97a0a624c1fdea63c4da8e16c7d94bfef9210626523"
+    },
+    {
+      "path": "crates/engine/src/engine_source_prevention.rs",
+      "sha256": "375a18bea857e374c4db03aa3746563dfdede0eca4c5dd1293f845c00098b2e8"
+    },
+    {
+      "path": "crates/engine/src/engine_stack_copies.rs",
+      "sha256": "e5bdee3cee752898be5435735afbc8d9d5fae249b3b58558402f393202ca5bb7"
+    },
+    {
+      "path": "crates/engine/src/engine_stats.rs",
+      "sha256": "5f585656a401684871433911500b26955022ec8fbca9300dfacb10aa9274f8cf"
+    },
+    {
+      "path": "crates/engine/src/engine_targeting.rs",
+      "sha256": "f729c7af18ac18ef1a17ae310574540724d8971b3cd2b20ee1e7ebd54948117f"
+    },
+    {
+      "path": "crates/engine/src/engine_temporary_abilities.rs",
+      "sha256": "68598c5ae4e24b586baf7ce2606dda25751fec89ba4298460dea47fd2dc15235"
+    },
+    {
+      "path": "crates/engine/src/engine_temporary_copy.rs",
+      "sha256": "42aa3917c798d6eea580d2378625e6540b9c2f458e7e4aeceeb49efeb39966d3"
+    },
+    {
+      "path": "crates/engine/src/engine_turn_callbacks.rs",
+      "sha256": "d2ab7e76354290975395a48ec8d9a4dc4ddad2b671c37930c57c2773bc47ef01"
+    },
+    {
+      "path": "crates/engine/src/engine_upkeep_tokens.rs",
+      "sha256": "79d53cc25f2ad7c57cc3df138a99ae3082772dca94082b71d50b89cf3f43bc4a"
+    },
+    {
+      "path": "crates/engine/src/policy.rs",
+      "sha256": "6506ed80a0553a593a96392b4adc5086f2bd3713c20ebcd0182233ce2f64f7de"
+    },
+    {
+      "path": "src/card_definitions/big/generous_plunderer.json",
+      "sha256": "fac9890d7640211e05916b474824904e6684783ec930aed1090a22dd168541a5"
+    },
+    {
+      "path": "src/card_definitions/big/generous_plunderer.rs",
+      "sha256": "4a4979004e2b5c1159e503ea1ae3fa354245c33e4a794f07ed1e2f08564ca2e1"
+    },
+    {
+      "path": "src/card_definitions/fdn/ancestor_dragon.json",
+      "sha256": "497feea13779d1ffb593995e79e189bdf1cc2ff827e6b288a248e2b60c3f9b41"
+    },
+    {
+      "path": "src/card_definitions/fdn/ancestor_dragon.rs",
+      "sha256": "45b330f73c214571b2a816512bb0f4a7f91f83cd866910eac2d15677c93b26b5"
+    },
+    {
+      "path": "src/card_definitions/fdn/armasaur_guide.json",
+      "sha256": "ef4b9d4feacac7b532d38d128c889e3d708677c30d8433e1ceebe4f4635f0748"
+    },
+    {
+      "path": "src/card_definitions/fdn/armasaur_guide.rs",
+      "sha256": "37b84b906a29bca57fce176155130baf200ae86d697a554574752fe1a32f0b4e"
+    },
+    {
+      "path": "src/card_definitions/mkm/meddling_youths.json",
+      "sha256": "c6ca9826243ae5777378453584c965b4acd4e537af890c5106f30b31f54e6378"
+    },
+    {
+      "path": "src/card_definitions/mkm/meddling_youths.rs",
+      "sha256": "e2de68a0a5a0c419665cf96eab13b34a0398e50b3fc1e828e715b6ff3cf72982"
+    },
+    {
+      "path": "src/card_definitions/mkm/seasoned_consultant.json",
+      "sha256": "d1a16b681e81bb3bc835c5e566a6d2e840d046445d9a9c1c37da6808969414cd"
+    },
+    {
+      "path": "src/card_definitions/mkm/seasoned_consultant.rs",
+      "sha256": "0567b503362621c6b4ce7375c6336e899700e70b6fd21d3c5fb12731d67a7501"
+    },
+    {
+      "path": "src/card_definitions/otj/jolene_plundering_pugilist.json",
+      "sha256": "43aa1a2f8452d2b239515c81f5b1807dfae761fcf25f0153f8fb0e5495ed7543"
+    },
+    {
+      "path": "src/card_definitions/otj/jolene_plundering_pugilist.rs",
+      "sha256": "30d9fdf2efd17f15b19b1e72432133edbfb86a922fd362a9a29ea883e76413b1"
+    },
+    {
+      "path": "tests/dft_trigger_facts_engine.rs",
+      "sha256": "44ed2b9ac67da6531cf070e59960090cb575083b3bf04a24d72d3feb16e493d2"
+    },
+    {
+      "path": "tests/tdm_remaining_world_rules.rs",
+      "sha256": "c5ee0388563b9114c5faf713e31f0eccbfb11dc13f4501a80024b732a588f1c3"
+    }
+  ],
+  "source_freeze": {
+    "files": 12907,
+    "manifest": {
+      "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/source-hashes.json",
+      "sha256": "4485e968666223b1629df3cfb165a9b83fccd3e20713913bb30240548e2f8480"
+    },
+    "patch": {
+      "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/source.patch",
+      "sha256": "50a83ad35538f9e8ac546d5a835b7257ec3299965bf51ce6a3d2c298c4162e66"
+    },
+    "focused_fixture": {
+      "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/test-source.rs",
+      "sha256": "c5ee0388563b9114c5faf713e31f0eccbfb11dc13f4501a80024b732a588f1c3"
+    },
+    "all_inputs_unchanged_at_every_terminal_boundary": true,
+    "docs_written_only_after_all_consuming_processes_terminated": true
+  },
+  "finite_audit": {
+    "artifact": {
+      "path": "docs/tdm-semantic-reference-audit.json",
+      "sha256": "e7ab016be868b46e701ff66dad7a24c859dd08f8040c0852866492455cdedd11"
+    },
+    "union_conditions": 145,
+    "dispatch_and_action_rows": "All six original independent read-only inventories embedded with original pins and explicit final qualified corrections. Root-only trigger variants are identified for integrator composition."
+  },
+  "authority": {
+    "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "complete_additional_java_bodies_read": [
+      {
+        "path": "Mage.Sets/src/mage/cards/g/GenerousPlunderer.java",
+        "sha256": "e86560702dbd8825fa29ff3ecaccd2776056586682cba0c40bb517433ea07a1f"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/f/FleetingFlight.java",
+        "sha256": "94ab8e84a913b4ac5ad42fa72ab6a915c4dcb7cc0bfe22dad6a337cee2d459b2"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/p/PyromancersGoggles.java",
+        "sha256": "8f5a73eee1702c8da987831ea8536befdc677861c39fc973ae438ed239c11318"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/r/RestorationSeminar.java",
+        "sha256": "4fb1e4411d11f43059e55112c8f02b95edd7aca28c706dae4d5d4d3a7d2fd6c4"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/e/EchocastingSymposium.java",
+        "sha256": "241c74da0338c9c3a429e6d47ef11f65984b7362988acb28e13e6113847295cf"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/t/TorchTheTower.java",
+        "sha256": "9904dd90a5f390438004d706e28d1dbc34c9d74493bb666e01f16b345baad057"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/s/ScorchingDragonfire.java",
+        "sha256": "ca74e67e374dc735a855434cdbc7afbdbabebd661a44e224425132db3104fbb1"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/keyword/ParadigmAbility.java",
+        "sha256": "77be2914f9efdc0eaa28dd563c081ee4cf47492bceff853a5fec90b81e003521"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+        "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetIfDiesEffect.java",
+        "sha256": "db2301f8fef9f5ce4777ebcc942f426194f6cd372156955efb846eeeed3b9c03"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/common/replacement/DealtDamageToCreatureBySourceDies.java",
+        "sha256": "4bc2baaa6f939bdcb4f3a943ba75326557b26aae1f74832c52c98bab08b1886e"
+      }
+    ],
+    "oracle_records": [
+      {
+        "oracle_id": "d88c3554-18db-4e5e-a979-2402990a0311",
+        "name": "Echocasting Symposium",
+        "layout": "normal",
+        "mana_cost": "{4}{U}{U}",
+        "cmc": 6.0,
+        "type_line": "Sorcery \u2014 Lesson",
+        "oracle_text": "Target player creates a token that's a copy of target creature you control.\nParadigm (Then exile this spell. After you first resolve a spell with this name, you may cast a copy of it from exile without paying its mana cost at the beginning of each of your first main phases.)",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [
+          "Paradigm"
+        ],
+        "all_parts": [
+          {
+            "id": "4e119457-948d-4ef8-8c27-59fa675f766f",
+            "component": "token",
+            "name": "Copy",
+            "type_line": "Token"
+          },
+          {
+            "id": "72a21e89-5988-4b8b-8e67-a915e74a54e2",
+            "component": "combo_piece",
+            "name": "Echocasting Symposium",
+            "type_line": "Sorcery \u2014 Lesson"
+          }
+        ],
+        "reference_printing": {
+          "id": "5d7086a7-dc42-468a-a2cf-a6f89030f947",
+          "set": "sos",
+          "collector_number": "44",
+          "released_at": "2026-04-24"
+        }
+      },
+      {
+        "oracle_id": "6336401f-4e2d-4ebe-8c5b-24aa6f516abf",
+        "name": "Fleeting Flight",
+        "layout": "normal",
+        "mana_cost": "{W}",
+        "cmc": 1.0,
+        "type_line": "Instant",
+        "oracle_text": "Put a +1/+1 counter on target creature. It gains flying until end of turn. Prevent all combat damage that would be dealt to it this turn.",
+        "colors": [
+          "W"
+        ],
+        "color_identity": [
+          "W"
+        ],
+        "keywords": [],
+        "reference_printing": {
+          "id": "55139100-9342-41fd-b10a-8e9932e605d4",
+          "set": "fdn",
+          "collector_number": "13",
+          "released_at": "2024-11-15"
+        }
+      },
+      {
+        "oracle_id": "91c835d1-22ca-4c90-9ba6-c8e01bbc0347",
+        "name": "Generous Plunderer",
+        "layout": "normal",
+        "mana_cost": "{1}{R}",
+        "cmc": 2.0,
+        "type_line": "Creature \u2014 Human Rogue",
+        "oracle_text": "Menace\nAt the beginning of your upkeep, you may create a Treasure token. When you do, target opponent creates a tapped Treasure token.\nWhenever this creature attacks, it deals damage to defending player equal to the number of artifacts they control.",
+        "power": "2",
+        "toughness": "2",
+        "colors": [
+          "R"
+        ],
+        "color_identity": [
+          "R"
+        ],
+        "keywords": [
+          "Treasure",
+          "Menace"
+        ],
+        "all_parts": [
+          {
+            "id": "7ec6f053-96f7-4e57-b2eb-4e7699a40a4f",
+            "component": "token",
+            "name": "Treasure",
+            "type_line": "Token Artifact \u2014 Treasure"
+          },
+          {
+            "id": "393bf5fc-0ad2-4116-83b4-346d61ac2911",
+            "component": "combo_piece",
+            "name": "Generous Plunderer",
+            "type_line": "Creature \u2014 Human Rogue"
+          }
+        ],
+        "reference_printing": {
+          "id": "4c6cf93a-d073-48ac-88db-c46bf3e10beb",
+          "set": "big",
+          "collector_number": "11",
+          "released_at": "2024-04-19"
+        }
+      },
+      {
+        "oracle_id": "f76bcbfe-483f-4e63-8425-76feca1abf3e",
+        "name": "Pyromancer's Goggles",
+        "layout": "normal",
+        "mana_cost": "{5}",
+        "cmc": 5.0,
+        "type_line": "Legendary Artifact",
+        "oracle_text": "{T}: Add {R}. When that mana is spent to cast a red instant or sorcery spell, copy that spell and you may choose new targets for the copy.",
+        "colors": [],
+        "color_identity": [
+          "R"
+        ],
+        "keywords": [],
+        "produced_mana": [
+          "R"
+        ],
+        "reference_printing": {
+          "id": "f340d8a4-196a-4433-807c-b7124e96e44f",
+          "set": "fdn",
+          "collector_number": "677",
+          "released_at": "2024-11-15"
+        }
+      },
+      {
+        "oracle_id": "fd0a27a9-7d7e-4a16-9dd0-0715e6c97b36",
+        "name": "Restoration Seminar",
+        "layout": "normal",
+        "mana_cost": "{5}{W}{W}",
+        "cmc": 7.0,
+        "type_line": "Sorcery \u2014 Lesson",
+        "oracle_text": "Return target nonland permanent card from your graveyard to the battlefield.\nParadigm (Then exile this spell. After you first resolve a spell with this name, you may cast a copy of it from exile without paying its mana cost at the beginning of each of your first main phases.)",
+        "colors": [
+          "W"
+        ],
+        "color_identity": [
+          "W"
+        ],
+        "keywords": [
+          "Paradigm"
+        ],
+        "reference_printing": {
+          "id": "9ebc4ecf-2fa2-4ab8-afde-3b91cf5eadb6",
+          "set": "sos",
+          "collector_number": "30",
+          "released_at": "2026-04-24"
+        }
+      },
+      {
+        "oracle_id": "d14f313c-fea6-49c4-8197-5b74ee584a6b",
+        "name": "Scorching Dragonfire",
+        "layout": "normal",
+        "mana_cost": "{1}{R}",
+        "cmc": 2.0,
+        "type_line": "Instant",
+        "oracle_text": "Scorching Dragonfire deals 3 damage to target creature or planeswalker. If that creature or planeswalker would die this turn, exile it instead.",
+        "colors": [
+          "R"
+        ],
+        "color_identity": [
+          "R"
+        ],
+        "keywords": [],
+        "reference_printing": {
+          "id": "44ea09c1-d420-4e99-a968-ade614579287",
+          "set": "fdn",
+          "collector_number": "545",
+          "released_at": "2024-11-15"
+        }
+      },
+      {
+        "oracle_id": "10d33e95-3e5d-447e-ba4a-acd3c33b4045",
+        "name": "Torch the Tower",
+        "layout": "normal",
+        "mana_cost": "{R}",
+        "cmc": 1.0,
+        "type_line": "Instant",
+        "oracle_text": "Bargain (You may sacrifice an artifact, enchantment, or token as you cast this spell.)\nTorch the Tower deals 2 damage to target creature or planeswalker. If this spell was bargained, instead it deals 3 damage to that permanent and you scry 1.\nIf a permanent dealt damage by Torch the Tower would die this turn, exile it instead.",
+        "colors": [
+          "R"
+        ],
+        "color_identity": [
+          "R"
+        ],
+        "keywords": [
+          "Bargain",
+          "Scry"
+        ],
+        "reference_printing": {
+          "id": "b3d6027c-813f-46df-95b4-e2e305a67620",
+          "set": "woe",
+          "collector_number": "153",
+          "released_at": "2023-09-08"
+        }
+      }
+    ],
+    "oracle_dataset": {
+      "path": "<worktree>/tdm-counter-world/rustmage/data/standard/cards.json",
+      "sha256": "6d187ee001d6284af816d4da7ef1a811f6316572616c049f492b4a96a87351c0"
+    },
+    "cr": {
+      "path": "<cache>/rustmage-tdm/initial-audit/MagicCompRules-20260925.txt",
+      "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca"
+    },
+    "cr_url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sections": [
+      "106.6",
+      "109.1",
+      "118.11",
+      "118.12",
+      "400.7",
+      "400.7e",
+      "603.2",
+      "603.7",
+      "603.12",
+      "608.2g",
+      "609.7a",
+      "611.2a",
+      "614.1",
+      "615.8",
+      "615.12",
+      "615.12a",
+      "701.66",
+      "702.192"
+    ],
+    "source_discrepancies": [
+      "Pinned XMage ParadigmAbility is explicitly TODO; current CR and official release notes supply behavior.",
+      "Flight/target-only death replacement creator is provenance, while named Torch damage source and rule-created Goggles DTA source are semantic. This is a CR-based interpretation, not an invented direct Fog ruling.",
+      "Existing CR118 audit overbroad prevention wording is corrected: a legal cost modified by replacement remains paid; a prohibited or unavailable resource is different. Actual-effect mill observers still use actual completed events.",
+      "Rite of Renewal owner/player/shuffle and TargetSource discrepancies remain preserved in earlier evidence; this repair does not broaden those claims."
+    ]
+  },
+  "implementation": [
+    "Physical ObjectRef and nonmana StackID source realms are distinct; actual chosen spell face and historical target refs are frozen without following a new incarnation. Ability-source permanent is never substituted for targeted ability object.",
+    "Cold EventObjectView semantic references are captured at actual semantic event dispatch independent of payload consumption. Merging preserves all inherited typed facts; no private or unused characteristics are captured for Identity.",
+    "Exact relevant groups are retained for cast/target/damage/activation/counter/tap/entry/leave/death/discard/combat/action events; incidental old Equip bearer, generic damage dealers, parent reflexive event roster and supporting guard/payment objects remain excluded.",
+    "Explicit creature attack declaration condition replaces ambiguous numerical inference for five existing consumers, preserving player-only attack callbacks.",
+    "Mass copy snapshots the cohort, recipe, provider and hand clocks once, materializes every copy row before one final control/designation/combat projection, and never awards transient Story.",
+    "New reflexive callbacks reset initiating event metadata then bind actual new sacrifice/discard/mill/creation/attachment receipts. Scalar X/power/controller/damage/source facts survive as consumed; no naked arbitrary parent roster inheritance.",
+    "Paradigm, real mana-created copy triggers, fixed prevention and death replacement effects, target-event DTA and Earthbend retain exact waiting subjects through their printed lifetime; expired/spent/triggered carriers stop contributing.",
+    "Closed mandatory pure-exiler loop proof alpha-renames only admitted Identity physical references. Nonidentity facts/StackID event refs fail closed; unrelated entry history and observer exclusions remain intact."
+  ],
+  "expected_negative_evidence": [
+    {
+      "reason": "Expected0/4: referred ability realm missing; physical targeted spell historical ref missing; incidental departed Equip bearer overincluded; transient mass-copy Story designation.",
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-source-completion-negative-fixed/native.json",
+        "sha256": "1e3f4245fd816d50237c19f516bafef0ce3f4932d3c41e400de4639a35a97e18"
+      },
+      "passed": 0,
+      "executed": 4,
+      "success": false,
+      "seconds": 1.2944485429907218,
+      "source-hashes.json": {
+        "path": "<cache>/rustmage-tdm/remaining-world-source-completion-negative-fixed/source-hashes.json",
+        "sha256": "8cb5797d87044983417fcf4339ad2eafaafe2d84e7f427340562de331d6a15f6"
+      }
+    },
+    {
+      "reason": "Expected0/1: Wildborn Preserver copied parent entrant into unrelated X-payment reflexive.",
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-reflexive-negative-fixed-1793670328123615009/native.json",
+        "sha256": "f4dde646f82220302143b69b0ddc6975cc9c756c07aec91ea7e37ef5811c1eeb"
+      },
+      "passed": 0,
+      "executed": 1,
+      "success": false,
+      "seconds": 1.947555074992124,
+      "source.patch": {
+        "path": "<cache>/rustmage-tdm/remaining-world-reflexive-negative-fixed-1793670328123615009/source.patch",
+        "sha256": "88f5edcabb7ade3c93f9b312de80883da76ec89af026fd482469d9e653d8c33f"
+      },
+      "test-source.rs": {
+        "path": "<cache>/rustmage-tdm/remaining-world-reflexive-negative-fixed-1793670328123615009/test-source.rs",
+        "sha256": "b74b85da0ac4de8374b81e5194147cc1d968afbd898b985650d3ce70086edc0b"
+      }
+    },
+    {
+      "reason": "Expected0/2: Bolg lost exact sacrificed creature although its power was named; Super Intelligence failed to freeze enchanted-controller guard recipient.",
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-reflexive-guard-negative-1793670862961133054/native.json",
+        "sha256": "3a41787b32358531f93e0ebba4ab09659c6a8b964f02a6786e7e5ad5652c7171"
+      },
+      "passed": 0,
+      "executed": 2,
+      "success": false,
+      "seconds": 1.9461251309840009,
+      "source.patch": {
+        "path": "<cache>/rustmage-tdm/remaining-world-reflexive-guard-negative-1793670862961133054/source.patch",
+        "sha256": "ee080c8bf040d75659fbea982eabdbae46cbc6503d4091f1712a387b5cf11847"
+      },
+      "test-source.rs": {
+        "path": "<cache>/rustmage-tdm/remaining-world-reflexive-guard-negative-1793670862961133054/test-source.rs",
+        "sha256": "127faf1215e3f408b037a1758c6bf04537a07f4b8247843d63679956ff3900b3"
+      }
+    },
+    {
+      "reason": "Expected0/9: actual Paradigm Exile object, Goggles tagged lot, Generous creation, Flight recipient, target-only death replacement recipient, target DTA wrong-departure retention, Earthbend wrong-departure retention, Earthbend noncreature-GY exclusion, Earthbend effect-controller return. Old Bolt source secondary assertion was not reached and is explicitly superseded by final target-only creator exclusion controls.",
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-waiting-negative-1793673724341836379/native.json",
+        "sha256": "b20b61a3364e85086696f731d5de4afd572fd2b8b84ff02ef1483650bf2ed58c"
+      },
+      "passed": 0,
+      "executed": 9,
+      "success": false,
+      "seconds": 2.095083915977739,
+      "source.patch": {
+        "path": "<cache>/rustmage-tdm/remaining-world-waiting-negative-1793673724341836379/source.patch",
+        "sha256": "0dc1713ff3a9554835d7b87b23d7751735f1c84d7c5e37529f4a62fa25aab8f1"
+      },
+      "test-source.rs": {
+        "path": "<cache>/rustmage-tdm/remaining-world-waiting-negative-1793673724341836379/test-source.rs",
+        "sha256": "1383f15c63e43e76367e1137e353f3a9c2d4d4c23097c01669ff2ee578df89e2"
+      }
+    }
+  ],
+  "preserved_iteration_evidence": [
+    {
+      "path": "<cache>/rustmage-tdm/remaining-world-semantic67-first-1793669681145142195",
+      "reason": "Initial borrow-check failure in typed event merging; recipe hoisted before mutably borrowing packet.",
+      "native.json": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic67-first-1793669681145142195/native.json",
+        "sha256": "6ec512faa638acb57ce85936e1ff27858ce43efa6b9c7265f5e5a71349e9a1e7"
+      },
+      "source-hashes.json": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic67-first-1793669681145142195/source-hashes.json",
+        "sha256": "1662708e5d6f19007c7e05cad31dec05ca2922cab343a7c13967cf727166850e"
+      }
+    },
+    {
+      "path": "<cache>/rustmage-tdm/remaining-world-semantic69-first-1793669849999620443",
+      "reason": "65/69; four fixture issues corrected without assertion weakening: actual Attackers pending, actual Food identity, exact cast packet rather than last triggered item.",
+      "native.json": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic69-first-1793669849999620443/native.json",
+        "sha256": "c0228852afe5d8537639d4390da34cac8e53e29200ea51592cf3bc43286d9f7b"
+      },
+      "source-hashes.json": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic69-first-1793669849999620443/source-hashes.json",
+        "sha256": "7a8bdb5c7cf1d2e522a99b6289790ad9a5e2f0ff724904ebad1603120646b9f3"
+      }
+    },
+    {
+      "path": "<cache>/rustmage-tdm/remaining-world-semantic70-first-1793670080292112715",
+      "reason": "Passing70 intermediate before reflexive/waiting completeness findings; not final acceptance.",
+      "native.json": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic70-first-1793670080292112715/native.json",
+        "sha256": "53a44725e783723110248b561db5847abbe4c05856055b0b8fbf73971a393d52"
+      },
+      "source-hashes.json": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic70-first-1793670080292112715/source-hashes.json",
+        "sha256": "67e978329a43c34a81e5a74e464d3a9eea649d7b4aff991e598d845e666fdf29"
+      },
+      "source.patch": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic70-first-1793670080292112715/source.patch",
+        "sha256": "f7967ec1214f416b036eafeaae3f84945432cbf027cd52bd72aec19e911d824a"
+      }
+    },
+    {
+      "path": "<cache>/rustmage-tdm/remaining-world-semantic80-first-1793671660733152988",
+      "reason": "Engine compiled; fixture TargetRule::Player lacked opponent_only:false.",
+      "native.json": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic80-first-1793671660733152988/native.json",
+        "sha256": "b34df8d30cd75b8d94ef9ee89263b3327a48f3b03e2555b156e7a374e5cb6bdf"
+      },
+      "source-hashes.json": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic80-first-1793671660733152988/source-hashes.json",
+        "sha256": "ae71184d44d88d0669afb39049a0016cda957c3362850771e11152721ac3c42c"
+      },
+      "source.patch": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic80-first-1793671660733152988/source.patch",
+        "sha256": "18b2d45f8adb18c796ac27b7fd2b8be614463df81c5ac6ec8783fccd3ae81374"
+      }
+    },
+    {
+      "path": "<cache>/rustmage-tdm/remaining-world-semantic80-fixture-fixed-1793671884050542673",
+      "reason": "Passing80 intermediate; waiting families not complete.",
+      "native.json": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic80-fixture-fixed-1793671884050542673/native.json",
+        "sha256": "8e8b649092e009054cf409eba7761d2a385e60713da99fd6d0b13c45111661d8"
+      },
+      "source-hashes.json": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic80-fixture-fixed-1793671884050542673/source-hashes.json",
+        "sha256": "beafe295fa0be29a4ea8ee1e3746d3d3211ccea3741e3c87323128f33f21ec39"
+      },
+      "source.patch": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic80-fixture-fixed-1793671884050542673/source.patch",
+        "sha256": "f337087de67f6cc6a72a5fd21a0ba3c3d0947c3625550025a8075460cf77cb0b"
+      }
+    },
+    {
+      "path": "<cache>/rustmage-tdm/remaining-world-semantic80-final-1793672407221622414",
+      "reason": "216/218 executed; mandatory loop equality needed alpha-renaming of new pure Identity references. Closed observer admission remains unchanged; no unsafe history erasure.",
+      "terminal.json": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic80-final-1793672407221622414/terminal.json",
+        "sha256": "f9ed7ed57639b3b420d3ed5d13ad20e440f4549887ce8a5420f0228e2e8b71de"
+      },
+      "source-hashes.json": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic80-final-1793672407221622414/source-hashes.json",
+        "sha256": "154a6ab2632e65d5c41e05b818bfad891a2d88b2130a015f37dec592f9c0b591"
+      },
+      "source.patch": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic80-final-1793672407221622414/source.patch",
+        "sha256": "5ba9017ae3746ffa0b22bf75100e7ef069eafd493ed031f3d28c0a235a3031b9"
+      }
+    },
+    {
+      "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793674885522574968",
+      "reason": "Passing96 and earlier compatibility; dft_trigger_facts10/11 expected erroneous immediate deletion of a turn-duration delayed row. Test corrected to retain inert old subject then expire at cleanup; runtime unchanged.",
+      "terminal.json": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793674885522574968/terminal.json",
+        "sha256": "e8ee8548a3e38b0c1debd68363765fc41dca0433f59cd30c9b068d7eeecefb24"
+      },
+      "source-hashes.json": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793674885522574968/source-hashes.json",
+        "sha256": "7c9aa081934aded532116428ef6d1e65cb44ccb5733ab879d27898a28c37694e"
+      },
+      "source.patch": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793674885522574968/source.patch",
+        "sha256": "f6673fa41a64dbba4c785f2d69acfcb76102e8fbc1d6a99b00bb97b6deecc181"
+      }
+    },
+    {
+      "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675065534219891",
+      "reason": "All nonempty selections passed; nonexistent legacy draw_events filter matched0 cases. Final harness uses real hartford_draw/discard_events/hob_inherited_draw. No runtime edits.",
+      "terminal.json": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675065534219891/terminal.json",
+        "sha256": "d3a44fbf42fe17602832639e88a4854c2f6075df42fb7556433f66996ee791cb"
+      },
+      "source-hashes.json": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675065534219891/source-hashes.json",
+        "sha256": "4485e968666223b1629df3cfb165a9b83fccd3e20713913bb30240548e2f8480"
+      },
+      "source.patch": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675065534219891/source.patch",
+        "sha256": "50a83ad35538f9e8ac546d5a835b7257ec3299965bf51ce6a3d2c298c4162e66"
+      }
+    }
+  ],
+  "core_clippy": {
+    "terminal": {
+      "path": "<cache>/rustmage-tdm/remaining-world-semantic96-clippy-1793674855670115678/terminal.json",
+      "sha256": "3d6c7cd19a7147eb26eb92b2c2160f6c2824f612547c99d2410976711295a120"
+    },
+    "seconds": 7.732349872007035,
+    "command": [
+      "/usr/bin/python3",
+      "scripts/resource_guard.py",
+      "--",
+      "cargo",
+      "clippy",
+      "-p",
+      "rustmage-core",
+      "--lib",
+      "--features",
+      "test-support",
+      "--",
+      "-D",
+      "warnings"
+    ],
+    "all_frozen_inputs_unchanged": true
+  },
+  "final_runs": [
+    {
+      "target": "tdm_remaining_world_rules",
+      "filter": "",
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_native_tests.py",
+        "--test-target",
+        "tdm_remaining_world_rules",
+        "--target-dir",
+        "<cache>/rustmage-authoring/tdm-counter-world/target",
+        "--report",
+        "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/0/native.json"
+      ],
+      "exit": 0,
+      "terminal": true,
+      "seconds": 0.43120121001265943,
+      "freeze_mismatches": [],
+      "success": true,
+      "cases": 96,
+      "passed": 96,
+      "compile_seconds": 0.06483248001313768,
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/0/native.json",
+        "sha256": "d9ac2f6271179d07af2468ce34d518c09e04eb7657f6f508f69cf56d83b5694c"
+      },
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/0/native-compile.log",
+        "sha256": "dc4890d9f7ec851451200de64a0a5d30e10d1c2aa6c8728798ecca1277b9133f"
+      },
+      "execution_seconds": 0.05835933401249349,
+      "resource_report": {
+        "path": "<cache>/rustmage-build-reports/536f0aaef0814430b84872881c22d948.json",
+        "sha256": "651dce50b99523eedb1d7b08e23aaef3506b9a9fe0727bfb75fb18ea8d8707cd"
+      }
+    },
+    {
+      "target": "tdm_protection_decayed",
+      "filter": "",
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_native_tests.py",
+        "--test-target",
+        "tdm_protection_decayed",
+        "--target-dir",
+        "<cache>/rustmage-authoring/tdm-counter-world/target",
+        "--report",
+        "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/1/native.json"
+      ],
+      "exit": 0,
+      "terminal": true,
+      "seconds": 0.3609515980060678,
+      "freeze_mismatches": [],
+      "success": true,
+      "cases": 16,
+      "passed": 16,
+      "compile_seconds": 0.0644384560000617,
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/1/native.json",
+        "sha256": "9f15289ce104ee7e2990aaef53a73bf2449e0072d111969bf19716a4edd617d4"
+      },
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/1/native-compile.log",
+        "sha256": "210ad45700bc2ce82250a0af757e1b1c4114c89fb285f205ccbe959117751e17"
+      },
+      "execution_seconds": 0.024289547000080347,
+      "resource_report": {
+        "path": "<cache>/rustmage-build-reports/9760b858fe0a4e9b9088838522b4129b.json",
+        "sha256": "ad9a9604d68b0233500353464f46a7a70c742d468791a7ede37df6bd7d92e13e"
+      }
+    },
+    {
+      "target": "tdm_counter_world",
+      "filter": "",
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_native_tests.py",
+        "--test-target",
+        "tdm_counter_world",
+        "--target-dir",
+        "<cache>/rustmage-authoring/tdm-counter-world/target",
+        "--report",
+        "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/2/native.json"
+      ],
+      "exit": 0,
+      "terminal": true,
+      "seconds": 0.36495726800058037,
+      "freeze_mismatches": [],
+      "success": true,
+      "cases": 7,
+      "passed": 7,
+      "compile_seconds": 0.06458874300005846,
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/2/native.json",
+        "sha256": "3684136e387f8c0b7bf0e57f45dc06e732bf7e85a05f6134c1e7f55472cd0621"
+      },
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/2/native-compile.log",
+        "sha256": "5548980b28a37ab10ee565ee9eb509f02e7156532d06b83f8648c0dda9318193"
+      },
+      "execution_seconds": 0.02434759002062492,
+      "resource_report": {
+        "path": "<cache>/rustmage-build-reports/f65f515ecca2427eb01f53d5086fac96.json",
+        "sha256": "58eb5535ba134ce5eec4a8b508729fcd9c97ca796b04064897378f382bfd643d"
+      }
+    },
+    {
+      "target": "tdm_copy_suspend",
+      "filter": "",
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_native_tests.py",
+        "--test-target",
+        "tdm_copy_suspend",
+        "--target-dir",
+        "<cache>/rustmage-authoring/tdm-counter-world/target",
+        "--report",
+        "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/3/native.json"
+      ],
+      "exit": 0,
+      "terminal": true,
+      "seconds": 0.3712540799751878,
+      "freeze_mismatches": [],
+      "success": true,
+      "cases": 18,
+      "passed": 18,
+      "compile_seconds": 0.06482409199816175,
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/3/native.json",
+        "sha256": "c23bf358edcab87ba403c26abd8878304f66ba8a8e68b01e32f3271edb9c5ec9"
+      },
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/3/native-compile.log",
+        "sha256": "613d81a5678933825a46ca71eae0f996a320e2c140065524f760b25998cdcf72"
+      },
+      "execution_seconds": 0.034576156991533935,
+      "resource_report": {
+        "path": "<cache>/rustmage-build-reports/344960f3603240f88493815cce961500.json",
+        "sha256": "a3e39cc68bb6d80cbab8143e484f57a4bebe83d642022c7630e20b03a8a5eb51"
+      }
+    },
+    {
+      "target": "tdm_combat_callbacks",
+      "filter": "",
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_native_tests.py",
+        "--test-target",
+        "tdm_combat_callbacks",
+        "--target-dir",
+        "<cache>/rustmage-authoring/tdm-counter-world/target",
+        "--report",
+        "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/4/native.json"
+      ],
+      "exit": 0,
+      "terminal": true,
+      "seconds": 0.38501654998981394,
+      "freeze_mismatches": [],
+      "success": true,
+      "cases": 32,
+      "passed": 32,
+      "compile_seconds": 0.06485591299133375,
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/4/native.json",
+        "sha256": "e69e0f152b93ae03a9c7bb9ee0ee4531580e8a482763a7dd623a0234b0c402c1"
+      },
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/4/native-compile.log",
+        "sha256": "68ccaf3ddfa186779678a1891e12b7aeac02ed4cc488a2caa9f09816d0a30eec"
+      },
+      "execution_seconds": 0.04285827500279993,
+      "resource_report": {
+        "path": "<cache>/rustmage-build-reports/84dafd45766b4a9b867acf5d6821c65b.json",
+        "sha256": "de987a9d9305a420d7d40d50f38eb13806de9dbe54bfdb5950bc1d8419b048e4"
+      }
+    },
+    {
+      "target": "dft_entry_copies",
+      "filter": "",
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_native_tests.py",
+        "--test-target",
+        "dft_entry_copies",
+        "--target-dir",
+        "<cache>/rustmage-authoring/tdm-counter-world/target",
+        "--report",
+        "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/5/native.json"
+      ],
+      "exit": 0,
+      "terminal": true,
+      "seconds": 0.38609051299863495,
+      "freeze_mismatches": [],
+      "success": true,
+      "cases": 16,
+      "passed": 16,
+      "compile_seconds": 0.06449663700186647,
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/5/native.json",
+        "sha256": "9f4d959f4b17d8bf29de38e9a468a83b0a32033d2f112a975ea7690eede891d8"
+      },
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/5/native-compile.log",
+        "sha256": "3c146061564ad962aa6915a594e9d25ec6a9f891d152c02a7501901c6da9d720"
+      },
+      "execution_seconds": 0.04316902099526487,
+      "resource_report": {
+        "path": "<cache>/rustmage-build-reports/702dbab2c3aa4f7db4f9fabeef181a57.json",
+        "sha256": "79956e18b7d00b43764b90cbfd1e928a2d7fa6d102312da32828d7c77cda4724"
+      }
+    },
+    {
+      "target": "dft_retained_copy",
+      "filter": "",
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_native_tests.py",
+        "--test-target",
+        "dft_retained_copy",
+        "--target-dir",
+        "<cache>/rustmage-authoring/tdm-counter-world/target",
+        "--report",
+        "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/6/native.json"
+      ],
+      "exit": 0,
+      "terminal": true,
+      "seconds": 0.3494558880047407,
+      "freeze_mismatches": [],
+      "success": true,
+      "cases": 7,
+      "passed": 7,
+      "compile_seconds": 0.064706056000432,
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/6/native.json",
+        "sha256": "165ba460a709272923b63609a909a666a4b2a442cdc7ebd117eb5b89d37fb55e"
+      },
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/6/native-compile.log",
+        "sha256": "8a25badad12f5265d12334ec2ac09e07b1c7ebe3990534ef9cdda274247f0d3d"
+      },
+      "execution_seconds": 0.024653244006913155,
+      "resource_report": {
+        "path": "<cache>/rustmage-build-reports/db5195a9dc994f9fae0bf36830e5847f.json",
+        "sha256": "38f8184a6896e8c736ea7240dcf93d589d8ffbab8d85e4c2cff94237625060c4"
+      }
+    },
+    {
+      "target": "dft_private_hand",
+      "filter": "",
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_native_tests.py",
+        "--test-target",
+        "dft_private_hand",
+        "--target-dir",
+        "<cache>/rustmage-authoring/tdm-counter-world/target",
+        "--report",
+        "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/7/native.json"
+      ],
+      "exit": 0,
+      "terminal": true,
+      "seconds": 0.3804557629919145,
+      "freeze_mismatches": [],
+      "success": true,
+      "cases": 6,
+      "passed": 6,
+      "compile_seconds": 0.0648191669897642,
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/7/native.json",
+        "sha256": "41dcb666a7d06b8b33234d3227316cee77b9ba43ba60011275820b5afd1c780e"
+      },
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/7/native-compile.log",
+        "sha256": "2466e515c66de0da117be5f87cf06eae96239e1ee43edcc9d7d4b889c5726a0f"
+      },
+      "execution_seconds": 0.025156974006677046,
+      "resource_report": {
+        "path": "<cache>/rustmage-build-reports/ad8d6e5bf7e5497999064eed7ae894d1.json",
+        "sha256": "b2fb91118112c6e6116ea624ab4dce9ba0f2020cd32e3d22f48b01157f4a4806"
+      }
+    },
+    {
+      "target": "dft_variable_costs_engine",
+      "filter": "",
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_native_tests.py",
+        "--test-target",
+        "dft_variable_costs_engine",
+        "--target-dir",
+        "<cache>/rustmage-authoring/tdm-counter-world/target",
+        "--report",
+        "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/8/native.json"
+      ],
+      "exit": 0,
+      "terminal": true,
+      "seconds": 0.39315586400334723,
+      "freeze_mismatches": [],
+      "success": true,
+      "cases": 11,
+      "passed": 11,
+      "compile_seconds": 0.06461824700818397,
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/8/native.json",
+        "sha256": "aaa5b9fd9c27167452a86367b045ecd5533d4447f9e427ed72ea12c9419a64b7"
+      },
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/8/native-compile.log",
+        "sha256": "f8fe1b6badc41d88c612d9939846b5342607cb1059b673bd6037235dc1357b4c"
+      },
+      "execution_seconds": 0.03528861497761682,
+      "resource_report": {
+        "path": "<cache>/rustmage-build-reports/7619798bbe684d93aa99d61b83bea980.json",
+        "sha256": "d5634bc7cbb32414b09815f8dd2dd02fb8f4e31978ea771da5a4cde85f8f19d1"
+      }
+    },
+    {
+      "target": "dft_mana_payment_continuations_engine",
+      "filter": "",
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_native_tests.py",
+        "--test-target",
+        "dft_mana_payment_continuations_engine",
+        "--target-dir",
+        "<cache>/rustmage-authoring/tdm-counter-world/target",
+        "--report",
+        "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/9/native.json"
+      ],
+      "exit": 0,
+      "terminal": true,
+      "seconds": 0.41344053199281916,
+      "freeze_mismatches": [],
+      "success": true,
+      "cases": 11,
+      "passed": 11,
+      "compile_seconds": 0.06464579299790785,
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/9/native.json",
+        "sha256": "44c3906122974143729914c5ef5b4d9db63ea7135c6a2e5034ded768f407778b"
+      },
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/9/native-compile.log",
+        "sha256": "9fb63a579bb33fe27b149403bd9b70a6a316b39491066dd11b9a70dea9ad40a3"
+      },
+      "execution_seconds": 0.05028040101751685,
+      "resource_report": {
+        "path": "<cache>/rustmage-build-reports/3de573539551416781f09711c76966d7.json",
+        "sha256": "dbd3604ff5f8789db58b8ec4f31fe21547000838c677346a8cda1705b05f61ce"
+      }
+    },
+    {
+      "target": "dft_mana_rollback",
+      "filter": "",
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_native_tests.py",
+        "--test-target",
+        "dft_mana_rollback",
+        "--target-dir",
+        "<cache>/rustmage-authoring/tdm-counter-world/target",
+        "--report",
+        "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/10/native.json"
+      ],
+      "exit": 0,
+      "terminal": true,
+      "seconds": 0.3893034200009424,
+      "freeze_mismatches": [],
+      "success": true,
+      "cases": 2,
+      "passed": 2,
+      "compile_seconds": 0.06499042001087219,
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/10/native.json",
+        "sha256": "61fb778847a34f42392d7b17cc9fa67659b471dcc2330a58d56a48adf6879cbd"
+      },
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/10/native-compile.log",
+        "sha256": "fb2fa5b3f2db13d2ff155553e6f4fac627e8b4fea552a0f4516e02e859f61a50"
+      },
+      "execution_seconds": 0.04280399400158785,
+      "resource_report": {
+        "path": "<cache>/rustmage-build-reports/0fa23b02640b4f018bb4f806e627239a.json",
+        "sha256": "a14f48570c00fc56af14bffc262262e90bfd3cd3189c0581373870b0671a425f"
+      }
+    },
+    {
+      "target": "dft_combat_schedule",
+      "filter": "",
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_native_tests.py",
+        "--test-target",
+        "dft_combat_schedule",
+        "--target-dir",
+        "<cache>/rustmage-authoring/tdm-counter-world/target",
+        "--report",
+        "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/11/native.json"
+      ],
+      "exit": 0,
+      "terminal": true,
+      "seconds": 0.37382119201356545,
+      "freeze_mismatches": [],
+      "success": true,
+      "cases": 7,
+      "passed": 7,
+      "compile_seconds": 0.06492553901625797,
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/11/native.json",
+        "sha256": "c76b7ef6a4a00eb031f143657bfe63aeb2b1f5d06e2506206fd87a9e42ca0dba"
+      },
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/11/native-compile.log",
+        "sha256": "ecb61d231b09f3dde19b5bc008e8de4f20a362f42d232371874052fe3a14a477"
+      },
+      "execution_seconds": 0.033108110015746206,
+      "resource_report": {
+        "path": "<cache>/rustmage-build-reports/03ef42e800464c0bbe028893efc5dc11.json",
+        "sha256": "b5fd23a494737ab1becfe790a1647e741fa873b2e69a17a1f68d7bec1824e758"
+      }
+    },
+    {
+      "target": "mandatory_loops",
+      "filter": "",
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_native_tests.py",
+        "--test-target",
+        "mandatory_loops",
+        "--target-dir",
+        "<cache>/rustmage-authoring/tdm-counter-world/target",
+        "--report",
+        "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/12/native.json"
+      ],
+      "exit": 0,
+      "terminal": true,
+      "seconds": 0.3701181169890333,
+      "freeze_mismatches": [],
+      "success": true,
+      "cases": 5,
+      "passed": 5,
+      "compile_seconds": 0.06533349599339999,
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/12/native.json",
+        "sha256": "3eef73fd3407d941d2a184ca46a0890169d3e7c1356bb206ca5c496dbb799689"
+      },
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/12/native-compile.log",
+        "sha256": "7fc9b8fc3de600ca5066d4f52f92b90934ad625b4b46d1426ce0d5db87fd6c67"
+      },
+      "execution_seconds": 0.0349701980012469,
+      "resource_report": {
+        "path": "<cache>/rustmage-build-reports/49334506d0e74a729d303b9cb1201856.json",
+        "sha256": "996def63e17cde414292b88ac38b76ba2ea58c3e40ffbe9fa65a3ff302392d47"
+      }
+    },
+    {
+      "target": "dft_attached_untap_engine",
+      "filter": "",
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_native_tests.py",
+        "--test-target",
+        "dft_attached_untap_engine",
+        "--target-dir",
+        "<cache>/rustmage-authoring/tdm-counter-world/target",
+        "--report",
+        "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/13/native.json"
+      ],
+      "exit": 0,
+      "terminal": true,
+      "seconds": 0.3863280340156052,
+      "freeze_mismatches": [],
+      "success": true,
+      "cases": 4,
+      "passed": 4,
+      "compile_seconds": 0.06480639200890437,
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/13/native.json",
+        "sha256": "1804bbd1a5517111e4e7de85db2cd2d929204ed36516fbdb3a42b8426c2300d1"
+      },
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/13/native-compile.log",
+        "sha256": "a1292259abe69a0cc2523174d8a374c75076e2030eaa9534194bf63e8b56f09a"
+      },
+      "execution_seconds": 0.03316684300079942,
+      "resource_report": {
+        "path": "<cache>/rustmage-build-reports/bc0bd20a6db547ddb0da931ba2d37a8b.json",
+        "sha256": "eab03d0f69bc283c24113db7c5070899b9ac70d132d0cdb438f6a672fad43b49"
+      }
+    },
+    {
+      "target": "dft_trigger_facts_engine",
+      "filter": "",
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_native_tests.py",
+        "--test-target",
+        "dft_trigger_facts_engine",
+        "--target-dir",
+        "<cache>/rustmage-authoring/tdm-counter-world/target",
+        "--report",
+        "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/14/native.json"
+      ],
+      "exit": 0,
+      "terminal": true,
+      "seconds": 0.38788477901834995,
+      "freeze_mismatches": [],
+      "success": true,
+      "cases": 11,
+      "passed": 11,
+      "compile_seconds": 0.065001568000298,
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/14/native.json",
+        "sha256": "91cca375ba14640d04179594469e4f5054976ab25a36605a142abd4553a09792"
+      },
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/14/native-compile.log",
+        "sha256": "e439b64f805d682a5e5d6df6a510a522869bc9b7e3d0ed6214b5c9b7d85378d6"
+      },
+      "execution_seconds": 0.0327639979950618,
+      "resource_report": {
+        "path": "<cache>/rustmage-build-reports/f33276d136654138bf7f8bdef3c5aa80.json",
+        "sha256": "6e883f912e58aae639fe5351a2a5df7034bb09f058c0153e79d61fc2bace216c"
+      }
+    },
+    {
+      "target": "dft_black_red_cards_grave_costs",
+      "filter": "",
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_native_tests.py",
+        "--test-target",
+        "dft_black_red_cards_grave_costs",
+        "--target-dir",
+        "<cache>/rustmage-authoring/tdm-counter-world/target",
+        "--report",
+        "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/15/native.json"
+      ],
+      "exit": 0,
+      "terminal": true,
+      "seconds": 0.37340520101133734,
+      "freeze_mismatches": [],
+      "success": true,
+      "cases": 13,
+      "passed": 13,
+      "compile_seconds": 0.06484321100288071,
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/15/native.json",
+        "sha256": "fe614c22ece7a8dbbf23c2f9fd76bac8494fbc8b0083f7e4c958a7bfa66a9579"
+      },
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/15/native-compile.log",
+        "sha256": "81f0d76454e7e63f35859d574bf94f7e9844e100cd7c520bba924b5186f7442b"
+      },
+      "execution_seconds": 0.03333382701384835,
+      "resource_report": {
+        "path": "<cache>/rustmage-build-reports/d2ad3fc3542042d0a06177857783cc1e.json",
+        "sha256": "bb25ff2986056f68f912c65ec8e35932bfe047422bed437b4f23ce40ec71d8cd"
+      }
+    },
+    {
+      "target": "dft_black_red_cards_discard_entries",
+      "filter": "",
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_native_tests.py",
+        "--test-target",
+        "dft_black_red_cards_discard_entries",
+        "--target-dir",
+        "<cache>/rustmage-authoring/tdm-counter-world/target",
+        "--report",
+        "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/16/native.json"
+      ],
+      "exit": 0,
+      "terminal": true,
+      "seconds": 0.37952766101807356,
+      "freeze_mismatches": [],
+      "success": true,
+      "cases": 8,
+      "passed": 8,
+      "compile_seconds": 0.06508785599726252,
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/16/native.json",
+        "sha256": "4c52fc426e71058c4c2982f3803542289be3a21a935e88eaf0fdd2c8c8dc223c"
+      },
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/16/native-compile.log",
+        "sha256": "6726230cdb25ab0dfd2c2d238a8ebe2e11593f1e1e9192f12d6d1367bbc33f19"
+      },
+      "execution_seconds": 0.024653831002069637,
+      "resource_report": {
+        "path": "<cache>/rustmage-build-reports/3b897791f97647a29f2c43e81c110f51.json",
+        "sha256": "b9a3edecc83fa8dae2a325be85b8db65e6b96e8793dcbde5c225c9f58b8dce4c"
+      }
+    },
+    {
+      "target": "dft_black_red_cards_trigger_creatures",
+      "filter": "",
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_native_tests.py",
+        "--test-target",
+        "dft_black_red_cards_trigger_creatures",
+        "--target-dir",
+        "<cache>/rustmage-authoring/tdm-counter-world/target",
+        "--report",
+        "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/17/native.json"
+      ],
+      "exit": 0,
+      "terminal": true,
+      "seconds": 0.3746957090042997,
+      "freeze_mismatches": [],
+      "success": true,
+      "cases": 8,
+      "passed": 8,
+      "compile_seconds": 0.06506098801037297,
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/17/native.json",
+        "sha256": "854a0a51ec89989fd1c1c9e264b9e259096e292c196a41d2866605124a217934"
+      },
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/17/native-compile.log",
+        "sha256": "40bbb2d9f962ea18870ea7305c02e1227b7592ce33ed7339924e8e2efe4e60f4"
+      },
+      "execution_seconds": 0.03297484299400821,
+      "resource_report": {
+        "path": "<cache>/rustmage-build-reports/09daa985d2124f5f8aa7162245513aab.json",
+        "sha256": "df1d558e2ca93c3b7bef5535dd86ef930d07b6de15c883f52851a3202d85bc8a"
+      }
+    },
+    {
+      "target": "legacy",
+      "filter": "reflexive",
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_native_tests.py",
+        "--test-target",
+        "legacy",
+        "--target-dir",
+        "<cache>/rustmage-authoring/tdm-counter-world/target",
+        "--report",
+        "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/18/native.json",
+        "--filter",
+        "reflexive"
+      ],
+      "exit": 0,
+      "terminal": true,
+      "seconds": 0.4238820839964319,
+      "freeze_mismatches": [],
+      "success": true,
+      "cases": 32,
+      "passed": 32,
+      "compile_seconds": 0.06545089700375684,
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/18/native.json",
+        "sha256": "9db2754df4c35ffc50b80fac24e0a05f71480739e64860667c22046df4d91993"
+      },
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/18/native-compile.log",
+        "sha256": "eecb3b9cb18292305758e77318fc729d473cf40bfd62614fb53a010fc3e2577a"
+      },
+      "execution_seconds": 0.08407391200307757,
+      "resource_report": {
+        "path": "<cache>/rustmage-build-reports/63116f77edca4558824c6d85d8bee6f8.json",
+        "sha256": "ae4ea34705d9e09bdb814baade71aa21023ce983a39dc8633ac80c18f551e515"
+      }
+    },
+    {
+      "target": "legacy",
+      "filter": "hob_thorin_mountain_king",
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_native_tests.py",
+        "--test-target",
+        "legacy",
+        "--target-dir",
+        "<cache>/rustmage-authoring/tdm-counter-world/target",
+        "--report",
+        "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/19/native.json",
+        "--filter",
+        "hob_thorin_mountain_king"
+      ],
+      "exit": 0,
+      "terminal": true,
+      "seconds": 0.374927791999653,
+      "freeze_mismatches": [],
+      "success": true,
+      "cases": 9,
+      "passed": 9,
+      "compile_seconds": 0.06460519199026749,
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/19/native.json",
+        "sha256": "494fbfcd476140e487dccac4082276ec4aa3c58e28e327571324e8b075946c1b"
+      },
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/19/native-compile.log",
+        "sha256": "a49436da70e5e8c4bf922d67321069984117bbe923ab30508d7e0a1f8216bd6d"
+      },
+      "execution_seconds": 0.04266963599366136,
+      "resource_report": {
+        "path": "<cache>/rustmage-build-reports/a675d132269343d5b731cb77de8faf2f.json",
+        "sha256": "daf71b44eed26af63b599b3678c1a8d7a088fd0c2cc94e968c7578f996287d16"
+      }
+    },
+    {
+      "target": "legacy",
+      "filter": "hob_bolg",
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_native_tests.py",
+        "--test-target",
+        "legacy",
+        "--target-dir",
+        "<cache>/rustmage-authoring/tdm-counter-world/target",
+        "--report",
+        "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/20/native.json",
+        "--filter",
+        "hob_bolg"
+      ],
+      "exit": 0,
+      "terminal": true,
+      "seconds": 0.39026347699109465,
+      "freeze_mismatches": [],
+      "success": true,
+      "cases": 7,
+      "passed": 7,
+      "compile_seconds": 0.06463716001599096,
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/20/native.json",
+        "sha256": "02f0054358796236eeea42d9c8f17dedb9ea2868eb63fc5a8d3a8d4110e98d11"
+      },
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/20/native-compile.log",
+        "sha256": "09fe2d30c0b31bcf092e85d43c3d9b2cb036319c517b04ba208aaf27ddad89b1"
+      },
+      "execution_seconds": 0.0435175719903782,
+      "resource_report": {
+        "path": "<cache>/rustmage-build-reports/2317ce1117e248da879239f597bf56ea.json",
+        "sha256": "885493e03a9ca31d4ab023fa3e0a9e2e7752f35e7b26d8cc71d0c644ac0fe667"
+      }
+    },
+    {
+      "target": "legacy",
+      "filter": "hartford_leatherhead",
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_native_tests.py",
+        "--test-target",
+        "legacy",
+        "--target-dir",
+        "<cache>/rustmage-authoring/tdm-counter-world/target",
+        "--report",
+        "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/21/native.json",
+        "--filter",
+        "hartford_leatherhead"
+      ],
+      "exit": 0,
+      "terminal": true,
+      "seconds": 0.3946420499996748,
+      "freeze_mismatches": [],
+      "success": true,
+      "cases": 1,
+      "passed": 1,
+      "compile_seconds": 0.06516059901332483,
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/21/native.json",
+        "sha256": "9859d33c6b11891e730030a0dd32fb53cb7e631e2200f5313df887c11aa06d32"
+      },
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/21/native-compile.log",
+        "sha256": "33996b4e538c04b066a43fbc1c7aabe87e8666e925c3fc743fa5b067c9d9e904"
+      },
+      "execution_seconds": 0.042458112991880625,
+      "resource_report": {
+        "path": "<cache>/rustmage-build-reports/9748c067890843dd9f7a9c133552ad83.json",
+        "sha256": "22a615f3a1c0a5c8717f8c08e189b9130f1d790cd6bbf7eefd81a7b46d19f473"
+      }
+    },
+    {
+      "target": "legacy",
+      "filter": "explore",
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_native_tests.py",
+        "--test-target",
+        "legacy",
+        "--target-dir",
+        "<cache>/rustmage-authoring/tdm-counter-world/target",
+        "--report",
+        "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/22/native.json",
+        "--filter",
+        "explore"
+      ],
+      "exit": 0,
+      "terminal": true,
+      "seconds": 0.38317012100014836,
+      "freeze_mismatches": [],
+      "success": true,
+      "cases": 5,
+      "passed": 5,
+      "compile_seconds": 0.06466132399509661,
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/22/native.json",
+        "sha256": "4f6a5690c5776b63de939b1856b7611c0bb627ff31b38f57f40efd37f1bc8f29"
+      },
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/22/native-compile.log",
+        "sha256": "ccb7c039456ee2954c238a50429c40fc7fa46661c51c4c97da7710a28df284ba"
+      },
+      "execution_seconds": 0.03232755800127052,
+      "resource_report": {
+        "path": "<cache>/rustmage-build-reports/ae68fed4010e449294bbe020ccb1347f.json",
+        "sha256": "17902c1235bf8c0ce01826a34464b916b221379538b7481d313bdac6c596d0bf"
+      }
+    },
+    {
+      "target": "legacy",
+      "filter": "hartford_draw",
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_native_tests.py",
+        "--test-target",
+        "legacy",
+        "--target-dir",
+        "<cache>/rustmage-authoring/tdm-counter-world/target",
+        "--report",
+        "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/23/native.json",
+        "--filter",
+        "hartford_draw"
+      ],
+      "exit": 0,
+      "terminal": true,
+      "seconds": 0.3994793519959785,
+      "freeze_mismatches": [],
+      "success": true,
+      "cases": 12,
+      "passed": 12,
+      "compile_seconds": 0.06492236701888032,
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/23/native.json",
+        "sha256": "6dfae57d349207ec1914051dadfb4f83751e46e2a19f67a61b16b339e38fde5c"
+      },
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/23/native-compile.log",
+        "sha256": "f884f5189f8266082db5264c4a0f1591fc3540a4f016ac8cdb20d21a5b6c19c6"
+      },
+      "execution_seconds": 0.04316478400141932,
+      "resource_report": {
+        "path": "<cache>/rustmage-build-reports/008a284761fd4ac0a22aabf5b44bf085.json",
+        "sha256": "0ccc000167aabd4e79f2db44a6f5535fe9d7708005c2a23fc66347b49fe3847b"
+      }
+    },
+    {
+      "target": "legacy",
+      "filter": "discard_events",
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_native_tests.py",
+        "--test-target",
+        "legacy",
+        "--target-dir",
+        "<cache>/rustmage-authoring/tdm-counter-world/target",
+        "--report",
+        "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/24/native.json",
+        "--filter",
+        "discard_events"
+      ],
+      "exit": 0,
+      "terminal": true,
+      "seconds": 0.3839351490023546,
+      "freeze_mismatches": [],
+      "success": true,
+      "cases": 5,
+      "passed": 5,
+      "compile_seconds": 0.06494032999034971,
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/24/native.json",
+        "sha256": "4fb4ec978d3a3ccef536ac3894bb727b505b5716913ae88e55128f8c65734463"
+      },
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/24/native-compile.log",
+        "sha256": "1e3ae3a941e3f0100496bc8e90d3c3cebb0977764aed443740af41b8f43a69f4"
+      },
+      "execution_seconds": 0.03276329499203712,
+      "resource_report": {
+        "path": "<cache>/rustmage-build-reports/8504ac4c85a14af4a44601739c451fcb.json",
+        "sha256": "6ef4fac87abe2dafb35fc5ae7883d051b1332782021d1a334fb45f1d66b122db"
+      }
+    },
+    {
+      "target": "legacy",
+      "filter": "hob_inherited_draw",
+      "command": [
+        "/usr/bin/python3",
+        "scripts/run_native_tests.py",
+        "--test-target",
+        "legacy",
+        "--target-dir",
+        "<cache>/rustmage-authoring/tdm-counter-world/target",
+        "--report",
+        "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/25/native.json",
+        "--filter",
+        "hob_inherited_draw"
+      ],
+      "exit": 0,
+      "terminal": true,
+      "seconds": 0.39252245298121125,
+      "freeze_mismatches": [],
+      "success": true,
+      "cases": 4,
+      "passed": 4,
+      "compile_seconds": 0.06545950699364766,
+      "report": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/25/native.json",
+        "sha256": "d858a0d47da8318a7426524f0cd1ab44585ffe8fff21b89927f3f2e6a30b3457"
+      },
+      "compile_log": {
+        "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/25/native-compile.log",
+        "sha256": "e8d732f0ef4bfbfc3a81bd79786f3c28e53e92fbabbfd06d6a550d7dbf7faab5"
+      },
+      "execution_seconds": 0.0336223490012344,
+      "resource_report": {
+        "path": "<cache>/rustmage-build-reports/8e1a1f0a441a4071af457a206e924ef0.json",
+        "sha256": "a2fbc14855a0e5676bc55d1906e21522bbe48a5f20441acd0f972fde87fca7a7"
+      }
+    }
+  ],
+  "resource_reports": {
+    "<cache>/rustmage-build-reports/536f0aaef0814430b84872881c22d948.json": {
+      "artifact": {
+        "path": "<cache>/rustmage-build-reports/536f0aaef0814430b84872881c22d948.json",
+        "sha256": "651dce50b99523eedb1d7b08e23aaef3506b9a9fe0727bfb75fb18ea8d8707cd"
+      },
+      "data": {
+        "command": [
+          "/usr/bin/python3",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "tdm_remaining_world_rules",
+          "--target-dir",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/0/native.json"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.1685010890068952,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 33468416,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "<cache>/rustmage-build-reports/9760b858fe0a4e9b9088838522b4129b.json": {
+      "artifact": {
+        "path": "<cache>/rustmage-build-reports/9760b858fe0a4e9b9088838522b4129b.json",
+        "sha256": "ad9a9604d68b0233500353464f46a7a70c742d468791a7ede37df6bd7d92e13e"
+      },
+      "data": {
+        "command": [
+          "/usr/bin/python3",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "tdm_protection_decayed",
+          "--target-dir",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/1/native.json"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.1354839839914348,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 32440320,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "<cache>/rustmage-build-reports/f65f515ecca2427eb01f53d5086fac96.json": {
+      "artifact": {
+        "path": "<cache>/rustmage-build-reports/f65f515ecca2427eb01f53d5086fac96.json",
+        "sha256": "58eb5535ba134ce5eec4a8b508729fcd9c97ca796b04064897378f382bfd643d"
+      },
+      "data": {
+        "command": [
+          "/usr/bin/python3",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "tdm_counter_world",
+          "--target-dir",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/2/native.json"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.12186171198845841,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 32034816,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "<cache>/rustmage-build-reports/344960f3603240f88493815cce961500.json": {
+      "artifact": {
+        "path": "<cache>/rustmage-build-reports/344960f3603240f88493815cce961500.json",
+        "sha256": "a3e39cc68bb6d80cbab8143e484f57a4bebe83d642022c7630e20b03a8a5eb51"
+      },
+      "data": {
+        "command": [
+          "/usr/bin/python3",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "tdm_copy_suspend",
+          "--target-dir",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/3/native.json"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.1407944899983704,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 31952896,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "<cache>/rustmage-build-reports/84dafd45766b4a9b867acf5d6821c65b.json": {
+      "artifact": {
+        "path": "<cache>/rustmage-build-reports/84dafd45766b4a9b867acf5d6821c65b.json",
+        "sha256": "de987a9d9305a420d7d40d50f38eb13806de9dbe54bfdb5950bc1d8419b048e4"
+      },
+      "data": {
+        "command": [
+          "/usr/bin/python3",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "tdm_combat_callbacks",
+          "--target-dir",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/4/native.json"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.13860796799417585,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 32808960,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "<cache>/rustmage-build-reports/702dbab2c3aa4f7db4f9fabeef181a57.json": {
+      "artifact": {
+        "path": "<cache>/rustmage-build-reports/702dbab2c3aa4f7db4f9fabeef181a57.json",
+        "sha256": "79956e18b7d00b43764b90cbfd1e928a2d7fa6d102312da32828d7c77cda4724"
+      },
+      "data": {
+        "command": [
+          "/usr/bin/python3",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "dft_entry_copies",
+          "--target-dir",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/5/native.json"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.15431351700681262,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 32813056,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "<cache>/rustmage-build-reports/db5195a9dc994f9fae0bf36830e5847f.json": {
+      "artifact": {
+        "path": "<cache>/rustmage-build-reports/db5195a9dc994f9fae0bf36830e5847f.json",
+        "sha256": "38f8184a6896e8c736ea7240dcf93d589d8ffbab8d85e4c2cff94237625060c4"
+      },
+      "data": {
+        "command": [
+          "/usr/bin/python3",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "dft_retained_copy",
+          "--target-dir",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/6/native.json"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.13072212401311845,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 32198656,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "<cache>/rustmage-build-reports/ad8d6e5bf7e5497999064eed7ae894d1.json": {
+      "artifact": {
+        "path": "<cache>/rustmage-build-reports/ad8d6e5bf7e5497999064eed7ae894d1.json",
+        "sha256": "b2fb91118112c6e6116ea624ab4dce9ba0f2020cd32e3d22f48b01157f4a4806"
+      },
+      "data": {
+        "command": [
+          "/usr/bin/python3",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "dft_private_hand",
+          "--target-dir",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/7/native.json"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.13533932200516574,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 32546816,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "<cache>/rustmage-build-reports/7619798bbe684d93aa99d61b83bea980.json": {
+      "artifact": {
+        "path": "<cache>/rustmage-build-reports/7619798bbe684d93aa99d61b83bea980.json",
+        "sha256": "d5634bc7cbb32414b09815f8dd2dd02fb8f4e31978ea771da5a4cde85f8f19d1"
+      },
+      "data": {
+        "command": [
+          "/usr/bin/python3",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "dft_variable_costs_engine",
+          "--target-dir",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/8/native.json"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.1475372000131756,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 32268288,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "<cache>/rustmage-build-reports/3de573539551416781f09711c76966d7.json": {
+      "artifact": {
+        "path": "<cache>/rustmage-build-reports/3de573539551416781f09711c76966d7.json",
+        "sha256": "dbd3604ff5f8789db58b8ec4f31fe21547000838c677346a8cda1705b05f61ce"
+      },
+      "data": {
+        "command": [
+          "/usr/bin/python3",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "dft_mana_payment_continuations_engine",
+          "--target-dir",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/9/native.json"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.16118871298385784,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 33484800,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "<cache>/rustmage-build-reports/0fa23b02640b4f018bb4f806e627239a.json": {
+      "artifact": {
+        "path": "<cache>/rustmage-build-reports/0fa23b02640b4f018bb4f806e627239a.json",
+        "sha256": "a14f48570c00fc56af14bffc262262e90bfd3cd3189c0581373870b0671a425f"
+      },
+      "data": {
+        "command": [
+          "/usr/bin/python3",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "dft_mana_rollback",
+          "--target-dir",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/10/native.json"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.1508992210146971,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 31907840,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "<cache>/rustmage-build-reports/03ef42e800464c0bbe028893efc5dc11.json": {
+      "artifact": {
+        "path": "<cache>/rustmage-build-reports/03ef42e800464c0bbe028893efc5dc11.json",
+        "sha256": "b5fd23a494737ab1becfe790a1647e741fa873b2e69a17a1f68d7bec1824e758"
+      },
+      "data": {
+        "command": [
+          "/usr/bin/python3",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "dft_combat_schedule",
+          "--target-dir",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/11/native.json"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.14377516999957152,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 31809536,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "<cache>/rustmage-build-reports/49334506d0e74a729d303b9cb1201856.json": {
+      "artifact": {
+        "path": "<cache>/rustmage-build-reports/49334506d0e74a729d303b9cb1201856.json",
+        "sha256": "996def63e17cde414292b88ac38b76ba2ea58c3e40ffbe9fa65a3ff302392d47"
+      },
+      "data": {
+        "command": [
+          "/usr/bin/python3",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "mandatory_loops",
+          "--target-dir",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/12/native.json"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.13168351599597372,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 32370688,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "<cache>/rustmage-build-reports/bc0bd20a6db547ddb0da931ba2d37a8b.json": {
+      "artifact": {
+        "path": "<cache>/rustmage-build-reports/bc0bd20a6db547ddb0da931ba2d37a8b.json",
+        "sha256": "eab03d0f69bc283c24113db7c5070899b9ac70d132d0cdb438f6a672fad43b49"
+      },
+      "data": {
+        "command": [
+          "/usr/bin/python3",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "dft_attached_untap_engine",
+          "--target-dir",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/13/native.json"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.14645938202738762,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 32059392,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "<cache>/rustmage-build-reports/f33276d136654138bf7f8bdef3c5aa80.json": {
+      "artifact": {
+        "path": "<cache>/rustmage-build-reports/f33276d136654138bf7f8bdef3c5aa80.json",
+        "sha256": "6e883f912e58aae639fe5351a2a5df7034bb09f058c0153e79d61fc2bace216c"
+      },
+      "data": {
+        "command": [
+          "/usr/bin/python3",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "dft_trigger_facts_engine",
+          "--target-dir",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/14/native.json"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.14331585500622168,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 32665600,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "<cache>/rustmage-build-reports/d2ad3fc3542042d0a06177857783cc1e.json": {
+      "artifact": {
+        "path": "<cache>/rustmage-build-reports/d2ad3fc3542042d0a06177857783cc1e.json",
+        "sha256": "bb25ff2986056f68f912c65ec8e35932bfe047422bed437b4f23ce40ec71d8cd"
+      },
+      "data": {
+        "command": [
+          "/usr/bin/python3",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "dft_black_red_cards_grave_costs",
+          "--target-dir",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/15/native.json"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.14706675100023858,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 33406976,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "<cache>/rustmage-build-reports/3b897791f97647a29f2c43e81c110f51.json": {
+      "artifact": {
+        "path": "<cache>/rustmage-build-reports/3b897791f97647a29f2c43e81c110f51.json",
+        "sha256": "b9a3edecc83fa8dae2a325be85b8db65e6b96e8793dcbde5c225c9f58b8dce4c"
+      },
+      "data": {
+        "command": [
+          "/usr/bin/python3",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "dft_black_red_cards_discard_entries",
+          "--target-dir",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/16/native.json"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.13173118300619535,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 32399360,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "<cache>/rustmage-build-reports/09daa985d2124f5f8aa7162245513aab.json": {
+      "artifact": {
+        "path": "<cache>/rustmage-build-reports/09daa985d2124f5f8aa7162245513aab.json",
+        "sha256": "df1d558e2ca93c3b7bef5535dd86ef930d07b6de15c883f52851a3202d85bc8a"
+      },
+      "data": {
+        "command": [
+          "/usr/bin/python3",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "dft_black_red_cards_trigger_creatures",
+          "--target-dir",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/17/native.json"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.1398542959941551,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 31801344,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "<cache>/rustmage-build-reports/63116f77edca4558824c6d85d8bee6f8.json": {
+      "artifact": {
+        "path": "<cache>/rustmage-build-reports/63116f77edca4558824c6d85d8bee6f8.json",
+        "sha256": "ae4ea34705d9e09bdb814baade71aa21023ce983a39dc8633ac80c18f551e515"
+      },
+      "data": {
+        "command": [
+          "/usr/bin/python3",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "legacy",
+          "--target-dir",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/18/native.json",
+          "--filter",
+          "reflexive"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.19145207002293319,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 34373632,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "<cache>/rustmage-build-reports/a675d132269343d5b731cb77de8faf2f.json": {
+      "artifact": {
+        "path": "<cache>/rustmage-build-reports/a675d132269343d5b731cb77de8faf2f.json",
+        "sha256": "daf71b44eed26af63b599b3678c1a8d7a088fd0c2cc94e968c7578f996287d16"
+      },
+      "data": {
+        "command": [
+          "/usr/bin/python3",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "legacy",
+          "--target-dir",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/19/native.json",
+          "--filter",
+          "hob_thorin_mountain_king"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.15022407099604607,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 34140160,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "<cache>/rustmage-build-reports/2317ce1117e248da879239f597bf56ea.json": {
+      "artifact": {
+        "path": "<cache>/rustmage-build-reports/2317ce1117e248da879239f597bf56ea.json",
+        "sha256": "885493e03a9ca31d4ab023fa3e0a9e2e7752f35e7b26d8cc71d0c644ac0fe667"
+      },
+      "data": {
+        "command": [
+          "/usr/bin/python3",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "legacy",
+          "--target-dir",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/20/native.json",
+          "--filter",
+          "hob_bolg"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.15005358099006116,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 33665024,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "<cache>/rustmage-build-reports/9748c067890843dd9f7a9c133552ad83.json": {
+      "artifact": {
+        "path": "<cache>/rustmage-build-reports/9748c067890843dd9f7a9c133552ad83.json",
+        "sha256": "22a615f3a1c0a5c8717f8c08e189b9130f1d790cd6bbf7eefd81a7b46d19f473"
+      },
+      "data": {
+        "command": [
+          "/usr/bin/python3",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "legacy",
+          "--target-dir",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/21/native.json",
+          "--filter",
+          "hartford_leatherhead"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.1393643849878572,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 33677312,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "<cache>/rustmage-build-reports/ae68fed4010e449294bbe020ccb1347f.json": {
+      "artifact": {
+        "path": "<cache>/rustmage-build-reports/ae68fed4010e449294bbe020ccb1347f.json",
+        "sha256": "17902c1235bf8c0ce01826a34464b916b221379538b7481d313bdac6c596d0bf"
+      },
+      "data": {
+        "command": [
+          "/usr/bin/python3",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "legacy",
+          "--target-dir",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/22/native.json",
+          "--filter",
+          "explore"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.14574991600238718,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 33099776,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "<cache>/rustmage-build-reports/008a284761fd4ac0a22aabf5b44bf085.json": {
+      "artifact": {
+        "path": "<cache>/rustmage-build-reports/008a284761fd4ac0a22aabf5b44bf085.json",
+        "sha256": "0ccc000167aabd4e79f2db44a6f5535fe9d7708005c2a23fc66347b49fe3847b"
+      },
+      "data": {
+        "command": [
+          "/usr/bin/python3",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "legacy",
+          "--target-dir",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/23/native.json",
+          "--filter",
+          "hartford_draw"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.15031043798080646,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 33607680,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "<cache>/rustmage-build-reports/8504ac4c85a14af4a44601739c451fcb.json": {
+      "artifact": {
+        "path": "<cache>/rustmage-build-reports/8504ac4c85a14af4a44601739c451fcb.json",
+        "sha256": "6ef4fac87abe2dafb35fc5ae7883d051b1332782021d1a334fb45f1d66b122db"
+      },
+      "data": {
+        "command": [
+          "/usr/bin/python3",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "legacy",
+          "--target-dir",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/24/native.json",
+          "--filter",
+          "discard_events"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.13899713099817745,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 33492992,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    },
+    "<cache>/rustmage-build-reports/8e1a1f0a441a4071af457a206e924ef0.json": {
+      "artifact": {
+        "path": "<cache>/rustmage-build-reports/8e1a1f0a441a4071af457a206e924ef0.json",
+        "sha256": "a2fbc14855a0e5676bc55d1906e21522bbe48a5f20441acd0f972fde87fca7a7"
+      },
+      "data": {
+        "command": [
+          "/usr/bin/python3",
+          "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+          "--test-target",
+          "legacy",
+          "--target-dir",
+          "<cache>/rustmage-authoring/tdm-counter-world/target",
+          "--report",
+          "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/25/native.json",
+          "--filter",
+          "hob_inherited_draw"
+        ],
+        "terminal": true,
+        "exit_code": 0,
+        "seconds": 0.14128571798210032,
+        "memory_max_bytes": 6442450944,
+        "memory_peak_bytes": 33263616,
+        "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+        "cargo_jobs": 1,
+        "test_threads": 1
+      }
+    }
+  },
+  "summary": {
+    "terminal": {
+      "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/terminal.json",
+      "sha256": "4119430003e80fcf9463418491035234a22aee8cb9afeba45522b0fa4c15ead7"
+    },
+    "focused_passes": 96,
+    "affected_compatibility_passes": 257,
+    "selected_total_passes": 353,
+    "selected_compile_seconds": 1.686712430062471,
+    "selected_execution_seconds": 0.9853520210308488,
+    "warm_pipeline_wall_seconds": 10.022179121995578,
+    "first_changed_engine96_compile_seconds": 114.16914333601017,
+    "native_case_execution_throughput": "Selected deterministic rules cases only; not simulation throughput or full-set performance.",
+    "core_clippy_pass": true
+  },
+  "measured_layout": {
+    "artifact": {
+      "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793675148590097165/layout.json",
+      "sha256": "06fd16cb295eb2b4dcdb4e9d8de17f1b9652d6578e743914857131a7e87e9bce"
+    },
+    "DamagePreventionKind": 16,
+    "DamagePreventionView": 40,
+    "DamageSource": 160,
+    "DamageSourceRef": 24,
+    "EventObjectView": 320,
+    "ExileDeathReplacementView": 40,
+    "Object": 160,
+    "ObjectView": 528,
+    "ReflexiveSubjectView": 48,
+    "RoleState": 408,
+    "SourcePreventionState": 88,
+    "SpellView": 880,
+    "State": 4960,
+    "new_hot_fields": 0,
+    "owner_hot_baseline_unchanged": true,
+    "root_inherited_baseline": "Object160/ObjectView544/State4992/SpellView880/Pending64 independently measured by integrator. Do not compare owner4960 to root4992 as repair growth.",
+    "new_cold_storage": "Existing event-object pointer carries optional owned semantic group; existing reflexive-subject payload adds action bool (48-byte cold payload); death source_referred bool fits current40-byte cold row."
+  },
+  "actual_public_wire_additions": [
+    {
+      "shape": "Action::ChooseStackDamageSource { id:u64 }",
+      "meaning": "Distinct referred nonmana ability object."
+    },
+    {
+      "shape": "DamageSourceChoiceView.stack_objects:Vec<u64>",
+      "serialization": "omitted empty",
+      "privacy": "chooser only, same gate as physical candidates"
+    },
+    {
+      "shape": "DamageSourceRef (untagged): Object({card,generation}) | StackObject({stack_object:u64})",
+      "consumers": "ChosenSourceShieldView.chosen and event semantic group; inherited physical-object encoding unchanged"
+    },
+    {
+      "shape": "EventObjectFacts::Identity",
+      "meaning": "identity-only facts; no hidden characteristics"
+    },
+    {
+      "shape": "EventObjectView.semantic_objects:Option<Box<Vec<DamageSourceRef>>>",
+      "serialization": "omitted None"
+    },
+    {
+      "shape": "ReflexiveSubjectView.action:bool",
+      "serialization": "omitted false",
+      "meaning": "new actual performed action receipt, not inherited parent subject"
+    },
+    {
+      "shape": "ExileDeathReplacementView.source_referred:bool",
+      "serialization": "omitted false",
+      "meaning": "typed replacement instruction semantically names historical damage source"
+    },
+    {
+      "shape": "BoundTarget.object:Option<ObjectRef> (inherited optional field)",
+      "newly_emitted": "Exact physical spell self-incarnation for targeted physical stack spells; ability targets remain StackID only. Existing same_target_object StackID semantics preserved."
+    },
+    {
+      "shape": "TriggerCondition::CreaturesAttackDeclared {minimum,power_min,guard}",
+      "meaning": "Explicit typed creature-condition vocabulary, separate from player-only AttackDeclared."
+    }
+  ],
+  "artifacts": {
+    "required_compiler_proc_macros": [
+      {
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/libserde_derive-4a3ec5018aa504ef.so",
+        "sha256": "16e56c72844cb52549aca635bf643fd0903d223d703291e366575e6900e074a7"
+      },
+      {
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/librustmage_test_access-636adfcd609bee93.so",
+        "sha256": "c009fbc5de616b8bd2e9b74040b5e3a93b47809c2a8f4c5e2a78d1a564398f6a"
+      }
+    ],
+    "native_elf_test_outputs_at_final_checkpoint": [
+      {
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/tdm_remaining_world_rules-cf0d4d28fb44e1bb",
+        "sha256": "5a26fd783b6cd2d07e5adfe02d6ff9b0c384cc632add09fcdf179c83b77280d7"
+      },
+      {
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/tdm_protection_decayed-bf5c0ce07b354580",
+        "sha256": "8564782b6f11a94118b6878d266615404eef33d4f85b5559db9986608b2798ae"
+      },
+      {
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/tdm_counter_world-fda5280ec130573e",
+        "sha256": "8e24f3e35c8c80a2a25059b9bd40f3e3594ba0432fb73379e104ea14b67ffdd1"
+      },
+      {
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/tdm_copy_suspend-a39e25d9caedb9ce",
+        "sha256": "921ea3fb5b5004f1d1009d319bcde2f097d3114b8bd5976f8ba116176a75f33b"
+      },
+      {
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/tdm_combat_callbacks-d0c5b1f64f96ce30",
+        "sha256": "12ee2960ddbaba4e46b3a46cdf340b84bb6a9e5c67b8e07ad671f758040dc605"
+      },
+      {
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/dft_entry_copies-08ebe83fb53074ce",
+        "sha256": "8c10f86db914a4d18af0010c3334cd11888ba2e795555b4ce21b0a4511f124eb"
+      },
+      {
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/dft_retained_copy-e670e777ae9b2f74",
+        "sha256": "056b75ad140ef9d748cf616b02eaaec7082fe4e4bf88113dc02383573c26d66f"
+      },
+      {
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/dft_private_hand-5da55615437b8ba0",
+        "sha256": "ee0e10b8e7c4111d78a511650537b190b9810800f4e615b8a49df1419869b852"
+      },
+      {
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/dft_variable_costs_engine-4404c9cb268fc190",
+        "sha256": "93cf7a313b7be389dc4093d24fe87a8accf1242fef33561c36b055b285783f03"
+      },
+      {
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/dft_mana_payment_continuations_engine-9999b14d56e1538e",
+        "sha256": "30e873e13d0f30c90fc91b04d3f28cfb108df6ea7879e5bc09fdaf83be76052c"
+      },
+      {
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/dft_mana_rollback-76b91df88a9477be",
+        "sha256": "7bccf5986a74a4906c44157dcdda8962b16a579e028efbad94c48e6971503f9e"
+      },
+      {
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/dft_combat_schedule-c2469020065fd73f",
+        "sha256": "c14662ecf853e31fc0a8f408eea14df67678584609a4f47e2438ca12c97ec8a6"
+      },
+      {
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/mandatory_loops-7737af393b71303a",
+        "sha256": "42eab5ceecbefd00cae7ba3de09094796836a6d864a0bfc992d0a49fcff36c8a"
+      },
+      {
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/dft_attached_untap_engine-b02769297bd020e0",
+        "sha256": "cfb623dab51fd7d517f166ff9017fcbafd98bb41e4654794bdfea24a68d2a793"
+      },
+      {
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/dft_trigger_facts_engine-9476a47dd20047df",
+        "sha256": "75f3c50dd2f408d5e68393c3714b2702a3c1e400b92fd49968ea947335bf9d19"
+      },
+      {
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/dft_black_red_cards_grave_costs-281068c61dfafcb8",
+        "sha256": "c22c0d2b2d7fc1a0da835643558c2a12d9986f6e1e5a483bba4bbc72c0959626"
+      },
+      {
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/dft_black_red_cards_discard_entries-074ccf4845fed615",
+        "sha256": "1394ff55e70dc918fb114eea7b7ed6c4814f07fc61fb8775805af3d3ba0c438a"
+      },
+      {
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/dft_black_red_cards_trigger_creatures-b27097e1dde48374",
+        "sha256": "87d6029c186fc77b139980d0d0412298e19201a00391612d981d3c757dc0d9c5"
+      },
+      {
+        "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/legacy-49262b90621dc1a0",
+        "sha256": "a1239abf6113134df7ee85f77329ade541e3f8ac1a5ddc635cf289726ea1b184"
+      }
+    ],
+    "native_linkage": "Native ELF tests link engine/set rlibs. Cargo-produced cdylib is transient build output, not required runtime input; no FFI command was run.",
+    "cargo_cdylib_transient": {
+      "path": "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/librustmage.so",
+      "sha256": "3e248bf1779ae34f98254d32875cc95906f39374a0a4399fd9bab6b0d7ed2cb0"
+    }
+  },
+  "resource_contract": {
+    "one_guarded_build": true,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "memory_cap_bytes": 6442450944,
+    "no_oom_probes": true,
+    "all_selected_processes_terminal_before_lease_release": true
+  },
+  "integration_obligations": [
+    "Keep root native-grant origins and newer entry/counter consumers, DeathCounters facts and its owned-byte accounting; use merging setter to retain semantic refs.",
+    "Root owns schema200/prior199 and trace classification. Never strip meaningful new semantic_objects/Identity/action/source_referred state merely to claim old observations equivalent.",
+    "Compose the inherited root strict State4992 budget and current ObjectView544, then run assembled focused/legacy/release checks, catalogue linking and simulation throughput.",
+    "Require two independent final published-head nonauthor reviews excluding authored ancestors before accepting shared-engine scope.",
+    "All TDM card authorship and admissions remain behind the complete shared-engine checkpoint."
+  ],
+  "acceptance": {
+    "newly_complete_tdm_cards": 0,
+    "scoped_focused_candidate_passes": true,
+    "independent_final_reviews_complete": false,
+    "assembled_validation_complete": false,
+    "release_validator_run_here": false,
+    "whole_set_or_pool_complete": false,
+    "simulation_benchmarks_run": false
+  },
+  "changed_engine96_checkpoint": {
+    "report": {
+      "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793674885522574968/0/native.json",
+      "sha256": "10ee7904daf8a53e2610863e949c5435cdc536877348ca08dbb639a0382d3f71"
+    },
+    "guard_report": {
+      "path": "<cache>/rustmage-build-reports/bd06e103b6aa4e23ba4209d461c27220.json",
+      "sha256": "6d29bd40d64a0ce7db690639baddf0fdfbf3c3cd43c3599c2b338cd7056b4988"
+    },
+    "guard_metrics": {
+      "command": [
+        "/usr/bin/python3",
+        "<worktree>/tdm-counter-world/rustmage/scripts/run_native_tests.py",
+        "--test-target",
+        "tdm_remaining_world_rules",
+        "--target-dir",
+        "<cache>/rustmage-authoring/tdm-counter-world/target",
+        "--report",
+        "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793674885522574968/0/native.json"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 114.2711168959795,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 1949880320,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    },
+    "focused_passes": 96,
+    "compile_seconds": 114.16914333601017,
+    "execution_seconds": 0.05911656600073911,
+    "source_freeze": {
+      "path": "<cache>/rustmage-tdm/remaining-world-semantic96-final-1793674885522574968/source-hashes.json",
+      "sha256": "7c9aa081934aded532116428ef6d1e65cb44ccb5733ab879d27898a28c37694e"
+    },
+    "final_source_difference": [
+      "<worktree>/tdm-counter-world/rustmage/tests/dft_trigger_facts_engine.rs"
+    ],
+    "final_source_difference_reason": "Only inherited DTA cleanup assertion changed afterward; all engine and96 focused fixture inputs match final353 checkpoint exactly."
+  },
+  "core_clippy_resource": {
+    "report": {
+      "path": "<cache>/rustmage-tdm/remaining-world-semantic96-clippy-1793674855670115678/terminal.json",
+      "sha256": "3d6c7cd19a7147eb26eb92b2c2160f6c2824f612547c99d2410976711295a120"
+    },
+    "guard_report": {
+      "path": "<cache>/rustmage-build-reports/d8874102ef2d4eac948d3bdc298e6847.json",
+      "sha256": "f37b6cc8f418ca84ff9c42bc4761c1be1a2d06b09b3cfd4a8b3a3dce98e7c196"
+    },
+    "guard_metrics": {
+      "command": [
+        "cargo",
+        "clippy",
+        "-p",
+        "rustmage-core",
+        "--lib",
+        "--features",
+        "test-support",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "terminal": true,
+      "exit_code": 0,
+      "seconds": 7.530955443013227,
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 976625664,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+      "cargo_jobs": 1,
+      "test_threads": 1
+    }
+  },
+  "review_followup": {
+    "status": "Historical353 selected passes retained; two1119 review findings require the descendant final-boundary repair. The old mana-loss/ineligible-spend removal expectation and inference are retracted, not counted as proof of correct DTA lifetime.",
+    "base_evidence_sha256": "b8528dd5434c2dd95878c316f1820e3d02b5160c643c23011809b86ade27e751",
+    "addendum": "docs/tdm-semantic-final-boundary-evidence.json",
+    "fixture_note": "Respecting pending choices exposed the old native Battlesong contrast had bypassed its mandatory target. Descendant now chooses the nonattacking source legally and preserves the original attacker exclusion assertion."
+  }
+}

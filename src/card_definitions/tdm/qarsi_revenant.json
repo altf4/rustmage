@@ -3,10 +3,21 @@
   "catalogue_id": 3298,
   "oracle_id": "bbea79bc-71d4-4100-92f4-783c2c4b46da",
   "facts_sha256": "7ccc9eb247aa9b8bb8a35e7dad36c0fccb5c35edd2b81e99f6b73bba8b6a52cd",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e761c66889e360d1116a579adde49ab14dcd6cd30aca43779d821926348fe025"
   },
-  "physical_metadata_sha256": "afcf4a3c070a09f8b7c652d357f47e4258f10e36fad1821ed09033aede3d6c80"
+  "physical_metadata_sha256": "afcf4a3c070a09f8b7c652d357f47e4258f10e36fad1821ed09033aede3d6c80",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/q/QarsiRevenant.java",
+  "java_sha256": "762dc77608e2d734a83efe251f86bf64bd9ee0143ad73e0a4fbc15a9f2f0aed9",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/RenewAbility.java",
+      "sha256": "32a1436eacfca7d3397a9bed3a949b686061d5e54d2627219e393fbe9947a02b"
+    }
+  ]
 }

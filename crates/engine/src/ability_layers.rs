@@ -40,6 +40,8 @@ pub struct StaticAbilityGroup {
 pub enum AdditionalTriggerScope {
     ControlledSubtype(&'static str),
     EquippedCreature,
+    /// Only abilities triggered by a creature attacking, never other events.
+    ControlledPermanentAttack,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -49,6 +51,15 @@ pub enum AdditionalTriggerScope {
     reason = "Complete immutable typed origin payloads are preserved while legacy fast tables supply some values; do not discard during direct-definition migration"
 )]
 pub enum StaticAbilityFragment {
+    /// Qualifies this entire immutable static ability group by its source's
+    /// active as-entry choice. Checked definitions restrict this to integrated
+    /// consumers. An in-place copy has no inherited choice.
+    EntryMode(u16),
+    /// A printed activated template present only in this source's chosen mode.
+    SourceEntryModeActivation {
+        mode: u16,
+        ability: u16,
+    },
     /// Cast the exact card exiled by this source's linked hand-reveal ability at threshold.
     CastLinkedExileAtThreshold,
     /// Initiates its controller's persistent speed designation as a state-based action.
@@ -67,6 +78,8 @@ pub enum StaticAbilityFragment {
     ControlledInstantSorcerySplitSecond,
     /// Permanents controlled by this source's controller cannot be sacrificed.
     ControlledPermanentsCannotBeSacrificed,
+    /// No player may activate abilities of matching battlefield permanent kinds.
+    ActivatedPermanentKindsProhibited(u16),
     /// Cards in graveyards cannot be exiled by any player.
     GraveyardCardsCannotBeExiled,
     /// Replace a controlled permanent's move to a graveyard with no move.
@@ -118,6 +131,8 @@ pub enum StaticAbilityFragment {
         condition: StatValue,
     },
     FreeHandCast,
+    /// An alternative mana cost only; the card needs an independent legal origin.
+    FreeSpellCast(CastFilter),
     FreeHandCastAtMostControlledCreatures,
     GrantInstantSorceryStorm {
         ability: u16,
@@ -136,6 +151,8 @@ pub enum StaticAbilityFragment {
     PlayLandFromGraveyard,
     SpendAnyManaForCreatures,
     SpellImprovise(CastFilter),
+    /// Controlled matching spells have delve while this provider's rule is available.
+    SpellDelve(CastFilter),
     GraveyardPermanentTypes,
     ForeignStashPlay,
     ControlAttached,
@@ -151,6 +168,12 @@ pub enum StaticAbilityFragment {
     /// This land is the chosen basic land type (CR305.7).
     ChosenBasicLandType,
     OtherSubtypeEntryCounters(&'static str),
+    /// A fixed addition from a provider already present before the entry event.
+    ControlledSubtypeEntryCounters {
+        subtype: &'static str,
+        kind: CounterKind,
+        amount: u64,
+    },
     /// Additional counters on other controlled entrants, selected by effective mana value.
     OtherControlledEntryCountersByManaValue {
         filter: ReplacementFilter,
@@ -176,6 +199,11 @@ pub enum StaticAbilityFragment {
     /// Grant controlled planeswalkers the one-attacker restriction.
     ControlledPlaneswalkerAttackLimit,
     ControlledSubtypeKeywords {
+        subtype: &'static str,
+        keywords: Keywords,
+    },
+    /// Live layer-six grant; virtual taps and control/subtype changes requalify recipients.
+    ControlledUntappedSubtypeKeywords {
         subtype: &'static str,
         keywords: Keywords,
     },
@@ -280,7 +308,12 @@ pub enum StaticAbilityFragment {
         filter: CountFilter,
         ability: u16,
     },
-    AttachmentActivation(u16),
+    /// Grant a creature the indexed ordinary activation template. Tapping the
+    /// distinct attachment is an additional cost only when printed explicitly.
+    AttachmentActivation {
+        ability: u16,
+        tap_attachment: bool,
+    },
     /// Grants an independent tap mana ability to the attached permanent.
     AttachmentMana(ManaProduction),
     AttachmentSacrificeMana(ManaProduction),
@@ -403,6 +436,8 @@ pub enum AnimationDuration {
 pub enum AnimationCreatureTypes {
     Unchanged,
     Named(&'static [&'static str]),
+    /// Add creature types while retaining existing subtypes.
+    Additional(&'static [&'static str]),
     All,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

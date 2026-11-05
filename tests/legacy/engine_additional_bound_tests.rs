@@ -9,6 +9,8 @@ fn context(game: &Game, actor: Player, source: CardId, kind: EffectChoiceKind) -
         .unwrap();
     additional.kind = kind;
     CostContext {
+        delve_selected: false,
+        mana_closed: false,
         actor,
         source: game.object_ref(source),
         source_counter_reservation: Counters::default(),
@@ -148,6 +150,7 @@ fn additional_bounds_handle_combined_costs_and_preserve_unknowns_and_linked_retu
         let prison = named(&mut game, actor, "Bolg's Company", Zone::Battlefield);
         let exiled = named(&mut game, actor, "Island", Zone::Exile);
         game.state.exile_links.push(ExileLink {
+            ability_origin: None,
             source: game.object_ref(prison),
             exiled: game.object_ref(exiled),
             return_zone: Zone::Hand,

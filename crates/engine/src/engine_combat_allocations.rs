@@ -12,6 +12,9 @@ pub struct CombatDamagePlayerView {
 pub(super) struct CombatRulesState {
     pub additional_combats: u64,
     pub after_main: Option<MainPhaseCombatView>,
+    pub inserted_phases: Vec<Step>,
+    pub turn_callbacks: Vec<TurnCallbackView>,
+    pub attack_without_defender: Vec<ObjectRef>,
     #[allow(
         clippy::box_collection,
         reason = "Cold delayed packets use one pointer when absent"
@@ -36,6 +39,13 @@ struct ExcessDamage {
 impl CombatRulesState {
     pub(super) fn owned_bytes(&self) -> usize {
         std::mem::size_of::<Self>()
+            + self.inserted_phases.len() * std::mem::size_of::<Step>()
+            + self.attack_without_defender.len() * std::mem::size_of::<ObjectRef>()
+            + self
+                .turn_callbacks
+                .iter()
+                .map(|row| std::mem::size_of::<TurnCallbackView>() + row.item.owned_bytes())
+                .sum::<usize>()
             + self.begin_combat_this_turn.as_ref().map_or(0, |rows| {
                 std::mem::size_of::<Vec<SpellView>>()
                     + rows
@@ -60,7 +70,7 @@ impl Game {
             .filter_map(|row| {
                 row.target
                     .object
-                    .map(|object| (object, Counters::of(kind, u64::from(row.amount))))
+                    .map(|object| (object, Counters::of(kind, row.amount)))
             })
             .collect();
         self.effect_counters(changes, replacements::ResumeMode::Program);
@@ -424,7 +434,10 @@ impl ActivatedAbility {
         .expect("activation X header count")
     }
     pub(super) fn has_x_cost(&self) -> bool {
-        self.x_symbols() != 0
+        self.x_symbols() != 0 || self.life_x_cost() || self.nonmana_x()
+    }
+    pub(super) fn nonmana_x(&self) -> bool {
+        self.program.first() == Some(&Instruction::ActivationNonmanaX)
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -432,12 +445,7 @@ impl Announcement {
     pub(super) fn has_x_cost(&self) -> bool {
         match self.item.kind {
             StackKind::Spell => {
-                self.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .card
-                    .x_symbols()
-                    > 0
+                self.payment_x_symbols() > 0
                     || self
                         .item
                         .source
@@ -452,6 +460,20 @@ impl Announcement {
                     .card
                     .activation_x_symbols(ability)
                     > 0
+                    || self
+                        .item
+                        .source
+                        .expect("activation source")
+                        .card
+                        .activation(ability)
+                        .life_x_cost()
+                    || self
+                        .item
+                        .source
+                        .expect("activation source")
+                        .card
+                        .activation(ability)
+                        .nonmana_x()
             }
             _ => false,
         }

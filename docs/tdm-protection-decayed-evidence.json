@@ -1,0 +1,228 @@
+{
+  "schema": 1,
+  "scope": [
+    "C:COLOR_PROTECTION",
+    "B:decayed_ability"
+  ],
+  "base_revision": "c5d2f06ee8bfba174514bab52e9f8794221ea15f",
+  "rules_authority": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "effective_date": "2026-09-25",
+    "sections": [
+      "702.16a-g,j (protection)",
+      "702.147a (Decayed)",
+      "122.1b / 613.7c (keyword counters)",
+      "603.7 (delayed triggered abilities)",
+      "701.17 (sacrifice controller)"
+    ]
+  },
+  "oracle_inputs": {
+    "path": "data/standard/cards.json",
+    "cards": [
+      {
+        "name": "Ureni, the Song Unending",
+        "oracle_id": "1c995c80-3301-409b-822b-9297aa260823"
+      },
+      {
+        "name": "Rot-Curse Rakshasa",
+        "oracle_id": "9fee2572-8864-475c-bade-a64e36ef69c4"
+      }
+    ],
+    "full_bodies_read": true
+  },
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "xmage_sources": [
+    {
+      "path": "Mage.Sets/src/mage/cards/u/UreniTheSongUnending.java",
+      "sha256": "a426d6d95e1351a4e138636275f714ecf2f5e58fe0e72269c977d49ab5adc888",
+      "full_body_read": true
+    },
+    {
+      "path": "Mage.Sets/src/mage/cards/r/RotCurseRakshasa.java",
+      "sha256": "4b458bef0b78f8746854cbecccfcce2f53d6402f0615cf3a32f1ad320c12d309",
+      "full_body_read": true
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProtectionAbility.java",
+      "sha256": "9e9e989ed896c2061243d8db26a7d6a364116b654a8477bbeb52c613e9d943cd",
+      "full_body_read": true
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/DecayedAbility.java",
+      "sha256": "4a8d6ab0aee39c967b2ec6f5884e3f8a2a37d83d4932a2c85b2549aed2c2cce1",
+      "full_body_read": true
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBlockSourceEffect.java",
+      "sha256": "8e20a86a1c2b5442b9281b9eb4910a3f341c30e5007204a29f1a68be3bdced20",
+      "full_body_read": true
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3",
+      "full_body_read": true
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateDelayedTriggeredAbilityEffect.java",
+      "sha256": "537fdb546ad334c8e75d07346e68cf02ee4fa38bf830cbbd041ef491234f0661",
+      "full_body_read": true
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/AtTheEndOfCombatDelayedTriggeredAbility.java",
+      "sha256": "002e2647f2a140f6779712baab32f0c9677bc25421148a9c457ac978e8896c33",
+      "full_body_read": true
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeSourceEffect.java",
+      "sha256": "67db08baf9a6cc6c7fad953388bdd2adb74e4c9af4c5e2f5483c8cc546bbb098",
+      "full_body_read": true
+    }
+  ],
+  "source_inputs": [
+    {
+      "path": "crates/engine/src/cards.rs",
+      "sha256": "11c7e64f8e87cf7822a3b0af7a7a431c265f7699dd43ac753a32e59a03488121"
+    },
+    {
+      "path": "crates/engine/src/engine.rs",
+      "sha256": "ae48df68efb7c50c876e3bb5486389d195b9305d5737ea8812e5923e46f1cae2"
+    },
+    {
+      "path": "crates/engine/src/engine_blocking.rs",
+      "sha256": "64b5a15d10538e2ace66f56d3ab77c9be1ff3a1c61a2742823b25f41a210243e"
+    },
+    {
+      "path": "crates/engine/src/engine_entries.rs",
+      "sha256": "18dcc5230f4e0bc1d4e6938b473eedfab0a9f90f654c53a141884f8e1ae1b766"
+    },
+    {
+      "path": "crates/engine/src/engine_equipment.rs",
+      "sha256": "2629956c4a2dcf15fcca8daaf9e59afa47f67acdfc3b02a573fb7bcf845c4d7c"
+    },
+    {
+      "path": "crates/engine/src/engine_funding.rs",
+      "sha256": "a1a14d3189c4e6759f76b9e2617515aa4f8831cc39fada7bda6a0d34bcd13e59"
+    },
+    {
+      "path": "crates/engine/src/engine_funding_entries.rs",
+      "sha256": "f2fd725709bba70c30576088a062bdd7cf4be9a2fde10d6a123a0f8057d7473f"
+    },
+    {
+      "path": "crates/engine/src/engine_granted_abilities.rs",
+      "sha256": "45dbc04337d484ebb9fd6b6bb2b873e1b52f1d77514085a5db8731f0b94e372c"
+    },
+    {
+      "path": "crates/engine/src/engine_keyword_counters.rs",
+      "sha256": "40b569a1c247c66417f1ce80661d8b28560cdf2a6a31999a3b9b77445dc9b8e1"
+    },
+    {
+      "path": "crates/engine/src/engine_mobilize.rs",
+      "sha256": "a8e671de95a996ad947e34aafd71df03a03e2996836225313f7064bb56799edf"
+    },
+    {
+      "path": "crates/engine/src/engine_programs.rs",
+      "sha256": "ec2c0352b96b2c9a80ed076710a53da5d1220911cad806ce211d909e1eaf4587"
+    },
+    {
+      "path": "crates/engine/src/engine_replacements.rs",
+      "sha256": "14a4c101cffcc5f944b1cdf557dd689af6654046d5707fc69ff851235d557cb2"
+    },
+    {
+      "path": "crates/engine/src/engine_roles.rs",
+      "sha256": "4978c716895cdb1775b085d5c6fa1c57afd7391208d790fca0bdf1a154a02921"
+    },
+    {
+      "path": "crates/engine/src/engine_sba.rs",
+      "sha256": "6e5c7d17c298934d1433ac9f8b229ff9242679dff9bb8b7dbb00951282df2807"
+    },
+    {
+      "path": "crates/engine/src/engine_steps.rs",
+      "sha256": "318a11ba0838bfd2f3b1263e3dbf5932f5018ceb0d596c4a9ed36926a6d40060"
+    },
+    {
+      "path": "crates/engine/src/engine_targeting.rs",
+      "sha256": "1dc5d600087cf6703f8905eb37bd8143859ea864a7c9e32fc8ba886e6decab1a"
+    },
+    {
+      "path": "tests/tdm_protection_decayed.rs",
+      "sha256": "6a98269bb0967677cd8e906569b3a50e51ade5d322dd49f68f7ab7a0e4259ae1"
+    }
+  ],
+  "behavior": [
+    "Widen Keywords u32 to u64, retaining all low32 bit values and numeric JSON encoding. Five named WUBRG protection flags and named DECAYED; no numeric keyword authorship.",
+    "Use one targeting source-quality query for chosen spell face in preflight/on stack, exact live ability source (including copy/color changes), or frozen actual departure LKI; never follow a later incarnation.",
+    "Protection participates in legal target selection including own-controller effects, pairwise blocking, preventable combat/noncombat damage and affected-controller replacement/prevention order, Equipment attachment, Aura entry and later attachment SBAs using live Aura colors.",
+    "CounterKind::Decayed uses the existing sparse layer-six keyword-counter timestamps and removal ordering; printed/copied/granted Decayed forbids blocking and queues one intrinsic attack ability per declared attack.",
+    "Decayed attack packet is counterable and creates a source-independent owned end-combat delayed sacrifice through the existing delayed-sacrifice batch. Controller is frozen from attack ability, subject is exact incarnation; copy/ability loss do not undo a queued delay, theft prevents foreign sacrifice, reentry/reused token slots never rebind.",
+    "Regular delayed next-end-step sacrifice behavior is retained and its wire shape omits end_combat=false."
+  ],
+  "focused_outcomes": [
+    "ability_targeting_rechecks_current_source_color_and_uses_exact_departure_lki_without_rebinding",
+    "actual_and_funding_attachment_worlds_requalify_after_virtual_provider_departure",
+    "colored_protection_blocks_matching_creatures_and_prevents_both_damage_kinds_but_not_unpreventable_damage",
+    "colored_protection_targeting_checks_all_five_colors_for_both_controllers_before_payment",
+    "decayed_counter_payment_is_projected_and_printed_or_copied_decayed_has_both_parts",
+    "decayed_delayed_sacrifice_retains_attack_controller_exact_incarnation_and_token_slot",
+    "decayed_sacrifices_once_per_attack_after_counter_removal_but_gaining_it_after_attack_is_not_retroactive",
+    "delayed_attack_and_end_combat_packets_are_counterable_and_owned_raw_index_restore_are_deterministic",
+    "keyword_widening_retains_old_numeric_wire_values_and_records_hot_layout",
+    "layer_six_suppression_removes_protection_and_decayed_then_later_counter_grant_restores_only_decayed",
+    "paid_chosen_omen_face_uses_red_spell_qualities_instead_of_green_physical_card",
+    "protection_from_each_color_rejects_aura_entry_and_equipment_then_cleans_later_color_changes",
+    "protection_participates_in_affected_players_prevention_replacement_order_and_preserves_shields"
+  ],
+  "run": {
+    "report": "<cache>/rustmage-tdm/protection-decayed-first/native.json",
+    "resource_report": "<cache>/rustmage-build-reports/53bcca2f3531451090ff900b08aa1873.json",
+    "success": true,
+    "terminal": true,
+    "cases": 13,
+    "compile_seconds": 112.86575039100717,
+    "execution_seconds": 0.0253345429955516,
+    "total_seconds": 112.89176076001604,
+    "memory_peak_bytes": 1910792192,
+    "timeouts": false,
+    "orphaned_processes": false,
+    "active_processes": []
+  },
+  "layout": {
+    "baseline_revision": "c5d2f06ee8bfba174514bab52e9f8794221ea15f",
+    "before": {
+      "Object": 160,
+      "ObjectView": 512,
+      "State": 4912
+    },
+    "after": {
+      "Object": 160,
+      "ObjectView": 528,
+      "State": 4944,
+      "DamageSource": 160
+    },
+    "measurement": "<cache>/rustmage-tdm/protection-decayed-layout.txt",
+    "hot_object_unchanged": true
+  },
+  "resource_contract": {
+    "guarded": true,
+    "cap_bytes": 6442450944,
+    "cargo_jobs": 1,
+    "test_threads": 1,
+    "inputs_frozen_until_terminal": true,
+    "no_oom_probe": true,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n"
+  },
+  "integration_obligations": [
+    "Integrator owns actual observation-schema extension for Keywords u64, DamagePreventionKind::ProtectionColor, StackKind::DecayedAttack and DelayedSacrificeView.end_combat (omitted false); no independent schema bump in this branch.",
+    "Combined optional-token attachment colored-source protection scenario after integrating shared can_attach hook.",
+    "Two independent nonauthor reviews of final published inputs; broader compatibility/release validation and inherited trace checks remain with set integrator.",
+    "No authored TDM behavior/admission edits, no full-set completion claim; simulation throughput not measured."
+  ],
+  "review_status": "Independent review found nonredundant Decayed instances were collapsed; original13-case proof superseded by docs/tdm-decayed-multiplicity-evidence.json, refreshed reviews pending.",
+  "acceptance": {
+    "focused_rules_pass": false,
+    "full_release_validation_run": false,
+    "newly_complete_cards": 0,
+    "all_shared_rules_complete": false,
+    "simulation_benchmarks_run": false
+  },
+  "followup": "docs/tdm-decayed-multiplicity-evidence.json"
+}

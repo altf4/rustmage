@@ -9,6 +9,9 @@ pub struct ExileDeathReplacementView {
     pub source: ObjectRef,
     pub source_card: Card,
     pub source_controller: Player,
+    /// The wording names this damage source, beyond creator provenance.
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub source_referred: bool,
     pub expires_turn: u32,
 }
 
@@ -35,6 +38,7 @@ impl Game {
             source: event.source.reference,
             source_card: event.source.facts.card,
             source_controller: event.source.controller,
+            source_referred: true,
             expires_turn: self.state.turn,
         };
         self.state
@@ -62,6 +66,7 @@ impl Game {
                 source: source.object,
                 source_card: item.trigger_definition(),
                 source_controller: item.controller,
+                source_referred: false,
                 expires_turn: self.state.turn,
             };
             self.state
@@ -91,15 +96,6 @@ impl Game {
             Zone::Exile
         } else {
             requested
-        }
-    }
-
-    pub(super) fn forget_death_exile_replacements(&mut self, object: ObjectRef) {
-        if let Some(rules) = self.state.death_exile_replacements.as_mut() {
-            rules.retain(|rule| rule.object != object);
-            if rules.is_empty() {
-                self.state.death_exile_replacements = None;
-            }
         }
     }
 

@@ -42,6 +42,7 @@ impl Game {
             source_copy_recipe: None,
             source_ability_origin: None,
             target_allocations: None,
+            announced_division: None,
             mana_copy_sources: None,
             is_copy: false,
             ninjutsu_defender: None,

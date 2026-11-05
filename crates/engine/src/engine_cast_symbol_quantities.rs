@@ -1,9 +1,9 @@
-//! Retain an existing cast event only for programs consuming printed spell symbols.
+//! Retain an existing cast event only for programs consuming its mana value or symbols.
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn amount(value: AmountValue) -> bool {
     match value {
-        AmountValue::CastSpellManaSymbols(_) => true,
+        AmountValue::CastSpellManaValue | AmountValue::CastSpellManaSymbols(_) => true,
         AmountValue::Multiple { value, .. } | AmountValue::Divided { value, .. } => amount(*value),
         AmountValue::Sum(values) => values.iter().any(|v| amount(*v)),
         _ => false,
@@ -33,6 +33,9 @@ pub(super) fn selected(program: &[Instruction]) -> bool {
         | Instruction::MoveCountersFromSource { amount: value, .. }
         | Instruction::RevealTargetHandSubsetDiscard(value)
         | Instruction::DrawScaled(_, value)
+        | Instruction::DrawRemembered(value)
+        | Instruction::MayMillAmount(value)
+        | Instruction::Mill(_, MillAmount::Amount(value))
         | Instruction::GainLifeScaled(_, value)
         | Instruction::LoseLifeScaled(_, value)
         | Instruction::DrainLifeScaled(value)
@@ -51,6 +54,8 @@ pub(super) fn selected(program: &[Instruction]) -> bool {
         | Instruction::GrowCreaturesScaled { amount: value, .. }
         | Instruction::GrowPermanentGroupScaled { amount: value, .. }
         | Instruction::CreateTokensScaled { amount: value, .. }
+        | Instruction::EndureScaled { amount: value, .. }
+        | Instruction::CreateSizedToken { size: value, .. }
         | Instruction::CreateTokensWithCounters {
             counters: value, ..
         } => amount(value),

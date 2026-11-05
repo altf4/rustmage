@@ -4,7 +4,10 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
     static_groups: &[StaticAbilityGroup {
         line: 0,
         first_layer: AbilityLayer::Ability,
-        fragments: &[StaticAbilityFragment::AttachmentActivation(1)],
+        fragments: &[StaticAbilityFragment::AttachmentActivation {
+            ability: 1,
+            tap_attachment: true,
+        }],
     }],
     extras: &CardExtras {
         equipment: Some(EquipmentSpec {

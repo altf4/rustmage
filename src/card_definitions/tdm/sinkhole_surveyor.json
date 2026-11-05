@@ -8,5 +8,36 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cd5b4c396a5399e9c9083c29c93a999d87140759b374449bd7d375ee1f36d547"
   },
-  "physical_metadata_sha256": "912f6ce5f31abe354c801f24a235176597d59e78aff762156852b5a87d152d52"
+  "physical_metadata_sha256": "912f6ce5f31abe354c801f24a235176597d59e78aff762156852b5a87d152d52",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SinkholeSurveyor.java",
+  "java_sha256": "c87b9a505e8c27129f1dbbdb4cd63c7315a0dff2ebf180fc0047787632aa1803",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+      "sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EndureSourceEffect.java",
+      "sha256": "b32a2eef10ea3a3f03e93398e6e5a6aeebd279daa5a95edda6aab6380e1d9dcd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/NoFlyingSpiritWhite11Token.java",
+      "sha256": "ae86fa5f2d2e9df5fe94d034fe7a720d7b69c3365f9d5e79585668e94c5db558"
+    }
+  ],
+  "rules_tests": "tests/tdm_cards_s_z.rs::creatures_"
 }

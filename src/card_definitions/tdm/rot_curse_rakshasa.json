@@ -3,10 +3,21 @@
   "catalogue_id": 3592,
   "oracle_id": "9fee2572-8864-475c-bade-a64e36ef69c4",
   "facts_sha256": "04484f7c6cff8b1019d6608f098d08792bb6cac36b44ac05ba78fc1777cbf493",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "058f707c2e0c14324dd95f170c9368680052ea5e5a9dabf54ac51daf9cacfe29"
   },
-  "physical_metadata_sha256": "46d762f542a7fa755441cd7fffcb0b544043c82f8bf23aa681599df3f6a5b69c"
+  "physical_metadata_sha256": "46d762f542a7fa755441cd7fffcb0b544043c82f8bf23aa681599df3f6a5b69c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RotCurseRakshasa.java",
+  "java_sha256": "4b458bef0b78f8746854cbecccfcce2f53d6402f0615cf3a32f1ad320c12d309",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DecayedAbility.java",
+      "sha256": "4a8d6ab0aee39c967b2ec6f5884e3f8a2a37d83d4932a2c85b2549aed2c2cce1"
+    }
+  ]
 }

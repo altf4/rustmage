@@ -80,6 +80,7 @@ fn matches(c: Card, f: SearchFilter) -> bool {
         SearchFilter::Any => true,
         SearchFilter::NoAbilities => !c.has_rules_abilities(),
         SearchFilter::Colorless => c.colors() == 0,
+        SearchFilter::Colors(colors) => c.colors() & colors != 0,
         SearchFilter::Nonland => !c.is_land(),
         SearchFilter::ManaValue { minimum, maximum } => {
             (minimum..=maximum).contains(&c.fixed_mana_value())

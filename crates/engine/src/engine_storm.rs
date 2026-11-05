@@ -14,6 +14,15 @@ impl Card {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn earlier_spells_this_turn(&self) -> u64 {
+        self.state
+            .players
+            .iter()
+            .try_fold(0u64, |sum, p| sum.checked_add(p.spells_cast_this_turn))
+            .capacity("storm count exhausted")
+            .checked_sub(1)
+            .expect("actual cast counted")
+    }
     pub(super) fn queue_instant_sorcery_storm(&mut self, index: usize) {
         let spell = &self.state.stack[index];
         if spell.is_copy
@@ -24,14 +33,7 @@ impl Game {
             return;
         }
         let spell = spell.clone();
-        let prior = self
-            .state
-            .players
-            .iter()
-            .try_fold(0u64, |sum, p| sum.checked_add(p.spells_cast_this_turn))
-            .capacity("storm count exhausted")
-            .checked_sub(1)
-            .expect("actual cast counted");
+        let prior = self.earlier_spells_this_turn();
         let mut grants = Vec::new();
         for &id in &self.state.static_sources {
             let source = &self.state.objects[id as usize];

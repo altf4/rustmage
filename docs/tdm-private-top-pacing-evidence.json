@@ -1,0 +1,117 @@
+{
+  "schema": 1,
+  "scope": "C:PRIVATE_TOP_LAND_THEN_OPTIONAL_GRAVE privacy pacing repair",
+  "base_revision": "b2a42eb84700c3b22e6f3a695aa836d6e8f8e125",
+  "source_inputs": [
+    {
+      "path": "crates/engine/src/engine_library_selection.rs",
+      "sha256": "82aefccfb2421bba7d4ee4a6c5d26908b61f1f25656218b79f2b620d5cc2024f"
+    },
+    {
+      "path": "tests/tdm_resolution_results.rs",
+      "sha256": "74cc3e9112172ad880b83c6fdac6427d2b2d071a198a53fe57cd511926288478"
+    }
+  ],
+  "card_authorship_or_admission_changes": false,
+  "independent_finding": {
+    "reviewer": "/root/tdm_audit_s_z",
+    "problem": "An unchosen land needed two private completions but an unchosen nonland needed one. Public pending/stack progression revealed landness despite the private frame."
+  },
+  "repair": [
+    "Every nonempty look starts the same private Hand stage. A nonland has no eligible hand pick but still has the same FinishLibrarySelection action.",
+    "The first decline advances either kind to the same private Graveyard stage. Nonland candidates become eligible only there. Both declines leave the original exact top card and retain private top knowledge.",
+    "No Action, Pending, observation field or hot state field was added. Actor-private eligibility remains intentionally different."
+  ],
+  "negative_witness": {
+    "report": "<cache>/rustmage-tdm/private-top-pacing-negative/native.json",
+    "sha256": "dd3fc3c53feddd77636135827e25a8cd35b4f8e9654701c8add87f03a532536c",
+    "runtime_original_sha256": "f81a57b8988d2c00483c656ac2b1cf9cf28add91f2b29efb495c1879262b0ade",
+    "runtime_repair_sha256": "82aefccfb2421bba7d4ee4a6c5d26908b61f1f25656218b79f2b620d5cc2024f",
+    "regression": "unchosen_land_and_nonland_have_identical_opponent_visible_choice_progression",
+    "result": "Exact baseline runtime with new regression terminates0/1 as intended: entire serialized opponent observations differ after the first decline, with library_selection/resolving versus priority/no resolving.",
+    "compile_seconds": 113.82190681499196,
+    "execution_seconds": 0.02527704299427569,
+    "preservation": "Repair was saved and hashed before restoring the exact baseline runtime; unchanged regression and repair hashes were verified after the negative process terminated before restoring the fix."
+  },
+  "final_runs": [
+    {
+      "report": "<cache>/rustmage-tdm/private-top-pacing-fixed/native.json",
+      "sha256": "f68d0d98a70485640fc012236b6177d135ab548932c33b3f632d0d5fadc847a7",
+      "cases": 31,
+      "compile_seconds": 115.70257460899302,
+      "execution_seconds": 0.04275136100477539,
+      "success": true,
+      "terminal": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/private-top-pacing-compat/0/native.json",
+      "sha256": "0b4739205acf450d56575f0f893992b6bf294d6a3451dcaa3f41743fc4ab79ff",
+      "cases": 2,
+      "compile_seconds": 21.67295687898877,
+      "execution_seconds": 0.03234783897642046,
+      "success": true,
+      "terminal": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/private-top-pacing-compat/1/native.json",
+      "sha256": "bbf6c8bdb0f77145107112d985351ae0ca73f0ef5be31ba0b32073731eb0f4bc",
+      "cases": 3,
+      "compile_seconds": 0.0644579759973567,
+      "execution_seconds": 0.03295098099624738,
+      "success": true,
+      "terminal": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/private-top-pacing-compat/2/native.json",
+      "sha256": "889a216b21795fbb4bf321adde0db8cd6b0db6788b8e9c2a20f5b7b43aadced2",
+      "cases": 1,
+      "compile_seconds": 0.06494587700581178,
+      "execution_seconds": 0.033361096982844174,
+      "success": true,
+      "terminal": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/private-top-pacing-compat/3/native.json",
+      "sha256": "f0e148d1e197f1b6e433c39d8c179233c1ff704d70ec675f903514e6be47606d",
+      "cases": 1,
+      "compile_seconds": 0.0646226599928923,
+      "execution_seconds": 0.024461761000566185,
+      "success": true,
+      "terminal": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/private-top-pacing-compat/4/native.json",
+      "sha256": "b7cedfd109df08f566a7135bfb1c548af920e35ddbc7170e2ff81584f645b35c",
+      "cases": 3,
+      "compile_seconds": 0.06446083000628278,
+      "execution_seconds": 0.03270245200837962,
+      "success": true,
+      "terminal": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/private-top-pacing-compat/5/native.json",
+      "sha256": "c2aaae1699c7e82d94c11ac42f32468b636a3581e6c602df466c1e68b5a90baa",
+      "cases": 4,
+      "compile_seconds": 0.06468470999971032,
+      "execution_seconds": 0.033187973021995276,
+      "success": true,
+      "terminal": true
+    }
+  ],
+  "final_cases": 45,
+  "compile_seconds": 137.69870354098384,
+  "execution_seconds": 0.2317634639912285,
+  "outcomes": [
+    "Both seats compare complete serialized opponent observations before and after each of two declines. The land and nonland cases are identical throughout public progression.",
+    "Nonland hand selection rejects transactionally, then that same exact nonland can be chosen for the subsequent graveyard phase.",
+    "All30 inherited resolution/private focused groups and14 directly affected inherited library/milled scenarios pass on the matching fixed inputs."
+  ],
+  "verification": [
+    "All inputs remained frozen until each consuming process actually terminated; every Cargo invocation entered resource_guard through the native runner.",
+    "rustfmt on both changed Rust files and git diff --check."
+  ],
+  "limitations": [
+    "Scope is the independently identified private-top pacing defect. New event contexts are a separate subsequent engine checkpoint.",
+    "No complete-card/set acceptance or simulation throughput claim."
+  ]
+}

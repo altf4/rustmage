@@ -128,6 +128,48 @@ impl Game {
             }
         }
     }
+    pub(super) fn shuffle_graveyard_targets_into_player_library(
+        &mut self,
+        item: &SpellView,
+        player_group: u16,
+        cards_group: u16,
+    ) {
+        let Some(player) = item.targets.iter().find_map(|bound| {
+            if bound.group == player_group
+                && let Target::Player(player) = bound.target
+            {
+                Some(player)
+            } else {
+                None
+            }
+        }) else {
+            return;
+        };
+        let mut ids = Vec::new();
+        for bound in item
+            .targets
+            .iter()
+            .filter(|bound| bound.group == cards_group)
+        {
+            let Some(reference) = bound.object else {
+                continue;
+            };
+            if self.same_target_object(*bound) {
+                let object = &self.state.objects[reference.card as usize];
+                if object.zone == Zone::Graveyard
+                    && object.owner == player
+                    && object.is_card()
+                    && !ids.contains(&reference.card)
+                {
+                    ids.push(reference.card);
+                }
+            }
+        }
+        let events = self.move_objects_raw(&ids, Zone::Library);
+        self.finish_zone_events(&events, &[]);
+        self.forget_library_top(player);
+        self.shuffle_library_cards(player);
+    }
     pub(super) fn shuffle_target_into_library(&mut self, item: &SpellView) {
         let Some(source) = item.source else {
             return;

@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2740fa003b6fbde7d10c271e7425cb0496cd3485f92caafd8c13fb70bf0ee57d"
   },
-  "physical_metadata_sha256": "e01a72d086e93cc3d0f0d557f7a5ff4c32cc26d9fb2e049dde82a8abf8fe9989"
+  "physical_metadata_sha256": "e01a72d086e93cc3d0f0d557f7a5ff4c32cc26d9fb2e049dde82a8abf8fe9989",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HighspireBellRinger.java",
+  "java_sha256": "9f2da655a38d33e03cb6a3e4ea038fa668224c46342c65f1d2790070fcc45ba1",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellsCostReductionControllerEffect.java",
+      "sha256": "47783fefecfbb22810317538f30e9e92302add21ebff508bc21f43683a85ad06"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalCostModificationEffect.java",
+      "sha256": "cdd08c2aebe148f281ec42f2d1a5fc92035dbc9e7b4bf144db74fc9670732196"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/YouCastExactOneSpellThisTurnCondition.java",
+      "sha256": "89e87c6cc1cfceb0ea987fc2a3cf3af22e062785d56ee95d6ce96c1bdb4d7e02"
+    }
+  ]
 }

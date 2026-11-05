@@ -3,10 +3,26 @@
   "catalogue_id": 3435,
   "oracle_id": "680a8e14-053f-4cde-a060-e1b36873cf14",
   "facts_sha256": "64ae758876e8127005c074f2fd44a9f37c88283e8992c483c0a1f724429766ab",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "59af4db4678e7c674e357b813491f7dc7a142311b16268a57f2e9290e183f297"
   },
-  "physical_metadata_sha256": "9289d1367c88e416e149c5bf105cb89f4d963a692b7dbd181422bfa31cb39b8f"
+  "physical_metadata_sha256": "9289d1367c88e416e149c5bf105cb89f4d963a692b7dbd181422bfa31cb39b8f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RediscoverTheWay.java",
+  "java_sha256": "a8e2880a1f5752e965e346cc926a0c517d17336356eb06682ae2c68a975f574a",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SagaAbility.java",
+      "sha256": "d907d96e4141a58d82f32fdb512e6426ed2cbd669544ade67f94b062dc7a8c80"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    }
+  ]
 }

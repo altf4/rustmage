@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b8e51af450c41b411dc74dddc703cd0092369aa0ec437e6dc4c5549074257bb4"
   },
-  "physical_metadata_sha256": "425e1542e8434a39bebfecd13b13e0805f469821fae45db7e7a0fdbff291bc15"
+  "physical_metadata_sha256": "425e1542e8434a39bebfecd13b13e0805f469821fae45db7e7a0fdbff291bc15",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AgentOfKotis.java",
+  "java_sha256": "2f74816aaf84939228c64eff1cbcdf6c5c418041eabeadc2c7e3f0ed83725c8a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/RenewAbility.java",
+      "sha256": "32a1436eacfca7d3397a9bed3a949b686061d5e54d2627219e393fbe9947a02b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+      "sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+    }
+  ],
+  "remaining_obligations": []
 }

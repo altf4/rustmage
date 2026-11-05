@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "056e25806925642fae2b0ff3fdae7cc6f58592c1cdc80746f647e7e01ea855c3"
   },
-  "physical_metadata_sha256": "a43e5eb7e2eed4c51a01552e7c93780022ee36b3fd7fe18a817eff359ef67232"
+  "physical_metadata_sha256": "a43e5eb7e2eed4c51a01552e7c93780022ee36b3fd7fe18a817eff359ef67232",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KnockoutManeuver.java",
+  "java_sha256": "07157c5c835682ffdf7956e5507bf67fb54a60c5509eb66b154246bb77c65183",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageWithPowerFromOneToAnotherTargetEffect.java",
+      "sha256": "cbe6b025fef2b13a46fcdddb02a0342eecd99af9db39d292c22b1f942d2729a3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    }
+  ]
 }

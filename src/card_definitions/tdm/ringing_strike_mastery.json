@@ -3,10 +3,26 @@
   "catalogue_id": 3531,
   "oracle_id": "334ffdc4-9fe6-4a7f-bf5d-bcd88adab715",
   "facts_sha256": "a1c8d71f6b689280ca74cd8f4f4f55921287cfeab82a1fc940250d1eff14378c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cd6023f3f7685d8c9f03530dd4a6a3a363843c412624525644fab3e834bacda6"
   },
-  "physical_metadata_sha256": "9db60884be31a92304d4d6054c0022c8e106b1fad8c049fe476f29e667dbe99e"
+  "physical_metadata_sha256": "9db60884be31a92304d4d6054c0022c8e106b1fad8c049fe476f29e667dbe99e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RingingStrikeMastery.java",
+  "java_sha256": "b98cde9d6a1b753b75c308140e1effd1c90f1281d5595f5c8e1dfbd7cd8e8499",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DontUntapInControllersUntapStepEnchantedEffect.java",
+      "sha256": "70d499fc10da2ffb0d0be4f8ac2104fd1e2c6dfc2c8f9e494c4b2e8480d90f3b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+      "sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+    }
+  ]
 }

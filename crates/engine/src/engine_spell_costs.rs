@@ -121,6 +121,14 @@ impl Game {
     }
     pub(super) fn announcement_base_cost(a: &Announcement) -> ManaCost {
         let mut base = a.cost.unwrap_or_else(|| {
+            if a.item
+                .cast
+                .is_some_and(|cast| cast.method == CastMethod::GrantedHarmonize)
+            {
+                return a
+                    .fixed_alternative_cost()
+                    .expect("printed harmonize mana cost");
+            }
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Mayhem) {
                 return a
                     .item
@@ -230,6 +238,10 @@ impl Game {
         }
         if a.cost.is_none() {
             base = Self::with_tiered_mana(base, &a.item).expect("validated selected Tiered cost");
+            base.generic = base
+                .generic
+                .checked_add(a.behold_decline_generic())
+                .capacity("behold alternative mana cost exhausted");
         }
         if a.forage
             .as_ref()
@@ -296,7 +308,7 @@ impl Game {
         };
         costs.into_iter().any(|cost| {
             let cost = Self::with_flash_surcharge(cost, definition, true);
-            if definition.target_cost_reduction().is_some() {
+            if definition.has_target_cost_modifier() {
                 self.initial_target_cost_fundable(actor, card, cost)
             } else if definition.collect_evidence_cost().is_some() {
                 self.evidence_cast_fundable(actor, card, cost, false)
@@ -365,8 +377,7 @@ impl Game {
             .source
             .expect("cost announcement has object source")
             .card
-            .target_cost_reduction()
-            .is_some()
+            .has_target_cost_modifier()
         {
             return self.announcement_target_fundable(a, None, None, Some(pay), None, false);
         }

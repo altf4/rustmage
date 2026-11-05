@@ -505,6 +505,35 @@ impl Game {
             player: item.controller,
         };
     }
+    pub(super) fn create_sized_tokens_for_linked_exile_owners(
+        &mut self,
+        item: &SpellView,
+        token: Card,
+    ) {
+        let Some(source) = item.source else {
+            return;
+        };
+        let linked = self.linked_exile_for_origin(source.object, item.source_ability_origin);
+        let mut owners = 0u8;
+        let mut size = 0u128;
+        for object in linked {
+            let exiled = &self.state.objects[object.card as usize];
+            owners |= 1 << exiled.owner.index();
+            size = size
+                .checked_add(u128::from(exiled.card.fixed_mana_value()))
+                .capacity("linked mana value exhausted");
+        }
+        if owners == 0 {
+            return;
+        }
+        let _ = i128::try_from(size).capacity("linked token base size exhausted");
+        let recipe = CopyRecipe::new(token).with_sampled_size(copies::SampledTokenSize::new(size));
+        let players: Vec<_> = [self.state.active, self.state.active.other()]
+            .into_iter()
+            .filter(|p| owners & (1 << p.index()) != 0)
+            .collect();
+        self.stage_simultaneous_copy_creation(&players, recipe);
+    }
     pub(super) fn remember_linked_exile(&mut self, selected: &[CardId]) {
         let Some(source) = self
             .state

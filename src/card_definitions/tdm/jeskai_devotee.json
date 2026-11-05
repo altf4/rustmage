@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8b69f4ecffda60c55eaebfceeffa34b76cc44fd550a860438e7c8796df4c6890"
   },
-  "physical_metadata_sha256": "2e2f844d2e53056d9ededc58115590b3c90463492e3db0a8c0d20924a26bc9d7"
+  "physical_metadata_sha256": "2e2f844d2e53056d9ededc58115590b3c90463492e3db0a8c0d20924a26bc9d7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/j/JeskaiDevotee.java",
+  "java_sha256": "bd2dc6ff3538a2435b521094e394be791249f82ecc97c0ac8fa841400723d03c",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/FlurryAbility.java",
+      "sha256": "c7fd2820826fec5fb71dc63ebaa7ebace3423c724629c164aa818c36781704cb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CastSecondSpellTriggeredAbility.java",
+      "sha256": "a4e91db65304a2f0a017d34eb680d683186071207b0002b036e94fcdc773ddce"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/LimitedTimesPerTurnActivatedManaAbility.java",
+      "sha256": "277f02f44bf32ea4d389b21f74227491808e3fb0c30fbdb911a88918d550af23"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaFromColorChoicesEffect.java",
+      "sha256": "566cfd640a483cb992f550774635dabe582d5f0aba45283a1d7748db79bcc558"
+    }
+  ]
 }

@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e6b140211e00a3ca7c28a65674062f4a61dfb34c7f7d8484c4b7d3436ecfc1d8"
   },
-  "physical_metadata_sha256": "0cbca04e91fbeadb893f9d6ec6b1426f6c46d059186d136e43e3bcec30d4da7c"
+  "physical_metadata_sha256": "0cbca04e91fbeadb893f9d6ec6b1426f6c46d059186d136e43e3bcec30d4da7c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ShockingSharpshooter.java",
+  "java_sha256": "a987ddb9c1d7bd4b8365873da09d280f2b4aff6378fb57a2a7a34ab7994fad48",
+  "rules_tests": "tests/tdm_cards_s_z_additional.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    }
+  ]
 }

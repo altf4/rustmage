@@ -45,6 +45,7 @@ fn land_subtype_loss_and_regain_changes_funding_and_live_mana_together() {
                 colors: None,
                 creature_types: None,
                 all_creature_types: false,
+                additional_creature_types: false,
                 base: Some((1, 1)),
                 keywords: Keywords::NONE,
                 expires_turn: None,

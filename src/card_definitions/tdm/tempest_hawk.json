@@ -3,10 +3,41 @@
   "catalogue_id": 4360,
   "oracle_id": "7423b3b9-56eb-4cf2-8ada-135918219c4b",
   "facts_sha256": "f1d12e38ae5e581cb88808218491c3dbab69034fddddaad8285038c93d8f7fa9",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4c89a89f4369dc41f8a23c58ca37f8e463dd0e23a1a282b1cbba2e9030a47882"
   },
-  "physical_metadata_sha256": "488db642cf524867525e911849e52fb7751d9fba3f02c116a5f18d4596330beb"
+  "physical_metadata_sha256": "488db642cf524867525e911849e52fb7751d9fba3f02c116a5f18d4596330beb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TempestHawk.java",
+  "java_sha256": "bc06b8c02fcd296ce5a95ab47313604acfe281a7fb57f61e48db3b2589f3d152",
+  "rules_tests": "tests/tdm_cards_s_z_additional.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/NamePredicate.java",
+      "sha256": "dd549c35b34f063ea5ec3f405a726fbee961e09b9a10f1cacf821f9125db9858"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/InfoEffect.java",
+      "sha256": "48bac57c3707da691071b0fb266461819de4fbfef0608a0e1767de405a2eca4b"
+    }
+  ]
 }

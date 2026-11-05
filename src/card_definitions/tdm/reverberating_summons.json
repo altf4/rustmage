@@ -3,10 +3,21 @@
   "catalogue_id": 3508,
   "oracle_id": "1fd78bf7-43ba-4e09-834b-14bfc1fd9d0d",
   "facts_sha256": "f26817b160b9ee4925188c4a68ba5e7bdc1b61faea7bca997d109c8fc3c4ecd6",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9831265c1cc0d4cdf5e648b746804952ca1ebd59247bea754fd8bdf1e55e17b0"
   },
-  "physical_metadata_sha256": "5da2b4037e8507782fe5f206c43e6f83a77abfb7cdb7bb6a9f441fce215cca9a"
+  "physical_metadata_sha256": "5da2b4037e8507782fe5f206c43e6f83a77abfb7cdb7bb6a9f441fce215cca9a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/ReverberatingSummons.java",
+  "java_sha256": "31c30eb01cad6b57c47eeea4a2a9fc56bebd27d120aaf86fbab5ea997ca1cfb3",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardHandCost.java",
+      "sha256": "070e69a35af785aced9d186215f0cd304b9265775000b413252e0a635ad4d2b4"
+    }
+  ]
 }

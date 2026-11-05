@@ -44,7 +44,7 @@ fn witchstalker_can_return_preexisting_graveyard_land_after_full_mill() {
 }
 
 #[test]
-fn witchstalker_counts_self_shuffle_as_part_of_mill_without_faking_a_zone_change() {
+fn witchstalker_does_not_count_same_library_shuffle_as_a_completed_mill() {
     for player in [Player::P0, Player::P1] {
         for total in [3, 4] {
             let mut game = scenario(player);
@@ -92,23 +92,17 @@ fn witchstalker_counts_self_shuffle_as_part_of_mill_without_faking_a_zone_change
                         break;
                     }
                 }
-                assert_eq!(chosen, total == 4);
-                if chosen {
-                    settle(&mut game);
-                }
+                // CR603.12 checks the actual four-card mill event. A shuffle
+                // within the library replaces this card's departure (CR614.6).
+                assert!(!chosen);
+                assert_eq!(game.state.pending, Pending::Priority);
+                assert!(game.state.stack.is_empty());
+                assert!(game.state.pending_triggers.is_empty());
+                assert!(game.state.ordering_triggers.is_empty());
+                assert!(game.state.resolving.is_none());
                 assert_eq!(game.object_ref(progenitus), original);
                 assert_eq!(game.object_view(progenitus).zone, Zone::Library);
-                assert_eq!(
-                    game.object_view(old_land).zone,
-                    if total == 4 {
-                        Zone::Battlefield
-                    } else {
-                        Zone::Graveyard
-                    }
-                );
-                if total == 4 {
-                    assert!(game.object_view(old_land).tapped);
-                }
+                assert_eq!(game.object_view(old_land).zone, Zone::Graveyard);
                 assert_eq!(
                     game.state.players[player.index()].cards_library_to_graveyard_this_turn,
                     total - 1

@@ -456,17 +456,25 @@ fn kili_route_survives_provider_sacrifice_and_owned_payment_branches() {
             "My Precious // Allure of Power",
             Zone::Battlefield,
         );
+        // The locked alternative has a positive total only because of this tax.
+        // A zero total grants no mana-ability window in which to sacrifice Kili.
+        let tax = put(&mut g, p.other(), "Skyseer's Chariot", Zone::Battlefield);
+        g.set_entry_value(
+            g.object_ref(tax),
+            EntryChoiceValue::CardName(rustmage_core::CardName::from_name("My Precious").unwrap()),
+        );
         g.state.players[p.index()].mana = [0; 6];
         start(&mut g, e, 0);
         route(&mut g, p, ActivationCostRoute::FirstEquipZero);
         target(&mut g, bear);
+        assert_eq!(g.observe(p).payment_request.unwrap().generic, 2);
         sacrifice_mana(&mut g, bolg, k);
         contracts::branch_contract(g.clone());
         assert!(!g.state.players[p.index()].equip_activated_this_turn);
         pay(&mut g);
         settle(&mut g);
         assert_eq!(g.state.players[p.index()].life, 20);
-        assert_eq!(g.state.players[p.index()].mana, [0, 0, 1, 1, 0, 0]);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
         assert_eq!(g.object_view(e).attached_to, Some(g.object_ref(bear)));
         contracts::branch_contract(g.clone());
     }

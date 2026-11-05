@@ -121,12 +121,6 @@ impl Game {
         }
     }
     pub(super) fn turn_free_library_origin(&self, player: Player, card: CardId) -> bool {
-        if self
-            .player_cast_grants_view(player.index())
-            .is_none_or(|row| row.next_red_or_green_creature_free == 0)
-        {
-            return false;
-        }
         let object = &self.state.objects[card as usize];
         [
             Some(object.card),
@@ -137,7 +131,8 @@ impl Game {
         .into_iter()
         .flatten()
         .any(|definition| {
-            self.turn_free_creature_available(player, definition)
+            (self.turn_free_creature_available(player, definition)
+                || self.filtered_free_cast_available(player, definition))
                 && self.can_cast_library_face(player, card, definition)
         })
     }
@@ -148,12 +143,6 @@ impl Game {
         sorcery: bool,
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
-        if self
-            .player_cast_grants_view(player.index())
-            .is_none_or(|row| row.next_red_or_green_creature_free == 0)
-        {
-            return false;
-        }
         let object = &self.state.objects[card as usize];
         if object.is_token() {
             return false;
@@ -172,7 +161,9 @@ impl Game {
             }) else {
                 continue;
             };
-            if !self.turn_free_creature_available(player, definition) {
+            if !self.turn_free_creature_available(player, definition)
+                && !self.filtered_free_cast_available(player, definition)
+            {
                 continue;
             }
             let ordinary_origin = match object.zone {
@@ -228,6 +219,19 @@ impl Game {
                         flash_surcharge,
                     })
                 {
+                    return true;
+                }
+                if self.permitted_free_additional_origin_cast(
+                    player,
+                    card,
+                    face,
+                    sorcery,
+                    flash_surcharge,
+                ) && emit(Action::AnnounceFreeGraveyardAdditionalCosts {
+                    card,
+                    face,
+                    flash_surcharge,
+                }) {
                     return true;
                 }
                 if player != self.state.active

@@ -3,10 +3,26 @@
   "catalogue_id": 2219,
   "oracle_id": "ce09c5b0-9dd4-4f73-9f3f-dfbd829813e4",
   "facts_sha256": "64e45ad3110e929cdc904744698910b1e6cf3fec7a17b016b973ecf5de7106ff",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b58578d0befd9c53eb9c970b4908064a5b49180bd9777bf4ad81bf8fc5b4b044"
   },
-  "physical_metadata_sha256": "382326561e780d7762df6dff61c632f3f8ce2953f37016646644b1dd2f6c8113"
+  "physical_metadata_sha256": "382326561e780d7762df6dff61c632f3f8ce2953f37016646644b1dd2f6c8113",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/IridescentTiger.java",
+  "java_sha256": "549b7dc3c943d1f11079e0ab25fc47150e2db9cef26340f91ae7c6b758738d41",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+      "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CastFromEverywhereSourceCondition.java",
+      "sha256": "2d091ae95c227de0b227151a9b315cf5370e50f5e0f5177f5e50d8ab3825c4ba"
+    }
+  ]
 }

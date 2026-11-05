@@ -21,6 +21,28 @@ impl Game {
         }) {
             self.state.damage_sources.push(id);
         }
+        if triggers.iter().any(|ability| {
+            ability.condition.origin() == Some(TargetZone::Graveyard)
+                && matches!(
+                    ability.condition.event(),
+                    TriggerCondition::CreatureDies { .. }
+                )
+        }) {
+            self.state.death_sources.push(id);
+        }
+    }
+    /// Ceasing a token/card copy is not a zone change, but must release its
+    /// graveyard observer indexes before the reusable object slot is occupied.
+    pub(super) fn unregister_graveyard_sources(&mut self, id: CardId) {
+        if self.state.death_sources.contains(&id) {
+            self.state.death_sources.retain(|&source| source != id);
+        }
+        if self.state.step_sources.contains(&id) {
+            self.state.step_sources.retain(|&source| source != id);
+        }
+        if self.state.damage_sources.contains(&id) {
+            self.state.damage_sources.retain(|&source| source != id);
+        }
     }
     pub(super) fn register_battlefield_sources(&mut self, id: CardId) {
         let object = self.object_ref(id);
@@ -53,6 +75,7 @@ impl Game {
                 TriggerCondition::OtherCreatureCountersAdded { .. }
                     | TriggerCondition::OtherCreatureCounterPlacedByYou { .. }
                     | TriggerCondition::CounterPlacedByYou { .. }
+                    | TriggerCondition::ControlledCreatureCountersPlaced { .. }
                     | TriggerCondition::CounterBatchPlacedByYou { .. }
                     | TriggerCondition::CounterPlacedByYouOnControlledSubtypes { .. }
                     | TriggerCondition::StateCounterAtLeast { .. }
@@ -91,6 +114,7 @@ impl Game {
                 TriggerCondition::CreatureAttacksYou { .. }
                     | TriggerCondition::CreaturesAttackYou
                     | TriggerCondition::AttackDeclared { .. }
+                    | TriggerCondition::CreaturesAttackDeclared { .. }
                     | TriggerCondition::FirstAttackWithTotalPowerAtLeast(_)
                     | TriggerCondition::AttackPlayer(_)
                     | TriggerCondition::ControlledCreatureAttacksAlone
@@ -161,6 +185,7 @@ impl Game {
                     | TriggerCondition::ReturnDeath(_)
                     | TriggerCondition::SelfEntersOrDies
                     | TriggerCondition::CreatureDies { .. }
+                    | TriggerCondition::CreatureDiesWithCounters { .. }
                     | TriggerCondition::OtherControlledPermanentWithSubtypeDies { .. }
                     | TriggerCondition::AttachedCreatureDies
                     | TriggerCondition::PermanentToGraveyard { .. }
@@ -224,11 +249,16 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::AttackControllerTax { .. }
                             | crate::cards::StaticAbilityFragment::OpponentNoncreatureSpellTax(_)
                             | crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(_)
+                            | crate::cards::StaticAbilityFragment::ActivatedPermanentKindsProhibited(_)
                             | crate::cards::StaticAbilityFragment::PlotCostReduction(_)
                             | crate::cards::StaticAbilityFragment::LandMana { .. }
                             | crate::cards::StaticAbilityFragment::ChosenBasicLandType
                             | crate::cards::StaticAbilityFragment::SpellImprovise(_)
+                            | crate::cards::StaticAbilityFragment::EntryMode(_)
+                            | crate::cards::StaticAbilityFragment::SourceEntryModeActivation { .. }
+                            | crate::cards::StaticAbilityFragment::SpellDelve(_)
                             | crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(_)
+                                    | crate::cards::StaticAbilityFragment::ControlledSubtypeEntryCounters { .. }
                             | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. }
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat
                             | crate::cards::StaticAbilityFragment::FlyingCombatRestriction
@@ -266,6 +296,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. }
                             | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. }
                             | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. }
                             | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..)
                             | crate::cards::StaticAbilityFragment::CounterKeywordOther(..)

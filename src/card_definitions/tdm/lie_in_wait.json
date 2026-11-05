@@ -3,10 +3,14 @@
   "catalogue_id": 2490,
   "oracle_id": "4dc0831a-0eb1-4f7d-9591-6e670e180116",
   "facts_sha256": "034b695cb5efbe29c66de3187bef9030a4fc083baa9a95204613a2ff797aaf86",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "53eabc05b826b6178ef1de9e88d7193d2d29601824bab01221b5cceeb133d60e"
   },
-  "physical_metadata_sha256": "40246057fbb752359824b5371254bddc6d3f6e966ae2ccc82d68b7e43292ee52"
+  "physical_metadata_sha256": "40246057fbb752359824b5371254bddc6d3f6e966ae2ccc82d68b7e43292ee52",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LieInWait.java",
+  "java_sha256": "d46705bdc18a9ab40d92c887bc7449c6271862ce959ef84c666f556685d505a7",
+  "rules_tests": "tests/tdm_cards_g_s.rs"
 }

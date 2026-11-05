@@ -1,0 +1,286 @@
+{
+  "schema": 1,
+  "scope": [
+    "A05",
+    "B:variable_endure",
+    "C:DYNAMIC_SUBJECT_ENDURE"
+  ],
+  "base_revision": "71e84359b1b861340b492288e912a6869e1b9653",
+  "card_authorship_or_admission_changes": false,
+  "source_inputs": [
+    {
+      "path": "crates/engine/src/cards.rs",
+      "sha256": "f4c23d59f8d1c699538370e5ea1d4a91cb753a497d1457e2a0abe8da44608cf3"
+    },
+    {
+      "path": "crates/engine/src/engine.rs",
+      "sha256": "4ed63ada3f98b5507083e65ef5928428c209ed90c5c950d83e6bd14d4501b91b"
+    },
+    {
+      "path": "crates/engine/src/engine_card_quantities.rs",
+      "sha256": "984707ba37ab9d7e5ab1b8dddfd1bc89786b2d8e3134e65ab789c8b71e14126b"
+    },
+    {
+      "path": "crates/engine/src/engine_cast_symbol_quantities.rs",
+      "sha256": "8adacf61d1b846285ecfc1ebff99a776765d8d93afdf0cd80a69bb7d356b8979"
+    },
+    {
+      "path": "crates/engine/src/engine_characteristic_query.rs",
+      "sha256": "20f3c78346df53ceb1846961b0af40cce2418e627fad185b5de9cc9ef3120511"
+    },
+    {
+      "path": "crates/engine/src/engine_copies.rs",
+      "sha256": "fb26277476ef0ea9e3b109573d81a5e836bdd6fbd317a2e54f5cd3e094b241cd"
+    },
+    {
+      "path": "crates/engine/src/engine_endure.rs",
+      "sha256": "27a6089bb0eca62aacc227829e82d998f279d8a26eefbfceddef9c360cfa6386"
+    },
+    {
+      "path": "crates/engine/src/engine_event_objects.rs",
+      "sha256": "7807f06790e28f4dbfbb6342c56452a9241f83bd98c28c590dfc78d5d9d4af9f"
+    },
+    {
+      "path": "crates/engine/src/engine_programs.rs",
+      "sha256": "b43545826c90eb44c0dfb960c6b127d271280b9959c0963c40da34e722b36421"
+    },
+    {
+      "path": "crates/engine/src/engine_source_quantities.rs",
+      "sha256": "bfb09ad0d9f2ff5ad013d0e3fed3bee25967e42333137dd370cb09c0bbf66848"
+    },
+    {
+      "path": "tests/legacy/engine_big_token_tests.rs",
+      "sha256": "fc4e1811f4ebd28522d069b19326e2cf3ed4d1fca2ce4f2085837175acd212d1"
+    },
+    {
+      "path": "tests/tdm_dynamic_tokens.rs",
+      "sha256": "ca0973dbf322cc166cef74c14389905e9e7dfc2448d7da785e9bc1376490f629"
+    }
+  ],
+  "source_authority": {
+    "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "java_complete_bodies_read": [
+      {
+        "path": "Mage.Sets/src/mage/cards/a/AbzanMonument.java",
+        "sha256": "abdb24f8fe053cc6bada860da27f1c9968cd489ebe9570a438ba58aaec0a2199"
+      },
+      {
+        "path": "Mage.Sets/src/mage/cards/w/WardenOfTheGrove.java",
+        "sha256": "56ce553bfa6f989e9659b26741048e1ae11c1ca25bf74407a16c16767ef36587"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/effects/keyword/EndureSourceEffect.java",
+        "sha256": "b32a2eef10ea3a3f03e93398e6e5a6aeebd279daa5a95edda6aab6380e1d9dcd"
+      },
+      {
+        "path": "Mage/src/main/java/mage/game/permanent/token/SpiritXXToken.java",
+        "sha256": "4932f0d1ba9b345e349a094d413209ad21588cae39049d7076781eff34ec12e7"
+      },
+      {
+        "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GreatestAmongPermanentsValue.java",
+        "sha256": "1fb2bb2baf97bbbf6aa1cf4669139b3d10d3fc3beb40a6f2c76fc403393fb299"
+      }
+    ],
+    "oracle_audits": [
+      "docs/tdm-audit-a-g.json#Abzan Monument",
+      "docs/tdm-audit-s-z.json#Warden of the Grove"
+    ],
+    "rules": "Official Tarkir release notes and pinned CR701.63,613,707; exact links retained in the set audit."
+  },
+  "outcomes": [
+    "Ordinary paid tap/sacrifice activation samples current greatest controlled toughness at resolution; opposing creatures are excluded. Large69999/69999 white Spirit has no counters or flying.",
+    "Copying and copying a copy preserve the sampled base while omitting later counters. A later explicit3/3 Golem copy exception replaces the sampled base. A sampled base suppresses a copied P/T CDA before ordinary counter modifiers.",
+    "Creating a0/0 token still creates it and SBA removes it; endure0 takes no action.",
+    "Entering-recipient Endure samples all hot and sparse source counter kinds at resolution, after responses; chosen counter and token events use ordinary replacements. Elspeth doubles tokens, not the sampled base.",
+    "Departed source quantities use final counter LKI and cannot bind a returned source. Recipient current controller chooses and places counters, including Doc Samson qualification in both seats; departed recipient uses controller LKI without binding reentry.",
+    "Counter prohibition creates one70000/70000 Spirit automatically.",
+    "Pending2^64 quantity survives owned raw/index branches and restore after parent disposal; illegal actor and counter-capacity failure preserve exact snapshot/revision, and the token branch remains usable.",
+    "Dynamic source-recipient Endure produces counters or one sampled token, including exact-source departure/reentry fallback."
+  ],
+  "final_runs": [
+    {
+      "report": "<cache>/rustmage-tdm/dynamic-tokens-compact/dft_combat_tokens/native.json",
+      "sha256": "2d78e6e2707f3d83882571b0cf4837a48f2587a31f85f7a7c7143067b6f1eb76",
+      "target": "dft_combat_tokens",
+      "cases": 7,
+      "compile_seconds": 0.7672065630031284,
+      "execution_seconds": 0.033689358009723946,
+      "success": true,
+      "terminal": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/dynamic-tokens-compact/dft_entry_copies/native.json",
+      "sha256": "550b07d21b21fa1f8417223d852220f80085630f137eecdb3de664a916c415f6",
+      "target": "dft_entry_copies",
+      "cases": 16,
+      "compile_seconds": 0.8673285249969922,
+      "execution_seconds": 0.035542365978471935,
+      "success": true,
+      "terminal": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/dynamic-tokens-compact/dft_permanent_cast_copy_engine/native.json",
+      "sha256": "29bc2a101eb3eaf23ba728d2a5f2421a9595cb3fa9cb96e6aae4afc8762334e5",
+      "target": "dft_permanent_cast_copy_engine",
+      "cases": 10,
+      "compile_seconds": 0.8671447359956801,
+      "execution_seconds": 0.02514893197803758,
+      "success": true,
+      "terminal": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/dynamic-tokens-compact/dft_retained_copy/native.json",
+      "sha256": "6a47b0bc8686762d31e4464ee034c82c099e63215e0bb78a3bc710f97d17b467",
+      "target": "dft_retained_copy",
+      "cases": 7,
+      "compile_seconds": 0.7668646759993862,
+      "execution_seconds": 0.03307484500692226,
+      "success": true,
+      "terminal": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/dynamic-tokens-compact/legacy/native.json",
+      "sha256": "c5825f2564774829741b82ce1b52b127628aeb3be44ff0efff5b93fb862deb7a",
+      "target": "legacy",
+      "cases": 12,
+      "compile_seconds": 21.818375036004,
+      "execution_seconds": 0.05071502400096506,
+      "success": true,
+      "terminal": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/dynamic-tokens-compact/tdm_cast_routes/native.json",
+      "sha256": "29b3d320decb700f4e14565227f8bf82fdee66b722172b5266d2ce7199486e7e",
+      "target": "tdm_cast_routes",
+      "cases": 19,
+      "compile_seconds": 1.5187207179842517,
+      "execution_seconds": 0.034268906980287284,
+      "success": true,
+      "terminal": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/dynamic-tokens-compact/tdm_counter_world/native.json",
+      "sha256": "23f67fff3449696a62c094005505bc3b7d01a965eebee00d9ed340802fabb4ac",
+      "target": "tdm_counter_world",
+      "cases": 7,
+      "compile_seconds": 1.4189357369905338,
+      "execution_seconds": 0.03254498599562794,
+      "success": true,
+      "terminal": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/dynamic-tokens-compact/tdm_dynamic_tokens/native.json",
+      "sha256": "dd816811cb2132dc05431d110f2489b375412556a124d84fa8347d2f06d13ec3",
+      "target": "tdm_dynamic_tokens",
+      "cases": 10,
+      "compile_seconds": 112.53922835399862,
+      "execution_seconds": 0.025133175979135558,
+      "success": true,
+      "terminal": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/dynamic-tokens-compact/tdm_endure/native.json",
+      "sha256": "bc938594c0d9cdbde23c2ff949469d034ef11f07af3d16f45c22580f6370ce68",
+      "target": "tdm_endure",
+      "cases": 6,
+      "compile_seconds": 0.8170367030252237,
+      "execution_seconds": 0.02475027201580815,
+      "success": true,
+      "terminal": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/dynamic-tokens-compact/tdm_entry_counters/native.json",
+      "sha256": "f7e9f4903d207f8ed617597ea91b5661826adce4bed419b93db68bf35e10ddbb",
+      "target": "tdm_entry_counters",
+      "cases": 19,
+      "compile_seconds": 0.8672042949765455,
+      "execution_seconds": 0.024782744992990047,
+      "success": true,
+      "terminal": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/dynamic-tokens-compact/tdm_entry_modes/native.json",
+      "sha256": "331c9922e0144b716ff6ab1b2b6c5d9ff06f6e81f07a2a6d42c5c5c33e1a460f",
+      "target": "tdm_entry_modes",
+      "cases": 12,
+      "compile_seconds": 0.8671664979774505,
+      "execution_seconds": 0.04332220400101505,
+      "success": true,
+      "terminal": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/dynamic-tokens-compact/tdm_optional_attachment/native.json",
+      "sha256": "2e04c489e1eeca5d41328840e5078faa1770dfce4114a49ecdd4d04886f483a4",
+      "target": "tdm_optional_attachment",
+      "cases": 6,
+      "compile_seconds": 0.8169980539823882,
+      "execution_seconds": 0.024615392001578584,
+      "success": true,
+      "terminal": true
+    },
+    {
+      "report": "<cache>/rustmage-tdm/dynamic-tokens-compact/tdm_protection_decayed/native.json",
+      "sha256": "1c424028c928d2f902da029c40fdf6e565ba58abe1355878af211330ab2c1620",
+      "target": "tdm_protection_decayed",
+      "cases": 16,
+      "compile_seconds": 0.7669459070020821,
+      "execution_seconds": 0.024302011996041983,
+      "success": true,
+      "terminal": true
+    }
+  ],
+  "final_cases": 147,
+  "compile_seconds": 144.69915580193629,
+  "execution_seconds": 0.4118902189366054,
+  "earlier_runs": [
+    {
+      "report": "<cache>/rustmage-tdm/dynamic-tokens-first/native.json",
+      "result": "Terminal compile failure: missing EndureRecipient imports; no scenarios executed."
+    },
+    {
+      "report": "<cache>/rustmage-tdm/dynamic-tokens-import-fixed/native.json",
+      "result": "TerminalPASS9 on initial16-aligned size representation."
+    },
+    {
+      "reports": "<cache>/rustmage-tdm/integrated-engine-first/*/native.json",
+      "result": "TerminalPASS85 on that same initial source representation."
+    }
+  ],
+  "layout": {
+    "final": {
+      "Object": 160,
+      "ObjectView": 544,
+      "State": 4976
+    },
+    "previous_protection_checkpoint": {
+      "Object": 160,
+      "ObjectView": 528,
+      "State": 4944
+    },
+    "initial_dynamic_size_representation": {
+      "ObjectView": 560,
+      "State": 4976
+    },
+    "reason": "Sampled recipe size uses16 bytes at8-byte alignment with no per-token allocation. Existing hot Object layout is unchanged; public views and the owned pending enum widen as measured."
+  },
+  "reviews": [
+    {
+      "reviewer": "/root/tdm_audit_a_g",
+      "result": "APPROVED exact published44612475ef8cbf42b44082f55b797117206824da source and147-case retained evidence; scoped review only."
+    },
+    {
+      "reviewer": "/root/tdm_audit_s_z",
+      "result": "APPROVED exact published44612475ef8cbf42b44082f55b797117206824da source and147-case retained evidence; scoped review only."
+    }
+  ],
+  "limitations": [
+    "Global observation schema/trace migration is still required for all engine wire changes.",
+    "The final complete shared-engine checkpoint, whole-card tests, set-only games, release acceptance, simulation throughput and two independent nonauthor final published PR-head reviews remain pending.",
+    "These are scoped engine proofs; no complete-card implementation or simulation throughput claim."
+  ],
+  "followup_reopened_review": {
+    "finding": "Source-copy LKI retention omitted sampled bases in three predicates; two independent outcome regressions reproduced it.",
+    "repair_evidence": "docs/tdm-sampled-source-lki-evidence.json",
+    "status": "Central repair passes12 focused/199 assembled cases; refreshed source reviews pending."
+  }
+}

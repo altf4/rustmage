@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "163df242aecf9352ce361af13d2c0bbbe7ea6956a10cde915d13cac838f1c452"
   },
-  "physical_metadata_sha256": "a98689518aa7c8b45cd06a6fcb0a67c8d47ae1ec702ba6acb65476eb7628a02c"
+  "physical_metadata_sha256": "a98689518aa7c8b45cd06a6fcb0a67c8d47ae1ec702ba6acb65476eb7628a02c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DefibrillatingCurrent.java",
+  "java_sha256": "750668bb012fda8b25bae663cd6feaba9eab0f2a23474690b92f690221beb395",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    }
+  ],
+  "remaining_obligations": []
 }

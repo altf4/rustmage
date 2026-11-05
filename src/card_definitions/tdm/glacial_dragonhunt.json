@@ -3,10 +3,36 @@
   "catalogue_id": 1760,
   "oracle_id": "8f976399-29a9-4eb7-844d-3d3f2fdf6ea7",
   "facts_sha256": "6b545fb1d8869e0cb0f96314822bc129a2e7e1d3e2ce6a9418cf3b176ae71c56",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5878d3f0ee86cecb0bc549f74b2f656254c99a81261ddcc1ee4407a4861be1ca"
   },
-  "physical_metadata_sha256": "8714d65c079888e8757bf78325754dd7acc4d97da0d62fc19d27bb41f291bf98"
+  "physical_metadata_sha256": "8714d65c079888e8757bf78325754dd7acc4d97da0d62fc19d27bb41f291bf98",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GlacialDragonhunt.java",
+  "java_sha256": "898a10c1983c399faa1f624fc13a9b37ede4b0412bd8b2126a538eceeb1b993e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HarmonizeAbility.java",
+      "sha256": "a646e202f733800900da7295d1a6886e583f76dcf25fad2be614b00e9f933f0d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+      "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+    }
+  ],
+  "remaining_obligations": []
 }

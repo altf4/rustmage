@@ -3,10 +3,26 @@
   "catalogue_id": 2663,
   "oracle_id": "1f82e4b9-e67f-4f34-ac4c-57b0b300ee42",
   "facts_sha256": "1d18f80b1ad6097c4bae8c4edc151d1ab2927ca08c0f8b79c18ebf25b428d2bf",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7e824d3b82c7221627c7ffe1e524fe49873d57abc91d0abf268d3951460788ce"
   },
-  "physical_metadata_sha256": "fc9bb6fe97a085c2896fb9666cc8573147e6e64d3f3e89090ca374d6c8639e14"
+  "physical_metadata_sha256": "fc9bb6fe97a085c2896fb9666cc8573147e6e64d3f3e89090ca374d6c8639e14",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MarduSiegebreaker.java",
+  "java_sha256": "6775cc47006680e84f2f535f70c06ee054eb9a83181d9a0f8b521a6c2b7a40ee",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileUntilSourceLeavesEffect.java",
+      "sha256": "b996095b17f25f3acb6d649beaf87d3f4abca10338c9444419cca03029d940bf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/util/functions/CopyTokenFunction.java",
+      "sha256": "ed8c0fe3b50030f54d3e32ddbabbdc1f7018c0da6878429821f54020c4d4ce1a"
+    }
+  ]
 }

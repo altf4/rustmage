@@ -37,6 +37,7 @@ impl Game {
             || definition
                 .activation_target_counter_discount(ability)
                 .is_some()
+            || definition.activation_target_color_discount(ability) != 0
     }
     pub(super) fn first_equip_zero_available(
         &self,

@@ -3,10 +3,21 @@
   "catalogue_id": 2417,
   "oracle_id": "33117d34-ea70-4566-92a3-5dec9bfe529a",
   "facts_sha256": "8266a70a5c323d2d8e193433a06276f4d423bf91432a765ccf01c9de14f5a2c2",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4cfe39b015a3823619c8b227859d19669024f35ab86a5bb077e9714f893d38eb"
   },
-  "physical_metadata_sha256": "fae0a986142ff9e047431e8f142149907ba22915ad655e6359358cde66d1dece"
+  "physical_metadata_sha256": "fae0a986142ff9e047431e8f142149907ba22915ad655e6359358cde66d1dece",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KrotiqNestguard.java",
+  "java_sha256": "47ff390e2efc9efd530e0e3339df2b4362971f771b5da3738566329c1805dc2f",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CanAttackAsThoughItDidntHaveDefenderSourceEffect.java",
+      "sha256": "29941ba238616f0249236b80bfb955d545f965ec9c330299ede506dc60096dd4"
+    }
+  ]
 }

@@ -1,0 +1,20 @@
+{
+  "reviewer": "/root",
+  "role": "independent nonauthor scoped review",
+  "commit": "fc95fb1da2575002c32d75cadb2fc438c0489a85",
+  "integration": "f20081bfcb6509fe3f16912852d80dea7c655e12",
+  "decision": "approve scoped rules after style-only lint repair8df06babc",
+  "scope": [
+    "A11 target-subtype casting surcharge",
+    "A12 target color-count activation discount",
+    "B:activation_x_life",
+    "B:exact_x_activation_targets"
+  ],
+  "source_review": "Complete scoped engine diffs and14 scenario groups; payment/funding, exact target cardinality, raw activation cost choices, locked total, selected-face/qualities, wide taxes/reductions and Harmonize composition examined. Oracle/source authority records and pinned evidence checked.",
+  "verified_inputs": 16,
+  "verified_final_reports": 8,
+  "passing_owner_cases": 70,
+  "additional_root_matching_cost_cases": 14,
+  "findings": [],
+  "limitation": "Scoped shared-rule approval; no full-card, complete-set, schema or final PR-head acceptance claim."
+}

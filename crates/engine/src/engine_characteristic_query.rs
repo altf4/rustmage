@@ -39,6 +39,24 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         }
     }
 
+    /// Count actual surviving triggered instances through the ordered ability
+    /// timeline, after provider suppression and recipient ability removal.
+    pub(super) fn decayed_instances(&self, id: CardId) -> usize {
+        if !self.on_battlefield(id) {
+            return 0;
+        }
+        if let Some(evaluation) = &self.evaluation {
+            evaluation.result.objects[id as usize].decayed_instances
+        } else {
+            // Ordinary keywords keep their mask-only fast path. Only an actual
+            // Decayed attack needs multiplicity when there was no other reason
+            // to evaluate the layer-six world.
+            ability_evaluation::evaluate_abilities(self.world)
+                .result
+                .objects[id as usize]
+                .decayed_instances
+        }
+    }
     pub(super) fn object_ref(&self, id: CardId) -> ObjectRef {
         self.reference(id)
     }
@@ -169,15 +187,12 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                 _ => Stats::default(),
             }
         };
-        if let Some((power, toughness)) = self.recipe(id).exceptions.base {
-            stats = Stats {
-                power: i128::from(power),
-                toughness: i128::from(toughness),
-            };
+        if let Some(base) = self.recipe(id).copiable_base() {
+            stats = base;
         }
         // Layer 7a applies in every zone, before setters and additive modifiers.
         if let Some(base) = object.card.dynamic_stats()
-            && self.recipe(id).exceptions.base.is_none()
+            && self.recipe(id).copiable_base().is_none()
             && self.continuous_fragment_available(id, |fragment| {
                 matches!(fragment, StaticAbilityFragment::DynamicStats(..))
             })
@@ -640,6 +655,16 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         {
                             keywords = keywords.union(grant)
                         }
+                        StaticAbilityFragment::ControlledUntappedSubtypeKeywords {
+                            subtype,
+                            keywords: grant,
+                        } if !target.tapped
+                            && target.controller == object.controller
+                            && CharacteristicWorld::subtypes(self, id)
+                                .has(CharacteristicWorld::definition(self, id), subtype) =>
+                        {
+                            keywords = keywords.union(grant)
+                        }
                         StaticAbilityFragment::PlusOnePlacedKeywords {
                             filter,
                             keywords: grant,
@@ -942,9 +967,16 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         if !self.on_battlefield(source) {
             return true;
         }
-        let Some(evaluation) = self.evaluation.as_ref() else {
+        let evaluation = self.evaluation.as_ref();
+        // Existing definitions without entry modes retain the ordinary no-removal fast path.
+        if evaluation.is_none()
+            && !matches!(
+                self.object(source).card.entry_choice(),
+                Some(EntryChoiceKind::NamedModes(_))
+            )
+        {
             return true;
-        };
+        }
         let reference = self.object_ref(source);
         let mut bound = false;
         let mut available = false;
@@ -957,7 +989,9 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         {
             if group.fragments.iter().any(&matches) {
                 bound = true;
-                available |= evaluation.group_available(reference, index);
+                available |= entry_modes::group_enabled(self, reference, group)
+                    && evaluation
+                        .is_none_or(|evaluation| evaluation.group_available(reference, index));
             }
         }
         assert!(
@@ -1071,6 +1105,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         };
         ObjectView {
             additional_triggers: trigger_multiplicity::additional_triggers(self, id),
+            active_entry_mode: entry_modes::active_mode(self, self.object_ref(id)),
             prepared: self.is_prepared(self.object_ref(id)),
             harnessed: CharacteristicWorld::harnessed(self, id).then_some(true),
             abilities: self.ability_availability(id),

@@ -8,5 +8,25 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d748f1db31253aec5a8217f013844612f135da6fb5271e454e6671ab56bfc77e"
   },
-  "physical_metadata_sha256": "f61b405f0c5d736cfae595ffe6dc944c223c67fd8bb28b098612abf2854cccf9"
+  "physical_metadata_sha256": "f61b405f0c5d736cfae595ffe6dc944c223c67fd8bb28b098612abf2854cccf9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/ArashinSunshield.java",
+  "java_sha256": "5d3f144d044ff3b283d1d5bd85340b11fd281f65a0371b2726249e7854370efa",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInASingleGraveyard.java",
+      "sha256": "949cc145a9909c27e84176fa97ef96c73a3e59f445abda54b117c3318d7f1db9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
+      "sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+      "sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+    }
+  ]
 }

@@ -3,10 +3,26 @@
   "catalogue_id": 4243,
   "oracle_id": "f17b9356-a329-4f89-b690-afc2eaff4977",
   "facts_sha256": "66b0b2d879bb013013e880c252b8bec9fb0307c79410411352d4a46b2ab7aa41",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d98db86117f432111518ad016e9307ee96b7596d8a6e3f63bed9410e10c21085"
   },
-  "physical_metadata_sha256": "e2b661781b33155b33d4c484c1f83ca825e55796e5ca7af3ab67fb9b663858c9"
+  "physical_metadata_sha256": "e2b661781b33155b33d4c484c1f83ca825e55796e5ca7af3ab67fb9b663858c9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SunpearlKirin.java",
+  "java_sha256": "3acd745f693e2cfc672597dfac87f6b43ba1bc6a78d7e0cd88a46b9290b01610",
+  "rules_tests": "tests/tdm_cards_s_z_additional.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    }
+  ]
 }

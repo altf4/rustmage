@@ -3,10 +3,21 @@
   "catalogue_id": 2911,
   "oracle_id": "0259f063-3e3f-4e07-9066-f748d4819829",
   "facts_sha256": "06f5f8b1b6ba36b6507a72b79710074ab692160327386d02e8ab54dbe19a6308",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "19858e7e1b7c61cc57215743bbbdbea0aab0f1fb8bbc9f91ae70eab4bcf6734c"
   },
-  "physical_metadata_sha256": "39b18e254333c6452dcfb7b22bade5f2067a16ff6fabc1a99c4c0d9fe42575aa"
+  "physical_metadata_sha256": "f1d437b3fe6257ef5cd2511bff046c79fb4ffe810bd6aef964efa9c345683144",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/n/NaturesRhythm.java",
+  "java_sha256": "3a17973e60216769760b842b096d20923811633b70335237e2b34a75ddf18331",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HarmonizeAbility.java",
+      "sha256": "a646e202f733800900da7295d1a6886e583f76dcf25fad2be614b00e9f933f0d"
+    }
+  ]
 }

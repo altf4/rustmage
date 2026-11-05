@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "88b7ae2ee1def7fdcc007bf6a266902db500b5b52dc7c1330469d4b7c92cfaa7"
   },
-  "physical_metadata_sha256": "9aba56c2865b961b4f57ef36cad8cf8c32462eb2f5207503dcceacf20d661597"
+  "physical_metadata_sha256": "9aba56c2865b961b4f57ef36cad8cf8c32462eb2f5207503dcceacf20d661597",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KinTreeNurturer.java",
+  "java_sha256": "d10516b1645f868eaa4a69ce638505c4030bcd00f28cb162e49528b6a6057eee",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/EndureSourceEffect.java",
+      "sha256": "b32a2eef10ea3a3f03e93398e6e5a6aeebd279daa5a95edda6aab6380e1d9dcd"
+    }
+  ]
 }

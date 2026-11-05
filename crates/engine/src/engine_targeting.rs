@@ -11,6 +11,7 @@ pub(super) struct ActivationCostChoice {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Announcement {
+    pub behold_required: bool,
     pub miracle_cost: Option<ManaCost>,
     pub item: SpellView,
     pub spec: TargetSpec,
@@ -34,6 +35,8 @@ pub(super) struct Announcement {
     pub free_hand_permission: Option<Box<ObjectRef>>,
     /// Mandatory nonmana cost belonging to the selected origin permission.
     pub origin_counter_cost: Option<u16>,
+    /// Immutable definition supplying mandatory costs for the chosen origin route.
+    pub origin_additional_cost: Option<Card>,
     pub counter_payment: Counters,
     pub pay_window: bool,
     pub production: Option<Mana>,
@@ -63,7 +66,7 @@ pub(super) struct Announcement {
     pub convoke: Option<Box<convoke::ConvokeSelection>>,
     /// None before choice; Some(None) declines the optional tap.
     pub harmonizer: Option<Option<ObjectRef>>,
-    pub harmonize_discount: u32,
+    pub harmonize_discount: u64,
     pub additional_paid: bool,
 }
 
@@ -85,6 +88,13 @@ impl Announcement {
     }
     pub(super) fn fixed_alternative_cost(&self) -> Option<ManaCost> {
         self.item.cast.and_then(|c| match c.method {
+            CastMethod::Harmonize => self.item.source?.card.harmonize_cost(),
+            CastMethod::GrantedHarmonize => {
+                crate::cards::mana_symbols::printed_cost(self.item.source?.card.info().mana_cost)?
+                    .options
+                    .first()
+                    .copied()
+            }
             CastMethod::Miracle => self.miracle_cost,
             CastMethod::Mayhem => self
                 .item
@@ -191,16 +201,26 @@ impl Announcement {
                 .expect("announcement has object source")
                 .card
                 .additional_cost(),
-            StackKind::ActivatedAbility { ability } => {
-                self.item
-                    .source
-                    .expect("announcement has object source")
-                    .card
-                    .activation(ability)
-                    .cost
-                    .additional
-            }
+            StackKind::ActivatedAbility { ability } => self
+                .item
+                .source
+                .expect("announcement has object source")
+                .card
+                .activation(ability)
+                .cost
+                .additional
+                .map(|mut cost| {
+                    if cost.kind == (EffectChoiceKind::SacrificeManaValue { value: None }) {
+                        cost.kind = EffectChoiceKind::SacrificeManaValue {
+                            value: self.item.x.map(u64::from),
+                        };
+                    }
+                    cost
+                }),
             StackKind::TriggeredAbility { .. }
+            | StackKind::DecayedAttack
+            | StackKind::SuspendTick
+            | StackKind::SuspendCast
             | StackKind::CopyEndStepSacrifice
             | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
@@ -344,6 +364,9 @@ impl Announcement {
                 .cost
                 .mana_options(),
             StackKind::TriggeredAbility { .. }
+            | StackKind::DecayedAttack
+            | StackKind::SuspendTick
+            | StackKind::SuspendCast
             | StackKind::CopyEndStepSacrifice
             | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
@@ -363,6 +386,23 @@ impl Announcement {
                 .expect("activated source")
                 .card
                 .activation_cost_options(ability)
+        } else if self
+            .item
+            .cast
+            .is_some_and(|cast| cast.method == CastMethod::GrantedHarmonize)
+        {
+            crate::cards::mana_symbols::ManaOptions::Printed(
+                crate::cards::mana_symbols::printed_cost(
+                    self.item
+                        .source
+                        .expect("harmonize source")
+                        .card
+                        .info()
+                        .mana_cost,
+                )
+                .map_or_else(Vec::new, |cost| cost.options)
+                .into_iter(),
+            )
         } else {
             crate::cards::mana_symbols::ManaOptions::Static(options)
         };
@@ -419,10 +459,22 @@ impl Announcement {
                     .map_or(&ZERO[..], |r| r.reductions.as_slice())
                     .iter()
                     .filter_map(move |&reduction| {
-                        power_up::reduce(
+                        power_up::reduce_wide(
                             cost,
                             reduction,
-                            self.activation_discount,
+                            u64::from(self.activation_discount)
+                                + match self.item.kind {
+                                    StackKind::ActivatedAbility { ability } => {
+                                        5 * u64::from(
+                                            self.item
+                                                .source
+                                                .expect("activation source")
+                                                .card
+                                                .activation_target_color_discount(ability),
+                                        )
+                                    }
+                                    _ => 0,
+                                },
                             u64::from(self.activation_generic_increase)
                                 + if route == ActivationCostRoute::Printed {
                                     u64::from(self.item.x.unwrap_or(0))
@@ -519,6 +571,10 @@ impl Announcement {
                     })
                     .map(|cost| (cost, ActivationCostRoute::Printed, None)),
             )
+            .filter_map(|(mut cost, route, choice)| {
+                cost.generic = cost.generic.checked_add(self.behold_decline_generic())?;
+                Some((cost, route, choice))
+            })
     }
     pub(super) fn cost_options(&self) -> impl Iterator<Item = ManaCost> + '_ {
         self.cost_route_options().map(|(cost, _, _)| cost)
@@ -639,6 +695,9 @@ impl Announcement {
                 }
                 StackKind::ActivatedAbility { .. } => self.cost_options().count() > 1,
                 StackKind::TriggeredAbility { .. }
+                | StackKind::DecayedAttack
+                | StackKind::SuspendTick
+                | StackKind::SuspendCast
                 | StackKind::CopyEndStepSacrifice
                 | StackKind::CopyEndStepConditionalSacrifice
                 | StackKind::CasualtyCopy
@@ -685,11 +744,28 @@ impl Game {
             .map(|(plan, _)| plan)
             .unwrap_or(TargetPlan::NONE);
         if let Some((TargetPlan::Single(mut spec), program)) = item.program()
+            && program.contains(&Instruction::TargetsExactlyX)
+        {
+            assert_eq!(spec.min, 0, "exact X has an explicit dynamic minimum");
+            spec.max = usize::try_from(item.x.unwrap_or(0)).expect("X fits target capacity");
+            return TargetPlan::Single(spec);
+        }
+        if let Some((TargetPlan::Single(mut spec), program)) = item.program()
             && let Some(Instruction::UpToTargets(value)) = program.first()
         {
             assert_eq!(spec.min, 0, "optional bound requires zero minimum");
             spec.max = usize::try_from(self.item_amount(*value, item)).unwrap_or(usize::MAX);
             plan = TargetPlan::Single(spec);
+        }
+        if item.has_scaled_division() {
+            if let TargetPlan::Single(mut spec) = plan {
+                if let Some(total) = item.division_total() {
+                    spec.max = spec.max.min(usize::try_from(total).unwrap_or(usize::MAX));
+                }
+                plan = TargetPlan::Single(spec);
+            } else {
+                panic!("scaled division requires one homogeneous target group");
+            }
         }
         if item.kind == StackKind::Spell
             && item
@@ -755,6 +831,38 @@ impl Game {
         } else {
             plan
         }
+    }
+
+    pub(super) fn exact_x_targets(&self, item: &SpellView) -> Option<usize> {
+        item.program()
+            .filter(|(_, program)| program.contains(&Instruction::TargetsExactlyX))
+            .map(|_| usize::try_from(item.x.unwrap_or(0)).expect("X fits target capacity"))
+    }
+
+    pub(super) fn exact_x_targets_fundable(
+        &self,
+        a: &Announcement,
+        extra: Option<Target>,
+        finished: bool,
+    ) -> bool {
+        let Some(required) = self.exact_x_targets(&a.item) else {
+            return true;
+        };
+        let count = a.item.targets.len() + usize::from(extra.is_some());
+        if count > required || finished && count != required {
+            return false;
+        }
+        let TargetPlan::Single(spec) = self.target_spec(&a.item) else {
+            panic!("exact X target group");
+        };
+        let mut available = 0usize;
+        self.visit_item_targets(&a.item, spec.rule, |target| {
+            if extra != Some(target) && !a.item.targets.iter().any(|b| b.target == target) {
+                available += 1;
+            }
+            false
+        });
+        count + available >= required
     }
 
     // A spell will leave its origin before targets are chosen (CR601.2a/c).
@@ -1019,6 +1127,8 @@ impl Game {
                 | TargetGroupConstraint::DistinctCardTypeSlots => unreachable!(),
             TargetGroupConstraint::ControllerOfPlayerGroup(first_group) => object.zone == Zone::Battlefield
                 && chosen.iter().find(|b| b.group == first_group).is_some_and(|b| matches!(b.target, Target::Player(player) if object.controller == player)),
+            TargetGroupConstraint::GraveyardOwnerOfPlayerGroup(first_group) => object.zone == Zone::Graveyard
+                && chosen.iter().find(|b| b.group == first_group).is_some_and(|b| matches!(b.target, Target::Player(player) if object.owner == player)),
             TargetGroupConstraint::AttachedToGroup(first_group) => object.zone == Zone::Battlefield
                 && chosen.iter().find(|b| b.group == first_group).is_some_and(|b| {
                     self.same_target_object(*b) && object.attached_to == b.object
@@ -1119,7 +1229,9 @@ impl Game {
         if let Some(TargetSpec {
             rule:
                 TargetRule::Grouped {
-                    constraint: TargetGroupConstraint::ControllerOfPlayerGroup(_),
+                    constraint:
+                        TargetGroupConstraint::ControllerOfPlayerGroup(_)
+                        | TargetGroupConstraint::GraveyardOwnerOfPlayerGroup(_),
                     ..
                 },
             ..
@@ -1269,7 +1381,9 @@ impl Game {
         let player = a.item.controller;
         // CR601.2b announces the mode before a hybrid equivalent. Both
         // declarations precede targets, mana abilities and payment.
-        if a.needs_blight() {
+        if a.needs_behold() {
+            self.state.pending = Pending::CastBehold { player };
+        } else if a.needs_blight() {
             self.state.pending = Pending::BlightIntent { player };
         } else if a.needs_teamwork() {
             self.state.pending = Pending::TeamworkIntent { player };
@@ -1307,13 +1421,12 @@ impl Game {
         {
             self.state.pending = Pending::Casualty { player };
         } else if a.pay_window
-            && a.item
-                .cast
-                .is_some_and(|c| c.method == CastMethod::Harmonize)
+            && a.item.cast.is_some_and(|c| c.method.is_harmonize())
             && a.harmonizer.is_none()
         {
             self.state.pending = Pending::Harmonize { player };
         } else {
+            self.capture_announcement_division();
             let improvise = improvise::potential(
                 self,
                 self.state
@@ -1325,6 +1438,15 @@ impl Game {
                     .expect("announcement has object source")
                     .card,
             );
+            if self.state.announcing.as_ref().unwrap().item.kind == StackKind::Spell
+                && delve::potential(self)
+            {
+                self.state
+                    .announcing
+                    .as_mut()
+                    .unwrap()
+                    .add_cast_cost_clause(CastCostClause::Mana);
+            }
             self.state
                 .announcing
                 .as_mut()
@@ -1364,7 +1486,20 @@ impl Game {
             group: 0,
             target,
             object: match target {
-                Target::Stack(_) | Target::Player(_) => None,
+                Target::Player(_) => None,
+                Target::Stack(id) => self
+                    .state
+                    .stack
+                    .iter()
+                    .find(|item| item.id == id)
+                    .filter(|item| item.kind == StackKind::Spell)
+                    .and_then(|item| item.source)
+                    .filter(|source| {
+                        source.id == source.object.card
+                            && self.object_ref(source.id) == source.object
+                            && self.state.objects[source.id as usize].zone == Zone::Stack
+                    })
+                    .map(|source| source.object),
                 Target::Card(id) | Target::Spell(id) => Some(self.object_ref(id)),
             },
         }
@@ -1377,6 +1512,7 @@ impl Game {
         controller: Player,
         source: ObjectRef,
         qualification: Option<TargetSourceCharacteristics<'_>>,
+        keywords: Keywords,
     ) -> bool {
         let object = &self.state.objects[id as usize];
         if object.zone != Zone::Battlefield || object.controller == controller {
@@ -1396,48 +1532,16 @@ impl Game {
                     }
                 })
         };
-        if filters().next().is_none() {
+        let monocolored = keywords.contains(Keywords::HEXPROOF_MONOCOLORED);
+        if filters().next().is_none() && !monocolored {
             return false;
         }
-        let packets = || {
-            self.state
-                .stack
-                .iter()
-                .chain(&self.state.pending_triggers)
-                .chain(&self.state.ordering_triggers)
-                .chain(self.state.announcing.iter().map(|a| &a.item))
-                .chain(self.state.resolving.iter().map(|r| &r.item))
-        };
-        let qualification = qualification.or_else(|| {
-            packets()
-                .find(|item| {
-                    item.source
-                        .is_some_and(|identity| identity.object == source)
-                })
-                .map(TargetSourceCharacteristics::from_item)
-        });
-        let source = qualification.map_or(source, |q| q.reference);
-        let current = self
-            .state
-            .objects
-            .get(source.card as usize)
-            .filter(|o| o.generation == source.generation);
-        let facts = if let Some(definition) = qualification.and_then(|q| q.spell) {
-            // A spell uses its chosen face even in preflight, before it reaches the stack.
-            Some((definition.colors(), definition.kind_mask()))
-        } else if let Some(current) = current {
-            Some((
-                ability_world::CharacteristicWorld::colors(self, source.card),
-                self.object_kinds(source.card, current),
-            ))
-        } else {
-            qualification
-                .and_then(|q| q.snapshot)
-                .map(|snapshot| (snapshot.colors(), snapshot.kinds))
-        };
-        let Some((colors, kinds)) = facts else {
+        let Some((colors, kinds)) = self.target_source_qualities(source, qualification) else {
             return false;
         };
+        if monocolored && colors.count_ones() == 1 {
+            return true;
+        }
         let query = self.characteristic_query();
         filters().any(|filter| {
             let matches = match filter {
@@ -1485,40 +1589,47 @@ impl Game {
             .map(|_| source.card);
         self.target_matches_without_hand(rule, controller, source, target, departing, None)
     }
-    fn instant_sorcery_source(
+    fn target_source_qualities(
         &self,
         source: ObjectRef,
         qualification: Option<TargetSourceCharacteristics<'_>>,
-    ) -> bool {
-        let qualification = qualification.or_else(|| {
+    ) -> Option<(u8, u16)> {
+        let packets = || {
             self.state
                 .stack
                 .iter()
-                .chain(self.state.pending_triggers.iter())
-                .chain(self.state.ordering_triggers.iter())
+                .chain(&self.state.pending_triggers)
+                .chain(&self.state.ordering_triggers)
                 .chain(self.state.announcing.iter().map(|a| &a.item))
                 .chain(self.state.resolving.iter().map(|r| &r.item))
+        };
+        let qualification = qualification.or_else(|| {
+            packets()
                 .find(|item| {
                     item.source
                         .is_some_and(|identity| identity.object == source)
                 })
                 .map(TargetSourceCharacteristics::from_item)
         });
-        let kinds = if let Some(card) = qualification.and_then(|q| q.spell) {
-            card.kind_mask()
-        } else if let Some(object) = self
+        let source = qualification.map_or(source, |q| q.reference);
+        let current = self
             .state
             .objects
             .get(source.card as usize)
-            .filter(|o| o.generation == source.generation)
-        {
-            self.object_kinds(source.card, object)
+            .filter(|o| o.generation == source.generation);
+        if let Some(definition) = qualification.and_then(|q| q.spell) {
+            // A spell uses its chosen face even in preflight, before it reaches the stack.
+            Some((definition.colors(), definition.kind_mask()))
+        } else if let Some(current) = current {
+            Some((
+                ability_world::CharacteristicWorld::colors(self, source.card),
+                self.object_kinds(source.card, current),
+            ))
         } else {
             qualification
                 .and_then(|q| q.snapshot)
-                .map_or(0, |f| f.kinds)
-        };
-        kinds & (4 | 8) != 0
+                .map(|snapshot| (snapshot.colors(), snapshot.kinds))
+        }
     }
     fn target_matches_without_hand(
         &self,
@@ -1586,6 +1697,7 @@ impl Game {
                 }
                 let zone = match constraint {
                     TargetGroupConstraint::SameGraveyard
+                    | TargetGroupConstraint::GraveyardOwnerOfPlayerGroup(_)
                     | TargetGroupConstraint::DistinctCardTypeSlots => Some(Zone::Graveyard),
                     TargetGroupConstraint::DifferentControllers
                     | TargetGroupConstraint::SharedCardType
@@ -1746,19 +1858,30 @@ impl Game {
                 let Some(obj) = self.state.objects.get(id as usize) else {
                     return false;
                 };
-                if obj.zone == Zone::Battlefield
-                    && (self.keywords(id).contains(Keywords::PROTECTION_EVERYTHING)
-                        || (self
-                            .keywords(id)
-                            .contains(Keywords::PROTECTION_INSTANT_SORCERY)
-                            && self.instant_sorcery_source(source, qualification)))
-                {
+                let battlefield_keywords =
+                    (obj.zone == Zone::Battlefield).then(|| self.keywords(id));
+                if battlefield_keywords.is_some_and(|keywords| {
+                    keywords.contains(Keywords::PROTECTION_EVERYTHING)
+                        || (keywords.protection_colors() != 0
+                            || keywords.contains(Keywords::PROTECTION_INSTANT_SORCERY))
+                            && self
+                                .target_source_qualities(source, qualification)
+                                .is_some_and(|(colors, kinds)| {
+                                    keywords.protects_from(colors, kinds)
+                                })
+                }) {
                     return false;
                 }
-                if obj.zone == Zone::Battlefield
+                if let Some(keywords) = battlefield_keywords
                     && obj.controller != controller
-                    && (self.keywords(id).contains(Keywords::HEXPROOF)
-                        || self.qualified_hexproof_blocks(id, controller, source, qualification))
+                    && (keywords.contains(Keywords::HEXPROOF)
+                        || self.qualified_hexproof_blocks(
+                            id,
+                            controller,
+                            source,
+                            qualification,
+                            keywords,
+                        ))
                 {
                     return false;
                 }
@@ -2011,6 +2134,7 @@ impl Game {
             source_copy_recipe: None,
             source_ability_origin: None,
             target_allocations: None,
+            announced_division: None,
             mana_copy_sources: None,
             is_copy: false,
             ninjutsu_defender: None,
@@ -2041,6 +2165,7 @@ impl Game {
                 blight: None,
                 bargain: None,
                 evidence: None,
+                beheld: None,
             }),
             id,
             kind: StackKind::Spell,
@@ -2121,12 +2246,14 @@ impl Game {
             // Prepaid declarations settle their deferred costs in the caller.
             // A spell is still only a proposal here, so do not fire cast triggers.
             let mut item = item;
+            self.capture_division(&mut item);
             self.capture_transform_stack_serial(&mut item);
             self.state.stack.push(item);
             return false;
         }
         assert!(self.state.announcing.is_none());
         self.state.announcing = Some(Announcement {
+            behold_required: false,
             equip_zero_available: false,
             exhaust_reuse_authorized: self.item_exhaust_reuse_available(&item),
             activation_cost_route: ActivationCostRoute::Printed,
@@ -2144,6 +2271,7 @@ impl Game {
             power_up_costs: self.item_power_up_costs(&item),
             free_hand_permission: None,
             origin_counter_cost: None,
+            origin_additional_cost: None,
             miracle_cost: self.miracle_cost_for(&item),
             item,
             spec: TargetSpec::NONE,
@@ -2185,10 +2313,27 @@ impl Game {
 
     pub(super) fn open_payment_announcement_with_origin_cost(
         &mut self,
+        item: SpellView,
+        counters: Counters,
+        production: Option<Mana>,
+        origin_counter_cost: Option<u16>,
+    ) {
+        self.open_payment_announcement_with_origin_rules(
+            item,
+            counters,
+            production,
+            origin_counter_cost,
+            None,
+        );
+    }
+
+    pub(super) fn open_payment_announcement_with_origin_rules(
+        &mut self,
         mut item: SpellView,
         counters: Counters,
         production: Option<Mana>,
         origin_counter_cost: Option<u16>,
+        origin_additional_cost: Option<Card>,
     ) {
         let source = item.source.expect("payment announcement has object source");
         if matches!(item.kind, StackKind::ActivatedAbility { .. })
@@ -2227,7 +2372,8 @@ impl Game {
         }
         let plan = self.target_spec(&item);
         assert!(
-            self.item_targets_available(&item, plan)
+            matches!(item.kind, StackKind::ActivatedAbility { ability } if item.x.is_none() && source.card.activation(ability).nonmana_x())
+                || self.item_targets_available(&item, plan)
                 || source.card.gift().is_some_and(|gift| {
                     self.item_targets_available(&item, gift.promised_targets)
                 })
@@ -2244,6 +2390,7 @@ impl Game {
         let needs_mode = item.modes().is_some() && item.mode.is_none();
         let mut announcement =
             self.payment_announcement(item, counters, production, origin_counter_cost);
+        announcement.origin_additional_cost = origin_additional_cost;
         // Fixed direct mana keeps its hot path. An announced fixed ability in
         // a guided/optional payment window must own that window through costs.
         if announcement.mana_output.is_none()
@@ -2299,6 +2446,7 @@ impl Game {
         let casualty = self.casualty_declarations(&item);
         let mana_output = production.and_then(|selected| self.mana_output(&item, selected));
         Announcement {
+            behold_required: self.behold_timing_required(&item),
             equip_zero_available: self.item_first_equip_zero_available(&item)
                 && counters == Counters::default(),
             exhaust_reuse_authorized: self.item_exhaust_reuse_available(&item),
@@ -2317,6 +2465,7 @@ impl Game {
             power_up_costs: self.item_power_up_costs(&item),
             free_hand_permission: None,
             origin_counter_cost,
+            origin_additional_cost: None,
             miracle_cost: self.miracle_cost_for(&item),
             item,
             spec: TargetSpec::NONE,
@@ -2350,6 +2499,13 @@ impl Game {
             return;
         }
         self.freeze_activation_total();
+        if let Some(a) = &mut self.state.announcing
+            && a.additional_cost()
+                .is_some_and(|cost| cost.kind == EffectChoiceKind::DiscardHand)
+        {
+            // The whole hand is sampled at payment, after the mana window.
+            a.additional_group_complete = true;
+        }
         if self.start_crew_payment() {
             return;
         }
@@ -2368,14 +2524,15 @@ impl Game {
                         .expect("chosen Harmonizer remains available before cost determination")
                 });
                 let extra =
-                    Self::announcement_optional_reduction(announcement) + u64::from(discount);
-                let total = if announcement
-                    .item
-                    .source
-                    .expect("announcement has object source")
-                    .card
-                    .x_symbols()
-                    > 0
+                    Self::announcement_optional_reduction(announcement).saturating_add(discount);
+                let total = if announcement.payment_x_symbols() > 0
+                    || announcement
+                        .item
+                        .source
+                        .expect("announcement has object source")
+                        .card
+                        .x_symbols()
+                        > 0
                 {
                     self.scalar_x_total_with_extra(
                         announcement.item.controller,
@@ -2457,10 +2614,9 @@ impl Game {
         }
         let mut announcement = self.state.announcing.take().unwrap();
         self.capture_announced_cast_mana(&announcement);
-        if announcement.cast_costs.is_none()
-            && let Some(frame) = announcement.convoke.take()
-        {
-            self.tap_objects(&frame.objects().iter().map(|s| s.card).collect::<Vec<_>>());
+        if announcement.cast_costs.is_none() && announcement.convoke.is_some() {
+            self.pay_mana_contributors(&mut announcement);
+            announcement.convoke = None;
         }
         if let Some(slots) = &mut announcement.item.target_type_slots {
             let mut rows: Vec<_> = announcement
@@ -2483,6 +2639,7 @@ impl Game {
         // observers. External sacrifice follows source tap/mana costs: the chosen
         // object may itself be this ability's source. No priority is granted.
         if !announcement.ordered_craft()
+            && announcement.cast_costs.is_none()
             && matches!(announcement.item.kind, StackKind::ActivatedAbility { .. })
             && !announcement.additional_paid
         {
@@ -2583,7 +2740,7 @@ impl Game {
             .take()
             .expect("suspended activation announcement");
         announcement.item = item;
-        if !announcement.additional_paid {
+        if announcement.cast_costs.is_none() && !announcement.additional_paid {
             self.pay_additional_cost(&mut announcement);
             announcement.additional_paid = true;
         }
@@ -2717,7 +2874,11 @@ impl Game {
                 .is_some_and(|rows| {
                     rows.iter().any(|row| {
                         row.object == self.object_ref(id)
-                            && row.kind == crate::cards::GraveyardCastKind::Flashback
+                            && matches!(
+                                row.kind,
+                                crate::cards::GraveyardCastKind::Flashback
+                                    | crate::cards::GraveyardCastKind::Harmonize
+                            )
                             && row.expires_turn >= self.state.turn
                     })
                 })

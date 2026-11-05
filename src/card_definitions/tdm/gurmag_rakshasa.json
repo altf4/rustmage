@@ -3,10 +3,21 @@
   "catalogue_id": 1911,
   "oracle_id": "2be43acc-a815-44bc-8803-d702e553fbc1",
   "facts_sha256": "9134e60bb1249170752671432ad6f81a522ed0c69fe6cc5e74cae3e5ccef6016",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2ce40104854cad08f7e6d284fde91f3d760a2ff8fd589652a02d00ab4b09c6ad"
   },
-  "physical_metadata_sha256": "8f8ea5b2f7a0b117a42883b778d089e3d865c5a365808e0e88c0aef974f99168"
+  "physical_metadata_sha256": "8f8ea5b2f7a0b117a42883b778d089e3d865c5a365808e0e88c0aef974f99168",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GurmagRakshasa.java",
+  "java_sha256": "c5db1d8758a7d32e781814adcf9b6699e707c7fabc829d4c69d5e58f1212fbea",
+  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    }
+  ]
 }

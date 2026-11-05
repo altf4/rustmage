@@ -382,7 +382,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             if let Some(f) = &frame {
                 frames += 1;
                 assert_eq!(actor, p);
-                assert_eq!(f.amount, AMOUNTS[i]);
+                assert_eq!(f.amount, u128::from(AMOUNTS[i]));
                 assert!(g.observe(p.other()).endure_choice.is_none());
                 assert!(!actions.iter().any(|a| matches!(
                     a,
@@ -462,7 +462,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .iter()
                     .find(|v| v.reference == f.source)
                     .unwrap();
-                let n = u64::from(f.amount);
+                let n = u64::try_from(f.amount).expect("fixed Endure fixture amount fits u64");
                 let spirits = |x: &Observation| {
                     x.objects
                         .iter()
@@ -478,8 +478,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     assert_eq!(
                         (current.power, current.toughness),
                         (
-                            before.power + i128::from(f.amount),
-                            before.toughness + i128::from(f.amount)
+                            before.power + i128::from(n),
+                            before.toughness + i128::from(n)
                         )
                     );
                     assert_eq!(spirits(&after), spirits(&o));
@@ -501,12 +501,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     let token = created[0];
                     assert_eq!(
                         (token.power, token.toughness),
-                        (i128::from(f.amount), i128::from(f.amount))
+                        (i128::from(n), i128::from(n))
                     );
                     assert_eq!(token.card, f.token);
                     assert_eq!(token.token.unwrap().colors, 1);
                     assert!(!token.keywords.contains(Keywords::FLYING));
-                    spirit_sizes[usize::from(f.amount) - 1][p.index()] += 1;
+                    spirit_sizes
+                        [usize::try_from(n).expect("fixed Endure fixture index fits usize") - 1]
+                        [p.index()] += 1;
                     token_choices[i][p.index()] += 1;
                 }
                 s.choices += 1;

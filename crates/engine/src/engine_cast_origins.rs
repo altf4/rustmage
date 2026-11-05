@@ -21,6 +21,7 @@ impl Card {
                         | StaticAbilityFragment::SpendAnyManaForCreatures
                         | StaticAbilityFragment::GraveyardPermanentTypes
                         | StaticAbilityFragment::ForeignStashPlay
+                        | StaticAbilityFragment::FreeSpellCast(_)
                 )
             })
         })
@@ -41,7 +42,7 @@ fn has_fragment<W: ability_world::CharacteristicWorld + ?Sized>(
                 .static_ability_groups()
                 .iter()
                 .any(|g| g.fragments.iter().any(&predicate))
-            && world.printed_abilities_available(id)
+            && world.fragment_available(id, &predicate)
     })
 }
 /// A live rule changes only the origin of an ordinary land play. It never grants
@@ -118,6 +119,14 @@ pub(super) fn payment_goal<W: ability_world::CharacteristicWorld + ?Sized>(
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn filtered_free_cast_available(&self, player: Player, definition: Card) -> bool {
+        !definition.is_land()
+            && has_fragment(
+                self,
+                player,
+                |fragment| matches!(fragment, StaticAbilityFragment::FreeSpellCast(filter) if filter.matches(definition)),
+            )
+    }
     pub(super) fn can_play_static_land(&self, player: Player, card: CardId) -> bool {
         let object = &self.state.objects[card as usize];
         object.owner == player
@@ -580,7 +589,7 @@ impl Game {
                     CastFace::Omen => physical.omen_spell(),
                     CastFace::Back => physical.back_face(),
                 };
-                if definition.is_some_and(|card| {
+                let eligible = definition.is_some_and(|card| {
                     !card.is_land()
                         && free.paid.is_none_or(|paid| {
                             paid.kinds == u8::MAX || card.kind_mask() & u16::from(paid.kinds) != 0
@@ -591,7 +600,11 @@ impl Game {
                         && free
                             .remaining_mana_value
                             .is_none_or(|left| card.fixed_mana_value() <= left)
-                }) && self.permitted_cast_available(
+                });
+                if !eligible {
+                    continue;
+                }
+                if self.permitted_cast_available(
                     player,
                     object.card,
                     if free.paid.is_some() {
@@ -608,6 +621,23 @@ impl Game {
                 {
                     return true;
                 }
+                if free.paid.is_some()
+                    && definition.is_some_and(|definition| {
+                        self.filtered_free_cast_available(player, definition)
+                            || self.turn_free_creature_available(player, definition)
+                    })
+                    && self.permitted_cast_available(
+                        player,
+                        object.card,
+                        CastMethod::Free,
+                        face,
+                        true,
+                        false,
+                    )
+                    && emit(Action::CastFreeDuringResolution { object, face })
+                {
+                    return true;
+                }
             }
         }
         false
@@ -617,6 +647,15 @@ impl Game {
         player: Player,
         object: ObjectRef,
         face: CastFace,
+    ) {
+        self.cast_during_resolution_with_cost(player, object, face, false);
+    }
+    pub(super) fn cast_during_resolution_with_cost(
+        &mut self,
+        player: Player,
+        object: ObjectRef,
+        face: CastFace,
+        force_free: bool,
     ) {
         let paid = self.state.resolution_free_casts.as_ref().unwrap().paid;
         let alternative_cost = self
@@ -645,7 +684,9 @@ impl Game {
             free.pending_cast = Some(item.id);
         }
         self.set_cast_face(&mut item, face);
-        item.cast.as_mut().unwrap().method = if paid.is_some() {
+        item.cast.as_mut().unwrap().method = if force_free {
+            CastMethod::Free
+        } else if paid.is_some() {
             CastMethod::Normal
         } else if alternative_cost.is_some() {
             CastMethod::Miracle
@@ -657,9 +698,12 @@ impl Game {
                 p.exile_instants_sorceries
                     && item.source.expect("cast spell has source").card.kind_mask() & (4 | 8) != 0
             });
-        if paid.is_none() && item.source.expect("cast spell has source").card.x_symbols() > 0 {
+        if (force_free || paid.is_none())
+            && item.source.expect("cast spell has source").card.x_symbols() > 0
+        {
             item.x = Some(0);
         }
+        self.remember_suspend_cast(object, item.id);
         self.open_payment_announcement(item, Counters::default(), None);
     }
 }
@@ -702,6 +746,45 @@ impl Game {
             }
             free.pending_cast = None;
         }
+    }
+    pub(super) fn exile_damage_event_library_cast_free(&mut self, item: &SpellView) -> bool {
+        let Some(damage) = item.damage_event else {
+            return false;
+        };
+        let ids = exile::top_library_cards(self, damage.player, damage.amount);
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        let remaining: Vec<_> = events
+            .iter()
+            .filter(|event| event.moved && event.destination == Zone::Exile)
+            .map(|event| event.after)
+            .collect();
+        self.finish_zone_events(&events, &[]);
+        if remaining.is_empty() {
+            return false;
+        }
+        // Existing maximum is exclusive. At/above u64::MAX every represented
+        // card mana value qualifies; do not narrow the frozen damage first.
+        let maximum_mana_value = u64::try_from(damage.amount)
+            .ok()
+            .and_then(|value| value.checked_add(1));
+        self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            siege_transformed: false,
+            paid: None,
+            casts_remaining: None,
+            pending_cast: None,
+            remaining_mana_value: None,
+            alternative_cost: None,
+            maximum_mana_value,
+            origin: Zone::Exile,
+            exile_on_graveyard: false,
+            allow_lands: false,
+            player: item.controller,
+            remaining,
+        }));
+        self.state.pending = Pending::ResolutionCasts {
+            player: item.controller,
+        };
+        true
     }
     pub(super) fn exile_target_top_cast_free(
         &mut self,

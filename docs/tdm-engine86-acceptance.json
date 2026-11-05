@@ -1,0 +1,406 @@
+{
+  "schema": 1,
+  "scope": "Shared engine checkpoint86; complete276-card set and final PR acceptance remain pending",
+  "status": "Accepted exact published executable inputs after full release and two independent pure nonauthor approvals",
+  "validated_published_revision": "2660c86112362973c195bee4c1b85e1a968f9f3a",
+  "previous_engine_acceptance": "docs/tdm-engine85-acceptance.json",
+  "audit_groups_including_aliases": 86,
+  "audit_group_counts_are_unweighted": true,
+  "dependency": "E:CAST_EVENT_SCALAR_CAPTURE",
+  "implementation": "The existing recursive cast-event quantity collector also recognizes CastSpellManaValue. Nested scalar consumers retain the existing captured event; nonconsumers opt out. Existing symbol behavior and legacy caller allowlist are preserved.",
+  "observation_schema": 201,
+  "schema_reason": "No new state, serialized shape, public action or view; existing optional CastPaymentEvent is retained for its intended typed consumers. Both independent reviewers verified no wire change.",
+  "validation": {
+    "report": "<cache>/rustmage-validation-owsb88ts/report/result.json",
+    "sha256": "c848c8b7a2df341b1adb373365976e9401e9bf948828ed72669abb7c0e264b9d",
+    "head": "2660c86112362973c195bee4c1b85e1a968f9f3a",
+    "terminal": true,
+    "success": true,
+    "input_sha256": "7ac5907fdf25131a61f84caaf13455ba5d0604cdd18fa624ba1487830a0f1a7f",
+    "files_verified": 13013,
+    "changed": [],
+    "active_processes": [],
+    "seconds": 506.09675945097115,
+    "phases": [
+      {
+        "name": "source pins",
+        "exit": 0,
+        "seconds": 0.9175510249915533,
+        "log": "<cache>/rustmage-validation-owsb88ts/report/00.log",
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "format",
+        "exit": 0,
+        "seconds": 4.2287868820130825,
+        "log": "<cache>/rustmage-validation-owsb88ts/report/01.log",
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "card format",
+        "exit": 0,
+        "seconds": 1.1193719509756193,
+        "log": "<cache>/rustmage-validation-owsb88ts/report/02.log",
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "script contracts",
+        "exit": 0,
+        "seconds": 2.1203132849768735,
+        "log": "<cache>/rustmage-validation-owsb88ts/report/03.log",
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "clippy",
+        "exit": 0,
+        "seconds": 78.32429583300836,
+        "log": "<cache>/rustmage-validation-owsb88ts/report/04.log",
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "native assurance",
+        "exit": 0,
+        "seconds": 224.787679511006,
+        "log": "<cache>/rustmage-validation-owsb88ts/report/05.log",
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "release build",
+        "exit": 0,
+        "seconds": 193.94319298904156,
+        "log": "<cache>/rustmage-validation-owsb88ts/report/06.log",
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "simulation sample",
+        "exit": 0,
+        "seconds": 0.265508520998992,
+        "log": "<cache>/rustmage-validation-owsb88ts/report/07.log",
+        "timed_out": false,
+        "orphaned_processes": false
+      },
+      {
+        "name": "Python assurance",
+        "exit": 0,
+        "seconds": 0.16545765404589474,
+        "log": "<cache>/rustmage-validation-owsb88ts/report/08.log",
+        "timed_out": false,
+        "orphaned_processes": false
+      }
+    ]
+  },
+  "native_assurance": {
+    "report": "<cache>/rustmage-validation-owsb88ts/report/native.json",
+    "sha256": "fb8281bc10b675a2eee1a6e3ab52dc54c25e51539b6ce5ce312f179cc6e0b8d9",
+    "tests": 4490,
+    "targets": 108,
+    "compile_seconds": 123.06160484597785,
+    "execution_seconds": 101.62637912697392,
+    "terminal": true,
+    "success": true,
+    "root_core_fresh": true
+  },
+  "binding_assurance": {
+    "suite": "contract",
+    "requested_suite": "smoke",
+    "library": "<cache>/rustmage-validation-owsb88ts/report/libraries/librustmage.so",
+    "terminal": true,
+    "tests": 10,
+    "success": true,
+    "seconds": 0.039553701994009316,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "runtime_budget_seconds": 5.0,
+    "budget_exceeded": false,
+    "timeout_seconds": 15.0,
+    "report": "<cache>/rustmage-validation-owsb88ts/report/python.json",
+    "sha256": "ddd1cb55356426e57b718db58904758f1140407e6f4bd34c9191069b3f0ea74b"
+  },
+  "resource_guard": {
+    "report": "<cache>/rustmage-build-reports/73a713bfd8da4f1997e9be0ca4c04f87.json",
+    "sha256": "b941a03f4f8a6aff5063fecb566181cd74855398e0658c00472b41fec7924026",
+    "command": [
+      "/usr/bin/python3",
+      "<worktree:tdm-complete-set>/scripts/validate.py",
+      "--release",
+      "--python",
+      "smoke",
+      "--target-dir",
+      "<cache>/rustmage-authoring/tdm-complete-set/target"
+    ],
+    "terminal": true,
+    "exit_code": 0,
+    "seconds": 506.328761060955,
+    "memory_max_bytes": 6442450944,
+    "memory_peak_bytes": 5247631360,
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cargo_jobs": 1,
+    "test_threads": 1
+  },
+  "required_immutable_shared_libraries": [
+    {
+      "path": "<cache>/rustmage-validation-g7kgj8zc/report/libraries/librustmage.so",
+      "sha256": "59f620a0efe73896dd20113594988f9b40736294c6dfff117e590c424064dc36",
+      "requires_preservation_at_exact_path_and_hash": true,
+      "readonly": true
+    },
+    {
+      "path": "<cache>/rustmage-validation-l0pzz2p2/report/libraries/librustmage.so",
+      "sha256": "c61c4e2a62e8ed9a58eec81aee83e61c622b88efcdbbf45ffef3a7dcaa315bf1",
+      "requires_preservation_at_exact_path_and_hash": true,
+      "readonly": true
+    },
+    {
+      "path": "<cache>/rustmage-validation-o8jjr7os/report/libraries/librustmage.so",
+      "sha256": "4aebb4867b67d084c98f12113c9eefb19e17a3c02a272e44e7f341cc15df2248",
+      "requires_preservation_at_exact_path_and_hash": true,
+      "readonly": true
+    },
+    {
+      "path": "<cache>/rustmage-validation-c3slnby9/report/libraries/librustmage.so",
+      "sha256": "4ee65b6abae8b89d79dfa2a87bd796882c05b3c87fb94833c9e4699ef44c5082",
+      "requires_preservation_at_exact_path_and_hash": true,
+      "readonly": true
+    },
+    {
+      "path": "<cache>/rustmage-validation-owsb88ts/report/libraries/librustmage.so",
+      "sha256": "87d4e2efd1104b701f0b45a00a4c8c098cd30f0d3fef7f93df419e50e8de965c",
+      "requires_preservation_at_exact_path_and_hash": true,
+      "readonly": true
+    }
+  ],
+  "simulation": {
+    "clone_ns": 296.61774,
+    "decisions": 4941,
+    "decisions_per_second": 28763.639574096946,
+    "deck_names": [
+      "native-smoke"
+    ],
+    "deck_rules": "Freeform",
+    "decklist_archive": null,
+    "games": 10,
+    "games_per_second": 58.214206788295776,
+    "initial_state_bytes_excluding_capacity_and_allocator": 24712,
+    "max_decisions_per_game": 655,
+    "note": "native smoke policy and observation construction included; optional named decks rotate adjacent matchups through both seats; setup and gameplay timed, archive loading excluded; no model, tensor encoding, or per-decision JSON; verify mode also times owned raw/index branch and restore checks; sampled gameplay is not complete card-interaction coverage or XMage parity",
+    "owned_raw_index_restore_checks": false,
+    "restore_ns": 230.19008,
+    "seconds": 0.171779374
+  },
+  "simulation_scope": "Ten generic Freeform native-smoke games only. Not TDM throughput or full-set coverage;52 fixed TDM games remain unexecuted.",
+  "focused_evidence": [
+    "docs/tdm-cast-event-scalars-evidence.json",
+    "docs/tdm-cast-event-scalar-capture-evidence.json"
+  ],
+  "focused_cases": 28,
+  "root_focused_cases": 8,
+  "trace_baseline": {
+    "rows": 3240,
+    "schema": 201,
+    "sha256": "cb7997d66260ee7435b1a0e22f77cb19083b1ab2dab640cde3f3dbf78687fceb",
+    "unchanged_since_engine85": true
+  },
+  "independent_nonauthor_reviews": [
+    {
+      "reviewer": "/root/tdm_engine_review_one",
+      "role": "Pure nonauthor, no authored ancestors",
+      "revision": "2660c86112362973c195bee4c1b85e1a968f9f3a",
+      "status": "Approved exact frozen head; no remaining findings",
+      "verified": [
+        "All13013 frozen hashes and fingerprint",
+        "9/9 phases,4490/108 native,10 Python contracts",
+        "Exact new immutable library and four prior required copies",
+        "Unchanged201/3240 acceptedtracebaseline",
+        "6GiB,1job/thread,zero OOM/timeouts/orphans/drift"
+      ]
+    },
+    {
+      "reviewer": "/root/tdm_engine_review_two",
+      "role": "Pure nonauthor, no authored ancestors",
+      "revision": "2660c86112362973c195bee4c1b85e1a968f9f3a",
+      "status": "Approved exact frozen head; no remaining findings",
+      "verified": [
+        "All13013 frozen hashes and fingerprint",
+        "9/9 phases,4490/108 native,10 Python contracts",
+        "Exact new immutable library and four prior required copies",
+        "Unchanged201/3240 acceptedtracebaseline",
+        "6GiB,1job/thread,zero OOM/timeouts/orphans/drift"
+      ]
+    }
+  ],
+  "author_warms": {
+    "report": "<cache>/rustmage-tdm/engine86-author-baselines-1793823908179048187/terminal.json",
+    "sha256": "5d2b84096c21583cba9aa46ff019982ec40c9bff6a62837403e5f08e243e7669",
+    "terminal": true,
+    "success": true,
+    "accepted_engine_head": "2660c86112362973c195bee4c1b85e1a968f9f3a",
+    "run": "<cache>/rustmage-tdm/engine86-author-baselines-1793823908179048187",
+    "authors": [
+      {
+        "owner": "a_g",
+        "worktree": "<worktree:tdm-entry-modes>",
+        "compat_commit": "496de1c386d6d0d999c6838c355908d5f8e82649",
+        "exit": 0,
+        "wip_preserved": true,
+        "changed_paths": [
+          "crates/engine/src/engine_cast_symbol_quantities.rs",
+          "docs/tdm-engine86-author-baseline.json"
+        ],
+        "warm": {
+          "terminal": true,
+          "success": true,
+          "command": {
+            "command": [
+              "cargo",
+              "build",
+              "-p",
+              "rustmage-core",
+              "--profile",
+              "test",
+              "--features",
+              "test-support",
+              "--message-format=json"
+            ],
+            "exit": 0,
+            "timed_out": false,
+            "orphaned_processes": false,
+            "seconds": 104.8106405029539,
+            "log": "<cache>/rustmage-tdm/engine86-author-baselines-1793823908179048187/a_g/cargo.jsonl"
+          },
+          "profile": {
+            "opt_level": "1",
+            "debuginfo": 0,
+            "debug_assertions": true,
+            "overflow_checks": true,
+            "test": false
+          },
+          "features": [
+            "test-support"
+          ],
+          "core_fresh": false,
+          "artifacts": [
+            "<cache>/rustmage-authoring/tdm-entry-modes/target/debug/librustmage_core.rlib",
+            "<cache>/rustmage-authoring/tdm-entry-modes/target/debug/deps/librustmage_core-8730d666de12db67.rmeta"
+          ]
+        }
+      },
+      {
+        "owner": "g_s",
+        "worktree": "<worktree:tdm-counter-world>",
+        "compat_commit": "8e0f68188497db21495595ea745760efbe7d800d",
+        "exit": 0,
+        "wip_preserved": true,
+        "changed_paths": [
+          "crates/engine/src/engine_cast_symbol_quantities.rs",
+          "docs/tdm-engine86-author-baseline.json"
+        ],
+        "warm": {
+          "terminal": true,
+          "success": true,
+          "command": {
+            "command": [
+              "cargo",
+              "build",
+              "-p",
+              "rustmage-core",
+              "--profile",
+              "test",
+              "--features",
+              "test-support",
+              "--message-format=json"
+            ],
+            "exit": 0,
+            "timed_out": false,
+            "orphaned_processes": false,
+            "seconds": 103.75564820202999,
+            "log": "<cache>/rustmage-tdm/engine86-author-baselines-1793823908179048187/g_s/cargo.jsonl"
+          },
+          "profile": {
+            "opt_level": "1",
+            "debuginfo": 0,
+            "debug_assertions": true,
+            "overflow_checks": true,
+            "test": false
+          },
+          "features": [
+            "test-support"
+          ],
+          "core_fresh": false,
+          "artifacts": [
+            "<cache>/rustmage-authoring/tdm-counter-world/target/debug/librustmage_core.rlib",
+            "<cache>/rustmage-authoring/tdm-counter-world/target/debug/deps/librustmage_core-8730d666de12db67.rmeta"
+          ]
+        }
+      },
+      {
+        "owner": "s_z",
+        "worktree": "<worktree:tdm-cast-routes>",
+        "compat_commit": "a649999b061906db61fddfc847e5d2614b6b8483",
+        "exit": 0,
+        "wip_preserved": true,
+        "changed_paths": [
+          "docs/tdm-engine86-author-baseline.json"
+        ],
+        "warm": {
+          "terminal": true,
+          "success": true,
+          "command": {
+            "command": [
+              "cargo",
+              "build",
+              "-p",
+              "rustmage-core",
+              "--profile",
+              "test",
+              "--features",
+              "test-support",
+              "--message-format=json"
+            ],
+            "exit": 0,
+            "timed_out": false,
+            "orphaned_processes": false,
+            "seconds": 0.06526344903977588,
+            "log": "<cache>/rustmage-tdm/engine86-author-baselines-1793823908179048187/s_z/cargo.jsonl"
+          },
+          "profile": {
+            "opt_level": "1",
+            "debuginfo": 0,
+            "debug_assertions": true,
+            "overflow_checks": true,
+            "test": false
+          },
+          "features": [
+            "test-support"
+          ],
+          "core_fresh": true,
+          "artifacts": [
+            "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/librustmage_core.rlib",
+            "<cache>/rustmage-authoring/tdm-cast-routes/target/debug/deps/librustmage_core-8730d666de12db67.rmeta"
+          ]
+        }
+      }
+    ]
+  },
+  "card_status": {
+    "verified": 187,
+    "new": 76,
+    "existing_verified": 111,
+    "scope": 276,
+    "remaining": 89,
+    "whole_set_acceptance": false
+  },
+  "remaining": [
+    "Finish parked27 physical-card admissions with ordinary supported actions; remaining62 afterward",
+    "Every printed obligation and full interaction/game acceptance for276 physical cards and13 Omen faces",
+    "52 fixed natural-terminal games, replay/owned checks, measured TDM benchmarks",
+    "README reconciliation, final complete-set release, exactly one PR and two independent final-head reviews"
+  ]
+}
