@@ -12,7 +12,12 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/n/NewWayForward.java",
   "java_sha256": "4725fcd5103cb58b9510f879cfe26c315ab34f5aa33084f0f33ccb63d3dcee7d",
-  "rules_tests": "tests/tdm_cards_g_s.rs",
+  "rules_tests": "tests/tdm_set_prevention.rs",
+  "rules_authority": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+    "section": "CR 608.2h",
+    "notes": "The reflexive ability reads the exact chosen source's current controller or last known controller. The amount of prevented damage is captured by the triggering event."
+  },
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",

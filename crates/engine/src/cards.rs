@@ -442,6 +442,8 @@ pub enum PlayerSet {
     CastingPlayer,
     /// Untargeted player frozen when the triggering event occurred.
     EventPlayer,
+    /// Current or last-known controller of the exact untargeted event object.
+    EventObjectController,
     DrawingPlayer,
     Active,
     DamagedPlayer,

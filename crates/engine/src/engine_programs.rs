@@ -3082,6 +3082,7 @@ impl Game {
                 Some(item.event_player.expect("event player must be captured")),
                 None,
             ],
+            PlayerSet::EventObjectController => [self.event_object_controller(item), None],
             PlayerSet::CastingPlayer => [
                 Some(
                     item.cast_event

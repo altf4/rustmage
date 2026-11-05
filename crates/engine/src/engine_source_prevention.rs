@@ -661,9 +661,19 @@ impl Game {
             combat: event.combat,
         });
         item.event_player = Some(event.source.controller);
-        // The reflexive clause explicitly refers to "that source's controller".
-        // This is semantic; ordinary player-damage observers do not name dealers.
+        // The reflexive clause names the exact source, whose controller is
+        // read when it resolves. The damage amount remains an event-time fact.
+        let pending = self.state.pending_triggers.len();
         self.queue_reflexive(&item, shield.ability, Some(event.source.reference));
+        if let Some(packet) = self.state.pending_triggers.get_mut(pending) {
+            packet.set_event_object(EventObjectView {
+                object: event.source.reference,
+                facts: EventObjectFacts::Controller(event.source.controller),
+                semantic_objects: None,
+                conniver_creature: None,
+                subtype_lki: None,
+            });
+        }
     }
     pub(super) fn expire_source_prevention(&mut self) {
         if let Some(roles) = &mut self.state.roles {

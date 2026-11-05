@@ -247,7 +247,7 @@ fn f15_stalwart_second_cast_damage_is_prevented_reflected_and_drawn_after_actual
             let callback = g.state.stack.last().unwrap();
             assert!(
                 callback.targets.is_empty(),
-                "reflected damage uses the damage-time controller without targeting"
+                "reflected damage uses the source's controller without targeting"
             );
             drain(&mut g);
             assert_eq!(g.state.players[p.index()].life, 20);
@@ -361,5 +361,77 @@ fn f15_headliner_can_be_chosen_before_or_after_sacrifice_but_creature_damage_kee
             assert_eq!(shields[0].controller, p);
             assert_eq!(shields[0].chosen, DamageSourceRef::Object(old));
         }
+    }
+}
+#[test]
+fn f15_reflexive_damage_uses_current_or_departure_controller_of_its_exact_source() {
+    let attacker = Player::P0;
+    let defender = Player::P1;
+    let mut game = scenario(attacker);
+    let bear = put(&mut game, defender, "Bear Cub", Zone::Battlefield);
+    let original = game.object_ref(bear);
+    let saga = put(&mut game, attacker, "The Super Hero Civil War", Zone::Hand);
+    let forward = put(&mut game, defender, "New Way Forward", Zone::Hand);
+    let disenchant = put(&mut game, defender, "Disenchant", Zone::Hand);
+    let murder = put(&mut game, attacker, "Murder", Zone::Hand);
+    let target = Action::ChooseTarget {
+        target: Target::Card(bear),
+    };
+    cast(&mut game, saga, None);
+    reach(&mut game, |game| game.legal_actions().contains(&target));
+    act(&mut game, target);
+    if game.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut game, Action::FinishTargets);
+    }
+    drain(&mut game);
+    assert_eq!(game.object_view(bear).controller, attacker);
+    assert_eq!(game.object_ref(bear), original);
+
+    source_choice(&mut game, defender, forward);
+    finish_choice(&mut game, defender, original);
+    // The fixture starts combat after the stolen creature can attack.
+    game.state.objects[bear as usize].summoning_sick = false;
+    game.state.step = Step::Attackers;
+    game.state.pending = Pending::Attackers;
+    game.state.priority = attacker;
+    act(&mut game, Action::Attack { card: bear });
+    act(&mut game, Action::FinishAttackers);
+    reach(&mut game, |game| game.state.pending == Pending::Blockers);
+    act(&mut game, Action::FinishBlockers);
+    let on_stack = |game: &Game| {
+        game.state.pending == Pending::Priority
+            && game.state.stack.len() == 1
+            && game.state.stack[0].source.unwrap().id == forward
+    };
+    reach(&mut game, on_stack);
+    assert_eq!(game.state.players[0].life, 20);
+    assert_eq!(game.state.players[1].life, 20);
+    let before_draw = game.state.players[defender.index()].cards_drawn_this_turn;
+
+    for (changed, departed) in [(false, false), (true, false), (true, true)] {
+        let mut branch = game.clone();
+        if changed {
+            priority(&mut branch, defender);
+            branch.state.players[defender.index()].mana = [1, 0, 0, 0, 0, 1];
+            cast(&mut branch, disenchant, Some(Target::Card(saga)));
+            reach(&mut branch, on_stack);
+            assert_eq!(branch.object_view(bear).controller, defender);
+            assert_eq!(branch.object_ref(bear), original);
+        }
+        if departed {
+            priority(&mut branch, attacker);
+            branch.state.players[attacker.index()].mana = [0, 0, 2, 0, 0, 1];
+            cast(&mut branch, murder, Some(Target::Card(bear)));
+            reach(&mut branch, on_stack);
+            assert_eq!(branch.object_view(bear).zone, Zone::Graveyard);
+            assert_ne!(branch.object_ref(bear), original);
+        }
+        drain(&mut branch);
+        assert_eq!(branch.state.players[0].life, if changed { 20 } else { 18 });
+        assert_eq!(branch.state.players[1].life, if changed { 18 } else { 20 });
+        assert_eq!(
+            branch.state.players[defender.index()].cards_drawn_this_turn,
+            before_draw + 2
+        );
     }
 }
