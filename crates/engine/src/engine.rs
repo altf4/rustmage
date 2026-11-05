@@ -9804,7 +9804,7 @@ impl Game {
         // Until-end-of-turn abilities expire before any cleanup-induced SBA death.
         self.expire_spell_copies();
         self.expire_temporary_ability_removals();
-        self.expire_temporary_controls();
+        let expired_controls = self.expire_temporary_controls();
         if let Some(rows) = &mut self.state.self_granted_abilities {
             rows.retain(|row| row.expires_turn.is_none());
             if rows.is_empty() {
@@ -9861,7 +9861,11 @@ impl Game {
                 )
                 .into_iter()
                 .any(|lost| lost)
-            || (expired_vehicles || expired_animations || expired_copies || expired_legend_rule)
+            || (expired_controls
+                || expired_vehicles
+                || expired_animations
+                || expired_copies
+                || expired_legend_rule)
                 && self.sba_required()
             || self.state.objects.iter().enumerate().any(|(id, obj)| {
                 obj.zone == Zone::Battlefield
