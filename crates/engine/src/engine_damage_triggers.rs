@@ -40,7 +40,7 @@ impl Game {
         let object = &self.state.objects[id as usize];
         let creature = object.zone == Zone::Battlefield && self.is_creature(id);
         let (base, stats) = if creature {
-            self.layered_stats_without_hand(id, None)
+            self.layered_stats(id)
         } else {
             (Stats::default(), Stats::default())
         };

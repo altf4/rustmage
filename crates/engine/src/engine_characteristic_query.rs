@@ -90,59 +90,10 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         )
     }
     fn stat_value(&self, value: StatValue, source: ObjectRef, owner: Player) -> i128 {
-        self.stat_value_without_hand(value, source, owner, None)
+        self.game.stat_value_in_world(self, value, source, owner)
     }
-    fn stat_value_without_hand(
-        &self,
-        value: StatValue,
-        source: ObjectRef,
-        owner: Player,
-        departing: Option<CardId>,
-    ) -> i128 {
-        if value == StatValue::CreaturesDiedThisTurn {
-            return i128::from(self.creatures_died());
-        }
-        if value == StatValue::CardLeftGraveyardThisTurn {
-            return i128::from(self.card_left_graveyard(owner));
-        }
-        if value == StatValue::LifeGainOccurredThisTurn {
-            return i128::from(self.gained_life(owner));
-        }
-        self.game.stat_value_with(
-            value,
-            source,
-            owner,
-            &|| {
-                self.state
-                    .objects
-                    .iter()
-                    .enumerate()
-                    .map(|(id, _)| (id as CardId, self.object(id as CardId)))
-                    .filter(move |(id, object)| departing != Some(*id) || object.zone != Zone::Hand)
-            },
-            &|id| self.subtypes(id),
-            &|id, _| self.kinds(id),
-            &|id| self.name(id),
-            &|id| self.colors(id),
-            &|id| self.legendary(id),
-            &|id| self.mana_value(id),
-            &|id, kind| self.counter_count(id, kind),
-            &|id| self.counter_amounts(id).has_any(),
-            self.life(owner),
-            self.life(owner.other()),
-            self.state.attack_declared && self.attacking(source.card),
-            self.has_enduring_story(owner),
-            self.lost_life(owner),
-        )
-    }
-    fn stat_expression_without_hand(
-        &self,
-        expr: StatExpr,
-        source: ObjectRef,
-        owner: Player,
-        departing: Option<CardId>,
-    ) -> i128 {
-        self.stat_value_without_hand(expr.value, source, owner, departing)
+    fn stat_expression(&self, expr: StatExpr, source: ObjectRef, owner: Player) -> i128 {
+        self.stat_value(expr.value, source, owner)
             .checked_mul(expr.multiplier)
             .and_then(|value| value.checked_add(expr.offset))
             .capacity("stat expression exhausted")
@@ -169,9 +120,9 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             && (filter.keyword == Keywords::NONE || self.keywords(id).contains(filter.keyword))
     }
     pub(super) fn stats(&self, id: CardId) -> Stats {
-        self.stats_without_hand(id, None)
+        self.layered_stats(id).1
     }
-    pub(super) fn base_stats_without_hand(&self, id: CardId, departing: Option<CardId>) -> Stats {
+    pub(super) fn base_stats(&self, id: CardId) -> Stats {
         let object = self.object(id);
         let mut stats = if let Some((power, toughness)) = object.card.vehicle_stats() {
             if !self.is_creature(id) {
@@ -198,9 +149,9 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             })
         {
             let reference = self.object_ref(id);
-            let power = base.power.map(|expr| {
-                self.stat_expression_without_hand(expr, reference, object.controller, departing)
-            });
+            let power = base
+                .power
+                .map(|expr| self.stat_expression(expr, reference, object.controller));
             if let Some(power) = power {
                 stats.power = power;
             }
@@ -215,26 +166,19 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         .and_then(|v| v.checked_sub(p.offset))
                         .capacity("toughness exhausted")
                 } else {
-                    self.stat_expression_without_hand(expr, reference, object.controller, departing)
+                    self.stat_expression(expr, reference, object.controller)
                 };
             }
         }
         let battlefield_creature = object.zone == Zone::Battlefield && self.is_creature(id);
         if battlefield_creature {
-            stats = self.apply_base_stat_layers(id, stats, departing);
+            stats = self.apply_base_stat_layers(id, stats);
         }
         stats
     }
-    pub(super) fn stats_without_hand(&self, id: CardId, departing: Option<CardId>) -> Stats {
-        self.layered_stats_without_hand(id, departing).1
-    }
-    pub(super) fn layered_stats_without_hand(
-        &self,
-        id: CardId,
-        departing: Option<CardId>,
-    ) -> (Stats, Stats) {
+    pub(super) fn layered_stats(&self, id: CardId) -> (Stats, Stats) {
         let object = self.object(id);
-        let base = self.base_stats_without_hand(id, departing);
+        let base = self.base_stats(id);
         // A Vehicle has no effective creature stats while it is not a creature.
         // Counters remain on it, ready for a later successful crew.
         if object.card.vehicle_stats().is_some() && !self.is_creature(id) {
@@ -375,12 +319,8 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         })
                         && (!modifier.own_turn || self.state.active == object.controller)
                         && (!modifier.requires_life_gain || self.gained_life(object.controller))
-                        && self.stat_value_without_hand(
-                            condition,
-                            self.object_ref(source),
-                            object.controller,
-                            departing,
-                        ) != 0
+                        && self.stat_value(condition, self.object_ref(source), object.controller)
+                            != 0
                         && self.creature_matches(
                             modifier.filter,
                             object.controller,
@@ -446,12 +386,8 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                     }
                 };
                 if applies {
-                    let value = self.stat_value_without_hand(
-                        modifier.value,
-                        self.object_ref(source),
-                        object.controller,
-                        departing,
-                    );
+                    let value =
+                        self.stat_value(modifier.value, self.object_ref(source), object.controller);
                     stats += Stats {
                         power: modifier
                             .stats
@@ -727,12 +663,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         }
         keywords.union(self.live_static_keywords(id))
     }
-    pub(super) fn apply_base_stat_layers(
-        &self,
-        id: CardId,
-        mut stats: Stats,
-        departing: Option<CardId>,
-    ) -> Stats {
+    pub(super) fn apply_base_stat_layers(&self, id: CardId, mut stats: Stats) -> Stats {
         let object = self.object_ref(id);
         let cursed = self.cursed_role_timestamp(object);
         let mut power_time = cursed;
@@ -767,12 +698,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         continue;
                     }
                     if spec.condition.is_some_and(|condition| {
-                        self.stat_value_without_hand(
-                            condition,
-                            effect.source,
-                            source.controller,
-                            departing,
-                        ) == 0
+                        self.stat_value(condition, effect.source, source.controller) == 0
                     }) {
                         continue;
                     }
@@ -816,12 +742,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                     }),
                     _ => continue,
                 };
-                let amount = self.stat_value_without_hand(
-                    value,
-                    object,
-                    self.object(id).controller,
-                    departing,
-                );
+                let amount = self.stat_value(value, object, self.object(id).controller);
                 if power_time.is_none_or(|old| time > old) {
                     stats.power = amount;
                     power_time = Some(time);
@@ -1101,7 +1022,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         let (base, stats) = if inset {
             (Stats::default(), Stats::default())
         } else {
-            self.layered_stats_without_hand(id, None)
+            self.layered_stats(id)
         };
         ObjectView {
             additional_triggers: trigger_multiplicity::additional_triggers(self, id),

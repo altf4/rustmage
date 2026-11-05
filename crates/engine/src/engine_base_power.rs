@@ -96,7 +96,7 @@ impl Game {
                 if !self.creature_matches(filter, item.controller, source.object, id) {
                     return None;
                 }
-                let (base, current) = self.layered_stats_without_hand(id, None);
+                let (base, current) = self.layered_stats(id);
                 if current.power <= base.power {
                     return None;
                 }

@@ -346,7 +346,7 @@ impl Game {
                 Self::announcement_optional_reduction(a).saturating_add(
                     a.harmonizer
                         .flatten()
-                        .and_then(|r| harmonize::contribution(self, a.item.controller, r))
+                        .and_then(|r| self.harmonizer_discount(&a.item, r))
                         .unwrap_or(0),
                 ),
             )

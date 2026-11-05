@@ -1,5 +1,6 @@
 //! Generic reductions and the total cost locked before mana abilities/payment.
 use super::*;
+use ability_world::CharacteristicWorld;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     /// Compute the wide pre-reduction generic increase from active sources.
@@ -436,10 +437,28 @@ impl Game {
         mana_value: u64,
         definition: Card,
     ) -> u64 {
-        let recipient = &self.state.objects[id as usize];
-        let departing = (recipient.zone == Zone::Hand).then_some(id);
+        if definition.cost_reductions().is_empty() && self.state.static_sources.is_empty() {
+            return self.turn_artifact_spell_reduction(actor, definition);
+        }
+        if let Some(world) = self.cast_departure(self.object_ref(id), actor) {
+            self.spell_reduction_in_world(&world, actor, id, mana_value, definition)
+        } else {
+            self.spell_reduction_in_world(self, actor, id, mana_value, definition)
+        }
+    }
+
+    fn spell_reduction_in_world<W: CharacteristicWorld + ?Sized>(
+        &self,
+        world: &W,
+        actor: Player,
+        id: CardId,
+        mana_value: u64,
+        definition: Card,
+    ) -> u64 {
+        let recipient = world.object(id);
+        let stats = |id| characteristic_query::CharacteristicQuery::in_world(world).stats(id);
         let applies = |rule: &crate::cards::SpellReduction, source: CardId| {
-            let object = &self.state.objects[source as usize];
+            let object = world.object(source);
             rule.filter.matches_mana_value(definition, mana_value)
                 && match rule.turn {
                     CostTurn::Any => true,
@@ -452,12 +471,12 @@ impl Game {
                     CostTurn::Own => self.state.active == actor,
                     CostTurn::Other => self.state.active != actor,
                 }
-                && self.step_guard_without_hand(
+                && self.step_guard_in_world(
+                    world,
                     rule.guard,
                     actor,
                     self.object_ref(source),
                     object.tapped,
-                    departing,
                 )
         };
         let amount = |rule: &crate::cards::SpellReduction, source: CardId| match rule.amount {
@@ -466,9 +485,9 @@ impl Game {
                     .objects
                     .iter()
                     .enumerate()
-                    .filter(|(candidate, object)| {
-                        *candidate != id as usize
-                            && object.zone == Zone::Graveyard
+                    .map(|(candidate, _)| world.object(candidate as CardId))
+                    .filter(|object| {
+                        object.zone == Zone::Graveyard
                             && object.owner == actor
                             && object.is_card()
                             && (object.card.kind_mask() & (4 | 8) != 0
@@ -484,9 +503,8 @@ impl Game {
                     .filter(|(id, o)| {
                         o.zone == Zone::Battlefield
                             && o.controller == actor
-                            && self.is_creature(*id as CardId)
-                            && self.stats_without_hand(*id as CardId, departing).power
-                                >= i128::from(minimum)
+                            && world.kinds(*id as CardId) & 1 != 0
+                            && stats(*id as CardId).power >= i128::from(minimum)
                     })
                     .count() as u64
             }
@@ -502,12 +520,10 @@ impl Game {
                 .filter(|target| {
                     self.on_battlefield(target.card)
                         && self.object_ref(target.card) == *target
-                        && Some(target.card) != departing
-                        && self.is_creature(target.card)
+                        && world.kinds(target.card) & 1 != 0
                 })
                 .map_or(0, |target| {
-                    u64::try_from(self.stats_without_hand(target.card, departing).power.max(0))
-                        .unwrap_or(u64::MAX)
+                    u64::try_from(stats(target.card).power.max(0)).unwrap_or(u64::MAX)
                 }),
             crate::cards::SpellReductionAmount::GreatestCreatureToughness => {
                 let maximum = self
@@ -518,28 +534,28 @@ impl Game {
                     .filter(|(id, object)| {
                         object.zone == Zone::Battlefield
                             && object.controller == actor
-                            && self.is_creature(*id as CardId)
+                            && world.kinds(*id as CardId) & 1 != 0
                     })
-                    .map(|(id, _)| self.stats_without_hand(id as CardId, departing).toughness)
+                    .map(|(id, _)| stats(id as CardId).toughness)
                     .max()
                     .unwrap_or(0)
                     .max(0);
                 u64::try_from(maximum).unwrap_or(u64::MAX)
             }
             crate::cards::SpellReductionAmount::SourcePower => {
-                u64::try_from(self.stats_without_hand(source, departing).power.max(0))
-                    .unwrap_or(u64::MAX)
+                u64::try_from(stats(source).power.max(0)).unwrap_or(u64::MAX)
             }
             crate::cards::SpellReductionAmount::CreaturePower { filter, greatest } => {
+                let query = characteristic_query::CharacteristicQuery::in_world(world);
                 let mut powers = self
                     .state
                     .objects
                     .iter()
                     .enumerate()
                     .filter(|&(id, _)| {
-                        self.creature_matches(filter, actor, self.object_ref(source), id as CardId)
+                        query.creature_matches(filter, actor, world.reference(source), id as CardId)
                     })
-                    .map(|(id, _)| self.stats_without_hand(id as CardId, departing).power);
+                    .map(|(id, _)| query.stats(id as CardId).power);
                 // Sum signed values before clamping: negative-power creatures
                 // reduce the total, but cannot create a negative discount.
                 let value = if greatest {
@@ -555,7 +571,7 @@ impl Game {
                 // Widen before multiplying: raw X plus printed generic may exceed
                 // u32 before a legal discount makes its payment representable.
                 let n = self
-                    .stat_value_without_hand(value, self.object_ref(source), actor, departing)
+                    .stat_value_in_world(world, value, world.reference(source), actor)
                     .max(0);
                 u64::try_from(n)
                     .unwrap_or(u64::MAX)
@@ -571,12 +587,12 @@ impl Game {
             }
         }
         for &source in &self.state.static_sources {
-            let object = &self.state.objects[source as usize];
+            let object = world.object(source);
             if object.controller != actor {
                 continue;
             }
             for (index, rule) in object.card.cost_reductions().iter().enumerate() {
-                if !self.continuous_fragment_available(source, |fragment| matches!(fragment,
+                if !world.fragment_available(source, |fragment| matches!(fragment,
                     crate::cards::StaticAbilityFragment::CostReduction(slot, _) if usize::from(*slot) == index)) { continue; }
                 if !rule.source_only && applies(rule, source) {
                     reduction = reduction.saturating_add(amount(rule, source));

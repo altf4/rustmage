@@ -66,13 +66,22 @@ impl Game {
         self.state.objects[source.id as usize].flashback = true;
     }
 
+    pub(super) fn harmonizer_discount(&self, item: &SpellView, object: ObjectRef) -> Option<u64> {
+        let source = item.source.expect("harmonize has a source");
+        if let Some(world) = self.cast_departure(source.object, item.controller) {
+            contribution(&world, item.controller, object)
+        } else {
+            contribution(self, item.controller, object)
+        }
+    }
+
     pub(super) fn harmonize_choice_fundable(
         &self,
         a: &Announcement,
         object: Option<ObjectRef>,
     ) -> bool {
         let discount = match object {
-            Some(reference) => match contribution(self, a.item.controller, reference) {
+            Some(reference) => match self.harmonizer_discount(&a.item, reference) {
                 Some(power) => power,
                 None => return false,
             },

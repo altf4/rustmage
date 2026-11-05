@@ -100,7 +100,7 @@ impl Game {
     ) -> u64 {
         let mut reduction = definition
             .activation_target_reduction(ability)
-            .filter(|rule| self.cast_target_matches(rule.rule, actor, source, target))
+            .filter(|rule| self.activation_target_matches(rule.rule, actor, source, target))
             .map_or(0, |rule| u64::from(rule.generic));
         if let Target::Card(id) = target
             && self.on_battlefield(id)
@@ -134,7 +134,7 @@ impl Game {
         mut base: ManaCost,
     ) -> ManaCost {
         if let Some(rule) = definition.activation_target_reduction(ability)
-            && self.cast_target_matches(rule.rule, actor, source, target)
+            && self.activation_target_matches(rule.rule, actor, source, target)
         {
             base.generic = base.generic.saturating_sub(rule.generic);
         }

@@ -1032,37 +1032,11 @@ pub(super) trait CharacteristicWorld {
         subtypes::in_world(self, id)
     }
     fn value(&self, value: StatValue, source: CardId) -> i128 {
-        let game = self.game();
-        let controller = self.object(source).controller;
-        if value == StatValue::CreaturesDiedThisTurn {
-            return i128::from(self.creatures_died());
-        }
-        if value == StatValue::CardLeftGraveyardThisTurn {
-            return i128::from(self.card_left_graveyard(controller));
-        }
-        game.stat_value_with(
+        self.game().stat_value_in_world(
+            self,
             value,
             self.reference(source),
-            controller,
-            &|| {
-                game.state.objects.iter().enumerate().map(|(id, _)| {
-                    let id = id as CardId;
-                    (id, self.object(id))
-                })
-            },
-            &|id| self.subtypes(id),
-            &|id, _| self.kinds(id),
-            &|id| self.name(id),
-            &|id| self.colors(id),
-            &|id| self.legendary(id),
-            &|id| self.mana_value(id),
-            &|id, kind| self.counter_count(id, kind),
-            &|id| self.counter_amounts(id).has_any(),
-            self.life(controller),
-            self.life(controller.other()),
-            game.state.attack_declared && self.attacking(source),
-            self.has_enduring_story(controller),
-            self.lost_life(controller),
+            self.object(source).controller,
         )
     }
     fn entered_this_turn(&self, source: ObjectRef) -> bool {
@@ -1375,6 +1349,70 @@ impl CharacteristicWorld for Game {
             .attackers
             .iter()
             .any(|attacker| attacker.card == id)
+    }
+}
+
+/// A cast proposal moves one exact object before sampling targets or costs.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) struct CastDepartureWorld<'a> {
+    game: &'a Game,
+    id: CardId,
+    spell: Object,
+    graveyard_owner: Option<Player>,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    pub(super) fn cast_departure(
+        &self,
+        source: ObjectRef,
+        controller: Player,
+    ) -> Option<CastDepartureWorld<'_>> {
+        let original = self.state.objects.get(source.card as usize)?;
+        if original.generation != source.generation
+            || !matches!(
+                original.zone,
+                Zone::Hand | Zone::Graveyard | Zone::Exile | Zone::Library
+            )
+        {
+            return None;
+        }
+        let mut spell = original.clone();
+        spell.zone = Zone::Stack;
+        spell.controller = controller;
+        Some(CastDepartureWorld {
+            game: self,
+            id: source.card,
+            spell,
+            graveyard_owner: (original.zone == Zone::Graveyard && original.is_card())
+                .then_some(original.owner),
+        })
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl CharacteristicWorld for CastDepartureWorld<'_> {
+    fn game(&self) -> &Game {
+        self.game
+    }
+    fn object(&self, id: CardId) -> &Object {
+        if id == self.id {
+            &self.spell
+        } else {
+            self.game.object(id)
+        }
+    }
+    fn card_left_graveyard(&self, player: Player) -> bool {
+        self.graveyard_owner == Some(player) || self.game.card_left_graveyard(player)
+    }
+    fn life(&self, player: Player) -> i128 {
+        self.game.life(player)
+    }
+    fn gained_life(&self, player: Player) -> bool {
+        self.game.gained_life(player)
+    }
+    fn attacking(&self, id: CardId) -> bool {
+        self.game.attacking(id)
     }
 }
 

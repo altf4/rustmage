@@ -1,5 +1,6 @@
 //! Earlier-layer count expressions; deliberately no derived-stat recursion.
 use super::*;
+use ability_world::CharacteristicWorld;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
@@ -40,43 +41,49 @@ impl Game {
             && (!filter.basic || (kinds(id, o) & 2 != 0 && o.card.is_basic_land()))
     }
     pub(super) fn stat_value(&self, value: StatValue, source: ObjectRef, owner: Player) -> i128 {
-        self.stat_value_without_hand(value, source, owner, None)
+        self.stat_value_in_world(self, value, source, owner)
     }
-    /// CR601.2a preflight removes only the exact proposed Hand spell. Plot and
-    /// activation queries retain their real current objects until costs commit.
-    pub(super) fn stat_value_without_hand(
+
+    pub(super) fn stat_value_in_world<W: CharacteristicWorld + ?Sized>(
         &self,
+        world: &W,
         value: StatValue,
         source: ObjectRef,
         owner: Player,
-        departing: Option<CardId>,
     ) -> i128 {
+        if value == StatValue::CreaturesDiedThisTurn {
+            return i128::from(world.creatures_died());
+        }
+        if value == StatValue::CardLeftGraveyardThisTurn {
+            return i128::from(world.card_left_graveyard(owner));
+        }
+        if value == StatValue::LifeGainOccurredThisTurn {
+            return i128::from(world.gained_life(owner));
+        }
         self.stat_value_with(
             value,
             source,
             owner,
             &|| {
-                self.state
-                    .objects
-                    .iter()
-                    .enumerate()
-                    .filter(move |(id, o)| departing != Some(*id as CardId) || o.zone != Zone::Hand)
-                    .map(|(id, o)| (id as CardId, o))
+                self.state.objects.iter().enumerate().map(|(id, _)| {
+                    let id = id as CardId;
+                    (id, world.object(id))
+                })
             },
-            &|id| self.granted_subtypes(id),
-            &|id, o| self.object_kinds(id, o),
-            &|id| self.object_name(id),
-            &|id| ability_world::CharacteristicWorld::colors(self, id),
-            &|id| ability_world::CharacteristicWorld::legendary(self, id),
-            &|id| ability_world::CharacteristicWorld::mana_value(self, id),
-            &|id, kind| self.counter_count(id, kind),
-            &|id| self.counter_amounts(id).has_any(),
-            self.state.players[owner.index()].life,
-            self.state.players[owner.other().index()].life,
-            self.state.attack_declared
-                && self.state.attackers.iter().any(|a| a.card == source.card),
-            self.state.players[owner.index()].enduring_story,
-            self.state.players[owner.index()].life_lost_this_turn > 0,
+            &|id| world.subtypes(id),
+            &|id, _| world.kinds(id),
+            &|id| world.name(id),
+            &|id| world.colors(id),
+            &|id| world.legendary(id),
+            &|id| world.mana_value(id),
+            &|id, kind| world.counter_count(id, kind),
+            &|id| world.counter_amounts(id).has_any(),
+            world.life(owner),
+            world.life(owner.other()),
+            self.state.attack_declared && world.attacking(source.card),
+            world.has_enduring_story(owner),
+            world.lost_life(owner),
+            world.card_left_graveyard(owner),
         )
     }
     /// The same earlier-layer evaluator serves concrete state and a borrowed
@@ -101,6 +108,7 @@ impl Game {
         attacking: bool,
         enduring_story: bool,
         life_lost: bool,
+        graveyard_left: bool,
     ) -> i128
     where
         F: Fn() -> I,
@@ -189,6 +197,7 @@ impl Game {
                     attacking,
                     enduring_story,
                     life_lost,
+                    graveyard_left,
                 ) % 2
                     != 0)
                     == odd,
@@ -229,6 +238,7 @@ impl Game {
                     attacking,
                     enduring_story,
                     life_lost,
+                    graveyard_left,
                 ) == 0,
             ),
             StatValue::SourceEquipmentCount => {
@@ -280,9 +290,7 @@ impl Game {
             StatValue::ControlledCreatureDiedThisTurn => {
                 i128::from(self.state.players[owner.index()].controlled_creature_died_this_turn)
             }
-            StatValue::CardLeftGraveyardThisTurn => {
-                i128::from(self.state.players[owner.index()].card_left_graveyard_this_turn)
-            }
+            StatValue::CardLeftGraveyardThisTurn => i128::from(graveyard_left),
             StatValue::ControllerEndStep => {
                 i128::from(self.state.step == Step::End && self.state.active == owner)
             }
@@ -366,6 +374,7 @@ impl Game {
                     attacking,
                     enduring_story,
                     life_lost,
+                    graveyard_left,
                 ) >= i128::from(minimum),
             ),
             StatValue::PermanentsSacrificedThisTurn => {
@@ -552,6 +561,7 @@ impl Game {
                     attacking,
                     enduring_story,
                     life_lost,
+                    graveyard_left,
                 )
                 .max(0)
                     / i128::from(size.get())
@@ -577,6 +587,7 @@ impl Game {
                         attacking,
                         enduring_story,
                         life_lost,
+                        graveyard_left,
                     )
                 })
                 .try_fold(0i128, i128::checked_add)
