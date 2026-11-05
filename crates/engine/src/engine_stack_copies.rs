@@ -209,17 +209,35 @@ impl Game {
             }
         }
     }
+    /// Resolution owns the top packet separately, but it is a stack object
+    /// until its resolution finishes.
+    pub(super) fn stack_items_for_targets(&self) -> impl Iterator<Item = &SpellView> {
+        let resolving = self.state.resolving.iter().map(|r| &r.item).filter(|item| {
+            item.kind != StackKind::Spell
+                || item.source.is_some_and(|source| {
+                    self.state
+                        .objects
+                        .get(source.id as usize)
+                        .is_some_and(|object| {
+                            object.zone == Zone::Stack
+                                && object.generation == source.object.generation
+                        })
+                })
+        });
+        self.state.stack.iter().chain(resolving)
+    }
     pub(super) fn bound_stack_item(&self, bound: &BoundTarget) -> Option<&SpellView> {
-        self.state.stack.iter().find(|item| match bound.target {
-            Target::Stack(id) => item.id == id,
-            Target::Spell(card) => {
-                item.kind == StackKind::Spell
-                    && item.source.is_some_and(|source| {
-                        source.id == card && Some(source.object) == bound.object
-                    })
-            }
-            _ => false,
-        })
+        self.stack_items_for_targets()
+            .find(|item| match bound.target {
+                Target::Stack(id) => item.id == id,
+                Target::Spell(card) => {
+                    item.kind == StackKind::Spell
+                        && item.source.is_some_and(|source| {
+                            source.id == card && Some(source.object) == bound.object
+                        })
+                }
+                _ => false,
+            })
     }
     pub(super) fn remember_next_spell_copy(&mut self, item: &SpellView, ability: u16) {
         let mut delayed = item.clone();
