@@ -282,49 +282,33 @@ impl Game {
                 })
         });
         if applies || frozen.is_some() {
-            let excluded = self
+            let entering = self
                 .state
                 .entry_batch
                 .as_ref()
-                .map(|batch| {
-                    batch
-                        .moves
-                        .iter()
-                        .filter(|movement| {
-                            !movement.skipped
-                                && movement.destination == Zone::Battlefield
-                                && movement.before.zone == Zone::Library
-                        })
-                        .map(|movement| movement.before.reference)
-                        .collect::<Vec<_>>()
-                })
-                .unwrap_or_default();
+                .map_or(&[][..], |batch| batch.moves.as_slice());
             let count = usize::try_from(amount).unwrap_or(usize::MAX);
-            let cards = self.state.players[player.index()]
+            let library = self.state.players[player.index()]
                 .library
                 .iter()
                 .rev()
                 .copied()
-                .filter(|&id| {
-                    self.state.objects[id as usize].is_card()
-                        && !excluded.contains(&self.object_ref(id))
-                })
-                .take(count)
-                .collect::<Vec<_>>();
-            let references = cards
-                .iter()
-                .map(|&id| self.object_ref(id))
-                .collect::<Vec<_>>();
+                .filter(|&id| self.state.objects[id as usize].is_card())
+                .map(|id| self.object_ref(id));
+            let cards = entries::life_replacement_exile_cards(library, count, entering);
             if let Some(Some(receipt)) = &frozen
-                && receipt.exiled.as_ref() != Some(&references)
+                && receipt.exiled.as_ref() != cards.as_ref()
             {
                 self.fail_frozen_mana_replay();
                 return;
             }
-            if cards.len() == count {
-                self.record_cast_mana_life_payment(player, amount, Some(references));
-                let events = self.move_objects_raw(&cards, Zone::Exile);
-                self.finish_zone_events(&events, &[]);
+            if let Some(cards) = cards {
+                let ids: Vec<_> = cards.iter().map(|object| object.card).collect();
+                self.record_cast_mana_life_payment(player, amount, Some(cards));
+                if !ids.is_empty() {
+                    let events = self.move_objects_raw(&ids, Zone::Exile);
+                    self.finish_zone_events(&events, &[]);
+                }
                 return;
             }
         }
