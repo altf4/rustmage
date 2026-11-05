@@ -962,8 +962,7 @@ pub enum CostAction {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum DelayedTargetEvent {
     DiesOnce,
-    /// Exact watched permanent enters a graveyard under this packet's controller;
-    /// unlike generic DiesOnce, it need not still be a creature (TDM ruling).
+    /// Exact watched permanent enters a graveyard under this packet's controller.
     GraveyardUnderControllerOnce,
     CombatDamageToPlayer,
 }
