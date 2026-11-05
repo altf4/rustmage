@@ -1008,15 +1008,22 @@ fn granted_harmonize_recomputes_the_cost_of_an_existing_selected_spell_face() {
     act(&mut g, Action::ChooseHarmonizer { object: None });
     pay(&mut g);
     assert_eq!(g.state.stack.last().unwrap().mana_value(), 2);
-    drain(&mut g);
-    assert_eq!(
-        g.object_view(spell).zone,
-        Zone::Exile,
-        "Harmonize overrides Omen shuffle"
-    );
-    assert_eq!(g.object_view(spell).card, named("Twinmaw Stormbrood"));
-    assert_eq!(g.hand_count(p), 1);
-    assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    let before_shuffle = g.state.rng;
+    act(&mut g, Action::Pass);
+    act(&mut g, Action::Pass);
+    for (effect, shuffled) in [
+        (ZoneReplacementKind::Exile, false),
+        (ZoneReplacementKind::Shuffle, true),
+    ] {
+        let mut branch = g.clone();
+        act(&mut branch, Action::ChooseZoneReplacement { effect });
+        drain(&mut branch);
+        assert_eq!(branch.object_view(spell).zone, Zone::Exile);
+        assert_eq!(branch.object_view(spell).card, named("Twinmaw Stormbrood"));
+        assert_eq!(branch.state.rng != before_shuffle, shuffled);
+        assert_eq!(branch.hand_count(p), 1);
+        assert_eq!(branch.state.players[p.index()].mana, [0; 6]);
+    }
 }
 
 #[test]
