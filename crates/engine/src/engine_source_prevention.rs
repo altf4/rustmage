@@ -665,16 +665,22 @@ impl Game {
         // read when it resolves. The damage amount remains an event-time fact.
         let pending = self.state.pending_triggers.len();
         self.queue_reflexive(&item, shield.ability, Some(event.source.reference));
-        if let Some(packet) = self.state.pending_triggers.get_mut(pending)
-            && packet.event_object.is_none()
-        {
-            packet.set_event_object(EventObjectView {
-                object: event.source.reference,
-                facts: EventObjectFacts::Controller(event.source.controller),
-                semantic_objects: None,
-                conniver_creature: None,
-                subtype_lki: None,
+        if let Some(packet) = self.state.pending_triggers.get_mut(pending) {
+            let object = packet.event_object.get_or_insert_with(|| {
+                Box::new(EventObjectView {
+                    object: event.source.reference,
+                    facts: EventObjectFacts::Controller(event.source.controller),
+                    semantic_objects: None,
+                    conniver_creature: None,
+                    subtype_lki: None,
+                })
             });
+            if object.object == event.source.reference
+                && let EventObjectFacts::DamageActor(saved) = &mut object.facts
+            {
+                // The hit can come from an ability whose source already left.
+                *saved = event.source;
+            }
         }
     }
     pub(super) fn expire_source_prevention(&mut self) {

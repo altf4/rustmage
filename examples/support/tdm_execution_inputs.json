@@ -267,7 +267,7 @@
     "crates/engine/src/engine_sos_tokens.rs": "274542b330fff5fb173eec63f2d83d653927e7bce6d1641e6b978d4cafa15cbf",
     "crates/engine/src/engine_source_counter_cost.rs": "1c2b8c85002f09035a951ac57cb5cc6bca563c6abf495a30c28b07ee92175b53",
     "crates/engine/src/engine_source_linked_effects.rs": "93f9c390895a8983efd3515f9240ce873d03e54f2e94dcdaabb838446288b813",
-    "crates/engine/src/engine_source_prevention.rs": "1eff5216896bb04dbcbdd3c1989692be07241b5df714c0c9cbb0596054cc6302",
+    "crates/engine/src/engine_source_prevention.rs": "f603dee179c381dc6edb82a2ea52c11926cd7721da36424a9e1da3a8ca4f053f",
     "crates/engine/src/engine_source_quantities.rs": "e0d4b15ff4ddbf4af701ccc2ade3d6d7c8edbf05cb22b8326ae222c299e72cff",
     "crates/engine/src/engine_spell_costs.rs": "cdc2a7fc29dd99ac3c4f0045eff2b3977c0ee1ebc38cd478be4d0606bd4b5c6d",
     "crates/engine/src/engine_stack_copies.rs": "7577e9051260cd86a1aa0176ed487650f22675b9419892c31a7544dca44d6d61",

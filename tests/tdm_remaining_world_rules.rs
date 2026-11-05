@@ -1834,27 +1834,37 @@ fn prevention_callback_can_read_both_the_damage_actor_and_its_latest_controller(
     };
     let _scope = fixture_rules::activate(&[(card("Opt"), &MIXED)]);
     let p = Player::P0;
-    let mut g = scenario(p);
-    let source = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
-    let reference = g.object_ref(source);
-    shield(&mut g, reference);
-    let hit = event(&g, source, p, 2, true);
-    g.apply_damage_batch(&[hit]);
-    g.advance_replacements(true);
-    g.give_priority();
-    let target = Action::ChooseTarget {
-        target: Target::Player(p.other()),
-    };
-    wait(&mut g, |game| game.legal_actions().contains(&target));
-    act(&mut g, target);
-    if g.legal_actions().contains(&Action::FinishTargets) {
-        act(&mut g, Action::FinishTargets);
+    for departed_before_hit in [false, true] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+        let reference = g.object_ref(source);
+        shield(&mut g, reference);
+        if departed_before_hit {
+            g.record_control(reference, p, None);
+        }
+        let hit = event(&g, source, p, 2, true);
+        if departed_before_hit {
+            g.move_object(source, Zone::Graveyard);
+        }
+        g.apply_damage_batch(&[hit]);
+        g.advance_replacements(true);
+        g.give_priority();
+        let target = Action::ChooseTarget {
+            target: Target::Player(p.other()),
+        };
+        wait(&mut g, |game| game.legal_actions().contains(&target));
+        act(&mut g, target);
+        if g.legal_actions().contains(&Action::FinishTargets) {
+            act(&mut g, Action::FinishTargets);
+        }
+        if !departed_before_hit {
+            g.record_control(reference, p, None);
+            g.move_object(source, Zone::Graveyard);
+        }
+        drain(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 18);
+        assert_eq!(g.state.players[p.other().index()].life, 17);
     }
-    g.record_control(reference, p, None);
-    g.move_object(source, Zone::Graveyard);
-    drain(&mut g);
-    assert_eq!(g.state.players[p.index()].life, 18);
-    assert_eq!(g.state.players[p.other().index()].life, 17);
 }
 
 #[test]
