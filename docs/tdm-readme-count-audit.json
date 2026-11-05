@@ -792,5 +792,7 @@
     "Freeze full20 physical set memberships against pinned XMage/Oracle facts; retain banned/unresolved members in denominators.",
     "TDM has276 full physical members:275 Standard-legal and separately supported banned Cori-Steel Cutter.138 new Standard identities increase3438 to3576;139 new physical implementations include Cutter."
   ],
-  "acceptance_evidence": "docs/tdm-set-acceptance.json"
+  "acceptance_evidence": "docs/tdm-set-acceptance.json",
+  "membership_sha256_recipe": "sha256(json.dumps(scripts.set_status.freeze(ROOT, XMAGE, CODE), sort_keys=True).encode()).hexdigest(); default JSON separators/ensure_ascii, no indent or trailing newline.",
+  "final_release_evidence": "docs/tdm-set-acceptance.json"
 }

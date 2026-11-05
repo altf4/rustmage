@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "set": "TDM",
-  "status": "All276 printed card proofs,16 interaction families,52 fixed games and labelled benchmarks verified; final assembled release/Python and published-PR reviews pending.",
-  "complete_set_accepted": false,
+  "status": "Full complete-set gameplay, interactions, release and actual Python acceptance passed. Publication and two final independent PR-head reviews are recorded on the PR without changing validated executable inputs.",
+  "complete_set_accepted": true,
   "card_scope": {
     "physical_members": 276,
     "standard_legal_members": 275,
@@ -48,7 +48,8 @@
       "path": "<cache>/rustmage-tdm/execution-input-contracts-1793834225052790899/terminal.json",
       "sha256": "573fab797ed8d700dc98283d10736ce39f1f027a6fee75a36ea07ad85e908db1"
     },
-    "source_binding_contract_count": 12
+    "source_binding_contract_count": 12,
+    "final_validated_source_head": "57b6c11f0f50757ee476fbbc179fbdf92ac597b9"
   },
   "interaction_matrix": {
     "path": "docs/tdm-set-coverage-matrix.json",
@@ -57,7 +58,7 @@
     "named_source_bound_proofs": 265,
     "source_gaps": 0,
     "historical_focused_engine_basis": "2660c86112362973c195bee4c1b85e1a968f9f3a",
-    "final_native_reexecution": "required by pending final release"
+    "final_native_reexecution": "265/265 named matrix proofs passed in the final4693-case native run."
   },
   "shared_engine": {
     "audited_groups_including_aliases": 88,
@@ -136,7 +137,19 @@
     "omen_witness_scope": "Legacy omen_resolution_shuffle key requires actual resolution+owner Library return. Optional isolated RNG/order receipts substantiate a shuffle boundary; shared/card lifecycle tests establish printed shuffle semantics.",
     "compile_seconds": 2.4219271969632246,
     "native_execution_seconds": 47.44477586902212,
-    "inputs_unchanged": true
+    "inputs_unchanged": true,
+    "witness_counts_scope": "All52 cases; Standard-only required gates are separately recorded below and exclude Cutter Freeform.",
+    "standard_only_witness_counts": {
+      "actual_rules_payoff": 1229,
+      "behold_payoff": 12,
+      "endure": 45,
+      "flurry_or_prowess": 36,
+      "harmonize_cast_and_exile": 63,
+      "harmonize_power_contribution": 13,
+      "mobilize": 61,
+      "omen_resolution_shuffle": 17,
+      "renew": 14
+    }
   },
   "benchmark": {
     "driver": {
@@ -212,7 +225,7 @@
     "old_unchanged": 3240,
     "new_independently_reviewed_additions": 63,
     "evidence": "docs/tdm-final-trace-additions.json",
-    "final_native_recheck": "pending final release"
+    "final_native_recheck": "Passed unchanged schema201 baseline in final4693-case native run."
   },
   "readme_accounting": {
     "evidence": "docs/tdm-readme-count-audit.json",
@@ -256,26 +269,177 @@
     }
   ],
   "final_release": {
-    "status": "pending",
-    "required_command": "python3 scripts/validate.py --release --python smoke --target-dir <cache>/rustmage-authoring/tdm-complete-set/target",
+    "status": "passed",
+    "report": {
+      "path": "<cache>/rustmage-validation-isnhuq91/report/result.json",
+      "sha256": "f30719285d87c24641e65bc832735930c0018ee1c4b3938b77c3d56ead28ea94"
+    },
+    "native_report": {
+      "path": "<cache>/rustmage-validation-isnhuq91/report/native.json",
+      "sha256": "4d844877b975ba3f8f52d8c91171f171a87eafa5fbf3548d10663d1ed7b3a19e"
+    },
+    "python_report": {
+      "path": "<cache>/rustmage-validation-isnhuq91/report/python.json",
+      "sha256": "6a14da9b7a8be9d7db6848f8c9d9345a9351ffbe1a19015506f9bf6a420b7c72"
+    },
+    "resource_report": {
+      "path": "<cache>/rustmage-build-reports/c58fcabb390248faa1fb891d7d96b129.json",
+      "sha256": "f283a934195795b26cf54309e2151e000224638d0fb30c420569b9090299d80b"
+    },
+    "validated_source_head": "57b6c11f0f50757ee476fbbc179fbdf92ac597b9",
+    "input_sha256": "3c7fd2947c480dd4e55b462081aecc1267777bd6af9e6866085464ce0e4b4e50",
+    "files_verified": 13040,
+    "inputs_unchanged": true,
+    "all_phases": [
+      {
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.9164431070093997,
+        "name": "source pins"
+      },
+      {
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 4.5254888299969025,
+        "name": "format"
+      },
+      {
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 1.2196546630002558,
+        "name": "card format"
+      },
+      {
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 2.1193163039861247,
+        "name": "script contracts"
+      },
+      {
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 80.96046928502619,
+        "name": "clippy"
+      },
+      {
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 293.1596349529573,
+        "name": "native assurance"
+      },
+      {
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 193.79129136900883,
+        "name": "release build"
+      },
+      {
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.2649093469954096,
+        "name": "simulation sample"
+      },
+      {
+        "exit": 0,
+        "timed_out": false,
+        "orphaned_processes": false,
+        "seconds": 0.16471925203222781,
+        "name": "Python assurance"
+      }
+    ],
+    "native_cases": 4693,
+    "native_targets": 115,
+    "matrix_proofs_reexecuted": 265,
+    "infrastructure_contracts": 43,
+    "actual_python_binding_cases": 10,
+    "native_compile_seconds": 137.87059490103275,
+    "native_execution_seconds": 155.17978800303536,
+    "total_seconds": 577.3544814519701,
+    "target_preexisting": true,
+    "fresh_target": false,
+    "cleaned_allocated_bytes": 0,
     "required_native_caps": {
       "per_case_seconds": 45,
       "suite_seconds": 240
     },
-    "required_resources": {
-      "memory_bytes": 6442450944,
+    "guard": {
+      "memory_max_bytes": 6442450944,
+      "memory_peak_bytes": 5282553856,
+      "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
       "cargo_jobs": 1,
-      "test_threads": 1
-    }
+      "test_threads": 1,
+      "seconds": 577.5947828009957
+    },
+    "timeouts": 0,
+    "orphaned_processes": 0,
+    "oom_events": 0,
+    "required_immutable_libraries_verified": [
+      {
+        "path": "<cache>/rustmage-validation-o8jjr7os/report/libraries/librustmage.so",
+        "sha256": "4aebb4867b67d084c98f12113c9eefb19e17a3c02a272e44e7f341cc15df2248"
+      },
+      {
+        "path": "<cache>/rustmage-validation-c3slnby9/report/libraries/librustmage.so",
+        "sha256": "4ee65b6abae8b89d79dfa2a87bd796882c05b3c87fb94833c9e4699ef44c5082"
+      },
+      {
+        "path": "<cache>/rustmage-validation-l0pzz2p2/report/libraries/librustmage.so",
+        "sha256": "c61c4e2a62e8ed9a58eec81aee83e61c622b88efcdbbf45ffef3a7dcaa315bf1"
+      },
+      {
+        "path": "<cache>/rustmage-validation-g7kgj8zc/report/libraries/librustmage.so",
+        "sha256": "59f620a0efe73896dd20113594988f9b40736294c6dfff117e590c424064dc36"
+      },
+      {
+        "path": "<cache>/rustmage-validation-owsb88ts/report/libraries/librustmage.so",
+        "sha256": "87d4e2efd1104b701f0b45a00a4c8c098cd30f0d3fef7f93df419e50e8de965c"
+      },
+      {
+        "path": "<cache>/rustmage-validation-isnhuq91/report/libraries/librustmage.so",
+        "sha256": "448a5156c0783985bf7d08ad685fb2f89bbef717b0c5647c86188b3c33239435"
+      }
+    ],
+    "fresh_full_suite_52_game_corpus": {
+      "path": "<cache>/rustmage-tdm/final-release-OLvcHsMD/games/corpus-verification.json",
+      "sha256": "c9fe884d6381dbfbda72607ff4e505d9a5a64c40d781fe068b4cbb1372f519f9"
+    },
+    "fresh_corpus_cases_outcomes_actions_witnesses_and_final_digests_match_prior_verified_corpus": true,
+    "generic_release_simulation": {
+      "clone_ns": 177.34485,
+      "decisions": 4941,
+      "decisions_per_second": 27015.87027369488,
+      "deck_names": [
+        "native-smoke"
+      ],
+      "deck_rules": "Freeform",
+      "decklist_archive": null,
+      "games": 10,
+      "games_per_second": 54.67692830134564,
+      "initial_state_bytes_excluding_capacity_and_allocator": 24712,
+      "max_decisions_per_game": 655,
+      "note": "native smoke policy and observation construction included; optional named decks rotate adjacent matchups through both seats; setup and gameplay timed, archive loading excluded; no model, tensor encoding, or per-decision JSON; verify mode also times owned raw/index branch and restore checks; sampled gameplay is not complete card-interaction coverage or XMage parity",
+      "owned_raw_index_restore_checks": false,
+      "restore_ns": 182.90762,
+      "seconds": 0.182892498
+    },
+    "generic_simulation_scope": "Existing10-game native-smoke Freeform workload only; not TDM or all-Standard throughput.",
+    "post_validation_delta": "Only docs/tdm-set-acceptance.json, docs/tdm-readme-count-audit.json, docs/tdm-engine-audit.json and docs/tdm-implementation-plan.md record completed results and clarify metadata serialization. README and every executable, source, test, fixture and provenance input are unchanged from the validated head. Published-head reviews must verify this delta and exact execution identity."
   },
   "published_pr": {
-    "status": "pending full release",
+    "status": "Ready to publish exactly one completed-set PR after successful full acceptance.",
     "exactly_one": true,
-    "two_fresh_pure_nonauthor_final_head_reviews": "required after publication"
+    "two_fresh_pure_nonauthor_final_head_reviews": "Required on the final published PR head; append results on the PR without executable/source changes."
   },
   "remaining": [
-    "Final assembled release and actual Python binding checks with all native cases",
-    "One completed-set PR",
-    "Two fresh independent pure nonauthor reviews of its final published head"
+    "Publish the single completed-set PR",
+    "Two fresh pure independent nonauthor reviews of its exact final published head, recorded on the PR"
   ]
 }

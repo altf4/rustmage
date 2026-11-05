@@ -12,7 +12,7 @@
     "unresolved_membership_facts": 0,
     "independently_verified_complete_set_cards": 0
   },
-  "phase": "All276 physical cards/13 Omen pairs,16 interaction families,52 fixed natural complete games, replay/owned/privacy and labelled throughput verified.88 shared groups focused-reviewed. Final assembled release/Python validation and single published PR/two final reviews remain.",
+  "phase": "Complete shared rules and full-set release accepted; final published-PR reviews pending.",
   "audit_reports": [
     "docs/tdm-audit-a-g.json",
     "docs/tdm-audit-g-s.json",
@@ -1193,7 +1193,15 @@
     "latest_accepted_evidence": "docs/tdm-engine86-acceptance.json",
     "newly_discovered_dependency_pending": null,
     "latest_focused_reviewed_revision": "2fcd64aa7106a27b74735a035f261a292d7bc335",
-    "latest_full_release_revision": "2660c86112362973c195bee4c1b85e1a968f9f3a"
+    "latest_full_release_revision": "2660c86112362973c195bee4c1b85e1a968f9f3a",
+    "final_set_release": {
+      "evidence": "docs/tdm-set-acceptance.json",
+      "validated_source_head": "57b6c11f0f50757ee476fbbc179fbdf92ac597b9",
+      "success": true,
+      "native_cases": 4693,
+      "actual_python_cases": 10,
+      "all_88_groups_are_unweighted": true
+    }
   },
   "metadata_reconciliation": "docs/tdm-metadata-reconciliation.json"
 }

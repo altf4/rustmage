@@ -4,51 +4,60 @@ Tracking issue: [#570](https://github.com/altf4/rustmage/issues/570).
 Branch: `codex/tdm-complete-set`; baseline `c87b55079c540edde1c49cc725a1e1475bebf68b`.
 Pinned XMage: `492369c7844b8d76479f0393ff9eb6b0b0cf30d7`.
 
-All276 physical identities are locally whole-verified:139 new implementations
-and137 existing implementations verified. All13 Omen parent/face pairs and the
-Reliquary Dragon factory are complete. Cori-Steel Cutter retains banned Standard
-legality and separate Freeform coverage. The printed ledger remains immutable at
+All 276 physical identities are whole-verified: 139 new implementations and 137
+existing implementations verified. All 13 Omen pairs and the Reliquary Dragon
+factory are complete. Cori-Steel Cutter retains its frozen Standard ban and
+separate Freeform coverage. The immutable printed ledger remains
 `b6716c0d6f18774988997e1183caaf5b0f977d2049406f56da7dbfaecec2942a`.
 
-The sixteen-family matrix binds265 named proofs to source and retained passing
-outcomes, with no source gaps. Two pure preliminary reviewers read all276 typed
-bodies,13 Omen bodies, Oracle text and603 unique primary/helper Java blobs.
-Engine86 had full release acceptance. Later focused engine87 preserves paid mana
-use receipts; engine88 conservatively groups same-source tap capacity and protects
-future restored producers. Engine88 passes10 new plus57 inherited cases, Clippy,
-two independent pure published-source approvals and Root exact-source10. The
-actual830-action slow trace preserves its public X-choice frame, final snapshot,
-both final views and outcome. No card-specific engine data or new wire shape was
-introduced; observation schema remains201.
+The sixteen-family matrix binds 265 named source proofs with no gaps. Two pure
+preliminary reviewers read all 276 bodies, 13 Omen bodies, full Oracle text and
+603 unique primary/helper Java blobs. Engine86 had full release acceptance before
+card authoring. Later engine87 preserves paid child mana-ability use receipts;
+engine88 conservatively groups same-source tap capacity and protects future
+restored producers. Their focused cases, Clippy and two independent reviews pass.
+The actual 830-action slow trace preserves its public X-choice frame, final
+snapshot, both final views and outcome. Observation schema remains201.
 
-The repaired harness binds11312 exact execution inputs, immutable proof-ledger
-and helper bytes, strict trace payloads, meaningful divergent owned siblings and
-parent disposal. Twelve source-binding and two actual compiled-corpus rejection
-contracts pass. Loader checks precede timed gameplay.
+The fixed 52-game corpus passes: 48 Standard and 4 separate Cutter Freeform,
+all natural life-total terminals, all five colors and eight required mechanic
+payoffs in Standard, 29,332 actual/replayed actions, 286–1026 decisions per game,
+and 3–5 meaningful owned roots per game. Decks, seeds and 4,096-action ceilings
+stay fixed. Independent reconstructed parents, divergent raw/index siblings,
+parent disposal, restore, atomic rejection and paired full observations are checked.
+Twelve source-binding and two compiled stale/tampered corpus rejection contracts
+pass; runtime identity pins 11,312 exact execution inputs.
 
-The fixed52-case corpus now passes:48 Standard and4 separate Cutter Freeform,
-all natural life-total terminals, all five colors/eight required natural mechanic
-payoffs,29332 actual/replayed actions,286–1026 decisions per game and3–5 meaningful
-owned roots per game. Decks/seeds and4096 action ceilings are unchanged.
+The same verified Standard48 workload repeated3 times measured 2.756 games/s and
+1,572.746 decisions/s; separate Freeform4x3 measured 13.495 games/s. This is the
+test profile with core/dependencies opt1, harness opt0 and test support/debug
+assertions. It includes construction/shuffle, legal actions, generic policy/actor
+observations, rules and light cast telemetry. It excludes loader validation,
+replay/owned proof work, detailed receipts/JSON and model/network/tensor work.
+These are workload measurements rather than production or all-Standard estimates.
 
-The same verified Standard48 cases repeated3 times measured2.756 games/s and
-1572.746 decisions/s; separate Freeform4x3 measured13.495 games/s and6555.132
-choices/s. Scope is the guarded test profile (core/dependencies opt1, harness opt0,
-test-support/debug assertions), including construction/shuffle, legal actions,
-generic policy and actor observations, rules and light cast telemetry. The clock
-excludes loader validation, replay/owned verification, detailed receipts/JSON,
-model inference/network/tensors. Full measurements and hashes are in
-[the acceptance record](tdm-set-acceptance.json).
+Final full release acceptance passed all9 phases at
+`57b6c11f0f50757ee476fbbc179fbdf92ac597b9`: 4,693 native cases across115 targets,
+all265 matrix proofs, 43 runner contracts and10 actual Python binding cases.
+All13,040 frozen inputs stayed unchanged; zero timeouts, orphaned processes or
+OOM events. Native compilation took 137.871s, execution
+155.180s, production release 193.791s and
+total validation 577.354s. Peak guarded memory was
+5282553856 bytes below the6GiB limit, with one Cargo job/test
+thread. All six required immutable libraries remain at their exact paths/hashes.
+The fresh full-suite52-game corpus matches the earlier verified corpus's cases,
+outcomes, actions, witnesses and final state/observation digests.
 
-The README candidate preserves accepted ECL/TMT branch coverage and now records
-10/20 complete sets,3576/5164 Standard identities across accepted branches and
-TDM276/276. Current checkout admission is3303 total/3296 Standard. A count audit
-pins the union by Oracle UUID.
+README records TDM276/276, 10/20 complete sets and3,576/5,164 Standard identities
+across accepted branches. Current checkout supports3,303 total/3,296 Standard.
+The count audit preserves accepted ECL/TMT coverage and pins the union by Oracle
+UUID. Through game/benchmark acceptance,139 new physical implementations took
+53.203 elapsed hours, including audit, engine work, integration, reviews, validation
+and waiting. Final release/publication steps follow that measured interval.
 
-Remaining: freeze this assembled candidate; run the full guarded release validator
-and actual Python smoke bindings against its immutable library; then open exactly
-one completed-set PR and obtain two fresh pure nonauthor reviews of its final
-published head. No PR exists yet. Required45-second case/240-second suite budgets,
-6GiB cap, one Cargo job/test thread and fixed consuming inputs remain unchanged.
-All five earlier required shared libraries remain at their exact paths/hashes.
-The complete-set goal stays open until release and final published review pass.
+[The acceptance record](tdm-set-acceptance.json) binds all retained reports and
+records the documentation-only results delta after validation. Publish exactly
+one completed-set PR, then obtain two fresh pure independent nonauthor reviews
+of its exact published head and record those reviews on the PR. No executable
+changes are needed after passing acceptance. Keep the goal open until publication
+and both final reviews finish. The wider Standard roadmap remains open.
