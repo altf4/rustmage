@@ -260,8 +260,8 @@ impl Workload {
         }
         // Candidate admission is insufficient. Runtime loading keeps compile-only
         // checks possible in partial worktrees; absent/partial outcome proof refuses.
-        let proof_path =
-            Path::new(env!("CARGO_MANIFEST_DIR")).join("docs/tdm-card-integration-evidence.json");
+        let proof_path = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("examples/support/tdm_card_integration_evidence.json");
         let proof_bytes = std::fs::read(&proof_path).map_err(|e| {
             format!(
                 "TDM printed-outcome proof gate REFUSED: {}: {e}",

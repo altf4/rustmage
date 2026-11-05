@@ -1,8 +1,7 @@
 # Test planning for fast complete-card implementation
 
-Use the active checkout's `docs/testing.md`, `docs/direct-card-authoring.md` and
-runner interfaces as the command authority. This reference defines test selection
-and cadence; it does not waive repository acceptance checks.
+Use the active checkout's `AGENTS.md` and runner interfaces for validation commands.
+Follow the repository's acceptance checks and use this reference to select tests.
 
 ## Plan assertions before implementation
 
@@ -30,8 +29,8 @@ card. Keep the mapping lightweight and reuse existing evidence formats.
 - Arrange minimal decks, boards and zones with existing scenario helpers, then
   exercise real paid legal actions. Direct state setup is a fixture convenience;
   it must not replace the action or rules event under test. Prefer the small
-  helpers in `tests/support/mod.rs`; avoid copying the legacy
-  `big_helpers::checked` pattern that branches, serializes and replays every action.
+  helpers in `tests/support/mod.rs` and exercise branching or replay at the
+  decision points relevant to the assertion.
 - Assert the actual result: damage/life totals, exact zone and incarnation, token
   characteristics, counter amounts, cost payment, timing, trigger recipients or
   visibility. Include enough context to identify a failing table row.
@@ -70,69 +69,29 @@ unexpected engine recompilation rather than accepting it as routine.
 
 A test filter selects execution within a compiled integration target; it does not
 compile just one function. Put new set cases in that set's own integration target,
-reuse `tests/support/mod.rs`, and select it with `--test <target>`. Keep the original
-suite available as the `legacy` integration target. Do not put card scenarios back
-into engine unit tests or depend on the complete legacy harness from a new set
-harness. Test helpers use the internal, dev-only fixture feature; production users
-continue to declare only the `rustmage` dependency.
+reuse `tests/support/mod.rs`, and select it with `--test-target` in
+`scripts/run_native_tests.py`. Test helpers use the internal fixture feature.
+Production users continue to declare only the `rustmage` dependency.
 
-Focused `cargo test` does not inherit the native runner's per-test timeouts. Use
-the existing process-tree-safe `run_command` helper inside the resource guard for
-a wall-clock bound. This example caps compilation plus focused execution together
-at 390 seconds; the separate 45-second scenario cap applies only to the native
-runner. Explicit action ceilings still belong in the scenarios themselves.
-
-For example, run this existing exact scenario from the active checkout; substitute
-the actual test path and a stable cache name unique to the authoring worktree:
+The native runner applies compile, suite and per-test timeouts and enters the
+resource guard automatically. Select a target and filter for focused checks.
+Use a stable cache name unique to the authoring worktree.
 
 ```sh
 rustmage_author_cache="$HOME/.cache/rustmage-authoring/your-worktree"
 mkdir -p "$rustmage_author_cache"
 rustmage_run_dir="$(mktemp -d "$rustmage_author_cache/run-XXXXXX")"
-rustmage_test_filter='engine::assurance::interactions::ajanis_pridemate_triggers_from_actual_lifelink_damage'
-CARGO_TARGET_DIR="$rustmage_author_cache/target" \
-  python3 scripts/resource_guard.py -- python3 - \
-  "$rustmage_test_filter" "$rustmage_run_dir/focused.log" <<'PY'
-import json
-import os
-from pathlib import Path
-import sys
-
-sys.path.insert(0, 'scripts')
-from run_native_tests import run_command
-
-command = ['cargo', 'test', '--test', 'legacy', sys.argv[1], '--',
-           '--exact', '--include-ignored', '--test-threads=1']
-result = run_command(command, env=dict(os.environ), log=Path(sys.argv[2]), timeout=390)
-print(json.dumps(result))
-raise SystemExit(result['exit'])
-PY
-```
-
-For a coherent family, use its actual module prefix as the filter and omit
-`--exact`. Select changed scenarios plus existing regressions for the affected
-rules and their consumers. Verify the intended tests actually executed, with a
-positive passing count and no failed or ignored intended cases; Cargo can return
-success with zero matching tests. Use the guarded test command with `-- --list`
-when discovering names, not as evidence that behavior passed. Keep each run's
-logs in a new directory, and inspect failures before broadening.
-
-Use `scripts/run_native_tests.py` for the whole native suite at a shared-rule
-checkpoint when
-the affected set is broad or uncertain, retaining its bounded execution and timing
-report while reusing the same development target:
-
-```sh
 python3 scripts/run_native_tests.py \
   --target-dir "$rustmage_author_cache/target" \
-  --report "$rustmage_run_dir/report/native.json"
+  --report "$rustmage_run_dir/native.json" \
+  --test-target dft_crew \
+  --filter crew_choice_raw_index_and_restore_branches_keep_owned_pending_and_events
 ```
 
-The focused example runs Cargo inside the guarded process; the native runner
-enters the resource guard automatically. Honor current guard
-serialization even across worktrees; parallel authorship is useful, parallel
-compilers are not permitted. Keep sources, generated links and fixtures immutable
-for every consuming job, and poll the same process through terminal completion.
+For a coherent family, filter by a shared test-name prefix. Verify the intended
+cases executed and passed. Keep logs in a new directory for each run. Omit the
+target and filter for a shared-rule checkpoint with broad impact, using the same
+Cargo target. Keep inputs fixed until the consuming process terminates.
 
 ## Keep acceptance builds cached too
 

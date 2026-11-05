@@ -28,7 +28,7 @@ Catalogue entries or partial card implementations do not satisfy it.
   owned raw/index branch/restore. Prefer existing scenario helpers over new bots;
   do not require parser mutation suites for authored Rust cards.
 - Run `python3 scripts/link_catalogue.py` and
-  `python3 scripts/validate.py --release`; see `docs/direct-card-authoring.md`.
+  `python3 scripts/validate.py --release --python smoke`.
   Keep execution inputs fixed until consuming jobs actually terminate. Poll the
   same running process after observation timeouts. Never delete active outputs.
 - Clean disposable completed build/test files promptly. Preserve every required

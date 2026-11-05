@@ -4,9 +4,9 @@ description: Implement complete Magic card batches in rustmage using directly au
 ---
 
 Implement whole cards for rustmage's deterministic in-process RL/MCTS library.
-Read the checkout's `AGENTS.md` and `docs/direct-card-authoring.md` for current
-interfaces and validation commands. Resolve repository paths from the active
-checkout. Locate XMage through `RUSTMAGE_XMAGE_SOURCE`, or use a sibling `mage`
+Read the checkout's `AGENTS.md` for current interfaces and validation commands.
+Resolve repository paths from the active checkout. Locate XMage through
+`RUSTMAGE_XMAGE_SOURCE`, or use a sibling `mage`
 checkout; the shared source resolver also handles linked Git worktrees.
 
 ## Audit and finish the engine before authoring cards
@@ -14,10 +14,9 @@ checkout; the shared source resolver also handles linked Git worktrees.
 Use the workspace boundary deliberately: `crates/engine/` contains shared rules
 and state; `src/card_definitions/<set>/` compiles through a separate generated set
 crate; integration tests link those libraries. Users still depend only on
-`rustmage`. Read `docs/build-architecture.md` for the current package and test
-commands. On older checkouts, use their documented paths and commands; cache
-reuse across this boundary requires the split to be present. Do not move card
-behavior or catalogue/name tables into the engine.
+`rustmage`. Follow the active checkout's Cargo targets and validation runner.
+Cache reuse across these packages requires the workspace split. Keep card
+behavior and catalogue/name tables in their own packages.
 
 Inspect main, active branches, issues and open PRs before starting a set. Read the
 whole selected set's Oracle/XMage evidence before beginning card implementation.
