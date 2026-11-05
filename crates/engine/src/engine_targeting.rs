@@ -2086,6 +2086,7 @@ impl Game {
             false,
             Counters::default(),
             Some(actor),
+            false,
         );
         if origin == Zone::Exile
             && event.moved

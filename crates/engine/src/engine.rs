@@ -8827,7 +8827,7 @@ impl Game {
         tapped: bool,
         counters: Counters,
     ) -> ZoneChange {
-        self.transition_object_under_control(before, destination, tapped, counters, None)
+        self.transition_object_under_control(before, destination, tapped, counters, None, false)
     }
 
     fn transition_object_under_control(
@@ -8837,10 +8837,12 @@ impl Game {
         tapped: bool,
         counters: Counters,
         entry_controller: Option<Player>,
+        shuffle_instead_of_graveyard: bool,
     ) -> ZoneChange {
         self.capture_event_object_facts(std::iter::once(&before));
         self.capture_source_quantities(std::iter::once(&before));
-        let rules = self.freeze_zone_rules(&before, destination, None);
+        let mut rules = self.freeze_zone_rules(&before, destination, None);
+        rules.shuffle_spell = shuffle_instead_of_graveyard;
         let plan = self.plan_zone_move(&before, destination, rules);
         let returned_hand_observers =
             if before.zone == Zone::Battlefield && destination == Zone::Hand {
@@ -8962,8 +8964,11 @@ impl Game {
                 evidence_collected: false,
             };
         }
-        if before.zone == Zone::Library && destination == Zone::Library && plan.shuffle {
-            self.reveal_and_shuffle_zone_card(&before);
+        if before.zone == Zone::Library
+            && destination == Zone::Library
+            && let Some(shuffle) = plan.shuffle
+        {
+            self.shuffle_zone_card(&before, shuffle);
             return ZoneChange {
                 was_card,
                 shuffled_in_place: true,
@@ -9433,8 +9438,8 @@ impl Game {
                 self.state.known_hand.push(reference);
             }
         }
-        if plan.shuffle {
-            self.reveal_and_shuffle_zone_card(&before);
+        if let Some(shuffle) = plan.shuffle {
+            self.shuffle_zone_card(&before, shuffle);
         }
         self.copy_characteristic_zone_commit(&before, self.object_ref(id), destination);
         // A Siege's protector must be an opponent; this library is two-player.

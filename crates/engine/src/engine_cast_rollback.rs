@@ -416,7 +416,7 @@ impl Game {
                     zone_replacements::Plan {
                         destination: Zone::Library,
                         prevented: false,
-                        shuffle: false,
+                        shuffle: None,
                         reflexive: None,
                     },
                     false,
