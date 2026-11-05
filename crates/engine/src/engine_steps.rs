@@ -1,5 +1,6 @@
 //! Shared live predicates, beginning-of-step events and intervening-if checks.
 use super::*;
+use ability_world::CharacteristicWorld;
 /// The relation belongs to the beginning-of-step event, not its later resolution.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn attached_controller_turn<W: ability_world::CharacteristicWorld + ?Sized>(
@@ -332,17 +333,24 @@ impl Game {
         source: ObjectRef,
         source_tapped: bool,
     ) -> bool {
-        self.step_guard_excluding(guard, player, source, source_tapped, None)
+        self.step_guard_in_world(self, guard, player, source, source_tapped)
     }
-    pub(super) fn step_guard_excluding(
+    pub(super) fn step_guard_in_world<W: CharacteristicWorld + ?Sized>(
         &self,
+        world: &W,
         guard: StepGuard,
         player: Player,
         source: ObjectRef,
         source_tapped: bool,
-        departing: Option<CardId>,
     ) -> bool {
         let p = &self.state.players[player.index()];
+        let hand_count = |owner| {
+            (0..self.state.objects.len())
+                .map(|id| world.object(id as CardId))
+                .filter(|o| o.zone == Zone::Hand && o.owner == owner && o.is_card())
+                .count()
+        };
+        let stats = |id| characteristic_query::CharacteristicQuery::in_world(world).stats(id);
         let (value, minimum, maximum) = match guard {
             StepGuard::SourceUnprepared => {
                 return self.on_battlefield(source.card)
@@ -366,7 +374,7 @@ impl Game {
                 return p.turn_facts.hero_entered || p.turn_facts.hero_attacked;
             }
             StepGuard::AttachedControllerTurn => {
-                return attached_controller_turn(self, source, self.state.active);
+                return attached_controller_turn(world, source, self.state.active);
             }
             StepGuard::CardExiledThisTurn => return self.state.cards_exiled_this_turn,
             StepGuard::OpponentControlsMoreCreatures => {
@@ -378,23 +386,14 @@ impl Game {
                         .filter(|(id, o)| {
                             o.zone == Zone::Battlefield
                                 && o.controller == controller
-                                && self.is_creature(*id as CardId)
+                                && world.kinds(*id as CardId) & 1 != 0
                         })
                         .count()
                 };
                 return count(player.other()) > count(player);
             }
             StepGuard::OpponentHasMoreCardsInHand => {
-                let count = |owner| {
-                    self.hand_count(owner)
-                        - usize::from(departing.is_some_and(|id| {
-                            self.state
-                                .objects
-                                .get(id as usize)
-                                .is_some_and(|o| o.zone == Zone::Hand && o.owner == owner)
-                        }))
-                };
-                return count(player.other()) > count(player);
+                return hand_count(player.other()) > hand_count(player);
             }
             StepGuard::SourceReceivedCounterThisTurn => {
                 return self.put_counter_on_source_this_turn(source, player);
@@ -407,18 +406,17 @@ impl Game {
             StepGuard::SourceCreature => {
                 return self.on_battlefield(source.card)
                     && self.object_ref(source.card) == source
-                    && self.is_creature(source.card);
+                    && world.kinds(source.card) & 1 != 0;
             }
             StepGuard::SourcePowerAtLeast(minimum) => {
                 return self.on_battlefield(source.card)
                     && self.object_ref(source.card) == source
-                    && self.stats_excluding(source.card, departing).power >= i128::from(minimum);
+                    && stats(source.card).power >= i128::from(minimum);
             }
             StepGuard::SourceToughnessAtMost(maximum) => {
                 return self.on_battlefield(source.card)
                     && self.object_ref(source.card) == source
-                    && self.stats_excluding(source.card, departing).toughness
-                        <= i128::from(maximum);
+                    && stats(source.card).toughness <= i128::from(maximum);
             }
             StepGuard::Outlaw => {
                 return self.state.objects.iter().enumerate().any(|(id, o)| {
@@ -426,7 +424,7 @@ impl Game {
                         && o.zone == Zone::Battlefield
                         && ["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"]
                             .iter()
-                            .any(|s| self.has_subtype(id as CardId, s))
+                            .any(|s| world.subtypes(id as CardId).has(o.card, s))
                 });
             }
             StepGuard::Expression {
@@ -434,7 +432,7 @@ impl Game {
                 minimum,
                 maximum,
             } => {
-                let value = self.stat_value_excluding(value, source, player, departing);
+                let value = self.stat_value_in_world(world, value, source, player);
                 return minimum.is_none_or(|min| value >= min)
                     && maximum.is_none_or(|max| value <= max);
             }
@@ -478,19 +476,11 @@ impl Game {
                 .objects
                 .iter()
                 .enumerate()
-                .filter(|(id, _)| owned(*id) && self.is_creature(*id as CardId))
+                .filter(|(id, _)| owned(*id) && world.kinds(*id as CardId) & 1 != 0)
         };
         let value = match value {
             StepValue::Life => Some(p.life),
-            StepValue::Hand => Some(
-                self.hand_count(player) as i128
-                    - i128::from(departing.is_some_and(|id| {
-                        self.state
-                            .objects
-                            .get(id as usize)
-                            .is_some_and(|o| o.zone == Zone::Hand && o.owner == player)
-                    })),
-            ),
+            StepValue::Hand => Some(hand_count(player) as i128),
             StepValue::SpellsCast => Some(i128::from(p.spells_cast_this_turn)),
             StepValue::Creatures => Some(creatures().count() as i128),
             StepValue::EnchantedCreatures => Some(
@@ -506,25 +496,25 @@ impl Game {
                     .objects
                     .iter()
                     .enumerate()
-                    .filter(|(id, _)| owned(*id) && self.current_kinds(*id as CardId) & 2 != 0)
+                    .filter(|(id, _)| owned(*id) && world.kinds(*id as CardId) & 2 != 0)
                     .count() as i128,
             ),
-            StepValue::GreatestCreaturePower => creatures()
-                .map(|(id, _)| self.stats_excluding(id as CardId, departing).power)
-                .max(),
+            StepValue::GreatestCreaturePower => {
+                creatures().map(|(id, _)| stats(id as CardId).power).max()
+            }
             StepValue::GreatestOtherCreaturePower => creatures()
                 .filter(|(id, _)| self.object_ref(*id as CardId) != source)
-                .map(|(id, _)| self.stats_excluding(id as CardId, departing).power)
+                .map(|(id, _)| stats(id as CardId).power)
                 .max(),
             StepValue::TotalCreaturePower => Some(
                 creatures()
-                    .map(|(id, _)| self.stats_excluding(id as CardId, departing).power)
+                    .map(|(id, _)| stats(id as CardId).power)
                     .try_fold(0i128, i128::checked_add)
                     .capacity("step aggregate exhausted"),
             ),
             StepValue::TotalCreatureToughness => Some(
                 creatures()
-                    .map(|(id, _)| self.stats_excluding(id as CardId, departing).toughness)
+                    .map(|(id, _)| stats(id as CardId).toughness)
                     .try_fold(0i128, i128::checked_add)
                     .capacity("step aggregate exhausted"),
             ),

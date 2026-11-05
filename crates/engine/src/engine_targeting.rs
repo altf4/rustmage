@@ -1,5 +1,6 @@
 //! Shared target predicates, binding, and owned incremental announcements.
 use super::*;
+use ability_world::CharacteristicWorld;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -887,72 +888,82 @@ impl Game {
         source: ObjectRef,
         definition: Card,
     ) -> bool {
+        if !plan.has_targets() {
+            return true;
+        }
+        if let Some(world) = self.cast_departure(source, actor) {
+            self.cast_definition_targets_in_world(&world, plan, actor, source, definition)
+        } else {
+            self.cast_definition_targets_in_world(self, plan, actor, source, definition)
+        }
+    }
+
+    fn cast_definition_targets_in_world<W: CharacteristicWorld + ?Sized>(
+        &self,
+        world: &W,
+        plan: TargetPlan,
+        actor: Player,
+        source: ObjectRef,
+        definition: Card,
+    ) -> bool {
         let qualification = Some(TargetSourceCharacteristics {
             reference: source,
             snapshot: None,
             attachment: None,
             spell: Some(definition),
         });
-        let departing = self.cast_departing_card(source);
         let available = |spec: TargetSpec| {
             if spec.min == 0 {
                 return true;
             }
             let mut count = [0usize; 2];
             let mut seen_kinds = 0u16;
-            self.visit_targets_excluding(
-                spec.rule,
-                actor,
-                source,
-                departing,
-                qualification,
-                |target| {
-                    if target == Target::Card(source.card) {
+            self.visit_targets_in_world(world, spec.rule, actor, source, qualification, |target| {
+                if target == Target::Card(source.card) {
+                    return false;
+                }
+                if matches!(
+                    spec.rule,
+                    TargetRule::Grouped {
+                        constraint: TargetGroupConstraint::SharedCardType,
+                        ..
+                    }
+                ) {
+                    let Target::Card(id) = target else {
                         return false;
-                    }
-                    if matches!(
-                        spec.rule,
-                        TargetRule::Grouped {
-                            constraint: TargetGroupConstraint::SharedCardType,
-                            ..
-                        }
-                    ) {
-                        let Target::Card(id) = target else {
-                            return false;
-                        };
-                        let kinds = self.current_kinds(id);
-                        let available = seen_kinds & kinds != 0;
-                        seen_kinds |= kinds;
-                        return available;
-                    }
-                    let distinct = matches!(
-                        spec.rule,
-                        TargetRule::Grouped {
-                            constraint: TargetGroupConstraint::DifferentControllers,
-                            ..
-                        }
-                    );
-                    let bucket = if matches!(spec.rule, TargetRule::Grouped { .. }) {
-                        let Target::Card(id) = target else {
-                            return false;
-                        };
-                        let object = &self.state.objects[id as usize];
-                        if distinct {
-                            object.controller.index()
-                        } else {
-                            object.owner.index()
-                        }
-                    } else {
-                        0
                     };
-                    count[bucket] += 1;
-                    if distinct {
-                        spec.min <= 1 || spec.min <= 2 && count[0] > 0 && count[1] > 0
-                    } else {
-                        count[bucket] >= usize::from(spec.min)
+                    let kinds = world.kinds(id);
+                    let available = seen_kinds & kinds != 0;
+                    seen_kinds |= kinds;
+                    return available;
+                }
+                let distinct = matches!(
+                    spec.rule,
+                    TargetRule::Grouped {
+                        constraint: TargetGroupConstraint::DifferentControllers,
+                        ..
                     }
-                },
-            )
+                );
+                let bucket = if matches!(spec.rule, TargetRule::Grouped { .. }) {
+                    let Target::Card(id) = target else {
+                        return false;
+                    };
+                    let object = world.object(id);
+                    if distinct {
+                        object.controller.index()
+                    } else {
+                        object.owner.index()
+                    }
+                } else {
+                    0
+                };
+                count[bucket] += 1;
+                if distinct {
+                    spec.min <= 1 || spec.min <= 2 && count[0] > 0 && count[1] > 0
+                } else {
+                    count[bucket] >= usize::from(spec.min)
+                }
+            })
         };
         match plan {
             TargetPlan::Single(spec) => available(spec),
@@ -994,7 +1005,7 @@ impl Game {
             }
             let mut count = [0usize; 2];
             let mut seen_kinds = 0u16;
-            self.visit_targets_excluding(spec.rule, actor, source, None, qualification, |target| {
+            self.visit_targets_in_world(self, spec.rule, actor, source, qualification, |target| {
                 if matches!(
                     spec.rule,
                     TargetRule::Grouped {
@@ -1503,15 +1514,16 @@ impl Game {
     }
 
     /// Only qualified recipients inspect source facts; ordinary targets keep their fast path.
-    fn qualified_hexproof_blocks(
+    fn qualified_hexproof_blocks<W: CharacteristicWorld + ?Sized>(
         &self,
+        world: &W,
         id: CardId,
         controller: Player,
         source: ObjectRef,
         qualification: Option<TargetSourceCharacteristics<'_>>,
         keywords: Keywords,
     ) -> bool {
-        let object = &self.state.objects[id as usize];
+        let object = world.object(id);
         if object.zone != Zone::Battlefield || object.controller == controller {
             return false;
         }
@@ -1539,7 +1551,7 @@ impl Game {
         if monocolored && colors.count_ones() == 1 {
             return true;
         }
-        let query = self.characteristic_query();
+        let query = characteristic_query::CharacteristicQuery::in_world(world);
         filters().any(|filter| {
             let matches = match filter {
                 crate::cards::SourceCharacteristicFilter::Color(color) => {
@@ -1562,21 +1574,16 @@ impl Game {
         target: Target,
     ) -> bool {
         target != Target::Stack(item.id)
-            && self.target_matches_excluding(
+            && self.target_matches_in_world(
+                self,
                 rule,
                 item.controller,
                 item.target_source(),
                 target,
-                None,
                 Some(TargetSourceCharacteristics::from_item(item)),
             )
     }
 
-    fn cast_departing_card(&self, source: ObjectRef) -> Option<CardId> {
-        let object = self.state.objects.get(source.card as usize)?;
-        (object.zone != Zone::Stack && object.generation == source.generation)
-            .then_some(source.card)
-    }
     pub(super) fn activation_target_matches(
         &self,
         rule: TargetRule,
@@ -1584,7 +1591,7 @@ impl Game {
         source: ObjectRef,
         target: Target,
     ) -> bool {
-        self.target_matches_excluding(rule, controller, source, target, None, None)
+        self.target_matches_in_world(self, rule, controller, source, target, None)
     }
     pub(super) fn cast_target_matches(
         &self,
@@ -1593,8 +1600,11 @@ impl Game {
         source: ObjectRef,
         target: Target,
     ) -> bool {
-        let departing = self.cast_departing_card(source);
-        self.target_matches_excluding(rule, controller, source, target, departing, None)
+        if let Some(world) = self.cast_departure(source, controller) {
+            self.target_matches_in_world(&world, rule, controller, source, target, None)
+        } else {
+            self.target_matches_in_world(self, rule, controller, source, target, None)
+        }
     }
     fn target_source_qualities(
         &self,
@@ -1638,31 +1648,39 @@ impl Game {
                 .map(|snapshot| (snapshot.colors(), snapshot.kinds))
         }
     }
-    fn target_matches_excluding(
+    fn target_matches_in_world<W: CharacteristicWorld + ?Sized>(
         &self,
+        world: &W,
         rule: TargetRule,
         controller: Player,
         source: ObjectRef,
         target: Target,
-        departing: Option<CardId>,
         qualification: Option<TargetSourceCharacteristics<'_>>,
     ) -> bool {
+        let lookup = |id: CardId| {
+            self.state
+                .objects
+                .get(id as usize)
+                .map(|_| world.object(id))
+        };
+        let characteristics = || characteristic_query::CharacteristicQuery::in_world(world);
+        let has_subtype = |id, subtype| world.subtypes(id).has(world.definition(id), subtype);
         match rule {
             TargetRule::ManaValueExactly { base, value, .. } => {
-                return value.is_some_and(|value| matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|_o| self.object_mana_value(id) == value)))
-                    && self.target_matches_excluding(*base, controller, source, target, departing, qualification);
+                return value.is_some_and(|value| matches!(target, Target::Card(id) if lookup(id).is_some_and(|_o| world.mana_value(id) == value)))
+                    && self.target_matches_in_world(world, *base, controller, source, target, qualification);
             }
             TargetRule::ManaValueAtMost { base, maximum, .. } => {
-                return maximum.is_some_and(|maximum| matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|_o| self.object_mana_value(id) <= maximum)))
-                    && self.target_matches_excluding(*base, controller, source, target, departing, qualification);
+                return maximum.is_some_and(|maximum| matches!(target, Target::Card(id) if lookup(id).is_some_and(|_o| world.mana_value(id) <= maximum)))
+                    && self.target_matches_in_world(world, *base, controller, source, target, qualification);
             }
             TargetRule::LinkedExileCreature { ability_origin } => {
-                return matches!(target,Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o|
+                return matches!(target,Target::Card(id) if lookup(id).is_some_and(|o|
                     o.zone==Zone::Exile && o.is_card() && o.card.is_creature()
                     && self.linked_exile_for_origin(source,ability_origin.unwrap_or_else(||self.copy_ability_origin(source))).contains(&self.object_ref(id))));
             }
             TargetRule::GraveCreatureEnteredThisTurn => {
-                return matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o|
+                return matches!(target, Target::Card(id) if lookup(id).is_some_and(|o|
                     o.zone == Zone::Graveyard && o.is_card() && o.card.is_creature()
                     && self.graveyard_entry_this_turn(self.object_ref(id))));
             }
@@ -1670,7 +1688,7 @@ impl Game {
                 let Target::Card(id) = target else {
                     return false;
                 };
-                return self.state.objects.get(id as usize).is_some_and(|o| {
+                return lookup(id).is_some_and(|o| {
                     o.zone == Zone::Graveyard
                         && o.is_card()
                         && o.owner == controller
@@ -1685,7 +1703,7 @@ impl Game {
                 let Target::Card(id) = target else {
                     return false;
                 };
-                return self.state.objects.get(id as usize).is_some_and(|object| {
+                return lookup(id).is_some_and(|object| {
                     object.zone == Zone::Graveyard
                         && object.is_card()
                         && object.owner == controller
@@ -1698,7 +1716,7 @@ impl Game {
             }
             TargetRule::Grouped { base, constraint } => {
                 if constraint == TargetGroupConstraint::DistinctCardTypeSlots
-                    && !matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o| !o.is_token() && !o.is_spell_copy()))
+                    && !matches!(target, Target::Card(id) if lookup(id).is_some_and(|o| !o.is_token() && !o.is_spell_copy()))
                 {
                     return false;
                 }
@@ -1713,35 +1731,35 @@ impl Game {
                     TargetGroupConstraint::OtherThanGroup(_)
                     | TargetGroupConstraint::TotalManaValueAtMost(_) => None,
                 };
-                return zone.is_none_or(|zone| matches!(target, Target::Card(id) if self.state.objects.get(id as usize).is_some_and(|o| o.zone == zone)))
-                    && self.target_matches_excluding(
+                return zone.is_none_or(|zone| matches!(target, Target::Card(id) if lookup(id).is_some_and(|o| o.zone == zone)))
+                    && self.target_matches_in_world(
+                        world,
                         *base,
                         controller,
                         source,
                         target,
-                        departing,
                         qualification,
                     );
             }
             TargetRule::Union(rules) => {
                 return rules.iter().any(|&rule| {
-                    self.target_matches_excluding(
+                    self.target_matches_in_world(
+                        world,
                         rule,
                         controller,
                         source,
                         target,
-                        departing,
                         qualification,
                     )
                 });
             }
             TargetRule::Filtered { base, predicate } => {
-                if !self.target_matches_excluding(
+                if !self.target_matches_in_world(
+                    world,
                     *base,
                     controller,
                     source,
                     target,
-                    departing,
                     qualification,
                 ) {
                     return false;
@@ -1750,7 +1768,7 @@ impl Game {
                     return false;
                 };
                 // The base rule validates the object index and zone before this lookup.
-                let object = &self.state.objects[id as usize];
+                let object = world.object(id);
                 return match *predicate {
                     TargetPredicate::OwnedByController => object.owner == controller,
                     TargetPredicate::EnteredGraveyardThisTurn => {
@@ -1763,7 +1781,7 @@ impl Game {
                             && self.entered_this_turn(self.object_ref(id))
                     }
                     TargetPredicate::ManaValueAtMostLifeGained => {
-                        u128::from(self.object_mana_value(id))
+                        u128::from(world.mana_value(id))
                             <= self.state.players[controller.index()].life_gained_this_turn
                     }
                     TargetPredicate::OtherThanSource => self.object_ref(id) != source,
@@ -1796,45 +1814,41 @@ impl Game {
                     }
                     TargetPredicate::Damaged => object.damaged_this_turn,
                     TargetPredicate::DealtDamage => object.dealt_damage_this_turn,
-                    TargetPredicate::HasCounter(kind) => self.counter_count(id, kind) > 0,
+                    TargetPredicate::HasCounter(kind) => world.counter_count(id, kind) > 0,
                     TargetPredicate::PowerAtLeast(n) => {
-                        self.stats_excluding(id, departing).power >= i128::from(n)
+                        characteristics().stats(id).power >= i128::from(n)
                     }
                     TargetPredicate::PowerAtMost(n) => {
-                        self.stats_excluding(id, departing).power <= i128::from(n)
+                        characteristics().stats(id).power <= i128::from(n)
                     }
                     TargetPredicate::ToughnessAtLeast(n) => {
-                        self.stats_excluding(id, departing).toughness >= i128::from(n)
+                        characteristics().stats(id).toughness >= i128::from(n)
                     }
                     TargetPredicate::PowerOrToughnessAtLeast(n) => {
-                        let stats = self.stats_excluding(id, departing);
+                        let stats = characteristics().stats(id);
                         stats.power >= i128::from(n) || stats.toughness >= i128::from(n)
                     }
-                    TargetPredicate::Colors(mask) => {
-                        ability_world::CharacteristicWorld::colors(self, id) & mask != 0
+                    TargetPredicate::Colors(mask) => world.colors(id) & mask != 0,
+                    TargetPredicate::Keyword(keyword) => {
+                        characteristics().keywords(id).contains(keyword)
                     }
-                    TargetPredicate::Keyword(keyword) => self.keywords(id).contains(keyword),
                     TargetPredicate::WithoutKeyword(keyword) => {
-                        !self.keywords(id).contains(keyword)
+                        !characteristics().keywords(id).contains(keyword)
                     }
-                    TargetPredicate::WithoutKinds(kinds) => self.current_kinds(id) & kinds == 0,
-                    TargetPredicate::WithoutSubtype(subtype) => !self.has_subtype(id, subtype),
+                    TargetPredicate::WithoutKinds(kinds) => world.kinds(id) & kinds == 0,
+                    TargetPredicate::WithoutSubtype(subtype) => !has_subtype(id, subtype),
                     TargetPredicate::Token => object.is_token(),
-                    TargetPredicate::Subtype(subtype) => self.has_subtype(id, subtype),
+                    TargetPredicate::Subtype(subtype) => has_subtype(id, subtype),
                     TargetPredicate::Permanent => {
-                        self.current_kinds(id) & (1 | 2 | 16 | 32 | 64 | 256) != 0
+                        world.kinds(id) & (1 | 2 | 16 | 32 | 64 | 256) != 0
                     }
-                    TargetPredicate::Legendary => {
-                        ability_world::CharacteristicWorld::legendary(self, id)
-                    }
-                    TargetPredicate::Nonlegendary => {
-                        !ability_world::CharacteristicWorld::legendary(self, id)
-                    }
+                    TargetPredicate::Legendary => world.legendary(id),
+                    TargetPredicate::Nonlegendary => !world.legendary(id),
                     TargetPredicate::Nonbasic => !object.card.is_basic_land(),
                     TargetPredicate::NonOutlaw => {
                         !["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"]
                             .iter()
-                            .any(|subtype| self.has_subtype(id, subtype))
+                            .any(|subtype| has_subtype(id, subtype))
                     }
                 };
             }
@@ -1862,11 +1876,11 @@ impl Game {
                     && self.stack_target_rule_matches(rule, item, controller)
             }),
             Target::Card(id) => {
-                let Some(obj) = self.state.objects.get(id as usize) else {
+                let Some(obj) = lookup(id) else {
                     return false;
                 };
                 let battlefield_keywords =
-                    (obj.zone == Zone::Battlefield).then(|| self.keywords(id));
+                    (obj.zone == Zone::Battlefield).then(|| characteristics().keywords(id));
                 if battlefield_keywords.is_some_and(|keywords| {
                     keywords.contains(Keywords::PROTECTION_EVERYTHING)
                         || (keywords.protection_colors() != 0
@@ -1883,6 +1897,7 @@ impl Game {
                     && obj.controller != controller
                     && (keywords.contains(Keywords::HEXPROOF)
                         || self.qualified_hexproof_blocks(
+                            world,
                             id,
                             controller,
                             source,
@@ -1895,14 +1910,16 @@ impl Game {
                 match rule {
                     TargetRule::CreatureOrVehicle { relation } => {
                         obj.zone == Zone::Battlefield
-                            && (self.is_creature(id) || self.has_subtype(id, "Vehicle"))
+                            && (world.kinds(id) & 1 != 0 || has_subtype(id, "Vehicle"))
                             && (relation == -1 || (obj.controller == controller) == (relation == 0))
                     }
-                    TargetRule::Creature => obj.zone == Zone::Battlefield && self.is_creature(id),
+                    TargetRule::Creature => {
+                        obj.zone == Zone::Battlefield && world.kinds(id) & 1 != 0
+                    }
                     TargetRule::Any => {
                         obj.zone == Zone::Battlefield
-                            && (self.is_creature(id)
-                                || self.current_kinds(id) & (64 | crate::cards::BATTLE_KIND) != 0)
+                            && (world.kinds(id) & 1 != 0
+                                || world.kinds(id) & (64 | crate::cards::BATTLE_KIND) != 0)
                     }
                     TargetRule::Object {
                         zone,
@@ -1920,7 +1937,7 @@ impl Game {
                         };
                         obj.zone == expected
                             && (expected != Zone::Graveyard || obj.is_card())
-                            && (kinds == 0 || self.current_kinds(id) & u16::from(kinds) != 0)
+                            && (kinds == 0 || world.kinds(id) & u16::from(kinds) != 0)
                             && (relation == -1
                                 || (if expected == Zone::Battlefield {
                                     obj.controller
@@ -1929,10 +1946,10 @@ impl Game {
                                 } == controller)
                                     == (relation == 0))
                             && (!other || self.object_ref(id) != source)
-                            && (!nonland || self.current_kinds(id) & 2 == 0)
+                            && (!nonland || world.kinds(id) & 2 == 0)
                             && (!tapped || obj.tapped)
                             && ((min_mana == 0 && max_mana == u32::MAX) || {
-                                let value = self.object_mana_value(id);
+                                let value = world.mana_value(id);
                                 value >= u64::from(min_mana) && value <= u64::from(max_mana)
                             })
                     }
@@ -1960,11 +1977,11 @@ impl Game {
         rule: TargetRule,
         mut emit: impl FnMut(Target) -> bool,
     ) -> bool {
-        self.visit_targets_excluding(
+        self.visit_targets_in_world(
+            self,
             rule,
             item.controller,
             item.target_source(),
-            None,
             Some(TargetSourceCharacteristics::from_item(item)),
             |target| target != Target::Stack(item.id) && emit(target),
         )
@@ -1976,7 +1993,7 @@ impl Game {
         source: ObjectRef,
         emit: impl FnMut(Target) -> bool,
     ) -> bool {
-        self.visit_targets_excluding(rule, controller, source, None, None, emit)
+        self.visit_targets_in_world(self, rule, controller, source, None, emit)
     }
     pub(super) fn visit_cast_targets(
         &self,
@@ -1985,15 +2002,18 @@ impl Game {
         source: ObjectRef,
         emit: impl FnMut(Target) -> bool,
     ) -> bool {
-        let departing = self.cast_departing_card(source);
-        self.visit_targets_excluding(rule, controller, source, departing, None, emit)
+        if let Some(world) = self.cast_departure(source, controller) {
+            self.visit_targets_in_world(&world, rule, controller, source, None, emit)
+        } else {
+            self.visit_targets_in_world(self, rule, controller, source, None, emit)
+        }
     }
-    fn visit_targets_excluding(
+    fn visit_targets_in_world<W: CharacteristicWorld + ?Sized>(
         &self,
+        world: &W,
         rule: TargetRule,
         controller: Player,
         source: ObjectRef,
-        departing: Option<CardId>,
         qualification: Option<TargetSourceCharacteristics<'_>>,
         mut emit: impl FnMut(Target) -> bool,
     ) -> bool {
@@ -2002,28 +2022,16 @@ impl Game {
         }
         for player in [Player::P0, Player::P1] {
             let target = Target::Player(player);
-            if self.target_matches_excluding(
-                rule,
-                controller,
-                source,
-                target,
-                departing,
-                qualification,
-            ) && emit(target)
+            if self.target_matches_in_world(world, rule, controller, source, target, qualification)
+                && emit(target)
             {
                 return true;
             }
         }
         for id in 0..self.state.objects.len() {
             let target = Target::Card(id as CardId);
-            if self.target_matches_excluding(
-                rule,
-                controller,
-                source,
-                target,
-                departing,
-                qualification,
-            ) && emit(target)
+            if self.target_matches_in_world(world, rule, controller, source, target, qualification)
+                && emit(target)
             {
                 return true;
             }
@@ -2038,12 +2046,12 @@ impl Game {
                 } else {
                     Target::Stack(item.id)
                 };
-                if self.target_matches_excluding(
+                if self.target_matches_in_world(
+                    world,
                     rule,
                     controller,
                     source,
                     target,
-                    departing,
                     qualification,
                 ) && emit(target)
                 {
@@ -2522,7 +2530,7 @@ impl Game {
             if announcement.item.kind == StackKind::Spell && announcement.total_cost.is_none() {
                 let base = Self::announcement_base_cost(announcement);
                 let discount = announcement.harmonizer.flatten().map_or(0, |reference| {
-                    harmonize::contribution(self, announcement.item.controller, reference)
+                    self.harmonizer_discount(&announcement.item, reference)
                         .expect("chosen Harmonizer remains available before cost determination")
                 });
                 let extra =

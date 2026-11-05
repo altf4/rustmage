@@ -2,7 +2,7 @@ mod support;
 use rustmage as _;
 use rustmage_core::{
     PermanentType,
-    cards::{TargetPredicate, TargetRule},
+    cards::{Keywords, TargetPredicate, TargetRule},
     engine::*,
 };
 use support::*;
@@ -62,4 +62,126 @@ fn cast_target_preflight_projects_the_departure_for_a_live_power_filter() {
     assert!(game.cast_target_matches(rule, p, source, target));
     assert!(game.visit_cast_targets(rule, p, source, |candidate| candidate == target));
     assert_eq!(game.object_view(drake).power, 1);
+}
+
+#[test]
+fn harmonize_uses_the_power_after_the_spell_leaves_its_graveyard() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let drake = put(&mut game, player, "Enigma Drake", Zone::Battlefield);
+    let spell = put(&mut game, player, "Wild Ride", Zone::Graveyard);
+    for _ in 0..3 {
+        put(&mut game, player, "Opt", Zone::Graveyard);
+    }
+    game.state.players[player.index()].mana = [0, 0, 0, 1, 0, 0];
+    let announce = Action::AnnounceHarmonize { card: spell };
+    assert_eq!(game.object_view(drake).power, 4);
+    reject(&mut game, announce.clone());
+
+    put(&mut game, player, "Opt", Zone::Graveyard);
+    act(&mut game, announce);
+    assert_eq!(game.object_view(drake).power, 4);
+    let object = Some(game.object_ref(drake));
+    act(&mut game, Action::ChooseHarmonizer { object });
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(drake),
+        },
+    );
+    pay(&mut game);
+    choose(&mut game, |action| {
+        matches!(action, Action::ChooseCastCost { .. })
+    });
+    settle(&mut game);
+    assert!(game.object_view(drake).tapped);
+    assert_eq!(game.object_view(spell).zone, Zone::Exile);
+}
+
+#[test]
+fn graveyard_aura_discount_uses_its_targets_post_departure_keywords() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let muldrotha = put(
+        &mut game,
+        player,
+        "Muldrotha, the Gravetide",
+        Zone::Battlefield,
+    );
+    let theorix = put(
+        &mut game,
+        player,
+        "Theorix Metamage // Omit Variables",
+        Zone::Battlefield,
+    );
+    let trap = put(&mut game, player, "Swampsnare Trap", Zone::Graveyard);
+    for _ in 0..6 {
+        put(&mut game, player, "Forest", Zone::Graveyard);
+    }
+    let announce = Action::PlayGraveyardPermanent {
+        card: trap,
+        permission: game.object_ref(muldrotha),
+        permanent_type: PermanentType::Enchantment,
+    };
+    game.state.players[player.index()].mana = [0, 0, 1, 0, 0, 1];
+    assert!(
+        game.object_view(theorix)
+            .keywords
+            .contains(Keywords::FLYING)
+    );
+    reject(&mut game, announce.clone());
+
+    put(&mut game, player, "Forest", Zone::Graveyard);
+    act(&mut game, announce);
+    assert!(
+        game.object_view(theorix)
+            .keywords
+            .contains(Keywords::FLYING)
+    );
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(theorix),
+        },
+    );
+    pay(&mut game);
+    assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+    assert_eq!(game.object_view(trap).zone, Zone::Stack);
+}
+
+#[test]
+fn a_flashback_cast_counts_its_own_graveyard_departure_for_a_history_discount() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let spell = put(&mut game, player, "Wilt in the Heat", Zone::Graveyard);
+    let mage = put(&mut game, player, "Stingcaster Mage", Zone::Hand);
+    cast(&mut game, mage, None);
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(spell),
+        },
+    );
+    settle(&mut game);
+    assert!(!game.state.players[player.index()].card_left_graveyard_this_turn);
+    game.state.players[player.index()].mana = [1, 0, 0, 1, 0, 0];
+    act(
+        &mut game,
+        Action::AnnounceGrantedFlashback {
+            card: spell,
+            flash_surcharge: false,
+        },
+    );
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(mage),
+        },
+    );
+    pay(&mut game);
+    assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+    settle(&mut game);
+    assert_eq!(game.object_view(spell).zone, Zone::Exile);
 }
