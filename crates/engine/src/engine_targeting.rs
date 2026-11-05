@@ -1169,6 +1169,7 @@ impl Game {
         item: &SpellView,
         bound: BoundTarget,
         plan: TargetPlan,
+        recheck_dependencies: bool,
     ) -> bool {
         if plan.group(bound.group).is_some_and(|g| {
             matches!(
@@ -1265,6 +1266,12 @@ impl Game {
                     .is_some_and(|b| {
                         self.same_target_object(*b)
                             && self.state.objects[id as usize].attached_to == b.object
+                            && (!recheck_dependencies
+                                || (b.group < bound.group
+                                    && plan.group(b.group).is_some_and(|group| {
+                                        self.item_target_matches(item, group.rule, b.target)
+                                    })
+                                    && self.resolution_target_relations_hold(item, *b, plan, true)))
                     });
         }
         if !plan.group(bound.group).is_some_and(|g| {
