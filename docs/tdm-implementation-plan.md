@@ -36,15 +36,22 @@ observations, rules and light cast telemetry. It excludes loader validation,
 replay/owned proof work, detailed receipts/JSON and model/network/tensor work.
 These are workload measurements rather than production or all-Standard estimates.
 
-Final full release acceptance passed all9 phases at
-`57b6c11f0f50757ee476fbbc179fbdf92ac597b9`: 4,693 native cases across115 targets,
-all265 matrix proofs, 43 runner contracts and10 actual Python binding cases.
+The initial PR CI exposed missing default game-evidence plumbing. The validator
+now supplies a unique retained report path, and standalone native calls allocate
+a fresh retained child even for reports sharing a parent. Explicit paths and old
+receipts stay unchanged. Three meaningful orchestration regressions pass. The
+following full acceptance used no caller-supplied evidence variable; runtime and
+card behavior remain identical. Earlier explicit-path acceptance took577.354s.
+
+Final default full release acceptance passed all9 phases at
+`16a9cec6882614f1208c34aa832662ee9f6aaa58`: 4,693 native cases across115 targets,
+all265 matrix proofs, 46 runner contracts and10 actual Python binding cases.
 All13,040 frozen inputs stayed unchanged; zero timeouts, orphaned processes or
-OOM events. Native compilation took 137.871s, execution
-155.180s, production release 193.791s and
-total validation 577.354s. Peak guarded memory was
-5282553856 bytes below the6GiB limit, with one Cargo job/test
-thread. All six required immutable libraries remain at their exact paths/hashes.
+OOM events. Native compilation took 1.118s, execution
+153.141s, production release 0.115s and
+total validation 165.988s. Peak guarded memory was
+2018320384 bytes below the6GiB limit, with one Cargo job/test
+thread. All seven required immutable libraries remain at their exact paths/hashes.
 The fresh full-suite52-game corpus matches the earlier verified corpus's cases,
 outcomes, actions, witnesses and final state/observation digests.
 
@@ -56,8 +63,8 @@ UUID. Through game/benchmark acceptance,139 new physical implementations took
 and waiting. Final release/publication steps follow that measured interval.
 
 [The acceptance record](tdm-set-acceptance.json) binds all retained reports and
-records the documentation-only results delta after validation. Publish exactly
-one completed-set PR, then obtain two fresh pure independent nonauthor reviews
+records the documentation-only results delta after validation. Update the existing single completed-set PR573, then obtain two renewed pure
+independent nonauthor reviews
 of its exact published head and record those reviews on the PR. No executable
-changes are needed after passing acceptance. Keep the goal open until publication
-and both final reviews finish. The wider Standard roadmap remains open.
+changes are needed after passing acceptance. Keep the goal open until renewed published-head
+reviews and GitHub CI pass. The wider Standard roadmap remains open.

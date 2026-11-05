@@ -49,7 +49,7 @@
       "sha256": "573fab797ed8d700dc98283d10736ce39f1f027a6fee75a36ea07ad85e908db1"
     },
     "source_binding_contract_count": 12,
-    "final_validated_source_head": "57b6c11f0f50757ee476fbbc179fbdf92ac597b9"
+    "final_validated_source_head": "16a9cec6882614f1208c34aa832662ee9f6aaa58"
   },
   "interaction_matrix": {
     "path": "docs/tdm-set-coverage-matrix.json",
@@ -266,28 +266,32 @@
     {
       "path": "<cache>/rustmage-validation-owsb88ts/report/libraries/librustmage.so",
       "sha256": "87d4e2efd1104b701f0b45a00a4c8c098cd30f0d3fef7f93df419e50e8de965c"
+    },
+    {
+      "path": "<cache>/rustmage-validation-isnhuq91/report/libraries/librustmage.so",
+      "sha256": "448a5156c0783985bf7d08ad685fb2f89bbef717b0c5647c86188b3c33239435"
     }
   ],
   "final_release": {
     "status": "passed",
     "report": {
-      "path": "<cache>/rustmage-validation-isnhuq91/report/result.json",
-      "sha256": "f30719285d87c24641e65bc832735930c0018ee1c4b3938b77c3d56ead28ea94"
+      "path": "<cache>/rustmage-validation-yt7qydcg/report/result.json",
+      "sha256": "fc810b1ced058965eff3d33e3a065562153a02ad60019d2352b58707d4551d56"
     },
     "native_report": {
-      "path": "<cache>/rustmage-validation-isnhuq91/report/native.json",
-      "sha256": "4d844877b975ba3f8f52d8c91171f171a87eafa5fbf3548d10663d1ed7b3a19e"
+      "path": "<cache>/rustmage-validation-yt7qydcg/report/native.json",
+      "sha256": "5193ceadd3ec90f7b689246d9939f1d514fdef684dcd31cae15dee96671e5b0e"
     },
     "python_report": {
-      "path": "<cache>/rustmage-validation-isnhuq91/report/python.json",
-      "sha256": "6a14da9b7a8be9d7db6848f8c9d9345a9351ffbe1a19015506f9bf6a420b7c72"
+      "path": "<cache>/rustmage-validation-yt7qydcg/report/python.json",
+      "sha256": "61de6ac44e3fb7b4c6204e03042cd78e80ce103bda549581c9c77733c0e0d350"
     },
     "resource_report": {
-      "path": "<cache>/rustmage-build-reports/c58fcabb390248faa1fb891d7d96b129.json",
-      "sha256": "f283a934195795b26cf54309e2151e000224638d0fb30c420569b9090299d80b"
+      "path": "<cache>/rustmage-build-reports/4d94c749bc6f4949b56f558e236357b5.json",
+      "sha256": "c7c958c6504f62ca64380480104421c07253f2be435e48641ae2aefd0899954f"
     },
-    "validated_source_head": "57b6c11f0f50757ee476fbbc179fbdf92ac597b9",
-    "input_sha256": "3c7fd2947c480dd4e55b462081aecc1267777bd6af9e6866085464ce0e4b4e50",
+    "validated_source_head": "16a9cec6882614f1208c34aa832662ee9f6aaa58",
+    "input_sha256": "c8805d9503cb792d4a84484783c05a3caf90c56212779de609458d8577e58205",
     "files_verified": 13040,
     "inputs_unchanged": true,
     "all_phases": [
@@ -295,74 +299,74 @@
         "exit": 0,
         "timed_out": false,
         "orphaned_processes": false,
-        "seconds": 0.9164431070093997,
+        "seconds": 0.9170411099912599,
         "name": "source pins"
       },
       {
         "exit": 0,
         "timed_out": false,
         "orphaned_processes": false,
-        "seconds": 4.5254888299969025,
+        "seconds": 4.477137824054807,
         "name": "format"
       },
       {
         "exit": 0,
         "timed_out": false,
         "orphaned_processes": false,
-        "seconds": 1.2196546630002558,
+        "seconds": 1.1697531339596026,
         "name": "card format"
       },
       {
         "exit": 0,
         "timed_out": false,
         "orphaned_processes": false,
-        "seconds": 2.1193163039861247,
+        "seconds": 2.0708500440232456,
         "name": "script contracts"
       },
       {
         "exit": 0,
         "timed_out": false,
         "orphaned_processes": false,
-        "seconds": 80.96046928502619,
+        "seconds": 2.3709852369502187,
         "name": "clippy"
       },
       {
         "exit": 0,
         "timed_out": false,
         "orphaned_processes": false,
-        "seconds": 293.1596349529573,
+        "seconds": 154.3009793079691,
         "name": "native assurance"
       },
       {
         "exit": 0,
         "timed_out": false,
         "orphaned_processes": false,
-        "seconds": 193.79129136900883,
+        "seconds": 0.1145932640065439,
         "name": "release build"
       },
       {
         "exit": 0,
         "timed_out": false,
         "orphaned_processes": false,
-        "seconds": 0.2649093469954096,
+        "seconds": 0.2150057940161787,
         "name": "simulation sample"
       },
       {
         "exit": 0,
         "timed_out": false,
         "orphaned_processes": false,
-        "seconds": 0.16471925203222781,
+        "seconds": 0.16471752198413014,
         "name": "Python assurance"
       }
     ],
     "native_cases": 4693,
     "native_targets": 115,
     "matrix_proofs_reexecuted": 265,
-    "infrastructure_contracts": 43,
+    "infrastructure_contracts": 46,
     "actual_python_binding_cases": 10,
-    "native_compile_seconds": 137.87059490103275,
-    "native_execution_seconds": 155.17978800303536,
-    "total_seconds": 577.3544814519701,
+    "native_compile_seconds": 1.1176101449527778,
+    "native_execution_seconds": 153.14051885600202,
+    "total_seconds": 165.9875027409871,
     "target_preexisting": true,
     "fresh_target": false,
     "cleaned_allocated_bytes": 0,
@@ -372,12 +376,14 @@
     },
     "guard": {
       "memory_max_bytes": 6442450944,
-      "memory_peak_bytes": 5282553856,
+      "memory_peak_bytes": 2018320384,
       "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
       "cargo_jobs": 1,
       "test_threads": 1,
-      "seconds": 577.5947828009957
+      "seconds": 166.21970300300745
     },
+    "default_game_evidence_directory": "<cache>/rustmage-validation-yt7qydcg/report/tdm-games",
+    "caller_evidence_variable_absent": true,
     "timeouts": 0,
     "orphaned_processes": 0,
     "oom_events": 0,
@@ -405,41 +411,112 @@
       {
         "path": "<cache>/rustmage-validation-isnhuq91/report/libraries/librustmage.so",
         "sha256": "448a5156c0783985bf7d08ad685fb2f89bbef717b0c5647c86188b3c33239435"
+      },
+      {
+        "path": "<cache>/rustmage-validation-yt7qydcg/report/libraries/librustmage.so",
+        "sha256": "448a5156c0783985bf7d08ad685fb2f89bbef717b0c5647c86188b3c33239435"
       }
     ],
     "fresh_full_suite_52_game_corpus": {
-      "path": "<cache>/rustmage-tdm/final-release-OLvcHsMD/games/corpus-verification.json",
-      "sha256": "c9fe884d6381dbfbda72607ff4e505d9a5a64c40d781fe068b4cbb1372f519f9"
+      "path": "<cache>/rustmage-validation-yt7qydcg/report/tdm-games/corpus-verification.json",
+      "sha256": "8ced1bbb2a5515c1bcc10b8ee0d39d1c18f7a51cf49254ee4bd995230bb92535"
     },
     "fresh_corpus_cases_outcomes_actions_witnesses_and_final_digests_match_prior_verified_corpus": true,
     "generic_release_simulation": {
-      "clone_ns": 177.34485,
+      "clone_ns": 182.20409,
       "decisions": 4941,
-      "decisions_per_second": 27015.87027369488,
+      "decisions_per_second": 28830.689381344342,
       "deck_names": [
         "native-smoke"
       ],
       "deck_rules": "Freeform",
       "decklist_archive": null,
       "games": 10,
-      "games_per_second": 54.67692830134564,
+      "games_per_second": 58.349907673232835,
       "initial_state_bytes_excluding_capacity_and_allocator": 24712,
       "max_decisions_per_game": 655,
       "note": "native smoke policy and observation construction included; optional named decks rotate adjacent matchups through both seats; setup and gameplay timed, archive loading excluded; no model, tensor encoding, or per-decision JSON; verify mode also times owned raw/index branch and restore checks; sampled gameplay is not complete card-interaction coverage or XMage parity",
       "owned_raw_index_restore_checks": false,
-      "restore_ns": 182.90762,
-      "seconds": 0.182892498
+      "restore_ns": 192.53176,
+      "seconds": 0.171379877
     },
     "generic_simulation_scope": "Existing10-game native-smoke Freeform workload only; not TDM or all-Standard throughput.",
-    "post_validation_delta": "Only docs/tdm-set-acceptance.json, docs/tdm-readme-count-audit.json, docs/tdm-engine-audit.json and docs/tdm-implementation-plan.md record completed results and clarify metadata serialization. README and every executable, source, test, fixture and provenance input are unchanged from the validated head. Published-head reviews must verify this delta and exact execution identity."
+    "post_validation_delta": "Only docs/tdm-set-acceptance.json, docs/tdm-engine-audit.json and docs/tdm-implementation-plan.md record completed results. The four runner/script contract files are included in the validated head. README and every executable, source, test, fixture and provenance input are unchanged from the validated head. Published-head reviews must verify this delta and exact execution identity."
   },
   "published_pr": {
-    "status": "Ready to publish exactly one completed-set PR after successful full acceptance.",
+    "url": "https://github.com/altf4/rustmage/pull/573",
+    "status": "Existing single completed-set PR to be updated after default-runner repair; renewed exact-head reviews required.",
     "exactly_one": true,
     "two_fresh_pure_nonauthor_final_head_reviews": "Required on the final published PR head; append results on the PR without executable/source changes."
   },
   "remaining": [
-    "Publish the single completed-set PR",
-    "Two fresh pure independent nonauthor reviews of its exact final published head, recorded on the PR"
-  ]
+    "Update the existing single completed-set PR with the repaired default-runner acceptance",
+    "Two fresh pure independent nonauthor reviews of its new exact published head, recorded on the PR",
+    "Passing GitHub CI on the final head"
+  ],
+  "release_acceptance_history": [
+    {
+      "validated_source_head": "57b6c11f0f50757ee476fbbc179fbdf92ac597b9",
+      "report": {
+        "path": "<cache>/rustmage-validation-isnhuq91/report/result.json",
+        "sha256": "f30719285d87c24641e65bc832735930c0018ee1c4b3938b77c3d56ead28ea94"
+      },
+      "native_cases": 4693,
+      "infrastructure_contracts": 43,
+      "actual_python_binding_cases": 10,
+      "total_seconds": 577.3544814519701,
+      "game_evidence_environment": "Caller supplied a fresh persistent path; the default invocation had not yet been exercised."
+    }
+  ],
+  "runner_evidence_repair": {
+    "trigger": "Initial PR CI failed8 game cases because the default validator did not supply the required game-evidence directory. All consuming inputs remained unchanged; no timeout/orphan/OOM caused the failure.",
+    "initial_ci_run": "https://github.com/altf4/rustmage/actions/runs/41945123111",
+    "initial_ci_failure_report": {
+      "path": "<cache>/rustmage-tdm/final-release-OLvcHsMD/ci-failure-diagnostics/rustmage-validation-53c4ea6v/report/result.json",
+      "sha256": "953c7cdb9cf212d7a5b609ee3c79b05d43388aa6c96b4563e4d8825b0f1a7c84"
+    },
+    "initial_ci_failure_native": {
+      "path": "<cache>/rustmage-tdm/final-release-OLvcHsMD/ci-failure-diagnostics/rustmage-validation-53c4ea6v/report/native.json",
+      "sha256": "94f8dc61281b6aca2f03314e42acd807c81b3c8575272ea108352e7839ae0c64"
+    },
+    "validator_default_negative": {
+      "path": "<cache>/rustmage-tdm/final-release-OLvcHsMD/runner-evidence-old-negative.log",
+      "sha256": "dfca8e56cb80df69863e4a40b3d31f2eead0d0fd5a2e1b7cb68510af086029c2"
+    },
+    "native_repeated_parent_negative": {
+      "path": "<cache>/rustmage-tdm/final-release-OLvcHsMD/runner-same-parent-old-negative-complete-fixture.log",
+      "sha256": "b20caf5d760846b93a43625c0403d5f8abd65a218a7bc028ee453e9673db24a2"
+    },
+    "validator_orchestration_positive": {
+      "path": "<cache>/rustmage-tdm/final-release-OLvcHsMD/runner-evidence-fixed-contracts-final.log",
+      "sha256": "7ecde787e04f8ba947916daf1075d9d0634ede4b93133daea18de938709eacc4"
+    },
+    "native_repeated_parent_positive": {
+      "path": "<cache>/rustmage-tdm/final-release-OLvcHsMD/runner-same-parent-fixed-contract.log",
+      "sha256": "c346f1228fe88f4ab3cb336ffa610dc3a34ec7c7bb7d05df7a1c222f2d928881"
+    },
+    "all46_guarded_infrastructure_positive": {
+      "path": "<cache>/rustmage-tdm/final-release-OLvcHsMD/runner-repair-all-infrastructure.log",
+      "sha256": "7fce18d430228d4e9ee89bd14abd965574d75fb2ffa091de4dee3425b41c0238"
+    },
+    "all46_guarded_resource_report": {
+      "path": "<cache>/rustmage-build-reports/2cf2b34e40954fe390dc59be44573f59.json",
+      "sha256": "e84dec3bfc894f15c8b367fdf55c0f1d4f660fda3ee5a2d3dc04eabed593d3e7"
+    },
+    "actual_first_default_native_focus": {
+      "path": "<cache>/rustmage-tdm/runner-evidence-focus-O7wQAm13/native.json",
+      "sha256": "98934dc65d7c55178664d9bdec22f659f3d4aba770eff6fc3f4f2a1affd08ec9"
+    },
+    "actual_first_default_native_focus_scope": "9 actual game cases passed without a supplied environment before the additional unique-child refinement; the final same-parent contract and final default full release validate the refined implementation.",
+    "behavior": "Validator defaults missing evidence paths to its unique retained report directory. Standalone native invocations allocate a fresh retained child per invocation, including reports sharing one parent. Explicit environment paths and old receipts are preserved. Both reports record the selected path.",
+    "source_files": [
+      "scripts/validate.py",
+      "scripts/run_native_tests.py",
+      "scripts/test_validate.py",
+      "scripts/test_assurance_runner.py"
+    ],
+    "new_meaningful_infrastructure_contracts": 3,
+    "runtime_manifest_and_all_game_behavior_unchanged": true,
+    "final_default_invocation_without_caller_evidence_variable": "Full9-phase release/Python acceptance recorded below."
+  }
 }

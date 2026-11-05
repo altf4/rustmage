@@ -1196,7 +1196,7 @@
     "latest_full_release_revision": "2660c86112362973c195bee4c1b85e1a968f9f3a",
     "final_set_release": {
       "evidence": "docs/tdm-set-acceptance.json",
-      "validated_source_head": "57b6c11f0f50757ee476fbbc179fbdf92ac597b9",
+      "validated_source_head": "16a9cec6882614f1208c34aa832662ee9f6aaa58",
       "success": true,
       "native_cases": 4693,
       "actual_python_cases": 10,
