@@ -1571,14 +1571,15 @@ impl Game {
         rule: TargetRule,
         target: Target,
     ) -> bool {
-        self.target_matches_without_hand(
-            rule,
-            item.controller,
-            item.target_source(),
-            target,
-            None,
-            Some(TargetSourceCharacteristics::from_item(item)),
-        )
+        target != Target::Stack(item.id)
+            && self.target_matches_without_hand(
+                rule,
+                item.controller,
+                item.target_source(),
+                target,
+                None,
+                Some(TargetSourceCharacteristics::from_item(item)),
+            )
     }
 
     pub(super) fn cast_target_matches(
@@ -1851,10 +1852,10 @@ impl Game {
                         _ => false,
                     }
             }
-            Target::Stack(id) => self.state.stack.iter().any(|item| {
+            Target::Stack(id) => self.stack_items_for_targets().any(|item| {
                 item.id == id && self.stack_target_rule_matches(rule, item, controller)
             }),
-            Target::Spell(id) => self.state.stack.iter().any(|item| {
+            Target::Spell(id) => self.stack_items_for_targets().any(|item| {
                 item.kind == StackKind::Spell
                     && item
                         .source
@@ -1944,7 +1945,7 @@ impl Game {
 
     pub(super) fn same_target_object(&self, target: BoundTarget) -> bool {
         match target.target {
-            Target::Stack(id) => self.state.stack.iter().any(|item| item.id == id),
+            Target::Stack(id) => self.stack_items_for_targets().any(|item| item.id == id),
             Target::Player(_) => target.object.is_none(),
             Target::Card(id) | Target::Spell(id) => self
                 .state
@@ -1958,7 +1959,7 @@ impl Game {
         &self,
         item: &SpellView,
         rule: TargetRule,
-        emit: impl FnMut(Target) -> bool,
+        mut emit: impl FnMut(Target) -> bool,
     ) -> bool {
         self.visit_targets_without_hand(
             rule,
@@ -1966,7 +1967,7 @@ impl Game {
             item.target_source(),
             None,
             Some(TargetSourceCharacteristics::from_item(item)),
-            emit,
+            |target| target != Target::Stack(item.id) && emit(target),
         )
     }
     pub(super) fn visit_targets(
@@ -2033,7 +2034,7 @@ impl Game {
                 return true;
             }
         }
-        for item in &self.state.stack {
+        for item in self.stack_items_for_targets() {
             {
                 let target = if item.kind == StackKind::Spell && !item.is_copy {
                     let Some(source) = item.source else {
