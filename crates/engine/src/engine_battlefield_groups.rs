@@ -273,37 +273,48 @@ impl Game {
         filters: &[BattlefieldFilter],
         players: Option<PlayerSet>,
         amount: i32,
-    ) {
-        self.damage_battlefield_group_excluding(item, filters, players, amount, None);
-    }
-    pub(super) fn damage_battlefield_group_excluding(
-        &mut self,
-        item: &SpellView,
-        filters: &[BattlefieldFilter],
-        players: Option<PlayerSet>,
-        amount: i32,
         excluded_subtype: Option<&str>,
+        target_amount: Option<i32>,
     ) {
         let source = self.program_damage_source(item);
-        let mut recipients: Vec<_> = self
+        let hit = |target, amount| DamageEvent {
+            preventable: true,
+            source,
+            target,
+            amount: i128::from(amount),
+            combat: false,
+        };
+        let mut events: Vec<_> = self
             .battlefield_group(item, filters)
             .into_iter()
             .filter(|&id| excluded_subtype.is_none_or(|subtype| !self.has_subtype(id, subtype)))
             .map(Target::Card)
+            .chain(
+                players
+                    .into_iter()
+                    .flat_map(|set| self.program_players(set, item).map(Target::Player)),
+            )
+            .map(|target| hit(target, amount))
             .collect();
-        if let Some(players) = players {
-            recipients.extend(self.program_players(players, item).map(Target::Player));
+        if let Some(amount) = target_amount.filter(|&amount| amount > 0) {
+            for target in item
+                .targets
+                .iter()
+                .filter(|&&bound| self.same_target_object(bound))
+                .map(|bound| bound.target)
+                .filter(|target| matches!(target, Target::Card(_) | Target::Player(_)))
+            {
+                // One source deals the combined amount to a shared recipient.
+                if let Some(event) = events.iter_mut().find(|event| event.target == target) {
+                    event.amount = event
+                        .amount
+                        .checked_add(i128::from(amount))
+                        .capacity("simultaneous damage quantity exhausted");
+                } else {
+                    events.push(hit(target, amount));
+                }
+            }
         }
-        let events: Vec<_> = recipients
-            .into_iter()
-            .map(|target| DamageEvent {
-                preventable: true,
-                source,
-                target,
-                amount: i128::from(amount),
-                combat: false,
-            })
-            .collect();
         self.apply_damage_batch(&events);
     }
     /// Freeze the complete recipients before the simultaneous damage event.

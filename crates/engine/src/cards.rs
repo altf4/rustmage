@@ -2197,6 +2197,13 @@ pub enum Instruction {
         players: Option<PlayerSet>,
         amount: i32,
     },
+    /// Deal damage to the selected targets and a battlefield group in one event.
+    DamageBattlefieldAndTargets {
+        filters: &'static [BattlefieldFilter],
+        players: Option<PlayerSet>,
+        amount: i32,
+        target_amount: i32,
+    },
     /// One damage batch to all creatures except the controller’s tokens.
     DamageCreaturesExceptControlledTokens(i32),
     /// One simultaneous damage batch, excluding creatures with a live subtype.
