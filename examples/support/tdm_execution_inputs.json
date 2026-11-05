@@ -303,7 +303,7 @@
     "crates/engine/src/engine_warp.rs": "51430f4c8dada03a0c8c10afac665ef9d2202b5da8cf4685cca1055d234d2b6a",
     "crates/engine/src/engine_waterbend.rs": "aa9b4c10368c191c8cc5ab1bd79fca3229c4b5d525744d87a42fdbb36925635d",
     "crates/engine/src/engine_zone_effects.rs": "5ca90e4ad0290f026d23144f2212a7627cf90e785bd830d6eb0cc76044422968",
-    "crates/engine/src/engine_zone_replacements.rs": "2ad7a610bbd8ce2017cc1d17356141db852743e77b60a8d6c810c027f2510406",
+    "crates/engine/src/engine_zone_replacements.rs": "ac62536db216c15ccf8becb0c6bb01e0bde81dba60056ad3975cfc77da028934",
     "crates/engine/src/engine_zone_search.rs": "8142460d80d2e8f632165d2d799a11542f581d1fb3c7aad034568150d87e8dda",
     "crates/engine/src/lib.rs": "655fd8a09cecdf731a4ccba2153bb0be93a697874d90b1782c4218c9cd40e6e1",
     "crates/engine/src/observation_schema.rs": "96628d4a2f654a03fb3da172b2d086067cbaf48c3a84e2a22083401119df2c3d",

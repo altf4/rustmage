@@ -4,6 +4,14 @@ use super::*;
 use crate::cards::ZoneReplacementRule;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn affected_player(before: &ObjectView) -> Player {
+    match before.zone {
+        Zone::Battlefield | Zone::Stack => before.controller,
+        _ => before.owner,
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum ZoneReplacementKind {
     RevealShuffle,
@@ -464,11 +472,7 @@ impl Game {
                 let request = Request {
                     object: before.reference,
                     requested,
-                    affected: if before.zone == Zone::Battlefield {
-                        before.controller
-                    } else {
-                        before.owner
-                    },
+                    affected: affected_player(before),
                     view: ZoneReplacementChoiceView {
                         card: before.card,
                         owner: before.owner,
