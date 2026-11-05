@@ -145,6 +145,16 @@ impl Game {
     }
 
     fn plotted_front_cast_fundable(&self, actor: Player, card: CardId, definition: Card) -> bool {
+        if definition.teamwork().is_some() {
+            return self.permitted_cast_available(
+                actor,
+                card,
+                CastMethod::Plot,
+                CastFace::Normal,
+                true,
+                false,
+            );
+        }
         let base = ManaCost {
             colored: [0; 6],
             generic: 0,
