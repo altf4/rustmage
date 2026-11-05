@@ -84,8 +84,8 @@ impl Game {
         let Some(recipient) = self.attached_subject(item).map(|id| self.object_ref(id)) else {
             return false;
         };
-        // Freeze the selected exact legal objects before the controller chooses
-        // their relative timestamps during resolution (CR613.7m).
+        // Freeze the exact legal objects before their controllers choose
+        // relative timestamps during resolution (CR 613.7m).
         let equipment: Vec<_> = item
             .targets
             .iter()
