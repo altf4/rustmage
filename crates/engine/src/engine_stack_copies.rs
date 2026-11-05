@@ -987,7 +987,7 @@ impl Game {
                 bound.target,
             )
         } else {
-            self.resolution_target_relations_hold(item, bound, plan)
+            self.resolution_target_relations_hold(item, bound, plan, false)
         }
     }
     fn stack_targets_finished(&self, r: &Retarget) -> bool {

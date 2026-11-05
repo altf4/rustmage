@@ -2780,12 +2780,13 @@ impl Game {
         let spec = self.target_spec(&item);
         // Preserve the whole original target set for relational legality. A departed
         // target still contributes its last controller, even though it cannot move.
-        // The empty common case allocates nothing.
+        // A target defined by an attachment to an earlier target also depends
+        // on that earlier target remaining legal. The empty case allocates nothing.
         let relation_illegal: Vec<_> = item
             .targets
             .iter()
             .copied()
-            .filter(|bound| !self.resolution_target_relations_hold(&item, *bound, spec))
+            .filter(|bound| !self.resolution_target_relations_hold(&item, *bound, spec, true))
             .collect();
         // Keep type slots paired with their targets when some targets go illegal.
         let type_bindings = item.target_type_slots.as_ref().map(|slots| {
