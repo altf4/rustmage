@@ -2000,7 +2000,9 @@ impl SpellView {
         }
     }
     pub(crate) fn program(&self) -> Option<(TargetPlan, &'static [Instruction])> {
-        if let Some(modes) = self.modes() {
+        if self.kind != StackKind::Spell
+            && let Some(modes) = self.modes()
+        {
             return self
                 .mode
                 .and_then(|mode| modes.get(usize::from(mode)))

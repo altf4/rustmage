@@ -56,3 +56,50 @@ fn a_kicker_target_plan_requires_funding_on_the_same_cast_route() {
         assert_eq!(g.state.players[p.index()].mana, [0; 6]);
     }
 }
+
+#[test]
+fn mode_menu_keeps_a_fundable_kicked_target_plan() {
+    use rustmage_core::cards::authored::{CardExtras, CardRules};
+    use rustmage_core::cards::{
+        Card, Effect, Instruction, ManaCost, PlayerSet, SpellMode, TargetPlan, TargetRule,
+        TargetSpec, fixture_rules,
+    };
+
+    const MODAL: CardRules = CardRules {
+        effect: Effect::Modal(&[SpellMode {
+            text: "Target a creature unless kicked",
+            targets: TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
+            program: &[Instruction::Draw(PlayerSet::Controller, 1)],
+        }]),
+        extras: &CardExtras {
+            kicker_cost: Some(ManaCost {
+                colored: [0; 6],
+                generic: 2,
+            }),
+            kicked_targets: Some(TargetPlan::NONE),
+            ..CardExtras::EMPTY
+        },
+        ..CardRules::EMPTY
+    };
+    let _rules = fixture_rules::activate(&[(Card::from_name("Opt").unwrap(), &MODAL)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    put(&mut g, p, "Omniscience", Zone::Battlefield);
+    let spell = put(&mut g, p, "Opt", Zone::Hand);
+    let free = Action::AnnounceFree {
+        card: spell,
+        face: CastFace::Normal,
+        flash_surcharge: false,
+    };
+    g.state.players[p.index()].mana = [0; 6];
+    reject(&mut g, free.clone());
+    g.state.players[p.index()].mana[5] = 2;
+    act(&mut g, free);
+    act(&mut g, Action::ChooseMode { mode: 0 });
+    reject(&mut g, Action::ChooseKicker { pay: false });
+    act(&mut g, Action::ChooseKicker { pay: true });
+    pay(&mut g);
+    assert_eq!(g.object_view(spell).zone, Zone::Stack);
+    settle(&mut g);
+    assert_eq!(g.hand_count(p), 1);
+}
