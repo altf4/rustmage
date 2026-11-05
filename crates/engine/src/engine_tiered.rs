@@ -44,15 +44,27 @@ impl Game {
     }
     pub(super) fn mode_choice_fundable(&self, a: &Announcement, index: usize) -> bool {
         let mode = &a.item.modes().expect("modal announcement")[index];
+        let kicker_changes_targets = a.item.kind == StackKind::Spell
+            && a.pay_window
+            && a.item
+                .source
+                .is_some_and(|source| source.card.kicked_targets().is_some());
         if a.item
             .bounded_mode_count(index)
             .is_some_and(|count| u32::from(count) > a.item.x.unwrap_or(0))
             || !self.teamwork_mode_allowed(&a.item, index)
             || !self.blight_mode_allowed(&a.item, index)
             || !self.modal_choice_unused(&a.item, index)
-            || !self.item_targets_available(&a.item, mode.targets)
+            || !kicker_changes_targets && !self.item_targets_available(&a.item, mode.targets)
         {
             return false;
+        }
+        if kicker_changes_targets {
+            let mut proposal = a.clone();
+            proposal.item.mode = Some(u16::try_from(index).expect("mode index"));
+            proposal.plan = mode.targets;
+            return self.kicker_choice_fundable(&proposal, false)
+                || self.kicker_choice_fundable(&proposal, true);
         }
         if a.item
             .source

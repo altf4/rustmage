@@ -89,15 +89,6 @@ impl Game {
                 )
             })
     }
-    pub(super) fn kicked_cast_targets_available(&self, actor: Player, card: CardId) -> bool {
-        let definition = self.effective_spell_card(card);
-        definition.kicked_targets().is_some_and(|plan| {
-            self.cast_targets_available(plan, actor, self.object_ref(card))
-                && definition.cost_options().any(|cost| {
-                    self.spell_can_fund(actor, card, Self::with_kicker_cost(cost, definition, true))
-                })
-        })
-    }
     pub(super) fn announcement_optional_reduction(a: &Announcement) -> u64 {
         let evidence = a.item.cast.is_some_and(|c| c.evidence == Some(true));
         let bargain = a.item.cast.is_some_and(|c| c.bargain == Some(true));
@@ -338,20 +329,20 @@ impl Game {
     pub(super) fn kicker_choice_fundable(&self, a: &Announcement, pay: bool) -> bool {
         let mut proposal = a.clone();
         proposal.item.cast.as_mut().unwrap().kicker = Some(pay);
-        if proposal
+        let source = proposal
             .item
             .source
-            .expect("cost announcement has object source")
-            .card
-            .kicked_targets()
-            .is_some()
-            && !self.targets_available(
-                self.target_spec(&proposal.item),
+            .expect("cost announcement has object source");
+        if source.card.kicked_targets().is_some() {
+            proposal.plan = self.target_spec(&proposal.item);
+            if !self.cast_definition_targets_available(
+                proposal.plan,
                 proposal.item.controller,
-                proposal.item.target_source(),
-            )
-        {
-            return false;
+                source.object,
+                source.card,
+            ) {
+                return false;
+            }
         }
         proposal
             .cost_options()

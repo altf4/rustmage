@@ -2000,7 +2000,9 @@ impl SpellView {
         }
     }
     pub(crate) fn program(&self) -> Option<(TargetPlan, &'static [Instruction])> {
-        if let Some(modes) = self.modes() {
+        if self.kind != StackKind::Spell
+            && let Some(modes) = self.modes()
+        {
             return self
                 .mode
                 .and_then(|mode| modes.get(usize::from(mode)))
@@ -5698,7 +5700,7 @@ impl Game {
                     {
                         return true;
                     }
-                    if obj.card.behold_cast().is_some() {
+                    if obj.card.behold_cast().is_some() || obj.card.kicked_targets().is_some() {
                         let method = if flashback {
                             CastMethod::Flashback
                         } else {
@@ -5753,7 +5755,6 @@ impl Game {
                                             self.object_ref(card),
                                         )
                                     })
-                                || self.kicked_cast_targets_available(actor, card)
                         }
                         _ => true,
                     };

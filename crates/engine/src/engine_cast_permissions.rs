@@ -497,7 +497,8 @@ impl Game {
             self.cast_definition_targets_available(plan, actor, self.object_ref(card), definition)
         };
         let teamwork = definition.teamwork().is_some();
-        if !teamwork {
+        let kicker_changes_targets = definition.kicked_targets().is_some();
+        if !teamwork && !kicker_changes_targets {
             let targets_available = match definition.effect() {
                 Effect::Modal(modes) => modes.iter().any(|mode| available(mode.targets)),
                 _ => available(self.target_spec(&item)),
@@ -506,7 +507,6 @@ impl Game {
                 && !definition
                     .gift()
                     .is_some_and(|gift| available(gift.promised_targets))
-                && !definition.kicked_targets().is_some_and(available)
             {
                 return false;
             }
@@ -580,20 +580,26 @@ impl Game {
             return self.teamwork_intent_fundable(&a, false)
                 || self.teamwork_intent_fundable(&a, true);
         }
+        let fundable = |choice: &Announcement| {
+            if kicker_changes_targets {
+                return self.kicker_choice_fundable(choice, false)
+                    || self.kicker_choice_fundable(choice, true);
+            }
+            choice
+                .cost_options()
+                .any(|cost| self.announcement_cost_fundable(choice, cost))
+        };
         if let Some(modes) = a.item.modes() {
             return modes.iter().enumerate().any(|(index, mode)| {
-                if !available(mode.targets) {
+                if !kicker_changes_targets && !available(mode.targets) {
                     return false;
                 }
                 let mut choice = a.clone();
                 choice.item.mode = Some(u16::try_from(index).expect("mode index"));
                 choice.plan = mode.targets;
-                choice
-                    .cost_options()
-                    .any(|cost| self.announcement_cost_fundable(&choice, cost))
+                fundable(&choice)
             });
         }
-        a.cost_options()
-            .any(|cost| self.announcement_cost_fundable(&a, cost))
+        fundable(&a)
     }
 }
