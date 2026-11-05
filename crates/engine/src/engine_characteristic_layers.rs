@@ -453,7 +453,11 @@ fn changed_base<W: CharacteristicWorld + ?Sized>(
         .into_iter()
         .filter_map(|(t, s)| s.base.map(|b| (t, b)))
         .collect();
-    changes.extend(animations(world, id).filter_map(|r| r.base.map(|b| (r.timestamp, b))));
+    changes.extend(animations(world, id).filter_map(|row| {
+        row.base
+            .filter(|_| !row.preserve_card_types || world.kinds(id) & 1 != 0)
+            .map(|base| (row.timestamp, base))
+    }));
     changes
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -636,13 +640,7 @@ impl Game {
             keywords: Keywords::NONE,
             duration: AnimationDuration::EndOfTurn,
         };
-        for target in &item.targets {
-            if self.same_target_object(*target)
-                && let Some(object) = target.object
-            {
-                self.change_object_form(object, spec, AnimationTypeMode::PreserveCardTypes);
-            }
-        }
+        self.change_targets_form(item, spec, AnimationTypeMode::PreserveCardTypes);
     }
     pub(super) fn animate_subject(
         &mut self,
@@ -654,12 +652,17 @@ impl Game {
             self.change_object_form(self.object_ref(id), spec, AnimationTypeMode::AddCreature);
         }
     }
-    pub(super) fn animate_targets(&mut self, item: &SpellView, spec: AnimationSpec) {
+    pub(super) fn change_targets_form(
+        &mut self,
+        item: &SpellView,
+        spec: AnimationSpec,
+        type_mode: AnimationTypeMode,
+    ) {
         for target in &item.targets {
             if self.same_target_object(*target)
                 && let Some(object) = target.object
             {
-                self.change_object_form(object, spec, AnimationTypeMode::AddCreature);
+                self.change_object_form(object, spec, type_mode);
             }
         }
     }
