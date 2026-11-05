@@ -6814,10 +6814,10 @@ impl Game {
             Action::RevealMiracle => self.choose_miracle_reveal(true),
             Action::DeclineMiracle => self.choose_miracle_reveal(false),
             Action::CastExiledDuringResolution { object, face } => {
-                self.cast_exiled_during_resolution(actor, object, face)
+                self.cast_during_resolution_with_cost(actor, object, face, None)
             }
             Action::CastFreeDuringResolution { object, face } => {
-                self.cast_during_resolution_with_cost(actor, object, face, true)
+                self.cast_during_resolution_with_cost(actor, object, face, Some(CastMethod::Free))
             }
             Action::FinishResolutionCasts => {
                 if let Some(resolution) = self.state.resolving.as_mut()
@@ -7209,30 +7209,25 @@ impl Game {
                 self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnounceHarmonize { card } | Action::AnnounceGrantedHarmonize { card, .. } => {
-                let mut item = self.cast_item(actor, card, [0; 6]);
-                let granted = matches!(action, Action::AnnounceGrantedHarmonize { .. });
-                if let Action::AnnounceGrantedHarmonize { face, .. } = action {
-                    self.set_cast_face(&mut item, face);
-                }
-                item.cast.as_mut().unwrap().method = if granted {
-                    CastMethod::GrantedHarmonize
-                } else {
-                    CastMethod::Harmonize
+                let (method, face) = match action {
+                    Action::AnnounceGrantedHarmonize { face, .. } => {
+                        (CastMethod::GrantedHarmonize, face)
+                    }
+                    _ => (CastMethod::Harmonize, CastFace::Normal),
                 };
-                if !granted
-                    && item
-                        .source
-                        .expect("harmonize source")
-                        .card
-                        .harmonize_x_symbols()
-                        == 0
-                    && item.source.expect("harmonize source").card.x_symbols() > 0
-                {
-                    item.x = Some(0);
+                if matches!(self.state.pending, Pending::ResolutionCasts { .. }) {
+                    self.cast_during_resolution_with_cost(
+                        actor,
+                        self.object_ref(card),
+                        face,
+                        Some(method),
+                    );
+                } else {
+                    let mut item = self.cast_item(actor, card, [0; 6]);
+                    self.set_cast_face(&mut item, face);
+                    self.configure_harmonize_cast(&mut item, method);
+                    self.open_payment_announcement(item, Counters::default(), None);
                 }
-                // Reuse the exact-object leave-stack exile replacement.
-                self.state.objects[card as usize].flashback = true;
-                self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnounceFlashback { card } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);

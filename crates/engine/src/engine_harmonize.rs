@@ -53,6 +53,19 @@ pub(super) fn reduce(mut cost: ManaCost, amount: u32) -> ManaCost {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn configure_harmonize_cast(&mut self, item: &mut SpellView, method: CastMethod) {
+        let source = item.source.expect("harmonize source");
+        item.cast.as_mut().unwrap().method = method;
+        if method == CastMethod::Harmonize
+            && source.card.harmonize_x_symbols() == 0
+            && source.card.x_symbols() > 0
+        {
+            item.x = Some(0);
+        }
+        // Use the exact-object leave-stack exile replacement.
+        self.state.objects[source.id as usize].flashback = true;
+    }
+
     pub(super) fn harmonize_choice_fundable(
         &self,
         a: &Announcement,
