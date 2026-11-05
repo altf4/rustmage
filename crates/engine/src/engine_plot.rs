@@ -134,41 +134,26 @@ impl Game {
         {
             return false;
         }
+        let base = ManaCost {
+            colored: [0; 6],
+            generic: 0,
+        };
+        if object.card.has_target_cost_modifier() {
+            return self.initial_target_cost_fundable(actor, card, base);
+        }
         if object.card.tiered_costs().is_some() {
-            return self.tiered_initial_fundable(
-                actor,
-                card,
-                ManaCost {
-                    colored: [0; 6],
-                    generic: 0,
-                },
-            );
+            return self.tiered_initial_fundable(actor, card, base);
         }
         let plan = match object.card.effect() {
             Effect::Modal(modes) => {
                 return modes
                     .iter()
                     .any(|m| self.cast_targets_available(m.targets, actor, p.object))
-                    && self.spell_can_fund(
-                        actor,
-                        card,
-                        ManaCost {
-                            colored: [0; 6],
-                            generic: 0,
-                        },
-                    );
+                    && self.spell_can_fund(actor, card, base);
             }
             Effect::Spell(plan, _) | Effect::Aura(plan) => plan,
             _ => TargetPlan::NONE,
         };
-        self.cast_targets_available(plan, actor, p.object)
-            && self.spell_can_fund(
-                actor,
-                card,
-                ManaCost {
-                    colored: [0; 6],
-                    generic: 0,
-                },
-            )
+        self.cast_targets_available(plan, actor, p.object) && self.spell_can_fund(actor, card, base)
     }
 }
