@@ -2512,6 +2512,9 @@ pub enum Instruction {
     AddArtifactToTargets,
     /// Change creature subtypes, base stats and keywords without adding a card type.
     ChangeSourceCreatureForm(AnimationSpec),
+    /// Change targets' creature form without adding a card type.
+    ChangeTargetCreatureForm(AnimationSpec),
+    /// Set target colors, creature subtypes and scaled base stats, retaining card types.
     SetCreatureForm {
         types: &'static [&'static str],
         colors: u8,

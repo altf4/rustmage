@@ -4,7 +4,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         SpellMode {
             text: "Conceal — Until end of turn, target creature you control becomes a Citizen with base power and toughness 1/1 and gains hexproof.",
             targets: one(TargetRule::creature_you_control()),
-            program: &[Instruction::AnimateTargets(AnimationSpec {
+            program: &[Instruction::ChangeTargetCreatureForm(AnimationSpec {
                 artifact: false,
                 creature_types: AnimationCreatureTypes::Named(&["Citizen"]),
                 base: Some((1, 1)),
@@ -15,7 +15,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         SpellMode {
             text: "Reveal — Until end of turn, target creature you control becomes a Hero with base power and toughness 3/4 and gains flying and vigilance.",
             targets: one(TargetRule::creature_you_control()),
-            program: &[Instruction::AnimateTargets(AnimationSpec {
+            program: &[Instruction::ChangeTargetCreatureForm(AnimationSpec {
                 artifact: false,
                 creature_types: AnimationCreatureTypes::Named(&["Hero"]),
                 base: Some((3, 4)),

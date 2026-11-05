@@ -6244,7 +6244,16 @@ impl Game {
                 Instruction::AnimateSourceWithAbilityIfNoncreature { spec, kind } => {
                     self.animate_source_with_ability_if_noncreature(&item, spec, kind)
                 }
-                Instruction::AnimateTargets(spec) => self.animate_targets(&item, spec),
+                Instruction::AnimateTargets(spec) => self.change_targets_form(
+                    &item,
+                    spec,
+                    characteristic_layers::AnimationTypeMode::AddCreature,
+                ),
+                Instruction::ChangeTargetCreatureForm(spec) => self.change_targets_form(
+                    &item,
+                    spec,
+                    characteristic_layers::AnimationTypeMode::PreserveCardTypes,
+                ),
                 Instruction::AnimateSubject { subject, spec } => {
                     self.animate_subject(&item, subject, spec)
                 }

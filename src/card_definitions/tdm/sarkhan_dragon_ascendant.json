@@ -13,6 +13,10 @@
   "java_source": "Mage.Sets/src/mage/cards/s/SarkhanDragonAscendant.java",
   "java_sha256": "af3b48503cf41d22bac4d9003352ff888ba4cd38d480196914560fb7cb26aeb0",
   "rules_tests": "tests/tdm_cards_s_z_additional.rs",
+  "rules_authority": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+    "notes": "CR 205.1b and 205.3d. The Dragon subtype is additive and does not supply the creature card type."
+  },
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",

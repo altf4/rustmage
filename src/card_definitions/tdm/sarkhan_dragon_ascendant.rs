@@ -26,7 +26,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     kind: CounterKind::PlusOne,
                     amount: 1,
                 },
-                Instruction::AnimateSource(AnimationSpec {
+                Instruction::ChangeSourceCreatureForm(AnimationSpec {
                     artifact: false,
                     creature_types: AnimationCreatureTypes::Additional(&["Dragon"]),
                     base: None,

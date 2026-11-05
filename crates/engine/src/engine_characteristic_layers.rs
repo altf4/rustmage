@@ -513,6 +513,7 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
         ));
     }
     changes.extend(land_forms(world, id).map(|row| (row.timestamp, SubtypeChange::LandOnly)));
+    let mut card_type_history = None;
     changes.extend(animations(world, id).filter_map(|row| {
         if row.food_only {
             return Some((row.timestamp, SubtypeChange::FoodOnly));
@@ -522,24 +523,39 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
         if row.artifact_noncreature || row.enchantment_noncreature {
             return None;
         }
-        // A subtype-only form cannot give creature types to a noncreature/nonkindred.
-        if row.preserve_card_types && world.kinds(id) & (1 | 128) == 0 {
-            return None;
-        }
-        if row.all_creature_types {
-            Some((row.timestamp, SubtypeChange::All))
+        let change = if row.all_creature_types {
+            SubtypeChange::All
         } else {
-            row.creature_types.map(|t| {
-                (
-                    row.timestamp,
-                    if row.additional_creature_types {
-                        SubtypeChange::Add(t)
-                    } else {
-                        SubtypeChange::Named(t, false)
-                    },
-                )
-            })
+            let types = row.creature_types?;
+            if row.additional_creature_types {
+                SubtypeChange::Add(types)
+            } else {
+                SubtypeChange::Named(types, false)
+            }
+        };
+        if row.preserve_card_types {
+            // A fixed object's subtype effect needs a compatible card type at
+            // its own layer-four timestamp (CR 205.3d, 613.7).
+            let (initial, history) = card_type_history.get_or_insert_with(|| {
+                let (initial, mut history) =
+                    kind_timeline(world, id, original_kinds(world, id, world.object(id)));
+                let mut kinds = initial;
+                for (_, mask, additive) in &mut history {
+                    kinds = if *additive { kinds | *mask } else { *mask };
+                    *mask = kinds;
+                }
+                (initial, history)
+            });
+            let at = history.partition_point(|&(time, _, _)| time <= row.timestamp);
+            let at_form = history[..at]
+                .last()
+                .map_or(*initial, |&(_, kinds, _)| kinds);
+            let final_kinds = history.last().map_or(*initial, |&(_, kinds, _)| kinds);
+            if at_form & (1 | 128) == 0 || final_kinds & (1 | 128) == 0 {
+                return None;
+            }
         }
+        Some((row.timestamp, change))
     }));
     changes
 }
@@ -636,13 +652,7 @@ impl Game {
             keywords: Keywords::NONE,
             duration: AnimationDuration::EndOfTurn,
         };
-        for target in &item.targets {
-            if self.same_target_object(*target)
-                && let Some(object) = target.object
-            {
-                self.change_object_form(object, spec, AnimationTypeMode::PreserveCardTypes);
-            }
-        }
+        self.change_targets_form(item, spec, AnimationTypeMode::PreserveCardTypes);
     }
     pub(super) fn animate_subject(
         &mut self,
@@ -654,12 +664,17 @@ impl Game {
             self.change_object_form(self.object_ref(id), spec, AnimationTypeMode::AddCreature);
         }
     }
-    pub(super) fn animate_targets(&mut self, item: &SpellView, spec: AnimationSpec) {
+    pub(super) fn change_targets_form(
+        &mut self,
+        item: &SpellView,
+        spec: AnimationSpec,
+        type_mode: AnimationTypeMode,
+    ) {
         for target in &item.targets {
             if self.same_target_object(*target)
                 && let Some(object) = target.object
             {
-                self.change_object_form(object, spec, AnimationTypeMode::AddCreature);
+                self.change_object_form(object, spec, type_mode);
             }
         }
     }
@@ -752,29 +767,20 @@ impl Game {
     ) {
         let value =
             i128::try_from(self.item_amount(base, item)).capacity("creature form base exhausted");
+        let spec = AnimationSpec {
+            artifact: false,
+            creature_types: AnimationCreatureTypes::Named(types),
+            base: Some((value, value)),
+            keywords: Keywords::NONE,
+            duration: AnimationDuration::EndOfTurn,
+        };
         for id in self.keyword_subjects(item, Subject::Targets) {
-            let row = AnimationView {
-                object: self.object_ref(id),
-                timestamp: self.next_role_timestamp(),
-                artifact: false,
-                land: false,
-                preserve_card_types: false,
-                food_only: false,
-                artifact_noncreature: false,
-                enchantment_noncreature: false,
-                colors: Some(colors),
-                creature_types: Some(types),
-                all_creature_types: false,
-                additional_creature_types: false,
-                base: Some((value, value)),
-                keywords: Keywords::NONE,
-                expires_turn: Some(self.state.turn),
-            };
-            self.state
-                .roles
-                .get_or_insert_with(Default::default)
-                .animations
-                .push(row);
+            self.change_object_form_colored(
+                self.object_ref(id),
+                spec,
+                AnimationTypeMode::PreserveCardTypes,
+                Some(colors),
+            );
         }
     }
     pub(super) fn forget_animations(&mut self, object: ObjectRef) {

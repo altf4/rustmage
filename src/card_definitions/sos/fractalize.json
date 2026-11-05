@@ -12,6 +12,11 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/f/Fractalize.java",
   "java_sha256": "8624380d0d084c09bc01b45e04377d128098f552d31a5986072e5dc4d1d2915b",
+  "rules_tests": "tests/bug_hunt_target_creature_form.rs",
+  "rules_authority": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+    "notes": "CR 205.1a, 205.3d and 208.3. The form sets colors, creature subtype and base stats while retaining existing card types."
+  },
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
