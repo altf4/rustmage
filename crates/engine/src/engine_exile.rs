@@ -92,12 +92,16 @@ impl Game {
         {
             return true;
         }
+        self.has_printed_cost_exile_permission(player, card)
+    }
+    pub(super) fn has_printed_cost_exile_permission(&self, player: Player, card: CardId) -> bool {
+        let object = self.object_ref(card);
         self.state.exile_permissions.iter().any(|p| {
             !p.life_instead_of_mana
                 && !p.without_paying_mana_cost
                 && !p.airbend
                 && p.player == player
-                && p.object == self.object_ref(card)
+                && p.object == object
                 && p.expiry.active(self.state.turn)
                 && self.exile_permission_guard(p)
         })
