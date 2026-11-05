@@ -2801,8 +2801,8 @@ impl<'g> FundingState<'g> {
             },
         }
     }
-    /// Pure funding moves never create new resources, untap them, restore
-    /// counters, or gain life. Sum maximum *net* gains before considering colors.
+    /// For closed funding paths, bound each source's alternative tap outputs once.
+    /// Keep non-tap net gains and conservative grants additive before colors.
     /// Ignore guards, sickness, reservations and shared costs here, since those
     /// restrictions can only lower the amount attainable. Convoke is similarly
     /// overcounted alongside any mana the same creature might produce.
