@@ -81,7 +81,13 @@ impl Game {
             .filter(|r| {
                 targets.iter().any(|b| {
                     self.same_target_object(*b)
-                        && self.cast_target_matches(r.rule, actor, self.object_ref(id), b.target)
+                        && self.cast_target_matches(
+                            r.rule,
+                            actor,
+                            self.object_ref(id),
+                            card,
+                            b.target,
+                        )
                 })
             })
             .map_or(

@@ -36,7 +36,7 @@ impl Game {
                 } != source)
             && (!filter.cards_only || o.is_card())
             && (filter.kind == 0 || kinds(id, o) & filter.kind != 0)
-            && kinds(id, o) & filter.exclude == 0
+            && (filter.exclude == 0 || kinds(id, o) & filter.exclude == 0)
             && filter.subtype.is_none_or(|s| subtypes(id).has(o.card, s))
             && (!filter.basic || (kinds(id, o) & 2 != 0 && o.card.is_basic_land()))
     }

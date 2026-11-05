@@ -20,7 +20,8 @@ impl Game {
         rule: TargetRule,
         prefer_matching: bool,
     ) -> Option<bool> {
-        let matches = |target| self.cast_target_matches(rule, c.actor, c.source, target);
+        let matches =
+            |target| self.cast_target_matches(rule, c.actor, c.source, c.definition, target);
         let mut qualifies = c
             .chosen
             .iter()
@@ -42,7 +43,7 @@ impl Game {
                 let mut available = 0;
                 let mut can_qualify = false;
                 let mut nonmatching = 0usize;
-                self.visit_cast_targets(spec.rule, c.actor, c.source, |target| {
+                self.visit_cast_targets(spec.rule, c.actor, c.source, c.definition, |target| {
                     if target == Target::Card(c.source.card)
                         || c.chosen
                             .iter()
@@ -198,17 +199,14 @@ impl Game {
         targets: &[BoundTarget],
         extra: u64,
     ) -> Option<ManaCost> {
-        let reduced = self
-            .effective_spell_card(id)
-            .target_cost_reduction()
-            .is_some_and(|r| {
-                targets.iter().any(|b| {
-                    self.same_target_object(*b)
-                        && self.cast_target_matches(r.rule, actor, self.object_ref(id), b.target)
-                })
-            });
-        let increased =
-            self.target_spell_increase(actor, id, self.effective_spell_card(id), targets);
+        let card = self.effective_spell_card(id);
+        let reduced = card.target_cost_reduction().is_some_and(|r| {
+            targets.iter().any(|b| {
+                self.same_target_object(*b)
+                    && self.cast_target_matches(r.rule, actor, self.object_ref(id), card, b.target)
+            })
+        });
+        let increased = self.target_spell_increase(actor, id, card, targets);
         self.target_total(actor, id, base, (reduced, increased != 0), extra)
     }
     pub(super) fn target_spell_increase(
@@ -222,7 +220,13 @@ impl Game {
             .filter(|r| {
                 targets.iter().any(|b| {
                     self.same_target_object(*b)
-                        && self.cast_target_matches(r.rule, actor, self.object_ref(id), b.target)
+                        && self.cast_target_matches(
+                            r.rule,
+                            actor,
+                            self.object_ref(id),
+                            card,
+                            b.target,
+                        )
                 })
             })
             .map_or(0, |r| u64::from(r.generic))

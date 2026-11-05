@@ -101,7 +101,7 @@ impl Game {
                     .linked_choices
                     .get_or_insert_default()
                     .hidden
-                    .push((source.object, event.after, viewers));
+                    .insert(event.after, (source.object, viewers));
                 for &player in &beneficiaries {
                     self.grant_exile_play_permission(player, event.after, false);
                     let permission = self

@@ -51,7 +51,7 @@ fn huskburster_swarm_ignores_creature_types_of_face_down_exiled_cards() {
     assert_eq!(hidden.kinds, 0);
     assert!(!hidden.has_subtype("Bear"));
     assert_eq!(g.object_mana_value(bear), 0);
-    let count = StatValue::Count(CountFilter {
+    let filter = CountFilter {
         zone: CountZone::Exile,
         relation: 0,
         kind: 0,
@@ -60,8 +60,18 @@ fn huskburster_swarm_ignores_creature_types_of_face_down_exiled_cards() {
         basic: false,
         other: false,
         cards_only: true,
-    });
+    };
+    let count = StatValue::Count(filter);
     assert_eq!(g.stat_value(count, g.object_ref(swarm), p), 1);
+    assert!(Game::count_object_matches(
+        filter,
+        g.object_ref(swarm),
+        p,
+        bear,
+        &g.state.objects[bear as usize],
+        &|_| panic!("an untyped count must not query subtypes"),
+        &|_, _| panic!("an untyped count must not query card types"),
+    ));
 
     g.state.players[p.index()].mana = [0, 0, 1, 0, 0, 6];
     let cast_swarm = Action::AnnounceCast { card: swarm };
@@ -82,4 +92,60 @@ fn huskburster_swarm_ignores_creature_types_of_face_down_exiled_cards() {
     pay(&mut g);
     assert_eq!(g.state.players[p.index()].mana, [0; 6]);
     assert_eq!(g.object_view(swarm).zone, Zone::Stack);
+}
+
+#[test]
+fn an_exiled_face_down_spell_uses_its_cast_face_to_check_protection_and_funding() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let robbery = put(&mut game, player, "Outrageous Robbery", Zone::Hand);
+    let spell = put(
+        &mut game,
+        player.other(),
+        "Seized from Slumber",
+        Zone::Library,
+    );
+    let elenda = put(
+        &mut game,
+        player.other(),
+        "Elenda, Saint of Dusk",
+        Zone::Battlefield,
+    );
+    let eligible = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+    game.state.objects[elenda as usize].tapped = true;
+    game.state.players[player.index()].mana = [0, 0, 3, 0, 0, 0];
+    act(&mut game, Action::AnnounceCast { card: robbery });
+    act(&mut game, Action::ChooseX { value: 1 });
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Player(player.other()),
+        },
+    );
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(spell).zone, Zone::Exile);
+    assert_eq!(game.object_view(spell).kinds, 0);
+
+    game.state.players[player.index()].mana = [1, 0, 0, 0, 0, 1];
+    let announce = Action::AnnounceExile { card: spell };
+    reject(&mut game, announce.clone());
+    game.state.objects[eligible as usize].tapped = true;
+    act(&mut game, announce);
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(elenda),
+        },
+    );
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(eligible),
+        },
+    );
+    pay(&mut game);
+    assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+    settle(&mut game);
+    assert_eq!(game.object_view(eligible).zone, Zone::Graveyard);
 }
