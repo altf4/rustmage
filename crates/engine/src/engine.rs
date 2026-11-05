@@ -9619,7 +9619,11 @@ impl Game {
         self.state.combat_rules = None;
         self.state.attacked_this_turn.clear();
         self.state.declared_attack_history = None;
+        // This-turn delayed abilities still observe cleanup SBAs and any
+        // priority cycles those actions create (CR 514.3a).
         self.state.delayed_target_events = None;
+        self.state.delayed_attack_this_turn = None;
+        self.expire_manifest_deaths();
         self.state.cards_exiled_this_turn = false;
         self.state.creatures_died_this_turn = 0;
         self.state.graveyard_entries = None;
@@ -9783,17 +9787,12 @@ impl Game {
     }
 
     fn finish_cleanup(&mut self) {
-        self.expire_manifest_deaths();
-        self.state.delayed_attack_this_turn = None;
-        self.state.delayed_target_events = None;
         if let Some(rules) = &mut self.state.combat_rules {
             rules.must_be_blocked.clear();
             rules.must_attack_this_combat.clear();
             rules.additional_combats = 0;
             rules.after_main = None;
-            rules.begin_combat_this_turn = None;
             rules.inserted_phases.clear();
-            rules.turn_callbacks.clear();
             rules.attack_without_defender.clear();
         }
         self.state.casting_prohibited = false;

@@ -96,7 +96,7 @@ impl Game {
             } else {
                 // CR603.7b/c: now-inert exact subjects are still referred to by
                 // this turn-duration delayed ability; a new incarnation cannot
-                // match it, and cleanup ends its lifetime.
+                // match it, and the turn advance ends its lifetime.
                 retained.push(row);
             }
         }
