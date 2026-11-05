@@ -2813,6 +2813,9 @@ impl<'g> FundingState<'g> {
             if object.zone != Zone::Battlefield || object.controller != self.actor {
                 continue;
             }
+            // Intrinsic and printed tap abilities compete for this exact
+            // source's single tap. Other grants below remain overestimates.
+            let mut tap_upper = 0;
             // Source-linked grants are independent of the exiled source's
             // current abilities. Count every retained row, even if presently
             // blanked, so this bound cannot prune a later restored grant.
@@ -2843,9 +2846,8 @@ impl<'g> FundingState<'g> {
                 total = total.saturating_add(u128::from(
                     self.game.state.players[self.actor.index()].mountain_mana_bonus,
                 ));
-                total = total.saturating_add(u128::from(
-                    object.card.mana_color().is_some() || self.kinds(resource) & 2 != 0,
-                ));
+                tap_upper =
+                    u128::from(object.card.mana_color().is_some() || self.kinds(resource) & 2 != 0);
                 // A chosen basic type can supply one mana even if ability removal
                 // currently hides it; later funding moves may restore the grant.
                 if object.card.static_ability_groups().iter().any(|group| {
@@ -2907,9 +2909,19 @@ impl<'g> FundingState<'g> {
             for (index, ability, borrowed, self_grant) in self.mana_activations(resource.id) {
                 // Tapped objects cannot pay tap costs in this closed search.
                 if (!object.tapped || !ability.cost.tap) && ability.mana_production().is_some() {
+                    let production = self.production_upper(ability.mana_production().unwrap());
+                    if ability.cost.tap {
+                        // Ignore input mana costs: another payment may restore
+                        // a discount before this ability is activated.
+                        production.visit(|mana| {
+                            tap_upper = tap_upper.max(mana.into_iter().map(u128::from).sum());
+                            false
+                        });
+                        continue;
+                    }
                     total = total.saturating_add(activation_gain_upper(
                         ability,
-                        self.production_upper(ability.mana_production().unwrap()),
+                        production,
                         ability_world::CharacteristicWorld::counter_amounts(self, resource.id),
                         if self.life_replacement_possible {
                             i128::MAX
@@ -2928,6 +2940,7 @@ impl<'g> FundingState<'g> {
                     ));
                 }
             }
+            total = total.saturating_add(tap_upper);
         }
         total
     }
@@ -3231,6 +3244,26 @@ impl<'g> FundingState<'g> {
             .attachment_sources()
             .iter()
             .any(|&id| self.object(id).card.controls_attached())
+        {
+            return true;
+        }
+        // Sacrificing a removal provider or a source-bound copy's source can
+        // restore a producer or a discount absent from the current inventory.
+        // Inspect projected rows, including hidden source-bound copy layers.
+        if ability_world::CharacteristicWorld::has_ability_removal(self)
+            || self
+                .temporary_copy_rows_state()
+                .as_ref()
+                .is_some_and(|rows| {
+                    rows.iter().any(|row| {
+                        self.object(row.object.card).zone == Zone::Battlefield
+                            && self.reference(row.object.card) == row.object
+                            && row
+                                .layers
+                                .iter()
+                                .any(|layer| layer.value.deadline.source().is_some())
+                    })
+                })
         {
             return true;
         }
