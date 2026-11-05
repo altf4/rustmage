@@ -496,17 +496,20 @@ impl Game {
         let available = |plan| {
             self.cast_definition_targets_available(plan, actor, self.object_ref(card), definition)
         };
-        let targets_available = match definition.effect() {
-            Effect::Modal(modes) => modes.iter().any(|mode| available(mode.targets)),
-            _ => available(self.target_spec(&item)),
-        };
-        if !targets_available
-            && !definition
-                .gift()
-                .is_some_and(|gift| available(gift.promised_targets))
-            && !definition.kicked_targets().is_some_and(available)
-        {
-            return false;
+        let teamwork = definition.teamwork().is_some();
+        if !teamwork {
+            let targets_available = match definition.effect() {
+                Effect::Modal(modes) => modes.iter().any(|mode| available(mode.targets)),
+                _ => available(self.target_spec(&item)),
+            };
+            if !targets_available
+                && !definition
+                    .gift()
+                    .is_some_and(|gift| available(gift.promised_targets))
+                && !definition.kicked_targets().is_some_and(available)
+            {
+                return false;
+            }
         }
         if definition.x_symbols() > 0
             && !matches!(
@@ -572,6 +575,10 @@ impl Game {
         };
         if method == CastMethod::GraveyardAdditionalCosts || origin_additional_cost.is_some() {
             a.initialize_cast_costs(improvise::potential(self, definition));
+        }
+        if teamwork {
+            return self.teamwork_intent_fundable(&a, false)
+                || self.teamwork_intent_fundable(&a, true);
         }
         if let Some(modes) = a.item.modes() {
             return modes.iter().enumerate().any(|(index, mode)| {

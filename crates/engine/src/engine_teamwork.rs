@@ -65,8 +65,8 @@ impl Game {
         };
         mode < 64 && bits & (1u64 << mode) != 0
     }
-    pub(super) fn teamwork_intent_fundable(&self, pay: bool) -> bool {
-        let mut a = self.state.announcing.as_ref().unwrap().clone();
+    pub(super) fn teamwork_intent_fundable(&self, announcement: &Announcement, pay: bool) -> bool {
+        let mut a = announcement.clone();
         a.item.cast.as_mut().unwrap().teamwork = Some(pay);
         a.initialize_cast_costs(improvise::potential(
             self,
@@ -75,19 +75,21 @@ impl Game {
                 .expect("cost announcement has object source")
                 .card,
         ));
-        let available = if let Some(modes) = a.item.modes() {
-            modes.iter().enumerate().any(|(i, m)| {
-                self.teamwork_mode_allowed(&a.item, i)
-                    && self.item_targets_available(&a.item, m.targets)
-            })
-        } else {
-            let plan = self.target_spec(&a.item);
-            self.item_targets_available(&a.item, plan)
-        };
-        if !available {
-            return false;
+        if let Some(modes) = a.item.modes() {
+            return modes.iter().enumerate().any(|(i, m)| {
+                if !self.teamwork_mode_allowed(&a.item, i)
+                    || !self.item_targets_available(&a.item, m.targets)
+                {
+                    return false;
+                }
+                let mut choice = a.clone();
+                choice.item.mode = Some(u16::try_from(i).expect("mode index"));
+                choice.plan = m.targets;
+                self.teamwork_proposal_fundable(&choice)
+            });
         }
-        self.teamwork_proposal_fundable(&a)
+        a.plan = self.target_spec(&a.item);
+        self.item_targets_available(&a.item, a.plan) && self.teamwork_proposal_fundable(&a)
     }
     pub(super) fn choose_teamwork(&mut self, pay: bool) {
         let improvise = improvise::potential(
