@@ -126,7 +126,6 @@ impl Game {
             delayed.mode = None;
             delayed.x = None;
             delayed.targets.clear();
-            delayed.crime_qualifying_target = false;
             delayed.target_type_slots = None;
             delayed.target_controller_lki = None;
             delayed.target_kinds_lki = None;

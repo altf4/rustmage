@@ -41,7 +41,6 @@ impl Game {
                 })
                 .map(|e| e.before.reference),
         );
-        delayed.crime_qualifying_target = false;
         delayed.target_type_slots = None;
         delayed.mode = None;
         delayed.cast = None;

@@ -84,7 +84,6 @@ impl Game {
             }));
             item.targets.clear();
             item.refer_zone_event(event);
-            item.crime_qualifying_target = false;
             item.target_type_slots = None;
             item.mode = None;
             self.state.pending_triggers.push(item);

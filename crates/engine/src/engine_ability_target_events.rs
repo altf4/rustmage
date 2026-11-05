@@ -18,7 +18,7 @@ impl Game {
                     self.object_ref(id) == reference
                         && match object.zone {
                             Zone::Battlefield => object.controller != player,
-                            Zone::Graveyard => object.owner != player,
+                            Zone::Graveyard => object.is_card() && object.owner != player,
                             _ => false,
                         }
                 })
@@ -36,7 +36,13 @@ impl Game {
                 StackKind::ActivatedAbility { .. } | StackKind::TriggeredAbility { .. } => true,
                 _ => false,
             };
-        if committed && item.crime_qualifying_target && !item.targets.is_empty() {
+        if committed
+            && !self.state.players[item.controller.index()].committed_crime_this_turn
+            && item
+                .targets
+                .iter()
+                .any(|&target| self.crime_target(item.controller, target))
+        {
             self.state.players[item.controller.index()].committed_crime_this_turn = true;
         }
     }

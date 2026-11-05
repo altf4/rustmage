@@ -246,7 +246,6 @@ impl Game {
         delayed.is_copy = false;
         delayed.targets.clear();
         delayed.clear_initiating_event_references();
-        delayed.crime_qualifying_target = false;
         delayed.target_type_slots = None;
         self.state
             .stack_copy_data
@@ -359,7 +358,6 @@ impl Game {
                 trigger.target_kinds_lki = None;
                 trigger.is_copy = false;
                 trigger.targets.clear();
-                trigger.crime_qualifying_target = false;
                 trigger.target_type_slots = None;
                 trigger.controller = source.controller;
                 trigger.copy_event = Some(Box::new(CopyEvent {

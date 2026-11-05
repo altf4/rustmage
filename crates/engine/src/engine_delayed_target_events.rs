@@ -45,7 +45,6 @@ impl Game {
             packet.targets.clear();
             packet.clear_initiating_event_references();
             packet.refer_objects([subject]);
-            packet.crime_qualifying_target = false;
             packet.target_type_slots = None;
             packet.mode = None;
             packet.cast = None;
