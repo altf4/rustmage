@@ -5698,7 +5698,7 @@ impl Game {
                     {
                         return true;
                     }
-                    if obj.card.behold_cast().is_some() {
+                    if obj.card.behold_cast().is_some() || obj.card.kicked_targets().is_some() {
                         let method = if flashback {
                             CastMethod::Flashback
                         } else {
@@ -5753,7 +5753,6 @@ impl Game {
                                             self.object_ref(card),
                                         )
                                     })
-                                || self.kicked_cast_targets_available(actor, card)
                         }
                         _ => true,
                     };
