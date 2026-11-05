@@ -9569,6 +9569,13 @@ impl Game {
     }
 
     fn begin_turn(&mut self) {
+        // This-turn delayed abilities still observe cleanup SBAs and any
+        // priority cycles those actions create (CR 514.3a).
+        self.state.delayed_target_events = None;
+        self.state.delayed_attack_this_turn = None;
+        self.state.combat_rules = None;
+        self.expire_manifest_deaths();
+        self.expire_spell_copies();
         if let Some(roles) = &mut self.state.roles {
             roles.prohibit_opponent_nonhand_casts[self.state.active.index()] = false;
         }
@@ -9608,7 +9615,6 @@ impl Game {
             }
         }
         self.clear_crew_history();
-        self.expire_spell_copies();
         self.state.triggered_this_turn.clear();
         self.state.ability_resolutions = None;
         self.state.used_free_hand_permissions = None;
@@ -9616,10 +9622,8 @@ impl Game {
         self.state.tap_history = None;
         self.state.counter_placement_history = None;
         self.state.cast_entry_counters = None;
-        self.state.combat_rules = None;
         self.state.attacked_this_turn.clear();
         self.state.declared_attack_history = None;
-        self.state.delayed_target_events = None;
         self.state.cards_exiled_this_turn = false;
         self.state.creatures_died_this_turn = 0;
         self.state.graveyard_entries = None;
@@ -9783,17 +9787,12 @@ impl Game {
     }
 
     fn finish_cleanup(&mut self) {
-        self.expire_manifest_deaths();
-        self.state.delayed_attack_this_turn = None;
-        self.state.delayed_target_events = None;
         if let Some(rules) = &mut self.state.combat_rules {
             rules.must_be_blocked.clear();
             rules.must_attack_this_combat.clear();
             rules.additional_combats = 0;
             rules.after_main = None;
-            rules.begin_combat_this_turn = None;
             rules.inserted_phases.clear();
-            rules.turn_callbacks.clear();
             rules.attack_without_defender.clear();
         }
         self.state.casting_prohibited = false;
@@ -9805,7 +9804,6 @@ impl Game {
             player.jace_loyalty_anytime = false;
         }
         // Until-end-of-turn abilities expire before any cleanup-induced SBA death.
-        self.expire_spell_copies();
         self.expire_temporary_ability_removals();
         let expired_controls = self.expire_temporary_controls();
         if let Some(rows) = &mut self.state.self_granted_abilities {
