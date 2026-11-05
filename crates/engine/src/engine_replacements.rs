@@ -2744,7 +2744,9 @@ impl Game {
                         0 => {
                             batch.next += 1;
                             batch.used.clear();
-                            batch.used_preventions.clear();
+                            batch
+                                .used_preventions
+                                .retain(|(_, kind)| *kind == DamagePreventionKind::ShieldCounter);
                             batch.ordered_event = false;
                         }
                         1 => {
@@ -2756,11 +2758,7 @@ impl Game {
                                 );
                                 batch.used.push((only.source, only.ability));
                             } else {
-                                self.apply_damage_prevention(
-                                    preventions[0],
-                                    &mut batch.events[batch.next],
-                                    &mut batch.used_preventions,
-                                );
+                                self.apply_damage_prevention(preventions[0], batch);
                             }
                         }
                         _ => {
@@ -3377,40 +3375,40 @@ impl Game {
         let Event::Damage(batch) = state.active.as_mut().unwrap() else {
             unreachable!()
         };
-        assert!(
-            self.damage_preventions(&batch.events[batch.next], &batch.used_preventions)
-                .iter()
-                .any(|choice| choice.source == source && choice.kind == kind)
-        );
         let choice = self
             .damage_preventions(&batch.events[batch.next], &batch.used_preventions)
             .into_iter()
             .find(|choice| choice.source == source && choice.kind == kind)
             .unwrap();
-        self.apply_damage_prevention(
-            choice,
-            &mut batch.events[batch.next],
-            &mut batch.used_preventions,
-        );
+        self.apply_damage_prevention(choice, batch);
         self.state.replacements = Some(state);
         self.advance_replacements(true);
     }
-    fn apply_damage_prevention(
-        &mut self,
-        choice: DamagePreventionView,
-        event: &mut DamageEvent,
-        used: &mut Vec<(ObjectRef, DamagePreventionKind)>,
-    ) {
+    fn apply_damage_prevention(&mut self, choice: DamagePreventionView, batch: &mut DamageBatch) {
+        let prevention_allowed = !self.damage_prevention_prohibited();
         if choice.kind == DamagePreventionKind::ShieldCounter {
+            // CR 122.1c: one effect covers all simultaneous damage to the
+            // permanent. Keep its used key for the batch even if some hits
+            // cannot be prevented and the permanent still has more counters.
             self.remove_shield(choice.source.card);
-        }
-        if event.preventable && !self.damage_prevention_prohibited() {
-            if let DamagePreventionKind::ChosenSource(id) = choice.kind {
-                self.consume_source_prevention(id, event);
+            if prevention_allowed {
+                let target = batch.events[batch.next].target;
+                for event in &mut batch.events[batch.next..] {
+                    if event.target == target && event.preventable {
+                        event.amount = 0;
+                    }
+                }
             }
-            event.amount = 0;
+        } else {
+            let event = &mut batch.events[batch.next];
+            if event.preventable && prevention_allowed {
+                if let DamagePreventionKind::ChosenSource(id) = choice.kind {
+                    self.consume_source_prevention(id, event);
+                }
+                event.amount = 0;
+            }
         }
-        used.push((choice.source, choice.kind));
+        batch.used_preventions.push((choice.source, choice.kind));
     }
     fn damage_event_order(&self, batch: &DamageBatch) -> Vec<DamageEventOrderView> {
         if batch.ordered_event {
@@ -3426,22 +3424,31 @@ impl Game {
         if self.counter_count(id, CounterKind::Shield) == 0 {
             return Vec::new();
         }
-        let choices: Vec<_> = batch
+        let shield = (self.object_ref(id), DamagePreventionKind::ShieldCounter);
+        if batch.used_preventions.contains(&shield) {
+            return Vec::new();
+        }
+        let hits = batch
             .events
             .iter()
             .enumerate()
             .skip(batch.next)
-            .filter(|(_, candidate)| candidate.target == event.target && candidate.amount > 0)
-            .map(|(index, &event)| DamageEventOrderView {
-                index: u32::try_from(index).expect("owned damage event index"),
-                event,
+            .filter(|(_, hit)| hit.target == event.target && hit.amount > 0);
+        // Packet order only matters when another effect can modify a hit
+        // before the controller applies the shield to all remaining hits.
+        if hits.clone().nth(1).is_none()
+            || !hits.clone().any(|(_, hit)| {
+                !self.damage_replacements(hit, &[]).is_empty()
+                    || !self.damage_preventions(hit, &[shield]).is_empty()
             })
-            .collect();
-        if choices.len() > 1 {
-            choices
-        } else {
-            Vec::new()
+        {
+            return Vec::new();
         }
+        hits.map(|(index, &event)| DamageEventOrderView {
+            index: u32::try_from(index).expect("owned damage event index"),
+            event,
+        })
+        .collect()
     }
     pub(super) fn choose_damage_event(&mut self, index: u32) {
         let mut state = self.state.replacements.take().unwrap();
