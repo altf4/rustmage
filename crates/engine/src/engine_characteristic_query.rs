@@ -880,6 +880,18 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                 .max()
         })
     }
+    pub(super) fn continuous_group_available(
+        &self,
+        source: ObjectRef,
+        index: usize,
+        group: &crate::cards::StaticAbilityGroup,
+    ) -> bool {
+        entry_modes::group_enabled(self, source, group)
+            && self
+                .evaluation
+                .as_ref()
+                .is_none_or(|evaluation| evaluation.group_available(source, index))
+    }
     pub(super) fn continuous_fragment_available(
         &self,
         source: CardId,
@@ -910,9 +922,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         {
             if group.fragments.iter().any(&matches) {
                 bound = true;
-                available |= entry_modes::group_enabled(self, reference, group)
-                    && evaluation
-                        .is_none_or(|evaluation| evaluation.group_available(reference, index));
+                available |= self.continuous_group_available(reference, index, group);
             }
         }
         assert!(
