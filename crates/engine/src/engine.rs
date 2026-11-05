@@ -4653,8 +4653,10 @@ impl Game {
             }
             Pending::BlightPayment { .. } => return self.visit_blight_payments(&mut emit),
             Pending::TeamworkIntent { .. } => {
+                let a = s.announcing.as_ref().unwrap();
                 for pay in [false, true] {
-                    if self.teamwork_intent_fundable(pay) && emit(Action::ChooseTeamwork { pay }) {
+                    if self.teamwork_intent_fundable(a, pay) && emit(Action::ChooseTeamwork { pay })
+                    {
                         return true;
                     }
                 }
