@@ -234,6 +234,7 @@ impl Game {
             | Action::AnnounceBack { card }
             | Action::AnnounceGraveyardBack { card, .. }
             | Action::AnnouncePlotted { card }
+            | Action::AnnouncePlottedFace { card, .. }
             | Action::AnnounceHarmonize { card }
             | Action::AnnounceGrantedHarmonize { card, .. }
             | Action::AnnounceMayhem { card }

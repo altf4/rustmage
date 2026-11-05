@@ -104,56 +104,68 @@ impl Game {
             }
         }
     }
-    pub(super) fn plotted_cast_available(&self, actor: Player, card: CardId) -> bool {
-        if actor != self.state.active
-            || !matches!(self.state.step, Step::Main1 | Step::Main2)
-            || !self.state.stack.is_empty()
-        {
-            return false;
-        }
+    pub(super) fn has_plotted_permission(&self, actor: Player, card: CardId) -> bool {
         let Some(state) = &self.state.plot else {
             return false;
         };
         let Ok(i) = state.cards.binary_search_by_key(&card, |p| p.object.card) else {
             return false;
         };
-        let p = state.cards[i];
+        let plotted = state.cards[i];
         let object = &self.state.objects[card as usize];
-        if object.card.is_land()
-            || object.is_token()
-            || object.card.is_emblem()
-            || !object.card.is_supported()
+        object.is_card()
+            && object.card.is_supported()
+            && plotted.owner == actor
+            && plotted.object == self.object_ref(card)
+            && object.zone == Zone::Exile
+            && object.owner == actor
+            && self.state.turn > plotted.plotted_turn
+    }
+
+    pub(super) fn visit_plotted_casts(
+        &self,
+        actor: Player,
+        card: CardId,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        let definition = self.state.objects[card as usize].card;
+        if !definition.is_land()
+            && self.spell_graveyard_requirement_holds(actor, card, definition)
+            && self.plotted_front_cast_fundable(actor, card, definition)
+            && emit(Action::AnnouncePlotted { card })
         {
-            return false;
+            return true;
         }
-        if p.owner != actor
-            || p.object != self.object_ref(card)
-            || object.zone != Zone::Exile
-            || object.owner != actor
-            || self.state.turn <= p.plotted_turn
-        {
-            return false;
-        }
+        [CastFace::Adventure, CastFace::Omen, CastFace::Back]
+            .into_iter()
+            .any(|face| {
+                self.permitted_cast_available(actor, card, CastMethod::Plot, face, true, false)
+                    && emit(Action::AnnouncePlottedFace { card, face })
+            })
+    }
+
+    fn plotted_front_cast_fundable(&self, actor: Player, card: CardId, definition: Card) -> bool {
         let base = ManaCost {
             colored: [0; 6],
             generic: 0,
         };
-        if object.card.has_target_cost_modifier() {
+        if definition.has_target_cost_modifier() {
             return self.initial_target_cost_fundable(actor, card, base);
         }
-        if object.card.tiered_costs().is_some() {
+        if definition.tiered_costs().is_some() {
             return self.tiered_initial_fundable(actor, card, base);
         }
-        let plan = match object.card.effect() {
+        let plan = match definition.effect() {
             Effect::Modal(modes) => {
                 return modes
                     .iter()
-                    .any(|m| self.cast_targets_available(m.targets, actor, p.object))
+                    .any(|m| self.cast_targets_available(m.targets, actor, self.object_ref(card)))
                     && self.spell_can_fund(actor, card, base);
             }
             Effect::Spell(plan, _) | Effect::Aura(plan) => plan,
             _ => TargetPlan::NONE,
         };
-        self.cast_targets_available(plan, actor, p.object) && self.spell_can_fund(actor, card, base)
+        self.cast_targets_available(plan, actor, self.object_ref(card))
+            && self.spell_can_fund(actor, card, base)
     }
 }

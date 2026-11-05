@@ -959,6 +959,7 @@ define_actions! {
     PayFaceUp { payment: Mana },
     AbortFaceUpPayment,
     AnnouncePlotted { card: CardId },
+    AnnouncePlottedFace { card: CardId, face: CastFace },
     AnnounceFlashback {
         card: CardId,
     },
@@ -5191,6 +5192,7 @@ impl Game {
                     {
                         return true;
                     }
+                    let mut plotted = false;
                     let authorized_origin = match obj.zone {
                         Zone::Battlefield => obj.controller == actor,
                         Zone::Hand | Zone::Graveyard => obj.owner == actor,
@@ -5200,11 +5202,12 @@ impl Game {
                                 || self.turn_free_library_origin(actor, card)
                         }
                         Zone::Exile => {
+                            plotted = sorcery && self.has_plotted_permission(actor, card);
                             self.can_play_exiled(actor, card)
                                 || self.has_exile_life_permission(actor, card)
                                 || self.has_exile_free_permission(actor, card)
                                 || self.has_airbend_permission(actor, card)
-                                || self.plotted_cast_available(actor, card)
+                                || plotted
                         }
                         _ => false,
                     };
@@ -5336,12 +5339,7 @@ impl Game {
                         // casting method/face below remains prohibited.
                         continue;
                     }
-                    if sorcery
-                        && obj.zone == Zone::Exile
-                        && self.spell_graveyard_requirement_holds(actor, card, obj.card)
-                        && self.plotted_cast_available(actor, card)
-                        && emit(Action::AnnouncePlotted { card })
-                    {
+                    if plotted && self.visit_plotted_casts(actor, card, &mut emit) {
                         return true;
                     }
                     if obj.zone == Zone::Hand
@@ -7183,8 +7181,11 @@ impl Game {
             Action::BeginFaceUp { object, cost } => self.begin_face_up(actor, object, cost),
             Action::PayFaceUp { payment } => self.finish_face_up(payment),
             Action::AbortFaceUpPayment => self.finish_cast_rollback(false),
-            Action::AnnouncePlotted { card } => {
+            Action::AnnouncePlotted { card } | Action::AnnouncePlottedFace { card, .. } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
+                if let Action::AnnouncePlottedFace { face, .. } = action {
+                    self.set_cast_face(&mut item, face);
+                }
                 item.cast.as_mut().unwrap().method = CastMethod::Plot;
                 if item
                     .source

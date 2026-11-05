@@ -436,6 +436,9 @@ impl Game {
         }) else {
             return false;
         };
+        if method == CastMethod::Plot && definition.is_land() {
+            return false;
+        }
         if method == CastMethod::GrantedHarmonize
             && (definition.is_land()
                 || !self.has_graveyard_cast(actor, card, GraveyardCastKind::Harmonize)
@@ -480,6 +483,7 @@ impl Game {
             CastMethod::ExileLife
                 | CastMethod::Airbend
                 | CastMethod::Free
+                | CastMethod::Plot
                 | CastMethod::Flashback
                 | CastMethod::Harmonize
                 | CastMethod::Mayhem
@@ -510,6 +514,7 @@ impl Game {
                 CastMethod::ExileLife
                     | CastMethod::Airbend
                     | CastMethod::Free
+                    | CastMethod::Plot
                     | CastMethod::Flashback
                     | CastMethod::Harmonize
                     | CastMethod::GrantedHarmonize
