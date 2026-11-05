@@ -160,7 +160,7 @@ impl Game {
             self.state.temporary_controls = None;
         }
     }
-    pub(super) fn expire_temporary_controls(&mut self) {
+    pub(super) fn expire_temporary_controls(&mut self) -> bool {
         let turn = self.state.turn;
         let active = self.state.active;
         let expired = |eot: Option<u32>, next: Option<NextTurnControlExpiry>| {
@@ -173,12 +173,15 @@ impl Game {
                 self.state.temporary_controls = None;
             }
         }
-        if let Some(state) = &mut self.state.controls {
+        let expired_controls = self.state.controls.as_mut().is_some_and(|state| {
+            let count = state.effects.len();
             state
                 .effects
                 .retain(|row| !expired(row.expires_turn, row.expires_after_next_turn));
-        }
+            state.effects.len() != count
+        });
         self.refresh_controllers();
+        expired_controls
     }
     pub(super) fn temporary_control_bytes(&self) -> usize {
         self.state.temporary_controls.as_ref().map_or(0, |v| {
