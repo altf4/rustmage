@@ -538,7 +538,7 @@ fn delayed_death_surveillance_keeps_original_controller_and_private_owned_choice
 }
 
 #[test]
-fn delayed_death_requires_exact_creature_death_and_expires_at_cleanup() {
+fn delayed_death_requires_exact_graveyard_departure_and_expires_at_turn_advance() {
     let _scope = fixture_rules::activate(&[(Card::GrizzlyBears, &GRIM)]);
     for mode in 0..3 {
         let p = Player::P0;

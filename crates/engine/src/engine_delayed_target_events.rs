@@ -69,7 +69,7 @@ impl Game {
         let Some(rows) = self.state.delayed_target_events.take() else {
             return;
         };
-        let dies = event.destination == Zone::Graveyard && event.before.is_creature();
+        let dies = event.destination == Zone::Graveyard;
         let mut retained = Vec::new();
         for row in *rows {
             if row.expires_turn != self.state.turn {
