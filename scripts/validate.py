@@ -21,11 +21,11 @@ import time
 
 if __package__:
     from .resource_limits import managed_context
-    from .build_platform import library_name, executable_name, allocated_bytes
+    from .build_platform import library_name, executable_name, allocated_bytes, exec_process
     from .run_native_tests import active_peers, interrupted, run_command
 else:
     from resource_limits import managed_context
-    from build_platform import library_name, executable_name, allocated_bytes
+    from build_platform import library_name, executable_name, allocated_bytes, exec_process
     from run_native_tests import active_peers, interrupted, run_command
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -79,8 +79,8 @@ def main(argv=None):
         parser.error('--games and --timeout must be positive')
     os.chdir(ROOT)
     if managed_context() is None:
-        os.execv(sys.executable, [sys.executable, str(ROOT/'scripts/resource_guard.py'), '--',
-                                 sys.executable, str(Path(__file__).resolve()), *arguments])
+        exec_process([sys.executable, str(ROOT/'scripts/resource_guard.py'), '--',
+                      sys.executable, str(Path(__file__).resolve()), *arguments])
     signal.signal(signal.SIGTERM, interrupted)
     cache = Path(os.environ.get('XDG_CACHE_HOME', Path.home()/'.cache')).expanduser().resolve()
     if cache == ROOT or ROOT in cache.parents:

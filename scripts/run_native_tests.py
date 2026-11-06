@@ -14,8 +14,10 @@ import time
 
 if __package__:
     from .resource_limits import bounded_group, managed_context
+    from .build_platform import exec_process
 else:
     from resource_limits import bounded_group, managed_context
+    from build_platform import exec_process
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -249,8 +251,8 @@ def main():
     if any(not math.isfinite(v) or v <= 0 for v in (args.compile_timeout, args.test_timeout, args.suite_timeout)):
         parser.error('timeouts must be positive')
     if managed_context() is None:
-        os.execv(sys.executable, [sys.executable, str(ROOT/'scripts/resource_guard.py'), '--',
-                                 sys.executable, str(Path(__file__).resolve()), *sys.argv[1:]])
+        exec_process([sys.executable, str(ROOT/'scripts/resource_guard.py'), '--',
+                      sys.executable, str(Path(__file__).resolve()), *sys.argv[1:]])
     signal.signal(signal.SIGTERM, interrupted)
     args.report.parent.mkdir(parents=True, exist_ok=True)
     target = args.target_dir.resolve()

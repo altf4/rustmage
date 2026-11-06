@@ -42,7 +42,7 @@ class ValidatorTests(unittest.TestCase):
             patch.object(validate, 'run_command', side_effect=self.run_command),
             patch.object(validate.subprocess, 'check_output', return_value='fixture-head\n'),
             patch.object(validate.signal, 'signal'),
-            patch.object(validate.os, 'execv', side_effect=AssertionError('unexpected guard re-entry')),
+            patch.object(validate, 'exec_process', side_effect=AssertionError('unexpected guard re-entry')),
             patch.dict(os.environ, {'XDG_CACHE_HOME': str(self.cache)}),
         ]
         for mocked in patches:

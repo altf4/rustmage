@@ -16,8 +16,10 @@ import unittest
 
 if __package__:
     from .resource_limits import managed_context
+    from .build_platform import exec_process
 else:
     from resource_limits import managed_context
+    from build_platform import exec_process
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -87,8 +89,8 @@ def main():
            (args.runtime_budget, args.timeout_seconds)):
         parser.error("runtime budget and timeout must be positive finite seconds")
     if managed_context() is None:
-        os.execv(sys.executable, [sys.executable, str(ROOT / "scripts/resource_guard.py"), "--",
-                                 sys.executable, str(Path(__file__).resolve()), *sys.argv[1:]])
+        exec_process([sys.executable, str(ROOT / "scripts/resource_guard.py"), "--",
+                      sys.executable, str(Path(__file__).resolve()), *sys.argv[1:]])
     try:
         library = Path(os.environ["RUSTMAGE_LIBRARY"]).resolve(strict=True)
     except (KeyError, OSError) as error:

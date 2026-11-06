@@ -32,11 +32,36 @@ class PortableBuildTests(unittest.TestCase):
             script.write_text('import json,sys; print(json.dumps(sys.argv[1:]))\n', encoding='utf-8')
             arguments = [f'--extern=crate_{index}=C:/long build cache/カード {index}.rlib' for index in range(220)]
             self.assertGreater(sum(map(len, arguments)), 8191)
-            result = subprocess.run([str(launcher), *arguments],
-                                    env=dict(os.environ, RUSTMAGE_RUSTC_GUARD=str(script)),
+            result = subprocess.run([str(launcher), sys.executable, str(script), *arguments],
                                     capture_output=True, text=True, timeout=10)
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual(json.loads(result.stdout), arguments)
+
+    def test_windows_handoff_waits_for_and_preserves_nonzero_child_exit(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            marker = Path(temporary)/'finished'
+            code = f'from pathlib import Path; Path({str(marker)!r}).write_text("done"); raise SystemExit(7)'
+            with patch.object(build_platform.os, 'name', 'nt'):
+                with self.assertRaises(SystemExit) as result:
+                    build_platform.exec_process([sys.executable, '-c', code])
+            self.assertEqual(result.exception.code, 7)
+            self.assertEqual(marker.read_text(), 'done')
+
+    def test_real_compiler_guard_probes_and_failure_status(self):
+        wrapper = ([os.environ['RUSTC_WRAPPER']] if sys.platform == 'win32' else
+                   [sys.executable, str(Path(__file__).with_name('rustc_guard.py'))])
+        rustc = subprocess.check_output(['rustup', 'which', 'rustc'], text=True).strip()
+        clippy = subprocess.check_output(['rustup', 'which', 'clippy-driver'], text=True).strip()
+        for command in ([rustc, '-vV'], [clippy, rustc, '-vV']):
+            result = subprocess.run([*wrapper, *command], capture_output=True, text=True, timeout=15)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn('rustc ', result.stdout)
+        result = subprocess.run([*wrapper, sys.executable, '-c',
+                                 "import sys; print('out'); print('err',file=sys.stderr); raise SystemExit(7)"],
+                                capture_output=True, text=True, timeout=15)
+        self.assertEqual(result.returncode, 7, result.stderr)
+        self.assertEqual(result.stdout.strip(), 'out')
+        self.assertEqual(result.stderr.strip(), 'err')
 
     def test_non_linux_does_not_read_procfs(self):
         with patch.object(resource_limits.sys, 'platform', 'darwin'), \
