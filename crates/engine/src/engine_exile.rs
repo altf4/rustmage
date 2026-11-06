@@ -84,15 +84,17 @@ impl Game {
                 .is_some_and(|source| threshold_linked_source_available(self, player, source))
     }
     pub(super) fn can_play_exiled(&self, player: Player, card: CardId) -> bool {
-        if self.can_cast_threshold_linked_exile(player, card)
-            || self.can_cast_prepared(player, card)
-            || self.can_play_foreign_stash(player, card)
+        self.can_cast_prepared(player, card)
             || self.can_play_adventure(player, card)
+            || self.can_cast_exiled_card(player, card)
+    }
+    /// Permissions to cast the card for a mana cost, including an alternate
+    /// spell face. Adventure's own right applies only to its normal face.
+    pub(super) fn can_cast_exiled_card(&self, player: Player, card: CardId) -> bool {
+        self.can_cast_threshold_linked_exile(player, card)
+            || self.can_play_foreign_stash(player, card)
             || self.can_cast_warped(player, card)
-        {
-            return true;
-        }
-        self.has_printed_cost_exile_permission(player, card)
+            || self.has_printed_cost_exile_permission(player, card)
     }
     pub(super) fn has_printed_cost_exile_permission(&self, player: Player, card: CardId) -> bool {
         let object = self.object_ref(card);
