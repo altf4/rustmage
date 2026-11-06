@@ -24,6 +24,10 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class AssuranceRunnerTests(unittest.TestCase):
+    def test_guard_starts_without_unowned_peers(self):
+        peers = active_peers()
+        self.assertFalse(peers, native.process_details(peers))
+
     def test_native_cli_retains_distinct_evidence_for_reports_sharing_a_parent(self):
         with tempfile.TemporaryDirectory() as temporary, patch.dict(os.environ):
             directory = Path(temporary).resolve()

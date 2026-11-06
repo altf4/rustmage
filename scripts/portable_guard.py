@@ -244,6 +244,7 @@ def run(command, report, env):
                RUSTMAGE_GUARD_PARENT_BIRTH=str(parent.create_time()))
     started = time.monotonic()
     code, orphaned, error = 1, False, None
+    orphan_details = []
     process = None
     def interrupted(*_):
         raise KeyboardInterrupt
@@ -267,8 +268,15 @@ def run(command, report, env):
                 break
             time.sleep(INTERVAL)
         code = process.wait()
-        orphaned = bool(supervisor.sample())
+        orphans = supervisor.sample()
+        orphaned = bool(orphans)
         if orphaned:
+            for orphan in orphans:
+                try:
+                    orphan_details.append(orphan.as_dict(
+                        attrs=['pid', 'ppid', 'name', 'exe', 'create_time'], ad_value=None))
+                except psutil.NoSuchProcess:
+                    pass
             supervisor.stop()
         if supervisor.exceeded or orphaned:
             code = code or 1
@@ -306,6 +314,7 @@ def run(command, report, env):
                         memory_peak_bytes=supervisor.peak, sample_interval_seconds=INTERVAL,
                         memory_budget_exceeded=supervisor.exceeded,
                         orphaned_processes=orphaned, active_processes=[p.pid for p in members],
+                        orphaned_process_details=orphan_details,
                         cargo_jobs=1, test_threads=1, error=error)
             report.write_text(json.dumps(data, indent=2)+'\n', encoding='utf-8')
             print('Resource report: '+str(report), file=sys.stderr)

@@ -91,6 +91,23 @@ def active_peers():
     return group_members() - ancestors
 
 
+def process_details(pids):
+    """Retain safe identity evidence without command arguments or environments."""
+    try:
+        import psutil
+    except ImportError:
+        # The Linux cgroup backend does not require the portable dependency.
+        return [dict(pid=pid) for pid in sorted(pids)]
+    details = []
+    for pid in sorted(pids):
+        try:
+            details.append(psutil.Process(pid).as_dict(
+                attrs=['pid', 'ppid', 'name', 'exe', 'create_time'], ad_value=None))
+        except psutil.NoSuchProcess:
+            details.append(dict(pid=pid, exited=True))
+    return details
+
+
 def stop_process(process, members_before=None):
     if bounded_group() is None:
         import psutil
@@ -330,6 +347,9 @@ def main():
         return 130
     finally:
         result['active_processes'] = sorted(active_peers())
+        if result['active_processes']:
+            result['active_process_details'] = process_details(result['active_processes'])
+            print('Active native peers: '+json.dumps(result['active_process_details']), flush=True)
         result['terminal'] = not result['active_processes']
         result['success'] = result['success'] and result['terminal']
         result['seconds'] = time.monotonic()-started
