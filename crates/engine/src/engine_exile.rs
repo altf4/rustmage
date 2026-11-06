@@ -84,9 +84,9 @@ impl Game {
                 .is_some_and(|source| threshold_linked_source_available(self, player, source))
     }
     pub(super) fn can_play_exiled(&self, player: Player, card: CardId) -> bool {
-        self.can_cast_exiled_card(player, card)
-            || self.can_cast_prepared(player, card)
+        self.can_cast_prepared(player, card)
             || self.can_play_adventure(player, card)
+            || self.can_cast_exiled_card(player, card)
     }
     /// Permissions to cast the card for a mana cost, including an alternate
     /// spell face. Adventure's own right applies only to its normal face.
