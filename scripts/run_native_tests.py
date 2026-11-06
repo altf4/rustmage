@@ -13,15 +13,21 @@ import tempfile
 import time
 
 if __package__:
-    from .resource_limits import bounded_group
+    from .resource_limits import bounded_group, managed_context
 else:
-    from resource_limits import bounded_group
+    from resource_limits import bounded_group, managed_context
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 def descendants(pid):
     """Find nested sessions too (Cargo and nested test runners may create them)."""
+    if sys.platform != 'linux':
+        import psutil
+        try:
+            return {p.pid for p in psutil.Process(pid).children(recursive=True)}
+        except psutil.NoSuchProcess:
+            return set()
     found = set()
     pending = [pid]
     while pending:
@@ -39,6 +45,13 @@ def descendants(pid):
 
 
 def process_running(pid):
+    if sys.platform != 'linux':
+        import psutil
+        try:
+            process = psutil.Process(pid)
+            return process.is_running() and process.status() not in (psutil.STATUS_ZOMBIE, psutil.STATUS_DEAD)
+        except psutil.NoSuchProcess:
+            return False
     try:
         # The command name may contain spaces or parentheses.
         state = Path(f'/proc/{pid}/stat').read_text().rsplit(')', 1)[1].split()[0]
@@ -50,7 +63,10 @@ def process_running(pid):
 def group_members():
     group = bounded_group()
     if group is None:
-        return set()
+        context = managed_context()
+        if context is None:
+            raise RuntimeError('managed process membership unavailable; preserve outputs')
+        return set(context['members'])
     return {int(pid) for pid in (group/'cgroup.procs').read_text().split()
             if process_running(int(pid))}
 
@@ -59,6 +75,10 @@ def active_peers():
     # A normally exiting parent can orphan children outside our /proc subtree.
     # The guarded service cgroup still owns those processes.
     ancestors = {os.getpid()}
+    if sys.platform != 'linux':
+        import psutil
+        ancestors.update(process.pid for process in psutil.Process().parents())
+        return group_members() - ancestors
     pid = os.getpid()
     while pid > 1:
         try:
@@ -70,6 +90,36 @@ def active_peers():
 
 
 def stop_process(process, members_before=None):
+    if bounded_group() is None:
+        import psutil
+        if __package__:
+            from .portable_guard import stop_processes
+        else:
+            from portable_guard import stop_processes
+        deadline = time.monotonic() + 5
+        while True:
+            context = managed_context()
+            if context is None:
+                raise RuntimeError('build supervisor disappeared; preserve outputs')
+            processes = []
+            for pid, birth in context['identities']:
+                if members_before is not None and pid in members_before:
+                    continue
+                if members_before is None and pid not in descendants(process.pid) | {process.pid}:
+                    continue
+                try:
+                    candidate = psutil.Process(pid)
+                    if candidate.create_time() == birth:
+                        processes.append(candidate)
+                except psutil.NoSuchProcess:
+                    pass
+            if not processes:
+                break
+            stop_processes(processes)
+            if time.monotonic() > deadline:
+                raise RuntimeError('command descendants remain active; preserve outputs')
+        process.wait()
+        return
     children = descendants(process.pid)
     deadline = time.monotonic() + 3
     for sig in (signal.SIGTERM, signal.SIGKILL):
@@ -198,7 +248,7 @@ def main():
     args = parser.parse_args()
     if any(not math.isfinite(v) or v <= 0 for v in (args.compile_timeout, args.test_timeout, args.suite_timeout)):
         parser.error('timeouts must be positive')
-    if bounded_group() is None:
+    if managed_context() is None:
         os.execv(sys.executable, [sys.executable, str(ROOT/'scripts/resource_guard.py'), '--',
                                  sys.executable, str(Path(__file__).resolve()), *sys.argv[1:]])
     signal.signal(signal.SIGTERM, interrupted)

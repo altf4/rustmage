@@ -15,9 +15,9 @@ import time
 import unittest
 
 if __package__:
-    from .resource_limits import bounded_group
+    from .resource_limits import managed_context
 else:
-    from resource_limits import bounded_group
+    from resource_limits import managed_context
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -86,7 +86,7 @@ def main():
     if any(not math.isfinite(value) or value <= 0 for value in
            (args.runtime_budget, args.timeout_seconds)):
         parser.error("runtime budget and timeout must be positive finite seconds")
-    if bounded_group() is None:
+    if managed_context() is None:
         os.execv(sys.executable, [sys.executable, str(ROOT / "scripts/resource_guard.py"), "--",
                                  sys.executable, str(Path(__file__).resolve()), *sys.argv[1:]])
     try:

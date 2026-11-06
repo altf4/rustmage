@@ -18,10 +18,15 @@ concurrency:
 jobs:
   tests:
     name: Card and interaction assurance
-    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15, windows-latest]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 40
     env:
       PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONUTF8: '1'
       RUSTUP_TOOLCHAIN: '1.98.0'
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -34,7 +39,7 @@ jobs:
         env:
           EVENT_NAME: ${{ github.event_name }}
         run: |
-          python3 - <<'PY'
+          python - <<'PY'
           import os, subprocess
           code = True
           if os.environ['EVENT_NAME'] == 'pull_request':
@@ -48,7 +53,7 @@ jobs:
           git diff --check HEAD^1 HEAD
 
       - name: Prepare bounded Linux runner
-        if: steps.scope.outputs.code == 'true'
+        if: steps.scope.outputs.code == 'true' && runner.os == 'Linux'
         run: |
           test -f /sys/fs/cgroup/cgroup.controllers
           sudo loginctl enable-linger "$(id -un)"
@@ -56,15 +61,33 @@ jobs:
           export XDG_RUNTIME_DIR="/run/user/$(id -u)"
           export DBUS_SESSION_BUS_ADDRESS="unix:path=$XDG_RUNTIME_DIR/bus"
           systemctl --user show-environment > /dev/null
-          mkdir -p "$HOME/.cache/rustmage-ci"
           {
             echo "XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR"
             echo "DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS"
-            echo "XDG_CACHE_HOME=$HOME/.cache/rustmage-ci"
-            echo "CARGO_TARGET_DIR=$HOME/.cache/rustmage-ci/rustmage-targets/ci"
-            echo "RUSTMAGE_XMAGE_SOURCE=$RUNNER_TEMP/mage"
           } >> "$GITHUB_ENV"
+
+      - name: Prepare native build tools and paths
+        if: steps.scope.outputs.code == 'true'
+        run: |
+          python -m venv "$RUNNER_TEMP/rustmage-build-venv"
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            venv_bin="$RUNNER_TEMP/rustmage-build-venv/Scripts"
+          else
+            venv_bin="$RUNNER_TEMP/rustmage-build-venv/bin"
+          fi
+          "$venv_bin/python" -m pip install -r scripts/requirements-build.txt
+          echo "$venv_bin" >> "$GITHUB_PATH"
           rustup toolchain install "$RUSTUP_TOOLCHAIN" --profile minimal --component rustfmt --component clippy
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          cache = Path.home()/'.cache/rustmage-ci'
+          cache.mkdir(parents=True, exist_ok=True)
+          with open(os.environ['GITHUB_ENV'], 'a', encoding='utf-8') as out:
+              print('XDG_CACHE_HOME='+cache.as_posix(), file=out)
+              print('CARGO_TARGET_DIR='+(cache/'rustmage-targets/ci').as_posix(), file=out)
+              print('RUSTMAGE_XMAGE_SOURCE='+(Path(os.environ['RUNNER_TEMP'])/'mage').as_posix(), file=out)
+          PY
 
       - name: Cache downloaded Rust dependencies
         if: steps.scope.outputs.code == 'true'
@@ -81,7 +104,7 @@ jobs:
       - name: Fetch pinned XMage source objects
         if: steps.scope.outputs.code == 'true'
         run: |
-          revision=$(python3 -c "import json; print(json.load(open('data/standard/xmage-inventory.json'))['xmage_source_commit'])")
+          revision=$(python -c "import json; print(json.load(open('data/standard/xmage-inventory.json'))['xmage_source_commit'])")
           git init "$RUSTMAGE_XMAGE_SOURCE"
           git -C "$RUSTMAGE_XMAGE_SOURCE" remote add origin https://github.com/magefree/mage.git
           git -C "$RUSTMAGE_XMAGE_SOURCE" fetch --depth=1 origin "$revision"
@@ -101,16 +124,26 @@ jobs:
 
       - name: Restore timestamps of verified unchanged compile inputs
         if: steps.scope.outputs.code == 'true'
-        run: python3 scripts/build_cache.py restore --target-dir "$CARGO_TARGET_DIR"
+        run: python scripts/build_cache.py restore --target-dir "$CARGO_TARGET_DIR"
+
+      - name: Verify portable catalogue generation
+        if: steps.scope.outputs.code == 'true'
+        run: |
+          python scripts/link_catalogue.py
+          git diff --exit-code
 
       - name: Validate cards, interactions and Python API
         if: steps.scope.outputs.code == 'true'
         timeout-minutes: 33
-        run: python3 scripts/validate.py --release --python smoke --timeout 1800 2>&1 | tee "$XDG_CACHE_HOME/validation.log"
+        run: python scripts/validate.py --release --python smoke --timeout 1800 2>&1 | tee "$XDG_CACHE_HOME/validation.log"
+
+      - name: Run Standard gameplay through the native guard
+        if: steps.scope.outputs.code == 'true'
+        run: python scripts/resource_guard.py -- cargo run --release --example standard -- 1
 
       - name: Record compile inputs for the next compatible cache
         if: success() && steps.scope.outputs.code == 'true'
-        run: python3 scripts/build_cache.py save --target-dir "$CARGO_TARGET_DIR"
+        run: python scripts/build_cache.py save --target-dir "$CARGO_TARGET_DIR"
 
       - name: Stop any remaining build processes
         if: always() && steps.scope.outputs.code == 'true'
@@ -123,7 +156,7 @@ jobs:
         if: always() && steps.scope.outputs.code == 'true'
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
-          name: ci-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}
+          name: ci-diagnostics-${{ runner.os }}-${{ github.run_id }}-${{ github.run_attempt }}
           retention-days: 7
           if-no-files-found: warn
           include-hidden-files: true

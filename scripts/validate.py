@@ -20,10 +20,12 @@ import tempfile
 import time
 
 if __package__:
-    from .resource_limits import bounded_group
+    from .resource_limits import managed_context
+    from .build_platform import library_name, executable_name, allocated_bytes
     from .run_native_tests import active_peers, interrupted, run_command
 else:
-    from resource_limits import bounded_group
+    from resource_limits import managed_context
+    from build_platform import library_name, executable_name, allocated_bytes
     from run_native_tests import active_peers, interrupted, run_command
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -42,9 +44,9 @@ def source_files():
 
 def snapshot_library(target, report_dir):
     """Publish a copy, never a hardlink into the mutable Cargo target."""
-    source = target/'release/librustmage.so'
+    source = target/'release'/library_name()
     if not source.is_file() or source.is_symlink():
-        raise RuntimeError('release build did not produce a regular librustmage.so')
+        raise RuntimeError('release build did not produce a regular '+library_name())
     directory = report_dir/'libraries'
     directory.mkdir()
     library = directory/source.name
@@ -76,7 +78,7 @@ def main(argv=None):
     if args.games < 1 or (not math.isfinite(args.timeout) or args.timeout <= 0):
         parser.error('--games and --timeout must be positive')
     os.chdir(ROOT)
-    if bounded_group() is None:
+    if managed_context() is None:
         os.execv(sys.executable, [sys.executable, str(ROOT/'scripts/resource_guard.py'), '--',
                                  sys.executable, str(Path(__file__).resolve()), *arguments])
     signal.signal(signal.SIGTERM, interrupted)
@@ -111,8 +113,7 @@ def main(argv=None):
     commands = [
         ('source pins', [sys.executable, 'scripts/check_sources.py'], 45),
         ('format', ['cargo', 'fmt', '--all', '--check'], 45),
-        ('card format', ['rustfmt', '--edition', '2024', '--check',
-                         *[str(p) for p in sorted((ROOT/'src/card_definitions').rglob('*.rs'))]], 45),
+        ('card format', [sys.executable, 'scripts/format_cards.py', '--check'], 90),
         ('script contracts', [sys.executable, 'scripts/test_assurance_runner.py'], 30),
         ('clippy', ['cargo', 'clippy', '--workspace', '--all-targets', '--', '-D', 'warnings'], 180),
         # A 56-game FRA workload can approach 30 seconds on CI; the enlarged
@@ -124,7 +125,7 @@ def main(argv=None):
     if args.release or args.python != 'none':
         commands.append(('release build', ['cargo', 'build', '--release', '--lib', '--bin', 'benchmark'], 360))
     if args.release:
-        commands.append(('simulation sample', [str(target/'release/benchmark'), str(args.games)], 15))
+        commands.append(('simulation sample', [str(target/'release'/executable_name('benchmark')), str(args.games)], 15))
     if args.python != 'none':
         commands.append(('Python assurance', [sys.executable, 'scripts/python_tests.py',
                                                '--suite', args.python,
@@ -177,7 +178,7 @@ def main(argv=None):
         report['seconds'] = time.monotonic()-started
         freed = 0
         if args.fresh and not active:
-            freed = sum(path.stat().st_blocks*512 for path in target.rglob('*')
+            freed = sum(allocated_bytes(path) for path in target.rglob('*')
                         if path.is_file() and not path.is_symlink())
             shutil.rmtree(target)
         for path, digest in report['shared_libraries'].items():

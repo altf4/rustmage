@@ -1,10 +1,14 @@
-"""Linux cgroup checks shared by the build runner and rustc wrapper."""
+"""Verify actual containment or a live portable build supervisor."""
 from pathlib import Path
+import os
+import sys
 
 MAX_MEMORY = 6 * 1024**3
 
 def bounded_group():
     """Return our actual bounded cgroup, not merely a caller-provided env flag."""
+    if sys.platform != 'linux' or not Path('/proc/self/cgroup').is_file():
+        return None
     for line in Path('/proc/self/cgroup').read_text().splitlines():
         if line.startswith('0::'):
             relative = line[3:]
@@ -22,3 +26,17 @@ def bounded_group():
             if maximum != 'max' and 0 < int(maximum) <= MAX_MEMORY:
                 return group
     return None
+
+
+def managed_context():
+    group = bounded_group()
+    if group is not None:
+        return dict(backend='cgroup', memory_limit_kind='hard',
+                    memory_max_bytes=MAX_MEMORY, group=str(group))
+    if not os.environ.get('RUSTMAGE_GUARD_PORT'):
+        return None
+    if __package__:
+        from .portable_guard import supervisor_request
+    else:
+        from portable_guard import supervisor_request
+    return supervisor_request()
