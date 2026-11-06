@@ -34,5 +34,11 @@
       "sha256": "9e9e989ed896c2061243d8db26a7d6a364116b654a8477bbeb52c613e9d943cd"
     }
   ],
+  "rules_authority": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.pdf",
+    "section": "CR 702.16e and 702.16j",
+    "notes": "The one protection ability supplies damage prevention. The separate Oracle replacement applies only to graveyard moves."
+  },
+  "rules_tests": "tests/bug_hunt_progenitus_prevention.rs",
   "remaining_obligations": []
 }
