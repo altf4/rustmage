@@ -66,8 +66,8 @@ def main(argv=None):
                         help='run binding assurance against this run\'s release library')
     parser.add_argument('--games', type=int, default=10,
                         help='native benchmark games, only with --release (default: 10)')
-    parser.add_argument('--timeout', type=float, default=600,
-                        help='total wall-clock budget after acquiring the build slot (seconds)')
+    parser.add_argument('--timeout', type=float, default=1800,
+                        help='total wall-clock budget after acquiring the build slot (default: 1800 seconds)')
     targets = parser.add_mutually_exclusive_group()
     targets.add_argument('--target-dir', type=Path,
                          help='reuse this Cargo target (default: CARGO_TARGET_DIR or a worktree cache)')
@@ -115,7 +115,9 @@ def main(argv=None):
         ('format', ['cargo', 'fmt', '--all', '--check'], 45),
         ('card format', [sys.executable, 'scripts/format_cards.py', '--check'], 90),
         ('script contracts', [sys.executable, 'scripts/test_assurance_runner.py'], 30),
-        ('clippy', ['cargo', 'clippy', '--workspace', '--all-targets', '--', '-D', 'warnings'], 180),
+        # Cold native toolchains on hosted Windows/macOS need time to populate
+        # the per-set cache; compilation budgets are separate from game limits.
+        ('clippy', ['cargo', 'clippy', '--workspace', '--all-targets', '--', '-D', 'warnings'], 600),
         # A 56-game FRA workload can approach 30 seconds on CI; the enlarged
         # catalogue also needs more than 120 seconds of serialized execution.
         ('native assurance', [sys.executable, 'scripts/run_native_tests.py',
@@ -123,7 +125,7 @@ def main(argv=None):
                               '--test-timeout', '45', '--suite-timeout', '240', '--compile-timeout', '900'], 1160),
     ]
     if args.release or args.python != 'none':
-        commands.append(('release build', ['cargo', 'build', '--release', '--lib', '--bin', 'benchmark'], 360))
+        commands.append(('release build', ['cargo', 'build', '--release', '--lib', '--bin', 'benchmark'], 600))
     if args.release:
         commands.append(('simulation sample', [str(target/'release'/executable_name('benchmark')), str(args.games)], 15))
     if args.python != 'none':

@@ -85,6 +85,9 @@ python scripts/validate.py --release --python smoke
 
 Validation retains a hashed native library snapshot (`.so`, `.dylib`, or `.dll`)
 with its report. The build never requires Java or a running XMage server.
+The default validation deadline is 30 minutes; `--timeout` sets a different total
+budget. Compiler phases allow cold native caches to warm, while each gameplay
+test retains its own bounded runtime.
 
 Card provenance that cites a path under `docs/` refers to evidence retained in
 [the repository history](https://github.com/altf4/rustmage/tree/b072c7932fc363b51938d429b99cb1b43d4beca7/docs).
