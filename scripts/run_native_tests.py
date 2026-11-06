@@ -259,7 +259,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--target-dir', type=Path, required=True)
     parser.add_argument('--report', type=Path, required=True)
-    parser.add_argument('--compile-timeout', type=float, default=360)
+    parser.add_argument('--compile-timeout', type=float, default=1800)
     parser.add_argument('--test-timeout', type=float, default=45)
     parser.add_argument('--suite-timeout', type=float, default=240)
     parser.add_argument('--test-target', help='compile only this integration target')

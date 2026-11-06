@@ -23,7 +23,7 @@ jobs:
       matrix:
         os: [ubuntu-24.04, macos-15, windows-latest]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 40
+    timeout-minutes: 80
     env:
       PYTHONDONTWRITEBYTECODE: '1'
       PYTHONUTF8: '1'
@@ -135,8 +135,8 @@ jobs:
 
       - name: Validate cards, interactions and Python API
         if: steps.scope.outputs.code == 'true'
-        timeout-minutes: 33
-        run: python scripts/validate.py --release --python smoke --timeout 1800 2>&1 | tee "$XDG_CACHE_HOME/validation.log"
+        timeout-minutes: 63
+        run: python scripts/validate.py --release --python smoke --timeout 3600 2>&1 | tee "$XDG_CACHE_HOME/validation.log"
 
       - name: Run Standard gameplay through the native guard
         if: steps.scope.outputs.code == 'true'

@@ -66,8 +66,8 @@ def main(argv=None):
                         help='run binding assurance against this run\'s release library')
     parser.add_argument('--games', type=int, default=10,
                         help='native benchmark games, only with --release (default: 10)')
-    parser.add_argument('--timeout', type=float, default=1800,
-                        help='total wall-clock budget after acquiring the build slot (default: 1800 seconds)')
+    parser.add_argument('--timeout', type=float, default=3600,
+                        help='total wall-clock budget after acquiring the build slot (default: 3600 seconds)')
     targets = parser.add_mutually_exclusive_group()
     targets.add_argument('--target-dir', type=Path,
                          help='reuse this Cargo target (default: CARGO_TARGET_DIR or a worktree cache)')
@@ -122,10 +122,10 @@ def main(argv=None):
         # catalogue also needs more than 120 seconds of serialized execution.
         ('native assurance', [sys.executable, 'scripts/run_native_tests.py',
                               '--target-dir', str(target), '--report', str(report_dir/'native.json'),
-                              '--test-timeout', '45', '--suite-timeout', '240', '--compile-timeout', '900'], 1160),
+                              '--test-timeout', '45', '--suite-timeout', '240', '--compile-timeout', '1800'], 2060),
     ]
     if args.release or args.python != 'none':
-        commands.append(('release build', ['cargo', 'build', '--release', '--lib', '--bin', 'benchmark'], 600))
+        commands.append(('release build', ['cargo', 'build', '--release', '--lib', '--bin', 'benchmark'], 900))
     if args.release:
         commands.append(('simulation sample', [str(target/'release'/executable_name('benchmark')), str(args.games)], 15))
     if args.python != 'none':

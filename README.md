@@ -87,7 +87,7 @@ python scripts/validate.py --release --python smoke
 
 Validation retains a hashed native library snapshot (`.so`, `.dylib`, or `.dll`)
 with its report. The build never requires Java or a running XMage server.
-The default validation deadline is 30 minutes; `--timeout` sets a different total
+The default validation deadline is 60 minutes; `--timeout` sets a different total
 budget. Compiler phases allow cold native caches to warm, while each gameplay
 test retains its own bounded runtime.
 
