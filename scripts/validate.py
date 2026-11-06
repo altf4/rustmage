@@ -114,7 +114,7 @@ def main(argv=None):
         ('source pins', [sys.executable, 'scripts/check_sources.py'], 45),
         ('format', ['cargo', 'fmt', '--all', '--check'], 45),
         ('card format', [sys.executable, 'scripts/format_cards.py', '--check'], 90),
-        ('script contracts', [sys.executable, 'scripts/test_assurance_runner.py'], 30),
+        ('script contracts', [sys.executable, 'scripts/test_assurance_runner.py'], 60),
         # Cold native toolchains on hosted Windows/macOS need time to populate
         # the per-set cache; compilation budgets are separate from game limits.
         ('clippy', ['cargo', 'clippy', '--workspace', '--all-targets', '--', '-D', 'warnings'], 600),

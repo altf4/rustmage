@@ -1,8 +1,9 @@
-"""Portable build contracts without allocation probes or compiler invocations."""
+"""Portable build contracts, including real compiler handoffs, without OOM probes."""
 import json
 import os
 from pathlib import Path
 import subprocess
+import shutil
 import sys
 import tempfile
 import unittest
@@ -14,6 +15,76 @@ from resource_limits import MAX_MEMORY, managed_context
 
 
 class PortableBuildTests(unittest.TestCase):
+    def test_compiler_cleanup_owns_only_new_identities_and_repeats_for_late_helpers(self):
+        import portable_guard
+        if portable_guard.psutil is None:
+            return
+        first, late, recycled = Mock(), Mock(), Mock()
+        for process, pid in ((first, 2), (late, 3), (recycled, 4)):
+            process.pid = pid
+            process.create_time.return_value = float(pid)
+            process.name.return_value = 'VCTIP.EXE'
+        recycled.create_time.return_value = 40.0
+        contexts = [dict(identities=[[1, 1.0], [2, 2.0], [4, 4.0]]),
+                    dict(identities=[[1, 1.0], [3, 3.0]]), dict(identities=[[1, 1.0]])]
+        with patch.object(portable_guard, 'supervisor_request', side_effect=contexts), \
+                patch.object(portable_guard.psutil, 'Process', side_effect=lambda pid: {2: first, 3: late, 4: recycled}[pid]), \
+                patch.object(portable_guard, 'running', return_value=True), \
+                patch.object(portable_guard, 'stop_processes') as stop:
+            portable_guard.drain_compiler_helpers({(1, 1.0)})
+        self.assertEqual([call.args[0] for call in stop.call_args_list], [[first], [late]])
+
+    def test_compiler_failure_still_drains_helpers_and_cleanup_failure_propagates(self):
+        import portable_guard
+        with patch.object(portable_guard, 'supervisor_request', return_value=dict(identities=[[1, 1.0]])), \
+                patch.object(portable_guard.subprocess, 'run', return_value=Mock(returncode=7)), \
+                patch.object(portable_guard, 'drain_compiler_helpers') as drain:
+            self.assertEqual(portable_guard.run_compiler(['compiler']), 7)
+            drain.assert_called_once_with({(1, 1.0)})
+            drain.side_effect = RuntimeError('helpers remain active')
+            with self.assertRaisesRegex(RuntimeError, 'helpers remain active'):
+                portable_guard.run_compiler(['compiler'])
+
+    def test_compiler_rejects_and_stops_unexpected_detached_children(self):
+        if managed_context()['backend'] == 'cgroup':
+            return
+        import portable_guard
+        from run_native_tests import process_running
+        with tempfile.TemporaryDirectory() as temporary:
+            pidfile = Path(temporary)/'child.pid'
+            code = ("import pathlib,subprocess,sys; "
+                    "p=subprocess.Popen([sys.executable,'-c','import time; time.sleep(20)'],start_new_session=True); "
+                    f"pathlib.Path({str(pidfile)!r}).write_text(str(p.pid))")
+            with self.assertRaisesRegex(RuntimeError, 'unexpected descendants'):
+                portable_guard.run_compiler([sys.executable, '-c', code])
+            self.assertFalse(process_running(int(pidfile.read_text())))
+
+    def test_guarded_cargo_links_and_runs_without_leaking_processes(self):
+        from run_native_tests import run_command
+        root = Path(__file__).resolve().parents[1]
+        cache = Path(os.environ.get('XDG_CACHE_HOME', Path.home()/'.cache'))
+        directory = Path(tempfile.mkdtemp(prefix='rustmage-link-probe-', dir=cache)).resolve()
+        passed = False
+        try:
+            (directory/'Cargo.toml').write_text(
+                '[package]\nname="guard-link-probe"\nversion="0.0.0"\nedition="2021"\n'
+                '[[bin]]\nname="guard-link-probe"\npath="main.rs"\n', encoding='utf-8')
+            (directory/'main.rs').write_text('fn main() { println!("guarded link works"); }\n', encoding='utf-8')
+            log = directory/'build.log'
+            result = run_command(
+                [sys.executable, str(root/'scripts/resource_guard.py'), '--', 'cargo', 'build',
+                 '--manifest-path', str(directory/'Cargo.toml'), '--target-dir', str(directory/'target')],
+                env=os.environ, log=log, timeout=20)
+            self.assertEqual(result['exit'], 0, str(directory)+'\n'+log.read_text(errors='replace'))
+            binary = directory/'target/debug'/build_platform.executable_name('guard-link-probe')
+            execution = subprocess.run([str(binary)], capture_output=True, text=True, timeout=5)
+            self.assertEqual(execution.returncode, 0, execution.stderr)
+            self.assertEqual(execution.stdout.strip(), 'guarded link works')
+            passed = True
+        finally:
+            if passed:
+                shutil.rmtree(directory)
+
     def test_native_artifact_names(self):
         for platform, library, executable in [
                 ('linux', 'librustmage.so', 'benchmark'),

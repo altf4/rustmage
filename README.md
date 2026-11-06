@@ -70,6 +70,8 @@ compiler admission. This prevents accidental unmanaged builds, not deliberate
 escape by processes that remove their markers or forcibly kill the supervisors.
 Windows builds bootstrap a small native compiler launcher inside the guard,
 avoiding shell limits on long compiler argument lists.
+After each compiler exits, its owned MSVC telemetry helper is stopped; unexpected
+surviving processes still fail the build. MSVC PDB endpoints are isolated per run.
 `--backend cgroup` requires hard Linux containment; `--backend portable` selects
 the watchdog. Once cgroup setup starts, failures stop the build.
 

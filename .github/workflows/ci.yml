@@ -121,6 +121,7 @@ jobs:
           key: rustmage-workspace-v1-${{ runner.os }}-${{ env.RUSTUP_TOOLCHAIN }}-${{ hashFiles('.cargo/config.toml', 'scripts/rustc_guard.py') }}-${{ github.sha }}
           restore-keys: |
             rustmage-workspace-v1-${{ runner.os }}-${{ env.RUSTUP_TOOLCHAIN }}-${{ hashFiles('.cargo/config.toml', 'scripts/rustc_guard.py') }}-
+            rustmage-workspace-v1-${{ runner.os }}-${{ env.RUSTUP_TOOLCHAIN }}-
 
       - name: Restore timestamps of verified unchanged compile inputs
         if: steps.scope.outputs.code == 'true'

@@ -207,6 +207,54 @@ def run_child(command, parent):
         raise
 
 
+def drain_compiler_helpers(baseline):
+    """Finish owned MSVC telemetry helpers; unexpected survivors remain failures.
+
+    MSVC's vctip.exe can outlive link.exe without owning build outputs. Microsoft
+    BuildXL identifies it as a surviving telemetry child in its MSVC tool config.
+    Membership and birth identities limit cleanup to this compiler invocation.
+    """
+    deadline = time.monotonic() + 5
+    while True:
+        context = supervisor_request()
+        if context is None:
+            raise RuntimeError('compiler supervisor disappeared; preserve outputs')
+        processes, unexpected = [], []
+        for pid, birth in context['identities']:
+            if (pid, birth) in baseline:
+                continue
+            try:
+                process = psutil.Process(pid)
+                if process.create_time() != birth or not running(process):
+                    continue
+                processes.append(process)
+                if process.name().casefold() != 'vctip.exe':
+                    unexpected.append(dict(pid=pid, name=process.name()))
+            except psutil.NoSuchProcess:
+                continue
+        if not processes:
+            return
+        stop_processes(processes)
+        if unexpected:
+            raise RuntimeError('compiler left unexpected descendants: '+json.dumps(unexpected))
+        if time.monotonic() > deadline:
+            raise RuntimeError('compiler helpers remain active; preserve outputs')
+
+
+def run_compiler(command, parent=None):
+    """Wait for a Windows compiler and its explicitly managed helper lifetime."""
+    context = supervisor_request()
+    if context is None:
+        raise RuntimeError('compiler supervisor unavailable')
+    baseline = {tuple(identity) for identity in context['identities']}
+    try:
+        if parent is not None:
+            return run_child(command, parent)
+        return subprocess.run(command).returncode
+    finally:
+        drain_compiler_helpers(baseline)
+
+
 def worker(command):
     """Wait for admission before executing, and clean up if the supervisor dies."""
     require_psutil()
@@ -220,14 +268,13 @@ def worker(command):
             launcher.parent.mkdir(parents=True, exist_ok=True)
             pending = launcher.with_suffix('.pending.exe')
             source = Path(__file__).with_name('rustc_guard_launcher.rs')
-            try:
-                # This tiny bootstrap is inside the same supervisor and lock.
-                code = run_child(['rustc', '--edition=2021', str(source), '-o', str(pending)], parent)
-                if code:
-                    return code
-                pending.replace(launcher)
-            finally:
+            # This tiny bootstrap is inside the same supervisor and lock.
+            # Do not touch outputs if compiler/helper termination is uncertain.
+            code = run_compiler(['rustc', '--edition=2021', str(source), '-o', str(pending)], parent)
+            if code:
                 pending.unlink(missing_ok=True)
+                return code
+            pending.replace(launcher)
     if supervisor_request() is None:
         raise RuntimeError('build supervisor unavailable before command start')
     return run_child(command, parent)
@@ -242,6 +289,9 @@ def run(command, report, env):
                RUSTMAGE_GUARD_PORT=str(server.server_address[1]),
                RUSTMAGE_GUARD_PARENT=str(parent.pid),
                RUSTMAGE_GUARD_PARENT_BIRTH=str(parent.create_time()))
+    if sys.platform == 'win32':
+        # MSVC must not share a PDB service with unrelated builds on this host.
+        env['_MSPDBSRV_ENDPOINT_'] = 'rustmage-' + secrets.token_hex(16)
     started = time.monotonic()
     code, orphaned, error = 1, False, None
     orphan_details = []

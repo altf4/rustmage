@@ -12,4 +12,7 @@ if managed_context() is None:
     sys.exit('Rust compilation requires the bounded runner: python3 scripts/resource_guard.py -- cargo <command>')
 if len(sys.argv) < 2:
     sys.exit('missing rustc command')
+if sys.platform == 'win32':
+    from portable_guard import run_compiler
+    sys.exit(run_compiler(sys.argv[1:]))
 exec_process(sys.argv[1:])
