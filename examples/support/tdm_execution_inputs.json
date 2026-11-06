@@ -198,7 +198,7 @@
     "crates/engine/src/engine_faces.rs": "b0037806f7dc891b8d0ffc3d12fd64b7d5cd7ea0f0c177b1161957fa314faa61",
     "crates/engine/src/engine_fight.rs": "8e569f539e24a85dc0c3cfe95361166a928127a48120b428b5d6a2ddf7d94285",
     "crates/engine/src/engine_forage.rs": "0d3615afbaecbf5b5d6d7c6101be8124eb677560844a70a753fb405ffc3615c5",
-    "crates/engine/src/engine_funding.rs": "5d15ccb7daff0790c8de372c49f6dd797c8f154754c5df5ebb152647ef22b2db",
+    "crates/engine/src/engine_funding.rs": "d618d19cacc11f5a752318dd4a77570c545f4d69e19f5975cdb3308e154047db",
     "crates/engine/src/engine_funding_entries.rs": "11dc93146e709d90f1e4f5b4361cac7e53d22028654cd64cc52b09e621fd1383",
     "crates/engine/src/engine_funding_entry_exiles.rs": "5aa47e13ae1f1be1e033dc9b49c465f2b700d188ee22727df19bc51a2a9fe7cf",
     "crates/engine/src/engine_funding_linked_copies.rs": "66a4bf717313769b969bf64434d39a4a44f083ee6085b07565baac0e82051165",

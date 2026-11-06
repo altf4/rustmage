@@ -3272,12 +3272,14 @@ impl<'g> FundingState<'g> {
         }
         // Substitution may be lost or restored by virtual sacrifices. Keep the
         // color bound conservative; the exact leaf uses the overlay.
-        if matches!(self.purpose, mana_lots::Purpose::Spell(_))
-            && self.static_sources().iter().any(|&id| {
-                self.game.state.objects[id as usize]
-                    .card
-                    .has_cast_origin_abilities()
-            })
+        if let mana_lots::Purpose::Spell(spell) = self.purpose
+            && (spell.spend_any_mana
+                || spell.linked_mana_source.is_some()
+                || self.static_sources().iter().any(|&id| {
+                    self.game.state.objects[id as usize]
+                        .card
+                        .has_cast_origin_abilities()
+                }))
         {
             return true;
         }
