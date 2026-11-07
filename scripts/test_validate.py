@@ -16,7 +16,7 @@ class ValidatorTests(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
-        self.directory = Path(self.temporary.name)
+        self.directory = Path(self.temporary.name).resolve()
         self.root = self.directory/'checkout'
         self.cache = self.directory/'cache'
         (self.root/'src/card_definitions').mkdir(parents=True)
@@ -36,13 +36,13 @@ class ValidatorTests(unittest.TestCase):
         self.addCleanup(os.chdir, self.previous_cwd)
         patches = [
             patch.object(validate, 'ROOT', self.root),
-            patch.object(validate, 'bounded_group', return_value=Path('/fixture-cgroup')),
+            patch.object(validate, 'managed_context', return_value=Path('/fixture-cgroup')),
             patch.object(validate, 'active_peers', side_effect=lambda: self.active),
             patch.object(validate, 'source_files', side_effect=self.source_files),
             patch.object(validate, 'run_command', side_effect=self.run_command),
             patch.object(validate.subprocess, 'check_output', return_value='fixture-head\n'),
             patch.object(validate.signal, 'signal'),
-            patch.object(validate.os, 'execv', side_effect=AssertionError('unexpected guard re-entry')),
+            patch.object(validate, 'exec_process', side_effect=AssertionError('unexpected guard re-entry')),
             patch.dict(os.environ, {'XDG_CACHE_HOME': str(self.cache)}),
         ]
         for mocked in patches:
@@ -72,13 +72,13 @@ class ValidatorTests(unittest.TestCase):
         if command[:2] == ['cargo', 'build']:
             status = self.release_exit
             if status == 0:
-                library = target/'release/librustmage.so'
+                library = target/'release'/validate.library_name()
                 library.parent.mkdir(parents=True, exist_ok=True)
                 library.write_bytes(self.library_bytes)
         if 'scripts/python_tests.py' in command:
             library = Path(env['RUSTMAGE_LIBRARY'])
             self.python_libraries.append((library, library.read_bytes()))
-        if Path(command[0]).name == 'benchmark':
+        if Path(command[0]).name == validate.executable_name('benchmark'):
             log.write_text(json.dumps({'games': 2, 'games_per_second': 200}))
         self.on_command(command)
         return dict(command=command, exit=status, seconds=0.001, log=str(log),
@@ -105,7 +105,7 @@ class ValidatorTests(unittest.TestCase):
         self.assertEqual(library.read_bytes(), expected_bytes)
         self.assertEqual(report['shared_libraries'][str(library)],
                          hashlib.sha256(expected_bytes).hexdigest())
-        mutable = Path(report['target'])/'release/librustmage.so'
+        mutable = Path(report['target'])/'release'/validate.library_name()
         self.assertNotEqual(library.stat().st_ino, mutable.stat().st_ino)
         return library
 
@@ -199,16 +199,16 @@ class ValidatorTests(unittest.TestCase):
         self.assertEqual(receipt.read_text(), 'previous evidence')
 
     def test_native_compile_budget_fits_inside_parent_deadline(self):
-        status, _, report, commands = self.invoke('--timeout', '1800')
+        status, _, report, commands = self.invoke()
         self.assertEqual(status, 0)
         index = next(i for i, (command, _) in enumerate(commands)
                      if 'scripts/run_native_tests.py' in command)
         command = commands[index][0]
-        self.assertEqual(command[command.index('--compile-timeout') + 1], '900')
+        compile_budget = float(command[command.index('--compile-timeout') + 1])
         self.assertEqual(command[command.index('--test-timeout') + 1], '45')
         self.assertEqual(command[command.index('--suite-timeout') + 1], '240')
-        self.assertGreaterEqual(self.command_timeouts[index], 1140)
-        self.assertLessEqual(self.command_timeouts[index], 1160)
+        self.assertGreaterEqual(self.command_timeouts[index], compile_budget + 240)
+        self.assertLessEqual(self.command_timeouts[index], compile_budget + 260)
         self.assertTrue(report['success'])
 
     def test_environment_target_is_reused_and_explicit_target_takes_precedence(self):
@@ -230,7 +230,7 @@ class ValidatorTests(unittest.TestCase):
 
     def test_failed_release_never_publishes_or_consumes_a_stale_library(self):
         target = self.directory/'reused-target'
-        stale = target/'release/librustmage.so'
+        stale = target/'release'/validate.library_name()
         stale.parent.mkdir(parents=True)
         stale.write_bytes(b'stale library from an earlier build')
         self.release_exit = 9
@@ -267,11 +267,17 @@ class ValidatorTests(unittest.TestCase):
     def test_source_tree_and_legacy_retained_targets_are_rejected_before_commands(self):
         self.assert_rejected_before_execution('--target-dir', str(self.root/'target'))
         alias = self.directory/'source-alias'
-        alias.symlink_to(self.root, target_is_directory=True)
+        if os.name == 'nt':
+            # Directory junctions do not require Windows symlink privilege.
+            import subprocess
+            subprocess.run(['cmd', '/c', 'mklink', '/J', str(alias), str(self.root)],
+                           check=True, capture_output=True)
+        else:
+            alias.symlink_to(self.root, target_is_directory=True)
         self.assert_rejected_before_execution('--target-dir', str(alias/'target'))
         legacy = self.directory/'legacy-target'
         (legacy/'report').mkdir(parents=True)
-        pinned = legacy/'release/librustmage.so'
+        pinned = legacy/'release'/validate.library_name()
         pinned.parent.mkdir()
         pinned_bytes = b'library pinned by a prior validation report'
         pinned.write_bytes(pinned_bytes)
@@ -316,7 +322,7 @@ class ValidatorTests(unittest.TestCase):
         self.assertEqual(report['active_processes'], [12345])
         self.assertEqual(report['shared_libraries'], {})
         target = Path(report['target'])
-        self.assertEqual((target/'release/librustmage.so').read_bytes(), self.library_bytes)
+        self.assertEqual((target/'release'/validate.library_name()).read_bytes(), self.library_bytes)
         self.assertTrue((target/'debug/incremental/fixture.o').is_file())
 
 

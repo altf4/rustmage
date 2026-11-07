@@ -40,7 +40,7 @@ def validate_simple_mana_components(metadata, records):
     return checked
 
 def load(root=ROOT):
-    metadata=json.loads((root/'data/catalogue-identities.json').read_text())
+    metadata=json.loads((root/'data/catalogue-identities.json').read_text(encoding='utf-8'))
     if len(metadata['cards']) >= 65535 or any(card['index'] != i for i,card in enumerate(metadata['cards'])):
         raise ValueError('catalogue IDs must be contiguous and leave the source-less sentinel unused')
     if sum(card['category']=='physical' for card in metadata['cards']) != metadata['physical_count']:
@@ -57,7 +57,7 @@ def load(root=ROOT):
     records={};fingerprint=bytearray(canonical(metadata))
     directory=root/'src/card_definitions'
     for path in sorted(directory.rglob('*.json')):
-        record=json.loads(path.read_text())
+        record=json.loads(path.read_text(encoding='utf-8'))
         index=record.get('catalogue_id')
         card=by_id[index] if index is not None else by_oracle[record['oracle_id']]
         index=card['index']
@@ -185,11 +185,11 @@ def render(metadata,records,version):
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--check',action='store_true');args=p.parse_args()
     metadata,records,version=load();outputs=render(metadata,records,version)
-    stale=[str(path.relative_to(ROOT))for path,value in outputs.items()if not path.is_file()or path.read_text()!=value]
+    stale=[str(path.relative_to(ROOT))for path,value in outputs.items()if not path.is_file()or path.read_text(encoding='utf-8')!=value]
     if args.check and stale:raise SystemExit('stale metadata/module links: '+', '.join(stale))
     if not args.check:
         for path,value in outputs.items():
             path.parent.mkdir(parents=True,exist_ok=True)
-            if not path.exists() or path.read_text()!=value:path.write_text(value)
+            if not path.exists() or path.read_text(encoding='utf-8')!=value:path.write_text(value,encoding='utf-8',newline='\n')
     report=json.loads(outputs[ROOT/'data/standard/coverage.json']);print(json.dumps({k:v for k,v in report.items()if k not in ['cards','definition_ownership']}))
 if __name__=='__main__':main()

@@ -27,7 +27,7 @@ def load(root):
     They cannot override a Standard identity, alias or legality decision.
     """
     root = Path(root)
-    standard = json.loads((root/'data/standard/cards.json').read_text())
+    standard = json.loads((root/'data/standard/cards.json').read_text(encoding='utf-8'))
     if standard['schema'] != 1 or digest(standard['cards']) != standard['cards_sha256']:
         raise ValueError('frozen Standard Oracle facts changed')
     cards = {card['oracle_id']: card for card in standard['cards']}
@@ -48,7 +48,7 @@ def load(root):
         add_aliases(card)
     path = root/SUPPLEMENT
     if path.is_file():
-        document = json.loads(path.read_text())
+        document = json.loads(path.read_text(encoding='utf-8'))
         if document['schema'] != 1 or document['oracle_cards_sha256'] != standard['cards_sha256']:
             raise ValueError('supplemental Oracle snapshot pin changed')
         target = document['target']
