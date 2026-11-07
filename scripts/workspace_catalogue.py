@@ -10,7 +10,7 @@ def render(root, metadata, records, version, definition_lines, legacy_catalogue,
     # These aliases are rule vocabulary already used by the engine. New identities
     # append to the catalogue instead of renumbering compiled intrinsic aliases.
     intrinsic = re.findall(r'pub const (\w+): Card = Card\((\d+)\)',
-                           (root/'crates/engine/src/catalogue.rs').read_text())
+                           (root/'crates/engine/src/catalogue.rs').read_text(encoding='utf-8'))
     for name, index in intrinsic:
         if metadata['constants'].get(name) != int(index):
             raise ValueError('intrinsic Card alias changed; preserve existing catalogue IDs: ' + name)
@@ -78,7 +78,7 @@ rustmage-core = {{ path = "../../engine", version = "=0.1.0" }}
         lines += ['];', '}', 'pub use cards::ENTRIES;']
         outputs[directory/'src/lib.rs'] = '\n'.join(lines) + '\n'
     manifest = root/'Cargo.toml'
-    original = manifest.read_text()
+    original = manifest.read_text(encoding='utf-8')
     outputs[manifest] = re.sub(r'(# BEGIN GENERATED SET DEPENDENCIES\n).*?(# END GENERATED SET DEPENDENCIES)',
                               lambda m: m[1] + '\n'.join(dependencies) + '\n' + m[2], original, flags=re.S)
     # Face/token/name metadata belongs to the assembly, not the cached engine.

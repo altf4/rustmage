@@ -109,7 +109,9 @@ fn validate_execution_inputs() -> Result<(), String> {
         }
         // Metadata inventory validation runs once before workload construction,
         // never during game rules, policy decisions or timed benchmark play.
-        let inventory = std::process::Command::new("python3")
+        let python = std::env::var_os("RUSTMAGE_PYTHON")
+            .unwrap_or_else(|| if cfg!(windows) { "python" } else { "python3" }.into());
+        let inventory = std::process::Command::new(python)
             .current_dir(&root).arg("scripts/tdm_execution_inputs.py").arg("--check")
             .output().map_err(|e| format!("execution-input inventory check REFUSED: {e}"))?;
         if !inventory.status.success() {

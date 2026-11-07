@@ -13,15 +13,23 @@ import tempfile
 import time
 
 if __package__:
-    from .resource_limits import bounded_group
+    from .resource_limits import bounded_group, managed_context
+    from .build_platform import exec_process
 else:
-    from resource_limits import bounded_group
+    from resource_limits import bounded_group, managed_context
+    from build_platform import exec_process
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 def descendants(pid):
     """Find nested sessions too (Cargo and nested test runners may create them)."""
+    if sys.platform != 'linux':
+        import psutil
+        try:
+            return {p.pid for p in psutil.Process(pid).children(recursive=True)}
+        except psutil.NoSuchProcess:
+            return set()
     found = set()
     pending = [pid]
     while pending:
@@ -39,6 +47,13 @@ def descendants(pid):
 
 
 def process_running(pid):
+    if sys.platform != 'linux':
+        import psutil
+        try:
+            process = psutil.Process(pid)
+            return process.is_running() and process.status() not in (psutil.STATUS_ZOMBIE, psutil.STATUS_DEAD)
+        except psutil.NoSuchProcess:
+            return False
     try:
         # The command name may contain spaces or parentheses.
         state = Path(f'/proc/{pid}/stat').read_text().rsplit(')', 1)[1].split()[0]
@@ -50,7 +65,10 @@ def process_running(pid):
 def group_members():
     group = bounded_group()
     if group is None:
-        return set()
+        context = managed_context()
+        if context is None:
+            raise RuntimeError('managed process membership unavailable; preserve outputs')
+        return set(context['members'])
     return {int(pid) for pid in (group/'cgroup.procs').read_text().split()
             if process_running(int(pid))}
 
@@ -59,6 +77,10 @@ def active_peers():
     # A normally exiting parent can orphan children outside our /proc subtree.
     # The guarded service cgroup still owns those processes.
     ancestors = {os.getpid()}
+    if sys.platform != 'linux':
+        import psutil
+        ancestors.update(process.pid for process in psutil.Process().parents())
+        return group_members() - ancestors
     pid = os.getpid()
     while pid > 1:
         try:
@@ -69,7 +91,54 @@ def active_peers():
     return group_members() - ancestors
 
 
+def process_details(pids):
+    """Retain safe identity evidence without command arguments or environments."""
+    try:
+        import psutil
+    except ImportError:
+        # The Linux cgroup backend does not require the portable dependency.
+        return [dict(pid=pid) for pid in sorted(pids)]
+    details = []
+    for pid in sorted(pids):
+        try:
+            details.append(psutil.Process(pid).as_dict(
+                attrs=['pid', 'ppid', 'name', 'exe', 'create_time'], ad_value=None))
+        except psutil.NoSuchProcess:
+            details.append(dict(pid=pid, exited=True))
+    return details
+
+
 def stop_process(process, members_before=None):
+    if bounded_group() is None:
+        import psutil
+        if __package__:
+            from .portable_guard import stop_processes
+        else:
+            from portable_guard import stop_processes
+        deadline = time.monotonic() + 5
+        while True:
+            context = managed_context()
+            if context is None:
+                raise RuntimeError('build supervisor disappeared; preserve outputs')
+            processes = []
+            for pid, birth in context['identities']:
+                if members_before is not None and pid in members_before:
+                    continue
+                if members_before is None and pid not in descendants(process.pid) | {process.pid}:
+                    continue
+                try:
+                    candidate = psutil.Process(pid)
+                    if candidate.create_time() == birth:
+                        processes.append(candidate)
+                except psutil.NoSuchProcess:
+                    pass
+            if not processes:
+                break
+            stop_processes(processes)
+            if time.monotonic() > deadline:
+                raise RuntimeError('command descendants remain active; preserve outputs')
+        process.wait()
+        return
     children = descendants(process.pid)
     deadline = time.monotonic() + 3
     for sig in (signal.SIGTERM, signal.SIGKILL):
@@ -190,7 +259,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--target-dir', type=Path, required=True)
     parser.add_argument('--report', type=Path, required=True)
-    parser.add_argument('--compile-timeout', type=float, default=360)
+    parser.add_argument('--compile-timeout', type=float, default=1800)
     parser.add_argument('--test-timeout', type=float, default=45)
     parser.add_argument('--suite-timeout', type=float, default=240)
     parser.add_argument('--test-target', help='compile only this integration target')
@@ -198,9 +267,9 @@ def main():
     args = parser.parse_args()
     if any(not math.isfinite(v) or v <= 0 for v in (args.compile_timeout, args.test_timeout, args.suite_timeout)):
         parser.error('timeouts must be positive')
-    if bounded_group() is None:
-        os.execv(sys.executable, [sys.executable, str(ROOT/'scripts/resource_guard.py'), '--',
-                                 sys.executable, str(Path(__file__).resolve()), *sys.argv[1:]])
+    if managed_context() is None:
+        exec_process([sys.executable, str(ROOT/'scripts/resource_guard.py'), '--',
+                      sys.executable, str(Path(__file__).resolve()), *sys.argv[1:]])
     signal.signal(signal.SIGTERM, interrupted)
     args.report.parent.mkdir(parents=True, exist_ok=True)
     target = args.target_dir.resolve()
@@ -278,6 +347,9 @@ def main():
         return 130
     finally:
         result['active_processes'] = sorted(active_peers())
+        if result['active_processes']:
+            result['active_process_details'] = process_details(result['active_processes'])
+            print('Active native peers: '+json.dumps(result['active_process_details']), flush=True)
         result['terminal'] = not result['active_processes']
         result['success'] = result['success'] and result['terminal']
         result['seconds'] = time.monotonic()-started

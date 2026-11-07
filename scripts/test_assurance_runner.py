@@ -13,7 +13,8 @@ from unittest.mock import patch
 import run_native_tests as native
 
 from run_native_tests import active_peers, descendants, process_running, run_command, run_suite, suite_results
-from resource_limits import MAX_MEMORY, bounded_group
+from resource_limits import MAX_MEMORY, bounded_group, managed_context
+from test_portable_build import PortableBuildTests
 from test_validate import ValidatorTests
 from test_build_cache import CacheInputTests
 from test_workspace_catalogue import WorkspaceCatalogueTests
@@ -23,9 +24,13 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class AssuranceRunnerTests(unittest.TestCase):
+    def test_guard_starts_without_unowned_peers(self):
+        peers = active_peers()
+        self.assertFalse(peers, native.process_details(peers))
+
     def test_native_cli_retains_distinct_evidence_for_reports_sharing_a_parent(self):
         with tempfile.TemporaryDirectory() as temporary, patch.dict(os.environ):
-            directory = Path(temporary)
+            directory = Path(temporary).resolve()
             target = directory/'target'
             report_parent = directory/'reports'
             binary = target/'debug/deps/fixture'
@@ -52,7 +57,7 @@ class AssuranceRunnerTests(unittest.TestCase):
                 return dict(exit=0, seconds=0.001, log=str(log),
                             timed_out=False, orphaned_processes=False)
 
-            with patch.object(native, 'bounded_group', return_value=Path('/fixture-cgroup')), \
+            with patch.object(native, 'managed_context', return_value={'backend': 'fixture'}), \
                     patch.object(native, 'active_peers', return_value=set()), \
                     patch.object(native.signal, 'signal'), \
                     patch.object(native, 'run_command', side_effect=run_fixture), \
@@ -101,6 +106,10 @@ class AssuranceRunnerTests(unittest.TestCase):
     def test_process_exit_during_proc_read_is_treated_as_gone(self):
         # Linux can return ESRCH after opening procfs when the task exits before
         # the read; ENOENT is also possible if it exits before the open.
+        if sys.platform != 'linux':
+            self.assertFalse(process_running(999999999))
+            self.assertEqual(descendants(999999999), set())
+            return
         for error in (FileNotFoundError, ProcessLookupError):
             with self.subTest(error=error), patch.object(Path, 'read_text', side_effect=error):
                 self.assertFalse(process_running(123456))
@@ -108,7 +117,16 @@ class AssuranceRunnerTests(unittest.TestCase):
                 with patch('run_native_tests.group_members', return_value=set()):
                     self.assertEqual(active_peers(), set())
 
-    def test_limits_are_enforced_by_the_running_cgroup(self):
+    def test_limits_are_enforced_by_the_running_backend(self):
+        context = managed_context()
+        self.assertIsNotNone(context, 'run through scripts/resource_guard.py')
+        self.assertEqual(context['memory_max_bytes'], MAX_MEMORY)
+        self.assertEqual(os.environ['CARGO_BUILD_JOBS'], '1')
+        self.assertEqual(os.environ['RUST_TEST_THREADS'], '1')
+        if context['backend'] != 'cgroup':
+            self.assertEqual(context['memory_limit_kind'], 'sampled-rss')
+            self.assertIn(os.getpid(), context['members'])
+            return
         group = bounded_group()
         self.assertIsNotNone(group, 'run through scripts/resource_guard.py')
         self.assertEqual(int((group/'memory.max').read_text()), MAX_MEMORY)
@@ -121,14 +139,14 @@ class AssuranceRunnerTests(unittest.TestCase):
     def test_wrapper_rejects_an_unbounded_host_even_with_a_forged_flag(self):
         code = "import sys; sys.path.insert(0, 'scripts'); import resource_limits,runpy; resource_limits.bounded_group=lambda:None; sys.argv=['scripts/rustc_guard.py','rustc','--version']; runpy.run_path('scripts/rustc_guard.py',run_name='__main__')"
         result = subprocess.run([sys.executable, '-c', code], cwd=ROOT,
-                                env=dict(os.environ, RUSTMAGE_RESOURCE_GUARD='1'),
+                                env=dict({k: v for k, v in os.environ.items() if not k.startswith('RUSTMAGE_GUARD_')}, RUSTMAGE_RESOURCE_GUARD='1'),
                                 capture_output=True, text=True, timeout=5)
         self.assertNotEqual(result.returncode, 0)
         self.assertIn('bounded runner', result.stderr)
 
     def test_timeout_stops_and_reaps_a_nested_session_before_returning(self):
         with tempfile.TemporaryDirectory() as temporary:
-            directory = Path(temporary)
+            directory = Path(temporary).resolve()
             pidfile = directory/'child.pid'
             # A new session is deliberate: killpg alone would miss this child.
             code = ("import pathlib,subprocess,sys,time; "
@@ -149,7 +167,7 @@ class AssuranceRunnerTests(unittest.TestCase):
 
     def test_normal_exit_with_detached_child_fails_and_reaps_the_child(self):
         with tempfile.TemporaryDirectory() as temporary:
-            directory = Path(temporary)
+            directory = Path(temporary).resolve()
             pidfile = directory/'child.pid'
             code = ("import pathlib,subprocess,sys; "
                     "p=subprocess.Popen([sys.executable,'-c','import time; time.sleep(20)'],start_new_session=True); "
@@ -160,10 +178,30 @@ class AssuranceRunnerTests(unittest.TestCase):
             self.assertTrue(result['orphaned_processes'])
             self.assertFalse(process_running(int(pidfile.read_text())))
 
+    def test_timeout_reaps_a_child_created_by_the_termination_handler(self):
+        if os.name == 'nt':
+            # TerminateProcess does not deliver a catchable SIGTERM on Windows.
+            return
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary).resolve()
+            pidfile = directory/'late.pid'
+            code = ("import pathlib,signal,subprocess,sys,time\n"
+                    "def terminate(*args):\n"
+                    " p=subprocess.Popen([sys.executable,'-c','import time; time.sleep(20)'],start_new_session=True)\n"
+                    f" pathlib.Path({str(pidfile)!r}).write_text(str(p.pid))\n"
+                    " raise SystemExit(0)\n"
+                    "signal.signal(signal.SIGTERM,terminate)\ntime.sleep(20)\n")
+            result = run_command([sys.executable, '-c', code], env=os.environ,
+                                 log=directory/'command.log', timeout=0.3)
+            self.assertEqual(result['exit'], 124)
+            self.assertTrue(pidfile.exists())
+            self.assertFalse(process_running(int(pidfile.read_text())))
+
 
 if __name__ == '__main__':
     suite = unittest.TestSuite([
         unittest.defaultTestLoader.loadTestsFromTestCase(AssuranceRunnerTests),
+        unittest.defaultTestLoader.loadTestsFromTestCase(PortableBuildTests),
         unittest.defaultTestLoader.loadTestsFromTestCase(ValidatorTests),
         unittest.defaultTestLoader.loadTestsFromTestCase(CacheInputTests),
         unittest.defaultTestLoader.loadTestsFromTestCase(WorkspaceCatalogueTests),

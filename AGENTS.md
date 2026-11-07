@@ -40,8 +40,12 @@ Catalogue entries or partial card implementations do not satisfy it.
 - Reuse warm Cargo outputs; do not run clean builds during routine work.
 - Resource safety: run Cargo through `python3 scripts/resource_guard.py -- cargo ...`.
   Routine validation enters this runner automatically. It enforces one build
-  across worktrees, one Cargo job/test thread, and a shared 6 GiB memory cgroup
-  (including subprocesses and orphaned units). Raw Cargo compilation from a checkout fails closed. Cargo invoked from an
+  across worktrees and one Cargo job/test thread. Linux with a user systemd manager
+  uses a shared hard 6 GiB memory cgroup (including orphaned units). macOS, Windows,
+  and Linux without systemd use a supervised 6 GiB aggregate RSS threshold;
+  this sampled budget can overshoot and is not a kernel allocation cap. Install
+  `scripts/requirements-build.txt` for that backend. Reports identify the backend
+  and limit semantics. Raw Cargo compilation from a checkout fails closed. Cargo invoked from an
   unrelated cwd with --manifest-path must still use the runner.
   Do not bypass the wrapper, raise the memory cap or launch unmanaged builds.
   Keep logs/reports under ~/.cache so reboot does not erase failure evidence.
