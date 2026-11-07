@@ -8,6 +8,7 @@ import platform
 import shutil
 import statistics
 import subprocess
+from build_platform import cargo_environment, executable_name
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--games", type=int, default=10000)
@@ -18,7 +19,8 @@ args = parser.parse_args()
 if args.games < 1 or args.repeats < 1:
     parser.error("games and repeats must be positive")
 root = Path(__file__).resolve().parents[1]
-command = [str(root / "target/release/benchmark"), str(args.games)]
+target = Path(cargo_environment()['CARGO_TARGET_DIR'])
+command = [str(target / 'release' / executable_name('benchmark')), str(args.games)]
 if args.cpu is not None:
     if not hasattr(os, "sched_getaffinity") or args.cpu not in os.sched_getaffinity(0):
         parser.error("requested CPU is not in this process's allowed affinity")

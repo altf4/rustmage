@@ -43,6 +43,54 @@ dependency. See the repository's [authoring and validation instructions](AGENTS.
 - [Rust examples](examples/) show how to drive games and branch game state.
 - [Python bindings](python/rustmage.py) expose the engine to Python applications.
 
+## Build and run
+
+Install Rust through rustup (the repository pins 1.98.0, matching CI) and Python
+3.10 or newer. In a Python
+virtual environment, install the portable build supervisor:
+
+```sh
+python -m pip install -r scripts/requirements-build.txt
+python scripts/link_catalogue.py
+python scripts/resource_guard.py -- cargo build --release --lib --bin rustmage --example standard
+python scripts/resource_guard.py -- cargo run --release --example standard -- 1
+```
+
+These commands work in native macOS, Linux and Windows terminals with the virtual
+environment activated (`python3` can be used instead of `python`). The example
+plays a Standard game and prints its terminal outcome. The `rustmage` executable
+is a JSON-lines diagnostic client; it expects a configuration on stdin.
+
+The guard serializes builds across worktrees and limits Cargo and test concurrency
+to one. It uses a hard 6 GiB cgroup limit when a Linux user systemd manager is
+available. Other hosts use a 6 GiB aggregate RSS watchdog, sampled every 100 ms.
+That budget can overshoot between samples; it is not a hard allocation cap.
+Run markers recover detached children, and a live supervisor is required for
+compiler admission. This prevents accidental unmanaged builds, not deliberate
+escape by processes that remove their markers or forcibly kill the supervisors.
+Windows builds bootstrap a small native compiler launcher inside the guard,
+avoiding shell limits on long compiler argument lists.
+After each compiler exits, its owned MSVC telemetry helper is stopped; unexpected
+surviving processes still fail the build. MSVC PDB endpoints are isolated per run.
+`--backend cgroup` requires hard Linux containment; `--backend portable` selects
+the watchdog. Once cgroup setup starts, failures stop the build.
+
+Build outputs are reused under `~/.cache/rustmage-targets` unless
+`CARGO_TARGET_DIR` is set. Reports remain under `~/.cache/rustmage-build-reports`.
+
+Full validation also requires the pinned XMage Git objects (see CI's source-fetch
+step). Set `RUSTMAGE_XMAGE_SOURCE` to that checkout and run:
+
+```sh
+python scripts/validate.py --release --python smoke
+```
+
+Validation retains a hashed native library snapshot (`.so`, `.dylib`, or `.dll`)
+with its report. The build never requires Java or a running XMage server.
+The default validation deadline is 60 minutes; `--timeout` sets a different total
+budget. Compiler phases allow cold native caches to warm, while each gameplay
+test retains its own bounded runtime.
+
 Card provenance that cites a path under `docs/` refers to evidence retained in
 [the repository history](https://github.com/altf4/rustmage/tree/b072c7932fc363b51938d429b99cb1b43d4beca7/docs).
 

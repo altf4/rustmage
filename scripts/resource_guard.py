@@ -1,39 +1,70 @@
 #!/usr/bin/env python3
-"""Serialize builds across worktrees and bound their entire process tree to 6 GiB.
+"""Serialize builds across worktrees with a 6 GiB memory budget.
 
-Uses a user systemd cgroup and preserves common Rust/C toolchain inputs. Fails closed if limits cannot be installed. Reports
+Linux uses a hard systemd cgroup limit; other hosts use sampled RSS supervision.
+Preserves common Rust/C toolchain inputs. Reports
 survive reboot under ~/.cache/rustmage-build-reports. Nested managed commands
 reuse the same cgroup and lock rather than deadlocking.
 """
 import argparse
-import fcntl
+import contextlib
+import errno
 import json
 import os
 from pathlib import Path
 import subprocess
+import shutil
 import sys
 import time
 import uuid
 if __package__:
-    from .resource_limits import MAX_MEMORY, bounded_group
+    from .resource_limits import MAX_MEMORY, bounded_group, managed_context
+    from .build_platform import cargo_environment
 else:
-    from resource_limits import MAX_MEMORY, bounded_group
+    from resource_limits import MAX_MEMORY, bounded_group, managed_context
+    from build_platform import cargo_environment
+
+
+@contextlib.contextmanager
+def shared_build_slot():
+    lock_path = Path.home()/'.cache/rustmage-build.lock'
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    with lock_path.open('a+b') as lock:
+        print('Waiting for the shared build slot...', file=sys.stderr)
+        if os.name == 'nt':
+            import msvcrt
+            if lock_path.stat().st_size == 0:
+                lock.write(b'\0')
+                lock.flush()
+            while True:
+                try:
+                    lock.seek(0)
+                    msvcrt.locking(lock.fileno(), msvcrt.LK_NBLCK, 1)
+                    break
+                except OSError as error:
+                    if error.errno not in (errno.EACCES, errno.EAGAIN, errno.EDEADLK):
+                        raise
+                    time.sleep(0.1)
+        else:
+            import fcntl
+            fcntl.flock(lock, fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            if os.name == 'nt':
+                lock.seek(0)
+                msvcrt.locking(lock.fileno(), msvcrt.LK_UNLCK, 1)
 
 def inside(command, report, acquire=True):
     group = bounded_group()
     if group is None:
         raise RuntimeError('refusing to execute without an enforced memory cgroup')
-    env = dict(os.environ, CARGO_BUILD_JOBS='1', RUST_TEST_THREADS='1')
+    env = cargo_environment()
     started = time.monotonic()
-    cache = Path(os.environ.get('XDG_CACHE_HOME', Path.home()/'.cache'))
-    lock_path = Path.home()/'.cache/rustmage-build.lock'
-    lock_path.parent.mkdir(parents=True, exist_ok=True)
-    with lock_path.open('a') as lock:
-        if acquire:
-            print('Waiting for the shared build slot...', file=sys.stderr)
-            fcntl.flock(lock, fcntl.LOCK_EX)
+    with shared_build_slot() if acquire else contextlib.nullcontext():
         result = subprocess.run(command, env=env)
     data = dict(command=command, terminal=True, exit_code=result.returncode,
+                backend='cgroup', memory_limit_kind='hard',
                 seconds=time.monotonic()-started, memory_max_bytes=int((group/'memory.max').read_text()),
                 memory_peak_bytes=int((group/'memory.peak').read_text()),
                 memory_events=(group/'memory.events').read_text(), cargo_jobs=1, test_threads=1)
@@ -45,6 +76,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--inside', action='store_true', help=argparse.SUPPRESS)
     parser.add_argument('--report', type=Path)
+    parser.add_argument('--backend', choices=['auto', 'cgroup', 'portable'], default='auto',
+                        help='auto uses an available Linux user systemd manager, otherwise portable supervision')
     parser.add_argument('command', nargs=argparse.REMAINDER)
     args = parser.parse_args()
     command = args.command[1:] if args.command[:1] == ['--'] else args.command
@@ -62,6 +95,36 @@ def main():
         return inside(command, report)
     if bounded_group() is not None:
         return inside(command, report, acquire=False)
+    context = managed_context()
+    if context is not None:
+        if args.backend == 'cgroup' and context['backend'] != 'cgroup':
+            parser.error('cgroup backend cannot run inside a portable supervisor')
+        started = time.monotonic()
+        result = subprocess.run(command, env=cargo_environment())
+        report.write_text(json.dumps(dict(command=command, terminal=True,
+            exit_code=result.returncode, seconds=time.monotonic()-started,
+            backend=context['backend'], memory_limit_kind=context['memory_limit_kind'],
+            memory_max_bytes=MAX_MEMORY, nested=True), indent=2)+'\n')
+        return result.returncode
+    if os.environ.get('RUSTMAGE_GUARD_PORT'):
+        parser.error('inherited build supervisor is unavailable; refusing unmanaged execution')
+    systemd_available = False
+    if args.backend != 'portable' and sys.platform == 'linux' and shutil.which('systemd-run') and shutil.which('systemctl'):
+        try:
+            systemd_available = subprocess.run(
+                ['systemctl', '--user', 'show-environment'], stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL, timeout=10).returncode == 0
+        except (OSError, subprocess.TimeoutExpired):
+            pass
+    if args.backend == 'cgroup' and not systemd_available:
+        parser.error('cgroup backend requires a running Linux user systemd manager')
+    if args.backend == 'portable' or not systemd_available:
+        if __package__:
+            from .portable_guard import run
+        else:
+            from portable_guard import run
+        with shared_build_slot():
+            return run(command, report, cargo_environment())
     # The parent slice also bounds orphaned units if the desktop/outer runner dies.
     subprocess.run(['systemctl', '--user', 'start', 'rustmage-builds.slice'], check=True)
     subprocess.run(['systemctl', '--user', 'set-property', '--runtime', 'rustmage-builds.slice',
@@ -73,7 +136,7 @@ def main():
                             'RUSTUP_TOOLCHAIN', 'RUSTFLAGS', 'RUSTDOCFLAGS', 'CARGO_ENCODED_RUSTFLAGS',
                             'CARGO_INCREMENTAL', 'CC', 'CXX', 'AR', 'CFLAGS', 'CXXFLAGS',
                             'LDFLAGS', 'LD_LIBRARY_PATH', 'PKG_CONFIG_PATH', 'PYTHONPATH',
-                            'PYTHONDONTWRITEBYTECODE', 'XDG_CACHE_HOME',
+                            'PYTHONDONTWRITEBYTECODE', 'PYTHONUTF8', 'XDG_CACHE_HOME',
                             'RUSTMAGE_CATALOGUE_SNAPSHOT')]
     invocation = ['systemd-run', '--user', '--wait', '--pipe', '--collect', '--unit='+unit,
                   '--slice=rustmage-builds.slice', '--working-directory='+str(Path.cwd()),
@@ -90,4 +153,7 @@ def main():
     return result.returncode
 
 if __name__ == '__main__':
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except (OSError, RuntimeError, subprocess.CalledProcessError) as error:
+        sys.exit('Build guard failed: '+str(error))

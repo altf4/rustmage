@@ -42,10 +42,10 @@ def main():
     output = render()
     target = ROOT / 'data/outside-card-names.tsv'
     if args.check:
-        if not target.is_file() or target.read_text() != output:
+        if not target.is_file() or target.read_text(encoding='utf-8') != output:
             raise SystemExit('stale outside-game card name table')
     else:
-        target.write_text(output)
+        target.write_text(output, encoding='utf-8', newline='\n')
 
 if __name__ == '__main__':
     main()
