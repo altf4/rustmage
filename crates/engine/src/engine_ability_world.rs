@@ -70,6 +70,9 @@ pub(super) trait CharacteristicWorld {
     fn static_sources(&self) -> &[CardId] {
         &self.game().state.static_sources
     }
+    fn trigger_multiplier_sources(&self) -> &[CardId] {
+        trigger_multiplicity::TriggerMultiplicityState::providers(self.game())
+    }
     fn attachment_sources(&self) -> &[CardId] {
         &self.game().state.attachment_sources
     }
@@ -1715,6 +1718,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
     }
     fn static_sources(&self) -> &[CardId] {
         self.parent.static_sources()
+    }
+    fn trigger_multiplier_sources(&self) -> &[CardId] {
+        self.parent.trigger_multiplier_sources()
     }
     fn attachment_sources(&self) -> &[CardId] {
         self.parent.attachment_sources()

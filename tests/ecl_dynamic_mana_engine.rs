@@ -53,6 +53,35 @@ const DRAW: CardRules = CardRules {
     ),
     ..CardRules::EMPTY
 };
+const AURA: CardRules = CardRules {
+    effect: Effect::Permanent,
+    aura: Some(AuraSpec {
+        kinds: 2,
+        relation: -1,
+        bonus: EquipmentSpec {
+            stats: Stats {
+                power: 0,
+                toughness: 0,
+            },
+            keywords: Keywords::NONE,
+        },
+    }),
+    static_groups: &[
+        StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Color,
+            fragments: &[StaticAbilityFragment::AttachedChosenColor],
+        },
+        StaticAbilityGroup {
+            line: 1,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::AttachmentManaBonus(
+                ManaProduction::ChosenColor,
+            )],
+        },
+    ],
+    ..CardRules::EMPTY
+};
 const OTHERS: StatValue = StatValue::Count(CountFilter {
     zone: CountZone::Battlefield,
     relation: 0,
@@ -198,35 +227,6 @@ fn creature_count_mana_samples_after_sacrifice_cost_and_never_splits() {
 }
 #[test]
 fn chosen_color_aura_and_basic_land_mana_bonus_are_unrestricted_and_apply_to_opponents() {
-    const AURA: CardRules = CardRules {
-        effect: Effect::Permanent,
-        aura: Some(AuraSpec {
-            kinds: 2,
-            relation: -1,
-            bonus: EquipmentSpec {
-                stats: Stats {
-                    power: 0,
-                    toughness: 0,
-                },
-                keywords: Keywords::NONE,
-            },
-        }),
-        static_groups: &[
-            StaticAbilityGroup {
-                line: 0,
-                first_layer: AbilityLayer::Color,
-                fragments: &[StaticAbilityFragment::AttachedChosenColor],
-            },
-            StaticAbilityGroup {
-                line: 1,
-                first_layer: AbilityLayer::Rule,
-                fragments: &[StaticAbilityFragment::AttachmentManaBonus(
-                    ManaProduction::ChosenColor,
-                )],
-            },
-        ],
-        ..CardRules::EMPTY
-    };
     const LAVA: CardRules = CardRules {
         effect: Effect::Permanent,
         static_groups: &[StaticAbilityGroup {
@@ -287,17 +287,23 @@ fn multitype_land_bonus_choice_preserves_parent_payment_and_captured_departed_so
     };
     let _rules = fixture_rules::activate(&[
         (Card::Forest, &LAND),
+        (Card::from_name("Pacifism").unwrap(), &AURA),
         (Card::from_name("Short Bow").unwrap(), &LAVA),
         (Card::from_name("Cancel").unwrap(), &DRAW),
     ]);
     let mut g = scenario(Player::P0);
     let land = put(&mut g, Player::P0, "Forest", Zone::Battlefield);
+    let aura = put(&mut g, Player::P0, "Pacifism", Zone::Battlefield);
+    g.state.objects[aura as usize].attached_to = Some(g.object_ref(land));
+    g.set_entry_value(g.object_ref(aura), EntryChoiceValue::Color(ChoiceColor::Blue));
     put(&mut g, Player::P1, "Short Bow", Zone::Battlefield);
     let spell = put(&mut g, Player::P0, "Cancel", Zone::Hand);
     g.state.players[0].mana = [0; 6];
     act(&mut g, Action::AnnounceCast { card: spell });
     act(&mut g, direct(land, [0; 6], [0, 1, 0, 0, 1, 0]));
     assert_eq!(g.state.objects[land as usize].zone, Zone::Graveyard);
+    // The aura no longer has an enchanted land at the mana event.
+    assert_eq!(g.state.players[0].mana, [0, 1, 0, 0, 1, 0]);
     assert!(matches!(g.state.pending, Pending::EffectMana { .. }));
     reject(
         &mut g,
@@ -326,6 +332,72 @@ fn multitype_land_bonus_choice_preserves_parent_payment_and_captured_departed_so
     pay(&mut other);
     settle(&mut other);
     assert_eq!(g.snapshot(), other.snapshot());
+}
+#[test]
+fn returned_trigger_multiplier_is_visible_to_the_projected_mana_payment() {
+    const LAVA: CardRules = CardRules {
+        effect: Effect::Creature(2, 2),
+        static_groups: &[StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::BasicLandTapManaBonus(1)],
+        }],
+        ..CardRules::EMPTY
+    };
+    const MULTIPLIER: CardRules = CardRules {
+        effect: Effect::Creature(2, 2),
+        static_groups: &[StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::AdditionalTriggers {
+                scope: AdditionalTriggerScope::OtherControlledSubtype("Elemental"),
+                condition: StatValue::Fixed(1),
+            }],
+        }],
+        ..CardRules::EMPTY
+    };
+    let _rules = fixture_rules::activate(&[
+        (Card::from_name("Elemental Mascot").unwrap(), &LAVA),
+        (Card::from_name("Bear Cub").unwrap(), &MULTIPLIER),
+        (Card::from_name("Confiscate").unwrap(), &DRAW),
+    ]);
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Elemental Mascot", Zone::Battlefield);
+        let bearer = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let ring = put(&mut g, p, "Lotus Ring", Zone::Battlefield);
+        let island = put(&mut g, p, "Island", Zone::Battlefield);
+        let returning = put(&mut g, p, "Bear Cub", Zone::Exile);
+        let spell = put(&mut g, p, "Confiscate", Zone::Hand);
+        let source = g.object_ref(bearer);
+        let grantor = g.object_ref(ring);
+        g.state.objects[ring as usize].attached_to = Some(source);
+        g.state.players[p.index()].mana = [0; 6];
+        let cast = Action::AnnounceCast { card: spell };
+        reject(&mut g, cast.clone());
+        g.state.exile_links.push(ExileLink {
+            ability_origin: None,
+            source,
+            exiled: g.object_ref(returning),
+            return_zone: Zone::Battlefield,
+        });
+        act(&mut g, cast);
+        reject(&mut g, Action::TapMana { card: island });
+        act(
+            &mut g,
+            Action::TapGrantedMana {
+                card: bearer,
+                grantor,
+                production: [0, 3, 0, 0, 0, 0],
+            },
+        );
+        assert_eq!(g.object_view(returning).zone, Zone::Battlefield);
+        act(&mut g, Action::TapMana { card: island });
+        assert_eq!(g.state.players[p.index()].mana, [0, 6, 0, 0, 0, 0]);
+        pay(&mut g);
+        assert_eq!(g.object_view(spell).zone, Zone::Stack);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+    }
 }
 #[test]
 fn mana_value_restriction_splits_x_intervals_before_and_after_mana_is_produced() {

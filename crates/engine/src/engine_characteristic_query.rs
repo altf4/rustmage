@@ -1215,6 +1215,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     fn static_sources(&self) -> &[CardId] {
         self.world.static_sources()
     }
+    fn trigger_multiplier_sources(&self) -> &[CardId] {
+        self.world.trigger_multiplier_sources()
+    }
     fn attachment_sources(&self) -> &[CardId] {
         self.world.attachment_sources()
     }

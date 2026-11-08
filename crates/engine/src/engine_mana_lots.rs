@@ -751,7 +751,7 @@ impl Game {
             })
         });
         self.add_quality_mana(item.controller, mana, quality);
-        self.finish_mana_tap_bonus(item.controller, item.tap_mana_bonus(), mana);
+        self.finish_mana_tap_bonus(item.controller, item.tap_mana_bonus(self), mana);
     }
     pub(super) fn add_quality_mana(&mut self, actor: Player, mana: Mana, quality: Option<Quality>) {
         self.record_cast_mana_production(actor, mana, quality);

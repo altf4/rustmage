@@ -51,7 +51,81 @@ impl ManaTapBonus {
         });
         if multiple { None } else { result }
     }
+
+    pub(super) fn with_attachment_bonuses<W: CharacteristicWorld + ?Sized>(
+        mut self,
+        world: &W,
+        actor: Player,
+        source: Option<ObjectRef>,
+    ) -> Self {
+        let Some(land) = source else { return self };
+        // CR106.12a, 303.4m: a land sacrificed as a mana cost is no longer
+        // enchanted when the paid mana ability resolves.
+        if world.attachment_sources().is_empty()
+            || world.reference(land.card) != land
+            || world.object(land.card).zone != Zone::Battlefield
+            || world.object(land.card).controller != actor
+            || world.kinds(land.card) & 2 == 0
+        {
+            return self;
+        }
+        let query = characteristic_query::CharacteristicQuery::in_world(world);
+        for &source in world.attachment_sources() {
+            let provider = world.object(source);
+            if provider.zone != Zone::Battlefield || provider.attached_to != Some(land) {
+                continue;
+            }
+            for fragment in world
+                .definition(source)
+                .static_ability_groups()
+                .iter()
+                .flat_map(|group| group.fragments)
+            {
+                let crate::cards::StaticAbilityFragment::AttachmentManaBonus(production) =
+                    *fragment
+                else {
+                    continue;
+                };
+                if !query.continuous_fragment_available(source, |candidate| {
+                    std::ptr::eq(candidate, fragment)
+                }) {
+                    continue;
+                }
+                let count = trigger_count(&query, source);
+                let mut fixed = None;
+                production.in_world(world, source).visit(|mana| {
+                    assert!(
+                        fixed.is_none(),
+                        "attachment bonus requires fixed or chosen-color mana"
+                    );
+                    fixed = Some(mana);
+                    false
+                });
+                for (total, amount) in self.fixed.iter_mut().zip(fixed.unwrap_or_default()) {
+                    *total = total
+                        .checked_add(
+                            amount
+                                .checked_mul(count)
+                                .capacity("mana representation exhausted"),
+                        )
+                        .capacity("mana representation exhausted");
+                }
+            }
+        }
+        self
+    }
 }
+
+fn trigger_count<W: CharacteristicWorld + ?Sized>(
+    query: &characteristic_query::CharacteristicQuery<'_, W>,
+    source: CardId,
+) -> u32 {
+    trigger_multiplicity::additional_triggers(query, source)
+        .checked_add(1)
+        .and_then(|n| u32::try_from(n).ok())
+        .capacity("mana trigger count exhausted")
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn capture<W: CharacteristicWorld + ?Sized>(
     world: &W,
@@ -63,7 +137,11 @@ pub(super) fn capture<W: CharacteristicWorld + ?Sized>(
         amount: 0,
     };
     let land = world.object(id);
-    if land.zone != Zone::Battlefield || land.controller != actor || world.kinds(id) & 2 == 0 {
+    if land.zone != Zone::Battlefield
+        || land.controller != actor
+        || !land.card.is_basic_land()
+        || world.kinds(id) & 2 == 0
+    {
         return bonus;
     }
     let query = characteristic_query::CharacteristicQuery::in_world(world);
@@ -78,56 +156,23 @@ pub(super) fn capture<W: CharacteristicWorld + ?Sized>(
             .iter()
             .flat_map(|g| g.fragments)
         {
-            let (production, amount) = match *fragment {
-                crate::cards::StaticAbilityFragment::AttachmentManaBonus(production)
-                    if provider.attached_to == Some(world.reference(id)) =>
-                {
-                    (Some(production), 0)
-                }
-                crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(amount)
-                    if land.card.is_basic_land() =>
-                {
-                    (None, u32::from(amount))
-                }
-                _ => continue,
+            let crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(amount) = *fragment
+            else {
+                continue;
             };
             if !query.continuous_fragment_available(source, |candidate| {
                 std::ptr::eq(candidate, fragment)
             }) {
                 continue;
             }
-            let count = trigger_multiplicity::additional_triggers(&query, source)
-                .checked_add(1)
-                .and_then(|n| u32::try_from(n).ok())
-                .capacity("mana trigger count exhausted");
             bonus.amount = bonus
                 .amount
                 .checked_add(
-                    amount
-                        .checked_mul(count)
+                    u32::from(amount)
+                        .checked_mul(trigger_count(&query, source))
                         .capacity("mana representation exhausted"),
                 )
                 .capacity("mana representation exhausted");
-            if let Some(production) = production {
-                let mut fixed = None;
-                production.in_world(world, source).visit(|mana| {
-                    assert!(
-                        fixed.is_none(),
-                        "attachment bonus requires fixed or chosen-color mana"
-                    );
-                    fixed = Some(mana);
-                    false
-                });
-                for (total, amount) in bonus.fixed.iter_mut().zip(fixed.unwrap_or_default()) {
-                    *total = total
-                        .checked_add(
-                            amount
-                                .checked_mul(count)
-                                .capacity("mana representation exhausted"),
-                        )
-                        .capacity("mana representation exhausted");
-                }
-            }
         }
     }
     bonus

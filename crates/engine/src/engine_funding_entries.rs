@@ -2383,7 +2383,8 @@ impl<'g> FundingState<'g> {
             && self.counter_count(self.resources[step.resource].id, CounterKind::Finality) == 0
         {
             let mut next = self.clone();
-            let bonus = next.apply(step, false);
+            let (bonus, tap_source) = next.apply(step, false);
+            let bonus = bonus.with_attachment_bonuses(&next, self.actor, tap_source);
             if let Some(production) = next.singleton_output(step)
                 && let Some(bonus) = bonus.singleton(production)
             {
@@ -2428,7 +2429,7 @@ impl<'g> FundingState<'g> {
         // Keep the post-payment counter snapshot until replacement planning.
         // Paying away the final Finality counter must differ from sacrificing
         // a permanent which still has one after the counter cost.
-        let bonus = next.apply(step, true);
+        let (bonus, tap_source) = next.apply(step, true);
         let departed = source.object.zone != next.object(source.id).zone;
         let destination = next.object(source.id).zone;
         if departed {
@@ -2457,7 +2458,10 @@ impl<'g> FundingState<'g> {
                 reference,
                 departed.then_some(destination),
                 external,
-                &mut |world| world.visit_output(step, bonus, emit),
+                &mut |world| {
+                    let bonus = bonus.with_attachment_bonuses(world, self.actor, tap_source);
+                    world.visit_output(step, bonus, emit)
+                },
             )
         })
     }

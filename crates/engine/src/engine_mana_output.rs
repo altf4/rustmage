@@ -315,7 +315,7 @@ impl Game {
         let output = a.mana_output.take().expect("owned paid mana output");
         self.add_quality_mana(a.item.controller, production, output.quality);
         self.apply_mana_color_change(output.recipe, output.instance.source, production);
-        self.finish_mana_tap_bonus(a.item.controller, a.item.tap_mana_bonus(), production);
+        self.finish_mana_tap_bonus(a.item.controller, a.item.tap_mana_bonus(self), production);
         self.committed_mana_reflexive(&a.item);
         if self.restore_mana_announcement() {
             self.reopen_evidence_after_mana_sacrifice(output.instance.source.card);

@@ -1734,8 +1734,18 @@ pub struct SpellView {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl SpellView {
-    pub(super) fn tap_mana_bonus(&self) -> ManaTapBonus {
-        self.mana_tap_bonus.as_deref().copied().unwrap_or_default()
+    pub(super) fn tap_mana_bonus<W: ability_world::CharacteristicWorld + ?Sized>(
+        &self,
+        world: &W,
+    ) -> ManaTapBonus {
+        let source = self.mana_activation_key().and_then(|key| {
+            key.definition.activation(key.ability).cost.tap.then_some(key.source)
+        });
+        self.mana_tap_bonus
+            .as_deref()
+            .copied()
+            .unwrap_or_default()
+            .with_attachment_bonuses(world, self.controller, source)
     }
 
     pub(super) fn remember_source_kinds_at_departure(&mut self, before: &ObjectView) -> bool {
@@ -7265,6 +7275,7 @@ impl Game {
                     self.sacrifice_batch(&[(actor, card)]);
                 }
                 self.add_quality_mana(actor, production, quality);
+                let bonus = bonus.with_attachment_bonuses(self, actor, Some(activated_object));
                 self.finish_mana_tap_bonus(actor, bonus, production);
                 self.creature_ability_activated(actor, creature, activated_object, None);
                 self.state.passes = 0;
@@ -7276,6 +7287,7 @@ impl Game {
                 production[color] = 1;
                 let quality = self.mana_quality(ManaProduction::Fixed(production), card);
                 let bonus = self.mana_tap_bonuses(actor, card);
+                let source = self.object_ref(card);
                 self.tap_objects(&[card]);
                 if quality.is_some() {
                     self.add_quality_mana(actor, production, quality);
@@ -7285,6 +7297,7 @@ impl Game {
                         .checked_add(1)
                         .capacity("mana representation exhausted");
                 }
+                let bonus = bonus.with_attachment_bonuses(self, actor, Some(source));
                 self.finish_mana_tap_bonus(actor, bonus, production);
                 if self.state.activation_observers.is_some() {
                     self.creature_ability_activated(
@@ -7680,7 +7693,7 @@ impl Game {
                     );
                 } else {
                     self.add_quality_mana(actor, production, quality);
-                    self.finish_mana_tap_bonus(actor, item.tap_mana_bonus(), production);
+                    self.finish_mana_tap_bonus(actor, item.tap_mana_bonus(self), production);
                     self.committed_mana_reflexive(&item);
                     self.reopen_evidence_after_mana_sacrifice(card);
                 }
@@ -7820,7 +7833,7 @@ impl Game {
                     );
                 } else {
                     self.add_quality_mana(actor, production, quality);
-                    self.finish_mana_tap_bonus(actor, item.tap_mana_bonus(), production);
+                    self.finish_mana_tap_bonus(actor, item.tap_mana_bonus(self), production);
                     self.committed_mana_reflexive(&item);
                     self.reopen_evidence_after_mana_sacrifice(card);
                 }

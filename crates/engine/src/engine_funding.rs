@@ -230,6 +230,12 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
             .as_ref()
             .map_or(&self.game.state.static_sources, |p| &p.static_sources)
     }
+    fn trigger_multiplier_sources(&self) -> &[CardId] {
+        self.entry_projection.as_ref().map_or_else(
+            || self.game.trigger_multiplier_sources(),
+            |projection| projection.static_sources.as_slice(),
+        )
+    }
     fn attachment_sources(&self) -> &[CardId] {
         self.entry_projection
             .as_ref()
@@ -2267,7 +2273,11 @@ impl<'g> FundingState<'g> {
         self.payment_departures
             .sort_by_key(|(object, _, _)| (object.card, object.generation));
     }
-    fn apply(&mut self, step: &FundingMove, preserve_departure_counters: bool) -> ManaTapBonus {
+    fn apply(
+        &mut self,
+        step: &FundingMove,
+        preserve_departure_counters: bool,
+    ) -> (ManaTapBonus, Option<ObjectRef>) {
         for (lot, allocation) in self.lots.iter_mut().zip(&step.allocation) {
             for (held, paid) in lot.amounts.iter_mut().zip(allocation) {
                 *held -= u128::from(*paid);
@@ -2385,6 +2395,7 @@ impl<'g> FundingState<'g> {
         // Match the owned executor: counters and life are paid before the tap,
         // while the source is still in its current zone and incarnation.
         let pays_tap = cost.is_none_or(|c| c.tap);
+        let tap_source = pays_tap.then(|| self.reference(id));
         let mut tap_bonus = ManaTapBonus::default();
         if pays_tap {
             tap_bonus = mana_tap_bonus::capture(self, self.actor, id);
@@ -2501,7 +2512,7 @@ impl<'g> FundingState<'g> {
             self.prune_source_linked_projection();
             self.refresh_enduring_projection();
         }
-        tap_bonus
+        (tap_bonus, tap_source)
     }
     fn project_mana_color_change(&mut self, output: &mana_output::ManaOutput, production: Mana) {
         let source = output.instance.source;
@@ -6388,7 +6399,7 @@ impl FundingState<'_> {
         selected: Option<Mana>,
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
-        let bonus = a.item.tap_mana_bonus();
+        let bonus = a.item.tap_mana_bonus(self);
         let quality = a.mana_output.as_ref().map_or_else(
             || {
                 self.game
