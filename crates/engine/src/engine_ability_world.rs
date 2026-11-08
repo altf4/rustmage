@@ -149,8 +149,31 @@ pub(super) trait CharacteristicWorld {
             } else {
                 0
             };
+        let artifact_token = if self.object(source).zone == Zone::Battlefield
+            && self.object(source).is_token()
+            && self.kinds(source) & 16 != 0
+        {
+            let query = characteristic_query::CharacteristicQuery::in_world(self);
+            self.static_sources().iter().copied().filter(|&id| {
+                let provider = self.object(id);
+                provider.zone == Zone::Battlefield && provider.controller == controller
+            }).fold(0u32, |total, id| {
+                self.definition(id).static_ability_groups().iter().flat_map(|group| group.fragments).fold(total, |total, fragment| {
+                    if let crate::cards::StaticAbilityFragment::ArtifactTokenActivationReduction(amount) = *fragment
+                        && query.continuous_fragment_available(id, |candidate| std::ptr::eq(candidate, fragment))
+                    {
+                        total.saturating_add(amount)
+                    } else {
+                        total
+                    }
+                })
+            })
+        } else {
+            0
+        };
         exhaust::generic_discount(self, source, definition, ability)
             .saturating_add(power_up)
+            .saturating_add(artifact_token)
             .saturating_add(subtype)
             .saturating_add(
                 definition
@@ -286,6 +309,49 @@ pub(super) trait CharacteristicWorld {
             0
         };
         (query.stats(card).power, bonus)
+    }
+    fn controlled_land_tap_bonus(&self, actor: Player, id: CardId) -> Mana {
+        let mut bonus = [0u32; 6];
+        let object = self.object(id);
+        if object.zone != Zone::Battlefield || object.controller != actor || self.kinds(id) & 2 == 0
+        {
+            return bonus;
+        }
+        let query = characteristic_query::CharacteristicQuery::in_world(self);
+        for &source in self.static_sources() {
+            let provider = self.object(source);
+            if provider.zone != Zone::Battlefield || provider.controller != actor {
+                continue;
+            }
+            for fragment in self
+                .definition(source)
+                .static_ability_groups()
+                .iter()
+                .flat_map(|g| g.fragments)
+            {
+                if let crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(mana) =
+                    *fragment
+                    && query.continuous_fragment_available(source, |candidate| {
+                        std::ptr::eq(candidate, fragment)
+                    })
+                {
+                    let count = trigger_multiplicity::additional_triggers(&query, source)
+                        .checked_add(1)
+                        .and_then(|count| u32::try_from(count).ok())
+                        .capacity("mana trigger count exhausted");
+                    for (total, amount) in bonus.iter_mut().zip(mana) {
+                        *total = total
+                            .checked_add(
+                                amount
+                                    .checked_mul(count)
+                                    .capacity("mana representation exhausted"),
+                            )
+                            .capacity("mana representation exhausted");
+                    }
+                }
+            }
+        }
+        bonus
     }
     fn named_activation_generic_increase(&self, id: CardId) -> u32 {
         let query = characteristic_query::CharacteristicQuery::in_world(self);
@@ -1438,7 +1504,9 @@ pub(super) fn aura_kind_matches<W: CharacteristicWorld + ?Sized>(
                 .aura_kind_or_subtype()
                 .is_some_and(|subtype| world.subtypes(id).has(world.definition(id), subtype))
     };
-    kind_match && aura_artifact_or_non_aura_enchantment(world, aura, id)
+    kind_match
+        && (!aura.enchant_basic() || world.definition(id).is_basic_land())
+        && aura_artifact_or_non_aura_enchantment(world, aura, id)
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

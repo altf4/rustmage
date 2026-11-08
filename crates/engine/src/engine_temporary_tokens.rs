@@ -7,7 +7,15 @@ pub(super) struct TokenInstructions {
     pub item: SpellView,
     pub keywords: Keywords,
     pub attacking: bool,
-    pub own_end_step: bool,
+    pub cleanup: TokenCleanup,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum TokenCleanup {
+    NextEndStepSacrifice,
+    OwnEndStepSacrifice,
+    NextEndStepDestroy,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {

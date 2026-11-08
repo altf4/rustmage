@@ -3,10 +3,57 @@
   "catalogue_id": 3985,
   "oracle_id": "003e5dc6-8b26-4a0a-a50b-5f0806a7bacd",
   "facts_sha256": "a656895e95e445539a80a61b62e74d0f7e476ec4fc3ba50b50db74c6363102ce",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c4375b2781eeb659c28661f0d709042d7eceabfe04349d873dd0adc3f4237fbb"
   },
-  "physical_metadata_sha256": "f4f221d6507b32634e331ec3ad51de0fd48d7de672c5faced9d5b84dc6ee17c6"
+  "physical_metadata_sha256": "f4f221d6507b32634e331ec3ad51de0fd48d7de672c5faced9d5b84dc6ee17c6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SouthWindAvatar.java",
+  "java_sha256": "ea4deacd71293f13c065de46fd3551753aa4609b4cb1c669039368c001538f35",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesCreatureTriggeredAbility.java",
+      "sha256": "62d53cb6be7c685032f9bf3a509c9217177b4ee44ccd9a294be1d8dca7d77b81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/GainLifeControllerTriggeredAbility.java",
+      "sha256": "368075cdc13fc2b881bea0dfadfa1135166c6c412c0602260aa8f0597a927d58"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeOpponentsEffect.java",
+      "sha256": "0efbab18123aec32ac502d57e9a8d9571965d09f3f4e09c448a4ed4cf10aa0e1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    }
+  ],
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "111.8",
+      "118.11",
+      "201.5",
+      "400.7",
+      "601.2",
+      "603.2d",
+      "603.12",
+      "608.2b",
+      "608.2h",
+      "701.21"
+    ],
+    "note": "Full printed obligations are tested in engine_tmt_reflexive_batch_tests.rs. Reflexive target choices occur after successful optional payments and can be responded to separately. Source counter quantities and dying-creature toughness use exact last-known incarnations. Splinter qualifies actual Ninja creature characteristics and controller, including granted death abilities, and excludes delayed/reflexive triggers."
+  }
 }

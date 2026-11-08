@@ -299,6 +299,7 @@ impl Game {
                     entry_counter_player: Some(controller),
                     graveyard_observers: None,
                     returned_hand_observers: None,
+                    battlefield_departure_observers: None,
                     was_cast: false,
                     gift: None,
                     before,

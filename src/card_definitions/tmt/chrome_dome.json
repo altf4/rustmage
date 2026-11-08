@@ -3,10 +3,45 @@
   "catalogue_id": 748,
   "oracle_id": "3dc71e16-b935-4ad7-b3f7-945ac2c179a7",
   "facts_sha256": "5b5fd0d0c1714e7e8f846c30f46f8ea62415c5671c995c364a3e7f5819404510",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cad703379a1ceeeac6a968d66fd4eec3a3d83ed4cbc2fbfd17161ec20c33458b"
   },
-  "physical_metadata_sha256": "e6a010f9c4b6eaaf445407c89790ebd91fb158288d9193c0f490cbd166b62eb3"
+  "physical_metadata_sha256": "e6a010f9c4b6eaaf445407c89790ebd91fb158288d9193c0f490cbd166b62eb3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ChromeDome.java",
+  "java_sha256": "6bf220baa868923907fb8de7ec7b18d135ccf67bdfb76bb0ace0daf51bd62a01",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenCopyTargetEffect.java",
+      "sha256": "d04e58fdcda406a60d92c760243fca54440f13ec1fc94517c97eb9b360b9a158"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/AtTheBeginOfNextEndStepDelayedTriggeredAbility.java",
+      "sha256": "9f3272690e0ade9a48526bd13165b3015a71d8bbed9d86a997af960d5f3214a5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeTargetEffect.java",
+      "sha256": "c45c32e2c47bd7f62480c732af33864bcac93ec246a9cf7e292dd32a2d10917c"
+    }
+  ],
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "707.2",
+      "603.7",
+      "613.1f"
+    ],
+    "note": "The Oracle instruction creates an unmodified copy, then gives that token haste and establishes a source-independent next-end-step sacrifice. Unlike XMage CreateTokenCopyTargetEffect.setHasHaste, the later gained haste is not a copiable exception. The delayed sacrifice is not an intrinsic ability of the token and persists through ability loss; copied copies do not inherit either effect."
+  }
 }

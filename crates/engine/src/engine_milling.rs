@@ -11,10 +11,14 @@ impl Game {
     ) -> usize {
         // Freeze all players' top cards before moving anything. Mandatory milling
         // does as much as possible and never attempts a draw from an empty library.
-        if amount == MillAmount::RecipientGraveyard {
+        if matches!(
+            amount,
+            MillAmount::RecipientGraveyard | MillAmount::HalfLibraryRoundedUp
+        ) {
             return self
-                .mill_batch_with_counts(players, |game, player| {
-                    game.state
+                .mill_batch_with_counts(players, |game, player| match amount {
+                    MillAmount::RecipientGraveyard => game
+                        .state
                         .objects
                         .iter()
                         .filter(|object| {
@@ -22,14 +26,23 @@ impl Game {
                                 && object.owner == player
                                 && object.is_card()
                         })
+                        .count(),
+                    MillAmount::HalfLibraryRoundedUp => game.state.players[player.index()]
+                        .library
+                        .iter()
+                        .filter(|&&id| game.state.objects[id as usize].is_card())
                         .count()
+                        .div_ceil(2),
+                    _ => unreachable!(),
                 })
                 .iter()
                 .filter(|event| event.moved)
                 .count();
         }
         let maximum = match amount {
-            MillAmount::RecipientGraveyard => unreachable!("per-player counts handled above"),
+            MillAmount::RecipientGraveyard | MillAmount::HalfLibraryRoundedUp => {
+                unreachable!("per-player counts handled above")
+            }
             MillAmount::LifeEvent => usize::try_from(
                 self.state
                     .resolving

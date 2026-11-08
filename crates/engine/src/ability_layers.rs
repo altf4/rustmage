@@ -39,6 +39,7 @@ pub struct StaticAbilityGroup {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum AdditionalTriggerScope {
     ControlledSubtype(&'static str),
+    ControlledCreatureSubtype(&'static str),
     EquippedCreature,
     /// Only abilities triggered by a creature attacking, never other events.
     ControlledPermanentAttack,
@@ -74,6 +75,8 @@ pub enum StaticAbilityFragment {
     ReuseExhaustBeforeFirstActivationOwnTurn,
     /// Generic reduction for exhaust abilities of other controlled permanents.
     OtherControlledExhaustGenericReduction(u32),
+    ArtifactTokenActivationReduction(u32),
+    ControlledLandTapManaBonus(Mana),
     /// Controlled instant and sorcery spells have split second.
     ControlledInstantSorcerySplitSecond,
     /// Permanents controlled by this source's controller cannot be sacrificed.
@@ -111,6 +114,8 @@ pub enum StaticAbilityFragment {
     AttachedCreaturePreventsSourceAttack,
     /// Controlled creatures with greater toughness assign combat damage using toughness.
     ControlledCombatDamageByGreaterToughness,
+    /// Add one independent blocking requirement for this creature.
+    MustBeBlocked,
     /// This source assigns combat damage using the magnitude of negative power.
     SourceNegativePowerCombatDamage,
     /// Replace each nonexempt controller draw with two draws.
@@ -147,6 +152,7 @@ pub enum StaticAbilityFragment {
     },
     LookAtLibraryTop,
     CastCreatureFromLibraryTop,
+    CastSubtypesFromLibraryTopWithCounter(&'static [&'static str]),
     PlayLandFromLibraryTop,
     PlayLandFromGraveyard,
     SpendAnyManaForCreatures,
@@ -154,6 +160,15 @@ pub enum StaticAbilityFragment {
     /// Controlled matching spells have delve while this provider's rule is available.
     SpellDelve(CastFilter),
     GraveyardPermanentTypes,
+    /// Play qualifying creature spells from your graveyard during your turn.
+    GraveyardSmallCreaturesWithFinality,
+    GrantGraveyardCreatureSneak {
+        minimum_class_level: u8,
+        cost: ManaCost,
+    },
+    CastGraveyardCreaturesUsingSneak {
+        minimum_class_level: u8,
+    },
     ForeignStashPlay,
     ControlAttached,
     AttachedCharacteristics(&'static AttachedCharacteristics),
@@ -324,6 +339,10 @@ pub enum StaticAbilityFragment {
     },
     KeywordGrant(u16, KeywordGrant),
     StaticRuleGrant(u16, KeywordGrant),
+    ControlledCreatureCounterRule {
+        kind: Option<CounterKind>,
+        keywords: Keywords,
+    },
     StaticModifier(u16, StaticModifier),
     /// One layer-7c effect applies once to the union of its live creature groups.
     CreatureGroupBonus {
@@ -406,6 +425,8 @@ pub enum UntapRestriction {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug)]
 pub enum PermanentForm {
+    /// Replace only creature subtypes while retaining all card types.
+    Preserve,
     Creature,
     Land,
     /// Add creature type without removing other card or creature types.

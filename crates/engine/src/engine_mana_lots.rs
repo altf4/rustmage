@@ -129,7 +129,7 @@ pub(super) fn quality_from_world<W: ability_world::CharacteristicWorld + ?Sized>
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Quality {
-    const ORDINARY: Self = Self {
+    pub(super) const ORDINARY: Self = Self {
         restriction: ManaRestrictionView::Unrestricted,
         spell_bonus: ManaSpellBonusView::None,
         retention: ManaRetention::Step,
@@ -710,10 +710,18 @@ impl Game {
             0
         }
     }
-    pub(super) fn produce_mountain_tap_bonus(&mut self, actor: Player, amount: u32) {
-        if amount > 0 {
-            self.record_cast_mana_bonus(actor, amount);
-            self.add_mana(actor, [0, 0, 0, amount, 0, 0]);
+    pub(super) fn mana_tap_bonuses(&self, actor: Player, card: CardId) -> Mana {
+        let mut mana =
+            ability_world::CharacteristicWorld::controlled_land_tap_bonus(self, actor, card);
+        mana[3] = mana[3]
+            .checked_add(self.mountain_tap_bonus(actor, card))
+            .capacity("mana representation exhausted");
+        mana
+    }
+    pub(super) fn produce_tap_mana_bonus(&mut self, actor: Player, mana: Mana) {
+        if mana != [0; 6] {
+            self.record_cast_mana_bonus(actor, mana);
+            self.add_mana(actor, mana);
         }
     }
     pub(super) fn add_announced_mana(&mut self, item: &SpellView, mana: Mana) {
@@ -724,7 +732,7 @@ impl Game {
             })
         });
         self.add_quality_mana(item.controller, mana, quality);
-        self.produce_mountain_tap_bonus(item.controller, item.mana_tap_bonus.unwrap_or(0));
+        self.produce_tap_mana_bonus(item.controller, item.tap_mana_bonus());
     }
     pub(super) fn add_quality_mana(&mut self, actor: Player, mana: Mana, quality: Option<Quality>) {
         self.record_cast_mana_production(actor, mana, quality);

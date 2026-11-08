@@ -1,16 +1,33 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from complete pinned Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Creature(4, 4),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfEntersOrAttacks,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::CreateTokens {
+            token: Card(5278),
+            amount: 1,
+            tapped: false,
+        }],
+    }],
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Ability,
+        fragments: &[StaticAbilityFragment::ControlledCreatureCounterRule {
+            kind: None,
+            keywords: Keywords::MAX_ONE_BLOCKER,
+        }],
+    }],
+    extras: &CardExtras {
+        static_ability_groups: &[StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Ability,
+            fragments: &[StaticAbilityFragment::ControlledCreatureCounterRule {
+                kind: None,
+                keywords: Keywords::MAX_ONE_BLOCKER,
+            }],
+        }],
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

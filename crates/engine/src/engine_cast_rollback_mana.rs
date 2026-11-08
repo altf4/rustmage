@@ -39,7 +39,7 @@ pub(super) struct ManaEvent {
     pub kind: ManaEventKind,
     pub production: Mana,
     /// Unrestricted mana produced by triggered mana abilities after this event.
-    pub mountain_bonus: u32,
+    pub tap_bonus: Mana,
     pub quality: Option<mana_lots::Quality>,
     pub spent_lots: Vec<(mana_lots::Quality, Mana)>,
     /// Fully replaced, ordered activation-cost placements from the actual event.
@@ -177,6 +177,8 @@ pub struct ManaRollbackView {
     pub production: Mana,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mountain_bonus: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub land_tap_bonus: Option<Mana>,
     pub payment: Mana,
     pub irreversible: bool,
     pub can_keep: bool,
@@ -241,7 +243,13 @@ impl Game {
             source,
             definition,
             production: event.production,
-            mountain_bonus: (event.mountain_bonus > 0).then_some(event.mountain_bonus),
+            mountain_bonus: (event.tap_bonus[3] > 0).then_some(event.tap_bonus[3]),
+            land_tap_bonus: event
+                .tap_bonus
+                .iter()
+                .enumerate()
+                .any(|(i, &amount)| i != 3 && amount > 0)
+                .then_some(event.tap_bonus),
             payment: event.payment(),
             irreversible: event.irreversible,
             can_keep: self.mana_rollback_option(true),
@@ -503,8 +511,8 @@ impl Game {
             }
         }
         self.add_quality_mana(event.actor, event.production, event.quality);
-        if event.mountain_bonus > 0 {
-            self.add_mana(event.actor, [0, 0, 0, event.mountain_bonus, 0, 0]);
+        if event.tap_bonus != [0; 6] {
+            self.add_mana(event.actor, event.tap_bonus);
         }
         let active = self
             .state

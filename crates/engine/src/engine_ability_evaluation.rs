@@ -331,6 +331,18 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             value
         }
+        StaticAbilityFragment::ControlledCreatureCounterRule { kind, keywords } => {
+            if !own
+                || world.kinds(id) & 1 == 0
+                || !kind.map_or_else(
+                    || world.counter_amounts(id).has_any(),
+                    |kind| world.counter_count(id, kind) > 0,
+                )
+            {
+                return None;
+            }
+            keywords
+        }
         StaticAbilityFragment::KeywordGrant(_, grant)
         | StaticAbilityFragment::StaticRuleGrant(_, grant) => {
             if grant
@@ -839,6 +851,7 @@ pub(super) fn apply_rule_effects<W: CharacteristicWorld + ?Sized>(
                     fragment,
                     StaticAbilityFragment::AttachmentRule(..)
                         | StaticAbilityFragment::StaticRuleGrant(..)
+                        | StaticAbilityFragment::ControlledCreatureCounterRule { .. }
                 ) {
                     continue;
                 }

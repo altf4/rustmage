@@ -3,10 +3,67 @@
   "catalogue_id": 4774,
   "oracle_id": "989b93fe-cad0-4890-a228-8a20ca666f10",
   "facts_sha256": "d8f230dbf0277f042c9eba5dc3359e70605cd340fa5a347b89acacc0d7034f33",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b8313d04de67eda14bcfd02e31895545ac35b9b22c363ad0d21e787e21631838"
   },
-  "physical_metadata_sha256": "3698bb35ab7e1fcedb2ebb862b00d62a77f2ae6477dc6242155a15b708add53f"
+  "physical_metadata_sha256": "3698bb35ab7e1fcedb2ebb862b00d62a77f2ae6477dc6242155a15b708add53f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UneasyAlliance.java",
+  "java_sha256": "86ca7a37e7b35ef80e7694f916dfed5b7e891a69ee67fbd47bef41ee1e0aac90",
+  "rules_tests": "src/engine_tmt_final_spells_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+      "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileAttachedEffect.java",
+      "sha256": "65e112d9164329318f146755e2e6d72c57795f6dce4384568d0ce0fca372ee64"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantAttackBlockAttachedEffect.java",
+      "sha256": "d78155f9b01ffc823d4c3c0faec891a723d6d2e00152803ccaf34ca43cd3bddf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+      "sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/Ninja11Token.java",
+      "sha256": "f38c0283434bcd3a5c753a3868a773c8b288df3b86b7d8d2e8fa5f71c1f6e8d3"
+    }
+  ],
+  "oracle_rules_notes": "External attack/block restriction remains despite recipient ability removal. Sorcery-only5 activation sacrifices the Aura as cost, exiles its exact attachment LKI if still the same incarnation, and creates the Ninja even if attachment is gone."
 }

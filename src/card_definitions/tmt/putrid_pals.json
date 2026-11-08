@@ -3,10 +3,40 @@
   "catalogue_id": 3289,
   "oracle_id": "3aa3b908-e8d3-4944-8ced-5219d4129594",
   "facts_sha256": "8c0fa28536e89f2a41d9414f17a3280ea26dec74c26e713f64b4a66894230eb3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6417b176591e60330ab87ed3236dfbee38f76b658fc28863005ec72af98094c8"
   },
-  "physical_metadata_sha256": "d714308c060f4539926cc838327194f92d3401910a4cce31b96fb49ddd28d34e"
+  "physical_metadata_sha256": "d714308c060f4539926cc838327194f92d3401910a4cce31b96fb49ddd28d34e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PutridPals.java",
+  "java_sha256": "5fc4bbf253adb186c44319c582548a2b684bbd5621bf930c24a5bd24b0f4b02c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/RevoltCondition.java",
+      "sha256": "eead800f3b89bb7d03776b7366556d161ab63dca93fc82ff0db185990e01002c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/RevoltWatcher.java",
+      "sha256": "596de803f88a78c9c8210442aca24cd62c678ff57c421063ff5398efe6154438"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAbility.java",
+      "sha256": "8f8fd13f114dcff33a7022d97b46aa6af78c44986d66d9e9757c7838ada4d81f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    }
+  ]
 }

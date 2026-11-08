@@ -3,10 +3,133 @@
   "catalogue_id": 2404,
   "oracle_id": "52562194-4a97-40d2-aa73-7827f7834f2f",
   "facts_sha256": "c5cd98adf4e4e7b3fa7b66d517596d7d80bdf6a0df43791a562710c870c8b8f5",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8753d56c037ed406f51b98c8dc15fb97ec09e9f633e2b4e6af4960b41419a917"
   },
-  "physical_metadata_sha256": "c04eed69e1209e19213f5e9da089ba18396ecf3bad2f081e8e160105dc8e96f9"
+  "physical_metadata_sha256": "c04eed69e1209e19213f5e9da089ba18396ecf3bad2f081e8e160105dc8e96f9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KrangMasterMind.java",
+  "java_sha256": "6c34c4b7849e6a81bbc173f35bb223411632e8d285f4a8e35ed516bf2ba57f90",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/AffinityForArtifactsAbility.java",
+      "sha256": "5a56fb3667271af8fb5c5ac996d502bf9f3aa7e870415ed1a232b4da05388aa6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/AffinityAbility.java",
+      "sha256": "b1b523671266f687df90eb3003d186bb0f68f9ca99ccaffe675f25ed11f40547"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/NextSpellCastHasAbilityEffect.java",
+      "sha256": "43c809423c6f788530a1ea5018040257643c1e5c9a69661d9a41df8e8c12d6ad"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardsEqualToDifferenceEffect.java",
+      "sha256": "9658545a5c034cb3a1c67f037a94d78193b800a1076e565e4e8ebba2547bf93a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CardsInHandCondition.java",
+      "sha256": "f800994982a02a45f1ab09d9fc85d88a5159699bc87b73781d03b1c738411c25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/RatToken.java",
+      "sha256": "ea1ee18f97d671a46e89e8f13f1501f4f9dc9c349a26ef949765617427c92152"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/CrewedSourceThisTurnPredicate.java",
+      "sha256": "5b3633d8bb4d125b94b1a71a597d0abda391cb759710eaa30ec039965de9faec"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/CrewedVehicleWatcher.java",
+      "sha256": "cf30f42d7f9bb7e0d06079c5c413d2c1bfc294b9d5d2dd1c442a37708fc05075"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenCopyTargetEffect.java",
+      "sha256": "d04e58fdcda406a60d92c760243fca54440f13ec1fc94517c97eb9b360b9a158"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoubleCountersTargetEffect.java",
+      "sha256": "efd6157e6d2b9be74a5eac1be3519dc1e559d574429693499fb9bb709a9e0ead"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SagaAbility.java",
+      "sha256": "d907d96e4141a58d82f32fdb512e6426ed2cbd669544ade67f94b062dc7a8c80"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/TargetHasSubtypeCondition.java",
+      "sha256": "8f2b5c35b36e949dde467dd40cc88ac8858056cc3df5bb1e8ade08e0ef0d0d25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardWithDifferentNameInLibrary.java",
+      "sha256": "9b476ca557a122039f3b6e71a99683785f4ca8242e526d0f0434f827644ae9b0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyAllEffect.java",
+      "sha256": "ff52578966339bd976dc24cb1505f5862e3ee9b7b1abf41d2d8fac78cb43b48d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateDelayedTriggeredAbilityEffect.java",
+      "sha256": "537fdb546ad334c8e75d07346e68cf02ee4fa38bf830cbbd041ef491234f0661"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+      "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+      "sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    }
+  ],
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "400.7",
+      "601.2",
+      "603.7",
+      "701.23b",
+      "702.41",
+      "707.9"
+    ],
+    "note": "Typed paid legal interactions and owned branching in engine_tmt_final_batch_tests.rs. Turtles Forever deliberately differs from the pinned Java all-four early return: CR701.23b permits failing to find some or all qualified hidden-zone cards, and subsequent instructions process the cards actually found."
+  }
 }

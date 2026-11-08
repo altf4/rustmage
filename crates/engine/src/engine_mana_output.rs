@@ -303,7 +303,7 @@ impl Game {
     pub(super) fn complete_mana_output(&mut self, a: &mut Announcement, production: Mana) {
         let output = a.mana_output.take().expect("owned paid mana output");
         self.add_quality_mana(a.item.controller, production, output.quality);
-        self.produce_mountain_tap_bonus(a.item.controller, a.item.mana_tap_bonus.unwrap_or(0));
+        self.produce_tap_mana_bonus(a.item.controller, a.item.tap_mana_bonus());
         self.committed_mana_reflexive(&a.item);
         if self.restore_mana_announcement() {
             self.reopen_evidence_after_mana_sacrifice(output.instance.source.card);

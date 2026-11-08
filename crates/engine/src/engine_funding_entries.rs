@@ -100,6 +100,7 @@ impl Announcement {
                         ..
                     }
                     | CastCostClause::Harmonize(object) => add(object),
+                    CastCostClause::SneakReturn(Some(object)) => add(object),
                     _ => (),
                 }
             }
@@ -454,6 +455,11 @@ impl FundingState<'_> {
                 self.game.declared_attack_subtypes_all(player, subtypes)
             }
             StepGuard::Always => true,
+            StepGuard::FirstCombatPhase => self.game.first_combat_phase(),
+            StepGuard::SourceSneakedThisTurn => self.game.source_sneaked_this_turn(source),
+            StepGuard::PermanentLeftBattlefieldThisTurn => {
+                self.permanent_left_battlefield[player.index()]
+            }
             StepGuard::ArtifactEnteredThisTurn => state.turn_facts.artifact_entered,
             StepGuard::HeroEnteredOrAttackedThisTurn => {
                 state.turn_facts.hero_entered || state.turn_facts.hero_attacked
@@ -1453,6 +1459,9 @@ impl FundingState<'_> {
             if m.skipped {
                 continue;
             }
+            if m.before.zone == Zone::Battlefield && m.destination != Zone::Battlefield {
+                next.permanent_left_battlefield[m.before.controller.index()] = true;
+            }
             let face_down_physical = next.projected_face_down_physical(m.before.reference);
             let physical_copy = next
                 .temporary_copy_rows_state()
@@ -1633,6 +1642,14 @@ impl FundingState<'_> {
                 p.roles
                     .animations
                     .push(characteristic_layers::food_form(source, timestamp));
+            }
+            if m.return_modification
+                .is_some_and(|(kind, _)| kind == ReturnKind::FlyingRobot)
+            {
+                let timestamp = p.roles.next_timestamp();
+                p.roles
+                    .animations
+                    .push(characteristic_layers::flying_robot_form(source, timestamp));
             }
             if let Some((kind, origin)) = m.return_modification
                 && let Some((types, keywords)) = return_links::modification(kind)

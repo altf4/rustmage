@@ -3,10 +3,40 @@
   "catalogue_id": 3042,
   "oracle_id": "d14f620c-0fbd-485c-9fe4-34949e742147",
   "facts_sha256": "9ca8661a60cbd47e73f711154fcc47a014fa3cf538c2a9225e6e78e187627c10",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ff4a34069c0827aa55db045858f865e16786766b8b6e04a774f8d9d8088dd6e8"
   },
-  "physical_metadata_sha256": "09a2364e76b5575a0532127eb137854570ece7826032f9f019847751977fe31f"
+  "physical_metadata_sha256": "09a2364e76b5575a0532127eb137854570ece7826032f9f019847751977fe31f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OrokuSakiShredderRising.java",
+  "java_sha256": "2c651505a3b0cfa74d54e63e40c3c267f9275259944fed04d4f6b021a489b574",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/SneakAbility.java",
+      "sha256": "b25a32bf041c6a146f7d602c757f3be034f9282db5ed9c6cc03070b374611c70"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ReturnToHandChosenControlledPermanentCost.java",
+      "sha256": "ea8192aa5d4930687e7803379d509a1bd5a1910bcd418503f19a8de6417072b4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+      "sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+    }
+  ]
 }

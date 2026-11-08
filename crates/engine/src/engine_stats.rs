@@ -78,6 +78,7 @@ impl Game {
                     | TriggerCondition::ControlledCreatureCountersPlaced { .. }
                     | TriggerCondition::CounterBatchPlacedByYou { .. }
                     | TriggerCondition::CounterPlacedByYouOnControlledSubtypes { .. }
+                    | TriggerCondition::CreatureCountersPutByYou
                     | TriggerCondition::StateCounterAtLeast { .. }
             )
         }) {
@@ -113,6 +114,7 @@ impl Game {
                 ability.condition.event(),
                 TriggerCondition::CreatureAttacksYou { .. }
                     | TriggerCondition::CreaturesAttackYou
+                    | TriggerCondition::OpponentAttacked
                     | TriggerCondition::AttackDeclared { .. }
                     | TriggerCondition::CreaturesAttackDeclared { .. }
                     | TriggerCondition::FirstAttackWithTotalPowerAtLeast(_)
@@ -182,6 +184,7 @@ impl Game {
                     | TriggerCondition::SelfNontokenDies
                     | TriggerCondition::SelfCreatureDies
                     | TriggerCondition::SelfLeaves
+                    | TriggerCondition::PermanentLeaves(_)
                     | TriggerCondition::ReturnDeath(_)
                     | TriggerCondition::SelfEntersOrDies
                     | TriggerCondition::CreatureDies { .. }
@@ -242,6 +245,8 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::StartYourEngines
                             | crate::cards::StaticAbilityFragment::ReuseExhaustBeforeFirstActivationOwnTurn
                             | crate::cards::StaticAbilityFragment::OtherControlledExhaustGenericReduction(_)
+                            | crate::cards::StaticAbilityFragment::ArtifactTokenActivationReduction(_)
+                            | crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(_)
                             | crate::cards::StaticAbilityFragment::DoubleDrawExceptFirst
                             | crate::cards::StaticAbilityFragment::ConditionalDoubleDraw(_)
                             | crate::cards::StaticAbilityFragment::AdditionalDrawWithAtMostOneCard
@@ -289,6 +294,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::SourceCounterBonus { .. }
                             | crate::cards::StaticAbilityFragment::SourceGraveyardBonus { .. }
                             | crate::cards::StaticAbilityFragment::ConditionalCreatureModifier { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledCreatureCounterRule { .. }
                             | crate::cards::StaticAbilityFragment::CreatureGroupBonus { .. }
                             | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. }
                             | crate::cards::StaticAbilityFragment::SourceOffTurnCreature

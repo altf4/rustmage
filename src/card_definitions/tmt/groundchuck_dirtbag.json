@@ -3,10 +3,30 @@
   "catalogue_id": 1884,
   "oracle_id": "da344e46-6bdf-4032-8590-bac850d5713d",
   "facts_sha256": "df2c87c9ae924d843d349e0ad9dd63134467d9d5881143c8458fa4889c348408",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ec8fbcecf73597ac91d924dcfd83d42e7f008f3778abbcd149512f8dce5f2ed7"
   },
-  "physical_metadata_sha256": "e329edcd5e6ff049f4ba37d559ac7e502831a1945680392b4c4b11e60b793731"
+  "physical_metadata_sha256": "e329edcd5e6ff049f4ba37d559ac7e502831a1945680392b4c4b11e60b793731",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GroundchuckAndDirtbag.java",
+  "java_sha256": "a5231930b18cecd0d47e0f82b3aad139011316bbc4dfa0bcdd1149a8f36e92ea",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/TriggeredManaAbility.java",
+      "sha256": "f5924161ca1498f35a1e1ecf8d98980d4c81774238758d62b5e68370ab64f543"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+      "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    }
+  ]
 }

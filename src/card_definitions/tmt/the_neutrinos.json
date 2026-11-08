@@ -3,10 +3,45 @@
   "catalogue_id": 4482,
   "oracle_id": "b1462c82-7702-451b-b612-990353a79ac4",
   "facts_sha256": "2969a12c316b77033d3e711bdb1421837bb176d9323e798c5e3eaba7e621770a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a8871d7e2cf2ba17db75b463d3668fbb45e7fc41e76028788422297145a9cd51"
   },
-  "physical_metadata_sha256": "e91ba5c62150c46a6f10d5ce84550999369c6f6fd91a9eef37078ce24399f9a2"
+  "physical_metadata_sha256": "e91ba5c62150c46a6f10d5ce84550999369c6f6fd91a9eef37078ce24399f9a2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheNeutrinos.java",
+  "java_sha256": "6fd1476e4c756789f2996ac7750b0e512d1bd6cd52ab1de21ca303c911ec6050",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AllianceAbility.java",
+      "sha256": "59143d4e17e5b1b32947adb117ded8a8aaf467364194a5a623992c9963eae1cb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+      "sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileThenReturnTargetEffect.java",
+      "sha256": "4217e01de7184be471a8a30f82298a81946260b08b239d049ab3b6700d034418"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ]
 }

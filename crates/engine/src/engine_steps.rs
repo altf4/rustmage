@@ -24,10 +24,15 @@ pub(super) fn attached_controller_turn<W: ability_world::CharacteristicWorld + ?
 impl Game {
     pub(super) fn begin_step(&mut self, step: Step) {
         self.state.step = step;
+        self.queue_delayed_steps(step);
         if step == Step::Upkeep {
             self.queue_suspend_upkeep();
         }
         if step == Step::BeginCombat {
+            let phases = &mut self.state.players[self.state.active.index()]
+                .turn_facts
+                .combat_phases_started;
+            *phases = (*phases + 1).min(2);
             self.queue_begin_combat_this_turn();
         }
         if step == Step::Upkeep
@@ -194,23 +199,26 @@ impl Game {
     pub(super) fn trigger_time_guards_hold(
         &self,
         condition: TriggerCondition,
-        player: Player,
-        source: ObjectRef,
-        tapped: bool,
+        source: &ObjectView,
     ) -> bool {
         match condition {
             TriggerCondition::When { guard, event } => {
-                self.step_guard(guard, player, source, tapped)
-                    && self.trigger_time_guards_hold(*event, player, source, tapped)
+                let qualified = if let StepGuard::ClassLevelAtLeast(level) = guard {
+                    source.class_level.is_some_and(|current| current >= level)
+                } else {
+                    self.step_guard(guard, source.controller, source.reference, source.tapped)
+                };
+                qualified && self.trigger_time_guards_hold(*event, source)
             }
             TriggerCondition::InZone { event, .. }
             | TriggerCondition::Granted(event)
             | TriggerCondition::OncePerTurn(event)
             | TriggerCondition::DuringOpponentsTurn(event)
             | TriggerCondition::TreasureManaSpent(event)
+            | TriggerCondition::ManaSpentBelowValue(event)
             | TriggerCondition::ManaSpent { event, .. }
             | TriggerCondition::InterveningIf { event, .. } => {
-                self.trigger_time_guards_hold(*event, player, source, tapped)
+                self.trigger_time_guards_hold(*event, source)
             }
             _ => true,
         }
@@ -229,6 +237,7 @@ impl Game {
             | TriggerCondition::OncePerTurn(event)
             | TriggerCondition::DuringOpponentsTurn(event)
             | TriggerCondition::TreasureManaSpent(event)
+            | TriggerCondition::ManaSpentBelowValue(event)
             | TriggerCondition::ManaSpent { event, .. } => {
                 self.trigger_guards_hold(*event, player, source, tapped)
             }
@@ -325,6 +334,20 @@ impl Game {
         )
     }
 
+    pub(super) fn first_combat_phase(&self) -> bool {
+        matches!(
+            self.state.step,
+            Step::BeginCombat
+                | Step::Attackers
+                | Step::Blockers
+                | Step::FirstStrikeDamage
+                | Step::CombatDamage
+                | Step::EndCombat
+        ) && self.state.players[self.state.active.index()]
+            .turn_facts
+            .combat_phases_started
+            == 1
+    }
     pub(super) fn step_guard(
         &self,
         guard: StepGuard,
@@ -368,6 +391,11 @@ impl Game {
                 return self.declared_attack_subtypes_all(player, subtypes);
             }
             StepGuard::Always => return true,
+            StepGuard::FirstCombatPhase => return self.first_combat_phase(),
+            StepGuard::SourceSneakedThisTurn => return self.source_sneaked_this_turn(source),
+            StepGuard::PermanentLeftBattlefieldThisTurn => {
+                return p.turn_facts.permanent_left_battlefield;
+            }
             StepGuard::ArtifactEnteredThisTurn => return p.turn_facts.artifact_entered,
             StepGuard::HeroEnteredOrAttackedThisTurn => {
                 return p.turn_facts.hero_entered || p.turn_facts.hero_attacked;

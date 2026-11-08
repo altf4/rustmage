@@ -13,7 +13,8 @@ pub(super) struct ActivationCostChoice {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Announcement {
     pub behold_required: bool,
-    pub miracle_cost: Option<ManaCost>,
+    /// Captured origin-specific Miracle or granted Sneak cost.
+    pub origin_alternative_cost: Option<ManaCost>,
     pub item: SpellView,
     pub spec: TargetSpec,
     pub plan: TargetPlan,
@@ -87,6 +88,13 @@ impl Announcement {
                 })
         })
     }
+    pub(super) fn sneak_cost_options(&self) -> impl Iterator<Item = ManaCost> {
+        let card = self.item.source.expect("Sneak spell has a source").card;
+        let grant = self
+            .origin_alternative_cost
+            .filter(|cost| !card.sneak_cost_options().any(|printed| printed == *cost));
+        card.sneak_cost_options().chain(grant)
+    }
     pub(super) fn fixed_alternative_cost(&self) -> Option<ManaCost> {
         self.item.cast.and_then(|c| match c.method {
             CastMethod::Harmonize => self.item.source?.card.harmonize_cost(),
@@ -96,7 +104,7 @@ impl Announcement {
                     .first()
                     .copied()
             }
-            CastMethod::Miracle => self.miracle_cost,
+            CastMethod::Miracle => self.origin_alternative_cost,
             CastMethod::Mayhem => self
                 .item
                 .source
@@ -116,11 +124,18 @@ impl Announcement {
             _ => None,
         })
     }
-    pub(super) fn creature_counter_cost_amount(&self) -> Option<u16> {
-        self.additional_cost().and_then(|cost| match cost.kind {
-            EffectChoiceKind::RemoveCreatureCounters(amount) => Some(amount),
-            _ => None,
-        })
+    pub(super) fn creature_counter_cost_requirement(&self) -> Option<(u16, Option<CounterKind>)> {
+        self.additional_cost()
+            .and_then(|cost| cost.kind.creature_counter_requirement())
+    }
+    pub(super) fn has_compound_sneak_cost(&self) -> bool {
+        self.item
+            .cast
+            .is_some_and(|cast| cast.method == CastMethod::Sneak)
+            && self
+                .item
+                .source
+                .is_some_and(|source| source.card.additional_cost().is_some())
     }
     pub(super) fn additional_cost(&self) -> Option<AdditionalCost> {
         if self.activation_cost_route == ActivationCostRoute::FirstEquipZero {
@@ -146,6 +161,7 @@ impl Announcement {
             .item
             .cast
             .is_some_and(|c| c.method == CastMethod::Sneak)
+            && !self.has_compound_sneak_cost()
         {
             return Some(sneak::COST);
         }
@@ -196,12 +212,18 @@ impl Announcement {
             {
                 None
             }
-            StackKind::Spell => self
-                .item
-                .source
-                .expect("announcement has object source")
-                .card
-                .additional_cost(),
+            StackKind::Spell => {
+                let card = self
+                    .item
+                    .source
+                    .expect("announcement has object source")
+                    .card;
+                self.item
+                    .cast
+                    .filter(|cast| cast.kicker == Some(true))
+                    .and_then(|_| card.kicker_additional_cost())
+                    .or_else(|| card.additional_cost())
+            }
             StackKind::ActivatedAbility { ability } => self
                 .item
                 .source
@@ -246,7 +268,8 @@ impl Announcement {
                     .cast
                     .is_some_and(|c| c.method == CastMethod::Miracle) =>
             {
-                std::iter::once(self.miracle_cost.expect("miracle cost")).chain([].iter().copied())
+                std::iter::once(self.origin_alternative_cost.expect("miracle cost"))
+                    .chain([].iter().copied())
             }
             StackKind::Spell
                 if self
@@ -254,15 +277,8 @@ impl Announcement {
                     .cast
                     .is_some_and(|c| c.method == CastMethod::Sneak) =>
             {
-                std::iter::once(
-                    self.item
-                        .source
-                        .expect("announcement has object source")
-                        .card
-                        .sneak_cost()
-                        .expect("Sneak cost"),
-                )
-                .chain([].iter().copied())
+                std::iter::once(self.sneak_cost_options().next().expect("Sneak cost"))
+                    .chain([].iter().copied())
             }
             StackKind::Spell
                 if self
@@ -403,6 +419,14 @@ impl Announcement {
                 )
                 .map_or_else(Vec::new, |cost| cost.options)
                 .into_iter(),
+            )
+        } else if self
+            .item
+            .cast
+            .is_some_and(|cast| cast.method == CastMethod::Sneak)
+        {
+            crate::cards::mana_symbols::ManaOptions::Printed(
+                self.sneak_cost_options().collect::<Vec<_>>().into_iter(),
             )
         } else {
             crate::cards::mana_symbols::ManaOptions::Static(options)
@@ -1415,6 +1439,8 @@ impl Game {
             self.state.pending = Pending::EvidenceIntent { player };
         } else if a.needs_bargain() {
             self.state.pending = Pending::Bargain { player };
+        } else if self.needs_library_entry_counter_choice(&a.item) {
+            self.state.pending = Pending::LibraryCastPermission { player };
         } else if a.needs_kicker() {
             self.state.pending = Pending::Kicker { player };
         } else if a.needs_gift() {
@@ -1545,13 +1571,14 @@ impl Game {
                 })
         };
         let monocolored = keywords.contains(Keywords::HEXPROOF_MONOCOLORED);
-        if filters().next().is_none() && !monocolored {
+        let hexproof_colors = keywords.hexproof_colors();
+        if filters().next().is_none() && !monocolored && hexproof_colors == 0 {
             return false;
         }
         let Some((colors, kinds)) = self.target_source_qualities(source, qualification) else {
             return false;
         };
-        if monocolored && colors.count_ones() == 1 {
+        if (monocolored && colors.count_ones() == 1) || hexproof_colors & colors != 0 {
             return true;
         }
         let query = characteristic_query::CharacteristicQuery::in_world(world);
@@ -1776,6 +1803,8 @@ impl Game {
                 let object = world.object(id);
                 return match *predicate {
                     TargetPredicate::OwnedByController => object.owner == controller,
+                    TargetPredicate::Basic => world.definition(id).is_basic_land(),
+                    TargetPredicate::Kinds(kinds) => world.kinds(id) & kinds == kinds,
                     TargetPredicate::EnteredGraveyardThisTurn => {
                         object.zone == Zone::Graveyard
                             && object.is_card()
@@ -1788,6 +1817,14 @@ impl Game {
                     TargetPredicate::ManaValueAtMostLifeGained => {
                         u128::from(world.mana_value(id))
                             <= self.state.players[controller.index()].life_gained_this_turn
+                    }
+                    TargetPredicate::CrewedSourceThisTurn => {
+                        self.state.crew.as_ref().is_some_and(|state| {
+                            state.history.iter().any(|entry| {
+                                entry.vehicle == source
+                                    && entry.contributors.contains(&world.reference(id))
+                            })
+                        })
                     }
                     TargetPredicate::OtherThanSource => self.object_ref(id) != source,
                     TargetPredicate::OtherThanSourceAttachment => {
@@ -2077,6 +2114,10 @@ impl Game {
         );
         self.state.passes = 0;
         let stash_origin = self.foreign_stash(actor, card);
+        let library_counter = self.library_entry_counter(actor, card);
+        let linked_play = self
+            .prepare_linked_exile_cast(actor, card)
+            .map(|approval| (approval, self.has_exile_free_permission(actor, card)));
         let modifiers = self.exile_cast_modifiers(actor, card);
         let origin = self.state.objects[card as usize].zone;
         let before = self.object_view(card);
@@ -2107,6 +2148,21 @@ impl Game {
         }
         let id = self.next_stack_id();
         let mut item = self.cast_preview(actor, card, origin, object, id, payment);
+        if let Some(mut counter) = library_counter {
+            counter.spell = id;
+            self.state
+                .linked_choices
+                .get_or_insert_default()
+                .library_entry_counter = Some(counter);
+        }
+        if let Some((approval, independent_free)) = linked_play {
+            self.state
+                .linked_choices
+                .as_mut()
+                .unwrap()
+                .play_approvals
+                .push((id, approval, independent_free));
+        }
         if outcome.uncounterable {
             self.mark_spell_uncounterable(id);
         }
@@ -2289,7 +2345,7 @@ impl Game {
             free_hand_permission: None,
             origin_counter_cost: None,
             origin_additional_cost: None,
-            miracle_cost: self.miracle_cost_for(&item),
+            origin_alternative_cost: self.origin_alternative_cost_for(&item),
             item,
             spec: TargetSpec::NONE,
             plan,
@@ -2317,6 +2373,17 @@ impl Game {
         });
         self.continue_announcement_choices(needs_mode);
         true
+    }
+
+    pub(super) fn origin_alternative_cost_for(&self, item: &SpellView) -> Option<ManaCost> {
+        self.miracle_cost_for(item).or_else(|| {
+            let cast = item.cast?;
+            if cast.method == CastMethod::Sneak && cast.origin == Zone::Graveyard {
+                self.granted_sneak_cost(item.controller, item.source?.card)
+            } else {
+                None
+            }
+        })
     }
 
     pub(super) fn open_payment_announcement(
@@ -2483,7 +2550,7 @@ impl Game {
             free_hand_permission: None,
             origin_counter_cost,
             origin_additional_cost: None,
-            miracle_cost: self.miracle_cost_for(&item),
+            origin_alternative_cost: self.origin_alternative_cost_for(&item),
             item,
             spec: TargetSpec::NONE,
             plan,
@@ -2669,6 +2736,7 @@ impl Game {
                     EffectChoiceKind::Sacrifice
                         | EffectChoiceKind::SacrificeRange { .. }
                         | EffectChoiceKind::SacrificeDifferentNames(_)
+                        | EffectChoiceKind::SacrificePermanents(_)
                         | EffectChoiceKind::ReturnToHand
                 ) || forage::is_forage_cost(spec)
                     || evidence::threshold(spec).is_some()

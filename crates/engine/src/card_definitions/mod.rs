@@ -356,6 +356,7 @@ pub struct CardExtras {
     pub warp_cost: Option<ManaCost>,
     pub disguise_cost: Option<ManaCost>,
     pub sneak_cost: Option<ManaCost>,
+    pub sneak_costs: &'static [ManaCost],
     /// Graveyard alternative with an optional power-based creature tap.
     pub harmonize_cost: Option<ManaCost>,
     /// Variable symbols in the printed harmonize alternative (independent of the mana cost).
@@ -381,6 +382,7 @@ pub struct CardExtras {
     pub teamwork: Option<TeamworkSpec>,
     pub blight: Option<BlightSpec>,
     pub kicker_cost: Option<ManaCost>,
+    pub kicker_additional_cost: Option<AdditionalCost>,
     pub gift: Option<GiftSpec>,
     pub kicked_entry_counters: u16,
     pub counter_keyword_grants: &'static [(CounterKind, Keywords)],
@@ -419,6 +421,7 @@ pub struct CardExtras {
     pub aura_artifact_or_non_aura_enchantment: bool,
     /// Additional live subtype accepted by this Aura’s ordinary kind union.
     pub aura_kind_or_subtype: Option<&'static str>,
+    pub enchant_basic: bool,
     pub enchanted_modifiers: &'static [EnchantedModifier],
     pub flash_surcharge: Option<ManaCost>,
 }
@@ -479,6 +482,7 @@ impl CardExtras {
         warp_cost: None,
         disguise_cost: None,
         sneak_cost: None,
+        sneak_costs: &[],
         harmonize_cost: None,
         harmonize_x_symbols: 0,
         mayhem_cost: None,
@@ -502,6 +506,7 @@ impl CardExtras {
         teamwork: None,
         blight: None,
         kicker_cost: None,
+        kicker_additional_cost: None,
         gift: None,
         kicked_entry_counters: 0,
         counter_keyword_grants: &[],
@@ -533,6 +538,7 @@ impl CardExtras {
         uncounterable: false,
         aura_artifact_or_non_aura_enchantment: false,
         aura_kind_or_subtype: None,
+        enchant_basic: false,
         enchanted_modifiers: &[],
         flash_surcharge: None,
     };

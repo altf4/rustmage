@@ -115,6 +115,19 @@ impl Game {
         I: Iterator<Item = (CardId, &'a Object)>,
     {
         match value {
+            StatValue::ArtifactEnteredThisTurn => i128::from(
+                self.state.players[owner.index()]
+                    .turn_facts
+                    .artifact_entered,
+            ),
+            StatValue::SourceClassLevelAtLeast(level) => {
+                i128::from(objects().any(|(id, object)| {
+                    id == source.card
+                        && object.generation == source.generation
+                        && object.zone == Zone::Battlefield
+                        && object.class_level >= level
+                }))
+            }
             StatValue::SourceHasNotDealtCombatDamage => objects()
                 .find(|(id, object)| *id == source.card && object.generation == source.generation)
                 .map_or(0, |(_, object)| {
@@ -595,6 +608,16 @@ impl Game {
                     .capacity("effect sum exhausted")
             }),
             AmountValue::Fixed(n) => u128::from(n),
+            AmountValue::GreatestCreaturePower(filter) => {
+                let query = self.characteristic_query();
+                (0..self.state.objects.len())
+                    .map(|id| id as CardId)
+                    .filter(|&id| query.creature_matches(filter, owner, source, id))
+                    .map(|id| query.stats(id).power)
+                    .max()
+                    .unwrap_or(0)
+                    .max(0) as u128
+            }
             AmountValue::GreatestCreatureToughness => {
                 ability_world::CharacteristicWorld::greatest_creature_toughness(self, owner).max(0)
                     as u128
@@ -622,6 +645,7 @@ impl Game {
             | AmountValue::ChosenX
             | AmountValue::ReflexiveTargetLimit
             | AmountValue::ManaSpent
+            | AmountValue::CastCardTypeCount
             | AmountValue::CastSpellManaValue
             | AmountValue::CastSpellManaSymbols(_)
             | AmountValue::SpellColors
@@ -640,6 +664,8 @@ impl Game {
             | AmountValue::DiscardEventAmount
             | AmountValue::DamageEventAmount
             | AmountValue::CreatureCombatDamageAmount
+            | AmountValue::DepartureCounterCount(_)
+            | AmountValue::DeathEventToughness
             | AmountValue::DamageReceivedAmount => 0, // Off-stack expressions have no cast parameter.
             AmountValue::Stat(value) => self.stat_value(value, source, owner).max(0) as u128,
             AmountValue::CardsDiscardedThisTurn => {

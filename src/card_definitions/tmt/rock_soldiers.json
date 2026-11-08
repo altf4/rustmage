@@ -8,5 +8,27 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d44c69e8b48780fcd112b8c2f478c735b340ff2d5ebceb39fffcef944a8cbb89"
   },
-  "physical_metadata_sha256": "5597c4d7989aa05b5adc09a5d9d7e2215396cccf8fc1a8871c26c1c5d3959bb2"
+  "physical_metadata_sha256": "5597c4d7989aa05b5adc09a5d9d7e2215396cccf8fc1a8871c26c1c5d3959bb2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RockSoldiers.java",
+  "java_sha256": "3f8b91f2bb4c68298c63a58414c3cf3e87ea4d723b17cd464411bd47c7e631ec",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    }
+  ],
+  "source_audit": {
+    "scope": "Full Oracle body, complete XMage card class and listed complete reusable implementations read; inherited typed behavior independently exercised with paid legal actions.",
+    "tests": [
+      "src/engine_tmt_inherited_batch_three_tests.rs"
+    ],
+    "status": "Focused rules audit; integrated release and complete-set acceptance remain integrator obligations."
+  }
 }

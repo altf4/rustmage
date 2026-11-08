@@ -16,10 +16,14 @@ impl Card {
                         | StaticAbilityFragment::CascadeFromHand { .. }
                         | StaticAbilityFragment::LookAtLibraryTop
                         | StaticAbilityFragment::CastCreatureFromLibraryTop
+                        | StaticAbilityFragment::CastSubtypesFromLibraryTopWithCounter(_)
                         | StaticAbilityFragment::PlayLandFromLibraryTop
                         | StaticAbilityFragment::PlayLandFromGraveyard
                         | StaticAbilityFragment::SpendAnyManaForCreatures
                         | StaticAbilityFragment::GraveyardPermanentTypes
+                        | StaticAbilityFragment::GraveyardSmallCreaturesWithFinality
+                        | StaticAbilityFragment::GrantGraveyardCreatureSneak { .. }
+                        | StaticAbilityFragment::CastGraveyardCreaturesUsingSneak { .. }
                         | StaticAbilityFragment::ForeignStashPlay
                         | StaticAbilityFragment::FreeSpellCast(_)
                 )
@@ -28,7 +32,7 @@ impl Card {
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-fn has_fragment<W: ability_world::CharacteristicWorld + ?Sized>(
+pub(super) fn has_fragment<W: ability_world::CharacteristicWorld + ?Sized>(
     world: &W,
     player: Player,
     predicate: impl Fn(&StaticAbilityFragment) -> bool,
@@ -145,12 +149,31 @@ impl Game {
         definition: Card,
     ) -> bool {
         let object = &self.state.objects[card as usize];
+        self.library_subtype_cast_permission(player, card, definition)
+            || (object.owner == player
+                && object.zone == Zone::Library
+                && definition.is_creature()
+                && self.top_library_card(player) == Some(card)
+                && has_fragment(self, player, |f| {
+                    matches!(f, StaticAbilityFragment::CastCreatureFromLibraryTop)
+                }))
+    }
+    pub(super) fn library_subtype_cast_permission(
+        &self,
+        player: Player,
+        card: CardId,
+        definition: Card,
+    ) -> bool {
+        let object = &self.state.objects[card as usize];
         object.owner == player
             && object.zone == Zone::Library
-            && definition.is_creature()
             && self.top_library_card(player) == Some(card)
-            && has_fragment(self, player, |f| {
-                matches!(f, StaticAbilityFragment::CastCreatureFromLibraryTop)
+            && has_fragment(self, player, |fragment| match fragment {
+                StaticAbilityFragment::CastSubtypesFromLibraryTopWithCounter(types) => {
+                    types.iter().any(|subtype| definition.has_subtype(subtype))
+                        || definition.keywords().contains(Keywords::CHANGELING)
+                }
+                _ => false,
             })
     }
     pub(super) fn can_look_library_top(&self, player: Player) -> bool {
@@ -259,7 +282,7 @@ impl Game {
                     if permanent_type != PermanentType::Land
                         && !object.card.is_land()
                         && !casting_prohibited
-                        && object.card.sneak_cost().is_some()
+                        && self.has_sneak_cost(actor, card)
                         && self.state.step == Step::Blockers
                         && self.permitted_cast_available(
                             actor,

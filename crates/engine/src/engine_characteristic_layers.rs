@@ -182,7 +182,7 @@ pub(super) fn land_kind_events<W: CharacteristicWorld + ?Sized>(
     let mut events: Vec<_> = aura_effects(world, id)
         .into_iter()
         .filter_map(|(time, spec)| match spec.form {
-            PermanentForm::AddCreature => None,
+            PermanentForm::AddCreature | PermanentForm::Preserve => None,
             form => Some((time, matches!(form, PermanentForm::Land))),
         })
         .collect();
@@ -262,16 +262,13 @@ fn kind_timeline<W: CharacteristicWorld + ?Sized>(
 ) -> (u16, Vec<(u64, u16, bool)>) {
     let mut changes: Vec<_> = aura_effects(world, id)
         .into_iter()
-        .map(|(time, spec)| {
-            (
-                time,
-                match spec.form {
-                    PermanentForm::Creature => 1,
-                    PermanentForm::Land => 2,
-                    PermanentForm::AddCreature => 1,
-                },
-                matches!(spec.form, PermanentForm::AddCreature),
-            )
+        .filter_map(|(time, spec)| {
+            let kinds = match spec.form {
+                PermanentForm::Creature | PermanentForm::AddCreature => 1,
+                PermanentForm::Land => 2,
+                PermanentForm::Preserve => return None,
+            };
+            Some((time, kinds, matches!(spec.form, PermanentForm::AddCreature)))
         })
         .collect();
     if let Some(change) = source_conditional_creature(world, id) {
@@ -403,7 +400,9 @@ fn changed_colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> u8 
     aura_effects(world, id)
         .into_iter()
         .filter_map(|(timestamp, spec)| {
-            if matches!(spec.form, PermanentForm::AddCreature) {
+            if matches!(spec.form, PermanentForm::AddCreature)
+                || (matches!(spec.form, PermanentForm::Preserve) && spec.colors.is_empty())
+            {
                 return None;
             }
             Some((
@@ -499,6 +498,7 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
                 match s.form {
                     PermanentForm::Creature => SubtypeChange::Named(s.creature_types, true),
                     PermanentForm::Land => SubtypeChange::LandOnly,
+                    PermanentForm::Preserve => SubtypeChange::Named(s.creature_types, false),
                     PermanentForm::AddCreature => SubtypeChange::Add(s.creature_types),
                 },
             )
@@ -758,6 +758,23 @@ impl Game {
             .animations
             .push(row);
     }
+    pub(super) fn choose_source_color_and_hexproof(&mut self, color: crate::cards::ChoiceColor) {
+        let Some(source) = self.state.resolving.as_ref().and_then(|r| r.item.source) else {
+            return;
+        };
+        self.change_object_form_colored(
+            source.object,
+            AnimationSpec {
+                artifact: false,
+                creature_types: AnimationCreatureTypes::Unchanged,
+                base: None,
+                keywords: Keywords::hexproof_from_color(color),
+                duration: AnimationDuration::EndOfTurn,
+            },
+            AnimationTypeMode::PreserveCardTypes,
+            Some(1 << color.index()),
+        );
+    }
     pub(super) fn set_creature_form(
         &mut self,
         item: &SpellView,
@@ -871,6 +888,21 @@ pub(super) fn artifact_noncreature_form(object: ObjectRef, timestamp: u64) -> An
         artifact_noncreature: true,
         enchantment_noncreature: false,
         preserve_card_types: false,
+        ..food_form(object, timestamp)
+    }
+}
+
+/// A returned noncreature artifact enters as a flying Robot.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn flying_robot_form(object: ObjectRef, timestamp: u64) -> AnimationView {
+    AnimationView {
+        food_only: false,
+        artifact: true,
+        artifact_noncreature: false,
+        preserve_card_types: false,
+        creature_types: Some(&["Robot"]),
+        base: Some((3, 3)),
+        keywords: Keywords::FLYING,
         ..food_form(object, timestamp)
     }
 }

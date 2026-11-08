@@ -8,5 +8,22 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "642f0b5225c497321025fb71832e9cf93a9c72977defa5511a8af2ea05e475f1"
   },
-  "physical_metadata_sha256": "8e7924137b0cc17180990e3ec3f6f5178eaa9b75041ab74f77db35939765872c"
+  "physical_metadata_sha256": "8e7924137b0cc17180990e3ec3f6f5178eaa9b75041ab74f77db35939765872c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/n/Negate.java",
+  "java_sha256": "6947cb935343a89e782f1aa5ee82047dfb5a5ecc9dca147b8974f1384be55908",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterTargetEffect.java",
+      "sha256": "49282767e8f8d631bb38ae1d35bc91a29ab2ae8173030e3a89d3da495c1cf233"
+    }
+  ],
+  "source_audit": {
+    "scope": "Full Oracle body, complete XMage card class and listed complete reusable implementations read; inherited typed behavior independently exercised with paid legal actions.",
+    "tests": [
+      "src/engine_tmt_inherited_batch_three_tests.rs"
+    ],
+    "status": "Focused rules audit; integrated release and complete-set acceptance remain integrator obligations."
+  }
 }

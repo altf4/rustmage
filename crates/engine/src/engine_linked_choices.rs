@@ -78,6 +78,13 @@ pub(super) struct ChoiceState {
     // Some(None) means tracking this instruction but no successful own sacrifice.
     sacrifice: Option<Option<ObjectRef>>,
     pub links: Vec<LinkedExileView>,
+    pub linked_exile_mode: Option<linked_exile_effects::LinkedExileMode>,
+    pub linked_exile_selected: Option<ObjectRef>,
+    pub legendary_search: Option<Box<legendary_split_search::LegendarySplitSearch>>,
+    pub delayed_steps: Vec<delayed_steps::DelayedStep>,
+    pub play_grants: Vec<limited_exile::LimitedExilePlay>,
+    pub play_approvals: Vec<(u64, limited_exile::LimitedExilePlay, bool)>,
+    pub library_entry_counter: Option<library_entry_counter::LibraryEntryCounter>,
     pub null_cast_links: Vec<NullCastLink>,
     hidden: BTreeMap<ObjectRef, HiddenExile>,
 }
@@ -106,6 +113,19 @@ impl ChoiceState {
             + self.deployment.as_ref().map_or(0, |h| h.bytes())
             + self.hidden.len() * std::mem::size_of::<(ObjectRef, HiddenExile)>()
             + self.links.len() * std::mem::size_of::<LinkedExileView>()
+            + self
+                .legendary_search
+                .as_ref()
+                .map_or(0, |state| state.owned_bytes())
+            + self.delayed_steps.len() * std::mem::size_of::<delayed_steps::DelayedStep>()
+            + self
+                .delayed_steps
+                .iter()
+                .map(|row| row.item.owned_bytes())
+                .sum::<usize>()
+            + self.play_grants.len() * std::mem::size_of::<limited_exile::LimitedExilePlay>()
+            + self.play_approvals.len()
+                * std::mem::size_of::<(u64, limited_exile::LimitedExilePlay, bool)>()
             + self.null_cast_links.len() * std::mem::size_of::<NullCastLink>()
             + self.piles.as_ref().map_or(0, |p| {
                 (p.remaining.len() + p.up.len() + p.down.len()) * std::mem::size_of::<ObjectRef>()
@@ -127,7 +147,10 @@ impl Game {
             data.piles = None;
             data.keep_types = None;
             data.sacrifice = None;
-            if data.links.is_empty() && data.null_cast_links.is_empty() && data.hidden.is_empty() {
+            data.linked_exile_mode = None;
+            data.linked_exile_selected = None;
+            data.legendary_search = None;
+            if **data == ChoiceState::default() {
                 self.state.linked_choices = None;
             }
         }
@@ -640,7 +663,20 @@ impl Game {
         else {
             return;
         };
-        assert!(self.linked_exile_candidates(source).contains(&object));
+        assert!(
+            self.resolution_linked_exile_candidates(source)
+                .contains(&object)
+        );
+        if let Some(mode) = self
+            .state
+            .linked_choices
+            .as_mut()
+            .and_then(|state| state.linked_exile_mode.take())
+        {
+            self.finish_linked_exile_effect(mode, object);
+            self.run_program();
+            return;
+        }
         let movement = self.entry_move(object.card, Zone::Hand, false);
         self.stage_entries(vec![movement], None);
         self.run_program();

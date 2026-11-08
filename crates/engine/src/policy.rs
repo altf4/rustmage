@@ -1,12 +1,18 @@
 //! Smoke policies for tests and benchmarks; not a training implementation.
 use crate::cards::{CounterKind, Effect, Instruction, PlayerSet};
-use crate::{Action, Game, StackKind, Target, Zone};
+use crate::{Action, Game, Observation, StackKind, Target, Zone};
 
 /// Deterministic simple policy: keep, play lands, cast, attack, block, tap, pass.
 /// Uses only the acting player's observation and the offered action list.
 pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
     let actor = game.actor().expect("nonterminal game");
     let observation = game.observe(actor);
+    smoke_index_from_observation(&observation, actions)
+}
+
+/// Score offered actions from the actor's observation, without observing twice.
+pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action]) -> usize {
+    let actor = observation.actor.expect("nonterminal game");
     // Fundable declarations are offered before any speculative mana activation.
     // Preserve spare sources for later steps once those declarations are exhausted.
     let tap_for_payment = observation.announcing.is_some()
@@ -198,7 +204,9 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::ChooseDelver { .. }
             | Action::ChooseWaterbender { .. }
             | Action::ChooseHarmonizer { .. } => 50,
-            Action::ChooseMobilizeDefender { .. } | Action::ChooseHandDefender { .. } => 50,
+            Action::ChooseMobilizeDefender { .. }
+            | Action::ChooseEntryAttackingDefender { .. }
+            | Action::ChooseHandDefender { .. } => 50,
             Action::PutHandCreature { .. }
             | Action::PutHandPermanent { .. }
             | Action::PutHandLand { .. }
@@ -212,7 +220,8 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             Action::ProliferatePermanent { .. } | Action::ProliferatePlayer { .. } => 50,
             Action::FinishProliferate => 0,
             Action::FinishGraveyardReturn | Action::FinishLandSelection => -1,
-            Action::DeclineHandEntry => -1,
+            Action::DeclineHandEntry | Action::FinishHandSelection => -1,
+            Action::BottomHandCard { .. } => 10,
             Action::ChooseBlight { pay } => i128::from(*pay) * 40,
             Action::PayBlight { .. } => 50,
             Action::ChooseTeamwork { pay } => i128::from(*pay) * 40,
@@ -244,6 +253,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             }
             Action::ChooseCasualty { pay }
             | Action::ChooseOffspring { pay }
+            | Action::ChooseLibraryCastPermission { with_counter: pay }
             | Action::ChooseKicker { pay } => {
                 if *pay {
                     100
@@ -272,6 +282,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             }
             Action::ChooseCastCost { .. }
             | Action::PayCasualty { .. }
+            | Action::PaySneakReturn { .. }
             | Action::ChooseAdditionalCost { .. }
             | Action::ChooseAdditionalLife
             | Action::ChooseCreatureCounterCost { .. } => 60,
@@ -334,6 +345,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::AnnounceGrantedHarmonize { .. }
             | Action::AnnounceCounterGraveyard { .. }
             | Action::AnnounceGraveyardAdditionalCosts { .. }
+            | Action::AnnounceGraveyardFinality { .. }
             | Action::AnnounceCast { .. }
             | Action::AnnounceFlashSurcharge { .. }
             | Action::AnnounceWarp { .. }
@@ -375,7 +387,12 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::ChooseOutsideEntryReplacement { .. }
             | Action::ChooseOutsideSelfReplacement { .. } => 60,
             Action::CancelOutsideCard | Action::DeclineOutsideCards => -1,
-            Action::ChooseSearch { .. } | Action::ChooseSearchBattlefield { .. } => 60,
+            Action::ChooseSearch { .. }
+            | Action::ChooseSearchBattlefield { .. }
+            | Action::ChooseLegendaryFound { .. } => 60,
+            Action::ChooseLegendarySearchZones { library, outside } => {
+                60 + i128::from(*library) + i128::from(*outside)
+            }
             Action::ChooseSearchDestination { destination } => {
                 if *destination == crate::SearchDestination::Hand {
                     60
@@ -530,13 +547,13 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 target_score(program, *target)
             }
             Action::FinishTargets => 0,
-            Action::ChooseMana { production } => mana_score(&observation, *production),
+            Action::ChooseMana { production } => mana_score(observation, *production),
             Action::TapGrantedMana { production, .. } => {
                 if observation.resolution_payment.is_some() {
                     return resolution_mana_score([0; 6], *production);
                 }
                 if tap_for_payment {
-                    20 + mana_score(&observation, *production)
+                    20 + mana_score(observation, *production)
                 } else {
                     -5
                 }
@@ -560,7 +577,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     return resolution_mana_score(*payment, *production);
                 }
                 if tap_for_payment {
-                    20 + mana_score(&observation, *production)
+                    20 + mana_score(observation, *production)
                 } else {
                     -5
                 }
@@ -587,8 +604,16 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                     .objects
                     .iter()
                     .find(|o| o.id == *card)
-                    .unwrap()
-                    .card;
+                    .map(|o| o.card)
+                    .or_else(|| {
+                        observation
+                            .known_library_top
+                            .iter()
+                            .flatten()
+                            .find(|top| top.object.card == *card)
+                            .map(|top| top.card)
+                    })
+                    .expect("visible legal cast");
                 if definition.aura().is_some() {
                     return target.map(|t| aura_score(definition, t)).unwrap_or(-10);
                 }
@@ -666,7 +691,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
                 }
             }
             Action::ChooseToken { .. } => 10,
-            Action::ChooseKeyword { .. } => 10,
+            Action::ChooseKeyword { .. } | Action::ChooseResolutionColor { .. } => 10,
             Action::CancelAttackDeclaration
             | Action::AbortAttackPayment
             | Action::AbortFaceUpPayment => -100,

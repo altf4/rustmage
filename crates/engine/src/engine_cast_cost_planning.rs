@@ -146,7 +146,8 @@ impl FundingState<'_> {
                 | CastCostClause::Blight { .. }
                 | CastCostClause::Casualty(_)
                 | CastCostClause::Harmonize(_) => {}
-                CastCostClause::Behold(_) => {}
+                CastCostClause::SneakReturn(_) if !row.paid => return false,
+                CastCostClause::Behold(_) | CastCostClause::SneakReturn(_) => {}
             }
         }
         let mut hand = 0usize;
@@ -181,6 +182,7 @@ impl FundingState<'_> {
             | EffectChoiceKind::ReturnToHand => battlefield > 0,
             EffectChoiceKind::SacrificeRange { minimum: n }
             | EffectChoiceKind::SacrificeDifferentNames(n)
+            | EffectChoiceKind::SacrificePermanents(n)
             | EffectChoiceKind::TapPermanents(n) => battlefield >= usize::from(n),
             EffectChoiceKind::ExileGraveyard => potential_graveyard > 0,
             EffectChoiceKind::ExileGraveyardCards(n)
@@ -194,6 +196,7 @@ impl FundingState<'_> {
                 n == 0 || potential_graveyard > 0
             }
             EffectChoiceKind::RemoveCreatureCounters(n) => n == 0 || battlefield > 0,
+            EffectChoiceKind::RemoveCreatureCounter(_) => battlefield > 0,
             EffectChoiceKind::Forage | EffectChoiceKind::ForageOrBlack => match c.forage {
                 Some(ForageRoute::Food) => battlefield > 0,
                 Some(ForageRoute::ExileThree) => potential_graveyard >= 3,
@@ -364,6 +367,7 @@ impl FundingState<'_> {
                 EffectChoiceKind::Sacrifice
                     | EffectChoiceKind::SacrificeRange { .. }
                     | EffectChoiceKind::SacrificeDifferentNames(_)
+                    | EffectChoiceKind::SacrificePermanents(_)
                     | EffectChoiceKind::SacrificeAttachedEquipment
             ) || !self.sacrifice_prohibited(r.card))
             && (spec.kind.payment_kind() != EffectChoiceKind::ReturnUnblockedAttacker
@@ -510,6 +514,9 @@ impl FundingState<'_> {
                         .iter()
                         .position(|v| v.id == r.card)
                         .expect("cost resource retained");
+                    if before_zone == Zone::Battlefield && zone != Zone::Battlefield {
+                        n.permanent_left_battlefield[controller.index()] = true;
+                    }
                     if before_zone == Zone::Battlefield && zone == Zone::Graveyard && kinds & 1 != 0
                     {
                         n.controlled_creatures_died[controller.index()] = n
@@ -729,6 +736,19 @@ impl FundingState<'_> {
                         })
                     {
                         return true;
+                    }
+                }
+                CastCostClause::SneakReturn(selected) => {
+                    for attack in &self.game.state.attackers {
+                        let object = self.game.object_ref(attack.card);
+                        if selected.is_none_or(|wanted| wanted == object)
+                            && self.cost_object(sneak::COST, object, c.source)
+                            && self.cost_departures(&[object], Zone::Hand, &mut |world| {
+                                world.complete_cost_rows(&later, &rest)
+                            })
+                        {
+                            return true;
+                        }
                     }
                 }
                 CastCostClause::Additional => {
@@ -1233,10 +1253,13 @@ impl FundingState<'_> {
                 evidence_min = Some((u128::from(minimum), Some(color)));
                 destination = Zone::Exile;
             }
-            EffectChoiceKind::RemoveCreatureCounters(n) => counters = Some(n),
-            EffectChoiceKind::TapPermanents(n) | EffectChoiceKind::SacrificeDifferentNames(n) => {
-                amount = usize::from(n)
+            EffectChoiceKind::RemoveCreatureCounters(_)
+            | EffectChoiceKind::RemoveCreatureCounter(_) => {
+                counters = spec.kind.creature_counter_requirement();
             }
+            EffectChoiceKind::TapPermanents(n)
+            | EffectChoiceKind::SacrificeDifferentNames(n)
+            | EffectChoiceKind::SacrificePermanents(n) => amount = usize::from(n),
             EffectChoiceKind::ExileGraveyard
             | EffectChoiceKind::ExileControlled
             | EffectChoiceKind::ExileControlledOrGraveyard => destination = Zone::Exile,
@@ -1262,8 +1285,8 @@ impl FundingState<'_> {
             | EffectChoiceKind::DiscardLegendary => {}
             _ => return false,
         }
-        if let Some(n) = counters {
-            return self.complete_counter_cost(c, later, remaining, n);
+        if let Some(requirement) = counters {
+            return self.complete_counter_cost(c, later, remaining, requirement);
         }
         if any_graveyard {
             spec.filter = SacrificeFilter {
@@ -1412,11 +1435,14 @@ impl FundingState<'_> {
         c: &CostContext,
         later: &CostContext,
         remaining: &[usize],
-        amount: u16,
+        requirement: (u16, Option<CounterKind>),
     ) -> bool {
+        let (amount, required_kind) = requirement;
         let mut next = self.clone();
         for &(r, kind) in &c.counters {
-            if !next.remove_creature_counter(r, kind) {
+            if required_kind.is_some_and(|expected| expected != kind)
+                || !next.remove_creature_counter(r, kind)
+            {
                 return false;
             }
         }
@@ -1433,9 +1459,10 @@ impl FundingState<'_> {
             later: &CostContext,
             remaining: &[usize],
             first: usize,
-            source: ObjectRef,
-            reservation: &Counters,
+            source_reservation: (ObjectRef, &Counters),
+            required_kind: Option<CounterKind>,
         ) -> bool {
+            let (source, reservation) = source_reservation;
             if left == 0 {
                 return w.complete_cost_rows(later, remaining);
             }
@@ -1447,6 +1474,9 @@ impl FundingState<'_> {
                     continue;
                 }
                 for kind in CounterKind::ALL {
+                    if required_kind.is_some_and(|expected| expected != kind) {
+                        continue;
+                    }
                     let mut next = w.clone();
                     if !next.remove_creature_counter(w.reference(resource.id), kind) {
                         continue;
@@ -1463,8 +1493,8 @@ impl FundingState<'_> {
                         later,
                         remaining,
                         index,
-                        source,
-                        reservation,
+                        source_reservation,
+                        required_kind,
                     ) {
                         return true;
                     }
@@ -1478,8 +1508,8 @@ impl FundingState<'_> {
             later,
             remaining,
             0,
-            c.source,
-            &c.source_counter_reservation,
+            (c.source, &c.source_counter_reservation),
+            required_kind,
         )
     }
 }
@@ -1617,6 +1647,24 @@ impl Game {
                     clause: index as u16,
                 })
             {
+                return true;
+            }
+        }
+        false
+    }
+    pub(in crate::engine) fn visit_sneak_return_cost(
+        &self,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        let a = self.state.announcing.as_ref().unwrap();
+        let world = self.cast_cost_world(a);
+        for attack in &self.state.attackers {
+            let object = self.object_ref(attack.card);
+            let mut choice = world.clone();
+            let costs = choice.cast_costs.as_mut().unwrap();
+            let active = usize::from(costs.active.unwrap());
+            costs.clauses[active].clause = CastCostClause::SneakReturn(Some(object));
+            if choice.cost_completion() && emit(Action::PaySneakReturn { object }) {
                 return true;
             }
         }

@@ -1,0 +1,11 @@
+{
+  "name": "@token/ninja_turtle_spirit_1_1_white",
+  "catalogue_id": 5491,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "8c4acf31ca6285cf8d4f769c49541bc0005bf7482fcf2082e7c8f0a57fc3ee1d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/NinjaTurtleSpiritToken.java",
+  "java_sha256": "8f3416bcf5f91eae58ecff35dd57b6de6336bef5243eea121bb3ad5393a9cbf1"
+}

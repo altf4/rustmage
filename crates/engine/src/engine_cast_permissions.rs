@@ -468,6 +468,9 @@ impl Game {
             self.cast_preview(actor, card, object.zone, self.object_ref(card), 0, [0; 6]);
         self.set_cast_face(&mut item, face);
         item.cast.as_mut().unwrap().method = method;
+        if method == CastMethod::Sneak {
+            Self::configure_sneak(&mut item);
+        }
         item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
         if independent_free {
             Self::configure_exile_free_cast(&mut item, flash_surcharge);
@@ -523,6 +526,7 @@ impl Game {
                     | CastMethod::GrantedHarmonize
                     | CastMethod::Mayhem
                     | CastMethod::Miracle
+                    | CastMethod::Sneak
             )
         {
             return !self
@@ -547,7 +551,7 @@ impl Game {
             free_hand_permission: None,
             origin_counter_cost,
             origin_additional_cost,
-            miracle_cost: self.miracle_cost_for(&item),
+            origin_alternative_cost: self.origin_alternative_cost_for(&item),
             item,
             spec: TargetSpec::NONE,
             plan: TargetPlan::Single(TargetSpec::NONE),

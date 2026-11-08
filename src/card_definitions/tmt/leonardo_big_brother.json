@@ -3,10 +3,35 @@
   "catalogue_id": 2472,
   "oracle_id": "6496eea7-38f5-4428-a379-b08b0eeb5239",
   "facts_sha256": "f7d575b26401fac2291ff3f4b00981fd8512a69d8d7dd23895a64e73319a1811",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9c0c884f27616ea3b381740928813c8eb46c32967be1093eae76ad54f5b00dde"
   },
-  "physical_metadata_sha256": "9000131214fbd1c72e8163a73e91c7ef6926a37aafa12dddeaefbfa51fd78ea7"
+  "physical_metadata_sha256": "9000131214fbd1c72e8163a73e91c7ef6926a37aafa12dddeaefbfa51fd78ea7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LeonardoBigBrother.java",
+  "java_sha256": "40834323119637f91d910f99e793bc1c6411d42cef9de1c1f1c72b83a6f1649f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/SneakAbility.java",
+      "sha256": "b25a32bf041c6a146f7d602c757f3be034f9282db5ed9c6cc03070b374611c70"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ReturnToHandChosenControlledPermanentCost.java",
+      "sha256": "ea8192aa5d4930687e7803379d509a1bd5a1910bcd418503f19a8de6417072b4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+      "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+    }
+  ]
 }

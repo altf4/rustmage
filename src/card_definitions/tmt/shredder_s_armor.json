@@ -3,10 +3,62 @@
   "catalogue_id": 3848,
   "oracle_id": "bda5d0aa-3ed0-4f8c-80ae-f9cb8ed0ac82",
   "facts_sha256": "d2d04335efc02cd808441876203bf62797842713f9b12e86826301b1cdac3978",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "56f25272c5bdffcbbd60ca523e1cca601a94782e10619a3f682283df8a73f51b"
   },
-  "physical_metadata_sha256": "d0f7e2350c5c394cd592084265c827fbdd8d477fbd76fb7b7a914a28ed3cd34b"
+  "physical_metadata_sha256": "d0f7e2350c5c394cd592084265c827fbdd8d477fbd76fb7b7a914a28ed3cd34b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ShreddersArmor.java",
+  "java_sha256": "ee9534aad820b6513eaf0c056afc782dc03c8f4e898e9ce691fe8879432be369",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+      "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAttachToTarget.java",
+      "sha256": "e50af4bbb1c04c044c182d9d0acb58dcf41375d41a94e85a67fbcbfe39f2625b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    }
+  ],
+  "rules_tests": "src/engine_tmt_equipment_tests.rs",
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "603.12",
+      "608.2h",
+      "701.3",
+      "702.6"
+    ],
+    "note": "All printed obligations pass paid rules scenarios. New attachment is required for the reflexive; its fight uses the creature currently equipped on resolution (or the source last known attachment), per Oracle and CR608.2h. XMage NovelNunchakuFightEffect captures the original entry target instead; this implementation resolves that discrepancy against equipped creature wording. Granted combat damage triggers once per simultaneous batch, for any damage recipient, and belongs to the equipped creature controller. Printed sacrifice-only equip has no mana component and is once per turn."
+  }
 }

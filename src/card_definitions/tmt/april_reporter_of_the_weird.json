@@ -8,5 +8,37 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "09c0247987f3283af60cb51ed07695aeda133475298fed70a08945fb616dfc71"
   },
-  "physical_metadata_sha256": "0f74034ea45d6ddeeb46a57675b39bc53f3e21f0099c6983da3a436cad25fcb4"
+  "physical_metadata_sha256": "0f74034ea45d6ddeeb46a57675b39bc53f3e21f0099c6983da3a436cad25fcb4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AprilReporterOfTheWeird.java",
+  "java_sha256": "eed724fe3e664ddd14486ceb7c2d57b2e2be055dfcc65a744271541f1c158a83",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SavedDamageValue.java",
+      "sha256": "2198ea2d400af0d1b03071469d9f85f92660dbe5101725ecb428a059d4264d26"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardControllerEffect.java",
+      "sha256": "48291599ed7d9537f89672284579f8c07f14b4ac974a3f482efa6ef593837717"
+    }
+  ],
+  "source_audit": {
+    "scope": "Full Oracle body, complete XMage card class and listed complete reusable implementations read; inherited typed behavior independently exercised with paid legal actions.",
+    "tests": [
+      "src/engine_tmt_inherited_batch_tests.rs"
+    ],
+    "status": "Focused rules audit; integrated release and complete-set acceptance remain integrator obligations."
+  }
 }

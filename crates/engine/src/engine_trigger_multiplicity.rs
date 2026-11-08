@@ -72,9 +72,14 @@ fn additional_triggers_for_event<W: CharacteristicWorld + ?Sized>(
                     || !query.continuous_fragment_available(provider, |f| matches!(f, StaticAbilityFragment::AdditionalTriggers { scope: s, condition: c } if *s == scope && *c == condition))
                 { continue; }
                 let applies = match scope {
-                    AdditionalTriggerScope::ControlledSubtype(subtype) => {
+                    AdditionalTriggerScope::ControlledSubtype(subtype)
+                    | AdditionalTriggerScope::ControlledCreatureSubtype(subtype) => {
                         recipient.controller == object.controller
                             && query.subtypes(id).has(recipient.card, subtype)
+                            && (!matches!(
+                                scope,
+                                AdditionalTriggerScope::ControlledCreatureSubtype(_)
+                            ) || query.kinds(id) & 1 != 0)
                     }
                     AdditionalTriggerScope::ControlledPermanentAttack => {
                         recipient.controller == object.controller

@@ -60,6 +60,7 @@ pub(super) struct MiracleState {
     draw_order: Option<DrawOrder>,
     remaining_choices: VecDeque<RevealChoice>,
     draws: VecDeque<DrawRequest>,
+    life_loss_after_draw: Option<(Player, i128)>,
     protection: Vec<Protection>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -174,6 +175,17 @@ impl Game {
     }
     pub(super) fn draw_many_interruptible(&mut self, player: Player, amount: u128) {
         self.draw_requests(player, amount, None);
+    }
+    pub(super) fn draw_then_lose_life(&mut self, player: Player, amount: u128) {
+        let life = i128::try_from(amount).capacity("life quantity representation exhausted");
+        self.draw_requests(player, amount, None);
+        if self.miracle_choice_pending() {
+            let state = self.state.miracle.as_mut().unwrap();
+            assert!(state.life_loss_after_draw.is_none());
+            state.life_loss_after_draw = Some((player, life));
+        } else {
+            self.lose_life(player, life);
+        }
     }
     pub(super) fn draw_many_recording(&mut self, player: Player, amount: u128, item_id: u64) {
         self.draw_requests(player, amount, Some((item_id, DrawFollowup::Remember)));
@@ -399,6 +411,9 @@ impl Game {
             }
         }
         let state = self.state.miracle.take().unwrap();
+        if let Some((player, amount)) = state.life_loss_after_draw {
+            self.lose_life(player, amount);
+        }
         for row in state.protection {
             self.grant_keyword_effects(&row.objects, row.source, Keywords::INDESTRUCTIBLE);
         }

@@ -10,6 +10,7 @@ pub enum CastCostClause {
     },
     Casualty(u16),
     Additional,
+    SneakReturn(Option<ObjectRef>),
     /// Exile the activated craft source as its own ordered cost component.
     CraftSource,
     Harmonize(ObjectRef),
@@ -103,6 +104,10 @@ impl Announcement {
     }
     pub(super) fn initialize_cast_costs(&mut self, improvise: bool) {
         self.initialize_alternative_life();
+        if self.has_compound_sneak_cost() {
+            self.add_cast_cost_clause(CastCostClause::Mana);
+            self.add_cast_cost_clause(CastCostClause::SneakReturn(None));
+        }
         if self.nonmana_x() {
             self.add_cast_cost_clause(CastCostClause::Mana);
         }
@@ -368,6 +373,12 @@ impl Game {
                 self.state.pending = Pending::CasualtyPayment {
                     player: a.item.controller,
                     instance,
+                };
+                self.state.announcing = Some(a);
+            }
+            CastCostClause::SneakReturn(_) => {
+                self.state.pending = Pending::SneakReturnCost {
+                    player: a.item.controller,
                 };
                 self.state.announcing = Some(a);
             }

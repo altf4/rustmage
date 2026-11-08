@@ -3,10 +3,30 @@
   "catalogue_id": 4065,
   "oracle_id": "41fbdaa2-7a7a-44d5-a8f4-77624350eedd",
   "facts_sha256": "c7e9a14b60c9e3c46ecb8e9954db081fb2b2562502f715f195bd5e7978f8cd6d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "63618e2130333558791f13aab4ac50c1049aafe558405423dcb88dbfca865b5f"
   },
-  "physical_metadata_sha256": "8cd9b068f8959d96dd7494fe7aeda9351aca1b54ffdd2baeb29942a18207f3eb"
+  "physical_metadata_sha256": "8cd9b068f8959d96dd7494fe7aeda9351aca1b54ffdd2baeb29942a18207f3eb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SplinterHamatoYoshi.java",
+  "java_sha256": "d45de52e697773dfe394523a08926ae1edf8caadb4cce60b5a3a96d21f3d3305",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/SneakAbility.java",
+      "sha256": "b25a32bf041c6a146f7d602c757f3be034f9282db5ed9c6cc03070b374611c70"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ReturnToHandChosenControlledPermanentCost.java",
+      "sha256": "ea8192aa5d4930687e7803379d509a1bd5a1910bcd418503f19a8de6417072b4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    }
+  ]
 }

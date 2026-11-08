@@ -248,6 +248,10 @@ impl Game {
         };
         let requested = match spec.count {
             LibrarySelectionCount::Fixed(n) => usize::from(n),
+            LibrarySelectionCount::ManaValueBudget { maximum_cards, .. } => {
+                assert!(spec.optional, "budgeted selection requires an up-to count");
+                usize::from(maximum_cards)
+            }
             LibrarySelectionCount::All => eligible.len(),
             LibrarySelectionCount::RandomOne => 1,
             LibrarySelectionCount::Lessons => {
@@ -326,6 +330,30 @@ impl Game {
         }
         self.state.pending = Pending::EffectLibrarySelection { player: owner };
         true
+    }
+    pub(super) fn library_selection_candidate(
+        &self,
+        frame: &LibrarySelection,
+        object: ObjectRef,
+    ) -> bool {
+        if !frame.eligible.contains(&object) {
+            return false;
+        }
+        match frame.spec.count {
+            LibrarySelectionCount::ManaValueBudget { maximum_total, .. } => {
+                frame
+                    .selected
+                    .iter()
+                    .copied()
+                    .chain([object])
+                    .map(|r| {
+                        u128::from(self.state.objects[r.card as usize].card.fixed_mana_value())
+                    })
+                    .sum::<u128>()
+                    <= u128::from(maximum_total)
+            }
+            _ => true,
+        }
     }
     pub(super) fn choose_library_selection(&mut self, card: CardId) {
         let f = self
@@ -499,16 +527,20 @@ impl Game {
         }
         if matches!(
             f.destination,
-            LibraryPickDestination::Battlefield | LibraryPickDestination::BattlefieldTapped
+            LibraryPickDestination::Battlefield
+                | LibraryPickDestination::BattlefieldTapped
+                | LibraryPickDestination::BattlefieldTappedAttacking
         ) && !ids.is_empty()
         {
             f.entering = true;
-            let tapped = f.destination == LibraryPickDestination::BattlefieldTapped;
+            let tapped = f.destination != LibraryPickDestination::Battlefield;
+            let attacking = f.destination == LibraryPickDestination::BattlefieldTappedAttacking;
             self.state.resolving.as_mut().unwrap().selection = Some(f);
             let moves = ids
                 .into_iter()
                 .map(|id| {
                     let mut movement = self.entry_move(id, Zone::Battlefield, tapped);
+                    movement.choose_attacking_defender = attacking;
                     movement.controller = owner;
                     movement
                 })
@@ -554,7 +586,9 @@ impl Game {
             && !f.exclude_selected_from_remainder
             && matches!(
                 f.destination,
-                LibraryPickDestination::Battlefield | LibraryPickDestination::BattlefieldTapped
+                LibraryPickDestination::Battlefield
+                    | LibraryPickDestination::BattlefieldTapped
+                    | LibraryPickDestination::BattlefieldTappedAttacking
             )
         {
             f.remaining.extend(f.selected.iter().copied().filter(|r| {
@@ -705,7 +739,7 @@ impl Game {
                 .remaining
                 .iter()
                 .copied()
-                .filter(|r| f.eligible.contains(r))
+                .filter(|&r| self.library_selection_candidate(f, r))
                 .collect(),
             selected: f
                 .selected
@@ -728,6 +762,9 @@ impl Game {
                 LibraryPickDestination::Graveyard => "graveyard",
                 LibraryPickDestination::Battlefield => "battlefield",
                 LibraryPickDestination::BattlefieldTapped => "battlefield_tapped",
+                LibraryPickDestination::BattlefieldTappedAttacking => {
+                    "battlefield_tapped_attacking"
+                }
                 LibraryPickDestination::Top => "top",
                 LibraryPickDestination::Hideaway => "hideaway",
                 LibraryPickDestination::Exile => "exile",

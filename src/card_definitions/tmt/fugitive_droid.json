@@ -3,10 +3,49 @@
   "catalogue_id": 1643,
   "oracle_id": "c04d4fd4-e5aa-431d-824b-8bc94245f103",
   "facts_sha256": "d65b981615bee0e276a24cd95c729029a3398e1b1b880224b49b2c98844ccd11",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "055b687d09856d429ab7fcb09186412fdb5e3e1500291c2cc0d6998f775ca900"
   },
-  "physical_metadata_sha256": "f4d5ccfbf318f8c2f2b39d34cb3fa7bfbe99ac0b9054e04888e1c3e1a239fb0a"
+  "physical_metadata_sha256": "f4d5ccfbf318f8c2f2b39d34cb3fa7bfbe99ac0b9054e04888e1c3e1a239fb0a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FugitiveDroid.java",
+  "java_sha256": "44c238c72483d89d06aa1c3e542931917025261716627e450c534665fb1a1892",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalRestrictionEffect.java",
+      "sha256": "1fa2a1d2f8bdcfdd9e3b62d643b7c07d1dd174162686bdff05615432d5e28aa8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedSourceEffect.java",
+      "sha256": "546b73507803da1667ee058a20486c5f3387357e38d1419a82f952b94ebb93d7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterTargetEffect.java",
+      "sha256": "49282767e8f8d631bb38ae1d35bc91a29ab2ae8173030e3a89d3da495c1cf233"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/TargetsPermanentPredicate.java",
+      "sha256": "6a52724f6a33c15df7f3951dc83aeb026acc8c20a5ccc6a031b11e18b08ea096"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+      "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+    }
+  ],
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "115.9b",
+      "608.2b"
+    ],
+    "note": "XMage TargetsPermanentPredicate consults battlefield LKI, but CR115.9b expressly ignores departed targets for a spell that targets something. This implementation uses current live exact target incarnations, current controller and current artifact/creature types; it does not use LKI. A spell whose sole qualifying target is the sacrificed Droid can become an illegal target when this ability resolves."
+  }
 }

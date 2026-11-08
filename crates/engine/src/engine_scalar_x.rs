@@ -419,6 +419,12 @@ impl Game {
                 .cast_event
                 .as_ref()
                 .map_or(0, |e| u128::from(e.mana_value)),
+            AmountValue::CastCardTypeCount => u128::from(
+                self.state.players[item.controller.index()]
+                    .turn_facts
+                    .cast_card_kinds
+                    .count_ones(),
+            ),
             AmountValue::CastSpellManaSymbols(color) => {
                 item.cast_event.as_ref().map_or(0, |event| {
                     u128::from(event.card.mana_symbols_of_color(color))
@@ -479,6 +485,22 @@ impl Game {
                 .copied()
                 .unwrap_or(0)
                 .max(0) as u128,
+            AmountValue::DepartureCounterCount(kind) => {
+                item.event_object.as_ref().map_or(0, |event| {
+                    if let EventObjectFacts::DeathCounters(counters) = &event.facts {
+                        u128::from(counters.get(kind))
+                    } else {
+                        0
+                    }
+                })
+            }
+            AmountValue::DeathEventToughness => item.event_object.as_ref().map_or(0, |event| {
+                if let EventObjectFacts::CreatureComparison(facts) = event.facts {
+                    facts.toughness.max(0) as u128
+                } else {
+                    0
+                }
+            }),
             AmountValue::DamageReceivedAmount => {
                 item.damage_received
                     .as_ref()

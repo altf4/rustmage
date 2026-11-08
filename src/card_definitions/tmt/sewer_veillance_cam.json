@@ -3,10 +3,35 @@
   "catalogue_id": 3802,
   "oracle_id": "25c83d45-581f-48ba-b6bb-feb66e8a65c7",
   "facts_sha256": "646097210bb881e56793e3abdb15337a18ffe8d475142eabc91da2d52cd6ddac",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6e941b6e76f2c4d5f2214a44a519fbe827bc9d0dd666c1ceec7b079c22a9affd"
   },
-  "physical_metadata_sha256": "3bfad0bb2c47a54bb4e0a9c2ffb59f7eba3b063429c8357673d028a3b432566f"
+  "physical_metadata_sha256": "3bfad0bb2c47a54bb4e0a9c2ffb59f7eba3b063429c8357673d028a3b432566f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SewerVeillanceCam.java",
+  "java_sha256": "f037f97ecddef01e54548e0e543c8440fa0c804fb3630da0ef0038c49306d2d1",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldOrLeavesSourceTriggeredAbility.java",
+      "sha256": "4cc6b8c193533f9bb9c040ffe5a12892b74ec6202a4e726100dc948bd738d111"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MayTapOrUntapTargetEffect.java",
+      "sha256": "bf68e65917470aa2ed124b99227338b670bee423ad569565e663d05456c799fe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ]
 }

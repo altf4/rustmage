@@ -3,10 +3,92 @@
   "catalogue_id": 3105,
   "oracle_id": "8df7a58c-053f-4ead-a778-2747718e5f10",
   "facts_sha256": "3948af7bfbe05bc8233323d4ef5ebeb1504155039ed720703e0d415cae3d1b5e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b7502e6e302b02a828ceafb3da7a7dd41550d8a281a9815153500a9256360c54"
   },
-  "physical_metadata_sha256": "655088457aa488eeef6572153071c0ce16505465386040d04438c790f7291c65"
+  "physical_metadata_sha256": "655088457aa488eeef6572153071c0ce16505465386040d04438c790f7291c65",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PartyDude.java",
+  "java_sha256": "da02cea58d7cb028e2cdad2c4c8e736cdeeab1ec7ceb5a1b61926ea2f8448f30",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ClassLevelAbility.java",
+      "sha256": "fb46d20a239b9dc3f6afb4f16ebebe9502ee5d8bd5c34fd8f1bd43c039748d28"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ClassReminderAbility.java",
+      "sha256": "8dc32040fc68007c96ef75000bf14278cdaa04bb0998d663f2f80b86f2411ea4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainClassAbilitySourceEffect.java",
+      "sha256": "bc5041794cf52d768818df17da1cd5ba5813a11a4135e92a01349b4f1d8347ee"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenAllEffect.java",
+      "sha256": "0305d2adb4d80aa018cff0a846a96f9c27c77b95dc6c166902ff7210ca57945c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/FoodToken.java",
+      "sha256": "67fca2eef5afc92dc08eefebb5d25489a0ab37ac22ab3b1b06556b17e5f0b53a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/token/FoodAbility.java",
+      "sha256": "79d6d33dd5aa5cf0a53784c96639953598780ecb010fcb3adc5f3db677ee22b4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/PutIntoGraveFromBattlefieldAllTriggeredAbility.java",
+      "sha256": "627dd80120b299b046c28267ddd1a1d5ac2cf8fba1b9546cb6508452e303bbc8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/events/ZoneChangeEvent.java",
+      "sha256": "eba0b01196de4b4ee1c99ca60b2734755800c5eedbc724f5573216d38b77df1e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetAttackingCreature.java",
+      "sha256": "363350ad2acb98ab5c6c846d03056ec043afe46651ae395550f1c25d56314965"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CardsInControllerHandCount.java",
+      "sha256": "765c3acced450b7a4f5b4f9659d478415f7b18f09e385a4dc10a78437d71b811"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    }
+  ],
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "101.4",
+      "111.2",
+      "608.2e",
+      "716.2"
+    ],
+    "rulings_url": "https://magic.wizards.com/en/news/feature/teenage-mutant-ninja-turtles-release-notes",
+    "note": "Cross-player token replacements finish before one shared entry batch. Opponent attacked means an opponent player, not just their planeswalker. The boost uses hand size when the ability resolves."
+  }
 }

@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "e370eaabf3e2ac2ffbf5e13bd79b594368174dc6e33bda6cf28e1fc4f06ab6b0",
+  "catalogue_version": "2fa8bd0ed793802a9119405a4566d4dc071feb97428779681634eb6de23d2631",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3296,
-  "implemented_total": 3303,
-  "token_definitions": 157,
+  "implemented_standard_cards": 3417,
+  "implemented_total": 3424,
+  "token_definitions": 161,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
   "omen_definitions": 13,
@@ -179,8 +179,7 @@
     },
     "tmt": {
       "total": 189,
-      "gated": 121,
-      "complete": 68
+      "complete": 189
     },
     "w17": {
       "total": 1,
@@ -616,8 +615,8 @@
     {
       "name": "Action News Crew",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/action_news_crew.rs",
       "set": "tmt"
     },
@@ -1728,8 +1727,8 @@
     {
       "name": "April O'Neil, Hacktivist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/april_o_neil_hacktivist.rs",
       "set": "tmt"
     },
@@ -1976,8 +1975,8 @@
     {
       "name": "Armaggon, Future Shark",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/armaggon_future_shark.rs",
       "set": "tmt"
     },
@@ -3024,8 +3023,8 @@
     {
       "name": "Baxter Stockman",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/baxter_stockman.rs",
       "set": "tmt"
     },
@@ -3128,16 +3127,16 @@
     {
       "name": "Bebop & Rocksteady",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/bebop_rocksteady.rs",
       "set": "tmt"
     },
     {
       "name": "Bebop, Warthog Warrior",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/bebop_warthog_warrior.rs",
       "set": "tmt"
     },
@@ -4624,8 +4623,8 @@
     {
       "name": "Brilliance Unleashed",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/brilliance_unleashed.rs",
       "set": "tmt"
     },
@@ -4712,8 +4711,8 @@
     {
       "name": "Broadcast Takeover",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/broadcast_takeover.rs",
       "set": "tmt"
     },
@@ -5592,8 +5591,8 @@
     {
       "name": "Casey Jones, Vigilante",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/casey_jones_vigilante.rs",
       "set": "tmt"
     },
@@ -6184,8 +6183,8 @@
     {
       "name": "Chrome Dome",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/chrome_dome.rs",
       "set": "tmt"
     },
@@ -7176,8 +7175,8 @@
     {
       "name": "Courier of Comestibles",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/courier_of_comestibles.rs",
       "set": "tmt"
     },
@@ -7944,8 +7943,8 @@
     {
       "name": "Dark Leo & Shredder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/dark_leo_shredder.rs",
       "set": "tmt"
     },
@@ -8824,8 +8823,8 @@
     {
       "name": "Dimensional Exile",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/dimensional_exile.rs",
       "set": "tmt"
     },
@@ -9168,8 +9167,8 @@
     {
       "name": "Does Machines",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/does_machines.rs",
       "set": "tmt"
     },
@@ -9192,16 +9191,16 @@
     {
       "name": "Don & Leo, Problem Solvers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/don_leo_problem_solvers.rs",
       "set": "tmt"
     },
     {
       "name": "Don & Raph, Hard Science",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/don_raph_hard_science.rs",
       "set": "tmt"
     },
@@ -9216,24 +9215,24 @@
     {
       "name": "Donatello's Technique",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/donatello_s_technique.rs",
       "set": "tmt"
     },
     {
       "name": "Donatello, Gadget Master",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/donatello_gadget_master.rs",
       "set": "tmt"
     },
     {
       "name": "Donatello, Mutant Mechanic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/donatello_mutant_mechanic.rs",
       "set": "tmt"
     },
@@ -11296,8 +11295,8 @@
     {
       "name": "Everything Pizza",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/everything_pizza.rs",
       "set": "tmt"
     },
@@ -12016,8 +12015,8 @@
     {
       "name": "Featherbrained Filcher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/featherbrained_filcher.rs",
       "set": "tmt"
     },
@@ -12896,16 +12895,16 @@
     {
       "name": "Foot Mystic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/foot_mystic.rs",
       "set": "tmt"
     },
     {
       "name": "Foot Ninjas",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/foot_ninjas.rs",
       "set": "tmt"
     },
@@ -13344,8 +13343,8 @@
     {
       "name": "Fugitive Droid",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/fugitive_droid.rs",
       "set": "tmt"
     },
@@ -13848,8 +13847,8 @@
     {
       "name": "General Traag, Heart of Stone",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/general_traag_heart_of_stone.rs",
       "set": "tmt"
     },
@@ -14584,8 +14583,8 @@
     {
       "name": "Go Ninja Go",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/go_ninja_go.rs",
       "set": "tmt"
     },
@@ -15272,8 +15271,8 @@
     {
       "name": "Groundchuck & Dirtbag",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/groundchuck_dirtbag.rs",
       "set": "tmt"
     },
@@ -16520,8 +16519,8 @@
     {
       "name": "High-Flying Ace",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/high_flying_ace.rs",
       "set": "tmt"
     },
@@ -17152,8 +17151,8 @@
     {
       "name": "Ice Cream Kitty",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/ice_cream_kitty.rs",
       "set": "tmt"
     },
@@ -17432,8 +17431,8 @@
     {
       "name": "Improvised Arsenal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/improvised_arsenal.rs",
       "set": "tmt"
     },
@@ -17632,8 +17631,8 @@
     {
       "name": "Insectoid Exterminator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/insectoid_exterminator.rs",
       "set": "tmt"
     },
@@ -18312,8 +18311,8 @@
     {
       "name": "Jennika's Technique",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/jennika_s_technique.rs",
       "set": "tmt"
     },
@@ -18712,16 +18711,16 @@
     {
       "name": "Karai's Technique",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/karai_s_technique.rs",
       "set": "tmt"
     },
     {
       "name": "Karai, Future of the Foot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/karai_future_of_the_foot.rs",
       "set": "tmt"
     },
@@ -19232,16 +19231,16 @@
     {
       "name": "Kitsune's Technique",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/kitsune_s_technique.rs",
       "set": "tmt"
     },
     {
       "name": "Kitsune, Dragon's Daughter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/kitsune_dragon_s_daughter.rs",
       "set": "tmt"
     },
@@ -19416,24 +19415,24 @@
     {
       "name": "Koya, Death from Above",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/koya_death_from_above.rs",
       "set": "tmt"
     },
     {
       "name": "Krang & Shredder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/krang_shredder.rs",
       "set": "tmt"
     },
     {
       "name": "Krang, Master Mind",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/krang_master_mind.rs",
       "set": "tmt"
     },
@@ -19896,8 +19895,8 @@
     {
       "name": "Leader's Talent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/leader_s_talent.rs",
       "set": "tmt"
     },
@@ -19968,40 +19967,40 @@
     {
       "name": "Leonardo's Technique",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/leonardo_s_technique.rs",
       "set": "tmt"
     },
     {
       "name": "Leonardo, Big Brother",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/leonardo_big_brother.rs",
       "set": "tmt"
     },
     {
       "name": "Leonardo, Cutting Edge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/leonardo_cutting_edge.rs",
       "set": "tmt"
     },
     {
       "name": "Leonardo, Leader in Blue",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/leonardo_leader_in_blue.rs",
       "set": "tmt"
     },
     {
       "name": "Leonardo, Sewer Samurai",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/leonardo_sewer_samurai.rs",
       "set": "tmt"
     },
@@ -20328,8 +20327,8 @@
     {
       "name": "Lita, Little Orphan Amphibian",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/lita_little_orphan_amphibian.rs",
       "set": "tmt"
     },
@@ -20640,8 +20639,8 @@
     {
       "name": "Lord Dregg, Insect Invader",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/lord_dregg_insect_invader.rs",
       "set": "tmt"
     },
@@ -21064,8 +21063,8 @@
     {
       "name": "Madame Null, Power Broker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/madame_null_power_broker.rs",
       "set": "tmt"
     },
@@ -21392,8 +21391,8 @@
     {
       "name": "Manhole Missile",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/manhole_missile.rs",
       "set": "tmt"
     },
@@ -22032,8 +22031,8 @@
     {
       "name": "Metalhead",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/metalhead.rs",
       "set": "tmt"
     },
@@ -22104,32 +22103,32 @@
     {
       "name": "Michelangelo's Technique",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/michelangelo_s_technique.rs",
       "set": "tmt"
     },
     {
       "name": "Michelangelo, Game Master",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/michelangelo_game_master.rs",
       "set": "tmt"
     },
     {
       "name": "Michelangelo, Improviser",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/michelangelo_improviser.rs",
       "set": "tmt"
     },
     {
       "name": "Michelangelo, Mutant BFF",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/michelangelo_mutant_bff.rs",
       "set": "tmt"
     },
@@ -22240,16 +22239,16 @@
     {
       "name": "Mikey & Don, Party Planners",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/mikey_don_party_planners.rs",
       "set": "tmt"
     },
     {
       "name": "Mikey & Leo, Chaos & Order",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/mikey_leo_chaos_order.rs",
       "set": "tmt"
     },
@@ -22320,8 +22319,8 @@
     {
       "name": "Mind Transfer Protocol",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/mind_transfer_protocol.rs",
       "set": "tmt"
     },
@@ -22824,8 +22823,8 @@
     {
       "name": "Mona Lisa, Science Geek",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/mona_lisa_science_geek.rs",
       "set": "tmt"
     },
@@ -22840,8 +22839,8 @@
     {
       "name": "Mondo Gecko",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/mondo_gecko.rs",
       "set": "tmt"
     },
@@ -23120,8 +23119,8 @@
     {
       "name": "Mouser Foundry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/mouser_foundry.rs",
       "set": "tmt"
     },
@@ -23296,16 +23295,16 @@
     {
       "name": "Mutagen Man, Living Ooze",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/mutagen_man_living_ooze.rs",
       "set": "tmt"
     },
     {
       "name": "Mutant Chain Reaction",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/mutant_chain_reaction.rs",
       "set": "tmt"
     },
@@ -23592,8 +23591,8 @@
     {
       "name": "New Generation's Technique",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/new_generation_s_technique.rs",
       "set": "tmt"
     },
@@ -23760,8 +23759,8 @@
     {
       "name": "Ninja Teen",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/ninja_teen.rs",
       "set": "tmt"
     },
@@ -23832,8 +23831,8 @@
     {
       "name": "Nobody",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/nobody.rs",
       "set": "tmt"
     },
@@ -23920,16 +23919,16 @@
     {
       "name": "North Wind Avatar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/north_wind_avatar.rs",
       "set": "tmt"
     },
     {
       "name": "Northampton Farm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/northampton_farm.rs",
       "set": "tmt"
     },
@@ -23968,8 +23967,8 @@
     {
       "name": "Novel Nunchaku",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/novel_nunchaku.rs",
       "set": "tmt"
     },
@@ -24248,8 +24247,8 @@
     {
       "name": "Old Hob, Alleycat Blues",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/old_hob_alleycat_blues.rs",
       "set": "tmt"
     },
@@ -24536,8 +24535,8 @@
     {
       "name": "Oroku Saki, Shredder Rising",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/oroku_saki_shredder_rising.rs",
       "set": "tmt"
     },
@@ -24912,8 +24911,8 @@
     {
       "name": "Pain 101",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/pain_101.rs",
       "set": "tmt"
     },
@@ -25000,8 +24999,8 @@
     {
       "name": "Paramecia Coloniex",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/paramecia_coloniex.rs",
       "set": "tmt"
     },
@@ -25040,8 +25039,8 @@
     {
       "name": "Party Dude",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/party_dude.rs",
       "set": "tmt"
     },
@@ -25616,8 +25615,8 @@
     {
       "name": "Pizza Face, Gastromancer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/pizza_face_gastromancer.rs",
       "set": "tmt"
     },
@@ -26480,8 +26479,8 @@
     {
       "name": "Purple Dragon Punks",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/purple_dragon_punks.rs",
       "set": "tmt"
     },
@@ -26512,8 +26511,8 @@
     {
       "name": "Putrid Pals",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/putrid_pals.rs",
       "set": "tmt"
     },
@@ -26760,8 +26759,8 @@
     {
       "name": "Quintessential Katana",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/quintessential_katana.rs",
       "set": "tmt"
     },
@@ -26896,8 +26895,8 @@
     {
       "name": "Ragamuffin Raptor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/ragamuffin_raptor.rs",
       "set": "tmt"
     },
@@ -27200,40 +27199,40 @@
     {
       "name": "Raph & Leo, Sibling Rivals",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/raph_leo_sibling_rivals.rs",
       "set": "tmt"
     },
     {
       "name": "Raph & Mikey, Troublemakers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/raph_mikey_troublemakers.rs",
       "set": "tmt"
     },
     {
       "name": "Raphael's Technique",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/raphael_s_technique.rs",
       "set": "tmt"
     },
     {
       "name": "Raphael, Most Attitude",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/raphael_most_attitude.rs",
       "set": "tmt"
     },
     {
       "name": "Raphael, Ninja Destroyer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/raphael_ninja_destroyer.rs",
       "set": "tmt"
     },
@@ -27248,8 +27247,8 @@
     {
       "name": "Raphael, the Nightwatcher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/raphael_the_nightwatcher.rs",
       "set": "tmt"
     },
@@ -27280,8 +27279,8 @@
     {
       "name": "Rat King, Verminister",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/rat_king_verminister.rs",
       "set": "tmt"
     },
@@ -27416,8 +27415,8 @@
     {
       "name": "Ray Fillet, Man Ray",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/ray_fillet_man_ray.rs",
       "set": "tmt"
     },
@@ -27864,8 +27863,8 @@
     {
       "name": "Renet, Temporal Apprentice",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/renet_temporal_apprentice.rs",
       "set": "tmt"
     },
@@ -28208,8 +28207,8 @@
     {
       "name": "Retro-Mutation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/retro_mutation.rs",
       "set": "tmt"
     },
@@ -28776,8 +28775,8 @@
     {
       "name": "Rocksteady, Crash Courser",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/rocksteady_crash_courser.rs",
       "set": "tmt"
     },
@@ -29768,8 +29767,8 @@
     {
       "name": "Savanti Romero, Time's Exile",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/savanti_romero_time_s_exile.rs",
       "set": "tmt"
     },
@@ -30616,8 +30615,8 @@
     {
       "name": "Sewer-veillance Cam",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/sewer_veillance_cam.rs",
       "set": "tmt"
     },
@@ -30720,8 +30719,8 @@
     {
       "name": "Shark Shredder, Killer Clone",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/shark_shredder_killer_clone.rs",
       "set": "tmt"
     },
@@ -30984,8 +30983,8 @@
     {
       "name": "Shredder's Armor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/shredder_s_armor.rs",
       "set": "tmt"
     },
@@ -31000,16 +30999,16 @@
     {
       "name": "Shredder's Technique",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/shredder_s_technique.rs",
       "set": "tmt"
     },
     {
       "name": "Shredder, Unrelenting",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/shredder_unrelenting.rs",
       "set": "tmt"
     },
@@ -32080,8 +32079,8 @@
     {
       "name": "South Wind Avatar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/south_wind_avatar.rs",
       "set": "tmt"
     },
@@ -32336,8 +32335,8 @@
     {
       "name": "Spicy Oatmeal Pizza",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/spicy_oatmeal_pizza.rs",
       "set": "tmt"
     },
@@ -32712,24 +32711,24 @@
     {
       "name": "Splinter's Technique",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/splinter_s_technique.rs",
       "set": "tmt"
     },
     {
       "name": "Splinter, Hamato Yoshi",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/splinter_hamato_yoshi.rs",
       "set": "tmt"
     },
     {
       "name": "Splinter, Radical Rat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/splinter_radical_rat.rs",
       "set": "tmt"
     },
@@ -33480,8 +33479,8 @@
     {
       "name": "Stomped by the Foot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/stomped_by_the_foot.rs",
       "set": "tmt"
     },
@@ -34224,8 +34223,8 @@
     {
       "name": "Super Shredder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/super_shredder.rs",
       "set": "tmt"
     },
@@ -34744,8 +34743,8 @@
     {
       "name": "Tainted Treats",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/tainted_treats.rs",
       "set": "tmt"
     },
@@ -35632,8 +35631,8 @@
     {
       "name": "The Cloning of Shredder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/the_cloning_of_shredder.rs",
       "set": "tmt"
     },
@@ -35888,16 +35887,16 @@
     {
       "name": "The Last Ronin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/the_last_ronin.rs",
       "set": "tmt"
     },
     {
       "name": "The Last Ronin's Technique",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/the_last_ronin_s_technique.rs",
       "set": "tmt"
     },
@@ -36056,8 +36055,8 @@
     {
       "name": "The Neutrinos",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/the_neutrinos.rs",
       "set": "tmt"
     },
@@ -36072,8 +36071,8 @@
     {
       "name": "The Ooze",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/the_ooze.rs",
       "set": "tmt"
     },
@@ -37152,8 +37151,8 @@
     {
       "name": "Tokka & Rahzar, Terrible Twos",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/tokka_rahzar_terrible_twos.rs",
       "set": "tmt"
     },
@@ -37640,8 +37639,8 @@
     {
       "name": "Triceraton Commander",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/triceraton_commander.rs",
       "set": "tmt"
     },
@@ -37848,8 +37847,8 @@
     {
       "name": "Turncoat Kunoichi",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/turncoat_kunoichi.rs",
       "set": "tmt"
     },
@@ -37864,8 +37863,8 @@
     {
       "name": "Turtle Lair",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/turtle_lair.rs",
       "set": "tmt"
     },
@@ -37880,8 +37879,8 @@
     {
       "name": "Turtle Van",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/turtle_van.rs",
       "set": "tmt"
     },
@@ -37896,16 +37895,16 @@
     {
       "name": "Turtles Forever",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/turtles_forever.rs",
       "set": "tmt"
     },
     {
       "name": "Turtles in Time",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/turtles_in_time.rs",
       "set": "tmt"
     },
@@ -38392,8 +38391,8 @@
     {
       "name": "Uneasy Alliance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/uneasy_alliance.rs",
       "set": "tmt"
     },
@@ -39184,8 +39183,8 @@
     {
       "name": "Venus, Torn Between Worlds",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/venus_torn_between_worlds.rs",
       "set": "tmt"
     },
@@ -40384,8 +40383,8 @@
     {
       "name": "Weather Maker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/weather_maker.rs",
       "set": "tmt"
     },
@@ -40488,8 +40487,8 @@
     {
       "name": "West Wind Avatar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/west_wind_avatar.rs",
       "set": "tmt"
     },
@@ -40832,8 +40831,8 @@
     {
       "name": "Wingnut, Bat on the Belfry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/wingnut_bat_on_the_belfry.rs",
       "set": "tmt"
     },
@@ -41560,8 +41559,8 @@
     {
       "name": "Zoo Escapees",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tmt/zoo_escapees.rs",
       "set": "tmt"
     },

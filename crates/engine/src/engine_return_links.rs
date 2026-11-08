@@ -73,13 +73,20 @@ pub(super) struct DelayedReturn {
     pub view: DelayedReturnView,
     pub item: SpellView,
 }
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct ImmediateBlink {
+    pub rows: Vec<ReturnLinkView>,
+    pub attacking: bool,
+}
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn modification(kind: ReturnKind) -> Option<(&'static [&'static str], Keywords)> {
     match kind {
         ReturnKind::Demon => Some((&["Demon"], Keywords::NONE)),
         ReturnKind::Angel => Some((&["Angel"], Keywords::FLYING)),
         ReturnKind::HeroFinality => Some((&["Hero"], Keywords::NONE)),
-        ReturnKind::Revival => None,
+        ReturnKind::Revival | ReturnKind::FlyingRobot => None,
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -198,7 +205,10 @@ impl Game {
             .resolving
             .as_mut()
             .unwrap()
-            .immediate_blink_return = Some(Box::new(returning));
+            .immediate_blink_return = Some(Box::new(ImmediateBlink {
+            rows: returning,
+            attacking: false,
+        }));
         self.finish_zone_events(&events, &[]);
     }
     /// Register only an actually successful return, after its replacement choices.
@@ -224,53 +234,73 @@ impl Game {
         counter: Option<(CounterKind, u64)>,
         tapped: bool,
     ) {
-        let ids: Vec<_> = item
-            .targets
-            .iter()
-            .filter_map(|bound| {
-                let Target::Card(id) = bound.target else {
-                    return None;
-                };
-                (self.same_target_object(*bound) && self.on_battlefield(id)).then_some(id)
-            })
-            .collect();
+        self.blink_immediately_inner(item, counter, tapped, false, false);
+    }
+    pub(super) fn blink_immediately_attacking(&mut self, item: &SpellView) {
+        self.blink_immediately_inner(item, None, true, true, true);
+    }
+    pub(super) fn blink_following_public_move(&mut self, item: &SpellView) {
+        self.blink_immediately_inner(item, None, false, false, true);
+    }
+    fn blink_immediately_inner(
+        &mut self,
+        item: &SpellView,
+        counter: Option<(CounterKind, u64)>,
+        tapped: bool,
+        attacking: bool,
+        follow_public_move: bool,
+    ) {
+        let mut ids = Vec::new();
+        for &bound in &item.targets {
+            if let Target::Card(id) = bound.target
+                && self.same_target_object(bound)
+                && self.on_battlefield(id)
+                && !ids.contains(&id)
+            {
+                ids.push(id);
+            }
+        }
         let events = self.move_objects_raw(&ids, Zone::Exile);
         let returning = events
             .iter()
             .filter_map(|event| {
-                (event.moved && event.destination == Zone::Exile && !event.before.is_token())
-                    .then_some(ReturnLinkView {
-                        exile_after: false,
-                        additional_returning: None,
-                        object: event.after,
-                        zone: Zone::Exile,
-                        controller: event.before.owner,
-                        counter,
-                        tapped,
-                    })
+                (event.moved
+                    && !event.before.is_token()
+                    && (event.destination == Zone::Exile
+                        || follow_public_move
+                            && matches!(event.destination, Zone::Graveyard | Zone::Command)))
+                .then_some(ReturnLinkView {
+                    exile_after: false,
+                    additional_returning: None,
+                    object: event.after,
+                    zone: event.destination,
+                    controller: if attacking {
+                        item.controller
+                    } else {
+                        event.before.owner
+                    },
+                    counter,
+                    tapped,
+                })
             })
             .collect();
         // Departure events can themselves stage a choice-bearing linked return.
         // Keep our exact exiled incarnations owned until that entry batch finishes.
-        self.state
-            .resolving
-            .as_mut()
-            .unwrap()
-            .immediate_blink_return = Some(Box::new(returning));
+        let resolution = self.state.resolving.as_mut().unwrap();
+        resolution.immediate_blink_return = Some(Box::new(ImmediateBlink {
+            rows: returning,
+            attacking,
+        }));
         self.finish_zone_events(&events, &[]);
     }
     pub(super) fn resume_immediate_blink(&mut self) -> bool {
-        let Some(rows) = self
-            .state
-            .resolving
-            .as_mut()
-            .unwrap()
-            .immediate_blink_return
-            .take()
-        else {
+        let resolution = self.state.resolving.as_mut().unwrap();
+        let Some(blink) = resolution.immediate_blink_return.take() else {
             return false;
         };
-        let moves = rows
+        let attacking = blink.attacking;
+        let moves = blink
+            .rows
             .iter()
             .filter_map(|row| {
                 if self.object_ref(row.object.card) != row.object
@@ -281,6 +311,7 @@ impl Game {
                 let mut movement = self.entry_move(row.object.card, Zone::Battlefield, row.tapped);
                 movement.controller = row.controller;
                 movement.effect_counter = row.counter;
+                movement.choose_attacking_defender = attacking;
                 if row.exile_after {
                     movement.delayed_return_exile = self
                         .state
@@ -361,6 +392,7 @@ impl Game {
                 link.counter = Some((CounterKind::Finality, 1));
                 self.stage_linked_return(&link, Some((kind, source.object)));
             }
+            ReturnKind::FlyingRobot => self.stage_linked_return(&link, Some((kind, source.object))),
             ReturnKind::Demon | ReturnKind::Angel => {
                 link.counter = Some((
                     CounterKind::PlusOne,
@@ -458,6 +490,13 @@ impl Game {
         kind: ReturnKind,
         source: ObjectRef,
     ) {
+        if kind == ReturnKind::FlyingRobot {
+            let timestamp = self.next_role_timestamp();
+            self.state.roles.as_mut().unwrap().animations.push(
+                characteristic_layers::flying_robot_form(recipient, timestamp),
+            );
+            return;
+        }
         let Some((types, keywords)) = modification(kind) else {
             return;
         };

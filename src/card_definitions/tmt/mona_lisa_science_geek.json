@@ -3,10 +3,45 @@
   "catalogue_id": 2828,
   "oracle_id": "e6490e98-37a9-4a8b-a04c-cceeb22b0c35",
   "facts_sha256": "f3e4fcdfebeda03f3a97d5872c2f654f550a8746757623dff96af43410485fd8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "984988f48681d208f775a6ffe6c2c682a8b442d2a8e068d8b5df3db414efaf74"
   },
-  "physical_metadata_sha256": "3a095c1c903c1d50b392306b08ee3c0952d0552e7d39681a4847376703fc23e8"
+  "physical_metadata_sha256": "3a095c1c903c1d50b392306b08ee3c0952d0552e7d39681a4847376703fc23e8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MonaLisaScienceGeek.java",
+  "java_sha256": "04bca96933381f2b39b718931587afcf26c46be619f3d2affe62871f88870e40",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/DynamicManaAbility.java",
+      "sha256": "b3d0b50f07f8a0d751bf30a6ecaca74c91fd98a7dd4e3228f71b7543a2d108da"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SourcePermanentPowerValue.java",
+      "sha256": "aabc6ce8b7bd68b08691830a2a45af0d886a2837c652bbca9e109b5813b0ca9a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/DynamicManaEffect.java",
+      "sha256": "e2767b7e03907de0266b757f49728816804d3a1376c423024119380c5797ce27"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/ActivatedManaAbilityImpl.java",
+      "sha256": "a35a08e0344957baa37e2f541145aac008683ccd0d0d49d1ca7fb1896478e0b5"
+    }
+  ]
 }

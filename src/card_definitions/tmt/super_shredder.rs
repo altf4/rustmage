@@ -1,16 +1,21 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from complete pinned Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(1, 1),
     keywords: Keywords::MENACE,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::PermanentLeaves(DepartureFilter {
+            kinds: 0,
+            relation: CastRelation::Any,
+            other: true,
+            graveyard_only: false,
+            counters: DepartureCounters::Unrestricted,
+        }),
+        targets: TargetPlan::NONE,
+        program: &[Instruction::PutCounters {
+            subject: Subject::Source,
+            kind: CounterKind::PlusOne,
+            amount: 1,
+        }],
+    }],
     ..CardRules::EMPTY
 };

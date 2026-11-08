@@ -3,10 +3,47 @@
   "catalogue_id": 3376,
   "oracle_id": "82563a5f-cae4-4ece-876c-0df245d2dc58",
   "facts_sha256": "e002bd7cffa4e6e3364e854c5cfbc05df336338e02e5163e2df493704a345f33",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7e41cdc66d26ad38d6f5c1f985ec558a712f4950806b626eb44b6071e4ea95cc"
   },
-  "physical_metadata_sha256": "b86cbdeaf6942c0ccf97c923df8c5dfa1821e4daf6669693df8ef14d65d964bf"
+  "physical_metadata_sha256": "b86cbdeaf6942c0ccf97c923df8c5dfa1821e4daf6669693df8ef14d65d964bf",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RaphAndMikeyTroublemakers.java",
+  "java_sha256": "efe092c5b9f9598a6a499a5288084f9a64230ceb0085617a1345b6394ca1e8ef",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/RevealCardsFromLibraryUntilEffect.java",
+      "sha256": "a9fe0b1c05462c01f6d6cbb28ec59832b9353151a7a25c8b86eb6fa51a40c2e6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/constants/PutCards.java",
+      "sha256": "6db1cb69eada87b2cc4db088d8b20fac65ced4dca5f50bdc85f1247138e45253"
+    }
+  ],
+  "source_audit": {
+    "scope": "Complete Oracle body, complete pinned XMage card class and listed complete reusable implementations read; directly authored typed behavior with actual paid-action rules scenarios.",
+    "tests": [
+      "src/engine_tmt_damage_legends_tests.rs"
+    ],
+    "status": "Complete public paid-action rules scenarios and affected regressions passed with Clippy; integrated release, full-game throughput and complete-set acceptance remain integrator obligations."
+  }
 }

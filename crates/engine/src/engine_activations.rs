@@ -191,7 +191,7 @@ impl Game {
                 quality,
             } => {
                 self.add_quality_mana(actor, production, quality);
-                self.produce_mountain_tap_bonus(actor, payment.item.mana_tap_bonus.unwrap_or(0));
+                self.produce_tap_mana_bonus(actor, payment.item.tap_mana_bonus());
                 self.committed_mana_reflexive(&payment.item);
                 self.reopen_evidence_after_mana_sacrifice(card);
             }
@@ -1194,8 +1194,8 @@ impl Game {
         // changes the source incarnation. All other paid source costs are set.
         if cost.tap {
             if definition.mana_production().is_some() {
-                let bonus = self.mountain_tap_bonus(item.controller, source.id);
-                item.mana_tap_bonus = (bonus > 0).then_some(bonus);
+                let bonus = self.mana_tap_bonuses(item.controller, source.id);
+                item.mana_tap_bonus = (bonus != [0; 6]).then(|| Box::new(bonus));
             }
             self.tap_objects(&[source.id]);
         }

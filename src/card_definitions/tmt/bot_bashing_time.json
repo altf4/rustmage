@@ -8,5 +8,32 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b386916ac2ad532f4c61648e1e8c69b05d1ed3bf71df9451ced051607c198747"
   },
-  "physical_metadata_sha256": "7885fc3d7eb139fe13ea496d5a37a71f6e72d3cbd652366839cde5693a2bde6b"
+  "physical_metadata_sha256": "7885fc3d7eb139fe13ea496d5a37a71f6e72d3cbd652366839cde5693a2bde6b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BotBashingTime.java",
+  "java_sha256": "d7a62a6d47986277928480330b4888e0ca4e2230e9b0c9062952174914c5b880",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetIfDiesEffect.java",
+      "sha256": "db2301f8fef9f5ce4777ebcc942f426194f6cd372156955efb846eeeed3b9c03"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/replacement/DiesReplacementEffect.java",
+      "sha256": "f71d5a645ee44f7ad736d7bcfd2e1ecde8b5a44924fedebefff2eadb0a176048"
+    }
+  ],
+  "source_audit": {
+    "scope": "Full Oracle body, complete XMage card class and listed complete reusable implementations read; inherited typed behavior independently exercised with paid legal actions.",
+    "tests": [
+      "src/engine_tmt_inherited_batch_tests.rs"
+    ],
+    "status": "Focused rules audit; integrated release and complete-set acceptance remain integrator obligations."
+  }
 }

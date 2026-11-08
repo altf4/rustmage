@@ -8,5 +8,32 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "664798da80859864752be90a7445bd9ca908e419dc62bcaaf3c4425323e42146"
   },
-  "physical_metadata_sha256": "08273f2de316e6521749e6d2ebffac95b140974099409f6b5f686e0d9b891e3a"
+  "physical_metadata_sha256": "08273f2de316e6521749e6d2ebffac95b140974099409f6b5f686e0d9b891e3a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MechanizedNinjaCavalry.java",
+  "java_sha256": "a19b5a6e897dd76f494a875bbc17fef42d55e38a3db739dda256c561b12a4826",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/Robot11Token.java",
+      "sha256": "80629ebbc61106f058ff6bcc6f8011768f01da78a78ffba9feecdaa756825bd1"
+    }
+  ],
+  "source_audit": {
+    "scope": "Full Oracle body, complete XMage card class and listed complete reusable implementations read; inherited typed behavior independently exercised with paid legal actions.",
+    "tests": [
+      "src/engine_tmt_inherited_batch_two_tests.rs"
+    ],
+    "status": "Focused rules audit; integrated release and complete-set acceptance remain integrator obligations."
+  }
 }

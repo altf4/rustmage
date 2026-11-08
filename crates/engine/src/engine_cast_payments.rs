@@ -128,6 +128,13 @@ impl Game {
         {
             return false;
         }
+        if condition.requires_mana_spent_below_value()
+            && !event.is_some_and(|event| {
+                event.payment.into_iter().map(u64::from).sum::<u64>() < event.mana_value
+            })
+        {
+            return false;
+        }
         let Some((minimum, increment)) = condition.mana_spent_rule() else {
             return true;
         };
