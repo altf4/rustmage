@@ -1504,7 +1504,9 @@ pub(super) fn aura_kind_matches<W: CharacteristicWorld + ?Sized>(
                 .aura_kind_or_subtype()
                 .is_some_and(|subtype| world.subtypes(id).has(world.definition(id), subtype))
     };
-    kind_match && aura_artifact_or_non_aura_enchantment(world, aura, id)
+    kind_match
+        && (!aura.enchant_basic() || world.definition(id).is_basic_land())
+        && aura_artifact_or_non_aura_enchantment(world, aura, id)
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

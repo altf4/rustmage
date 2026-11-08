@@ -1801,6 +1801,7 @@ impl Game {
                 let object = world.object(id);
                 return match *predicate {
                     TargetPredicate::OwnedByController => object.owner == controller,
+                    TargetPredicate::Basic => world.definition(id).is_basic_land(),
                     TargetPredicate::EnteredGraveyardThisTurn => {
                         object.zone == Zone::Graveyard
                             && object.is_card()

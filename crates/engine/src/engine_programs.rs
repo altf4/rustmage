@@ -4676,6 +4676,7 @@ impl Game {
                     self.shuffle_source_into_owner_library(&item);
                 }
                 Instruction::BlinkAttacking => self.blink_immediately_attacking(&item),
+                Instruction::BlinkFollowingPublicMove => self.blink_following_public_move(&item),
                 Instruction::BlinkImmediately { counter, tapped } => {
                     self.blink_immediately(&item, counter, tapped)
                 }

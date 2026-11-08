@@ -342,6 +342,7 @@ pub enum TargetPredicate {
     EnteredGraveyardThisTurn,
     /// This exact battlefield incarnation entered during the current turn.
     EnteredBattlefieldThisTurn,
+    Basic,
     CrewedSourceThisTurn,
     ManaValueAtMostLifeGained,
     OtherThanSource,
@@ -1605,6 +1606,7 @@ pub enum Instruction {
     DelayCreatureAttacksAlone {
         ability: u16,
     },
+    BlinkFollowingPublicMove,
     BlinkImmediately {
         counter: Option<(CounterKind, u64)>,
         tapped: bool,
@@ -5956,6 +5958,9 @@ impl Card {
     }
     pub(crate) fn entry_copy(self) -> Option<EntryCopySpec> {
         authored::rules(self).and_then(|rules| rules.extras.entry_copy)
+    }
+    pub(crate) fn enchant_basic(self) -> bool {
+        authored::rules(self).is_some_and(|rules| rules.extras.enchant_basic)
     }
     pub(crate) fn aura_kind_or_subtype(self) -> Option<&'static str> {
         authored::rules(self).and_then(|rules| rules.extras.aura_kind_or_subtype)

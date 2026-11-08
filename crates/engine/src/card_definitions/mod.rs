@@ -421,6 +421,7 @@ pub struct CardExtras {
     pub aura_artifact_or_non_aura_enchantment: bool,
     /// Additional live subtype accepted by this Aura’s ordinary kind union.
     pub aura_kind_or_subtype: Option<&'static str>,
+    pub enchant_basic: bool,
     pub enchanted_modifiers: &'static [EnchantedModifier],
     pub flash_surcharge: Option<ManaCost>,
 }
@@ -537,6 +538,7 @@ impl CardExtras {
         uncounterable: false,
         aura_artifact_or_non_aura_enchantment: false,
         aura_kind_or_subtype: None,
+        enchant_basic: false,
         enchanted_modifiers: &[],
         flash_surcharge: None,
     };

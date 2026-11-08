@@ -234,10 +234,13 @@ impl Game {
         counter: Option<(CounterKind, u64)>,
         tapped: bool,
     ) {
-        self.blink_immediately_inner(item, counter, tapped, false);
+        self.blink_immediately_inner(item, counter, tapped, false, false);
     }
     pub(super) fn blink_immediately_attacking(&mut self, item: &SpellView) {
-        self.blink_immediately_inner(item, None, true, true);
+        self.blink_immediately_inner(item, None, true, true, true);
+    }
+    pub(super) fn blink_following_public_move(&mut self, item: &SpellView) {
+        self.blink_immediately_inner(item, None, false, false, true);
     }
     fn blink_immediately_inner(
         &mut self,
@@ -245,6 +248,7 @@ impl Game {
         counter: Option<(CounterKind, u64)>,
         tapped: bool,
         attacking: bool,
+        follow_public_move: bool,
     ) {
         let ids: Vec<_> = item
             .targets
@@ -263,7 +267,7 @@ impl Game {
                 (event.moved
                     && !event.before.is_token()
                     && (event.destination == Zone::Exile
-                        || attacking
+                        || follow_public_move
                             && matches!(event.destination, Zone::Graveyard | Zone::Command)))
                 .then_some(ReturnLinkView {
                     exile_after: false,
