@@ -2330,6 +2330,7 @@ impl<'g> FundingState<'g> {
                         object,
                         self.actor,
                         placed.plus_one > 0,
+                        placement.kind & 1 != 0,
                     );
                 }
                 next.refresh_control_projection();

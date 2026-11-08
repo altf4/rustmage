@@ -1173,6 +1173,7 @@ impl Game {
                     .get_or_insert_default()
                     .links
                     .push(LinkedExileView {
+                        exiled_turn: self.state.turn,
                         source: event.after,
                         exiled,
                         ability_origin: None,
