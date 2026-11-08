@@ -312,9 +312,11 @@ impl Game {
             choice.kind.payment_kind(),
             EffectChoiceKind::Discard
                 | EffectChoiceKind::HandToTop
+                | EffectChoiceKind::BottomHand
                 | EffectChoiceKind::HandExileCopy
                 | EffectChoiceKind::HandPlot { .. }
                 | EffectChoiceKind::HandCreature
+                | EffectChoiceKind::HandCreatureAndLand
                 | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }
         );
@@ -329,9 +331,11 @@ impl Game {
             choice.kind.payment_kind(),
             EffectChoiceKind::Discard
                 | EffectChoiceKind::HandToTop
+                | EffectChoiceKind::BottomHand
                 | EffectChoiceKind::HandExileCopy
                 | EffectChoiceKind::HandPlot { .. }
                 | EffectChoiceKind::HandCreature
+                | EffectChoiceKind::HandCreatureAndLand
                 | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }
         ) {
@@ -350,6 +354,17 @@ impl Game {
                         object,
                     ),
                     EffectChoiceKind::HandCreature => o.card.is_creature(),
+                    EffectChoiceKind::HandCreatureAndLand => {
+                        match choice.selected[player.index()].as_slice() {
+                            [] => o.card.is_creature() || o.card.is_land(),
+                            [first] => {
+                                let first = self.state.objects[first.card as usize].card;
+                                (first.is_creature() && o.card.is_land())
+                                    || (first.is_land() && o.card.is_creature())
+                            }
+                            _ => false,
+                        }
+                    }
                     EffectChoiceKind::HandPermanent { maximum, .. } => {
                         o.card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 256) != 0
                             && o.card.fixed_mana_value() <= u64::from(maximum)
@@ -1089,9 +1104,11 @@ impl Game {
                 && !matches!(
                     kind,
                     EffectChoiceKind::SacrificeOrDiscard { .. }
+                        | EffectChoiceKind::BottomHand
                         | EffectChoiceKind::HandExileCopy
                         | EffectChoiceKind::HandPlot { .. }
                         | EffectChoiceKind::HandCreature
+                        | EffectChoiceKind::HandCreatureAndLand
                         | EffectChoiceKind::HandPermanent { .. }
                         | EffectChoiceKind::HandLand { .. }
                 )
@@ -1107,9 +1124,11 @@ impl Game {
                 || matches!(
                     kind,
                     EffectChoiceKind::SacrificeOrDiscard { .. }
+                        | EffectChoiceKind::BottomHand
                         | EffectChoiceKind::HandExileCopy
                         | EffectChoiceKind::HandPlot { .. }
                         | EffectChoiceKind::HandCreature
+                        | EffectChoiceKind::HandCreatureAndLand
                         | EffectChoiceKind::HandPermanent { .. }
                         | EffectChoiceKind::HandLand { .. }
                 ) {
@@ -1120,6 +1139,20 @@ impl Game {
         }
         self.state.resolving.as_mut().unwrap().choice = Some(Box::new(choice));
         self.advance_effect_choice()
+    }
+
+    pub(super) fn finish_creature_and_land_selection(&mut self) {
+        let resolution = self.state.resolving.as_mut().unwrap();
+        let player = resolution.item.controller;
+        let choice = resolution.choice.take().unwrap();
+        let moves = choice.selected[player.index()]
+            .iter()
+            .map(|r| {
+                assert_eq!(self.object_ref(r.card), *r);
+                self.entry_move(r.card, Zone::Battlefield, false)
+            })
+            .collect();
+        self.stage_entries(moves, None);
     }
 
     pub(super) fn advance_effect_choice(&mut self) -> bool {
@@ -1221,6 +1254,10 @@ impl Game {
                 return true;
             }
         }
+        if choice.kind == EffectChoiceKind::HandCreatureAndLand {
+            self.finish_creature_and_land_selection();
+            return false;
+        }
         if choice.kind.payment_kind() == EffectChoiceKind::CoverUpGraveyardCard {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
             let selected = choice.selected[player.index()].first().copied();
@@ -1245,7 +1282,10 @@ impl Game {
             self.state.resolving.as_mut().unwrap().choice = None;
             return false;
         }
-        if choice.kind.payment_kind() == EffectChoiceKind::HandToTop {
+        if matches!(
+            choice.kind.payment_kind(),
+            EffectChoiceKind::HandToTop | EffectChoiceKind::BottomHand
+        ) {
             let choice = self
                 .state
                 .resolving
@@ -1262,8 +1302,31 @@ impl Game {
             if !ids.is_empty() {
                 self.obscure_private_hand_selection(player);
             }
+            let bottom = choice.kind == EffectChoiceKind::BottomHand;
+            let prior_top = bottom.then(|| self.public_library_top(player)).flatten();
             self.forget_library_top(player);
             let events = self.move_objects_raw(&ids, Zone::Library);
+            if bottom {
+                let library = &mut self.state.players[player.index()].library;
+                for event in events
+                    .iter()
+                    .rev()
+                    .filter(|e| e.moved && e.destination == Zone::Library)
+                {
+                    let position = library
+                        .iter()
+                        .position(|&id| id == event.after.card)
+                        .unwrap();
+                    let id = library.remove(position);
+                    library.insert(0, id);
+                }
+                if let Some(prior) = prior_top
+                    && self.top_library_card(player) == Some(prior.card)
+                    && self.object_ref(prior.card) == prior
+                {
+                    self.remember_library_top(player, prior);
+                }
+            }
             self.finish_zone_events(&events, &[]);
             return false;
         }
@@ -1875,9 +1938,11 @@ impl Game {
             EffectChoiceKind::Discard
                 | EffectChoiceKind::SacrificeOrDiscard { .. }
                 | EffectChoiceKind::HandToTop
+                | EffectChoiceKind::BottomHand
                 | EffectChoiceKind::HandExileCopy
                 | EffectChoiceKind::HandPlot { .. }
                 | EffectChoiceKind::HandCreature
+                | EffectChoiceKind::HandCreatureAndLand
                 | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }
         ) && !self.shares_information(viewer, actor)

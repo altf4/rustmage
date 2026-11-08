@@ -1129,6 +1129,7 @@ impl Game {
             | EffectChoiceKind::AmassGoblins(_)
             | EffectChoiceKind::EmpowerJace(_)
             | EffectChoiceKind::HandToTop
+            | EffectChoiceKind::BottomHand
             | EffectChoiceKind::ExileCardFromAnyGraveyard
             | EffectChoiceKind::ExileCreatureAndGraveyard
             | EffectChoiceKind::CoverUpGraveyardCard
@@ -1149,6 +1150,7 @@ impl Game {
             | EffectChoiceKind::HandExileCopy
             | EffectChoiceKind::HandPlot { .. }
             | EffectChoiceKind::HandCreature
+            | EffectChoiceKind::HandCreatureAndLand
             | EffectChoiceKind::HandPermanent { .. }
             | EffectChoiceKind::HandLand { .. }
             | EffectChoiceKind::GraveyardCreatures { .. }

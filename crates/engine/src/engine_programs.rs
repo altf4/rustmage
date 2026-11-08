@@ -22,6 +22,7 @@ pub(super) struct OptionalWheel {
     pub amount: u16,
     pub next: u8,
     pub running: bool,
+    pub shuffle: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -3155,7 +3156,7 @@ impl Game {
             .collect()
     }
 
-    /// Discard all chosen hands together, then draw in APNAP order.
+    /// Move chosen hands together, then draw in APNAP order.
     /// Entry replacements and interrupted draws suspend between stages.
     fn advance_optional_wheel(&mut self) -> bool {
         let Some(wheel) = self.state.resolving.as_ref().and_then(|r| r.optional_wheel) else {
@@ -3184,13 +3185,25 @@ impl Game {
                 .iter()
                 .enumerate()
                 .filter_map(|(id, object)| {
-                    (object.zone == Zone::Hand
+                    ((object.zone == Zone::Hand
+                        || (wheel.shuffle && object.zone == Zone::Graveyard))
                         && object.is_card()
                         && wheel.choices[object.owner.index()] == Some(true))
                     .then_some(id as CardId)
                 })
                 .collect();
-            self.discard_batch_with_after(&cards, None, Some(cause), None);
+            if wheel.shuffle {
+                let events = self.move_objects_raw(&cards, Zone::Library);
+                for player in [wheel.first, wheel.first.other()] {
+                    if wheel.choices[player.index()] == Some(true) {
+                        self.forget_library_top(player);
+                        self.shuffle_library_cards(player);
+                    }
+                }
+                self.finish_zone_events(&events, &[]);
+            } else {
+                self.discard_batch_with_after(&cards, None, Some(cause), None);
+            }
         } else {
             let player = if wheel.next == 1 {
                 wheel.first
@@ -4352,13 +4365,15 @@ impl Game {
                 Instruction::ExileAttackingCreatures(players) => {
                     self.exile_attacking_creatures(players, &item)
                 }
-                Instruction::BeginOptionalWheel(amount) => {
+                Instruction::BeginOptionalWheel(amount)
+                | Instruction::BeginOptionalShuffleWheel(amount) => {
                     self.state.resolving.as_mut().unwrap().optional_wheel = Some(OptionalWheel {
                         first: self.state.active,
                         choices: [None; 2],
                         amount,
                         next: 0,
                         running: false,
+                        shuffle: matches!(instruction, Instruction::BeginOptionalShuffleWheel(_)),
                     });
                 }
                 Instruction::AskOptionalWheel { first, skip } => {
@@ -7070,6 +7085,18 @@ impl Game {
                 }
                 Instruction::PutHandFiltered { filter, skip } => {
                     if self.start_filtered_hand_entry(&item, filter, skip) {
+                        return;
+                    }
+                }
+                Instruction::PutHandCreatureAndLand => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::HandCreatureAndLand,
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        2,
+                        Some(0),
+                    ) {
                         return;
                     }
                 }

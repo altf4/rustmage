@@ -788,6 +788,11 @@ pub enum LibrarySelectionFilter {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum LibrarySelectionCount {
+    /// Choose at most this many cards within their combined mana-value budget.
+    ManaValueBudget {
+        maximum_cards: u16,
+        maximum_total: u16,
+    },
     Fixed(u16),
     /// Any number of the eligible cards in the looked group.
     All,
@@ -1035,6 +1040,7 @@ pub enum EffectChoiceKind {
         minimum: u16,
     },
     HandToTop,
+    BottomHand,
     RemoveCreatureCounters(u16),
     UntapLands {
         maximum: u16,
@@ -1044,6 +1050,7 @@ pub enum EffectChoiceKind {
         counter: CounterKind,
     },
     HandCreature,
+    HandCreatureAndLand,
     HandPermanent {
         maximum: u32,
         tapped: bool,
@@ -1270,6 +1277,7 @@ impl RecoveryFilter {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum MillAmount {
+    HalfLibraryRoundedUp,
     RecipientGraveyard,
     LifeEvent,
     ChosenX,
@@ -1848,6 +1856,7 @@ pub enum Instruction {
         filter: SearchFilter,
     },
     PutHandCreature,
+    PutHandCreatureAndLand,
     PutHandPermanent {
         maximum: AmountValue,
         tapped: bool,
@@ -2606,6 +2615,7 @@ pub enum Instruction {
     /// Single-player optional effect, including zero-card searches.
     /// Record APNAP optional wheel decisions before performing either player's action.
     BeginOptionalWheel(u16),
+    BeginOptionalShuffleWheel(u16),
     AskOptionalWheel {
         first: bool,
         skip: usize,

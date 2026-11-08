@@ -248,6 +248,10 @@ impl Game {
         };
         let requested = match spec.count {
             LibrarySelectionCount::Fixed(n) => usize::from(n),
+            LibrarySelectionCount::ManaValueBudget { maximum_cards, .. } => {
+                assert!(spec.optional, "budgeted selection requires an up-to count");
+                usize::from(maximum_cards)
+            }
             LibrarySelectionCount::All => eligible.len(),
             LibrarySelectionCount::RandomOne => 1,
             LibrarySelectionCount::Lessons => {
@@ -326,6 +330,30 @@ impl Game {
         }
         self.state.pending = Pending::EffectLibrarySelection { player: owner };
         true
+    }
+    pub(super) fn library_selection_candidate(
+        &self,
+        frame: &LibrarySelection,
+        object: ObjectRef,
+    ) -> bool {
+        if !frame.eligible.contains(&object) {
+            return false;
+        }
+        match frame.spec.count {
+            LibrarySelectionCount::ManaValueBudget { maximum_total, .. } => {
+                frame
+                    .selected
+                    .iter()
+                    .copied()
+                    .chain([object])
+                    .map(|r| {
+                        u128::from(self.state.objects[r.card as usize].card.fixed_mana_value())
+                    })
+                    .sum::<u128>()
+                    <= u128::from(maximum_total)
+            }
+            _ => true,
+        }
     }
     pub(super) fn choose_library_selection(&mut self, card: CardId) {
         let f = self
@@ -705,7 +733,7 @@ impl Game {
                 .remaining
                 .iter()
                 .copied()
-                .filter(|r| f.eligible.contains(r))
+                .filter(|&r| self.library_selection_candidate(f, r))
                 .collect(),
             selected: f
                 .selected

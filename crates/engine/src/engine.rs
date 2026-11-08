@@ -814,6 +814,8 @@ define_actions! {
     ChooseJace { object: ObjectRef },
     FinishLandSelection,
     DeclineHandEntry,
+    FinishHandSelection,
+    BottomHandCard { object: ObjectRef },
     ChooseHandDefender { defender: CombatDefender },
     ChooseBlight { pay: bool },
     PayBlight { object: ObjectRef },
@@ -4947,19 +4949,19 @@ impl Game {
                             | EffectChoiceKind::UntapLands { .. }
                             | EffectChoiceKind::DiscardedLand { .. }
                     )
-                    && emit(
-                        if matches!(
-                            choice.kind,
-                            EffectChoiceKind::HandExileCopy
-                                | EffectChoiceKind::HandCreature
-                                | EffectChoiceKind::HandPermanent { .. }
-                                | EffectChoiceKind::HandLand { .. }
-                        ) {
-                            Action::DeclineHandEntry
-                        } else {
-                            Action::DeclineEffectPayment
-                        },
-                    )
+                    && emit(if choice.kind == EffectChoiceKind::HandCreatureAndLand {
+                        Action::FinishHandSelection
+                    } else if matches!(
+                        choice.kind,
+                        EffectChoiceKind::HandExileCopy
+                            | EffectChoiceKind::HandCreature
+                            | EffectChoiceKind::HandPermanent { .. }
+                            | EffectChoiceKind::HandLand { .. }
+                    ) {
+                        Action::DeclineHandEntry
+                    } else {
+                        Action::DeclineEffectPayment
+                    })
                 {
                     return true;
                 }
@@ -4978,7 +4980,8 @@ impl Game {
                             EffectChoiceKind::HandExileCopy | EffectChoiceKind::HandCreature => {
                                 Action::PutHandCreature { object }
                             }
-                            EffectChoiceKind::HandPermanent { .. } => {
+                            EffectChoiceKind::HandCreatureAndLand
+                            | EffectChoiceKind::HandPermanent { .. } => {
                                 Action::PutHandPermanent { object }
                             }
                             EffectChoiceKind::HandLand { .. } => Action::PutHandLand { object },
@@ -5003,6 +5006,7 @@ impl Game {
                             EffectChoiceKind::HandPlot { .. } => {
                                 Action::SelectResolutionExile { object }
                             }
+                            EffectChoiceKind::BottomHand => Action::BottomHandCard { object },
                             EffectChoiceKind::Discard => Action::Discard { card: object.card },
                             EffectChoiceKind::SacrificeOrDiscard { .. } => {
                                 if s.objects[index].zone == Zone::Hand {
@@ -6584,7 +6588,7 @@ impl Game {
                     }
                     if !f.random && f.selected.len() < f.maximum {
                         for r in &f.remaining {
-                            if f.eligible.contains(r)
+                            if self.library_selection_candidate(f, *r)
                                 && emit(Action::SelectLibrary { card: r.card })
                             {
                                 return true;
@@ -7961,7 +7965,8 @@ impl Game {
             | Action::ChooseJace { object }
             | Action::SelectGraveyardReturn { object }
             | Action::SelectLand { object }
-            | Action::SelectResolutionExile { object } => self.choose_effect_object(actor, object),
+            | Action::SelectResolutionExile { object }
+            | Action::BottomHandCard { object } => self.choose_effect_object(actor, object),
             Action::FinishGraveyardReturn => {
                 self.finish_graveyard_return_selection();
                 self.run_program();
@@ -7971,6 +7976,10 @@ impl Game {
                 self.run_program();
             }
             Action::DeclineHandEntry => self.decline_effect_payment(),
+            Action::FinishHandSelection => {
+                self.finish_creature_and_land_selection();
+                self.run_program();
+            }
             Action::ChooseHandDefender { defender } => self.choose_hand_defender(defender),
             Action::Sacrifice { object } => self.choose_effect_object(actor, object),
             Action::DeclineEffectPayment => self.decline_effect_payment(),
