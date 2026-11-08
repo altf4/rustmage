@@ -113,6 +113,7 @@ impl Game {
                 ability.condition.event(),
                 TriggerCondition::CreatureAttacksYou { .. }
                     | TriggerCondition::CreaturesAttackYou
+                    | TriggerCondition::OpponentAttacked
                     | TriggerCondition::AttackDeclared { .. }
                     | TriggerCondition::CreaturesAttackDeclared { .. }
                     | TriggerCondition::FirstAttackWithTotalPowerAtLeast(_)

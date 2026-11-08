@@ -16,6 +16,21 @@ pub(super) const COST: AdditionalCost = AdditionalCost {
 };
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn record_sneak_entry(&mut self, object: ObjectRef) {
+        self.state
+            .combat_rules
+            .get_or_insert_with(Default::default)
+            .sneak_entries
+            .get_or_insert_with(Default::default)
+            .push(object);
+    }
+    pub(super) fn source_sneaked_this_turn(&self, object: ObjectRef) -> bool {
+        self.state
+            .combat_rules
+            .as_ref()
+            .and_then(|rules| rules.sneak_entries.as_ref())
+            .is_some_and(|rows| rows.contains(&object))
+    }
     /// Ninjutsu's unblocked attacker can be returned after blockers, including
     /// in a combat-damage or end-of-combat priority window. Sneak's own
     /// announcement check remains restricted to the blockers step.

@@ -224,6 +224,18 @@ impl Game {
         counter: Option<(CounterKind, u64)>,
         tapped: bool,
     ) {
+        self.blink_immediately_inner(item, counter, tapped, false);
+    }
+    pub(super) fn blink_immediately_attacking(&mut self, item: &SpellView) {
+        self.blink_immediately_inner(item, None, true, true);
+    }
+    fn blink_immediately_inner(
+        &mut self,
+        item: &SpellView,
+        counter: Option<(CounterKind, u64)>,
+        tapped: bool,
+        attacking: bool,
+    ) {
         let ids: Vec<_> = item
             .targets
             .iter()
@@ -238,38 +250,39 @@ impl Game {
         let returning = events
             .iter()
             .filter_map(|event| {
-                (event.moved && event.destination == Zone::Exile && !event.before.is_token())
-                    .then_some(ReturnLinkView {
-                        exile_after: false,
-                        additional_returning: None,
-                        object: event.after,
-                        zone: Zone::Exile,
-                        controller: event.before.owner,
-                        counter,
-                        tapped,
-                    })
+                (event.moved
+                    && !event.before.is_token()
+                    && (event.destination == Zone::Exile
+                        || attacking
+                            && matches!(event.destination, Zone::Graveyard | Zone::Command)))
+                .then_some(ReturnLinkView {
+                    exile_after: false,
+                    additional_returning: None,
+                    object: event.after,
+                    zone: event.destination,
+                    controller: if attacking {
+                        item.controller
+                    } else {
+                        event.before.owner
+                    },
+                    counter,
+                    tapped,
+                })
             })
             .collect();
         // Departure events can themselves stage a choice-bearing linked return.
         // Keep our exact exiled incarnations owned until that entry batch finishes.
-        self.state
-            .resolving
-            .as_mut()
-            .unwrap()
-            .immediate_blink_return = Some(Box::new(returning));
+        let resolution = self.state.resolving.as_mut().unwrap();
+        resolution.immediate_blink_attacking = attacking;
+        resolution.immediate_blink_return = Some(Box::new(returning));
         self.finish_zone_events(&events, &[]);
     }
     pub(super) fn resume_immediate_blink(&mut self) -> bool {
-        let Some(rows) = self
-            .state
-            .resolving
-            .as_mut()
-            .unwrap()
-            .immediate_blink_return
-            .take()
-        else {
+        let resolution = self.state.resolving.as_mut().unwrap();
+        let Some(rows) = resolution.immediate_blink_return.take() else {
             return false;
         };
+        let attacking = std::mem::take(&mut resolution.immediate_blink_attacking);
         let moves = rows
             .iter()
             .filter_map(|row| {
@@ -281,6 +294,7 @@ impl Game {
                 let mut movement = self.entry_move(row.object.card, Zone::Battlefield, row.tapped);
                 movement.controller = row.controller;
                 movement.effect_counter = row.counter;
+                movement.choose_attacking_defender = attacking;
                 if row.exile_after {
                     movement.delayed_return_exile = self
                         .state

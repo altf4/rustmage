@@ -454,6 +454,8 @@ impl FundingState<'_> {
                 self.game.declared_attack_subtypes_all(player, subtypes)
             }
             StepGuard::Always => true,
+            StepGuard::FirstCombatPhase => self.game.first_combat_phase(),
+            StepGuard::SourceSneakedThisTurn => self.game.source_sneaked_this_turn(source),
             StepGuard::ArtifactEnteredThisTurn => state.turn_facts.artifact_entered,
             StepGuard::HeroEnteredOrAttackedThisTurn => {
                 state.turn_facts.hero_entered || state.turn_facts.hero_attacked

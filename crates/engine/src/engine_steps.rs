@@ -29,6 +29,10 @@ impl Game {
             self.queue_suspend_upkeep();
         }
         if step == Step::BeginCombat {
+            let phases = &mut self.state.players[self.state.active.index()]
+                .turn_facts
+                .combat_phases_started;
+            *phases = (*phases + 1).min(2);
             self.queue_begin_combat_this_turn();
         }
         if step == Step::Upkeep
@@ -326,6 +330,20 @@ impl Game {
         )
     }
 
+    pub(super) fn first_combat_phase(&self) -> bool {
+        matches!(
+            self.state.step,
+            Step::BeginCombat
+                | Step::Attackers
+                | Step::Blockers
+                | Step::FirstStrikeDamage
+                | Step::CombatDamage
+                | Step::EndCombat
+        ) && self.state.players[self.state.active.index()]
+            .turn_facts
+            .combat_phases_started
+            == 1
+    }
     pub(super) fn step_guard(
         &self,
         guard: StepGuard,
@@ -369,6 +387,8 @@ impl Game {
                 return self.declared_attack_subtypes_all(player, subtypes);
             }
             StepGuard::Always => return true,
+            StepGuard::FirstCombatPhase => return self.first_combat_phase(),
+            StepGuard::SourceSneakedThisTurn => return self.source_sneaked_this_turn(source),
             StepGuard::ArtifactEnteredThisTurn => return p.turn_facts.artifact_entered,
             StepGuard::HeroEnteredOrAttackedThisTurn => {
                 return p.turn_facts.hero_entered || p.turn_facts.hero_attacked;

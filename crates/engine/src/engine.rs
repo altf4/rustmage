@@ -796,6 +796,7 @@ define_actions! {
     ChooseWaterbender { object: ObjectRef },
     ChooseConvoker { object: ObjectRef, contribution: ConvokeContribution },
     ChooseMobilizeDefender { defender: CombatDefender },
+    ChooseEntryAttackingDefender { defender: CombatDefender },
     ChooseToken { token: Card },
     ChooseKeyword { index: u16 },
     PutHandCreature { object: ObjectRef },
@@ -2024,17 +2025,25 @@ impl SpellView {
                 let a = &self.trigger_definition().triggers()[ability as usize];
                 let targets = match a.targets {
                     TargetPlan::Single(mut spec)
-                        if matches!(spec.rule, TargetRule::DamagedPlayerPermanent { .. }) =>
+                        if matches!(
+                            spec.rule,
+                            TargetRule::DamagedPlayerPermanent { .. }
+                                | TargetRule::DamagedPlayerObject { .. }
+                        ) =>
                     {
-                        let TargetRule::DamagedPlayerPermanent { kinds } = spec.rule else {
-                            unreachable!()
+                        let (zone, kinds) = match spec.rule {
+                            TargetRule::DamagedPlayerPermanent { kinds } => {
+                                (TargetZone::Battlefield, kinds)
+                            }
+                            TargetRule::DamagedPlayerObject { zone, kinds } => (zone, kinds),
+                            _ => unreachable!(),
                         };
                         let player = self
                             .damage_event
                             .expect("damage-bound target requires event")
                             .player;
                         spec.rule = TargetRule::Object {
-                            zone: TargetZone::Battlefield,
+                            zone,
                             kinds,
                             relation: if player == self.controller { 0 } else { 1 },
                             other: false,
@@ -2560,6 +2569,9 @@ enum Pending {
         player: Player,
     },
     EntryValue {
+        player: Player,
+    },
+    EntryAttackingDefender {
         player: Player,
     },
     LandCardName {
@@ -3465,6 +3477,8 @@ pub struct Observation {
     pub turn_schedule: Option<TurnScheduleView>,
     pub must_be_blocked: Vec<ObjectRef>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub sneak_entries: Vec<ObjectRef>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub must_attack_this_combat: Vec<ObjectRef>,
     pub combat_damaged_players: Vec<combat_allocations::CombatDamagePlayerView>,
     pub animations: Vec<AnimationView>,
@@ -4149,6 +4163,7 @@ impl Game {
             | Pending::LinkedChoice { player }
             | Pending::CreatureTypeChoice { player }
             | Pending::EntryValue { player }
+            | Pending::EntryAttackingDefender { player }
             | Pending::EntryCopy { player }
             | Pending::EntryExile { player }
             | Pending::LandCardName { player }
@@ -4830,6 +4845,13 @@ impl Game {
                     }) {
                         return true;
                     }
+                }
+            }
+            Pending::EntryAttackingDefender { player } => {
+                if self.visit_entry_attacking_defenders(player, &mut |defender| {
+                    emit(Action::ChooseEntryAttackingDefender { defender })
+                }) {
+                    return true;
                 }
             }
             Pending::EntryValue { .. }
@@ -6782,6 +6804,9 @@ impl Game {
                 self.choose_type_for_tokens(creature_type)
             }
             Action::ChooseEntryValue { value } => self.choose_entry_value(value),
+            Action::ChooseEntryAttackingDefender { defender } => {
+                self.choose_entry_attacking_defender(defender)
+            }
             Action::ChooseEntryCopy { object } => self.choose_entry_copy(object),
             Action::ChooseEntryExile { object } => self.choose_entry_exile(object),
             Action::FinishEntryExile => self.finish_entry_exile(),
@@ -7873,6 +7898,7 @@ impl Game {
                     .extend(self.state.selected_blocks.iter().map(|&(b, _)| b));
                 self.state.blocks.append(&mut self.state.selected_blocks);
                 self.attachment_block_triggers(actor);
+                self.self_block_triggers(&declared);
                 self.opponent_blocker_triggers(actor, &declared);
                 for attacker in &mut self.state.attackers {
                     attacker.blocked = self.state.blocks.iter().any(|&(_, a)| a == attacker.card);
@@ -10691,6 +10717,11 @@ impl Game {
                 .combat_rules
                 .as_ref()
                 .map_or_else(Vec::new, |r| r.must_be_blocked.clone()),
+            sneak_entries: s
+                .combat_rules
+                .as_ref()
+                .and_then(|rules| rules.sneak_entries.as_ref())
+                .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
             combat_damaged_players: s
                 .combat_rules
                 .as_ref()
@@ -10816,6 +10847,7 @@ impl Game {
                 Pending::EntryTimestamp { .. } => "entry_timestamps",
                 Pending::LinkedChoice { .. } => "linked_choice",
                 Pending::EntryValue { .. } => "entry_value",
+                Pending::EntryAttackingDefender { .. } => "entry_attacking_defender",
                 Pending::EntryCopy { .. } => "entry_copy",
                 Pending::EntryExile { .. } => "entry_exile",
                 Pending::LandCardName { .. } => "land_card_name",

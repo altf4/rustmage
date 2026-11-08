@@ -111,6 +111,8 @@ pub enum StaticAbilityFragment {
     AttachedCreaturePreventsSourceAttack,
     /// Controlled creatures with greater toughness assign combat damage using toughness.
     ControlledCombatDamageByGreaterToughness,
+    /// Add one independent blocking requirement for this creature.
+    MustBeBlocked,
     /// This source assigns combat damage using the magnitude of negative power.
     SourceNegativePowerCombatDamage,
     /// Replace each nonexempt controller draw with two draws.

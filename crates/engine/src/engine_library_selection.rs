@@ -527,16 +527,20 @@ impl Game {
         }
         if matches!(
             f.destination,
-            LibraryPickDestination::Battlefield | LibraryPickDestination::BattlefieldTapped
+            LibraryPickDestination::Battlefield
+                | LibraryPickDestination::BattlefieldTapped
+                | LibraryPickDestination::BattlefieldTappedAttacking
         ) && !ids.is_empty()
         {
             f.entering = true;
-            let tapped = f.destination == LibraryPickDestination::BattlefieldTapped;
+            let tapped = f.destination != LibraryPickDestination::Battlefield;
+            let attacking = f.destination == LibraryPickDestination::BattlefieldTappedAttacking;
             self.state.resolving.as_mut().unwrap().selection = Some(f);
             let moves = ids
                 .into_iter()
                 .map(|id| {
                     let mut movement = self.entry_move(id, Zone::Battlefield, tapped);
+                    movement.choose_attacking_defender = attacking;
                     movement.controller = owner;
                     movement
                 })
@@ -582,7 +586,9 @@ impl Game {
             && !f.exclude_selected_from_remainder
             && matches!(
                 f.destination,
-                LibraryPickDestination::Battlefield | LibraryPickDestination::BattlefieldTapped
+                LibraryPickDestination::Battlefield
+                    | LibraryPickDestination::BattlefieldTapped
+                    | LibraryPickDestination::BattlefieldTappedAttacking
             )
         {
             f.remaining.extend(f.selected.iter().copied().filter(|r| {
@@ -756,6 +762,9 @@ impl Game {
                 LibraryPickDestination::Graveyard => "graveyard",
                 LibraryPickDestination::Battlefield => "battlefield",
                 LibraryPickDestination::BattlefieldTapped => "battlefield_tapped",
+                LibraryPickDestination::BattlefieldTappedAttacking => {
+                    "battlefield_tapped_attacking"
+                }
                 LibraryPickDestination::Top => "top",
                 LibraryPickDestination::Hideaway => "hideaway",
                 LibraryPickDestination::Exile => "exile",

@@ -257,6 +257,11 @@ pub enum TargetRule {
     DamagedPlayerPermanent {
         kinds: u8,
     },
+    /// Bind the controller or owner to the player from the captured damage event.
+    DamagedPlayerObject {
+        zone: TargetZone,
+        kinds: u8,
+    },
     CreatureOrVehicle {
         relation: i8,
     },
@@ -822,6 +827,7 @@ pub enum LibraryPickDestination {
     /// A single forced candidate; evaluate the threshold before any entry choices.
     BattlefieldIfManaValueAtMostElseHand(AmountValue),
     BattlefieldTapped,
+    BattlefieldTappedAttacking,
     LandsTappedRestHand,
     Graveyard,
     Hideaway,
@@ -1571,6 +1577,9 @@ pub enum Instruction {
     ScheduleAttackTriggerThisTurn {
         ability: u16,
     },
+    DelayCreatureAttacksAlone {
+        ability: u16,
+    },
     BlinkImmediately {
         counter: Option<(CounterKind, u64)>,
         tapped: bool,
@@ -1589,6 +1598,7 @@ pub enum Instruction {
     /// Exile a target; return small physical cards tapped under your control,
     /// then exile the returned incarnation at the next end step.
     ExileSmallReturnUntilEndStep,
+    BlinkAttacking,
     BlinkUntilEndStep {
         under_owner: bool,
     },
@@ -1713,8 +1723,20 @@ pub enum Instruction {
     CreateTemporaryArtifactCopy,
     /// A normal token copy with source-independent next-end-step sacrifice.
     CreateCopyWithDelayedSacrifice,
+    CreateHastyCopyWithDelayedSacrifice,
+    CreateHastyTokensDestroyedAtEnd {
+        token: Card,
+        amount: AmountValue,
+    },
+    CreateTokensAttacking {
+        token: Card,
+        amount: u16,
+    },
     /// Copy each physical card linked to this acquired ability, tapped attacking opponents.
     CreateLinkedExileAttackingCopies,
+    IfSneakPaid {
+        skip: usize,
+    },
     CreateTemporaryTokens {
         token: Card,
         amount: AmountValue,
@@ -2972,6 +2994,7 @@ pub enum Instruction {
     /// Return first, freeze entry observers, then counter only successful exact results.
     ReturnToBattlefieldThenCounters(&'static [(CounterKind, u64)]),
     ReturnToBattlefieldTapped,
+    ReturnToBattlefieldAttacking(PlayerSet),
     ReturnTargetAttackingWithCounter(CounterKind),
     Destroy,
     DestroyCounted { kinds: u16 },
@@ -4453,6 +4476,8 @@ pub struct CombatRestriction {
 pub enum StepGuard {
     SourceUnprepared,
     ClassLevelAtLeast(u8),
+    FirstCombatPhase,
+    SourceSneakedThisTurn,
     UnsolvedLifeGainedAtLeast(u128),
     /// Trigger-time attachment relation; wrap the step event in When.
     AttachedControllerTurn,
@@ -4834,16 +4859,19 @@ pub enum TriggerCondition {
     SelfAttacks,
     /// Intervening equipped clause, with exact source-departure quantities.
     SelfAttacksIfEquipped,
+    SelfAttacksOrBlocks,
     SelfFirstAttack,
     CreatureAttacksYou {
         colors: u8,
     },
     /// Once per declaration, capturing only creatures declared attacking this controller as a player.
     CreaturesAttackYou,
+    OpponentAttacked,
     /// Declaration-time condition; not a resolution-time intervening if.
     SelfAttacksAlone,
     /// A completed declaration with exactly one controlled creature, whether this source attacked or not.
     ControlledCreatureAttacksAlone,
+    DelayedCreatureAttacksAlone,
     /// One event for each creature declared attacking by the source controller.
     ControlledCreatureAttacks,
     ControlledCreatureAttacksPlayerAlone,

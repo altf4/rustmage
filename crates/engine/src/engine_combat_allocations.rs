@@ -21,6 +21,7 @@ pub(super) struct CombatRulesState {
     )]
     pub begin_combat_this_turn: Option<Box<Vec<SpellView>>>,
     pub must_be_blocked: Vec<ObjectRef>,
+    pub sneak_entries: Option<SharedVec<ObjectRef>>,
     pub must_attack_this_combat: Vec<ObjectRef>,
     pub damaged_players: Vec<CombatDamagePlayerView>,
     excess: Option<ExcessDamage>,
@@ -56,6 +57,10 @@ impl CombatRulesState {
             + (self.must_be_blocked.len() + self.must_attack_this_combat.len())
                 * std::mem::size_of::<ObjectRef>()
             + self.damaged_players.len() * std::mem::size_of::<CombatDamagePlayerView>()
+            + self.sneak_entries.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<ObjectRef>>()
+                    + rows.len() * std::mem::size_of::<ObjectRef>()
+            })
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -380,13 +385,19 @@ impl Game {
         rules.must_be_blocked.extend(recipients);
     }
     pub(super) fn block_requirement_weight(&self, id: CardId) -> usize {
-        self.state.combat_rules.as_ref().map_or(0, |rules| {
-            rules
-                .must_be_blocked
-                .iter()
-                .filter(|&&r| r == self.object_ref(id))
-                .count()
-        })
+        let static_requirement = self
+            .characteristic_query()
+            .continuous_fragment_available(id, |fragment| {
+                matches!(fragment, crate::cards::StaticAbilityFragment::MustBeBlocked)
+            });
+        usize::from(static_requirement)
+            + self.state.combat_rules.as_ref().map_or(0, |rules| {
+                rules
+                    .must_be_blocked
+                    .iter()
+                    .filter(|&&r| r == self.object_ref(id))
+                    .count()
+            })
     }
     pub(super) fn destroy_combat_damaged_players_permanents(&mut self, item: &SpellView) {
         let mut damaged = [false; 2];

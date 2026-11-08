@@ -59,6 +59,8 @@ pub(super) struct EntryMove {
     /// Source-independent enchantment-only form as it enters.
     pub enchantment_return: bool,
     pub attacking: Option<CombatDefender>,
+    pub sneak_paid: bool,
+    pub choose_attacking_defender: bool,
     pub skipped: bool,
     pub reveal_hand: bool,
     pub exile_free_until_end: Option<Player>,
@@ -124,7 +126,7 @@ pub(super) struct EntryBatch {
     pub atomic_cost: Option<Box<AtomicCostCheckpoint>>,
     pub temporary_copy: Option<Box<SpellView>>,
     pub delayed_sacrifice: Option<Box<SpellView>>,
-    pub delayed_sacrifice_own_end: bool,
+    pub delayed_token_cleanup: temporary_tokens::TokenCleanup,
     pub captures_result: bool,
     pub copying: bool,
     pub discard_context: Option<discard_events::DiscardContext>,
@@ -230,6 +232,8 @@ impl EntryMove {
             artifact_return: false,
             enchantment_return: false,
             attacking: None,
+            sneak_paid: false,
+            choose_attacking_defender: false,
             skipped: false,
             reveal_hand: false,
             exile_free_until_end: None,
@@ -427,14 +431,30 @@ impl Game {
         EntryMove::from_view(self.object_view(id), destination, tapped)
     }
     pub(super) fn stage_entries(&mut self, moves: Vec<EntryMove>, shuffle_after: Option<Player>) {
-        self.stage_entries_inner(moves, shuffle_after, None, None, None, None, false);
+        self.stage_entries_inner(
+            moves,
+            shuffle_after,
+            None,
+            None,
+            None,
+            None,
+            temporary_tokens::TokenCleanup::NextEndStepSacrifice,
+        );
     }
     pub(super) fn stage_discard_entries(
         &mut self,
         moves: Vec<EntryMove>,
         context: discard_events::DiscardContext,
     ) {
-        self.stage_entries_inner(moves, None, Some(context), None, None, None, false);
+        self.stage_entries_inner(
+            moves,
+            None,
+            Some(context),
+            None,
+            None,
+            None,
+            temporary_tokens::TokenCleanup::NextEndStepSacrifice,
+        );
     }
     pub(super) fn stage_temporary_copy_entries(&mut self, moves: Vec<EntryMove>, item: &SpellView) {
         self.stage_entries_inner(
@@ -444,7 +464,7 @@ impl Game {
             Some(Box::new(item.clone())),
             None,
             None,
-            false,
+            temporary_tokens::TokenCleanup::NextEndStepSacrifice,
         );
     }
     pub(super) fn stage_atomic_cost_entries(
@@ -459,7 +479,7 @@ impl Game {
             None,
             Some(Box::new(checkpoint)),
             None,
-            false,
+            temporary_tokens::TokenCleanup::NextEndStepSacrifice,
         );
     }
     pub(super) fn stage_entries_with_delayed_sacrifice(
@@ -474,14 +494,14 @@ impl Game {
             None,
             None,
             Some(Box::new(item.clone())),
-            false,
+            temporary_tokens::TokenCleanup::NextEndStepSacrifice,
         );
     }
     pub(super) fn stage_temporary_token_entries(
         &mut self,
         moves: Vec<EntryMove>,
         item: &SpellView,
-        own_end: bool,
+        cleanup: temporary_tokens::TokenCleanup,
     ) {
         self.stage_entries_inner(
             moves,
@@ -490,7 +510,7 @@ impl Game {
             None,
             None,
             Some(Box::new(item.clone())),
-            own_end,
+            cleanup,
         );
     }
     #[allow(
@@ -505,7 +525,7 @@ impl Game {
         temporary_copy: Option<Box<SpellView>>,
         atomic_cost: Option<Box<AtomicCostCheckpoint>>,
         delayed_sacrifice: Option<Box<SpellView>>,
-        delayed_sacrifice_own_end: bool,
+        delayed_token_cleanup: temporary_tokens::TokenCleanup,
     ) {
         if atomic_cost.is_none() && self.replay_frozen_mana_entries() {
             return;
@@ -536,7 +556,7 @@ impl Game {
             atomic_cost,
             temporary_copy,
             delayed_sacrifice,
-            delayed_sacrifice_own_end,
+            delayed_token_cleanup,
             captures_result,
             copying: true,
             discard_context,
@@ -651,7 +671,8 @@ impl Game {
             .enumerate()
             .filter(|(i, m)| {
                 m.destination == Zone::Battlefield
-                    && (m.before.card.entry_choice().is_some()
+                    && (m.choose_attacking_defender
+                        || m.before.card.entry_choice().is_some()
                         || !m.artifact_return
                             && !m.enchantment_return
                             && m.before.card.aura().is_some()
@@ -1120,6 +1141,9 @@ impl Game {
                 ghost_results.push((event.after, source));
             }
             event.cast_event = movement.cast_event;
+            if event.moved && event.destination == Zone::Battlefield && movement.sneak_paid {
+                self.record_sneak_entry(event.after);
+            }
             event.was_cast = movement.cast_origin.is_some();
             event.offspring_paid = movement.offspring_paid;
             event.kicked = movement.kicked;
@@ -1333,11 +1357,12 @@ impl Game {
                 .filter(|event| event.moved && event.destination == Zone::Battlefield)
                 .map(|event| event.after)
                 .collect();
-            self.register_delayed_sacrifice_when(
+            self.register_delayed_token_cleanup(
                 item,
                 recipients,
                 false,
-                batch.delayed_sacrifice_own_end,
+                batch.delayed_token_cleanup == temporary_tokens::TokenCleanup::OwnEndStepSacrifice,
+                batch.delayed_token_cleanup == temporary_tokens::TokenCleanup::NextEndStepDestroy,
             );
         }
         if let Some(context) = batch.discard_context {
@@ -1453,6 +1478,22 @@ impl Game {
                     .map(|&index| (index, batch.moves[index].controller))
             }) {
                 let movement = &self.state.entry_batch.as_ref().unwrap().moves[index];
+                if movement.choose_attacking_defender {
+                    let attacking =
+                        self.attacking_return_combat(owner) && movement.entry_kinds() & 1 != 0;
+                    if attacking
+                        && self.visit_entry_attacking_defenders(owner, &mut |defender| {
+                            defender != CombatDefender::Player(owner.other())
+                        })
+                    {
+                        self.state.pending = Pending::EntryAttackingDefender { player: owner };
+                        return true;
+                    }
+                    let movement = &mut self.state.entry_batch.as_mut().unwrap().moves[index];
+                    movement.choose_attacking_defender = false;
+                    movement.attacking = attacking.then_some(CombatDefender::Player(owner.other()));
+                    continue;
+                }
                 if movement.before.card.entry_choice().is_some() && movement.choice.is_none() {
                     self.state.pending = Pending::EntryValue { player: owner };
                     return true;
@@ -1622,6 +1663,29 @@ impl Game {
         let movement = &batch.moves[batch.choices[batch.next]];
         self.aura_can_enchant(movement.before.card, movement.controller, target)
             && batch.moves.iter().all(|m| m.before.id != target.card)
+    }
+    pub(super) fn visit_entry_attacking_defenders(
+        &self,
+        player: Player,
+        emit: &mut impl FnMut(CombatDefender) -> bool,
+    ) -> bool {
+        let batch = self.state.entry_batch.as_ref().unwrap();
+        self.visit_attacking_defenders(player, &mut |defender| {
+            let moving = match defender {
+                CombatDefender::Player(_) => false,
+                CombatDefender::Battle(object) | CombatDefender::Planeswalker(object) => batch
+                    .moves
+                    .iter()
+                    .any(|movement| movement.before.reference == object && !movement.skipped),
+            };
+            !moving && emit(defender)
+        })
+    }
+    pub(super) fn choose_entry_attacking_defender(&mut self, defender: CombatDefender) {
+        let batch = self.state.entry_batch.as_mut().unwrap();
+        let movement = &mut batch.moves[batch.choices[batch.next]];
+        movement.choose_attacking_defender = false;
+        movement.attacking = Some(defender);
     }
     pub(super) fn choose_aura_attachment(&mut self, target: ObjectRef) {
         let batch = self.state.entry_batch.as_mut().unwrap();

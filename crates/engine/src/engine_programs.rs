@@ -36,6 +36,7 @@ pub(super) struct Resolution {
     pub target_card_facts: Option<Box<Vec<TargetCardFacts>>>,
     #[allow(clippy::box_collection)]
     pub immediate_blink_return: Option<Box<Vec<ReturnLinkView>>>,
+    pub immediate_blink_attacking: bool,
     pub connive: Option<Box<super::connive::ConniveSequence>>,
     pub proliferate: Option<Box<super::proliferate::ProliferateSequence>>,
     pub explore: Option<Box<ExploreChoiceView>>,
@@ -1028,6 +1029,7 @@ impl Game {
                     | TriggerCondition::SelfCountersAdded { .. }
                     | TriggerCondition::CreatureAttacksYou { .. }
                     | TriggerCondition::CreaturesAttackYou
+                    | TriggerCondition::OpponentAttacked
                     | TriggerCondition::OtherCreatureCountersAdded { .. }
                     | TriggerCondition::OtherCreatureCounterPlacedByYou { .. }
                     | TriggerCondition::CounterPlacedByYou { .. }
@@ -1043,6 +1045,8 @@ impl Game {
                     | TriggerCondition::SelfFirstAttack
                     | TriggerCondition::SelfAttacksAlone
                     | TriggerCondition::ControlledCreatureAttacksAlone
+                    | TriggerCondition::DelayedCreatureAttacksAlone
+                    | TriggerCondition::SelfAttacksOrBlocks
                     | TriggerCondition::ControlledCreatureAttacks
                     | TriggerCondition::ControlledCreatureAttacksPlayerAlone
                     | TriggerCondition::OpponentCreatureBlocksSmall
@@ -2241,6 +2245,15 @@ impl Game {
                 .cloned()
                 .collect();
             for mut packet in packets {
+                if let StackKind::TriggeredAbility { ability } = packet.kind
+                    && packet.trigger_definition().triggers()[usize::from(ability)]
+                        .condition
+                        .event()
+                        == TriggerCondition::DelayedCreatureAttacksAlone
+                {
+                    let Some(attacker) = alone else { continue };
+                    packet.entering_object = Some(attacker);
+                }
                 packet.id = self.next_stack_id();
                 self.state.pending_triggers.push(packet);
             }
@@ -2439,7 +2452,11 @@ impl Game {
                         .triggers()
                         .iter()
                         .any(|ability| {
-                            ability.condition.event() == TriggerCondition::CreaturesAttackYou
+                            matches!(
+                                ability.condition.event(),
+                                TriggerCondition::CreaturesAttackYou
+                                    | TriggerCondition::OpponentAttacked
+                            )
                         })
             })
             .map(|id| self.object_view(id))
@@ -2450,22 +2467,52 @@ impl Game {
                 .filter(|row| row.defender == Some(CombatDefender::Player(source.controller)))
                 .map(|row| self.object_ref(row.card))
                 .collect();
-            let Some((&first, rest)) = attackers.split_first() else {
-                continue;
-            };
+            let opponent_attacked = declared
+                .iter()
+                .any(|row| row.defender == Some(CombatDefender::Player(source.controller.other())));
             for (index, ability) in source.card.triggers().iter().enumerate() {
-                if ability.condition.event() == TriggerCondition::CreaturesAttackYou
-                    && self.queue_attack_trigger(&source, index)
-                {
-                    self.state
-                        .pending_triggers
-                        .last_mut()
-                        .unwrap()
-                        .reflexive_subject = Some(Box::new(ReflexiveSubjectView {
-                        object: first,
-                        action: false,
-                        additional_objects: rest.to_vec(),
-                    }));
+                match ability.condition.event() {
+                    TriggerCondition::OpponentAttacked if opponent_attacked => {
+                        self.queue_attack_trigger(&source, index);
+                    }
+                    TriggerCondition::CreaturesAttackYou => {
+                        if let Some((&first, rest)) = attackers.split_first()
+                            && self.queue_attack_trigger(&source, index)
+                        {
+                            self.state
+                                .pending_triggers
+                                .last_mut()
+                                .unwrap()
+                                .reflexive_subject = Some(Box::new(ReflexiveSubjectView {
+                                object: first,
+                                action: false,
+                                additional_objects: rest.to_vec(),
+                            }));
+                        }
+                    }
+                    _ => (),
+                }
+            }
+        }
+    }
+
+    pub(super) fn self_block_triggers(&mut self, declared: &[CardId]) {
+        for (index, &id) in declared.iter().enumerate() {
+            if declared[..index].contains(&id)
+                || !self.state.objects[id as usize]
+                    .card
+                    .triggers()
+                    .iter()
+                    .any(|ability| {
+                        ability.condition.event() == TriggerCondition::SelfAttacksOrBlocks
+                    })
+            {
+                continue;
+            }
+            let source = self.object_view(id);
+            for (index, ability) in source.card.triggers().iter().enumerate() {
+                if ability.condition.event() == TriggerCondition::SelfAttacksOrBlocks {
+                    self.queue_trigger(&source, index);
                 }
             }
         }
@@ -2667,6 +2714,7 @@ impl Game {
             if match ability.condition.event() {
                 TriggerCondition::SelfAttacks
                 | TriggerCondition::SelfAttacksIfEquipped
+                | TriggerCondition::SelfAttacksOrBlocks
                 | TriggerCondition::SelfEntersOrAttacks => true,
                 TriggerCondition::SelfFirstAttack => first_attack,
                 TriggerCondition::SelfAttacksAlone => declared_count == 1,
@@ -2899,6 +2947,8 @@ impl Game {
                                 item.cast.is_some_and(|c| c.method == CastMethod::Sneak),
                             );
                             movement.attacking = item.cast.and_then(|c| c.sneak_defender);
+                            movement.sneak_paid =
+                                item.cast.is_some_and(|c| c.method == CastMethod::Sneak);
                             movement.warp_controller = item
                                 .cast
                                 .filter(|c| c.method == CastMethod::Warp)
@@ -3021,6 +3071,7 @@ impl Game {
             target_card_facts,
             sacrificed_power: None,
             immediate_blink_return: None,
+            immediate_blink_attacking: false,
             explore: None,
             evidence: None,
             connive: None,
@@ -3571,7 +3622,8 @@ impl Game {
                 Instruction::CombatAndMainAfterCurrentMain(count) => {
                     self.add_combat_main_pairs(count)
                 }
-                Instruction::ScheduleAttackTriggerThisTurn { ability } => {
+                Instruction::ScheduleAttackTriggerThisTurn { ability }
+                | Instruction::DelayCreatureAttacksAlone { ability } => {
                     let mut delayed = item.clone();
                     delayed.id = self.next_stack_id();
                     delayed.kind = StackKind::TriggeredAbility { ability };
@@ -4299,6 +4351,14 @@ impl Game {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
+                Instruction::IfSneakPaid { skip } => {
+                    if !item
+                        .cast
+                        .is_some_and(|cast| cast.method == CastMethod::Sneak)
+                    {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
                 Instruction::IfKicked { skip } => {
                     if !item.cast.is_some_and(|c| c.kicker == Some(true)) {
                         self.state.resolving.as_mut().unwrap().pc += skip;
@@ -4499,6 +4559,7 @@ impl Game {
                 Instruction::ShuffleSourceIntoOwnerLibrary => {
                     self.shuffle_source_into_owner_library(&item);
                 }
+                Instruction::BlinkAttacking => self.blink_immediately_attacking(&item),
                 Instruction::BlinkImmediately { counter, tapped } => {
                     self.blink_immediately(&item, counter, tapped)
                 }
@@ -5730,8 +5791,39 @@ impl Game {
                 Instruction::BecomeSourceLandUntilNextTurn => {
                     self.source_land_until_next_turn(&item)
                 }
+                Instruction::CreateTokensAttacking { token, amount } => {
+                    let attacking = self.attacking_return_combat(item.controller);
+                    self.stage_token_creation(
+                        item.controller,
+                        token,
+                        u128::from(amount),
+                        true,
+                        if attacking {
+                            replacements::TokenCompletion::Attacking
+                        } else {
+                            replacements::TokenCompletion::None
+                        },
+                    );
+                }
                 Instruction::CreateLinkedExileAttackingCopies => {
                     self.create_linked_exile_attacking_copies(&item)
+                }
+                Instruction::CreateHastyTokensDestroyedAtEnd { token, amount } => {
+                    let count = self.item_amount(amount, &item);
+                    self.stage_token_creation(
+                        item.controller,
+                        token,
+                        count,
+                        false,
+                        replacements::TokenCompletion::TemporaryTokens(Box::new(
+                            temporary_tokens::TokenInstructions {
+                                item: item.clone(),
+                                keywords: Keywords::HASTE,
+                                attacking: false,
+                                cleanup: temporary_tokens::TokenCleanup::NextEndStepDestroy,
+                            },
+                        )),
+                    );
                 }
                 Instruction::CreateTemporaryTokens {
                     token,
@@ -5748,12 +5840,17 @@ impl Game {
                                 item: item.clone(),
                                 keywords,
                                 attacking: false,
-                                own_end_step: false,
+                                cleanup: temporary_tokens::TokenCleanup::NextEndStepSacrifice,
                             },
                         )),
                     );
                 }
                 Instruction::CreateCopyWithDelayedSacrifice => {
+                    if let Some(recipe) = self.recipe_for_subject(&item, Subject::Targets) {
+                        self.stage_temporary_copy_creation(&item, recipe);
+                    }
+                }
+                Instruction::CreateHastyCopyWithDelayedSacrifice => {
                     if let Some(recipe) = self.recipe_for_subject(&item, Subject::Targets) {
                         self.stage_temporary_copy_creation(&item, recipe);
                     }
@@ -9057,6 +9154,28 @@ impl Game {
                             Target::Card(id) => {
                                 let mut movement = self.entry_move(id, Zone::Battlefield, false);
                                 movement.controller = item.controller;
+                                Some(movement)
+                            }
+                            _ => None,
+                        })
+                        .collect();
+                    self.stage_entries(moves, None);
+                }
+                Instruction::ReturnToBattlefieldAttacking(players) => {
+                    let defender = self
+                        .program_players(players, &item)
+                        .next()
+                        .map(CombatDefender::Player);
+                    let moves = item
+                        .targets
+                        .iter()
+                        .copied()
+                        .filter(|&bound| self.same_target_object(bound))
+                        .filter_map(|bound| match bound.target {
+                            Target::Card(id) => {
+                                let mut movement = self.entry_move(id, Zone::Battlefield, true);
+                                movement.controller = item.controller;
+                                movement.attacking = defender;
                                 Some(movement)
                             }
                             _ => None,

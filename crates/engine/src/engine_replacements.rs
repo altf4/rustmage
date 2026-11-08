@@ -273,6 +273,7 @@ pub(super) enum TokenCompletion {
     /// One mass creation event; original group indices retain exact recipients.
     RoleAttachMany(Vec<ObjectRef>),
     Mobilize,
+    Attacking,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl TokenCompletion {
@@ -2261,7 +2262,7 @@ impl Game {
                     item: item.clone(),
                     keywords: Keywords::NONE,
                     attacking: true,
-                    own_end_step: true,
+                    cleanup: temporary_tokens::TokenCleanup::OwnEndStepSacrifice,
                 },
             )),
         });
@@ -2997,8 +2998,13 @@ impl Game {
                                 }
                                 continue;
                             }
-                            if matches!(batch.completion, TokenCompletion::Mobilize) {
-                                self.start_mobilize_groups(batch.groups);
+                            if matches!(
+                                batch.completion,
+                                TokenCompletion::Mobilize | TokenCompletion::Attacking
+                            ) {
+                                let sacrifice =
+                                    matches!(batch.completion, TokenCompletion::Mobilize);
+                                self.start_mobilize_groups(batch.groups, sacrifice);
                                 if let Some(entry) = self.state.entry_batch.as_mut() {
                                     assert!(entry.replacement_resume.is_none());
                                     entry.replacement_resume = Some(state);

@@ -13,6 +13,8 @@ pub struct DelayedSacrificeView {
     pub end_combat: bool,
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub own_end_step: bool,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub destroy: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl DelayedSacrificeView {
@@ -36,6 +38,7 @@ pub(super) struct MobilizePlan {
     token: Card,
     amount: usize,
     defenders: Vec<CombatDefender>,
+    sacrifice: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -81,26 +84,27 @@ impl Game {
         {
             return false;
         }
-        if emit(Action::ChooseMobilizeDefender {
-            defender: CombatDefender::Player(p.other()),
-        }) {
+        self.visit_attacking_defenders(p, &mut |defender| {
+            emit(Action::ChooseMobilizeDefender { defender })
+        })
+    }
+    pub(super) fn visit_attacking_defenders(
+        &self,
+        p: Player,
+        emit: &mut impl FnMut(CombatDefender) -> bool,
+    ) -> bool {
+        if emit(CombatDefender::Player(p.other())) {
             return true;
         }
         for (id, o) in self.state.objects.iter().enumerate() {
             let battle = self.object_ref(id as CardId);
-            if self.battle_can_be_attacked_by(battle, p)
-                && emit(Action::ChooseMobilizeDefender {
-                    defender: CombatDefender::Battle(battle),
-                })
-            {
+            if self.battle_can_be_attacked_by(battle, p) && emit(CombatDefender::Battle(battle)) {
                 return true;
             }
             if o.zone == Zone::Battlefield
                 && o.controller == p.other()
                 && self.current_kinds(id as CardId) & 64 != 0
-                && emit(Action::ChooseMobilizeDefender {
-                    defender: CombatDefender::Planeswalker(self.object_ref(id as CardId)),
-                })
+                && emit(CombatDefender::Planeswalker(self.object_ref(id as CardId)))
             {
                 return true;
             }
@@ -117,7 +121,11 @@ impl Game {
         );
         self.advance_replacements(false)
     }
-    pub(super) fn start_mobilize_groups(&mut self, groups: Vec<TokenGroupView>) -> bool {
+    pub(super) fn start_mobilize_groups(
+        &mut self,
+        groups: Vec<TokenGroupView>,
+        sacrifice: bool,
+    ) -> bool {
         let item = &self.state.resolving.as_ref().unwrap().item;
         let token = groups[0].token;
         let total = groups
@@ -143,6 +151,7 @@ impl Game {
             groups,
             amount,
             defenders,
+            sacrifice,
         }));
         // Use the same legal defender population as the public chooser. A
         // defended battle can require choices even without a planeswalker.
@@ -194,8 +203,9 @@ impl Game {
                 .iter()
                 .all(|&d| self.mobilize_defender_valid(item.controller, d))
         );
-        let tokens = self.create_token_groups(item.controller, &f.groups, Some(&f.defenders), true);
-        if tokens.is_empty() {
+        let tokens =
+            self.create_token_groups(item.controller, &f.groups, Some(&f.defenders), f.sacrifice);
+        if !f.sacrifice || tokens.is_empty() {
             return;
         }
         let id = self.next_stack_id();
@@ -208,6 +218,7 @@ impl Game {
                 tokens,
                 end_combat: false,
                 own_end_step: false,
+                destroy: false,
             },
             keywords: item.source_keywords,
             tapped: item.source_tapped,
@@ -255,6 +266,16 @@ impl Game {
         end_combat: bool,
         own_end_step: bool,
     ) {
+        self.register_delayed_token_cleanup(item, tokens, end_combat, own_end_step, false);
+    }
+    pub(super) fn register_delayed_token_cleanup(
+        &mut self,
+        item: &SpellView,
+        tokens: Vec<ObjectRef>,
+        end_combat: bool,
+        own_end_step: bool,
+        destroy: bool,
+    ) {
         if tokens.is_empty() {
             return;
         }
@@ -271,6 +292,7 @@ impl Game {
                 tokens,
                 end_combat,
                 own_end_step,
+                destroy,
             },
             keywords: item.source_keywords,
             tapped: item.source_tapped,
@@ -384,6 +406,23 @@ impl Game {
             .delayed_sacrifice
             .as_ref()
             .expect("delayed sacrifice context");
+        if d.destroy {
+            let mut ids: Vec<_> = d
+                .tokens
+                .iter()
+                .filter(|r| {
+                    self.on_battlefield(r.card)
+                        && self.object_ref(r.card) == **r
+                        && !self.keywords(r.card).contains(Keywords::INDESTRUCTIBLE)
+                })
+                .map(|r| r.card)
+                .collect();
+            ids.retain(|&id| !self.effect_destruction_prevented(id));
+            let sources = self.death_trigger_sources();
+            let events = self.move_objects_raw(&ids, Zone::Graveyard);
+            self.finish_zone_events(&events, &sources);
+            return;
+        }
         let sacrifices: Vec<_> = d
             .tokens
             .iter()

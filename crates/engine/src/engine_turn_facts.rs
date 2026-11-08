@@ -7,6 +7,9 @@ pub struct TurnFactsView {
     pub artifact_entered: bool,
     pub hero_entered: bool,
     pub hero_attacked: bool,
+    /// Counts begun combat phases, capped at two.
+    #[serde(skip_serializing_if = "is_zero")]
+    pub combat_phases_started: u8,
     /// Actual committed activation history, retained even before a provider enters.
     #[serde(skip_serializing_if = "is_false")]
     pub exhaust_activated_this_turn: bool,
@@ -14,6 +17,10 @@ pub struct TurnFactsView {
 
 fn is_false(value: &bool) -> bool {
     !*value
+}
+
+fn is_zero(value: &u8) -> bool {
+    *value == 0
 }
 
 /// Frozen at declaration, before any per-attacker triggered-ability callbacks.
@@ -28,7 +35,9 @@ pub(super) struct AttackPowerEvent {
 fn guard_uses_facts(guard: StepGuard) -> bool {
     matches!(
         guard,
-        StepGuard::ArtifactEnteredThisTurn | StepGuard::HeroEnteredOrAttackedThisTurn
+        StepGuard::ArtifactEnteredThisTurn
+            | StepGuard::HeroEnteredOrAttackedThisTurn
+            | StepGuard::FirstCombatPhase
     )
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
