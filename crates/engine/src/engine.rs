@@ -968,7 +968,7 @@ define_actions! {
     CastFreeDuringResolution { object: ObjectRef, face: CastFace },
     FinishResolutionCasts,
     AnnounceLinkedFree { card: CardId, source: ObjectRef, face: CastFace, flash_surcharge: bool },
-    AnnounceLinkedExileCounterCost { card: CardId, source: ObjectRef, flash_surcharge: bool },
+    AnnounceLinkedExileCounterCost { card: CardId, source: ObjectRef, face: CastFace, flash_surcharge: bool },
     FinishGraveyardSymbolCost,
     Mulligan,
     Bottom {
@@ -7166,8 +7166,9 @@ impl Game {
             Action::AnnounceLinkedExileCounterCost {
                 card,
                 source,
+                face,
                 flash_surcharge,
-            } => self.start_linked_counter_cast(actor, card, source, flash_surcharge),
+            } => self.start_linked_counter_cast(actor, card, source, face, flash_surcharge),
             Action::FinishResolutionCasts => {
                 if let Some(resolution) = self.state.resolving.as_mut()
                     && resolution.pc > 0

@@ -102,10 +102,17 @@ impl Game {
         player: Player,
         source: ObjectRef,
         card: CardId,
+        face: CastFace,
     ) -> Option<u16> {
         let definition = self.linked_source_definition(player, source, card, false)?;
         let exiled = &self.state.objects[card as usize];
-        if self.state.active != player || exiled.owner != player || !exiled.card.is_creature() {
+        let spell = match face {
+            CastFace::Normal => Some(exiled.card),
+            CastFace::Adventure => exiled.card.adventure_spell(),
+            CastFace::Omen => exiled.card.omen_spell(),
+            CastFace::Back => exiled.card.back_face(),
+        }?;
+        if self.state.active != player || exiled.owner != player || !spell.is_creature() {
             return None;
         }
         definition
@@ -168,19 +175,29 @@ impl Game {
                     }
                 }
             }
-            if let Some(amount) = self.linked_counter_permission(player, source, card) {
+            for face in [
+                CastFace::Normal,
+                CastFace::Adventure,
+                CastFace::Omen,
+                CastFace::Back,
+            ] {
+                let Some(amount) = self.linked_counter_permission(player, source, card, face)
+                else {
+                    continue;
+                };
                 for flash_surcharge in [false, true] {
                     if self.permitted_cast_with_origin_cost(
                         player,
                         card,
                         CastMethod::LinkedExileCounterCost,
-                        CastFace::Normal,
+                        face,
                         sorcery,
                         flash_surcharge,
                         Some(amount),
                     ) && emit(Action::AnnounceLinkedExileCounterCost {
                         card,
                         source,
+                        face,
                         flash_surcharge,
                     }) {
                         return true;
@@ -220,12 +237,14 @@ impl Game {
         player: Player,
         card: CardId,
         source: ObjectRef,
+        face: CastFace,
         flash_surcharge: bool,
     ) {
         let amount = self
-            .linked_counter_permission(player, source, card)
+            .linked_counter_permission(player, source, card, face)
             .expect("approved linked alternative");
         let mut item = self.cast_item(player, card, [0; 6]);
+        self.set_cast_face(&mut item, face);
         item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
         item.cast.as_mut().unwrap().method = CastMethod::LinkedExileCounterCost;
         if let Some(data) = &mut self.state.linked_choices {

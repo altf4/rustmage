@@ -250,6 +250,8 @@ impl Game {
             | Action::AnnounceAirbend { card, .. }
             | Action::AnnounceExileLife { card, .. }
             | Action::AnnounceExileFree { card, .. }
+            | Action::AnnounceLinkedFree { card, .. }
+            | Action::AnnounceLinkedExileCounterCost { card, .. }
             | Action::AnnounceFlashSurcharge { card }
             | Action::AnnounceWarp { card }
             | Action::AnnounceDisguise { card }

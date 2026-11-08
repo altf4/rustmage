@@ -2,6 +2,7 @@
 mod support;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
+use rustmage_core::engine::ability_world::CharacteristicWorld;
 use rustmage_core::{cards::*, engine::*};
 use support::*;
 fn card(name: &str) -> Card {
@@ -299,6 +300,7 @@ fn linked_counter_permission_keeps_mana_and_printed_sacrifice_cost_in_either_pay
         let announcement = Action::AnnounceLinkedExileCounterCost {
             card: exiled,
             source: reference,
+            face: CastFace::Normal,
             flash_surcharge: false,
         };
         reject(&mut g, announcement);
@@ -308,6 +310,7 @@ fn linked_counter_permission_keeps_mana_and_printed_sacrifice_cost_in_either_pay
             Action::AnnounceLinkedExileCounterCost {
                 card: exiled,
                 source: reference,
+                face: CastFace::Normal,
                 flash_surcharge: false,
             },
         );
@@ -660,6 +663,7 @@ fn linked_counter_permission_reserves_counters_against_mana_abilities() {
         let action = Action::AnnounceLinkedExileCounterCost {
             card: spell,
             source: g.object_ref(source),
+            face: CastFace::Normal,
             flash_surcharge: false,
         };
         if amount == 7 {
@@ -689,6 +693,7 @@ fn linked_counter_permission_preserves_declared_x_and_requires_existing_counters
     let action = Action::AnnounceLinkedExileCounterCost {
         card: spell,
         source: g.object_ref(source),
+        face: CastFace::Normal,
         flash_surcharge: false,
     };
     reject(&mut g, action.clone());
@@ -723,6 +728,7 @@ fn linked_counter_shortfall_rejects_without_spending_interchangeable_lands() {
         Action::AnnounceLinkedExileCounterCost {
             card: spell,
             source,
+            face: CastFace::Normal,
             flash_surcharge: false,
         },
     );
@@ -814,6 +820,7 @@ fn linked_counter_shortfall_can_be_repaired_by_a_mana_ability() {
         let cast = Action::AnnounceLinkedExileCounterCost {
             card: spell,
             source: origin,
+            face: CastFace::Normal,
             flash_surcharge: false,
         };
         if !succeeds {
@@ -831,5 +838,389 @@ fn linked_counter_shortfall_can_be_repaired_by_a_mana_ability() {
         assert_eq!(g.counter_count(source, CounterKind::Flying), 0);
         assert_eq!(g.state.players[0].mana, [0; 6]);
         assert_eq!(g.object_view(spell).zone, Zone::Battlefield);
+    }
+}
+
+#[test]
+fn linked_counter_cast_uses_the_selected_modal_creature_face_and_its_full_cost() {
+    let _scope = fixture_rules::activate(&[(card("Bear Cub"), &COUNTER_LINK)]);
+    for face in [CastFace::Normal, CastFace::Back] {
+        for counters_first in [false, true] {
+            let mut g = scenario(Player::P0);
+            let source = put(&mut g, Player::P0, "Bear Cub", Zone::Battlefield);
+            g.add_counter(source, CounterKind::Charge, 3);
+            let spell = put(
+                &mut g,
+                Player::P0,
+                "Bruce Banner // The Incredible Hulk",
+                Zone::Exile,
+            );
+            link(&mut g, source, spell);
+            let physical = g.state.objects[spell as usize].card;
+            let definition = match face {
+                CastFace::Normal => physical,
+                CastFace::Back => physical.back_face().unwrap(),
+                _ => unreachable!(),
+            };
+            let action = Action::AnnounceLinkedExileCounterCost {
+                card: spell,
+                source: g.object_ref(source),
+                face,
+                flash_surcharge: false,
+            };
+            let payment = match face {
+                CastFace::Normal => [0, 1, 0, 0, 0, 0],
+                CastFace::Back => [0, 0, 0, 2, 2, 2],
+                _ => unreachable!(),
+            };
+            g.state.players[0].mana = payment;
+            // A blue mana casts the front but cannot pay the chosen back face.
+            if face == CastFace::Back {
+                g.state.players[0].mana = [0, 1, 0, 0, 0, 0];
+                reject(&mut g, action.clone());
+                assert!(
+                    g.legal_actions()
+                        .contains(&Action::AnnounceLinkedExileCounterCost {
+                            card: spell,
+                            source: g.object_ref(source),
+                            face: CastFace::Normal,
+                            flash_surcharge: false,
+                        })
+                );
+                g.state.players[0].mana = payment;
+            }
+            act(&mut g, action);
+            let packet = &g.state.announcing.as_ref().unwrap().item;
+            assert_eq!(packet.source_identity().unwrap().1, definition);
+            assert_eq!(packet.cast.unwrap().face, face);
+            assert_eq!(packet.cast.unwrap().origin, Zone::Exile);
+            assert_eq!(
+                packet.cast.unwrap().method,
+                CastMethod::LinkedExileCounterCost
+            );
+            for _ in 0..30 {
+                if g.state.announcing.is_none() {
+                    break;
+                }
+                match g.state.pending {
+                    Pending::PayCosts { .. } => {
+                        if g.legal_actions().contains(&Action::BeginOrderedCosts) {
+                            act(&mut g, Action::BeginOrderedCosts);
+                        } else {
+                            pay(&mut g);
+                        }
+                    }
+                    Pending::CastCosts { .. } => {
+                        let rows = &g
+                            .state
+                            .announcing
+                            .as_ref()
+                            .unwrap()
+                            .cast_costs
+                            .as_ref()
+                            .unwrap()
+                            .clauses;
+                        let wanted = if counters_first {
+                            CastCostClause::OriginCounters(3)
+                        } else {
+                            CastCostClause::Mana
+                        };
+                        let index = rows
+                            .iter()
+                            .position(|row| !row.paid && row.clause == wanted)
+                            .or_else(|| rows.iter().position(|row| !row.paid))
+                            .unwrap();
+                        act(
+                            &mut g,
+                            Action::ChooseCastCost {
+                                clause: index as u16,
+                            },
+                        );
+                    }
+                    Pending::AdditionalCost { .. } => {
+                        let object = g.object_ref(source);
+                        act(
+                            &mut g,
+                            Action::ChooseCreatureCounterCost {
+                                object,
+                                counter: CounterKind::Charge,
+                            },
+                        );
+                    }
+                    _ => panic!("selected face payment {:?}", g.state.pending),
+                }
+            }
+            assert!(g.state.announcing.is_none());
+            let receipt = g.state.stack.last().unwrap().cast.unwrap();
+            assert_eq!(receipt.face, face);
+            assert_eq!(receipt.payment, payment);
+            assert_eq!(g.counter_count(source, CounterKind::Charge), 0);
+            assert_eq!(g.state.players[0].mana, [0; 6]);
+            drain(&mut g);
+            assert_eq!(g.object_view(spell).zone, Zone::Battlefield);
+            assert_eq!(g.state.objects[spell as usize].card, definition);
+            assert_eq!(g.power(spell), if face == CastFace::Back { 8 } else { 1 });
+            g.move_object(spell, Zone::Graveyard);
+            assert_eq!(g.state.objects[spell as usize].card, physical);
+        }
+    }
+}
+
+#[test]
+fn linked_counter_cast_rejects_transforming_backs_and_noncreature_alternatives() {
+    let _scope = fixture_rules::activate(&[(card("Bear Cub"), &COUNTER_LINK)]);
+    let mut g = scenario(Player::P0);
+    let source = put(&mut g, Player::P0, "Bear Cub", Zone::Battlefield);
+    g.add_counter(source, CounterKind::Charge, 3);
+    for (name, face) in [
+        (
+            "Aang, Swift Savior // Aang and La, Ocean's Fury",
+            CastFace::Back,
+        ),
+        (
+            "Bilbo Baggins, Burglar // Take a Glance",
+            CastFace::Adventure,
+        ),
+    ] {
+        let spell = put(&mut g, Player::P0, name, Zone::Exile);
+        link(&mut g, source, spell);
+        assert!(
+            g.legal_actions()
+                .contains(&Action::AnnounceLinkedExileCounterCost {
+                    card: spell,
+                    source: g.object_ref(source),
+                    face: CastFace::Normal,
+                    flash_surcharge: false,
+                })
+        );
+        let object = g.object_ref(source);
+        reject(
+            &mut g,
+            Action::AnnounceLinkedExileCounterCost {
+                card: spell,
+                source: object,
+                face,
+                flash_surcharge: false,
+            },
+        );
+    }
+}
+
+const ROLLBACK_COPY: CardRules = CardRules {
+    effect: Effect::Creature(0, 0),
+    extras: &CardExtras {
+        entry_copy: Some(EntryCopySpec {
+            filters: &[BattlefieldFilter {
+                kinds: 17,
+                relation: 0,
+                nonland: false,
+                tapped: None,
+                without: Keywords::NONE,
+                subtype: None,
+                max_mana: u32::MAX,
+            }],
+            optional: true,
+        }),
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+const ROLLBACK_MANA: CardRules = CardRules {
+    effect: Effect::Creature(1, 1),
+    activated: &[ActivatedAbility {
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        cycling: false,
+        origin: ActivationOrigin::Battlefield,
+        cost: ActivationCost {
+            tap: true,
+            sacrifice: true,
+            ..ActivationCost::ZERO
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::AddMana(ManaProduction::Fixed([
+            1, 0, 0, 0, 0, 0,
+        ]))],
+        sorcery: false,
+        once_per_turn: false,
+    }],
+    ..CardRules::EMPTY
+};
+const ROLLBACK_TAX: CardRules = CardRules {
+    effect: Effect::Permanent,
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::OpponentNoncreatureSpellTax(2)],
+    }],
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn foreign_aura_invalidating_linked_cast_restores_permission_and_offers_exact_mana_rollback() {
+    for free in [false, true] {
+        let _scope = fixture_rules::activate(&[
+            (
+                card("Bear Cub"),
+                if free { &FREE_LINK } else { &COUNTER_LINK },
+            ),
+            (card("Grizzly Bears"), &ROLLBACK_COPY),
+            (card("Llanowar Elves"), &ROLLBACK_MANA),
+            (card("Short Bow"), &ROLLBACK_TAX),
+        ]);
+        let mut g = scenario(Player::P0);
+        let source = put(&mut g, Player::P0, "Bear Cub", Zone::Battlefield);
+        g.add_counter(source, CounterKind::Charge, 3);
+        let mana = put(&mut g, Player::P0, "Llanowar Elves", Zone::Battlefield);
+        let remaining_mana = put(&mut g, Player::P0, "Druid of the Cowl", Zone::Battlefield);
+        let enchanted = put(&mut g, Player::P1, "Hill Giant", Zone::Battlefield);
+        let blueprint = put(&mut g, Player::P1, "Witness Protection", Zone::Battlefield);
+        g.state.objects[blueprint as usize].attached_to = Some(g.object_ref(enchanted));
+        g.change_object_form(
+            g.object_ref(blueprint),
+            AnimationSpec {
+                artifact: true,
+                creature_types: AnimationCreatureTypes::Unchanged,
+                base: None,
+                keywords: Keywords::NONE,
+                duration: AnimationDuration::EndOfTurn,
+            },
+            characteristic_layers::AnimationTypeMode::PreserveCardTypes,
+        );
+        let returning = put(&mut g, Player::P1, "Grizzly Bears", Zone::Exile);
+        g.state.exile_links.push(ExileLink {
+            ability_origin: None,
+            source: g.object_ref(mana),
+            exiled: g.object_ref(returning),
+            return_zone: Zone::Battlefield,
+        });
+        let spell = put(
+            &mut g,
+            Player::P0,
+            if free {
+                "Pacifism"
+            } else {
+                "Druid of the Cowl"
+            },
+            Zone::Exile,
+        );
+        link(&mut g, source, spell);
+        if free {
+            put(&mut g, Player::P1, "Short Bow", Zone::Battlefield);
+        }
+        g.state.players[0].mana = [0; 6];
+        let physical = g.object_ref(spell);
+        let permission = g.state.linked_choices.as_ref().unwrap().links.clone();
+        let action = if free {
+            Action::AnnounceLinkedFree {
+                card: spell,
+                source: g.object_ref(source),
+                face: CastFace::Normal,
+                flash_surcharge: false,
+            }
+        } else {
+            Action::AnnounceLinkedExileCounterCost {
+                card: spell,
+                source: g.object_ref(source),
+                face: CastFace::Normal,
+                flash_surcharge: false,
+            }
+        };
+        act(&mut g, action);
+        let checkpoint = g
+            .state
+            .cast_rollback
+            .as_ref()
+            .expect("linked proposals own the foreign-choice checkpoint");
+        assert_eq!(checkpoint.spell, spell);
+        assert_eq!(checkpoint.before.objects[spell as usize].zone, Zone::Exile);
+        if free {
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(source),
+                },
+            );
+            if g.legal_actions().contains(&Action::FinishTargets) {
+                act(&mut g, Action::FinishTargets);
+            }
+        }
+        choose(
+            &mut g,
+            |a| matches!(a, Action::ActivateMana { card, ability: 0, .. } if *card == mana),
+        );
+        assert_eq!(g.actor(), Some(Player::P1));
+        let object = Some(g.object_ref(blueprint));
+        act(&mut g, Action::ChooseEntryCopy { object });
+        let object = g.object_ref(remaining_mana);
+        act(&mut g, Action::ChooseAuraAttachment { object });
+        assert_eq!(g.object_view(spell).zone, Zone::Exile);
+        assert_eq!(g.object_ref(spell), physical);
+        assert!(matches!(g.state.pending, Pending::ManaRollback { .. }));
+        let saved = g.snapshot();
+        for keep in [false, true] {
+            let mut raw = g.clone();
+            let mut indexed = g.clone();
+            let action = Action::ChooseManaRollback { keep };
+            let index = indexed
+                .legal_actions()
+                .iter()
+                .position(|a| *a == action)
+                .unwrap();
+            let actor = indexed.actor().unwrap();
+            let revision = indexed.revision();
+            act(&mut raw, action);
+            indexed.apply_index(actor, revision, index).unwrap();
+            assert_eq!(raw.snapshot(), indexed.snapshot());
+            assert_eq!(
+                raw.state.players[0].mana,
+                if keep { [1, 0, 0, 0, 0, 0] } else { [0; 6] }
+            );
+            assert_eq!(
+                raw.object_view(mana).zone,
+                if keep {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                }
+            );
+            assert_eq!(
+                raw.object_view(returning).zone,
+                if keep { Zone::Battlefield } else { Zone::Exile }
+            );
+            assert_eq!(raw.object_ref(spell), physical);
+            assert_eq!(raw.object_view(spell).zone, Zone::Exile);
+            assert_eq!(raw.counter_count(source, CounterKind::Charge), 3);
+            let linked = raw.state.linked_choices.as_ref().unwrap();
+            assert_eq!(linked.links, permission);
+            assert!(linked.free_cast_uses.is_empty());
+            assert!(linked.free_cast_approvals.is_empty());
+            assert!(raw.state.announcing.is_none());
+            assert!(raw.state.cast_rollback.is_none());
+            if keep {
+                assert_eq!(
+                    raw.state.objects[returning as usize].card,
+                    card("Witness Protection")
+                );
+                assert_eq!(
+                    raw.temporary_copy_view(raw.object_ref(returning))
+                        .unwrap()
+                        .physical_card,
+                    card("Grizzly Bears")
+                );
+                assert!(
+                    !raw.legal_actions()
+                        .iter()
+                        .any(|a| matches!(a, Action::TapMana { card } if *card == remaining_mana))
+                );
+            }
+            indexed.restore(&saved).unwrap();
+            assert_eq!(indexed.snapshot(), saved);
+        }
+        assert_eq!(
+            g.snapshot(),
+            saved,
+            "owned children do not change the pending parent"
+        );
     }
 }
