@@ -176,6 +176,20 @@ pub(super) fn payable_in<W: ability_world::CharacteristicWorld + ?Sized>(
     true
 }
 
+fn is_convoke_grant(fragment: &crate::cards::StaticAbilityFragment) -> bool {
+    matches!(
+        fragment,
+        crate::cards::StaticAbilityFragment::ConvokeCreatureSpells
+    )
+}
+
+fn provides_convoke(card: Card) -> bool {
+    card.static_ability_groups()
+        .iter()
+        .flat_map(|group| group.fragments)
+        .any(is_convoke_grant)
+}
+
 /// Public battlefield providers can regain abilities during payment; a public
 /// linked exile can return one. Hidden cards without such a route must not alter
 /// either speculative funding or the observable announcement/payment phases.
@@ -197,19 +211,7 @@ pub(super) fn potential<W: ability_world::CharacteristicWorld + ?Sized>(
                         && world.game().state.exile_links.iter().any(|link| {
                             link.exiled == reference && link.return_zone == Zone::Battlefield
                         });
-                public_route
-                    && world
-                        .definition(id)
-                        .static_ability_groups()
-                        .iter()
-                        .any(|g| {
-                            g.fragments.iter().any(|f| {
-                                matches!(
-                                    f,
-                                    crate::cards::StaticAbilityFragment::ConvokeCreatureSpells
-                                )
-                            })
-                        })
+                public_route && provides_convoke(world.definition(id))
             })
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -224,12 +226,8 @@ pub(super) fn available<W: ability_world::CharacteristicWorld + ?Sized>(
                 let object = world.object(id);
                 object.zone == Zone::Battlefield
                     && object.controller == player
-                    && world.fragment_available(id, |f| {
-                        matches!(
-                            f,
-                            crate::cards::StaticAbilityFragment::ConvokeCreatureSpells
-                        )
-                    })
+                    && provides_convoke(world.definition(id))
+                    && world.fragment_available(id, is_convoke_grant)
             })
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
