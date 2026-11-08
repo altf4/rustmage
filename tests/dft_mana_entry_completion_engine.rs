@@ -355,8 +355,8 @@ fn a_departed_animated_mountain_receipt_adds_its_frozen_tap_bonus_exactly_once()
         );
         act(&mut g, direct(source, [0; 6]));
         assert_eq!(
-            g.state.announcing.as_ref().unwrap().item.mana_tap_bonus,
-            Some(1)
+            g.state.announcing.as_ref().unwrap().item.tap_mana_bonus(),
+            [0, 0, 0, 1, 0, 0]
         );
         let saved = g.snapshot();
         let mut raw = g.clone();
