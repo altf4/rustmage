@@ -495,16 +495,15 @@ impl Announcement {
         // shared cost modifiers. A route identity survives equal mana totals.
         options
             .map(|cost| {
-                let evoked = self
+                let evoked = self.item.cast.is_some_and(|c| {
+                    matches!(
+                        c.method,
+                        CastMethod::Normal | CastMethod::LinkedExileCounterCost
+                    )
+                }) && self
                     .item
-                    .cast
-                    .is_some_and(|c| {
-                        matches!(c.method, CastMethod::Normal | CastMethod::LinkedExileCounterCost)
-                    })
-                    && self
-                        .item
-                        .source
-                        .is_some_and(|s| s.card.evoke_costs().contains(&cost));
+                    .source
+                    .is_some_and(|s| s.card.evoke_costs().contains(&cost));
                 (cost, ActivationCostRoute::Printed, evoked)
             })
             .chain(self.equip_zero_available.then_some((

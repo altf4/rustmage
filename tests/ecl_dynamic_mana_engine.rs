@@ -295,7 +295,10 @@ fn multitype_land_bonus_choice_preserves_parent_payment_and_captured_departed_so
     let land = put(&mut g, Player::P0, "Forest", Zone::Battlefield);
     let aura = put(&mut g, Player::P0, "Pacifism", Zone::Battlefield);
     g.state.objects[aura as usize].attached_to = Some(g.object_ref(land));
-    g.set_entry_value(g.object_ref(aura), EntryChoiceValue::Color(ChoiceColor::Blue));
+    g.set_entry_value(
+        g.object_ref(aura),
+        EntryChoiceValue::Color(ChoiceColor::Blue),
+    );
     put(&mut g, Player::P1, "Short Bow", Zone::Battlefield);
     let spell = put(&mut g, Player::P0, "Cancel", Zone::Hand);
     g.state.players[0].mana = [0; 6];

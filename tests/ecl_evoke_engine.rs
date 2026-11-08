@@ -134,12 +134,15 @@ fn linked_counter_cost_preserves_evoke_and_records_only_paid_mana() {
         for _ in 0..12 {
             match g.state.pending {
                 Pending::CastCosts { .. } => {
-                    choose(&mut g, |action| matches!(action, Action::ChooseCastCost { .. }));
+                    choose(&mut g, |action| {
+                        matches!(action, Action::ChooseCastCost { .. })
+                    });
                 }
                 Pending::AdditionalCost { .. } => {
-                    choose(&mut g, |action| {
-                        matches!(action, Action::ChooseCreatureCounterCost { object, .. } if object.card == donor)
-                    });
+                    choose(
+                        &mut g,
+                        |action| matches!(action, Action::ChooseCreatureCounterCost { object, .. } if object.card == donor),
+                    );
                 }
                 Pending::PayCosts { .. } => {
                     if g.legal_actions().contains(&Action::BeginOrderedCosts) {

@@ -1739,7 +1739,11 @@ impl SpellView {
         world: &W,
     ) -> ManaTapBonus {
         let source = self.mana_activation_key().and_then(|key| {
-            key.definition.activation(key.ability).cost.tap.then_some(key.source)
+            key.definition
+                .activation(key.ability)
+                .cost
+                .tap
+                .then_some(key.source)
         });
         self.mana_tap_bonus
             .as_deref()

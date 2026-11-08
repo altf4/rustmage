@@ -2345,7 +2345,7 @@ impl<'g> FundingState<'g> {
                         .activation(o.instance.ability)
                         .source_zone()
         }) {
-            return ManaTapBonus::default();
+            return (ManaTapBonus::default(), None);
         }
         if let Some((definition, timestamp)) = step.self_grant
             && step.ability.is_some_and(|i| {
