@@ -780,7 +780,7 @@ fn ecl_student_sanar_reveals_through_lands_and_freezes_colors_for_nongreedy_assi
             assert_eq!(g.object_view(id).zone, Zone::Exile);
             assert!(g.can_cast_exiled_card(p, id));
             assert!(!g.can_cast_exiled_card(p.other(), id));
-            assert!(!g.can_play_exiled(p, id));
+            assert!(!g.can_play_exiled_land(p, id));
         }
         assert_eq!(g.state.players[p.index()].library.len(), 3);
     }
@@ -961,12 +961,12 @@ fn ecl_student_sanar_cast_only_permissions_never_allow_land_plays_but_ordinary_p
         let land = named(&mut g, p, "Forest", Zone::Exile);
         grant_cast_only(&mut g, p, land);
         assert!(g.can_cast_exiled_card(p, land));
-        assert!(!g.can_play_exiled(p, land));
+        assert!(!g.can_play_exiled_land(p, land));
         reject(&mut g, Action::PlayLand { card: land });
         reject(&mut g, Action::AnnounceExile { card: land });
         // The independent ordinary permission remains usable if also granted.
         g.grant_exile_play_permission(p, g.object_ref(land), false);
-        assert!(g.can_play_exiled(p, land));
+        assert!(g.can_play_exiled_land(p, land));
         checked(&mut g, Action::PlayLand { card: land });
         assert_eq!(g.object_view(land).zone, Zone::Battlefield);
     }

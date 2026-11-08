@@ -245,7 +245,7 @@ fn ecl_transform_copy_of_back_face_has_both_faces_and_its_front_mana_value() {
         let copy = g.state.copy_recipes.as_ref().unwrap()[0].object.card;
         assert!(g.state.objects[copy as usize].is_copy_token());
         assert_eq!(g.state.objects[copy as usize].card.name(), BACK);
-        assert_eq!(g.state.objects[copy as usize].card.fixed_mana_value(), 3);
+        assert_eq!(g.mana_value(copy), 3);
         g.state.active = p.other();
         g.state.priority = p.other();
         transform_paid(&mut g, 0);
@@ -760,7 +760,7 @@ fn ecl_transform_trystan_copy_enters_back_without_transform_mill_or_exile_trigge
             g.state.objects[copy as usize].card.name(),
             "Trystan, Penitent Culler"
         );
-        assert_eq!(g.state.objects[copy as usize].card.fixed_mana_value(), 3);
+        assert_eq!(g.mana_value(copy), 3);
         assert!(g.keywords(copy).contains(Keywords::DEATHTOUCH));
     }
 }
@@ -824,7 +824,7 @@ fn ecl_transform_eirdu_paid_faces_and_creature_convoke_from_summoning_sick_sourc
         transform_paid(&mut g, 2);
         assert_eq!(g.state.objects[god as usize].card.name(), ISILU);
         assert_eq!(g.colors(god), 4);
-        assert_eq!(g.state.objects[god as usize].card.fixed_mana_value(), 5);
+        assert_eq!(g.mana_value(god), 5);
         g.state.players[p.index()].mana = [1, 0, 0, 0, 0, 0];
         transform_paid(&mut g, 0);
         assert_eq!(g.state.objects[god as usize].card.name(), EIRDU);
@@ -964,9 +964,25 @@ fn ecl_transform_eirdu_behold_cost_witness_can_also_convoke_before_reveal_paymen
         g.state.players[p.index()].mana = [0; 6];
         checked(&mut g, Action::AnnounceCast { card: spell });
         checked(&mut g, Action::ChooseSpellCost { cost: 0 });
-        let object = g.object_ref(elf);
-        checked(&mut g, Action::ChooseAdditionalCost { object });
         checked(&mut g, Action::BeginConvoke);
+        let clauses = &g
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .cast_costs
+            .as_ref()
+            .unwrap()
+            .clauses;
+        let mana = clauses
+            .iter()
+            .position(|row| row.clause == CastCostClause::Mana)
+            .unwrap() as u16;
+        let additional = clauses
+            .iter()
+            .position(|row| row.clause == CastCostClause::Additional)
+            .unwrap() as u16;
+        checked(&mut g, Action::ChooseCastCost { clause: mana });
         for (id, contribution) in [
             (god, ConvokeContribution::Generic),
             (elf, ConvokeContribution::Green),
@@ -981,6 +997,9 @@ fn ecl_transform_eirdu_behold_cost_witness_can_also_convoke_before_reveal_paymen
             );
         }
         checked(&mut g, Action::PayCosts { payment: [0; 6] });
+        checked(&mut g, Action::ChooseCastCost { clause: additional });
+        let object = g.object_ref(elf);
+        checked(&mut g, Action::ChooseAdditionalCost { object });
         settle(&mut g);
         assert_eq!(g.object_view(spell).zone, Zone::Battlefield);
         assert!(g.object_view(elf).tapped);
@@ -1251,7 +1270,7 @@ fn ecl_transform_sygg_back_copy_entry_does_not_grant_protection_and_unblockabili
         let sygg = named(&mut g, p, face, Zone::Battlefield);
         let blocker = named(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
         assert!(!g.keywords(sygg).contains(ALL_COLOR_PROTECTION));
-        assert_eq!(g.state.objects[sygg as usize].card.fixed_mana_value(), 2);
+        assert_eq!(g.mana_value(sygg), 2);
         g.state.step = Step::Attackers;
         g.state.pending = Pending::Attackers;
         checked(&mut g, Action::Attack { card: sygg });

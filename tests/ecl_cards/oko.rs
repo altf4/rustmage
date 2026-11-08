@@ -109,24 +109,19 @@ fn ecl_oko_back_mill_optional_permanent_selection_is_exact_to_the_event() {
             g.state.players[p.index()].library = vec![land, bear, instant].into();
             activate(&mut g, id, 0, None);
             for _ in 0..10 {
-                if g.legal_actions().contains(&Action::FinishMilledSelection) {
+                if matches!(g.state.pending, Pending::RecoverMilled { .. }) {
                     break;
                 }
                 checked(&mut g, Action::Pass);
             }
-            assert!(!g.legal_actions().contains(&Action::SelectMilled {
-                object: g.object_ref(old)
+            assert!(!g.legal_actions().contains(&Action::RecoverMilled {
+                object: Some(g.object_ref(old))
             }));
-            assert!(!g.legal_actions().contains(&Action::SelectMilled {
-                object: g.object_ref(instant)
+            assert!(!g.legal_actions().contains(&Action::RecoverMilled {
+                object: Some(g.object_ref(instant))
             }));
-            if take {
-                let object = g.object_ref(land);
-                checked(&mut g, Action::SelectMilled { object });
-            }
-            if g.legal_actions().contains(&Action::FinishMilledSelection) {
-                checked(&mut g, Action::FinishMilledSelection);
-            }
+            let object = take.then(|| g.object_ref(land));
+            checked(&mut g, Action::RecoverMilled { object });
             settle(&mut g);
             assert_eq!(g.object_view(id).counters.loyalty, 2);
             assert_eq!(
