@@ -1514,6 +1514,8 @@ pub enum Instruction {
         subject: Subject,
         choices: &'static [Keywords],
     },
+    /// Set the source's color and grant it hexproof from the chosen color this turn.
+    ChooseSourceColorAndHexproof,
     PlayHideawayIfCoven,
     ExileHandCardCopy,
     /// Exile the current hand and draw its frozen size, retaining exact exile results.
@@ -5364,6 +5366,13 @@ impl Keywords {
     pub const HEXPROOF_MONOCOLORED: Self = Self(1u64 << 38);
     /// A granted static ability, removed with the recipient's other abilities.
     pub const CANT_BE_SACRIFICED: Self = Self(1u64 << 39);
+    const HEXPROOF_COLOR_SHIFT: u32 = 40;
+    pub const fn hexproof_from_color(color: ChoiceColor) -> Self {
+        Self(1u64 << (Self::HEXPROOF_COLOR_SHIFT + color.index() as u32))
+    }
+    pub(crate) const fn hexproof_colors(self) -> u8 {
+        ((self.0 >> Self::HEXPROOF_COLOR_SHIFT) & 31) as u8
+    }
     pub const fn protection_from_color(color: ChoiceColor) -> Self {
         match color {
             ChoiceColor::White => Self::PROTECTION_WHITE,

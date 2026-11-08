@@ -802,6 +802,7 @@ define_actions! {
     ChooseEntryAttackingDefender { defender: CombatDefender },
     ChooseToken { token: Card },
     ChooseKeyword { index: u16 },
+    ChooseResolutionColor { color: crate::cards::ChoiceColor },
     PutHandCreature { object: ObjectRef },
     PutHandPermanent { object: ObjectRef },
     PutHandLand { object: ObjectRef },
@@ -2665,6 +2666,9 @@ enum Pending {
         player: Player,
         tokens: &'static [Card],
     },
+    ResolutionColor {
+        player: Player,
+    },
     KeywordChoice {
         player: Player,
         // Keep the common Pending value compact; the collection exists only during this choice.
@@ -4176,6 +4180,7 @@ impl Game {
             | Pending::AuraEntry { player }
             | Pending::TokenChoice { player, .. }
             | Pending::KeywordChoice { player, .. }
+            | Pending::ResolutionColor { player }
             | Pending::Proliferate { player }
             | Pending::EffectChoice { player }
             | Pending::HandDefender { player }
@@ -4895,6 +4900,13 @@ impl Game {
             Pending::HandDefender { .. } => {
                 if self.visit_hand_defenders(&mut emit) {
                     return true;
+                }
+            }
+            Pending::ResolutionColor { .. } => {
+                for color in crate::cards::ChoiceColor::ALL {
+                    if emit(Action::ChooseResolutionColor { color }) {
+                        return true;
+                    }
                 }
             }
             Pending::KeywordChoice { choices, .. } => {
@@ -7927,6 +7939,10 @@ impl Game {
                 }
                 self.advance_damage_choices();
             }
+            Action::ChooseResolutionColor { color } => {
+                self.choose_source_color_and_hexproof(color);
+                self.run_program();
+            }
             Action::ChooseKeyword { index } => {
                 let Pending::KeywordChoice {
                     recipients,
@@ -10845,6 +10861,7 @@ impl Game {
                 Pending::HandDefender { .. } => "hand_defender",
                 Pending::TokenChoice { .. } => "token_choice",
                 Pending::KeywordChoice { .. } => "keyword_choice",
+                Pending::ResolutionColor { .. } => "resolution_color",
                 Pending::Proliferate { .. } => "proliferate",
                 Pending::EffectChoice { .. } => "effect_choice",
                 Pending::EntryTimestamp { .. } => "entry_timestamps",

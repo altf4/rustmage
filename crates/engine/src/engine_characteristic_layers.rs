@@ -758,6 +758,23 @@ impl Game {
             .animations
             .push(row);
     }
+    pub(super) fn choose_source_color_and_hexproof(&mut self, color: crate::cards::ChoiceColor) {
+        let Some(source) = self.state.resolving.as_ref().and_then(|r| r.item.source) else {
+            return;
+        };
+        self.change_object_form_colored(
+            source.object,
+            AnimationSpec {
+                artifact: false,
+                creature_types: AnimationCreatureTypes::Unchanged,
+                base: None,
+                keywords: Keywords::hexproof_from_color(color),
+                duration: AnimationDuration::EndOfTurn,
+            },
+            AnimationTypeMode::PreserveCardTypes,
+            Some(1 << color.index()),
+        );
+    }
     pub(super) fn set_creature_form(
         &mut self,
         item: &SpellView,

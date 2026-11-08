@@ -1545,13 +1545,14 @@ impl Game {
                 })
         };
         let monocolored = keywords.contains(Keywords::HEXPROOF_MONOCOLORED);
-        if filters().next().is_none() && !monocolored {
+        let hexproof_colors = keywords.hexproof_colors();
+        if filters().next().is_none() && !monocolored && hexproof_colors == 0 {
             return false;
         }
         let Some((colors, kinds)) = self.target_source_qualities(source, qualification) else {
             return false;
         };
-        if monocolored && colors.count_ones() == 1 {
+        if (monocolored && colors.count_ones() == 1) || hexproof_colors & colors != 0 {
             return true;
         }
         let query = characteristic_query::CharacteristicQuery::in_world(world);

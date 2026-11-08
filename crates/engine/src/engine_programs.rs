@@ -5739,6 +5739,17 @@ impl Game {
                         self.draw_many(item.controller, 1);
                     }
                 }
+                Instruction::ChooseSourceColorAndHexproof => {
+                    if item.source.is_some_and(|source| {
+                        self.on_battlefield(source.id)
+                            && self.object_ref(source.id) == source.object
+                    }) {
+                        self.state.pending = Pending::ResolutionColor {
+                            player: item.controller,
+                        };
+                        return;
+                    }
+                }
                 Instruction::ChooseGrantKeywords { subject, choices } => {
                     let recipients: Vec<_> = self
                         .keyword_subjects(&item, subject)
