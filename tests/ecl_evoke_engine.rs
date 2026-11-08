@@ -121,6 +121,7 @@ fn linked_counter_cost_preserves_evoke_and_records_only_paid_mana() {
             Action::AnnounceLinkedExileCounterCost {
                 card: spell,
                 source,
+                face: CastFace::Normal,
                 flash_surcharge: false,
             },
         );
