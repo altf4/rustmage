@@ -1607,7 +1607,9 @@ pub enum Instruction {
     DelayCreatureAttacksAlone {
         ability: u16,
     },
-    BlinkFollowingPublicMove,
+    BlinkFollowingPublicMove {
+        all_groups: bool,
+    },
     BlinkImmediately {
         counter: Option<(CounterKind, u64)>,
         tapped: bool,

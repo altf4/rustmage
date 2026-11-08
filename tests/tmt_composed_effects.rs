@@ -143,6 +143,73 @@ fn farm_returns_one_linked_creature_then_the_other_to_hand() {
 }
 
 #[test]
+fn don_and_leo_blink_both_independent_target_roles() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Don & Leo, Problem Solvers", Zone::Battlefield);
+        let artifact = put(&mut g, p, "Swiftfoot Boots", Zone::Battlefield);
+        let creature = put(&mut g, p, "Healer's Hawk", Zone::Battlefield);
+        let before = [g.object_ref(artifact), g.object_ref(creature)];
+
+        g.begin_step(Step::End);
+        g.prepare_triggers();
+        for target in [artifact, creature] {
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+        }
+        drain(&mut g, None);
+
+        for object in before {
+            assert_ne!(g.object_ref(object.card), object);
+            assert_eq!(
+                g.state.objects[object.card as usize].zone,
+                Zone::Battlefield
+            );
+            assert_eq!(g.state.objects[object.card as usize].controller, p);
+        }
+    }
+}
+
+#[test]
+fn five_color_payment_does_not_count_the_same_flexible_source_twice() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let pizza = put(&mut g, p, "Everything Pizza", Zone::Battlefield);
+    let captive = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+    g.state.objects[captive as usize].tapped = true;
+    let henchbots = put(&mut g, p, "Henchbots", Zone::Hand);
+    cast(&mut g, henchbots, None);
+    drain(&mut g, Some(captive));
+    assert_eq!(g.state.objects[captive as usize].zone, Zone::Exile);
+
+    for _ in 0..24 {
+        put(&mut g, p, "Forest", Zone::Battlefield);
+    }
+    for _ in 0..2 {
+        put(&mut g, p, "Omni-Cheese Pizza", Zone::Battlefield);
+    }
+    put(&mut g, p, "Weather Maker", Zone::Battlefield);
+    g.state.players[p.index()].mana = [0; 6];
+
+    let activate = Action::AnnounceActivate {
+        card: pizza,
+        ability: 0,
+        counter_payment: Counters::default(),
+    };
+    let before = g.snapshot();
+    assert!(!g.legal_actions().contains(&activate));
+    assert_eq!(g.apply(p, activate.clone()), Err(Error::IllegalAction));
+    assert_eq!(g.snapshot(), before);
+
+    put(&mut g, p, "Weather Maker", Zone::Battlefield);
+    assert!(g.legal_actions().contains(&activate));
+}
+
+#[test]
 fn mikey_and_don_cast_the_known_top_creature_with_its_entry_counter() {
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);

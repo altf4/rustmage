@@ -38,7 +38,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 max: 1,
             },
         ]),
-        program: &[Instruction::BlinkFollowingPublicMove],
+        program: &[Instruction::BlinkFollowingPublicMove { all_groups: true }],
     }],
     extras: &CardExtras {
         cost_alternatives: &[

@@ -17,7 +17,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 min: 1,
                 max: 1,
             }),
-            program: &[Instruction::BlinkFollowingPublicMove],
+            program: &[Instruction::BlinkFollowingPublicMove { all_groups: false }],
         },
         SpellMode {
             text: "Deal damage equal to the greatest power among creatures you control to target creature an opponent controls.",
@@ -72,7 +72,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 }),
             ]),
             program: &[
-                Instruction::BlinkFollowingPublicMove,
+                Instruction::BlinkFollowingPublicMove { all_groups: false },
                 Instruction::SelectGroup(1),
                 Instruction::DamageScaled(AmountValue::GreatestCreaturePower(CreatureFilter {
                     relation: 0,

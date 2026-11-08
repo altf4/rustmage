@@ -3425,6 +3425,7 @@ impl Game {
                     // These aggregate operations consume every independently
                     // revalidated target role, regardless of SelectGroup.
                     | Instruction::ExchangeControlTargets
+                    | Instruction::BlinkFollowingPublicMove { all_groups: true }
                     | Instruction::DestroyTargetsThenSourceCountersIfOwnCreature { .. }
                     | Instruction::CopyTargetSpell { .. }
                     | Instruction::CopyTargetAbility { .. }
@@ -4677,7 +4678,9 @@ impl Game {
                     self.shuffle_source_into_owner_library(&item);
                 }
                 Instruction::BlinkAttacking => self.blink_immediately_attacking(&item),
-                Instruction::BlinkFollowingPublicMove => self.blink_following_public_move(&item),
+                Instruction::BlinkFollowingPublicMove { .. } => {
+                    self.blink_following_public_move(&item)
+                }
                 Instruction::BlinkImmediately { counter, tapped } => {
                     self.blink_immediately(&item, counter, tapped)
                 }

@@ -3250,6 +3250,150 @@ impl<'g> FundingState<'g> {
         let adjusted = cast_origins::payment_goal(self, goal, purpose);
         !payable(upper, adjusted.required, adjusted.generic)
     }
+    /// A flexible producer can contribute to several individual color bounds,
+    /// but it cannot produce its full amount for all those colors at once.
+    /// Bound every subset of requested colors in a finite printed-mana world.
+    fn joint_colors_possible(&self, goal: &FundingGoal) -> bool {
+        use crate::cards::StaticAbilityFragment;
+        let required_mask = goal
+            .required
+            .iter()
+            .enumerate()
+            .fold(0u8, |mask, (color, &amount)| {
+                mask | (u8::from(amount != 0) << color)
+            });
+        if required_mask.count_ones() < 2 {
+            return true;
+        }
+        let state = &self.game.state;
+        if self.has_contributions()
+            || self.cast_costs.is_some()
+            || self.required_face_up.is_some()
+            || self.entry_projection.is_some()
+            || self.continuation.is_some()
+            || self.controls().is_some()
+            || state.temporary_controls.is_some()
+            || self.temporary_copy_rows_state().is_some()
+            || self.copy_recipes.is_some()
+            || state.borrowed_links.is_some()
+            || state.borrowed_slots.is_some()
+            || state.graveyard_borrowing.is_some()
+            || state.self_granted_abilities.is_some()
+            || !state.tap_sources.is_empty()
+            || self.land_tap_bonus_upper() != [0; 6]
+            || matches!(self.purpose, mana_lots::Purpose::Spell(spell) if spell.spend_any_mana || spell.linked_mana_source.is_some())
+            || self.roles().is_some_and(|roles| {
+                !roles.source_linked_effects.is_empty() || !roles.basic_land_types.is_empty()
+            })
+            || self
+                .static_sources()
+                .iter()
+                .chain(self.attachment_sources())
+                .any(|&id| {
+                    let card = self.object(id).card;
+                    (matches!(self.purpose, mana_lots::Purpose::Spell(_))
+                        && card.has_cast_origin_abilities())
+                        || card
+                            .static_ability_groups()
+                            .iter()
+                            .flat_map(|g| g.fragments)
+                            .any(|fragment| {
+                                matches!(
+                                    fragment,
+                                    StaticAbilityFragment::ChosenBasicLandType
+                                        | StaticAbilityFragment::AttachmentMana(_)
+                                        | StaticAbilityFragment::AttachmentSacrificeMana(_)
+                                        | StaticAbilityFragment::LandMana { .. }
+                                )
+                            })
+                })
+            || state.exile_links.iter().any(|link| {
+                let card = self.object(link.exiled.card).card;
+                // An immediate linked return can put a new producer, copy, or
+                // mana provider onto the battlefield during the search.
+                card.is_land()
+                    || card.mana_color().is_some()
+                    || card.entry_copy().is_some()
+                    || !card.static_ability_groups().is_empty()
+                    || card
+                        .activations()
+                        .iter()
+                        .any(|a| a.mana_production().is_some())
+            })
+        {
+            return true;
+        }
+
+        let mut fixed = self.mana;
+        let mut flexible = [0u128; 64];
+        for resource in &self.resources {
+            let object = &resource.object;
+            if object.zone != Zone::Battlefield || object.controller != self.actor {
+                continue;
+            }
+            if !object.tapped {
+                for color in object
+                    .card
+                    .printed_intrinsic_mana_colors()
+                    .chain(object.card.mana_color())
+                {
+                    fixed[color] = fixed[color].saturating_add(1);
+                }
+            }
+            for ability in object.card.activations() {
+                let Some(production) = ability.mana_production() else {
+                    continue;
+                };
+                let cost = ability.cost;
+                if ability.source_zone() != Zone::Battlefield {
+                    return true;
+                }
+                if cost.tap && object.tapped {
+                    continue;
+                }
+                if !(cost.tap || cost.sacrifice || cost.exile_self) {
+                    return true;
+                }
+                // Count every printed option separately and ignore costs, guards,
+                // and mana restrictions. Each of these only increases the bound.
+                match production.base() {
+                    ManaProduction::Fixed(mana) => {
+                        for (total, amount) in fixed.iter_mut().zip(mana) {
+                            *total = total.saturating_add(u128::from(amount));
+                        }
+                    }
+                    ManaProduction::Choice { mask, amount }
+                    | ManaProduction::Combination { mask, amount } => {
+                        let total = &mut flexible[usize::from(mask & required_mask)];
+                        *total = total.saturating_add(u128::from(amount));
+                    }
+                    _ => return true,
+                }
+            }
+        }
+        let mut subset = required_mask;
+        while subset != 0 {
+            let mut demand = 0u128;
+            let mut capacity = 0u128;
+            for (color, &amount) in fixed.iter().enumerate() {
+                if subset & (1 << color) != 0 {
+                    demand += u128::from(goal.required[color]);
+                    capacity = capacity.saturating_add(amount);
+                }
+            }
+            for (mask, &amount) in flexible.iter().enumerate() {
+                if usize::from(subset) & mask != 0 {
+                    capacity = capacity.saturating_add(amount);
+                }
+            }
+            if capacity < demand {
+                return false;
+            }
+            subset = (subset - 1) & required_mask;
+        }
+        true
+    }
+
     fn optimistic(&self, goal: &FundingGoal) -> bool {
         // A later mana sacrifice may both add graveyard payment resources and
         // change whether delve is granted. Battlefield mana alone is no bound.
@@ -3263,7 +3407,7 @@ impl<'g> FundingState<'g> {
             // mana. Exact moves/visited states still determine reachability.
             return true;
         }
-        if self.fixed_ineligible_spell_mana_cannot_pay(goal) {
+        if !self.joint_colors_possible(goal) || self.fixed_ineligible_spell_mana_cannot_pay(goal) {
             return false;
         }
         // Immediate linked returns may introduce new sources, untap them, or
