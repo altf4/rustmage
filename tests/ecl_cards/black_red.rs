@@ -5481,10 +5481,15 @@ fn soul_immolation_full_u32_counter_amount_is_owned_and_does_not_increase_mana_v
         let spell = named(&mut g, p, "Soul Immolation", Zone::Hand);
         soul_declare(&mut g, spell, u32::MAX, witness);
         choose_ordered_cost(&mut g, |clause| clause == CastCostClause::Mana);
-        let request = g.observe(p).payment_request.unwrap();
-        assert_eq!(request.generic, 3);
-        assert_eq!(request.required, [0, 0, 0, 2, 0, 0]);
-        kindle_pay(&mut g);
+        for payment in [[0, 0, 0, 1, 0, 4], [0, 0, 0, 2, 0, 2]] {
+            reject(&mut g, Action::PayCosts { payment });
+        }
+        checked(
+            &mut g,
+            Action::PayCosts {
+                payment: [0, 0, 0, 2, 0, 3],
+            },
+        );
         assert_eq!(
             g.counter_count(witness, CounterKind::MinusOne),
             u64::from(u32::MAX)
