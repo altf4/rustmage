@@ -10692,11 +10692,11 @@ impl Game {
             } else {
                 None
             },
-            immediate_blink_return: self
-                .state
-                .resolving
-                .as_ref()
-                .and_then(|r| r.immediate_blink_return.as_deref().cloned()),
+            immediate_blink_return: self.state.resolving.as_ref().and_then(|r| {
+                r.immediate_blink_return
+                    .as_ref()
+                    .map(|blink| blink.rows.clone())
+            }),
             earthbend_returns: self.earthbend_views(),
             delayed_returns: self
                 .state
@@ -11839,9 +11839,9 @@ impl Game {
                         + resolution
                             .immediate_blink_return
                             .as_ref()
-                            .map_or(0, |rows| {
-                                std::mem::size_of::<Vec<ReturnLinkView>>()
-                                    + rows.len() * std::mem::size_of::<ReturnLinkView>()
+                            .map_or(0, |blink| {
+                                std::mem::size_of::<return_links::ImmediateBlink>()
+                                    + blink.rows.len() * std::mem::size_of::<ReturnLinkView>()
                             })
                         + resolution
                             .milled_selection

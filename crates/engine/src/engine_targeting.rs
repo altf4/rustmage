@@ -13,9 +13,8 @@ pub(super) struct ActivationCostChoice {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Announcement {
     pub behold_required: bool,
-    pub miracle_cost: Option<ManaCost>,
-    /// Captured from the graveyard grant at this spell's announcement.
-    pub sneak_granted_cost: Option<ManaCost>,
+    /// Captured origin-specific Miracle or granted Sneak cost.
+    pub origin_alternative_cost: Option<ManaCost>,
     pub item: SpellView,
     pub spec: TargetSpec,
     pub plan: TargetPlan,
@@ -92,7 +91,7 @@ impl Announcement {
     pub(super) fn sneak_cost_options(&self) -> impl Iterator<Item = ManaCost> {
         let card = self.item.source.expect("Sneak spell has a source").card;
         let grant = self
-            .sneak_granted_cost
+            .origin_alternative_cost
             .filter(|cost| !card.sneak_cost_options().any(|printed| printed == *cost));
         card.sneak_cost_options().chain(grant)
     }
@@ -105,7 +104,7 @@ impl Announcement {
                     .first()
                     .copied()
             }
-            CastMethod::Miracle => self.miracle_cost,
+            CastMethod::Miracle => self.origin_alternative_cost,
             CastMethod::Mayhem => self
                 .item
                 .source
@@ -269,7 +268,8 @@ impl Announcement {
                     .cast
                     .is_some_and(|c| c.method == CastMethod::Miracle) =>
             {
-                std::iter::once(self.miracle_cost.expect("miracle cost")).chain([].iter().copied())
+                std::iter::once(self.origin_alternative_cost.expect("miracle cost"))
+                    .chain([].iter().copied())
             }
             StackKind::Spell
                 if self
@@ -2337,11 +2337,7 @@ impl Game {
             free_hand_permission: None,
             origin_counter_cost: None,
             origin_additional_cost: None,
-            miracle_cost: self.miracle_cost_for(&item),
-            sneak_granted_cost: item
-                .cast
-                .filter(|cast| cast.method == CastMethod::Sneak && cast.origin == Zone::Graveyard)
-                .and_then(|_| self.granted_sneak_cost(item.controller, item.source.unwrap().card)),
+            origin_alternative_cost: self.origin_alternative_cost_for(&item),
             item,
             spec: TargetSpec::NONE,
             plan,
@@ -2369,6 +2365,17 @@ impl Game {
         });
         self.continue_announcement_choices(needs_mode);
         true
+    }
+
+    pub(super) fn origin_alternative_cost_for(&self, item: &SpellView) -> Option<ManaCost> {
+        self.miracle_cost_for(item).or_else(|| {
+            let cast = item.cast?;
+            if cast.method == CastMethod::Sneak && cast.origin == Zone::Graveyard {
+                self.granted_sneak_cost(item.controller, item.source?.card)
+            } else {
+                None
+            }
+        })
     }
 
     pub(super) fn open_payment_announcement(
@@ -2535,11 +2542,7 @@ impl Game {
             free_hand_permission: None,
             origin_counter_cost,
             origin_additional_cost: None,
-            miracle_cost: self.miracle_cost_for(&item),
-            sneak_granted_cost: item
-                .cast
-                .filter(|cast| cast.method == CastMethod::Sneak && cast.origin == Zone::Graveyard)
-                .and_then(|_| self.granted_sneak_cost(item.controller, item.source.unwrap().card)),
+            origin_alternative_cost: self.origin_alternative_cost_for(&item),
             item,
             spec: TargetSpec::NONE,
             plan,

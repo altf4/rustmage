@@ -131,7 +131,7 @@ impl Game {
                     .expect("mayhem cost");
             }
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Miracle) {
-                return a.miracle_cost.expect("miracle cost");
+                return a.origin_alternative_cost.expect("miracle cost");
             }
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Sneak) {
                 return a.sneak_cost_options().next().expect("Sneak cost");

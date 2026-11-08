@@ -34,9 +34,7 @@ pub(super) struct Resolution {
     pub cascade: Option<Box<cascade::CascadeView>>,
     #[allow(clippy::box_collection)]
     pub target_card_facts: Option<Box<Vec<TargetCardFacts>>>,
-    #[allow(clippy::box_collection)]
-    pub immediate_blink_return: Option<Box<Vec<ReturnLinkView>>>,
-    pub immediate_blink_attacking: bool,
+    pub immediate_blink_return: Option<Box<return_links::ImmediateBlink>>,
     pub connive: Option<Box<super::connive::ConniveSequence>>,
     pub proliferate: Option<Box<super::proliferate::ProliferateSequence>>,
     pub explore: Option<Box<ExploreChoiceView>>,
@@ -3081,7 +3079,6 @@ impl Game {
             target_card_facts,
             sacrificed_power: None,
             immediate_blink_return: None,
-            immediate_blink_attacking: false,
             explore: None,
             evidence: None,
             connive: None,

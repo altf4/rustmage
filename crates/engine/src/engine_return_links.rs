@@ -73,6 +73,13 @@ pub(super) struct DelayedReturn {
     pub view: DelayedReturnView,
     pub item: SpellView,
 }
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct ImmediateBlink {
+    pub rows: Vec<ReturnLinkView>,
+    pub attacking: bool,
+}
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn modification(kind: ReturnKind) -> Option<(&'static [&'static str], Keywords)> {
     match kind {
@@ -198,7 +205,10 @@ impl Game {
             .resolving
             .as_mut()
             .unwrap()
-            .immediate_blink_return = Some(Box::new(returning));
+            .immediate_blink_return = Some(Box::new(ImmediateBlink {
+            rows: returning,
+            attacking: false,
+        }));
         self.finish_zone_events(&events, &[]);
     }
     /// Register only an actually successful return, after its replacement choices.
@@ -273,17 +283,20 @@ impl Game {
         // Departure events can themselves stage a choice-bearing linked return.
         // Keep our exact exiled incarnations owned until that entry batch finishes.
         let resolution = self.state.resolving.as_mut().unwrap();
-        resolution.immediate_blink_attacking = attacking;
-        resolution.immediate_blink_return = Some(Box::new(returning));
+        resolution.immediate_blink_return = Some(Box::new(ImmediateBlink {
+            rows: returning,
+            attacking,
+        }));
         self.finish_zone_events(&events, &[]);
     }
     pub(super) fn resume_immediate_blink(&mut self) -> bool {
         let resolution = self.state.resolving.as_mut().unwrap();
-        let Some(rows) = resolution.immediate_blink_return.take() else {
+        let Some(blink) = resolution.immediate_blink_return.take() else {
             return false;
         };
-        let attacking = std::mem::take(&mut resolution.immediate_blink_attacking);
-        let moves = rows
+        let attacking = blink.attacking;
+        let moves = blink
+            .rows
             .iter()
             .filter_map(|row| {
                 if self.object_ref(row.object.card) != row.object

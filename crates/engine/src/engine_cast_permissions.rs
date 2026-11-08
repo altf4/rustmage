@@ -551,10 +551,7 @@ impl Game {
             free_hand_permission: None,
             origin_counter_cost,
             origin_additional_cost,
-            miracle_cost: self.miracle_cost_for(&item),
-            sneak_granted_cost: (method == CastMethod::Sneak && object.zone == Zone::Graveyard)
-                .then(|| self.granted_sneak_cost(actor, definition))
-                .flatten(),
+            origin_alternative_cost: self.origin_alternative_cost_for(&item),
             item,
             spec: TargetSpec::NONE,
             plan: TargetPlan::Single(TargetSpec::NONE),
