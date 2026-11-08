@@ -484,13 +484,8 @@ fn activate_with_blight(g: &mut Game, id: CardId, witness: CardId) {
             .is_none()
     );
     let object = g.object_ref(witness);
-    checked(g, Action::ChooseAdditionalCost { object });
-    let pay = g
-        .legal_actions()
-        .into_iter()
-        .find(|a| matches!(a, Action::PayCosts { .. }))
-        .unwrap();
-    checked(g, pay);
+    pay_additional(g, object);
+    kindle_pay(g);
 }
 #[test]
 fn gristle_glutton_mandatory_blight_pays_before_forced_discard_and_draw() {
@@ -514,11 +509,12 @@ fn gristle_glutton_mandatory_blight_pays_before_forced_discard_and_draw() {
             let library = g.state.players[p.index()].library.len();
             checked(&mut g, activation);
             assert!(g.observe(p.other()).additional_cost.is_none());
+            reject(&mut g, Action::TapMana { card: land });
             let object = g.object_ref(id);
-            checked(&mut g, Action::ChooseAdditionalCost { object });
+            pay_additional(&mut g, object);
             if g.state.announcing.is_some() {
                 reject(&mut g, Action::TapMana { card: land });
-                checked(&mut g, Action::PayCosts { payment: [0; 6] });
+                kindle_pay(&mut g);
             }
             assert!(g.state.objects[id as usize].tapped);
             assert_eq!(g.counter_count(id, CounterKind::MinusOne), 1);
@@ -567,10 +563,7 @@ fn sting_slinger_blight_witness_can_fund_mana_then_die_with_ability_on_stack() {
                 counter_payment: Counters::default(),
             },
         );
-        let invalid = g.object_ref(enemy);
-        reject(&mut g, Action::ChooseAdditionalCost { object: invalid });
         let witness = g.object_ref(elf);
-        checked(&mut g, Action::ChooseAdditionalCost { object: witness });
         checked(&mut g, Action::TapMana { card: elf });
         checked(&mut g, Action::TapMana { card: mountain });
         assert_eq!(
@@ -578,12 +571,11 @@ fn sting_slinger_blight_witness_can_fund_mana_then_die_with_ability_on_stack() {
             0,
             "cost is not placed during announcement"
         );
-        let pay = g
-            .legal_actions()
-            .into_iter()
-            .find(|a| matches!(a, Action::PayCosts { .. }))
-            .unwrap();
-        checked(&mut g, pay);
+        open_additional_payment(&mut g);
+        let invalid = g.object_ref(enemy);
+        reject(&mut g, Action::ChooseAdditionalCost { object: invalid });
+        pay_additional(&mut g, witness);
+        kindle_pay(&mut g);
         assert_eq!(g.state.objects[elf as usize].zone, Zone::Graveyard);
         assert_eq!(g.state.stack.len(), 1);
         settle(&mut g);
@@ -1317,7 +1309,6 @@ fn burning_curiosity_paid_witness_can_produce_mana_and_permissions_last_through_
             } else {
                 optional_cast(&mut g, id, None, None);
             }
-            let turn = g.state.turn;
             settle(&mut g);
             assert_eq!(g.state.exile_permissions.len(), if paid { 3 } else { 2 });
             assert!(
@@ -1325,7 +1316,7 @@ fn burning_curiosity_paid_witness_can_produce_mana_and_permissions_last_through_
                     .exile_permissions
                     .iter()
                     .all(|permission| permission.player == p
-                        && permission.expiry == ExilePlayExpiry::Turn(turn + 2))
+                        && permission.expiry == ExilePlayExpiry::EndOfNextTurn)
             );
             let land = g.state.exile_permissions[0].object.card;
             assert!(g.legal_actions().contains(&Action::PlayLand { card: land }));
@@ -1442,7 +1433,7 @@ fn bogslither_or_additional_routes_preserve_mana_for_free_casts() {
                 );
                 if let Some(witness) = witness {
                     let object = g.object_ref(witness);
-                    checked(&mut g, Action::ChooseAdditionalCost { object });
+                    pay_additional(&mut g, object);
                 }
                 while g.state.announcing.is_some() {
                     advance(&mut g);
@@ -3311,7 +3302,7 @@ fn two_behold_creatures_pay_with_permanents_or_private_hand_cards_and_offer_the_
                 reject(&mut g, Action::ChooseAdditionalCost { object });
                 assert!(g.observe(p.other()).additional_cost.is_none());
                 let object = g.object_ref(witness);
-                checked(&mut g, Action::ChooseAdditionalCost { object });
+                pay_additional(&mut g, object);
                 assert!(!g.observe(p.other()).known_hand.contains(&object));
                 checked(&mut g, Action::PayCosts { payment: mana });
                 assert_eq!(g.observe(p.other()).known_hand.contains(&object), hand);
@@ -3904,22 +3895,28 @@ fn scarblades_malice_multiple_independent_watches_each_trigger_once_for_a_token_
     }
 }
 #[test]
-fn scarblades_malice_blink_and_non_graveyard_departures_remove_only_the_exact_watch() {
+fn scarblades_malice_blink_and_non_graveyard_departures_leave_only_an_inert_exact_watch() {
     for p in [Player::P0, Player::P1] {
         let mut g = hexing_setup(p);
         let creature = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let watched = g.object_ref(creature);
         malice(&mut g, p, creature);
         g.move_object(creature, Zone::Exile);
+        let watches = g.observe(p).delayed_target_events.unwrap();
+        assert_eq!(watches.len(), 1);
+        assert_eq!(watches[0].subject, watched);
+        g.move_object(creature, Zone::Battlefield);
+        assert_ne!(g.object_ref(creature), watched);
+        g.move_object(creature, Zone::Graveyard);
+        settle(&mut g);
+        assert!(malice_elves(&g, p).is_empty());
+        g.finish_cleanup();
         assert!(
             g.observe(p)
                 .delayed_target_events
                 .unwrap_or_default()
                 .is_empty()
         );
-        g.move_object(creature, Zone::Battlefield);
-        g.move_object(creature, Zone::Graveyard);
-        settle(&mut g);
-        assert!(malice_elves(&g, p).is_empty());
     }
 }
 #[test]
@@ -4059,16 +4056,12 @@ fn champion_cast(g: &mut Game, p: Player, name: &str, witness: CardId) -> CardId
     let source = named(g, p, name, Zone::Hand);
     checked(g, Action::AnnounceCast { card: source });
     assert!(g.observe(p.other()).additional_cost.is_none());
+    open_additional_payment(g);
     let object = g.object_ref(source);
     reject(g, Action::ChooseAdditionalCost { object });
     let object = g.object_ref(witness);
-    checked(g, Action::ChooseAdditionalCost { object });
-    let pay = g
-        .legal_actions()
-        .into_iter()
-        .find(|a| matches!(a, Action::PayCosts { .. }))
-        .unwrap();
-    checked(g, pay);
+    pay_additional(g, object);
+    kindle_pay(g);
     assert_eq!(g.object_view(witness).zone, Zone::Exile);
     source
 }
@@ -4250,13 +4243,8 @@ fn champion_weird_pays_life_and_blight_then_opponent_chooses_effect_recipient() 
             },
         );
         let object = g.object_ref(source);
-        checked(&mut g, Action::ChooseAdditionalCost { object });
-        let pay = g
-            .legal_actions()
-            .into_iter()
-            .find(|a| matches!(a, Action::PayCosts { .. }))
-            .unwrap();
-        checked(&mut g, pay);
+        pay_additional(&mut g, object);
+        kindle_pay(&mut g);
         assert_eq!(g.state.players[p.index()].life, 19);
         assert_eq!(g.counter_count(source, CounterKind::MinusOne), 2);
         for _ in 0..100 {
@@ -4317,13 +4305,8 @@ fn champion_weird_cost_can_kill_itself_return_witness_and_still_blight_opponent(
             },
         );
         let object = g.object_ref(source);
-        checked(&mut g, Action::ChooseAdditionalCost { object });
-        let pay = g
-            .legal_actions()
-            .into_iter()
-            .find(|a| matches!(a, Action::PayCosts { .. }))
-            .unwrap();
-        checked(&mut g, pay);
+        pay_additional(&mut g, object);
+        kindle_pay(&mut g);
         assert_eq!(g.object_view(source).zone, Zone::Graveyard);
         settle(&mut g);
         assert_eq!(g.object_view(witness).zone, Zone::Hand);
@@ -4340,14 +4323,9 @@ fn champion_path_witness_can_produce_restricted_mana_before_its_exile_cost() {
         g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
         checked(&mut g, Action::AnnounceCast { card: source });
         let object = g.object_ref(witness);
-        checked(&mut g, Action::ChooseAdditionalCost { object });
         flamebraider_mana(&mut g, witness, [0, 0, 0, 2, 0, 0]);
-        let pay = g
-            .legal_actions()
-            .into_iter()
-            .find(|a| matches!(a, Action::PayCosts { .. }))
-            .unwrap();
-        checked(&mut g, pay);
+        pay_additional(&mut g, object);
+        kindle_pay(&mut g);
         assert_eq!(g.object_view(witness).zone, Zone::Exile);
         settle(&mut g);
         assert!(g.on_battlefield(source));
@@ -4662,6 +4640,7 @@ fn end_blaze_epiphany_lost_target_and_blinked_or_exiled_watch_never_create_permi
         for mode in 0..4 {
             let mut g = hexing_setup(p);
             let victim = named(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+            let watched = g.object_ref(victim);
             endblaze_cast(&mut g, p, victim, 0);
             if mode == 0 {
                 g.move_object(victim, Zone::Hand);
@@ -4678,12 +4657,21 @@ fn end_blaze_epiphany_lost_target_and_blinked_or_exiled_watch_never_create_permi
                 g.move_object(victim, Zone::Graveyard);
             }
             settle(&mut g);
-            assert!(
-                g.observe(p)
-                    .delayed_target_events
-                    .unwrap_or_default()
-                    .is_empty()
-            );
+            let watches = g.observe(p).delayed_target_events.unwrap_or_default();
+            if mode == 1 || mode == 2 {
+                assert_eq!(watches.len(), 1);
+                assert_eq!(watches[0].subject, watched);
+                assert_ne!(g.object_ref(victim), watched);
+                g.finish_cleanup();
+                assert!(
+                    g.observe(p)
+                        .delayed_target_events
+                        .unwrap_or_default()
+                        .is_empty()
+                );
+            } else {
+                assert!(watches.is_empty());
+            }
             assert!(g.observe(p).exile_permissions.is_empty());
         }
     }
@@ -4704,7 +4692,7 @@ fn end_blaze_epiphany_permission_survives_current_turn_and_expires_at_casters_ne
             let deadline = g.state.turn + if during_your_turn { 2 } else { 1 };
             assert_eq!(
                 g.observe(p).exile_permissions[0].expiry,
-                ExilePlayExpiry::Turn(deadline)
+                ExilePlayExpiry::EndOfNextTurn
             );
             while g.state.turn < deadline {
                 g.finish_cleanup();
@@ -4759,8 +4747,11 @@ fn kindle_copies(g: &Game, p: Player) -> Vec<CardId> {
         .collect()
 }
 fn kindle_pay(g: &mut Game) {
+    let announced = g.state.announcing.as_ref().map(|a| a.item.id);
     for _ in 0..20 {
-        if g.state.announcing.is_none() {
+        if g.state.announcing.as_ref().map(|a| a.item.id) != announced
+            || g.state.announcing.is_none()
+        {
             return;
         }
         if matches!(g.state.pending, Pending::CastCosts { .. }) {
@@ -4857,15 +4848,15 @@ fn kindle_inner_flame_flashback_beholds_three_distinct_elementals_including_kind
             },
         );
         assert!(g.observe(p.other()).additional_cost.is_none());
+        flamebraider_mana(&mut g, target, [0, 0, 0, 2, 0, 0]);
+        open_additional_payment(&mut g);
         let object = g.object_ref(enemy);
         reject(&mut g, Action::ChooseAdditionalCost { object });
         let object = g.object_ref(first);
-        checked(&mut g, Action::ChooseAdditionalCost { object });
+        pay_additional(&mut g, object);
         reject(&mut g, Action::ChooseAdditionalCost { object });
         let object = g.object_ref(second);
-        checked(&mut g, Action::ChooseAdditionalCost { object });
-        let object = g.object_ref(target);
-        checked(&mut g, Action::ChooseAdditionalCost { object });
+        pay_additional(&mut g, object);
         for card in [first, second] {
             assert!(
                 !g.observe(p.other())
@@ -4873,7 +4864,8 @@ fn kindle_inner_flame_flashback_beholds_three_distinct_elementals_including_kind
                     .contains(&g.object_ref(card))
             );
         }
-        flamebraider_mana(&mut g, target, [0, 0, 0, 2, 0, 0]);
+        let object = g.object_ref(target);
+        pay_additional(&mut g, object);
         kindle_pay(&mut g);
         for card in [first, second] {
             assert_eq!(g.object_view(card).zone, Zone::Hand);
@@ -4948,7 +4940,7 @@ fn kindle_inner_flame_flashback_lost_target_and_countered_spell_still_exile_sour
             );
             for &card in &witnesses {
                 let object = g.object_ref(card);
-                checked(&mut g, Action::ChooseAdditionalCost { object });
+                pay_additional(&mut g, object);
             }
             kindle_pay(&mut g);
             if counter {
@@ -5062,7 +5054,7 @@ fn kindle_inner_flame_spell_copy_inherits_effect_without_repaying_printed_flashb
         );
         for &card in &witnesses {
             let object = g.object_ref(card);
-            checked(&mut g, Action::ChooseAdditionalCost { object });
+            pay_additional(&mut g, object);
         }
         kindle_pay(&mut g);
         settle(&mut g);
@@ -5331,7 +5323,7 @@ fn soul_declare(g: &mut Game, spell: CardId, x: u32, witness: CardId) {
     assert!(g.observe(g.actor().unwrap().other()).x_choice.is_none());
     checked(g, Action::ChooseX { value: x });
     let object = g.object_ref(witness);
-    checked(g, Action::ChooseAdditionalCost { object });
+    pay_additional(g, object);
 }
 #[test]
 fn soul_immolation_uses_greatest_toughness_but_may_blight_a_smaller_creature_and_damages_only_opposition()
@@ -5347,11 +5339,12 @@ fn soul_immolation_uses_greatest_toughness_but_may_blight_a_smaller_creature_and
         checked(&mut g, Action::AnnounceCast { card: spell });
         reject(&mut g, Action::ChooseX { value: 11 });
         checked(&mut g, Action::ChooseX { value: 10 });
+        open_additional_payment(&mut g);
         let foreign = g.object_ref(enemy);
         reject(&mut g, Action::ChooseAdditionalCost { object: foreign });
         let object = g.object_ref(witness);
-        checked(&mut g, Action::ChooseAdditionalCost { object });
         assert_eq!(g.counter_count(witness, CounterKind::MinusOne), 0);
+        pay_additional(&mut g, object);
         kindle_pay(&mut g);
         assert_eq!(g.object_view(witness).zone, Zone::Graveyard);
         assert_eq!(g.state.stack.last().unwrap().x, Some(10));
@@ -5389,7 +5382,8 @@ fn soul_immolation_free_cast_still_chooses_nonmana_x_and_keeps_it_after_the_only
         );
         checked(&mut g, Action::ChooseX { value: 10 });
         let object = g.object_ref(witness);
-        checked(&mut g, Action::ChooseAdditionalCost { object });
+        pay_additional(&mut g, object);
+        choose_ordered_cost(&mut g, |clause| clause == CastCostClause::Mana);
         checked(&mut g, Action::PayCosts { payment: [0; 6] });
         assert_eq!(g.object_view(witness).zone, Zone::Graveyard);
         assert_eq!(g.state.stack.last().unwrap().mana_value(), 5);
@@ -5408,11 +5402,15 @@ fn soul_immolation_same_blight_witness_can_tap_for_mana_before_placing_cost_coun
             .collect();
         let spell = named(&mut g, p, "Soul Immolation", Zone::Hand);
         g.state.players[p.index()].mana = [0; 6];
-        soul_declare(&mut g, spell, 1, witness);
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        assert!(g.observe(p.other()).x_choice.is_none());
+        checked(&mut g, Action::ChooseX { value: 1 });
         for card in std::iter::once(witness).chain(lands) {
             checked(&mut g, Action::TapMana { card });
         }
         assert_eq!(g.counter_count(witness, CounterKind::MinusOne), 0);
+        let object = g.object_ref(witness);
+        pay_additional(&mut g, object);
         kindle_pay(&mut g);
         assert_eq!(g.object_view(witness).zone, Zone::Graveyard);
         settle(&mut g);
@@ -5448,7 +5446,7 @@ fn soul_immolation_zero_requires_a_creature_but_does_not_place_counters_even_whe
         reject(&mut g, Action::ChooseX { value: 1 });
         checked(&mut g, Action::ChooseX { value: 0 });
         let object = g.object_ref(witness);
-        checked(&mut g, Action::ChooseAdditionalCost { object });
+        pay_additional(&mut g, object);
         kindle_pay(&mut g);
         settle(&mut g);
         assert_eq!(g.counter_count(witness, CounterKind::MinusOne), 0);
@@ -5482,6 +5480,7 @@ fn soul_immolation_full_u32_counter_amount_is_owned_and_does_not_increase_mana_v
         g.state.objects[witness as usize].growth.toughness = i128::from(u32::MAX);
         let spell = named(&mut g, p, "Soul Immolation", Zone::Hand);
         soul_declare(&mut g, spell, u32::MAX, witness);
+        choose_ordered_cost(&mut g, |clause| clause == CastCostClause::Mana);
         let request = g.observe(p).payment_request.unwrap();
         assert_eq!(request.generic, 3);
         assert_eq!(request.required, [0, 0, 0, 2, 0, 0]);
@@ -5521,7 +5520,7 @@ fn forced_blight_effect_can_choose_a_counter_prohibited_creature_without_placing
             },
         );
         let object = g.object_ref(own);
-        checked(&mut g, Action::ChooseAdditionalCost { object });
+        pay_additional(&mut g, object);
         kindle_pay(&mut g);
         for _ in 0..100 {
             if g.actor() == Some(p.other())
@@ -5625,6 +5624,15 @@ fn choose_ordered_cost(g: &mut Game, predicate: impl Fn(CastCostClause) -> bool)
         .unwrap() as u16;
     checked(g, Action::ChooseCastCost { clause });
 }
+fn open_additional_payment(g: &mut Game) {
+    if !matches!(g.state.pending, Pending::AdditionalCost { .. }) {
+        choose_ordered_cost(g, |clause| clause == CastCostClause::Additional);
+    }
+}
+fn pay_additional(g: &mut Game, object: ObjectRef) {
+    open_additional_payment(g);
+    checked(g, Action::ChooseAdditionalCost { object });
+}
 fn dawnhand_link(g: &mut Game, p: Player, name: &str) -> (CardId, CardId, ObjectRef) {
     let source = named(g, p, "Dawnhand Dissident", Zone::Battlefield);
     let card = named(g, p, name, Zone::Exile);
@@ -5688,7 +5696,7 @@ fn dawnhand_paid_activations_tap_blight_surveillance_privacy_and_exact_graveyard
             },
         );
         let donor_ref = g.object_ref(donor);
-        checked(&mut g, Action::ChooseAdditionalCost { object: donor_ref });
+        pay_additional(&mut g, donor_ref);
         kindle_pay(&mut g);
         assert!(g.object_view(source).tapped);
         assert_eq!(g.counter_count(donor, CounterKind::MinusOne), 1);
@@ -5724,7 +5732,7 @@ fn dawnhand_paid_activations_tap_blight_surveillance_privacy_and_exact_graveyard
                 target: Target::Card(card),
             },
         );
-        checked(&mut g, Action::ChooseAdditionalCost { object: donor_ref });
+        pay_additional(&mut g, donor_ref);
         kindle_pay(&mut g);
         settle(&mut g);
         assert_eq!(g.object_view(card).zone, Zone::Exile);
@@ -5911,7 +5919,7 @@ fn dawnhand_printed_champion_exile_and_counter_cost_can_share_donor_before_payme
         dawnhand_announce(&mut g, card, reference);
         dawnhand_remove(&mut g, reference, &[CounterKind::PlusOne; 3]);
         choose_ordered_cost(&mut g, |clause| clause == CastCostClause::Additional);
-        checked(&mut g, Action::ChooseAdditionalCost { object: reference });
+        pay_additional(&mut g, reference);
         kindle_pay(&mut g);
         assert_eq!(g.object_view(source).zone, Zone::Exile);
         settle(&mut g);
@@ -5957,7 +5965,7 @@ fn dawnhand_after_printed_exile_returns_fresh_counter_donor_before_cast_complete
             .unwrap() as u16;
         reject(&mut g, Action::ChooseCastCost { clause: counters });
         choose_ordered_cost(&mut g, |clause| clause == CastCostClause::Additional);
-        checked(&mut g, Action::ChooseAdditionalCost { object: hunter_ref });
+        pay_additional(&mut g, hunter_ref);
         for _ in 0..20 {
             if matches!(g.state.pending, Pending::CastCosts { .. }) {
                 break;
@@ -6148,7 +6156,7 @@ fn dawnhand_actual_exile_activation_unlocks_cast_and_source_loss_preserves_only_
                 },
             );
             let donor_ref = g.object_ref(donor);
-            checked(&mut g, Action::ChooseAdditionalCost { object: donor_ref });
+            pay_additional(&mut g, donor_ref);
             kindle_pay(&mut g);
             if departed {
                 g.move_object(source, Zone::Hand);
@@ -6223,7 +6231,7 @@ fn dawnhand_copy_epochs_keep_queued_exile_packets_separate_from_new_linked_abili
                 target: Target::Card(old_card),
             },
         );
-        checked(&mut g, Action::ChooseAdditionalCost { object: donor_ref });
+        pay_additional(&mut g, donor_ref);
         kindle_pay(&mut g);
         assert_eq!(g.state.stack.last().unwrap().source_ability_origin, None);
         // Typed boundary for acquiring the same printed abilities through a new
@@ -6274,7 +6282,7 @@ fn dawnhand_copy_epochs_keep_queued_exile_packets_separate_from_new_linked_abili
                 target: Target::Card(new_card),
             },
         );
-        checked(&mut g, Action::ChooseAdditionalCost { object: donor_ref });
+        pay_additional(&mut g, donor_ref);
         kindle_pay(&mut g);
         assert_eq!(
             g.state.stack.last().unwrap().source_ability_origin,
@@ -6428,10 +6436,8 @@ fn spinerock_copy_and_original_gain_wither_independently_and_retarget_owned() {
                     .iter()
                     .any(|row| {
                         row.recipient == recipient
-                            && row.origin
-                                == KeywordEffectOrigin::Resolution {
-                                    source: g.object_ref(source),
-                                }
+                            && row.origin == KeywordEffectOrigin::Resolution { source: recipient }
+                            && row.keywords.contains(Keywords::WITHER)
                             && row.expires_turn.is_none()
                     })
             );
@@ -6774,12 +6780,7 @@ fn lavaleaper_granted_land_mana_gets_one_bonus_not_one_per_mana_and_nonbasic_is_
         );
         assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 3, 0, 0]);
         let nonbasic = named(&mut g, p, "Hallowed Fountain", Zone::Battlefield);
-        let tap = g
-            .legal_actions()
-            .into_iter()
-            .find(|a| matches!(a, Action::ActivateMana { card, .. } if *card == nonbasic))
-            .unwrap();
-        checked(&mut g, tap);
+        checked(&mut g, Action::TapMana { card: nonbasic });
         assert_eq!(g.state.players[p.index()].mana.iter().sum::<u32>(), 4);
     }
 }
@@ -7435,17 +7436,13 @@ fn twilight_stack_copies_of_a_graveyard_cast_are_not_themselves_cast_from_there(
             );
         }
         kindle_pay(&mut g);
-        // Construct the owned permanent-spell-copy boundary from the actual
-        // paid spell. The current copy instruction admits only instant/sorcery
-        // spells; permanent spell-copy normalization is independently generic.
-        let mut copy = g.state.stack.last().unwrap().clone();
+        // Use the owned copy boundary, including its exact-incarnation recipe,
+        // on the actual paid graveyard spell without creating a second cast.
+        let original = g.state.stack.last().unwrap().clone();
+        assert_eq!(original.cast.unwrap().origin, Zone::Graveyard);
+        let copy = g.allocate_spell_copy(&original, p);
+        assert!(copy.is_copy);
         assert_eq!(copy.cast.unwrap().origin, Zone::Graveyard);
-        let copy_card = named(&mut g, p, "Quilled Greatwurm", Zone::Stack);
-        g.state.objects[copy_card as usize].copy_kind = CopyKind::Spell;
-        copy.id = g.next_stack_id();
-        copy.source.as_mut().unwrap().id = copy_card;
-        copy.source.as_mut().unwrap().object = g.object_ref(copy_card);
-        copy.is_copy = true;
         g.state.stack.push(copy);
         for _ in 0..50 {
             if !twilight_tokens(&g, p).is_empty() {
