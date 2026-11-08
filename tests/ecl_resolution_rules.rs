@@ -606,9 +606,13 @@ fn graveyard_pair_mode_and_first_target_need_a_distinct_shared_creature_type() {
         cast(&mut with_copy, fork, Some(Target::Spell(spell)));
         with_copy.move_object(partner, Zone::Exile);
         resolve_top(&mut with_copy);
-        checked(&mut with_copy, Action::SetStackTarget {
-            index: 0, target: Target::Card(replacement),
-        });
+        checked(
+            &mut with_copy,
+            Action::SetStackTarget {
+                index: 0,
+                target: Target::Card(replacement),
+            },
+        );
         checked(&mut with_copy, Action::FinishStackTargets);
         settle(&mut with_copy);
         assert_eq!(with_copy.object_view(bear).zone, Zone::Hand);

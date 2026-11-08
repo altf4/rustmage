@@ -1212,49 +1212,83 @@ impl Game {
     }
 
     fn creature_type_facts(&self, id: CardId) -> (Card, GrantedSubtypes) {
-        (self.state.objects[id as usize].card, self.granted_subtypes(id))
+        (
+            self.state.objects[id as usize].card,
+            self.granted_subtypes(id),
+        )
     }
 
     fn types_intersect(
         (first, first_types): (Card, GrantedSubtypes),
         (second, second_types): (Card, GrantedSubtypes),
     ) -> bool {
-        crate::cards::CREATURE_TYPES.iter().any(|name| {
-            first_types.has(first, name) && second_types.has(second, name)
-        })
+        crate::cards::CREATURE_TYPES
+            .iter()
+            .any(|name| first_types.has(first, name) && second_types.has(second, name))
     }
 
     fn share_creature_type(&self, first: CardId, second: CardId) -> bool {
-        Self::types_intersect(self.creature_type_facts(first), self.creature_type_facts(second))
+        Self::types_intersect(
+            self.creature_type_facts(first),
+            self.creature_type_facts(second),
+        )
     }
 
     pub(super) fn capture_target_types_departure(&mut self, before: &ObjectView) {
         let (constraint, facts) = match before.zone {
-            Zone::Battlefield => (TargetGroupConstraint::SharedCardType,
-                TargetTypeLki::CardTypes(before.kinds)),
-            Zone::Graveyard => (TargetGroupConstraint::SharedCreatureType,
-                TargetTypeLki::CreatureTypes(before.card, before.granted_subtypes)),
+            Zone::Battlefield => (
+                TargetGroupConstraint::SharedCardType,
+                TargetTypeLki::CardTypes(before.kinds),
+            ),
+            Zone::Graveyard => (
+                TargetGroupConstraint::SharedCreatureType,
+                TargetTypeLki::CreatureTypes(before.card, before.granted_subtypes),
+            ),
             _ => return,
         };
-        fn remember(item: &mut SpellView, reference: ObjectRef, constraint: TargetGroupConstraint, facts: TargetTypeLki) {
-            if item.targets.iter().any(|bound| bound.object == Some(reference))
+        fn remember(
+            item: &mut SpellView,
+            reference: ObjectRef,
+            constraint: TargetGroupConstraint,
+            facts: TargetTypeLki,
+        ) {
+            if item
+                .targets
+                .iter()
+                .any(|bound| bound.object == Some(reference))
                 && item.target_type_lki(reference).is_none()
                 && item.needs_target_relation_lki(constraint)
             {
-                item.target_types_lki.get_or_insert_with(|| Box::new(Vec::new())).push((reference, facts));
+                item.target_types_lki
+                    .get_or_insert_with(|| Box::new(Vec::new()))
+                    .push((reference, facts));
             }
             if let Some(event) = &mut item.copy_event {
                 remember(&mut event.spell, reference, constraint, facts);
             }
         }
-        let mut remember = |item: &mut SpellView| remember(item, before.reference, constraint, facts);
-        self.state.stack.iter_mut()
+        let mut remember =
+            |item: &mut SpellView| remember(item, before.reference, constraint, facts);
+        self.state
+            .stack
+            .iter_mut()
             .chain(&mut self.state.pending_triggers)
             .chain(&mut self.state.ordering_triggers)
             .chain(self.state.resolving.iter_mut().map(|r| &mut r.item))
             .chain(self.state.announcing.iter_mut().map(|a| &mut a.item))
-            .chain(self.state.activation_payment.iter_mut().map(|p| &mut p.item))
-            .chain(self.state.mana_announcement_stack.iter_mut().flat_map(|frames| frames.iter_mut()).map(|frame| &mut frame.announcement.item))
+            .chain(
+                self.state
+                    .activation_payment
+                    .iter_mut()
+                    .map(|p| &mut p.item),
+            )
+            .chain(
+                self.state
+                    .mana_announcement_stack
+                    .iter_mut()
+                    .flat_map(|frames| frames.iter_mut())
+                    .map(|frame| &mut frame.announcement.item),
+            )
             .for_each(&mut remember);
         if let Some(data) = &mut self.state.stack_copy_data {
             data.visit_owned_packets(&mut remember);
@@ -1262,7 +1296,12 @@ impl Game {
         if let Some(data) = &mut self.state.replacements {
             data.visit_owned_packets(&mut remember);
         }
-        if let Some(data) = self.state.entry_batch.as_mut().and_then(|batch| batch.replacement_resume.as_deref_mut()) {
+        if let Some(data) = self
+            .state
+            .entry_batch
+            .as_mut()
+            .and_then(|batch| batch.replacement_resume.as_deref_mut())
+        {
             data.visit_owned_packets(&mut remember);
         }
     }
@@ -1354,15 +1393,27 @@ impl Game {
                     other_kinds.is_some_and(|other| kinds & other != 0)
                 });
         }
-        if plan.group(bound.group).is_some_and(|spec| matches!(spec.rule,
-            TargetRule::Grouped { constraint: TargetGroupConstraint::SharedCreatureType, .. }
-        )) {
-            let Target::Card(id) = bound.target else { return false };
+        if plan.group(bound.group).is_some_and(|spec| {
+            matches!(
+                spec.rule,
+                TargetRule::Grouped {
+                    constraint: TargetGroupConstraint::SharedCreatureType,
+                    ..
+                }
+            )
+        }) {
+            let Target::Card(id) = bound.target else {
+                return false;
+            };
             let first = self.creature_type_facts(id);
-            return item.targets.iter()
+            return item
+                .targets
+                .iter()
                 .filter(|other| other.group == bound.group && other.target != bound.target)
                 .all(|other| {
-                    let Target::Card(other_id) = other.target else { return false };
+                    let Target::Card(other_id) = other.target else {
+                        return false;
+                    };
                     let second = if self.same_target_object(*other)
                         && self.state.objects[other_id as usize].zone == Zone::Graveyard
                     {

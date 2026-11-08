@@ -1805,9 +1805,10 @@ impl SpellView {
         self.needs_target_relation_lki(TargetGroupConstraint::DifferentControllers)
     }
     pub(super) fn target_type_lki(&self, object: ObjectRef) -> Option<TargetTypeLki> {
-        self.target_types_lki.as_ref()?.iter().find_map(|(reference, facts)| {
-            (*reference == object).then_some(*facts)
-        })
+        self.target_types_lki
+            .as_ref()?
+            .iter()
+            .find_map(|(reference, facts)| (*reference == object).then_some(*facts))
     }
     fn needs_target_relation_lki(&self, required: TargetGroupConstraint) -> bool {
         // Legacy event packets can have no typed ability entry. They cannot
