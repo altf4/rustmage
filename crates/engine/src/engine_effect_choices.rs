@@ -400,6 +400,7 @@ impl Game {
             o.card,
             self.current_kinds(object.card),
             self.granted_subtypes(object.card),
+            o.is_token(),
         ) {
             return false;
         }

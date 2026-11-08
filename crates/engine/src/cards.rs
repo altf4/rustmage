@@ -960,6 +960,7 @@ pub struct SearchSpec {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum CostMatch {
     Kinds(u16),
+    Token,
     Subtype(&'static str),
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -1050,6 +1051,7 @@ pub enum EffectChoiceKind {
     HandToTop,
     BottomHand,
     RemoveCreatureCounters(u16),
+    RemoveCreatureCounter(CounterKind),
     UntapLands {
         maximum: u16,
     },
@@ -1117,6 +1119,13 @@ pub enum EffectChoiceKind {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl EffectChoiceKind {
+    pub(crate) fn creature_counter_requirement(self) -> Option<(u16, Option<CounterKind>)> {
+        match self {
+            Self::RemoveCreatureCounters(amount) => Some((amount, None)),
+            Self::RemoveCreatureCounter(kind) => Some((1, Some(kind))),
+            _ => None,
+        }
+    }
     pub(crate) fn payment_kind(self) -> Self {
         match self {
             Self::FilteredCost {
@@ -1152,10 +1161,12 @@ impl EffectChoiceKind {
         card: Card,
         kinds: u16,
         subtypes: GrantedSubtypes,
+        token: bool,
     ) -> bool {
         match self {
             Self::FilteredCost { any, .. } => any.iter().any(|predicate| match predicate {
                 CostMatch::Kinds(mask) => kinds & mask != 0,
+                CostMatch::Token => token,
                 CostMatch::Subtype(name) => subtypes.has(card, name),
             }),
             _ => true,
@@ -2550,6 +2561,11 @@ pub enum Instruction {
     },
     AddCombatRed(u16),
     AddCombatRedScaled(AmountValue),
+    AddRetainedManaScaled {
+        color: u8,
+        amount: AmountValue,
+        retention: ManaRetention,
+    },
     Scry(u16),
     Surveil(u16),
     /// Return a surveilled card that meets the life gained threshold after movement.
@@ -3019,6 +3035,7 @@ pub enum Instruction {
     DamageEachPlayerPerNonbasicLand,
     PreventTargetDamageUntilSourceLeaves,
     PreventTargetUntapWhileSourceControlled,
+    TapOrUntap,
     Untap,
     /// One simultaneous placement on battlefield permanents matching the count predicate.
     PutFilteredCounters {
@@ -3162,6 +3179,7 @@ pub enum Instruction {
         size: u16,
     },
     DrawScaled(PlayerSet, AmountValue),
+    DrawAndLoseLife(AmountValue),
     /// Draw greatest controlled creature power and remember successful draws.
     DrawGreatestCreaturePowerRemember,
     /// Draw for the controller and remember actual completed draws through replacements.
@@ -3316,6 +3334,7 @@ pub enum AmountValue {
     ColorsSpent,
     SpellColors,
     CastSpellManaValue,
+    CastCardTypeCount,
     CastSpellManaSymbols(ChoiceColor),
     SourcePower,
     SourceToughness,
@@ -3328,6 +3347,10 @@ pub enum AmountValue {
     )]
     DamageEventAmount,
     DamageReceivedAmount,
+    /// Quantity of this counter kind immediately before the triggering departure.
+    DepartureCounterCount(CounterKind),
+    /// Toughness of the creature immediately before the triggering death.
+    DeathEventToughness,
     /// Damage dealt by the equipped creature in one completed combat batch.
     CreatureCombatDamageAmount,
     #[allow(
@@ -3433,6 +3456,8 @@ pub enum StatValue {
     OtherNamedCreatures(&'static str),
     /// Unqualified all-player count; distinct from controller-owned attackers.
     AllAttackingCreatures,
+    /// Gate a continuous effect on this exact permanent's current Class level.
+    SourceClassLevelAtLeast(u8),
     SourceModified,
     SourceEquipmentCount,
     LegendaryCreaturesYouControl,
@@ -4492,6 +4517,7 @@ pub enum StepGuard {
     UnsolvedLifeGainedAtLeast(u128),
     /// Trigger-time attachment relation; wrap the step event in When.
     AttachedControllerTurn,
+    PermanentLeftBattlefieldThisTurn,
     ArtifactEnteredThisTurn,
     HeroEnteredOrAttackedThisTurn,
     CardExiledThisTurn,
@@ -4602,6 +4628,23 @@ pub enum ReturnKind {
     HeroFinality,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum DepartureCounters {
+    Unrestricted,
+    Any,
+    Kind(CounterKind),
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct DepartureFilter {
+    /// A union of qualifying pre-event permanent kinds. Zero allows all kinds.
+    pub kinds: u16,
+    pub relation: CastRelation,
+    pub other: bool,
+    pub graveyard_only: bool,
+    pub counters: DepartureCounters,
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum TriggerCondition {
@@ -4663,6 +4706,7 @@ pub enum TriggerCondition {
     Chapter {
         number: u16,
     },
+    ManaSpentBelowValue(&'static TriggerCondition),
     TreasureManaSpent(&'static TriggerCondition),
     ManaSpent {
         minimum: u64,
@@ -4771,6 +4815,7 @@ pub enum TriggerCondition {
     CounterPlacedByYouOnControlledSubtypes {
         subtypes: &'static [&'static str],
     },
+    CreatureCountersPutByYou,
     /// Look back at another controlled permanent's characteristics on death.
     OtherControlledPermanentWithSubtypeDies {
         subtypes: &'static [&'static str],
@@ -4866,6 +4911,7 @@ pub enum TriggerCondition {
     /// Token status is immutable for an incarnation, including through source LKI.
     SelfNontokenEnters,
     SelfLeaves,
+    PermanentLeaves(DepartureFilter),
     SelfEntersOrDies,
     SelfAttacks,
     /// Intervening equipped clause, with exact source-departure quantities.
@@ -4951,6 +4997,22 @@ pub enum TriggerCondition {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl TriggerCondition {
+    pub(crate) fn requires_mana_spent_below_value(self) -> bool {
+        match self {
+            Self::ManaSpentBelowValue(_) => true,
+            Self::InZone { event, .. }
+            | Self::Granted(event)
+            | Self::OncePerTurn(event)
+            | Self::DuringOpponentsTurn(event)
+            | Self::CastFromHand(event)
+            | Self::CastFromExile(event)
+            | Self::TreasureManaSpent(event)
+            | Self::ManaSpent { event, .. }
+            | Self::When { event, .. }
+            | Self::InterveningIf { event, .. } => event.requires_mana_spent_below_value(),
+            _ => false,
+        }
+    }
     pub(crate) fn requires_treasure_mana(self) -> bool {
         match self {
             Self::TreasureManaSpent(_) => true,
@@ -4960,6 +5022,7 @@ impl TriggerCondition {
             | Self::DuringOpponentsTurn(event)
             | Self::CastFromHand(event)
             | Self::CastFromExile(event)
+            | Self::ManaSpentBelowValue(event)
             | Self::ManaSpent { event, .. }
             | Self::When { event, .. }
             | Self::InterveningIf { event, .. } => event.requires_treasure_mana(),
@@ -4975,6 +5038,7 @@ impl TriggerCondition {
             | Self::DuringOpponentsTurn(event)
             | Self::CastFromExile(event)
             | Self::TreasureManaSpent(event)
+            | Self::ManaSpentBelowValue(event)
             | Self::ManaSpent { event, .. }
             | Self::When { event, .. }
             | Self::InterveningIf { event, .. } => event.requires_hand_cast(),
@@ -4990,6 +5054,7 @@ impl TriggerCondition {
             | Self::DuringOpponentsTurn(event)
             | Self::CastFromHand(event)
             | Self::TreasureManaSpent(event)
+            | Self::ManaSpentBelowValue(event)
             | Self::ManaSpent { event, .. }
             | Self::When { event, .. }
             | Self::InterveningIf { event, .. } => event.requires_exile_cast(),
@@ -5005,6 +5070,7 @@ impl TriggerCondition {
             | Self::CastFromHand(event)
             | Self::CastFromExile(event)
             | Self::TreasureManaSpent(event)
+            | Self::ManaSpentBelowValue(event)
             | Self::ManaSpent { event, .. }
             | Self::When { event, .. }
             | Self::InterveningIf { event, .. } => event.origin(),
@@ -5023,6 +5089,7 @@ impl TriggerCondition {
             | Self::CastFromHand(e)
             | Self::CastFromExile(e)
             | Self::TreasureManaSpent(e)
+            | Self::ManaSpentBelowValue(e)
             | Self::When { event: e, .. }
             | Self::InterveningIf { event: e, .. } => e.mana_spent_rule(),
             _ => None,
@@ -5040,6 +5107,7 @@ impl TriggerCondition {
             | Self::When { event: e, .. }
             | Self::InterveningIf { event: e, .. }
             | Self::TreasureManaSpent(e)
+            | Self::ManaSpentBelowValue(e)
             | Self::ManaSpent { event: e, .. } => e.is_granted(),
             _ => false,
         }
@@ -5053,6 +5121,7 @@ impl TriggerCondition {
             | Self::Granted(event)
             | Self::OncePerTurn(event)
             | Self::TreasureManaSpent(event)
+            | Self::ManaSpentBelowValue(event)
             | Self::ManaSpent { event, .. }
             | Self::When { event, .. }
             | Self::InterveningIf { event, .. } => event.requires_opponents_turn(),
@@ -5071,6 +5140,7 @@ impl TriggerCondition {
             | Self::When { event, .. }
             | Self::InterveningIf { event, .. }
             | Self::TreasureManaSpent(event)
+            | Self::ManaSpentBelowValue(event)
             | Self::ManaSpent { event, .. } => event.event(),
             event => event,
         }
@@ -5083,6 +5153,7 @@ impl TriggerCondition {
             | Self::When { event, .. }
             | Self::InterveningIf { event, .. }
             | Self::TreasureManaSpent(event)
+            | Self::ManaSpentBelowValue(event)
             | Self::ManaSpent { event, .. }
             | Self::DuringOpponentsTurn(event)
             | Self::CastFromHand(event)

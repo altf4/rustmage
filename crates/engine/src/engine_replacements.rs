@@ -353,7 +353,7 @@ enum Event {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Work {
-    SimultaneousCopyTokens {
+    SimultaneousTokens {
         ready: Vec<TokenBatch>,
         remaining: VecDeque<TokenBatch>,
     },
@@ -461,7 +461,7 @@ impl ReplacementState {
                     Work::Proliferate(b) => b.used.len() * std::mem::size_of::<(ObjectRef, u16)>(),
                     Work::Counters(b) => counter_bytes(b),
                     Work::Tokens(b) => token_bytes(b),
-                    Work::SimultaneousCopyTokens { ready, remaining } => {
+                    Work::SimultaneousTokens { ready, remaining } => {
                         (ready.len() + remaining.len()) * std::mem::size_of::<TokenBatch>()
                             + ready
                                 .iter()
@@ -2167,19 +2167,32 @@ impl Game {
         players: &[Player],
         recipe: CopyRecipe,
     ) {
-        if players.is_empty() {
+        self.stage_simultaneous_token_creation(
+            players,
+            TokenGroupView {
+                token: recipe.definition,
+                amount: 1,
+                tapped: false,
+            },
+            Some(recipe),
+        );
+    }
+
+    pub(super) fn stage_simultaneous_token_creation(
+        &mut self,
+        players: &[Player],
+        group: TokenGroupView,
+        recipe: Option<CopyRecipe>,
+    ) {
+        if players.is_empty() || group.amount == 0 {
             return;
         }
         let remaining = players
             .iter()
             .map(|&player| TokenBatch {
-                recipes: vec![Some(recipe)],
+                recipes: vec![recipe],
                 player,
-                groups: vec![TokenGroupView {
-                    token: recipe.definition,
-                    amount: 1,
-                    tapped: false,
-                }],
+                groups: vec![group],
                 effect: true,
                 used: Vec::new(),
                 completion: TokenCompletion::CollectSimultaneous,
@@ -2194,7 +2207,7 @@ impl Game {
                 mode: ResumeMode::Program,
             })
         });
-        state.work.push_back(Work::SimultaneousCopyTokens {
+        state.work.push_back(Work::SimultaneousTokens {
             ready: Vec::new(),
             remaining,
         });
@@ -2471,14 +2484,14 @@ impl Game {
             }
             if state.active.is_none() {
                 match state.work.pop_front() {
-                    Some(Work::SimultaneousCopyTokens {
+                    Some(Work::SimultaneousTokens {
                         mut ready,
                         mut remaining,
                     }) => {
                         if let Some(batch) = remaining.pop_front() {
                             state
                                 .work
-                                .push_front(Work::SimultaneousCopyTokens { ready, remaining });
+                                .push_front(Work::SimultaneousTokens { ready, remaining });
                             state.active = Some(Event::Tokens(batch));
                         } else {
                             let mut moves = Vec::new();
@@ -2916,7 +2929,7 @@ impl Game {
                                 unreachable!()
                             };
                             if matches!(batch.completion, TokenCompletion::CollectSimultaneous) {
-                                let Some(Work::SimultaneousCopyTokens { ready, .. }) =
+                                let Some(Work::SimultaneousTokens { ready, .. }) =
                                     state.work.front_mut()
                                 else {
                                     unreachable!("owned simultaneous token continuation")

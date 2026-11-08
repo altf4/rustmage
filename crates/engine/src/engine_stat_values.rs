@@ -115,6 +115,14 @@ impl Game {
         I: Iterator<Item = (CardId, &'a Object)>,
     {
         match value {
+            StatValue::SourceClassLevelAtLeast(level) => {
+                i128::from(objects().any(|(id, object)| {
+                    id == source.card
+                        && object.generation == source.generation
+                        && object.zone == Zone::Battlefield
+                        && object.class_level >= level
+                }))
+            }
             StatValue::SourceHasNotDealtCombatDamage => objects()
                 .find(|(id, object)| *id == source.card && object.generation == source.generation)
                 .map_or(0, |(_, object)| {
@@ -622,6 +630,7 @@ impl Game {
             | AmountValue::ChosenX
             | AmountValue::ReflexiveTargetLimit
             | AmountValue::ManaSpent
+            | AmountValue::CastCardTypeCount
             | AmountValue::CastSpellManaValue
             | AmountValue::CastSpellManaSymbols(_)
             | AmountValue::SpellColors
@@ -640,6 +649,8 @@ impl Game {
             | AmountValue::DiscardEventAmount
             | AmountValue::DamageEventAmount
             | AmountValue::CreatureCombatDamageAmount
+            | AmountValue::DepartureCounterCount(_)
+            | AmountValue::DeathEventToughness
             | AmountValue::DamageReceivedAmount => 0, // Off-stack expressions have no cast parameter.
             AmountValue::Stat(value) => self.stat_value(value, source, owner).max(0) as u128,
             AmountValue::CardsDiscardedThisTurn => {

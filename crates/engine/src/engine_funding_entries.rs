@@ -456,6 +456,9 @@ impl FundingState<'_> {
             StepGuard::Always => true,
             StepGuard::FirstCombatPhase => self.game.first_combat_phase(),
             StepGuard::SourceSneakedThisTurn => self.game.source_sneaked_this_turn(source),
+            StepGuard::PermanentLeftBattlefieldThisTurn => {
+                self.permanent_left_battlefield[player.index()]
+            }
             StepGuard::ArtifactEnteredThisTurn => state.turn_facts.artifact_entered,
             StepGuard::HeroEnteredOrAttackedThisTurn => {
                 state.turn_facts.hero_entered || state.turn_facts.hero_attacked
@@ -1454,6 +1457,9 @@ impl FundingState<'_> {
         for m in &moves {
             if m.skipped {
                 continue;
+            }
+            if m.before.zone == Zone::Battlefield && m.destination != Zone::Battlefield {
+                next.permanent_left_battlefield[m.before.controller.index()] = true;
             }
             let face_down_physical = next.projected_face_down_physical(m.before.reference);
             let physical_copy = next

@@ -39,6 +39,7 @@ pub struct StaticAbilityGroup {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum AdditionalTriggerScope {
     ControlledSubtype(&'static str),
+    ControlledCreatureSubtype(&'static str),
     EquippedCreature,
     /// Only abilities triggered by a creature attacking, never other events.
     ControlledPermanentAttack,
@@ -74,6 +75,7 @@ pub enum StaticAbilityFragment {
     ReuseExhaustBeforeFirstActivationOwnTurn,
     /// Generic reduction for exhaust abilities of other controlled permanents.
     OtherControlledExhaustGenericReduction(u32),
+    ArtifactTokenActivationReduction(u32),
     /// Controlled instant and sorcery spells have split second.
     ControlledInstantSorcerySplitSecond,
     /// Permanents controlled by this source's controller cannot be sacrificed.
@@ -326,6 +328,10 @@ pub enum StaticAbilityFragment {
     },
     KeywordGrant(u16, KeywordGrant),
     StaticRuleGrant(u16, KeywordGrant),
+    ControlledCreatureCounterRule {
+        kind: Option<CounterKind>,
+        keywords: Keywords,
+    },
     StaticModifier(u16, StaticModifier),
     /// One layer-7c effect applies once to the union of its live creature groups.
     CreatureGroupBonus {

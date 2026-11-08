@@ -968,6 +968,11 @@ impl Game {
         } else {
             None
         };
+        let battlefield_departure = moves
+            .iter()
+            .any(|(m, _)| m.before.zone == Zone::Battlefield)
+            .then(|| self.freeze_battlefield_departure_observers())
+            .flatten();
         self.capture_event_object_facts(moves.iter().map(|(movement, _)| {
             movement
                 .source_before
@@ -1035,6 +1040,7 @@ impl Game {
                 ZoneObservers {
                     graveyard: graveyard_observers.clone(),
                     returned_hand: returned_hand_observers.clone(),
+                    battlefield_departure: battlefield_departure.clone(),
                 },
             );
             if event.moved && event.destination == Zone::Battlefield {

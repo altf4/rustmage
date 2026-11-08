@@ -194,6 +194,7 @@ impl FundingState<'_> {
                 n == 0 || potential_graveyard > 0
             }
             EffectChoiceKind::RemoveCreatureCounters(n) => n == 0 || battlefield > 0,
+            EffectChoiceKind::RemoveCreatureCounter(_) => battlefield > 0,
             EffectChoiceKind::Forage | EffectChoiceKind::ForageOrBlack => match c.forage {
                 Some(ForageRoute::Food) => battlefield > 0,
                 Some(ForageRoute::ExileThree) => potential_graveyard >= 3,
@@ -510,6 +511,9 @@ impl FundingState<'_> {
                         .iter()
                         .position(|v| v.id == r.card)
                         .expect("cost resource retained");
+                    if before_zone == Zone::Battlefield && zone != Zone::Battlefield {
+                        n.permanent_left_battlefield[controller.index()] = true;
+                    }
                     if before_zone == Zone::Battlefield && zone == Zone::Graveyard && kinds & 1 != 0
                     {
                         n.controlled_creatures_died[controller.index()] = n
@@ -1233,7 +1237,10 @@ impl FundingState<'_> {
                 evidence_min = Some((u128::from(minimum), Some(color)));
                 destination = Zone::Exile;
             }
-            EffectChoiceKind::RemoveCreatureCounters(n) => counters = Some(n),
+            EffectChoiceKind::RemoveCreatureCounters(_)
+            | EffectChoiceKind::RemoveCreatureCounter(_) => {
+                counters = spec.kind.creature_counter_requirement();
+            }
             EffectChoiceKind::TapPermanents(n) | EffectChoiceKind::SacrificeDifferentNames(n) => {
                 amount = usize::from(n)
             }
@@ -1262,8 +1269,8 @@ impl FundingState<'_> {
             | EffectChoiceKind::DiscardLegendary => {}
             _ => return false,
         }
-        if let Some(n) = counters {
-            return self.complete_counter_cost(c, later, remaining, n);
+        if let Some(requirement) = counters {
+            return self.complete_counter_cost(c, later, remaining, requirement);
         }
         if any_graveyard {
             spec.filter = SacrificeFilter {
@@ -1412,11 +1419,14 @@ impl FundingState<'_> {
         c: &CostContext,
         later: &CostContext,
         remaining: &[usize],
-        amount: u16,
+        requirement: (u16, Option<CounterKind>),
     ) -> bool {
+        let (amount, required_kind) = requirement;
         let mut next = self.clone();
         for &(r, kind) in &c.counters {
-            if !next.remove_creature_counter(r, kind) {
+            if required_kind.is_some_and(|expected| expected != kind)
+                || !next.remove_creature_counter(r, kind)
+            {
                 return false;
             }
         }
@@ -1435,6 +1445,7 @@ impl FundingState<'_> {
             first: usize,
             source: ObjectRef,
             reservation: &Counters,
+            required_kind: Option<CounterKind>,
         ) -> bool {
             if left == 0 {
                 return w.complete_cost_rows(later, remaining);
@@ -1447,6 +1458,9 @@ impl FundingState<'_> {
                     continue;
                 }
                 for kind in CounterKind::ALL {
+                    if required_kind.is_some_and(|expected| expected != kind) {
+                        continue;
+                    }
                     let mut next = w.clone();
                     if !next.remove_creature_counter(w.reference(resource.id), kind) {
                         continue;
@@ -1465,6 +1479,7 @@ impl FundingState<'_> {
                         index,
                         source,
                         reservation,
+                        required_kind,
                     ) {
                         return true;
                     }
@@ -1480,6 +1495,7 @@ impl FundingState<'_> {
             0,
             c.source,
             &c.source_counter_reservation,
+            required_kind,
         )
     }
 }

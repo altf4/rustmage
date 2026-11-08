@@ -149,8 +149,31 @@ pub(super) trait CharacteristicWorld {
             } else {
                 0
             };
+        let artifact_token = if self.object(source).zone == Zone::Battlefield
+            && self.object(source).is_token()
+            && self.kinds(source) & 16 != 0
+        {
+            let query = characteristic_query::CharacteristicQuery::in_world(self);
+            self.static_sources().iter().copied().filter(|&id| {
+                let provider = self.object(id);
+                provider.zone == Zone::Battlefield && provider.controller == controller
+            }).fold(0u32, |total, id| {
+                self.definition(id).static_ability_groups().iter().flat_map(|group| group.fragments).fold(total, |total, fragment| {
+                    if let crate::cards::StaticAbilityFragment::ArtifactTokenActivationReduction(amount) = *fragment
+                        && query.continuous_fragment_available(id, |candidate| std::ptr::eq(candidate, fragment))
+                    {
+                        total.saturating_add(amount)
+                    } else {
+                        total
+                    }
+                })
+            })
+        } else {
+            0
+        };
         exhaust::generic_discount(self, source, definition, ability)
             .saturating_add(power_up)
+            .saturating_add(artifact_token)
             .saturating_add(subtype)
             .saturating_add(
                 definition

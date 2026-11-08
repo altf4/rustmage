@@ -3062,6 +3062,7 @@ struct EntryIdentity {
 struct ZoneObservers {
     graveyard: Option<std::sync::Arc<[ObjectView]>>,
     returned_hand: Option<std::sync::Arc<[ObjectView]>>,
+    battlefield_departure: Option<std::sync::Arc<[ObjectView]>>,
 }
 
 /// A single zone transition with the departing object's last-known characteristics.
@@ -3079,6 +3080,7 @@ pub struct ZoneChange {
     pub(super) entry_counter_player: Option<Player>,
     pub(super) graveyard_observers: Option<std::sync::Arc<[ObjectView]>>,
     pub(super) returned_hand_observers: Option<std::sync::Arc<[ObjectView]>>,
+    pub(super) battlefield_departure_observers: Option<std::sync::Arc<[ObjectView]>>,
     pub gift: Option<Box<GiftContext>>,
     pub was_cast: bool,
     pub before: ObjectView,
@@ -5104,7 +5106,7 @@ impl Game {
                     .announcing
                     .as_ref()
                     .unwrap()
-                    .creature_counter_cost_amount()
+                    .creature_counter_cost_requirement()
                     .is_some()
                 {
                     return self.visit_creature_counter_cost(&mut emit);
@@ -8477,6 +8479,11 @@ impl Game {
             .flatten();
         self.capture_event_object_facts(plans.iter().map(|(view, _)| view));
         self.capture_source_quantities(plans.iter().map(|(view, _)| view));
+        let battlefield_departure = plans
+            .iter()
+            .any(|(view, _)| view.zone == Zone::Battlefield)
+            .then(|| self.freeze_battlefield_departure_observers())
+            .flatten();
         let events = plans
             .into_iter()
             .map(|(view, plan)| {
@@ -8488,6 +8495,7 @@ impl Game {
                     EntryIdentity::default(),
                     ZoneObservers {
                         graveyard: graveyard_observers.clone(),
+                        battlefield_departure: battlefield_departure.clone(),
                         returned_hand: returned_hand_observers.clone(),
                     },
                 )
@@ -8587,6 +8595,7 @@ impl Game {
         self.capture_event_object_facts(plans.iter().map(|(view, _)| view));
         self.capture_source_quantities(plans.iter().map(|(view, _)| view));
         let graveyard_observers = self.freeze_exile_batch_observers();
+        let battlefield_departure = self.freeze_battlefield_departure_observers();
         let mut events: Vec<_> = plans
             .into_iter()
             .map(|(before, plan)| {
@@ -8598,6 +8607,7 @@ impl Game {
                     EntryIdentity::default(),
                     ZoneObservers {
                         graveyard: graveyard_observers.clone(),
+                        battlefield_departure: battlefield_departure.clone(),
                         ..ZoneObservers::default()
                     },
                 )
@@ -8719,6 +8729,11 @@ impl Game {
                 .library
                 .retain(|card| !top.contains(card) && !bottom.contains(card));
         }
+        let battlefield_departure = ids
+            .iter()
+            .any(|&id| self.on_battlefield(id))
+            .then(|| self.freeze_battlefield_departure_observers())
+            .flatten();
         let events = planned
             .into_iter()
             .map(|(before, plan, (tapped, counters))| {
@@ -8730,6 +8745,7 @@ impl Game {
                     EntryIdentity::default(),
                     ZoneObservers {
                         graveyard: graveyard_observers.clone(),
+                        battlefield_departure: battlefield_departure.clone(),
                         returned_hand: returned_hand_observers.clone(),
                     },
                 )
@@ -8983,6 +8999,9 @@ impl Game {
         } else {
             None
         };
+        let battlefield_departure = (before.zone == Zone::Battlefield)
+            .then(|| self.freeze_battlefield_departure_observers())
+            .flatten();
         self.commit_planned_zone_move(
             before,
             plan,
@@ -8997,6 +9016,7 @@ impl Game {
             ZoneObservers {
                 graveyard: graveyard_observers,
                 returned_hand: returned_hand_observers,
+                battlefield_departure,
             },
         )
     }
@@ -9019,6 +9039,7 @@ impl Game {
         let ZoneObservers {
             graveyard: graveyard_observers,
             returned_hand: returned_hand_observers,
+            battlefield_departure: battlefield_departure_observers,
         } = observers;
         let id = before.id;
         let was_card = self.state.objects[id as usize].is_card();
@@ -9030,6 +9051,7 @@ impl Game {
                 entry_counter_player: None,
                 graveyard_observers: None,
                 returned_hand_observers: None,
+                battlefield_departure_observers: None,
                 was_cast: false,
                 gift: None,
                 after: before.reference,
@@ -9076,6 +9098,7 @@ impl Game {
                 entry_counter_player: None,
                 graveyard_observers: None,
                 returned_hand_observers: None,
+                battlefield_departure_observers: None,
                 was_cast: false,
                 gift: None,
                 after: before.reference,
@@ -9102,6 +9125,7 @@ impl Game {
                 entry_counter_player: None,
                 graveyard_observers: None,
                 returned_hand_observers: None,
+                battlefield_departure_observers: None,
                 was_cast: false,
                 gift: None,
                 after: before.reference,
@@ -9222,6 +9246,9 @@ impl Game {
                 .capacity("creature death history exhausted");
         }
         if before.zone == Zone::Battlefield {
+            self.state.players[before.controller.index()]
+                .turn_facts
+                .permanent_left_battlefield = true;
             self.capture_stat_subject_departure(&before);
             self.forget_vehicle_animation(before.reference);
             self.forget_exertions(before.reference);
@@ -9596,6 +9623,7 @@ impl Game {
             entry_counter_player: (destination == Zone::Battlefield).then_some(entry_identity.0),
             graveyard_observers,
             returned_hand_observers,
+            battlefield_departure_observers,
             was_cast: false,
             gift: None,
             before,
@@ -11743,6 +11771,10 @@ impl Game {
                                 + values.len() * std::mem::size_of::<programs::TargetCardFacts>()
                         })
                         + resolution
+                            .lose_life_after_draw
+                            .as_ref()
+                            .map_or(0, |_| std::mem::size_of::<i128>())
+                        + resolution
                             .color_sequence
                             .as_ref()
                             .map_or(0, |f| f.owned_bytes())
@@ -12031,6 +12063,10 @@ pub use library_top::LibraryRevealEvent;
 #[doc(hidden)]
 #[path = "engine_graveyard_symbol_cost.rs"]
 pub mod graveyard_symbol_cost;
+
+#[doc(hidden)]
+#[path = "engine_battlefield_departures.rs"]
+mod battlefield_departures;
 
 #[doc(hidden)]
 #[path = "engine_death_return.rs"]

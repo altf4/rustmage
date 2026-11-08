@@ -253,7 +253,10 @@ impl Game {
         {
             return false;
         }
-        if !spec.kind.cost_matches_any(o.card, kinds, subtypes) {
+        if !spec
+            .kind
+            .cost_matches_any(o.card, kinds, subtypes, o.is_token())
+        {
             return false;
         }
         if matches!(o.zone, Zone::Hand | Zone::Graveyard) && !o.is_card() {
@@ -588,7 +591,7 @@ impl Game {
             return self.preview_ordered_craft(goal, spec);
         }
         let source = goal.source.as_ref().expect("activation source").0;
-        if let EffectChoiceKind::RemoveCreatureCounters(amount) = spec.kind.payment_kind() {
+        if let Some(requirement) = spec.kind.creature_counter_requirement() {
             let purpose = self.funding_purpose(&goal);
             let selected = self
                 .state
@@ -602,7 +605,7 @@ impl Game {
                 })
                 .and_then(|a| a.creature_counter_cost.as_deref())
                 .map_or(&[][..], Vec::as_slice);
-            return self.creature_counter_fundable(goal, purpose, amount, selected);
+            return self.creature_counter_fundable(goal, purpose, requirement, selected);
         }
         if matches!(
             spec.kind.payment_kind(),
@@ -967,9 +970,14 @@ impl Game {
             a.additional_paid = true;
             return;
         }
-        if let EffectChoiceKind::RemoveCreatureCounters(amount) = spec.kind.payment_kind() {
+        if let Some(requirement) = spec.kind.creature_counter_requirement() {
             let selected = a.creature_counter_cost.as_ref().unwrap();
-            assert_eq!(selected.len(), usize::from(amount));
+            assert_eq!(selected.len(), usize::from(requirement.0));
+            assert!(
+                selected
+                    .iter()
+                    .all(|&(_, kind)| requirement.1.is_none_or(|expected| expected == kind))
+            );
             self.pay_selected_creature_counters(&mut a.item, selected);
             a.additional_paid = true;
             return;
@@ -1145,6 +1153,7 @@ impl Game {
             | EffectChoiceKind::SacrificeDifferentNames(_)
             | EffectChoiceKind::SacrificeRange { .. }
             | EffectChoiceKind::RemoveCreatureCounters(_)
+            | EffectChoiceKind::RemoveCreatureCounter(_)
             | EffectChoiceKind::TapPermanents(_)
             | EffectChoiceKind::UntapLands { .. }
             | EffectChoiceKind::HandExileCopy

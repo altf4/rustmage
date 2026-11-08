@@ -199,23 +199,26 @@ impl Game {
     pub(super) fn trigger_time_guards_hold(
         &self,
         condition: TriggerCondition,
-        player: Player,
-        source: ObjectRef,
-        tapped: bool,
+        source: &ObjectView,
     ) -> bool {
         match condition {
             TriggerCondition::When { guard, event } => {
-                self.step_guard(guard, player, source, tapped)
-                    && self.trigger_time_guards_hold(*event, player, source, tapped)
+                let qualified = if let StepGuard::ClassLevelAtLeast(level) = guard {
+                    source.class_level.is_some_and(|current| current >= level)
+                } else {
+                    self.step_guard(guard, source.controller, source.reference, source.tapped)
+                };
+                qualified && self.trigger_time_guards_hold(*event, source)
             }
             TriggerCondition::InZone { event, .. }
             | TriggerCondition::Granted(event)
             | TriggerCondition::OncePerTurn(event)
             | TriggerCondition::DuringOpponentsTurn(event)
             | TriggerCondition::TreasureManaSpent(event)
+            | TriggerCondition::ManaSpentBelowValue(event)
             | TriggerCondition::ManaSpent { event, .. }
             | TriggerCondition::InterveningIf { event, .. } => {
-                self.trigger_time_guards_hold(*event, player, source, tapped)
+                self.trigger_time_guards_hold(*event, source)
             }
             _ => true,
         }
@@ -234,6 +237,7 @@ impl Game {
             | TriggerCondition::OncePerTurn(event)
             | TriggerCondition::DuringOpponentsTurn(event)
             | TriggerCondition::TreasureManaSpent(event)
+            | TriggerCondition::ManaSpentBelowValue(event)
             | TriggerCondition::ManaSpent { event, .. } => {
                 self.trigger_guards_hold(*event, player, source, tapped)
             }
@@ -389,6 +393,9 @@ impl Game {
             StepGuard::Always => return true,
             StepGuard::FirstCombatPhase => return self.first_combat_phase(),
             StepGuard::SourceSneakedThisTurn => return self.source_sneaked_this_turn(source),
+            StepGuard::PermanentLeftBattlefieldThisTurn => {
+                return p.turn_facts.permanent_left_battlefield;
+            }
             StepGuard::ArtifactEnteredThisTurn => return p.turn_facts.artifact_entered,
             StepGuard::HeroEnteredOrAttackedThisTurn => {
                 return p.turn_facts.hero_entered || p.turn_facts.hero_attacked;

@@ -1,15 +1,21 @@
 //! Frozen public event facts, recorded even before an observing permanent exists.
 use super::*;
+use crate::cards::TriggeredAbility;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
 pub struct TurnFactsView {
+    /// A permanent actually left under this player's pre-event control.
+    #[serde(skip_serializing_if = "is_false")]
+    pub permanent_left_battlefield: bool,
     pub artifact_entered: bool,
     pub hero_entered: bool,
     pub hero_attacked: bool,
     /// Counts begun combat phases, capped at two.
     #[serde(skip_serializing_if = "is_zero")]
     pub combat_phases_started: u8,
+    #[serde(skip_serializing_if = "is_zero_kinds")]
+    pub cast_card_kinds: u16,
     /// Actual committed activation history, retained even before a provider enters.
     #[serde(skip_serializing_if = "is_false")]
     pub exhaust_activated_this_turn: bool,
@@ -20,6 +26,10 @@ fn is_false(value: &bool) -> bool {
 }
 
 fn is_zero(value: &u8) -> bool {
+    *value == 0
+}
+
+fn is_zero_kinds(value: &u16) -> bool {
     *value == 0
 }
 
@@ -35,7 +45,8 @@ pub(super) struct AttackPowerEvent {
 fn guard_uses_facts(guard: StepGuard) -> bool {
     matches!(
         guard,
-        StepGuard::ArtifactEnteredThisTurn
+        StepGuard::PermanentLeftBattlefieldThisTurn
+            | StepGuard::ArtifactEnteredThisTurn
             | StepGuard::HeroEnteredOrAttackedThisTurn
             | StepGuard::FirstCombatPhase
     )
@@ -53,10 +64,21 @@ fn condition_uses_facts(condition: TriggerCondition) -> bool {
         | TriggerCondition::OncePerTurn(event)
         | TriggerCondition::DuringOpponentsTurn(event)
         | TriggerCondition::TreasureManaSpent(event)
+        | TriggerCondition::ManaSpentBelowValue(event)
         | TriggerCondition::ManaSpent { event, .. } => condition_uses_facts(*event),
         _ => false,
     }
 }
+fn trigger_uses_facts(ability: &TriggeredAbility) -> bool {
+    condition_uses_facts(ability.condition)
+        || ability.program.iter().any(|i| {
+            matches!(
+                i,
+                Instruction::DrawScaled(_, AmountValue::CastCardTypeCount)
+            )
+        })
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn record_entry_turn_facts(&mut self, events: &[ZoneChange]) {
@@ -129,11 +151,7 @@ impl Game {
             .iter()
             .any(|p| p.turn_facts.exhaust_activated_this_turn)
             || self.state.objects.iter().any(|o| {
-                o.zone == Zone::Battlefield
-                    && o.card
-                        .triggers()
-                        .iter()
-                        .any(|a| condition_uses_facts(a.condition))
+                o.zone == Zone::Battlefield && o.card.triggers().iter().any(trigger_uses_facts)
             })
             || self
                 .state
@@ -144,9 +162,11 @@ impl Game {
                 .chain(self.state.resolving.iter().map(|r| &r.item))
                 .chain(self.state.announcing.iter().map(|a| &a.item))
                 .any(|item| match item.kind {
-                    StackKind::TriggeredAbility { ability } => condition_uses_facts(
-                        item.trigger_definition().triggers()[usize::from(ability)].condition,
-                    ),
+                    StackKind::TriggeredAbility { ability } => item
+                        .trigger_definition()
+                        .triggers()
+                        .get(usize::from(ability))
+                        .is_some_and(trigger_uses_facts),
                     _ => false,
                 });
         observer.then(|| std::array::from_fn(|i| self.state.players[i].turn_facts))

@@ -70,6 +70,7 @@ pub(super) struct FundingState<'g> {
     life_lost: [bool; 2],
     enduring_story: [bool; 2],
     exhaust_activated: [bool; 2],
+    permanent_left_battlefield: [bool; 2],
     active: Player,
     mana: [u128; 6],
     lots: Vec<mana_lots::Lot>,
@@ -409,6 +410,7 @@ struct FundingKey {
     life_lost: [bool; 2],
     enduring_story: [bool; 2],
     exhaust_activated: [bool; 2],
+    permanent_left_battlefield: [bool; 2],
     payment_departures: Vec<(ObjectRef, mana_lots::Source, i128)>,
     source_linked_effects: Vec<SourceLinkedEffectView>,
     resolved_ability_modifications: Vec<ResolvedAbilityModificationView>,
@@ -992,7 +994,7 @@ impl<'g> FundingState<'g> {
                             || game.state.attachment_sources.iter().any(|&provider| game.state.objects[provider as usize].attached_to == Some(game.object_ref(*id as CardId)))
                             || !object.card.keyword_grants().is_empty()
                             || !object.card.counter_keyword_grants().is_empty()
-                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(_) | crate::cards::StaticAbilityFragment::ActivatedPermanentKindsProhibited(_) | crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste | crate::cards::StaticAbilityFragment::ReuseExhaustBeforeFirstActivationOwnTurn | crate::cards::StaticAbilityFragment::OtherControlledExhaustGenericReduction(_) | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. } | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..) | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. } | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. } | crate::cards::StaticAbilityFragment::SourceOffTurnCreature | crate::cards::StaticAbilityFragment::CreatureGroupBonus { .. } | crate::cards::StaticAbilityFragment::ChosenBasicLandType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterCreature { .. } | crate::cards::StaticAbilityFragment::SourceGraveyardAllTypes { .. } | crate::cards::StaticAbilityFragment::SourceConditionalKeywords { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..) | crate::cards::StaticAbilityFragment::CounterKeywordOther(..))))
+                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(_) | crate::cards::StaticAbilityFragment::ActivatedPermanentKindsProhibited(_) | crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste | crate::cards::StaticAbilityFragment::ReuseExhaustBeforeFirstActivationOwnTurn | crate::cards::StaticAbilityFragment::OtherControlledExhaustGenericReduction(_) | crate::cards::StaticAbilityFragment::ArtifactTokenActivationReduction(_) | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. } | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..) | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. } | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. } | crate::cards::StaticAbilityFragment::SourceOffTurnCreature | crate::cards::StaticAbilityFragment::CreatureGroupBonus { .. } | crate::cards::StaticAbilityFragment::ChosenBasicLandType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterCreature { .. } | crate::cards::StaticAbilityFragment::SourceGraveyardAllTypes { .. } | crate::cards::StaticAbilityFragment::SourceConditionalKeywords { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..) | crate::cards::StaticAbilityFragment::CounterKeywordOther(..))))
                             || object.controller == goal.actor
                                 && subtypes
                                     .iter()
@@ -1023,6 +1025,11 @@ impl<'g> FundingState<'g> {
                 .players
                 .each_ref()
                 .map(|p| p.turn_facts.exhaust_activated_this_turn),
+            permanent_left_battlefield: game
+                .state
+                .players
+                .each_ref()
+                .map(|p| p.turn_facts.permanent_left_battlefield),
             exhaust_source_reuse_authorized: game.exhaust_reuse_authorized_for_goal(goal),
             source_use_independent: game.self_granted_goal(goal),
             copy_recipes: game.state.copy_recipes.clone(),
@@ -1139,6 +1146,7 @@ impl<'g> FundingState<'g> {
                         s.kind,
                         EffectChoiceKind::ExileGraveyardSymbols { .. }
                             | EffectChoiceKind::RemoveCreatureCounters(_)
+                            | EffectChoiceKind::RemoveCreatureCounter(_)
                     )
             })
         {
@@ -2335,6 +2343,10 @@ impl<'g> FundingState<'g> {
             // Counter and tap payments precede the actual move, as in the real
             // payment path. Capture characteristics before zone effects cease.
             if !preserve_departure_counters {
+                if from_battlefield {
+                    let controller = self.resources[step.resource].object.controller;
+                    self.permanent_left_battlefield[controller.index()] = true;
+                }
                 self.remember_payment_departure(id);
             }
             let reference = self.reference(id);
@@ -2719,6 +2731,7 @@ impl<'g> FundingState<'g> {
             mana_window_open: self.mana_window_open(goal),
             enduring_story: self.enduring_story,
             exhaust_activated: self.exhaust_activated,
+            permanent_left_battlefield: self.permanent_left_battlefield,
             payment_departures: self.payment_departures.clone(),
             resolved_ability_modifications: self
                 .roles()
@@ -4016,12 +4029,12 @@ impl Game {
         }
         if let Some(a) = &self.state.announcing
             && !a.additional_paid
-            && a.creature_counter_cost_amount().is_some()
+            && let Some(requirement) = a.creature_counter_cost_requirement()
         {
             return self.creature_counter_fundable(
                 goal,
                 purpose,
-                a.creature_counter_cost_amount().unwrap(),
+                requirement,
                 a.creature_counter_cost
                     .as_ref()
                     .map_or(&[], |v| v.as_slice()),
@@ -4451,7 +4464,7 @@ impl Game {
                     source: None,
                 },
                 self.purpose_for_item(&a.item),
-                a.graveyard_origin_counter_cost().unwrap(),
+                (a.graveyard_origin_counter_cost().unwrap(), None),
                 a.creature_counter_cost
                     .as_ref()
                     .map_or(&[], |v| v.as_slice()),
@@ -5669,9 +5682,10 @@ impl FundingState<'_> {
     fn creature_counter_payment_possible(
         &self,
         goal: &FundingGoal,
-        amount: u16,
+        requirement: (u16, Option<CounterKind>),
         selected: &[(ObjectRef, CounterKind)],
     ) -> bool {
+        let (amount, required_kind) = requirement;
         if selected.len() > usize::from(amount) {
             return false;
         }
@@ -5706,7 +5720,17 @@ impl FundingState<'_> {
                         .loyalty
                         .filter(|change| *change < 0)
                         .map_or(0, |change| u64::from(change.unsigned_abs()));
-                    selected.total() + u128::from(loyalty)
+                    required_kind.map_or_else(
+                        || selected.total() + u128::from(loyalty),
+                        |kind| {
+                            u128::from(selected.get(kind))
+                                + if kind == CounterKind::Loyalty {
+                                    u128::from(loyalty)
+                                } else {
+                                    0
+                                }
+                        },
+                    )
                 });
         let available = after
             .resources
@@ -5716,14 +5740,17 @@ impl FundingState<'_> {
                     && r.object.controller == self.actor
                     && after.kinds(r) & 1 != 0
             })
-            .map(|r| ability_world::CharacteristicWorld::counter_amounts(&after, r.id).total())
+            .map(|r| {
+                let counts = ability_world::CharacteristicWorld::counter_amounts(&after, r.id);
+                required_kind.map_or_else(|| counts.total(), |kind| u128::from(counts.get(kind)))
+            })
             .sum::<u128>();
         available.saturating_sub(reserved) >= u128::from(amount) - selected.len() as u128
     }
     fn fund_creature_counter_cost(
         &self,
         goal: &FundingGoal,
-        amount: u16,
+        requirement: (u16, Option<CounterKind>),
         selected: &[(ObjectRef, CounterKind)],
         visited: &mut HashSet<CounterCostFundingKey>,
     ) -> bool {
@@ -5739,7 +5766,7 @@ impl FundingState<'_> {
             mana_lots::available(self.mana, &self.lots, purpose),
             adjusted.required,
             adjusted.generic,
-        ) && self.creature_counter_payment_possible(goal, amount, selected)
+        ) && self.creature_counter_payment_possible(goal, requirement, selected)
         {
             return true;
         }
@@ -5773,7 +5800,7 @@ impl FundingState<'_> {
             };
             for step in moves {
                 if self.visit_applied(&step, &mut |next| {
-                    next.fund_creature_counter_cost(goal, amount, selected, visited)
+                    next.fund_creature_counter_cost(goal, requirement, selected, visited)
                 }) {
                     return true;
                 }
@@ -5788,9 +5815,16 @@ impl Game {
         &self,
         goal: FundingGoal,
         purpose: mana_lots::Purpose,
-        amount: u16,
+        requirement: (u16, Option<CounterKind>),
         selected: &[(ObjectRef, CounterKind)],
     ) -> bool {
+        let (amount, required_kind) = requirement;
+        if selected
+            .iter()
+            .any(|&(_, kind)| required_kind.is_some_and(|required| kind != required))
+        {
+            return false;
+        }
         if self.cast_costs_mana_paid() {
             return self.cast_cost_counters_fundable(selected);
         }
@@ -5807,7 +5841,13 @@ impl Game {
                     card: CardId::MAX,
                     generation: 0,
                 },
-                Some(Self::creature_counter_spec(amount)),
+                Some(AdditionalCost {
+                    kind: required_kind.map_or(
+                        EffectChoiceKind::RemoveCreatureCounters(amount),
+                        EffectChoiceKind::RemoveCreatureCounter,
+                    ),
+                    ..Self::creature_counter_spec(amount)
+                }),
                 None,
                 &[],
                 false,
@@ -5837,13 +5877,17 @@ impl Game {
                 .iter()
                 .enumerate()
                 .filter(|(_, o)| o.zone == Zone::Battlefield)
-                .map(|(id, _)| self.counter_amounts(id as CardId).total())
+                .map(|(id, _)| {
+                    let counts = self.counter_amounts(id as CardId);
+                    required_kind
+                        .map_or_else(|| counts.total(), |kind| u128::from(counts.get(kind)))
+                })
                 .sum::<u128>();
             if upper < u128::from(amount) {
                 return false;
             }
         }
-        world.fund_creature_counter_cost(&goal, amount, selected, &mut HashSet::new())
+        world.fund_creature_counter_cost(&goal, requirement, selected, &mut HashSet::new())
     }
 }
 
