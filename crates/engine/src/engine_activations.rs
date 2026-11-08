@@ -72,6 +72,21 @@ pub(super) fn mana_loyalty_placement_prohibited<W: ability_world::Characteristic
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn printed_counter_placement_prohibited<
+    W: ability_world::CharacteristicWorld + ?Sized,
+>(
+    world: &W,
+    source: ObjectRef,
+    definition: Card,
+    ability: u16,
+) -> bool {
+    definition
+        .activation_put_counter(ability)
+        .is_some_and(|(_, amount)| amount != 0)
+        && replacements::counters_prohibited(world, source)
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn simple_loyalty_placement_prohibited<W: ability_world::CharacteristicWorld + ?Sized>(
     world: &W,
     source: ObjectRef,
@@ -740,7 +755,14 @@ impl Game {
                     if self.first_equip_zero_available(actor, ability) {
                         return false;
                     }
-                    if mana_loyalty_placement_prohibited(self, self.object_ref(card), ability) {
+                    if mana_loyalty_placement_prohibited(self, self.object_ref(card), ability)
+                        || printed_counter_placement_prohibited(
+                            self,
+                            self.object_ref(card),
+                            object.card,
+                            index as u16,
+                        )
+                    {
                         return false;
                     }
                     if object

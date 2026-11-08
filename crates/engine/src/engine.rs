@@ -6190,6 +6190,7 @@ impl Game {
                         && !self.has_conspire(actor, obj.card)
                         && !obj.card.has_bargain()
                         && obj.card.additional_cost().is_none()
+                        && obj.card.blight().is_none()
                     {
                         let plan = match obj.card.effect() {
                             Effect::Spell(plan, _) | Effect::Aura(plan) => Some(plan),
@@ -6259,6 +6260,7 @@ impl Game {
                         || self.has_conspire(actor, obj.card)
                         || obj.card.has_bargain()
                         || obj.card.additional_cost().is_some()
+                        || obj.card.blight().is_some()
                         || obj.card.cost_alternative_guard().is_some()
                         || matches!(obj.card.effect(), Effect::Modal(_))
                     {

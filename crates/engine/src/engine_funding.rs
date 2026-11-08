@@ -55,7 +55,7 @@ struct Resource {
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-fn mana_loyalty_placement_payable<W: CharacteristicWorld + ?Sized>(
+fn activation_counter_placement_payable<W: CharacteristicWorld + ?Sized>(
     world: &W,
     goal: &FundingGoal,
 ) -> bool {
@@ -66,6 +66,11 @@ fn mana_loyalty_placement_payable<W: CharacteristicWorld + ?Sized>(
                 world,
                 *source,
                 definition.activation(*index),
+            ) && !activations::printed_counter_placement_prohibited(
+                world,
+                *source,
+                *definition,
+                *index,
             )
         })
 }
@@ -3869,7 +3874,7 @@ impl<'g> FundingState<'g> {
                 adjusted.generic,
             )
         }) && evidence.is_none_or(|n| self.evidence_value() >= u128::from(n))
-            && mana_loyalty_placement_payable(self, goal)
+            && activation_counter_placement_payable(self, goal)
             && source_exile_payable(self, goal)
             && goal.reserve.is_none_or(|(reference, spec)| {
                 spec.kind.payment_kind() != EffectChoiceKind::ExileControlledOrGraveyard
@@ -4416,7 +4421,7 @@ impl Game {
             self.available_mana(goal.actor, purpose),
             adjusted.required,
             adjusted.generic,
-        ) && mana_loyalty_placement_payable(self, &goal)
+        ) && activation_counter_placement_payable(self, &goal)
             && source_exile_payable(self, &goal)
             && goal.reserve.is_none_or(|(reference, spec)| {
                 spec.kind.payment_kind() != EffectChoiceKind::ExileControlledOrGraveyard
@@ -5292,7 +5297,7 @@ impl Game {
                     .as_ref()
                     .is_none_or(|c| c.payable(&state))
                 || !state.cost_completion()
-                || !mana_loyalty_placement_payable(&state, &goal)
+                || !activation_counter_placement_payable(&state, &goal)
                 || !source_exile_payable(&state, &goal)
                 || a.cast_costs.is_none() && a.evidence.as_ref().is_some_and(|e| !e.complete)
             {
@@ -5379,7 +5384,7 @@ impl Game {
             // and correctly excludes every active mana-ability instance.
             state.obligations(&goal)
                 && source_exile_payable(&state, &goal)
-                && mana_loyalty_placement_payable(&state, &goal)
+                && activation_counter_placement_payable(&state, &goal)
                 && state.complete_funding_continuation_for(&goal, Some(payment))
         } else {
             state.reachable_with_evidence(
@@ -5623,6 +5628,7 @@ impl Game {
                 .is_some_and(|s| matches!(s.kind.payment_kind(), EffectChoiceKind::BlightCost(_)))
             || announcement.has_compound_sneak_cost()
             || announcement.self_graveyard_cast_cost().is_some()
+            || announcement.linked_origin_counter_cost().is_some()
             || announcement
                 .additional_cost()
                 .is_some_and(|s| matches!(s.kind, EffectChoiceKind::DiscardOrLife(_))))

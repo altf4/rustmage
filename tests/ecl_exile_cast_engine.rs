@@ -60,10 +60,10 @@ const BRE: CardRules = CardRules {
     ..CardRules::EMPTY
 };
 #[test]
-fn immediate_nonland_cast_has_strict_life_gain_bound_and_uncast_card_goes_to_hand() {
+fn immediate_nonland_cast_includes_equal_life_gain_and_uncast_card_goes_to_hand() {
     let _scope = fixture_rules::activate(&[(card("Opt"), &BRE)]);
     for p in [Player::P0, Player::P1] {
-        for gained in [2, 3] {
+        for gained in [1, 2, 3] {
             for accept in [false, true] {
                 let mut g = scenario(p);
                 g.state.players[p.index()].life_gained_this_turn = gained;
@@ -78,9 +78,9 @@ fn immediate_nonland_cast_has_strict_life_gain_bound_and_uncast_card_goes_to_han
                     object: g.object_ref(offered),
                     face: CastFace::Normal,
                 };
-                assert_eq!(g.legal_actions().contains(&action), gained > 2);
+                assert_eq!(g.legal_actions().contains(&action), gained >= 2);
                 assert_eq!(g.object_view(land).zone, Zone::Exile);
-                if accept && gained > 2 {
+                if accept && gained >= 2 {
                     g.state.players[p.index()].mana = [0; 6];
                     act(&mut g, action);
                     costs(&mut g);
@@ -89,13 +89,13 @@ fn immediate_nonland_cast_has_strict_life_gain_bound_and_uncast_card_goes_to_han
                 drain(&mut g);
                 assert_eq!(
                     g.object_view(offered).zone,
-                    if accept && gained > 2 {
+                    if accept && gained >= 2 {
                         Zone::Battlefield
                     } else {
                         Zone::Hand
                     }
                 );
-                if !accept || gained == 2 {
+                if !accept || gained < 2 {
                     assert!(g.state.known_hand.contains(&g.object_ref(offered)));
                 }
             }
@@ -314,39 +314,33 @@ fn linked_counter_permission_keeps_mana_and_printed_sacrifice_cost_in_either_pay
                 flash_surcharge: false,
             },
         );
+        act(&mut g, Action::BeginOrderedCosts);
+        let first = g
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .cast_costs
+            .as_ref()
+            .unwrap()
+            .clauses
+            .iter()
+            .position(|row| {
+                if counters_first {
+                    matches!(row.clause, CastCostClause::OriginCounters(_))
+                } else {
+                    row.clause == CastCostClause::Additional
+                }
+            })
+            .unwrap() as u16;
+        act(&mut g, Action::ChooseCastCost { clause: first });
         for _ in 0..30 {
             if g.state.announcing.is_none() {
                 break;
             }
             match g.state.pending {
                 Pending::CastCosts { .. } => {
-                    let rows = &g
-                        .state
-                        .announcing
-                        .as_ref()
-                        .unwrap()
-                        .cast_costs
-                        .as_ref()
-                        .unwrap()
-                        .clauses;
-                    let wanted = rows.iter().position(|r| {
-                        !r.paid
-                            && if counters_first {
-                                matches!(r.clause, CastCostClause::OriginCounters(_))
-                            } else {
-                                r.clause == CastCostClause::Additional
-                            }
-                    });
-                    if let Some(index) = wanted {
-                        act(
-                            &mut g,
-                            Action::ChooseCastCost {
-                                clause: index as u16,
-                            },
-                        );
-                    } else {
-                        choose(&mut g, |a| matches!(a, Action::ChooseCastCost { .. }));
-                    }
+                    choose(&mut g, |a| matches!(a, Action::ChooseCastCost { .. }));
                 }
                 Pending::AdditionalCost { .. } => {
                     if g.state
@@ -365,13 +359,7 @@ fn linked_counter_permission_keeps_mana_and_printed_sacrifice_cost_in_either_pay
                         act(&mut g, Action::ChooseAdditionalCost { object });
                     }
                 }
-                Pending::PayCosts { .. } => {
-                    if g.legal_actions().contains(&Action::BeginOrderedCosts) {
-                        act(&mut g, Action::BeginOrderedCosts);
-                    } else {
-                        pay(&mut g);
-                    }
-                }
+                Pending::PayCosts { .. } => pay(&mut g),
                 _ => panic!("linked payment {:?}", g.state.pending),
             }
         }

@@ -481,7 +481,8 @@ impl Game {
                     maximum_mana_value: u64::try_from(
                         self.state.players[player.index()].life_gained_this_turn,
                     )
-                    .ok(),
+                    .ok()
+                    .and_then(|value| value.checked_add(1)),
                     origin: Zone::Exile,
                     exile_on_graveyard: false,
                     allow_lands: false,
