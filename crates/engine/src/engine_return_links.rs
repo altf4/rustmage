@@ -86,7 +86,7 @@ pub(super) fn modification(kind: ReturnKind) -> Option<(&'static [&'static str],
         ReturnKind::Demon => Some((&["Demon"], Keywords::NONE)),
         ReturnKind::Angel => Some((&["Angel"], Keywords::FLYING)),
         ReturnKind::HeroFinality => Some((&["Hero"], Keywords::NONE)),
-        ReturnKind::Revival | ReturnKind::FlyingRobot | ReturnKind::WithoutAbilities => None,
+        ReturnKind::Revival | ReturnKind::FlyingRobot | ReturnKind::WithoutAbilities | ReturnKind::Persist => None,
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -106,6 +106,11 @@ impl Game {
                 before.is_creature()
                     && source.reference == before.reference
                     && !before.has_subtype("Demon")
+            }
+            ReturnDeathFilter::SourceWithoutCounter(kind) => {
+                before.is_creature()
+                    && source.reference == before.reference
+                    && before.counters.get(kind) == 0
             }
             ReturnDeathFilter::SourceRevival => {
                 before.is_creature()
@@ -329,6 +334,14 @@ impl Game {
         true
     }
     pub(super) fn blink_until_end_step(&mut self, item: &SpellView, under_owner: bool) {
+        self.blink_group_until_end_step(item, under_owner, false);
+    }
+    pub(super) fn blink_group_until_end_step(
+        &mut self,
+        item: &SpellView,
+        under_owner: bool,
+        tapped: bool,
+    ) {
         let ids: Vec<_> = item
             .targets
             .iter()
@@ -343,19 +356,23 @@ impl Game {
         // returns may suspend entry choices only after the entire exile batch.
         let events = self.move_objects_raw(&ids, Zone::Exile);
         let mut returning = events.iter().filter_map(|event| {
-            (event.moved && event.destination == Zone::Exile && !event.before.is_token()).then_some(
-                ReturnCardView {
-                    object: event.after,
-                    zone: Zone::Exile,
-                    tapped: false,
-                    controller: if under_owner {
-                        event.before.owner
-                    } else {
-                        item.controller
-                    },
-                    counter: None,
+            (event.moved
+                && matches!(
+                    event.destination,
+                    Zone::Exile | Zone::Graveyard | Zone::Command
+                )
+                && !event.before.is_token())
+            .then_some(ReturnCardView {
+                object: event.after,
+                zone: event.destination,
+                tapped,
+                controller: if under_owner {
+                    event.before.owner
+                } else {
+                    item.controller
                 },
-            )
+                counter: None,
+            })
         });
         if let Some(first) = returning.next() {
             let companions: Vec<_> = returning.collect();
@@ -394,6 +411,10 @@ impl Game {
                 link.counter = Some((CounterKind::Revival, amount - 1));
                 link.controller = item.controller;
                 self.register_delayed_return(item, link);
+            }
+            ReturnKind::Persist => {
+                link.counter = Some((CounterKind::MinusOne, 1));
+                self.stage_linked_return(&link, None);
             }
             ReturnKind::HeroFinality => {
                 link.counter = Some((CounterKind::Finality, 1));
@@ -550,5 +571,28 @@ impl Game {
                     })
                     .sum::<usize>()
         })
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct PlayerDamageShieldView {
+    pub source: ObjectRef,
+    pub source_card: Card,
+    pub controller: Player,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    pub(super) fn prevent_player_damage_until_next_turn(&mut self, item: &SpellView) {
+        let source = item.source.expect("prevention source");
+        self.state
+            .roles
+            .get_or_insert_default()
+            .player_damage_shields
+            .push(PlayerDamageShieldView {
+                source: source.object,
+                source_card: source.card,
+                controller: item.controller,
+            });
     }
 }

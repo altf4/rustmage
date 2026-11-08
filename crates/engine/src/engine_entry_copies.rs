@@ -28,7 +28,15 @@ pub(super) fn needs_copy(movement: &entries::EntryMove) -> bool {
             .is_none_or(|copy| !copy.done)
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-pub(super) fn apply_blueprint(movement: &mut entries::EntryMove, recipe: CopyRecipe) {
+pub(super) fn apply_blueprint(movement: &mut entries::EntryMove, mut recipe: CopyRecipe) {
+    let added = movement.before.card.entry_copy_keywords();
+    if added != Keywords::NONE {
+        let overrides = recipe.overrides.unwrap_or(CopyOverrides::NONE);
+        recipe.overrides = Some(CopyOverrides {
+            keywords: overrides.keywords.union(added),
+            ..overrides
+        });
+    }
     if movement.source_before.is_none() {
         movement.source_before = Some(Box::new(movement.before.clone()));
     }

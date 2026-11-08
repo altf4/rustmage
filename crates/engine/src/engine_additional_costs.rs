@@ -1168,6 +1168,7 @@ impl Game {
             }
             EffectChoiceKind::Blight(_)
             | EffectChoiceKind::BlightXCost
+            | EffectChoiceKind::KeepSharedCreatureTypes
             | EffectChoiceKind::ColorCounter { .. }
             | EffectChoiceKind::PowerDifferenceBoost
             | EffectChoiceKind::FilteredCost { .. }

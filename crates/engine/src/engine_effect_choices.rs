@@ -35,6 +35,7 @@ pub(super) struct EffectChoice {
     pub entry_life_bonus: Option<(&'static str, u16)>,
     pub hand_entry_filter: Option<crate::SearchFilter>,
     pub equipment_recipient: Option<ObjectRef>,
+    pub blight_copy_attacking: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl EffectChoice {
@@ -107,6 +108,7 @@ impl Game {
             entry_life_bonus: None,
             hand_entry_filter: None,
             equipment_recipient: None,
+            blight_copy_attacking: false,
         }));
         self.state.pending = Pending::EffectChoice { player };
     }
@@ -132,6 +134,7 @@ impl Game {
             entry_life_bonus: None,
             hand_entry_filter: None,
             equipment_recipient: None,
+            blight_copy_attacking: false,
         }));
     }
     pub(super) fn start_resolution_counter_payment(&mut self, item: &SpellView) -> bool {
@@ -159,6 +162,7 @@ impl Game {
             entry_life_bonus: None,
             hand_entry_filter: None,
             equipment_recipient: None,
+            blight_copy_attacking: false,
         }));
         self.state.pending = Pending::EffectChoice {
             player: item.controller,
@@ -181,6 +185,9 @@ impl Game {
         object: ObjectRef,
         enforce_sacrifice_prohibition: bool,
     ) -> bool {
+        if choice.kind == EffectChoiceKind::KeepSharedCreatureTypes {
+            return self.keep_shared_type_candidate(choice, object);
+        }
         if choice.kind.payment_kind() == EffectChoiceKind::RemoveCreatureCounters(1) {
             return self.resolution_counter_candidate(player, object)
                 && self.counter_amounts(object.card).has_any();
@@ -521,6 +528,7 @@ impl Game {
             entry_life_bonus: None,
             hand_entry_filter: None,
             equipment_recipient: None,
+            blight_copy_attacking: false,
         };
         // Freeze both quotas before either player chooses. The following printed
         // instruction computes new quotas after this entire event and its replacements.
@@ -601,6 +609,7 @@ impl Game {
             entry_life_bonus: None,
             hand_entry_filter: None,
             equipment_recipient: None,
+            blight_copy_attacking: false,
         }));
         self.advance_effect_choice()
     }
@@ -880,6 +889,7 @@ impl Game {
             entry_life_bonus: None,
             hand_entry_filter: None,
             equipment_recipient: None,
+            blight_copy_attacking: false,
         }));
         self.state.pending = Pending::EffectChoice { player };
     }
@@ -995,6 +1005,7 @@ impl Game {
             entry_life_bonus: None,
             hand_entry_filter: None,
             equipment_recipient: None,
+            blight_copy_attacking: false,
         }));
         self.advance_target_attacking_return()
     }
@@ -1136,6 +1147,7 @@ impl Game {
             entry_life_bonus: None,
             hand_entry_filter: None,
             equipment_recipient: None,
+            blight_copy_attacking: false,
             source: item
                 .source
                 .expect("effect choice requires object source")
@@ -1270,6 +1282,17 @@ impl Game {
     }
 
     pub(super) fn advance_effect_choice(&mut self) -> bool {
+        if self
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .choice
+            .as_ref()
+            .is_some_and(|c| c.kind == EffectChoiceKind::KeepSharedCreatureTypes)
+        {
+            return self.advance_keep_shared_types();
+        }
         if self
             .state
             .resolving
@@ -1695,7 +1718,7 @@ impl Game {
         } else if let EffectChoiceKind::Blight(amount) | EffectChoiceKind::BlightCost(amount) =
             choice.kind
         {
-            let choices = [self.state.active, self.state.active.other()]
+            let choices: Vec<_> = [self.state.active, self.state.active.other()]
                 .into_iter()
                 .flat_map(|p| {
                     choice.selected[p.index()]
@@ -1704,6 +1727,11 @@ impl Game {
                         .map(move |object| (p, object))
                 })
                 .collect();
+            if choice.blight_copy_attacking
+                && let Some((player, object)) = choices.first().copied()
+            {
+                self.remember_blight_copy(object, player);
+            }
             self.blight_counters(
                 choices,
                 amount,
@@ -2197,5 +2225,107 @@ impl Game {
             defender_choice: matches!(self.state.pending, Pending::HandDefender { .. }),
             inspected_cards,
         })
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    pub(super) fn keep_shared_type_player(
+        &self,
+        choice: &effect_choices::EffectChoice,
+    ) -> Option<Player> {
+        [self.state.active, self.state.active.other()]
+            .into_iter()
+            .find(|player| {
+                choice.selected[player.index()].len() < choice.required[player.index()] as usize
+            })
+    }
+    pub(super) fn keep_shared_type_candidate(
+        &self,
+        choice: &effect_choices::EffectChoice,
+        object: ObjectRef,
+    ) -> bool {
+        self.keep_shared_type_player(choice).is_some_and(|player| {
+            self.on_battlefield(object.card)
+                && self.object_ref(object.card) == object
+                && self.state.objects[object.card as usize].controller == player
+                && self.is_creature(object.card)
+        })
+    }
+    pub(super) fn start_keep_shared_types(&mut self, item: &SpellView) -> bool {
+        let required = std::array::from_fn(|index| {
+            u32::from(self.state.objects.iter().enumerate().any(|(id, object)| {
+                object.zone == Zone::Battlefield
+                    && object.controller.index() == index
+                    && self.is_creature(id as CardId)
+            }))
+        });
+        self.state.resolving.as_mut().unwrap().choice =
+            Some(Box::new(effect_choices::EffectChoice {
+                kind: EffectChoiceKind::KeepSharedCreatureTypes,
+                filter: evidence::cost(0).filter,
+                amount: 1,
+                source: item.source.expect("choice source").object,
+                required,
+                selected: std::array::from_fn(|_| Vec::new()),
+                skip_to: None,
+                greatest_value: [None; 2],
+                discard_mana_value_life: None,
+                hand_defender: None,
+                entry_life_bonus: None,
+                hand_entry_filter: None,
+                equipment_recipient: None,
+                blight_copy_attacking: false,
+                discard_draw: None,
+                discarded: None,
+            }));
+        self.advance_keep_shared_types()
+    }
+    pub(super) fn advance_keep_shared_types(&mut self) -> bool {
+        let resolution = self.state.resolving.as_ref().unwrap();
+        let choice = resolution.choice.as_ref().unwrap();
+        if self.keep_shared_type_player(choice).is_some() {
+            self.state.pending = Pending::EffectChoice {
+                player: resolution.item.controller,
+            };
+            return true;
+        }
+        let choice = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .choice
+            .take()
+            .unwrap();
+        // Freeze characteristics before any sacrifice can remove a subtype provider.
+        let anchors: [Option<ObjectView>; 2] = std::array::from_fn(|index| {
+            choice.selected[index]
+                .first()
+                .map(|r| self.object_view(r.card))
+        });
+        let sacrifices: Vec<_> = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, object)| {
+                let id = id as CardId;
+                if object.zone != Zone::Battlefield || !self.is_creature(id) {
+                    return None;
+                }
+                let anchor = anchors[object.controller.index()].as_ref()?;
+                if anchor.reference == self.object_ref(id) {
+                    return None;
+                }
+                let recipient = self.object_view(id);
+                let shares = crate::cards::CREATURE_TYPES
+                    .iter()
+                    .any(|kind| anchor.has_subtype(kind) && recipient.has_subtype(kind));
+                (!shares).then_some((object.controller, id))
+            })
+            .collect();
+        self.sacrifice_batch(&sacrifices);
+        false
     }
 }

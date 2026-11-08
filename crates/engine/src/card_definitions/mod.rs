@@ -336,6 +336,8 @@ pub struct CardExtras {
     /// (trigger slot, named-mode index), checked only at the triggering event.
     pub entry_mode_triggers: &'static [(u16, u16)],
     pub entry_copy: Option<EntryCopySpec>,
+    /// Copiable keyword exceptions added by this as-entry copy replacement.
+    pub entry_copy_keywords: Keywords,
     pub entry_exile_counters: Option<EntryExileCountersSpec>,
     pub chosen_entry_counters: Option<CounterKind>,
     pub static_modifiers: &'static [StaticModifier],
@@ -462,6 +464,7 @@ impl CardExtras {
         entry_choice: None,
         entry_mode_triggers: &[],
         entry_copy: None,
+        entry_copy_keywords: Keywords::NONE,
         entry_exile_counters: None,
         chosen_entry_counters: None,
         static_modifiers: &[],

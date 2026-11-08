@@ -1155,6 +1155,7 @@ impl Game {
                 self.record_sneak_entry(event.after);
             }
             event.was_cast = movement.cast_origin.is_some();
+            event.cast_origin = movement.cast_origin;
             event.offspring_paid = movement.offspring_paid;
             event.kicked = movement.kicked;
             if event.moved && event.destination == Zone::Battlefield {

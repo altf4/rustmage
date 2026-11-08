@@ -256,6 +256,9 @@ impl Game {
         self.apply_temporary_copy(recipient, recipe, deadline);
     }
     pub(super) fn copy_target_to_other_controlled_creatures(&mut self, item: &SpellView) {
+        self.copy_target_to_controlled_cohort(item, false);
+    }
+    pub(super) fn copy_target_to_controlled_cohort(&mut self, item: &SpellView, nonlands: bool) {
         let Some(blueprint) = item.targets.iter().find_map(|bound| {
             bound.object.filter(|reference| {
                 self.same_target_object(*bound) && self.on_battlefield(reference.card)
@@ -274,9 +277,12 @@ impl Game {
                 let id = id as CardId;
                 (object.zone == Zone::Battlefield
                     && object.controller == item.controller
-                    && self.is_creature(id)
-                    && self.object_ref(id) != blueprint)
-                    .then_some(self.object_ref(id))
+                    && if nonlands {
+                        self.current_kinds(id) & 2 == 0
+                    } else {
+                        self.is_creature(id) && self.object_ref(id) != blueprint
+                    })
+                .then_some(self.object_ref(id))
             })
             .collect::<Vec<_>>();
         if recipients.is_empty() {
@@ -288,7 +294,11 @@ impl Game {
             self.apply_temporary_copy_timestamped(
                 recipient,
                 recipe,
-                CopyDeadline::EndOfTurn,
+                if nonlands {
+                    CopyDeadline::WhileSource { source: recipient }
+                } else {
+                    CopyDeadline::EndOfTurn
+                },
                 Some((provider_time, hand_time)),
                 false,
             );

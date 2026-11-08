@@ -640,7 +640,10 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             Action::ChooseLibraryDestination { .. }
             | Action::ChooseManaValueParity { .. }
             | Action::ChooseLinkedExile { .. } => 50,
-            Action::SelectLibrary { .. } => 60,
+            Action::SelectLibrary { .. }
+            | Action::ChooseSharedCreature { .. }
+            | Action::ChooseEntryBatchCopy { .. }
+            | Action::ChooseCounterRemoval { .. } => 60,
             Action::FinishLibrarySelection | Action::OrderLibraryBottom { .. } => 50,
             Action::ArrangeLibrary { destination, .. } => {
                 if *destination == crate::LibraryDestination::Top {

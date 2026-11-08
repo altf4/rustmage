@@ -32,6 +32,7 @@ pub(super) struct Resolution {
     pub chosen_creature_type: Option<crate::cards::CreatureType>,
     pub target_counter_removal: Option<Box<TargetCounterRemovalView>>,
     pub linked_copy: Option<Box<linked_copies::LinkedCopyCapture>>,
+    pub blight_copy: Option<Box<CopyRecipe>>,
     pub cascade: Option<Box<cascade::CascadeView>>,
     #[allow(clippy::box_collection)]
     pub target_card_facts: Option<Box<Vec<TargetCardFacts>>>,
@@ -965,10 +966,13 @@ impl Game {
                     | TriggerCondition::Chapter { .. } => false,
                     TriggerCondition::SelfEnters
                     | TriggerCondition::SelfEntersOrBecomesTapped
+                    | TriggerCondition::SelfEntersOrTransforms
                     | TriggerCondition::SelfEntersOrAttacks
                     | TriggerCondition::SelfEntersOrAttacksWhileSaddled
                     | TriggerCondition::SelfEntersOrDies => same,
-                    TriggerCondition::OtherControlledNonlandReturnedToOwnersHand
+                    TriggerCondition::CreaturesFromGraveyardEnterYou { .. }
+                    | TriggerCondition::SelfTransforms
+                    | TriggerCondition::OtherControlledNonlandReturnedToOwnersHand
                     | TriggerCondition::OpponentTargetsControlledCreatureOrSpell
                     | TriggerCondition::ControlledAbilityTargetsPlayerOrPermanent
                     | TriggerCondition::TokensEnterYou
@@ -1739,6 +1743,18 @@ impl Game {
                         targets,
                     )
             }
+            CastFilter::TargetCount { filter, count } => {
+                targets.len() == usize::from(count)
+                    && self.cast_filter_matches_value(
+                        spell_owner,
+                        *filter,
+                        card,
+                        mana_value,
+                        caster,
+                        source,
+                        targets,
+                    )
+            }
             CastFilter::Targeted { filter, target } => {
                 self.cast_filter_matches_value(
                     spell_owner,
@@ -1826,6 +1842,7 @@ impl Game {
                 }
             }
             CastFilter::CasterOffTurn { filter }
+            | CastFilter::TargetCount { filter, .. }
             | CastFilter::Colors { filter, .. }
             | CastFilter::ManaSymbols { filter, .. }
             | CastFilter::ManaValueMaximum { filter, .. }
@@ -3027,6 +3044,8 @@ impl Game {
                             let mut event = self.move_object_raw(source.id, Zone::Battlefield);
                             event.cast_event = item.actual_cast_event().map(Box::new);
                             event.was_cast = item.cast.is_some() && !item.is_copy;
+                            event.cast_origin =
+                                item.cast.filter(|_| !item.is_copy).map(|cast| cast.origin);
                             self.finish_zone_events(std::slice::from_ref(&event), &[]);
                         }
                         self.give_priority();
@@ -3128,6 +3147,7 @@ impl Game {
             chosen_creature_type: None,
             target_counter_removal: None,
             linked_copy: None,
+            blight_copy: None,
             cascade: None,
             target_card_facts,
             sacrificed_power: None,
@@ -3356,6 +3376,12 @@ impl Game {
             if self.advance_replacements(false) {
                 return;
             }
+            if self.finish_blight_copy() {
+                // The creation continuation owns program resumption, including
+                // when all entries and their replacements complete immediately.
+                self.advance_replacements(true);
+                return;
+            }
             if self.advance_color_counter_sequence() {
                 return;
             }
@@ -3575,6 +3601,11 @@ impl Game {
                 Instruction::PartitionLibraryPiles(maximum) => {
                     self.start_library_piles(item.controller, maximum);
                     return;
+                }
+                Instruction::KeepSharedCreatureTypes => {
+                    if self.start_keep_shared_types(&item) {
+                        return;
+                    }
                 }
                 Instruction::KeepOneOfEachPermanentType => {
                     if self.start_keep_types(item.controller.other()) {
@@ -3800,6 +3831,19 @@ impl Game {
                 | Instruction::CopyCastSpellChosenX
                 | Instruction::CopyStormSpell => {
                     if self.copy_captured_spell(&item) {
+                        return;
+                    }
+                }
+                Instruction::MayCopyCastSpellWithKeywords(_) => {
+                    if item
+                        .copy_event
+                        .as_ref()
+                        .is_some_and(|event| event.amount > 0)
+                    {
+                        self.state.pending = Pending::EffectOptional {
+                            player: item.controller,
+                            skip_to: self.state.resolving.as_ref().unwrap().pc,
+                        };
                         return;
                     }
                 }
@@ -4135,6 +4179,17 @@ impl Game {
                 Instruction::PreventNextChosenSourceDamage { ability } => {
                     self.choose_source_prevention(ability);
                     return;
+                }
+                Instruction::CopyEntryBatchCreature => {
+                    if !self.entry_batch_copy_options().is_empty() {
+                        self.state.pending = Pending::EntryBatchCopy {
+                            player: item.controller,
+                        };
+                        return;
+                    }
+                }
+                Instruction::CopyControlledNonlandsFromTarget => {
+                    self.copy_target_to_controlled_cohort(&item, true);
                 }
                 Instruction::CopyTargetToOtherControlledCreatures => {
                     self.copy_target_to_other_controlled_creatures(&item);
@@ -4790,6 +4845,12 @@ impl Game {
                 }
                 Instruction::ExileSmallReturnUntilEndStep => {
                     self.exile_small_return_until_end_step(&item);
+                }
+                Instruction::BlinkGroupTappedUntilEndStep => {
+                    self.blink_group_until_end_step(&item, true, true)
+                }
+                Instruction::PreventPlayerDamageUntilNextTurn => {
+                    self.prevent_player_damage_until_next_turn(&item)
                 }
                 Instruction::BlinkUntilEndStep { under_owner } => {
                     self.blink_until_end_step(&item, under_owner)
@@ -5996,6 +6057,26 @@ impl Game {
                         self.create_tokens(item.controller, token, 1, false);
                     }
                 }
+                Instruction::MayBlightCopyAttacking => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::BlightCost(1),
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        1,
+                        Some(0),
+                    ) {
+                        self.state
+                            .resolving
+                            .as_mut()
+                            .unwrap()
+                            .choice
+                            .as_mut()
+                            .unwrap()
+                            .blight_copy_attacking = true;
+                        return;
+                    }
+                }
                 Instruction::ChooseObjects {
                     kind,
                     players,
@@ -6369,7 +6450,7 @@ impl Game {
                             .unwrap()
                             .target_counter_removal = Some(Box::new(TargetCounterRemovalView {
                             target: source.object,
-                            maximum: 1,
+                            maximum: Some(1),
                             selected: Counters::default(),
                         }));
                         self.state.pending = Pending::TargetCounterRemoval {
@@ -6378,7 +6459,11 @@ impl Game {
                         return;
                     }
                 }
-                Instruction::RemoveUpToTargetCounters(maximum) => {
+                Instruction::RemoveUpToTargetCounters(_) | Instruction::RemoveAnyTargetCounters => {
+                    let maximum = match instruction {
+                        Instruction::RemoveUpToTargetCounters(maximum) => Some(u64::from(maximum)),
+                        _ => None,
+                    };
                     let target = item.targets.iter().copied().find_map(|bound| {
                         if !self.same_target_object(bound) {
                             return None;
@@ -6391,8 +6476,8 @@ impl Game {
                         }
                     });
                     if let Some(target) = target
-                        && maximum != 0
-                        && self.counter_amounts(target.card).total() != 0
+                        && maximum != Some(0)
+                        && (maximum.is_none() || self.counter_amounts(target.card).total() != 0)
                     {
                         self.state
                             .resolving

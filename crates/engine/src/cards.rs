@@ -43,6 +43,9 @@ pub struct RetainedCopyActivation {
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
 pub struct CopyExceptions {
     pub sacrifice_abilities: u16,
+    /// Copiable beginning-of-end-step sacrifices without a haste grant.
+    #[serde(skip_serializing_if = "copy_exception_zero")]
+    pub sacrifice_only_abilities: u16,
     /// Copiable intervening-if sacrifice triggers granted with haste.
     pub conditional_sacrifice_abilities: u16,
     pub nightmare: bool,
@@ -72,6 +75,7 @@ pub struct InPlaceCopySpec {
 impl CopyExceptions {
     pub const NONE: Self = Self {
         sacrifice_abilities: 0,
+        sacrifice_only_abilities: 0,
         conditional_sacrifice_abilities: 0,
         nightmare: false,
         artifact: false,
@@ -83,6 +87,7 @@ impl CopyExceptions {
     };
     pub const HASTE_AND_SACRIFICE: Self = Self {
         sacrifice_abilities: 1,
+        sacrifice_only_abilities: 0,
         conditional_sacrifice_abilities: 0,
         nightmare: false,
         artifact: false,
@@ -92,8 +97,13 @@ impl CopyExceptions {
         retained_activation: None,
         embalm: false,
     };
+    pub const SACRIFICE_ONLY: Self = Self {
+        sacrifice_only_abilities: 1,
+        ..Self::NONE
+    };
     pub const NIGHTMARE: Self = Self {
         sacrifice_abilities: 0,
+        sacrifice_only_abilities: 0,
         conditional_sacrifice_abilities: 0,
         nightmare: true,
         artifact: false,
@@ -124,6 +134,10 @@ impl CopyExceptions {
                 .sacrifice_abilities
                 .checked_add(other.sacrifice_abilities)
                 .capacity("copy sacrifice abilities"),
+            sacrifice_only_abilities: self
+                .sacrifice_only_abilities
+                .checked_add(other.sacrifice_only_abilities)
+                .capacity("copy sacrifice-only abilities"),
             conditional_sacrifice_abilities: self
                 .conditional_sacrifice_abilities
                 .checked_add(other.conditional_sacrifice_abilities)
@@ -137,6 +151,10 @@ impl CopyExceptions {
             embalm: self.embalm || other.embalm,
         }
     }
+}
+
+fn copy_exception_zero(value: &u16) -> bool {
+    *value == 0
 }
 
 /// A temporary permission on one graveyard incarnation, independent of its grantor.
@@ -274,6 +292,10 @@ pub enum TargetRule {
     SingleTargetStackObject,
     /// Any activated or triggered ability on the stack.
     Ability,
+    /// Only a triggered ability, including a copy of a triggered ability.
+    TriggeredAbility {
+        relation: i8,
+    },
     YourSpellKinds {
         kinds: u8,
     },
@@ -776,6 +798,7 @@ impl ManaProduction {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum LibraryRemainder {
+    OptionalGraveyard,
     /// Leave every unselected looked card in its existing position.
     Keep,
     /// Shuffle the entire library after selected entries finish.
@@ -788,6 +811,7 @@ pub enum LibraryRemainder {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum LibrarySelectionFilter {
+    SourceChosenCreatureType,
     HasX,
     Any,
     Kinds(u16),
@@ -800,6 +824,7 @@ pub enum LibrarySelectionFilter {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum LibrarySelectionCount {
+    ControlledColors,
     /// Choose at most this many cards within their combined mana-value budget.
     ManaValueBudget {
         maximum_cards: u16,
@@ -829,6 +854,7 @@ pub struct LibrarySelectionSpec {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum LibraryPickDestination {
+    ExileCastThisTurn,
     /// A single forced candidate; evaluate the threshold before any entry choices.
     BattlefieldIfManaValueAtMostElseHand(AmountValue),
     BattlefieldTapped,
@@ -844,6 +870,8 @@ pub enum LibraryPickDestination {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum LibraryLook {
+    UntilCount { kinds: u16, amount: AmountValue },
+    UntilNonlandCount(AmountValue),
     Amount(AmountValue),
     Fixed(u16),
     ChosenX,
@@ -992,6 +1020,7 @@ pub enum DelayedTargetEvent {
 pub enum EffectChoiceKind {
     /// Choose exactly two controlled creatures, or do nothing if fewer exist.
     PowerDifferenceBoost,
+    KeepSharedCreatureTypes,
     /// One mandatory-if-possible nontarget recipient for the current color.
     ColorCounter {
         color: ChoiceColor,
@@ -1613,6 +1642,7 @@ pub enum Instruction {
     RandomLinkedExileToBattlefield,
     PartitionLibraryPiles(u16),
     KeepOneOfEachPermanentType,
+    KeepSharedCreatureTypes,
     RememberOwnSacrifice,
     RecoverAnotherPermanent,
     ReturnLinkedExileToHand,
@@ -1681,6 +1711,8 @@ pub enum Instruction {
     /// then exile the returned incarnation at the next end step.
     ExileSmallReturnUntilEndStep,
     BlinkAttacking,
+    BlinkGroupTappedUntilEndStep,
+    PreventPlayerDamageUntilNextTurn,
     BlinkUntilEndStep {
         under_owner: bool,
     },
@@ -1738,6 +1770,8 @@ pub enum Instruction {
     },
     /// Copy the actual triggering spell its chosen X times.
     CopyCastSpellChosenX,
+    MayCopyCastSpellWithKeywords(Keywords),
+    MayBlightCopyAttacking,
     CopyPreparedCastSpell,
     /// Exile legal graveyard targets together, then copy the exiled cards and offer free casts.
     ExileTargetsCopyFreeWithBudget {
@@ -1828,6 +1862,9 @@ pub enum Instruction {
     BecomeCopy(InPlaceCopySpec),
     /// Freeze one target blueprint and every other currently controlled creature.
     CopyTargetToOtherControlledCreatures,
+    /// One permanent copy effect over the frozen controlled nonland cohort.
+    CopyControlledNonlandsFromTarget,
+    CopyEntryBatchCreature,
     /// Choose a source now; prevent its next damage to this controller this turn,
     /// then queue the indexed reflexive ability with the actual prevented amount.
     PreventNextChosenSourceDamage {
@@ -3265,6 +3302,7 @@ pub enum Instruction {
     DestroyEntering,
     /// Choose and remove up to this many counters from one targeted permanent.
     RemoveUpToTargetCounters(u16),
+    RemoveAnyTargetCounters,
     /// Optional non-targeted source-counter removal; an actual removal queues the named reflexive trigger.
     MayRemoveAnySourceCounterReflexive(u16),
     CreateTokensWithCounters {
@@ -3906,6 +3944,7 @@ pub enum ReplacementSpec {
         factor: u32,
         add: u32,
     },
+    FirstTokensCopyAttached,
     DoubleTokens {
         effects_only: bool,
     },
@@ -4493,6 +4532,10 @@ pub enum CastFilter {
         filter: &'static CastFilter,
         color: ChoiceColor,
     },
+    TargetCount {
+        filter: &'static CastFilter,
+        count: u16,
+    },
     Targeted {
         filter: &'static CastFilter,
         target: CastTarget,
@@ -4529,6 +4572,7 @@ impl CastFilter {
             | Self::SourceChosenCreatureType
             | Self::CreatureToughnessGreaterThanPower
             | Self::SourceChosenManaValueParity
+            | Self::TargetCount { .. }
             | Self::Targeted { .. }
             | Self::InstantSorceryOrdinal(_)
             | Self::NonCreatureOrdinal(_) => false,
@@ -4763,6 +4807,7 @@ pub enum ReturnDeathFilter {
     SourceNonDemon,
     SourceCounter { kind: CounterKind, minimum: u64 },
     SourceRevival,
+    SourceWithoutCounter(CounterKind),
     ControlledNontokenNonAngel,
     ControlledSubtype(&'static str),
 }
@@ -4775,6 +4820,7 @@ pub enum ReturnKind {
     Angel,
     Revival,
     HeroFinality,
+    Persist,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -5041,6 +5087,11 @@ pub enum TriggerCondition {
         ordinal: Option<u64>,
     },
     SelfEnters,
+    SelfEntersOrTransforms,
+    CreaturesFromGraveyardEnterYou {
+        other: bool,
+    },
+    SelfTransforms,
     SelfOffspring,
     SelfKicked,
     CreatureExploresYou,
@@ -6081,6 +6132,9 @@ impl Card {
     }
     pub(crate) fn entry_exile_counters(self) -> Option<EntryExileCountersSpec> {
         authored::rules(self).and_then(|rules| rules.extras.entry_exile_counters)
+    }
+    pub(crate) fn entry_copy_keywords(self) -> Keywords {
+        authored::rules(self).map_or(Keywords::NONE, |rules| rules.extras.entry_copy_keywords)
     }
     pub(crate) fn entry_copy(self) -> Option<EntryCopySpec> {
         authored::rules(self).and_then(|rules| rules.extras.entry_copy)

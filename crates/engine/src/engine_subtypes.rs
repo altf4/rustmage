@@ -593,7 +593,16 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
         card: id,
         generation: target.generation,
     };
-    mask.apply_copy_types(Some(world.recipe(id).copy_types()));
+    let recipe = world.recipe(id);
+    mask.apply_copy_types(Some(recipe.copy_types()));
+    // A keyword added by the copy exception is itself copiable (CR707.9).
+    // Changeling contributes types in layer four before later type changes.
+    if recipe
+        .overrides
+        .is_some_and(|o| o.keywords.contains(Keywords::CHANGELING))
+    {
+        mask.set_flag(ALL_CREATURE_TYPES, true);
+    }
     // Copy exceptions already exist while an owned token awaits entry.
     // Later continuous type changes apply only on the battlefield.
     if target.zone != Zone::Battlefield {
@@ -1208,6 +1217,13 @@ impl Game {
         }
         let mut result = GrantedSubtypes::default();
         result.apply_copy_types(m.before.copy_recipe.map(CopyRecipe::copy_types));
+        if m.before
+            .copy_recipe
+            .and_then(|recipe| recipe.overrides)
+            .is_some_and(|o| o.keywords.contains(Keywords::CHANGELING))
+        {
+            result.set_flag(ALL_CREATURE_TYPES, true);
+        }
         if m.before.card.static_ability_groups().iter().any(|group| {
             group.fragments.iter().any(|fragment| {
                 matches!(

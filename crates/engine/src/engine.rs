@@ -572,6 +572,14 @@ pub use source_linked_effects::{SourceLinkedEffectKind, SourceLinkedEffectView};
 pub mod source_prevention;
 pub use source_prevention::{ChosenSourceShieldView, DamageSourceChoiceView, DamageSourceRef};
 #[doc(hidden)]
+#[path = "engine_counter_removal.rs"]
+pub mod counter_removal;
+pub use counter_removal::CounterRemovalDomain;
+#[doc(hidden)]
+#[path = "engine_entry_batch_triggers.rs"]
+pub mod entry_batch_triggers;
+pub use entry_batch_triggers::EntryBatchCopyView;
+#[doc(hidden)]
 #[path = "engine_ability_world.rs"]
 pub mod ability_world;
 pub use ability_timeline::{AbilitySourceTimestampView, KeywordEffectOrigin, KeywordEffectView};
@@ -911,6 +919,9 @@ define_actions! {
     ChooseRevealedDiscard { object: ObjectRef },
     SelectTargetCounter { counter: CounterKind },
     FinishTargetCounterRemoval,
+    ChooseSharedCreature { object: ObjectRef },
+    ChooseEntryBatchCopy { object: ObjectRef },
+    ChooseCounterRemoval { counters: Counters },
     RecoverMilled {
         object: Option<ObjectRef>,
     },
@@ -1304,6 +1315,7 @@ struct PlayerState {
     speed_triggered_this_turn: bool,
     turn_facts: TurnFactsView,
     hexproof_until_end_turn: bool,
+    token_creation_attempted_this_turn: bool,
     mountain_mana_bonus: u32,
     jace_loyalty_anytime: bool,
     /// Presence of a lasting grant; its authoritative order is in HandSizeState.
@@ -2426,6 +2438,9 @@ enum Pending {
     Proliferate {
         player: Player,
     },
+    EntryBatchCopy {
+        player: Player,
+    },
     TargetCounterRemoval {
         player: Player,
     },
@@ -3134,6 +3149,7 @@ pub struct ZoneChange {
     pub(super) battlefield_departure_observers: Option<std::sync::Arc<[ObjectView]>>,
     pub gift: Option<Box<GiftContext>>,
     pub was_cast: bool,
+    pub(super) cast_origin: Option<Zone>,
     pub before: ObjectView,
     pub after: ObjectRef,
     pub destination: Zone,
@@ -3176,6 +3192,7 @@ pub struct PlayerView {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub turn_cast_grants: Option<PlayerCastGrantsView>,
     pub hexproof_until_end_turn: bool,
+    pub token_creation_attempted_this_turn: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mountain_mana_bonus: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3430,13 +3447,15 @@ pub struct SourceCounterChoiceView {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct TargetCounterRemovalView {
     pub target: ObjectRef,
-    pub maximum: u16,
+    pub maximum: Option<u64>,
     pub selected: Counters,
 }
 /// Complete action space: concrete choices and full numeric payment/damage domains.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Serialize)]
 pub struct LegalActionSpace {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub counter_removal: Option<CounterRemovalDomain>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_counter_choice: Option<SourceCounterChoiceView>,
     pub mana_lot_spend: Option<ManaLotSpendRange>,
@@ -3477,6 +3496,8 @@ pub struct Observation {
     pub keyword_choice: Option<KeywordChoiceView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub target_counter_removal: Option<TargetCounterRemovalView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub entry_batch_copy: Vec<EntryBatchCopyView>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub face_down_permanents: Vec<FaceDownPermanentView>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -3677,6 +3698,8 @@ pub struct Observation {
     pub damage_source_choice: Option<DamageSourceChoiceView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chosen_source_shields: Option<Vec<ChosenSourceShieldView>>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub player_damage_shields: Vec<return_links::PlayerDamageShieldView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub resolved_ability_modifications: Option<Vec<ResolvedAbilityModificationView>>,
     pub legend_choices: Vec<LegendGroupView>,
@@ -3906,6 +3929,7 @@ impl Game {
             speed_triggered_this_turn: false,
             turn_facts: TurnFactsView::default(),
             hexproof_until_end_turn: false,
+            token_creation_attempted_this_turn: false,
             mountain_mana_bonus: 0,
             jace_loyalty_anytime: false,
             no_maximum_hand_size: false,
@@ -4213,6 +4237,7 @@ impl Game {
             | Pending::BeholdCost { player }
             | Pending::ResolutionX { player }
             | Pending::SourceCounterAmount { player }
+            | Pending::EntryBatchCopy { player }
             | Pending::TargetCounterRemoval { player }
             | Pending::X { player }
             | Pending::Casualty { player }
@@ -4293,6 +4318,7 @@ impl Game {
     /// Complete legal space, including damage assignments and scalar-X intervals.
     pub fn legal_action_space(&self) -> LegalActionSpace {
         LegalActionSpace {
+            counter_removal: self.counter_removal_domain(),
             source_counter_choice: self.source_counter_choice(),
             mana_lot_spend: self.mana_lot_spend_range(),
             mana_payment: self.mana_payment_domain(),
@@ -4491,6 +4517,9 @@ impl Game {
                     && self
                         .mana_payment_domain()
                         .is_some_and(|d| d.contains(*payment))
+            } else if let Action::ChooseCounterRemoval { counters } = &action {
+                self.counter_removal_domain()
+                    .is_some_and(|domain| domain.contains(counters))
             } else if let Action::ChooseSourceCounterAmount { amount } = &action {
                 self.source_counter_choice()
                     .is_some_and(|domain| *amount <= domain.maximum)
@@ -4657,6 +4686,12 @@ impl Game {
                     return true;
                 }
             }
+            Pending::EntryBatchCopy { .. } => {
+                return self
+                    .entry_batch_copy_options()
+                    .iter()
+                    .any(|row| emit(Action::ChooseEntryBatchCopy { object: row.object }));
+            }
             Pending::TargetCounterRemoval { .. } => {
                 let choice = s
                     .resolving
@@ -4668,7 +4703,12 @@ impl Game {
                 if emit(Action::FinishTargetCounterRemoval) {
                     return true;
                 }
-                if choice.selected.total() < u128::from(choice.maximum) {
+                if choice.maximum.is_none() {
+                    return self.counter_removal_domain().unwrap().representatives(
+                        &mut |counters| emit(Action::ChooseCounterRemoval { counters }),
+                    );
+                }
+                if choice.selected.total() < u128::from(choice.maximum.unwrap()) {
                     for counter in CounterKind::ALL {
                         if choice.selected.get(counter)
                             < self.counter_count(choice.target.card, counter)
@@ -5078,6 +5118,9 @@ impl Game {
                     let object = self.object_ref(index as CardId);
                     if self.effect_choice_candidate(choice, player, object) {
                         let action = match choice.kind.payment_kind() {
+                            EffectChoiceKind::KeepSharedCreatureTypes => {
+                                Action::ChooseSharedCreature { object }
+                            }
                             EffectChoiceKind::GraveyardCreatures { .. } => {
                                 Action::SelectGraveyardReturn { object }
                             }
@@ -6708,6 +6751,11 @@ impl Game {
             Pending::EffectLibrarySelection { .. } => {
                 let f = s.resolving.as_ref().unwrap().selection.as_ref().unwrap();
                 if f.ordering {
+                    if f.spec.remainder == crate::cards::LibraryRemainder::OptionalGraveyard
+                        && emit(Action::FinishLibrarySelection)
+                    {
+                        return true;
+                    }
                     for r in &f.remaining {
                         if emit(Action::OrderLibraryBottom { card: r.card }) {
                             return true;
@@ -8186,6 +8234,32 @@ impl Game {
             Action::SelectMilled { object } => self.select_milled(object),
             Action::FinishMilledSelection => self.finish_milled_selection(),
             Action::ChooseHandCard { object } => self.choose_hand_card(object),
+            Action::ChooseEntryBatchCopy { object } => {
+                self.choose_entry_batch_copy(object);
+            }
+            Action::ChooseSharedCreature { object } => {
+                let choice = self
+                    .state
+                    .resolving
+                    .as_ref()
+                    .unwrap()
+                    .choice
+                    .as_ref()
+                    .unwrap();
+                let player = self.keep_shared_type_player(choice).unwrap();
+                self.choose_effect_object(player, object);
+            }
+            Action::ChooseCounterRemoval { counters } => {
+                self.state
+                    .resolving
+                    .as_mut()
+                    .unwrap()
+                    .target_counter_removal
+                    .as_mut()
+                    .unwrap()
+                    .selected = counters;
+                self.finish_target_counter_removal();
+            }
             Action::SelectTargetCounter { counter } => {
                 self.state
                     .resolving
@@ -8197,32 +8271,7 @@ impl Game {
                     .selected
                     .add(counter, 1);
             }
-            Action::FinishTargetCounterRemoval => {
-                let choice = self
-                    .state
-                    .resolving
-                    .as_mut()
-                    .unwrap()
-                    .target_counter_removal
-                    .take()
-                    .unwrap();
-                if self.on_battlefield(choice.target.card)
-                    && self.object_ref(choice.target.card) == choice.target
-                {
-                    self.pay_counters(choice.target.card, &choice.selected);
-                    if !choice.selected.is_empty() {
-                        let resolution = self.state.resolving.as_ref().unwrap();
-                        if let Some(Instruction::MayRemoveAnySourceCounterReflexive(ability)) =
-                            resolution.program.get(resolution.pc - 1)
-                        {
-                            let ability = *ability;
-                            let item = resolution.item.clone();
-                            self.queue_reflexive(&item, ability, None);
-                        }
-                    }
-                }
-                self.run_program();
-            }
+            Action::FinishTargetCounterRemoval => self.finish_target_counter_removal(),
             Action::ChooseRevealedDiscard { object } => {
                 let cause = self.state.resolving.as_ref().unwrap().item.controller;
                 self.discard_batch_caused(&[object.card], None, Some(cause));
@@ -8296,11 +8345,19 @@ impl Game {
                 self.decline_created_attachment();
             }
             Action::ChooseOptional { accept }
+                if matches!(self.state.pending, Pending::Replacement { .. }) =>
+            {
+                self.choose_optional_token_replacement(accept);
+            }
+            Action::ChooseOptional { accept }
                 if matches!(self.state.pending, Pending::OptionalSearch(_)) =>
             {
                 self.choose_optional_search(actor, accept);
             }
             Action::ChooseOptional { accept } => {
+                if self.complete_optional_spell_copy(accept) {
+                    return;
+                }
                 if self.complete_library_entry_transform(accept) {
                     self.run_program();
                     return;
@@ -9182,6 +9239,7 @@ impl Game {
                 returned_hand_observers: None,
                 battlefield_departure_observers: None,
                 was_cast: false,
+                cast_origin: None,
                 gift: None,
                 after: before.reference,
                 destination: before.zone,
@@ -9229,6 +9287,7 @@ impl Game {
                 returned_hand_observers: None,
                 battlefield_departure_observers: None,
                 was_cast: false,
+                cast_origin: None,
                 gift: None,
                 after: before.reference,
                 destination: before.zone,
@@ -9256,6 +9315,7 @@ impl Game {
                 returned_hand_observers: None,
                 battlefield_departure_observers: None,
                 was_cast: false,
+                cast_origin: None,
                 gift: None,
                 after: before.reference,
                 destination,
@@ -9758,6 +9818,7 @@ impl Game {
             returned_hand_observers,
             battlefield_departure_observers,
             was_cast: false,
+            cast_origin: None,
             gift: None,
             before,
             after: self.object_ref(id),
@@ -9871,6 +9932,9 @@ impl Game {
         self.expire_spell_copies();
         if let Some(roles) = &mut self.state.roles {
             roles.prohibit_opponent_nonhand_casts[self.state.active.index()] = false;
+            roles
+                .player_damage_shields
+                .retain(|shield| shield.controller != self.state.active);
         }
         self.expire_source_land_forms(self.state.active);
         self.expire_next_turn_stats(self.state.active);
@@ -9928,6 +9992,7 @@ impl Game {
             player.nonland_permanents_entered_this_turn = 0;
             player.mount_or_vehicle_entries_this_turn = 0;
             player.spells_cast_this_turn = 0;
+            player.token_creation_attempted_this_turn = false;
             player.instant_sorcery_cast_this_turn = 0;
             player.creature_spells_cast_this_turn = 0;
             player.equip_activated_this_turn = false;
@@ -11022,6 +11087,7 @@ impl Game {
                 Pending::ResolutionX { .. } => "resolution_x",
                 Pending::SourceCounterAmount { .. } => "source_counter_amount",
                 Pending::TargetCounterRemoval { .. } => "target_counter_removal",
+                Pending::EntryBatchCopy { .. } => "entry_batch_copy",
                 Pending::X { .. } => "x",
                 Pending::EvidenceIntent { .. } => "evidence_intent",
                 Pending::Evidence { .. } => "evidence",
@@ -11096,6 +11162,7 @@ impl Game {
                 turns_to_skip: s.turn_skips.as_ref().map_or(0, |v| v[i]),
                 turns_started: s.players[i].turns_started,
                 hexproof_until_end_turn: s.players[i].hexproof_until_end_turn,
+                token_creation_attempted_this_turn: s.players[i].token_creation_attempted_this_turn,
                 mountain_mana_bonus: (s.players[i].mountain_mana_bonus > 0)
                     .then_some(s.players[i].mountain_mana_bonus),
                 jace_loyalty_anytime: s.players[i].jace_loyalty_anytime.then_some(true),
@@ -11293,7 +11360,17 @@ impl Game {
             keyword_effects: self.keyword_effect_views(viewer),
             source_linked_effects: self.source_linked_effect_views(),
             damage_source_choice: self.damage_source_choice(viewer),
+            entry_batch_copy: if matches!(self.state.pending, Pending::EntryBatchCopy { .. }) {
+                self.entry_batch_copy_options()
+            } else {
+                Vec::new()
+            },
             chosen_source_shields: self.chosen_source_shields(),
+            player_damage_shields: self
+                .state
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |roles| roles.player_damage_shields.clone()),
             resolved_ability_modifications: self.resolved_ability_modification_views(),
             role_timestamps: s
                 .roles
@@ -11933,6 +12010,10 @@ impl Game {
                         + resolution.power_difference.as_ref().map_or(0, |_| {
                             std::mem::size_of::<effect_choices::PowerDifferenceView>()
                         })
+                        + resolution
+                            .blight_copy
+                            .as_ref()
+                            .map_or(0, |_| std::mem::size_of::<CopyRecipe>())
                         + resolution.linked_copy.as_ref().map_or(0, |_| {
                             std::mem::size_of::<linked_copies::LinkedCopyCapture>()
                         })

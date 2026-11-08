@@ -301,6 +301,7 @@ impl Game {
                     returned_hand_observers: None,
                     battlefield_departure_observers: None,
                     was_cast: false,
+                    cast_origin: None,
                     gift: None,
                     before,
                     after: self.object_ref(id),

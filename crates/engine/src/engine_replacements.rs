@@ -32,6 +32,7 @@ pub enum DamagePreventionKind {
     ProtectionColor(crate::cards::ChoiceColor),
     SourceLinkedDamage,
     ChosenSource(u64),
+    UntilNextTurn,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -278,6 +279,17 @@ pub(super) enum TokenCompletion {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl TokenCompletion {
+    fn visit_owned_packets(&mut self, visit: &mut impl FnMut(&mut SpellView)) {
+        match self {
+            Self::TemporaryCopy(item)
+            | Self::Reflexive { item, .. }
+            | Self::ReflexiveCreated { item, .. } => visit(item),
+            Self::TemporaryTokens(context) => visit(&mut context.item),
+            Self::RoleReflexive(context) => visit(&mut context.item),
+            _ => (),
+        }
+    }
+
     fn owned_bytes(&self) -> usize {
         match self {
             TokenCompletion::TemporaryTokens(context) => {
@@ -305,6 +317,8 @@ impl TokenCompletion {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct TokenBatch {
+    first_this_turn: Option<bool>,
+    optional: Option<ReplacementEffectView>,
     recipes: Vec<Option<CopyRecipe>>,
     player: Player,
     groups: Vec<TokenGroupView>,
@@ -364,20 +378,10 @@ enum Work {
         created: Vec<ObjectRef>,
         completion: Box<TokenCompletion>,
     },
-    CreatedAttackThisCombat(Vec<ObjectRef>),
     AmassSubtype {
         source: ObjectRef,
         recipient: ObjectRef,
         attach: bool,
-    },
-    AnimateCreated {
-        created: Vec<ObjectRef>,
-        spec: AnimationSpec,
-    },
-    CreatedCounters {
-        player: Player,
-        created: Vec<ObjectRef>,
-        counters: Box<Counters>,
     },
     CreatedGraveyardCounters {
         player: Player,
@@ -414,6 +418,37 @@ pub(super) struct ReplacementState {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ReplacementState {
+    pub(super) fn visit_owned_packets(&mut self, visit: &mut impl FnMut(&mut SpellView)) {
+        if let Some(Event::Tokens(batch)) = &mut self.active {
+            batch.completion.visit_owned_packets(visit);
+        }
+        if let Some(Event::Counters(batch)) = &mut self.active
+            && let Some(completion) = &mut batch.completion
+            && let CounterCompletion::Reflexive(context) = completion.as_mut()
+        {
+            visit(&mut context.item);
+        }
+        for work in &mut self.work {
+            match work {
+                Work::Tokens(batch) => batch.completion.visit_owned_packets(visit),
+                Work::CreatedTokens { completion, .. } => completion.visit_owned_packets(visit),
+                Work::SimultaneousTokens { ready, remaining } => {
+                    for batch in ready.iter_mut().chain(remaining.iter_mut()) {
+                        batch.completion.visit_owned_packets(visit);
+                    }
+                }
+                Work::Counters(batch) => {
+                    if let Some(completion) = &mut batch.completion
+                        && let CounterCompletion::Reflexive(context) = completion.as_mut()
+                    {
+                        visit(&mut context.item);
+                    }
+                }
+                _ => (),
+            }
+        }
+    }
+
     pub fn bytes(&self) -> usize {
         let counter_bytes = |b: &CounterBatch| {
             b.player_events.owned_bytes()
@@ -453,10 +488,6 @@ impl ReplacementState {
                             + std::mem::size_of::<TokenCompletion>()
                             + completion.owned_bytes()
                     }
-                    Work::CreatedAttackThisCombat(created)
-                    | Work::AnimateCreated { created, .. } => {
-                        created.len() * std::mem::size_of::<ObjectRef>()
-                    }
                     Work::Damage(b) => {
                         b.events.len() * std::mem::size_of::<DamageEvent>()
                             + b.heals.len() * std::mem::size_of::<ObjectRef>()
@@ -480,13 +511,6 @@ impl ReplacementState {
                     }
                     Work::CreatedGraveyardCounters { created, .. } => {
                         created.len() * std::mem::size_of::<ObjectRef>()
-                    }
-                    Work::CreatedCounters {
-                        created, counters, ..
-                    } => {
-                        created.len() * std::mem::size_of::<ObjectRef>()
-                            + std::mem::size_of::<Counters>()
-                            + counters.owned_bytes()
                     }
                     Work::DestroyAndCreate { targets, .. } => {
                         targets.len() * std::mem::size_of::<BoundTarget>()
@@ -1177,6 +1201,17 @@ impl Game {
             return out;
         }
         if let Some(roles) = &self.state.roles {
+            for shield in &roles.player_damage_shields {
+                if event.target == Target::Player(shield.controller)
+                    && !used.contains(&(shield.source, DamagePreventionKind::UntilNextTurn))
+                {
+                    out.push(DamagePreventionView {
+                        source: shield.source,
+                        source_card: shield.source_card,
+                        kind: DamagePreventionKind::UntilNextTurn,
+                    });
+                }
+            }
             for row in &roles.source_linked_effects {
                 if row.kind == SourceLinkedEffectKind::PreventDamageBy
                     && source_linked_effects::active(self, row)
@@ -2185,6 +2220,10 @@ impl Game {
                 let applicable = match spec {
                     ReplacementSpec::DoubleTokens { effects_only } => !effects_only || b.effect,
                     ReplacementSpec::AddToken(_) => true,
+                    ReplacementSpec::FirstTokensCopyAttached => {
+                        b.first_this_turn == Some(true)
+                            && self.equipped_copy_recipe(source).is_some()
+                    }
                     ReplacementSpec::AddArtifactToken(_)
                     | ReplacementSpec::ReplaceArtifactTokens(_) => b
                         .groups
@@ -2204,8 +2243,21 @@ impl Game {
         }
         out
     }
-    fn modify_tokens(choice: ReplacementEffectView, b: &mut TokenBatch) {
+    fn modify_tokens(&self, choice: ReplacementEffectView, b: &mut TokenBatch) {
         match choice.source_card.replacement_effects()[choice.ability as usize] {
+            ReplacementSpec::FirstTokensCopyAttached => {
+                let recipe = self
+                    .equipped_copy_recipe(choice.source)
+                    .expect("applicable attached creature");
+                b.recipes = b
+                    .groups
+                    .iter_mut()
+                    .map(|group| {
+                        group.token = recipe.definition;
+                        Some(recipe)
+                    })
+                    .collect();
+            }
             ReplacementSpec::DoubleTokens { .. } => {
                 for g in &mut b.groups {
                     g.amount = g
@@ -2284,6 +2336,8 @@ impl Game {
         let remaining = players
             .iter()
             .map(|&player| TokenBatch {
+                first_this_turn: None,
+                optional: None,
                 recipes: vec![recipe],
                 player,
                 groups: vec![group],
@@ -2328,6 +2382,8 @@ impl Game {
             return;
         }
         let batch = TokenBatch {
+            first_this_turn: None,
+            optional: None,
             recipes: vec![Some(recipe)],
             player,
             groups: vec![TokenGroupView {
@@ -2359,6 +2415,8 @@ impl Game {
             })
             .collect();
         self.stage_copy_token_batch(TokenBatch {
+            first_this_turn: None,
+            optional: None,
             recipes: recipes.into_iter().map(Some).collect(),
             player: item.controller,
             groups,
@@ -2387,6 +2445,8 @@ impl Game {
             })
             .collect();
         self.stage_copy_token_batch(TokenBatch {
+            first_this_turn: None,
+            optional: None,
             recipes: recipes.into_iter().map(Some).collect(),
             player,
             groups,
@@ -2414,6 +2474,7 @@ impl Game {
         if batch.groups.is_empty() {
             return;
         }
+        self.begin_token_batch(&mut batch);
         if matches!(
             batch.completion,
             TokenCompletion::None | TokenCompletion::TemporaryCopy(_)
@@ -2465,6 +2526,8 @@ impl Game {
             })
         });
         state.work.push_back(Work::Tokens(TokenBatch {
+            first_this_turn: None,
+            optional: None,
             recipes: Vec::new(),
             player,
             groups,
@@ -2485,6 +2548,7 @@ impl Game {
         if amount == 0 {
             return;
         }
+        let first_this_turn = self.begin_token_event(player, amount);
         let entry_required = self.fixed_token_entries_required(&[TokenGroupView {
             token,
             amount,
@@ -2500,7 +2564,8 @@ impl Game {
                     && o.card.replacement_effects().iter().any(|s| {
                         matches!(
                             s,
-                            ReplacementSpec::DoubleTokens { .. }
+                            ReplacementSpec::FirstTokensCopyAttached
+                                | ReplacementSpec::DoubleTokens { .. }
                                 | ReplacementSpec::AddToken(_)
                                 | ReplacementSpec::AddArtifactToken(_)
                         ) || matches!(s, ReplacementSpec::ReplaceArtifactTokens(_))
@@ -2513,6 +2578,8 @@ impl Game {
         }
 
         let batch = TokenBatch {
+            first_this_turn: Some(first_this_turn),
+            optional: None,
             recipes: Vec::new(),
             player,
             groups: vec![TokenGroupView {
@@ -2618,14 +2685,6 @@ impl Game {
                         self.complete_created_tokens(&mut state, player, *completion, created);
                         continue;
                     }
-                    Some(Work::CreatedAttackThisCombat(created)) => {
-                        self.require_created_attacks_this_combat(&created);
-                        continue;
-                    }
-                    Some(Work::AnimateCreated { created, spec }) => {
-                        self.animate_created_noncreatures(&created, spec);
-                        continue;
-                    }
                     Some(Work::CreatedGraveyardCounters {
                         player,
                         created,
@@ -2645,30 +2704,6 @@ impl Game {
                         let amount = u64::try_from(cards / usize::from(group.get()))
                             .capacity("graveyard counter quantity exhausted");
                         let counters = Counters::of(CounterKind::PlusOne, amount);
-                        let placements =
-                            self.created_token_counter_placements(player, &created, &counters);
-                        if !placements.is_empty() {
-                            state.work.push_front(Work::Counters(CounterBatch {
-                                player_events: player_counter_events::PlayerCounterEvents::default(
-                                ),
-                                self_effects: Vec::new(),
-                                player_placed_by: None,
-                                player_effect: [true; 2],
-                                next_player: 0,
-                                proliferated: None,
-                                completion: None,
-                                placements,
-                                next: 0,
-                                used: Vec::new(),
-                            }));
-                        }
-                        continue;
-                    }
-                    Some(Work::CreatedCounters {
-                        player,
-                        created,
-                        counters,
-                    }) => {
                         let placements =
                             self.created_token_counter_placements(player, &created, &counters);
                         if !placements.is_empty() {
@@ -2739,6 +2774,8 @@ impl Game {
                                     self.move_target_batch(&[bound], Zone::Graveyard);
                                 }
                                 state.work.push_front(Work::Tokens(TokenBatch {
+                                    first_this_turn: None,
+                                    optional: None,
                                     recipes: Vec::new(),
                                     player,
                                     groups: vec![TokenGroupView {
@@ -3049,6 +3086,7 @@ impl Game {
                     }
                 }
                 Event::Tokens(batch) => {
+                    self.begin_token_batch(batch);
                     let choices = self.token_replacements(batch);
                     match choices.as_slice() {
                         [] => {
@@ -3086,56 +3124,23 @@ impl Game {
                                 continue;
                             }
                             if !batch.recipes.is_empty() {
-                                let temporary = match &batch.completion {
-                                    TokenCompletion::TemporaryCopy(item) => Some(item.as_ref()),
-                                    _ => None,
-                                };
-                                let created = self.create_copy_groups_inner(
-                                    batch.player,
-                                    &batch.groups,
-                                    &batch.recipes,
-                                    temporary,
-                                );
-                                if matches!(batch.completion, TokenCompletion::AttackThisCombat) {
-                                    state
-                                        .work
-                                        .push_front(Work::CreatedAttackThisCombat(created.clone()));
-                                }
-                                if let TokenCompletion::AnimateNoncreatures(spec) = batch.completion
-                                {
-                                    state.work.push_front(Work::AnimateCreated {
-                                        created: created.clone(),
-                                        spec,
-                                    });
-                                }
-                                let counters = match &batch.completion {
-                                    TokenCompletion::Counters { kind, amount } => {
-                                        Some(Counters::of(*kind, *amount))
-                                    }
-                                    TokenCompletion::CounterSet(counters) => {
-                                        Some(counters.as_ref().clone())
-                                    }
-                                    _ => None,
-                                };
-                                if let TokenCompletion::GraveyardGroups(group) = batch.completion {
-                                    state.work.push_front(Work::CreatedGraveyardCounters {
-                                        player: batch.player,
-                                        created: created.clone(),
-                                        group,
-                                    });
-                                }
-                                if let Some(counters) = counters {
-                                    state.work.push_front(Work::CreatedCounters {
+                                let created = self.create_replacement_copy_groups(&batch);
+                                if let Some(entry) = self.state.entry_batch.as_mut() {
+                                    state.work.push_front(Work::CreatedTokens {
                                         player: batch.player,
                                         created,
-                                        counters: Box::new(counters),
+                                        completion: Box::new(batch.completion),
                                     });
-                                }
-                                if let Some(entry) = self.state.entry_batch.as_mut() {
                                     assert!(entry.replacement_resume.is_none());
                                     entry.replacement_resume = Some(state);
                                     return self.advance_entries();
                                 }
+                                self.complete_created_tokens(
+                                    &mut state,
+                                    batch.player,
+                                    batch.completion,
+                                    created,
+                                );
                                 continue;
                             }
                             if matches!(
@@ -3155,6 +3160,7 @@ impl Game {
                                     batch.completion,
                                     TokenCompletion::CounterOtherWizards
                                         | TokenCompletion::AttackThisCombat
+                                        | TokenCompletion::AnimateNoncreatures(_)
                                         | TokenCompletion::JobAttach(_)
                                         | TokenCompletion::OptionalAttachSource(_)
                                         | TokenCompletion::AttachCreatedTo(_)
@@ -3211,7 +3217,18 @@ impl Game {
                                 );
                             }
                         }
-                        [only] => Self::modify_tokens(*only, batch),
+                        [only]
+                            if only.source_card.replacement_effects()[only.ability as usize]
+                                == ReplacementSpec::FirstTokensCopyAttached =>
+                        {
+                            batch.optional = Some(*only);
+                            self.state.pending = Pending::Replacement {
+                                player: batch.player,
+                            };
+                            self.state.replacements = Some(state);
+                            return true;
+                        }
+                        [only] => self.modify_tokens(*only, batch),
                         _ => {
                             self.state.pending = Pending::Replacement {
                                 player: batch.player,
@@ -3231,6 +3248,19 @@ impl Game {
         completion: TokenCompletion,
         created: Vec<ObjectRef>,
     ) {
+        let created: Vec<_> = created
+            .into_iter()
+            .filter(|object| {
+                self.on_battlefield(object.card) && self.object_ref(object.card) == *object
+            })
+            .collect();
+        if matches!(completion, TokenCompletion::Mobilize) {
+            let item = self.state.resolving.as_ref().unwrap().item.clone();
+            self.register_delayed_sacrifice(&item, created.clone());
+        }
+        if let TokenCompletion::AnimateNoncreatures(spec) = completion {
+            self.animate_created_noncreatures(&created, spec);
+        }
         if matches!(completion, TokenCompletion::AttackThisCombat) {
             self.require_created_attacks_this_combat(&created);
         }
@@ -3506,7 +3536,14 @@ impl Game {
                     .into_iter()
                     .find(|c| c.source == source && c.ability == ability)
                     .unwrap();
-                Self::modify_tokens(choice, batch);
+                if choice.source_card.replacement_effects()[choice.ability as usize]
+                    == ReplacementSpec::FirstTokensCopyAttached
+                {
+                    batch.optional = Some(choice);
+                    self.state.replacements = Some(state);
+                    return;
+                }
+                self.modify_tokens(choice, batch);
             }
         }
         self.state.replacements = Some(state);
@@ -3628,6 +3665,12 @@ impl Game {
             .active
             .as_ref()
             .unwrap();
+        if let Event::Tokens(batch) = active
+            && batch.optional.is_some()
+        {
+            return emit(Action::ChooseOptional { accept: false })
+                || emit(Action::ChooseOptional { accept: true });
+        }
         if let Event::Damage(batch) = active {
             let choices = self.damage_event_order(batch);
             if !choices.is_empty() {
@@ -3853,7 +3896,11 @@ impl Game {
                 damage_preventions: Vec::new(),
                 heals_before_damage: Vec::new(),
                 damage_event_order: Vec::new(),
-                kind: "Tokens",
+                kind: if batch.optional.is_some() {
+                    "TokensOptional"
+                } else {
+                    "Tokens"
+                },
                 object: None,
                 counters: None,
                 player_counters: None,
@@ -4043,5 +4090,134 @@ impl Game {
                 self.attach_equipment(source.object, recipient);
             }
         }
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    fn equipped_copy_recipe(&self, source: ObjectRef) -> Option<CopyRecipe> {
+        if !self.on_battlefield(source.card) || self.object_ref(source.card) != source {
+            return None;
+        }
+        let recipient = self.state.objects[source.card as usize].attached_to?;
+        (self.on_battlefield(recipient.card)
+            && self.object_ref(recipient.card) == recipient
+            && self.is_creature(recipient.card))
+        .then(|| self.copiable_recipe(recipient))
+    }
+    fn begin_token_event(&mut self, player: Player, amount: u128) -> bool {
+        let history = &mut self.state.players[player.index()].token_creation_attempted_this_turn;
+        let first = !*history;
+        if amount > 0 {
+            *history = true;
+        }
+        first
+    }
+    fn begin_token_batch(&mut self, batch: &mut TokenBatch) {
+        if batch.first_this_turn.is_none() {
+            batch.first_this_turn = Some(self.begin_token_event(
+                batch.player,
+                u128::from(batch.groups.iter().any(|group| group.amount > 0)),
+            ));
+        }
+    }
+    pub(super) fn choose_optional_token_replacement(&mut self, accept: bool) {
+        let mut state = self.state.replacements.take().unwrap();
+        let Some(Event::Tokens(batch)) = state.active.as_mut() else {
+            unreachable!()
+        };
+        let choice = batch.optional.take().unwrap();
+        if accept {
+            self.modify_tokens(choice, batch);
+        } else {
+            batch.used.push((choice.source, choice.ability));
+        }
+        self.state.replacements = Some(state);
+        self.advance_replacements(true);
+    }
+    fn create_replacement_copy_groups(&mut self, batch: &TokenBatch) -> Vec<ObjectRef> {
+        let mut moves =
+            self.allocate_copy_group_entries(batch.player, &batch.groups, &batch.recipes);
+        let mut index = 0;
+        for (group_index, group) in batch.groups.iter().enumerate() {
+            let recipient = match &batch.completion {
+                TokenCompletion::RoleAttach(recipient) => Some(*recipient),
+                TokenCompletion::RoleReflexive(context) => Some(context.recipient),
+                TokenCompletion::RoleAttachMany(recipients) => recipients.get(group_index).copied(),
+                _ => None,
+            };
+            for _ in 0..group.amount {
+                let movement = &mut moves[index];
+                index += 1;
+                if movement.before.card.role().is_some() {
+                    movement.attachment = recipient;
+                }
+                if matches!(
+                    batch.completion,
+                    TokenCompletion::Mobilize | TokenCompletion::Attacking
+                ) {
+                    movement.choose_attacking_defender = true;
+                }
+            }
+        }
+        let created = moves
+            .iter()
+            .map(|movement| ObjectRef {
+                card: movement.before.id,
+                generation: movement
+                    .before
+                    .reference
+                    .generation
+                    .checked_add(1)
+                    .capacity("object generation exhausted"),
+            })
+            .collect();
+        if !moves.is_empty() {
+            self.track_nightmare_copy_entries(&moves);
+            if let TokenCompletion::TemporaryCopy(item) = &batch.completion {
+                self.stage_temporary_copy_entries(moves, item);
+            } else {
+                self.stage_entries(moves, None);
+            }
+        }
+        created
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    pub(super) fn remember_blight_copy(&mut self, object: ObjectRef, _player: Player) {
+        let recipe = self
+            .copiable_recipe(object)
+            .with_exceptions(CopyExceptions::SACRIFICE_ONLY);
+        self.state.resolving.as_mut().unwrap().blight_copy = Some(Box::new(recipe));
+    }
+    /// The frozen pre-payment blueprint survives all counter replacement choices.
+    /// This is an intrinsic copied ability, never a delayed sacrifice or haste grant.
+    pub(super) fn finish_blight_copy(&mut self) -> bool {
+        let Some(recipe) = self
+            .state
+            .resolving
+            .as_mut()
+            .and_then(|r| r.blight_copy.take())
+        else {
+            return false;
+        };
+        let player = self.state.resolving.as_ref().unwrap().item.controller;
+        self.stage_copy_token_batch(TokenBatch {
+            first_this_turn: None,
+            optional: None,
+            recipes: vec![Some(*recipe)],
+            player,
+            groups: vec![TokenGroupView {
+                token: recipe.definition,
+                amount: 1,
+                tapped: true,
+            }],
+            effect: true,
+            used: Vec::new(),
+            completion: TokenCompletion::Attacking,
+        });
+        true
     }
 }
