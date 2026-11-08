@@ -398,3 +398,37 @@ fn tmt_sibling_rivals_only_schedule_an_additional_combat_from_the_first() {
         assert!(g.state.stack.is_empty());
     }
 }
+
+#[test]
+fn tmt_raphael_requires_blocking_only_when_he_attacks() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = scenario(player);
+        let raphael = put(
+            &mut g,
+            player,
+            "Raphael, Ninja Destroyer",
+            Zone::Battlefield,
+        );
+        let ordinary = put(&mut g, player, "Grizzly Bears", Zone::Battlefield);
+        let blocker = put(&mut g, player.other(), "Grizzly Bears", Zone::Battlefield);
+        reach(&mut g, |g| g.state.pending == Pending::Attackers);
+        let mut control = g.clone();
+        act(&mut control, Action::Attack { card: ordinary });
+        act(&mut control, Action::FinishAttackers);
+        reach(&mut control, |g| g.state.pending == Pending::Blockers);
+        assert!(control.legal_actions().contains(&Action::FinishBlockers));
+        act(&mut g, Action::Attack { card: ordinary });
+        act(&mut g, Action::Attack { card: raphael });
+        act(&mut g, Action::FinishAttackers);
+        reach(&mut g, |g| g.state.pending == Pending::Blockers);
+        reject(&mut g, Action::FinishBlockers);
+        act(
+            &mut g,
+            Action::Block {
+                blocker,
+                attacker: raphael,
+            },
+        );
+        assert!(g.legal_actions().contains(&Action::FinishBlockers));
+    }
+}

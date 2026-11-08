@@ -181,14 +181,15 @@ impl Game {
         let o = &self.state.objects[card as usize];
         if self.state.active != actor
             || self.state.step != Step::Blockers
-            || !o.is_card()
+            || o.is_token()
             || !self.has_sneak_cost(actor, card)
-            || !(o.zone == Zone::Hand && o.owner == actor
+            || !(o.zone == Zone::Hand && o.owner == actor && o.is_card()
                 || self.can_play_exiled(actor, card)
                 || self.can_cast_library_top(actor, card)
                 || self.has_graveyard_cast(actor, card, GraveyardCastKind::Cast)
                 || o.zone == Zone::Graveyard
                     && o.owner == actor
+                    && o.is_card()
                     && o.card.is_creature()
                     && self.graveyard_sneak_permission(actor))
         {
