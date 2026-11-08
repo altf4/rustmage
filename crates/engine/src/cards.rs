@@ -445,6 +445,24 @@ pub enum TargetPlan {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl TargetPlan {
+    pub(crate) fn reads_source_creature_type(self) -> bool {
+        fn reads(rule: TargetRule) -> bool {
+            match rule {
+                TargetRule::Filtered { base, predicate } => {
+                    *predicate == TargetPredicate::SourceChosenCreatureType || reads(*base)
+                }
+                TargetRule::Grouped { base, .. }
+                | TargetRule::ManaValueExactly { base, .. }
+                | TargetRule::ManaValueAtMost { base, .. } => reads(*base),
+                TargetRule::Union(rules) => rules.iter().copied().any(reads),
+                _ => false,
+            }
+        }
+        match self {
+            Self::Single(spec) => reads(spec.rule),
+            Self::Groups(groups) => groups.iter().any(|spec| reads(spec.rule)),
+        }
+    }
     pub const NONE: Self = Self::Single(TargetSpec::NONE);
     pub fn group(self, index: u16) -> Option<TargetSpec> {
         match self {
@@ -595,12 +613,24 @@ pub enum EntryChoiceKind {
     Color,
     BasicLandType,
     CreatureType,
+    CreatureTypes(&'static [&'static str]),
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl EntryChoiceKind {
+    pub(crate) const fn creature_type_names(self) -> Option<&'static [&'static str]> {
+        match self {
+            Self::CreatureType => Some(crate::CREATURE_TYPES),
+            Self::CreatureTypes(names) => Some(names),
+            _ => None,
+        }
+    }
+
     pub(crate) fn matches(self, value: EntryChoiceValue) -> bool {
         if let Self::NamedModes(names) = self {
             return matches!(value, EntryChoiceValue::NamedMode(index) if usize::from(index) < names.len());
+        }
+        if let Self::CreatureTypes(names) = self {
+            return matches!(value, EntryChoiceValue::CreatureType(kind) if names.contains(&kind.name()));
         }
         if self == Self::NonlandCardName {
             return matches!(value, EntryChoiceValue::CardName(name) if !name.is_land());
@@ -1018,7 +1048,7 @@ pub enum DelayedTargetEvent {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EffectChoiceKind {
-    /// Choose exactly two controlled creatures, or do nothing if fewer exist.
+    /// Choose two controlled creatures, or as many as possible.
     PowerDifferenceBoost,
     KeepSharedCreatureTypes,
     /// One mandatory-if-possible nontarget recipient for the current color.
@@ -1469,8 +1499,10 @@ pub enum Instruction {
         other: bool,
         keywords: Keywords,
     },
-    GrantPlayerCreatureKeywords {
+    ModifyPlayerCreatures {
         players: PlayerSet,
+        power: i32,
+        toughness: i32,
         keywords: Keywords,
     },
     UntapSubtype {

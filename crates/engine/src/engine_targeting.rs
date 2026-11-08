@@ -750,6 +750,7 @@ struct TargetSourceCharacteristics<'a> {
     snapshot: Option<&'a DamageFacts>,
     attachment: Option<ObjectRef>,
     spell: Option<Card>,
+    chosen_creature_type: Option<Option<crate::cards::CreatureType>>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl<'a> TargetSourceCharacteristics<'a> {
@@ -759,6 +760,7 @@ impl<'a> TargetSourceCharacteristics<'a> {
             snapshot: None,
             attachment: None,
             spell: Some(definition),
+            chosen_creature_type: None,
         }
     }
     fn from_item(item: &'a SpellView) -> Self {
@@ -771,6 +773,10 @@ impl<'a> TargetSourceCharacteristics<'a> {
             snapshot: Some(&source.facts),
             attachment: item.source_attachment,
             spell: (item.kind == StackKind::Spell).then_some(source.card),
+            chosen_creature_type: item
+                .source_quantity_lki
+                .as_ref()
+                .map(|facts| facts.chosen_creature_type),
         }
     }
 }
@@ -1823,7 +1829,13 @@ impl Game {
                 let object = world.object(id);
                 return match *predicate {
                     TargetPredicate::SourceChosenCreatureType => {
-                        matches!(world.entry_value(source), Some(EntryChoiceValue::CreatureType(typ)) if has_subtype(id, typ.name()))
+                        let chosen = qualification
+                            .and_then(|row| row.chosen_creature_type)
+                            .unwrap_or_else(|| match world.entry_value(source) {
+                                Some(EntryChoiceValue::CreatureType(kind)) => Some(kind),
+                                _ => None,
+                            });
+                        chosen.is_some_and(|kind| has_subtype(id, kind.name()))
                     }
                     TargetPredicate::OwnedByController => object.owner == controller,
                     TargetPredicate::Basic => world.definition(id).is_basic_land(),

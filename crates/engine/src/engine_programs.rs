@@ -1530,8 +1530,11 @@ impl Game {
             event_player: None,
             event_object: None,
             manifest_event: None,
-            source_quantity_lki: self
-                .source_quantity_facts(definition.triggers()[index].program, source),
+            source_quantity_lki: self.source_quantity_facts(
+                definition.triggers()[index].program,
+                definition.triggers()[index].targets,
+                source,
+            ),
             sacrificed_toughness: None,
             sacrificed_mana_value: None,
             sacrificed_power: None,
@@ -8981,8 +8984,13 @@ impl Game {
                 Instruction::GrantChosenCreatureTypeKeywords { other, keywords } => {
                     self.grant_chosen_creature_type_keywords(&item, other, keywords)
                 }
-                Instruction::GrantPlayerCreatureKeywords { players, keywords } => {
+                Instruction::ModifyPlayerCreatures { players, power, toughness, keywords } => {
                     let recipients = self.player_creature_recipients(players, &item);
+                    for &id in &recipients {
+                        self.state.objects[id as usize].growth += Stats {
+                            power: i128::from(power), toughness: i128::from(toughness),
+                        };
+                    }
                     if let Some(source) = item.source {
                         self.grant_keyword_effects(&recipients, source.object, keywords);
                     }

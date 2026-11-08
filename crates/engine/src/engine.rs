@@ -12007,8 +12007,9 @@ impl Game {
                             .sacrificed_power
                             .as_ref()
                             .map_or(0, |_| std::mem::size_of::<i128>())
-                        + resolution.power_difference.as_ref().map_or(0, |_| {
+                        + resolution.power_difference.as_ref().map_or(0, |effect| {
                             std::mem::size_of::<effect_choices::PowerDifferenceView>()
+                                + std::mem::size_of_val(&*effect.recipients)
                         })
                         + resolution
                             .blight_copy

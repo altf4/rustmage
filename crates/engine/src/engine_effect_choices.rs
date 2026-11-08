@@ -5,7 +5,7 @@ use ability_world::CharacteristicWorld;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct PowerDifferenceView {
-    pub recipients: [ObjectRef; 2],
+    pub recipients: Box<[ObjectRef]>,
     pub amount: i128,
     pub source: ObjectRef,
 }
@@ -59,11 +59,11 @@ impl Game {
         };
         let recipients: Vec<_> = effect
             .recipients
-            .into_iter()
+            .iter()
+            .copied()
             .filter(|recipient| {
                 self.on_battlefield(recipient.card)
                     && self.object_ref(recipient.card) == *recipient
-                    && self.is_creature(recipient.card)
             })
             .map(|recipient| recipient.card)
             .collect();
@@ -1218,7 +1218,7 @@ impl Game {
                     self.effect_choice_candidate(&choice, player, self.object_ref(*id as CardId))
                 })
                 .count();
-            if kind == EffectChoiceKind::PowerDifferenceBoost && available < 2 {
+            if kind == EffectChoiceKind::PowerDifferenceBoost && available == 0 {
                 return false;
             }
             if let Some(skip_to) = choice.skip_to
@@ -1628,14 +1628,14 @@ impl Game {
         if choice.kind.payment_kind() == EffectChoiceKind::PowerDifferenceBoost {
             let controller = self.state.resolving.as_ref().unwrap().item.controller;
             let selected = &choice.selected[controller.index()];
-            assert_eq!(selected.len(), 2);
-            let amount = self
-                .stats(selected[0].card)
-                .power
-                .abs_diff(self.stats(selected[1].card).power);
+            let amount = match selected.as_slice() {
+                [one, other] => self.stats(one.card).power.abs_diff(self.stats(other.card).power),
+                [_] => 0,
+                _ => unreachable!("the mandatory choice selects one or two creatures"),
+            };
             self.state.resolving.as_mut().unwrap().power_difference =
                 Some(Box::new(PowerDifferenceView {
-                    recipients: [selected[0], selected[1]],
+                    recipients: Box::from(selected.as_slice()),
                     amount: i128::try_from(amount).capacity("power difference exhausted"),
                     source: choice.source,
                 }));

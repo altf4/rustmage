@@ -1,7 +1,7 @@
 //! Owned Lorwyn resolution steps, exercised before admitting their card consumers.
 mod support;
 use rustmage as _;
-use rustmage_core::cards::authored::CardRules;
+use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
 use rustmage_core::engine::*;
 use support::*;
@@ -218,14 +218,19 @@ fn power_difference_waits_for_private_draw_choice_and_preserves_owned_recipients
 }
 
 #[test]
-fn power_difference_with_only_one_creature_does_nothing() {
+fn power_difference_with_only_one_creature_grants_trample_without_drawing() {
     let _scope = fixture_rules::activate(&[(Card::Shock, &PAIR)]);
     let mut g = scenario(Player::P0);
     let a = put(&mut g, Player::P0, "Grizzly Bears", Zone::Battlefield);
+    put(&mut g, Player::P1, "Hill Giant", Zone::Battlefield);
     start(&mut g, Player::P0, None);
+    resolve_top(&mut g);
+    let choice = Action::ChoosePowerDifferenceCreature { object: g.object_ref(a) };
+    checked(&mut g, choice);
     settle(&mut g);
     assert_eq!(stats(&g, a), (2, 2));
     assert_eq!(g.state.players[0].cards_drawn_this_turn, 0);
+    assert!(g.keywords(a).contains(Keywords::TRAMPLE));
 }
 
 #[test]
@@ -682,5 +687,89 @@ fn counter_history_records_the_recipient_as_a_creature_at_the_event() {
         resolve_top(&mut g);
         settle(&mut g);
         assert_eq!(g.state.players[0].life, if qualifies { 21 } else { 20 });
+    }
+}
+
+#[test]
+fn bounded_entry_type_choice_is_retained_after_the_activation_sacrifices_its_source() {
+    const GRAVE: TargetRule = TargetRule::Object {
+        zone: TargetZone::Graveyard,
+        kinds: 0,
+        relation: 0,
+        other: false,
+        nonland: false,
+        tapped: false,
+        min_mana: 0,
+        max_mana: u32::MAX,
+    };
+    const PENNANT: CardRules = CardRules {
+        effect: Effect::Permanent,
+        activated: &[ActivatedAbility {
+            exhaust: false,
+            guard: ActivationGuard::Always,
+            origin: ActivationOrigin::Battlefield,
+            cycling: false,
+            cost: ActivationCost {
+                generic: 2,
+                mana_component: true,
+                tap: true,
+                sacrifice: true,
+                ..ActivationCost::ZERO
+            },
+            targets: TargetPlan::Single(TargetSpec::one(TargetRule::Filtered {
+                base: &GRAVE,
+                predicate: &TargetPredicate::SourceChosenCreatureType,
+            })),
+            program: &[Instruction::ReturnToHand],
+            sorcery: false,
+            once_per_turn: false,
+        }],
+        extras: &CardExtras {
+            entry_choice: Some(EntryChoiceKind::CreatureTypes(&["Bear", "Goblin"])),
+            ..CardExtras::EMPTY
+        },
+        ..CardRules::EMPTY
+    };
+    let _scope =
+        fixture_rules::activate(&[(Card::from_name("Swiftfoot Boots").unwrap(), &PENNANT)]);
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Swiftfoot Boots", Zone::Hand);
+        let bear = put(&mut g, p, "Grizzly Bears", Zone::Graveyard);
+        let giant = put(&mut g, p, "Hill Giant", Zone::Graveyard);
+        cast(&mut g, source, None);
+        resolve_top(&mut g);
+        let value = |name| Action::ChooseEntryValue {
+            value: EntryChoiceValue::CreatureType(CreatureType::from_name(name).unwrap()),
+        };
+        reject(&mut g, value("Giant"));
+        checked(&mut g, value("Bear"));
+        settle(&mut g);
+        checked(
+            &mut g,
+            Action::AnnounceActivate {
+                card: source,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(giant),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(bear),
+            },
+        );
+        pay(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(source).entry_choice, None);
+        settle(&mut g);
+        assert_eq!(g.object_view(bear).zone, Zone::Hand);
+        assert_eq!(g.object_view(giant).zone, Zone::Graveyard);
     }
 }

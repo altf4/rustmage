@@ -86,7 +86,10 @@ pub(super) fn modification(kind: ReturnKind) -> Option<(&'static [&'static str],
         ReturnKind::Demon => Some((&["Demon"], Keywords::NONE)),
         ReturnKind::Angel => Some((&["Angel"], Keywords::FLYING)),
         ReturnKind::HeroFinality => Some((&["Hero"], Keywords::NONE)),
-        ReturnKind::Revival | ReturnKind::FlyingRobot | ReturnKind::WithoutAbilities | ReturnKind::Persist => None,
+        ReturnKind::Revival
+        | ReturnKind::FlyingRobot
+        | ReturnKind::WithoutAbilities
+        | ReturnKind::Persist => None,
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

@@ -1116,8 +1116,9 @@ impl FundingState<'_> {
                         .into_iter()
                         .map(EntryChoiceValue::BasicLandType),
                 ),
-                crate::cards::EntryChoiceKind::CreatureType => {
-                    choices.extend(crate::CREATURE_TYPES.iter().map(|name| {
+                crate::cards::EntryChoiceKind::CreatureType
+                | crate::cards::EntryChoiceKind::CreatureTypes(_) => {
+                    choices.extend(kind.creature_type_names().unwrap().iter().map(|name| {
                         EntryChoiceValue::CreatureType(
                             crate::cards::CreatureType::from_name(name).unwrap(),
                         )

@@ -134,10 +134,11 @@ impl Game {
     pub(super) fn source_quantity_facts(
         &self,
         program: &[Instruction],
+        targets: TargetPlan,
         source: &ObjectView,
     ) -> Option<Box<SourceQuantityView>> {
         let (toughness, equipment) = selected(program);
-        let chosen_type = reads_chosen_type(program);
+        let chosen_type = targets.reads_source_creature_type() || reads_chosen_type(program);
         (toughness || equipment || chosen_type).then(|| {
             Box::new(SourceQuantityView {
                 creature_comparison: None,
@@ -183,10 +184,16 @@ impl Game {
             self.source_counter_quantity_live(source, kind)
                 .expect("exact activated quantity source")
         });
-        let (toughness, equipment) = selected(program);
-        item.source_quantity_lki = (toughness || equipment || reads_chosen_type(program))
-            .then(|| self.source_quantity_facts(program, &self.object_view(source.card)))
-            .flatten();
+        let targets = item.program().map_or(TargetPlan::NONE, |(plan, _)| plan);
+        if selected(program) != (false, false)
+            || reads_chosen_type(program)
+            || targets.reads_source_creature_type()
+        {
+            item.source_quantity_lki =
+                self.source_quantity_facts(program, targets, &self.object_view(source.card));
+        } else {
+            item.source_quantity_lki = None;
+        }
     }
     /// The local paying packet is outside State during its own source costs.
     /// Refresh after counter payment and before any source-departure cost.
@@ -365,9 +372,9 @@ fn reads_chosen_type(program: &[Instruction]) -> bool {
         Instruction::Modal(modes)
         | Instruction::ModalOnce(modes)
         | Instruction::ModalOncePerTurn(modes)
-        | Instruction::ModalUpToX { modes, .. } => {
-            modes.iter().any(|m| reads_chosen_type(m.program))
-        }
+        | Instruction::ModalUpToX { modes, .. } => modes.iter().any(|mode| {
+            mode.targets.reads_source_creature_type() || reads_chosen_type(mode.program)
+        }),
         _ => false,
     })
 }
