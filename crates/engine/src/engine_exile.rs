@@ -91,6 +91,9 @@ impl Game {
     /// Permissions to cast the card for a mana cost, including an alternate
     /// spell face. Adventure's own right applies only to its normal face.
     pub(super) fn can_cast_exiled_card(&self, player: Player, card: CardId) -> bool {
+        self.can_cast_exiled_independently(player, card) || self.linked_exile_play(player, card).is_some()
+    }
+    pub(super) fn can_cast_exiled_independently(&self, player: Player, card: CardId) -> bool {
         self.can_cast_threshold_linked_exile(player, card)
             || self.can_play_foreign_stash(player, card)
             || self.can_cast_warped(player, card)
@@ -109,6 +112,9 @@ impl Game {
         })
     }
     pub(super) fn can_play_exiled_land(&self, player: Player, card: CardId) -> bool {
+        self.can_play_exiled_land_independently(player, card) || self.linked_exile_play(player, card).is_some()
+    }
+    pub(super) fn can_play_exiled_land_independently(&self, player: Player, card: CardId) -> bool {
         self.can_play_foreign_stash(player, card)
             || self.can_play_adventure(player, card)
             || self.state.exile_permissions.iter().any(|p| {

@@ -2100,6 +2100,10 @@ impl Game {
         );
         self.state.passes = 0;
         let stash_origin = self.foreign_stash(actor, card);
+        let definition = self.effective_spell_card(card);
+        let library_counter = definition.is_creature()
+            && self.library_subtype_cast_permission(actor, card, definition);
+        let linked_play = self.prepare_linked_exile_cast(actor, card);
         let modifiers = self.exile_cast_modifiers(actor, card);
         let origin = self.state.objects[card as usize].zone;
         let before = self.object_view(card);
@@ -2130,6 +2134,12 @@ impl Game {
         }
         let id = self.next_stack_id();
         let mut item = self.cast_preview(actor, card, origin, object, id, payment);
+        if library_counter {
+            self.record_cast_entry_counters(object, CounterKind::PlusOne, 1);
+        }
+        if let Some(approval) = linked_play {
+            self.state.linked_choices.as_mut().unwrap().play_approvals.push((id, approval));
+        }
         if outcome.uncounterable {
             self.mark_spell_uncounterable(id);
         }

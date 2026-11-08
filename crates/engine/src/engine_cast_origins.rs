@@ -16,6 +16,7 @@ impl Card {
                         | StaticAbilityFragment::CascadeFromHand { .. }
                         | StaticAbilityFragment::LookAtLibraryTop
                         | StaticAbilityFragment::CastCreatureFromLibraryTop
+                        | StaticAbilityFragment::CastSubtypesFromLibraryTopWithCounter(_)
                         | StaticAbilityFragment::PlayLandFromLibraryTop
                         | StaticAbilityFragment::PlayLandFromGraveyard
                         | StaticAbilityFragment::SpendAnyManaForCreatures
@@ -148,12 +149,21 @@ impl Game {
         definition: Card,
     ) -> bool {
         let object = &self.state.objects[card as usize];
-        object.owner == player
-            && object.zone == Zone::Library
-            && definition.is_creature()
+        self.library_subtype_cast_permission(player, card, definition)
+            || (object.owner == player && object.zone == Zone::Library && definition.is_creature()
+                && self.top_library_card(player) == Some(card)
+                && has_fragment(self, player, |f| matches!(f, StaticAbilityFragment::CastCreatureFromLibraryTop)))
+    }
+    pub(super) fn library_subtype_cast_permission(&self, player: Player, card: CardId, definition: Card) -> bool {
+        let object = &self.state.objects[card as usize];
+        object.owner == player && object.zone == Zone::Library
             && self.top_library_card(player) == Some(card)
-            && has_fragment(self, player, |f| {
-                matches!(f, StaticAbilityFragment::CastCreatureFromLibraryTop)
+            && has_fragment(self, player, |fragment| match fragment {
+                StaticAbilityFragment::CastSubtypesFromLibraryTopWithCounter(types) => {
+                    types.iter().any(|subtype| definition.has_subtype(subtype))
+                        || definition.keywords().contains(Keywords::CHANGELING)
+                }
+                _ => false,
             })
     }
     pub(super) fn can_look_library_top(&self, player: Player) -> bool {

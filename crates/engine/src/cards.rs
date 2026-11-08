@@ -1563,6 +1563,8 @@ pub enum Instruction {
     ReturnLinkedExileToHand,
     ReturnOneLinkedExileToHand,
     ExileTargetsLinkedToSource,
+    ExileControllerLibraryTopLinked(u16),
+    GrantLinkedExilePlay,
     ChooseLinkedCreatureReturn,
     ReturnOtherLinkedExileToHand,
     ExileGraveyardCaptureMutantCopy,

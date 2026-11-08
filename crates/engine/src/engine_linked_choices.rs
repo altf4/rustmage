@@ -78,6 +78,8 @@ pub(super) struct ChoiceState {
     // Some(None) means tracking this instruction but no successful own sacrifice.
     sacrifice: Option<Option<ObjectRef>>,
     pub links: Vec<LinkedExileView>,
+    pub play_grants: Vec<limited_exile::LimitedExilePlay>,
+    pub play_approvals: Vec<(u64, limited_exile::LimitedExilePlay)>,
     pub null_cast_links: Vec<NullCastLink>,
     hidden: BTreeMap<ObjectRef, HiddenExile>,
 }
@@ -106,6 +108,8 @@ impl ChoiceState {
             + self.deployment.as_ref().map_or(0, |h| h.bytes())
             + self.hidden.len() * std::mem::size_of::<(ObjectRef, HiddenExile)>()
             + self.links.len() * std::mem::size_of::<LinkedExileView>()
+            + self.play_grants.len() * std::mem::size_of::<limited_exile::LimitedExilePlay>()
+            + self.play_approvals.len() * std::mem::size_of::<(u64, limited_exile::LimitedExilePlay)>()
             + self.null_cast_links.len() * std::mem::size_of::<NullCastLink>()
             + self.piles.as_ref().map_or(0, |p| {
                 (p.remaining.len() + p.up.len() + p.down.len()) * std::mem::size_of::<ObjectRef>()

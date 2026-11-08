@@ -38,6 +38,13 @@ impl Game {
         }
     }
 
+    pub(super) fn exile_controller_library_top_linked(&mut self, item: &SpellView, amount: u16) {
+        let ids = exile::top_library_cards(self, item.controller, u128::from(amount));
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        self.remember_linked_exile_events(item, &events);
+        self.finish_zone_events(&events, &[]);
+    }
+
     pub(super) fn exile_targets_linked(&mut self, item: &SpellView, capture_mutant: bool) {
         let ids: Vec<_> = item.targets.iter()
             .filter(|&&target| self.same_target_object(target))

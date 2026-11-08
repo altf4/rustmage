@@ -151,6 +151,7 @@ pub enum StaticAbilityFragment {
     },
     LookAtLibraryTop,
     CastCreatureFromLibraryTop,
+    CastSubtypesFromLibraryTopWithCounter(&'static [&'static str]),
     PlayLandFromLibraryTop,
     PlayLandFromGraveyard,
     SpendAnyManaForCreatures,

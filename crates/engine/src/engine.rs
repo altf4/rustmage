@@ -112,6 +112,9 @@ pub mod linked_choices;
 #[path = "engine_linked_exile_effects.rs"]
 pub mod linked_exile_effects;
 #[doc(hidden)]
+#[path = "engine_limited_exile.rs"]
+pub mod limited_exile;
+#[doc(hidden)]
 #[path = "engine_zone_replacements.rs"]
 pub mod zone_replacements;
 pub use linked_choices::{KeepTypesView, LibraryPile, LibraryPilesView, LinkedExileView};
@@ -3585,6 +3588,8 @@ pub struct Observation {
     pub modal_history: Vec<ModalHistoryView>,
     pub exile_links: Vec<ExileLink>,
     pub exile_permissions: Vec<ExilePlayPermission>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limited_exile_plays: Option<Vec<limited_exile::LimitedExilePlay>>,
     pub borrowed_abilities: Vec<BorrowedAbilityView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub graveyard_borrowed_abilities: Option<Vec<GraveyardBorrowedAbilityView>>,
@@ -6946,6 +6951,7 @@ impl Game {
                 permanent_type: PermanentType::Land,
                 ..
             } => {
+                self.commit_linked_exile_land(actor, card);
                 if let Some(free) = self.state.resolution_free_casts.as_mut() {
                     free.remaining.retain(|reference| reference.card != card);
                     self.reveal_hideaway_object(self.object_ref(card));
@@ -10034,6 +10040,7 @@ impl Game {
         self.expire_graveyard_cast_permissions();
         self.expire_embalm();
         self.state.turn_cast_grants = None;
+        self.expire_linked_exile_plays();
         self.prune_uncounterable_spell_ids();
         self.expire_keyword_effects();
         if let Some(roles) = &mut self.state.roles {
@@ -11073,6 +11080,7 @@ impl Game {
                 .as_ref()
                 .map_or_else(Vec::new, |rows| rows.to_vec()),
             exile_links: s.exile_links.clone(),
+            limited_exile_plays: self.limited_exile_plays(),
             spell_characteristics: self.spell_characteristics(),
             exile_permissions: s
                 .exile_permissions

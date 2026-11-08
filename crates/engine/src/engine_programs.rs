@@ -1849,6 +1849,7 @@ impl Game {
         if let Some(index) = stack {
             let item = self.state.stack[index].clone();
             self.expire_land_mana_on_exile_cast(&item);
+            self.commit_linked_exile_cast(&item);
         }
         self.commit_suspend_cast(stack);
         self.consume_resolution_cast_quota(caster, stack);
@@ -3558,6 +3559,8 @@ impl Game {
                         .object,
                 ),
                 Instruction::ExileTargetsLinkedToSource => self.exile_targets_linked(&item, false),
+                Instruction::ExileControllerLibraryTopLinked(amount) => self.exile_controller_library_top_linked(&item, amount),
+                Instruction::GrantLinkedExilePlay => self.grant_linked_exile_play(&item),
                 Instruction::ExileGraveyardCaptureMutantCopy => self.exile_targets_linked(&item, true),
                 Instruction::ChooseLinkedCreatureReturn | Instruction::CopyLinkedExiledAsMutant => {
                     let mode = if instruction == Instruction::ChooseLinkedCreatureReturn {
