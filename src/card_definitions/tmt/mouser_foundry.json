@@ -3,10 +3,40 @@
   "catalogue_id": 2865,
   "oracle_id": "404e958b-ead9-4ec7-b786-7b3d65e29967",
   "facts_sha256": "80b44a3d76e69cce697e409e7ba81b6b78d5af696765308db3f2dc8d7e1e1611",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d8c498a6828ca3780ce9b50f4c9245569604ac39a6ef4e566dff31fc4fe4aa90"
   },
-  "physical_metadata_sha256": "43e096d42a108055c42f74b49d25d050884203859419b593e87ae55f95380467"
+  "physical_metadata_sha256": "43e096d42a108055c42f74b49d25d050884203859419b593e87ae55f95380467",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MouserFoundry.java",
+  "java_sha256": "5e978c301dbcfb94199ef0f19c67e2fc922d547193d675617cd4b60caa8dc044",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldOrLeavesSourceTriggeredAbility.java",
+      "sha256": "4cc6b8c193533f9bb9c040ffe5a12892b74ec6202a4e726100dc948bd738d111"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/Robot11Token.java",
+      "sha256": "80629ebbc61106f058ff6bcc6f8011768f01da78a78ffba9feecdaa756825bd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ]
 }

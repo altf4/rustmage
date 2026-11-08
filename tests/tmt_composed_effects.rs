@@ -1,0 +1,219 @@
+//! Paid scenarios for the casting, attachment and linked movement integration.
+mod support;
+use rustmage as _;
+use rustmage_core::cards::*;
+use rustmage_core::engine::*;
+use support::*;
+
+fn drain(g: &mut Game, target: Option<CardId>) {
+    for _ in 0..40 {
+        if g.state.pending == Pending::Priority
+            && g.state.stack.is_empty()
+            && g.state.resolving.is_none()
+            && g.state.pending_triggers.is_empty()
+            && g.state.announcing.is_none()
+        {
+            return;
+        }
+        let actions = g.legal_actions();
+        let select = target.map(|card| Action::ChooseTarget {
+            target: Target::Card(card),
+        });
+        let action = select
+            .filter(|action| actions.contains(action))
+            .or_else(|| {
+                actions.into_iter().find(|action| {
+                    matches!(
+                        action,
+                        Action::Pass
+                            | Action::PutTrigger { .. }
+                            | Action::FinishTargets
+                            | Action::DeclineResolutionMana
+                    )
+                })
+            })
+            .unwrap_or_else(|| panic!("unexpected choice {:?}", g.state.pending));
+        act(g, action);
+    }
+    panic!("resolution action budget exhausted");
+}
+
+fn activate(g: &mut Game, source: CardId, ability: u16, target: Option<CardId>) {
+    act(
+        g,
+        Action::AnnounceActivate {
+            card: source,
+            ability,
+            counter_payment: Counters::default(),
+        },
+    );
+    if let Some(card) = target {
+        act(
+            g,
+            Action::ChooseTarget {
+                target: Target::Card(card),
+            },
+        );
+    }
+    pay(g);
+}
+
+#[test]
+fn stomped_by_the_foot_kicker_consumes_a_legal_sacrifice_and_changes_the_effect() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let spell = put(&mut g, p, "Stomped by the Foot", Zone::Hand);
+        let target = put(
+            &mut g,
+            p.other(),
+            "Ghalta, Primal Hunger",
+            Zone::Battlefield,
+        );
+        let land = put(&mut g, p, "Swamp", Zone::Battlefield);
+        let sacrifice = put(&mut g, p, "Healer's Hawk", Zone::Battlefield);
+        act(&mut g, Action::AnnounceCast { card: spell });
+        let announced = g.snapshot();
+        for kicked in [true, false] {
+            g.restore(&announced).unwrap();
+            act(&mut g, Action::ChooseKicker { pay: kicked });
+            act(
+                &mut g,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            if kicked {
+                let invalid = g.object_ref(land);
+                reject(&mut g, Action::ChooseAdditionalCost { object: invalid });
+                let object = g.object_ref(sacrifice);
+                act(&mut g, Action::ChooseAdditionalCost { object });
+            }
+            pay(&mut g);
+            drain(&mut g, None);
+            assert_eq!(stats(&g, target), if kicked { (7, 7) } else { (10, 10) });
+            assert_eq!(
+                g.state.objects[sacrifice as usize].zone,
+                if kicked {
+                    Zone::Graveyard
+                } else {
+                    Zone::Battlefield
+                }
+            );
+        }
+    }
+}
+
+#[test]
+fn farm_returns_one_linked_creature_then_the_other_to_hand() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let farm = put(&mut g, p, "Northampton Farm", Zone::Battlefield);
+        let first = put(&mut g, p, "Healer's Hawk", Zone::Battlefield);
+        let second = put(&mut g, p, "Ghitu Lavarunner", Zone::Battlefield);
+        for target in [first, second] {
+            g.state.objects[farm as usize].tapped = false;
+            activate(&mut g, farm, 1, Some(target));
+            drain(&mut g, None);
+            assert_eq!(g.state.objects[target as usize].zone, Zone::Exile);
+        }
+        g.state.objects[farm as usize].tapped = false;
+        activate(&mut g, farm, 2, None);
+        for _ in 0..6 {
+            if matches!(g.state.pending, Pending::LinkedExile { .. }) {
+                break;
+            }
+            act(&mut g, Action::Pass);
+        }
+        let choice = Action::ChooseLinkedExile {
+            object: g.object_ref(first),
+        };
+        let saved = g.snapshot();
+        let index = g.legal_actions().iter().position(|a| *a == choice).unwrap();
+        let mut child = g.clone();
+        child.apply_index(p, g.revision(), index).unwrap();
+        act(&mut g, choice.clone());
+        assert_eq!(g.snapshot(), child.snapshot());
+        g.restore(&saved).unwrap();
+        act(&mut g, choice);
+        assert_eq!(g.snapshot(), child.snapshot());
+        assert_eq!(g.state.objects[first as usize].zone, Zone::Battlefield);
+        assert_eq!(g.state.objects[first as usize].controller, p);
+        assert_eq!(g.state.objects[second as usize].zone, Zone::Hand);
+    }
+}
+
+#[test]
+fn mikey_and_don_cast_the_known_top_creature_with_its_entry_counter() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        put(&mut g, p, "Mikey & Don, Party Planners", Zone::Battlefield);
+        let creature = put(&mut g, p, "Leonardo, Leader in Blue", Zone::Library);
+        assert!(g.can_cast_library_top(p, creature));
+        assert!(!g.can_cast_library_top(p.other(), creature));
+        cast(&mut g, creature, None);
+        drain(&mut g, None);
+        assert_eq!(g.state.objects[creature as usize].zone, Zone::Battlefield);
+        assert_eq!(g.state.objects[creature as usize].counters.plus_one, 1);
+    }
+}
+
+#[test]
+fn koya_returns_the_exact_exile_when_the_delayed_payment_is_declined() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let koya = put(&mut g, p, "Koya, Death from Above", Zone::Hand);
+        let target = put(&mut g, p.other(), "Healer's Hawk", Zone::Battlefield);
+        cast(&mut g, koya, None);
+        drain(&mut g, Some(target));
+        assert_eq!(g.state.objects[target as usize].zone, Zone::Exile);
+        let exiled = g.object_ref(target);
+        let check_link = |item: &SpellView| {
+            assert_eq!(
+                item.return_link.as_ref().map(|link| link.object),
+                Some(exiled)
+            );
+        };
+        let delay = g.observe(p).delayed_steps.expect("Koya scheduled a return");
+        assert_eq!(delay.len(), 1);
+        check_link(&delay[0].item);
+        g.move_object(koya, Zone::Graveyard);
+        g.begin_step(Step::End);
+        check_link(
+            g.state
+                .pending_triggers
+                .last()
+                .expect("delayed ability queued"),
+        );
+        g.prepare_triggers();
+        check_link(g.state.stack.last().expect("delayed ability stacked"));
+        drain(&mut g, None);
+        assert_ne!(g.object_ref(target), exiled);
+        assert_eq!(g.state.objects[target as usize].zone, Zone::Battlefield);
+        assert_eq!(g.state.objects[target as usize].controller, p.other());
+    }
+}
+
+#[test]
+fn library_counter_choice_preserves_the_independent_ordinary_permission() {
+    for p in [Player::P0, Player::P1] {
+        for with_counter in [false, true] {
+            let mut g = scenario(p);
+            put(&mut g, p, "Mikey & Don, Party Planners", Zone::Battlefield);
+            put(&mut g, p, "Vizier of the Menagerie", Zone::Battlefield);
+            let creature = put(&mut g, p, "Leonardo, Leader in Blue", Zone::Library);
+            act(&mut g, Action::AnnounceCast { card: creature });
+            let choices = g.legal_actions();
+            assert!(choices.contains(&Action::ChooseLibraryCastPermission { with_counter: true }));
+            assert!(choices.contains(&Action::ChooseLibraryCastPermission {
+                with_counter: false
+            }));
+            act(&mut g, Action::ChooseLibraryCastPermission { with_counter });
+            pay(&mut g);
+            drain(&mut g, None);
+            assert_eq!(
+                g.state.objects[creature as usize].counters.plus_one,
+                if with_counter { 1 } else { 0 }
+            );
+        }
+    }
+}

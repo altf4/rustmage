@@ -3,10 +3,50 @@
   "catalogue_id": 4706,
   "oracle_id": "0f35cf85-6783-4d69-b5e6-a81f7c1f21e7",
   "facts_sha256": "fbefe19b3579bcd88b3f6e1b808858934d0916bb1efaf3d274b90d8376947a00",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b9ad124898971d614c91cf6c5826aaa794608903afe3addbed62b32fdd766c0f"
   },
-  "physical_metadata_sha256": "c2130834a86c09dc9819921eceb45cb55bae43a2d0cc62861137ca4e91f505a8"
+  "physical_metadata_sha256": "c2130834a86c09dc9819921eceb45cb55bae43a2d0cc62861137ca4e91f505a8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TurncoatKunoichi.java",
+  "java_sha256": "1d64633afff41a59637c2c0cbea3e615cd9c9ba527486107d4751cfaf54182a4",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/SneakAbility.java",
+      "sha256": "b25a32bf041c6a146f7d602c757f3be034f9282db5ed9c6cc03070b374611c70"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ReturnToHandChosenControlledPermanentCost.java",
+      "sha256": "ea8192aa5d4930687e7803379d509a1bd5a1910bcd418503f19a8de6417072b4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SneakCondition.java",
+      "sha256": "6e3471ef3a5eac8d44996baa39e18c8b323ea8941bd460f0c0f21be874f2b3ba"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
+      "sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileUntilSourceLeavesEffect.java",
+      "sha256": "b996095b17f25f3acb6d649beaf87d3f4abca10338c9444419cca03029d940bf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+      "sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a"
+    }
+  ]
 }

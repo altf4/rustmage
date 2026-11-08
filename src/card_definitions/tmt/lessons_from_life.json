@@ -8,5 +8,27 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3ad0fadb0650c59947cf7658debc9562df5a33ef05f23e1ddee5baaefcae7160"
   },
-  "physical_metadata_sha256": "dc02abb797acb977ec2536e6fd5ddd950a1d6121b9705e64b0b4c1102a24f179"
+  "physical_metadata_sha256": "dc02abb797acb977ec2536e6fd5ddd950a1d6121b9705e64b0b4c1102a24f179",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LessonsFromLife.java",
+  "java_sha256": "a738045093516268c9e137679eb415d87efd257ff739ad41c9b03caf1aaf9628",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutCardFromHandOntoBattlefieldEffect.java",
+      "sha256": "60ead6e7cba07c849019361189b61b541490b8f4ec1bdda1e91b3315a673788a"
+    }
+  ],
+  "source_audit": {
+    "scope": "Full Oracle body, complete XMage card class and listed complete reusable implementations read; inherited typed behavior independently exercised with paid legal actions.",
+    "tests": [
+      "src/engine_tmt_inherited_batch_two_tests.rs"
+    ],
+    "status": "Focused rules audit; integrated release and complete-set acceptance remain integrator obligations."
+  }
 }

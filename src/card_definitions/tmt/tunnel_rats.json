@@ -8,5 +8,27 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2360ccc262b203eae2f0322baca6a08d1322820974dff940271ded5e23d69f63"
   },
-  "physical_metadata_sha256": "4df04a1413ee5c2f48885606ac2fd7ffb7e99bd0ece37925ff47a8c9dedc34a3"
+  "physical_metadata_sha256": "4df04a1413ee5c2f48885606ac2fd7ffb7e99bd0ece37925ff47a8c9dedc34a3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TunnelRats.java",
+  "java_sha256": "00ee797bcfa5b411a1dcc510204cd4579fd5f9e8c1bcc4afeda3fed9f35607dc",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToBattlefieldEffect.java",
+      "sha256": "16cae19ce2e7af02a635cb76afbd5f1139e792df2170daa35f5692a12412f54b"
+    }
+  ],
+  "source_audit": {
+    "scope": "Full Oracle body, complete XMage card class and listed complete reusable implementations read; inherited typed behavior independently exercised with paid legal actions.",
+    "tests": [
+      "src/engine_tmt_inherited_batch_four_tests.rs"
+    ],
+    "status": "Focused rules audit; integrated release and complete-set acceptance remain integrator obligations."
+  }
 }

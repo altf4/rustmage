@@ -3,10 +3,55 @@
   "catalogue_id": 4619,
   "oracle_id": "86ef86de-104f-4eae-a2db-893b50e95ad7",
   "facts_sha256": "cb89bbafeb962701101d28b105d82608ae53f8949c6ab69b905497932ae6a93a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9d29c824f697c0ab70e580093982f81965cc0329db487898d850b459a08575fb"
   },
-  "physical_metadata_sha256": "2d6acaa849175b340f8f0502fdd0d750b00f8ea48c351c196afaf8d216871ad7"
+  "physical_metadata_sha256": "2d6acaa849175b340f8f0502fdd0d750b00f8ea48c351c196afaf8d216871ad7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TokkaAndRahzarTerribleTwos.java",
+  "java_sha256": "6295ac1e3ac1e7fa66d8561cec607601cd830d07955b7cd1847ee5d3475f6139",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CantBeCounteredSourceAbility.java",
+      "sha256": "ab592d3d97f245e6b3ca9971e1c559a7063c8717a4a5963b64564a13abd768de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastAllTriggeredAbility.java",
+      "sha256": "7837dc850438ff0b6ee06931b9578252338a1abd3306475a94d92d1333df4988"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CantBeCounteredSourceEffect.java",
+      "sha256": "f682272dc5b296650d7dfffd0792fcf6508ee366cc67bf1f583d31017a94e9a2"
+    }
+  ],
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "107.1b",
+      "118.3",
+      "118.5",
+      "400.7",
+      "601.2",
+      "603.3c",
+      "608.2h",
+      "701.23"
+    ],
+    "note": "Paid legal scenarios in engine_tmt_alliance_batch_tests.rs cover optional qualified searches, actual hand movement, grouped activation targets, resolution-time ability choice, per-turn modes, exact entering power/life payments, actual cast mana, card-type history, and owned branching/restore."
+  }
 }

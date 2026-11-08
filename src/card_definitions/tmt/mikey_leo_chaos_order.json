@@ -3,10 +3,38 @@
   "catalogue_id": 2756,
   "oracle_id": "a86117c1-b83d-4350-9a10-a23b7e67e1bd",
   "facts_sha256": "c83a4c7a5a33ad5746edd4469ccbe9bdc3a35f4d1ecb4855ad9c198562908b35",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e15e8c59daa0068fe245917e659c88cb47645ea37eadda816844efd1392e6858"
   },
-  "physical_metadata_sha256": "4e9a2d4a189c15e05c08316910ab6f19777fb6f6c31a40d6f28972714ccd2076"
+  "physical_metadata_sha256": "4e9a2d4a189c15e05c08316910ab6f19777fb6f6c31a40d6f28972714ccd2076",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MikeyAndLeoChaosAndOrder.java",
+  "java_sha256": "2640e53d45af36fb4ff28ac3eda2bd71c12a9047f04c0bff8f723d3d4fc9ab57",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/PutCounterOnPermanentTriggeredAbility.java",
+      "sha256": "f333016822bde02a6e1be7257787d3031615b525220bf0e7403a392289f4e5d3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ],
+  "rules_tests": "src/engine_tmt_mutagen_tests.rs",
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "122.6",
+      "122.6a",
+      "603.2",
+      "608.2b",
+      "613.11"
+    ],
+    "note": "Counter placement includes entry counters and records the player placing them; only actual nonzero additions trigger. The once-per-turn limit is consumed when the ability triggers. External blocking restrictions are rule effects applied after characteristic layers and survive ability removal from recipients. Optional zero-target spells resolve; all chosen targets illegal causes the spell to fizzle, including its later token creation."
+  }
 }

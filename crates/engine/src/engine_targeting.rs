@@ -1439,6 +1439,8 @@ impl Game {
             self.state.pending = Pending::EvidenceIntent { player };
         } else if a.needs_bargain() {
             self.state.pending = Pending::Bargain { player };
+        } else if self.needs_library_entry_counter_choice(&a.item) {
+            self.state.pending = Pending::LibraryCastPermission { player };
         } else if a.needs_kicker() {
             self.state.pending = Pending::Kicker { player };
         } else if a.needs_gift() {
@@ -1802,6 +1804,7 @@ impl Game {
                 return match *predicate {
                     TargetPredicate::OwnedByController => object.owner == controller,
                     TargetPredicate::Basic => world.definition(id).is_basic_land(),
+                    TargetPredicate::Kinds(kinds) => world.kinds(id) & kinds == kinds,
                     TargetPredicate::EnteredGraveyardThisTurn => {
                         object.zone == Zone::Graveyard
                             && object.is_card()
@@ -2111,10 +2114,10 @@ impl Game {
         );
         self.state.passes = 0;
         let stash_origin = self.foreign_stash(actor, card);
-        let definition = self.effective_spell_card(card);
-        let library_counter = definition.is_creature()
-            && self.library_subtype_cast_permission(actor, card, definition);
-        let linked_play = self.prepare_linked_exile_cast(actor, card);
+        let library_counter = self.library_entry_counter(actor, card);
+        let linked_play = self
+            .prepare_linked_exile_cast(actor, card)
+            .map(|approval| (approval, self.has_exile_free_permission(actor, card)));
         let modifiers = self.exile_cast_modifiers(actor, card);
         let origin = self.state.objects[card as usize].zone;
         let before = self.object_view(card);
@@ -2145,16 +2148,20 @@ impl Game {
         }
         let id = self.next_stack_id();
         let mut item = self.cast_preview(actor, card, origin, object, id, payment);
-        if library_counter {
-            self.record_cast_entry_counters(object, CounterKind::PlusOne, 1);
+        if let Some(mut counter) = library_counter {
+            counter.spell = id;
+            self.state
+                .linked_choices
+                .get_or_insert_default()
+                .library_entry_counter = Some(counter);
         }
-        if let Some(approval) = linked_play {
+        if let Some((approval, independent_free)) = linked_play {
             self.state
                 .linked_choices
                 .as_mut()
                 .unwrap()
                 .play_approvals
-                .push((id, approval));
+                .push((id, approval, independent_free));
         }
         if outcome.uncounterable {
             self.mark_spell_uncounterable(id);

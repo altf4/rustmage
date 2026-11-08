@@ -8,5 +8,22 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "dad519d1f128e275f50a256f3737fd16aa0b2196fa0f987950d01c6d58bf13ae"
   },
-  "physical_metadata_sha256": "1d7e8fbb8cc45f860a1f5f1fd1055346408ee69cc242316c2c82715b70cee164"
+  "physical_metadata_sha256": "1d7e8fbb8cc45f860a1f5f1fd1055346408ee69cc242316c2c82715b70cee164",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DeathInTheFamily.java",
+  "java_sha256": "a29a0bfe5a7cf5f1b41ce67ea9fb7b62d4c610d1f2cdf1579c691cab4dad010f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
+      "sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756"
+    }
+  ],
+  "source_audit": {
+    "scope": "Full Oracle body, complete XMage card class and listed complete reusable implementations read; inherited typed behavior independently exercised with paid legal actions.",
+    "tests": [
+      "src/engine_tmt_inherited_batch_tests.rs"
+    ],
+    "status": "Focused rules audit; integrated release and complete-set acceptance remain integrator obligations."
+  }
 }

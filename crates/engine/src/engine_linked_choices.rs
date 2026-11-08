@@ -83,7 +83,8 @@ pub(super) struct ChoiceState {
     pub legendary_search: Option<Box<legendary_split_search::LegendarySplitSearch>>,
     pub delayed_steps: Vec<delayed_steps::DelayedStep>,
     pub play_grants: Vec<limited_exile::LimitedExilePlay>,
-    pub play_approvals: Vec<(u64, limited_exile::LimitedExilePlay)>,
+    pub play_approvals: Vec<(u64, limited_exile::LimitedExilePlay, bool)>,
+    pub library_entry_counter: Option<library_entry_counter::LibraryEntryCounter>,
     pub null_cast_links: Vec<NullCastLink>,
     hidden: BTreeMap<ObjectRef, HiddenExile>,
 }
@@ -124,7 +125,7 @@ impl ChoiceState {
                 .sum::<usize>()
             + self.play_grants.len() * std::mem::size_of::<limited_exile::LimitedExilePlay>()
             + self.play_approvals.len()
-                * std::mem::size_of::<(u64, limited_exile::LimitedExilePlay)>()
+                * std::mem::size_of::<(u64, limited_exile::LimitedExilePlay, bool)>()
             + self.null_cast_links.len() * std::mem::size_of::<NullCastLink>()
             + self.piles.as_ref().map_or(0, |p| {
                 (p.remaining.len() + p.up.len() + p.down.len()) * std::mem::size_of::<ObjectRef>()
@@ -146,7 +147,10 @@ impl Game {
             data.piles = None;
             data.keep_types = None;
             data.sacrifice = None;
-            if data.links.is_empty() && data.null_cast_links.is_empty() && data.hidden.is_empty() {
+            data.linked_exile_mode = None;
+            data.linked_exile_selected = None;
+            data.legendary_search = None;
+            if **data == ChoiceState::default() {
                 self.state.linked_choices = None;
             }
         }

@@ -3,10 +3,35 @@
   "catalogue_id": 564,
   "oracle_id": "e0d221da-16cd-4399-830f-eecc9a0912eb",
   "facts_sha256": "62d09ee9900b7bb28cace88d57fb65e65c4793dee4d5d5895e0c4b06f16b7a0f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "067ebe7d787cc6c9a651bc97615348b1ad084d4e4380ef07588c73dc73239b6b"
   },
-  "physical_metadata_sha256": "5056b2a4897980c657e79d3ed74b0babfd8b7dd3e2ba4160c2b85c7aada50443"
+  "physical_metadata_sha256": "5056b2a4897980c657e79d3ed74b0babfd8b7dd3e2ba4160c2b85c7aada50443",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BroadcastTakeover.java",
+  "java_sha256": "4a2d8250a5404fe84e2414667b124efed061f2b38e394f9b34586f0905c14822",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainControlAllUntapGainHasteEffect.java",
+      "sha256": "d35514598beca2e83044105937ab7a174f8abdd13cbcd3f27a00151fc8370576"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainControlAllEffect.java",
+      "sha256": "b888d6a65927ee74dae6633d190c0d984fb7d78259756990e55ef8fb5b2be21d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapAllEffect.java",
+      "sha256": "47ebd67f929a1ed625874e7efc4fa26009e074822875002bac26772575136f3c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAllEffect.java",
+      "sha256": "fccf43cbeaa763aae8a75efc3f28c5e33dcd045398d9b1cf6a97270e4a9000e4"
+    }
+  ]
 }

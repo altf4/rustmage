@@ -3,10 +3,40 @@
   "catalogue_id": 1078,
   "oracle_id": "8f0777bc-4fca-4601-beed-1fd060f28075",
   "facts_sha256": "9f9be69247ec50f71304d494f8dfe8049efdcb2084a0c03143268e8a138bdcaa",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c15cb4031bde2c87ef3c1777100d0f1a621e0a2fe7b5c8b3e004a9e0d404cb4f"
   },
-  "physical_metadata_sha256": "7e068059c231a10e35688342cb7d0a91b7a5530b2667546e63ee0362ce80b289"
+  "physical_metadata_sha256": "7e068059c231a10e35688342cb7d0a91b7a5530b2667546e63ee0362ce80b289",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DimensionalExile.java",
+  "java_sha256": "194c8011483febe5b2d5900ebc21c6945f181b08a343f490afa06558938d6fb0",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+      "sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileUntilSourceLeavesEffect.java",
+      "sha256": "b996095b17f25f3acb6d649beaf87d3f4abca10338c9444419cca03029d940bf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/OnLeaveReturnExiledAbility.java",
+      "sha256": "5b62cf341bee369a87d667c2431aa2bdf252f167e84793aca73e04a2ceee1822"
+    }
+  ]
 }

@@ -129,7 +129,7 @@ pub(super) fn quality_from_world<W: ability_world::CharacteristicWorld + ?Sized>
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Quality {
-    const ORDINARY: Self = Self {
+    pub(super) const ORDINARY: Self = Self {
         restriction: ManaRestrictionView::Unrestricted,
         spell_bonus: ManaSpellBonusView::None,
         retention: ManaRetention::Step,

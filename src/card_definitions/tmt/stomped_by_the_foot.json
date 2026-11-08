@@ -3,10 +3,47 @@
   "catalogue_id": 4160,
   "oracle_id": "10185447-a13f-40d8-a8b6-39ce801f2fc0",
   "facts_sha256": "f82ce97013be6fd6c45d7cc3428786316f503d9357654e4a1b3905c1e3d8c2be",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5bf1005c54104f0564a46211130b51f5ddc98af83d6719549a73f108a458bbac"
   },
-  "physical_metadata_sha256": "3050c27477ef9b0cf0d8eb0a50f9b6bd088b172f23277116f54309a64bc8ec65"
+  "physical_metadata_sha256": "3050c27477ef9b0cf0d8eb0a50f9b6bd088b172f23277116f54309a64bc8ec65",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StompedByTheFoot.java",
+  "java_sha256": "5c9979828ce18b3ab4d0f5c44778bd707e228f524bffa4b1c2f63c408cbb58bd",
+  "rules_tests": "src/engine_tmt_final_spells_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/KickedCondition.java",
+      "sha256": "6c4e759d58e4d9a85bcf6d6262fcae06b43a04d08ffbf3c71d7d850dbfba5a04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AddContinuousEffectToGame.java",
+      "sha256": "3647d2fb3d84fed968d2b45c43d33d706a712ec4dc4f9ba7aa39d39cc3efa31e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/KickerAbility.java",
+      "sha256": "fa52c368056b1e9798f37a5af5bb70a0fe935aaf23a71dcf592a67eae3e13650"
+    }
+  ],
+  "oracle_rules_notes": "Nonmana kicker is announced before targets and its exact sacrifice witness is chosen with additional costs. Joint funding reserves the witness while permitting tap-then-sacrifice, but not sacrifice-for-mana plus sacrifice again. A sacrificed target becomes illegal; -2/-2 or -5/-5 expires at cleanup."
 }

@@ -3,10 +3,35 @@
   "catalogue_id": 2179,
   "oracle_id": "3d081701-514b-4611-b5a1-239b8f335fb6",
   "facts_sha256": "b6f4859f757cecfe3c9959ffc41e4312e4b6c483421df3b7625dc3181eacef46",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "995b246c96988c265d9653f4747fc9ebe366169db2386d486a2f5905c1eb05bf"
   },
-  "physical_metadata_sha256": "83cf9f25ceed17f5f1346c45b008b1abce77e48b79f21f68b838abdaee0881d6"
+  "physical_metadata_sha256": "83cf9f25ceed17f5f1346c45b008b1abce77e48b79f21f68b838abdaee0881d6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/InsectoidExterminator.java",
+  "java_sha256": "d6efe3952f6e4484335b15141e97a7e2aeba7563c1eab35ff41e69a26fd81520",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/RevoltCondition.java",
+      "sha256": "eead800f3b89bb7d03776b7366556d161ab63dca93fc82ff0db185990e01002c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/RevoltWatcher.java",
+      "sha256": "596de803f88a78c9c8210442aca24cd62c678ff57c421063ff5398efe6154438"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ScryEffect.java",
+      "sha256": "2b5d4d62bb612633238db872252ec41349e37180816e4a965002ee3b6f8d0b58"
+    }
+  ]
 }

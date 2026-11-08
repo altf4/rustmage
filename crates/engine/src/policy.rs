@@ -253,6 +253,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             }
             Action::ChooseCasualty { pay }
             | Action::ChooseOffspring { pay }
+            | Action::ChooseLibraryCastPermission { with_counter: pay }
             | Action::ChooseKicker { pay } => {
                 if *pay {
                     100

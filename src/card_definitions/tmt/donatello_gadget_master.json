@@ -3,10 +3,30 @@
   "catalogue_id": 1128,
   "oracle_id": "bb6aef0d-052b-44e6-b4cd-2d2eafd84969",
   "facts_sha256": "6d464c135e93b9548ad4a8f1589b477b7ad26c0530c111bbf3b443c4f35f290a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c57c605cc114451e5a7227ec0fc5925e7038f405d4d874b38de938d693489bbd"
   },
-  "physical_metadata_sha256": "4caba4bd0125748e037248be0634f66b8fe744872852200c5a8256018b286418"
+  "physical_metadata_sha256": "4caba4bd0125748e037248be0634f66b8fe744872852200c5a8256018b286418",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DonatelloGadgetMaster.java",
+  "java_sha256": "8ee7a3c3673580710cbe58c43bf4405a6bbda7b206ab68b442ef31ed5b6507ec",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/SneakAbility.java",
+      "sha256": "b25a32bf041c6a146f7d602c757f3be034f9282db5ed9c6cc03070b374611c70"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ReturnToHandChosenControlledPermanentCost.java",
+      "sha256": "ea8192aa5d4930687e7803379d509a1bd5a1910bcd418503f19a8de6417072b4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenCopyTargetEffect.java",
+      "sha256": "d04e58fdcda406a60d92c760243fca54440f13ec1fc94517c97eb9b360b9a158"
+    }
+  ]
 }

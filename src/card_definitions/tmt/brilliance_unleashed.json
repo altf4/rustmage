@@ -3,10 +3,27 @@
   "catalogue_id": 553,
   "oracle_id": "b047cd3f-9129-41cc-8b91-b0dc970f5068",
   "facts_sha256": "0bfd67b3db578f011ab6ce26eb0ce3e62c678d7cbd0fc4d17e1372a8f1502a70",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c1c9825ed85363882021dfdca53d9fb5c7cf421b44a32fe9148199be8e4af18a"
   },
-  "physical_metadata_sha256": "9993f4d95313c2612a3845906d9a762ab7f11e27d9ca04a0559bf6e5254864b3"
+  "physical_metadata_sha256": "9993f4d95313c2612a3845906d9a762ab7f11e27d9ca04a0559bf6e5254864b3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BrillianceUnleashed.java",
+  "java_sha256": "27c1453b748323cdcad5e9a51586039b712084237a7c65b18080d20141c7918a",
+  "rules_tests": "src/engine_tmt_final_spells_tests.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BecomesCreatureTargetEffect.java",
+      "sha256": "434e8c33e1b80342d01dc8475ebc78920a314f3265bae6e16da7902d4e40c4f8"
+    }
+  ],
+  "oracle_rules_notes": "Actual returned incarnation receives the permanent animation before entry observers. Printed artifact creatures are not animated. Continuous animation is not copiable (CR707.2). Mode groups retain independently legal targets."
 }

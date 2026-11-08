@@ -1,0 +1,1700 @@
+{
+  "schema": 1,
+  "set": "TMT",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "table": {
+    "source": "Mage.Sets/src/mage/sets/TeenageMutantNinjaTurtles.java",
+    "sha256": "638d9a3bda714c22da0c27244e3ee3f35b3ca3897400627c5efc9fce207f6068",
+    "printing_count": 320
+  },
+  "scope": "All physical set card identities, including reprints and starter products; cosmetic printings counted once",
+  "card_count": 195,
+  "cards": [
+    {
+      "name": "Action News Crew",
+      "oracle_id": "a9d68cf5-3055-4ec9-9893-244bfd7046be",
+      "facts_sha256": "fa96fc7ddf56985f4cddb2d2e2797cc4cc3c19688ecfdd66f42956de5ecb6d33",
+      "printings": [
+        "1"
+      ]
+    },
+    {
+      "name": "Agent Bishop, Man in Black",
+      "oracle_id": "f33217cc-175f-45e8-bc69-801f41cb4495",
+      "facts_sha256": "a5b6cc2533be92cfcc3cfec0e8e05c32a723284c92a720ffb4f947cf2136ecbd",
+      "printings": [
+        "2",
+        "258"
+      ]
+    },
+    {
+      "name": "Anchovy & Banana Pizza",
+      "oracle_id": "5f4834c7-cd63-420b-8492-ef127ffd4f45",
+      "facts_sha256": "6eaf6a482b309b9c1ba6de1a11df75cf0708fb6a871a2257d7f55144380b6050",
+      "printings": [
+        "57"
+      ]
+    },
+    {
+      "name": "April O'Neil, Hacktivist",
+      "oracle_id": "d379a919-02cd-46fd-a6ce-b66a77745ae7",
+      "facts_sha256": "c5618b1060b1b154787961802f694eb3d3a6d7ffa9028123c078b4504ce7b2ac",
+      "printings": [
+        "227",
+        "282",
+        "29",
+        "292"
+      ]
+    },
+    {
+      "name": "April O'Neil, Kunoichi Trainee",
+      "oracle_id": "3f166376-2739-411c-8f42-96f2ef28ef86",
+      "facts_sha256": "939179cf83ec6556aa2babbc979b82714767d308c6baf790577aa3029a8d849f",
+      "printings": [
+        "3"
+      ]
+    },
+    {
+      "name": "April, Reporter of the Weird",
+      "oracle_id": "1c371003-e4f0-4d7c-b021-273176772f97",
+      "facts_sha256": "8f36b0a59698ab56f9ada554eabed04a35d1e09bd6cebbe7c85b7bf0d5e4b9e3",
+      "printings": [
+        "206",
+        "30"
+      ]
+    },
+    {
+      "name": "Armaggon, Future Shark",
+      "oracle_id": "e2a35850-92c5-40ab-8697-2e995819d7ac",
+      "facts_sha256": "2afa612ec6d6774e9e67f1e273b154cb3a0cd16448c2a4e981574e71be80cabb",
+      "printings": [
+        "264",
+        "58"
+      ]
+    },
+    {
+      "name": "Baxter Stockman",
+      "oracle_id": "e610bfd4-d064-410b-929c-1d9dd82828b1",
+      "facts_sha256": "331979a19e52fab7f0d101a274ad1139ba81e64a4a480e9878f9114df85a0f01",
+      "printings": [
+        "139"
+      ]
+    },
+    {
+      "name": "Bebop & Rocksteady",
+      "oracle_id": "a08b0a07-6da2-4ff6-88e5-88355dd84589",
+      "facts_sha256": "09479ceb12c05e276a66ebf11eecae9eb74a6cadca9926abec40c79c55e696e0",
+      "printings": [
+        "140",
+        "204",
+        "241"
+      ]
+    },
+    {
+      "name": "Bebop, Warthog Warrior",
+      "oracle_id": "39c813e1-0e26-440a-b9bd-e781f7576b8b",
+      "facts_sha256": "0fdd1faa66b02f4119747d30dcb4c48b25f8d54631f7533a3d7e3940f4274e21",
+      "printings": [
+        "59"
+      ]
+    },
+    {
+      "name": "Bespoke Bō",
+      "oracle_id": "679480aa-f9ad-4a6c-bd79-db9f9f75433d",
+      "facts_sha256": "3d7d03a14afaa8a21961c1a190bfdc8332e3114ba7558196469a08486bb002e8",
+      "printings": [
+        "31"
+      ]
+    },
+    {
+      "name": "Bot Bashing Time",
+      "oracle_id": "14079f05-fbc1-401c-9008-da678656b4c6",
+      "facts_sha256": "61e62646f9f4811849caeadc73fdd70e88ae0a5f435de86679765db02e8dfe97",
+      "printings": [
+        "85"
+      ]
+    },
+    {
+      "name": "Brilliance Unleashed",
+      "oracle_id": "b047cd3f-9129-41cc-8b91-b0dc970f5068",
+      "facts_sha256": "0bfd67b3db578f011ab6ce26eb0ce3e62c678d7cbd0fc4d17e1372a8f1502a70",
+      "printings": [
+        "141"
+      ]
+    },
+    {
+      "name": "Broadcast Takeover",
+      "oracle_id": "e0d221da-16cd-4399-830f-eecc9a0912eb",
+      "facts_sha256": "62d09ee9900b7bb28cace88d57fb65e65c4793dee4d5d5895e0c4b06f16b7a0f",
+      "printings": [
+        "234",
+        "86"
+      ]
+    },
+    {
+      "name": "Buzz Bots",
+      "oracle_id": "434e720f-2bfa-49b6-a5ac-fe0c0b24764d",
+      "facts_sha256": "6c9151df33bda6aebf6b1952bcd65770d1404d0681c2af21966aa05602fcf07d",
+      "printings": [
+        "32"
+      ]
+    },
+    {
+      "name": "Casey Jones, Jury-Rig Justiciar",
+      "oracle_id": "b4c4fdb9-e034-49c0-9f7f-07e8cae19eb2",
+      "facts_sha256": "b9988ee23d455a086eab59327a8ec8e5834ac43fd7ca94c25a80d82699510a7b",
+      "printings": [
+        "207",
+        "87"
+      ]
+    },
+    {
+      "name": "Casey Jones, Vigilante",
+      "oracle_id": "bc163b5a-0b1a-4257-8c07-5c7d5284015f",
+      "facts_sha256": "c103e8da155019f04d4766470afb55ca1d6c6fdb232e8788a22a7ed26a7ca400",
+      "printings": [
+        "235",
+        "286",
+        "296",
+        "88"
+      ]
+    },
+    {
+      "name": "Chrome Dome",
+      "oracle_id": "3dc71e16-b935-4ad7-b3f7-945ac2c179a7",
+      "facts_sha256": "5b5fd0d0c1714e7e8f846c30f46f8ea62415c5671c995c364a3e7f5819404510",
+      "printings": [
+        "172",
+        "276"
+      ]
+    },
+    {
+      "name": "Cool but Rude",
+      "oracle_id": "1f076303-d160-4e02-aa1e-9ed6040c3735",
+      "facts_sha256": "0df36191b1bc121f7b348c847b430f07535af0dddf5e26541ebb418f1edb3dd5",
+      "printings": [
+        "89"
+      ]
+    },
+    {
+      "name": "Courier of Comestibles",
+      "oracle_id": "049d8b06-db90-4b9c-8195-d987b3ef1005",
+      "facts_sha256": "cab31da08edfaa5236c62f810a4d5cc0e4a78b77ba697a7c4145ea8356c6fb34",
+      "printings": [
+        "112"
+      ]
+    },
+    {
+      "name": "Cowabunga!",
+      "oracle_id": "a1ddf985-1646-468c-b1a4-ab6bb8e9dd7c",
+      "facts_sha256": "4247573759faa0bc0c401a33e112610f7cfae8773de6285d33d8a3c1deb789c8",
+      "printings": [
+        "113"
+      ]
+    },
+    {
+      "name": "Crustacean Commando",
+      "oracle_id": "b24a87af-407f-4c58-80b4-caab9c65a233",
+      "facts_sha256": "c60173d96865d5d9b59a9861e5d6b87e6d7d93c88f62336ab0bb4139936e4743",
+      "printings": [
+        "33"
+      ]
+    },
+    {
+      "name": "Dark Leo & Shredder",
+      "oracle_id": "c3ea6af5-48b9-45d2-9576-46cacb2db5b0",
+      "facts_sha256": "7f20bb8aa5fa378a66d7336914d039c5b15885c7ea758e84cf35ee7839bd5350",
+      "printings": [
+        "142",
+        "220",
+        "289",
+        "299"
+      ]
+    },
+    {
+      "name": "Death in the Family",
+      "oracle_id": "f599471a-31a6-4fb0-bf27-c5b707e1db6a",
+      "facts_sha256": "cba3028840cdb25437a8709b12e28f40df00ecff1abb07268d1854b476f21f5c",
+      "printings": [
+        "61"
+      ]
+    },
+    {
+      "name": "Dimension X",
+      "oracle_id": "8683341a-e836-41e5-9034-4da09eb0ab42",
+      "facts_sha256": "e02cadb1389c46c6311b8dd227fdfda92d3b4a3df0a281727a9653c8d6a54ff9",
+      "printings": [
+        "183"
+      ]
+    },
+    {
+      "name": "Dimensional Exile",
+      "oracle_id": "8f0777bc-4fca-4601-beed-1fd060f28075",
+      "facts_sha256": "9f9be69247ec50f71304d494f8dfe8049efdcb2084a0c03143268e8a138bdcaa",
+      "printings": [
+        "4"
+      ]
+    },
+    {
+      "name": "Does Machines",
+      "oracle_id": "df54b79d-f31d-4582-86c0-1d34ec77be0f",
+      "facts_sha256": "d378cb34a607c8b6a02bad44432d7db3f3c24e251c4505444ff90e0d26efd834",
+      "printings": [
+        "34"
+      ]
+    },
+    {
+      "name": "Don & Leo, Problem Solvers",
+      "oracle_id": "a4ae71c8-ea1b-4fa4-9e47-cf00ab60c5ee",
+      "facts_sha256": "0b7f117139410056eb01f868c494c46bfed8f23a0d34517d68dd5b4ef29dad24",
+      "printings": [
+        "143",
+        "242"
+      ]
+    },
+    {
+      "name": "Don & Raph, Hard Science",
+      "oracle_id": "01758a4a-ac29-47ad-8e88-158374f1ae4c",
+      "facts_sha256": "8ee51d1cdf60579be463635b5fd334d56b9a2b01180770765e2f2d83dfd5175b",
+      "printings": [
+        "144",
+        "205",
+        "243"
+      ]
+    },
+    {
+      "name": "Donatello's Technique",
+      "oracle_id": "194284f7-cf92-4d9f-a8ce-e4dc3505ab7a",
+      "facts_sha256": "14353c04633da34dcdf2f01dad9aadb5a386b55be8f70438ec5bbdbcad3cafba",
+      "printings": [
+        "228",
+        "39"
+      ]
+    },
+    {
+      "name": "Donatello, Gadget Master",
+      "oracle_id": "bb6aef0d-052b-44e6-b4cd-2d2eafd84969",
+      "facts_sha256": "6d464c135e93b9548ad4a8f1589b477b7ad26c0530c111bbf3b443c4f35f290a",
+      "printings": [
+        "212",
+        "283",
+        "293",
+        "35"
+      ]
+    },
+    {
+      "name": "Donatello, Mutant Mechanic",
+      "oracle_id": "f6a7838d-380f-4752-a647-c55c2a0eb6e2",
+      "facts_sha256": "42275a57c231656c5d22faaa3bf8732aba8a64452b2c3fa3d744292e8f95dbe7",
+      "printings": [
+        "216",
+        "302",
+        "36"
+      ]
+    },
+    {
+      "name": "Donatello, Turtle Techie",
+      "oracle_id": "f84850bc-6348-449e-bd82-bb39e2119bec",
+      "facts_sha256": "bbb00925a5678c92cb2e51ea211cd6c40eb06f55f8ac7ebeca45ce042835bcf7",
+      "printings": [
+        "37"
+      ]
+    },
+    {
+      "name": "Donatello, Way with Machines",
+      "oracle_id": "194af2be-50c7-484b-bdd3-402bad70335b",
+      "facts_sha256": "2ef66d865c8c88ce5fa092cf4fdbd7bb6110706bfeef96cfc2818be4f1b3a23d",
+      "printings": [
+        "197",
+        "38"
+      ]
+    },
+    {
+      "name": "Dream Beavers",
+      "oracle_id": "a1cec8e8-cf3c-42a4-b625-ca0cd148664e",
+      "facts_sha256": "90615ae52ea0ec4392327a49d77f1a734c79d1cf80daddc8a4263c81539089e2",
+      "printings": [
+        "62"
+      ]
+    },
+    {
+      "name": "EPF Point Squad",
+      "oracle_id": "2dea1935-c227-46d5-9d98-e7d2cd612f98",
+      "facts_sha256": "599b7d4987e68dcb834930abfa432e1efdda31195f69b1754e7330bcae9ae2ee",
+      "printings": [
+        "145"
+      ]
+    },
+    {
+      "name": "East Wind Avatar",
+      "oracle_id": "e2ef355a-2472-47e0-9b2e-987994291921",
+      "facts_sha256": "83a9305f8aaee852381aba3d8afdec2f39d07796ae43711ed6f0094af31f3b36",
+      "printings": [
+        "5"
+      ]
+    },
+    {
+      "name": "Escape Tunnel",
+      "oracle_id": "0056fc91-4398-471c-b561-7ff99750ac8a",
+      "facts_sha256": "7c58321ca3af0f74073d92b0e1a537b6141e894e6f7269b34ba2c189dee80fcf",
+      "printings": [
+        "184"
+      ]
+    },
+    {
+      "name": "Everything Pizza",
+      "oracle_id": "aa481983-8f1a-4519-9371-5e7edcd3274f",
+      "facts_sha256": "b1b04d3c4fe9f363b538b2781a2f972e2bdf78e690219342e19a31206ac2585f",
+      "printings": [
+        "173"
+      ]
+    },
+    {
+      "name": "Featherbrained Filcher",
+      "oracle_id": "79a9fc1c-a6a9-483a-9ba7-d09fe41760c3",
+      "facts_sha256": "519776dfe332d1dccda8c9c72700a7267fb6e62aae5eadf1ac6773568f63019b",
+      "printings": [
+        "6"
+      ]
+    },
+    {
+      "name": "Foot Elite",
+      "oracle_id": "b6244b6c-664d-417a-bd58-ace5c7a995a2",
+      "facts_sha256": "bec8cdec9fd22c09eb8485bce3d9029cf57853cccee1e0ff148b53e41b7dc859",
+      "printings": [
+        "146"
+      ]
+    },
+    {
+      "name": "Foot Headquarters",
+      "oracle_id": "063dd25b-d4b4-4e09-acae-8c52dcb40803",
+      "facts_sha256": "4110cc8a0365b8a77418cb02d3553eacf3eb1169cd12b4e4e5da65a89f535921",
+      "printings": [
+        "185"
+      ]
+    },
+    {
+      "name": "Foot Mystic",
+      "oracle_id": "2043fbde-48c4-4a77-8911-8991d77de1eb",
+      "facts_sha256": "04368d2240acedd5ce20d82cf2e8db44db2f6dce3fd40401da01b83ce9ee5081",
+      "printings": [
+        "63"
+      ]
+    },
+    {
+      "name": "Foot Ninjas",
+      "oracle_id": "306652a8-9a9c-4b33-96d7-b59234d148e9",
+      "facts_sha256": "433274317c197bd60a81b92f1ca4ea6e4fff4e65d585688194cf449f2a1a4207",
+      "printings": [
+        "147",
+        "209"
+      ]
+    },
+    {
+      "name": "Forest",
+      "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+      "facts_sha256": "191d17171bc11d7b26d625ceb8f828799439304fc668127c733de3e0f65bdbd6",
+      "printings": [
+        "195",
+        "257",
+        "309",
+        "314",
+        "319"
+      ]
+    },
+    {
+      "name": "Frog Butler",
+      "oracle_id": "5b865275-4114-44d0-9832-ae5d3b4efba4",
+      "facts_sha256": "1c2549b89da972f15f6450ed8a9e981b3a91723b90d34b1b01c05667956c6ff2",
+      "printings": [
+        "114"
+      ]
+    },
+    {
+      "name": "Fugitive Droid",
+      "oracle_id": "c04d4fd4-e5aa-431d-824b-8bc94245f103",
+      "facts_sha256": "d65b981615bee0e276a24cd95c729029a3398e1b1b880224b49b2c98844ccd11",
+      "printings": [
+        "40"
+      ]
+    },
+    {
+      "name": "General Traag, Heart of Stone",
+      "oracle_id": "ade54bb7-3df8-4578-add8-1f85afee57ab",
+      "facts_sha256": "6d388dc9b1f9174e20cc46802e193a8ec7d76c68d008f62b04acf829becbe939",
+      "printings": [
+        "90"
+      ]
+    },
+    {
+      "name": "Genghis Frog",
+      "oracle_id": "1d6d0348-46ad-46ed-ae7b-d7510f0ebe70",
+      "facts_sha256": "3236a016c3dd01d351285eb087d7152dd5f60c839a3fa0d7f9298812bc7b7103",
+      "printings": [
+        "148"
+      ]
+    },
+    {
+      "name": "Go Ninja Go",
+      "oracle_id": "46f77c8c-6817-4aea-a80a-d91f508ccbd0",
+      "facts_sha256": "af8c626471ff7044f0363383858bcb0b9c85cc6906a05ef9cf36874ccd87eed8",
+      "printings": [
+        "149"
+      ]
+    },
+    {
+      "name": "Groundchuck & Dirtbag",
+      "oracle_id": "da344e46-6bdf-4032-8590-bac850d5713d",
+      "facts_sha256": "df2c87c9ae924d843d349e0ad9dd63134467d9d5881143c8458fa4889c348408",
+      "printings": [
+        "115",
+        "238"
+      ]
+    },
+    {
+      "name": "Grounded for Life",
+      "oracle_id": "9a334434-072a-4486-810a-63efb29dea6d",
+      "facts_sha256": "a368a63a81bc020fc41c4f128586cb9512eaeb39fb6a3599e8fd70318ad6e5d8",
+      "printings": [
+        "7"
+      ]
+    },
+    {
+      "name": "Guac & Marshmallow Pizza",
+      "oracle_id": "d6d83a51-9d57-44a7-aae3-a96d43ec5ac8",
+      "facts_sha256": "7cc1c4090f6951f613b360c7b200eb21132f42ca0759ab7be27659b51e95ff8f",
+      "printings": [
+        "116"
+      ]
+    },
+    {
+      "name": "Hamato Guardian Stance",
+      "oracle_id": "e08b19ca-f9d7-4c33-b37a-a77b37aabf1b",
+      "facts_sha256": "02603e4b9a9611237d1137cf06094427863658b44872e5ad23608c7b9c512164",
+      "printings": [
+        "8"
+      ]
+    },
+    {
+      "name": "Hard-Won Jitte",
+      "oracle_id": "ab433d41-e801-405c-81f7-06fa6640797d",
+      "facts_sha256": "222631289c824a4c728439f7efe12d15948a888e5a2ae01868eb0fec46de1818",
+      "printings": [
+        "91"
+      ]
+    },
+    {
+      "name": "Henchbots",
+      "oracle_id": "1f097c91-6c2e-410f-8c8f-c021f39491af",
+      "facts_sha256": "dad1595bc8ccc59a32804281f379319fa5d39c16cb5b91288ec82b7f8ba3d750",
+      "printings": [
+        "174"
+      ]
+    },
+    {
+      "name": "High-Flying Ace",
+      "oracle_id": "84a56740-8563-4ce5-8560-d44998d7f80d",
+      "facts_sha256": "bafcea3e7f17f86c1ec862b65e3cfc2d740a26a73737323c64d8ca87ce8f825b",
+      "printings": [
+        "9"
+      ]
+    },
+    {
+      "name": "Ice Cream Kitty",
+      "oracle_id": "f8131dca-ba6e-4ca4-943e-a3d26c75b8b8",
+      "facts_sha256": "15155a8b3b63ff3200a3a156e03e576d28e22c7176d56baf55fa3183a0a5ab5a",
+      "printings": [
+        "150"
+      ]
+    },
+    {
+      "name": "Illegitimate Business",
+      "oracle_id": "01ee70d4-6527-45ae-9600-bd3d16b3037d",
+      "facts_sha256": "efbf5350792c924f6e397b1ec7368ef1881ace8c7e895eec872be5207c570cbb",
+      "printings": [
+        "186"
+      ]
+    },
+    {
+      "name": "Improvised Arsenal",
+      "oracle_id": "4f02aa99-481c-4089-8f7c-cfe7eaa7dda0",
+      "facts_sha256": "9d15e1ccddef58b497c7480e3fc116241ef713b22dd64b86c0505b269922d736",
+      "printings": [
+        "270",
+        "92"
+      ]
+    },
+    {
+      "name": "Insectoid Exterminator",
+      "oracle_id": "3d081701-514b-4611-b5a1-239b8f335fb6",
+      "facts_sha256": "b6f4859f757cecfe3c9959ffc41e4312e4b6c483421df3b7625dc3181eacef46",
+      "printings": [
+        "64"
+      ]
+    },
+    {
+      "name": "Island",
+      "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
+      "facts_sha256": "9663433a19f0b70520d2598600be1ddac39dd97fd02f80811dcce06dd0cbaf26",
+      "printings": [
+        "192",
+        "254",
+        "306",
+        "311",
+        "316"
+      ]
+    },
+    {
+      "name": "Jennika's Technique",
+      "oracle_id": "90b1226f-4c90-47fd-98f3-ad4edd3b3518",
+      "facts_sha256": "898f282acedca06d2c5d0cc374e68002f7df9a2af92588721da92a7a01359a22",
+      "printings": [
+        "236",
+        "93"
+      ]
+    },
+    {
+      "name": "Jennika, Bad Apple Big Sister",
+      "oracle_id": "b55da4d3-2cad-4c89-ad3f-7d8397b64d52",
+      "facts_sha256": "35da778d5968dd821517b6d44290b982cb9a97b9306ce33887eb06b4b540790f",
+      "printings": [
+        "10",
+        "203"
+      ]
+    },
+    {
+      "name": "Karai's Technique",
+      "oracle_id": "e53fb128-bf90-4af6-b998-ef9c250001cb",
+      "facts_sha256": "c9db609f2c8f36f94b07290a73595d7b23d27db84a8847da6e746b1a743f0a54",
+      "printings": [
+        "152",
+        "244"
+      ]
+    },
+    {
+      "name": "Karai, Future of the Foot",
+      "oracle_id": "7246638e-0361-40e3-8019-3c10210a593e",
+      "facts_sha256": "51e56d5965959eaab3bf1bff7ac835f75f4c14d5519829a620076f50229ddd14",
+      "printings": [
+        "151"
+      ]
+    },
+    {
+      "name": "Kitsune's Technique",
+      "oracle_id": "3e0f8ab3-75a6-49a2-a228-fa720cbde3d8",
+      "facts_sha256": "fde81a1522412e649d99000d055570f547dc18cb5a4702a2bbf6c001ddb2bcc0",
+      "printings": [
+        "229",
+        "42"
+      ]
+    },
+    {
+      "name": "Kitsune, Dragon's Daughter",
+      "oracle_id": "9be19bdf-db1e-433e-8be4-8b985a568211",
+      "facts_sha256": "57bf54712dd6d64133858b0925769dc0af64b2201447962bf9da1eef34a03a35",
+      "printings": [
+        "262",
+        "41"
+      ]
+    },
+    {
+      "name": "Koya, Death from Above",
+      "oracle_id": "e7cd87d4-028c-49d9-9416-69f57e7dfec5",
+      "facts_sha256": "72054f906336efbfccdcdca90f37321d70c262054159be00584eee2181e90e01",
+      "printings": [
+        "11"
+      ]
+    },
+    {
+      "name": "Krang & Shredder",
+      "oracle_id": "2385c8fb-9c38-4ff3-8f61-4e25a8c7d46b",
+      "facts_sha256": "ff930417f16d9c4f1a550a817b021d83456553b4e43ac05a2bd17a01cf09ffe1",
+      "printings": [
+        "153",
+        "201",
+        "245"
+      ]
+    },
+    {
+      "name": "Krang, Master Mind",
+      "oracle_id": "52562194-4a97-40d2-aa73-7827f7834f2f",
+      "facts_sha256": "c5cd98adf4e4e7b3fa7b66d517596d7d80bdf6a0df43791a562710c870c8b8f5",
+      "printings": [
+        "230",
+        "43"
+      ]
+    },
+    {
+      "name": "Krang, Utrom Warlord",
+      "oracle_id": "2d56a491-b3eb-4f3e-82ab-981d3036c45d",
+      "facts_sha256": "9d3e7dc68e3c822ffaf69fad6f0f59b69a02891da4e7c7336f832563a5804c01",
+      "printings": [
+        "175",
+        "221",
+        "290",
+        "300"
+      ]
+    },
+    {
+      "name": "Leader's Talent",
+      "oracle_id": "134430b7-d566-485a-bd5c-7db8a285f4ca",
+      "facts_sha256": "b4db3ef417946447099acfb0c536579f3f1f2f36b2881cf3a04df31fb4dedf11",
+      "printings": [
+        "13"
+      ]
+    },
+    {
+      "name": "Leatherhead, Swamp Stalker",
+      "oracle_id": "ee9b606a-a1fe-43c8-84d0-9bf7b012cc75",
+      "facts_sha256": "b52ba9f158ec1efc58a6993888c2dae775def54e73d7a519b13cc9c2683f85a9",
+      "printings": [
+        "117",
+        "272"
+      ]
+    },
+    {
+      "name": "Leonardo's Technique",
+      "oracle_id": "e98c2af9-1393-487d-b8e9-f49a67bb7296",
+      "facts_sha256": "84bfc1d00f2fa3c351731d5d4840eca423cf110b9be19f8cfaa7eab879c8dac1",
+      "printings": [
+        "18",
+        "224"
+      ]
+    },
+    {
+      "name": "Leonardo, Big Brother",
+      "oracle_id": "6496eea7-38f5-4428-a379-b08b0eeb5239",
+      "facts_sha256": "f7d575b26401fac2291ff3f4b00981fd8512a69d8d7dd23895a64e73319a1811",
+      "printings": [
+        "14"
+      ]
+    },
+    {
+      "name": "Leonardo, Cutting Edge",
+      "oracle_id": "933fe6e5-8d00-4411-aa54-7780382c1ea6",
+      "facts_sha256": "e9ae295dbb988b7b46f812156c979c514a5d792ee6bbc9eb01270dd7ceb6807b",
+      "printings": [
+        "15",
+        "211",
+        "281",
+        "291"
+      ]
+    },
+    {
+      "name": "Leonardo, Leader in Blue",
+      "oracle_id": "348c7e22-2179-41b8-a5d2-8dd488e7e66d",
+      "facts_sha256": "eb8135dd2e4de031ea2b2b38d6e1b765136bf5dc7cdf2c12c18e73da6e50a144",
+      "printings": [
+        "16",
+        "196"
+      ]
+    },
+    {
+      "name": "Leonardo, Sewer Samurai",
+      "oracle_id": "74e3243b-6707-4769-8767-7cf2ef71009a",
+      "facts_sha256": "8583e7431b82b8296ef6d835633002b10cdeec8e542104e32ca1ffcb81302f36",
+      "printings": [
+        "17",
+        "215",
+        "301"
+      ]
+    },
+    {
+      "name": "Lessons from Life",
+      "oracle_id": "51df0203-578d-47e1-a9f7-a13445f597d7",
+      "facts_sha256": "a25c6b0b81b301762540e11b60ba82c97bef39e383602d91de1cfd09b535a34d",
+      "printings": [
+        "155"
+      ]
+    },
+    {
+      "name": "Lita, Little Orphan Amphibian",
+      "oracle_id": "212fdb7c-1c7e-4eed-b1ed-bcc14a425da8",
+      "facts_sha256": "184a3ec7e10a74c551383523249b6ebea6e3efcbd330e40572bf4c792d78b8f7",
+      "printings": [
+        "19"
+      ]
+    },
+    {
+      "name": "Lord Dregg, Insect Invader",
+      "oracle_id": "2db77e35-a54a-4e9c-8081-c97822515879",
+      "facts_sha256": "a292d14a1097acf281f64e1c164a73317226a82d64c6f52d3e171282aab13e04",
+      "printings": [
+        "65"
+      ]
+    },
+    {
+      "name": "Madame Null, Power Broker",
+      "oracle_id": "73413bd5-8c40-4d45-8f05-c20c39ee4017",
+      "facts_sha256": "175a666c07b81b85469d08b83a9936a450b2ac7d7f31cdfdf27ff30ebac88cfe",
+      "printings": [
+        "265",
+        "66"
+      ]
+    },
+    {
+      "name": "Make Your Move",
+      "oracle_id": "8226f31d-6f51-49c3-87f7-0c68f7f4f9ce",
+      "facts_sha256": "3dfcd0e25488caa6142411793c83604bc36992fe2b4ba3a53bc5e46a1b4efcdf",
+      "printings": [
+        "20"
+      ]
+    },
+    {
+      "name": "Manhole Missile",
+      "oracle_id": "c596b847-4e05-4279-8675-b4e39cb3dc91",
+      "facts_sha256": "0adffb8ea4038955f36081a07e11c64637159bd6c9a3b1e6e9bf3cb838bc7557",
+      "printings": [
+        "94"
+      ]
+    },
+    {
+      "name": "Mechanized Ninja Cavalry",
+      "oracle_id": "2db8dda3-8136-4cf2-ba2d-ecc344a36725",
+      "facts_sha256": "cebe8dea9e73a82be5ec67e96133e288b2ef76d8928cc889d77b2bc3a5996c22",
+      "printings": [
+        "156"
+      ]
+    },
+    {
+      "name": "Metalhead",
+      "oracle_id": "7df45a2a-75bc-4343-8dad-3a642efd13ee",
+      "facts_sha256": "e62465eb6707e909c86e9f3999b70a2f02507dafb13c48870035446272ddd1bc",
+      "printings": [
+        "44"
+      ]
+    },
+    {
+      "name": "Michelangelo's Technique",
+      "oracle_id": "42f12942-9ac1-497e-a8b7-9f66a5afd0ae",
+      "facts_sha256": "4701be46965b312c1375438c8f7aefaa3a61f98e9ff854eeb635aefdbcf07fa7",
+      "printings": [
+        "122",
+        "239"
+      ]
+    },
+    {
+      "name": "Michelangelo, Game Master",
+      "oracle_id": "594c6b1f-ff0e-4122-8b29-852632a22a79",
+      "facts_sha256": "3d14af44092519cbc31bcdae19493297677b3516811c46933254fdeb1e525f29",
+      "printings": [
+        "118"
+      ]
+    },
+    {
+      "name": "Michelangelo, Improviser",
+      "oracle_id": "1939679b-ea2e-4a75-b3ce-d7af68437484",
+      "facts_sha256": "4dbd540abada0fdcd7e145a86e112892b27aad17033802e434c5cd25b73eb026",
+      "printings": [
+        "119",
+        "219",
+        "304"
+      ]
+    },
+    {
+      "name": "Michelangelo, Mutant BFF",
+      "oracle_id": "fe1eb8b3-c605-4711-a057-ed3565bfe75c",
+      "facts_sha256": "7801573421febc1122aaa713eec254ee9edfdad8d20dcf147bd36eb1648e5bd8",
+      "printings": [
+        "120",
+        "198"
+      ]
+    },
+    {
+      "name": "Michelangelo, Weirdness to 11",
+      "oracle_id": "170ab932-9d50-4ce7-9a42-08e1edce7e7c",
+      "facts_sha256": "abd1022f3e4d6b5594110de712516682b96c72b3a73150eddad45112c8311917",
+      "printings": [
+        "121",
+        "214",
+        "288",
+        "298"
+      ]
+    },
+    {
+      "name": "Mighty Mutanimals",
+      "oracle_id": "fcdc7dfc-04b5-411a-ab49-282b9c2608e2",
+      "facts_sha256": "38cf4d255e949d1e0978a38654e29dc942b5cbef8ab451ef94b90bda682ee950",
+      "printings": [
+        "21"
+      ]
+    },
+    {
+      "name": "Mikey & Don, Party Planners",
+      "oracle_id": "529178e8-425e-4d59-948c-ca7d0663f6ff",
+      "facts_sha256": "388b9972709fa6b689b53c59a6ae0a9ca3dd337ff84b8e998d5cbd776c49e785",
+      "printings": [
+        "157",
+        "246"
+      ]
+    },
+    {
+      "name": "Mikey & Leo, Chaos & Order",
+      "oracle_id": "a86117c1-b83d-4350-9a10-a23b7e67e1bd",
+      "facts_sha256": "c83a4c7a5a33ad5746edd4469ccbe9bdc3a35f4d1ecb4855ad9c198562908b35",
+      "printings": [
+        "158",
+        "200",
+        "247"
+      ]
+    },
+    {
+      "name": "Mind Transfer Protocol",
+      "oracle_id": "0d80d0f7-a436-431c-a54e-e7dd7dbba8de",
+      "facts_sha256": "3d1eb08fc494fb19ffeb8a38035a8ed7e2e27c805fa09e8a16fcbdebf35df8e7",
+      "printings": [
+        "45"
+      ]
+    },
+    {
+      "name": "Mona Lisa, Science Geek",
+      "oracle_id": "e6490e98-37a9-4a8b-a04c-cceeb22b0c35",
+      "facts_sha256": "f3e4fcdfebeda03f3a97d5872c2f654f550a8746757623dff96af43410485fd8",
+      "printings": [
+        "123"
+      ]
+    },
+    {
+      "name": "Mondo Gecko",
+      "oracle_id": "fa3ae120-756d-4c52-91f9-235767539d67",
+      "facts_sha256": "dd7fe0e117fe96bc9063cc143b78b23c4bff42a6c5f528196f112f9aa742a019",
+      "printings": [
+        "231",
+        "46"
+      ]
+    },
+    {
+      "name": "Mountain",
+      "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+      "facts_sha256": "dc8fd7c2b9340114200a1478f7e78bc91e28a0949ef1353a3bb0b2e39e65f366",
+      "printings": [
+        "194",
+        "256",
+        "308",
+        "313",
+        "318"
+      ]
+    },
+    {
+      "name": "Mouser Attack!",
+      "oracle_id": "bae5dc68-1fd1-428d-bee7-c238e07b21ea",
+      "facts_sha256": "87e46002493698a323e5bcef96d9340f0d22aa15347a2a23565e40a0445611f3",
+      "printings": [
+        "95"
+      ]
+    },
+    {
+      "name": "Mouser Foundry",
+      "oracle_id": "404e958b-ead9-4ec7-b786-7b3d65e29967",
+      "facts_sha256": "80b44a3d76e69cce697e409e7ba81b6b78d5af696765308db3f2dc8d7e1e1611",
+      "printings": [
+        "96"
+      ]
+    },
+    {
+      "name": "Mouser Mark III",
+      "oracle_id": "ad0c6d46-a1ca-4a9f-93f0-4a4dc31868e6",
+      "facts_sha256": "ad6a9f03dc3b55075b0f461006af144a40ffcbd34b03aeeff6aa0c7ab3da6625",
+      "printings": [
+        "159"
+      ]
+    },
+    {
+      "name": "Mutagen Man, Living Ooze",
+      "oracle_id": "472d9a18-19a0-46c0-a4bf-328ebec7ce41",
+      "facts_sha256": "f93577abd6118c3dbb20ad4380cbece8d103d75461868598d3176c9c8fd42ac2",
+      "printings": [
+        "124",
+        "273"
+      ]
+    },
+    {
+      "name": "Mutant Chain Reaction",
+      "oracle_id": "ea9fc868-374b-4acc-be0d-4283907b4524",
+      "facts_sha256": "80df7ce71caba16c0fd8c64674cae7d935d90b43525b88ee6f152abcfa4ddfc0",
+      "printings": [
+        "125"
+      ]
+    },
+    {
+      "name": "Mutant Town",
+      "oracle_id": "f6059731-2e10-4f72-a214-b257f1677e9e",
+      "facts_sha256": "82bcb0b022c868d85620dc2d41dec4e3128e16824c26a88f55f5e954454b7d74",
+      "printings": [
+        "187"
+      ]
+    },
+    {
+      "name": "Mutant Town Musicians",
+      "oracle_id": "9f318ddc-3dc5-4e43-92b3-3a776e41c56e",
+      "facts_sha256": "53a885e75ee2b039c0539b90fc469a8dae0d2dd463c7001563c46f9c02397ad7",
+      "printings": [
+        "97"
+      ]
+    },
+    {
+      "name": "Negate",
+      "oracle_id": "3407fe41-fdd3-4119-8f70-4bc4590a379f",
+      "facts_sha256": "34e74431417b713872cd1af5d0dcfb47afae4c865874994fe263eb5c138bd075",
+      "printings": [
+        "47"
+      ]
+    },
+    {
+      "name": "New Generation's Technique",
+      "oracle_id": "e7ae3ee7-824f-4dcb-8f28-7de99e4d8c3e",
+      "facts_sha256": "98eb5d0630994cf34a08b16469df6c41e12aef800463fbfa2043d33fbe8007f3",
+      "printings": [
+        "126",
+        "240"
+      ]
+    },
+    {
+      "name": "Ninja Teen",
+      "oracle_id": "2c5044ff-a303-4276-8e23-7caac30a275b",
+      "facts_sha256": "e45a8cbbf8a74a15e66dce03dbf4938ebeefe91aaf11460b50bc02e4fd5760de",
+      "printings": [
+        "67"
+      ]
+    },
+    {
+      "name": "Nobody",
+      "oracle_id": "eddab60f-2eac-4f20-934c-3d9307f885c3",
+      "facts_sha256": "0f5034cbecb935d855920436d9b182d073830c5a66a2d8586a9988bb06a27901",
+      "printings": [
+        "161"
+      ]
+    },
+    {
+      "name": "North Wind Avatar",
+      "oracle_id": "b408c345-b308-4920-8494-4f204d856aa3",
+      "facts_sha256": "e5e1eddda81c28b0916e0f77dce6325c8c8f346f2dfd6e6bbc1fa3eb29ee9b30",
+      "printings": [
+        "162",
+        "248"
+      ]
+    },
+    {
+      "name": "Northampton Farm",
+      "oracle_id": "e05f1a43-16ce-4e88-b0ad-2202efb25516",
+      "facts_sha256": "73fa7f45c99155e0c60eee1c3c69a38907b0cd2cf0c67b5c06a62295f117fdde",
+      "printings": [
+        "188",
+        "280"
+      ]
+    },
+    {
+      "name": "Novel Nunchaku",
+      "oracle_id": "6d819742-3d02-4d60-9b10-82caa49a9d49",
+      "facts_sha256": "c2a1c6e2c360053f55013a07b383086d859c5ed1913be097f284b4191f808623",
+      "printings": [
+        "127"
+      ]
+    },
+    {
+      "name": "Null Group Biological Assets",
+      "oracle_id": "49598fd5-2aad-4974-b499-38b60fc371b6",
+      "facts_sha256": "63e894cc7031d03a52fb30006738464d16d93e4bd1d58acc6d1f88aa2a38ad92",
+      "printings": [
+        "98"
+      ]
+    },
+    {
+      "name": "Old Hob, Alleycat Blues",
+      "oracle_id": "e88b1520-aa9a-41ee-9036-4d4bebd1a0c0",
+      "facts_sha256": "ba49ce725684f0dc430cb24d1195d8538145a61fb86f04498492c6b0ddfb20e3",
+      "printings": [
+        "99"
+      ]
+    },
+    {
+      "name": "Omni-Cheese Pizza",
+      "oracle_id": "73144877-1d37-4c7a-8493-3cef191b9211",
+      "facts_sha256": "f7aeeccbd9dd02eb712ba132e0645946e25f83b667e219b9ea655e35f58caaa2",
+      "printings": [
+        "176"
+      ]
+    },
+    {
+      "name": "Ooze Spill",
+      "oracle_id": "c1c5f9da-1396-4406-b803-b64f66b8e49d",
+      "facts_sha256": "fdd335fa2bb23992951915c3a8994d03df145b409e3ce1f7084b495b51eb163c",
+      "printings": [
+        "48"
+      ]
+    },
+    {
+      "name": "Oroku Saki, Shredder Rising",
+      "oracle_id": "d14f620c-0fbd-485c-9fe4-34949e742147",
+      "facts_sha256": "9ca8661a60cbd47e73f711154fcc47a014fa3cf538c2a9225e6e78e187627c10",
+      "printings": [
+        "68"
+      ]
+    },
+    {
+      "name": "Pain 101",
+      "oracle_id": "e9975888-c75f-471e-a70d-17449e92226d",
+      "facts_sha256": "494d223425f3ffebd33e2f95a675ebe2b2ff29b35c1c7dbb8f922dedabcc1a78",
+      "printings": [
+        "69"
+      ]
+    },
+    {
+      "name": "Paramecia Coloniex",
+      "oracle_id": "9076a886-efe0-4c99-8661-f0fd7a7b3129",
+      "facts_sha256": "a7527682ee8168279b09eee9863fd60374705c45957bb6cbf2004055a3b3d055",
+      "printings": [
+        "70"
+      ]
+    },
+    {
+      "name": "Party Dude",
+      "oracle_id": "8df7a58c-053f-4ead-a778-2747718e5f10",
+      "facts_sha256": "3948af7bfbe05bc8233323d4ef5ebeb1504155039ed720703e0d415cae3d1b5e",
+      "printings": [
+        "128"
+      ]
+    },
+    {
+      "name": "Pizza Face, Gastromancer",
+      "oracle_id": "e71479c9-bb38-4112-bf8a-41b39a3ade51",
+      "facts_sha256": "06714979bf95bbe4f6df4dfb0528ee553f59bdfb49bd15b05292819a2a17e749",
+      "printings": [
+        "163"
+      ]
+    },
+    {
+      "name": "Plains",
+      "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
+      "facts_sha256": "a46fdb7aed01739b4f3c48497e4bf8b5ded78b5a5cf67d3fe57a045f47ee35c1",
+      "printings": [
+        "191",
+        "253",
+        "305",
+        "310",
+        "315"
+      ]
+    },
+    {
+      "name": "Prehistoric Pet",
+      "oracle_id": "2519ccc0-c206-41fb-aa15-2ef88025ff96",
+      "facts_sha256": "41973db807d3a4e4bd9b1bc30e1a08166810974e58ce44e18d0cd57841996811",
+      "printings": [
+        "22",
+        "259"
+      ]
+    },
+    {
+      "name": "Primordial Pachyderm",
+      "oracle_id": "5ebdc1a5-e678-444b-abb8-8753558a39de",
+      "facts_sha256": "1fe603e5e42f8ed399fba7222624d589401e65cf93a34d00a2baaeba98dd6790",
+      "printings": [
+        "129"
+      ]
+    },
+    {
+      "name": "Punk Frogs",
+      "oracle_id": "dfb13eca-55fd-4ac6-aee3-2bdbfe9e1c4e",
+      "facts_sha256": "5e4286b17e887f75e775a7612bb93301a86ff6f0766c60ed6cf3b18c96f425c7",
+      "printings": [
+        "164"
+      ]
+    },
+    {
+      "name": "Purple Dragon Punks",
+      "oracle_id": "d1edb950-a118-4b4d-a0ef-9a6683d74c9f",
+      "facts_sha256": "b5a0e156ba58ac0acd860a47e9a7eee5119a9fc7f01ed79b738f487319a510a7",
+      "printings": [
+        "100"
+      ]
+    },
+    {
+      "name": "Putrid Pals",
+      "oracle_id": "3aa3b908-e8d3-4944-8ced-5219d4129594",
+      "facts_sha256": "8c0fa28536e89f2a41d9414f17a3280ea26dec74c26e713f64b4a66894230eb3",
+      "printings": [
+        "165"
+      ]
+    },
+    {
+      "name": "Quintessential Katana",
+      "oracle_id": "e9685c61-e33d-4ae0-9dd3-7fd0df5eb46f",
+      "facts_sha256": "29db21baead7b9e303b0dc289d937a7c0bbd0735283eb72cb215dc33b294b043",
+      "printings": [
+        "23"
+      ]
+    },
+    {
+      "name": "Ragamuffin Raptor",
+      "oracle_id": "71b81f3f-6092-4819-8529-e27bccfcf088",
+      "facts_sha256": "df47cf90c22fa3b54e251044bff4a5642d0991ada6e4424a1d2b6e982300295e",
+      "printings": [
+        "130"
+      ]
+    },
+    {
+      "name": "Raph & Leo, Sibling Rivals",
+      "oracle_id": "57f39ce2-ecbb-4262-8140-03aba5c4303f",
+      "facts_sha256": "90a6e4cca39f04415b70ee854ba5e503047c0e57fac9d6ec503120ef980ab386",
+      "printings": [
+        "166",
+        "249"
+      ]
+    },
+    {
+      "name": "Raph & Mikey, Troublemakers",
+      "oracle_id": "82563a5f-cae4-4ece-876c-0df245d2dc58",
+      "facts_sha256": "e002bd7cffa4e6e3364e854c5cfbc05df336338e02e5163e2df493704a345f33",
+      "printings": [
+        "167",
+        "250"
+      ]
+    },
+    {
+      "name": "Raphael's Technique",
+      "oracle_id": "f58a5f8b-254c-4206-bdbe-55a23798ed2d",
+      "facts_sha256": "8fefda7a25709c6bc1248ed1d18778efb3e51b0e777df8ff1bdefef9c9473b87",
+      "printings": [
+        "105",
+        "237"
+      ]
+    },
+    {
+      "name": "Raphael, Most Attitude",
+      "oracle_id": "eaf194a7-d95f-4738-9052-92ad00443a76",
+      "facts_sha256": "ee8ae7028609c8d57fc5eae05e4ec8e86c17dde6825501413d812fea39c14675",
+      "printings": [
+        "101",
+        "199"
+      ]
+    },
+    {
+      "name": "Raphael, Ninja Destroyer",
+      "oracle_id": "fdb8e862-c642-4b7b-b061-400de6061ffe",
+      "facts_sha256": "4492d9300e7740f8b875a54ac2793b852c3adab165a59f82a767cb181934d47f",
+      "printings": [
+        "102",
+        "218",
+        "303"
+      ]
+    },
+    {
+      "name": "Raphael, Tough Turtle",
+      "oracle_id": "2c72e6d2-bbb0-42de-b465-438d584cbddc",
+      "facts_sha256": "80314886639f9ac261ba0f66c251c7e729bb3e064a6b2182c50d5f497fbe54d1",
+      "printings": [
+        "104"
+      ]
+    },
+    {
+      "name": "Raphael, the Nightwatcher",
+      "oracle_id": "8c1e5b25-ee5a-4ea9-a715-08dd1a4f51c4",
+      "facts_sha256": "f7ae108cf2033ffb09655d8a2c50096158d8394e3713bcf0c27f295c74371483",
+      "printings": [
+        "103",
+        "213",
+        "287",
+        "297"
+      ]
+    },
+    {
+      "name": "Rat King, Verminister",
+      "oracle_id": "a5656dab-5ce6-48fd-9eae-2c06969bb8df",
+      "facts_sha256": "d8178153695019c98e26bbfa367ef7da003d317843fb8736e3a76b986ef5ca99",
+      "printings": [
+        "266",
+        "71"
+      ]
+    },
+    {
+      "name": "Ravenous Robots",
+      "oracle_id": "45873747-f2a4-4d83-9492-bfc97df7b605",
+      "facts_sha256": "74f1e4f2cbb8c2d4e79b8ddd89110abdb0d1688b937c1a8538d38d094ea123f0",
+      "printings": [
+        "106",
+        "271"
+      ]
+    },
+    {
+      "name": "Ray Fillet, Man Ray",
+      "oracle_id": "698098b8-b8e4-4e88-b13a-6b039579d192",
+      "facts_sha256": "6aff604d0328ab3c2ec0128105d1dbd367ca56f68125dd79528b76e746a9d947",
+      "printings": [
+        "49"
+      ]
+    },
+    {
+      "name": "Renet, Temporal Apprentice",
+      "oracle_id": "6c754808-86a6-43d3-8aeb-96ec19f7396c",
+      "facts_sha256": "534a9ad551d0af6999f3f1dc10e496ec31ed30c91493d3c33456d346404297a3",
+      "printings": [
+        "202",
+        "50"
+      ]
+    },
+    {
+      "name": "Retro-Mutation",
+      "oracle_id": "d8b5de6d-8654-4550-bccb-79de6cbef4d5",
+      "facts_sha256": "288d1f0bbf16203eab0925d83fc849677ad8cfbd6869dc337c7fb4ccbbfcde17",
+      "printings": [
+        "51"
+      ]
+    },
+    {
+      "name": "Return to the Sewers",
+      "oracle_id": "a3ee8565-f34c-4073-bc94-3fe9ec6bbe8a",
+      "facts_sha256": "34646c7458a579b36829f19de2b18a7f039b86e95a5edaeb05dcce5a5660bb9c",
+      "printings": [
+        "52"
+      ]
+    },
+    {
+      "name": "Rock Soldiers",
+      "oracle_id": "0217da8e-e74f-4f5c-ab75-f17600f94405",
+      "facts_sha256": "036b3f186c1d2d23da121c13620a305bea2df924a54c6ccc2ccddecd844f76fd",
+      "printings": [
+        "107"
+      ]
+    },
+    {
+      "name": "Rocksteady, Crash Courser",
+      "oracle_id": "f9330a7b-8a65-4e04-a777-bf6512332850",
+      "facts_sha256": "742b9e4eb64558b15290a23f6bf81d57a456936e6e43cea307dac221194ac0ae",
+      "printings": [
+        "131"
+      ]
+    },
+    {
+      "name": "Sally Pride, Lioness Leader",
+      "oracle_id": "b529f6b0-c6b2-4eb3-bb48-178e1eda75f3",
+      "facts_sha256": "80c038aa877d7fab44b1874f61369a25b4f59ba881624209af9fc7725ac20f5d",
+      "printings": [
+        "225",
+        "24"
+      ]
+    },
+    {
+      "name": "Savanti Romero, Time's Exile",
+      "oracle_id": "6074632b-4520-4ae8-bcdc-26b1eff71af9",
+      "facts_sha256": "9ab55df579ef1b24632d5290a62d0df527e16a9de5b70e7293497bc3256b484b",
+      "printings": [
+        "267",
+        "72"
+      ]
+    },
+    {
+      "name": "Saved by the Shell",
+      "oracle_id": "7ef5c812-ad7d-4d6c-8ee5-68561e7e4bd7",
+      "facts_sha256": "58614e66274423d04ecd6ecff033a3daf3792372cb978e3ef64055b367db0ee7",
+      "printings": [
+        "132"
+      ]
+    },
+    {
+      "name": "Sewer-veillance Cam",
+      "oracle_id": "25c83d45-581f-48ba-b6bb-feb66e8a65c7",
+      "facts_sha256": "646097210bb881e56793e3abdb15337a18ffe8d475142eabc91da2d52cd6ddac",
+      "printings": [
+        "53"
+      ]
+    },
+    {
+      "name": "Shark Shredder, Killer Clone",
+      "oracle_id": "dabd0867-ee3f-40cb-8314-b4a3966f8b24",
+      "facts_sha256": "cd533dcf4621e2febe69d736cb7794b713d80bb1de6035a577c827f7aeecbc1b",
+      "printings": [
+        "268",
+        "320",
+        "73"
+      ]
+    },
+    {
+      "name": "Shredder's Armor",
+      "oracle_id": "bda5d0aa-3ed0-4f8c-80ae-f9cb8ed0ac82",
+      "facts_sha256": "d2d04335efc02cd808441876203bf62797842713f9b12e86826301b1cdac3978",
+      "printings": [
+        "75"
+      ]
+    },
+    {
+      "name": "Shredder's Revenge",
+      "oracle_id": "5dd31fcd-72db-4daf-b127-ceb27bf25a94",
+      "facts_sha256": "a920f569b5aa2a7ff215682ba895b83707684a3fc792ba6f79a1b1e90c068742",
+      "printings": [
+        "76"
+      ]
+    },
+    {
+      "name": "Shredder's Technique",
+      "oracle_id": "d92714c0-4e22-47f9-a4d4-405894e734d0",
+      "facts_sha256": "5e2000d7a7736a768981be1b11d963aee9302e03ae1b13900248039129752595",
+      "printings": [
+        "232",
+        "77"
+      ]
+    },
+    {
+      "name": "Shredder, Unrelenting",
+      "oracle_id": "59d96fc0-6580-43c2-8c6a-dcf983644561",
+      "facts_sha256": "1d1b2eadd5d0ba630a48da6d5221be212ef862825939133f88dc2a7a2f3e7dec",
+      "printings": [
+        "210",
+        "74"
+      ]
+    },
+    {
+      "name": "Skateboard",
+      "oracle_id": "decfde5e-ea53-4b15-8f69-51da7ef39d15",
+      "facts_sha256": "3388e1538f3d706083cddb7b7c597b4178a1b346c5a10b4b4c67deb2e40abc45",
+      "printings": [
+        "178"
+      ]
+    },
+    {
+      "name": "Slash, Reptile Rampager",
+      "oracle_id": "8abff7b5-fe27-46bd-b951-b5d9f93f3a14",
+      "facts_sha256": "55a00a0a2700f86293f1f492f610be4076f561045e8eb45b35441499b3db9b89",
+      "printings": [
+        "108",
+        "208"
+      ]
+    },
+    {
+      "name": "Slithering Cryptid",
+      "oracle_id": "f570bac8-9987-4963-af02-476d18abc847",
+      "facts_sha256": "453f78249d1be6f8b5a059d3a3302c75b6a8e9ddff2ba63e117bce58b715ea89",
+      "printings": [
+        "168"
+      ]
+    },
+    {
+      "name": "South Wind Avatar",
+      "oracle_id": "003e5dc6-8b26-4a0a-a50b-5f0806a7bacd",
+      "facts_sha256": "a656895e95e445539a80a61b62e74d0f7e476ec4fc3ba50b50db74c6363102ce",
+      "printings": [
+        "269",
+        "78"
+      ]
+    },
+    {
+      "name": "Spicy Oatmeal Pizza",
+      "oracle_id": "9665f940-c0a4-4d3e-b889-8049cf549a4f",
+      "facts_sha256": "b90c648a0486eb4f01e10d8830f0662aac6807e74945a8b08a1e5968d71a1e10",
+      "printings": [
+        "109"
+      ]
+    },
+    {
+      "name": "Splinter's Technique",
+      "oracle_id": "532ee9c3-391c-44db-8ed5-a1d28fd7f876",
+      "facts_sha256": "2edccf438ff9d29098f0b547fabb3a13ee5d2bf226bcc0602fa72fbb1bae771e",
+      "printings": [
+        "233",
+        "80"
+      ]
+    },
+    {
+      "name": "Splinter, Hamato Yoshi",
+      "oracle_id": "41fbdaa2-7a7a-44d5-a8f4-77624350eedd",
+      "facts_sha256": "c7e9a14b60c9e3c46ecb8e9954db081fb2b2562502f715f195bd5e7978f8cd6d",
+      "printings": [
+        "79"
+      ]
+    },
+    {
+      "name": "Splinter, Radical Rat",
+      "oracle_id": "fb2cd508-f5cd-4d5b-b8e7-3cae1f39fd58",
+      "facts_sha256": "c2b1ebcf4a52f5391c2b9b4b5f44f036bef71a468931f331e7a8ff2a8976d5ed",
+      "printings": [
+        "169",
+        "251"
+      ]
+    },
+    {
+      "name": "Squirrelanoids",
+      "oracle_id": "315ddc7a-c39c-43d9-b134-23acbd865e3e",
+      "facts_sha256": "c260a2d1f6055f1fc77c29dd7be9f1a7fe76bdf705f31917e6dafd2a329950b2",
+      "printings": [
+        "81"
+      ]
+    },
+    {
+      "name": "Stockman, Mad Fly-entist",
+      "oracle_id": "baa4cb1b-6fb5-46df-9cdd-54421ee0fc88",
+      "facts_sha256": "8203a17c29722b74df6bdc24db1dcd2de07907906ff3a70c8e1ffbd128fa8b91",
+      "printings": [
+        "54"
+      ]
+    },
+    {
+      "name": "Stomped by the Foot",
+      "oracle_id": "10185447-a13f-40d8-a8b6-39ce801f2fc0",
+      "facts_sha256": "f82ce97013be6fd6c45d7cc3428786316f503d9357654e4a1b3905c1e3d8c2be",
+      "printings": [
+        "82"
+      ]
+    },
+    {
+      "name": "Super Shredder",
+      "oracle_id": "b7ee76bf-d15a-489e-8f05-414788f8f649",
+      "facts_sha256": "8ee1f22f66087083cf7ac190cb98bb0348446530e8ab025bb13d87507b3ffc15",
+      "printings": [
+        "217",
+        "285",
+        "295",
+        "83"
+      ]
+    },
+    {
+      "name": "Swamp",
+      "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+      "facts_sha256": "0ddffcfeb10574ceab2d19fcaad90b912eb08a51601bfa0d51ceb993dcfc04e5",
+      "printings": [
+        "193",
+        "255",
+        "307",
+        "312",
+        "317"
+      ]
+    },
+    {
+      "name": "TCRI Building",
+      "oracle_id": "4139f40a-873b-4842-96a2-b7875de1c20a",
+      "facts_sha256": "10abcd8afba632d562b2a597f40eae25cb45f11e370e17fede412739f9a4cb77",
+      "printings": [
+        "189"
+      ]
+    },
+    {
+      "name": "Tainted Treats",
+      "oracle_id": "60826714-b9fd-4c89-b9f2-1a3c3229686b",
+      "facts_sha256": "859310befd155478de5c38b9a3c4470a3d0eb6d0d31f849f77e38b4447f6bbb9",
+      "printings": [
+        "170"
+      ]
+    },
+    {
+      "name": "Technodrome",
+      "oracle_id": "51c0b46c-c379-420a-a4a4-d18724c759aa",
+      "facts_sha256": "c27500984f3c352de0698dc6e7c059d04c3b96dfdadc2ad471f0788698237b6a",
+      "printings": [
+        "179",
+        "222"
+      ]
+    },
+    {
+      "name": "Tenderize",
+      "oracle_id": "a03fa584-ceb5-410c-9b80-f75d00215537",
+      "facts_sha256": "e1f945317ca5db906c7f7e6820d95fea3b5595fac83db5d8f80baa33d40bfdb4",
+      "printings": [
+        "133"
+      ]
+    },
+    {
+      "name": "The Cloning of Shredder",
+      "oracle_id": "bd768e8f-8f04-487e-85e9-2828d6fd8745",
+      "facts_sha256": "2a0b2b352d1f1542068aaee2dbec5968b3a3abfc974e5ca3dbebcf176ff54e69",
+      "printings": [
+        "60"
+      ]
+    },
+    {
+      "name": "The Last Ronin",
+      "oracle_id": "e1865bec-1744-40c2-9031-7d6363be5333",
+      "facts_sha256": "50b0ed64016570af13282090503928ae448c39efd419c8bd76822548055a3f88",
+      "printings": [
+        "154"
+      ]
+    },
+    {
+      "name": "The Last Ronin's Technique",
+      "oracle_id": "6a51bb21-0c01-4ad8-99d7-17685db90b69",
+      "facts_sha256": "7f243e673efa31f6b04700842804e2c17fbf92895564319fabc4e8151f19f8f9",
+      "printings": [
+        "12",
+        "223"
+      ]
+    },
+    {
+      "name": "The Neutrinos",
+      "oracle_id": "b1462c82-7702-451b-b612-990353a79ac4",
+      "facts_sha256": "2969a12c316b77033d3e711bdb1421837bb176d9323e798c5e3eaba7e621770a",
+      "printings": [
+        "160"
+      ]
+    },
+    {
+      "name": "The Ooze",
+      "oracle_id": "82a6fa6f-13c2-4ea3-bec2-c51b56b2783b",
+      "facts_sha256": "ba1eb62dad5820e98bb490e1843091c7a89c13b61337b30ef25958870900ac3d",
+      "printings": [
+        "177",
+        "277"
+      ]
+    },
+    {
+      "name": "Tokka & Rahzar, Terrible Twos",
+      "oracle_id": "86ef86de-104f-4eae-a2db-893b50e95ad7",
+      "facts_sha256": "cb89bbafeb962701101d28b105d82608ae53f8949c6ab69b905497932ae6a93a",
+      "printings": [
+        "171",
+        "252"
+      ]
+    },
+    {
+      "name": "Transdimensional Bovine",
+      "oracle_id": "eaa6b294-ac66-4fe2-b694-97b0a04f7be1",
+      "facts_sha256": "f35bdd4abb73672a7e76854de6e7499de3b899954ebe4797624f8f27fb645fee",
+      "printings": [
+        "134",
+        "274"
+      ]
+    },
+    {
+      "name": "Triceraton Commander",
+      "oracle_id": "45d40cdb-21cc-4569-a894-83dd3026c947",
+      "facts_sha256": "a44fc742f6b4688c45fa8217562b76cad682e5f544128201b1849b5bc94a792c",
+      "printings": [
+        "226",
+        "25"
+      ]
+    },
+    {
+      "name": "Tunnel Rats",
+      "oracle_id": "0a8e5c48-885d-4ea8-9c68-a3e9213d4289",
+      "facts_sha256": "9df8fe9624b12cbbb57fe2532bb24276c8b41df93ab8725834279d4a5c89d758",
+      "printings": [
+        "84"
+      ]
+    },
+    {
+      "name": "Turncoat Kunoichi",
+      "oracle_id": "0f35cf85-6783-4d69-b5e6-a81f7c1f21e7",
+      "facts_sha256": "fbefe19b3579bcd88b3f6e1b808858934d0916bb1efaf3d274b90d8376947a00",
+      "printings": [
+        "26",
+        "260"
+      ]
+    },
+    {
+      "name": "Turtle Blimp",
+      "oracle_id": "bb8c6dd2-1abe-4eb2-be1f-b0c078e5f257",
+      "facts_sha256": "b364b927216fc36cb44e4c8d02ec1120f95fba248d5d3ca7b80366051acb9cd5",
+      "printings": [
+        "180"
+      ]
+    },
+    {
+      "name": "Turtle Lair",
+      "oracle_id": "eb002bbc-08df-4bf0-bea3-46494ad261b6",
+      "facts_sha256": "f717c8bd8935681b12133c88c496e0883a09bc045a44725eb12b4170a47f69ee",
+      "printings": [
+        "190"
+      ]
+    },
+    {
+      "name": "Turtle Power!",
+      "oracle_id": "15934a19-a29e-4728-816f-20b610eec377",
+      "facts_sha256": "e84ddea627ef19f21434f9dcc4ceadf638efc811d08156f6ea0b0bde2bfcb4f8",
+      "printings": [
+        "135",
+        "275"
+      ]
+    },
+    {
+      "name": "Turtle Van",
+      "oracle_id": "aeb9a2e6-ad11-4e2c-81d0-caf279d31ece",
+      "facts_sha256": "a2d2d1ffd846f030b142a6cb7f808730b280b3b4981a8445fc80fa67be834f7d",
+      "printings": [
+        "181",
+        "278"
+      ]
+    },
+    {
+      "name": "Turtles Forever",
+      "oracle_id": "cff5aca2-72c5-4053-a32c-c0bd3174c52d",
+      "facts_sha256": "ad15d62864593ee9104204195d8ee3ed44ca476f5fe43e4a54cb392ba8b93c66",
+      "printings": [
+        "261",
+        "27"
+      ]
+    },
+    {
+      "name": "Turtles in Time",
+      "oracle_id": "803971e6-67f3-4fda-aeb6-69ef8ea4b54e",
+      "facts_sha256": "27195782c7846a8eebfeda3c965a1c341b9bbd90018cf8f2d46bcdfca6b68145",
+      "printings": [
+        "263",
+        "284",
+        "294",
+        "55"
+      ]
+    },
+    {
+      "name": "Uneasy Alliance",
+      "oracle_id": "989b93fe-cad0-4890-a228-8a20ca666f10",
+      "facts_sha256": "d8f230dbf0277f042c9eba5dc3359e70605cd340fa5a347b89acacc0d7034f33",
+      "printings": [
+        "28"
+      ]
+    },
+    {
+      "name": "Utrom Scientists",
+      "oracle_id": "89793c8c-98a3-4621-ad3d-cfc5949c65da",
+      "facts_sha256": "ddf50de758c8f395b11a37223f7a03cdbfa5db936e4116879c7cded9a3ec3dd7",
+      "printings": [
+        "56"
+      ]
+    },
+    {
+      "name": "Venus, Torn Between Worlds",
+      "oracle_id": "7b3d364d-6581-43de-a80a-d5b07f5d21ed",
+      "facts_sha256": "249d872adfb75e97312615ad5f469354708690803f55b784890223a449f8aeb8",
+      "printings": [
+        "136"
+      ]
+    },
+    {
+      "name": "Weather Maker",
+      "oracle_id": "4097fea2-ae34-4b99-ab7e-a276d608b489",
+      "facts_sha256": "99b5f08cd9c1f0f63cae3c83dc2a0ac1890a7fd2fd5d36821c30a36cf4cd1212",
+      "printings": [
+        "182",
+        "279"
+      ]
+    },
+    {
+      "name": "West Wind Avatar",
+      "oracle_id": "92e45a8f-c582-45e1-9b7f-def219023ebf",
+      "facts_sha256": "b8e64ba517866c86660d31bea4de71c79b04d47d9d299226781a22d9ada06a90",
+      "printings": [
+        "137"
+      ]
+    },
+    {
+      "name": "Wingnut, Bat on the Belfry",
+      "oracle_id": "392a71c7-8f6d-46b8-bcc3-613e086d86ed",
+      "facts_sha256": "4096896d789e2afb5094fff5b56a16663e9802fd4d19a9d15835021146a274ce",
+      "printings": [
+        "110"
+      ]
+    },
+    {
+      "name": "Zog, Triceraton Castaway",
+      "oracle_id": "d944d33d-0a95-4d0d-96ce-49d02500227d",
+      "facts_sha256": "60bc8687c17d93320830012a33c80ca0eaa4870951d4d78a90f0cc99084adc27",
+      "printings": [
+        "111"
+      ]
+    },
+    {
+      "name": "Zoo Escapees",
+      "oracle_id": "107e9ada-4e2e-4032-addd-274bca956621",
+      "facts_sha256": "98f246d4671083b2f6d07a7e25e6f2637d16f495c76cd16f4438959fc6c925e9",
+      "printings": [
+        "138"
+      ]
+    }
+  ],
+  "unresolved": []
+}

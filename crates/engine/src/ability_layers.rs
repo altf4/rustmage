@@ -425,6 +425,8 @@ pub enum UntapRestriction {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug)]
 pub enum PermanentForm {
+    /// Replace only creature subtypes while retaining all card types.
+    Preserve,
     Creature,
     Land,
     /// Add creature type without removing other card or creature types.

@@ -5294,6 +5294,7 @@ impl Game {
                 .is_some_and(|c| c.method.is_harmonize() || c.blight == Some(true))
             || announcement.ordered_craft()
             || announcement.nonmana_x()
+            || announcement.has_compound_sneak_cost()
             || announcement.self_graveyard_cast_cost().is_some()
             || announcement
                 .additional_cost()

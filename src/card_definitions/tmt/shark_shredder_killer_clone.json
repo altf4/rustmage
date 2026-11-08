@@ -3,10 +3,40 @@
   "catalogue_id": 3815,
   "oracle_id": "dabd0867-ee3f-40cb-8314-b4a3966f8b24",
   "facts_sha256": "cd533dcf4621e2febe69d736cb7794b713d80bb1de6035a577c827f7aeecbc1b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a6f5eb7aca4f789b50ed0858e2407114310f904efad164a0d8243e4fc75bf9e0"
   },
-  "physical_metadata_sha256": "89cfc0d45a60adcaa06a5c6d16f3a26838969329416421288ea5e95456143da9"
+  "physical_metadata_sha256": "89cfc0d45a60adcaa06a5c6d16f3a26838969329416421288ea5e95456143da9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SharkShredderKillerClone.java",
+  "java_sha256": "091767fd7d469e617e57902e36cb1cc053f74ed0c45e45dde8f5ebec8ff2fedd",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/SneakAbility.java",
+      "sha256": "b25a32bf041c6a146f7d602c757f3be034f9282db5ed9c6cc03070b374611c70"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ReturnToHandChosenControlledPermanentCost.java",
+      "sha256": "ea8192aa5d4930687e7803379d509a1bd5a1910bcd418503f19a8de6417072b4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInGraveyard.java",
+      "sha256": "906e86825eed8b6d1a0e9e72c0761aa181aabdc61abbf99fd526f2d3531020b7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetadjustment/ThatPlayerControlsTargetAdjuster.java",
+      "sha256": "d04b005aee7176ae56ce53f839e2610cb8fc6050f9a223c20a7805e579eb6621"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    }
+  ]
 }

@@ -101,7 +101,14 @@ impl Game {
         let Some(index) = state.play_approvals.iter().position(|row| row.0 == item.id) else {
             return;
         };
-        let (_, approval) = state.play_approvals.remove(index);
+        let (_, approval, independent_free) = state.play_approvals.remove(index);
+        if independent_free
+            && item
+                .cast
+                .is_some_and(|cast| cast.method == CastMethod::Free)
+        {
+            return;
+        }
         if item.cast.is_some_and(|cast| {
             !matches!(
                 cast.method,

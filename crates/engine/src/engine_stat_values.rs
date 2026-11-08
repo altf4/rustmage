@@ -115,6 +115,11 @@ impl Game {
         I: Iterator<Item = (CardId, &'a Object)>,
     {
         match value {
+            StatValue::ArtifactEnteredThisTurn => i128::from(
+                self.state.players[owner.index()]
+                    .turn_facts
+                    .artifact_entered,
+            ),
             StatValue::SourceClassLevelAtLeast(level) => {
                 i128::from(objects().any(|(id, object)| {
                     id == source.card
@@ -603,6 +608,16 @@ impl Game {
                     .capacity("effect sum exhausted")
             }),
             AmountValue::Fixed(n) => u128::from(n),
+            AmountValue::GreatestCreaturePower(filter) => {
+                let query = self.characteristic_query();
+                (0..self.state.objects.len())
+                    .map(|id| id as CardId)
+                    .filter(|&id| query.creature_matches(filter, owner, source, id))
+                    .map(|id| query.stats(id).power)
+                    .max()
+                    .unwrap_or(0)
+                    .max(0) as u128
+            }
             AmountValue::GreatestCreatureToughness => {
                 ability_world::CharacteristicWorld::greatest_creature_toughness(self, owner).max(0)
                     as u128

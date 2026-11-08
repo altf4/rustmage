@@ -1216,7 +1216,7 @@ impl Game {
         }
     }
 
-    fn queue_zone_trigger(
+    pub(super) fn queue_zone_trigger(
         &mut self,
         source: &ObjectView,
         index: usize,
@@ -1845,6 +1845,7 @@ impl Game {
             let item = self.state.stack[index].clone();
             self.expire_land_mana_on_exile_cast(&item);
             self.commit_linked_exile_cast(&item);
+            self.commit_library_entry_counter(&item);
         }
         self.commit_suspend_cast(stack);
         self.consume_resolution_cast_quota(caster, stack);

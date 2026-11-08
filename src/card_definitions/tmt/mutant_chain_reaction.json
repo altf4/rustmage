@@ -3,10 +3,73 @@
   "catalogue_id": 2888,
   "oracle_id": "ea9fc868-374b-4acc-be0d-4283907b4524",
   "facts_sha256": "80df7ce71caba16c0fd8c64674cae7d935d90b43525b88ee6f152abcfa4ddfc0",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3c1080dfffa7d6e52e6fbdaffc3ef380ddd7dae155de574460d0ab4efee1f95c"
   },
-  "physical_metadata_sha256": "b764292a8e658b2c20c24894d425fa50a60d1a82d10647187d7cfeeb16646ae5"
+  "physical_metadata_sha256": "b764292a8e658b2c20c24894d425fa50a60d1a82d10647187d7cfeeb16646ae5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MutantChainReaction.java",
+  "java_sha256": "fbbd7928fc4483035535dd3549ad946897b3481a16523a8c5f5ff268a8a8fa16",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/MutagenToken.java",
+      "sha256": "bcb05068d2fd40b12c614b7be40e1fc353c9b5398e72ce493fa9c24e0354644d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+      "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    }
+  ],
+  "rules_tests": "src/engine_tmt_mutagen_tests.rs",
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "122.6",
+      "122.6a",
+      "603.2",
+      "608.2b",
+      "613.11"
+    ],
+    "note": "Counter placement includes entry counters and records the player placing them; only actual nonzero additions trigger. The once-per-turn limit is consumed when the ability triggers. External blocking restrictions are rule effects applied after characteristic layers and survive ability removal from recipients. Optional zero-target spells resolve; all chosen targets illegal causes the spell to fizzle, including its later token creation."
+  }
 }

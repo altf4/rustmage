@@ -367,6 +367,7 @@ pub enum TargetPredicate {
     Colors(u8),
     Keyword(Keywords),
     WithoutKeyword(Keywords),
+    Kinds(u16),
     WithoutKinds(u16),
     WithoutSubtype(&'static str),
     Token,
@@ -3376,6 +3377,7 @@ pub enum AmountValue {
     SourceToughness,
     /// Resolution-time derived quantity, floored at zero if no positive toughness exists.
     GreatestCreatureToughness,
+    GreatestCreaturePower(CreatureFilter),
     SourceEquipmentCount,
     #[allow(
         dead_code,
@@ -3494,6 +3496,7 @@ pub enum StatValue {
     AllAttackingCreatures,
     /// Gate a continuous effect on this exact permanent's current Class level.
     SourceClassLevelAtLeast(u8),
+    ArtifactEnteredThisTurn,
     SourceModified,
     SourceEquipmentCount,
     LegendaryCreaturesYouControl,

@@ -3,10 +3,46 @@
   "catalogue_id": 1798,
   "oracle_id": "46f77c8c-6817-4aea-a80a-d91f508ccbd0",
   "facts_sha256": "af8c626471ff7044f0363383858bcb0b9c85cc6906a05ef9cf36874ccd87eed8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "909b49a02a2a33c517aae322df189cc28b52217cdaeed19e8875ca6d7a5bfed8"
   },
-  "physical_metadata_sha256": "f088ebde0a05df240d14d81a0b4c2c5e7bf0e815600c42b225dd49b857ed6c4b"
+  "physical_metadata_sha256": "f088ebde0a05df240d14d81a0b4c2c5e7bf0e815600c42b225dd49b857ed6c4b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GoNinjaGo.java",
+  "java_sha256": "1544f231b2a8f8e368c9ab985354dfb7f42f124e526db6dcd8fb2f4773e453de",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileThenReturnTargetEffect.java",
+      "sha256": "4217e01de7184be471a8a30f82298a81946260b08b239d049ab3b6700d034418"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GreatestAmongPermanentsValue.java",
+      "sha256": "1fb2bb2baf97bbbf6aa1cf4669139b3d10d3fc3beb40a6f2c76fc403393fb299"
+    }
+  ],
+  "rules_evidence": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt",
+    "sha256": "8d860e451f20f38865b725b42d82feb714c725373dd8f3b32b8652b3eeb070ca",
+    "sections": [
+      "111.8",
+      "201.5",
+      "400.7",
+      "601.2",
+      "608.2b",
+      "608.2h",
+      "701.8",
+      "701.21",
+      "701.22"
+    ],
+    "note": "Printed obligations are implemented directly and exercised by engine_tmt_spell_batch_tests.rs. Ice Cream Kitty requires another permanent even when the source is a token: the Java predicate admits the source when copied as a token, but printed another excludes it. Tainted Treats freezes mana value immediately before attempting destruction and creates Food even for indestructible targets. Manhole Missile uses a private non-targeting optional hand selection."
+  }
 }

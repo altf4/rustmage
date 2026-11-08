@@ -1,16 +1,121 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from complete pinned Oracle/XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Permanent,
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::SelfEnters,
+            targets: TargetPlan::NONE,
+            program: &[
+                Instruction::Mill(PlayerSet::Controller, MillAmount::Fixed(2)),
+                Instruction::Draw(PlayerSet::Controller, 2),
+                Instruction::Discard(PlayerSet::Controller, 2),
+            ],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::BecomesClassLevel(2),
+            targets: TargetPlan::Single(TargetSpec {
+                rule: TargetRule::Object {
+                    zone: TargetZone::Graveyard,
+                    kinds: 16,
+                    relation: 0,
+                    other: false,
+                    nonland: false,
+                    tapped: false,
+                    min_mana: 0,
+                    max_mana: u32::MAX,
+                },
+                min: 0,
+                max: 2,
+            }),
+            program: &[Instruction::ReturnToHand],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::When {
+                guard: StepGuard::ClassLevelAtLeast(3),
+                event: &TriggerCondition::AtStep {
+                    step: TriggerStep::BeginCombat,
+                    relation: CastRelation::You,
+                    guard: StepGuard::Always,
+                },
+            },
+            targets: one(TargetRule::Object {
+                zone: TargetZone::Battlefield,
+                kinds: 16,
+                relation: 0,
+                other: false,
+                nonland: false,
+                tapped: false,
+                min_mana: 0,
+                max_mana: u32::MAX,
+            }),
+            program: &[
+                Instruction::PutCounters {
+                    subject: Subject::Targets,
+                    kind: CounterKind::PlusOne,
+                    amount: 3,
+                },
+                Instruction::AnimateNoncreatureTargets(AnimationSpec {
+                    artifact: false,
+                    creature_types: AnimationCreatureTypes::Additional(&["Robot"]),
+                    base: Some((0, 0)),
+                    keywords: Keywords::NONE,
+                    duration: AnimationDuration::Permanent,
+                }),
+            ],
+        },
+    ],
+    activated: &[
+        ActivatedAbility {
+            exhaust: false,
+            guard: ActivationGuard::ClassLevelExactly(1),
+            origin: ActivationOrigin::Battlefield,
+            cycling: false,
+            cost: ActivationCost {
+                colored: [0, 1, 0, 0, 0, 0],
+                generic: 1,
+                alternatives: &[],
+                additional: None,
+                mana_component: true,
+                tap: false,
+                sacrifice: false,
+                exile_self: false,
+                discard: false,
+                life: 0,
+                remove: None,
+                loyalty: None,
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::GainClassLevel(2)],
+            sorcery: true,
+            once_per_turn: false,
+        },
+        ActivatedAbility {
+            exhaust: false,
+            guard: ActivationGuard::ClassLevelExactly(2),
+            origin: ActivationOrigin::Battlefield,
+            cycling: false,
+            cost: ActivationCost {
+                colored: [0, 1, 0, 0, 0, 0],
+                generic: 4,
+                alternatives: &[],
+                additional: None,
+                mana_component: true,
+                tap: false,
+                sacrifice: false,
+                exile_self: false,
+                discard: false,
+                life: 0,
+                remove: None,
+                loyalty: None,
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::GainClassLevel(3)],
+            sorcery: true,
+            once_per_turn: false,
+        },
+    ],
+    extras: &CardExtras {
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

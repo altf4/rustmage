@@ -3,10 +3,30 @@
   "catalogue_id": 3850,
   "oracle_id": "d92714c0-4e22-47f9-a4d4-405894e734d0",
   "facts_sha256": "5e2000d7a7736a768981be1b11d963aee9302e03ae1b13900248039129752595",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b0e51b92131937701163f71d33b4a6aa7fa932d09a24310a9e0db499421aff30"
   },
-  "physical_metadata_sha256": "7c486a01bcb0712691f089f0120ebfc06990270f8acb49fc81f898e9e6013aaa"
+  "physical_metadata_sha256": "7c486a01bcb0712691f089f0120ebfc06990270f8acb49fc81f898e9e6013aaa",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ShreddersTechnique.java",
+  "java_sha256": "7464b0e44a25f8a0829ec80453e5fc487f8ccb8f968fbb5274066c35f867e24a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/SneakAbility.java",
+      "sha256": "b25a32bf041c6a146f7d602c757f3be034f9282db5ed9c6cc03070b374611c70"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ReturnToHandChosenControlledPermanentCost.java",
+      "sha256": "ea8192aa5d4930687e7803379d509a1bd5a1910bcd418503f19a8de6417072b4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+      "sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+    }
+  ]
 }

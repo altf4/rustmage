@@ -151,7 +151,15 @@ impl Game {
             .iter()
             .any(|p| p.turn_facts.exhaust_activated_this_turn)
             || self.state.objects.iter().any(|o| {
-                o.zone == Zone::Battlefield && o.card.triggers().iter().any(trigger_uses_facts)
+                o.zone == Zone::Battlefield
+                    && (o.card.triggers().iter().any(trigger_uses_facts)
+                        || o.card.static_ability_groups().iter().any(|group| {
+                            group.fragments.iter().any(|fragment| {
+                                matches!(fragment,
+                                crate::cards::StaticAbilityFragment::KeywordGrant(_, grant)
+                                    if grant.condition == Some(StatValue::ArtifactEnteredThisTurn))
+                            })
+                        }))
             })
             || self
                 .state

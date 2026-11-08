@@ -1,16 +1,24 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from complete pinned Oracle and XMage sources.
+const GROUPS: &[StaticAbilityGroup] = &[StaticAbilityGroup {
+    line: 0,
+    first_layer: AbilityLayer::Rule,
+    fragments: &[StaticAbilityFragment::MustBeBlocked],
+}];
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Creature(4, 4),
+    static_groups: GROUPS,
+    extras: &CardExtras {
+        static_ability_groups: GROUPS,
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfDamaged,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::AddRetainedManaScaled {
+            color: 3,
+            amount: AmountValue::DamageEventAmount,
+            retention: ManaRetention::Turn,
+        }],
+    }],
     ..CardRules::EMPTY
 };

@@ -106,6 +106,9 @@ pub use paradigm::{ParadigmView, ResolvedSpellNameView};
 #[path = "engine_endgame.rs"]
 pub mod endgame;
 #[doc(hidden)]
+#[path = "engine_library_entry_counter.rs"]
+pub mod library_entry_counter;
+#[doc(hidden)]
 #[path = "engine_limited_exile.rs"]
 pub mod limited_exile;
 #[doc(hidden)]
@@ -807,6 +810,7 @@ define_actions! {
     ChooseConvoker { object: ObjectRef, contribution: ConvokeContribution },
     ChooseMobilizeDefender { defender: CombatDefender },
     ChooseEntryAttackingDefender { defender: CombatDefender },
+    ChooseLibraryCastPermission { with_counter: bool },
     ChooseToken { token: Card },
     ChooseKeyword { index: u16 },
     ChooseResolutionColor { color: crate::cards::ChoiceColor },
@@ -2560,6 +2564,9 @@ enum Pending {
     Kicker {
         player: Player,
     },
+    LibraryCastPermission {
+        player: Player,
+    },
     Gift {
         player: Player,
     },
@@ -3611,6 +3618,8 @@ pub struct Observation {
     pub exile_permissions: Vec<ExilePlayPermission>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub limited_exile_plays: Option<Vec<limited_exile::LimitedExilePlay>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub library_cast_with_entry_counter: Option<bool>,
     pub borrowed_abilities: Vec<BorrowedAbilityView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub graveyard_borrowed_abilities: Option<Vec<GraveyardBorrowedAbilityView>>,
@@ -4200,6 +4209,7 @@ impl Game {
             | Pending::CastCosts { player }
             | Pending::CasualtyPayment { player, .. }
             | Pending::Kicker { player }
+            | Pending::LibraryCastPermission { player }
             | Pending::Gift { player }
             | Pending::Offspring { player }
             | Pending::SpellCost { player }
@@ -5809,7 +5819,10 @@ impl Game {
                     {
                         return true;
                     }
-                    if obj.card.behold_cast().is_some() || obj.card.kicked_targets().is_some() {
+                    if obj.card.behold_cast().is_some()
+                        || obj.card.kicked_targets().is_some()
+                        || self.library_counter_choice_available(actor, card)
+                    {
                         let method = if flashback {
                             CastMethod::Flashback
                         } else {
@@ -6374,6 +6387,15 @@ impl Game {
                             }
                         }
                     }
+                }
+            }
+            Pending::LibraryCastPermission { .. } => {
+                if emit(Action::ChooseLibraryCastPermission { with_counter: true })
+                    || emit(Action::ChooseLibraryCastPermission {
+                        with_counter: false,
+                    })
+                {
+                    return true;
                 }
             }
             Pending::Kicker { .. } => {
@@ -7818,6 +7840,9 @@ impl Game {
                     self.state.announcing.as_mut().unwrap().plan = plan;
                 }
                 self.continue_announcement_choices(false);
+            }
+            Action::ChooseLibraryCastPermission { with_counter } => {
+                self.select_library_entry_counter(with_counter)
             }
             Action::ChooseKicker { pay } => {
                 self.state
@@ -10909,6 +10934,7 @@ impl Game {
                 Pending::CastBehold { .. } => "cast_behold",
                 Pending::BeholdCost { .. } => "behold_cost",
                 Pending::Kicker { .. } => "kicker",
+                Pending::LibraryCastPermission { .. } => "library_cast_permission",
                 Pending::Gift { .. } => "gift",
                 Pending::Endure { .. } => "endure",
                 Pending::Harmonize { .. } => "harmonize",
@@ -11105,6 +11131,10 @@ impl Game {
                 .map_or_else(Vec::new, |rows| rows.to_vec()),
             exile_links: s.exile_links.clone(),
             limited_exile_plays: self.limited_exile_plays(),
+            library_cast_with_entry_counter: s
+                .announcing
+                .as_ref()
+                .and_then(|a| self.library_entry_counter_choice(&a.item)),
             spell_characteristics: self.spell_characteristics(),
             exile_permissions: s
                 .exile_permissions

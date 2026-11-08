@@ -3,10 +3,30 @@
   "catalogue_id": 52,
   "oracle_id": "a9d68cf5-3055-4ec9-9893-244bfd7046be",
   "facts_sha256": "fa96fc7ddf56985f4cddb2d2e2797cc4cc3c19688ecfdd66f42956de5ecb6d33",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "196eab3df5cedfe96c66866d321168ac24fd1d57fa0e4c5259c90e883792e108"
   },
-  "physical_metadata_sha256": "f3b68c3e98273f6fb6db2eac0de21c2354e4dd4b13ca935693ea663777a1d3bb"
+  "physical_metadata_sha256": "f3b68c3e98273f6fb6db2eac0de21c2354e4dd4b13ca935693ea663777a1d3bb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/ActionNewsCrew.java",
+  "java_sha256": "4b657f5790fc195f4b9c2cad735b27d6e265c7c515c65c3a6ef271ec49e91375",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ChannelAbility.java",
+      "sha256": "27ea117d94f3cd2f9abc876abf3e6a00583d99298219c9b0374249eefb4c3020"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAllEffect.java",
+      "sha256": "064c925d60c97db41aa0444db30fd482c857b12e3bf8c0635f990dfd4a7094d5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ]
 }

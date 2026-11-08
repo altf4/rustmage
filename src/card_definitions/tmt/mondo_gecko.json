@@ -3,10 +3,92 @@
   "catalogue_id": 2830,
   "oracle_id": "fa3ae120-756d-4c52-91f9-235767539d67",
   "facts_sha256": "dd7fe0e117fe96bc9063cc143b78b23c4bff42a6c5f528196f112f9aa742a019",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "69b92d534681fedd0703a6a2a183d2d1c59c6222c104a933c26bab64a3d9c0c4"
   },
-  "physical_metadata_sha256": "5cfa73093ea90e138e57bcb7ec854a94425f4866dce773aed50967eb3885069d"
+  "physical_metadata_sha256": "5cfa73093ea90e138e57bcb7ec854a94425f4866dce773aed50967eb3885069d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MondoGecko.java",
+  "java_sha256": "9897a81c240534946f0b38a7cca7ced0d333ce5ac17561d69c10ae96980c71cb",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+      "sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardTargetCost.java",
+      "sha256": "003c775808c1e2c48f7c67ce1fd2f1c24d7fa905bcf61b52609e8e73b82aed01"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ColorsAmongControlledPermanentsCount.java",
+      "sha256": "94d0639d201ef40c27aa8b05d8dc072166ac4f2c82494425ebe1449d385eb8a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BecomesColorSourceEffect.java",
+      "sha256": "aeac42c0a3d9413ff846a0740d92ad65b926487347fa85d08649a1408f2d1126"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofBaseAbility.java",
+      "sha256": "eb33a62a2d3a0cfd4fffee6d99691000ed3d9cadd4937b41d0b53c4e5abacdea"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofFromWhiteAbility.java",
+      "sha256": "a59200ff39ad00951a06d43a63caf6bf26ea8dd67d1c6ddc3521e6631b08f5a8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofFromBlueAbility.java",
+      "sha256": "612e6d326d149e7a40ee3f8169b6063996c9ca8030c925ed79cf2c46e7ebc83d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofFromBlackAbility.java",
+      "sha256": "7daec794f77e32483c349b4c8a742e1b44fc5954429f2dfd0ae82cc511c29a22"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofFromRedAbility.java",
+      "sha256": "2ee08371d73d29111f665ea627e3a326b809c3f97cf090c75ea08e38bbf86ca6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofFromGreenAbility.java",
+      "sha256": "605df0f3c1a01a3ae8e105f73b5d7af9a2b973a5cce7195b8eff2d8a98ccdf33"
+    }
+  ],
+  "source_audit": {
+    "scope": "Complete Oracle body, complete pinned XMage card class and listed complete reusable implementations read; directly authored typed behavior with actual paid-action rules scenarios.",
+    "tests": [
+      "src/engine_tmt_damage_legends_tests.rs"
+    ],
+    "status": "Complete public paid-action rules scenarios and affected regressions passed with Clippy; integrated release, full-game throughput and complete-set acceptance remain integrator obligations."
+  }
 }

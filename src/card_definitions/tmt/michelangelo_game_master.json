@@ -3,10 +3,35 @@
   "catalogue_id": 2739,
   "oracle_id": "594c6b1f-ff0e-4122-8b29-852632a22a79",
   "facts_sha256": "3d14af44092519cbc31bcdae19493297677b3516811c46933254fdeb1e525f29",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d78c98ce29c0ad7203373e8a1b47ce28c2712ac06a65fc012f4c2fee3eef105a"
   },
-  "physical_metadata_sha256": "d81a4ecc40e7826ee1a442a5019eb2b3e08b790515b04d90be3c82b4cff8b8c1"
+  "physical_metadata_sha256": "d81a4ecc40e7826ee1a442a5019eb2b3e08b790515b04d90be3c82b4cff8b8c1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MichelangeloGameMaster.java",
+  "java_sha256": "4396de0244928874b06ec0ca9d814f6afcac3cec164fd5ca9e1ee68c8f822bcf",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/RevoltCondition.java",
+      "sha256": "eead800f3b89bb7d03776b7366556d161ab63dca93fc82ff0db185990e01002c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/RevoltWatcher.java",
+      "sha256": "596de803f88a78c9c8210442aca24cd62c678ff57c421063ff5398efe6154438"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    }
+  ]
 }

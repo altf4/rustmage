@@ -8,5 +8,32 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "56ad83cad50524be790cf379676853479d5eaf75f140f4ef1dd98861d62f0e9f"
   },
-  "physical_metadata_sha256": "2c92924fe38b91cc5fed18beeaa2ef6230d2b4fb4e767a3161e8f36f2ab50b45"
+  "physical_metadata_sha256": "2c92924fe38b91cc5fed18beeaa2ef6230d2b4fb4e767a3161e8f36f2ab50b45",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ShreddersRevenge.java",
+  "java_sha256": "a8dd8580c7cf1ac33dcd4d6326415ac210e3c1af4f119d41807b3132ac6f6967",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardTargetEffect.java",
+      "sha256": "1011f870b5768153b7d9d7d194431db724bfc61844195b66efc06e759dae57a3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardTargetEffect.java",
+      "sha256": "1d131bf3ff4ac75e46660190098938610581d961ad6d8f39e553c9c200f7a467"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeTargetEffect.java",
+      "sha256": "cb540577a835c69b5b4bd5182c58715215e03ee165d349a7d19d388c03224e37"
+    }
+  ],
+  "source_audit": {
+    "scope": "Full Oracle body, complete XMage card class and listed complete reusable implementations read; inherited typed behavior independently exercised with paid legal actions.",
+    "tests": [
+      "src/engine_tmt_inherited_batch_four_tests.rs"
+    ],
+    "status": "Focused rules audit; integrated release and complete-set acceptance remain integrator obligations."
+  }
 }
