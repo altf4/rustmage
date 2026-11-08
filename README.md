@@ -21,15 +21,6 @@ The engine is available through a native Rust API and in-process Python bindings
 Your application supplies the bot, learning algorithm, and reward function;
 Rustmage supplies the game rules and state transitions.
 
-Ten full sets are implemented across accepted branches: **Foundations**,
-**Lorwyn Eclipsed**, **Teenage Mutant Ninja Turtles**, **The Big Score**,
-**Secrets of Strixhaven**, **Marvel Super Heroes**, **The Hobbit**,
-**Reality Fracture**, **Aetherdrift**, and **Tarkir: Dragonstorm**, with
-accepted rules and interaction assurance.
-The long-term goal is complete Standard coverage; implementation of the wider
-card pool is still in progress. Standard games reject cards whose rules have not
-been implemented.
-
 Card behavior is authored directly in Rust, organized by set, and built on shared
 abilities, effects, targets, and costs. XMage's implementations and authoritative
 Oracle text guide that work. Gameplay executes deterministic Rust code.
