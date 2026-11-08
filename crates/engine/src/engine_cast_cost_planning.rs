@@ -681,6 +681,64 @@ impl FundingState<'_> {
             .collect::<Vec<_>>();
         self.complete_cost_rows(context, &unpaid)
     }
+    fn conspire_candidate(&self, actor: Player, colors: u8, index: usize) -> bool {
+        let resource = &self.resources[index];
+        resource.object.zone == Zone::Battlefield
+            && resource.object.controller == actor
+            && !resource.object.tapped
+            && CharacteristicWorld::kinds(self, resource.id) & 1 != 0
+            && CharacteristicWorld::colors(self, resource.id) & colors != 0
+    }
+    fn complete_conspire_clause(
+        &self,
+        current: &CostContext,
+        later: &CostContext,
+        remaining: &[usize],
+        instance: u16,
+    ) -> bool {
+        let colors = CharacteristicWorld::colors(self, current.source.card);
+        let complete = |[first, second]: [usize; 2]| {
+            let mut next = self.clone();
+            next.resources[first].object.tapped = true;
+            next.resources[second].object.tapped = true;
+            next.complete_cost_rows(later, remaining)
+        };
+        if let Some(objects) = current.conspire[usize::from(instance)].objects {
+            // A selected pair is one exact payment, not a prefix to enumerate.
+            // Resource insertion order differs from public object/action order.
+            if objects[0].card >= objects[1].card {
+                return false;
+            }
+            let mut pair = [0; 2];
+            for (index, object) in objects.iter().enumerate() {
+                let Some(resource) = self
+                    .resources
+                    .iter()
+                    .position(|r| r.id == object.card && r.object.generation == object.generation)
+                else {
+                    return false;
+                };
+                if !self.conspire_candidate(current.actor, colors, resource) {
+                    return false;
+                }
+                pair[index] = resource;
+            }
+            return complete(pair);
+        }
+        // Future unpaid instances still explore distinct pairs in the current
+        // projected world, after earlier mana and nonmana costs have changed it.
+        let eligible: Vec<_> = (0..self.resources.len())
+            .filter(|&index| self.conspire_candidate(current.actor, colors, index))
+            .collect();
+        for (at, &first) in eligible.iter().enumerate() {
+            for &second in &eligible[at + 1..] {
+                if complete([first, second]) {
+                    return true;
+                }
+            }
+        }
+        false
+    }
     fn complete_cost_rows(&self, c: &CostContext, remaining: &[usize]) -> bool {
         if remaining.is_empty() {
             return true;
@@ -772,37 +830,8 @@ impl FundingState<'_> {
                     }
                 }
                 CastCostClause::Conspire(instance) => {
-                    let selected = c.conspire[usize::from(instance)].objects;
-                    let colors = CharacteristicWorld::colors(self, c.source.card);
-                    let eligible: Vec<_> = self
-                        .resources
-                        .iter()
-                        .enumerate()
-                        .filter(|(_, r)| {
-                            r.object.zone == Zone::Battlefield
-                                && r.object.controller == c.actor
-                                && !r.object.tapped
-                                && CharacteristicWorld::kinds(self, r.id) & 1 != 0
-                                && CharacteristicWorld::colors(self, r.id) & colors != 0
-                        })
-                        .map(|(i, _)| i)
-                        .collect();
-                    for (at, &first) in eligible.iter().enumerate() {
-                        for &second in &eligible[at + 1..] {
-                            let pair = [
-                                self.reference(self.resources[first].id),
-                                self.reference(self.resources[second].id),
-                            ];
-                            if selected.is_some_and(|wanted| wanted != pair) {
-                                continue;
-                            }
-                            let mut next = self.clone();
-                            next.resources[first].object.tapped = true;
-                            next.resources[second].object.tapped = true;
-                            if next.complete_cost_rows(&later, &rest) {
-                                return true;
-                            }
-                        }
+                    if self.complete_conspire_clause(c, &later, &rest, instance) {
+                        return true;
                     }
                 }
                 CastCostClause::Casualty(instance) => {
@@ -1810,16 +1839,12 @@ impl Game {
         };
         let a = self.state.announcing.as_ref().unwrap();
         let world = self.cast_cost_world(a);
-        let candidates: Vec<_> = (0..self.state.objects.len())
-            .filter(|&id| {
-                let o = &self.state.objects[id];
-                o.zone == Zone::Battlefield
-                    && o.controller == a.item.controller
-                    && !o.tapped
-                    && self.object_kinds(id as CardId, o) & 1 != 0
-            })
-            .map(|id| self.object_ref(id as CardId))
+        let colors = CharacteristicWorld::colors(&world, a.item.source.unwrap().id);
+        let mut candidates: Vec<_> = (0..world.resources.len())
+            .filter(|&index| world.conspire_candidate(a.item.controller, colors, index))
+            .map(|index| world.reference(world.resources[index].id))
             .collect();
+        candidates.sort_unstable_by_key(|object| object.card);
         for (at, &first) in candidates.iter().enumerate() {
             for &second in &candidates[at + 1..] {
                 let objects = [first, second];
@@ -1924,26 +1949,29 @@ impl Game {
                     self.harmonize_choice_fundable(&a, Some(self.object_ref(id as CardId)))
                 });
         }
-        a.cost_options().any(|cost| {
-            let mut choice = a.clone();
-            choice.cost = Some(cost);
-            let goal = self.funding_goal(&choice);
-            let mut world = FundingState::from_game_with_convoke(
-                self,
-                &goal,
-                convoke::potential(
+        a.cost
+            .into_iter()
+            .chain(a.cost_options().filter(|_| a.cost.is_none()))
+            .any(|cost| {
+                let mut choice = a.clone();
+                choice.cost = Some(cost);
+                let goal = self.funding_goal(&choice);
+                let mut world = FundingState::from_game_with_convoke(
                     self,
-                    choice
-                        .item
-                        .source
-                        .expect("cost announcement has object source")
-                        .card,
-                ),
-            );
-            world.set_purpose(self.purpose_for_item(&choice.item));
-            world.set_cost_context(Some(&choice));
-            world.reachable(&goal, &mut HashSet::new())
-        })
+                    &goal,
+                    convoke::potential(
+                        self,
+                        choice
+                            .item
+                            .source
+                            .expect("cost announcement has object source")
+                            .card,
+                    ),
+                );
+                world.set_purpose(self.purpose_for_item(&choice.item));
+                world.set_cost_context(Some(&choice));
+                world.reachable(&goal, &mut HashSet::new())
+            })
     }
     pub(in crate::engine) fn casualty_intent_fundable(&self, pay: bool) -> bool {
         let mut a = self.state.announcing.as_ref().unwrap().clone();
