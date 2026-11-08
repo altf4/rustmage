@@ -327,7 +327,7 @@ impl Game {
         }
         if let Some(slot) = hand.pop() {
             *awaiting = Some((slot, pool_version));
-            let origin = resolution.item.id;
+            let origin = self.state.resolving.as_ref().unwrap().item.id;
             self.admit_revealed_outside_to_hand(owner, origin, slot);
             return true;
         }
