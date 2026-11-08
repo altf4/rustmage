@@ -225,7 +225,9 @@ fn power_difference_with_only_one_creature_grants_trample_without_drawing() {
     put(&mut g, Player::P1, "Hill Giant", Zone::Battlefield);
     start(&mut g, Player::P0, None);
     resolve_top(&mut g);
-    let choice = Action::ChoosePowerDifferenceCreature { object: g.object_ref(a) };
+    let choice = Action::ChoosePowerDifferenceCreature {
+        object: g.object_ref(a),
+    };
     checked(&mut g, choice);
     settle(&mut g);
     assert_eq!(stats(&g, a), (2, 2));
@@ -539,7 +541,15 @@ fn graveyard_pair_mode_and_first_target_need_a_distinct_shared_creature_type() {
         ]),
         ..CardRules::EMPTY
     };
-    let _scope = fixture_rules::activate(&[(Card::Shock, &RECOVER)]);
+    const FORK: CardRules = spell(
+        TargetPlan::Single(TargetSpec::one(TargetRule::Spell)),
+        &[Instruction::CopyTargetSpell {
+            group: 0,
+            retarget: true,
+            exceptions: CopyExceptions::NONE,
+        }],
+    );
+    let _scope = fixture_rules::activate(&[(Card::Shock, &RECOVER), (Card::LightningBolt, &FORK)]);
     for have_pair in [false, true] {
         let p = Player::P0;
         let mut g = scenario(p);
@@ -584,11 +594,26 @@ fn graveyard_pair_mode_and_first_target_need_a_distinct_shared_creature_type() {
             },
         );
         pay(&mut g);
+        let mut with_copy = g.clone();
         g.move_object(partner, Zone::Exile);
         settle(&mut g);
         assert_eq!(g.state.objects[bear as usize].zone, Zone::Hand);
         assert_eq!(g.state.objects[giant as usize].zone, Zone::Graveyard);
         assert_eq!(g.state.objects[partner as usize].zone, Zone::Exile);
+
+        let replacement = put(&mut with_copy, p, "Grizzly Bears", Zone::Graveyard);
+        let fork = put(&mut with_copy, p, "Lightning Bolt", Zone::Hand);
+        cast(&mut with_copy, fork, Some(Target::Spell(spell)));
+        with_copy.move_object(partner, Zone::Exile);
+        resolve_top(&mut with_copy);
+        checked(&mut with_copy, Action::SetStackTarget {
+            index: 0, target: Target::Card(replacement),
+        });
+        checked(&mut with_copy, Action::FinishStackTargets);
+        settle(&mut with_copy);
+        assert_eq!(with_copy.object_view(bear).zone, Zone::Hand);
+        assert_eq!(with_copy.object_view(replacement).zone, Zone::Hand);
+        assert_eq!(with_copy.object_view(partner).zone, Zone::Exile);
     }
 }
 

@@ -1552,6 +1552,14 @@ pub enum SourceLessRule {
     Speed,
 }
 
+/// Cold last-known facts for a relational target that changed zones.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum TargetTypeLki {
+    CardTypes(u16),
+    CreatureTypes(Card, GrantedSubtypes),
+}
+
 /// Object-backed stack source, absent for inherent game-rule abilities.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -1606,7 +1614,7 @@ pub struct SpellView {
     /// Internal exact departure facts for a relational card-type target constraint.
     #[serde(skip)]
     #[allow(clippy::box_collection)]
-    pub(crate) target_kinds_lki: Option<Box<Vec<(ObjectRef, u16)>>>,
+    pub(crate) target_types_lki: Option<Box<Vec<(ObjectRef, TargetTypeLki)>>>,
     /// Public type-slot choices retained by copied and retargeted abilities.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[allow(clippy::box_collection)]
@@ -1736,7 +1744,7 @@ impl SpellView {
         self.target_type_slots = None;
         self.target_allocations = None;
         self.target_controller_lki = None;
-        self.target_kinds_lki = None;
+        self.target_types_lki = None;
     }
     fn needs_source_copy_lki(&self) -> bool {
         // Some legacy event packets carry no corresponding typed ability.
@@ -1796,8 +1804,10 @@ impl SpellView {
     fn needs_target_controller_lki(&self) -> bool {
         self.needs_target_relation_lki(TargetGroupConstraint::DifferentControllers)
     }
-    fn needs_target_kinds_lki(&self) -> bool {
-        self.needs_target_relation_lki(TargetGroupConstraint::SharedCardType)
+    pub(super) fn target_type_lki(&self, object: ObjectRef) -> Option<TargetTypeLki> {
+        self.target_types_lki.as_ref()?.iter().find_map(|(reference, facts)| {
+            (*reference == object).then_some(*facts)
+        })
     }
     fn needs_target_relation_lki(&self, required: TargetGroupConstraint) -> bool {
         // Legacy event packets can have no typed ability entry. They cannot
@@ -1885,9 +1895,9 @@ impl SpellView {
             + self.target_type_slots.as_ref().map_or(0, |v| {
                 std::mem::size_of::<Vec<u16>>() + v.len() * std::mem::size_of::<u16>()
             })
-            + self.target_kinds_lki.as_ref().map_or(0, |v| {
-                std::mem::size_of::<Vec<(ObjectRef, u16)>>()
-                    + v.len() * std::mem::size_of::<(ObjectRef, u16)>()
+            + self.target_types_lki.as_ref().map_or(0, |v| {
+                std::mem::size_of::<Vec<(ObjectRef, TargetTypeLki)>>()
+                    + v.len() * std::mem::size_of::<(ObjectRef, TargetTypeLki)>()
             })
             + self.target_controller_lki.as_ref().map_or(0, |v| {
                 std::mem::size_of::<Vec<(ObjectRef, Player)>>()
@@ -9504,6 +9514,7 @@ impl Game {
         self.capture_turn_callback_source_departure(&before);
         self.capture_source_prevention_departure(&before);
         self.capture_source_counter_departure(&before);
+        self.capture_target_types_departure(&before);
         self.clear_entry_value(before.reference);
         if before.zone == Zone::Battlefield {
             self.forget_prepared(before.reference);
@@ -9629,22 +9640,6 @@ impl Game {
                         .map(|f| &mut f.announcement.item),
                 )
             {
-                if item.needs_target_kinds_lki()
-                    && item
-                        .targets
-                        .iter()
-                        .any(|bound| bound.object == Some(before.reference))
-                {
-                    let history = item
-                        .target_kinds_lki
-                        .get_or_insert_with(|| Box::new(Vec::new()));
-                    if !history
-                        .iter()
-                        .any(|(object, _)| *object == before.reference)
-                    {
-                        history.push((before.reference, before.kinds));
-                    }
-                }
                 if item.needs_target_controller_lki()
                     && item
                         .targets

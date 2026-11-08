@@ -128,7 +128,7 @@ impl Game {
             delayed.targets.clear();
             delayed.target_type_slots = None;
             delayed.target_controller_lki = None;
-            delayed.target_kinds_lki = None;
+            delayed.target_types_lki = None;
             delayed.target_allocations = None;
             delayed.related_stack = None;
             delayed.copy_event = None;

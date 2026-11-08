@@ -62,8 +62,7 @@ impl Game {
             .iter()
             .copied()
             .filter(|recipient| {
-                self.on_battlefield(recipient.card)
-                    && self.object_ref(recipient.card) == *recipient
+                self.on_battlefield(recipient.card) && self.object_ref(recipient.card) == *recipient
             })
             .map(|recipient| recipient.card)
             .collect();
@@ -1629,7 +1628,10 @@ impl Game {
             let controller = self.state.resolving.as_ref().unwrap().item.controller;
             let selected = &choice.selected[controller.index()];
             let amount = match selected.as_slice() {
-                [one, other] => self.stats(one.card).power.abs_diff(self.stats(other.card).power),
+                [one, other] => self
+                    .stats(one.card)
+                    .power
+                    .abs_diff(self.stats(other.card).power),
                 [_] => 0,
                 _ => unreachable!("the mandatory choice selects one or two creatures"),
             };

@@ -112,7 +112,9 @@ impl Announcement {
         if self.additional_cost().is_some_and(|s| {
             matches!(
                 s.kind.payment_kind(),
-                EffectChoiceKind::BeholdMany(_) | EffectChoiceKind::BeholdAndExile | EffectChoiceKind::BlightCost(_)
+                EffectChoiceKind::BeholdMany(_)
+                    | EffectChoiceKind::BeholdAndExile
+                    | EffectChoiceKind::BlightCost(_)
             )
         }) {
             self.add_cast_cost_clause(CastCostClause::Mana);

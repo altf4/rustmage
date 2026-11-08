@@ -1458,7 +1458,7 @@ impl Game {
             borrowed_slot: None,
             self_granted_activation: None,
             target_controller_lki: None,
-            target_kinds_lki: None,
+            target_types_lki: None,
             target_type_slots: None,
             reflexive_subject: None,
             crew: None,
@@ -9067,11 +9067,17 @@ impl Game {
                 Instruction::GrantChosenCreatureTypeKeywords { other, keywords } => {
                     self.grant_chosen_creature_type_keywords(&item, other, keywords)
                 }
-                Instruction::ModifyPlayerCreatures { players, power, toughness, keywords } => {
+                Instruction::ModifyPlayerCreatures {
+                    players,
+                    power,
+                    toughness,
+                    keywords,
+                } => {
                     let recipients = self.player_creature_recipients(players, &item);
                     for &id in &recipients {
                         self.state.objects[id as usize].growth += Stats {
-                            power: i128::from(power), toughness: i128::from(toughness),
+                            power: i128::from(power),
+                            toughness: i128::from(toughness),
                         };
                     }
                     if let Some(source) = item.source {

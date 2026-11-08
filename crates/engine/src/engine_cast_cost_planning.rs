@@ -2026,7 +2026,12 @@ impl Game {
                 EffectChoiceKind::BeholdMany(_) | EffectChoiceKind::BeholdAndExile
             )
         }) || delve::potential(self)
-            || additional.is_some_and(|a| matches!(a.kind.payment_kind(), EffectChoiceKind::DiscardOrLife(_) | EffectChoiceKind::BlightCost(_)))
+            || additional.is_some_and(|a| {
+                matches!(
+                    a.kind.payment_kind(),
+                    EffectChoiceKind::DiscardOrLife(_) | EffectChoiceKind::BlightCost(_)
+                )
+            })
             || additional.is_some()
                 && (convoke::potential(self, spell.card)
                     || improvise::potential(self, spell.card)
