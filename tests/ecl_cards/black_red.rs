@@ -5630,7 +5630,7 @@ fn dawnhand_announce(g: &mut Game, card: CardId, source: ObjectRef) {
         "provider index"
     );
     assert_eq!(
-        g.linked_counter_permission(g.actor().unwrap(), source, card),
+        g.linked_counter_permission(g.actor().unwrap(), source, card, CastFace::Normal),
         Some(3),
         "permission"
     );
@@ -5639,6 +5639,7 @@ fn dawnhand_announce(g: &mut Game, card: CardId, source: ObjectRef) {
         Action::AnnounceLinkedExileCounterCost {
             card,
             source,
+            face: CastFace::Normal,
             flash_surcharge: false,
         },
     );
@@ -5811,6 +5812,7 @@ fn dawnhand_exact_provider_turn_control_and_source_departure_during_announcement
         let linked = Action::AnnounceLinkedExileCounterCost {
             card,
             source: reference,
+            face: CastFace::Normal,
             flash_surcharge: false,
         };
         g.state.objects[card as usize].owner = p.other();
@@ -5826,6 +5828,7 @@ fn dawnhand_exact_provider_turn_control_and_source_departure_during_announcement
             Action::AnnounceLinkedExileCounterCost {
                 card: noncreature,
                 source: reference,
+                face: CastFace::Normal,
                 flash_surcharge: false,
             },
         );
@@ -5835,6 +5838,7 @@ fn dawnhand_exact_provider_turn_control_and_source_departure_during_announcement
             Action::AnnounceLinkedExileCounterCost {
                 card,
                 source: reference,
+                face: CastFace::Normal,
                 flash_surcharge: false,
             },
         );
@@ -5845,6 +5849,7 @@ fn dawnhand_exact_provider_turn_control_and_source_departure_during_announcement
             Action::AnnounceLinkedExileCounterCost {
                 card,
                 source: reference,
+                face: CastFace::Normal,
                 flash_surcharge: false,
             },
         );
@@ -5856,6 +5861,7 @@ fn dawnhand_exact_provider_turn_control_and_source_departure_during_announcement
             Action::AnnounceLinkedExileCounterCost {
                 card,
                 source: other_ref,
+                face: CastFace::Normal,
                 flash_surcharge: false,
             },
         );
@@ -5975,6 +5981,7 @@ fn dawnhand_counter_mana_funding_cannot_double_spend_reserved_counters() {
             let action = Action::AnnounceLinkedExileCounterCost {
                 card,
                 source: reference,
+                face: CastFace::Normal,
                 flash_surcharge: false,
             };
             if count == 7 {
@@ -6009,6 +6016,7 @@ fn dawnhand_variable_creature_spell_requires_existing_counters_and_pays_declared
             Action::AnnounceLinkedExileCounterCost {
                 card,
                 source: reference,
+                face: CastFace::Normal,
                 flash_surcharge: false,
             },
         );
@@ -6087,6 +6095,7 @@ fn dawnhand_provider_ability_loss_and_reentry_do_not_reuse_old_exile_link() {
             Action::AnnounceLinkedExileCounterCost {
                 card,
                 source: reference,
+                face: CastFace::Normal,
                 flash_surcharge: false,
             },
         );
@@ -6099,6 +6108,7 @@ fn dawnhand_provider_ability_loss_and_reentry_do_not_reuse_old_exile_link() {
             Action::AnnounceLinkedExileCounterCost {
                 card,
                 source: newer,
+                face: CastFace::Normal,
                 flash_surcharge: false,
             },
         );
@@ -6146,6 +6156,7 @@ fn dawnhand_actual_exile_activation_unlocks_cast_and_source_loss_preserves_only_
                     Action::AnnounceLinkedExileCounterCost {
                         card,
                         source: newer,
+                        face: CastFace::Normal,
                         flash_surcharge: false,
                     },
                 );
@@ -6175,6 +6186,7 @@ fn dawnhand_insufficient_counters_reject_without_exploring_equivalent_land_subse
         Action::AnnounceLinkedExileCounterCost {
             card,
             source: reference,
+            face: CastFace::Normal,
             flash_surcharge: false,
         },
     );
@@ -6234,6 +6246,7 @@ fn dawnhand_copy_epochs_keep_queued_exile_packets_separate_from_new_linked_abili
             Action::AnnounceLinkedExileCounterCost {
                 card: old_card,
                 source: reference,
+                face: CastFace::Normal,
                 flash_surcharge: false,
             },
         );
@@ -6278,6 +6291,7 @@ fn dawnhand_copy_epochs_keep_queued_exile_packets_separate_from_new_linked_abili
             Action::AnnounceLinkedExileCounterCost {
                 card: new_card,
                 source: reference,
+                face: CastFace::Normal,
                 flash_surcharge: false,
             },
         );
@@ -6291,7 +6305,10 @@ fn dawnhand_copy_epochs_keep_queued_exile_packets_separate_from_new_linked_abili
         assert_eq!(g.object_view(old_card).zone, Zone::Exile);
         g.move_object(first_boundary, Zone::Graveyard);
         assert_eq!(g.copy_ability_origin(reference), None);
-        assert_eq!(g.linked_counter_permission(p, reference, old_card), Some(3));
+        assert_eq!(
+            g.linked_counter_permission(p, reference, old_card, CastFace::Normal),
+            Some(3)
+        );
     }
 }
 
@@ -6768,12 +6785,16 @@ fn lavaleaper_mixed_event_choices_are_owned_and_keep_frozen_types_and_multiplici
         // Narrow event boundary: no currently admitted basic-land ability makes
         // this mixed vector, but all three types must remain valid choices.
         let production = [1, 1, 0, 0, 0, 1];
-        let bonus = g.mana_tap_bonuses(p, forest);
-        g.move_object(source, Zone::Graveyard);
-        g.move_object(travelers, Zone::Graveyard);
+        let tapped_land = g.object_ref(forest);
+        let tap = g.mana_tap_bonuses(p, forest);
         g.state.players[p.index()].mana = [0; 6];
+        let bonus = tap.with_trigger_bonuses(&g, p, Some(tapped_land));
         g.finish_mana_tap_bonus(p, bonus, production);
         assert!(g.advance_mana_tap_bonus());
+        // Providers are checked at production. Once the bonus choice exists,
+        // its types and multiplicity survive their later departure.
+        g.move_object(source, Zone::Graveyard);
+        g.move_object(travelers, Zone::Graveyard);
         assert_eq!(g.observe(p).mana_choices.len(), 6);
         assert!(g.observe(p.other()).mana_choices.is_empty());
         reject(
@@ -6800,8 +6821,10 @@ fn lavaleaper_mixed_bonus_overflow_is_atomic_and_another_type_remains_payable() 
     named(&mut g, p, "Lavaleaper", Zone::Battlefield);
     let forest = named(&mut g, p, "Forest", Zone::Battlefield);
     let production = [0, 0, 0, 1, 0, 1];
-    let bonus = g.mana_tap_bonuses(p, forest);
+    let tapped_land = g.object_ref(forest);
+    let tap = g.mana_tap_bonuses(p, forest);
     g.state.players[p.index()].mana = [0, 0, 0, u32::MAX, 0, 0];
+    let bonus = tap.with_trigger_bonuses(&g, p, Some(tapped_land));
     g.finish_mana_tap_bonus(p, bonus, production);
     assert!(g.advance_mana_tap_bonus());
     reject(
@@ -6825,7 +6848,8 @@ fn lavaleaper_pending_mana_bonus_waits_for_replacements_and_defers_sbas() {
     named(&mut g, p, "Lavaleaper", Zone::Battlefield);
     let forest = named(&mut g, p, "Forest", Zone::Battlefield);
     let production = [1, 1, 0, 0, 0, 0];
-    let bonus = g.mana_tap_bonuses(p, forest);
+    let tapped_land = g.object_ref(forest);
+    let tap = g.mana_tap_bonuses(p, forest);
     let victim = named(&mut g, p, "Grizzly Bears", Zone::Battlefield);
     named(&mut g, p, "Doubling Season", Zone::Battlefield);
     named(&mut g, p, "Doubling Season", Zone::Battlefield);
@@ -6837,6 +6861,7 @@ fn lavaleaper_pending_mana_bonus_waits_for_replacements_and_defers_sbas() {
     );
     assert!(g.advance_replacements(false));
     assert!(matches!(g.state.pending, Pending::Replacement { .. }));
+    let bonus = tap.with_trigger_bonuses(&g, p, Some(tapped_land));
     g.finish_mana_tap_bonus(p, bonus, production);
     for _ in 0..10 {
         if matches!(g.state.pending, Pending::EffectMana { .. }) {
@@ -6872,7 +6897,9 @@ fn lavaleaper_mixed_mana_choice_resumes_an_existing_cast_payment_window() {
         let spell = named(&mut g, p, "Gigantosaurus", Zone::Hand);
         checked(&mut g, Action::AnnounceCast { card: spell });
         let production = [1, 0, 0, 0, 0, 1];
-        let bonus = g.mana_tap_bonuses(p, forests[0]);
+        let tapped_land = g.object_ref(forests[0]);
+        let tap = g.mana_tap_bonuses(p, forests[0]);
+        let bonus = tap.with_trigger_bonuses(&g, p, Some(tapped_land));
         g.finish_mana_tap_bonus(p, bonus, production);
         assert!(g.advance_mana_tap_bonus());
         checked(

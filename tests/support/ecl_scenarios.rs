@@ -27,8 +27,10 @@ pub(super) fn simple_cast(g: &mut Game, card: CardId, target: Option<Target>) {
 }
 
 pub(super) fn named(g: &mut Game, p: Player, name: &str, zone: Zone) -> CardId {
-    let card = Card::from_name(name).unwrap();
-    assert!(card.is_supported(), "{name}");
+    // Card scenarios establish behavior before the set's admission gate opens.
+    // Complete-set acceptance checks catalogue admission independently; the
+    // ordinary support::put helper keeps its supported-card guard.
+    let card = Card::from_name(name).unwrap_or_else(|| panic!("unknown ECL fixture {name}"));
     spawn(g, p, card, zone)
 }
 pub(super) fn checked(g: &mut Game, action: Action) {

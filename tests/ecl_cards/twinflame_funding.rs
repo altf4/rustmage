@@ -1,4 +1,4 @@
-//! Frozen triggered mana uses the same owned and speculative characteristics.
+//! Triggered mana uses the same production-time owned and speculative characteristics.
 use crate::ecl_scenarios::{checked, named, setup};
 use rustmage_core::engine::ability_world::CharacteristicWorld;
 use rustmage_core::engine::funding::{FundingGoal, FundingState};
@@ -68,7 +68,7 @@ fn ecl_twinflame_funding_virtual_provider_departure_removal_and_source_control_a
     }
 }
 #[test]
-fn ecl_twinflame_triggered_mana_bonus_is_frozen_before_departure_and_funding_matches_actual() {
+fn ecl_twinflame_triggered_mana_bonus_at_production_and_funding_match_actual() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
         let provider = named(&mut g, p, "Twinflame Travelers", Zone::Battlefield);
@@ -96,8 +96,10 @@ fn ecl_twinflame_triggered_mana_bonus_is_frozen_before_departure_and_funding_mat
         };
         g.state.players[p.index()].mana = [0; 6];
         let world = FundingState::from_game(&g, &goal);
-        let captured = g.mana_tap_bonuses(p, land).fixed;
-        assert_eq!(captured, [0, 0, 0, 2, 0, 0]);
+        let tapped_land = g.object_ref(land);
+        let tap = g.mana_tap_bonuses(p, land);
+        let produced_bonus = tap.with_trigger_bonuses(&g, p, Some(tapped_land));
+        assert_eq!(produced_bonus.fixed, [0, 0, 0, 2, 0, 0]);
         let step = world
             .moves(&goal)
             .into_iter()
@@ -146,9 +148,13 @@ fn ecl_twinflame_triggered_mana_bonus_is_frozen_before_departure_and_funding_mat
         assert_eq!(g.object_view(victim).controller, p);
         g.restore(&saved).unwrap();
         g.move_object(provider, Zone::Graveyard);
-        assert_eq!(g.mana_tap_bonuses(p, land).fixed, [0, 0, 0, 1, 0, 0]);
-        // The original event's frozen result remains usable after its provider leaves.
-        g.add_mana(p, captured);
-        assert_eq!(g.state.players[p.index()].mana, captured);
+        assert_eq!(
+            tap.with_trigger_bonuses(&g, p, Some(tapped_land)).fixed,
+            [0, 0, 0, 1, 0, 0]
+        );
+        assert!(!FundingState::from_game(&g, &goal).reachable(&goal, &mut HashSet::new()));
+        // A new production event sees the provider's departure in both worlds.
+        checked(&mut g, Action::TapMana { card: land });
+        assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 1, 1, 0]);
     }
 }

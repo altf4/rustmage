@@ -2788,7 +2788,7 @@ fn ecl_green_growth_external_creature_tap_cost_never_counts_as_land_tapped_for_m
 }
 
 #[test]
-fn ecl_green_growth_multiple_providers_timestamps_and_exact_departed_land_bonus_capture() {
+fn ecl_green_growth_multiple_providers_timestamps_and_exact_land_at_production() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
         let land = named(&mut g, p, "Forest", Zone::Battlefield);
@@ -2808,21 +2808,36 @@ fn ecl_green_growth_multiple_providers_timestamps_and_exact_departed_land_bonus_
         assert_eq!(g.state.players[p.index()].mana, [0, 1, 0, 1, 1, 0]);
         g.move_object(second, Zone::Graveyard);
         assert_eq!(g.object_view(land).colors, 2);
-        // Typed LKI capture fixture: there is no admitted T+sacrifice land-mana
-        // producer. Preserve the bonus from the exact tap event before departure.
-        let captured = g.mana_tap_bonuses(p, land).fixed;
-        let snapshot = g.snapshot();
+        // Typed event boundary for a tap-and-sacrifice mana ability: the tap
+        // receipt retains land facts, but Aura triggers wait for production.
         let old = g.object_ref(land);
+        let tap = g.mana_tap_bonuses(p, land);
+        assert_eq!(
+            tap.with_trigger_bonuses(&g, p, Some(old)).fixed,
+            [0, 1, 0, 0, 0, 0]
+        );
+        let snapshot = g.snapshot();
         g.move_object(land, Zone::Graveyard);
-        assert_eq!(g.mana_tap_bonuses(p, land).fixed, [0; 6]);
-        g.add_mana(p, captured);
-        assert_eq!(g.state.players[p.index()].mana, [0, 2, 0, 1, 1, 0]);
+        let departed_bonus = tap.with_trigger_bonuses(&g, p, Some(old));
+        assert_eq!(departed_bonus.fixed, [0; 6]);
+        g.finish_mana_tap_bonus(p, departed_bonus, [0, 0, 0, 0, 1, 0]);
+        assert_eq!(g.state.players[p.index()].mana, [0, 1, 0, 1, 1, 0]);
         g.move_object(land, Zone::Battlefield);
-        assert_ne!(g.object_ref(land), old);
-        assert_eq!(g.mana_tap_bonuses(p, land).fixed, [0; 6]);
+        let newer = g.object_ref(land);
+        assert_ne!(newer, old);
+        assert_eq!(tap.with_trigger_bonuses(&g, p, Some(old)).fixed, [0; 6]);
+        assert_eq!(
+            g.mana_tap_bonuses(p, land)
+                .with_trigger_bonuses(&g, p, Some(newer))
+                .fixed,
+            [0; 6]
+        );
         assert_eq!(g.object_view(first).attached_to, Some(old));
         g.restore(&snapshot).unwrap();
-        assert_eq!(g.mana_tap_bonuses(p, land).fixed, captured);
+        assert_eq!(
+            tap.with_trigger_bonuses(&g, p, Some(old)).fixed,
+            [0, 1, 0, 0, 0, 0]
+        );
     }
 }
 
