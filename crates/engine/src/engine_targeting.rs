@@ -14,6 +14,8 @@ pub(super) struct ActivationCostChoice {
 pub(super) struct Announcement {
     pub behold_required: bool,
     pub miracle_cost: Option<ManaCost>,
+    /// Captured from the graveyard grant at this spell's announcement.
+    pub sneak_granted_cost: Option<ManaCost>,
     pub item: SpellView,
     pub spec: TargetSpec,
     pub plan: TargetPlan,
@@ -87,6 +89,13 @@ impl Announcement {
                 })
         })
     }
+    pub(super) fn sneak_cost_options(&self) -> impl Iterator<Item = ManaCost> {
+        let card = self.item.source.expect("Sneak spell has a source").card;
+        let grant = self
+            .sneak_granted_cost
+            .filter(|cost| !card.sneak_cost_options().any(|printed| printed == *cost));
+        card.sneak_cost_options().chain(grant)
+    }
     pub(super) fn fixed_alternative_cost(&self) -> Option<ManaCost> {
         self.item.cast.and_then(|c| match c.method {
             CastMethod::Harmonize => self.item.source?.card.harmonize_cost(),
@@ -120,6 +129,15 @@ impl Announcement {
         self.additional_cost()
             .and_then(|cost| cost.kind.creature_counter_requirement())
     }
+    pub(super) fn has_compound_sneak_cost(&self) -> bool {
+        self.item
+            .cast
+            .is_some_and(|cast| cast.method == CastMethod::Sneak)
+            && self
+                .item
+                .source
+                .is_some_and(|source| source.card.additional_cost().is_some())
+    }
     pub(super) fn additional_cost(&self) -> Option<AdditionalCost> {
         if self.activation_cost_route == ActivationCostRoute::FirstEquipZero {
             return None;
@@ -144,6 +162,7 @@ impl Announcement {
             .item
             .cast
             .is_some_and(|c| c.method == CastMethod::Sneak)
+            && !self.has_compound_sneak_cost()
         {
             return Some(sneak::COST);
         }
@@ -252,15 +271,8 @@ impl Announcement {
                     .cast
                     .is_some_and(|c| c.method == CastMethod::Sneak) =>
             {
-                std::iter::once(
-                    self.item
-                        .source
-                        .expect("announcement has object source")
-                        .card
-                        .sneak_cost()
-                        .expect("Sneak cost"),
-                )
-                .chain([].iter().copied())
+                std::iter::once(self.sneak_cost_options().next().expect("Sneak cost"))
+                    .chain([].iter().copied())
             }
             StackKind::Spell
                 if self
@@ -401,6 +413,14 @@ impl Announcement {
                 )
                 .map_or_else(Vec::new, |cost| cost.options)
                 .into_iter(),
+            )
+        } else if self
+            .item
+            .cast
+            .is_some_and(|cast| cast.method == CastMethod::Sneak)
+        {
+            crate::cards::mana_symbols::ManaOptions::Printed(
+                self.sneak_cost_options().collect::<Vec<_>>().into_iter(),
             )
         } else {
             crate::cards::mana_symbols::ManaOptions::Static(options)
@@ -2293,6 +2313,10 @@ impl Game {
             origin_counter_cost: None,
             origin_additional_cost: None,
             miracle_cost: self.miracle_cost_for(&item),
+            sneak_granted_cost: item
+                .cast
+                .filter(|cast| cast.method == CastMethod::Sneak && cast.origin == Zone::Graveyard)
+                .and_then(|_| self.granted_sneak_cost(item.controller, item.source.unwrap().card)),
             item,
             spec: TargetSpec::NONE,
             plan,
@@ -2487,6 +2511,10 @@ impl Game {
             origin_counter_cost,
             origin_additional_cost: None,
             miracle_cost: self.miracle_cost_for(&item),
+            sneak_granted_cost: item
+                .cast
+                .filter(|cast| cast.method == CastMethod::Sneak && cast.origin == Zone::Graveyard)
+                .and_then(|_| self.granted_sneak_cost(item.controller, item.source.unwrap().card)),
             item,
             spec: TargetSpec::NONE,
             plan,

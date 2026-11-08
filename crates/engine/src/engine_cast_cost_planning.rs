@@ -146,7 +146,8 @@ impl FundingState<'_> {
                 | CastCostClause::Blight { .. }
                 | CastCostClause::Casualty(_)
                 | CastCostClause::Harmonize(_) => {}
-                CastCostClause::Behold(_) => {}
+                CastCostClause::SneakReturn(_) if !row.paid => return false,
+                CastCostClause::Behold(_) | CastCostClause::SneakReturn(_) => {}
             }
         }
         let mut hand = 0usize;
@@ -733,6 +734,19 @@ impl FundingState<'_> {
                         })
                     {
                         return true;
+                    }
+                }
+                CastCostClause::SneakReturn(selected) => {
+                    for attack in &self.game.state.attackers {
+                        let object = self.game.object_ref(attack.card);
+                        if selected.is_none_or(|wanted| wanted == object)
+                            && self.cost_object(sneak::COST, object, c.source)
+                            && self.cost_departures(&[object], Zone::Hand, &mut |world| {
+                                world.complete_cost_rows(&later, &rest)
+                            })
+                        {
+                            return true;
+                        }
                     }
                 }
                 CastCostClause::Additional => {
@@ -1633,6 +1647,24 @@ impl Game {
                     clause: index as u16,
                 })
             {
+                return true;
+            }
+        }
+        false
+    }
+    pub(in crate::engine) fn visit_sneak_return_cost(
+        &self,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        let a = self.state.announcing.as_ref().unwrap();
+        let world = self.cast_cost_world(a);
+        for attack in &self.state.attackers {
+            let object = self.object_ref(attack.card);
+            let mut choice = world.clone();
+            let costs = choice.cast_costs.as_mut().unwrap();
+            let active = usize::from(costs.active.unwrap());
+            costs.clauses[active].clause = CastCostClause::SneakReturn(Some(object));
+            if choice.cost_completion() && emit(Action::PaySneakReturn { object }) {
                 return true;
             }
         }

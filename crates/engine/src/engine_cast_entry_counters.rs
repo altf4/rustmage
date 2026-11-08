@@ -37,6 +37,14 @@ impl Game {
         }
         let amount =
             u64::try_from(self.item_amount(amount, item)).capacity("cast entry counters exhausted");
+        self.record_cast_entry_counters(event.object, kind, amount);
+    }
+    pub(super) fn record_cast_entry_counters(
+        &mut self,
+        spell: ObjectRef,
+        kind: CounterKind,
+        amount: u64,
+    ) {
         if amount == 0 {
             return;
         }
@@ -46,7 +54,7 @@ impl Game {
             .get_or_insert_with(SharedVec::default);
         if let Some(row) = rows
             .iter_mut()
-            .find(|row| row.spell == event.object && row.kind == kind)
+            .find(|row| row.spell == spell && row.kind == kind)
         {
             row.amount = row
                 .amount
@@ -54,7 +62,7 @@ impl Game {
                 .capacity("cast entry counters exhausted");
         } else {
             rows.push(CastEntryCounterView {
-                spell: event.object,
+                spell,
                 kind,
                 amount,
             });

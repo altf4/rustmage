@@ -158,6 +158,15 @@ pub enum StaticAbilityFragment {
     /// Controlled matching spells have delve while this provider's rule is available.
     SpellDelve(CastFilter),
     GraveyardPermanentTypes,
+    /// Play qualifying creature spells from your graveyard during your turn.
+    GraveyardSmallCreaturesWithFinality,
+    GrantGraveyardCreatureSneak {
+        minimum_class_level: u8,
+        cost: ManaCost,
+    },
+    CastGraveyardCreaturesUsingSneak {
+        minimum_class_level: u8,
+    },
     ForeignStashPlay,
     ControlAttached,
     AttachedCharacteristics(&'static AttachedCharacteristics),

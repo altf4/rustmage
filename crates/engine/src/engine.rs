@@ -824,6 +824,7 @@ define_actions! {
     ChooseHandDefender { defender: CombatDefender },
     ChooseBlight { pay: bool },
     PayBlight { object: ObjectRef },
+    PaySneakReturn { object: ObjectRef },
     ChooseTeamwork { pay: bool },
     ChooseTeammate { object: ObjectRef },
     FinishTeamwork,
@@ -841,6 +842,7 @@ define_actions! {
     DeclineMiracle,
     AnnounceCounterGraveyard { card: CardId },
     AnnounceGraveyardAdditionalCosts { card: CardId },
+    AnnounceGraveyardFinality { card: CardId, sneak: bool },
     ChooseCreatureCounterCost { object: ObjectRef, counter: CounterKind },
     AnnounceAttachedAbility { grantor: ObjectRef, ability: u16 },
     AnnouncePlaneswalkerGrant { source: ObjectRef, grantor: ObjectRef, ability: u16 },
@@ -2467,6 +2469,9 @@ enum Pending {
         player: Player,
     },
     BlightPayment {
+        player: Player,
+    },
+    SneakReturnCost {
         player: Player,
     },
     TeamworkIntent {
@@ -4140,6 +4145,7 @@ impl Game {
             | Pending::Mobilize { player }
             | Pending::BlightIntent { player }
             | Pending::BlightPayment { player }
+            | Pending::SneakReturnCost { player }
             | Pending::TeamworkIntent { player }
             | Pending::TeamworkPayment { player }
             | Pending::Saddle { player }
@@ -4699,6 +4705,7 @@ impl Game {
                 }
             }
             Pending::BlightPayment { .. } => return self.visit_blight_payments(&mut emit),
+            Pending::SneakReturnCost { .. } => return self.visit_sneak_return_cost(&mut emit),
             Pending::TeamworkIntent { .. } => {
                 let a = s.announcing.as_ref().unwrap();
                 for pay in [false, true] {
@@ -5450,6 +5457,9 @@ impl Game {
                         return true;
                     }
                     if self.visit_exile_life_casts(actor, card, sorcery, &mut emit) {
+                        return true;
+                    }
+                    if self.visit_graveyard_finality_cast(actor, card, sorcery, &mut emit) {
                         return true;
                     }
                     if self.sneak_cast_available(actor, card)
@@ -7209,12 +7219,24 @@ impl Game {
                     .power = 0;
                 self.open_payment_announcement(item, Counters::default(), None);
             }
+            Action::AnnounceGraveyardFinality { card, sneak } => {
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                if sneak {
+                    Self::configure_sneak(&mut item);
+                }
+                self.record_cast_entry_counters(
+                    item.source.unwrap().object,
+                    CounterKind::Finality,
+                    1,
+                );
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
             Action::AnnounceSneak { card, permission } => {
                 if let Some((source, kind)) = permission {
                     self.consume_graveyard_type(source, kind);
                 }
                 let mut item = self.cast_item(actor, card, [0; 6]);
-                item.cast.as_mut().unwrap().method = CastMethod::Sneak;
+                Self::configure_sneak(&mut item);
                 self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnounceDisguise { card } | Action::AnnounceDisguiseGraveyard { card, .. } => {
@@ -7670,6 +7692,7 @@ impl Game {
             Action::ChooseMobilizeDefender { defender } => self.choose_mobilize_defender(defender),
             Action::ChooseBlight { pay } => self.choose_blight(pay),
             Action::PayBlight { object } => self.pay_blight(object),
+            Action::PaySneakReturn { object } => self.pay_sneak_return(object),
             Action::ChooseTeamwork { pay } => self.choose_teamwork(pay),
             Action::ChooseTeammate { object } => self.choose_teammate(object),
             Action::FinishTeamwork => self.finish_teamwork(),
@@ -10836,6 +10859,7 @@ impl Game {
                 Pending::Mobilize { .. } => "mobilize",
                 Pending::BlightIntent { .. } => "blight_intent",
                 Pending::BlightPayment { .. } => "blight_payment",
+                Pending::SneakReturnCost { .. } => "sneak_return_cost",
                 Pending::TeamworkIntent { .. } => "teamwork_intent",
                 Pending::TeamworkPayment { .. } => "teamwork_payment",
                 Pending::Saddle { .. } => "saddle",

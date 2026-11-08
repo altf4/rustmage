@@ -134,13 +134,7 @@ impl Game {
                 return a.miracle_cost.expect("miracle cost");
             }
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Sneak) {
-                return a
-                    .item
-                    .source
-                    .expect("cost announcement has object source")
-                    .card
-                    .sneak_cost()
-                    .expect("Sneak cost");
+                return a.sneak_cost_options().next().expect("Sneak cost");
             }
             if a.item
                 .cast

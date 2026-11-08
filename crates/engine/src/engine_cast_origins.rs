@@ -20,6 +20,9 @@ impl Card {
                         | StaticAbilityFragment::PlayLandFromGraveyard
                         | StaticAbilityFragment::SpendAnyManaForCreatures
                         | StaticAbilityFragment::GraveyardPermanentTypes
+                        | StaticAbilityFragment::GraveyardSmallCreaturesWithFinality
+                        | StaticAbilityFragment::GrantGraveyardCreatureSneak { .. }
+                        | StaticAbilityFragment::CastGraveyardCreaturesUsingSneak { .. }
                         | StaticAbilityFragment::ForeignStashPlay
                         | StaticAbilityFragment::FreeSpellCast(_)
                 )
@@ -28,7 +31,7 @@ impl Card {
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-fn has_fragment<W: ability_world::CharacteristicWorld + ?Sized>(
+pub(super) fn has_fragment<W: ability_world::CharacteristicWorld + ?Sized>(
     world: &W,
     player: Player,
     predicate: impl Fn(&StaticAbilityFragment) -> bool,
@@ -259,7 +262,7 @@ impl Game {
                     if permanent_type != PermanentType::Land
                         && !object.card.is_land()
                         && !casting_prohibited
-                        && object.card.sneak_cost().is_some()
+                        && self.has_sneak_cost(actor, card)
                         && self.state.step == Step::Blockers
                         && self.permitted_cast_available(
                             actor,

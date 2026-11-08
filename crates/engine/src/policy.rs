@@ -275,6 +275,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             }
             Action::ChooseCastCost { .. }
             | Action::PayCasualty { .. }
+            | Action::PaySneakReturn { .. }
             | Action::ChooseAdditionalCost { .. }
             | Action::ChooseAdditionalLife
             | Action::ChooseCreatureCounterCost { .. } => 60,
@@ -337,6 +338,7 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::AnnounceGrantedHarmonize { .. }
             | Action::AnnounceCounterGraveyard { .. }
             | Action::AnnounceGraveyardAdditionalCosts { .. }
+            | Action::AnnounceGraveyardFinality { .. }
             | Action::AnnounceCast { .. }
             | Action::AnnounceFlashSurcharge { .. }
             | Action::AnnounceWarp { .. }

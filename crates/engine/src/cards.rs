@@ -5800,8 +5800,16 @@ impl Card {
     pub(crate) fn harmonize_x_symbols(self) -> u8 {
         authored::rules(self).map_or(0, |r| r.extras.harmonize_x_symbols)
     }
-    pub(crate) fn sneak_cost(self) -> Option<ManaCost> {
-        authored::rules(self).and_then(|r| r.extras.sneak_cost)
+    pub(crate) fn sneak_cost_options(self) -> impl Iterator<Item = ManaCost> {
+        let extras = authored::rules(self).map(|rules| rules.extras);
+        extras
+            .and_then(|extras| extras.sneak_cost)
+            .into_iter()
+            .chain(
+                extras
+                    .into_iter()
+                    .flat_map(|extras| extras.sneak_costs.iter().copied()),
+            )
     }
     pub(crate) fn disguise_cost(self) -> Option<ManaCost> {
         authored::rules(self).and_then(|r| r.extras.disguise_cost)

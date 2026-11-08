@@ -100,6 +100,7 @@ impl Announcement {
                         ..
                     }
                     | CastCostClause::Harmonize(object) => add(object),
+                    CastCostClause::SneakReturn(Some(object)) => add(object),
                     _ => (),
                 }
             }

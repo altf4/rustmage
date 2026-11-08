@@ -356,6 +356,7 @@ pub struct CardExtras {
     pub warp_cost: Option<ManaCost>,
     pub disguise_cost: Option<ManaCost>,
     pub sneak_cost: Option<ManaCost>,
+    pub sneak_costs: &'static [ManaCost],
     /// Graveyard alternative with an optional power-based creature tap.
     pub harmonize_cost: Option<ManaCost>,
     /// Variable symbols in the printed harmonize alternative (independent of the mana cost).
@@ -480,6 +481,7 @@ impl CardExtras {
         warp_cost: None,
         disguise_cost: None,
         sneak_cost: None,
+        sneak_costs: &[],
         harmonize_cost: None,
         harmonize_x_symbols: 0,
         mayhem_cost: None,
