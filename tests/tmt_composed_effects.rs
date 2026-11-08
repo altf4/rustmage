@@ -273,6 +273,48 @@ fn damage_to_venus_puts_that_many_counters_on_her() {
 }
 
 #[test]
+fn courier_creates_food_only_when_the_search_puts_no_card_in_hand() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let courier = put(&mut g, p, "Courier of Comestibles", Zone::Hand);
+    let pizza = put(&mut g, p, "Omni-Cheese Pizza", Zone::Library);
+    cast(&mut g, courier, None);
+    for _ in 0..4 {
+        act(&mut g, Action::Pass);
+    }
+    let optional_search = g.snapshot();
+
+    for search in [None, Some(false), Some(true)] {
+        g.restore(&optional_search).unwrap();
+        act(
+            &mut g,
+            Action::ChooseOptional {
+                accept: search.is_some(),
+            },
+        );
+        if search == Some(true) {
+            act(&mut g, Action::ChooseSearch { card: pizza });
+        }
+        if search.is_some() {
+            act(&mut g, Action::FinishSearch);
+        }
+        drain(&mut g, None);
+        let found = search == Some(true);
+        assert_eq!(g.state.objects[pizza as usize].zone == Zone::Hand, found);
+        assert_eq!(
+            g.state
+                .objects
+                .iter()
+                .filter(|object| object.zone == Zone::Battlefield
+                    && object.is_token()
+                    && object.card.has_subtype("Food"))
+                .count(),
+            usize::from(!found)
+        );
+    }
+}
+
+#[test]
 fn mikey_and_don_cast_the_known_top_creature_with_its_entry_counter() {
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);

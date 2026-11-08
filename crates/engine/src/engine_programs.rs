@@ -6832,6 +6832,16 @@ impl Game {
                     self.state.resolving.as_mut().unwrap().search_result =
                         Some(Box::new(search::SearchResult::default()));
                 }
+                Instruction::IfSearchPutInHand { skip } => {
+                    let resolution = self.state.resolving.as_mut().unwrap();
+                    if !resolution
+                        .search_result
+                        .as_ref()
+                        .is_some_and(|result| result.put_in_hand)
+                    {
+                        resolution.pc += skip;
+                    }
+                }
                 Instruction::BeholdToUntapSearchResult(subtype) => {
                     if self.start_behold_search_result(&item, subtype) {
                         return;

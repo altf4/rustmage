@@ -5,7 +5,8 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         condition: TriggerCondition::SelfEnters,
         targets: TargetPlan::NONE,
         program: &[
-            Instruction::May { skip: 3 },
+            Instruction::May { skip: 4 },
+            Instruction::CaptureSearchResult,
             Instruction::Search(SearchSpec {
                 filter: SearchFilter::Subtype("Food"),
                 maximum: 1,
@@ -13,11 +14,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 tapped: false,
                 reveal: true,
             }),
-            Instruction::IfAmountAtLeast {
-                value: AmountValue::MovedCount,
-                minimum: 1,
-                skip: 1,
-            },
+            Instruction::IfSearchPutInHand { skip: 1 },
             Instruction::Skip(1),
             Instruction::CreateTokens {
                 token: Card(5246),

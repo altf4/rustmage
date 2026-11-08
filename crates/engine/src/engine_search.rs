@@ -7,6 +7,7 @@ use crate::SearchDestination;
 pub(super) struct SearchResult {
     pub origin: Option<ObjectRef>,
     pub entered: Option<ObjectRef>,
+    pub put_in_hand: bool,
     pub capture_next_entry: bool,
     pub closed: bool,
 }
@@ -292,14 +293,13 @@ impl Game {
             return;
         }
         frame.closed = true;
-        frame.entered = events
+        let movement = events
             .iter()
-            .find(|event| {
-                Some(event.before.reference) == frame.origin
-                    && event.moved
-                    && event.destination == Zone::Battlefield
-            })
+            .find(|event| Some(event.before.reference) == frame.origin && event.moved);
+        frame.entered = movement
+            .filter(|event| event.destination == Zone::Battlefield)
             .map(|event| event.after);
+        frame.put_in_hand = movement.is_some_and(|event| event.destination == Zone::Hand);
     }
 }
 

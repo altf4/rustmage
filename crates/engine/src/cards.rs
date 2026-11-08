@@ -2657,6 +2657,9 @@ pub enum Instruction {
     SearchHandAndOrLibrary(SearchFilter),
     /// Remember the exact result of the immediately following library search.
     CaptureSearchResult,
+    IfSearchPutInHand {
+        skip: usize,
+    },
     /// Capture the first attempted entry of the next entry operation, including failure/decline.
     CaptureEntryResult,
     AnimateEntryResultIfSubtype {
