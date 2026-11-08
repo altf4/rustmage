@@ -133,6 +133,21 @@ fn attack_history_keeps_subtypes_before_observer_entry_and_counts_each_incarnati
     );
     g.record_declared_attack_history(Player::P0, &declaration);
     assert_eq!(g.declared_subtype_attackers(Player::P0, "Bear"), 2);
+    g.begin_step(Step::EndCombat);
+    g.give_priority();
+    act(&mut g, Action::Pass);
+    act(&mut g, Action::Pass);
+    assert_eq!(g.state.step, Step::Main2);
+    assert!(g.observe(Player::P0).declared_attack_history.is_none());
+    let observer = put(&mut g, Player::P0, "Bear Cub", Zone::Battlefield);
+    assert_eq!(
+        g.stat_value(
+            StatValue::DeclaredSubtypeAttackersThisTurn("Bear"),
+            g.object_ref(observer),
+            Player::P0,
+        ),
+        2,
+    );
     g.begin_turn();
     assert_eq!(g.declared_subtype_attackers(Player::P0, "Bear"), 0);
 }

@@ -10274,7 +10274,7 @@ impl Game {
                 self.give_priority();
             }
             Step::EndCombat => {
-                self.state.declared_attack_history = None;
+                self.finish_declared_attack_combat();
                 if let Some(rules) = &mut self.state.combat_rules {
                     rules.must_attack_this_combat.clear();
                 }
@@ -11053,7 +11053,7 @@ impl Game {
                 .state
                 .declared_attack_history
                 .as_ref()
-                .map(|history| history.rows.clone()),
+                .and_then(|history| history.combat_view()),
             creature_entry_history: self
                 .state
                 .creature_entry_history
