@@ -52,7 +52,7 @@ pub(super) struct Resolution {
     pub moved_count: Option<u64>,
     pub remembered_draws: Option<u64>,
     pub remembered_damage_players: Option<u8>,
-    pub remembered_creatures: Vec<ObjectRef>,
+    pub remembered_creatures: Option<SharedVec<ObjectRef>>,
     pub sacrificed_power: Option<Box<i128>>,
     pub discard_after: Option<discard_events::DiscardAfter>,
     pub optional_wheel: Option<OptionalWheel>,
@@ -61,7 +61,7 @@ pub(super) struct Resolution {
     pub selected_discards: [Vec<CardId>; 2],
     pub milled: Vec<ObjectRef>,
     pub milled_selection: Option<Box<super::milled_selection::MilledSelection>>,
-    pub library: Option<LibraryChoice>,
+    pub library: Option<Box<LibraryChoice>>,
     pub selection: Option<Box<super::library_selection::LibrarySelection>>,
     pub return_attachment: Option<Box<super::return_attachment::ReturnAttachment>>,
     pub search: Option<Box<super::search::SearchChoice>>,
@@ -3184,7 +3184,7 @@ impl Game {
             moved_count: None,
             remembered_draws: None,
             remembered_damage_players: None,
-            remembered_creatures: Vec::new(),
+            remembered_creatures: None,
             discard_after: None,
             optional_wheel: None,
             color_sequence: None,
@@ -7398,15 +7398,16 @@ impl Game {
                         .copied()
                         .collect();
                     if !remaining.is_empty() {
-                        self.state.resolving.as_mut().unwrap().library = Some(LibraryChoice {
-                            surveil: matches!(instruction, Instruction::Surveil(_)),
-                            return_within_life_gained: false,
-                            return_noncreature_nonland: false,
-                            remaining,
-                            top: Vec::new(),
-                            bottom: Vec::new(),
-                            graveyard: Vec::new(),
-                        });
+                        self.state.resolving.as_mut().unwrap().library =
+                            Some(Box::new(LibraryChoice {
+                                surveil: matches!(instruction, Instruction::Surveil(_)),
+                                return_within_life_gained: false,
+                                return_noncreature_nonland: false,
+                                remaining,
+                                top: Vec::new(),
+                                bottom: Vec::new(),
+                                graveyard: Vec::new(),
+                            }));
                         self.state.pending = Pending::EffectLibrary {
                             player: item.controller,
                         };
@@ -7427,21 +7428,22 @@ impl Game {
                         .copied()
                         .collect();
                     if !remaining.is_empty() {
-                        self.state.resolving.as_mut().unwrap().library = Some(LibraryChoice {
-                            surveil: true,
-                            return_within_life_gained: matches!(
-                                instruction,
-                                Instruction::SurveilOneReturnByLifeGained
-                            ),
-                            return_noncreature_nonland: matches!(
-                                instruction,
-                                Instruction::SurveilOneReturnNoncreatureNonland
-                            ),
-                            remaining,
-                            top: Vec::new(),
-                            bottom: Vec::new(),
-                            graveyard: Vec::new(),
-                        });
+                        self.state.resolving.as_mut().unwrap().library =
+                            Some(Box::new(LibraryChoice {
+                                surveil: true,
+                                return_within_life_gained: matches!(
+                                    instruction,
+                                    Instruction::SurveilOneReturnByLifeGained
+                                ),
+                                return_noncreature_nonland: matches!(
+                                    instruction,
+                                    Instruction::SurveilOneReturnNoncreatureNonland
+                                ),
+                                remaining,
+                                top: Vec::new(),
+                                bottom: Vec::new(),
+                                graveyard: Vec::new(),
+                            }));
                         self.state.pending = Pending::EffectLibrary {
                             player: item.controller,
                         };
@@ -8993,11 +8995,16 @@ impl Game {
                     self.grant_keyword_effects(&affected, source, keywords);
                 }
                 Instruction::GrantRememberedCreaturesUntilNextTurn(keywords) => {
-                    let objects = std::mem::take(
-                        &mut self.state.resolving.as_mut().unwrap().remembered_creatures,
-                    );
+                    let objects = self
+                        .state
+                        .resolving
+                        .as_mut()
+                        .unwrap()
+                        .remembered_creatures
+                        .take();
                     let affected: Vec<_> = objects
                         .into_iter()
+                        .flatten()
                         .filter(|object| {
                             self.on_battlefield(object.card)
                                 && self.object_ref(object.card) == *object
@@ -9269,8 +9276,9 @@ impl Game {
                         instruction,
                         Instruction::PutCreatureCountersAndRemember { .. }
                     ) {
-                        self.state.resolving.as_mut().unwrap().remembered_creatures =
-                            affected.iter().map(|(object, _)| *object).collect();
+                        self.state.resolving.as_mut().unwrap().remembered_creatures = (!affected
+                            .is_empty())
+                        .then(|| affected.iter().map(|(object, _)| *object).collect());
                     }
                     self.effect_counters(affected, replacements::ResumeMode::Program);
                 }

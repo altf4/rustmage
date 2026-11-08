@@ -12241,7 +12241,10 @@ impl Game {
                             std::mem::size_of::<resolution_mana::ResolutionPayment>()
                         })
                         + resolution.milled.len() * std::mem::size_of::<ObjectRef>()
-                        + resolution.remembered_creatures.len() * std::mem::size_of::<ObjectRef>()
+                        + resolution.remembered_creatures.as_ref().map_or(0, |rows| {
+                            std::mem::size_of::<Vec<ObjectRef>>()
+                                + rows.len() * std::mem::size_of::<ObjectRef>()
+                        })
                         + resolution
                             .choice
                             .as_ref()
@@ -12265,11 +12268,12 @@ impl Game {
                             .library
                             .as_ref()
                             .map(|choice| {
-                                (choice.remaining.len()
-                                    + choice.top.len()
-                                    + choice.bottom.len()
-                                    + choice.graveyard.len())
-                                    * std::mem::size_of::<CardId>()
+                                std::mem::size_of::<programs::LibraryChoice>()
+                                    + (choice.remaining.len()
+                                        + choice.top.len()
+                                        + choice.bottom.len()
+                                        + choice.graveyard.len())
+                                        * std::mem::size_of::<CardId>()
                             })
                             .unwrap_or(0)
                         + resolution.selection.as_ref().map_or(0, |f| f.bytes())
