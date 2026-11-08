@@ -276,6 +276,7 @@ pub enum TargetRule {
     },
     /// A spell that is a creature or legendary.
     CreatureOrLegendarySpell,
+    SpellTargetsControlledArtifactOrCreature,
     SpellKinds {
         kinds: u8,
         excluded: u8,
@@ -336,6 +337,7 @@ pub enum TargetPredicate {
     EnteredGraveyardThisTurn,
     /// This exact battlefield incarnation entered during the current turn.
     EnteredBattlefieldThisTurn,
+    CrewedSourceThisTurn,
     ManaValueAtMostLifeGained,
     OtherThanSource,
     OtherThanSourceAttachment,
@@ -1594,7 +1596,11 @@ pub enum Instruction {
     ResolveDelayedReturn,
     CaptureDelayedReturnTarget,
     /// Schedule one independent triggered program for the next matching step.
-    ScheduleStep { step: TriggerStep, relation: CastRelation, ability: u16 },
+    ScheduleStep {
+        step: TriggerStep,
+        relation: CastRelation,
+        ability: u16,
+    },
     /// Register a one-shot, any-type next-spell callback until cleanup.
     CopyNextSpell {
         ability: u16,
@@ -1755,6 +1761,7 @@ pub enum Instruction {
     PlayerHexproofThisTurn,
     HarnessSource,
     GrantPermanentsThisTurn(Keywords),
+    DamageTargetAndController { damage: i32, controller_damage: i32 },
     DamageWithController {
         damage: i32,
         controller_damage: i32,
@@ -2159,6 +2166,7 @@ pub enum Instruction {
         skip: usize,
     },
     /// Live subtype check on one exact permanent, including noncreatures.
+    IfSubjectSubtypeAny { subject: Subject, subtypes: &'static [&'static str], skip: usize },
     IfSubjectSubtype {
         subject: Subject,
         subtype: &'static str,
@@ -2172,6 +2180,8 @@ pub enum Instruction {
     /// Freeze a non-targeted battlefield group, then return it simultaneously.
     /// An all-or-nothing, simultaneous fixed exchange of exactly two legal objects.
     ExchangeControlTargets,
+    TakeOpposingArtifactsUntilEndTurn,
+    ReturnNewNonlandPermanents,
     GainControlUntilEndTurn,
     /// Lock control through your next turn when a controlled Villain has greater mana value.
     GainControlConditionalVillainManaValue,
@@ -2408,6 +2418,9 @@ pub enum Instruction {
     DestroyLoseManaValue,
     SelectMilled(MilledSelectionSpec),
     AttachSource,
+    AttachSourceReflexive { ability: u16 },
+    AttachSourceToEntering,
+    ExileAttached,
     /// One optional nontargeting Equipment attachment to the selected target group.
     MayAttachControlledEquipment {
         recipient: u16,
@@ -2961,6 +2974,7 @@ pub enum Instruction {
     ReturnToBattlefieldTapped,
     ReturnTargetAttackingWithCounter(CounterKind),
     Destroy,
+    DestroyCounted { kinds: u16 },
     Tap,
     GainControlTargetsUntilSourceLeaves,
     /// Linked control plus combat prohibition, ending irreversibly when source control is lost.
@@ -3109,7 +3123,10 @@ pub enum Instruction {
     },
     DrawPowerOfTwoChosenX(PlayerSet),
     Draw(PlayerSet, u16),
-    DrawToHandSize { players: PlayerSet, size: u16 },
+    DrawToHandSize {
+        players: PlayerSet,
+        size: u16,
+    },
     DrawScaled(PlayerSet, AmountValue),
     /// Draw greatest controlled creature power and remember successful draws.
     DrawGreatestCreaturePowerRemember,

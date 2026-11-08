@@ -83,9 +83,12 @@ impl Game {
             .capacity("turn spell reduction exhausted");
     }
     pub(super) fn grant_next_noncreature_artifact_affinity(&mut self, player: Player) {
-        let row = &mut self.state.turn_cast_grants.get_or_insert_with(Default::default)
-            [player.index()];
-        row.next_noncreature_artifact_affinity = row.next_noncreature_artifact_affinity
+        let row = &mut self
+            .state
+            .turn_cast_grants
+            .get_or_insert_with(Default::default)[player.index()];
+        row.next_noncreature_artifact_affinity = row
+            .next_noncreature_artifact_affinity
             .checked_add(1)
             .capacity("turn affinity grants exhausted");
     }

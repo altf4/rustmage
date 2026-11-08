@@ -3734,6 +3734,20 @@ impl Game {
                         keywords,
                     );
                 }
+                Instruction::DamageTargetAndController { damage, controller_damage } => {
+                    let source = self.program_damage_source(&item);
+                    let mut events: Vec<_> = item.targets.iter()
+                        .filter(|&&bound| self.same_target_object(bound))
+                        .map(|bound| DamageEvent {
+                            preventable: true, source, target: bound.target,
+                            amount: i128::from(damage), combat: false,
+                        }).collect();
+                    events.push(DamageEvent {
+                        preventable: true, source, target: Target::Player(item.controller),
+                        amount: i128::from(controller_damage), combat: false,
+                    });
+                    self.apply_damage_batch(&events);
+                }
                 Instruction::DamageWithController {
                     damage,
                     controller_damage,
@@ -4305,6 +4319,11 @@ impl Game {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
+                Instruction::IfSubjectSubtypeAny { subject, subtypes, skip } => {
+                    if !subtypes.iter().any(|name| self.subject_has_subtype(&item, subject, name)) {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
                 Instruction::IfSubjectSubtype {
                     subject,
                     subtype,
@@ -4511,8 +4530,14 @@ impl Game {
                     self.resolve_delayed_return(&item)
                 }
                 Instruction::ResolveDelayedReturn => self.resolve_delayed_return(&item),
-                Instruction::CaptureDelayedReturnTarget => self.capture_delayed_return_target(&item),
-                Instruction::ScheduleStep { step, relation, ability } => {
+                Instruction::CaptureDelayedReturnTarget => {
+                    self.capture_delayed_return_target(&item)
+                }
+                Instruction::ScheduleStep {
+                    step,
+                    relation,
+                    ability,
+                } => {
                     self.schedule_delayed_step(&item, step, relation, ability);
                 }
                 Instruction::PreventTargetActivationsWhileTapped => {
@@ -4817,6 +4842,17 @@ impl Game {
                     self.move_battlefield_group(&item, filters, exile);
                 }
                 Instruction::ExchangeControlTargets => self.exchange_control_targets(&item),
+                Instruction::TakeOpposingArtifactsUntilEndTurn => self.take_opposing_artifacts(&item),
+                Instruction::ReturnNewNonlandPermanents => {
+                    let source = item.source.expect("return trigger has a source").object;
+                    let ids: Vec<_> = self.state.entered_this_turn.as_ref().into_iter()
+                        .flat_map(|rows| rows.iter())
+                        .filter(|&&r| r != source && self.on_battlefield(r.card)
+                            && self.object_ref(r.card) == r && self.current_kinds(r.card) & 2 == 0)
+                        .map(|r| r.card).collect();
+                    let events = self.move_objects_raw(&ids, Zone::Hand);
+                    self.finish_zone_events(&events, &[]);
+                }
                 Instruction::GainControlUntilEndTurn => self.gain_control_until_end_turn(&item),
                 Instruction::GainControlConditionalVillainManaValue => {
                     self.gain_control_conditional_villain_mana_value(&item)
@@ -5512,6 +5548,28 @@ impl Game {
                                 }
                             }
                         }
+                    }
+                }
+                Instruction::AttachSourceReflexive { ability } => {
+                    if let Some(target) = item.targets.iter().find_map(|bound| bound.object) {
+                        let source = item.source.expect("equipment ability has a source").object;
+                        if self.equipment_can_attach(source, target)
+                            && self.state.objects[source.card as usize].attached_to != Some(target)
+                            && self.attach_equipment(source, target)
+                        {
+                            self.queue_reflexive(&item, ability, Some(target));
+                        }
+                    }
+                }
+                Instruction::AttachSourceToEntering => {
+                    if let Some(target) = item.entering_object {
+                        let source = item.source.expect("equipment ability has a source").object;
+                        self.attach_equipment(source, target);
+                    }
+                }
+                Instruction::ExileAttached => {
+                    if let Some(target) = self.attached_permanent(&item) {
+                        self.move_object(target, Zone::Exile);
                     }
                 }
                 Instruction::AttachSource => {
@@ -9085,6 +9143,19 @@ impl Game {
                         .count();
                     self.move_target_batch(&item.targets, Zone::Hand);
                     self.draw_many(item.controller, draws as u128);
+                }
+                Instruction::DestroyCounted { kinds } => {
+                    let ids: Vec<_> = item.targets.iter()
+                        .filter(|&&bound| self.same_target_object(bound))
+                        .filter_map(|bound| match bound.target {
+                            Target::Card(id) if self.on_battlefield(id)
+                                && !self.effect_destruction_prevented(id) => Some(id),
+                            _ => None,
+                        }).collect();
+                    let events = self.move_objects_raw(&ids, Zone::Graveyard);
+                    let count = events.iter().filter(|e| e.moved && e.before.kinds & kinds != 0).count();
+                    self.state.resolving.as_mut().unwrap().moved_count = Some(count as u64);
+                    self.finish_zone_events(&events, &[]);
                 }
                 Instruction::Exile
                 | Instruction::Destroy

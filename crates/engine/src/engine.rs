@@ -493,6 +493,9 @@ pub mod outcome_effects;
 pub mod target_exile_play;
 pub use exile::{ExilePlayExpiry, ExilePlayPermission};
 #[doc(hidden)]
+#[path = "engine_delayed_steps.rs"]
+pub mod delayed_steps;
+#[doc(hidden)]
 #[path = "engine_explore.rs"]
 pub mod explore;
 #[doc(hidden)]
@@ -504,9 +507,6 @@ pub mod milling;
 #[doc(hidden)]
 #[path = "engine_return_links.rs"]
 pub mod return_links;
-#[doc(hidden)]
-#[path = "engine_delayed_steps.rs"]
-pub mod delayed_steps;
 #[doc(hidden)]
 #[path = "engine_roles.rs"]
 pub mod roles;
