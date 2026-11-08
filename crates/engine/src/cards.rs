@@ -1808,7 +1808,10 @@ pub enum Instruction {
     PlayerHexproofThisTurn,
     HarnessSource,
     GrantPermanentsThisTurn(Keywords),
-    DamageTargetAndController { damage: i32, controller_damage: i32 },
+    DamageTargetAndController {
+        damage: i32,
+        controller_damage: i32,
+    },
     DamageWithController {
         damage: i32,
         controller_damage: i32,
@@ -1867,6 +1870,10 @@ pub enum Instruction {
         skip: usize,
     },
     /// Branch on the legal target spell before any counter attempt changes zones.
+    IfTargetManaValueAtMost {
+        maximum: u64,
+        skip: usize,
+    },
     IfTargetSpellManaValueAtMost {
         maximum: u64,
         skip: usize,
@@ -2213,7 +2220,11 @@ pub enum Instruction {
         skip: usize,
     },
     /// Live subtype check on one exact permanent, including noncreatures.
-    IfSubjectSubtypeAny { subject: Subject, subtypes: &'static [&'static str], skip: usize },
+    IfSubjectSubtypeAny {
+        subject: Subject,
+        subtypes: &'static [&'static str],
+        skip: usize,
+    },
     IfSubjectSubtype {
         subject: Subject,
         subtype: &'static str,
@@ -2353,7 +2364,9 @@ pub enum Instruction {
         skip: usize,
     },
     /// Offer the following payment block only when the controller can afford it.
-    MayPayEnteringPower { skip: usize },
+    MayPayEnteringPower {
+        skip: usize,
+    },
     PayEnteringPowerLifeAndCounters,
     MayPayControllerLife {
         amount: u16,
@@ -2467,7 +2480,9 @@ pub enum Instruction {
     DestroyLoseManaValue,
     SelectMilled(MilledSelectionSpec),
     AttachSource,
-    AttachSourceReflexive { ability: u16 },
+    AttachSourceReflexive {
+        ability: u16,
+    },
     AttachSourceToEntering,
     ExileAttached,
     /// One optional nontargeting Equipment attachment to the selected target group.
@@ -2963,8 +2978,12 @@ pub enum Instruction {
     },
     ExileTargetsAndTopPlayForOwners,
     ExileUntilSourceLeaves,
-    MayExileDepartedSource { skip: usize },
-    ExileDepartedSourceReflexive { ability: u16 },
+    MayExileDepartedSource {
+        skip: usize,
+    },
+    ExileDepartedSourceReflexive {
+        ability: u16,
+    },
     ExileBattlefieldUntilSourceLeaves {
         filters: &'static [BattlefieldFilter],
     },
@@ -3037,7 +3056,9 @@ pub enum Instruction {
     ReturnToBattlefieldAttacking(PlayerSet),
     ReturnTargetAttackingWithCounter(CounterKind),
     Destroy,
-    DestroyCounted { kinds: u16 },
+    DestroyCounted {
+        kinds: u16,
+    },
     Tap,
     GainControlTargetsUntilSourceLeaves,
     /// Linked control plus combat prohibition, ending irreversibly when source control is lost.

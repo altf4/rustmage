@@ -31,8 +31,6 @@ pub(super) struct Resolution {
     pub chosen_creature_type: Option<crate::cards::CreatureType>,
     pub target_counter_removal: Option<Box<TargetCounterRemovalView>>,
     pub linked_copy: Option<Box<linked_copies::LinkedCopyCapture>>,
-    pub linked_exile_mode: Option<linked_exile_effects::LinkedExileMode>,
-    pub linked_exile_selected: Option<ObjectRef>,
     pub cascade: Option<Box<cascade::CascadeView>>,
     #[allow(clippy::box_collection)]
     pub target_card_facts: Option<Box<Vec<TargetCardFacts>>>,
@@ -68,7 +66,6 @@ pub(super) struct Resolution {
     pub search: Option<Box<super::search::SearchChoice>>,
     pub search_result: Option<Box<super::search::SearchResult>>,
     pub optional_searches: Option<Box<super::search::OptionalSearchSequence>>,
-    pub legendary_search: Option<Box<legendary_split_search::LegendarySplitSearch>>,
     pub choice: Option<Box<super::effect_choices::EffectChoice>>,
 }
 
@@ -91,7 +88,8 @@ impl Game {
         (event.destination == Zone::Graveyard
             && self.object_ref(event.after.card) == event.after
             && self.state.objects[event.after.card as usize].zone == Zone::Graveyard
-            && self.state.objects[event.after.card as usize].is_card()).then_some(event.after.card)
+            && self.state.objects[event.after.card as usize].is_card())
+        .then_some(event.after.card)
     }
 
     pub(super) fn entering_subject(&self, item: &SpellView) -> Option<CardId> {
@@ -3079,8 +3077,6 @@ impl Game {
             chosen_creature_type: None,
             target_counter_removal: None,
             linked_copy: None,
-            linked_exile_mode: None,
-            linked_exile_selected: None,
             cascade: None,
             target_card_facts,
             sacrificed_power: None,
@@ -3114,7 +3110,6 @@ impl Game {
             search: None,
             search_result: None,
             optional_searches: None,
-            legendary_search: None,
             choice: None,
         });
         self.run_program();
@@ -3546,9 +3541,13 @@ impl Game {
                         .object,
                 ),
                 Instruction::ExileTargetsLinkedToSource => self.exile_targets_linked(&item, false),
-                Instruction::ExileControllerLibraryTopLinked(amount) => self.exile_controller_library_top_linked(&item, amount),
+                Instruction::ExileControllerLibraryTopLinked(amount) => {
+                    self.exile_controller_library_top_linked(&item, amount)
+                }
                 Instruction::GrantLinkedExilePlay => self.grant_linked_exile_play(&item),
-                Instruction::ExileGraveyardCaptureMutantCopy => self.exile_targets_linked(&item, true),
+                Instruction::ExileGraveyardCaptureMutantCopy => {
+                    self.exile_targets_linked(&item, true)
+                }
                 Instruction::ChooseLinkedCreatureReturn | Instruction::CopyLinkedExiledAsMutant => {
                     let mode = if instruction == Instruction::ChooseLinkedCreatureReturn {
                         linked_exile_effects::LinkedExileMode::ReturnCreature
@@ -3560,7 +3559,9 @@ impl Game {
                     }
                 }
                 Instruction::ReturnOtherLinkedExileToHand => self.return_other_linked_exile(&item),
-                Instruction::ExileOpponentUntilNonlandLinked => self.exile_opponent_until_nonland_linked(&item),
+                Instruction::ExileOpponentUntilNonlandLinked => {
+                    self.exile_opponent_until_nonland_linked(&item)
+                }
                 Instruction::CastOneLinkedDuringResolution => {
                     if self.start_linked_exile_cast(&item) {
                         return;
@@ -3826,17 +3827,29 @@ impl Game {
                         keywords,
                     );
                 }
-                Instruction::DamageTargetAndController { damage, controller_damage } => {
+                Instruction::DamageTargetAndController {
+                    damage,
+                    controller_damage,
+                } => {
                     let source = self.program_damage_source(&item);
-                    let mut events: Vec<_> = item.targets.iter()
+                    let mut events: Vec<_> = item
+                        .targets
+                        .iter()
                         .filter(|&&bound| self.same_target_object(bound))
                         .map(|bound| DamageEvent {
-                            preventable: true, source, target: bound.target,
-                            amount: i128::from(damage), combat: false,
-                        }).collect();
+                            preventable: true,
+                            source,
+                            target: bound.target,
+                            amount: i128::from(damage),
+                            combat: false,
+                        })
+                        .collect();
                     events.push(DamageEvent {
-                        preventable: true, source, target: Target::Player(item.controller),
-                        amount: i128::from(controller_damage), combat: false,
+                        preventable: true,
+                        source,
+                        target: Target::Player(item.controller),
+                        amount: i128::from(controller_damage),
+                        combat: false,
                     });
                     self.apply_damage_batch(&events);
                 }
@@ -4405,6 +4418,15 @@ impl Game {
                     }
                 }
 
+                Instruction::IfTargetManaValueAtMost { maximum, skip } => {
+                    let eligible = item.targets.iter().any(|&bound| {
+                        self.same_target_object(bound)
+                            && matches!(bound.target, Target::Card(id) if self.object_mana_value(id) <= maximum)
+                    });
+                    if !eligible {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
                 Instruction::IfEventObjectSubtype { subtype, skip } => {
                     if !self.event_object_has_subtype(&item, subtype) {
                         self.state.resolving.as_mut().unwrap().pc += skip;
@@ -4419,8 +4441,15 @@ impl Game {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
-                Instruction::IfSubjectSubtypeAny { subject, subtypes, skip } => {
-                    if !subtypes.iter().any(|name| self.subject_has_subtype(&item, subject, name)) {
+                Instruction::IfSubjectSubtypeAny {
+                    subject,
+                    subtypes,
+                    skip,
+                } => {
+                    if !subtypes
+                        .iter()
+                        .any(|name| self.subject_has_subtype(&item, subject, name))
+                    {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
@@ -4589,22 +4618,35 @@ impl Game {
                 }
                 Instruction::MayPayEnteringPower { skip } => {
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");
-                    let amount = self.resolved_stat_value(&item, ResolvedStatValue::EnteringPower)
-                        .unwrap_or(0).max(0);
+                    let amount = self
+                        .resolved_stat_value(&item, ResolvedStatValue::EnteringPower)
+                        .unwrap_or(0)
+                        .max(0);
                     if amount == 0 || self.state.players[item.controller.index()].life >= amount {
-                        self.state.pending = Pending::EffectOptional { player: item.controller, skip_to };
+                        self.state.pending = Pending::EffectOptional {
+                            player: item.controller,
+                            skip_to,
+                        };
                         return;
                     }
                     self.state.resolving.as_mut().unwrap().pc = skip_to;
                 }
                 Instruction::PayEnteringPowerLifeAndCounters => {
-                    let amount = self.resolved_stat_value(&item, ResolvedStatValue::EnteringPower)
-                        .unwrap_or(0).max(0);
+                    let amount = self
+                        .resolved_stat_value(&item, ResolvedStatValue::EnteringPower)
+                        .unwrap_or(0)
+                        .max(0);
                     self.lose_life(item.controller, amount);
                     if let Some(id) = self.entering_subject(&item) {
                         let mut counters = Counters::default();
-                        counters.add(CounterKind::PlusOne, u64::try_from(amount).capacity("counter amount exhausted"));
-                        self.effect_counters(vec![(self.object_ref(id), counters)], replacements::ResumeMode::Program);
+                        counters.add(
+                            CounterKind::PlusOne,
+                            u64::try_from(amount).capacity("counter amount exhausted"),
+                        );
+                        self.effect_counters(
+                            vec![(self.object_ref(id), counters)],
+                            replacements::ResumeMode::Program,
+                        );
                     }
                 }
                 Instruction::MayOpponent { skip } => {
@@ -4980,14 +5022,25 @@ impl Game {
                     self.move_battlefield_group(&item, filters, exile);
                 }
                 Instruction::ExchangeControlTargets => self.exchange_control_targets(&item),
-                Instruction::TakeOpposingArtifactsUntilEndTurn => self.take_opposing_artifacts(&item),
+                Instruction::TakeOpposingArtifactsUntilEndTurn => {
+                    self.take_opposing_artifacts(&item)
+                }
                 Instruction::ReturnNewNonlandPermanents => {
                     let source = item.source.expect("return trigger has a source").object;
-                    let ids: Vec<_> = self.state.entered_this_turn.as_ref().into_iter()
+                    let ids: Vec<_> = self
+                        .state
+                        .entered_this_turn
+                        .as_ref()
+                        .into_iter()
                         .flat_map(|rows| rows.iter())
-                        .filter(|&&r| r != source && self.on_battlefield(r.card)
-                            && self.object_ref(r.card) == r && self.current_kinds(r.card) & 2 == 0)
-                        .map(|r| r.card).collect();
+                        .filter(|&&r| {
+                            r != source
+                                && self.on_battlefield(r.card)
+                                && self.object_ref(r.card) == r
+                                && self.current_kinds(r.card) & 2 == 0
+                        })
+                        .map(|r| r.card)
+                        .collect();
                     let events = self.move_objects_raw(&ids, Zone::Hand);
                     self.finish_zone_events(&events, &[]);
                 }
@@ -7508,7 +7561,10 @@ impl Game {
                 Instruction::MayExileDepartedSource { skip } => {
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");
                     if self.departed_source_in_graveyard(&item).is_some() {
-                        self.state.pending = Pending::EffectOptional { player: item.controller, skip_to };
+                        self.state.pending = Pending::EffectOptional {
+                            player: item.controller,
+                            skip_to,
+                        };
                         return;
                     }
                     self.state.resolving.as_mut().unwrap().pc = skip_to;
@@ -9405,27 +9461,44 @@ impl Game {
                 }
                 Instruction::ReturnArtifactAsRobot => {
                     let source = item.source.expect("return spell has a source");
-                    let moves = item.targets.iter().filter(|&&bound| self.same_target_object(bound))
-                        .filter_map(|bound| bound.object).map(|object| {
-                            let mut movement = self.entry_move(object.card, Zone::Battlefield, false);
+                    let moves = item
+                        .targets
+                        .iter()
+                        .filter(|&&bound| self.same_target_object(bound))
+                        .filter_map(|bound| bound.object)
+                        .map(|object| {
+                            let mut movement =
+                                self.entry_move(object.card, Zone::Battlefield, false);
                             movement.controller = item.controller;
                             if !movement.before.is_creature() {
-                                movement.return_modification = Some((ReturnKind::FlyingRobot, source.object));
+                                movement.return_modification =
+                                    Some((ReturnKind::FlyingRobot, source.object));
                             }
                             movement
-                        }).collect();
+                        })
+                        .collect();
                     self.stage_entries(moves, None);
                 }
                 Instruction::DestroyCounted { kinds } => {
-                    let ids: Vec<_> = item.targets.iter()
-                        .filter(|&&bound| self.same_target_object(bound))
-                        .filter_map(|bound| match bound.target {
-                            Target::Card(id) if self.on_battlefield(id)
-                                && !self.effect_destruction_prevented(id) => Some(id),
+                    let ids: Vec<_> = item
+                        .targets
+                        .iter()
+                        .filter_map(|&bound| match bound.target {
+                            Target::Card(id)
+                                if self.same_target_object(bound)
+                                    && self.on_battlefield(id)
+                                    && !self.effect_destruction_prevented(id) =>
+                            {
+                                Some(id)
+                            }
                             _ => None,
-                        }).collect();
+                        })
+                        .collect();
                     let events = self.move_objects_raw(&ids, Zone::Graveyard);
-                    let count = events.iter().filter(|e| e.moved && e.before.kinds & kinds != 0).count();
+                    let count = events
+                        .iter()
+                        .filter(|e| e.moved && e.before.kinds & kinds != 0)
+                        .count();
                     self.state.resolving.as_mut().unwrap().moved_count = Some(count as u64);
                     self.finish_zone_events(&events, &[]);
                 }

@@ -214,8 +214,14 @@ impl Announcement {
                 None
             }
             StackKind::Spell => {
-                let card = self.item.source.expect("announcement has object source").card;
-                self.item.cast.filter(|cast| cast.kicker == Some(true))
+                let card = self
+                    .item
+                    .source
+                    .expect("announcement has object source")
+                    .card;
+                self.item
+                    .cast
+                    .filter(|cast| cast.kicker == Some(true))
                     .and_then(|_| card.kicker_additional_cost())
                     .or_else(|| card.additional_cost())
             }
@@ -1808,10 +1814,14 @@ impl Game {
                         u128::from(world.mana_value(id))
                             <= self.state.players[controller.index()].life_gained_this_turn
                     }
-                    TargetPredicate::CrewedSourceThisTurn => self.state.crew.as_ref().is_some_and(|state| {
-                        state.history.iter().any(|entry| entry.vehicle == source
-                            && entry.contributors.contains(&world.reference(id)))
-                    }),
+                    TargetPredicate::CrewedSourceThisTurn => {
+                        self.state.crew.as_ref().is_some_and(|state| {
+                            state.history.iter().any(|entry| {
+                                entry.vehicle == source
+                                    && entry.contributors.contains(&world.reference(id))
+                            })
+                        })
+                    }
                     TargetPredicate::OtherThanSource => self.object_ref(id) != source,
                     TargetPredicate::OtherThanSourceAttachment => {
                         let attached = if self.on_battlefield(source.card)
@@ -2138,7 +2148,12 @@ impl Game {
             self.record_cast_entry_counters(object, CounterKind::PlusOne, 1);
         }
         if let Some(approval) = linked_play {
-            self.state.linked_choices.as_mut().unwrap().play_approvals.push((id, approval));
+            self.state
+                .linked_choices
+                .as_mut()
+                .unwrap()
+                .play_approvals
+                .push((id, approval));
         }
         if outcome.uncounterable {
             self.mark_spell_uncounterable(id);

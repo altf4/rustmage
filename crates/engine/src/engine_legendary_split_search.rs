@@ -93,21 +93,23 @@ impl Game {
         maximum: u16,
         opponent_choices: u16,
     ) {
-        self.state.resolving.as_mut().unwrap().legendary_search =
-            Some(Box::new(LegendarySplitSearch {
-                controller,
-                maximum,
-                opponent_choices,
-                phase: Phase::Zones,
-                found: Vec::new(),
-                chosen: Vec::new(),
-            }));
+        self.state
+            .linked_choices
+            .get_or_insert_default()
+            .legendary_search = Some(Box::new(LegendarySplitSearch {
+            controller,
+            maximum,
+            opponent_choices,
+            phase: Phase::Zones,
+            found: Vec::new(),
+            chosen: Vec::new(),
+        }));
         self.state.pending = Pending::LegendarySplitSearch { player: controller };
     }
 
     fn legendary_search(&self) -> &LegendarySplitSearch {
         self.state
-            .resolving
+            .linked_choices
             .as_ref()
             .unwrap()
             .legendary_search
@@ -117,7 +119,7 @@ impl Game {
 
     fn legendary_search_mut(&mut self) -> &mut LegendarySplitSearch {
         self.state
-            .resolving
+            .linked_choices
             .as_mut()
             .unwrap()
             .legendary_search
@@ -235,7 +237,7 @@ impl Game {
     pub(super) fn finish_legendary_split_search(&mut self) {
         let mut search = self
             .state
-            .resolving
+            .linked_choices
             .as_mut()
             .unwrap()
             .legendary_search
@@ -253,7 +255,7 @@ impl Game {
             }
             if search.required() > 0 {
                 search.phase = Phase::Choosing;
-                self.state.resolving.as_mut().unwrap().legendary_search = Some(search);
+                self.state.linked_choices.as_mut().unwrap().legendary_search = Some(search);
                 self.state.pending = Pending::LegendarySplitSearch {
                     player: controller.other(),
                 };
@@ -287,7 +289,7 @@ impl Game {
             library,
             awaiting: None,
         };
-        self.state.resolving.as_mut().unwrap().legendary_search = Some(search);
+        self.state.linked_choices.as_mut().unwrap().legendary_search = Some(search);
         if !moves.is_empty() {
             self.stage_entries(moves, None);
         }
@@ -295,8 +297,10 @@ impl Game {
     }
 
     pub(super) fn advance_legendary_split_search(&mut self) -> bool {
-        let resolution = self.state.resolving.as_mut().unwrap();
-        let Some(search) = resolution.legendary_search.as_mut() else {
+        let Some(state) = self.state.linked_choices.as_mut() else {
+            return false;
+        };
+        let Some(search) = state.legendary_search.as_mut() else {
             return false;
         };
         let Phase::Admitting {
@@ -328,7 +332,7 @@ impl Game {
             return true;
         }
         let library = std::mem::take(library);
-        resolution.legendary_search = None;
+        state.legendary_search = None;
         for slot in library.into_iter().rev() {
             self.admit_revealed_outside_to_library(owner, slot);
         }
@@ -338,7 +342,12 @@ impl Game {
     }
 
     pub(super) fn legendary_split_view(&self, viewer: Player) -> Option<LegendarySplitSearchView> {
-        let search = self.state.resolving.as_ref()?.legendary_search.as_ref()?;
+        let search = self
+            .state
+            .linked_choices
+            .as_ref()?
+            .legendary_search
+            .as_ref()?;
         let revealed = matches!(search.phase, Phase::Choosing | Phase::Admitting { .. });
         if !revealed && !self.shares_information(viewer, search.controller) {
             return None;

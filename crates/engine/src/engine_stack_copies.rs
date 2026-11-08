@@ -152,12 +152,13 @@ impl Game {
                         != 0
             }
             TargetRule::SpellTargetsControlledArtifactOrCreature => {
-                item.kind == StackKind::Spell && item.targets.iter().any(|bound| {
-                    self.same_target_object(*bound)
-                        && matches!(bound.target, Target::Card(id) if self.on_battlefield(id)
+                item.kind == StackKind::Spell
+                    && item.targets.iter().any(|bound| {
+                        self.same_target_object(*bound)
+                            && matches!(bound.target, Target::Card(id) if self.on_battlefield(id)
                             && self.state.objects[id as usize].controller == controller
                             && self.current_kinds(id) & 17 != 0)
-                })
+                    })
             }
             TargetRule::CreatureOrLegendarySpell => {
                 item.kind == StackKind::Spell

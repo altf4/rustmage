@@ -44,8 +44,9 @@ impl Game {
         packet.cast = None;
         packet.is_copy = false;
         self.state
+            .linked_choices
+            .get_or_insert_default()
             .delayed_steps
-            .get_or_insert_with(Default::default)
             .push(DelayedStep {
                 steps,
                 active_player,
@@ -54,26 +55,20 @@ impl Game {
     }
 
     pub(super) fn queue_delayed_steps(&mut self, step: Step) {
-        let Some(rows) = self.state.delayed_steps.take() else {
+        let Some(state) = self.state.linked_choices.as_mut() else {
             return;
         };
+        if state.delayed_steps.is_empty() {
+            return;
+        }
+        let rows = std::mem::take(&mut state.delayed_steps);
         let (ready, retained): (Vec<_>, Vec<_>) = rows.into_iter().partition(|row| {
             row.steps.contains(&step) && row.active_player.is_none_or(|p| p == self.state.active)
         });
-        if !retained.is_empty() {
-            self.state.delayed_steps = Some(Box::new(retained));
-        }
+        state.delayed_steps = retained;
         self.state
             .pending_triggers
             .extend(ready.into_iter().map(|row| row.item));
-    }
-
-    pub(super) fn delayed_steps_bytes(&self) -> usize {
-        self.state.delayed_steps.as_ref().map_or(0, |rows| {
-            std::mem::size_of::<Vec<DelayedStep>>()
-                + rows.len() * std::mem::size_of::<DelayedStep>()
-                + rows.iter().map(|row| row.item.owned_bytes()).sum::<usize>()
-        })
     }
 
     pub(super) fn capture_delayed_return_target(&mut self, item: &SpellView) {

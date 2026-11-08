@@ -72,10 +72,18 @@ impl Game {
         target.summoning_sick = true;
     }
     pub(super) fn take_opposing_artifacts(&mut self, item: &SpellView) {
-        let ids: Vec<_> = self.state.objects.iter().enumerate()
-            .filter(|(id, object)| object.zone == Zone::Battlefield
-                && object.controller != item.controller && self.current_kinds(*id as CardId) & 16 != 0)
-            .map(|(id, _)| id as CardId).collect();
+        let ids: Vec<_> = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(id, object)| {
+                object.zone == Zone::Battlefield
+                    && object.controller != item.controller
+                    && self.current_kinds(*id as CardId) & 16 != 0
+            })
+            .map(|(id, _)| id as CardId)
+            .collect();
         if ids.is_empty() {
             return;
         }
@@ -84,18 +92,36 @@ impl Game {
             let object = self.object_ref(id);
             let expires_turn = Some(self.state.turn);
             self.ensure_control_base(object);
-            self.state.temporary_controls.get_or_insert_with(Default::default).push(TemporaryControlView {
-                object, controller: item.controller,
-                previous_controller: self.state.objects[id as usize].controller,
-                expires_turn, expires_after_next_turn: None,
-            });
-            self.state.controls.as_mut().unwrap().effects.push(continuous_control::ControlEffect {
-                object, controller: item.controller, timestamp, expires_turn, expires_after_next_turn: None,
-            });
+            self.state
+                .temporary_controls
+                .get_or_insert_with(Default::default)
+                .push(TemporaryControlView {
+                    object,
+                    controller: item.controller,
+                    previous_controller: self.state.objects[id as usize].controller,
+                    expires_turn,
+                    expires_after_next_turn: None,
+                });
+            self.state
+                .controls
+                .as_mut()
+                .unwrap()
+                .effects
+                .push(continuous_control::ControlEffect {
+                    object,
+                    controller: item.controller,
+                    timestamp,
+                    expires_turn,
+                    expires_after_next_turn: None,
+                });
         }
         self.refresh_controllers();
         self.untap_objects(&ids, untap_rules::UntapCause::Effect);
-        self.grant_keyword_effects(&ids, item.source.expect("spell has a source").object, Keywords::HASTE);
+        self.grant_keyword_effects(
+            &ids,
+            item.source.expect("spell has a source").object,
+            Keywords::HASTE,
+        );
     }
     pub(super) fn gain_control_until_end_turn(&mut self, item: &SpellView) {
         self.gain_control_with_duration(item, false);

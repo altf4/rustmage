@@ -106,14 +106,14 @@ pub use paradigm::{ParadigmView, ResolvedSpellNameView};
 #[path = "engine_endgame.rs"]
 pub mod endgame;
 #[doc(hidden)]
+#[path = "engine_limited_exile.rs"]
+pub mod limited_exile;
+#[doc(hidden)]
 #[path = "engine_linked_choices.rs"]
 pub mod linked_choices;
 #[doc(hidden)]
 #[path = "engine_linked_exile_effects.rs"]
 pub mod linked_exile_effects;
-#[doc(hidden)]
-#[path = "engine_limited_exile.rs"]
-pub mod limited_exile;
 #[doc(hidden)]
 #[path = "engine_zone_replacements.rs"]
 pub mod zone_replacements;
@@ -2798,7 +2798,6 @@ struct State {
     // Cold pointer keeps games without delayed returns allocation-free.
     #[allow(clippy::box_collection)]
     delayed_returns: Option<Box<Vec<return_links::DelayedReturn>>>,
-    delayed_steps: Option<Box<Vec<delayed_steps::DelayedStep>>>,
     // Sparse delayed obligations keep the common state compact.
     #[allow(clippy::box_collection)]
     earthbend_returns: Option<Box<Vec<earthbend::EarthbendReturn>>>,
@@ -4078,7 +4077,6 @@ impl Game {
                 evidence_data: None,
                 delayed_sacrifices: None,
                 delayed_returns: None,
-                delayed_steps: None,
                 earthbend_returns: None,
                 mobilize: None,
                 exertions: None,
@@ -10708,7 +10706,11 @@ impl Game {
                     rows.iter().map(|r| r.view.clone()).collect()
                 }),
             delayed_upkeep_tokens: self.state.delayed_upkeep_tokens.as_deref().cloned(),
-            delayed_steps: self.state.delayed_steps.as_deref().cloned(),
+            delayed_steps: s
+                .linked_choices
+                .as_ref()
+                .filter(|state| !state.delayed_steps.is_empty())
+                .map(|state| state.delayed_steps.clone()),
             delayed_main_mana: self
                 .state
                 .delayed_main_mana
@@ -11631,7 +11633,6 @@ impl Game {
             + self.mobilize_bytes()
             + self.earthbend_bytes()
             + self.return_links_bytes()
-            + self.delayed_steps_bytes()
             + std::mem::size_of::<Vec<Object>>()
             + std::mem::size_of::<Vec<ObjectRef>>()
             + s.combat_rules.as_ref().map_or(0, |r| r.owned_bytes())
@@ -11846,10 +11847,6 @@ impl Game {
                             .milled_selection
                             .as_ref()
                             .map_or(0, |f| f.bytes())
-                        + resolution
-                            .legendary_search
-                            .as_ref()
-                            .map_or(0, |f| f.owned_bytes())
                         + resolution
                             .optional_searches
                             .as_ref()
