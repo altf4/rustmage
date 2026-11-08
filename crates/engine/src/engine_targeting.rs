@@ -944,64 +944,14 @@ impl Game {
         source: ObjectRef,
         definition: Card,
     ) -> bool {
-        let qualification = Some(TargetSourceCharacteristics::for_spell(source, definition));
-        let available = |spec: TargetSpec| {
-            if spec.min == 0 {
-                return true;
-            }
-            let mut count = [0usize; 2];
-            let mut seen_kinds = 0u16;
-            self.visit_targets_in_world(world, spec.rule, actor, source, qualification, |target| {
-                if target == Target::Card(source.card) {
-                    return false;
-                }
-                if matches!(
-                    spec.rule,
-                    TargetRule::Grouped {
-                        constraint: TargetGroupConstraint::SharedCardType,
-                        ..
-                    }
-                ) {
-                    let Target::Card(id) = target else {
-                        return false;
-                    };
-                    let kinds = world.kinds(id);
-                    let available = seen_kinds & kinds != 0;
-                    seen_kinds |= kinds;
-                    return available;
-                }
-                let distinct = matches!(
-                    spec.rule,
-                    TargetRule::Grouped {
-                        constraint: TargetGroupConstraint::DifferentControllers,
-                        ..
-                    }
-                );
-                let bucket = if matches!(spec.rule, TargetRule::Grouped { .. }) {
-                    let Target::Card(id) = target else {
-                        return false;
-                    };
-                    let object = world.object(id);
-                    if distinct {
-                        object.controller.index()
-                    } else {
-                        object.owner.index()
-                    }
-                } else {
-                    0
-                };
-                count[bucket] += 1;
-                if distinct {
-                    spec.min <= 1 || spec.min <= 2 && count[0] > 0 && count[1] > 0
-                } else {
-                    count[bucket] >= usize::from(spec.min)
-                }
-            })
-        };
-        match plan {
-            TargetPlan::Single(spec) => available(spec),
-            TargetPlan::Groups(groups) => groups.iter().copied().all(available),
-        }
+        self.target_specs_available_in_world(
+            world,
+            plan,
+            actor,
+            source,
+            Some(TargetSourceCharacteristics::for_spell(source, definition)),
+            true,
+        )
     }
 
     pub(super) fn targets_available(
@@ -1032,13 +982,49 @@ impl Game {
         source: ObjectRef,
         qualification: Option<TargetSourceCharacteristics<'_>>,
     ) -> bool {
+        self.target_specs_available_in_world(self, plan, actor, source, qualification, false)
+    }
+    fn target_specs_available_in_world<W: CharacteristicWorld + ?Sized>(
+        &self,
+        world: &W,
+        plan: TargetPlan,
+        actor: Player,
+        source: ObjectRef,
+        qualification: Option<TargetSourceCharacteristics<'_>>,
+        exclude_source: bool,
+    ) -> bool {
         let available = |spec: TargetSpec| {
             if spec.min == 0 {
                 return true;
             }
             let mut count = [0usize; 2];
             let mut seen_kinds = 0u16;
-            self.visit_targets_in_world(self, spec.rule, actor, source, qualification, |target| {
+            let mut seen_creature_types = None;
+            self.visit_targets_in_world(world, spec.rule, actor, source, qualification, |target| {
+                if exclude_source && target == Target::Card(source.card) {
+                    return false;
+                }
+                if matches!(
+                    spec.rule,
+                    TargetRule::Grouped {
+                        constraint: TargetGroupConstraint::SharedCreatureType,
+                        ..
+                    }
+                ) {
+                    let Target::Card(id) = target else {
+                        return false;
+                    };
+                    let types = world.subtypes(id);
+                    let definition = world.object(id).card;
+                    let seen = seen_creature_types
+                        .get_or_insert_with(|| vec![false; crate::cards::CREATURE_TYPES.len()]);
+                    return crate::cards::CREATURE_TYPES
+                        .iter()
+                        .zip(seen)
+                        .any(|(name, seen)| {
+                            types.has(definition, name) && std::mem::replace(seen, true)
+                        });
+                }
                 if matches!(
                     spec.rule,
                     TargetRule::Grouped {
@@ -1049,7 +1035,7 @@ impl Game {
                     let Target::Card(id) = target else {
                         return false;
                     };
-                    let kinds = self.current_kinds(id);
+                    let kinds = world.kinds(id);
                     let available = seen_kinds & kinds != 0;
                     seen_kinds |= kinds;
                     return available;
@@ -1065,7 +1051,7 @@ impl Game {
                     let Target::Card(id) = target else {
                         return false;
                     };
-                    let object = &self.state.objects[id as usize];
+                    let object = world.object(id);
                     if distinct {
                         object.controller.index()
                     } else {
@@ -1172,6 +1158,12 @@ impl Game {
             TargetGroupConstraint::SameGraveyard => object.zone == Zone::Graveyard && chosen.iter().filter(|b| b.group == group).all(|b| {
                 matches!(b.target, Target::Card(other) if self.state.objects.get(other as usize).is_some_and(|o| o.owner == object.owner))
             }),
+            TargetGroupConstraint::SharedCreatureType => object.zone == Zone::Graveyard
+                && chosen.iter().filter(|bound| bound.group == group).all(|bound| {
+                    matches!(bound.target, Target::Card(other)
+                        if self.same_target_object(*bound)
+                            && self.share_creature_type(id, other))
+                }),
             TargetGroupConstraint::SharedCardType => object.zone == Zone::Battlefield && chosen.iter().filter(|b| b.group == group).all(|b| {
                 matches!(b.target, Target::Card(other) if self.same_target_object(*b) && self.on_battlefield(other) && self.current_kinds(other) & self.current_kinds(id) != 0)
             }),
@@ -1181,14 +1173,25 @@ impl Game {
         }
     }
 
+    fn share_creature_type(&self, first: CardId, second: CardId) -> bool {
+        let first_types = self.granted_subtypes(first);
+        let second_types = self.granted_subtypes(second);
+        let first_definition = self.state.objects[first as usize].card;
+        let second_definition = self.state.objects[second as usize].card;
+        crate::cards::CREATURE_TYPES.iter().any(|name| {
+            first_types.has(first_definition, name) && second_types.has(second_definition, name)
+        })
+    }
+
     pub(super) fn shared_type_target_completion(&self, a: &Announcement, target: Target) -> bool {
+        let TargetRule::Grouped { constraint, .. } = a.spec.rule else {
+            return true;
+        };
         if !matches!(
-            a.spec.rule,
-            TargetRule::Grouped {
-                constraint: TargetGroupConstraint::SharedCardType,
-                ..
-            }
-        ) || a.item.targets.iter().any(|b| b.group == a.group)
+            constraint,
+            TargetGroupConstraint::SharedCardType | TargetGroupConstraint::SharedCreatureType
+        ) || a.spec.min < 2
+            || a.item.targets.iter().any(|bound| bound.group == a.group)
         {
             return true;
         }
@@ -1196,7 +1199,12 @@ impl Game {
             return false;
         };
         self.visit_item_targets(&a.item, a.spec.rule, |other| {
-            matches!(other, Target::Card(other_id) if other_id != id && self.current_kinds(other_id) & self.current_kinds(id) != 0)
+            matches!(other, Target::Card(other_id) if other_id != id &&
+            if constraint == TargetGroupConstraint::SharedCreatureType {
+                self.share_creature_type(id, other_id)
+            } else {
+                self.current_kinds(other_id) & self.current_kinds(id) != 0
+            })
         })
     }
 
@@ -1765,6 +1773,7 @@ impl Game {
                 }
                 let zone = match constraint {
                     TargetGroupConstraint::SameGraveyard
+                    | TargetGroupConstraint::SharedCreatureType
                     | TargetGroupConstraint::GraveyardOwnerOfPlayerGroup(_)
                     | TargetGroupConstraint::DistinctCardTypeSlots => Some(Zone::Graveyard),
                     TargetGroupConstraint::DifferentControllers

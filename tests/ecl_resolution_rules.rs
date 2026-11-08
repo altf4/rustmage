@@ -499,3 +499,188 @@ fn combat_callback_survives_its_source_and_uses_actual_dealer_controller() {
     settle(&mut g);
     assert_eq!(g.state.players[0].life, life);
 }
+
+#[test]
+fn graveyard_pair_mode_and_first_target_need_a_distinct_shared_creature_type() {
+    const GRAVE: TargetRule = TargetRule::Object {
+        zone: TargetZone::Graveyard,
+        kinds: 1,
+        relation: 0,
+        other: false,
+        nonland: false,
+        tapped: false,
+        min_mana: 0,
+        max_mana: u32::MAX,
+    };
+    const RECOVER: CardRules = CardRules {
+        effect: Effect::Modal(&[
+            SpellMode {
+                text: "Return one",
+                targets: TargetPlan::Single(TargetSpec::one(GRAVE)),
+                program: &[Instruction::ReturnToHand],
+            },
+            SpellMode {
+                text: "Return a pair",
+                targets: TargetPlan::Single(TargetSpec {
+                    rule: TargetRule::Grouped {
+                        base: &GRAVE,
+                        constraint: TargetGroupConstraint::SharedCreatureType,
+                    },
+                    min: 2,
+                    max: 2,
+                }),
+                program: &[Instruction::ReturnToHand],
+            },
+        ]),
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[(Card::Shock, &RECOVER)]);
+    for have_pair in [false, true] {
+        let p = Player::P0;
+        let mut g = scenario(p);
+        let bear = put(&mut g, p, "Grizzly Bears", Zone::Graveyard);
+        let giant = put(&mut g, p, "Hill Giant", Zone::Graveyard);
+        let partner = put(
+            &mut g,
+            if have_pair { p } else { p.other() },
+            "Bear Cub",
+            Zone::Graveyard,
+        );
+        let spell = put(&mut g, p, "Shock", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        let mode = Action::ChooseMode { mode: 1 };
+        if !have_pair {
+            reject(&mut g, mode);
+            continue;
+        }
+        checked(&mut g, mode);
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(giant),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(bear),
+            },
+        );
+        reject(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(bear),
+            },
+        );
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(partner),
+            },
+        );
+        pay(&mut g);
+        g.move_object(partner, Zone::Exile);
+        settle(&mut g);
+        assert_eq!(g.state.objects[bear as usize].zone, Zone::Hand);
+        assert_eq!(g.state.objects[giant as usize].zone, Zone::Graveyard);
+        assert_eq!(g.state.objects[partner as usize].zone, Zone::Exile);
+    }
+}
+
+#[test]
+fn death_with_a_counter_returns_untapped_to_its_owner_without_abilities() {
+    const BODY: CardRules = CardRules {
+        effect: Effect::Creature(3, 3),
+        keywords: Keywords::FLYING,
+        triggers: &[TriggeredAbility {
+            condition: TriggerCondition::ReturnDeath(ReturnDeathFilter::SourceCounter {
+                kind: CounterKind::MinusOne,
+                minimum: 1,
+            }),
+            targets: TargetPlan::NONE,
+            program: &[Instruction::ReturnDeathCard(ReturnKind::WithoutAbilities)],
+        }],
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[(Card::HillGiant, &BODY)]);
+    for blighted in [false, true] {
+        let mut g = scenario(Player::P0);
+        let creature = put(&mut g, Player::P0, "Hill Giant", Zone::Battlefield);
+        g.state.objects[creature as usize].controller = Player::P1;
+        g.state.objects[creature as usize].tapped = true;
+        if blighted {
+            g.add_counter(creature, CounterKind::MinusOne, 1);
+        }
+        g.move_object(creature, Zone::Graveyard);
+        g.prepare_triggers();
+        settle(&mut g);
+        if !blighted {
+            assert_eq!(g.state.objects[creature as usize].zone, Zone::Graveyard);
+            continue;
+        }
+        let body = g.object_view(creature);
+        assert_eq!(body.zone, Zone::Battlefield);
+        assert_eq!(body.controller, Player::P0);
+        assert!(!body.tapped);
+        assert!(!body.keywords.contains(Keywords::FLYING));
+        assert_eq!(g.counter_count(creature, CounterKind::MinusOne), 0);
+        g.add_counter(creature, CounterKind::MinusOne, 1);
+        g.move_object(creature, Zone::Graveyard);
+        g.prepare_triggers();
+        settle(&mut g);
+        assert_eq!(g.state.objects[creature as usize].zone, Zone::Graveyard);
+        g.move_object(creature, Zone::Battlefield);
+        assert!(g.keywords(creature).contains(Keywords::FLYING));
+    }
+}
+
+#[test]
+fn counter_history_records_the_recipient_as_a_creature_at_the_event() {
+    const PUT: CardRules = spell(
+        TargetPlan::Single(TargetSpec::one(TargetRule::Object {
+            zone: TargetZone::Battlefield,
+            kinds: 0,
+            relation: 2,
+            other: false,
+            nonland: false,
+            tapped: false,
+            min_mana: 0,
+            max_mana: u32::MAX,
+        })),
+        &[Instruction::PutCounters {
+            subject: Subject::Targets,
+            kind: CounterKind::Charge,
+            amount: 1,
+        }],
+    );
+    const OBSERVER: CardRules = CardRules {
+        effect: Effect::Permanent,
+        triggers: &[TriggeredAbility {
+            condition: TriggerCondition::AtStep {
+                step: TriggerStep::End,
+                relation: CastRelation::Any,
+                guard: StepGuard::PutCounterOnCreatureThisTurn,
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::GainLife(PlayerSet::Controller, 1)],
+        }],
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[
+        (Card::Shock, &PUT),
+        (Card::from_name("Swiftfoot Boots").unwrap(), &OBSERVER),
+    ]);
+    for (name, qualifies) in [("Hill Giant", true), ("Forest", false)] {
+        let mut g = scenario(Player::P0);
+        put(&mut g, Player::P0, "Swiftfoot Boots", Zone::Battlefield);
+        let recipient = put(&mut g, Player::P1, name, Zone::Battlefield);
+        start(&mut g, Player::P0, Some(Target::Card(recipient)));
+        settle(&mut g);
+        assert_eq!(g.counter_count(recipient, CounterKind::Charge), 1);
+        g.move_object(recipient, Zone::Exile);
+        g.state.step = Step::Main2;
+        resolve_top(&mut g);
+        settle(&mut g);
+        assert_eq!(g.state.players[0].life, if qualifies { 21 } else { 20 });
+    }
+}

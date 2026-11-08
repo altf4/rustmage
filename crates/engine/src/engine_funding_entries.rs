@@ -520,6 +520,12 @@ impl FundingState<'_> {
                 source,
                 player,
             ),
+            StepGuard::PutCounterOnCreatureThisTurn => {
+                counter_placement_history::placed_on_creature(
+                    &self.counter_placement_history,
+                    player,
+                )
+            }
             StepGuard::SourceCreature => {
                 self.reference(source.card) == source
                     && self.object(source.card).zone == Zone::Battlefield
@@ -1554,14 +1560,6 @@ impl FundingState<'_> {
                         .battle_protectors
                         .push((source, protector));
                 }
-                if m.counters.has_any() {
-                    counter_placement_history::record(
-                        &mut next.counter_placement_history,
-                        source,
-                        m.controller,
-                        m.counters.plus_one > 0,
-                    );
-                }
                 let p = next.entry_projection.as_mut().unwrap();
                 if !p.static_sources.contains(&row.id) {
                     p.static_sources.push(row.id)
@@ -1678,6 +1676,17 @@ impl FundingState<'_> {
                         expires_turn: None,
                     });
                 }
+            }
+            if let Some((ReturnKind::WithoutAbilities, origin)) = m.return_modification {
+                let timestamp = p.roles.next_timestamp();
+                p.roles
+                    .resolved_ability_modifications
+                    .push(ResolvedAbilityModificationView {
+                        recipient: source,
+                        source: origin,
+                        keywords: Keywords::NONE,
+                        timestamp,
+                    });
             }
             if let Some(recipient) = m.attachment
                 && m.before.card.role().is_some()
@@ -1869,6 +1878,20 @@ impl FundingState<'_> {
         }
         next.refresh_control_projection();
         next.refresh_enduring_projection();
+        for m in &moves {
+            if m.skipped || m.destination != Zone::Battlefield || !m.counters.has_any() {
+                continue;
+            }
+            let source = next.reference(m.before.id);
+            let on_creature = CharacteristicWorld::kinds(&next, source.card) & 1 != 0;
+            counter_placement_history::record(
+                &mut next.counter_placement_history,
+                source,
+                m.controller,
+                m.counters.plus_one > 0,
+                on_creature,
+            );
+        }
         if moves
             .iter()
             .any(|movement| movement.post_entry_counters.is_some())
@@ -1912,11 +1935,13 @@ impl FundingState<'_> {
                     None,
                 );
                 if amount.has_any() {
+                    let on_creature = CharacteristicWorld::kinds(&next, object.card) & 1 != 0;
                     counter_placement_history::record(
                         &mut next.counter_placement_history,
                         *object,
                         *player,
                         amount.plus_one > 0,
+                        on_creature,
                     );
                 }
             }

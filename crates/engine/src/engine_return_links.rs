@@ -86,7 +86,7 @@ pub(super) fn modification(kind: ReturnKind) -> Option<(&'static [&'static str],
         ReturnKind::Demon => Some((&["Demon"], Keywords::NONE)),
         ReturnKind::Angel => Some((&["Angel"], Keywords::FLYING)),
         ReturnKind::HeroFinality => Some((&["Hero"], Keywords::NONE)),
-        ReturnKind::Revival | ReturnKind::FlyingRobot => None,
+        ReturnKind::Revival | ReturnKind::FlyingRobot | ReturnKind::WithoutAbilities => None,
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -99,6 +99,9 @@ impl Game {
     ) -> bool {
         let before = &event.before;
         match filter {
+            ReturnDeathFilter::SourceCounter { kind, minimum } => {
+                source.reference == before.reference && before.counters.get(kind) >= minimum
+            }
             ReturnDeathFilter::SourceNonDemon => {
                 before.is_creature()
                     && source.reference == before.reference
@@ -381,6 +384,10 @@ impl Game {
         };
         let mut link = (**link).clone();
         match kind {
+            ReturnKind::WithoutAbilities => {
+                link.counter = None;
+                self.stage_linked_return(&link, Some((kind, source.object)));
+            }
             ReturnKind::Revival => {
                 let amount = link.counter.expect("captured revival counters").1;
                 assert!(amount > 0);
@@ -490,6 +497,15 @@ impl Game {
         kind: ReturnKind,
         source: ObjectRef,
     ) {
+        if kind == ReturnKind::WithoutAbilities {
+            self.remove_abilities_exact(
+                &[recipient],
+                source,
+                self.state.objects[recipient.card as usize].controller,
+                crate::cards::AnimationDuration::Permanent,
+            );
+            return;
+        }
         if kind == ReturnKind::FlyingRobot {
             let timestamp = self.next_role_timestamp();
             self.state.roles.as_mut().unwrap().animations.push(

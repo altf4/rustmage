@@ -425,6 +425,12 @@ impl Game {
             StepGuard::SourceReceivedCounterThisTurn => {
                 return self.put_counter_on_source_this_turn(source, player);
             }
+            StepGuard::PutCounterOnCreatureThisTurn => {
+                return counter_placement_history::placed_on_creature(
+                    &self.state.counter_placement_history,
+                    player,
+                );
+            }
             StepGuard::YourTurn => return self.state.active == player,
             StepGuard::YourMainPhase => {
                 return self.state.active == player

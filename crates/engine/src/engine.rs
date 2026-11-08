@@ -9693,17 +9693,21 @@ impl Game {
         let entered_with_plus_one = counters.plus_one > 0;
         self.set_counters(id, counters);
         if destination == Zone::Battlefield {
+            let (owner, _) = entry_identity;
+            // Register the entrant before reading its continuous types.
+            self.register_battlefield_sources(id);
             if entered_with_counters {
-                self.record_counter_placement(
-                    self.object_ref(id),
-                    self.state.objects[id as usize].controller,
+                // Simultaneous entry effects establish creature membership as a batch.
+                let reference = self.object_ref(id);
+                let placed_by = self.state.objects[id as usize].controller;
+                counter_placement_history::record(
+                    &mut self.state.counter_placement_history,
+                    reference,
+                    placed_by,
                     entered_with_plus_one,
+                    false,
                 );
             }
-            let (owner, _) = entry_identity;
-            // Own as-entry type effects need their provider timestamp before
-            // historical entry facts inspect the final layer-four creature types.
-            self.register_battlefield_sources(id);
             self.record_nonland_entry(owner, id, self.current_kinds(id));
         } else if destination == Zone::Graveyard {
             self.register_graveyard_sources(id);

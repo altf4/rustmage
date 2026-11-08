@@ -11,25 +11,25 @@ pub struct CreatureEntryHistoryView {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn record_creature_entry_history(&mut self, events: &[ZoneChange]) {
-        let entries: Vec<_> = events
-            .iter()
-            .filter(|event| {
-                event.moved
-                    && event.destination == Zone::Battlefield
-                    && self.on_battlefield(event.after.card)
-                    && self.object_ref(event.after.card) == event.after
-                    && self.is_creature(event.after.card)
-            })
-            .map(|event| CreatureEntryHistoryView {
-                object: event.after,
-                controller: self.state.objects[event.after.card as usize].controller,
-            })
-            .collect();
-        if !entries.is_empty() {
+        for event in events {
+            let object = event.after;
+            if !event.moved
+                || event.destination != Zone::Battlefield
+                || !self.on_battlefield(object.card)
+                || self.object_ref(object.card) != object
+                || !self.is_creature(object.card)
+            {
+                continue;
+            }
+            let controller = self.state.objects[object.card as usize].controller;
+            counter_placement_history::mark_creature_entry(
+                &mut self.state.counter_placement_history,
+                object,
+            );
             self.state
                 .creature_entry_history
                 .get_or_insert_default()
-                .extend(entries);
+                .push(CreatureEntryHistoryView { object, controller });
         }
     }
     pub(super) fn creature_entries_this_turn(

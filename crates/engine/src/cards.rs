@@ -205,6 +205,8 @@ pub enum TargetGroupConstraint {
     DistinctCardTypeSlots,
     /// Pair shares at least one current card type, not a subtype or supertype.
     SharedCardType,
+    /// Two graveyard cards that share at least one creature subtype.
+    SharedCreatureType,
     /// Controlled by the player chosen in a distinct target group.
     ControllerOfPlayerGroup(u16),
     /// Graveyard card owned by the player selected in another target group.
@@ -4665,6 +4667,7 @@ pub enum StepGuard {
     OpponentHasMoreCardsInHand,
     OpponentControlsMoreCreatures,
     SourceReceivedCounterThisTurn,
+    PutCounterOnCreatureThisTurn,
     YourTurn,
     YourMainPhase,
     SourcePowerAtLeast(u16),
@@ -4758,6 +4761,7 @@ pub enum EntryPredicate {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum ReturnDeathFilter {
     SourceNonDemon,
+    SourceCounter { kind: CounterKind, minimum: u64 },
     SourceRevival,
     ControlledNontokenNonAngel,
     ControlledSubtype(&'static str),
@@ -4765,6 +4769,7 @@ pub enum ReturnDeathFilter {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum ReturnKind {
+    WithoutAbilities,
     FlyingRobot,
     Demon,
     Angel,

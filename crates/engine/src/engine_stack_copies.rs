@@ -993,6 +993,7 @@ impl Game {
             TargetRule::Grouped {
                 constraint: TargetGroupConstraint::SameGraveyard
                     | TargetGroupConstraint::SharedCardType
+                    | TargetGroupConstraint::SharedCreatureType
                     | TargetGroupConstraint::OtherThanGroup(_),
                 ..
             }
