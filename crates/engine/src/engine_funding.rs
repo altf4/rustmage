@@ -3418,16 +3418,9 @@ impl<'g> FundingState<'g> {
             // mana. Exact moves/visited states still determine reachability.
             return true;
         }
-        if !self.joint_colors_possible(goal) || self.fixed_ineligible_spell_mana_cannot_pay(goal) {
+        if self.fixed_ineligible_spell_mana_cannot_pay(goal) {
             return false;
         }
-        // Immediate linked returns may introduce new sources, untap them, or
-        // restore an ability provider. Current-resource bounds are inapplicable.
-        if !self.game.state.exile_links.is_empty() {
-            return true;
-        }
-        let required =
-            u128::from(goal.generic) + goal.required.into_iter().map(u128::from).sum::<u128>();
         // A virtual sacrifice can supply a previously absent graveyard mana
         // ability. The ordinary current-inventory upper bound is not conservative
         // for this opt-in rule; exact owned reachability still decides legality.
@@ -3479,6 +3472,16 @@ impl<'g> FundingState<'g> {
         {
             return true;
         }
+        if !self.joint_colors_possible(goal) {
+            return false;
+        }
+        // Immediate linked returns may introduce new sources, untap them, or
+        // restore an ability provider. Current-resource bounds are inapplicable.
+        if !self.game.state.exile_links.is_empty() {
+            return true;
+        }
+        let required =
+            u128::from(goal.generic) + goal.required.into_iter().map(u128::from).sum::<u128>();
         if self.total_mana_upper() < required {
             return false;
         }

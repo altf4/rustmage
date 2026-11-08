@@ -175,6 +175,33 @@ fn don_and_leo_blink_both_independent_target_roles() {
 }
 
 #[test]
+fn don_and_leo_blink_one_artifact_creature_chosen_for_both_roles_once() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    put(&mut g, p, "Don & Leo, Problem Solvers", Zone::Battlefield);
+    put(&mut g, p, "Ninja Teen", Zone::Battlefield);
+    let mouser = put(&mut g, p, "Mouser Mark III", Zone::Battlefield);
+    let generation = g.object_ref(mouser).generation;
+    let life = g.state.players[p.other().index()].life;
+
+    g.begin_step(Step::End);
+    g.prepare_triggers();
+    for _ in 0..2 {
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(mouser),
+            },
+        );
+    }
+    drain(&mut g, None);
+
+    assert_eq!(g.state.objects[mouser as usize].zone, Zone::Battlefield);
+    assert_eq!(g.object_ref(mouser).generation, generation + 2);
+    assert_eq!(g.state.players[p.other().index()].life, life - 1);
+}
+
+#[test]
 fn costed_mana_keeps_the_exact_pending_activation_source_untapped() {
     let p = Player::P0;
     let mut g = scenario(p);
@@ -240,6 +267,56 @@ fn five_color_payment_does_not_count_the_same_flexible_source_twice() {
 
     put(&mut g, p, "Weather Maker", Zone::Battlefield);
     assert!(g.legal_actions().contains(&activate));
+}
+
+#[test]
+fn color_bound_leaves_room_for_mana_borrowed_after_sacrifice() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let oko = put(&mut g, p, "Oko, Lorwyn Liege", Zone::Battlefield);
+    let druid = put(&mut g, p, "Druid of the Cowl", Zone::Battlefield);
+    let thranduil = put(&mut g, p, "Thranduil, the Elvenking", Zone::Battlefield);
+    let bolg = put(&mut g, p, "Bolg's Company", Zone::Battlefield);
+    let target = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+    let spell = put(&mut g, p, "Tainted Treats", Zone::Hand);
+    g.state.objects[oko as usize].counters.loyalty = 4;
+    g.state.objects[druid as usize].tapped = true;
+
+    activate(&mut g, oko, 0, Some(druid));
+    drain(&mut g, None);
+    assert!(g.has_subtype(druid, "Goblin"));
+    g.state.players[p.index()].mana = [0; 6];
+
+    act(&mut g, Action::AnnounceCast { card: spell });
+    act(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(target),
+        },
+    );
+    act(
+        &mut g,
+        Action::AnnounceMana {
+            card: bolg,
+            ability: 0,
+            counter_payment: Counters::default(),
+            production: [0, 0, 1, 1, 0, 0],
+        },
+    );
+    let object = g.object_ref(druid);
+    act(&mut g, Action::ChooseAdditionalCost { object });
+    pay(&mut g);
+    assert_eq!(g.state.objects[druid as usize].zone, Zone::Graveyard);
+
+    let graveyard_druid = g.object_ref(druid);
+    choose(&mut g, |action| {
+        matches!(action, Action::ActivateGraveyardBorrowedMana {
+        card, graveyard, production: [0, 0, 0, 0, 1, 0], ..
+    } if *card == thranduil && *graveyard == graveyard_druid)
+    });
+    pay(&mut g);
+    drain(&mut g, None);
+    assert_eq!(g.state.objects[target as usize].zone, Zone::Graveyard);
 }
 
 #[test]
@@ -311,6 +388,33 @@ fn courier_creates_food_only_when_the_search_puts_no_card_in_hand() {
                 .count(),
             usize::from(!found)
         );
+    }
+}
+
+#[test]
+fn the_last_ronin_returns_a_creature_only_after_milling_four_cards() {
+    let p = Player::P0;
+    for cards in [3, 4] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "The Last Ronin", Zone::Battlefield);
+        let creature = put(&mut g, p, "Bear Cub", Zone::Graveyard);
+        g.state.objects[source as usize].counters.lore = 1;
+        while g.state.players[p.index()].library.len() > cards {
+            let card = *g.state.players[p.index()].library.last().unwrap();
+            g.move_object(card, Zone::Exile);
+        }
+
+        g.begin_step(Step::Main1);
+        g.prepare_triggers();
+        drain(&mut g, Some(creature));
+
+        assert!(g.state.players[p.index()].library.is_empty());
+        let expected_zone = if cards == 4 {
+            Zone::Hand
+        } else {
+            Zone::Graveyard
+        };
+        assert_eq!(g.state.objects[creature as usize].zone, expected_zone);
     }
 }
 

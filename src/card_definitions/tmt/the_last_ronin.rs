@@ -21,10 +21,10 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         TriggeredAbility {
             condition: TriggerCondition::Chapter { number: 2 },
             targets: TargetPlan::NONE,
-            program: &[
-                Instruction::Mill(PlayerSet::Controller, MillAmount::Fixed(4)),
-                Instruction::Reflexive { ability: 3 },
-            ],
+            program: &[Instruction::MillThenReflexive {
+                amount: 4,
+                ability: 3,
+            }],
         },
         TriggeredAbility {
             condition: TriggerCondition::Chapter { number: 3 },

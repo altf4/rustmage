@@ -250,16 +250,16 @@ impl Game {
         attacking: bool,
         follow_public_move: bool,
     ) {
-        let ids: Vec<_> = item
-            .targets
-            .iter()
-            .filter_map(|bound| {
-                let Target::Card(id) = bound.target else {
-                    return None;
-                };
-                (self.same_target_object(*bound) && self.on_battlefield(id)).then_some(id)
-            })
-            .collect();
+        let mut ids = Vec::new();
+        for &bound in &item.targets {
+            if let Target::Card(id) = bound.target
+                && self.same_target_object(bound)
+                && self.on_battlefield(id)
+                && !ids.contains(&id)
+            {
+                ids.push(id);
+            }
+        }
         let events = self.move_objects_raw(&ids, Zone::Exile);
         let returning = events
             .iter()
