@@ -919,6 +919,20 @@ pub(super) trait CharacteristicWorld {
         result
     }
 
+    fn controlled_creature_trigger_applies(
+        &self,
+        source: ObjectRef,
+        id: CardId,
+        other: bool,
+        nontoken: bool,
+    ) -> bool {
+        let target = self.object(id);
+        target.zone == Zone::Battlefield
+            && target.controller == self.object(source.card).controller
+            && self.kinds(id) & 1 != 0
+            && (!other || self.reference(id) != source)
+            && (!nontoken || !self.is_token(id))
+    }
     fn death_baron_applies(&self, source: ObjectRef, id: CardId) -> bool {
         let target = self.object(id);
         target.zone == Zone::Battlefield

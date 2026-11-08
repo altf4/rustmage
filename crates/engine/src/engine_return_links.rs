@@ -131,6 +131,70 @@ impl Game {
             }
         }
     }
+    /// Both the grantor and recipient are from the same pre-departure world.
+    /// Reading live providers here would lose grants during simultaneous deaths.
+    pub(super) fn controlled_creature_death_triggers(
+        &mut self,
+        event: &ZoneChange,
+        sources: &[ObjectView],
+    ) {
+        use crate::cards::StaticAbilityFragment;
+        let recipient = &event.before;
+        if !event.moved
+            || recipient.zone != Zone::Battlefield
+            || event.destination != Zone::Graveyard
+            || !recipient.is_creature()
+        {
+            return;
+        }
+        for provider in sources {
+            if provider.zone != Zone::Battlefield || provider.controller != recipient.controller {
+                continue;
+            }
+            for fragment in provider
+                .card
+                .static_ability_groups()
+                .iter()
+                .flat_map(|group| group.fragments)
+            {
+                let StaticAbilityFragment::ControlledCreatureTrigger {
+                    ability,
+                    other,
+                    nontoken,
+                } = *fragment
+                else {
+                    continue;
+                };
+                if (other && provider.reference == recipient.reference)
+                    || (nontoken && recipient.is_token())
+                    || !recipient.grant_available(provider.reference, provider.card, ability, None)
+                {
+                    continue;
+                }
+                let index = usize::from(ability);
+                let trigger = provider.card.triggers()[index];
+                let TriggerCondition::ReturnDeath(filter) = trigger.condition.event() else {
+                    continue;
+                };
+                if !trigger.condition.is_granted()
+                    || !self.return_death_matches(filter, recipient, event)
+                {
+                    continue;
+                }
+                let grant = Box::new(AttachmentTriggerView {
+                    grantor: provider.reference,
+                    granting_card: provider.card,
+                    recipient: recipient.reference,
+                    defender: None,
+                    granted: true,
+                    origin: provider.copied_grant_origin(),
+                });
+                if self.queue_zone_trigger_from(recipient, index, event, Some(grant)) {
+                    self.capture_return_death(event);
+                }
+            }
+        }
+    }
     pub(super) fn capture_return_death(&mut self, event: &ZoneChange) {
         self.state.pending_triggers.last_mut().unwrap().return_link =
             Some(Box::new(ReturnLinkView {

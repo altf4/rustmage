@@ -965,7 +965,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         );
         available
     }
-    pub(super) fn conditional_ward_grants(&self, recipient: CardId) -> Vec<GrantedAbilityView> {
+    pub(super) fn static_ward_grants(&self, recipient: CardId) -> Vec<GrantedAbilityView> {
         let mut grants = Vec::new();
         for &id in self.world.static_sources() {
             if !self.on_battlefield(id) {
@@ -987,20 +987,43 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                     continue;
                 }
                 for fragment in group.fragments {
-                    if let StaticAbilityFragment::ConditionalWard {
-                        condition,
-                        filter,
-                        ability,
-                    } = *fragment
-                        && self
+                    let ability = match *fragment {
+                        StaticAbilityFragment::ConditionalWard {
+                            condition,
+                            filter,
+                            ability,
+                        } if self
                             .world
-                            .conditional_ward_applies(source, condition, filter, recipient)
+                            .conditional_ward_applies(source, condition, filter, recipient) =>
+                        {
+                            Some(ability)
+                        }
+                        StaticAbilityFragment::ControlledCreatureTrigger {
+                            ability,
+                            other,
+                            nontoken,
+                        } if self.world.controlled_creature_trigger_applies(
+                            source, recipient, other, nontoken,
+                        ) =>
+                        {
+                            Some(ability)
+                        }
+                        _ => None,
+                    };
+                    if let Some(ability) = ability
+                        && self.object(id).card.triggers()[usize::from(ability)]
+                            .condition
+                            .is_granted()
+                        && self.object(id).card.triggers()[usize::from(ability)]
+                            .condition
+                            .event()
+                            == TriggerCondition::Ward
                     {
                         let timestamp = self
                             .world
                             .roles()
                             .and_then(|r| r.ability_timestamps.iter().find(|r| r.source == source))
-                            .expect("conditional Ward provider registered")
+                            .expect("static Ward provider registered")
                             .timestamp;
                         grants.push(GrantedAbilityView {
                             grantor: source,

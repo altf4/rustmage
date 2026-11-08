@@ -126,6 +126,21 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 }],
             });
         }
+        StaticAbilityFragment::ControlledCreatureTrigger {
+            ability,
+            other,
+            nontoken,
+        } => {
+            if !world.controlled_creature_trigger_applies(source, id, other, nontoken) {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: vec![key(ability)],
+                mana: Vec::new(),
+            });
+        }
         StaticAbilityFragment::ConditionalWard {
             condition,
             filter,
@@ -606,6 +621,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::SourceEntryModeActivation { .. }
                         | StaticAbilityFragment::HarnessedTrigger(..)
                         | StaticAbilityFragment::ConditionalWard { .. }
+                        | StaticAbilityFragment::ControlledCreatureTrigger { .. }
                         | StaticAbilityFragment::AttachmentTrigger(..)
                         | StaticAbilityFragment::AttachmentActivation { .. }
                         | StaticAbilityFragment::AttachmentMana(..)

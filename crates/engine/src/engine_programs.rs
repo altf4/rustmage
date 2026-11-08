@@ -709,6 +709,7 @@ impl Game {
         }
         self.delayed_target_departure(event);
         self.temporary_departure_triggers(event);
+        self.controlled_creature_death_triggers(event, death_sources);
         self.forget_self_grants(event);
         if event.before.zone == Zone::Battlefield {
             self.battlefield_departure_triggers(event);

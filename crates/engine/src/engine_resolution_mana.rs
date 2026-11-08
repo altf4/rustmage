@@ -179,7 +179,7 @@ impl Game {
             // The active layer-one definition is materialized for copied providers.
             // Keep blank providers in this conservative gate: restored abilities
             // must work without reacquiring or rebuilding a derived ward cache.
-            let has_conditional = self.state.static_sources.iter().any(|&provider| {
+            let has_static_ward = self.state.static_sources.iter().any(|&provider| {
                 self.on_battlefield(provider)
                     && self.state.objects[provider as usize]
                         .card
@@ -190,31 +190,28 @@ impl Game {
                                 matches!(
                                     fragment,
                                     crate::cards::StaticAbilityFragment::ConditionalWard { .. }
+                                        | crate::cards::StaticAbilityFragment::ControlledCreatureTrigger { .. }
                                 )
                             })
                         })
             });
-            let conditional = if has_conditional {
-                self.characteristic_query().conditional_ward_grants(id)
+            let static_grants = if has_static_ward {
+                self.characteristic_query().static_ward_grants(id)
             } else {
                 Vec::new()
             };
-            for grant in conditional {
+            for grant in static_grants {
                 let event = Box::new(AttachmentTriggerView {
                     grantor: grant.grantor,
                     granting_card: grant.granting_card,
                     recipient: reference,
                     defender: None,
                     granted: true,
-                    origin: self.copy_ability_origin(grant.grantor),
+                    origin: self.copied_grant_origin(grant.grantor),
                 });
                 if self.queue_trigger_from(
                     &source,
-                    usize::from(
-                        grant
-                            .ability
-                            .expect("conditional ward has a trigger template"),
-                    ),
+                    usize::from(grant.ability.expect("static ward has a trigger template")),
                     Some(event),
                 ) {
                     self.state
@@ -387,19 +384,10 @@ impl Game {
         };
     }
     pub(super) fn start_resolution_life(&mut self, item: &SpellView, amount: u32) -> bool {
-        let related = item.related_stack.expect("ward stack association");
-        let Some(victim) = self
-            .state
-            .stack
-            .iter()
-            .find(|spell| spell.id == related.id)
-            .map(|spell| StackLink {
-                id: spell.id,
-                controller: spell.controller,
-            })
-        else {
-            return false;
-        };
+        // Ward's "that player" is fixed by the triggering event. The optional
+        // payment remains available even if another ward already countered the
+        // spell, or control of that spell subsequently changed (CR118.12a).
+        let victim = item.related_stack.expect("ward stack association");
         let resolution = self.state.resolving.as_mut().unwrap();
         resolution.mana_payment = Some(Box::new(ResolutionPayment {
             payer: victim.controller,

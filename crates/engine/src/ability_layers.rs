@@ -344,6 +344,13 @@ pub enum StaticAbilityFragment {
     AttachedTurnKeywords(Keywords),
     /// Stable index into the granting definition's immutable trigger array.
     AttachmentTrigger(u16),
+    /// Each matching creature owns the indexed granted trigger template.
+    /// Scope is evaluated in layer six and frozen for departure events.
+    ControlledCreatureTrigger {
+        ability: u16,
+        other: bool,
+        nontoken: bool,
+    },
     /// A real Ward instance granted by a live conditional static ability.
     ConditionalWard {
         condition: StatValue,
