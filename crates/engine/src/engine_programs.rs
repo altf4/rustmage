@@ -86,6 +86,14 @@ pub(super) struct LibraryChoice {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    fn departed_source_in_graveyard(&self, item: &SpellView) -> Option<CardId> {
+        let event = item.source_move.as_ref()?;
+        (event.destination == Zone::Graveyard
+            && self.object_ref(event.after.card) == event.after
+            && self.state.objects[event.after.card as usize].zone == Zone::Graveyard
+            && self.state.objects[event.after.card as usize].is_card()).then_some(event.after.card)
+    }
+
     pub(super) fn entering_subject(&self, item: &SpellView) -> Option<CardId> {
         item.entering_object
             .filter(|object| {
@@ -4584,6 +4592,26 @@ impl Game {
                         self.gain_life(controller, power);
                     }
                 }
+                Instruction::MayPayEnteringPower { skip } => {
+                    let skip_to = resolution.pc.checked_add(skip).expect("program offset");
+                    let amount = self.resolved_stat_value(&item, ResolvedStatValue::EnteringPower)
+                        .unwrap_or(0).max(0);
+                    if amount == 0 || self.state.players[item.controller.index()].life >= amount {
+                        self.state.pending = Pending::EffectOptional { player: item.controller, skip_to };
+                        return;
+                    }
+                    self.state.resolving.as_mut().unwrap().pc = skip_to;
+                }
+                Instruction::PayEnteringPowerLifeAndCounters => {
+                    let amount = self.resolved_stat_value(&item, ResolvedStatValue::EnteringPower)
+                        .unwrap_or(0).max(0);
+                    self.lose_life(item.controller, amount);
+                    if let Some(id) = self.entering_subject(&item) {
+                        let mut counters = Counters::default();
+                        counters.add(CounterKind::PlusOne, u64::try_from(amount).capacity("counter amount exhausted"));
+                        self.effect_counters(vec![(self.object_ref(id), counters)], replacements::ResumeMode::Program);
+                    }
+                }
                 Instruction::MayOpponent { skip } => {
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");
                     assert!(skip_to <= resolution.program.len());
@@ -7482,6 +7510,20 @@ impl Game {
                 Instruction::ExileTargetsAndTopPlayForOwners => {
                     self.exile_targets_play(&item, true, true, true)
                 }
+                Instruction::MayExileDepartedSource { skip } => {
+                    let skip_to = resolution.pc.checked_add(skip).expect("program offset");
+                    if self.departed_source_in_graveyard(&item).is_some() {
+                        self.state.pending = Pending::EffectOptional { player: item.controller, skip_to };
+                        return;
+                    }
+                    self.state.resolving.as_mut().unwrap().pc = skip_to;
+                }
+                Instruction::ExileDepartedSourceReflexive { ability } => {
+                    if let Some(id) = self.departed_source_in_graveyard(&item) {
+                        self.move_object(id, Zone::Exile);
+                        self.queue_reflexive(&item, ability, None);
+                    }
+                }
                 Instruction::ExileUntilSourceLeaves => self.exile_until_source_leaves(&item),
                 Instruction::ExileBattlefieldUntilSourceLeaves { filters } => {
                     self.exile_battlefield_until_source_leaves(&item, filters)
@@ -9358,6 +9400,19 @@ impl Game {
                         .count();
                     self.move_target_batch(&item.targets, Zone::Hand);
                     self.draw_many(item.controller, draws as u128);
+                }
+                Instruction::ReturnArtifactAsRobot => {
+                    let source = item.source.expect("return spell has a source");
+                    let moves = item.targets.iter().filter(|&&bound| self.same_target_object(bound))
+                        .filter_map(|bound| bound.object).map(|object| {
+                            let mut movement = self.entry_move(object.card, Zone::Battlefield, false);
+                            movement.controller = item.controller;
+                            if !movement.before.is_creature() {
+                                movement.return_modification = Some((ReturnKind::FlyingRobot, source.object));
+                            }
+                            movement
+                        }).collect();
+                    self.stage_entries(moves, None);
                 }
                 Instruction::DestroyCounted { kinds } => {
                     let ids: Vec<_> = item.targets.iter()

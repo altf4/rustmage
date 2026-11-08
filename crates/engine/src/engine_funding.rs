@@ -4332,6 +4332,11 @@ impl Game {
         {
             return self.behold_announcement_fundable(a, cost);
         }
+        if a.item.cast.is_some_and(|cast| cast.kicker == Some(true))
+            && a.item.source.is_some_and(|source| source.card.kicker_additional_cost().is_some())
+        {
+            return self.behold_announcement_fundable(a, cost);
+        }
         if a.self_graveyard_cast_cost().is_some() {
             return self.self_graveyard_announcement_fundable(a, cost);
         }

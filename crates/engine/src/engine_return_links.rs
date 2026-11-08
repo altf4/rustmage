@@ -79,7 +79,7 @@ pub(super) fn modification(kind: ReturnKind) -> Option<(&'static [&'static str],
         ReturnKind::Demon => Some((&["Demon"], Keywords::NONE)),
         ReturnKind::Angel => Some((&["Angel"], Keywords::FLYING)),
         ReturnKind::HeroFinality => Some((&["Hero"], Keywords::NONE)),
-        ReturnKind::Revival => None,
+        ReturnKind::Revival | ReturnKind::FlyingRobot => None,
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -375,6 +375,7 @@ impl Game {
                 link.counter = Some((CounterKind::Finality, 1));
                 self.stage_linked_return(&link, Some((kind, source.object)));
             }
+            ReturnKind::FlyingRobot => self.stage_linked_return(&link, Some((kind, source.object))),
             ReturnKind::Demon | ReturnKind::Angel => {
                 link.counter = Some((
                     CounterKind::PlusOne,
@@ -472,6 +473,13 @@ impl Game {
         kind: ReturnKind,
         source: ObjectRef,
     ) {
+        if kind == ReturnKind::FlyingRobot {
+            let timestamp = self.next_role_timestamp();
+            self.state.roles.as_mut().unwrap().animations.push(
+                characteristic_layers::flying_robot_form(recipient, timestamp),
+            );
+            return;
+        }
         let Some((types, keywords)) = modification(kind) else {
             return;
         };

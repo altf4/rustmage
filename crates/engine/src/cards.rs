@@ -2350,6 +2350,8 @@ pub enum Instruction {
         skip: usize,
     },
     /// Offer the following payment block only when the controller can afford it.
+    MayPayEnteringPower { skip: usize },
+    PayEnteringPowerLifeAndCounters,
     MayPayControllerLife {
         amount: u16,
         skip: usize,
@@ -2953,6 +2955,8 @@ pub enum Instruction {
     },
     ExileTargetsAndTopPlayForOwners,
     ExileUntilSourceLeaves,
+    MayExileDepartedSource { skip: usize },
+    ExileDepartedSourceReflexive { ability: u16 },
     ExileBattlefieldUntilSourceLeaves {
         filters: &'static [BattlefieldFilter],
     },
@@ -3011,6 +3015,7 @@ pub enum Instruction {
         factor: u8,
     },
     ReturnToBattlefield,
+    ReturnArtifactAsRobot,
     ReturnToBattlefieldUnderControl,
     /// Return under your control; grant attack-each-combat and a permanent triggered template.
     ReturnToBattlefieldWithAttackTrigger(u16),
@@ -4622,6 +4627,7 @@ pub enum ReturnDeathFilter {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum ReturnKind {
+    FlyingRobot,
     Demon,
     Angel,
     Revival,
@@ -6581,6 +6587,9 @@ impl Card {
     }
     pub(crate) fn teamwork(self) -> Option<TeamworkSpec> {
         authored::rules(self).and_then(|r| r.extras.teamwork)
+    }
+    pub(crate) fn kicker_additional_cost(self) -> Option<AdditionalCost> {
+        authored::rules(self).and_then(|rules| rules.extras.kicker_additional_cost)
     }
     pub fn kicker_cost(self) -> Option<ManaCost> {
         generated::kicker_cost(self)

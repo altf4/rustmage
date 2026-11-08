@@ -892,6 +892,21 @@ pub(super) fn artifact_noncreature_form(object: ObjectRef, timestamp: u64) -> An
     }
 }
 
+/// A returned noncreature artifact enters as a flying Robot.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn flying_robot_form(object: ObjectRef, timestamp: u64) -> AnimationView {
+    AnimationView {
+        food_only: false,
+        artifact: true,
+        artifact_noncreature: false,
+        preserve_card_types: false,
+        creature_types: Some(&["Robot"]),
+        base: Some((3, 3)),
+        keywords: Keywords::FLYING,
+        ..food_form(object, timestamp)
+    }
+}
+
 /// Source-independent CR611.2e enchantment-only form.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn enchantment_noncreature_form(object: ObjectRef, timestamp: u64) -> AnimationView {

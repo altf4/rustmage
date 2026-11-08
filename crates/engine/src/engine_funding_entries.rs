@@ -1642,6 +1642,10 @@ impl FundingState<'_> {
                     .animations
                     .push(characteristic_layers::food_form(source, timestamp));
             }
+            if m.return_modification.is_some_and(|(kind, _)| kind == ReturnKind::FlyingRobot) {
+                let timestamp = p.roles.next_timestamp();
+                p.roles.animations.push(characteristic_layers::flying_robot_form(source, timestamp));
+            }
             if let Some((kind, origin)) = m.return_modification
                 && let Some((types, keywords)) = return_links::modification(kind)
             {

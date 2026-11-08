@@ -194,12 +194,12 @@ impl Announcement {
             {
                 None
             }
-            StackKind::Spell => self
-                .item
-                .source
-                .expect("announcement has object source")
-                .card
-                .additional_cost(),
+            StackKind::Spell => {
+                let card = self.item.source.expect("announcement has object source").card;
+                self.item.cast.filter(|cast| cast.kicker == Some(true))
+                    .and_then(|_| card.kicker_additional_cost())
+                    .or_else(|| card.additional_cost())
+            }
             StackKind::ActivatedAbility { ability } => self
                 .item
                 .source
