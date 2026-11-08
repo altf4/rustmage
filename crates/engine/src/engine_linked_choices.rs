@@ -46,6 +46,7 @@ pub struct KeepTypesView {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct LinkedExileView {
+    pub exiled_turn: u32,
     pub source: ObjectRef,
     pub exiled: ObjectRef,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -54,6 +55,7 @@ pub struct LinkedExileView {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) struct NullCastLink {
+    pub exiled_turn: u32,
     pub source: ObjectRef,
     pub exiled: ObjectRef,
     pub ability_origin: Option<u64>,
@@ -78,6 +80,8 @@ pub(super) struct ChoiceState {
     // Some(None) means tracking this instruction but no successful own sacrifice.
     sacrifice: Option<Option<ObjectRef>>,
     pub links: Vec<LinkedExileView>,
+    pub free_cast_uses: Vec<LinkedFreeCastUseView>,
+    pub free_cast_approvals: Vec<LinkedFreeCastApprovalView>,
     pub linked_exile_mode: Option<linked_exile_effects::LinkedExileMode>,
     pub linked_exile_selected: Option<ObjectRef>,
     pub legendary_search: Option<Box<legendary_split_search::LegendarySplitSearch>>,
@@ -113,6 +117,8 @@ impl ChoiceState {
             + self.deployment.as_ref().map_or(0, |h| h.bytes())
             + self.hidden.len() * std::mem::size_of::<(ObjectRef, HiddenExile)>()
             + self.links.len() * std::mem::size_of::<LinkedExileView>()
+            + self.free_cast_uses.len() * std::mem::size_of::<LinkedFreeCastUseView>()
+            + self.free_cast_approvals.len() * std::mem::size_of::<LinkedFreeCastApprovalView>()
             + self
                 .legendary_search
                 .as_ref()
@@ -541,6 +547,7 @@ impl Game {
             return;
         }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            uncast_to_hand: false,
             siege_transformed: false,
             paid: None,
             casts_remaining: None,
@@ -605,6 +612,7 @@ impl Game {
                     .get_or_insert_default()
                     .links
                     .push(LinkedExileView {
+                        exiled_turn: self.state.turn,
                         source,
                         exiled,
                         ability_origin: None,

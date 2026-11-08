@@ -147,6 +147,7 @@ impl Game {
             return false;
         }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            uncast_to_hand: false,
             siege_transformed: true,
             paid: None,
             casts_remaining: Some(1),

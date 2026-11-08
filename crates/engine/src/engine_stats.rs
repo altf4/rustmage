@@ -382,7 +382,7 @@ impl Game {
                 .card
                 .cast_timing_grants()
                 .is_empty()
-            || self.state.objects[id as usize].card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::FirstEquipZeroCost { .. } | crate::cards::StaticAbilityFragment::EquipTargetReduction(_) | crate::cards::StaticAbilityFragment::CantDrawCards)))
+            || self.state.objects[id as usize].card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::FirstEquipZeroCost { .. } | crate::cards::StaticAbilityFragment::EquipTargetReduction(_) | crate::cards::StaticAbilityFragment::CantDrawCards | crate::cards::StaticAbilityFragment::LinkedExileFreeCastBySubtypeUnion(_) | crate::cards::StaticAbilityFragment::LinkedExileCreatureCounterCasting(_))))
             || zone_replacements::card_provides_prevention(self.state.objects[id as usize].card)
             || self.state.objects[id as usize].card.graveyard_activation_subtype().is_some()
             || self.state.objects[id as usize].card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::SourceMaxSpeedActivation(_) | crate::cards::StaticAbilityFragment::ControlledPlaneswalkerActivation(_) | crate::cards::StaticAbilityFragment::ControlledPlaneswalkerAttackLimit)))

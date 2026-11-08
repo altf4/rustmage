@@ -1707,6 +1707,7 @@ pub enum Instruction {
     ReturnLinkedExileToHand,
     ReturnOneLinkedExileToHand,
     ExileTargetsLinkedToSource,
+    ExileTargetLibraryLinked(u16),
     ExileControllerLibraryTopLinked(u16),
     GrantLinkedExilePlay,
     ChooseLinkedCreatureReturn,
@@ -2924,6 +2925,14 @@ pub enum Instruction {
     PutHandCreatureHasteSacrifice {
         maximum_total_stats: u64,
     },
+    ExileNonlandLifeFreeCast,
+    MarkCastDreamExile,
+    CastOwnedDreamCard,
+    ExileUntilManaValueFreeCast {
+        players: PlayerSet,
+        minimum: u16,
+    },
+    RevealHandForControlledCast(AmountValue),
     ExileTopChoosePlayScaled {
         amount: AmountValue,
         next_turn: bool,

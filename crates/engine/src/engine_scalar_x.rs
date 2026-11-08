@@ -115,6 +115,15 @@ impl Game {
                 && a.item.controller == actor
                 && a.item.source.is_some_and(|s| s.id == id && s.card == card)
         });
+        self.scalar_x_intervals_with_announcement(actor, id, card, current)
+    }
+    pub(super) fn scalar_x_intervals_with_announcement(
+        &self,
+        actor: Player,
+        id: CardId,
+        card: Card,
+        current: Option<&Announcement>,
+    ) -> Vec<XInterval> {
         let symbols = u64::from(card.x_symbols());
         if current.map_or(symbols, |a| u64::from(a.payment_x_symbols())) == 0 {
             return Vec::new();

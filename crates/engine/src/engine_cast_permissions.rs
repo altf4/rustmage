@@ -517,7 +517,8 @@ impl Game {
         if definition.x_symbols() > 0
             && !matches!(
                 method,
-                CastMethod::ExileLife
+                CastMethod::LinkedExileCounterCost
+                    | CastMethod::ExileLife
                     | CastMethod::Airbend
                     | CastMethod::Free
                     | CastMethod::Plot
@@ -578,8 +579,17 @@ impl Game {
             harmonize_discount: 0,
             additional_paid: false,
         };
-        if method == CastMethod::GraveyardAdditionalCosts || origin_additional_cost.is_some() {
+        if matches!(
+            method,
+            CastMethod::GraveyardAdditionalCosts | CastMethod::LinkedExileCounterCost
+        ) || origin_additional_cost.is_some()
+        {
             a.initialize_cast_costs(convoke::cost_potential(self, definition));
+        }
+        if method == CastMethod::LinkedExileCounterCost && definition.x_symbols() > 0 {
+            return !self
+                .scalar_x_intervals_with_announcement(actor, card, definition, Some(&a))
+                .is_empty();
         }
         if teamwork {
             return self.teamwork_intent_fundable(&a, false)

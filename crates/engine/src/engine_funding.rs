@@ -3815,7 +3815,7 @@ impl<'g> FundingState<'g> {
         if !self.obligations(goal) {
             return false;
         }
-        if self.additional_cost_deficit() {
+        if self.additional_cost_deficit() || self.fixed_origin_counter_deficit() {
             return false;
         }
         if self.pure_tap_teamwork_deficit(goal) {
@@ -4649,7 +4649,10 @@ impl Game {
         if a.item
             .cast
             .is_some_and(|cast| cast.method == CastMethod::Free)
+            || a.linked_origin_counter_cost().is_some()
         {
+            // Source-linked counter payments supplement all other costs. The
+            // complete ordered context reserves them during initial preflight.
             return self.behold_announcement_fundable(a, cost);
         }
         if a.item.cast.is_some_and(|cast| cast.kicker == Some(true))
@@ -6183,7 +6186,12 @@ impl Game {
         {
             return false;
         }
-        if self.cast_costs_mana_paid() {
+        if self
+            .state
+            .announcing
+            .as_ref()
+            .is_some_and(|a| a.cast_costs.as_ref().is_some_and(|c| c.mana_closed))
+        {
             return self.cast_cost_counters_fundable(selected);
         }
         if self

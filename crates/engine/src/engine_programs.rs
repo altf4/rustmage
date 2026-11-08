@@ -1887,6 +1887,7 @@ impl Game {
             let item = self.state.stack[index].clone();
             self.expire_land_mana_on_exile_cast(&item);
             self.commit_linked_exile_cast(&item);
+            self.commit_linked_free_cast(&item);
             self.commit_library_entry_counter(&item);
         }
         self.commit_suspend_cast(stack);
@@ -2026,6 +2027,7 @@ impl Game {
                                 matches!(
                                     instruction,
                                     Instruction::ChangeCastSpellTargets
+                                        | Instruction::MarkCastDreamExile
                                         | Instruction::GainLifeScaled(_, AmountValue::SpellColors)
                                         | Instruction::DamageScaled(
                                             AmountValue::CastSpellManaValue
@@ -3497,7 +3499,9 @@ impl Game {
                         .zone
                         == Zone::Stack
                 {
-                    if item.cast.is_some_and(|c| c.face == CastFace::Adventure) {
+                    if self.finish_dream_spell_resolution(&item) {
+                        // The selected resolution replacement already completed its exact move.
+                    } else if item.cast.is_some_and(|c| c.face == CastFace::Adventure) {
                         self.finish_adventure(&item);
                     } else if item.cast.is_some_and(|c| c.face == CastFace::Omen) {
                         self.finish_omen(&item);
@@ -3641,6 +3645,9 @@ impl Game {
                         .expect("instruction requires an object source")
                         .object,
                 ),
+                Instruction::ExileTargetLibraryLinked(amount) => {
+                    self.exile_target_library_linked(&item, amount)
+                }
                 Instruction::ExileTargetsLinkedToSource => self.exile_targets_linked(&item, false),
                 Instruction::ExileControllerLibraryTopLinked(amount) => {
                     self.exile_controller_library_top_linked(&item, amount)
@@ -7196,6 +7203,26 @@ impl Game {
                 } => {
                     self.exile_top_play_boost_source(&item, subtype, power, toughness);
                 }
+                Instruction::RevealHandForControlledCast(amount) => {
+                    if self.start_hand_subset_controlled_cast(&item, amount) {
+                        return;
+                    }
+                }
+                Instruction::MarkCastDreamExile => self.mark_cast_dream_exile(&item),
+                Instruction::CastOwnedDreamCard => {
+                    self.start_dream_free_cast(item.controller);
+                    return;
+                }
+                Instruction::ExileNonlandLifeFreeCast => {
+                    if self.exile_nonland_life_free_cast(item.controller) {
+                        return;
+                    }
+                }
+                Instruction::ExileUntilManaValueFreeCast { players, minimum } => {
+                    for owner in self.program_players(players, &item) {
+                        self.exile_until_mana_value_free_cast(owner, item.controller, minimum);
+                    }
+                }
                 Instruction::ExileTopChoosePlayScaled { amount, next_turn } => {
                     let count = self.item_amount(amount, &item);
                     if self.exile_top_choose_play(item.controller, count, next_turn) {
@@ -9306,6 +9333,7 @@ impl Game {
                                 .get_or_insert_default()
                                 .links
                                 .push(linked_choices::LinkedExileView {
+                                    exiled_turn: self.state.turn,
                                     source: item
                                         .source
                                         .expect("instruction requires an object source")

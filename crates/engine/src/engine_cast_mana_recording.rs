@@ -316,6 +316,7 @@ impl Game {
                 plan.destination,
                 plan.shuffle,
                 plan.prevented,
+                plan.completion,
             ));
             capture.event.irreversible |= plan.shuffle.is_some()
                 || plan.destination == Zone::Library

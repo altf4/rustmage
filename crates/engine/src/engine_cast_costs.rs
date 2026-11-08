@@ -11,6 +11,7 @@ pub enum CastCostClause {
     Casualty(u16),
     Conspire(u16),
     Additional,
+    OriginCounters(u16),
     SneakReturn(Option<ObjectRef>),
     /// Exile the activated craft source as its own ordered cost component.
     CraftSource,
@@ -105,6 +106,10 @@ impl Announcement {
     }
     pub(super) fn initialize_cast_costs(&mut self, improvise: bool) {
         self.initialize_alternative_life();
+        if let Some(amount) = self.linked_origin_counter_cost() {
+            self.add_cast_cost_clause(CastCostClause::Mana);
+            self.add_cast_cost_clause(CastCostClause::OriginCounters(amount));
+        }
         if self.has_compound_sneak_cost() {
             self.add_cast_cost_clause(CastCostClause::Mana);
             self.add_cast_cost_clause(CastCostClause::SneakReturn(None));
@@ -257,13 +262,21 @@ impl Game {
             let clause = costs.clauses[usize::from(index)].clause;
             assert!(matches!(
                 clause,
-                CastCostClause::Additional | CastCostClause::Mana
+                CastCostClause::Additional
+                    | CastCostClause::Mana
+                    | CastCostClause::OriginCounters(_)
             ));
             costs.clauses[usize::from(index)].paid = true;
             costs.active = None;
             if clause == CastCostClause::Mana {
                 costs.mana_paid = true;
                 self.pay_mana_contributors(a);
+            }
+            if let CastCostClause::OriginCounters(amount) = clause {
+                let selected = a.creature_counter_cost.take().unwrap_or_default();
+                assert_eq!(selected.len(), usize::from(amount));
+                self.pay_selected_creature_counters(&mut a.item, &selected);
+                a.additional = None;
             }
             if clause == CastCostClause::Additional {
                 a.additional_paid = true;
@@ -404,6 +417,20 @@ impl Game {
                     player: a.item.controller,
                 };
                 self.state.announcing = Some(a);
+            }
+            CastCostClause::OriginCounters(amount) => {
+                a.additional = None;
+                a.creature_counter_cost = Some(Box::new(Vec::new()));
+                let player = a.item.controller;
+                if amount == 0 {
+                    a.additional = Some(a.item.source.unwrap().object);
+                    self.state.pending = Pending::PayCosts { player };
+                    self.state.announcing = Some(a);
+                    self.resume_cast_cost_selection();
+                } else {
+                    self.state.pending = Pending::AdditionalCost { player };
+                    self.state.announcing = Some(a);
+                }
             }
             CastCostClause::Additional => {
                 let spec = a.additional_cost().unwrap();

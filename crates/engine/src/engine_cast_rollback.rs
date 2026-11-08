@@ -441,6 +441,7 @@ impl Game {
                 self.commit_planned_zone_move(
                     before,
                     zone_replacements::Plan {
+                        completion: None,
                         destination: Zone::Library,
                         prevented: false,
                         shuffle: None,

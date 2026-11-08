@@ -76,7 +76,16 @@ pub(super) struct Announcement {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Announcement {
+    pub(super) fn linked_origin_counter_cost(&self) -> Option<u16> {
+        self.item
+            .cast
+            .filter(|c| c.method == CastMethod::LinkedExileCounterCost)
+            .and(self.origin_counter_cost)
+    }
     pub(super) fn graveyard_origin_counter_cost(&self) -> Option<u16> {
+        if self.linked_origin_counter_cost().is_some() {
+            return None;
+        }
         self.origin_counter_cost.or_else(|| {
             self.item
                 .cast
@@ -140,6 +149,16 @@ impl Announcement {
                 .is_some_and(|source| source.card.additional_cost().is_some())
     }
     pub(super) fn additional_cost(&self) -> Option<AdditionalCost> {
+        if let Some(costs) = &self.cast_costs
+            && let Some(active) = costs.active
+            && let CastCostClause::OriginCounters(amount) =
+                costs.clauses[usize::from(active)].clause
+        {
+            return Some(Game::creature_counter_spec(amount));
+        }
+        self.printed_additional_cost()
+    }
+    pub(super) fn printed_additional_cost(&self) -> Option<AdditionalCost> {
         if self.activation_cost_route == ActivationCostRoute::FirstEquipZero {
             return None;
         }
@@ -186,13 +205,15 @@ impl Announcement {
             }
             StackKind::Spell
                 if self.item.cast.is_some_and(|c| match c.method {
-                    CastMethod::Normal => self.cost.is_some_and(|cost| {
-                        self.item
-                            .source
-                            .expect("object-backed announcement")
-                            .card
-                            .mana_alternative_replaces_additional(cost)
-                    }),
+                    CastMethod::Normal | CastMethod::LinkedExileCounterCost => {
+                        self.cost.is_some_and(|cost| {
+                            self.item
+                                .source
+                                .expect("object-backed announcement")
+                                .card
+                                .mana_alternative_replaces_additional(cost)
+                        })
+                    }
                     CastMethod::ExileLife
                     | CastMethod::Airbend
                     | CastMethod::Free
@@ -477,7 +498,9 @@ impl Announcement {
                 let evoked = self
                     .item
                     .cast
-                    .is_some_and(|c| c.method == CastMethod::Normal)
+                    .is_some_and(|c| {
+                        matches!(c.method, CastMethod::Normal | CastMethod::LinkedExileCounterCost)
+                    })
                     && self
                         .item
                         .source

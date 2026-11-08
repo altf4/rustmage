@@ -2267,6 +2267,77 @@ impl Game {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl<'g> FundingState<'g> {
+    fn visit_mana_source_counter_cost(
+        &self,
+        object: ObjectRef,
+        cost: Option<(CounterKind, u64)>,
+        emit: &mut dyn FnMut(&Self) -> bool,
+    ) -> bool {
+        let Some((kind, amount)) = cost.filter(|(_, amount)| *amount != 0) else {
+            return emit(self);
+        };
+        if self.reference(object.card) != object || replacements::counters_prohibited(self, object)
+        {
+            return false;
+        }
+        let recipient = self.object(object.card);
+        let placement = replacements::CounterPlacement {
+            object,
+            amount: Counters::of(kind, amount),
+            placed_by: self.actor,
+            card: recipient.card,
+            owner: recipient.owner,
+            controller: recipient.controller,
+            protector: self.battle_protector(object),
+            subtypes: self.subtypes(object.card),
+            kind: CharacteristicWorld::kinds(self, object.card),
+            power: self.power(object.card),
+            effect: false,
+            entry_index: None,
+            private: false,
+        };
+        replacements::counter_outcomes(
+            self,
+            &placement,
+            &mut Vec::new(),
+            &|placement| placement.clone(),
+            &mut |placed| {
+                let mut next = self.clone();
+                next.prepare_entry_projection();
+                let mut total = next.counter_amounts(object.card).to_owned();
+                let before = CounterAmounts::from(&total).keyword_amounts();
+                for kind in CounterKind::ALL {
+                    total.add(kind, placed.get(kind));
+                }
+                let after = CounterAmounts::from(&total).keyword_amounts();
+                next.resources
+                    .iter_mut()
+                    .find(|row| row.id == object.card)
+                    .unwrap()
+                    .object
+                    .counters = total.hot();
+                live_counters::set(&mut next.named_counters, object, total.named);
+                keyword_counters::sync_effects(
+                    &mut next.entry_projection.as_mut().unwrap().roles,
+                    object,
+                    before,
+                    after,
+                    None,
+                );
+                if placed.has_any() {
+                    counter_placement_history::record(
+                        &mut next.counter_placement_history,
+                        object,
+                        self.actor,
+                        placed.plus_one > 0,
+                    );
+                }
+                next.refresh_control_projection();
+                next.refresh_enduring_projection();
+                emit(&next)
+            },
+        )
+    }
     pub(super) fn visit_applied(
         &self,
         step: &FundingMove,
@@ -2275,7 +2346,23 @@ impl<'g> FundingState<'g> {
         if step.output.as_ref().and_then(|o| o.deferred_cost).is_some() {
             return self.visit_deferred(step, emit);
         }
-        if step.external.is_none()
+        let source_counter_cost = step.ability.and_then(|index| {
+            let definition = step.frozen.as_deref().map_or_else(
+                || {
+                    step.self_grant.map_or_else(
+                        || {
+                            step.borrowed
+                                .map_or(self.resources[step.resource].object.card, |a| a.definition)
+                        },
+                        |g| g.0,
+                    )
+                },
+                |f| f.0,
+            );
+            definition.activation_put_counter(index)
+        });
+        if source_counter_cost.is_none()
+            && step.external.is_none()
             && self.cast_costs.is_none()
             && self.continuation.is_none()
             && self.entry_projection.is_none()
@@ -2361,12 +2448,17 @@ impl<'g> FundingState<'g> {
                 return false;
             }
         }
-        next.visit_mana_cost_departures(
-            reference,
-            departed.then_some(destination),
-            external,
-            &mut |world| world.visit_output(step, bonus, emit),
-        )
+        // The executor taps before this source-counter event, then performs
+        // departure costs. Retain the captured tap bonus while replacements
+        // update the counter world used by subsequent costs and mana output.
+        next.visit_mana_source_counter_cost(reference, source_counter_cost, &mut |world| {
+            world.visit_mana_cost_departures(
+                reference,
+                departed.then_some(destination),
+                external,
+                &mut |world| world.visit_output(step, bonus, emit),
+            )
+        })
     }
     pub(super) fn visit_mana_cost_departures(
         &self,

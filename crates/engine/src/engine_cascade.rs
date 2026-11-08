@@ -131,6 +131,7 @@ impl Game {
         }));
         if let Some(object) = eligible {
             self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+                uncast_to_hand: false,
                 siege_transformed: false,
                 paid: None,
                 casts_remaining: None,
@@ -189,6 +190,7 @@ impl Game {
             keep_exiled: true,
         }));
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            uncast_to_hand: false,
             siege_transformed: false,
             paid: None,
             casts_remaining: Some(1),

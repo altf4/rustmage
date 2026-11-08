@@ -93,7 +93,7 @@ impl CostContext {
             active: c.active,
             casualty: a.casualty.as_deref().cloned().unwrap_or_default(),
             conspire: a.conspire.as_deref().cloned().unwrap_or_default(),
-            additional: a.additional_cost(),
+            additional: a.printed_additional_cost(),
             additional_life: a.additional_life,
             forage: a.forage.as_ref().and_then(|v| v.route),
             selected,
@@ -110,6 +110,61 @@ impl CostContext {
 impl FundingState<'_> {
     pub(super) fn mana_window_open(&self, goal: &FundingGoal) -> bool {
         goal.requires_mana() && self.cast_costs.as_ref().is_none_or(|c| !c.mana_closed)
+    }
+    /// Intrinsic land mana cannot repair a counter shortfall. Avoid enumerating
+    /// equivalent land subsets while retaining the complete search for costs or
+    /// mana abilities that can introduce counters, objects, or new abilities.
+    pub(super) fn fixed_origin_counter_deficit(&self) -> bool {
+        let Some(c) = &self.cast_costs else {
+            return false;
+        };
+        let mut required = 0;
+        for row in c.clauses.iter().filter(|row| !row.paid) {
+            match row.clause {
+                CastCostClause::OriginCounters(amount) => required = required.max(amount),
+                CastCostClause::Mana => (),
+                _ => return false,
+            }
+        }
+        let state = &self.game.state;
+        if required == 0
+            || self.continuation.is_some()
+            || self.entry_projection.is_some()
+            || !state.exile_links.is_empty()
+            || state.borrowed_links.is_some()
+            || state.graveyard_borrowing.is_some()
+            || state.borrowed_slots.is_some()
+            || state.activation_observers.is_some()
+            || state.temporary_abilities.is_some()
+            || state.self_granted_abilities.is_some()
+            || !state.attachment_sources.is_empty()
+            || !state.tap_sources.is_empty()
+        {
+            return false;
+        }
+        let mut upper = 0u128;
+        for id in 0..state.objects.len() {
+            let id = id as CardId;
+            let object = self.object(id);
+            // Include inactive and nonbattlefield definitions: a change in
+            // availability must not hide a future counter-producing route.
+            if object.card.borrows_activations()
+                || object
+                    .card
+                    .activations()
+                    .iter()
+                    .any(|ability| ability.mana_production().is_some())
+                || !CharacteristicWorld::granted_mana(self, id).is_empty()
+            {
+                return false;
+            }
+            if object.zone == Zone::Battlefield {
+                // Ignore control and creature restrictions for an overestimate.
+                upper =
+                    upper.saturating_add(CharacteristicWorld::counter_amounts(self, id).total());
+            }
+        }
+        upper < u128::from(required)
     }
     /// Reject an unpaid additional cost only if even an overestimate of the
     /// resources available after funding cannot satisfy any of its routes.
@@ -139,7 +194,8 @@ impl FundingState<'_> {
         // Keep this exhaustive so new ordered clauses require a bound audit.
         for row in &c.clauses {
             match row.clause {
-                CastCostClause::Additional
+                CastCostClause::OriginCounters(_)
+                | CastCostClause::Additional
                 | CastCostClause::CraftSource
                 | CastCostClause::Mana
                 | CastCostClause::Life(_)
@@ -660,12 +716,20 @@ impl FundingState<'_> {
             rest.remove(position);
             let mut later = c.clone();
             later.active = None;
-            if c.clauses[index].clause == CastCostClause::Additional {
+            if matches!(
+                c.clauses[index].clause,
+                CastCostClause::Additional | CastCostClause::OriginCounters(_)
+            ) {
                 later.selected.clear();
                 later.exact = false;
                 later.counters.clear();
             }
             match c.clauses[index].clause {
+                CastCostClause::OriginCounters(amount) => {
+                    if self.complete_counter_cost(c, &later, &rest, (amount, None)) {
+                        return true;
+                    }
+                }
                 CastCostClause::Teamwork(minimum) => {
                     if self.complete_teamwork_clause(c, &later, &rest, minimum) {
                         return true;

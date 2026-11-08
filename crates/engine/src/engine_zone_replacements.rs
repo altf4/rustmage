@@ -15,6 +15,9 @@ pub(super) fn affected_player(before: &ObjectView) -> Player {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum ZoneReplacementKind {
     RevealShuffle,
+    DreamExile,
+    AdventureExile,
+    OmenShuffle,
     /// The event is prevented; the object remains in its original zone.
     Prevent,
     Exile,
@@ -92,6 +95,7 @@ struct Replay {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct ZoneState {
+    pub dream_exiles: Vec<DreamExileView>,
     choice: Option<Box<Choice>>,
     replay: Option<Box<Replay>>,
     reveals: SharedVec<ZoneRevealView>,
@@ -130,6 +134,7 @@ pub(super) fn test_checkpoint(state: State, object: ObjectRef, owner: Player) ->
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Default)]
 pub(super) struct FrozenRules {
+    pub dream: Option<DreamExileView>,
     pub prevent: bool,
     pub shuffle_self: bool,
     pub shuffle_spell: bool,
@@ -144,8 +149,15 @@ pub(super) enum ZoneShuffle {
     Reveal,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum ZoneMoveCompletion {
+    Dream,
+    Adventure(Player),
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Plan {
+    pub completion: Option<ZoneMoveCompletion>,
     pub destination: Zone,
     pub prevented: bool,
     pub shuffle: Option<ZoneShuffle>,
@@ -205,6 +217,7 @@ impl ZoneState {
         std::mem::size_of::<Self>()
             + self.reveals.len() * std::mem::size_of::<ZoneRevealView>()
             + self.graveyard_exile_spells.len() * std::mem::size_of::<ObjectRef>()
+            + self.dream_exiles.len() * std::mem::size_of::<DreamExileView>()
             + self.choice.as_ref().map_or(0, |c| {
                 std::mem::size_of::<Choice>()
                     + base_bytes(&c.base)
@@ -260,6 +273,7 @@ impl Game {
         }
     }
     pub(super) fn forget_stack_graveyard_exile(&mut self, object: ObjectRef) {
+        self.forget_dream_exile(object);
         if let Some(rules) = &mut self.state.zone_rules
             && rules.graveyard_exile_spells.contains(&object)
         {
@@ -380,6 +394,7 @@ impl Game {
             Vec::new()
         };
         FrozenRules {
+            dream: self.dream_resolution_mark(before.reference),
             prevent,
             reflexive_exiles,
             shuffle_spell: false,
@@ -416,7 +431,8 @@ impl Game {
         let requires_apnap = frozen.len() > 1
             && frozen.iter().any(|(_, _, rules, _)| {
                 // All other effects collapse to a single exile option.
-                rules.prevent
+                rules.dream.is_some()
+                    || rules.prevent
                     || rules.shuffle_self
                     || rules.shuffle_spell
                     || rules.discard_to_battlefield
@@ -482,6 +498,7 @@ impl Game {
         // must never become a competing "prevent" replacement or a paid cost.
         if requested == Zone::Exile && self.graveyard_exile_prohibited(before.id) {
             return Plan {
+                completion: None,
                 destination: requested,
                 prevented: true,
                 shuffle: None,
@@ -499,6 +516,7 @@ impl Game {
         if !rules.prevent && !test_redirect && requested != Zone::Graveyard && !exile_on_stack_exit
         {
             return Plan {
+                completion: None,
                 destination: requested,
                 prevented: false,
                 shuffle: None,
@@ -506,6 +524,14 @@ impl Game {
             };
         }
         let mut choices = Vec::new();
+        if let Some(mark) = rules.dream {
+            choices.push(ZoneReplacementKind::DreamExile);
+            match mark.face {
+                CastFace::Adventure => choices.push(ZoneReplacementKind::AdventureExile),
+                CastFace::Omen => choices.push(ZoneReplacementKind::OmenShuffle),
+                _ => {}
+            }
+        }
         if rules.prevent {
             choices.push(ZoneReplacementKind::Prevent);
         }
@@ -536,6 +562,7 @@ impl Game {
         let effect = match choices.as_slice() {
             [] => {
                 return Plan {
+                    completion: None,
                     destination: requested,
                     prevented: false,
                     shuffle: None,
@@ -592,14 +619,25 @@ impl Game {
         exile_on_stack_exit: bool,
     ) -> Plan {
         let shuffle = match effect {
-            ZoneReplacementKind::Shuffle => Some(ZoneShuffle::Plain),
+            ZoneReplacementKind::Shuffle | ZoneReplacementKind::OmenShuffle => {
+                Some(ZoneShuffle::Plain)
+            }
             ZoneReplacementKind::RevealShuffle => Some(ZoneShuffle::Reveal),
             _ => None,
         };
         Plan {
+            completion: match effect {
+                ZoneReplacementKind::DreamExile => Some(ZoneMoveCompletion::Dream),
+                ZoneReplacementKind::AdventureExile => Some(ZoneMoveCompletion::Adventure(
+                    rules.dream.expect("marked adventure").player,
+                )),
+                _ => None,
+            },
             destination: match effect {
                 ZoneReplacementKind::Prevent => Zone::Graveyard,
-                ZoneReplacementKind::Shuffle | ZoneReplacementKind::RevealShuffle => {
+                ZoneReplacementKind::Shuffle
+                | ZoneReplacementKind::RevealShuffle
+                | ZoneReplacementKind::OmenShuffle => {
                     // An exile-on-stack-exit replacement still applies to the
                     // move within the shuffle. CR 701.24c retains the shuffle.
                     if exile_on_stack_exit {
@@ -608,9 +646,10 @@ impl Game {
                         Zone::Library
                     }
                 }
-                ZoneReplacementKind::Exile | ZoneReplacementKind::ExileReflexive { .. } => {
-                    Zone::Exile
-                }
+                ZoneReplacementKind::DreamExile
+                | ZoneReplacementKind::AdventureExile
+                | ZoneReplacementKind::Exile
+                | ZoneReplacementKind::ExileReflexive { .. } => Zone::Exile,
                 ZoneReplacementKind::Battlefield => Zone::Battlefield,
             },
             prevented: effect == ZoneReplacementKind::Prevent,

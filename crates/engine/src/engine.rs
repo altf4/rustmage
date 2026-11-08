@@ -207,7 +207,15 @@ pub mod adventure;
 #[path = "engine_cast_origins.rs"]
 pub mod cast_origins;
 use crate::PermanentType;
+#[doc(hidden)]
+#[path = "engine_linked_source_casts.rs"]
+pub mod linked_source_casts;
+pub use linked_source_casts::{LinkedFreeCastApprovalView, LinkedFreeCastUseView};
+#[doc(hidden)]
+#[path = "engine_dream_exile.rs"]
+pub mod dream_exile;
 pub use cast_origins::{GraveyardTypeUse, ResolutionFreeCasts, ResolutionPaidCast};
+pub use dream_exile::DreamExileView;
 #[doc(hidden)]
 #[path = "engine_cast_permissions.rs"]
 pub mod cast_permissions;
@@ -959,6 +967,8 @@ define_actions! {
     CastExiledDuringResolution { object: ObjectRef, face: CastFace },
     CastFreeDuringResolution { object: ObjectRef, face: CastFace },
     FinishResolutionCasts,
+    AnnounceLinkedFree { card: CardId, source: ObjectRef, face: CastFace, flash_surcharge: bool },
+    AnnounceLinkedExileCounterCost { card: CardId, source: ObjectRef, flash_surcharge: bool },
     FinishGraveyardSymbolCost,
     Mulligan,
     Bottom {
@@ -1406,6 +1416,7 @@ impl PlayerState {
 pub enum CastMethod {
     Normal,
     GraveyardCounterCost,
+    LinkedExileCounterCost,
     /// The card's own graveyard permission with independent added nonmana costs.
     GraveyardAdditionalCosts,
     Free,
@@ -3585,6 +3596,9 @@ pub struct Observation {
     pub hand_deployment: Option<HandDeploymentView>,
     pub keep_types: Option<KeepTypesView>,
     pub linked_exile: Vec<LinkedExileView>,
+    pub dream_exiles: Vec<DreamExileView>,
+    pub linked_free_cast_uses: Vec<LinkedFreeCastUseView>,
+    pub linked_free_cast_approvals: Vec<LinkedFreeCastApprovalView>,
     pub mana_lots: Vec<ManaLotView>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub inert_mana_copy_sources: Vec<ObjectRef>,
@@ -5435,6 +5449,13 @@ impl Game {
                     {
                         return true;
                     }
+                    if obj.zone == Zone::Exile
+                        && !casting_prohibited
+                        && !self.nonhand_cast_prohibited(actor)
+                        && self.visit_linked_source_casts(actor, card, sorcery, &mut emit)
+                    {
+                        return true;
+                    }
                     let mut plotted = false;
                     let authorized_origin = match obj.zone {
                         Zone::Battlefield => obj.controller == actor,
@@ -7122,6 +7143,17 @@ impl Game {
             Action::CastFreeDuringResolution { object, face } => {
                 self.cast_during_resolution_with_cost(actor, object, face, Some(CastMethod::Free))
             }
+            Action::AnnounceLinkedFree {
+                card,
+                source,
+                face,
+                flash_surcharge,
+            } => self.start_linked_free_cast(actor, card, source, face, flash_surcharge),
+            Action::AnnounceLinkedExileCounterCost {
+                card,
+                source,
+                flash_surcharge,
+            } => self.start_linked_counter_cast(actor, card, source, flash_surcharge),
             Action::FinishResolutionCasts => {
                 if let Some(resolution) = self.state.resolving.as_mut()
                     && resolution.pc > 0
@@ -7139,7 +7171,7 @@ impl Game {
                 }
                 self.finish_suspend_offer();
                 self.finish_paradigm_copy_offer();
-                self.state.resolution_free_casts = None;
+                self.finish_resolution_free_casts();
                 self.run_program();
             }
             Action::PlayLand { card }
@@ -9884,6 +9916,9 @@ impl Game {
         if let Some(shuffle) = plan.shuffle {
             self.shuffle_zone_card(&before, shuffle);
         }
+        if let Some(completion) = plan.completion {
+            self.complete_special_zone_move(self.object_ref(id), completion);
+        }
         self.copy_characteristic_zone_commit(&before, self.object_ref(id), destination);
         // A Siege's protector must be an opponent; this library is two-player.
         if destination == Zone::Battlefield
@@ -10050,6 +10085,10 @@ impl Game {
         self.begin_player_control_turn();
         self.expire_temporary_copies(false);
         self.reset_copy_turn_uses();
+        if let Some(data) = &mut self.state.linked_choices {
+            data.free_cast_uses.clear();
+            data.free_cast_approvals.clear();
+        }
         self.prune_modal_history();
         self.state.entered_this_turn = None;
         self.state.creature_entry_history = None;
@@ -10876,6 +10915,18 @@ impl Game {
             keep_types: self.keep_types_view(),
             hand_choice: self.hand_choice_view(viewer),
             hand_deployment: self.public_hand_deployment_view(),
+            dream_exiles: s
+                .zone_rules
+                .as_ref()
+                .map_or_else(Vec::new, |s| s.dream_exiles.clone()),
+            linked_free_cast_uses: s
+                .linked_choices
+                .as_ref()
+                .map_or_else(Vec::new, |s| s.free_cast_uses.clone()),
+            linked_free_cast_approvals: s
+                .linked_choices
+                .as_ref()
+                .map_or_else(Vec::new, |s| s.free_cast_approvals.clone()),
             linked_exile: s.linked_choices.as_ref().map_or_else(Vec::new, |c| {
                 c.links
                     .iter()
@@ -10885,6 +10936,7 @@ impl Game {
                             .iter()
                             .filter(|link| s.objects[link.exiled.card as usize].zone == Zone::Exile)
                             .map(|link| LinkedExileView {
+                                exiled_turn: link.exiled_turn,
                                 source: link.source,
                                 exiled: link.exiled,
                                 ability_origin: link.ability_origin,

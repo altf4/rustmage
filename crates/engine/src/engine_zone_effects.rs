@@ -64,6 +64,7 @@ impl Game {
         let previous = self.state.objects[object.card as usize].controller;
         self.remember_face_down_controller(object, previous);
         self.remember_face_down_controller(object, controller);
+        self.end_source_bound_exile_permissions(object);
         self.end_control_linked_effects(object);
         self.remember_hideaway_controller(object, controller);
         self.remove_from_combat(object.card, object);

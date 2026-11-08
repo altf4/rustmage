@@ -370,6 +370,8 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceAirbend { .. }
             | Action::AnnounceExileLife { .. }
             | Action::AnnounceExileFree { .. }
+            | Action::AnnounceLinkedFree { .. }
+            | Action::AnnounceLinkedExileCounterCost { .. }
             | Action::AnnounceFlashback { .. }
             | Action::AnnounceHarmonize { .. }
             | Action::AnnounceMayhem { .. } => 79,
