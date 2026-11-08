@@ -30,6 +30,107 @@ fn drain(g: &mut Game) {
     });
 }
 const CREATURE: TargetPlan = TargetPlan::Single(TargetSpec::one(TargetRule::Creature));
+
+#[test]
+fn return_then_lose_abilities_preserves_entry_choices_and_frozen_entry_trigger() {
+    const BODY: CardRules = CardRules {
+        effect: Effect::Creature(3, 3),
+        keywords: Keywords::FLYING,
+        entry: EntryTapped::PayLife(2),
+        triggers: &[
+            TriggeredAbility {
+                condition: TriggerCondition::ReturnDeath(ReturnDeathFilter::SourceCounter {
+                    kind: CounterKind::MinusOne,
+                    minimum: 1,
+                }),
+                targets: TargetPlan::NONE,
+                program: &[Instruction::ReturnDeathCard(ReturnKind::WithoutAbilities)],
+            },
+            TriggeredAbility {
+                condition: TriggerCondition::SelfEnters,
+                targets: TargetPlan::NONE,
+                program: &[Instruction::Draw(PlayerSet::Controller, 1)],
+            },
+        ],
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[(card("Hill Giant"), &BODY)]);
+    for player in [Player::P0, Player::P1] {
+        for pay in [false, true] {
+            let mut g = scenario(player);
+            let creature = put(&mut g, player, "Hill Giant", Zone::Battlefield);
+            let source = g.object_ref(creature);
+            let before = g.state.players[player.index()].library.len();
+            g.add_counter(creature, CounterKind::MinusOne, 1);
+            g.move_object(creature, Zone::Graveyard);
+
+            let mut movement = g.entry_move(creature, Zone::Battlefield, false);
+            movement.return_modification = Some((ReturnKind::WithoutAbilities, source));
+            let goal = FundingGoal {
+                actor: player,
+                required: [0; 6],
+                generic: 0,
+                reserve: None,
+                source: None,
+            };
+            let world = FundingState::from_game(&g, &goal);
+            let mut projected = Vec::new();
+            world.visit_entry_moves(vec![movement], true, None, &mut |next| {
+                projected.push(
+                    characteristic_query::CharacteristicQuery::in_world(next).object_view(creature),
+                );
+                false
+            });
+
+            g.prepare_triggers();
+            ready(&mut g, |g| {
+                matches!(g.state.pending, Pending::EntryLife { .. })
+            });
+            assert_eq!(g.object_view(creature).zone, Zone::Graveyard);
+            let before_choice = g.snapshot();
+            let action = Action::ChooseEntryLife { pay };
+            let mut child = g.clone();
+            let index = child
+                .legal_actions()
+                .iter()
+                .position(|a| *a == action)
+                .unwrap();
+            child.apply_index(player, child.revision(), index).unwrap();
+            act(&mut g, action.clone());
+            assert_eq!(g.snapshot(), child.snapshot());
+            for viewer in [Player::P0, Player::P1] {
+                assert_eq!(
+                    serde_json::to_value(g.observe(viewer)).unwrap(),
+                    serde_json::to_value(child.observe(viewer)).unwrap(),
+                );
+            }
+            let after_choice = g.snapshot();
+            g.restore(&before_choice).unwrap();
+            act(&mut g, action);
+            assert_eq!(g.snapshot(), after_choice);
+
+            let returned = g.object_view(creature);
+            assert!(projected.contains(&returned));
+            assert_eq!(returned.zone, Zone::Battlefield);
+            assert_eq!(returned.tapped, !pay);
+            assert!(!returned.keywords.contains(Keywords::FLYING));
+            assert!(!g.printed_abilities_available(creature));
+            assert_eq!(
+                g.state.players[player.index()].life,
+                if pay { 18 } else { 20 }
+            );
+            drain(&mut g);
+            assert_eq!(g.state.players[player.index()].library.len(), before - 1);
+
+            g.add_counter(creature, CounterKind::MinusOne, 1);
+            g.move_object(creature, Zone::Graveyard);
+            g.prepare_triggers();
+            drain(&mut g);
+            assert_eq!(g.object_view(creature).zone, Zone::Graveyard);
+        }
+    }
+}
+
 const KILL: CardRules = CardRules {
     effect: Effect::Spell(CREATURE, &[Instruction::Destroy]),
     ..CardRules::EMPTY

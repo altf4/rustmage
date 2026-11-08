@@ -1451,7 +1451,8 @@ impl FundingState<'_> {
             || m.enchantment_return
             || m.ghost_vacuum_after.is_some()
             || m.food_return.is_some()
-            || m.return_modification.is_some()
+            || m.return_modification
+                .is_some_and(|(kind, _)| kind != ReturnKind::WithoutAbilities)
             || CounterAmounts::from(&m.counters)
                 .keyword_amounts()
                 .iter()
@@ -1686,17 +1687,6 @@ impl FundingState<'_> {
                     });
                 }
             }
-            if let Some((ReturnKind::WithoutAbilities, origin)) = m.return_modification {
-                let timestamp = p.roles.next_timestamp();
-                p.roles
-                    .resolved_ability_modifications
-                    .push(ResolvedAbilityModificationView {
-                        recipient: source,
-                        source: origin,
-                        keywords: Keywords::NONE,
-                        timestamp,
-                    });
-            }
             if let Some(recipient) = m.attachment
                 && m.before.card.role().is_some()
             {
@@ -1828,6 +1818,22 @@ impl FundingState<'_> {
             }
         }
         for m in &moves {
+            if !m.skipped
+                && m.destination == Zone::Battlefield
+                && let Some((ReturnKind::WithoutAbilities, source)) = m.return_modification
+            {
+                let recipient = next.reference(m.before.id);
+                let p = next.entry_projection.as_mut().unwrap();
+                let timestamp = p.roles.next_timestamp();
+                p.roles
+                    .resolved_ability_modifications
+                    .push(ResolvedAbilityModificationView {
+                        recipient,
+                        source,
+                        keywords: Keywords::NONE,
+                        timestamp,
+                    });
+            }
             if !m.skipped
                 && m.destination == Zone::Battlefield
                 && let Some(source) = m.blank_with_haste_after

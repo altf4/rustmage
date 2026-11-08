@@ -1002,6 +1002,7 @@ impl Game {
         let mut equipment_results = Vec::new();
         let mut keyword_results = Vec::new();
         let mut ability_results = Vec::new();
+        let mut return_ability_results = Vec::new();
         let mut attack_trigger_results = Vec::new();
         let mut food_results = Vec::new();
         let mut artifact_results = Vec::new();
@@ -1134,7 +1135,11 @@ impl Game {
                 && event.destination == Zone::Battlefield
                 && let Some((kind, source)) = movement.return_modification
             {
-                self.apply_return_modification(event.after, kind, source);
+                if kind == ReturnKind::WithoutAbilities {
+                    return_ability_results.push((event.after, source));
+                } else {
+                    self.apply_return_modification(event.after, kind, source);
+                }
             }
             if event.moved
                 && event.destination == Zone::Battlefield
@@ -1408,6 +1413,14 @@ impl Game {
             self.finish_discard_events(&events, context);
         } else {
             self.finish_zone_events(&events, &[]);
+        }
+        // "Loses all abilities" follows the return event; it does not describe
+        // the entrant as having no abilities (CR 611.2e). Its entry abilities
+        // and replacements apply before this permanent, exact-object effect.
+        for (recipient, source) in return_ability_results {
+            if self.object_ref(recipient.card) == recipient && self.on_battlefield(recipient.card) {
+                self.apply_return_modification(recipient, ReturnKind::WithoutAbilities, source);
+            }
         }
         // The entry event and its frozen trigger facts precede this subsequent
         // attachment. Packets cannot be stacked until the surrounding resolution ends.
@@ -1885,7 +1898,8 @@ impl Game {
                 || m.enchantment_return
                 || m.ghost_vacuum_after.is_some()
                 || m.food_return.is_some()
-                || m.return_modification.is_some()
+                || m.return_modification
+                    .is_some_and(|(kind, _)| kind != ReturnKind::WithoutAbilities)
                 || m.before.card.base_stat_setter().is_some()
                 || !m.before.card.live_static_effects().is_empty()
                 || m.before.card.role().is_some()
