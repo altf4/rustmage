@@ -16,7 +16,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         targets: TargetPlan::NONE,
         program: &[Instruction::AddRetainedManaScaled {
             color: 3,
-            amount: AmountValue::DamageEventAmount,
+            amount: AmountValue::DamageReceivedAmount,
             retention: ManaRetention::Turn,
         }],
     }],

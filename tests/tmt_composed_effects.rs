@@ -243,6 +243,36 @@ fn five_color_payment_does_not_count_the_same_flexible_source_twice() {
 }
 
 #[test]
+fn damage_to_raphael_adds_red_mana_that_survives_the_step() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let raphael = put(&mut g, p, "Raphael, Ninja Destroyer", Zone::Battlefield);
+    let shock = put(&mut g, p, "Shock", Zone::Hand);
+    g.state.players[p.index()].mana = [0, 0, 0, 2, 0, 0];
+
+    cast(&mut g, shock, Some(Target::Card(raphael)));
+    drain(&mut g, None);
+    assert_eq!(g.state.players[p.index()].mana[3], 3);
+
+    act(&mut g, Action::Pass);
+    act(&mut g, Action::Pass);
+    assert_eq!(g.state.step, Step::BeginCombat);
+    assert_eq!(g.state.players[p.index()].mana[3], 2);
+}
+
+#[test]
+fn damage_to_venus_puts_that_many_counters_on_her() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let venus = put(&mut g, p, "Venus, Torn Between Worlds", Zone::Battlefield);
+    let shock = put(&mut g, p, "Shock", Zone::Hand);
+
+    cast(&mut g, shock, Some(Target::Card(venus)));
+    drain(&mut g, None);
+    assert_eq!(g.state.objects[venus as usize].counters.plus_one, 2);
+}
+
+#[test]
 fn mikey_and_don_cast_the_known_top_creature_with_its_entry_counter() {
     for p in [Player::P0, Player::P1] {
         let mut g = scenario(p);

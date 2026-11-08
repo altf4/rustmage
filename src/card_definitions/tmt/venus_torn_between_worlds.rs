@@ -8,7 +8,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             program: &[Instruction::PutCountersScaled {
                 subject: Subject::Source,
                 kind: CounterKind::PlusOne,
-                amount: AmountValue::DamageEventAmount,
+                amount: AmountValue::DamageReceivedAmount,
             }],
         },
         TriggeredAbility {
