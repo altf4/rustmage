@@ -5,7 +5,7 @@ use rustmage::{
     Player, Zone,
 };
 use std::collections::BTreeSet;
-#[path = "support/tmt_evidence.rs"]
+#[path = "../tests/support/tmt_evidence.rs"]
 mod tmt_evidence;
 use std::time::Instant;
 use tmt_evidence::{Evidence, check_privacy, private_choice};
@@ -75,7 +75,7 @@ fn pool_decks(members: &BTreeSet<Card>) -> Vec<Vec<Card>> {
 }
 fn theme_decks(members: &BTreeSet<Card>) -> Vec<Vec<Card>> {
     let themes: Vec<(String, Vec<String>)> =
-        serde_json::from_str(include_str!("data/tmt_themes.json")).unwrap();
+        serde_json::from_str(include_str!("../tests/data/tmt_themes.json")).unwrap();
     themes
         .into_iter()
         .map(|(colors, names)| {
@@ -358,8 +358,6 @@ fn run_workloads(workloads: Vec<Workload>, verify: bool) -> Evidence {
     println!("TMT_ACCEPTANCE {result}");
     evidence
 }
-#[test]
-#[ignore = "explicit comprehensive 172-game acceptance"]
 fn tmt_entire_pool_and_theme_acceptance() {
     let e = run_workloads(workloads(), true);
     assert!(
@@ -386,8 +384,6 @@ fn tmt_entire_pool_and_theme_acceptance() {
         );
     }
 }
-#[test]
-#[ignore = "explicit optimized workload measurement after strict full-set acceptance"]
 #[allow(
     clippy::assertions_on_constants,
     reason = "reject debug measurement at runtime"
@@ -396,4 +392,13 @@ fn tmt_optimized_throughput() {
     assert!(!cfg!(debug_assertions), "use an optimized profile");
     let e = run_workloads(workloads(), false);
     assert!(e.games > 100 && e.decisions > 10000);
+}
+
+fn main() -> Result<(), &'static str> {
+    match std::env::args().nth(1).as_deref() {
+        Some("verify") => tmt_entire_pool_and_theme_acceptance(),
+        Some("benchmark") => tmt_optimized_throughput(),
+        _ => return Err("use verify or benchmark"),
+    }
+    Ok(())
 }
