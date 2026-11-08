@@ -8,7 +8,7 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage/src/main/java/mage/game/permanent/token/MutavaultToken.java",
   "java_sha256": "f4b2797dd2051ea21adc0747b01aaca66d94098db79280df03cd0b434c014521",
-  "rules_tests": "src/engine_ecl_green_colorless_tests.rs",
+  "rules_tests": "tests/ecl_cards/green_colorless.rs",
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",

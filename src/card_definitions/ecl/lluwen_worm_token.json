@@ -8,7 +8,7 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/l/LluwenImperfectNaturalist.java",
   "java_sha256": "819ff07cdbd1b3701c61f4b127b3d2a994f9d7ec7d3c032d8943a313093a622b",
-  "rules_tests": "src/engine_ecl_lluwen_tests.rs",
+  "rules_tests": "tests/ecl_cards/lluwen.rs",
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",

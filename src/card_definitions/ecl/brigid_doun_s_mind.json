@@ -8,7 +8,7 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/b/BrigidClachansHeart.java",
   "java_sha256": "4ef1a46f4dabe42f147d7ab70aacf8ac1084145b0cd0bc91e96b76543517b194",
-  "rules_tests": "src/engine_ecl_transform_tests.rs",
+  "rules_tests": "tests/ecl_cards/transform.rs",
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",

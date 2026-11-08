@@ -8,5 +8,45 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9d4e41029cb10f87d926f9976297939608aedf6c2c0710d55ad8315afc1cfb9c"
   },
-  "physical_metadata_sha256": "2f8b8b65402267f738f6d46835002aab90c5e3790d6dc5558f963571eb93d076"
+  "physical_metadata_sha256": "2f8b8b65402267f738f6d46835002aab90c5e3790d6dc5558f963571eb93d076",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BrigidsCommand.java",
+  "java_sha256": "17fa4f06a0d4f889565d9f64c13b0164dd5fb5c267394510a926badfc1fce535",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenCopyTargetEffect.java",
+      "sha256": "d04e58fdcda406a60d92c760243fca54440f13ec1fc94517c97eb9b360b9a158"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledPermanent.java",
+      "sha256": "c92e4575c58b761ac506eb2bac05cdf956faa0bd4ab56c812dc1fe3f09a431af"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenTargetEffect.java",
+      "sha256": "899cbb24bb096977a1368027ba991506de15e4dcda39c6378a05daef65c295a7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/FightTargetsEffect.java",
+      "sha256": "e562370eb9b15a7fc0db16f44b32e8dce627719fc405b2bc09eb8dad21f8edc2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/KithkinGreenWhiteToken.java",
+      "sha256": "6c62a8c176b9def6a5ad2c9d6359b35ccb2703273f5db2ab2c7c191fd147d28e"
+    }
+  ]
 }

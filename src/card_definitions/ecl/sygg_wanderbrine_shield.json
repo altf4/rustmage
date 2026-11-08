@@ -8,7 +8,7 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/s/SyggWanderwineWisdom.java",
   "java_sha256": "2f1e992bcc12b27a8fa5efaab785266d1cd852e340d1eafcf7f6435059e83947",
-  "rules_tests": "src/engine_ecl_transform_tests.rs",
+  "rules_tests": "tests/ecl_cards/transform.rs",
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",

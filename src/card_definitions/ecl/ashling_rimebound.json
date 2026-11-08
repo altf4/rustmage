@@ -8,7 +8,7 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/a/AshlingRekindled.java",
   "java_sha256": "9656f47a36fd0dfcd016e640e58f2b827a4051966bd7260c415857be2edf3336",
-  "rules_tests": "src/engine_ecl_transform_tests.rs",
+  "rules_tests": "tests/ecl_cards/transform.rs",
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",

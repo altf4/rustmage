@@ -8,7 +8,7 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/t/TrystanCallousCultivator.java",
   "java_sha256": "1f91b84f3366efed8e190f7f644c9ed678f2935634a21d2ba676308b951b5330",
-  "rules_tests": "src/engine_ecl_transform_tests.rs",
+  "rules_tests": "tests/ecl_cards/transform.rs",
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",

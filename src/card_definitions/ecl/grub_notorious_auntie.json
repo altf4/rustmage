@@ -8,7 +8,7 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/g/GrubStoriedMatriarch.java",
   "java_sha256": "e979eae2403bfa2003243cf3b7c46de1aebc8d1100f3db51d7bd3b1fa2023f6a",
-  "rules_tests": "src/engine_ecl_transform_tests.rs",
+  "rules_tests": "tests/ecl_cards/transform.rs",
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
