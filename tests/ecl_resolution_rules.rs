@@ -264,7 +264,10 @@ fn hand_entry_stays_private_when_empty_and_filters_mana_before_attacking_entry()
             );
         } else {
             assert_eq!(
-                g.legal_actions().into_iter().filter(|a| *a != Action::Concede).collect::<Vec<_>>(),
+                g.legal_actions()
+                    .into_iter()
+                    .filter(|a| *a != Action::Concede)
+                    .collect::<Vec<_>>(),
                 vec![Action::DeclineHandEntry]
             );
             checked(&mut g, Action::DeclineHandEntry);
