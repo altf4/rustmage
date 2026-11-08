@@ -5548,6 +5548,8 @@ impl Keywords {
     pub const HEXPROOF_MONOCOLORED: Self = Self(1u64 << 38);
     /// A granted static ability, removed with the recipient's other abilities.
     pub const CANT_BE_SACRIFICED: Self = Self(1u64 << 39);
+    /// Damage to creatures is dealt in the form of -1/-1 counters.
+    pub const WITHER: Self = Self(1u64 << 45);
     /// Protection considers the source controller, including captured damage LKI.
     pub const PROTECTION_OPPONENTS: Self = Self(1u64 << 46);
     /// Hexproof qualified by any color the protected object currently has.

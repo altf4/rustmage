@@ -385,6 +385,11 @@ enum Work {
         group: std::num::NonZeroU16,
     },
     Damage(DamageBatch),
+    /// The rest of a simultaneous damage event waits for wither replacements.
+    DamageResults {
+        events: Vec<DamageEvent>,
+        remembering: Option<u64>,
+    },
     Counters(CounterBatch),
     Tokens(TokenBatch),
     Proliferate(ProliferateBatch),
@@ -458,6 +463,9 @@ impl ReplacementState {
                             + b.used_preventions.len()
                                 * std::mem::size_of::<(ObjectRef, DamagePreventionKind)>()
                             + b.used.len() * std::mem::size_of::<(ObjectRef, u16)>()
+                    }
+                    Work::DamageResults { events, .. } => {
+                        events.len() * std::mem::size_of::<DamageEvent>()
                     }
                     Work::Proliferate(b) => b.used.len() * std::mem::size_of::<(ObjectRef, u16)>(),
                     Work::Counters(b) => counter_bytes(b),
@@ -1745,6 +1753,45 @@ impl Game {
         };
         self.stage_counter_placements(vec![placement], ResumeMode::ActivationCosts);
     }
+    fn wither_damage_counters(&self, events: &[DamageEvent]) -> Vec<CounterPlacement> {
+        events
+            .iter()
+            .filter_map(|event| {
+                if event.amount <= 0 || !event.source.keywords.contains(Keywords::WITHER) {
+                    return None;
+                }
+                let Target::Card(id) = event.target else {
+                    return None;
+                };
+                if !self.on_battlefield(id) || !self.is_creature(id) {
+                    return None;
+                }
+                let object = self.object_ref(id);
+                let o = &self.state.objects[id as usize];
+                let placement = CounterPlacement {
+                    placed_by: event.source.controller,
+                    object,
+                    card: o.card,
+                    owner: o.owner,
+                    controller: o.controller,
+                    protector: self.battle_protector(object),
+                    subtypes: self.granted_subtypes(id),
+                    kind: self.current_kinds(id),
+                    power: self.stats(id).power,
+                    amount: Counters::of(
+                        CounterKind::MinusOne,
+                        u64::try_from(event.amount).capacity("wither counter quantity exhausted"),
+                    ),
+                    // Combat is a turn-based action (CR120.2); noncombat damage
+                    // comes from a spell or ability effect (CR614.16).
+                    effect: !event.combat,
+                    entry_index: None,
+                    private: false,
+                };
+                (!placement_prohibited(self, &placement)).then_some(placement)
+            })
+            .collect()
+    }
     pub(super) fn blight_cost_counters(&mut self, object: ObjectRef, amount: u16, player: Player) {
         let o = &self.state.objects[object.card as usize];
         let placement = CounterPlacement {
@@ -2615,6 +2662,13 @@ impl Game {
                         state.active = Some(Event::Proliferate(batch))
                     }
                     Some(Work::Damage(batch)) => state.active = Some(Event::Damage(batch)),
+                    Some(Work::DamageResults {
+                        events,
+                        remembering,
+                    }) => {
+                        self.commit_unprevented_damage_batch(&events, remembering);
+                        continue;
+                    }
                     Some(Work::Counters(batch)) => state.active = Some(Event::Counters(batch)),
                     Some(Work::Tokens(batch)) => state.active = Some(Event::Tokens(batch)),
                     Some(Work::EmptyExplore {
@@ -2747,7 +2801,33 @@ impl Game {
                                 self.state.objects[reference.card as usize].damage = 0;
                             }
                         }
-                        self.commit_damage_batch(&batch.events, batch.remembering);
+                        let events: Vec<_> = batch
+                            .events
+                            .into_iter()
+                            .filter(|event| !self.damage_event_prevented(event))
+                            .collect();
+                        self.refresh_excess_threshold(&events);
+                        let placements = self.wither_damage_counters(&events);
+                        if placements.is_empty() {
+                            self.commit_unprevented_damage_batch(&events, batch.remembering);
+                        } else {
+                            state.work.push_front(Work::DamageResults {
+                                events,
+                                remembering: batch.remembering,
+                            });
+                            state.work.push_front(Work::Counters(CounterBatch {
+                                player_events: Default::default(),
+                                self_effects: Vec::new(),
+                                player_placed_by: None,
+                                player_effect: [false; 2],
+                                next_player: 0,
+                                proliferated: None,
+                                completion: None,
+                                placements,
+                                next: 0,
+                                used: Vec::new(),
+                            }));
+                        }
                         continue;
                     }
                     let event = batch.events[batch.next];

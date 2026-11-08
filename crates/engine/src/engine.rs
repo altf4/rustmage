@@ -10204,7 +10204,13 @@ impl Game {
         events: &[DamageEvent],
         remembering: Option<u64>,
     ) -> Vec<LifeGainEvent> {
-        if self.damage_replacement_candidates_exist(events) {
+        if self.damage_replacement_candidates_exist(events)
+            || events.iter().any(|event| {
+                event.amount > 0
+                    && event.source.keywords.contains(Keywords::WITHER)
+                    && matches!(event.target, Target::Card(id) if self.is_creature(id))
+            })
+        {
             self.stage_damage_replacements(events, remembering);
             Vec::new()
         } else {
@@ -10238,29 +10244,53 @@ impl Game {
             })
     }
 
+    fn damage_event_prevented(&self, event: &DamageEvent) -> bool {
+        if !event.preventable || self.damage_prevention_prohibited() {
+            return false;
+        }
+        if event.combat && event.source.keywords.contains(Keywords::PREVENT_COMBAT_BY) {
+            return true;
+        }
+        let Target::Card(id) = event.target else {
+            return false;
+        };
+        let keywords = self.keywords(id);
+        (event.combat && keywords.contains(Keywords::PREVENT_COMBAT_TO))
+            || keywords.protects_from_controller(
+                event.source.facts.colors,
+                event.source.facts.kinds,
+                self.state.objects[id as usize].controller != event.source.controller,
+            )
+    }
+
     fn commit_damage_batch(
         &mut self,
         events: &[DamageEvent],
         remembering: Option<u64>,
     ) -> Vec<LifeGainEvent> {
         // Avoid allocating on the ordinary, unprevented damage path.
-        let prevented = |event: &DamageEvent| {
-            event.preventable
-                && !self.damage_prevention_prohibited()
-                && ((event.combat
-                    && (event.source.keywords.contains(Keywords::PREVENT_COMBAT_BY)
-                        || matches!(event.target, Target::Card(id) if self.keywords(id).contains(Keywords::PREVENT_COMBAT_TO))))
-                    || matches!(event.target, Target::Card(id) if self.keywords(id).protects_from_controller(event.source.facts.colors, event.source.facts.kinds, self.state.objects[id as usize].controller != event.source.controller)))
-        };
-        let dealt = events.iter().any(prevented).then(|| {
-            events
-                .iter()
-                .copied()
-                .filter(|event| !prevented(event))
-                .collect::<Vec<_>>()
-        });
+        let dealt = events
+            .iter()
+            .any(|event| self.damage_event_prevented(event))
+            .then(|| {
+                events
+                    .iter()
+                    .copied()
+                    .filter(|event| !self.damage_event_prevented(event))
+                    .collect::<Vec<_>>()
+            });
         let events = dealt.as_deref().unwrap_or(events);
         self.refresh_excess_threshold(events);
+        self.commit_unprevented_damage_batch(events, remembering)
+    }
+
+    /// Prevention and pre-damage thresholds are already fixed, including when
+    /// wither counter replacements suspend the damage event.
+    fn commit_unprevented_damage_batch(
+        &mut self,
+        events: &[DamageEvent],
+        remembering: Option<u64>,
+    ) -> Vec<LifeGainEvent> {
         let mut losses = [0i128; 2];
         let mut gains: Vec<LifeGainEvent> = Vec::new();
         let mut gain_indices: std::collections::BTreeMap<DamageSource, usize> =
@@ -10316,7 +10346,7 @@ impl Game {
                             as u64;
                         obj.counters.loyalty -= removed;
                     }
-                    if creature {
+                    if creature && !event.source.keywords.contains(Keywords::WITHER) {
                         obj.damage = obj
                             .damage
                             .checked_add(event.amount)
