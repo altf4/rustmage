@@ -58,7 +58,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             loyalty: None,
         },
         targets: TargetPlan::NONE,
-        program: &[Instruction::Proliferate],
+        program: &[Instruction::Proliferate(AmountValue::Fixed(1))],
         sorcery: true,
         once_per_turn: false,
     }],
