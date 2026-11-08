@@ -689,23 +689,17 @@ impl Game {
         self.stage_entries(vec![movement], None);
         self.run_program();
     }
-    pub(super) fn return_linked_exile(&mut self, source: ObjectRef) {
-        let Some(data) = self.state.linked_choices.as_ref() else {
-            return;
-        };
-        let ids: Vec<_> = data
-            .links
+    pub(super) fn return_linked_exile(&mut self, item: &SpellView) {
+        let source = item
+            .source
+            .expect("linked return has an object source")
+            .object;
+        // A new copy effect acquires a new pair of linked abilities. The queued
+        // packet retains its own acquisition identity after source departure.
+        let linked = self.linked_exile_for_origin(source, item.source_ability_origin);
+        let moves = linked
             .iter()
-            .filter(|link| {
-                link.source == source
-                    && self.object_ref(link.exiled.card) == link.exiled
-                    && self.state.objects[link.exiled.card as usize].zone == Zone::Exile
-            })
-            .map(|link| link.exiled.card)
-            .collect();
-        let moves = ids
-            .iter()
-            .map(|&id| self.entry_move(id, Zone::Hand, false))
+            .map(|object| self.entry_move(object.card, Zone::Hand, false))
             .collect();
         self.stage_entries(moves, None);
     }

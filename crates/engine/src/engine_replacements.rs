@@ -1588,11 +1588,8 @@ impl Game {
         completion: Option<Box<CounterCompletion>>,
         self_effects: Vec<SelfPlayerCounterReplacement>,
     ) {
-        for placement in &mut placements {
-            if placement_prohibited(self, placement) {
-                placement.amount = Counters::default();
-            }
-        }
+        // Keep the proposed permanent event through replacement choices, even
+        // when placement is prohibited. Commit suppresses the final counters.
         for player in [Player::P0, Player::P1] {
             for kind in crate::cards::PlayerCounterKind::ALL {
                 if self.player_counters_prohibited(player, kind)
@@ -1604,8 +1601,8 @@ impl Game {
                 }
             }
         }
-        // A prohibited entry still has to commit the cleared result back to
-        // EntryMove.counters. Ordinary zero placements have no continuation.
+        // Entry events retain zero placements so the result is committed back
+        // to EntryMove.counters. Ordinary zero placements have no continuation.
         placements.retain(|p| p.entry_index.is_some() || p.amount.has_any());
         if placements.is_empty() && player_counters == [[0; 5]; 2] && proliferated.is_none() {
             if mode == ResumeMode::ActivationCosts {
@@ -1835,7 +1832,7 @@ impl Game {
                     entry_index: None,
                     private: false,
                 };
-                (!placement_prohibited(self, &placement)).then_some(placement)
+                Some(placement)
             })
             .collect()
     }
@@ -2124,7 +2121,7 @@ impl Game {
         amount: u64,
         mode: ResumeMode,
     ) {
-        if amount == 0 || counters_prohibited(self, self.object_ref(id)) {
+        if amount == 0 {
             return;
         }
         let placed_by = self
@@ -2162,6 +2159,11 @@ impl Game {
                     })
             })
         {
+            // This path has no replacement choices and must not report an
+            // addition event for counters that cannot actually be placed.
+            if counters_prohibited(self, self.object_ref(id)) {
+                return;
+            }
             let before = self.state.objects[id as usize].counters.lore;
             self.add_counter(id, kind, amount);
             let object = self.object_ref(id);

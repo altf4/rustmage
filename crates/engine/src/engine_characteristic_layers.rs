@@ -182,7 +182,9 @@ pub(super) fn land_kind_events<W: CharacteristicWorld + ?Sized>(
     let mut events: Vec<_> = aura_effects(world, id)
         .into_iter()
         .filter_map(|(time, spec)| match spec.form {
-            PermanentForm::AddCreature | PermanentForm::Preserve => None,
+            PermanentForm::AddCreature
+            | PermanentForm::Preserve
+            | PermanentForm::PreserveWithColors => None,
             form => Some((time, matches!(form, PermanentForm::Land))),
         })
         .collect();
@@ -266,7 +268,7 @@ fn kind_timeline<W: CharacteristicWorld + ?Sized>(
             let kinds = match spec.form {
                 PermanentForm::Creature | PermanentForm::AddCreature => 1,
                 PermanentForm::Land => 2,
-                PermanentForm::Preserve => return None,
+                PermanentForm::Preserve | PermanentForm::PreserveWithColors => return None,
             };
             Some((time, kinds, matches!(spec.form, PermanentForm::AddCreature)))
         })
@@ -499,7 +501,9 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
                 match s.form {
                     PermanentForm::Creature => SubtypeChange::Named(s.creature_types, true),
                     PermanentForm::Land => SubtypeChange::LandOnly,
-                    PermanentForm::Preserve => SubtypeChange::Named(s.creature_types, false),
+                    PermanentForm::Preserve | PermanentForm::PreserveWithColors => {
+                        SubtypeChange::Named(s.creature_types, false)
+                    }
                     PermanentForm::AddCreature => SubtypeChange::Add(s.creature_types),
                 },
             )

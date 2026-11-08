@@ -19,7 +19,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         fragments: &[
             StaticAbilityFragment::AttachedCharacteristics(&AttachedCharacteristics {
                 name: None,
-                form: PermanentForm::Preserve,
+                form: PermanentForm::PreserveWithColors,
                 creature_types: &["Noggle"],
                 colors: &[],
                 base: Some((1, 1)),

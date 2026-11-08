@@ -48,7 +48,10 @@ pub struct TargetLibraryMovement {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn valid_library_target(&self, item: &SpellView, bound: BoundTarget) -> bool {
-        matches!(bound.target, Target::Card(_))
+        matches!(
+            bound.target,
+            Target::Card(_) | Target::Spell(_) | Target::Stack(_)
+        ) && bound.object.is_some()
             && self.same_target_object(bound)
             && self
                 .target_spec(item)
@@ -70,7 +73,7 @@ impl Game {
         ));
         let owner = self.state.objects[object.card as usize].owner;
         let card = self.state.objects[object.card as usize].card;
-        let token = self.state.objects[object.card as usize].is_token();
+        let physical = self.state.objects[object.card as usize].is_card();
         let prior_top = self.public_library_top(owner);
         let nth_position = if let LibraryDestination::NthFromTop(n) = destination {
             assert!(n > 0, "library positions are one-based");
@@ -93,7 +96,7 @@ impl Game {
         let placed = event.moved && event.destination == Zone::Library;
         if placed {
             let library = &mut self.state.players[owner.index()].library;
-            if !token
+            if physical
                 && matches!(
                     destination,
                     LibraryDestination::Bottom
@@ -153,10 +156,10 @@ impl Game {
             .filter(|b| self.valid_library_target(item, *b))
             .collect();
         for target in targets {
-            if let Target::Card(id) = target.target {
+            if let Some(object) = target.object {
                 self.move_target_to_library(
                     source.object,
-                    self.object_ref(id),
+                    object,
                     LibraryDestination::NthFromTop(n),
                 );
             }

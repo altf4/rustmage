@@ -3641,11 +3641,7 @@ impl Game {
                         return;
                     }
                 }
-                Instruction::ReturnLinkedExileToHand => self.return_linked_exile(
-                    item.source
-                        .expect("instruction requires an object source")
-                        .object,
-                ),
+                Instruction::ReturnLinkedExileToHand => self.return_linked_exile(&item),
                 Instruction::ExileTargetLibraryLinked(amount) => {
                     self.exile_target_library_linked(&item, amount)
                 }

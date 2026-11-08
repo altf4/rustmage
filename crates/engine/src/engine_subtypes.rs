@@ -600,7 +600,10 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
     if recipe
         .overrides
         .is_some_and(|o| o.keywords.contains(Keywords::CHANGELING))
+        && kinds(id, target) & CREATURE_OR_KINDRED != 0
     {
+        // A noncreature, nonkindred copy can have changeling but cannot have
+        // creature subtypes (CR205.3d). A later animation can make them apply.
         mask.set_flag(ALL_CREATURE_TYPES, true);
     }
     // Copy exceptions already exist while an owned token awaits entry.
