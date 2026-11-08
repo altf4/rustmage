@@ -292,6 +292,30 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             }
             for group in object.card.static_ability_groups() {
                 for fragment in group.fragments {
+                    if let StaticAbilityFragment::ControlledCreatureScaling {
+                        subtype,
+                        value,
+                        stats: scale,
+                    } = *fragment
+                        && object.controller == self.object(id).controller
+                        && subtype.is_none_or(|typ| self.subtypes(id).has(self.definition(id), typ))
+                        && self.continuous_fragment_available(source, |candidate| {
+                            std::ptr::eq(candidate, fragment)
+                        })
+                    {
+                        let value =
+                            self.stat_value(value, self.object_ref(source), object.controller);
+                        stats += Stats {
+                            power: scale
+                                .power
+                                .checked_mul(value)
+                                .capacity("scaled group power exhausted"),
+                            toughness: scale
+                                .toughness
+                                .checked_mul(value)
+                                .capacity("scaled group toughness exhausted"),
+                        };
+                    }
                     if let StaticAbilityFragment::CreatureGroupBonus {
                         filters,
                         stats: bonus,
@@ -588,6 +612,16 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         } if target.controller == object.controller
                             && CharacteristicWorld::subtypes(self, id)
                                 .has(CharacteristicWorld::definition(self, id), subtype) =>
+                        {
+                            keywords = keywords.union(grant)
+                        }
+                        StaticAbilityFragment::ControlledTappedKeywords {
+                            other,
+                            keywords: grant,
+                        } if target.controller == object.controller
+                            && target.tapped
+                            && self.is_creature(id)
+                            && (!other || id != source) =>
                         {
                             keywords = keywords.union(grant)
                         }

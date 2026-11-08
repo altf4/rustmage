@@ -1,5 +1,6 @@
 //! Generic reductions and the total cost locked before mana abilities/payment.
 use super::*;
+use crate::cards::CastFilter;
 use ability_world::CharacteristicWorld;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
@@ -463,25 +464,34 @@ impl Game {
         let stats = |id| characteristic_query::CharacteristicQuery::in_world(world).stats(id);
         let applies = |rule: &crate::cards::SpellReduction, source: CardId| {
             let object = world.object(source);
-            rule.filter.matches_mana_value(definition, mana_value)
-                && match rule.turn {
-                    CostTurn::Any => true,
-                    CostTurn::GraveyardOrExile => match self.spell_origin(id) {
-                        Zone::Graveyard => recipient.owner == actor,
-                        Zone::Exile => true,
-                        _ => false,
-                    },
-                    CostTurn::NonHand => self.spell_origin_is_nonhand(actor, id),
-                    CostTurn::Own => self.state.active == actor,
-                    CostTurn::Other => self.state.active != actor,
+            (match rule.filter {
+                CastFilter::SourceChosenCreatureType => {
+                    matches!(world.entry_value(world.reference(source)), Some(EntryChoiceValue::CreatureType(typ)) if definition.has_subtype(typ.name()))
                 }
-                && self.step_guard_in_world(
-                    world,
-                    rule.guard,
-                    actor,
-                    self.object_ref(source),
-                    object.tapped,
-                )
+                CastFilter::CreatureToughnessGreaterThanPower => {
+                    definition.is_creature() && {
+                        let value = stats(id);
+                        value.toughness > value.power
+                    }
+                }
+                _ => rule.filter.matches_mana_value(definition, mana_value),
+            }) && match rule.turn {
+                CostTurn::Any => true,
+                CostTurn::GraveyardOrExile => match self.spell_origin(id) {
+                    Zone::Graveyard => recipient.owner == actor,
+                    Zone::Exile => true,
+                    _ => false,
+                },
+                CostTurn::NonHand => self.spell_origin_is_nonhand(actor, id),
+                CostTurn::Own => self.state.active == actor,
+                CostTurn::Other => self.state.active != actor,
+            } && self.step_guard_in_world(
+                world,
+                rule.guard,
+                actor,
+                self.object_ref(source),
+                object.tapped,
+            )
         };
         let amount = |rule: &crate::cards::SpellReduction, source: CardId| match rule.amount {
             crate::cards::SpellReductionAmount::GraveyardInstantSorceryAdventure => {

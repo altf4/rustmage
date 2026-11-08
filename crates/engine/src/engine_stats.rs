@@ -5,6 +5,15 @@ use super::*;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn attachment_uses_greater_toughness(&self, id: CardId) -> bool {
+        self.is_creature(id) && self.state.static_sources.iter().copied().any(|source| {
+            self.on_battlefield(source)
+                && !self.is_creature(source)
+                && self.state.objects[source as usize].attached_to == Some(self.object_ref(id))
+                && self.state.objects[source as usize].card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::AttachmentCombatToughnessIfGreater)))
+                && self.continuous_fragment_available(source, |fragment| matches!(fragment, crate::cards::StaticAbilityFragment::AttachmentCombatToughnessIfGreater))
+        })
+    }
     // Reuse sparse event indexes for explicit graveyard observers.
     pub(super) fn register_graveyard_sources(&mut self, id: CardId) {
         self.register_activation_observer(id);
@@ -120,6 +129,7 @@ impl Game {
                     | TriggerCondition::FirstAttackWithTotalPowerAtLeast(_)
                     | TriggerCondition::AttackPlayer(_)
                     | TriggerCondition::ControlledCreatureAttacksAlone
+                    | TriggerCondition::ControlledCreatureAttacksOrBlocks
                     | TriggerCondition::ControlledCreatureAttacks
                     | TriggerCondition::ControlledCreatureAttacksPlayerAlone
                     | TriggerCondition::OpponentCreatureBlocksSmall
@@ -291,6 +301,9 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::CantGainLife
                             | crate::cards::StaticAbilityFragment::ChosenModifier(..)
                             | crate::cards::StaticAbilityFragment::ChosenTypeKeywords(..)
+                            | crate::cards::StaticAbilityFragment::ControlledCreatureScaling { .. }
+                            | crate::cards::StaticAbilityFragment::AttachedAllCreatureTypes
+                            | crate::cards::StaticAbilityFragment::AttachmentCombatToughnessIfGreater
                             | crate::cards::StaticAbilityFragment::SourceCounterBonus { .. }
                             | crate::cards::StaticAbilityFragment::SourceGraveyardBonus { .. }
                             | crate::cards::StaticAbilityFragment::ConditionalCreatureModifier { .. }
@@ -300,6 +313,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::SourceOffTurnCreature
                             | crate::cards::StaticAbilityFragment::DeathBaronLord
                             | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. }
                             | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. }
                             | crate::cards::StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. }

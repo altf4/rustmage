@@ -28,6 +28,7 @@ pub enum DamagePreventionKind {
     CombatToRecipient,
     ProtectionEverything,
     ProtectionInstantSorcery,
+    ProtectionOpponents,
     ProtectionColor(crate::cards::ChoiceColor),
     SourceLinkedDamage,
     ChosenSource(u64),
@@ -1192,6 +1193,11 @@ impl Game {
             }
             if keywords.contains(Keywords::PROTECTION_EVERYTHING) {
                 add(DamagePreventionKind::ProtectionEverything);
+            }
+            if keywords.contains(Keywords::PROTECTION_OPPONENTS)
+                && self.state.objects[id as usize].controller != event.source.controller
+            {
+                add(DamagePreventionKind::ProtectionOpponents);
             }
             if keywords.contains(Keywords::PROTECTION_INSTANT_SORCERY)
                 && event.source.facts.kinds & (4 | 8) != 0

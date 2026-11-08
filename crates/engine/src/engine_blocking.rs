@@ -94,9 +94,10 @@ impl Game {
             || keywords.contains(Keywords::CANT_BE_BLOCKED)
             || keywords.contains(Keywords::ONLY_HASTE_BLOCKERS)
                 && !self.keywords(blocker).contains(Keywords::HASTE)
-            || keywords.protects_from(
+            || keywords.protects_from_controller(
                 ability_world::CharacteristicWorld::colors(self, blocker),
                 self.current_kinds(blocker),
+                a.controller != b.controller,
             )
             || keywords.contains(Keywords::NO_HUMAN_BLOCKERS) && self.has_subtype(blocker, "Human")
             || keywords.contains(Keywords::NO_TOKEN_BLOCKERS) && b.is_token()

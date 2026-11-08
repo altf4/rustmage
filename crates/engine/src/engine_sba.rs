@@ -254,9 +254,11 @@ impl Game {
                     || characteristics
                         .get_or_init(|| self.characteristic_query())
                         .keywords(target.card)
-                        .protects_from(
+                        .protects_from_controller(
                             ability_world::CharacteristicWorld::colors(self, id),
                             self.current_kinds(id),
+                            object.controller
+                                != self.state.objects[target.card as usize].controller,
                         ))
             {
                 batch.detached.push(self.object_ref(id));

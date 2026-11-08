@@ -702,6 +702,31 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
             .map(|row| row.timestamp)
             .expect("registered layer-four provider timestamp")
     };
+    if kinds(id, target) & CREATURE_OR_KINDRED != 0 {
+        for &source in world.static_sources() {
+            let origin = world.reference(source);
+            if world.attached(origin, id)
+                && world
+                    .object(source)
+                    .card
+                    .static_ability_groups()
+                    .iter()
+                    .any(|group| {
+                        group.fragments.iter().any(|fragment| {
+                            matches!(
+                                fragment,
+                                crate::cards::StaticAbilityFragment::AttachedAllCreatureTypes
+                            )
+                        })
+                    })
+            {
+                changes.push((
+                    source_time(origin),
+                    characteristic_layers::SubtypeChange::All,
+                ));
+            }
+        }
+    }
     if kinds(id, target) & 1 != 0 {
         let mut dependency_time = None;
         if target.card.static_ability_groups().iter().any(|g| {

@@ -211,6 +211,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::PutHandPermanent { .. }
             | Action::PutHandLand { .. }
             | Action::ChooseColorCounter { .. }
+            | Action::ChoosePowerDifferenceCreature { .. }
             | Action::ChooseArmy { .. }
             | Action::ChooseJace { .. }
             | Action::SelectGraveyardReturn { .. }

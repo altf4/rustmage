@@ -31,26 +31,67 @@ fn is_false(value: &bool) -> bool {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn stack_item_is_counterable(&self, victim: &SpellView) -> bool {
+        victim.kind != StackKind::Spell
+            || victim.source.is_some_and(|source| {
+                !self
+                    .state
+                    .uncounterable_spell_ids
+                    .as_deref()
+                    .is_some_and(|ids| ids.contains(&victim.id))
+                    && !source.card.cannot_be_countered()
+                    && !self.controlled_spells_uncounterable(victim.controller, source.card)
+            })
+    }
+    /// One simultaneous counter event; copies and abilities each count once.
+    pub(super) fn counter_opponents_counted(&mut self, controller: Player) {
+        let victims: Vec<_> = self
+            .state
+            .stack
+            .iter()
+            .filter(|victim| {
+                victim.controller != controller && self.stack_item_is_counterable(victim)
+            })
+            .cloned()
+            .collect();
+        let spells: Vec<_> = victims
+            .iter()
+            .filter(|victim| victim.kind == StackKind::Spell)
+            .filter_map(|victim| victim.source.map(|source| source.id))
+            .collect();
+        for victim in victims
+            .iter()
+            .filter(|victim| victim.kind != StackKind::Spell)
+        {
+            self.retain_departing_activation_for_triggers(victim);
+        }
+        self.state.stack.retain(|item| {
+            !victims
+                .iter()
+                .any(|victim| victim.id == item.id && victim.kind != StackKind::Spell)
+        });
+        let events = self.move_objects_raw(&spells, Zone::Graveyard);
+        self.state.resolving.as_mut().unwrap().moved_count = Some(
+            victims
+                .len()
+                .try_into()
+                .capacity("countered item count exhausted"),
+        );
+        self.finish_zone_events(&events, &[]);
+    }
     /// Explicit counters share one check. Abilities are independent of their source spell.
     pub(super) fn counter_stack_item(&mut self, id: u64, exile: bool) -> bool {
         let Some(index) = self.state.stack.iter().position(|s| s.id == id) else {
             return false;
         };
         let victim = &self.state.stack[index];
+        if !self.stack_item_is_counterable(victim) {
+            return false;
+        }
         if victim.kind == StackKind::Spell {
             let Some(source) = victim.source else {
                 return false;
             };
-            if self
-                .state
-                .uncounterable_spell_ids
-                .as_deref()
-                .is_some_and(|ids| ids.contains(&victim.id))
-                || source.card.cannot_be_countered()
-                || self.controlled_spells_uncounterable(victim.controller, source.card)
-            {
-                return false;
-            }
             self.move_object(source.id, if exile { Zone::Exile } else { Zone::Graveyard });
         } else {
             let departed = self.state.stack.remove(index);

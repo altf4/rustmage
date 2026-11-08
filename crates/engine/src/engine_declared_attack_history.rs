@@ -10,6 +10,9 @@ pub struct DeclaredAttackHistoryView {
     pub player: Player,
     /// Only queried public subtypes that were true at the declaration event.
     pub subtypes: Vec<&'static str>,
+    /// Complete public characteristics, including declarations before an observer enters.
+    pub definition: Card,
+    pub granted_subtypes: GrantedSubtypes,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -96,9 +99,6 @@ impl Game {
                 );
             }
         }
-        if queried.is_empty() {
-            return;
-        }
         let rows = declared
             .iter()
             .map(|attack| DeclaredAttackHistoryView {
@@ -109,6 +109,8 @@ impl Game {
                     .copied()
                     .filter(|typ| self.has_subtype(attack.card, typ))
                     .collect(),
+                definition: self.state.objects[attack.card as usize].card,
+                granted_subtypes: self.granted_subtypes(attack.card),
             })
             .collect::<Vec<_>>();
         let history = self.state.declared_attack_history.get_or_insert_with(|| {
@@ -120,6 +122,25 @@ impl Game {
         history.queried = queried;
         history.rows.extend(rows);
     }
+    pub(super) fn declared_subtype_attackers(&self, player: Player, subtype: &str) -> usize {
+        let Some(history) = &self.state.declared_attack_history else {
+            return 0;
+        };
+        let matches = |row: &DeclaredAttackHistoryView| {
+            row.player == player && row.granted_subtypes.has(row.definition, subtype)
+        };
+        history
+            .rows
+            .iter()
+            .enumerate()
+            .filter(|(index, row)| {
+                matches(row)
+                    && !history.rows[..*index]
+                        .iter()
+                        .any(|previous| previous.object == row.object && matches(previous))
+            })
+            .count()
+    }
     pub(super) fn declared_attack_subtypes_all(&self, player: Player, subtypes: &[&str]) -> bool {
         subtypes.iter().all(|wanted| {
             self.state
@@ -127,7 +148,7 @@ impl Game {
                 .as_ref()
                 .is_some_and(|h| {
                     h.rows.iter().any(|row| {
-                        row.player == player && row.subtypes.iter().any(|actual| actual == wanted)
+                        row.player == player && row.granted_subtypes.has(row.definition, wanted)
                     })
                 })
         })

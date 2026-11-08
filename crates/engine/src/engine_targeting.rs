@@ -1571,7 +1571,12 @@ impl Game {
                 })
         };
         let monocolored = keywords.contains(Keywords::HEXPROOF_MONOCOLORED);
-        let hexproof_colors = keywords.hexproof_colors();
+        let hexproof_colors = keywords.hexproof_colors()
+            | if keywords.contains(Keywords::HEXPROOF_OWN_COLORS) {
+                world.colors(id)
+            } else {
+                0
+            };
         if filters().next().is_none() && !monocolored && hexproof_colors == 0 {
             return false;
         }
@@ -1802,6 +1807,9 @@ impl Game {
                 // The base rule validates the object index and zone before this lookup.
                 let object = world.object(id);
                 return match *predicate {
+                    TargetPredicate::SourceChosenCreatureType => {
+                        matches!(world.entry_value(source), Some(EntryChoiceValue::CreatureType(typ)) if has_subtype(id, typ.name()))
+                    }
                     TargetPredicate::OwnedByController => object.owner == controller,
                     TargetPredicate::Basic => world.definition(id).is_basic_land(),
                     TargetPredicate::Kinds(kinds) => world.kinds(id) & kinds == kinds,
@@ -1925,6 +1933,8 @@ impl Game {
                     (obj.zone == Zone::Battlefield).then(|| characteristics().keywords(id));
                 if battlefield_keywords.is_some_and(|keywords| {
                     keywords.contains(Keywords::PROTECTION_EVERYTHING)
+                        || (obj.controller != controller
+                            && keywords.contains(Keywords::PROTECTION_OPPONENTS))
                         || (keywords.protection_colors() != 0
                             || keywords.contains(Keywords::PROTECTION_INSTANT_SORCERY))
                             && self

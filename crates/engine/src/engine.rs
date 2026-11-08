@@ -317,6 +317,9 @@ use crate::shared_vec::SharedVec;
 #[path = "engine_declared_attack_history.rs"]
 pub mod declared_attack_history;
 pub use declared_attack_history::DeclaredAttackHistoryView;
+#[path = "engine_entry_history.rs"]
+pub mod entry_history;
+pub use entry_history::CreatureEntryHistoryView;
 #[path = "engine_delayed_target_events.rs"]
 pub mod delayed_target_events;
 pub use delayed_target_events::DelayedTargetTriggerView;
@@ -911,6 +914,7 @@ define_actions! {
         object: Option<ObjectRef>,
     },
     SelectMilled { object: ObjectRef },
+    ChoosePowerDifferenceCreature { object: ObjectRef },
     FinishMilledSelection,
     ChooseEntryTimestamp { object: ObjectRef },
     ChooseEntryReplacement { source: ObjectRef, intrinsic: bool },
@@ -2824,6 +2828,7 @@ struct State {
     cast_entry_counters: cast_entry_counters::Rows,
     entry_values: entry_choices::Rows,
     entered_this_turn: Option<SharedVec<ObjectRef>>,
+    creature_entry_history: Option<SharedVec<CreatureEntryHistoryView>>,
     power_up_uses: power_up::Rows,
     copy_recipes: copies::Rows,
     temporary_copies: temporary_copy::Rows,
@@ -3573,6 +3578,8 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub declared_attack_history: Option<Vec<DeclaredAttackHistoryView>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub creature_entry_history: Option<Vec<CreatureEntryHistoryView>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub delayed_target_events: Option<Vec<DelayedTargetTriggerView>>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub delayed_opponent_attack_until_next_turn: Vec<SpellView>,
@@ -3677,6 +3684,8 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub uncounterable_spell_ids: Vec<u64>,
     pub resolving: Option<SpellView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub power_difference: Option<effect_choices::PowerDifferenceView>,
     pub retarget: Option<RetargetView>,
     pub target_amount: Option<TargetAmountChoiceView>,
     pub delayed_spell_copies: Vec<SpellView>,
@@ -4012,6 +4021,7 @@ impl Game {
                 cast_entry_counters: None,
                 entry_values: None,
                 entered_this_turn: None,
+                creature_entry_history: None,
                 power_up_uses: None,
                 copy_recipes: None,
                 temporary_copies: None,
@@ -5051,6 +5061,7 @@ impl Game {
                         choice.kind,
                         EffectChoiceKind::HandExileCopy
                             | EffectChoiceKind::HandCreature
+                            | EffectChoiceKind::HandCreatureAttacking { .. }
                             | EffectChoiceKind::HandPermanent { .. }
                             | EffectChoiceKind::HandLand { .. }
                     ) {
@@ -5073,7 +5084,12 @@ impl Game {
                             }
                             EffectChoiceKind::AmassGoblins(_) => Action::ChooseArmy { object },
                             EffectChoiceKind::EmpowerJace(_) => Action::ChooseJace { object },
-                            EffectChoiceKind::HandExileCopy | EffectChoiceKind::HandCreature => {
+                            EffectChoiceKind::PowerDifferenceBoost => {
+                                Action::ChoosePowerDifferenceCreature { object }
+                            }
+                            EffectChoiceKind::HandExileCopy
+                            | EffectChoiceKind::HandCreature
+                            | EffectChoiceKind::HandCreatureAttacking { .. } => {
                                 Action::PutHandCreature { object }
                             }
                             EffectChoiceKind::HandCreatureAndLand
@@ -8108,6 +8124,7 @@ impl Game {
             | Action::ChooseColorCounter { object }
             | Action::ChooseArmy { object }
             | Action::ChooseJace { object }
+            | Action::ChoosePowerDifferenceCreature { object }
             | Action::SelectGraveyardReturn { object }
             | Action::SelectLand { object }
             | Action::SelectResolutionExile { object }
@@ -9860,6 +9877,7 @@ impl Game {
         self.reset_copy_turn_uses();
         self.prune_modal_history();
         self.state.entered_this_turn = None;
+        self.state.creature_entry_history = None;
         self.state
             .exile_permissions
             .retain(|p| p.expiry != ExilePlayExpiry::StartOfNextTurn(self.state.active));
@@ -10232,7 +10250,7 @@ impl Game {
                 && ((event.combat
                     && (event.source.keywords.contains(Keywords::PREVENT_COMBAT_BY)
                         || matches!(event.target, Target::Card(id) if self.keywords(id).contains(Keywords::PREVENT_COMBAT_TO))))
-                    || matches!(event.target, Target::Card(id) if self.keywords(id).protects_from(event.source.facts.colors, event.source.facts.kinds)))
+                    || matches!(event.target, Target::Card(id) if self.keywords(id).protects_from_controller(event.source.facts.colors, event.source.facts.kinds, self.state.objects[id as usize].controller != event.source.controller)))
         };
         let dealt = events.iter().any(prevented).then(|| {
             events
@@ -10450,7 +10468,7 @@ impl Game {
     /// Assignment rule only. Actual characteristic power and noncombat damage are unchanged.
     pub(super) fn combat_assignment_amount(&self, id: CardId) -> i128 {
         let stats = self.stats(id);
-        if (self.state.roles.as_ref().is_some_and(|r| {
+        if (self.attachment_uses_greater_toughness(id) || self.state.roles.as_ref().is_some_and(|r| {
             r.toughness_combat_damage[self.state.objects[id as usize].controller.index()]
         }) || self.state.static_sources.iter().copied().any(|source| {
             self.on_battlefield(source)
@@ -10747,6 +10765,11 @@ impl Game {
                 .declared_attack_history
                 .as_ref()
                 .map(|history| history.rows.clone()),
+            creature_entry_history: self
+                .state
+                .creature_entry_history
+                .as_ref()
+                .map(|rows| rows.to_vec()),
             delayed_target_events: self.state.delayed_target_events.as_deref().cloned(),
             delayed_attack_this_turn: self
                 .state
@@ -11288,6 +11311,10 @@ impl Game {
                 .resolving
                 .as_ref()
                 .map(|resolution| self.spell_with_current_abilities(&resolution.item)),
+            power_difference: s
+                .resolving
+                .as_ref()
+                .and_then(|resolution| resolution.power_difference.as_deref().cloned()),
             group_move_count: s
                 .resolving
                 .as_ref()
@@ -11684,6 +11711,10 @@ impl Game {
             + s.entered_this_turn.as_ref().map_or(0, |r| {
                 std::mem::size_of::<Vec<ObjectRef>>() + r.len() * std::mem::size_of::<ObjectRef>()
             })
+            + s.creature_entry_history.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<CreatureEntryHistoryView>>()
+                    + rows.len() * std::mem::size_of::<CreatureEntryHistoryView>()
+            })
             + s.pending.owned_bytes()
             + ability_resolutions::owned_bytes(&s.ability_resolutions)
             + copies::owned_bytes(&s.copy_recipes)
@@ -11855,6 +11886,9 @@ impl Game {
                             .sacrificed_power
                             .as_ref()
                             .map_or(0, |_| std::mem::size_of::<i128>())
+                        + resolution.power_difference.as_ref().map_or(0, |_| {
+                            std::mem::size_of::<effect_choices::PowerDifferenceView>()
+                        })
                         + resolution.linked_copy.as_ref().map_or(0, |_| {
                             std::mem::size_of::<linked_copies::LinkedCopyCapture>()
                         })

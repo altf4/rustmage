@@ -235,6 +235,12 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             keywords
         }
+        StaticAbilityFragment::ControlledTappedKeywords { other, keywords } => {
+            if !own || !target.tapped || world.kinds(id) & 1 == 0 || (other && id == source.card) {
+                return None;
+            }
+            keywords
+        }
         StaticAbilityFragment::ControlledSubtypeKeywords { subtype, keywords } => {
             if !own || !world.subtypes(id).has(world.definition(id), subtype) {
                 return None;
@@ -612,6 +618,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::KeywordGrant(..)
                         | StaticAbilityFragment::ChosenTypeKeywords(..)
                         | StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                        | StaticAbilityFragment::ControlledTappedKeywords { .. }
                         | StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                         | StaticAbilityFragment::ControlledPlaneswalkerActivation(..)
                         | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit

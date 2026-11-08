@@ -10,6 +10,7 @@ pub struct CreatureDamageHistoryView {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn creature_damage_events(&mut self, events: &[DamageEvent]) {
+        self.combat_turn_callback_events(events);
         self.controlled_combat_damage_triggers(events);
         let sources = self.state.damage_sources.clone();
         for id in sources {
@@ -132,7 +133,25 @@ impl Game {
             let event = grant.granting_card.triggers()[usize::from(grant.ability)]
                 .condition
                 .event();
-            if let TriggerCondition::PlayerDamaged { .. } = event {
+            if event == TriggerCondition::SourceCombatDamagePlayerOrPlaneswalker {
+                let hits: std::collections::BTreeSet<_> = events
+                    .iter()
+                    .filter(|event| {
+                        event.amount > 0
+                            && event.combat
+                            && event.source.reference == grant.recipient
+                            && self.is_player_or_planeswalker_damage(event)
+                    })
+                    .map(|event| event.target)
+                    .collect();
+                for _ in hits {
+                    self.queue_trigger_from(
+                        &source,
+                        usize::from(grant.ability),
+                        Some(Box::new(context)),
+                    );
+                }
+            } else if let TriggerCondition::PlayerDamaged { .. } = event {
                 let mut hits = std::collections::BTreeMap::<Player, u128>::new();
                 for e in events {
                     if e.amount > 0

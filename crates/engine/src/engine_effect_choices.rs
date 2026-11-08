@@ -1,6 +1,14 @@
 //! Simultaneous public sacrifices and private exact resolution-cost payments.
 use super::*;
 use ability_world::CharacteristicWorld;
+/// The chosen quantity and exact recipients survive interruptible draws.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct PowerDifferenceView {
+    pub recipients: [ObjectRef; 2],
+    pub amount: i128,
+    pub source: ObjectRef,
+}
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct DiscardDrawChoice {
@@ -39,6 +47,33 @@ impl EffectChoice {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn finish_power_difference_boost(&mut self) {
+        let Some(effect) = self
+            .state
+            .resolving
+            .as_mut()
+            .and_then(|resolution| resolution.power_difference.take())
+        else {
+            return;
+        };
+        let recipients: Vec<_> = effect
+            .recipients
+            .into_iter()
+            .filter(|recipient| {
+                self.on_battlefield(recipient.card)
+                    && self.object_ref(recipient.card) == *recipient
+                    && self.is_creature(recipient.card)
+            })
+            .map(|recipient| recipient.card)
+            .collect();
+        for &id in &recipients {
+            self.state.objects[id as usize].growth += Stats {
+                power: effect.amount,
+                toughness: effect.amount,
+            };
+        }
+        self.grant_keyword_effects(&recipients, effect.source, Keywords::TRAMPLE);
+    }
     pub(super) fn start_color_counter_choice(
         &mut self,
         color: crate::cards::ChoiceColor,
@@ -316,6 +351,7 @@ impl Game {
                 | EffectChoiceKind::HandExileCopy
                 | EffectChoiceKind::HandPlot { .. }
                 | EffectChoiceKind::HandCreature
+                | EffectChoiceKind::HandCreatureAttacking { .. }
                 | EffectChoiceKind::HandCreatureAndLand
                 | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }
@@ -335,6 +371,7 @@ impl Game {
                 | EffectChoiceKind::HandExileCopy
                 | EffectChoiceKind::HandPlot { .. }
                 | EffectChoiceKind::HandCreature
+                | EffectChoiceKind::HandCreatureAttacking { .. }
                 | EffectChoiceKind::HandCreatureAndLand
                 | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }
@@ -354,6 +391,9 @@ impl Game {
                         object,
                     ),
                     EffectChoiceKind::HandCreature => o.card.is_creature(),
+                    EffectChoiceKind::HandCreatureAttacking { maximum } => {
+                        o.card.is_creature() && o.card.fixed_mana_value() <= u64::from(maximum)
+                    }
                     EffectChoiceKind::HandCreatureAndLand => {
                         match choice.selected[player.index()].as_slice() {
                             [] => o.card.is_creature() || o.card.is_land(),
@@ -644,6 +684,23 @@ impl Game {
         self.start_effect_choice_inner(
             item,
             EffectChoiceKind::HandPermanent { maximum, tapped },
+            PlayerSet::Controller,
+            evidence::cost(0).filter,
+            1,
+            Some(0),
+            false,
+            None,
+        )
+    }
+    pub(super) fn start_hand_creature_attacking(
+        &mut self,
+        item: &SpellView,
+        maximum: AmountValue,
+    ) -> bool {
+        let maximum = u32::try_from(self.item_amount(maximum, item)).unwrap_or(u32::MAX);
+        self.start_effect_choice_inner(
+            item,
+            EffectChoiceKind::HandCreatureAttacking { maximum },
             PlayerSet::Controller,
             evidence::cost(0).filter,
             1,
@@ -1100,6 +1157,9 @@ impl Game {
                     self.effect_choice_candidate(&choice, player, self.object_ref(*id as CardId))
                 })
                 .count();
+            if kind == EffectChoiceKind::PowerDifferenceBoost && available < 2 {
+                return false;
+            }
             if let Some(skip_to) = choice.skip_to
                 && !private_optional_discard
                 && !matches!(
@@ -1109,6 +1169,7 @@ impl Game {
                         | EffectChoiceKind::HandExileCopy
                         | EffectChoiceKind::HandPlot { .. }
                         | EffectChoiceKind::HandCreature
+                        | EffectChoiceKind::HandCreatureAttacking { .. }
                         | EffectChoiceKind::HandCreatureAndLand
                         | EffectChoiceKind::HandPermanent { .. }
                         | EffectChoiceKind::HandLand { .. }
@@ -1129,6 +1190,7 @@ impl Game {
                         | EffectChoiceKind::HandExileCopy
                         | EffectChoiceKind::HandPlot { .. }
                         | EffectChoiceKind::HandCreature
+                        | EffectChoiceKind::HandCreatureAttacking { .. }
                         | EffectChoiceKind::HandCreatureAndLand
                         | EffectChoiceKind::HandPermanent { .. }
                         | EffectChoiceKind::HandLand { .. }
@@ -1351,6 +1413,7 @@ impl Game {
             choice.kind.payment_kind(),
             EffectChoiceKind::HandExileCopy
                 | EffectChoiceKind::HandCreature
+                | EffectChoiceKind::HandCreatureAttacking { .. }
                 | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }
         ) {
@@ -1393,12 +1456,18 @@ impl Game {
                 EffectChoiceKind::HandLand { tapped: true }
                     | EffectChoiceKind::HandPermanent { tapped: true, .. }
             );
-            if enchantment && choice.hand_defender.is_none() {
-                if self.state.objects.iter().enumerate().any(|(id, o)| {
-                    o.zone == Zone::Battlefield
-                        && o.controller == player.other()
-                        && self.current_kinds(id as CardId) & 64 != 0
-                }) {
+            let tapped_and_attacking = enchantment
+                || matches!(choice.kind, EffectChoiceKind::HandCreatureAttacking { .. });
+            if tapped_and_attacking
+                && self.attacking_return_combat(player)
+                && choice.hand_defender.is_none()
+            {
+                let mut defenders = 0;
+                self.visit_hand_defenders(&mut |_| {
+                    defenders += 1;
+                    defenders > 1
+                });
+                if defenders > 1 {
                     self.state.pending = Pending::HandDefender { player };
                     return true;
                 }
@@ -1422,7 +1491,7 @@ impl Game {
             let mut movement = self.entry_move(
                 reference.card,
                 Zone::Battlefield,
-                forced_tapped || enchantment,
+                forced_tapped || tapped_and_attacking,
             );
             movement.controller = player;
             movement.attach_equipment_to = choice.equipment_recipient;
@@ -1471,7 +1540,22 @@ impl Game {
             }
             return false;
         }
-        if choice.kind.payment_kind() == EffectChoiceKind::CopyExiledTriggerCreature {
+        if choice.kind.payment_kind() == EffectChoiceKind::PowerDifferenceBoost {
+            let controller = self.state.resolving.as_ref().unwrap().item.controller;
+            let selected = &choice.selected[controller.index()];
+            assert_eq!(selected.len(), 2);
+            let amount = self
+                .stats(selected[0].card)
+                .power
+                .abs_diff(self.stats(selected[1].card).power);
+            self.state.resolving.as_mut().unwrap().power_difference =
+                Some(Box::new(PowerDifferenceView {
+                    recipients: [selected[0], selected[1]],
+                    amount: i128::try_from(amount).capacity("power difference exhausted"),
+                    source: choice.source,
+                }));
+            self.draw_many(controller, amount);
+        } else if choice.kind.payment_kind() == EffectChoiceKind::CopyExiledTriggerCreature {
             let item = self.state.resolving.as_ref().unwrap().item.clone();
             if let Some(&card) = choice.selected[item.controller.index()].first()
                 && self.object_ref(card.card) == card
@@ -1841,6 +1925,7 @@ impl Game {
             choice.kind,
             EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandCreature
+                | EffectChoiceKind::HandCreatureAttacking { .. }
                 | EffectChoiceKind::HandLand { .. }
         ) && let Some(frame) = self
             .state
@@ -1943,6 +2028,7 @@ impl Game {
                 | EffectChoiceKind::HandExileCopy
                 | EffectChoiceKind::HandPlot { .. }
                 | EffectChoiceKind::HandCreature
+                | EffectChoiceKind::HandCreatureAttacking { .. }
                 | EffectChoiceKind::HandCreatureAndLand
                 | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }

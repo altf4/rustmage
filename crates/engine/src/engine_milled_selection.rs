@@ -140,8 +140,15 @@ impl Game {
         })
     }
     pub(super) fn start_milled_selection(&mut self, spec: MilledSelectionSpec) -> bool {
+        let player = self.state.resolving.as_ref().unwrap().item.controller;
+        self.start_milled_selection_for(player, spec)
+    }
+    pub(super) fn start_milled_selection_for(
+        &mut self,
+        player: Player,
+        spec: MilledSelectionSpec,
+    ) -> bool {
         let resolution = self.state.resolving.as_ref().unwrap();
-        let player = resolution.item.controller;
         let eligible: Vec<_> = resolution
             .milled
             .iter()

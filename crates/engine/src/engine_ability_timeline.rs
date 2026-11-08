@@ -58,6 +58,7 @@ impl Card {
                             | StaticAbilityFragment::SourceCounterCreature { .. }
                             | StaticAbilityFragment::SourceOffTurnCreature
                             | StaticAbilityFragment::ControlledCreatureSubtype { .. }
+                            | StaticAbilityFragment::AttachedAllCreatureTypes
                             | StaticAbilityFragment::SourceGraveyardAllTypes { .. }
                             | StaticAbilityFragment::SourceConditionalKeywords { .. }
                             | StaticAbilityFragment::SourceCounterKeywords { .. }
@@ -70,6 +71,7 @@ impl Card {
                             | StaticAbilityFragment::AttachedLegendary
                             | StaticAbilityFragment::KeywordGrant(..)
                             | StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                            | StaticAbilityFragment::ControlledTappedKeywords { .. }
                             | StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                             | StaticAbilityFragment::SourceMaxSpeedActivation(..)
                             | StaticAbilityFragment::SourceEntryModeActivation { .. }

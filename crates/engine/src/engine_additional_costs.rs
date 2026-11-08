@@ -1145,6 +1145,7 @@ impl Game {
                 }
             }
             EffectChoiceKind::ColorCounter { .. }
+            | EffectChoiceKind::PowerDifferenceBoost
             | EffectChoiceKind::FilteredCost { .. }
             | EffectChoiceKind::SacrificeManaValue { .. }
             | EffectChoiceKind::DiscardHand
@@ -1175,6 +1176,7 @@ impl Game {
             | EffectChoiceKind::HandExileCopy
             | EffectChoiceKind::HandPlot { .. }
             | EffectChoiceKind::HandCreature
+            | EffectChoiceKind::HandCreatureAttacking { .. }
             | EffectChoiceKind::HandCreatureAndLand
             | EffectChoiceKind::HandPermanent { .. }
             | EffectChoiceKind::HandLand { .. }

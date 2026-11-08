@@ -11,6 +11,46 @@ pub struct TurnCallbackView {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn is_player_or_planeswalker_damage(&self, event: &DamageEvent) -> bool {
+        match event.target {
+            Target::Player(_) => true,
+            Target::Card(id) => self.on_battlefield(id) && self.current_kinds(id) & 64 != 0,
+            _ => false,
+        }
+    }
+    pub(super) fn combat_turn_callback_events(&mut self, events: &[DamageEvent]) {
+        if !self.state.combat_rules.as_ref().is_some_and(|rules| {
+            rules.turn_callbacks.iter().any(|row| {
+                row.event == TurnCallbackEvent::ControlledCreatureCombatDamagePlayerOrPlaneswalker
+            })
+        }) {
+            return;
+        }
+        let hits: std::collections::BTreeSet<_> = events
+            .iter()
+            .filter(|event| {
+                event.amount > 0
+                    && event.combat
+                    && event.source.facts.battlefield
+                    && event.source.facts.is_creature()
+                    && self.is_player_or_planeswalker_damage(event)
+            })
+            .map(|event| {
+                (
+                    event.source.controller,
+                    event.source.reference,
+                    event.target,
+                )
+            })
+            .collect();
+        for (controller, object, _) in hits {
+            self.queue_turn_callbacks(
+                TurnCallbackEvent::ControlledCreatureCombatDamagePlayerOrPlaneswalker,
+                controller,
+                Some(object),
+            );
+        }
+    }
     pub(super) fn schedule_turn_callback(
         &mut self,
         item: &SpellView,

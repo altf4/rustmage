@@ -73,8 +73,11 @@ fn additional_triggers_for_event<W: CharacteristicWorld + ?Sized>(
                 { continue; }
                 let applies = match scope {
                     AdditionalTriggerScope::ControlledSubtype(subtype)
+                    | AdditionalTriggerScope::OtherControlledSubtype(subtype)
                     | AdditionalTriggerScope::ControlledCreatureSubtype(subtype) => {
                         recipient.controller == object.controller
+                            && (!matches!(scope, AdditionalTriggerScope::OtherControlledSubtype(_))
+                                || provider != id)
                             && query.subtypes(id).has(recipient.card, subtype)
                             && (!matches!(
                                 scope,

@@ -417,9 +417,11 @@ impl Game {
         };
         self.on_battlefield(target.card)
             && self.object_ref(target.card) == target
-            && !self
-                .keywords(target.card)
-                .protects_from(colors, aura.kind_mask())
+            && !self.keywords(target.card).protects_from_controller(
+                colors,
+                aura.kind_mask(),
+                self.state.objects[target.card as usize].controller != controller,
+            )
             && ability_world::aura_kind_matches(self, aura, target.card)
             && match spec.relation {
                 0 => self.state.objects[target.card as usize].controller == controller,

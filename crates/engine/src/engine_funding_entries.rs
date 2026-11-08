@@ -1058,7 +1058,11 @@ impl FundingState<'_> {
             && self.reference(target.card) == target
             && !characteristic_query::CharacteristicQuery::in_world(self)
                 .keywords(target.card)
-                .protects_from(m.before.card.colors(), m.before.card.kind_mask())
+                .protects_from_controller(
+                    m.before.card.colors(),
+                    m.before.card.kind_mask(),
+                    o.controller != m.controller,
+                )
             && ability_world::aura_kind_matches(self, m.before.card, target.card)
             && match spec.relation {
                 0 => o.controller == m.controller,
