@@ -176,7 +176,9 @@ pub(super) fn payable_in<W: ability_world::CharacteristicWorld + ?Sized>(
     true
 }
 
-/// Keep contributors in a borrowed world when a mana cost may return a provider.
+/// Public battlefield providers can regain abilities during payment; a public
+/// linked exile can return one. Hidden cards without such a route must not alter
+/// either speculative funding or the observable announcement/payment phases.
 /// Actual eligibility is always evaluated again in that world's current state.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn potential<W: ability_world::CharacteristicWorld + ?Sized>(
@@ -186,18 +188,28 @@ pub(super) fn potential<W: ability_world::CharacteristicWorld + ?Sized>(
     card.has_convoke()
         || card.kind_mask() & 1 != 0
             && (0..world.game().state.objects.len()).any(|id| {
-                world
-                    .definition(id as CardId)
-                    .static_ability_groups()
-                    .iter()
-                    .any(|g| {
-                        g.fragments.iter().any(|f| {
-                            matches!(
-                                f,
-                                crate::cards::StaticAbilityFragment::ConvokeCreatureSpells
-                            )
+                let id = id as CardId;
+                let object = world.object(id);
+                let reference = world.reference(id);
+                let public_route = object.zone == Zone::Battlefield && !world.face_down(id)
+                    || object.zone == Zone::Exile
+                        && !world.game().exiled_face_down(reference)
+                        && world.game().state.exile_links.iter().any(|link| {
+                            link.exiled == reference && link.return_zone == Zone::Battlefield
+                        });
+                public_route
+                    && world
+                        .definition(id)
+                        .static_ability_groups()
+                        .iter()
+                        .any(|g| {
+                            g.fragments.iter().any(|f| {
+                                matches!(
+                                    f,
+                                    crate::cards::StaticAbilityFragment::ConvokeCreatureSpells
+                                )
+                            })
                         })
-                    })
             })
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

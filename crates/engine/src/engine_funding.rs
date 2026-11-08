@@ -5585,7 +5585,17 @@ impl Game {
         if done {
             return true;
         }
-        if (delve::potential(self)
+        // A public suppressed/linked provider may grant convoke only after an
+        // additional cost. Let that cost be paid first; selecting the mana clause
+        // still requires a complete payment with the grant actually available.
+        let deferred_convoke = !convoke
+            && announcement.item.kind == StackKind::Spell
+            && announcement
+                .item
+                .source
+                .is_some_and(|source| convoke::potential(self, source.card));
+        if (deferred_convoke
+            || delve::potential(self)
             || announcement
                 .conspire
                 .as_deref()
