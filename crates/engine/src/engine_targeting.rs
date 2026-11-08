@@ -63,6 +63,8 @@ pub(super) struct Announcement {
         reason = "Rare casualty declarations use one pointer in ordinary announcements"
     )]
     pub casualty: Option<Box<Vec<CasualtyDeclaration>>>,
+    #[allow(clippy::box_collection, reason = "Rare conspire declarations are cold")]
+    pub conspire: Option<Box<Vec<ConspireDeclaration>>>,
     pub cast_costs: Option<Box<CastCostTransaction>>,
     pub evidence: Option<Box<evidence::EvidenceSelection>>,
     pub convoke: Option<Box<convoke::ConvokeSelection>>,
@@ -223,11 +225,16 @@ impl Announcement {
                     .filter(|cast| cast.kicker == Some(true))
                     .and_then(|_| card.kicker_additional_cost())
                     .or_else(|| card.additional_cost())
-                    .map(|mut cost| {
+                    .and_then(|mut cost| {
+                        if let EffectChoiceKind::OptionalBeholdType(amount) = cost.kind {
+                            let kind = self.item.cast?.beheld_type?;
+                            cost.kind = EffectChoiceKind::BeholdMany(amount);
+                            cost.filter.subtype = Some(kind.name());
+                        }
                         if cost.kind == EffectChoiceKind::BlightXCost {
                             cost.kind = EffectChoiceKind::BlightCost(self.item.x.unwrap_or(0));
                         }
-                        cost
+                        Some(cost)
                     })
             }
             StackKind::ActivatedAbility { ability } => self
@@ -253,6 +260,7 @@ impl Announcement {
             | StackKind::CopyEndStepSacrifice
             | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
+            | StackKind::ConspireCopy
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
             | StackKind::DelayedTokenCreation { .. }
@@ -265,8 +273,14 @@ impl Announcement {
 
     fn cost_route_options(
         &self,
-    ) -> impl Iterator<Item = (ManaCost, ActivationCostRoute, Option<ActivationCostChoice>)> + '_
-    {
+    ) -> impl Iterator<
+        Item = (
+            ManaCost,
+            ActivationCostRoute,
+            Option<ActivationCostChoice>,
+            bool,
+        ),
+    > + '_ {
         let options = match self.item.kind {
             StackKind::Spell
                 if self
@@ -393,6 +407,7 @@ impl Announcement {
             | StackKind::CopyEndStepSacrifice
             | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
+            | StackKind::ConspireCopy
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
             | StackKind::DelayedTokenCreation { .. }
@@ -458,16 +473,27 @@ impl Announcement {
         // Choose the printed base or its replacement before applying the
         // shared cost modifiers. A route identity survives equal mana totals.
         options
-            .map(|cost| (cost, ActivationCostRoute::Printed))
+            .map(|cost| {
+                let evoked = self
+                    .item
+                    .cast
+                    .is_some_and(|c| c.method == CastMethod::Normal)
+                    && self
+                        .item
+                        .source
+                        .is_some_and(|s| s.card.evoke_costs().contains(&cost));
+                (cost, ActivationCostRoute::Printed, evoked)
+            })
             .chain(self.equip_zero_available.then_some((
                 ManaCost {
                     colored: [0; 6],
                     generic: 0,
                 },
                 ActivationCostRoute::FirstEquipZero,
+                false,
             )))
-            .flat_map(move |(cost, route)| {
-                std::iter::once((cost, route)).chain(
+            .flat_map(move |(cost, route, evoked)| {
+                std::iter::once((cost, route, evoked)).chain(
                     (self.item.kind == StackKind::Spell && self.fixed_alternative_cost().is_none())
                         .then(|| {
                             self.item
@@ -477,10 +503,10 @@ impl Announcement {
                                 .explicit_additional_mana()
                         })
                         .flatten()
-                        .map(move |extra| (Card::add_mana_cost(cost, extra), route)),
+                        .map(move |extra| (Card::add_mana_cost(cost, extra), route, evoked)),
                 )
             })
-            .flat_map(move |(cost, route)| {
+            .flat_map(move |(cost, route, evoked)| {
                 const ZERO: [ManaCost; 1] = [ManaCost {
                     colored: [0; 6],
                     generic: 0,
@@ -532,11 +558,12 @@ impl Announcement {
                                         reduction,
                                         route,
                                     }),
+                                evoked,
                             )
                         })
                     })
             })
-            .filter(|(cost, _, _)| {
+            .filter(|(cost, _, _, _)| {
                 self.item
                     .cast
                     .is_none_or(|cast| cast.method != CastMethod::GrantedFlashback)
@@ -571,7 +598,7 @@ impl Announcement {
                                 .1,
                         }
             })
-            .filter_map(|(cost, route, choice)| {
+            .filter_map(|(cost, route, choice, evoked)| {
                 Game::with_tiered_mana(
                     Game::with_flash_surcharge(
                         cost,
@@ -583,7 +610,7 @@ impl Announcement {
                     ),
                     &self.item,
                 )
-                .map(|cost| (cost, route, choice))
+                .map(|cost| (cost, route, choice, evoked))
             })
             .chain(
                 extra
@@ -600,18 +627,22 @@ impl Announcement {
                             &self.item,
                         )
                     })
-                    .map(|cost| (cost, ActivationCostRoute::Printed, None)),
+                    .map(|cost| (cost, ActivationCostRoute::Printed, None, false)),
             )
-            .filter_map(|(mut cost, route, choice)| {
+            .filter_map(|(mut cost, route, choice, evoked)| {
                 cost.generic = cost.generic.checked_add(self.behold_decline_generic())?;
-                Some((cost, route, choice))
+                Some((cost, route, choice, evoked))
             })
     }
     pub(super) fn cost_options(&self) -> impl Iterator<Item = ManaCost> + '_ {
-        self.cost_route_options().map(|(cost, _, _)| cost)
+        self.cost_route_options().map(|(cost, _, _, _)| cost)
     }
     pub(super) fn select_cost(&mut self, index: usize) {
-        let (cost, route, choice) = self.cost_route_options().nth(index).expect("cost option");
+        let (cost, route, choice, evoked) =
+            self.cost_route_options().nth(index).expect("cost option");
+        if let Some(cast) = &mut self.item.cast {
+            cast.evoked = evoked;
+        }
         self.cost = Some(cost);
         self.activation_cost_route = route;
         self.activation_choice = choice.map(Box::new);
@@ -732,6 +763,7 @@ impl Announcement {
                 | StackKind::CopyEndStepSacrifice
                 | StackKind::CopyEndStepConditionalSacrifice
                 | StackKind::CasualtyCopy
+                | StackKind::ConspireCopy
                 | StackKind::DelayedSacrifice
                 | StackKind::DelayedReturn
                 | StackKind::DelayedTokenCreation { .. }
@@ -1438,7 +1470,9 @@ impl Game {
         let player = a.item.controller;
         // CR601.2b announces the mode before a hybrid equivalent. Both
         // declarations precede targets, mana abilities and payment.
-        if a.needs_behold() {
+        if a.needs_behold_type() {
+            self.state.pending = Pending::BeholdType { player };
+        } else if a.needs_behold() {
             self.state.pending = Pending::CastBehold { player };
         } else if a.needs_blight() {
             self.state.pending = Pending::BlightIntent { player };
@@ -1474,6 +1508,12 @@ impl Game {
         } else if a.additional_cost().is_some_and(forage::is_forage_cost) && a.forage.is_none() {
             self.state.pending = Pending::ForageMethod { player };
         } else if a
+            .conspire
+            .as_ref()
+            .is_some_and(|rows| rows.iter().any(|r| !r.declared))
+        {
+            self.state.pending = Pending::Conspire { player };
+        } else if a
             .casualty
             .as_ref()
             .is_some_and(|rows| rows.iter().any(|row| !row.declared))
@@ -1486,7 +1526,7 @@ impl Game {
             self.state.pending = Pending::Harmonize { player };
         } else {
             self.capture_announcement_division();
-            let improvise = improvise::potential(
+            let improvise = convoke::cost_potential(
                 self,
                 self.state
                     .announcing
@@ -2267,6 +2307,10 @@ impl Game {
                 origin,
                 stash_origin: self.foreign_stash(actor, card),
                 method: CastMethod::Normal,
+                evoked: false,
+                beheld_type: None,
+                behold_type_declared: false,
+                behold_exiled: None,
                 sneak_defender: None,
                 flash_surcharge: false,
                 offspring: None,
@@ -2399,6 +2443,7 @@ impl Game {
             creature_counter_cost: None,
             forage: None,
             casualty: None,
+            conspire: None,
             cast_costs: None,
             evidence: None,
             convoke: None,
@@ -2565,6 +2610,7 @@ impl Game {
         }
         let plan = self.target_spec(&item);
         let casualty = self.casualty_declarations(&item);
+        let conspire = self.conspire_declarations(&item);
         let mana_output = production.and_then(|selected| self.mana_output(&item, selected));
         Announcement {
             behold_required: self.behold_timing_required(&item),
@@ -2604,6 +2650,7 @@ impl Game {
             creature_counter_cost: None,
             forage: None,
             casualty,
+            conspire,
             cast_costs: None,
             evidence: None,
             convoke: None,
@@ -2929,6 +2976,7 @@ impl Game {
                 self.use_free_hand_permission(*permission);
             }
             self.queue_casualty_copies(&announcement);
+            self.queue_conspire_copies(&announcement);
             self.push_stack_item(announcement.item);
         }
         if announcement.trigger {

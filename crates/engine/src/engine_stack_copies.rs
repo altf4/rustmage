@@ -612,6 +612,7 @@ impl Game {
         copy.is_copy = true;
         if let Some(cast) = &mut copy.cast {
             cast.payment = [0; 6];
+            cast.behold_exiled = None;
             // The permission-created replacement is external to copiable values.
             cast.exile_on_graveyard = false;
             cast.spend_any_mana = false;

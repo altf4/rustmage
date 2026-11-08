@@ -191,7 +191,7 @@ impl Game {
                 quality,
             } => {
                 self.add_quality_mana(actor, production, quality);
-                self.produce_tap_mana_bonus(actor, payment.item.tap_mana_bonus());
+                self.finish_mana_tap_bonus(actor, payment.item.tap_mana_bonus(), production);
                 self.committed_mana_reflexive(&payment.item);
                 self.reopen_evidence_after_mana_sacrifice(card);
             }
@@ -334,6 +334,12 @@ impl Game {
                         ))
                     })
                     >= minimum
+            }
+            ActivationGuard::ControlColorsAtLeast(minimum) => {
+                ability_world::controlled_colors(self, actor).count_ones() >= u32::from(minimum)
+            }
+            ActivationGuard::GraveyardSubtype(subtype) => {
+                ability_world::graveyard_subtype(self, actor, subtype)
             }
             ActivationGuard::ControlLandsAtLeast(minimum) => {
                 self.state
@@ -1195,7 +1201,7 @@ impl Game {
         if cost.tap {
             if definition.mana_production().is_some() {
                 let bonus = self.mana_tap_bonuses(item.controller, source.id);
-                item.mana_tap_bonus = (bonus != [0; 6]).then(|| Box::new(bonus));
+                item.mana_tap_bonus = bonus.has_any().then(|| Box::new(bonus));
             }
             self.tap_objects(&[source.id]);
         }

@@ -11,6 +11,7 @@ pub(super) struct CostContext {
     clauses: Vec<CastCostRow>,
     active: Option<u16>,
     casualty: Vec<CasualtyDeclaration>,
+    conspire: Vec<ConspireDeclaration>,
     additional: Option<AdditionalCost>,
     additional_life: bool,
     forage: Option<ForageRoute>,
@@ -91,6 +92,7 @@ impl CostContext {
             clauses: c.clauses.clone(),
             active: c.active,
             casualty: a.casualty.as_deref().cloned().unwrap_or_default(),
+            conspire: a.conspire.as_deref().cloned().unwrap_or_default(),
             additional: a.additional_cost(),
             additional_life: a.additional_life,
             forage: a.forage.as_ref().and_then(|v| v.route),
@@ -145,6 +147,7 @@ impl FundingState<'_> {
                 | CastCostClause::Teamwork(_)
                 | CastCostClause::Blight { .. }
                 | CastCostClause::Casualty(_)
+                | CastCostClause::Conspire(_)
                 | CastCostClause::Harmonize(_) => {}
                 CastCostClause::SneakReturn(_) if !row.paid => return false,
                 CastCostClause::Behold(_) | CastCostClause::SneakReturn(_) => {}
@@ -173,9 +176,11 @@ impl FundingState<'_> {
             | EffectChoiceKind::DiscardMatchingLegendary
             | EffectChoiceKind::DiscardLegendary => hand > 0,
             EffectChoiceKind::DiscardOrLife(life) => hand > 0 || self.life >= i128::from(life),
-            EffectChoiceKind::Behold | EffectChoiceKind::SacrificeOrDiscard { .. } => {
-                battlefield > 0 || hand > 0
-            }
+            EffectChoiceKind::Behold
+            | EffectChoiceKind::BeholdMany(_)
+            | EffectChoiceKind::BeholdAndExile
+            | EffectChoiceKind::OptionalBeholdType(_)
+            | EffectChoiceKind::SacrificeOrDiscard { .. } => battlefield > 0 || hand > 0,
             EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeAttachedEquipment
             | EffectChoiceKind::ReturnUnblockedAttacker
@@ -264,7 +269,7 @@ impl FundingState<'_> {
         if a.cast_costs.is_none() && a.additional_cost().is_some() {
             let mut shadow = a.clone();
             shadow.cast_costs = Some(Box::default());
-            shadow.initialize_cast_costs(matches!(self.purpose, mana_lots::Purpose::Spell(spell) if improvise::potential(self, spell.card)));
+            shadow.initialize_cast_costs(matches!(self.purpose, mana_lots::Purpose::Spell(spell) if convoke::cost_potential(self, spell.card)));
             self.set_cost_context(Some(&shadow));
         } else {
             self.set_cost_context(Some(a));
@@ -702,6 +707,40 @@ impl FundingState<'_> {
                         return true;
                     }
                 }
+                CastCostClause::Conspire(instance) => {
+                    let selected = c.conspire[usize::from(instance)].objects;
+                    let colors = CharacteristicWorld::colors(self, c.source.card);
+                    let eligible: Vec<_> = self
+                        .resources
+                        .iter()
+                        .enumerate()
+                        .filter(|(_, r)| {
+                            r.object.zone == Zone::Battlefield
+                                && r.object.controller == c.actor
+                                && !r.object.tapped
+                                && CharacteristicWorld::kinds(self, r.id) & 1 != 0
+                                && CharacteristicWorld::colors(self, r.id) & colors != 0
+                        })
+                        .map(|(i, _)| i)
+                        .collect();
+                    for (at, &first) in eligible.iter().enumerate() {
+                        for &second in &eligible[at + 1..] {
+                            let pair = [
+                                self.reference(self.resources[first].id),
+                                self.reference(self.resources[second].id),
+                            ];
+                            if selected.is_some_and(|wanted| wanted != pair) {
+                                continue;
+                            }
+                            let mut next = self.clone();
+                            next.resources[first].object.tapped = true;
+                            next.resources[second].object.tapped = true;
+                            if next.complete_cost_rows(&later, &rest) {
+                                return true;
+                            }
+                        }
+                    }
+                }
                 CastCostClause::Casualty(instance) => {
                     let row = &c.casualty[usize::from(instance)];
                     for resource in &self.resources {
@@ -1065,7 +1104,7 @@ impl FundingState<'_> {
             }
             let colors = CharacteristicWorld::colors(self, resource.id);
             let kinds = CharacteristicWorld::kinds(self, resource.id);
-            let choices: &[ConvokeContribution] = if self.convoke && kinds & 1 != 0 {
+            let choices: &[ConvokeContribution] = if self.convoke_available() && kinds & 1 != 0 {
                 &convoke::contributions()
             } else if self.improvise_available() && kinds & 16 != 0 {
                 &[ConvokeContribution::Generic]
@@ -1275,10 +1314,12 @@ impl FundingState<'_> {
             | EffectChoiceKind::RemoveCreatureCounter(_) => {
                 counters = spec.kind.creature_counter_requirement();
             }
-            EffectChoiceKind::TapPermanents(n)
+            EffectChoiceKind::BeholdMany(n)
+            | EffectChoiceKind::TapPermanents(n)
             | EffectChoiceKind::SacrificeDifferentNames(n)
             | EffectChoiceKind::SacrificePermanents(n) => amount = usize::from(n),
             EffectChoiceKind::ExileGraveyard
+            | EffectChoiceKind::BeholdAndExile
             | EffectChoiceKind::ExileControlled
             | EffectChoiceKind::ExileControlledOrGraveyard => destination = Zone::Exile,
             EffectChoiceKind::ExileCraftNonlands(n) => {
@@ -1387,7 +1428,10 @@ impl FundingState<'_> {
             if remaining.is_empty() {
                 return true;
             }
-            let success = if spec.kind.payment_kind() == EffectChoiceKind::Behold {
+            let success = if matches!(
+                spec.kind.payment_kind(),
+                EffectChoiceKind::Behold | EffectChoiceKind::BeholdMany(_)
+            ) {
                 self.complete_cost_rows(later, remaining)
             } else if matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_)) {
                 let mut next = self.clone();
@@ -1567,6 +1611,7 @@ impl Game {
             .collect(),
             active: None,
             casualty: Vec::new(),
+            conspire: Vec::new(),
             additional: Some(spec),
             additional_life: false,
             forage: None,
@@ -1590,12 +1635,14 @@ impl Game {
             let mut world = FundingState::from_game_with_convoke(
                 self,
                 &goal,
-                choice
-                    .item
-                    .source
-                    .expect("cost announcement has object source")
-                    .card
-                    .has_convoke(),
+                convoke::potential(
+                    self,
+                    choice
+                        .item
+                        .source
+                        .expect("cost announcement has object source")
+                        .card,
+                ),
             );
             world.set_purpose(self.purpose_for_item(&choice.item));
             world.set_cost_context(Some(&choice));
@@ -1638,11 +1685,13 @@ impl Game {
         let mut world = FundingState::from_game_with_convoke(
             self,
             &goal,
-            a.item
-                .source
-                .expect("cost announcement has object source")
-                .card
-                .has_convoke(),
+            convoke::potential(
+                self,
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card,
+            ),
         );
         world.set_purpose(self.purpose_for_item(&a.item));
         world.set_cost_context(Some(a));
@@ -1684,6 +1733,38 @@ impl Game {
             costs.clauses[active].clause = CastCostClause::SneakReturn(Some(object));
             if choice.cost_completion() && emit(Action::PaySneakReturn { object }) {
                 return true;
+            }
+        }
+        false
+    }
+    pub(in crate::engine) fn visit_conspire_payments(
+        &self,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        let Pending::ConspirePayment { instance, .. } = self.state.pending else {
+            return false;
+        };
+        let a = self.state.announcing.as_ref().unwrap();
+        let world = self.cast_cost_world(a);
+        let candidates: Vec<_> = (0..self.state.objects.len())
+            .filter(|&id| {
+                let o = &self.state.objects[id];
+                o.zone == Zone::Battlefield
+                    && o.controller == a.item.controller
+                    && !o.tapped
+                    && self.object_kinds(id as CardId, o) & 1 != 0
+            })
+            .map(|id| self.object_ref(id as CardId))
+            .collect();
+        for (at, &first) in candidates.iter().enumerate() {
+            for &second in &candidates[at + 1..] {
+                let objects = [first, second];
+                let mut choice = world.clone();
+                choice.cast_costs.as_mut().unwrap().conspire[usize::from(instance)].objects =
+                    Some(objects);
+                if choice.cost_completion() && emit(Action::PayConspire { objects }) {
+                    return true;
+                }
             }
         }
         false
@@ -1745,10 +1826,10 @@ impl Game {
         world.cast_costs.as_mut().unwrap().counters = selected.to_vec();
         world.cost_completion()
     }
-    pub(in crate::engine) fn casualty_intent_fundable(&self, pay: bool) -> bool {
+    pub(in crate::engine) fn conspire_intent_fundable(&self, pay: bool) -> bool {
         let mut a = self.state.announcing.as_ref().unwrap().clone();
         let row = a
-            .casualty
+            .conspire
             .as_mut()
             .unwrap()
             .iter_mut()
@@ -1756,7 +1837,7 @@ impl Game {
             .unwrap();
         row.pay = pay;
         row.declared = true;
-        a.initialize_cast_costs(improvise::potential(
+        a.initialize_cast_costs(convoke::cost_potential(
             self,
             a.item
                 .source
@@ -1765,7 +1846,7 @@ impl Game {
         ));
         if a.cast_costs.is_none() {
             a.cast_costs = Some(Box::default());
-            a.initialize_cast_costs(improvise::potential(
+            a.initialize_cast_costs(convoke::cost_potential(
                 self,
                 a.item
                     .source
@@ -1786,12 +1867,69 @@ impl Game {
             let mut world = FundingState::from_game_with_convoke(
                 self,
                 &goal,
-                choice
-                    .item
+                convoke::potential(
+                    self,
+                    choice
+                        .item
+                        .source
+                        .expect("cost announcement has object source")
+                        .card,
+                ),
+            );
+            world.set_purpose(self.purpose_for_item(&choice.item));
+            world.set_cost_context(Some(&choice));
+            world.reachable(&goal, &mut HashSet::new())
+        })
+    }
+    pub(in crate::engine) fn casualty_intent_fundable(&self, pay: bool) -> bool {
+        let mut a = self.state.announcing.as_ref().unwrap().clone();
+        let row = a
+            .casualty
+            .as_mut()
+            .unwrap()
+            .iter_mut()
+            .find(|r| !r.declared)
+            .unwrap();
+        row.pay = pay;
+        row.declared = true;
+        a.initialize_cast_costs(convoke::cost_potential(
+            self,
+            a.item
+                .source
+                .expect("cost announcement has object source")
+                .card,
+        ));
+        if a.cast_costs.is_none() {
+            a.cast_costs = Some(Box::default());
+            a.initialize_cast_costs(convoke::cost_potential(
+                self,
+                a.item
                     .source
                     .expect("cost announcement has object source")
-                    .card
-                    .has_convoke(),
+                    .card,
+            ));
+        }
+        if a.item.cast.is_some_and(|c| c.method.is_harmonize()) {
+            return self.harmonize_choice_fundable(&a, None)
+                || (0..self.state.objects.len()).any(|id| {
+                    self.harmonize_choice_fundable(&a, Some(self.object_ref(id as CardId)))
+                });
+        }
+        a.cost_options().any(|cost| {
+            let mut choice = a.clone();
+            choice.cost = Some(cost);
+            let goal = self.funding_goal(&choice);
+            let mut world = FundingState::from_game_with_convoke(
+                self,
+                &goal,
+                convoke::potential(
+                    self,
+                    choice
+                        .item
+                        .source
+                        .expect("cost announcement has object source")
+                        .card,
+                ),
             );
             world.set_purpose(self.purpose_for_item(&choice.item));
             world.set_cost_context(Some(&choice));
@@ -1823,6 +1961,7 @@ impl Game {
                 clauses: Vec::new(),
                 active: None,
                 casualty: Vec::new(),
+                conspire: Vec::new(),
                 additional: None,
                 additional_life: false,
                 forage: None,
@@ -1874,20 +2013,29 @@ impl Game {
                     .card
                     == spell.card
         });
-        let ordered_additional = delve::potential(self)
-            || additional.is_some_and(|a| {
-                matches!(
-                    a.kind.payment_kind(),
-                    EffectChoiceKind::DiscardOrLife(_) | EffectChoiceKind::BlightCost(_)
-                )
-            })
+        let additional = additional.and_then(|spec| {
+            if matches!(spec.kind, EffectChoiceKind::OptionalBeholdType(_)) {
+                current.and_then(Announcement::additional_cost)
+            } else {
+                Some(spec)
+            }
+        });
+        let ordered_additional = additional.is_some_and(|s| {
+            matches!(
+                s.kind,
+                EffectChoiceKind::BeholdMany(_) | EffectChoiceKind::BeholdAndExile
+            )
+        }) || delve::potential(self)
+            || additional.is_some_and(|a| matches!(a.kind.payment_kind(), EffectChoiceKind::DiscardOrLife(_) | EffectChoiceKind::BlightCost(_)))
             || additional.is_some()
-                && (spell.card.has_convoke()
+                && (convoke::potential(self, spell.card)
                     || improvise::potential(self, spell.card)
                     || delve::potential(self));
         if !ordered_additional
             && extra.is_empty()
-            && current.is_none_or(|a| a.casualty.is_none() && a.cast_costs.is_none())
+            && current.is_none_or(|a| {
+                a.casualty.is_none() && a.conspire.is_none() && a.cast_costs.is_none()
+            })
             && !self.has_casualty(goal.actor, spell.card)
         {
             return None;
@@ -1951,6 +2099,23 @@ impl Game {
                         paid: false,
                     })
                     .collect::<Vec<_>>();
+                if let Some(rows) = current.and_then(|a| a.conspire.as_deref()) {
+                    clauses.extend(
+                        rows.iter()
+                            .enumerate()
+                            .filter(|(_, r)| r.pay && !r.paid)
+                            .map(|(i, _)| CastCostRow {
+                                clause: CastCostClause::Conspire(i as u16),
+                                paid: false,
+                            }),
+                    );
+                    if rows.iter().any(|r| r.pay) {
+                        clauses.push(CastCostRow {
+                            clause: CastCostClause::Mana,
+                            paid: false,
+                        });
+                    }
+                }
                 if let Some(a) = current
                     && a.item.cast.is_some_and(|c| c.teamwork == Some(true))
                 {
@@ -1965,7 +2130,12 @@ impl Game {
                         paid: false,
                     });
                 }
-                if spell.card.has_convoke()
+                if additional.is_some_and(|s| {
+                    matches!(
+                        s.kind,
+                        EffectChoiceKind::BeholdMany(_) | EffectChoiceKind::BeholdAndExile
+                    )
+                }) || convoke::potential(self, spell.card)
                     || improvise::potential(self, spell.card)
                     || delve::potential(self)
                 {
@@ -1992,7 +2162,16 @@ impl Game {
                         .map_or_else(Vec::new, |c| c.teammates.clone()),
                     teamwork_exact: false,
                     actor: goal.actor,
-                    mana: (spell.card.has_convoke()
+                    mana: (additional.is_some_and(|s| {
+                        matches!(
+                            s.kind,
+                            EffectChoiceKind::BeholdMany(_) | EffectChoiceKind::BeholdAndExile
+                        )
+                    }) || current.is_some_and(|a| {
+                        a.conspire
+                            .as_deref()
+                            .is_some_and(|rows| rows.iter().any(|r| r.pay))
+                    }) || convoke::potential(self, spell.card)
                         || improvise::potential(self, spell.card)
                         || delve::potential(self))
                     .then_some(ManaCost {
@@ -2004,6 +2183,10 @@ impl Game {
                     clauses,
                     active: None,
                     casualty: casualty.to_vec(),
+                    conspire: current
+                        .and_then(|a| a.conspire.as_deref())
+                        .cloned()
+                        .unwrap_or_default(),
                     additional,
                     additional_life: current.is_some_and(|a| a.additional_life),
                     forage: chosen_route,
@@ -2011,8 +2194,11 @@ impl Game {
                     exact,
                     counters: counters.to_vec(),
                 };
-                let mut world =
-                    FundingState::from_game_with_convoke(self, &attempt, spell.card.has_convoke());
+                let mut world = FundingState::from_game_with_convoke(
+                    self,
+                    &attempt,
+                    convoke::potential(self, spell.card),
+                );
                 world.set_purpose(purpose);
                 world.install_cost_context(Some(Box::new(context)));
                 world.reachable(&attempt, &mut HashSet::new())
@@ -2060,6 +2246,7 @@ impl Game {
             ],
             active: None,
             casualty: Vec::new(),
+            conspire: Vec::new(),
             additional: Some(spec),
             additional_life: false,
             forage: None,

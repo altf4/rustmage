@@ -40,6 +40,7 @@ pub(super) struct ManaEvent {
     pub production: Mana,
     /// Unrestricted mana produced by triggered mana abilities after this event.
     pub tap_bonus: Mana,
+    pub recolor: Option<u8>,
     pub quality: Option<mana_lots::Quality>,
     pub spent_lots: Vec<(mana_lots::Quality, Mana)>,
     /// Fully replaced, ordered activation-cost placements from the actual event.
@@ -509,6 +510,16 @@ impl Game {
                 }
                 self.commit_activation_use(&item);
             }
+        }
+        if let Some(colors) = event.recolor
+            && self.object_ref(source.card) == source
+            && self.on_battlefield(source.card)
+        {
+            self.set_color_effects(
+                &[source.card],
+                colors,
+                crate::cards::AnimationDuration::Permanent,
+            );
         }
         self.add_quality_mana(event.actor, event.production, event.quality);
         if event.tap_bonus != [0; 6] {

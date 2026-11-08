@@ -28,6 +28,7 @@ pub(super) struct OptionalWheel {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Resolution {
     pub power_difference: Option<Box<effect_choices::PowerDifferenceView>>,
+    pub chosen_color: Option<crate::cards::ChoiceColor>,
     pub chosen_card_name: Option<crate::CardName>,
     pub chosen_creature_type: Option<crate::cards::CreatureType>,
     pub target_counter_removal: Option<Box<TargetCounterRemovalView>>,
@@ -954,6 +955,14 @@ impl Game {
                         unreachable!("unwrapped event")
                     }
                     TriggerCondition::SelfEntersIfCast => same && event.was_cast,
+                    TriggerCondition::SelfEvokedEnters => same && event.evoked,
+                    TriggerCondition::SelfEntersManaSpent { color, minimum } => {
+                        same && event.cast_event.as_ref().is_some_and(|e| {
+                            e.payment
+                                .get(usize::from(color))
+                                .is_some_and(|n| *n >= minimum)
+                        })
+                    }
                     TriggerCondition::SelfNontokenEnters => same && !entered.is_token(),
                     TriggerCondition::SelfOffspring => same && event.offspring_paid,
                     TriggerCondition::SelfKicked => same && event.kicked,
@@ -2952,6 +2961,7 @@ impl Game {
             | StackKind::CopyEndStepSacrifice
             | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
+            | StackKind::ConspireCopy
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
             | StackKind::DelayedTokenCreation { .. }
@@ -3011,6 +3021,8 @@ impl Game {
                             || !source.card.graveyard_cast_entry_counters().is_empty()
                             || !source.card.hand_cast_entry_counters().is_empty()
                             || !source.card.cast_entry_counters().is_empty()
+                            || !source.card.evoke_costs().is_empty()
+                            || item.cast.is_some_and(|c| c.behold_exiled.is_some())
                             || source.card.entry_choice().is_some()
                             || source.card.entry_copy().is_some()
                             || source.card.entry_exile_counters().is_some()
@@ -3034,6 +3046,8 @@ impl Game {
                                 item.cast.filter(|_| !item.is_copy).map(|c| c.payment);
                             movement.cast_origin =
                                 item.cast.filter(|_| !item.is_copy).map(|c| c.origin);
+                            movement.evoked = item.cast.is_some_and(|c| c.evoked);
+                            movement.behold_exiled = item.cast.and_then(|cast| cast.behold_exiled);
                             movement.offspring_paid =
                                 item.cast.is_some_and(|c| c.offspring == Some(true));
                             movement.kicked = item.cast.is_some_and(|c| c.kicker == Some(true));
@@ -3146,6 +3160,7 @@ impl Game {
             });
         self.state.resolving = Some(Resolution {
             power_difference: None,
+            chosen_color: None,
             chosen_card_name: None,
             chosen_creature_type: None,
             target_counter_removal: None,
@@ -6006,6 +6021,13 @@ impl Game {
                         self.draw_many(item.controller, 1);
                     }
                 }
+                Instruction::ChooseColor => {
+                    self.state.resolving.as_mut().unwrap().chosen_color = None;
+                    self.state.pending = Pending::ResolutionColor {
+                        player: item.controller,
+                    };
+                    return;
+                }
                 Instruction::ChooseSourceColorAndHexproof => {
                     if item.source.is_some_and(|source| {
                         self.on_battlefield(source.id)
@@ -6255,6 +6277,15 @@ impl Game {
                     }
                 }
                 Instruction::SacrificeSource => self.sacrifice_exact_source(&item),
+                Instruction::SacrificeSourceByController => {
+                    if let Some(source) = item.source
+                        && self.on_battlefield(source.id)
+                        && self.object_ref(source.id) == source.object
+                    {
+                        let controller = self.state.objects[source.id as usize].controller;
+                        self.sacrifice_batch(&[(controller, source.id)]);
+                    }
+                }
                 Instruction::SacrificeSourceOrSkip { skip } => {
                     if !self.try_sacrifice_exact_source(&item) {
                         self.state.resolving.as_mut().unwrap().pc += skip;
@@ -6709,6 +6740,9 @@ impl Game {
                             .id,
                     ) {
                         ManaProduction::ChosenColor
+                        | ManaProduction::ColorsAmongControlledPermanents
+                        | ManaProduction::AnyColorChangingSource(_)
+                        | ManaProduction::ChoiceStat { .. }
                         | ManaProduction::MonocoloredPermanentColors
                         | ManaProduction::DistinctCreaturePowers
                         | ManaProduction::CountSubtype { .. }
@@ -6738,6 +6772,23 @@ impl Game {
                 }
                 Instruction::DamageEventObjectController(amount) => {
                     self.damage_event_object_controller(&item, amount);
+                }
+                Instruction::SetColors {
+                    subject,
+                    colors,
+                    duration,
+                } => {
+                    let colors = match colors {
+                        crate::cards::ColorValue::Fixed(mask) => mask,
+                        crate::cards::ColorValue::Chosen => {
+                            1 << self
+                                .resolution_chosen_color()
+                                .expect("preceding color choice")
+                                .index()
+                        }
+                    };
+                    let subjects = self.keyword_subjects(&item, subject);
+                    self.set_color_effects(&subjects, colors, duration);
                 }
                 Instruction::AnimateSource(spec) => self.animate_source(&item, spec),
                 Instruction::AnimateSourceColored(spec, colors) => {
@@ -6794,6 +6845,38 @@ impl Game {
                 }
                 Instruction::SearchHandAndOrLibrary(filter) => {
                     self.start_hand_library_search(item.controller, filter);
+                    return;
+                }
+                Instruction::SearchCreatureManaValue {
+                    maximum,
+                    destination,
+                } => {
+                    let maximum =
+                        u64::try_from(self.item_amount(maximum, &item)).unwrap_or(u64::MAX);
+                    self.state.resolving.as_mut().unwrap().search =
+                        Some(Box::new(search::SearchChoice {
+                            spec: SearchSpec {
+                                filter: crate::SearchFilter::KindsManaValue {
+                                    kinds: 1,
+                                    minimum: 0,
+                                    maximum,
+                                },
+                                maximum: 1,
+                                destination,
+                                tapped: false,
+                                reveal: true,
+                            },
+                            entry_counters: &[],
+                            minimum: 0,
+                            different_names: false,
+                            distinct_colors: 0,
+                            selected: Vec::new(),
+                            battlefield: None,
+                            destination_pending: false,
+                        }));
+                    self.state.pending = Pending::EffectSearch {
+                        player: item.controller,
+                    };
                     return;
                 }
                 Instruction::SearchFor { spec, .. }
@@ -9930,5 +10013,12 @@ impl Game {
                 }
             }
         }
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    pub(super) fn resolution_chosen_color(&self) -> Option<crate::cards::ChoiceColor> {
+        self.state.resolving.as_ref().and_then(|r| r.chosen_color)
     }
 }

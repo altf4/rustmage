@@ -664,6 +664,8 @@ pub struct ChosenModifier {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum ManaRestriction {
+    SpellManaValueAtLeast(u64),
+    ChosenSubtypeSpellOrActivation,
     /// Any cost except casting a spell from a hand.
     ExceptCastFromHand,
     /// Only spells cast from exile.
@@ -725,6 +727,12 @@ pub enum ManaProduction {
         quality: &'static ManaQuality,
     },
     ChosenColor,
+    AnyColorChangingSource(u32),
+    ColorsAmongControlledPermanents,
+    ChoiceStat {
+        colors: u8,
+        amount: &'static StatValue,
+    },
     SourcePower {
         color: u8,
     },
@@ -771,7 +779,10 @@ impl ManaProduction {
     pub(crate) fn visit(self, mut emit: impl FnMut(Mana) -> bool) -> bool {
         match self {
             Self::Tagged { production, .. } => production.visit(emit),
+            Self::AnyColorChangingSource(amount) => Self::any_color(amount).visit(emit),
             Self::ChosenColor
+            | Self::ColorsAmongControlledPermanents
+            | Self::ChoiceStat { .. }
             | Self::SourcePower { .. }
             | Self::TapSourcePowerChoice { .. }
             | Self::MonocoloredPermanentColors
@@ -993,6 +1004,7 @@ impl SearchFilter {
 pub enum SearchDestination {
     /// Reveal the selected cards, then choose one destination for the selection.
     HandOrGraveyard,
+    BeheldCreatureType,
     /// Face-up exile linked to this exact source incarnation, without an automatic return.
     LinkedExile,
     /// Exile the found cards and allow their controller to cast them free this turn.
@@ -1069,6 +1081,9 @@ pub enum EffectChoiceKind {
     BlightXCost,
     /// Choose a controlled permanent or reveal a matching card in hand.
     Behold,
+    BeholdMany(u16),
+    OptionalBeholdType(u16),
+    BeholdAndExile,
     /// Non-targeted Army selection during amass.
     AmassGoblins(u64),
     EmpowerJace(u64),
@@ -1488,6 +1503,12 @@ pub enum SpellCopyCount {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum ColorValue {
+    Fixed(u8),
+    Chosen,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Instruction {
     CounterOpponentsCounted,
     CounterAndDrawForController {
@@ -1523,6 +1544,12 @@ pub enum Instruction {
     },
     /// Grow the exact current attack/block event creature by its absolute stat difference.
     GrowEventPowerToughnessDifference,
+    ChooseColor,
+    SetColors {
+        subject: Subject,
+        colors: ColorValue,
+        duration: AnimationDuration,
+    },
     /// Marks the printed waterbend component of an activation cost.
     WaterbendCost(u16),
     /// Definition-only marker: exert the exact permanent as an activation cost.
@@ -2109,6 +2136,8 @@ pub enum Instruction {
     /// Create a source-independent delayed ability for this exact source.
     SacrificeSourceAtEndCombat,
     SacrificeSource,
+    /// Sacrifice the exact source under its current controller (evoke).
+    SacrificeSourceByController,
     SacrificeSourceIfNoPlaneswalker,
     /// Continue in this resolution only if sacrificing the exact source succeeds.
     SacrificeSourceOrSkip {
@@ -2764,6 +2793,10 @@ pub enum Instruction {
         filter: SearchFilter,
         counter: CounterKind,
         haste_at: Option<u32>,
+    },
+    SearchCreatureManaValue {
+        maximum: AmountValue,
+        destination: SearchDestination,
     },
     Search(SearchSpec),
     SearchScaled {
@@ -4955,6 +4988,11 @@ pub enum TriggerCondition {
     /// A paid promise belongs to this actual cast-to-battlefield entry event.
     SelfGiftEnters,
     SelfEntersIfCast,
+    SelfEvokedEnters,
+    SelfEntersManaSpent {
+        color: u8,
+        minimum: u32,
+    },
     Foraged,
     FoodsSacrificed,
     Reflexive,
@@ -5459,6 +5497,8 @@ pub enum ActivationOrigin {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum ActivationGuard {
+    ControlColorsAtLeast(u8),
+    GraveyardSubtype(&'static str),
     ClassLevelExactly(u8),
     SourceSolved,
     CastInstantSorceryThisTurn,
@@ -5489,6 +5529,8 @@ impl ActivationGuard {
     pub(crate) fn subtypes(self) -> &'static [&'static str] {
         match self {
             Self::ClassLevelExactly(_)
+            | Self::ControlColorsAtLeast(_)
+            | Self::GraveyardSubtype(_)
             | Self::Always
             | Self::SourceSolved
             | Self::SourceAttackedThisTurn
@@ -6816,6 +6858,9 @@ impl Card {
     }
     pub(crate) fn has_hybrid_cost(self) -> bool {
         !generated::cost_alternatives(self).is_empty()
+    }
+    pub(crate) fn evoke_costs(self) -> &'static [ManaCost] {
+        authored::rules(self).map_or(&[], |r| r.extras.evoke_costs)
     }
     pub fn collect_evidence_cost(self) -> Option<u16> {
         generated::collect_evidence(self).map(|v| v.0)

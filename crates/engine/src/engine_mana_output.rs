@@ -39,6 +39,8 @@ impl ManaOutput {
         };
         let choice = match recipe {
             ManaProduction::Choice { .. }
+            | ManaProduction::AnyColorChangingSource(_)
+            | ManaProduction::ChoiceStat { .. }
             | ManaProduction::TapSourcePowerChoice { .. }
             | ManaProduction::DistinctCreaturePowers => {
                 let mut colors = selected.iter().enumerate().filter(|(_, n)| **n != 0);
@@ -140,6 +142,8 @@ impl ManaProduction {
         matches!(
             self.base(),
             Self::Choice { .. }
+                | Self::AnyColorChangingSource(_)
+                | Self::ChoiceStat { .. }
                 | Self::Combination { .. }
                 | Self::TapSourcePowerChoice { .. }
                 | Self::DistinctCreaturePowers
@@ -163,7 +167,9 @@ impl ManaProduction {
         }
         let late_dynamic = matches!(
             self.base(),
-            Self::TapSourcePowerChoice { .. } | Self::DistinctCreaturePowers
+            Self::TapSourcePowerChoice { .. }
+                | Self::DistinctCreaturePowers
+                | Self::ChoiceStat { .. }
         );
         (late_dynamic || (late_fixed && self.has_late_choice())) && !zero && emit([0; 6])
     }
@@ -198,6 +204,9 @@ impl Game {
                 .as_ref()
                 .is_some_and(|r| r.capture.is_some());
         production.visit(|mana| {
+            if self.mana_tap_bonus_active() {
+                return (escaping || self.tap_bonus_choice_fundable(mana)) && emit(mana);
+            }
             (!owned || escaping || self.mana_output_choice_fundable(mana)) && emit(mana)
         })
     }
@@ -211,7 +220,9 @@ impl Game {
     ) -> bool {
         let late_fixed = matches!(
             production.base(),
-            ManaProduction::Choice { .. } | ManaProduction::Combination { .. }
+            ManaProduction::Choice { .. }
+                | ManaProduction::Combination { .. }
+                | ManaProduction::AnyColorChangingSource(_)
         ) && self.fixed_mana_choice_can_be_late(source, definition, index);
         // Pure tap-only fixed mana has no intervening information choice and
         // retains its original concrete action set. Real costs retain a full
@@ -303,7 +314,8 @@ impl Game {
     pub(super) fn complete_mana_output(&mut self, a: &mut Announcement, production: Mana) {
         let output = a.mana_output.take().expect("owned paid mana output");
         self.add_quality_mana(a.item.controller, production, output.quality);
-        self.produce_tap_mana_bonus(a.item.controller, a.item.tap_mana_bonus());
+        self.apply_mana_color_change(output.recipe, output.instance.source, production);
+        self.finish_mana_tap_bonus(a.item.controller, a.item.tap_mana_bonus(), production);
         self.committed_mana_reflexive(&a.item);
         if self.restore_mana_announcement() {
             self.reopen_evidence_after_mana_sacrifice(output.instance.source.card);

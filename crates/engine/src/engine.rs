@@ -73,6 +73,9 @@ pub mod hand_exile;
 #[path = "engine_mana_announcements.rs"]
 pub mod mana_announcements;
 #[doc(hidden)]
+#[path = "engine_mana_tap_bonus.rs"]
+mod mana_tap_bonus;
+pub use mana_tap_bonus::ManaTapBonus;
 #[path = "engine_mana_output.rs"]
 pub mod mana_output;
 #[doc(hidden)]
@@ -340,6 +343,11 @@ pub mod cast_costs;
 pub mod casualty;
 pub use cast_costs::{CastCostClause, CastCostRow, CastCostTransaction};
 pub use casualty::{CasualtyDeclaration, CasualtyGrant};
+#[doc(hidden)]
+#[path = "engine_conspire.rs"]
+pub mod conspire;
+#[doc(hidden)]
+pub use conspire::{ConspireDeclaration, ConspireGrant};
 #[doc(hidden)]
 #[path = "engine_cast_mana_recording.rs"]
 pub mod cast_mana_recording;
@@ -885,6 +893,9 @@ define_actions! {
     ChooseExplore { object: ObjectRef, graveyard: bool },
     ChooseManifest { object: ObjectRef },
     ChooseCasualty { pay: bool },
+    ChooseConspire { pay: bool },
+    ChooseBeholdType { creature_type: Option<crate::cards::CreatureType> },
+    PayConspire { objects: [ObjectRef; 2] },
     ChooseCastCost {clause:u16},
     PayCasualty {object:ObjectRef},
     ChooseBargain {
@@ -1443,6 +1454,15 @@ pub struct CastInfo {
     /// Counter qualification captured before the exile-to-stack transition.
     pub stash_origin: bool,
     pub method: CastMethod,
+    /// The paid alternative-cost declaration; spell copies retain this fact.
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub evoked: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub beheld_type: Option<crate::cards::CreatureType>,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub behold_type_declared: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub behold_exiled: Option<ObjectRef>,
     /// Defender captured before the non-targeted Sneak return is paid.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sneak_defender: Option<CombatDefender>,
@@ -1510,12 +1530,16 @@ fn is_false(value: &bool) -> bool {
 }
 
 fn serialize_tap_mana_bonus<S: serde::Serializer>(
-    bonus: &Option<Box<Mana>>,
+    bonus: &Option<Box<ManaTapBonus>>,
     serializer: S,
 ) -> Result<S::Ok, S::Error> {
     match bonus.as_deref() {
-        Some([0, 0, 0, red, 0, 0]) => serializer.serialize_u32(*red),
-        Some(mana) => mana.serialize(serializer),
+        Some(ManaTapBonus {
+            fixed: [0, 0, 0, red, 0, 0],
+            amount: 0,
+        }) => serializer.serialize_u32(*red),
+        Some(ManaTapBonus { fixed, amount: 0 }) => fixed.serialize(serializer),
+        Some(bonus) => bonus.serialize(serializer),
         None => serializer.serialize_none(),
     }
 }
@@ -1652,7 +1676,7 @@ pub struct SpellView {
         skip_serializing_if = "Option::is_none",
         serialize_with = "serialize_tap_mana_bonus"
     )]
-    pub mana_tap_bonus: Option<Box<Mana>>,
+    pub mana_tap_bonus: Option<Box<ManaTapBonus>>,
     pub source_attachment: Option<ObjectRef>,
     pub damage_event: Option<DamageTriggerView>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1691,7 +1715,7 @@ pub struct SpellView {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl SpellView {
-    pub(super) fn tap_mana_bonus(&self) -> Mana {
+    pub(super) fn tap_mana_bonus(&self) -> ManaTapBonus {
         self.mana_tap_bonus.as_deref().copied().unwrap_or_default()
     }
 
@@ -1876,7 +1900,7 @@ impl SpellView {
             + self
                 .mana_tap_bonus
                 .as_ref()
-                .map_or(0, |_| std::mem::size_of::<Mana>())
+                .map_or(0, |_| std::mem::size_of::<ManaTapBonus>())
             + self
                 .source_move
                 .as_ref()
@@ -2052,6 +2076,7 @@ impl SpellView {
             | StackKind::CopyEndStepSacrifice
             | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
+            | StackKind::ConspireCopy
             | StackKind::DelayedReturn
             | StackKind::DelayedTokenCreation { .. } => None,
             StackKind::DelayedManifestDread | StackKind::InherentRule { .. } => None,
@@ -2202,7 +2227,7 @@ impl SpellView {
                     };
                     (plan, program)
                 }),
-            StackKind::CasualtyCopy => Some((
+            StackKind::CasualtyCopy | StackKind::ConspireCopy => Some((
                 TargetPlan::NONE,
                 &[Instruction::CopyCastSpell {
                     prior_spells: false,
@@ -2306,6 +2331,7 @@ pub enum StackKind {
     SuspendCast,
     CopyEndStepConditionalSacrifice,
     CasualtyCopy,
+    ConspireCopy,
     DelayedReturn,
     DelayedTokenCreation {
         token: Card,
@@ -2567,6 +2593,16 @@ enum Pending {
     },
     Casualty {
         player: Player,
+    },
+    BeholdType {
+        player: Player,
+    },
+    Conspire {
+        player: Player,
+    },
+    ConspirePayment {
+        player: Player,
+        instance: u16,
     },
     CastCosts {
         player: Player,
@@ -3150,6 +3186,7 @@ pub struct ZoneChange {
     pub gift: Option<Box<GiftContext>>,
     pub was_cast: bool,
     pub(super) cast_origin: Option<Zone>,
+    pub evoked: bool,
     pub before: ObjectView,
     pub after: ObjectRef,
     pub destination: Zone,
@@ -3527,6 +3564,7 @@ pub struct Observation {
     pub resolved_spell_names: Vec<ResolvedSpellNameView>,
     pub preparations: Vec<PreparationView>,
     pub casualty_declarations: Vec<CasualtyDeclaration>,
+    pub conspire_declarations: Vec<ConspireDeclaration>,
     pub cast_costs: Option<CastCostTransaction>,
     pub mana_rollback: Option<ManaRollbackView>,
     pub library_piles: Option<LibraryPilesView>,
@@ -4241,6 +4279,9 @@ impl Game {
             | Pending::TargetCounterRemoval { player }
             | Pending::X { player }
             | Pending::Casualty { player }
+            | Pending::Conspire { player }
+            | Pending::BeholdType { player }
+            | Pending::ConspirePayment { player, .. }
             | Pending::ManaRollback { player }
             | Pending::CastCosts { player }
             | Pending::CasualtyPayment { player, .. }
@@ -4557,6 +4598,9 @@ impl Game {
                 if self.advance_entries() {
                     break;
                 }
+                if self.advance_mana_tap_bonus() {
+                    break;
+                }
                 if self.state.resolving.is_none()
                     && self.state.replacements.is_none()
                     && self.state.announcing.is_none()
@@ -4585,6 +4629,7 @@ impl Game {
                 .is_some_and(|r| r.capture.is_some())
                 && (self.state.entry_batch.is_some()
                     || self.state.replacements.is_some()
+                    || self.mana_tap_bonus_pending()
                     // CR605: finish the owned mana ability, including its late
                     // color/allocation choice, before reversing its parent cast.
                     || (matches!(self.state.pending, Pending::EffectMana { .. })
@@ -6027,7 +6072,7 @@ impl Game {
                                 ) != 0
                                     || self.foreign_stash(actor, card)
                                     || self.exile_cast_modifiers(actor, card).0
-                                    || obj.card.has_convoke()
+                                    || convoke::potential(self, obj.card)
                                     || improvise::potential(self, obj.card)
                                     || delve::potential(self)
                                     || obj.card.additional_cost().is_some()
@@ -6091,6 +6136,7 @@ impl Game {
                         && obj.card.gift().is_none()
                         && obj.card.collect_evidence_cost().is_none()
                         && !self.has_casualty(actor, obj.card)
+                        && !self.has_conspire(actor, obj.card)
                         && !obj.card.has_bargain()
                         && obj.card.additional_cost().is_none()
                     {
@@ -6156,9 +6202,10 @@ impl Game {
                         || obj.card.kicker_cost().is_some()
                         || obj.card.gift().is_some()
                         || obj.card.collect_evidence_cost().is_some()
-                        || obj.card.has_convoke()
+                        || convoke::potential(self, obj.card)
                         || improvise::potential(self, obj.card)
                         || self.has_casualty(actor, obj.card)
+                        || self.has_conspire(actor, obj.card)
                         || obj.card.has_bargain()
                         || obj.card.additional_cost().is_some()
                         || obj.card.cost_alternative_guard().is_some()
@@ -6366,6 +6413,33 @@ impl Game {
                     }
                 }
             }
+            Pending::BeholdType { .. } => {
+                if self.behold_type_fundable(None)
+                    && emit(Action::ChooseBeholdType {
+                        creature_type: None,
+                    })
+                {
+                    return true;
+                }
+                for name in crate::CREATURE_TYPES {
+                    let kind = crate::cards::CreatureType::from_name(name).unwrap();
+                    if self.behold_type_fundable(Some(kind))
+                        && emit(Action::ChooseBeholdType {
+                            creature_type: Some(kind),
+                        })
+                    {
+                        return true;
+                    }
+                }
+            }
+            Pending::Conspire { .. } => {
+                for pay in [false, true] {
+                    if self.conspire_intent_fundable(pay) && emit(Action::ChooseConspire { pay }) {
+                        return true;
+                    }
+                }
+            }
+            Pending::ConspirePayment { .. } => return self.visit_conspire_payments(&mut emit),
             Pending::Casualty { .. } => {
                 for pay in [false, true] {
                     if self.casualty_intent_fundable(pay) && emit(Action::ChooseCasualty { pay }) {
@@ -7148,7 +7222,7 @@ impl Game {
                     self.sacrifice_batch(&[(actor, card)]);
                 }
                 self.add_quality_mana(actor, production, quality);
-                self.produce_tap_mana_bonus(actor, bonus);
+                self.finish_mana_tap_bonus(actor, bonus, production);
                 self.creature_ability_activated(actor, creature, activated_object, None);
                 self.state.passes = 0;
             }
@@ -7168,7 +7242,7 @@ impl Game {
                         .checked_add(1)
                         .capacity("mana representation exhausted");
                 }
-                self.produce_tap_mana_bonus(actor, bonus);
+                self.finish_mana_tap_bonus(actor, bonus, production);
                 if self.state.activation_observers.is_some() {
                     self.creature_ability_activated(
                         actor,
@@ -7563,7 +7637,7 @@ impl Game {
                     );
                 } else {
                     self.add_quality_mana(actor, production, quality);
-                    self.produce_tap_mana_bonus(actor, item.tap_mana_bonus());
+                    self.finish_mana_tap_bonus(actor, item.tap_mana_bonus(), production);
                     self.committed_mana_reflexive(&item);
                     self.reopen_evidence_after_mana_sacrifice(card);
                 }
@@ -7703,13 +7777,17 @@ impl Game {
                     );
                 } else {
                     self.add_quality_mana(actor, production, quality);
-                    self.produce_tap_mana_bonus(actor, item.tap_mana_bonus());
+                    self.finish_mana_tap_bonus(actor, item.tap_mana_bonus(), production);
                     self.committed_mana_reflexive(&item);
                     self.reopen_evidence_after_mana_sacrifice(card);
                 }
             }
             Action::ChooseManaLotSpend { .. } => unreachable!("allocation handled transactionally"),
             Action::ChooseMana { production } => {
+                if self.mana_tap_bonus_active() {
+                    self.choose_mana_tap_bonus(production);
+                    return;
+                }
                 if self
                     .state
                     .announcing
@@ -7823,6 +7901,11 @@ impl Game {
             Action::ChooseExplore { graveyard, .. } => self.finish_explore(graveyard),
             Action::ChooseManifest { object } => self.choose_manifest(object),
             Action::ChooseCasualty { pay } => self.choose_casualty(pay),
+            Action::ChooseConspire { pay } => self.choose_conspire(pay),
+            Action::ChooseBeholdType {
+                creature_type: kind,
+            } => self.choose_behold_type(kind),
+            Action::PayConspire { objects } => self.pay_conspire_clause(objects),
             Action::ChooseCastCost { clause } => self.choose_cast_cost(clause),
             Action::PayCasualty { object } => self.pay_casualty_clause(object),
             Action::ChooseBargain { sacrifice } => {
@@ -8111,7 +8194,21 @@ impl Game {
                 self.advance_damage_choices();
             }
             Action::ChooseResolutionColor { color } => {
-                self.choose_source_color_and_hexproof(color);
+                let resolution = self
+                    .state
+                    .resolving
+                    .as_mut()
+                    .expect("color choice resolution");
+                if resolution.pc > 0
+                    && matches!(
+                        resolution.program[resolution.pc - 1],
+                        Instruction::ChooseColor
+                    )
+                {
+                    resolution.chosen_color = Some(color);
+                } else {
+                    self.choose_source_color_and_hexproof(color);
+                }
                 self.run_program();
             }
             Action::ChooseKeyword { index } => {
@@ -9240,6 +9337,7 @@ impl Game {
                 battlefield_departure_observers: None,
                 was_cast: false,
                 cast_origin: None,
+                evoked: false,
                 gift: None,
                 after: before.reference,
                 destination: before.zone,
@@ -9288,6 +9386,7 @@ impl Game {
                 battlefield_departure_observers: None,
                 was_cast: false,
                 cast_origin: None,
+                evoked: false,
                 gift: None,
                 after: before.reference,
                 destination: before.zone,
@@ -9316,6 +9415,7 @@ impl Game {
                 battlefield_departure_observers: None,
                 was_cast: false,
                 cast_origin: None,
+                evoked: false,
                 gift: None,
                 after: before.reference,
                 destination,
@@ -9819,6 +9919,7 @@ impl Game {
             battlefield_departure_observers,
             was_cast: false,
             cast_origin: None,
+            evoked: false,
             gift: None,
             before,
             after: self.object_ref(id),
@@ -10761,6 +10862,14 @@ impl Game {
                 .filter(|a| self.shares_information(viewer, a.item.controller))
                 .and_then(|a| a.cast_costs.as_deref())
                 .cloned(),
+            conspire_declarations: self
+                .state
+                .announcing
+                .as_ref()
+                .filter(|a| self.shares_information(viewer, a.item.controller))
+                .and_then(|a| a.conspire.as_deref())
+                .cloned()
+                .unwrap_or_default(),
             casualty_declarations: self
                 .state
                 .announcing
@@ -11059,6 +11168,9 @@ impl Game {
                 Pending::Targets { .. } => "targets",
                 Pending::Offspring { .. } => "offspring",
                 Pending::Casualty { .. } => "casualty",
+                Pending::Conspire { .. } => "conspire",
+                Pending::BeholdType { .. } => "behold_type",
+                Pending::ConspirePayment { .. } => "conspire_payment",
                 Pending::ManaRollback { .. } => "mana_rollback",
                 Pending::CastCosts { .. } => "cast_costs",
                 Pending::CasualtyPayment { .. } => "casualty_payment",
@@ -12103,7 +12215,9 @@ impl Game {
                 })
                 .unwrap_or(0)
             + s.announcing.as_ref().map_or(0, |a| {
-                casualty::bytes(&a.casualty) + a.cast_costs.as_ref().map_or(0, |c| c.bytes())
+                casualty::bytes(&a.casualty)
+                    + conspire::bytes(&a.conspire)
+                    + a.cast_costs.as_ref().map_or(0, |c| c.bytes())
             })
             + s.announcing
                 .as_ref()

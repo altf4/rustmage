@@ -257,6 +257,8 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::OtherControlledExhaustGenericReduction(_)
                             | crate::cards::StaticAbilityFragment::ArtifactTokenActivationReduction(_)
                             | crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(_)
+                            | crate::cards::StaticAbilityFragment::AttachmentManaBonus(_)
+                            | crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(_)
                             | crate::cards::StaticAbilityFragment::DoubleDrawExceptFirst
                             | crate::cards::StaticAbilityFragment::ConditionalDoubleDraw(_)
                             | crate::cards::StaticAbilityFragment::AdditionalDrawWithAtMostOneCard
@@ -289,6 +291,8 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::CantLoseGameAndOpponentsCantWin
                             | crate::cards::StaticAbilityFragment::ControlledSpellsUncounterable(_)
                             | crate::cards::StaticAbilityFragment::ControlledSpellsCasualty { .. }
+                            | crate::cards::StaticAbilityFragment::NoncreatureConspire
+                            | crate::cards::StaticAbilityFragment::ConvokeCreatureSpells
                             | crate::cards::StaticAbilityFragment::SelfUntap(_)
                             | crate::cards::StaticAbilityFragment::CounterProhibition(_)
                             | crate::cards::StaticAbilityFragment::PlayerCounterProhibition { .. }

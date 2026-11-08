@@ -70,6 +70,14 @@ impl Announcement {
                 add(object);
             }
         }
+        if let Some(conspire) = &self.conspire {
+            for row in conspire.iter() {
+                add(row.grant.source);
+                for object in row.objects.into_iter().flatten() {
+                    add(object);
+                }
+            }
+        }
         if let Some(casualty) = &self.casualty {
             for row in casualty.iter() {
                 add(row.grant.source);
@@ -253,7 +261,7 @@ impl EntryProjection {
             if card.static_ability_groups().iter().any(|g| {
                 g.fragments
                     .iter()
-                    .any(|f| matches!(f, F::AttachedCharacteristics(_)))
+                    .any(|f| matches!(f, F::AttachedCharacteristics(_) | F::AttachedChosenColor))
             }) {
                 self.roles.characteristic_sources.push(source);
             }
@@ -2065,13 +2073,15 @@ impl Game {
                 self,
                 &goal,
                 parent.announcement.item.kind == StackKind::Spell
-                    && parent
-                        .announcement
-                        .item
-                        .source
-                        .expect("cost announcement has object source")
-                        .card
-                        .has_convoke(),
+                    && convoke::potential(
+                        self,
+                        parent
+                            .announcement
+                            .item
+                            .source
+                            .expect("cost announcement has object source")
+                            .card,
+                    ),
             );
             world.set_purpose(self.purpose_for_item(&parent.announcement.item));
             world.set_payment_context(&parent.announcement);
@@ -2087,11 +2097,13 @@ impl Game {
                 self,
                 &goal,
                 a.item.kind == StackKind::Spell
-                    && a.item
-                        .source
-                        .expect("cost announcement has object source")
-                        .card
-                        .has_convoke(),
+                    && convoke::potential(
+                        self,
+                        a.item
+                            .source
+                            .expect("cost announcement has object source")
+                            .card,
+                    ),
             );
             world.set_purpose(self.purpose_for_item(&a.item));
             world.set_payment_context(a);
@@ -2284,7 +2296,9 @@ impl<'g> FundingState<'g> {
         {
             let mut next = self.clone();
             let bonus = next.apply(step, false);
-            if let Some(production) = next.singleton_output(step) {
+            if let Some(production) = next.singleton_output(step)
+                && let Some(bonus) = bonus.singleton(production)
+            {
                 next.add_funding_output(step, bonus, production);
                 return emit(&next);
             }
@@ -2679,13 +2693,15 @@ impl<'g> FundingState<'g> {
                     next.continuation_memo = query.continuation_memo.clone();
                     next.set_purpose(self.game.purpose_for_item(&parent.announcement.item));
                     next.convoke = parent.announcement.item.kind == StackKind::Spell
-                        && parent
-                            .announcement
-                            .item
-                            .source
-                            .expect("cost announcement has object source")
-                            .card
-                            .has_convoke();
+                        && convoke::potential(
+                            self,
+                            parent
+                                .announcement
+                                .item
+                                .source
+                                .expect("cost announcement has object source")
+                                .card,
+                        );
                     next.set_payment_context(&parent.announcement);
                     next.reachable_with_evidence(
                         parent_goal.as_ref().expect("parent goal"),

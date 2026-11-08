@@ -71,6 +71,8 @@ pub(super) struct EntryMove {
     pub life_paid: Option<bool>,
     pub offspring_paid: bool,
     pub cast_payment: Option<Mana>,
+    pub evoked: bool,
+    pub behold_exiled: Option<ObjectRef>,
     pub cast_event: Option<Box<CastPaymentEvent>>,
     /// Explicit origin of an actual spell cast; absent for reanimation/put effects.
     pub cast_origin: Option<Zone>,
@@ -243,6 +245,8 @@ impl EntryMove {
             life_paid: None,
             offspring_paid: false,
             cast_payment: None,
+            evoked: false,
+            behold_exiled: None,
             cast_event: None,
             cast_origin: None,
             warp_controller: None,
@@ -1156,6 +1160,23 @@ impl Game {
             }
             event.was_cast = movement.cast_origin.is_some();
             event.cast_origin = movement.cast_origin;
+            event.evoked = movement.evoked;
+            if event.moved
+                && event.destination == Zone::Battlefield
+                && let Some(exiled) = movement.behold_exiled
+                && self.object_ref(exiled.card) == exiled
+                && self.state.objects[exiled.card as usize].zone == Zone::Exile
+            {
+                self.state
+                    .linked_choices
+                    .get_or_insert_default()
+                    .links
+                    .push(LinkedExileView {
+                        source: event.after,
+                        exiled,
+                        ability_origin: None,
+                    });
+            }
             event.offspring_paid = movement.offspring_paid;
             event.kicked = movement.kicked;
             if event.moved && event.destination == Zone::Battlefield {

@@ -570,6 +570,7 @@ impl Game {
             creature_counter_cost: None,
             forage: None,
             casualty: None,
+            conspire: None,
             cast_costs: None,
             evidence: None,
             convoke: None,
@@ -578,7 +579,7 @@ impl Game {
             additional_paid: false,
         };
         if method == CastMethod::GraveyardAdditionalCosts || origin_additional_cost.is_some() {
-            a.initialize_cast_costs(improvise::potential(self, definition));
+            a.initialize_cast_costs(convoke::cost_potential(self, definition));
         }
         if teamwork {
             return self.teamwork_intent_fundable(&a, false)

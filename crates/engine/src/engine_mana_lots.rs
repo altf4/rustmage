@@ -13,6 +13,7 @@ use crate::cards::{CreatureType, ManaQuality, ManaRestriction, ManaRetention, Ma
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
 pub enum ManaRestrictionView {
+    SpellManaValueAtLeast(u64),
     ExceptCastFromHand,
     CastFromExile,
     ArtifactSpell,
@@ -143,6 +144,17 @@ impl Quality {
     ) -> Self {
         Self {
             restriction: match quality.restriction {
+                ManaRestriction::SpellManaValueAtLeast(minimum) => {
+                    ManaRestrictionView::SpellManaValueAtLeast(minimum)
+                }
+                ManaRestriction::ChosenSubtypeSpellOrActivation => {
+                    match world.entry_value(world.reference(source)) {
+                        Some(EntryChoiceValue::CreatureType(kind)) => {
+                            ManaRestrictionView::SubtypeSpellOrActivation(kind.name())
+                        }
+                        _ => ManaRestrictionView::Unavailable,
+                    }
+                }
                 ManaRestriction::ExceptCastFromHand => ManaRestrictionView::ExceptCastFromHand,
                 ManaRestriction::CastFromExile => ManaRestrictionView::CastFromExile,
                 ManaRestriction::EquipmentSpellOrEquip => {
@@ -220,6 +232,9 @@ impl Quality {
     }
     pub(super) fn eligible(self, purpose: Purpose) -> bool {
         match self.restriction {
+            ManaRestrictionView::SpellManaValueAtLeast(minimum) => {
+                matches!(purpose, Purpose::Spell(source) if source.mana_value >= minimum)
+            }
             ManaRestrictionView::ExceptCastFromHand => {
                 !matches!(purpose, Purpose::Spell(source) if source.cast_from_hand)
             }
@@ -298,6 +313,7 @@ pub(super) enum Purpose {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub(super) struct Source {
     pub card: Card,
+    pub mana_value: u64,
     pub kinds: u16,
     pub subtypes: GrantedSubtypes,
     pub foreign_stash: bool,
@@ -320,6 +336,7 @@ impl Source {
     ) -> Self {
         Self {
             card: world.object(id).card,
+            mana_value: world.mana_value(id),
             kinds: world.kinds(id),
             subtypes: world.subtypes(id),
             foreign_stash: false,
@@ -336,6 +353,7 @@ impl Source {
     fn printed(card: Card) -> Self {
         Self {
             card,
+            mana_value: card.fixed_mana_value(),
             kinds: card.kind_mask(),
             subtypes: GrantedSubtypes::default(),
             foreign_stash: false,
@@ -352,6 +370,7 @@ impl From<DamageFacts> for Source {
     fn from(facts: DamageFacts) -> Self {
         Self {
             card: facts.card,
+            mana_value: facts.card.fixed_mana_value(),
             kinds: facts.kinds,
             subtypes: facts.granted_subtypes,
             foreign_stash: false,
@@ -420,6 +439,7 @@ pub(super) struct ManaState {
     pub trace: Option<SpendRequest>,
     pub replay: Option<Vec<Mana>>,
     pub choice: Option<Box<SpendChoice>>,
+    pub tap_bonus: Option<Box<mana_tap_bonus::TapBonusChoice>>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ManaState {
@@ -710,10 +730,9 @@ impl Game {
             0
         }
     }
-    pub(super) fn mana_tap_bonuses(&self, actor: Player, card: CardId) -> Mana {
-        let mut mana =
-            ability_world::CharacteristicWorld::controlled_land_tap_bonus(self, actor, card);
-        mana[3] = mana[3]
+    pub(super) fn mana_tap_bonuses(&self, actor: Player, card: CardId) -> ManaTapBonus {
+        let mut mana = mana_tap_bonus::capture(self, actor, card);
+        mana.fixed[3] = mana.fixed[3]
             .checked_add(self.mountain_tap_bonus(actor, card))
             .capacity("mana representation exhausted");
         mana
@@ -732,7 +751,7 @@ impl Game {
             })
         });
         self.add_quality_mana(item.controller, mana, quality);
-        self.produce_tap_mana_bonus(item.controller, item.tap_mana_bonus());
+        self.finish_mana_tap_bonus(item.controller, item.tap_mana_bonus(), mana);
     }
     pub(super) fn add_quality_mana(&mut self, actor: Player, mana: Mana, quality: Option<Quality>) {
         self.record_cast_mana_production(actor, mana, quality);
@@ -788,6 +807,7 @@ impl Game {
             state.pools.iter().all(|pool| pool.is_empty())
                 && state.inert_copy_sources.is_none()
                 && state.choice.is_none()
+                && state.tap_bonus.is_none()
                 && state.effect_quality.is_none()
                 && state.announcement_quality.is_none()
                 && state.replay.is_none()
@@ -926,6 +946,7 @@ impl Game {
         };
         if item.kind == StackKind::Spell {
             let mut source = Source::printed(identity.card);
+            source.mana_value = item.mana_value();
             source.foreign_stash = item.cast.is_some_and(|c| c.stash_origin);
             source.cast_from_hand = item.cast.is_some_and(|c| {
                 c.origin == Zone::Hand
@@ -966,6 +987,14 @@ impl Game {
         definition: Card,
     ) -> Purpose {
         let mut source = Source::printed(definition);
+        if let Some(a) = self.state.announcing.as_ref().filter(|a| {
+            a.item.kind == StackKind::Spell
+                && a.item
+                    .source
+                    .is_some_and(|s| s.id == card && s.card == definition)
+        }) {
+            source.mana_value = a.item.mana_value();
+        }
         source.cast_from_hand = self.state.objects[card as usize].owner == actor
             && self
                 .state
@@ -1299,7 +1328,7 @@ impl Game {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    fn compact_mana_lots(&mut self) {
+    pub(super) fn compact_mana_lots(&mut self) {
         if self.state.mana_lots.as_ref().is_some_and(|state| {
             state.pools.iter().all(|pool| pool.is_empty())
                 && state.inert_copy_sources.is_none()
@@ -1307,6 +1336,7 @@ impl Game {
                 && state.prepared.is_none()
                 && state.replay.is_none()
                 && state.choice.is_none()
+                && state.tap_bonus.is_none()
                 && state.effect_quality.is_none()
                 && state.announcement_quality.is_none()
         }) {
@@ -1327,6 +1357,10 @@ impl Game {
             return 0;
         };
         std::mem::size_of::<ManaState>()
+            + state.tap_bonus.as_ref().map_or(0, |choice| {
+                std::mem::size_of::<mana_tap_bonus::TapBonusChoice>()
+                    + choice.previous.as_ref().map_or(0, Pending::owned_bytes)
+            })
             + state.inert_copy_sources.as_ref().map_or(0, |roots| {
                 std::mem::size_of::<Vec<ObjectRef>>()
                     + roots.len() * std::mem::size_of::<ObjectRef>()

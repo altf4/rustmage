@@ -302,6 +302,7 @@ impl Game {
                     battlefield_departure_observers: None,
                     was_cast: false,
                     cast_origin: None,
+                    evoked: false,
                     gift: None,
                     before,
                     after: self.object_ref(id),

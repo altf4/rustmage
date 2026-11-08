@@ -68,7 +68,7 @@ impl Game {
     pub(super) fn teamwork_intent_fundable(&self, announcement: &Announcement, pay: bool) -> bool {
         let mut a = announcement.clone();
         a.item.cast.as_mut().unwrap().teamwork = Some(pay);
-        a.initialize_cast_costs(improvise::potential(
+        a.initialize_cast_costs(convoke::cost_potential(
             self,
             a.item
                 .source

@@ -66,7 +66,7 @@ impl Game {
     pub(super) fn blight_intent_fundable(&self, pay: bool) -> bool {
         let mut a = self.state.announcing.as_ref().unwrap().clone();
         a.item.cast.as_mut().unwrap().blight = Some(pay);
-        a.initialize_cast_costs(improvise::potential(
+        a.initialize_cast_costs(convoke::cost_potential(
             self,
             a.item
                 .source

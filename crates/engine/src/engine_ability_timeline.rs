@@ -54,6 +54,8 @@ impl Card {
                             | StaticAbilityFragment::RemoveAttachedAbilities
                             | StaticAbilityFragment::ControlAttached
                             | StaticAbilityFragment::AttachedCharacteristics(..)
+                            | StaticAbilityFragment::AttachedChosenColor
+                            | StaticAbilityFragment::AttachmentManaBonus(..)
                             | StaticAbilityFragment::SourceCounterSubtype { .. }
                             | StaticAbilityFragment::SourceCounterCreature { .. }
                             | StaticAbilityFragment::SourceOffTurnCreature
@@ -136,7 +138,11 @@ impl Game {
             .iter()
             .any(|group| {
                 group.fragments.iter().any(|fragment| {
-                    matches!(fragment, StaticAbilityFragment::AttachedCharacteristics(..))
+                    matches!(
+                        fragment,
+                        StaticAbilityFragment::AttachedCharacteristics(..)
+                            | StaticAbilityFragment::AttachedChosenColor
+                    )
                 })
             })
         {

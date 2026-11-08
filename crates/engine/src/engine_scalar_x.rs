@@ -174,6 +174,36 @@ impl Game {
                 }
             }
         }
+        if symbols > 0 {
+            let mut add_minimum = |minimum: u64| {
+                cuts.push(
+                    minimum
+                        .saturating_sub(card.fixed_mana_value())
+                        .div_ceil(symbols)
+                        .min(end),
+                )
+            };
+            if let Some(state) = &self.state.mana_lots {
+                for lot in &state.pools[actor.index()] {
+                    if let mana_lots::ManaRestrictionView::SpellManaValueAtLeast(minimum) =
+                        lot.quality.restriction
+                    {
+                        add_minimum(minimum);
+                    }
+                }
+            }
+            // A threshold also matters before the restricted producer has been tapped.
+            for object in &self.state.objects {
+                for ability in object.card.activations() {
+                    if let Some(ManaProduction::Tagged { quality, .. }) = ability.mana_production()
+                        && let crate::cards::ManaRestriction::SpellManaValueAtLeast(minimum) =
+                            quality.restriction
+                    {
+                        add_minimum(minimum);
+                    }
+                }
+            }
+        }
         cuts.sort_unstable();
         cuts.dedup();
         let (colored, generic) = card.cost();
@@ -188,7 +218,14 @@ impl Game {
             }
             self.scalar_x_total_for_definition(actor, id, base, x, card)
                 .is_some_and(|cost| {
-                    self.spell_can_fund_total_for_definition(actor, id, cost, None, card)
+                    self.spell_can_fund_total_at_value(
+                        actor,
+                        id,
+                        cost,
+                        None,
+                        card,
+                        Some(card.fixed_mana_value() + symbols * u64::from(x)),
+                    )
                 })
         };
         let mut intervals: Vec<XInterval> = Vec::new();

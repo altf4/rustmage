@@ -80,6 +80,9 @@ pub enum StaticAbilityFragment {
     OtherControlledExhaustGenericReduction(u32),
     ArtifactTokenActivationReduction(u32),
     ControlledLandTapManaBonus(Mana),
+    AttachedChosenColor,
+    AttachmentManaBonus(ManaProduction),
+    BasicLandTapManaBonus(u16),
     /// Controlled instant and sorcery spells have split second.
     ControlledInstantSorcerySplitSecond,
     /// Permanents controlled by this source's controller cannot be sacrificed.
@@ -251,6 +254,9 @@ pub enum StaticAbilityFragment {
     CantLoseGameAndOpponentsCantWin,
     QualifiedHexproof(SourceCharacteristicFilter),
     ControlledSpellsUncounterable(u16),
+    /// Each instance grants a distinct optional paired-tap copy cost.
+    NoncreatureConspire,
+    ConvokeCreatureSpells,
     ControlledSpellsCasualty {
         kinds: u16,
         minimum: u16,

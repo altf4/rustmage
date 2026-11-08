@@ -402,6 +402,8 @@ pub struct CardExtras {
     pub cast_timing_guard: StepGuard,
     pub cost_reductions: &'static [SpellReduction],
     pub cost_alternatives: &'static [ManaCost],
+    /// Printed evoke routes, also present among the ordinary alternative costs.
+    pub evoke_costs: &'static [ManaCost],
     pub cost_alternative_guard: Option<StepGuard>,
     pub mana_alternative_replaces_additional: bool,
     /// Independent additional mana route crossed with every printed hybrid base.
@@ -527,6 +529,7 @@ impl CardExtras {
         cast_timing_guard: StepGuard::Always,
         cost_reductions: &[],
         cost_alternatives: &[],
+        evoke_costs: &[],
         cost_alternative_guard: None,
         mana_alternative_replaces_additional: false,
         additional_mana_alternative: None,

@@ -245,6 +245,15 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                     80 + i128::from((*value).min(20))
                 }
             }
+            Action::ChooseBeholdType {
+                creature_type: kind,
+            } => {
+                if kind.is_some() {
+                    100
+                } else {
+                    0
+                }
+            }
             Action::ChooseGift { beneficiary } => {
                 if beneficiary.is_some() {
                     40
@@ -253,6 +262,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                 }
             }
             Action::ChooseCasualty { pay }
+            | Action::ChooseConspire { pay }
             | Action::ChooseOffspring { pay }
             | Action::ChooseLibraryCastPermission { with_counter: pay }
             | Action::ChooseKicker { pay } => {
@@ -283,6 +293,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             }
             Action::ChooseCastCost { .. }
             | Action::PayCasualty { .. }
+            | Action::PayConspire { .. }
             | Action::PaySneakReturn { .. }
             | Action::ChooseAdditionalCost { .. }
             | Action::ChooseAdditionalLife

@@ -1557,6 +1557,30 @@ impl ManaProduction {
                     .capacity("mana representation exhausted");
                 Self::Fixed(mana)
             }
+            Self::AnyColorChangingSource(amount) => Self::any_color(amount),
+            Self::ColorsAmongControlledPermanents => {
+                let mask = self::controlled_colors(world, controller);
+                Self::Fixed(std::array::from_fn(|i| {
+                    u32::from(i < 5 && mask & (1 << i) != 0)
+                }))
+            }
+            Self::ChoiceStat { colors, amount } => {
+                let amount = world.game().stat_value_in_world(
+                    world,
+                    *amount,
+                    world.reference(source),
+                    controller,
+                );
+                let amount = u32::try_from(amount.max(0)).capacity("mana representation exhausted");
+                if amount == 0 {
+                    Self::Fixed([0; 6])
+                } else {
+                    Self::Choice {
+                        mask: colors,
+                        amount,
+                    }
+                }
+            }
             Self::ChosenColor => {
                 let mut mana = [0; 6];
                 if let Some(EntryChoiceValue::Color(color)) =
@@ -1751,4 +1775,32 @@ fn power_after_source_tap<W: CharacteristicWorld + ?Sized>(world: &W, source: Ca
         object,
     }
     .power(source)
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn controlled_colors<W: CharacteristicWorld + ?Sized>(world: &W, actor: Player) -> u8 {
+    (0..world.game().state.objects.len()).fold(0, |mask, id| {
+        let id = id as CardId;
+        let object = world.object(id);
+        mask | if object.zone == Zone::Battlefield && object.controller == actor {
+            world.colors(id) & 31
+        } else {
+            0
+        }
+    })
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn graveyard_subtype<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    actor: Player,
+    subtype: &str,
+) -> bool {
+    (0..world.game().state.objects.len()).any(|id| {
+        let id = id as CardId;
+        let object = world.object(id);
+        object.zone == Zone::Graveyard
+            && object.owner == actor
+            && object.is_card()
+            && world.subtypes(id).has(object.card, subtype)
+    })
 }
