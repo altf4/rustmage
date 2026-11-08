@@ -640,7 +640,12 @@ impl Game {
         else {
             return;
         };
-        assert!(self.linked_exile_candidates(source).contains(&object));
+        assert!(self.resolution_linked_exile_candidates(source).contains(&object));
+        if let Some(mode) = self.state.resolving.as_mut().unwrap().linked_exile_mode.take() {
+            self.finish_linked_exile_effect(mode, object);
+            self.run_program();
+            return;
+        }
         let movement = self.entry_move(object.card, Zone::Hand, false);
         self.stage_entries(vec![movement], None);
         self.run_program();

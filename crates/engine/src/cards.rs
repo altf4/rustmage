@@ -1549,6 +1549,15 @@ pub enum Instruction {
     RecoverAnotherPermanent,
     ReturnLinkedExileToHand,
     ReturnOneLinkedExileToHand,
+    ExileTargetsLinkedToSource,
+    ChooseLinkedCreatureReturn,
+    ReturnOtherLinkedExileToHand,
+    ExileGraveyardCaptureMutantCopy,
+    CreateCapturedCopy,
+    CopyLinkedExiledAsMutant,
+    ExileOpponentUntilNonlandLinked,
+    CastOneLinkedDuringResolution,
+    ReturnGraveyardNameTapped,
     /// Trigger once per declaration attacking the resolving controller's opponent,
     /// through (but not including) the beginning of that controller's next turn.
     ScheduleOpponentAttackUntilNextTurn {

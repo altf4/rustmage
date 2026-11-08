@@ -31,6 +31,8 @@ pub(super) struct Resolution {
     pub chosen_creature_type: Option<crate::cards::CreatureType>,
     pub target_counter_removal: Option<Box<TargetCounterRemovalView>>,
     pub linked_copy: Option<Box<linked_copies::LinkedCopyCapture>>,
+    pub linked_exile_mode: Option<linked_exile_effects::LinkedExileMode>,
+    pub linked_exile_selected: Option<ObjectRef>,
     pub cascade: Option<Box<cascade::CascadeView>>,
     #[allow(clippy::box_collection)]
     pub target_card_facts: Option<Box<Vec<TargetCardFacts>>>,
@@ -3067,6 +3069,8 @@ impl Game {
             chosen_creature_type: None,
             target_counter_removal: None,
             linked_copy: None,
+            linked_exile_mode: None,
+            linked_exile_selected: None,
             cascade: None,
             target_card_facts,
             sacrificed_power: None,
@@ -3527,6 +3531,26 @@ impl Game {
                         .expect("instruction requires an object source")
                         .object,
                 ),
+                Instruction::ExileTargetsLinkedToSource => self.exile_targets_linked(&item, false),
+                Instruction::ExileGraveyardCaptureMutantCopy => self.exile_targets_linked(&item, true),
+                Instruction::ChooseLinkedCreatureReturn | Instruction::CopyLinkedExiledAsMutant => {
+                    let mode = if instruction == Instruction::ChooseLinkedCreatureReturn {
+                        linked_exile_effects::LinkedExileMode::ReturnCreature
+                    } else {
+                        linked_exile_effects::LinkedExileMode::CopyMutant
+                    };
+                    if self.start_linked_exile_effect(&item, mode) {
+                        return;
+                    }
+                }
+                Instruction::ReturnOtherLinkedExileToHand => self.return_other_linked_exile(&item),
+                Instruction::ExileOpponentUntilNonlandLinked => self.exile_opponent_until_nonland_linked(&item),
+                Instruction::CastOneLinkedDuringResolution => {
+                    if self.start_linked_exile_cast(&item) {
+                        return;
+                    }
+                }
+                Instruction::ReturnGraveyardNameTapped => self.return_graveyard_name_tapped(&item),
                 Instruction::ReturnOneLinkedExileToHand => {
                     if !self
                         .linked_exile_candidates(
@@ -3659,7 +3683,7 @@ impl Game {
                 Instruction::CopyEnteringPermanentThenAnimate(spec) => {
                     self.copy_entering_then_animate(&item, spec);
                 }
-                Instruction::CreateCapturedArtifactCopy => {
+                Instruction::CreateCapturedArtifactCopy | Instruction::CreateCapturedCopy => {
                     if let Some(recipe) = item.captured_artifact_copy.as_deref() {
                         self.stage_copy_creation(item.controller, *recipe, 1);
                     }

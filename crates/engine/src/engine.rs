@@ -109,6 +109,9 @@ pub mod endgame;
 #[path = "engine_linked_choices.rs"]
 pub mod linked_choices;
 #[doc(hidden)]
+#[path = "engine_linked_exile_effects.rs"]
+pub mod linked_exile_effects;
+#[doc(hidden)]
 #[path = "engine_zone_replacements.rs"]
 pub mod zone_replacements;
 pub use linked_choices::{KeepTypesView, LibraryPile, LibraryPilesView, LinkedExileView};
@@ -4727,7 +4730,7 @@ impl Game {
                 else {
                     return false;
                 };
-                for object in self.linked_exile_candidates(source) {
+                for object in self.resolution_linked_exile_candidates(source) {
                     if emit(Action::ChooseLinkedExile { object }) {
                         return true;
                     }

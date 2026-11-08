@@ -13,6 +13,8 @@ pub struct CopyTypes {
     pub fractal: bool,
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub zombie: bool,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub mutant: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -222,6 +224,7 @@ impl Game {
                     golem: previous.golem || value.golem,
                     fractal: previous.fractal || value.fractal,
                     zombie: previous.zombie || value.zombie,
+                    mutant: previous.mutant || value.mutant,
                 }
             })
             .or(old.types);
