@@ -83,6 +83,85 @@ fn alternative_receipt_and_actual_mana_payment_are_separate_for_both_seats() {
     }
 }
 #[test]
+fn linked_counter_cost_preserves_evoke_and_records_only_paid_mana() {
+    const LINK: CardRules = CardRules {
+        effect: Effect::Creature(2, 3),
+        static_groups: &[StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::LinkedExileCreatureCounterCasting(3)],
+        }],
+        ..CardRules::EMPTY
+    };
+    let _rules = fixture_rules::activate(&[
+        (Card::GrizzlyBears, &RULES),
+        (Card::from_name("Bear Cub").unwrap(), &LINK),
+    ]);
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        g.state.players[p.index()].mana = [0, 0, 0, 0, 2, 0];
+        let provider = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let donor = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+        g.add_counter(donor, CounterKind::Charge, 3);
+        let spell = put(&mut g, p, "Grizzly Bears", Zone::Exile);
+        let source = g.object_ref(provider);
+        let exiled = g.object_ref(spell);
+        g.state
+            .linked_choices
+            .get_or_insert_default()
+            .links
+            .push(LinkedExileView {
+                source,
+                exiled,
+                ability_origin: None,
+                exiled_turn: g.state.turn,
+            });
+        act(
+            &mut g,
+            Action::AnnounceLinkedExileCounterCost {
+                card: spell,
+                source,
+                flash_surcharge: false,
+            },
+        );
+        let choice = g
+            .observe(p)
+            .cost_choices
+            .into_iter()
+            .find(|c| c.cost == EVOKE)
+            .expect("Evoke route remains available from linked exile");
+        act(&mut g, Action::ChooseSpellCost { cost: choice.index });
+        for _ in 0..12 {
+            match g.state.pending {
+                Pending::CastCosts { .. } => {
+                    choose(&mut g, |action| matches!(action, Action::ChooseCastCost { .. }));
+                }
+                Pending::AdditionalCost { .. } => {
+                    choose(&mut g, |action| {
+                        matches!(action, Action::ChooseCreatureCounterCost { object, .. } if object.card == donor)
+                    });
+                }
+                Pending::PayCosts { .. } => {
+                    if g.legal_actions().contains(&Action::BeginOrderedCosts) {
+                        act(&mut g, Action::BeginOrderedCosts);
+                    } else {
+                        pay(&mut g);
+                    }
+                }
+                Pending::Priority => break,
+                _ => panic!("unexpected linked Evoke payment {:?}", g.state.pending),
+            }
+        }
+        let cast = g.state.stack.last().unwrap().cast.unwrap();
+        assert!(cast.evoked);
+        assert_eq!(cast.payment, [0, 0, 0, 0, 1, 0]);
+        assert_eq!(g.counter_count(donor, CounterKind::Charge), 0);
+        finish(&mut g);
+        assert_eq!(g.object_view(spell).zone, Zone::Graveyard);
+        assert_eq!(g.state.players[p.index()].life, 22);
+    }
+}
+#[test]
 fn permanent_spell_copy_retains_evoke_without_claiming_an_actual_payment() {
     let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &RULES)]);
     let mut g = scenario(Player::P0);

@@ -10,12 +10,22 @@ impl Game {
         controller: Player,
         duration: crate::cards::AnimationDuration,
     ) {
-        if recipients.is_empty() {
+        let objects = &self.state.objects;
+        let mut live = recipients
+            .iter()
+            .copied()
+            .filter(|object| {
+                objects.get(object.card as usize).is_some_and(|recipient| {
+                    recipient.zone == Zone::Battlefield && recipient.generation == object.generation
+                })
+            })
+            .peekable();
+        if live.peek().is_none() {
             return;
         }
-        let timestamp = self.next_role_timestamp();
-        let roles = self.state.roles.as_mut().unwrap();
-        for &recipient in recipients {
+        let roles = self.state.roles.get_or_insert_with(Default::default);
+        let timestamp = roles.next_timestamp();
+        for recipient in live {
             match duration {
                 crate::cards::AnimationDuration::Permanent => roles
                     .resolved_ability_modifications
