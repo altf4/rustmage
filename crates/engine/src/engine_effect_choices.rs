@@ -360,12 +360,14 @@ impl Game {
         let hand_choice = matches!(
             choice.kind.payment_kind(),
             EffectChoiceKind::Discard
+                | EffectChoiceKind::ExileFromHand
                 | EffectChoiceKind::HandToTop
                 | EffectChoiceKind::BottomHand
                 | EffectChoiceKind::HandExileCopy
                 | EffectChoiceKind::HandPlot { .. }
                 | EffectChoiceKind::HandCreature
                 | EffectChoiceKind::HandCreatureAttacking { .. }
+                | EffectChoiceKind::HandCreatureHasteSacrifice { .. }
                 | EffectChoiceKind::HandCreatureAndLand
                 | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }
@@ -380,12 +382,14 @@ impl Game {
         if matches!(
             choice.kind.payment_kind(),
             EffectChoiceKind::Discard
+                | EffectChoiceKind::ExileFromHand
                 | EffectChoiceKind::HandToTop
                 | EffectChoiceKind::BottomHand
                 | EffectChoiceKind::HandExileCopy
                 | EffectChoiceKind::HandPlot { .. }
                 | EffectChoiceKind::HandCreature
                 | EffectChoiceKind::HandCreatureAttacking { .. }
+                | EffectChoiceKind::HandCreatureHasteSacrifice { .. }
                 | EffectChoiceKind::HandCreatureAndLand
                 | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }
@@ -408,6 +412,19 @@ impl Game {
                     EffectChoiceKind::HandCreatureAttacking { maximum } => {
                         o.card.is_creature() && o.card.fixed_mana_value() <= u64::from(maximum)
                     }
+                    EffectChoiceKind::HandCreatureHasteSacrifice {
+                        maximum_total_stats,
+                    } => {
+                        let view = self.object_view(object.card);
+                        view.is_creature()
+                            && view
+                                .power
+                                .checked_add(view.toughness)
+                                .expect("total statistics")
+                                .max(0)
+                                <= i128::from(maximum_total_stats)
+                    }
+                    EffectChoiceKind::ExileFromHand => o.is_card(),
                     EffectChoiceKind::HandCreatureAndLand => {
                         match choice.selected[player.index()].as_slice() {
                             [] => o.card.is_creature() || o.card.is_land(),
@@ -675,6 +692,24 @@ impl Game {
         choice.skip_to = Some(resolution.pc.checked_add(skip).expect("program offset"));
         assert!(choice.skip_to.unwrap() <= resolution.program.len());
         pending
+    }
+    pub(super) fn start_hand_creature_haste_sacrifice(
+        &mut self,
+        item: &SpellView,
+        maximum_total_stats: u64,
+    ) -> bool {
+        self.start_effect_choice_inner(
+            item,
+            EffectChoiceKind::HandCreatureHasteSacrifice {
+                maximum_total_stats,
+            },
+            PlayerSet::Controller,
+            evidence::cost(0).filter,
+            1,
+            Some(0),
+            false,
+            None,
+        )
     }
     pub(super) fn start_hand_creature(&mut self, item: &SpellView) -> bool {
         self.start_effect_choice_inner(
@@ -1184,6 +1219,7 @@ impl Game {
                         | EffectChoiceKind::HandPlot { .. }
                         | EffectChoiceKind::HandCreature
                         | EffectChoiceKind::HandCreatureAttacking { .. }
+                        | EffectChoiceKind::HandCreatureHasteSacrifice { .. }
                         | EffectChoiceKind::HandCreatureAndLand
                         | EffectChoiceKind::HandPermanent { .. }
                         | EffectChoiceKind::HandLand { .. }
@@ -1205,6 +1241,7 @@ impl Game {
                         | EffectChoiceKind::HandPlot { .. }
                         | EffectChoiceKind::HandCreature
                         | EffectChoiceKind::HandCreatureAttacking { .. }
+                        | EffectChoiceKind::HandCreatureHasteSacrifice { .. }
                         | EffectChoiceKind::HandCreatureAndLand
                         | EffectChoiceKind::HandPermanent { .. }
                         | EffectChoiceKind::HandLand { .. }
@@ -1428,6 +1465,7 @@ impl Game {
             EffectChoiceKind::HandExileCopy
                 | EffectChoiceKind::HandCreature
                 | EffectChoiceKind::HandCreatureAttacking { .. }
+                | EffectChoiceKind::HandCreatureHasteSacrifice { .. }
                 | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }
         ) {
@@ -1513,7 +1551,17 @@ impl Game {
             movement.life_bonus = choice
                 .entry_life_bonus
                 .map(|(subtype, life)| (player, subtype, life));
-            self.stage_entries(vec![movement], None);
+            if matches!(
+                choice.kind.payment_kind(),
+                EffectChoiceKind::HandCreatureHasteSacrifice { .. }
+            ) {
+                let item = self.state.resolving.as_ref().unwrap().item.clone();
+                movement.keywords_after = Some((choice.source, Keywords::HASTE));
+                movement.keywords_after_permanent = true;
+                self.stage_entries_with_delayed_sacrifice(vec![movement], &item);
+            } else {
+                self.stage_entries(vec![movement], None);
+            }
             return false;
         }
         let choice = self
@@ -1721,6 +1769,7 @@ impl Game {
         } else if matches!(
             choice.kind.payment_kind(),
             EffectChoiceKind::ExileGraveyard
+                | EffectChoiceKind::ExileFromHand
                 | EffectChoiceKind::ExileCardFromAnyGraveyard
                 | EffectChoiceKind::ExileGreatestManaValue
         ) || matches!(
@@ -1735,6 +1784,7 @@ impl Game {
             if matches!(
                 choice.kind.payment_kind(),
                 EffectChoiceKind::ExileGraveyard
+                    | EffectChoiceKind::ExileFromHand
                     | EffectChoiceKind::ExileCardFromAnyGraveyard
                     | EffectChoiceKind::ExileGreatestManaValue
             ) {
@@ -1958,6 +2008,7 @@ impl Game {
             EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandCreature
                 | EffectChoiceKind::HandCreatureAttacking { .. }
+                | EffectChoiceKind::HandCreatureHasteSacrifice { .. }
                 | EffectChoiceKind::HandLand { .. }
         ) && let Some(frame) = self
             .state
@@ -2054,6 +2105,7 @@ impl Game {
         if matches!(
             choice.kind.payment_kind(),
             EffectChoiceKind::Discard
+                | EffectChoiceKind::ExileFromHand
                 | EffectChoiceKind::SacrificeOrDiscard { .. }
                 | EffectChoiceKind::HandToTop
                 | EffectChoiceKind::BottomHand
@@ -2061,6 +2113,7 @@ impl Game {
                 | EffectChoiceKind::HandPlot { .. }
                 | EffectChoiceKind::HandCreature
                 | EffectChoiceKind::HandCreatureAttacking { .. }
+                | EffectChoiceKind::HandCreatureHasteSacrifice { .. }
                 | EffectChoiceKind::HandCreatureAndLand
                 | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }
@@ -2121,11 +2174,13 @@ impl Game {
                 choice.selected[index]
                     .iter()
                     .filter(|_| {
-                        choice.kind.payment_kind() != EffectChoiceKind::Discard
-                            || self.shares_information(
-                                viewer,
-                                if index == 0 { Player::P0 } else { Player::P1 },
-                            )
+                        !matches!(
+                            choice.kind.payment_kind(),
+                            EffectChoiceKind::Discard | EffectChoiceKind::ExileFromHand
+                        ) || self.shares_information(
+                            viewer,
+                            if index == 0 { Player::P0 } else { Player::P1 },
+                        )
                     })
                     .copied()
                     .filter(|object| {

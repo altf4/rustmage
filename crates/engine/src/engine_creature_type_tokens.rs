@@ -23,6 +23,7 @@ impl Game {
         r.chosen_creature_type = Some(creature_type);
         let player = r.item.controller;
         match instruction {
+            Instruction::ChooseCreatureType => {}
             Instruction::CreateEmblemForChosenCreatureType(factory) => {
                 let id = CardId::try_from(self.state.objects.len())
                     .capacity("emblem object slots exhausted");
@@ -68,6 +69,34 @@ impl Game {
             _ => unreachable!("creature-type choice continuation"),
         }
         self.run_program();
+    }
+    pub(super) fn return_resolution_chosen_type(&mut self, controller: Player) {
+        let kind = self
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .chosen_creature_type
+            .expect("preceding creature type choice");
+        let moves = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(id, object)| {
+                object.zone == Zone::Graveyard
+                    && object.owner == controller
+                    && object.is_card()
+                    && self.current_kinds(*id as CardId) & 1 != 0
+                    && self.has_subtype(*id as CardId, kind.name())
+            })
+            .map(|(id, _)| {
+                let mut m = self.entry_move(id as CardId, Zone::Battlefield, false);
+                m.controller = controller;
+                m
+            })
+            .collect();
+        self.stage_entries(moves, None);
     }
     pub(super) fn creature_type_tokens_view(&self) -> Option<CreatureTypeChoiceView> {
         let r = self.state.resolving.as_ref()?;

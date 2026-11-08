@@ -42,6 +42,7 @@ pub(super) struct EntryMove {
     pub post_entry_counters: Option<(Player, &'static [(CounterKind, u64)])>,
     /// Timestamped ability grant after only this move actually enters.
     pub keywords_after: Option<(ObjectRef, Keywords)>,
+    pub keywords_after_permanent: bool,
     /// Source-independent abilities granted only after this actual successful return.
     pub attack_trigger_after: Option<Box<mayhem::ReturnedAbilityGrant>>,
     /// Only this surrounding return effect captures its actual public entry result.
@@ -222,6 +223,7 @@ impl EntryMove {
             effect_counters: &[],
             post_entry_counters: None,
             keywords_after: None,
+            keywords_after_permanent: false,
             attack_trigger_after: None,
             equipment_after: false,
             blank_with_haste_after: None,
@@ -1165,7 +1167,12 @@ impl Game {
                 if event.destination == Zone::Battlefield
                     && let Some((source, keywords)) = movement.keywords_after
                 {
-                    keyword_results.push((event.after, source, keywords));
+                    keyword_results.push((
+                        event.after,
+                        source,
+                        keywords,
+                        movement.keywords_after_permanent,
+                    ));
                 }
                 if event.destination == Zone::Battlefield
                     && let Some(grant) = movement.attack_trigger_after
@@ -1380,9 +1387,19 @@ impl Game {
         }
         // The entry event and its frozen trigger facts precede this subsequent
         // attachment. Packets cannot be stacked until the surrounding resolution ends.
-        for (recipient, source, keywords) in keyword_results {
+        for (recipient, source, keywords, permanent) in keyword_results {
             if self.object_ref(recipient.card) == recipient && self.on_battlefield(recipient.card) {
                 self.grant_keyword_effects(&[recipient.card], source, keywords);
+                if permanent {
+                    self.state
+                        .roles
+                        .as_mut()
+                        .unwrap()
+                        .keyword_effects
+                        .last_mut()
+                        .unwrap()
+                        .expires_turn = None;
+                }
             }
         }
         for (recipient, grant) in attack_trigger_results {

@@ -227,8 +227,8 @@ impl Game {
         self.finish_zone_events(&events, &[]);
     }
 
-    pub(super) fn exile_top_play_until_next_end_step(&mut self, player: Player, amount: u16) {
-        let ids = top_library_cards(self, player, u128::from(amount));
+    pub(super) fn exile_top_play_until_next_end_step(&mut self, player: Player, amount: u128) {
+        let ids = top_library_cards(self, player, amount);
         let events = self.move_objects_raw(&ids, Zone::Exile);
         for event in &events {
             if event.moved && event.destination == Zone::Exile {
@@ -283,17 +283,10 @@ impl Game {
     pub(super) fn exile_top_choose_play(
         &mut self,
         player: Player,
-        amount: u16,
+        amount: u128,
         next_turn: bool,
     ) -> bool {
-        let ids: Vec<_> = self.state.players[player.index()]
-            .library
-            .iter()
-            .rev()
-            .filter(|&&id| self.state.objects[id as usize].is_card())
-            .take(usize::from(amount))
-            .copied()
-            .collect();
+        let ids = top_library_cards(self, player, amount);
         let events = self.move_objects_raw(&ids, Zone::Exile);
         self.state.resolving.as_mut().unwrap().milled = events
             .iter()

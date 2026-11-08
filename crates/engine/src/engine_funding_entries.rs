@@ -1761,7 +1761,11 @@ impl FundingState<'_> {
                     keywords: keywords.without(keywords.resolution_rules()),
                     rules: keywords.resolution_rules(),
                     timestamp,
-                    expires_turn: Some(turn),
+                    expires_turn: if m.keywords_after_permanent {
+                        None
+                    } else {
+                        Some(turn)
+                    },
                 });
                 let row = next
                     .resources

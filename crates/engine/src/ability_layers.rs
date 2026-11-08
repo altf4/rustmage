@@ -66,6 +66,8 @@ pub enum StaticAbilityFragment {
     CastLinkedExileAtThreshold,
     /// Initiates its controller's persistent speed designation as a state-based action.
     StartYourEngines,
+    /// No player can draw cards while this rule ability is active.
+    CantDrawCards,
     /// Use live toughness rather than power when paying Crew or Saddle costs.
     CrewSaddleWithToughness,
     /// A layer-six activated-ability template granted to this source at max speed.

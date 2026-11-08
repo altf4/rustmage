@@ -1028,6 +1028,13 @@ impl Game {
                 .any(|g| g.fragments.iter().any(&predicate))
             && self.continuous_fragment_available(id, predicate)
     }
+    pub(super) fn draws_prohibited(&self) -> bool {
+        self.state.static_sources.iter().any(|&id| {
+            self.active_rule_fragment(id, |f| {
+                matches!(f, crate::cards::StaticAbilityFragment::CantDrawCards)
+            })
+        })
+    }
     pub(super) fn player_has_hexproof(&self, player: Player) -> bool {
         self.state.players[player.index()].hexproof_until_end_turn
             || self.state.static_sources.iter().any(|&id| {
@@ -1071,6 +1078,10 @@ impl Game {
                 let ability = u16::try_from(index).expect("immutable replacement index");
                 if used.contains(&(source, ability)) || !self.continuous_fragment_available(id, |f| matches!(f, crate::cards::StaticAbilityFragment::Replacement(slot, _) if usize::from(*slot) == index)) { continue; }
                 let applies = match spec {
+                    ReplacementSpec::DoubleControlledChosenTypeDamage => {
+                        event.source.controller == object.controller
+                            && matches!(self.entry_value(source), Some(EntryChoiceValue::CreatureType(kind)) if event.source.facts.has_subtype(kind.name()))
+                    }
                     ReplacementSpec::DoubleCreatureDamage => {
                         event.source.facts.battlefield
                             && event.source.facts.is_creature()
@@ -1228,7 +1239,8 @@ impl Game {
         heals: &mut Vec<ObjectRef>,
     ) {
         match choice.source_card.replacement_effects()[usize::from(choice.ability)] {
-            ReplacementSpec::DoubleCreatureDamage
+            ReplacementSpec::DoubleControlledChosenTypeDamage
+            | ReplacementSpec::DoubleCreatureDamage
             | ReplacementSpec::DoubleEnteredCreatureDamage
             | ReplacementSpec::DoubleOpponentDamage
             | ReplacementSpec::DoubleEquippedDamage => {

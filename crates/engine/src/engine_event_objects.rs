@@ -321,6 +321,23 @@ impl Game {
         entering: &ObjectView,
         program: &[Instruction],
     ) {
+        if program
+            .iter()
+            .any(|instruction| matches!(instruction, Instruction::EnteringPowerDamagePlayers(_)))
+        {
+            self.state
+                .pending_triggers
+                .last_mut()
+                .unwrap()
+                .set_event_object(EventObjectView {
+                    object: entering.reference,
+                    facts: EventObjectFacts::DamageActor(actor(entering)),
+                    semantic_objects: None,
+                    conniver_creature: None,
+                    subtype_lki: None,
+                });
+            return;
+        }
         if program.iter().any(|instruction| {
             matches!(
                 instruction,
@@ -511,6 +528,40 @@ impl Game {
             .map(|b| DamageEvent {
                 source,
                 target: b.target,
+                amount,
+                combat: false,
+                preventable: true,
+            })
+            .collect::<Vec<_>>();
+        self.apply_damage_batch(&events);
+    }
+    pub(super) fn event_object_power_damage_players(
+        &mut self,
+        item: &SpellView,
+        players: PlayerSet,
+    ) {
+        let Some(e) = &item.event_object else {
+            return;
+        };
+        let EventObjectFacts::DamageActor(saved) = e.facts else {
+            return;
+        };
+        let source =
+            if self.on_battlefield(e.object.card) && self.object_ref(e.object.card) == e.object {
+                self.damage_source(e.object.card)
+            } else {
+                saved
+            };
+        let amount = if source.facts.is_creature() {
+            source.facts.power.max(0)
+        } else {
+            0
+        };
+        let events = self
+            .program_players(players, item)
+            .map(|player| DamageEvent {
+                source,
+                target: Target::Player(player),
                 amount,
                 combat: false,
                 preventable: true,

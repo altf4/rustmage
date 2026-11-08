@@ -496,6 +496,24 @@ impl Game {
                     }
                 })
             }
+            AmountValue::DeathEventPower => item.event_object.as_ref().map_or(0, |event| {
+                if let EventObjectFacts::CreatureComparison(facts) = event.facts {
+                    if facts.creature {
+                        facts.power.max(0) as u128
+                    } else {
+                        0
+                    }
+                } else {
+                    0
+                }
+            }),
+            AmountValue::DeathEventCounterTotal => item.event_object.as_ref().map_or(0, |event| {
+                if let EventObjectFacts::DeathCounters(counters) = &event.facts {
+                    counters.total()
+                } else {
+                    0
+                }
+            }),
             AmountValue::DeathEventToughness => item.event_object.as_ref().map_or(0, |event| {
                 if let EventObjectFacts::CreatureComparison(facts) = event.facts {
                     facts.toughness.max(0) as u128

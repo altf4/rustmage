@@ -1075,6 +1075,10 @@ pub enum EffectChoiceKind {
     HandCreatureAttacking {
         maximum: u32,
     },
+    HandCreatureHasteSacrifice {
+        maximum_total_stats: u64,
+    },
+    ExileFromHand,
     HandCreatureAndLand,
     HandPermanent {
         maximum: u32,
@@ -2806,6 +2810,26 @@ pub enum Instruction {
     RevealUntilLandToGraveyard(PlayerSet),
     Damage(i32),
     DamageScaled(AmountValue),
+    DamagePlayerCreatures {
+        players: PlayerSet,
+        amount: u16,
+    },
+    EnteringPowerDamagePlayers(PlayerSet),
+    ChooseCreatureType,
+    ReturnChosenCreatureTypeFromGraveyard,
+    PutHandCreatureHasteSacrifice {
+        maximum_total_stats: u64,
+    },
+    ExileTopChoosePlayScaled {
+        amount: AmountValue,
+        next_turn: bool,
+    },
+    ExileDeathCounterTotalUntilNextEnd,
+    SearchFor {
+        player: PlayerSet,
+        required: bool,
+        spec: SearchSpec,
+    },
     DamagePlayersAndTheirCreatures {
         players: PlayerSet,
         amount: AmountValue,
@@ -3452,6 +3476,8 @@ pub enum AmountValue {
     DepartureCounterCount(CounterKind),
     /// Toughness of the creature immediately before the triggering death.
     DeathEventToughness,
+    DeathEventPower,
+    DeathEventCounterTotal,
     /// Damage dealt by the equipped creature in one completed combat batch.
     CreatureCombatDamageAmount,
     #[allow(
@@ -3829,6 +3855,7 @@ pub enum ReplacementSpec {
     /// Add one of each positive kind, only for the provider controller placing
     /// counters on their own permanent. General providers do not apply entering.
     CountersPlacedByController,
+    DoubleControlledChosenTypeDamage,
     DoubleCreatureDamage,
     DoubleEnteredCreatureDamage,
     DoubleOpponentDamage,

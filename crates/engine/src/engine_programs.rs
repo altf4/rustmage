@@ -6708,7 +6708,8 @@ impl Game {
                     self.start_hand_library_search(item.controller, filter);
                     return;
                 }
-                Instruction::Search(spec)
+                Instruction::SearchFor { spec, .. }
+                | Instruction::Search(spec)
                 | Instruction::SearchDistinctColors { spec, .. }
                 | Instruction::SearchCreaturesUpToChosenX(spec)
                 | Instruction::SearchScaled { spec, .. }
@@ -6764,7 +6765,12 @@ impl Game {
                             .moved_count
                             .unwrap_or(0);
                     }
-                    let player = if matches!(
+                    let player = if let Instruction::SearchFor { player, .. } = instruction {
+                        let Some(player) = self.program_players(player, &item).next() else {
+                            continue;
+                        };
+                        player
+                    } else if matches!(
                         instruction,
                         Instruction::SearchTargetController(_)
                             | Instruction::SearchTargetControllerWithEntryCounters { .. }
@@ -6786,7 +6792,11 @@ impl Game {
                     } else {
                         item.controller
                     };
-                    let minimum = if matches!(instruction, Instruction::SearchRequired(_)) {
+                    let minimum = if matches!(
+                        instruction,
+                        Instruction::SearchRequired(_)
+                            | Instruction::SearchFor { required: true, .. }
+                    ) {
                         assert_eq!(
                             spec.filter,
                             crate::SearchFilter::Any,
@@ -7015,8 +7025,18 @@ impl Game {
                 } => {
                     self.exile_top_play_boost_source(&item, subtype, power, toughness);
                 }
+                Instruction::ExileTopChoosePlayScaled { amount, next_turn } => {
+                    let count = self.item_amount(amount, &item);
+                    if self.exile_top_choose_play(item.controller, count, next_turn) {
+                        return;
+                    }
+                }
+                Instruction::ExileDeathCounterTotalUntilNextEnd => {
+                    let amount = self.item_amount(AmountValue::DeathEventCounterTotal, &item);
+                    self.exile_top_play_until_next_end_step(item.controller, amount);
+                }
                 Instruction::ExileTopChoosePlay { amount, next_turn } => {
-                    if self.exile_top_choose_play(item.controller, amount, next_turn) {
+                    if self.exile_top_choose_play(item.controller, u128::from(amount), next_turn) {
                         return;
                     }
                 }
@@ -7041,7 +7061,7 @@ impl Game {
                     self.finish_zone_events(&events, &[]);
                 }
                 Instruction::ExileTopPlayUntilNextEndStep(amount) => {
-                    self.exile_top_play_until_next_end_step(item.controller, amount);
+                    self.exile_top_play_until_next_end_step(item.controller, u128::from(amount));
                 }
                 Instruction::ExileTopPlay { amount, next_turn } => {
                     self.exile_top_play(item.controller, u128::from(amount), next_turn);
@@ -7420,6 +7440,7 @@ impl Game {
                     }
                 }
                 Instruction::CreateTokensForChosenCreatureType { .. }
+                | Instruction::ChooseCreatureType
                 | Instruction::CreateEmblemForChosenCreatureType(_)
                 | Instruction::DestroyCreaturesExceptChosenType => {
                     self.state.pending = Pending::CreatureTypeChoice {
@@ -7439,6 +7460,13 @@ impl Game {
                     let maximum = u32::try_from(self.item_amount(maximum, &item))
                         .capacity("land selection limit exhausted");
                     if self.start_land_selection(&item, maximum, tapped) {
+                        return;
+                    }
+                }
+                Instruction::PutHandCreatureHasteSacrifice {
+                    maximum_total_stats,
+                } => {
+                    if self.start_hand_creature_haste_sacrifice(&item, maximum_total_stats) {
                         return;
                     }
                 }
@@ -8336,23 +8364,44 @@ impl Game {
                         }
                     }
                 }
-                Instruction::DamagePlayersAndTheirCreatures { players, amount } => {
+                Instruction::ReturnChosenCreatureTypeFromGraveyard => {
+                    self.return_resolution_chosen_type(item.controller)
+                }
+                Instruction::EnteringPowerDamagePlayers(players) => {
+                    self.event_object_power_damage_players(&item, players)
+                }
+                Instruction::DamagePlayersAndTheirCreatures { players, .. }
+                | Instruction::DamagePlayerCreatures { players, .. } => {
+                    let creatures_only =
+                        matches!(instruction, Instruction::DamagePlayerCreatures { .. });
+                    let amount = match instruction {
+                        Instruction::DamagePlayerCreatures { amount, .. } => {
+                            AmountValue::Fixed(amount)
+                        }
+                        Instruction::DamagePlayersAndTheirCreatures { amount, .. } => amount,
+                        _ => unreachable!(),
+                    };
                     let amount = i128::try_from(self.item_amount(amount, &item))
                         .capacity("damage amount representation exhausted");
                     let source = self.program_damage_source(&item);
                     let players: Vec<_> = self.program_players(players, &item).collect();
-                    let targets = players.iter().copied().map(Target::Player).chain(
-                        self.state
-                            .objects
-                            .iter()
-                            .enumerate()
-                            .filter(|(id, o)| {
-                                o.zone == Zone::Battlefield
-                                    && players.contains(&o.controller)
-                                    && self.is_creature(*id as CardId)
-                            })
-                            .map(|(id, _)| Target::Card(id as CardId)),
-                    );
+                    let targets = players
+                        .iter()
+                        .copied()
+                        .filter(|_| !creatures_only)
+                        .map(Target::Player)
+                        .chain(
+                            self.state
+                                .objects
+                                .iter()
+                                .enumerate()
+                                .filter(|(id, o)| {
+                                    o.zone == Zone::Battlefield
+                                        && players.contains(&o.controller)
+                                        && self.is_creature(*id as CardId)
+                                })
+                                .map(|(id, _)| Target::Card(id as CardId)),
+                        );
                     let events: Vec<_> = targets
                         .map(|target| DamageEvent {
                             preventable: true,

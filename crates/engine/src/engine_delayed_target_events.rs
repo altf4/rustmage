@@ -91,7 +91,13 @@ impl Game {
                 let mut packet = row.packet;
                 packet.id = self.next_stack_id();
                 packet.refer_zone_event(event);
+                let program = packet.trigger_definition().triggers()[match packet.kind {
+                    StackKind::TriggeredAbility { ability } => usize::from(ability),
+                    _ => unreachable!(),
+                }]
+                .program;
                 self.state.pending_triggers.push(packet);
+                self.capture_battlefield_departure_facts(event, program);
             } else {
                 // CR603.7b/c: now-inert exact subjects are still referred to by
                 // this turn-duration delayed ability; a new incarnation cannot

@@ -5063,6 +5063,7 @@ impl Game {
                         EffectChoiceKind::HandExileCopy
                             | EffectChoiceKind::HandCreature
                             | EffectChoiceKind::HandCreatureAttacking { .. }
+                            | EffectChoiceKind::HandCreatureHasteSacrifice { .. }
                             | EffectChoiceKind::HandPermanent { .. }
                             | EffectChoiceKind::HandLand { .. }
                     ) {
@@ -5093,7 +5094,8 @@ impl Game {
                             }
                             EffectChoiceKind::HandExileCopy
                             | EffectChoiceKind::HandCreature
-                            | EffectChoiceKind::HandCreatureAttacking { .. } => {
+                            | EffectChoiceKind::HandCreatureAttacking { .. }
+                            | EffectChoiceKind::HandCreatureHasteSacrifice { .. } => {
                                 Action::PutHandCreature { object }
                             }
                             EffectChoiceKind::HandCreatureAndLand
@@ -5119,7 +5121,7 @@ impl Game {
                             | EffectChoiceKind::CopyExiledTriggerCreature => {
                                 Action::SelectResolutionExile { object }
                             }
-                            EffectChoiceKind::HandPlot { .. } => {
+                            EffectChoiceKind::HandPlot { .. } | EffectChoiceKind::ExileFromHand => {
                                 Action::SelectResolutionExile { object }
                             }
                             EffectChoiceKind::BottomHand => Action::BottomHandCard { object },
@@ -8453,6 +8455,9 @@ impl Game {
         self.draw_many_interruptible(p, 1);
     }
     pub(super) fn draw_one_unreplaced(&mut self, p: Player) -> bool {
+        if self.draws_prohibited() {
+            return false;
+        }
         match self.top_library_card(p) {
             Some(id) => {
                 let event = self.move_object(id, Zone::Hand);

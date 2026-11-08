@@ -1201,6 +1201,8 @@ impl Game {
             | EffectChoiceKind::HandPlot { .. }
             | EffectChoiceKind::HandCreature
             | EffectChoiceKind::HandCreatureAttacking { .. }
+            | EffectChoiceKind::HandCreatureHasteSacrifice { .. }
+            | EffectChoiceKind::ExileFromHand
             | EffectChoiceKind::HandCreatureAndLand
             | EffectChoiceKind::HandPermanent { .. }
             | EffectChoiceKind::HandLand { .. }
