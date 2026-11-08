@@ -24,6 +24,7 @@ pub(super) fn attached_controller_turn<W: ability_world::CharacteristicWorld + ?
 impl Game {
     pub(super) fn begin_step(&mut self, step: Step) {
         self.state.step = step;
+        self.queue_delayed_steps(step);
         if step == Step::Upkeep {
             self.queue_suspend_upkeep();
         }

@@ -1584,6 +1584,9 @@ pub enum Instruction {
     },
     ReturnDeathCard(ReturnKind),
     ResolveDelayedReturn,
+    CaptureDelayedReturnTarget,
+    /// Schedule one independent triggered program for the next matching step.
+    ScheduleStep { step: TriggerStep, relation: CastRelation, ability: u16 },
     /// Register a one-shot, any-type next-spell callback until cleanup.
     CopyNextSpell {
         ability: u16,
@@ -2221,6 +2224,8 @@ pub enum Instruction {
     CreateEmblemForChosenCreatureType(Card),
     /// The controller’s next committed spell cast this turn cannot be countered.
     GrantNextSpellUncounterable,
+    /// The next noncreature spell this turn has affinity for artifacts.
+    GrantNextNoncreatureArtifactAffinity,
     LoseGainedLife(PlayerSet),
     Connive {
         subject: Subject,
@@ -3094,6 +3099,7 @@ pub enum Instruction {
     },
     DrawPowerOfTwoChosenX(PlayerSet),
     Draw(PlayerSet, u16),
+    DrawToHandSize { players: PlayerSet, size: u16 },
     DrawScaled(PlayerSet, AmountValue),
     /// Draw greatest controlled creature power and remember successful draws.
     DrawGreatestCreaturePowerRemember,

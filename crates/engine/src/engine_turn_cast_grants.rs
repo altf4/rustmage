@@ -8,6 +8,8 @@ pub struct PlayerCastGrantsView {
     pub artifact_generic_reduction: u64,
     pub next_red_or_green_creature_free: u64,
     pub next_spell_uncounterable: bool,
+    #[serde(skip_serializing_if = "is_zero_u64")]
+    pub next_noncreature_artifact_affinity: u64,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
@@ -80,6 +82,13 @@ impl Game {
             .checked_add(u64::from(amount))
             .capacity("turn spell reduction exhausted");
     }
+    pub(super) fn grant_next_noncreature_artifact_affinity(&mut self, player: Player) {
+        let row = &mut self.state.turn_cast_grants.get_or_insert_with(Default::default)
+            [player.index()];
+        row.next_noncreature_artifact_affinity = row.next_noncreature_artifact_affinity
+            .checked_add(1)
+            .capacity("turn affinity grants exhausted");
+    }
     pub(super) fn grant_next_creature_free(&mut self, player: Player) {
         let rows = self
             .state
@@ -107,11 +116,14 @@ impl Game {
                 .is_some_and(|row| row.next_red_or_green_creature_free > 0)
     }
     pub(super) fn consume_turn_cast_grants(&mut self, player: Player, card: Card) {
-        if !Self::turn_free_creature_matches(card) {
-            return;
-        }
         if let Some(rows) = self.state.turn_cast_grants.as_mut() {
-            rows[player.index()].next_red_or_green_creature_free = 0;
+            let row = &mut rows[player.index()];
+            if Self::turn_free_creature_matches(card) {
+                row.next_red_or_green_creature_free = 0;
+            }
+            if !card.is_creature() {
+                row.next_noncreature_artifact_affinity = 0;
+            }
             if rows
                 .iter()
                 .all(|row| *row == PlayerCastGrantsView::default())

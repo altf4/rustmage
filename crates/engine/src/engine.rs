@@ -505,6 +505,9 @@ pub mod milling;
 #[path = "engine_return_links.rs"]
 pub mod return_links;
 #[doc(hidden)]
+#[path = "engine_delayed_steps.rs"]
+pub mod delayed_steps;
+#[doc(hidden)]
 #[path = "engine_roles.rs"]
 pub mod roles;
 #[doc(hidden)]
@@ -2735,6 +2738,7 @@ struct State {
     // Cold pointer keeps games without delayed returns allocation-free.
     #[allow(clippy::box_collection)]
     delayed_returns: Option<Box<Vec<return_links::DelayedReturn>>>,
+    delayed_steps: Option<Box<Vec<delayed_steps::DelayedStep>>>,
     // Sparse delayed obligations keep the common state compact.
     #[allow(clippy::box_collection)]
     earthbend_returns: Option<Box<Vec<earthbend::EarthbendReturn>>>,
@@ -3504,6 +3508,8 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub delayed_upkeep_tokens: Option<Vec<SpellView>>,
     pub delayed_returns: Vec<DelayedReturnView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub delayed_steps: Option<Vec<delayed_steps::DelayedStep>>,
     pub earthbend_returns: Vec<EarthbendReturnView>,
     /// Exact public exile objects awaiting immediate return after departure events.
     pub immediate_blink_return: Option<Vec<ReturnLinkView>>,
@@ -4004,6 +4010,7 @@ impl Game {
                 evidence_data: None,
                 delayed_sacrifices: None,
                 delayed_returns: None,
+                delayed_steps: None,
                 earthbend_returns: None,
                 mobilize: None,
                 exertions: None,
@@ -10538,6 +10545,7 @@ impl Game {
                     rows.iter().map(|r| r.view.clone()).collect()
                 }),
             delayed_upkeep_tokens: self.state.delayed_upkeep_tokens.as_deref().cloned(),
+            delayed_steps: self.state.delayed_steps.as_deref().cloned(),
             delayed_main_mana: self
                 .state
                 .delayed_main_mana
@@ -11450,6 +11458,7 @@ impl Game {
             + self.mobilize_bytes()
             + self.earthbend_bytes()
             + self.return_links_bytes()
+            + self.delayed_steps_bytes()
             + std::mem::size_of::<Vec<Object>>()
             + std::mem::size_of::<Vec<ObjectRef>>()
             + s.combat_rules.as_ref().map_or(0, |r| r.owned_bytes())

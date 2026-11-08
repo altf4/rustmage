@@ -4496,6 +4496,10 @@ impl Game {
                     self.resolve_delayed_return(&item)
                 }
                 Instruction::ResolveDelayedReturn => self.resolve_delayed_return(&item),
+                Instruction::CaptureDelayedReturnTarget => self.capture_delayed_return_target(&item),
+                Instruction::ScheduleStep { step, relation, ability } => {
+                    self.schedule_delayed_step(&item, step, relation, ability);
+                }
                 Instruction::PreventTargetActivationsWhileTapped => {
                     self.prevent_target_activations_until_untapped(&item);
                 }
@@ -7283,6 +7287,12 @@ impl Game {
                         self.draw_many(player, amount);
                     }
                 }
+                Instruction::DrawToHandSize { players, size } => {
+                    for player in self.program_players(players, &item) {
+                        let count = usize::from(size).saturating_sub(self.hand_count(player));
+                        self.draw_many(player, count as u128);
+                    }
+                }
                 Instruction::DrawRemembered(value) => {
                     let amount = self.item_amount(value, &item);
                     self.state.resolving.as_mut().unwrap().remembered_draws = Some(0);
@@ -7413,6 +7423,9 @@ impl Game {
                     }
                 }
                 Instruction::CreateEmblem(factory) => self.create_emblem(item.controller, factory),
+                Instruction::GrantNextNoncreatureArtifactAffinity => {
+                    self.grant_next_noncreature_artifact_affinity(item.controller);
+                }
                 Instruction::GrantNextSpellUncounterable => {
                     self.grant_next_spell_uncounterable(item.controller)
                 }
