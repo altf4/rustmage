@@ -132,7 +132,9 @@ impl Game {
         let Some(reference) = bound.object else {
             return;
         };
-        if !self.on_battlefield(id) || item.targets.iter().any(|old| old.object == Some(reference))
+        if !self.on_battlefield(id)
+            || self.object_ref(id) != reference
+            || item.targets.iter().any(|old| old.object == Some(reference))
         {
             return;
         }

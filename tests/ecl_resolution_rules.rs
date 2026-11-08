@@ -622,6 +622,45 @@ fn graveyard_pair_mode_and_first_target_need_a_distinct_shared_creature_type() {
 }
 
 #[test]
+fn a_copy_retaining_a_departed_target_does_not_trigger_the_returned_creatures_ward() {
+    const FORK: CardRules = spell(
+        TargetPlan::Single(TargetSpec::one(TargetRule::Spell)),
+        &[Instruction::CopyTargetSpell {
+            group: 0,
+            retarget: true,
+            exceptions: CopyExceptions::NONE,
+        }],
+    );
+    let _scope = fixture_rules::activate(&[(Card::LightningBolt, &FORK)]);
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let raptor = put(&mut g, p.other(), "Hulking Raptor", Zone::Battlefield);
+        let original = put(&mut g, p, "Murder", Zone::Hand);
+        cast(&mut g, original, Some(Target::Card(raptor)));
+        g.prepare_triggers();
+        resolve_top(&mut g);
+        assert!(matches!(g.state.pending, Pending::ResolutionMana { player } if player == p));
+        choose(&mut g, |action| {
+            matches!(action, Action::PayResolutionMana { .. })
+        });
+
+        let fork = put(&mut g, p, "Lightning Bolt", Zone::Hand);
+        cast(&mut g, fork, Some(Target::Spell(original)));
+        let old = g.object_ref(raptor);
+        g.move_object(raptor, Zone::Exile);
+        g.move_object(raptor, Zone::Battlefield);
+        assert_ne!(g.object_ref(raptor), old);
+        resolve_top(&mut g);
+        checked(&mut g, Action::FinishStackTargets);
+        assert!(g.state.pending_triggers.is_empty());
+        assert!(g.state.stack.last().unwrap().is_copy);
+        assert_eq!(g.state.stack.last().unwrap().targets[0].object, Some(old));
+        settle(&mut g);
+        assert!(g.on_battlefield(raptor));
+    }
+}
+
+#[test]
 fn death_with_a_counter_returns_untapped_to_its_owner_without_abilities() {
     const BODY: CardRules = CardRules {
         effect: Effect::Creature(3, 3),
