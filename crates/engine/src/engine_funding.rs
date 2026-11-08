@@ -37,6 +37,14 @@ impl FundingGoal {
     fn requires_mana(&self) -> bool {
         self.generic != 0 || self.required.iter().any(|&amount| amount != 0)
     }
+
+    fn reserves_source_tap(&self, object: ObjectRef) -> bool {
+        self.source
+            .as_ref()
+            .is_some_and(|(source, ability, _, definition, _)| {
+                *source == object && definition.activation(*ability).cost.tap
+            })
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone)]
@@ -1706,7 +1714,9 @@ impl<'g> FundingState<'g> {
             {
                 continue;
             }
-            if object.zone == Zone::Battlefield
+            let reserved_tap = goal.reserves_source_tap(self.reference(entry.id));
+            if !reserved_tap
+                && object.zone == Zone::Battlefield
                 && !object.tapped
                 && (self.kinds(entry) & 1 == 0
                     || !object.summoning_sick
@@ -1806,7 +1816,8 @@ impl<'g> FundingState<'g> {
                     );
                 }
             }
-            if object.zone == Zone::Battlefield
+            if !reserved_tap
+                && object.zone == Zone::Battlefield
                 && ability_world::CharacteristicWorld::printed_abilities_available(self, entry.id)
                 && !object.tapped
                 && (self.kinds(entry) & 1 == 0
@@ -1912,7 +1923,8 @@ impl<'g> FundingState<'g> {
                     }
                 }
 
-                if (ability.cost.sacrifice && self.sacrifice_prohibited(entry.id))
+                if (reserved_tap && ability.cost.tap)
+                    || (ability.cost.sacrifice && self.sacrifice_prohibited(entry.id))
                     || (ability.cost.exile_self && self.graveyard_exile_prohibited(entry.id))
                 {
                     continue;
@@ -3254,7 +3266,6 @@ impl<'g> FundingState<'g> {
     /// but it cannot produce its full amount for all those colors at once.
     /// Bound every subset of requested colors in a finite printed-mana world.
     fn joint_colors_possible(&self, goal: &FundingGoal) -> bool {
-        use crate::cards::StaticAbilityFragment;
         let required_mask = goal
             .required
             .iter()
@@ -5294,6 +5305,17 @@ impl Game {
             return false;
         }
         let goal = self.funding_goal(candidate);
+        // A payment cannot untap an exact source for an ancestor's pending
+        // tap cost. Reject this child before searching ways to pay for it.
+        if let Some((source, ..)) = goal.source.as_ref()
+            && goal.reserves_source_tap(*source)
+            && parents.iter().any(|frame| {
+                self.funding_goal(&frame.announcement)
+                    .reserves_source_tap(*source)
+            })
+        {
+            return false;
+        }
         let mut world = FundingState::from_game(self, &goal);
         world.set_purpose(self.purpose_for_item(&candidate.item));
         world.set_payment_context(candidate);

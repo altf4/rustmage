@@ -175,6 +175,39 @@ fn don_and_leo_blink_both_independent_target_roles() {
 }
 
 #[test]
+fn costed_mana_keeps_the_exact_pending_activation_source_untapped() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let source = put(&mut g, p, "Omni-Cheese Pizza", Zone::Battlefield);
+    let other = put(&mut g, p, "Omni-Cheese Pizza", Zone::Battlefield);
+    for _ in 0..20 {
+        put(&mut g, p, "Forest", Zone::Battlefield);
+    }
+    g.state.players[p.index()].mana = [0; 6];
+    act(
+        &mut g,
+        Action::AnnounceActivate {
+            card: source,
+            ability: 1,
+            counter_payment: Counters::default(),
+        },
+    );
+
+    let announce_mana = |card| Action::AnnounceMana {
+        card,
+        ability: 0,
+        counter_payment: Counters::default(),
+        production: [1, 0, 0, 0, 0, 0],
+    };
+    let actions = g.legal_actions();
+    assert!(actions.contains(&announce_mana(other)));
+    assert!(!actions.contains(&announce_mana(source)));
+    let before = g.snapshot();
+    assert_eq!(g.apply(p, announce_mana(source)), Err(Error::IllegalAction));
+    assert_eq!(g.snapshot(), before);
+}
+
+#[test]
 fn five_color_payment_does_not_count_the_same_flexible_source_twice() {
     let p = Player::P0;
     let mut g = scenario(p);
