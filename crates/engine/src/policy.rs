@@ -380,7 +380,12 @@ pub fn smoke_index(game: &Game, actions: &[Action]) -> usize {
             | Action::ChooseOutsideEntryReplacement { .. }
             | Action::ChooseOutsideSelfReplacement { .. } => 60,
             Action::CancelOutsideCard | Action::DeclineOutsideCards => -1,
-            Action::ChooseSearch { .. } | Action::ChooseSearchBattlefield { .. } => 60,
+            Action::ChooseSearch { .. }
+            | Action::ChooseSearchBattlefield { .. }
+            | Action::ChooseLegendaryFound { .. } => 60,
+            Action::ChooseLegendarySearchZones { library, outside } => {
+                60 + i128::from(*library) + i128::from(*outside)
+            }
             Action::ChooseSearchDestination { destination } => {
                 if *destination == crate::SearchDestination::Hand {
                     60

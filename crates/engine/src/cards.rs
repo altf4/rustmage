@@ -2501,6 +2501,11 @@ pub enum Instruction {
     },
     CreateTokenIfControllerSacrificed(Card),
     OpponentsDiscardTwoDrawUnlessTwoNonland,
+    ChooseOutsideGameCard,
+    SearchLibraryOrOutsideLegendarySplit {
+        maximum: u16,
+        opponent_choices: u16,
+    },
     RevealTwoOutsideCards,
     /// The instruction owns these self-replacements; they precede other effects.
     #[allow(

@@ -647,8 +647,12 @@ pub mod big_core;
 #[path = "engine_borrowed_activations.rs"]
 pub mod borrowed_activations;
 #[doc(hidden)]
+#[path = "engine_legendary_split_search.rs"]
+pub mod legendary_split_search;
+#[doc(hidden)]
 #[path = "engine_outside_choices.rs"]
 pub mod outside_choices;
+pub use legendary_split_search::LegendarySplitSearchView;
 pub use outside_choices::{
     OutsideEntryDestination, OutsideEntryProviderView, OutsideEntryReplacementView,
     OutsideEntrySelfEffectView,
@@ -1074,6 +1078,8 @@ define_actions! {
         id: u64,
     },
     ChooseOutsideCard { index: u16 },
+    ChooseLegendarySearchZones { library: bool, outside: bool },
+    ChooseLegendaryFound { index: u16 },
     ChooseOutsideBasic { card: Card },
     CancelOutsideCard,
     DeclineOutsideCards,
@@ -2694,6 +2700,9 @@ enum Pending {
     OutsideGameChoice {
         player: Player,
     },
+    LegendarySplitSearch {
+        player: Player,
+    },
     OutsideEntryReplacement {
         player: Player,
     },
@@ -3414,6 +3423,8 @@ pub struct KeywordChoiceView {
 pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub outside_choice: Option<outside_choices::OutsideChoiceView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub legendary_split_search: Option<LegendarySplitSearchView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub draw_replacement: Option<DrawReplacementView>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4220,6 +4231,7 @@ impl Game {
             | Pending::EffectOptional { player, .. }
             | Pending::EffectDiscard { player, .. }
             | Pending::OutsideGameChoice { player }
+            | Pending::LegendarySplitSearch { player }
             | Pending::OutsideEntryReplacement { player } => Some(player),
             Pending::Attackers | Pending::Damage | Pending::Discard => Some(self.state.active),
             Pending::Blockers => Some(self.state.active.other()),
@@ -4590,6 +4602,9 @@ impl Game {
                 if self.visit_outside_entry_replacements(&mut emit) {
                     return true;
                 }
+            }
+            Pending::LegendarySplitSearch { .. } => {
+                return self.visit_legendary_split_search(&mut emit);
             }
             Pending::OutsideGameChoice { .. } => {
                 if self.visit_outside_choices(&mut emit) {
@@ -6707,6 +6722,15 @@ impl Game {
             self.consume_graveyard_type(*permission, *permanent_type);
         }
         match action {
+            Action::ChooseLegendarySearchZones { library, outside } => {
+                self.choose_legendary_search_zones(library, outside);
+            }
+            Action::ChooseLegendaryFound { index } => self.choose_legendary_found(index),
+            Action::ChooseOutsideCard { index }
+                if matches!(self.state.pending, Pending::LegendarySplitSearch { .. }) =>
+            {
+                self.choose_legendary_outside_card(index);
+            }
             Action::ChooseOutsideCard { index } => {
                 self.choose_outside_card(outside_choices::Selection::Pool(index))
             }
@@ -8137,7 +8161,9 @@ impl Game {
                 self.choose_search_zones(library, graveyard)
             }
             Action::ChooseSearch { card } => {
-                if self.has_hand_library_search() {
+                if matches!(self.state.pending, Pending::LegendarySplitSearch { .. }) {
+                    self.choose_legendary_library_card(card)
+                } else if self.has_hand_library_search() {
                     self.choose_hand_library_card(card)
                 } else if self.has_zone_search() {
                     self.choose_zone_search_card(card)
@@ -8146,7 +8172,9 @@ impl Game {
                 }
             }
             Action::FinishSearch => {
-                if matches!(self.state.pending, Pending::EffectChoice { .. }) {
+                if matches!(self.state.pending, Pending::LegendarySplitSearch { .. }) {
+                    self.finish_legendary_split_search();
+                } else if matches!(self.state.pending, Pending::EffectChoice { .. }) {
                     self.finish_cover_up_search();
                 } else if self.has_hand_library_search() {
                     self.finish_hand_library_search()
@@ -10500,6 +10528,7 @@ impl Game {
             .collect();
         Observation {
             outside_choice: self.outside_choice_view(viewer),
+            legendary_split_search: self.legendary_split_view(viewer),
             outside_entry_replacement: self.outside_entry_replacement_view(viewer),
             owned_outside: self.owned_outside_view(viewer),
             known_outside: self.known_outside_view(),
@@ -10909,6 +10938,7 @@ impl Game {
                 }
                 Pending::EffectDiscard { .. } => "effect_discard",
                 Pending::OutsideGameChoice { .. } => "outside_game_choice",
+                Pending::LegendarySplitSearch { .. } => "legendary_split_search",
                 Pending::OutsideEntryReplacement { .. } => "outside_entry_replacement",
                 Pending::HandDefender { .. } => "hand_defender",
                 Pending::TokenChoice { .. } => "token_choice",
@@ -11786,6 +11816,10 @@ impl Game {
                             .milled_selection
                             .as_ref()
                             .map_or(0, |f| f.bytes())
+                        + resolution
+                            .legendary_search
+                            .as_ref()
+                            .map_or(0, |f| f.owned_bytes())
                         + resolution
                             .optional_searches
                             .as_ref()

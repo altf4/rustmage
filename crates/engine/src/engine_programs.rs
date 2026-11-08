@@ -69,6 +69,7 @@ pub(super) struct Resolution {
     pub search: Option<Box<super::search::SearchChoice>>,
     pub search_result: Option<Box<super::search::SearchResult>>,
     pub optional_searches: Option<Box<super::search::OptionalSearchSequence>>,
+    pub legendary_search: Option<Box<legendary_split_search::LegendarySplitSearch>>,
     pub choice: Option<Box<super::effect_choices::EffectChoice>>,
 }
 
@@ -3114,6 +3115,7 @@ impl Game {
             search: None,
             search_result: None,
             optional_searches: None,
+            legendary_search: None,
             choice: None,
         });
         self.run_program();
@@ -3354,6 +3356,9 @@ impl Game {
             }
             if self.resume_immediate_blink() {
                 continue;
+            }
+            if self.advance_legendary_split_search() {
+                return;
             }
             if self.advance_optional_searches() {
                 return;
@@ -7697,6 +7702,17 @@ impl Game {
                             controller: item.controller,
                             ability,
                         });
+                }
+                Instruction::SearchLibraryOrOutsideLegendarySplit {
+                    maximum,
+                    opponent_choices,
+                } => {
+                    self.start_legendary_split_search(item.controller, maximum, opponent_choices);
+                    return;
+                }
+                Instruction::ChooseOutsideGameCard => {
+                    self.start_single_outside_choice(item.controller, item.id);
+                    return;
                 }
                 Instruction::RevealTwoOutsideCards => {
                     if self.start_outside_choice(item.controller) {

@@ -37,12 +37,20 @@ pub enum Selection {
     Basic(Card),
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum ChoiceKind {
+    Pair,
+    PrivateOne,
+    PublicOne,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Choice {
     id: u64,
     owner: Player,
     first: Option<Selection>,
     pair: Option<[Selection; 2]>,
+    kind: ChoiceKind,
     self_origin: Option<u64>,
     self_effects: &'static [crate::cards::SelfOutsideEntryTemplate],
 }
@@ -77,6 +85,7 @@ enum OutsideAdmissionOutcome {
         card: Card,
         object: ObjectRef,
         destination: OutsideAdmissionDestination,
+        reveal_hand: bool,
     },
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -84,6 +93,7 @@ enum OutsideAdmissionOutcome {
 enum OutsideAdmissionDestination {
     Hand,
     Exile,
+    Library,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -98,8 +108,9 @@ pub(super) struct OutsideHandEvent {
     owner: Player,
     choice_id: u64,
     selected: Selection,
-    pair: [Selection; 2],
-    revealed: [Card; 2],
+    pair: Option<[Selection; 2]>,
+    revealed: Option<[Card; 2]>,
+    reveal_hand: bool,
     card: Card,
     pool_version: u64,
     destination: OutsideEntryDestination,
@@ -233,6 +244,30 @@ impl OutsideGameState {
         }
         result
     }
+    fn take_card(&mut self, owner: Player, selection: Selection, obscure: bool) -> Card {
+        match selection {
+            Selection::Pool(index) => {
+                let player = owner.index();
+                let next_version = self.pool_versions[player]
+                    .checked_add(1)
+                    .capacity("outside pool version exhausted");
+                let known = &mut self.known[player];
+                if obscure {
+                    known.clear();
+                } else {
+                    known.retain(|&entry| entry != index);
+                    for entry in known {
+                        if *entry > index {
+                            *entry -= 1;
+                        }
+                    }
+                }
+                self.pool_versions[player] = next_version;
+                self.pools[player].remove(usize::from(index))
+            }
+            Selection::Basic(card) => card,
+        }
+    }
     fn distinct(&self, owner: Player, a: Selection, b: Selection) -> bool {
         a != b && outside_names::different(self.card(owner, a), self.card(owner, b)) == Some(true)
     }
@@ -240,7 +275,7 @@ impl OutsideGameState {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn start_outside_choice(&mut self, owner: Player) -> bool {
-        self.start_outside_choice_inner(owner, None, &[])
+        self.start_outside_choice_inner(owner, ChoiceKind::Pair, None, &[])
     }
     pub(super) fn start_outside_choice_with_self(
         &mut self,
@@ -249,11 +284,15 @@ impl Game {
         effects: &'static [crate::cards::SelfOutsideEntryTemplate],
     ) -> bool {
         u16::try_from(effects.len()).capacity("outside self replacement count exhausted");
-        self.start_outside_choice_inner(owner, Some(origin), effects)
+        self.start_outside_choice_inner(owner, ChoiceKind::Pair, Some(origin), effects)
+    }
+    pub(super) fn start_single_outside_choice(&mut self, owner: Player, origin: u64) {
+        self.start_outside_choice_inner(owner, ChoiceKind::PrivateOne, Some(origin), &[]);
     }
     fn start_outside_choice_inner(
         &mut self,
         owner: Player,
+        kind: ChoiceKind,
         self_origin: Option<u64>,
         self_effects: &'static [crate::cards::SelfOutsideEntryTemplate],
     ) -> bool {
@@ -283,6 +322,7 @@ impl Game {
             owner,
             first: None,
             pair: None,
+            kind,
             self_origin,
             self_effects,
         });
@@ -309,13 +349,18 @@ impl Game {
             return true;
         }
         let candidates = state.candidates(choice.owner);
-        let names = NameIndex::new(state, choice.owner, &candidates);
+        let names = (choice.kind == ChoiceKind::Pair && choice.first.is_none())
+            .then(|| NameIndex::new(state, choice.owner, &candidates));
         for &candidate in &candidates {
-            let legal = if let Some(first) = choice.first {
-                state.distinct(choice.owner, first, candidate)
-            } else {
-                names.has_distinct(state.card(choice.owner, candidate))
-            };
+            let legal = choice.kind != ChoiceKind::Pair
+                || if let Some(first) = choice.first {
+                    state.distinct(choice.owner, first, candidate)
+                } else {
+                    names
+                        .as_ref()
+                        .unwrap()
+                        .has_distinct(state.card(choice.owner, candidate))
+                };
             let action = match candidate {
                 Selection::Pool(index) => Action::ChooseOutsideCard { index },
                 Selection::Basic(card) => Action::ChooseOutsideBasic { card },
@@ -369,6 +414,15 @@ impl Game {
     pub(super) fn choose_outside_card(&mut self, selected: Selection) {
         let state = self.state.outside_game.as_mut().unwrap();
         let choice = state.choice.as_mut().unwrap();
+        if choice.kind != ChoiceKind::Pair {
+            choice.first = Some(selected);
+            assert!(
+                self.plan_outside_selection(selected),
+                "validated single outside selection"
+            );
+            self.advance_outside_entry();
+            return;
+        }
         if let Some(first) = choice.first {
             choice.pair = Some([first, selected]);
             for entry in [first, selected] {
@@ -405,34 +459,48 @@ impl Game {
     /// Freeze the physical slot and pool version without consuming the card.
     /// The choice stays owned until commitment; this is not a zone-change event.
     pub(super) fn plan_outside_hand(&mut self, index: u8) -> bool {
+        let Some(selected) = self
+            .state
+            .outside_game
+            .as_ref()
+            .and_then(|s| s.choice.as_ref())
+            .and_then(|choice| choice.pair)
+            .and_then(|pair| pair.get(usize::from(index)).copied())
+        else {
+            return false;
+        };
+        self.plan_outside_selection(selected)
+    }
+    fn plan_outside_selection(&mut self, selected: Selection) -> bool {
         let Some(state) = self.state.outside_game.as_mut() else {
             return false;
         };
         let Some(choice) = state.choice.as_ref() else {
             return false;
         };
-        let Some(pair) = choice.pair else {
-            return false;
-        };
-        let Some(selected) = pair.get(usize::from(index)).copied() else {
-            return false;
-        };
         if state.pending_entry.is_some() {
             return false;
         }
-        let Some(first) = state.checked_card(choice.owner, pair[0]) else {
+        let Some(card) = state.checked_card(choice.owner, selected) else {
             return false;
         };
-        let Some(second) = state.checked_card(choice.owner, pair[1]) else {
-            return false;
+        let revealed = if let Some(pair) = choice.pair {
+            let [Some(first), Some(second)] =
+                pair.map(|entry| state.checked_card(choice.owner, entry))
+            else {
+                return false;
+            };
+            Some([first, second])
+        } else {
+            None
         };
-        let card = if index == 0 { first } else { second };
         state.pending_entry = Some(OutsideHandEvent {
             owner: choice.owner,
             choice_id: choice.id,
             selected,
-            pair,
-            revealed: [first, second],
+            pair: choice.pair,
+            revealed,
+            reveal_hand: choice.kind != ChoiceKind::PrivateOne,
             card,
             pool_version: state.pool_versions[choice.owner.index()],
             destination: OutsideEntryDestination::Hand,
@@ -599,12 +667,21 @@ impl Game {
                     .is_some_and(|resolving| resolving.item.id == origin)
             })
             && choice.id == event.choice_id
-            && choice.pair == Some(event.pair)
+            && choice.pair == event.pair
+            && (choice.kind != ChoiceKind::PrivateOne) == event.reveal_hand
             && choice.self_origin == event.self_origin
             && choice.self_effects == event.self_effects
             && state.pool_versions[event.owner.index()] == event.pool_version
-            && state.checked_card(event.owner, event.pair[0]) == Some(event.revealed[0])
-            && state.checked_card(event.owner, event.pair[1]) == Some(event.revealed[1])
+            && state.checked_card(event.owner, event.selected) == Some(event.card)
+            && match (event.pair, event.revealed) {
+                (Some(pair), Some(revealed)) => {
+                    pair.map(|entry| state.checked_card(event.owner, entry)) == revealed.map(Some)
+                }
+                (None, None) => {
+                    choice.kind != ChoiceKind::Pair && choice.first == Some(event.selected)
+                }
+                _ => false,
+            }
     }
     fn apply_outside_self(&mut self, id: u16) -> bool {
         if !self.outside_event_is_current() {
@@ -821,12 +898,15 @@ impl Game {
     }
     pub(super) fn outside_entry_replacement_view(
         &self,
-        _viewer: Player,
+        viewer: Player,
     ) -> Option<OutsideEntryReplacementView> {
         let Pending::OutsideEntryReplacement { player } = self.state.pending else {
             return None;
         };
         let event = self.state.outside_game.as_ref()?.pending_entry.as_ref()?;
+        if !event.reveal_hand && viewer != event.owner {
+            return None;
+        }
         Some(OutsideEntryReplacementView {
             player,
             card: event.card,
@@ -890,6 +970,7 @@ impl Game {
                 card,
                 object,
                 destination,
+                reveal_hand,
             } => {
                 let admitted = &self.state.objects[object.card as usize];
                 debug_assert_eq!(admitted.owner, owner);
@@ -898,7 +979,12 @@ impl Game {
                 match destination {
                     OutsideAdmissionDestination::Hand => {
                         debug_assert_eq!(admitted.zone, Zone::Hand);
-                        self.state.known_hand.push(object);
+                        if reveal_hand {
+                            self.state.known_hand.push(object);
+                        }
+                    }
+                    OutsideAdmissionDestination::Library => {
+                        self.state.players[owner.index()].library.push(object.card);
                     }
                     OutsideAdmissionDestination::Exile => {
                         debug_assert_eq!(admitted.zone, Zone::Exile);
@@ -935,42 +1021,55 @@ impl Game {
             });
             return true;
         }
-        let next_version = match event.selected {
-            Selection::Pool(_) => Some(
-                state.pool_versions[event.owner.index()]
-                    .checked_add(1)
-                    .capacity("outside pool version exhausted"),
-            ),
-            Selection::Basic(_) => None,
+        let destination = match event.destination {
+            OutsideEntryDestination::Hand => OutsideAdmissionDestination::Hand,
+            OutsideEntryDestination::Exile => OutsideAdmissionDestination::Exile,
+            OutsideEntryDestination::Prevent => unreachable!("prevented entry did not allocate"),
         };
-        let id = CardId::try_from(self.state.objects.len()).capacity("object slots exhausted");
         state.choice = None;
         state.pending_entry = None;
-        let card = match event.selected {
-            Selection::Pool(index) => {
-                let known = &mut state.known[event.owner.index()];
-                known.retain(|&entry| entry != index);
-                for entry in known {
-                    if *entry > index {
-                        *entry -= 1;
-                    }
-                }
-                state.pool_versions[event.owner.index()] = next_version.unwrap();
-                state.pools[event.owner.index()].remove(usize::from(index))
-            }
-            Selection::Basic(card) => card,
-        };
+        let obscure = !event.reveal_hand && destination == OutsideAdmissionDestination::Hand;
+        let card = state.take_card(event.owner, event.selected, obscure);
+        self.admit_outside_card(event.owner, card, destination, event.reveal_hand);
+        true
+    }
+
+    pub(super) fn reveal_outside_pool_card(&mut self, owner: Player, slot: u16) {
+        let state = self.state.outside_game.as_mut().unwrap();
+        let known = &mut state.known[owner.index()];
+        if !known.contains(&slot) {
+            known.push(slot);
+        }
+    }
+
+    pub(super) fn admit_revealed_outside_to_hand(&mut self, owner: Player, origin: u64, slot: u16) {
+        self.start_outside_choice_inner(owner, ChoiceKind::PublicOne, Some(origin), &[]);
+        self.choose_outside_card(Selection::Pool(slot));
+    }
+
+    pub(super) fn admit_revealed_outside_to_library(&mut self, owner: Player, slot: u16) {
+        let state = self.state.outside_game.as_mut().unwrap();
+        let card = state.take_card(owner, Selection::Pool(slot), false);
+        self.admit_outside_card(owner, card, OutsideAdmissionDestination::Library, false);
+    }
+
+    fn admit_outside_card(
+        &mut self,
+        owner: Player,
+        card: Card,
+        destination: OutsideAdmissionDestination,
+        reveal_hand: bool,
+    ) {
+        let id = CardId::try_from(self.state.objects.len()).capacity("object slots exhausted");
         self.state.objects.push(Object {
             card,
             copy_kind: CopyKind::None,
-            owner: event.owner,
-            controller: event.owner,
-            zone: match event.destination {
-                OutsideEntryDestination::Hand => Zone::Hand,
-                OutsideEntryDestination::Exile => Zone::Exile,
-                OutsideEntryDestination::Prevent => {
-                    unreachable!("prevented entry did not allocate")
-                }
+            owner,
+            controller: owner,
+            zone: match destination {
+                OutsideAdmissionDestination::Hand => Zone::Hand,
+                OutsideAdmissionDestination::Exile => Zone::Exile,
+                OutsideAdmissionDestination::Library => Zone::Library,
             },
             generation: 0,
             tapped: false,
@@ -991,17 +1090,12 @@ impl Game {
             class_level: 1,
             attached_to: None,
         });
-        let destination = match event.destination {
-            OutsideEntryDestination::Hand => OutsideAdmissionDestination::Hand,
-            OutsideEntryDestination::Exile => OutsideAdmissionDestination::Exile,
-            OutsideEntryDestination::Prevent => unreachable!("prevented entry did not allocate"),
-        };
         self.record_outside_admission(OutsideAdmissionOutcome::Entered {
-            owner: event.owner,
+            owner,
             card,
             object: self.object_ref(id),
             destination,
+            reveal_hand,
         });
-        true
     }
 }
