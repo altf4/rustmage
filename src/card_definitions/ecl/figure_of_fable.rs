@@ -32,16 +32,13 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 loyalty: None,
             },
             targets: TargetPlan::NONE,
-            program: &[Instruction::EvolveSource {
-                required: None,
-                types: &["Kithkin", "Scout"],
-                stats: Some(Stats {
-                    power: 2,
-                    toughness: 3,
-                }),
+            program: &[Instruction::ChangeSourceCreatureForm(AnimationSpec {
+                artifact: false,
+                creature_types: AnimationCreatureTypes::Named(&["Kithkin", "Scout"]),
+                base: Some((2, 3)),
                 keywords: Keywords::NONE,
-                ability: None,
-            }],
+                duration: AnimationDuration::Permanent,
+            })],
             sorcery: false,
             once_per_turn: false,
         },
@@ -75,7 +72,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             },
             targets: TargetPlan::NONE,
             program: &[Instruction::EvolveSource {
-                required: Some("Scout"),
+                required: "Scout",
                 types: &["Kithkin", "Soldier"],
                 stats: Some(Stats {
                     power: 4,
@@ -121,7 +118,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             },
             targets: TargetPlan::NONE,
             program: &[Instruction::EvolveSource {
-                required: Some("Soldier"),
+                required: "Soldier",
                 types: &["Kithkin", "Avatar"],
                 stats: Some(Stats {
                     power: 7,
