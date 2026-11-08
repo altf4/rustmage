@@ -1792,6 +1792,35 @@ impl Game {
             })
             .collect()
     }
+    /// The instructed player places the counters. Cost and effect placements
+    /// share replacements while retaining their independent cause.
+    pub(super) fn blight_counters(
+        &mut self,
+        choices: Vec<(Player, ObjectRef)>,
+        amount: u32,
+        effect: bool,
+        mode: ResumeMode,
+    ) {
+        let placements = choices
+            .into_iter()
+            .filter_map(|(player, object)| {
+                if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {
+                    return None;
+                }
+                let mut placements = self.create_counter_placements(
+                    vec![(
+                        object,
+                        Counters::of(CounterKind::MinusOne, u64::from(amount)),
+                    )],
+                    Some(player),
+                );
+                let mut placement = placements.pop()?;
+                placement.effect = effect;
+                Some(placement)
+            })
+            .collect();
+        self.stage_counter_placements(placements, mode);
+    }
     pub(super) fn blight_cost_counters(&mut self, object: ObjectRef, amount: u16, player: Player) {
         let o = &self.state.objects[object.card as usize];
         let placement = CounterPlacement {

@@ -108,6 +108,12 @@ impl Announcement {
             self.add_cast_cost_clause(CastCostClause::Mana);
             self.add_cast_cost_clause(CastCostClause::SneakReturn(None));
         }
+        if self
+            .additional_cost()
+            .is_some_and(|cost| matches!(cost.kind.payment_kind(), EffectChoiceKind::BlightCost(_)))
+        {
+            self.add_cast_cost_clause(CastCostClause::Mana);
+        }
         if self.nonmana_x() {
             self.add_cast_cost_clause(CastCostClause::Mana);
         }
@@ -244,7 +250,7 @@ impl Game {
             if clause == CastCostClause::Additional {
                 a.additional_paid = true;
                 self.pay_additional_cost(a);
-                if self.state.entry_batch.is_some() {
+                if self.state.entry_batch.is_some() || self.state.replacements.is_some() {
                     return true;
                 }
             }

@@ -159,6 +159,12 @@ impl Game {
         {
             return false;
         }
+        if !projected
+            && matches!(spec.kind.payment_kind(), EffectChoiceKind::BlightCost(n) if n > 0)
+            && replacements::counters_prohibited(self, object)
+        {
+            return false;
+        }
         let spec = spec.in_zone(o.zone);
         if matches!(
             spec.kind.payment_kind(),
@@ -185,7 +191,8 @@ impl Game {
             | EffectChoiceKind::ExileGraveyardCards(_)
             | EffectChoiceKind::ExileGraveyardRange { .. }
             | EffectChoiceKind::ExileGraveyardSymbols { .. } => o.owner == actor,
-            EffectChoiceKind::ExileControlled
+            EffectChoiceKind::BlightCost(_)
+            | EffectChoiceKind::ExileControlled
             | EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeRange { .. }
             | EffectChoiceKind::SacrificeDifferentNames(_)
@@ -274,7 +281,8 @@ impl Game {
             | EffectChoiceKind::DiscardNamed(_)
             | EffectChoiceKind::DiscardMatchingLegendary
             | EffectChoiceKind::DiscardLegendary => Zone::Hand,
-            EffectChoiceKind::ExileControlled
+            EffectChoiceKind::BlightCost(_)
+            | EffectChoiceKind::ExileControlled
             | EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeRange { .. }
             | EffectChoiceKind::SacrificeDifferentNames(_)
@@ -298,6 +306,9 @@ impl Game {
             && zone == Zone::Hand
             && !o.is_card()
         {
+            return false;
+        }
+        if matches!(spec.kind.payment_kind(), EffectChoiceKind::BlightCost(_)) && kinds & 1 == 0 {
             return false;
         }
         let f = spec.filter;
@@ -559,6 +570,9 @@ impl Game {
         let Some(spec) = spec else {
             return self.can_fund(goal);
         };
+        if matches!(spec.kind.payment_kind(), EffectChoiceKind::BlightCost(_)) {
+            return self.preview_blight_activation(goal, spec);
+        }
         if spec.kind == EffectChoiceKind::DiscardHand {
             // Mana abilities run before the whole-hand payment, so no current
             // card is reserved: even an empty resulting hand is payable.
@@ -1139,12 +1153,22 @@ impl Game {
         }
         let spec = spec.in_zone(self.state.objects[object.card as usize].zone);
         match spec.kind.payment_kind() {
+            EffectChoiceKind::BlightCost(amount) => {
+                self.blight_counters(
+                    vec![(a.item.controller, object)],
+                    amount,
+                    false,
+                    replacements::ResumeMode::CastCosts,
+                );
+            }
             EffectChoiceKind::Behold => {
                 if self.state.objects[object.card as usize].zone == Zone::Hand {
                     self.remember_public_hand(object);
                 }
             }
-            EffectChoiceKind::ColorCounter { .. }
+            EffectChoiceKind::Blight(_)
+            | EffectChoiceKind::BlightXCost
+            | EffectChoiceKind::ColorCounter { .. }
             | EffectChoiceKind::PowerDifferenceBoost
             | EffectChoiceKind::FilteredCost { .. }
             | EffectChoiceKind::SacrificeManaValue { .. }

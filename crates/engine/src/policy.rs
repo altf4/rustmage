@@ -224,7 +224,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             Action::DeclineHandEntry | Action::FinishHandSelection => -1,
             Action::BottomHandCard { .. } => 10,
             Action::ChooseBlight { pay } => i128::from(*pay) * 40,
-            Action::PayBlight { .. } => 50,
+            Action::PayBlight { .. } | Action::Blight { .. } => 50,
             Action::ChooseTeamwork { pay } => i128::from(*pay) * 40,
             Action::ChooseTeammate { .. } => 50,
             Action::FinishTeamwork => 100,

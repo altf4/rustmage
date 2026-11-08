@@ -1000,6 +1000,12 @@ pub enum EffectChoiceKind {
         action: CostAction,
         any: &'static [CostMatch],
     },
+    /// Place minus counters as an effect; a prohibited recipient remains eligible.
+    Blight(u32),
+    /// Place minus counters as a cost; positive amounts require a legal placement.
+    BlightCost(u32),
+    /// Declaration-bound nonmana X, limited by greatest controlled toughness.
+    BlightXCost,
     /// Choose a controlled permanent or reveal a matching card in hand.
     Behold,
     /// Non-targeted Army selection during amass.
@@ -1137,6 +1143,7 @@ impl EffectChoiceKind {
     }
     pub(crate) fn payment_kind(self) -> Self {
         match self {
+            Self::BlightXCost => Self::BlightCost(0),
             Self::FilteredCost {
                 action: CostAction::Sacrifice,
                 ..
@@ -2799,6 +2806,10 @@ pub enum Instruction {
     RevealUntilLandToGraveyard(PlayerSet),
     Damage(i32),
     DamageScaled(AmountValue),
+    DamagePlayersAndTheirCreatures {
+        players: PlayerSet,
+        amount: AmountValue,
+    },
     /// Damage legal targets in the selected group using the other legal target's
     /// power captured at resolution start, before any instruction moves it.
     DamageByTargetPower {

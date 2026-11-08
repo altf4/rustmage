@@ -223,6 +223,12 @@ impl Announcement {
                     .filter(|cast| cast.kicker == Some(true))
                     .and_then(|_| card.kicker_additional_cost())
                     .or_else(|| card.additional_cost())
+                    .map(|mut cost| {
+                        if cost.kind == EffectChoiceKind::BlightXCost {
+                            cost.kind = EffectChoiceKind::BlightCost(self.item.x.unwrap_or(0));
+                        }
+                        cost
+                    })
             }
             StackKind::ActivatedAbility { ability } => self
                 .item

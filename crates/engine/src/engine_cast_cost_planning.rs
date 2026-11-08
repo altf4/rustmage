@@ -361,6 +361,11 @@ impl FundingState<'_> {
             return false;
         }
         let spec = spec.in_zone(o.zone);
+        if matches!(spec.kind.payment_kind(), EffectChoiceKind::BlightCost(amount) if amount > 0)
+            && replacements::counters_prohibited(self, r)
+        {
+            return false;
+        }
         (!craft || !CharacteristicWorld::graveyard_exile_prohibited(self, r.card))
             && (!matches!(
                 spec.kind.payment_kind(),
@@ -667,9 +672,11 @@ impl FundingState<'_> {
                         if selected.is_some_and(|wanted| wanted != reference) {
                             continue;
                         }
-                        if self.visit_blight_cost_projection(reference, amount, &mut |next| {
-                            next.complete_cost_rows(&later, &rest)
-                        }) {
+                        if self.visit_blight_cost_projection(
+                            reference,
+                            u32::from(amount),
+                            &mut |next| next.complete_cost_rows(&later, &rest),
+                        ) {
                             return true;
                         }
                     }
@@ -1218,6 +1225,17 @@ impl FundingState<'_> {
                 return false;
             }
             spec.kind = EffectChoiceKind::Discard;
+        }
+        if let EffectChoiceKind::BlightCost(amount) = spec.kind.payment_kind() {
+            return self.resources.iter().any(|resource| {
+                let object = self.reference(resource.id);
+                self.cost_object(spec, object, c.source)
+                    && (!c.exact || c.selected == [object])
+                    && (c.selected.is_empty() || c.selected == [object])
+                    && self.visit_blight_cost_projection(object, amount, &mut |next| {
+                        next.complete_cost_rows(later, remaining)
+                    })
+            });
         }
         let mut amount = 1usize;
         let mut destination = Zone::Graveyard;
@@ -1857,7 +1875,12 @@ impl Game {
                     == spell.card
         });
         let ordered_additional = delve::potential(self)
-            || additional.is_some_and(|a| matches!(a.kind, EffectChoiceKind::DiscardOrLife(_)))
+            || additional.is_some_and(|a| {
+                matches!(
+                    a.kind.payment_kind(),
+                    EffectChoiceKind::DiscardOrLife(_) | EffectChoiceKind::BlightCost(_)
+                )
+            })
             || additional.is_some()
                 && (spell.card.has_convoke()
                     || improvise::potential(self, spell.card)
@@ -2057,23 +2080,24 @@ impl Game {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl FundingState<'_> {
     /// Enumerate the exact pre-SBA counter worlds produced by paying a blight cost.
-    /// This remains unconnected to casting until blight intent and prohibitions exist.
     fn visit_blight_cost_projection(
         &self,
         subject: ObjectRef,
-        amount: u16,
+        amount: u32,
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
         let Some(row) = self.resources.iter().find(|r| r.id == subject.card) else {
             return false;
         };
-        if amount == 0
-            || row.object.zone != Zone::Battlefield
+        if row.object.zone != Zone::Battlefield
             || row.object.generation != subject.generation
             || row.object.controller != self.actor
             || CharacteristicWorld::kinds(self, subject.card) & 1 == 0
         {
             return false;
+        }
+        if amount == 0 {
+            return emit(self);
         }
         if replacements::counters_prohibited(self, subject) {
             return false;

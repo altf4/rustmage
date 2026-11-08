@@ -4512,6 +4512,9 @@ impl Game {
         if !self.exact_x_targets_fundable(a, None, false) {
             return false;
         }
+        if a.blight_x_cost() {
+            return self.blight_x_cost_fundable(a, cost, a.item.x.unwrap_or(0));
+        }
         if a.nonmana_x() {
             let mut proposal = a.clone();
             proposal.cost = Some(cost);
@@ -5473,6 +5476,9 @@ impl Game {
                 .is_some_and(|c| c.method.is_harmonize() || c.blight == Some(true))
             || announcement.ordered_craft()
             || announcement.nonmana_x()
+            || announcement
+                .additional_cost()
+                .is_some_and(|s| matches!(s.kind.payment_kind(), EffectChoiceKind::BlightCost(_)))
             || announcement.has_compound_sneak_cost()
             || announcement.self_graveyard_cast_cost().is_some()
             || announcement

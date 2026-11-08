@@ -192,6 +192,20 @@ impl Game {
             return false;
         }
         let o = &self.state.objects[object.card as usize];
+        if matches!(
+            choice.kind,
+            EffectChoiceKind::Blight(_) | EffectChoiceKind::BlightCost(_)
+        ) {
+            return o.zone == Zone::Battlefield
+                && o.controller == player
+                && self.object_ref(object.card) == object
+                && self.is_creature(object.card)
+                && !choice.selected[player.index()].contains(&object)
+                && (matches!(
+                    choice.kind,
+                    EffectChoiceKind::Blight(_) | EffectChoiceKind::BlightCost(0)
+                ) || !replacements::counters_prohibited(self, object));
+        }
         if let EffectChoiceKind::ColorCounter { color, subtype } = choice.kind {
             return self.color_counter_candidate(player, color, subtype, object);
         }
@@ -1630,6 +1644,24 @@ impl Game {
             } else {
                 self.state.resolving.as_mut().unwrap().pc = failure_pc;
             }
+        } else if let EffectChoiceKind::Blight(amount) | EffectChoiceKind::BlightCost(amount) =
+            choice.kind
+        {
+            let choices = [self.state.active, self.state.active.other()]
+                .into_iter()
+                .flat_map(|p| {
+                    choice.selected[p.index()]
+                        .iter()
+                        .copied()
+                        .map(move |object| (p, object))
+                })
+                .collect();
+            self.blight_counters(
+                choices,
+                amount,
+                matches!(choice.kind, EffectChoiceKind::Blight(_)),
+                replacements::ResumeMode::Program,
+            );
         } else if let EffectChoiceKind::AmassGoblins(amount) = choice.kind.payment_kind() {
             let item = self.state.resolving.as_ref().unwrap().item.clone();
             // The owned selection seat is the amassing player. The resolving

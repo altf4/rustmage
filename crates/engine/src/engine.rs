@@ -838,6 +838,7 @@ define_actions! {
     ChooseHandDefender { defender: CombatDefender },
     ChooseBlight { pay: bool },
     PayBlight { object: ObjectRef },
+    Blight { object: ObjectRef },
     PaySneakReturn { object: ObjectRef },
     ChooseTeamwork { pay: bool },
     ChooseTeammate { object: ObjectRef },
@@ -5082,6 +5083,9 @@ impl Game {
                             EffectChoiceKind::ColorCounter { .. } => {
                                 Action::ChooseColorCounter { object }
                             }
+                            EffectChoiceKind::Blight(_) | EffectChoiceKind::BlightCost(_) => {
+                                Action::Blight { object }
+                            }
                             EffectChoiceKind::AmassGoblins(_) => Action::ChooseArmy { object },
                             EffectChoiceKind::EmpowerJace(_) => Action::ChooseJace { object },
                             EffectChoiceKind::PowerDifferenceBoost => {
@@ -7780,6 +7784,7 @@ impl Game {
             Action::ChooseMobilizeDefender { defender } => self.choose_mobilize_defender(defender),
             Action::ChooseBlight { pay } => self.choose_blight(pay),
             Action::PayBlight { object } => self.pay_blight(object),
+            Action::Blight { object } => self.choose_effect_object(actor, object),
             Action::PaySneakReturn { object } => self.pay_sneak_return(object),
             Action::ChooseTeamwork { pay } => self.choose_teamwork(pay),
             Action::ChooseTeammate { object } => self.choose_teammate(object),
