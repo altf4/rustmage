@@ -784,25 +784,42 @@ fn inherited_lands_five_shocks_actual_preentry_payment_and_exact_two_intrinsic_c
                     assert!(g.has_subtype(id, typ));
                 }
                 assert!(!g.state.objects[id as usize].card.is_basic_land());
+                let choices = g
+                    .legal_actions()
+                    .into_iter()
+                    .filter_map(|action| match action {
+                        Action::TapMana { card } if card == id => {
+                            let mut production = [0; 6];
+                            production[(mask as u8).trailing_zeros() as usize] = 1;
+                            Some((action, production))
+                        }
+                        Action::TapGrantedMana {
+                            card,
+                            grantor,
+                            production,
+                        } if card == id => {
+                            assert_eq!(grantor, g.object_ref(id));
+                            Some((action, production))
+                        }
+                        _ => None,
+                    })
+                    .collect::<Vec<_>>();
                 if pay {
-                    let choices = g
-                        .legal_actions()
-                        .into_iter()
-                        .filter(|a| matches!(a,Action::ActivateMana{card,..}if *card==id))
-                        .collect::<Vec<_>>();
                     assert_eq!(choices.len(), 2);
                     for color in 0..6 {
-                        assert_eq!(choices.iter().any(|a|matches!(a,Action::ActivateMana{production,..}if production[color]==1)),mask&(1<<color)!=0);
+                        assert_eq!(
+                            choices.iter().any(|(_, production)| production[color] == 1),
+                            mask & (1 << color) != 0
+                        );
                     }
-                    let action = choices[0].clone();
-                    checked(&mut g, action);
-                    assert_eq!(g.state.players[p.index()].mana.into_iter().sum::<u32>(), 1);
+                    for (action, production) in choices {
+                        let mut branch = g.clone();
+                        checked(&mut branch, action);
+                        assert_eq!(branch.state.players[p.index()].mana, production);
+                        assert!(branch.object_view(id).tapped);
+                    }
                 } else {
-                    assert!(
-                        !g.legal_actions()
-                            .iter()
-                            .any(|a| matches!(a,Action::ActivateMana{card,..}if *card==id))
-                    );
+                    assert!(choices.is_empty());
                 }
             }
         }
