@@ -692,3 +692,115 @@ fn delayed_produced_type_bonus_belongs_to_the_same_selectively_replayed_mana_eve
     assert_eq!(g.state.objects[spell as usize].zone, Zone::Hand);
     assert!(!g.mana_tap_bonus_pending());
 }
+
+#[test]
+fn fixed_land_tap_bonus_requires_positive_output_in_actual_and_projected_worlds() {
+    use rustmage_core::engine::funding::{FundingGoal, FundingState};
+    const ZERO: CardRules = CardRules {
+        effect: Effect::Land,
+        activated: &[ActivatedAbility {
+            cost: ActivationCost {
+                tap: true,
+                ..ActivationCost::ZERO
+            },
+            program: &[Instruction::AddMana(ManaProduction::Fixed([0; 6]))],
+            ..BASE
+        }],
+        ..CardRules::EMPTY
+    };
+    const POSITIVE: CardRules = CardRules {
+        activated: &[ActivatedAbility {
+            cost: ActivationCost {
+                tap: true,
+                ..ActivationCost::ZERO
+            },
+            program: &[Instruction::AddMana(ManaProduction::Fixed([
+                0, 0, 0, 0, 1, 0,
+            ]))],
+            ..BASE
+        }],
+        ..ZERO
+    };
+    const AURA: CardRules = CardRules {
+        effect: Effect::Permanent,
+        aura: Some(AuraSpec {
+            kinds: 2,
+            relation: -1,
+            bonus: EquipmentSpec {
+                stats: Stats {
+                    power: 0,
+                    toughness: 0,
+                },
+                keywords: Keywords::NONE,
+            },
+        }),
+        static_groups: &[StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::AttachmentManaBonus(
+                ManaProduction::Fixed([0, 1, 0, 0, 0, 0]),
+            )],
+        }],
+        ..CardRules::EMPTY
+    };
+    for positive in [false, true] {
+        let _rules = fixture_rules::activate(&[
+            (
+                Card::from_name("Tarnation Vista").unwrap(),
+                if positive { &POSITIVE } else { &ZERO },
+            ),
+            (Card::from_name("Pacifism").unwrap(), &AURA),
+        ]);
+        let p = Player::P1;
+        let mut g = scenario(p);
+        let land = put(&mut g, p, "Tarnation Vista", Zone::Battlefield);
+        let aura = put(&mut g, p.other(), "Pacifism", Zone::Battlefield);
+        g.state.objects[aura as usize].attached_to = Some(g.object_ref(land));
+        g.state.players[p.index()].mana = [0; 6];
+        let goal = FundingGoal {
+            actor: p,
+            required: [0, 1, 0, 0, 0, 0],
+            generic: 0,
+            source: None,
+            reserve: None,
+        };
+        let world = FundingState::from_game(&g, &goal);
+        let step = world
+            .moves(&goal)
+            .into_iter()
+            .find(|step| world.resources[step.resource].id == land && step.ability == Some(0))
+            .unwrap();
+        let expected: Mana = if positive { [0, 1, 0, 0, 1, 0] } else { [0; 6] };
+        let mut projected = None;
+        world.visit_applied(&step, &mut |next| {
+            projected = Some(next.mana);
+            true
+        });
+        assert_eq!(projected, Some(expected.map(u128::from)));
+        assert_eq!(world.mana, [0; 6]);
+        assert_eq!(
+            world.reachable(&goal, &mut std::collections::HashSet::new()),
+            positive
+        );
+        let saved = g.snapshot();
+        let mut raw = g.clone();
+        let mut indexed = g.clone();
+        let production = if positive { [0, 0, 0, 0, 1, 0] } else { [0; 6] };
+        let action = direct(land, [0; 6], production);
+        let index = indexed
+            .legal_actions()
+            .iter()
+            .position(|a| *a == action)
+            .unwrap();
+        act(&mut raw, action);
+        indexed.apply_index(p, indexed.revision(), index).unwrap();
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        assert_eq!(raw.state.players[p.index()].mana, expected);
+        assert!(raw.state.objects[land as usize].tapped);
+        assert!(raw.state.stack.is_empty() && raw.state.pending_triggers.is_empty());
+        assert_eq!(g.snapshot(), saved);
+        raw.restore(&saved).unwrap();
+        assert_eq!(raw.state.players[p.index()].mana, [0; 6]);
+        assert!(!raw.state.objects[land as usize].tapped);
+    }
+}

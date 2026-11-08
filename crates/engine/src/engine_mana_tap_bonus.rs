@@ -29,6 +29,11 @@ impl ManaTapBonus {
         }
     }
     pub(super) fn visit(self, production: Mana, mut emit: impl FnMut(Mana) -> bool) -> bool {
+        // CR106.12a: tapping for mana must actually produce mana. A captured
+        // fixed-color trigger does not fire for an ability that produces zero.
+        if production == [0; 6] {
+            return emit([0; 6]);
+        }
         self.domain(production).visit(|mana| {
             let bonus = std::array::from_fn(|i| {
                 self.fixed[i]
