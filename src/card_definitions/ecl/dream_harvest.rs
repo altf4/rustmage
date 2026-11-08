@@ -1,6 +1,12 @@
 // Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
+    effect: Effect::Spell(
+        TargetPlan::NONE,
+        &[Instruction::ExileUntilManaValueFreeCast {
+            players: PlayerSet::Opponent,
+            minimum: 5,
+        }],
+    ),
     triggers: &[],
     activated: &[],
     enters: Counters {

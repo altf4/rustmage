@@ -1,16 +1,26 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from the pinned Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(4, 2),
     keywords: Keywords::FLASH,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfEnters,
+        targets: TargetPlan::NONE,
+        program: &[
+            Instruction::ChooseCreatureType,
+            Instruction::GrantChosenCreatureTypeKeywords {
+                other: true,
+                keywords: Keywords::HEXPROOF.union(Keywords::INDESTRUCTIBLE),
+            },
+        ],
+    }],
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Ability,
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLASH)],
+    }],
+    extras: &CardExtras {
+        has_convoke: true,
+        ..CardExtras::EMPTY
+    },
     ..CardRules::EMPTY
 };
