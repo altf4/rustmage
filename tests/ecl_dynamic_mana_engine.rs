@@ -299,12 +299,19 @@ fn multitype_land_bonus_choice_preserves_parent_payment_and_captured_departed_so
         g.object_ref(aura),
         EntryChoiceValue::Color(ChoiceColor::Blue),
     );
-    put(&mut g, Player::P1, "Short Bow", Zone::Battlefield);
+    let returning = put(&mut g, Player::P1, "Short Bow", Zone::Exile);
+    g.state.exile_links.push(ExileLink {
+        ability_origin: None,
+        source: g.object_ref(land),
+        exiled: g.object_ref(returning),
+        return_zone: Zone::Battlefield,
+    });
     let spell = put(&mut g, Player::P0, "Cancel", Zone::Hand);
     g.state.players[0].mana = [0; 6];
     act(&mut g, Action::AnnounceCast { card: spell });
     act(&mut g, direct(land, [0; 6], [0, 1, 0, 0, 1, 0]));
     assert_eq!(g.state.objects[land as usize].zone, Zone::Graveyard);
+    assert!(g.on_battlefield(returning));
     // The aura no longer has an enchanted land at the mana event.
     assert_eq!(g.state.players[0].mana, [0, 1, 0, 0, 1, 0]);
     assert!(matches!(g.state.pending, Pending::EffectMana { .. }));
@@ -336,6 +343,80 @@ fn multitype_land_bonus_choice_preserves_parent_payment_and_captured_departed_so
     settle(&mut other);
     assert_eq!(g.snapshot(), other.snapshot());
 }
+#[test]
+fn paying_for_mana_can_remove_the_only_global_tap_bonus_provider() {
+    const LAND: CardRules = CardRules {
+        effect: Effect::Permanent,
+        activated: &[ActivatedAbility {
+            cost: ActivationCost {
+                tap: true,
+                additional: Some(AdditionalCost {
+                    kind: EffectChoiceKind::Sacrifice,
+                    filter: FILTER,
+                }),
+                ..ActivationCost::ZERO
+            },
+            program: &[Instruction::AddMana(ManaProduction::Fixed([
+                0, 0, 0, 0, 1, 0,
+            ]))],
+            ..BASE
+        }],
+        ..CardRules::EMPTY
+    };
+    const LAVA: CardRules = CardRules {
+        effect: Effect::Creature(2, 2),
+        static_groups: &[StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::BasicLandTapManaBonus(1)],
+        }],
+        ..CardRules::EMPTY
+    };
+    let _rules = fixture_rules::activate(&[
+        (Card::Forest, &LAND),
+        (Card::from_name("Elemental Mascot").unwrap(), &LAVA),
+    ]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let land = put(&mut g, p, "Forest", Zone::Battlefield);
+    let provider = put(&mut g, p, "Elemental Mascot", Zone::Battlefield);
+    let donor = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let spell = put(&mut g, p, "Druid of the Cowl", Zone::Hand);
+    g.state.players[0].mana = [0; 6];
+    let mut independent = g.clone();
+    let announce = |game: &mut Game| {
+        choose(
+            game,
+            |action| matches!(action, Action::AnnounceMana { card, ability: 0, .. } if *card == land),
+        );
+    };
+    let sacrifice = |game: &Game, card| Action::ChooseAdditionalCost {
+        object: game.object_ref(card),
+    };
+    act(&mut g, Action::AnnounceCast { card: spell });
+    announce(&mut g);
+    let invalid = sacrifice(&g, provider);
+    reject(&mut g, invalid);
+    let payment = sacrifice(&g, donor);
+    act(&mut g, payment);
+    if g.state.players[0].mana == [0; 6] {
+        pay(&mut g);
+    }
+    assert_eq!(g.state.players[0].mana, [0, 0, 0, 0, 2, 0]);
+    assert_eq!(g.object_view(donor).zone, Zone::Graveyard);
+    pay(&mut g);
+    assert_eq!(g.object_view(spell).zone, Zone::Stack);
+
+    announce(&mut independent);
+    let payment = sacrifice(&independent, provider);
+    act(&mut independent, payment);
+    if matches!(independent.state.pending, Pending::PayCosts { .. }) {
+        pay(&mut independent);
+    }
+    assert_eq!(independent.object_view(provider).zone, Zone::Graveyard);
+    assert_eq!(independent.state.players[0].mana, [0, 0, 0, 0, 1, 0]);
+}
+
 #[test]
 fn returned_trigger_multiplier_is_visible_to_the_projected_mana_payment() {
     const LAVA: CardRules = CardRules {

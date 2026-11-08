@@ -1,6 +1,24 @@
 //! Triggered mana receipts retain the tap event while output types are chosen later.
 use super::*;
+use crate::cards::StaticAbilityFragment;
 use ability_world::CharacteristicWorld;
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub(super) enum LandAtTap {
+    Basic,
+    Nonbasic,
+}
+
+impl LandAtTap {
+    fn from_card(card: Card) -> Self {
+        if card.is_basic_land() {
+            Self::Basic
+        } else {
+            Self::Nonbasic
+        }
+    }
+}
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
@@ -8,11 +26,13 @@ pub struct ManaTapBonus {
     pub fixed: Mana,
     /// One freely selected type actually produced by the land, per trigger.
     pub amount: u32,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(super) land_at_tap: Option<LandAtTap>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ManaTapBonus {
     pub(super) fn has_any(self) -> bool {
-        self.fixed != [0; 6] || self.amount != 0
+        self.fixed != [0; 6] || self.amount != 0 || self.land_at_tap.is_some()
     }
     pub(super) fn domain(self, production: Mana) -> ManaProduction {
         let mask = production
@@ -57,27 +77,33 @@ impl ManaTapBonus {
         if multiple { None } else { result }
     }
 
-    pub(super) fn with_attachment_bonuses<W: CharacteristicWorld + ?Sized>(
+    pub(super) fn with_trigger_bonuses<W: CharacteristicWorld + ?Sized>(
         mut self,
         world: &W,
         actor: Player,
         source: Option<ObjectRef>,
     ) -> Self {
         let Some(land) = source else { return self };
-        // CR106.12a, 303.4m: a land sacrificed as a mana cost is no longer
-        // enchanted when the paid mana ability resolves.
-        if world.attachment_sources().is_empty()
-            || world.reference(land.card) != land
-            || world.object(land.card).zone != Zone::Battlefield
-            || world.object(land.card).controller != actor
-            || world.kinds(land.card) & 2 == 0
-        {
+        if world.static_sources().is_empty() {
             return self;
         }
+        // CR106.12a and 603.10: the mana event checks the providers after the
+        // activation costs. Keep the tapped land's identity if it left.
+        let live =
+            world.reference(land.card) == land && world.object(land.card).zone == Zone::Battlefield;
+        let land_kind = if live {
+            (world.kinds(land.card) & 2 != 0)
+                .then(|| LandAtTap::from_card(world.definition(land.card)))
+        } else {
+            self.land_at_tap
+        };
+        let Some(land_kind) = land_kind else {
+            return self;
+        };
         let query = characteristic_query::CharacteristicQuery::in_world(world);
-        for &source in world.attachment_sources() {
+        for &source in world.static_sources() {
             let provider = world.object(source);
-            if provider.zone != Zone::Battlefield || provider.attached_to != Some(land) {
+            if provider.zone != Zone::Battlefield {
                 continue;
             }
             for fragment in world
@@ -86,10 +112,24 @@ impl ManaTapBonus {
                 .iter()
                 .flat_map(|group| group.fragments)
             {
-                let crate::cards::StaticAbilityFragment::AttachmentManaBonus(production) =
-                    *fragment
-                else {
-                    continue;
+                let (production, amount) = match *fragment {
+                    StaticAbilityFragment::ControlledLandTapManaBonus(mana)
+                        if provider.controller == actor =>
+                    {
+                        (Some(ManaProduction::Fixed(mana)), 0)
+                    }
+                    StaticAbilityFragment::BasicLandTapManaBonus(amount)
+                        if land_kind == LandAtTap::Basic =>
+                    {
+                        (None, u32::from(amount))
+                    }
+                    // CR303.4m: a departed land has no current Aura.
+                    StaticAbilityFragment::AttachmentManaBonus(production)
+                        if live && provider.attached_to == Some(land) =>
+                    {
+                        (Some(production), 0)
+                    }
+                    _ => continue,
                 };
                 if !query.continuous_fragment_available(source, |candidate| {
                     std::ptr::eq(candidate, fragment)
@@ -97,6 +137,17 @@ impl ManaTapBonus {
                     continue;
                 }
                 let count = trigger_count(&query, source);
+                self.amount = self
+                    .amount
+                    .checked_add(
+                        amount
+                            .checked_mul(count)
+                            .capacity("mana representation exhausted"),
+                    )
+                    .capacity("mana representation exhausted");
+                let Some(production) = production else {
+                    continue;
+                };
                 let mut fixed = None;
                 production.in_world(world, source).visit(|mana| {
                     assert!(
@@ -137,50 +188,15 @@ pub(super) fn capture<W: CharacteristicWorld + ?Sized>(
     actor: Player,
     id: CardId,
 ) -> ManaTapBonus {
-    let mut bonus = ManaTapBonus {
-        fixed: world.controlled_land_tap_bonus(actor, id),
-        amount: 0,
-    };
-    let land = world.object(id);
-    if land.zone != Zone::Battlefield
-        || land.controller != actor
-        || !land.card.is_basic_land()
-        || world.kinds(id) & 2 == 0
-    {
-        return bonus;
+    let object = world.object(id);
+    let land_at_tap = (object.zone == Zone::Battlefield
+        && object.controller == actor
+        && world.kinds(id) & 2 != 0)
+        .then(|| LandAtTap::from_card(world.definition(id)));
+    ManaTapBonus {
+        land_at_tap,
+        ..ManaTapBonus::default()
     }
-    let query = characteristic_query::CharacteristicQuery::in_world(world);
-    for &source in world.static_sources() {
-        let provider = world.object(source);
-        if provider.zone != Zone::Battlefield {
-            continue;
-        }
-        for fragment in world
-            .definition(source)
-            .static_ability_groups()
-            .iter()
-            .flat_map(|g| g.fragments)
-        {
-            let crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(amount) = *fragment
-            else {
-                continue;
-            };
-            if !query.continuous_fragment_available(source, |candidate| {
-                std::ptr::eq(candidate, fragment)
-            }) {
-                continue;
-            }
-            bonus.amount = bonus
-                .amount
-                .checked_add(
-                    u32::from(amount)
-                        .checked_mul(trigger_count(&query, source))
-                        .capacity("mana representation exhausted"),
-                )
-                .capacity("mana representation exhausted");
-        }
-    }
-    bonus
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]

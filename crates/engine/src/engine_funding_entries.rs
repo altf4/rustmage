@@ -2384,7 +2384,7 @@ impl<'g> FundingState<'g> {
         {
             let mut next = self.clone();
             let (bonus, tap_source) = next.apply(step, false);
-            let bonus = bonus.with_attachment_bonuses(&next, self.actor, tap_source);
+            let bonus = bonus.with_trigger_bonuses(&next, self.actor, tap_source);
             if let Some(production) = next.singleton_output(step)
                 && let Some(bonus) = bonus.singleton(production)
             {
@@ -2459,7 +2459,7 @@ impl<'g> FundingState<'g> {
                 departed.then_some(destination),
                 external,
                 &mut |world| {
-                    let bonus = bonus.with_attachment_bonuses(world, self.actor, tap_source);
+                    let bonus = bonus.with_trigger_bonuses(world, self.actor, tap_source);
                     world.visit_output(step, bonus, emit)
                 },
             )

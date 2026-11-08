@@ -1548,8 +1548,13 @@ fn serialize_tap_mana_bonus<S: serde::Serializer>(
         Some(ManaTapBonus {
             fixed: [0, 0, 0, red, 0, 0],
             amount: 0,
+            land_at_tap: None,
         }) => serializer.serialize_u32(*red),
-        Some(ManaTapBonus { fixed, amount: 0 }) => fixed.serialize(serializer),
+        Some(ManaTapBonus {
+            fixed,
+            amount: 0,
+            land_at_tap: None,
+        }) => fixed.serialize(serializer),
         Some(bonus) => bonus.serialize(serializer),
         None => serializer.serialize_none(),
     }
@@ -1749,7 +1754,7 @@ impl SpellView {
             .as_deref()
             .copied()
             .unwrap_or_default()
-            .with_attachment_bonuses(world, self.controller, source)
+            .with_trigger_bonuses(world, self.controller, source)
     }
 
     pub(super) fn remember_source_kinds_at_departure(&mut self, before: &ObjectView) -> bool {
@@ -7280,7 +7285,7 @@ impl Game {
                     self.sacrifice_batch(&[(actor, card)]);
                 }
                 self.add_quality_mana(actor, production, quality);
-                let bonus = bonus.with_attachment_bonuses(self, actor, Some(activated_object));
+                let bonus = bonus.with_trigger_bonuses(self, actor, Some(activated_object));
                 self.finish_mana_tap_bonus(actor, bonus, production);
                 self.creature_ability_activated(actor, creature, activated_object, None);
                 self.state.passes = 0;
@@ -7302,7 +7307,7 @@ impl Game {
                         .checked_add(1)
                         .capacity("mana representation exhausted");
                 }
-                let bonus = bonus.with_attachment_bonuses(self, actor, Some(source));
+                let bonus = bonus.with_trigger_bonuses(self, actor, Some(source));
                 self.finish_mana_tap_bonus(actor, bonus, production);
                 if self.state.activation_observers.is_some() {
                     self.creature_ability_activated(
