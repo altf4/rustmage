@@ -182,6 +182,7 @@ impl FundingState<'_> {
             | EffectChoiceKind::ReturnToHand => battlefield > 0,
             EffectChoiceKind::SacrificeRange { minimum: n }
             | EffectChoiceKind::SacrificeDifferentNames(n)
+            | EffectChoiceKind::SacrificePermanents(n)
             | EffectChoiceKind::TapPermanents(n) => battlefield >= usize::from(n),
             EffectChoiceKind::ExileGraveyard => potential_graveyard > 0,
             EffectChoiceKind::ExileGraveyardCards(n)
@@ -366,6 +367,7 @@ impl FundingState<'_> {
                 EffectChoiceKind::Sacrifice
                     | EffectChoiceKind::SacrificeRange { .. }
                     | EffectChoiceKind::SacrificeDifferentNames(_)
+                    | EffectChoiceKind::SacrificePermanents(_)
                     | EffectChoiceKind::SacrificeAttachedEquipment
             ) || !self.sacrifice_prohibited(r.card))
             && (spec.kind.payment_kind() != EffectChoiceKind::ReturnUnblockedAttacker
@@ -1255,9 +1257,9 @@ impl FundingState<'_> {
             | EffectChoiceKind::RemoveCreatureCounter(_) => {
                 counters = spec.kind.creature_counter_requirement();
             }
-            EffectChoiceKind::TapPermanents(n) | EffectChoiceKind::SacrificeDifferentNames(n) => {
-                amount = usize::from(n)
-            }
+            EffectChoiceKind::TapPermanents(n)
+            | EffectChoiceKind::SacrificeDifferentNames(n)
+            | EffectChoiceKind::SacrificePermanents(n) => amount = usize::from(n),
             EffectChoiceKind::ExileGraveyard
             | EffectChoiceKind::ExileControlled
             | EffectChoiceKind::ExileControlledOrGraveyard => destination = Zone::Exile,
@@ -1457,10 +1459,10 @@ impl FundingState<'_> {
             later: &CostContext,
             remaining: &[usize],
             first: usize,
-            source: ObjectRef,
-            reservation: &Counters,
+            source_reservation: (ObjectRef, &Counters),
             required_kind: Option<CounterKind>,
         ) -> bool {
+            let (source, reservation) = source_reservation;
             if left == 0 {
                 return w.complete_cost_rows(later, remaining);
             }
@@ -1491,8 +1493,7 @@ impl FundingState<'_> {
                         later,
                         remaining,
                         index,
-                        source,
-                        reservation,
+                        source_reservation,
                         required_kind,
                     ) {
                         return true;
@@ -1507,8 +1508,7 @@ impl FundingState<'_> {
             later,
             remaining,
             0,
-            c.source,
-            &c.source_counter_reservation,
+            (c.source, &c.source_counter_reservation),
             required_kind,
         )
     }

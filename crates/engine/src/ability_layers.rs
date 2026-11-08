@@ -76,6 +76,7 @@ pub enum StaticAbilityFragment {
     /// Generic reduction for exhaust abilities of other controlled permanents.
     OtherControlledExhaustGenericReduction(u32),
     ArtifactTokenActivationReduction(u32),
+    ControlledLandTapManaBonus(Mana),
     /// Controlled instant and sorcery spells have split second.
     ControlledInstantSorcerySplitSecond,
     /// Permanents controlled by this source's controller cannot be sacrificed.

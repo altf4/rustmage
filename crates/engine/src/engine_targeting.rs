@@ -2710,6 +2710,7 @@ impl Game {
                     EffectChoiceKind::Sacrifice
                         | EffectChoiceKind::SacrificeRange { .. }
                         | EffectChoiceKind::SacrificeDifferentNames(_)
+                        | EffectChoiceKind::SacrificePermanents(_)
                         | EffectChoiceKind::ReturnToHand
                 ) || forage::is_forage_cost(spec)
                     || evidence::threshold(spec).is_some()

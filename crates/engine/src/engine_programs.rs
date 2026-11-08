@@ -52,7 +52,6 @@ pub(super) struct Resolution {
     pub target_group: u16,
     pub moved_count: Option<u64>,
     pub remembered_draws: Option<u64>,
-    pub lose_life_after_draw: Option<Box<i128>>,
     pub remembered_damage_players: Option<u8>,
     pub remembered_creatures: Vec<ObjectRef>,
     pub sacrificed_power: Option<Box<i128>>,
@@ -3097,7 +3096,6 @@ impl Game {
             target_group: 0,
             moved_count: None,
             remembered_draws: None,
-            lose_life_after_draw: None,
             remembered_damage_players: None,
             remembered_creatures: Vec::new(),
             discard_after: None,
@@ -3307,17 +3305,6 @@ impl Game {
             self.refresh_graveyard_borrowing();
             if self.miracle_choice_pending() {
                 return;
-            }
-            if let Some(amount) = self
-                .state
-                .resolving
-                .as_mut()
-                .unwrap()
-                .lose_life_after_draw
-                .take()
-            {
-                let player = self.state.resolving.as_ref().unwrap().item.controller;
-                self.lose_life(player, *amount);
             }
             self.finish_cascade();
             if self.advance_replacements(false) {
@@ -7603,11 +7590,7 @@ impl Game {
                 }
                 Instruction::DrawAndLoseLife(value) => {
                     let amount = self.item_amount(value, &item);
-                    let life_loss =
-                        i128::try_from(amount).capacity("life quantity representation exhausted");
-                    self.state.resolving.as_mut().unwrap().lose_life_after_draw =
-                        Some(Box::new(life_loss));
-                    self.draw_many(item.controller, amount);
+                    self.draw_then_lose_life(item.controller, amount);
                 }
                 Instruction::DrawRemembered(value) => {
                     let amount = self.item_amount(value, &item);

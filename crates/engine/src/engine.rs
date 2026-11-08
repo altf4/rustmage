@@ -1488,6 +1488,17 @@ fn is_false(value: &bool) -> bool {
     !*value
 }
 
+fn serialize_tap_mana_bonus<S: serde::Serializer>(
+    bonus: &Option<Box<Mana>>,
+    serializer: S,
+) -> Result<S::Ok, S::Error> {
+    match bonus.as_deref() {
+        Some([0, 0, 0, red, 0, 0]) => serializer.serialize_u32(*red),
+        Some(mana) => mana.serialize(serializer),
+        None => serializer.serialize_none(),
+    }
+}
+
 /// An inherent game-rule ability has no object or card as its source.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -1615,9 +1626,12 @@ pub struct SpellView {
     pub split_second: bool,
     pub source_keywords: Keywords,
     pub source_tapped: bool,
-    /// Extra red mana frozen when this mana ability's source was tapped.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub mana_tap_bonus: Option<u32>,
+    /// Unrestricted triggered mana frozen when this mana ability's source was tapped.
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        serialize_with = "serialize_tap_mana_bonus"
+    )]
+    pub mana_tap_bonus: Option<Box<Mana>>,
     pub source_attachment: Option<ObjectRef>,
     pub damage_event: Option<DamageTriggerView>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1656,6 +1670,10 @@ pub struct SpellView {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl SpellView {
+    pub(super) fn tap_mana_bonus(&self) -> Mana {
+        self.mana_tap_bonus.as_deref().copied().unwrap_or_default()
+    }
+
     pub(super) fn remember_source_kinds_at_departure(&mut self, before: &ObjectView) -> bool {
         if let Some(source) = &mut self.source
             && source.object == before.reference
@@ -1834,6 +1852,10 @@ impl SpellView {
                 .gift
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<GiftContext>())
+            + self
+                .mana_tap_bonus
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<Mana>())
             + self
                 .source_move
                 .as_ref()
@@ -7028,7 +7050,7 @@ impl Game {
                     }
                 }
                 let quality = self.mana_quality(grant.production, card);
-                let bonus = self.mountain_tap_bonus(actor, card);
+                let bonus = self.mana_tap_bonuses(actor, card);
                 self.tap_objects(&[card]);
                 let creature = self.is_creature(card);
                 let activated_object = self.object_ref(card);
@@ -7036,7 +7058,7 @@ impl Game {
                     self.sacrifice_batch(&[(actor, card)]);
                 }
                 self.add_quality_mana(actor, production, quality);
-                self.produce_mountain_tap_bonus(actor, bonus);
+                self.produce_tap_mana_bonus(actor, bonus);
                 self.creature_ability_activated(actor, creature, activated_object, None);
                 self.state.passes = 0;
             }
@@ -7046,7 +7068,7 @@ impl Game {
                 let mut production = [0; 6];
                 production[color] = 1;
                 let quality = self.mana_quality(ManaProduction::Fixed(production), card);
-                let bonus = self.mountain_tap_bonus(actor, card);
+                let bonus = self.mana_tap_bonuses(actor, card);
                 self.tap_objects(&[card]);
                 if quality.is_some() {
                     self.add_quality_mana(actor, production, quality);
@@ -7056,7 +7078,7 @@ impl Game {
                         .checked_add(1)
                         .capacity("mana representation exhausted");
                 }
-                self.produce_mountain_tap_bonus(actor, bonus);
+                self.produce_tap_mana_bonus(actor, bonus);
                 if self.state.activation_observers.is_some() {
                     self.creature_ability_activated(
                         actor,
@@ -7451,7 +7473,7 @@ impl Game {
                     );
                 } else {
                     self.add_quality_mana(actor, production, quality);
-                    self.produce_mountain_tap_bonus(actor, item.mana_tap_bonus.unwrap_or(0));
+                    self.produce_tap_mana_bonus(actor, item.tap_mana_bonus());
                     self.committed_mana_reflexive(&item);
                     self.reopen_evidence_after_mana_sacrifice(card);
                 }
@@ -7591,7 +7613,7 @@ impl Game {
                     );
                 } else {
                     self.add_quality_mana(actor, production, quality);
-                    self.produce_mountain_tap_bonus(actor, item.mana_tap_bonus.unwrap_or(0));
+                    self.produce_tap_mana_bonus(actor, item.tap_mana_bonus());
                     self.committed_mana_reflexive(&item);
                     self.reopen_evidence_after_mana_sacrifice(card);
                 }
@@ -11836,10 +11858,6 @@ impl Game {
                             std::mem::size_of::<Vec<programs::TargetCardFacts>>()
                                 + values.len() * std::mem::size_of::<programs::TargetCardFacts>()
                         })
-                        + resolution
-                            .lose_life_after_draw
-                            .as_ref()
-                            .map_or(0, |_| std::mem::size_of::<i128>())
                         + resolution
                             .color_sequence
                             .as_ref()

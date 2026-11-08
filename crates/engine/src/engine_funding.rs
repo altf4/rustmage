@@ -994,7 +994,7 @@ impl<'g> FundingState<'g> {
                             || game.state.attachment_sources.iter().any(|&provider| game.state.objects[provider as usize].attached_to == Some(game.object_ref(*id as CardId)))
                             || !object.card.keyword_grants().is_empty()
                             || !object.card.counter_keyword_grants().is_empty()
-                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(_) | crate::cards::StaticAbilityFragment::ActivatedPermanentKindsProhibited(_) | crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste | crate::cards::StaticAbilityFragment::ReuseExhaustBeforeFirstActivationOwnTurn | crate::cards::StaticAbilityFragment::OtherControlledExhaustGenericReduction(_) | crate::cards::StaticAbilityFragment::ArtifactTokenActivationReduction(_) | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. } | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..) | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. } | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. } | crate::cards::StaticAbilityFragment::SourceOffTurnCreature | crate::cards::StaticAbilityFragment::CreatureGroupBonus { .. } | crate::cards::StaticAbilityFragment::ChosenBasicLandType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterCreature { .. } | crate::cards::StaticAbilityFragment::SourceGraveyardAllTypes { .. } | crate::cards::StaticAbilityFragment::SourceConditionalKeywords { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..) | crate::cards::StaticAbilityFragment::CounterKeywordOther(..))))
+                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(_) | crate::cards::StaticAbilityFragment::ActivatedPermanentKindsProhibited(_) | crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste | crate::cards::StaticAbilityFragment::ReuseExhaustBeforeFirstActivationOwnTurn | crate::cards::StaticAbilityFragment::OtherControlledExhaustGenericReduction(_) | crate::cards::StaticAbilityFragment::ArtifactTokenActivationReduction(_) | crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(_) | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. } | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..) | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. } | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. } | crate::cards::StaticAbilityFragment::SourceOffTurnCreature | crate::cards::StaticAbilityFragment::CreatureGroupBonus { .. } | crate::cards::StaticAbilityFragment::ChosenBasicLandType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterCreature { .. } | crate::cards::StaticAbilityFragment::SourceGraveyardAllTypes { .. } | crate::cards::StaticAbilityFragment::SourceConditionalKeywords { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..) | crate::cards::StaticAbilityFragment::CounterKeywordOther(..))))
                             || object.controller == goal.actor
                                 && subtypes
                                     .iter()
@@ -1049,6 +1049,7 @@ impl<'g> FundingState<'g> {
                         spec.kind.payment_kind(),
                         EffectChoiceKind::TapPermanents(_)
                             | EffectChoiceKind::SacrificeRange { .. }
+                            | EffectChoiceKind::SacrificePermanents(_)
                             | EffectChoiceKind::ExileGraveyardRange { .. }
                             | EffectChoiceKind::ExileGraveyardCards(_)
                     ) {
@@ -1228,6 +1229,7 @@ impl<'g> FundingState<'g> {
                             EffectChoiceKind::Sacrifice
                                 | EffectChoiceKind::SacrificeRange { .. }
                                 | EffectChoiceKind::SacrificeDifferentNames(_)
+                                | EffectChoiceKind::SacrificePermanents(_)
                                 | EffectChoiceKind::SacrificeAttachedEquipment
                         ) || !self.sacrifice_prohibited(r.card))
                         && (spec.kind.payment_kind() != EffectChoiceKind::DiscardLegendary
@@ -1290,6 +1292,7 @@ impl<'g> FundingState<'g> {
                     EffectChoiceKind::Sacrifice
                         | EffectChoiceKind::SacrificeRange { .. }
                         | EffectChoiceKind::SacrificeDifferentNames(_)
+                        | EffectChoiceKind::SacrificePermanents(_)
                         | EffectChoiceKind::SacrificeAttachedEquipment
                 ) || !self.sacrifice_prohibited(r.card))
                     && (spec.kind.payment_kind() != EffectChoiceKind::ReturnUnblockedAttacker
@@ -2203,7 +2206,7 @@ impl<'g> FundingState<'g> {
         self.payment_departures
             .sort_by_key(|(object, _, _)| (object.card, object.generation));
     }
-    fn apply(&mut self, step: &FundingMove, preserve_departure_counters: bool) -> u32 {
+    fn apply(&mut self, step: &FundingMove, preserve_departure_counters: bool) -> Mana {
         for (lot, allocation) in self.lots.iter_mut().zip(&step.allocation) {
             for (held, paid) in lot.amounts.iter_mut().zip(allocation) {
                 *held -= u128::from(*paid);
@@ -2271,7 +2274,7 @@ impl<'g> FundingState<'g> {
                         .activation(o.instance.ability)
                         .source_zone()
         }) {
-            return 0;
+            return [0; 6];
         }
         if let Some((definition, timestamp)) = step.self_grant
             && step.ability.is_some_and(|i| {
@@ -2321,16 +2324,19 @@ impl<'g> FundingState<'g> {
         // Match the owned executor: counters and life are paid before the tap,
         // while the source is still in its current zone and incarnation.
         let pays_tap = cost.is_none_or(|c| c.tap);
-        let tap_bonus = if pays_tap
-            && CharacteristicWorld::object(self, id).zone == Zone::Battlefield
-            && CharacteristicWorld::object(self, id).controller == self.actor
-            && CharacteristicWorld::subtypes(self, id)
-                .has(CharacteristicWorld::object(self, id).card, "Mountain")
-        {
-            self.game.state.players[self.actor.index()].mountain_mana_bonus
-        } else {
-            0
-        };
+        let mut tap_bonus = [0; 6];
+        if pays_tap {
+            tap_bonus = CharacteristicWorld::controlled_land_tap_bonus(self, self.actor, id);
+            if CharacteristicWorld::object(self, id).zone == Zone::Battlefield
+                && CharacteristicWorld::object(self, id).controller == self.actor
+                && CharacteristicWorld::subtypes(self, id)
+                    .has(CharacteristicWorld::object(self, id).card, "Mountain")
+            {
+                tap_bonus[3] = tap_bonus[3]
+                    .checked_add(self.game.state.players[self.actor.index()].mountain_mana_bonus)
+                    .capacity("mana representation exhausted");
+            }
+        }
         if pays_tap {
             self.resources[step.resource].object.tapped = true;
         }
@@ -2436,7 +2442,7 @@ impl<'g> FundingState<'g> {
         }
         tap_bonus
     }
-    fn add_funding_output(&mut self, step: &FundingMove, tap_bonus: u32, production: Mana) {
+    fn add_funding_output(&mut self, step: &FundingMove, tap_bonus: Mana, production: Mana) {
         self.add_completed_mana(
             production,
             step.output.as_ref().map_or(step.quality, |o| o.quality),
@@ -2447,7 +2453,7 @@ impl<'g> FundingState<'g> {
         &mut self,
         production: Mana,
         quality: Option<mana_lots::Quality>,
-        tap_bonus: u32,
+        tap_bonus: Mana,
     ) {
         for (pool, produced) in self.mana.iter_mut().zip(production) {
             *pool = pool
@@ -2457,9 +2463,11 @@ impl<'g> FundingState<'g> {
         if let Some(quality) = quality {
             mana_lots::add_lot(&mut self.lots, quality, production.map(u128::from));
         }
-        self.mana[3] = self.mana[3]
-            .checked_add(u128::from(tap_bonus))
-            .capacity("mana representation exhausted");
+        for (pool, amount) in self.mana.iter_mut().zip(tap_bonus) {
+            *pool = pool
+                .checked_add(u128::from(amount))
+                .capacity("mana representation exhausted");
+        }
     }
     /// The ordinary fixed path adds to the already owned cost world directly.
     /// Dynamic choices keep a separate branch for every distinct concrete result.
@@ -2482,7 +2490,7 @@ impl<'g> FundingState<'g> {
     fn visit_output(
         &self,
         step: &FundingMove,
-        tap_bonus: u32,
+        tap_bonus: Mana,
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
         let mut finish = |production| {
@@ -2814,6 +2822,39 @@ impl<'g> FundingState<'g> {
             },
         }
     }
+    fn land_tap_bonus_upper(&self) -> [u128; 6] {
+        let mut bonus = [0u128; 6];
+        let mut multiplicity = 1u128;
+        for &id in self.static_sources() {
+            if self.object(id).zone != Zone::Battlefield {
+                continue;
+            }
+            for fragment in self
+                .definition(id)
+                .static_ability_groups()
+                .iter()
+                .flat_map(|g| g.fragments)
+            {
+                match *fragment {
+                    crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(mana) => {
+                        for (total, amount) in bonus.iter_mut().zip(mana) {
+                            *total = total.saturating_add(u128::from(amount));
+                        }
+                    }
+                    crate::cards::StaticAbilityFragment::AdditionalTriggers { .. } => {
+                        multiplicity = multiplicity.saturating_add(1);
+                    }
+                    _ => {}
+                }
+            }
+        }
+        bonus = bonus.map(|amount| amount.saturating_mul(multiplicity));
+        bonus[3] = bonus[3].saturating_add(u128::from(
+            self.game.state.players[self.actor.index()].mountain_mana_bonus,
+        ));
+        bonus
+    }
+
     /// For closed funding paths, bound each source's alternative tap outputs once.
     /// Keep non-tap net gains and conservative grants additive before colors.
     /// Ignore guards, sickness, reservations and shared costs here, since those
@@ -2821,6 +2862,10 @@ impl<'g> FundingState<'g> {
     /// overcounted alongside any mana the same creature might produce.
     fn total_mana_upper(&self) -> u128 {
         let mut total = self.mana.into_iter().fold(0u128, u128::saturating_add);
+        let tap_bonus = self
+            .land_tap_bonus_upper()
+            .into_iter()
+            .fold(0u128, u128::saturating_add);
         for resource in &self.resources {
             let object = &resource.object;
             if object.zone != Zone::Battlefield || object.controller != self.actor {
@@ -2856,9 +2901,7 @@ impl<'g> FundingState<'g> {
             }
             if !object.tapped {
                 // Overcount all possible tap sources; subtype may change during funding.
-                total = total.saturating_add(u128::from(
-                    self.game.state.players[self.actor.index()].mountain_mana_bonus,
-                ));
+                total = total.saturating_add(tap_bonus);
                 tap_upper =
                     u128::from(object.card.mana_color().is_some() || self.kinds(resource) & 2 != 0);
                 // A chosen basic type can supply one mana even if ability removal
@@ -2963,6 +3006,7 @@ impl<'g> FundingState<'g> {
     // untaps a source, creates a permanent, restores counters or gains life.
     fn possible_color_upper(&self) -> [u128; 6] {
         let mut upper = self.mana;
+        let tap_bonus = self.land_tap_bonus_upper();
         for resource in &self.resources {
             let object = &resource.object;
             if object.zone != Zone::Battlefield || object.controller != self.actor {
@@ -2991,9 +3035,9 @@ impl<'g> FundingState<'g> {
                 upper[1] = upper[1].saturating_add(blue as u128);
             }
             if !object.tapped {
-                upper[3] = upper[3].saturating_add(u128::from(
-                    self.game.state.players[self.actor.index()].mountain_mana_bonus,
-                ));
+                for (total, amount) in upper.iter_mut().zip(tap_bonus) {
+                    *total = total.saturating_add(amount);
+                }
             }
             let mut add = |production: ManaProduction, uses: u128| {
                 let production = self.production_upper(production);
@@ -3142,7 +3186,7 @@ impl<'g> FundingState<'g> {
             || self.game.state.crew.is_some()
             || !self.game.state.attachment_sources.is_empty()
             || !self.game.state.tap_sources.is_empty()
-            || self.game.state.players[self.actor.index()].mountain_mana_bonus != 0
+            || self.land_tap_bonus_upper() != [0; 6]
             || self.roles().is_some_and(|r| {
                 !r.source_linked_effects.is_empty()
                     || !r.resolved_ability_modifications.is_empty()
@@ -3310,6 +3354,7 @@ impl<'g> FundingState<'g> {
                 .all(|(available, required)| available >= u128::from(required));
         }
         let mut upper = self.mana;
+        let tap_bonus = self.land_tap_bonus_upper();
         for resource in &self.resources {
             let object = &resource.object;
             if object.zone != Zone::Battlefield || object.controller != goal.actor {
@@ -3322,9 +3367,9 @@ impl<'g> FundingState<'g> {
                         .contains(Keywords::HASTE));
             if tap_ready {
                 // Overestimate: a later payment may change this source's subtype.
-                upper[3] = upper[3].saturating_add(u128::from(
-                    self.game.state.players[self.actor.index()].mountain_mana_bonus,
-                ));
+                for (total, amount) in upper.iter_mut().zip(tap_bonus) {
+                    *total = total.saturating_add(amount);
+                }
                 for grant in ability_world::CharacteristicWorld::granted_mana(self, resource.id) {
                     self.production_upper(grant.production).visit(|mana| {
                         for i in 0..6 {
@@ -6024,7 +6069,7 @@ impl FundingState<'_> {
         selected: Option<Mana>,
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
-        let bonus = a.item.mana_tap_bonus.unwrap_or(0);
+        let bonus = a.item.tap_mana_bonus();
         let quality = a.mana_output.as_ref().map_or_else(
             || {
                 self.game

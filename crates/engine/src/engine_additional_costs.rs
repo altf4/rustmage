@@ -165,6 +165,7 @@ impl Game {
             EffectChoiceKind::Sacrifice
                 | EffectChoiceKind::SacrificeRange { .. }
                 | EffectChoiceKind::SacrificeDifferentNames(_)
+                | EffectChoiceKind::SacrificePermanents(_)
                 | EffectChoiceKind::SacrificeAttachedEquipment
         ) && ability_world::CharacteristicWorld::sacrifice_prohibited(self, object.card)
         {
@@ -188,6 +189,7 @@ impl Game {
             | EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeRange { .. }
             | EffectChoiceKind::SacrificeDifferentNames(_)
+            | EffectChoiceKind::SacrificePermanents(_)
             | EffectChoiceKind::ReturnUnblockedAttacker
             | EffectChoiceKind::ReturnToHand
             | EffectChoiceKind::TapPermanents(_) => o.controller == actor,
@@ -276,6 +278,7 @@ impl Game {
             | EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeRange { .. }
             | EffectChoiceKind::SacrificeDifferentNames(_)
+            | EffectChoiceKind::SacrificePermanents(_)
             | EffectChoiceKind::ReturnUnblockedAttacker
             | EffectChoiceKind::ReturnToHand
             | EffectChoiceKind::TapPermanents(_) => Zone::Battlefield,
@@ -423,6 +426,7 @@ impl Game {
                 | EffectChoiceKind::ExileGraveyardCards(_)
                 | EffectChoiceKind::ExileGraveyardRange { .. }
                 | EffectChoiceKind::ExileGraveyardSymbols { .. }
+                | EffectChoiceKind::SacrificePermanents(_)
         ) {
             return self.group_cost_fundable(base, purpose, spec, self.object_ref(card), &[]);
         }
@@ -460,7 +464,9 @@ impl Game {
             return self.can_fund_symbol_cost_group(goal, purpose, spec, source, chosen);
         }
         let amount = match spec.kind.payment_kind() {
-            EffectChoiceKind::TapPermanents(n) | EffectChoiceKind::ExileGraveyardCards(n) => n,
+            EffectChoiceKind::TapPermanents(n)
+            | EffectChoiceKind::ExileGraveyardCards(n)
+            | EffectChoiceKind::SacrificePermanents(n) => n,
             _ => unreachable!("group cost"),
         };
         let Some(needed) = usize::from(amount).checked_sub(chosen.len()) else {
@@ -613,6 +619,7 @@ impl Game {
                 | EffectChoiceKind::ExileGraveyardCards(_)
                 | EffectChoiceKind::ExileGraveyardRange { .. }
                 | EffectChoiceKind::ExileGraveyardSymbols { .. }
+                | EffectChoiceKind::SacrificePermanents(_)
         ) {
             let purpose = self.funding_purpose(&goal);
             return self.group_cost_fundable(goal, purpose, spec, source, &[]);
@@ -666,6 +673,7 @@ impl Game {
                     | EffectChoiceKind::ExileGraveyardSymbols { .. }
                     | EffectChoiceKind::ExileCraftNonlands(_)
                     | EffectChoiceKind::SacrificeDifferentNames(_)
+                    | EffectChoiceKind::SacrificePermanents(_)
             ) {
                 let mut selected = a.additional_group.as_deref().cloned().unwrap_or_default();
                 if selected.contains(&object) {
@@ -725,6 +733,7 @@ impl Game {
                 | EffectChoiceKind::ExileGraveyardCards(_)
                 | EffectChoiceKind::ExileGraveyardRange { .. }
                 | EffectChoiceKind::ExileGraveyardSymbols { .. }
+                | EffectChoiceKind::SacrificePermanents(_)
         ) {
             let mut selected = a
                 .additional_group
@@ -814,7 +823,8 @@ impl Game {
         }
         if let EffectChoiceKind::TapPermanents(amount)
         | EffectChoiceKind::ExileGraveyardCards(amount)
-        | EffectChoiceKind::SacrificeDifferentNames(amount) =
+        | EffectChoiceKind::SacrificeDifferentNames(amount)
+        | EffectChoiceKind::SacrificePermanents(amount) =
             a.additional_cost().unwrap().kind.payment_kind()
         {
             let group = a
@@ -982,7 +992,9 @@ impl Game {
             a.additional_paid = true;
             return;
         }
-        if let EffectChoiceKind::SacrificeDifferentNames(amount) = spec.kind.payment_kind() {
+        if let EffectChoiceKind::SacrificeDifferentNames(amount)
+        | EffectChoiceKind::SacrificePermanents(amount) = spec.kind.payment_kind()
+        {
             let group = a
                 .additional_group
                 .as_ref()
@@ -999,12 +1011,15 @@ impl Game {
                     r,
                 )
             }));
-            self.sacrifice_batch(
-                &group
-                    .iter()
-                    .map(|r| (a.item.controller, r.card))
-                    .collect::<Vec<_>>(),
-            );
+            let sacrifices: Vec<_> = group.iter().map(|r| (a.item.controller, r.card)).collect();
+            if matches!(spec.kind, EffectChoiceKind::SacrificePermanents(_)) {
+                assert!(
+                    self.sacrifice_cost_batch_atomic(&sacrifices),
+                    "legal group sacrifice cost"
+                );
+            } else {
+                self.sacrifice_batch(&sacrifices);
+            }
             a.additional_paid = true;
             return;
         }
@@ -1151,6 +1166,7 @@ impl Game {
             | EffectChoiceKind::ExileGreatestManaValue
             | EffectChoiceKind::SacrificeGreatestManaValue
             | EffectChoiceKind::SacrificeDifferentNames(_)
+            | EffectChoiceKind::SacrificePermanents(_)
             | EffectChoiceKind::SacrificeRange { .. }
             | EffectChoiceKind::RemoveCreatureCounters(_)
             | EffectChoiceKind::RemoveCreatureCounter(_)

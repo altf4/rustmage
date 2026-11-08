@@ -47,7 +47,7 @@ impl Game {
             actor,
             kind,
             production,
-            mountain_bonus: 0,
+            tap_bonus: [0; 6],
             quality: None,
             spent_lots: Vec::new(),
             counter_costs: Vec::new(),
@@ -182,7 +182,7 @@ impl Game {
             };
         }
     }
-    pub(super) fn record_cast_mana_bonus(&mut self, actor: Player, amount: u32) {
+    pub(super) fn record_cast_mana_bonus(&mut self, actor: Player, mana: Mana) {
         if let Some(capture) = self
             .state
             .cast_rollback
@@ -190,11 +190,11 @@ impl Game {
             .and_then(|r| r.capture.as_mut())
         {
             assert_eq!(capture.event.actor, actor);
-            capture.event.mountain_bonus = capture
-                .event
-                .mountain_bonus
-                .checked_add(amount)
-                .capacity("mountain mana receipt exhausted");
+            for (amount, added) in capture.event.tap_bonus.iter_mut().zip(mana) {
+                *amount = amount
+                    .checked_add(added)
+                    .capacity("triggered mana receipt exhausted");
+            }
         }
     }
     pub(super) fn record_cast_mana_production(

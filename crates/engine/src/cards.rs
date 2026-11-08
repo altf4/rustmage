@@ -1028,6 +1028,7 @@ pub enum EffectChoiceKind {
     /// Optionally choose a creature card captured by an exile-batch trigger.
     CopyExiledTriggerCreature,
     SacrificeDifferentNames(u16),
+    SacrificePermanents(u16),
     /// Incremental non-target selection; the group is explicitly finished before payment.
     SacrificeRange {
         minimum: u16,
