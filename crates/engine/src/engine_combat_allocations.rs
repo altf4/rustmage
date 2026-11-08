@@ -385,11 +385,17 @@ impl Game {
         rules.must_be_blocked.extend(recipients);
     }
     pub(super) fn block_requirement_weight(&self, id: CardId) -> usize {
-        let static_requirement = self
-            .characteristic_query()
-            .continuous_fragment_available(id, |fragment| {
-                matches!(fragment, crate::cards::StaticAbilityFragment::MustBeBlocked)
-            });
+        let matches_requirement = |fragment: &crate::cards::StaticAbilityFragment| {
+            matches!(fragment, crate::cards::StaticAbilityFragment::MustBeBlocked)
+        };
+        let static_requirement = self.state.objects[id as usize]
+            .card
+            .static_ability_groups()
+            .iter()
+            .any(|group| group.fragments.iter().any(matches_requirement))
+            && self
+                .characteristic_query()
+                .continuous_fragment_available(id, matches_requirement);
         usize::from(static_requirement)
             + self.state.combat_rules.as_ref().map_or(0, |rules| {
                 rules
