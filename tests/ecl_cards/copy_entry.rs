@@ -530,16 +530,17 @@ fn typed_permanent_spell_copy(
     target: Option<Target>,
     evoked: bool,
 ) -> CardId {
-    // Typed allocator boundary; Raiding's real conspire consumer is authored in the integrator's worktree.
-    let id = named(g, p, name, Zone::Hand);
-    let mut item = g.cast_item(p, id, [0; 6]);
-    g.state.objects[id as usize].copy_kind = CopyKind::Spell;
-    item.is_copy = true;
-    item.cast.as_mut().unwrap().evoked = evoked;
+    // The allocator installs the exact-incarnation recipe used by permanent spell copies.
+    let original = named(g, p, name, Zone::Hand);
+    let mut template = g.cast_item(p, original, [0; 6]);
+    template.cast.as_mut().unwrap().evoked = evoked;
     if let Some(target) = target {
-        item.targets.push(g.bind_target(target));
+        template.targets.push(g.bind_target(target));
     }
-    g.state.stack.push(item);
+    let copy = g.allocate_spell_copy(&template, p);
+    let id = copy.source.unwrap().id;
+    g.move_object(original, Zone::Outside);
+    g.state.stack.push(copy);
     id
 }
 #[test]
@@ -873,8 +874,10 @@ fn ecl_copy_entry_omni_paid_opposing_hexproof_creature_is_nontargeted_copy_and_r
 fn ecl_copy_entry_omni_decline_and_repeated_new_copy_replacements() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
-        let id = paid_omni(&mut g, p);
-        select_omni(&mut g, None);
+        let id = omni(&mut g, p, Zone::Hand);
+        g.state.players[p.index()].mana = [0, 2, 0, 0, 0, 3];
+        cast(&mut g, id, None, &[]);
+        // With no creature to copy, the optional entry replacement needs no choice.
         settle(&mut g);
         assert_eq!(g.state.objects[id as usize].zone, Zone::Graveyard);
         let lord = named(&mut g, p, "Imperious Perfect", Zone::Battlefield);
@@ -1096,7 +1099,7 @@ fn ecl_copy_entry_omni_cast_qualification_distinguishes_paid_free_and_token_spel
             let id = if method == 0 {
                 paid_omni(&mut g, p)
             } else {
-                let id = omni(
+                let mut id = omni(
                     &mut g,
                     p,
                     if method == 1 { Zone::Exile } else { Zone::Hand },
@@ -1107,7 +1110,7 @@ fn ecl_copy_entry_omni_cast_qualification_distinguishes_paid_free_and_token_spel
                     g.state.players[p.index()].mana = [0; 6];
                     checked(
                         &mut g,
-                        Action::AnnounceFree {
+                        Action::AnnounceExileFree {
                             card: id,
                             face: CastFace::Normal,
                             flash_surcharge: false,
@@ -1123,10 +1126,11 @@ fn ecl_copy_entry_omni_cast_qualification_distinguishes_paid_free_and_token_spel
                     }
                 } else {
                     // Existing typed stack-copy allocator boundary; no cast event occurs.
-                    let mut item = g.cast_item(p, id, [0; 6]);
-                    item.is_copy = true;
-                    g.state.objects[id as usize].copy_kind = CopyKind::Spell;
-                    g.state.stack.push(item);
+                    let template = g.cast_item(p, id, [0; 6]);
+                    let copy = g.allocate_spell_copy(&template, p);
+                    g.move_object(id, Zone::Outside);
+                    id = copy.source.unwrap().id;
+                    g.state.stack.push(copy);
                 }
                 to_omni_copy(&mut g);
                 id

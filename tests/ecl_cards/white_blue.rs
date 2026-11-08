@@ -1243,14 +1243,44 @@ fn finish_cast_choices(g: &mut Game) {
             .into_iter()
             .find(|a| matches!(a, Action::PayCosts { .. }))
             .or_else(|| {
-                g.legal_actions()
-                    .into_iter()
-                    .find(|a| matches!(a, Action::FinishTargets))
+                g.legal_actions().into_iter().find(|a| {
+                    matches!(
+                        a,
+                        Action::FinishTargets
+                            | Action::BeginOrderedCosts
+                            | Action::ChooseCastCost { .. }
+                    )
+                })
             })
-            .unwrap();
+            .expect("remaining declared cost or target step");
         checked(g, action);
     }
     panic!("cast did not finish");
+}
+fn begin_additional_payment(g: &mut Game) {
+    if g.legal_actions().contains(&Action::BeginOrderedCosts) {
+        checked(g, Action::BeginOrderedCosts);
+    }
+    if matches!(g.state.pending, Pending::CastCosts { .. }) {
+        let clause = g
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .cast_costs
+            .as_ref()
+            .unwrap()
+            .clauses
+            .iter()
+            .position(|row| row.clause == CastCostClause::Additional && !row.paid)
+            .expect("unpaid printed additional cost");
+        checked(
+            g,
+            Action::ChooseCastCost {
+                clause: clause as u16,
+            },
+        );
+    }
 }
 fn finish_optional_blight_cast(g: &mut Game, witness: CardId) {
     for _ in 0..32 {
@@ -1393,7 +1423,9 @@ fn pyrrhic_strike_paid_intent_requires_both_and_unpaid_requires_exactly_one() {
 fn pyrrhic_strike_paid_route_requires_a_pair_but_payment_may_remove_its_creature_target() {
     for only_artifact in [false, true] {
         let mut g = setup(Player::P0);
-        let witness = spawn(&mut g, Player::P0, Card::GrizzlyBears, Zone::Battlefield);
+        let witness = spawn(&mut g, Player::P0, Card::HillGiant, Zone::Battlefield);
+        // The four-mana 3/3 is a legal second target and dies to blight 2 with one damage marked.
+        g.state.objects[witness as usize].damage = 1;
         let target = spawn(
             &mut g,
             Player::P1,
@@ -1560,6 +1592,7 @@ fn wild_unraveling_blight_or_mana_routes_normal_and_free_casts() {
                 checked(&mut g, Action::ChooseTarget { target });
                 if let Some(witness) = witness {
                     let object = g.object_ref(witness);
+                    begin_additional_payment(&mut g);
                     checked(&mut g, Action::ChooseAdditionalCost { object });
                 }
                 finish_cast_choices(&mut g);
@@ -1614,6 +1647,7 @@ fn evershrikes_gift_paid_aura_blight_recursion_and_exact_source_binding() {
                 },
             );
             let object = g.object_ref(bear);
+            begin_additional_payment(&mut g);
             checked(&mut g, Action::ChooseAdditionalCost { object });
             finish_cast_choices(&mut g);
             assert_eq!(g.object_view(bear).zone, Zone::Graveyard);
@@ -1875,9 +1909,11 @@ fn wanderbrine_trapper_tap_costs_are_distinct_nontargeted_and_source_independent
             );
             for invalid in [source, land, target] {
                 let object = g.object_ref(invalid);
+                begin_additional_payment(&mut g);
                 reject_atomic(&mut g, Action::ChooseAdditionalCost { object });
             }
             let object = g.object_ref(witness);
+            begin_additional_payment(&mut g);
             checked(&mut g, Action::ChooseAdditionalCost { object });
             finish_cast_choices(&mut g);
             assert!(g.object_view(source).tapped);
@@ -1913,6 +1949,7 @@ fn wanderbrine_trapper_tapped_payment_is_illegal_and_invalid_target_does_not_ref
         },
     );
     let object = g.object_ref(witness);
+    begin_additional_payment(&mut g);
     checked(&mut g, Action::ChooseAdditionalCost { object });
     finish_cast_choices(&mut g);
     g.move_object(target, Zone::Hand);
@@ -2008,10 +2045,13 @@ fn kithkeeper_can_tap_itself_while_sick_or_three_other_creatures_and_binding_is_
             );
             let first = if include_source { source } else { bear };
             let object = g.object_ref(first);
+            begin_additional_payment(&mut g);
             checked(&mut g, Action::ChooseAdditionalCost { object });
+            begin_additional_payment(&mut g);
             reject_atomic(&mut g, Action::ChooseAdditionalCost { object });
             for &id in &tokens {
                 let object = g.object_ref(id);
+                begin_additional_payment(&mut g);
                 checked(&mut g, Action::ChooseAdditionalCost { object });
             }
             finish_cast_choices(&mut g);
@@ -2053,6 +2093,7 @@ fn kithkeeper_requires_three_distinct_untapped_creatures_and_can_repeat_after_un
         checked(&mut g, activation.clone());
         for id in [source, bear, token] {
             let object = g.object_ref(id);
+            begin_additional_payment(&mut g);
             checked(&mut g, Action::ChooseAdditionalCost { object });
         }
         finish_cast_choices(&mut g);
@@ -2365,10 +2406,10 @@ fn blossombind_selected_land_untap_effect_honors_prohibition_before_stun() {
     checked(&mut g, Action::Pass);
     checked(&mut g, Action::Pass);
     assert!(matches!(g.state.pending, Pending::EffectChoice { .. }));
-    for id in [land, other] {
-        let object = g.object_ref(id);
-        checked(&mut g, Action::SelectLand { object });
-    }
+    let prohibited = g.object_ref(land);
+    reject_atomic(&mut g, Action::SelectLand { object: prohibited });
+    let object = g.object_ref(other);
+    checked(&mut g, Action::SelectLand { object });
     checked(&mut g, Action::FinishLandSelection);
     settle(&mut g);
     assert!(g.object_view(land).tapped);
@@ -3802,6 +3843,7 @@ fn behold_announce(g: &mut Game, source: CardId, witness: Option<CardId>, route:
     }
     if let Some(witness) = witness {
         let object = g.object_ref(witness);
+        begin_additional_payment(g);
         checked(g, Action::ChooseAdditionalCost { object });
     }
     finish_cast_choices(g);
@@ -3843,6 +3885,7 @@ fn behold_white_blue_reveal_or_controlled_permanent_routes_pay_and_keep_the_witn
                 };
                 checked(&mut g, Action::AnnounceCast { card: source });
                 checked(&mut g, Action::ChooseSpellCost { cost: 0 });
+                begin_additional_payment(&mut g);
                 checked(&mut g, Action::ChooseAdditionalCost { object });
                 if hand {
                     assert!(
@@ -4231,6 +4274,7 @@ fn solitude_activate(g: &mut Game, aura: CardId, witness: CardId) {
         },
     );
     let object = g.object_ref(witness);
+    begin_additional_payment(g);
     checked(g, Action::ChooseAdditionalCost { object });
     finish_cast_choices(g);
 }
@@ -4376,8 +4420,10 @@ fn spiral_into_solitude_blight_cost_cannot_use_enemy_or_counter_prohibited_creat
         g.move_object(prohibition, Zone::Graveyard);
         checked(&mut g, action);
         let enemy = g.object_ref(bear);
+        begin_additional_payment(&mut g);
         reject_atomic(&mut g, Action::ChooseAdditionalCost { object: enemy });
         let object = g.object_ref(witness);
+        begin_additional_payment(&mut g);
         checked(&mut g, Action::ChooseAdditionalCost { object });
         finish_cast_choices(&mut g);
         settle(&mut g);
@@ -4392,7 +4438,10 @@ fn attack_tap_payment(g: &mut Game, source: CardId) -> bool {
 fn advance_to_tap_payment(g: &mut Game) -> bool {
     g.prepare_triggers();
     for _ in 0..30 {
-        if matches!(g.state.pending, Pending::EffectChoice { .. }) {
+        if matches!(
+            g.state.pending,
+            Pending::EffectChoice { .. } | Pending::TargetCounterRemoval { .. }
+        ) {
             return true;
         }
         if g.state.pending == Pending::Priority
@@ -4695,7 +4744,9 @@ fn sentry_choice(g: &mut Game, attackers: &[CardId]) {
             .as_ref()
             .unwrap()
             .kind,
-        EffectChoiceKind::HandCreature
+        EffectChoiceKind::HandCreatureAttacking {
+            maximum: attackers.len() as u32
+        }
     );
 }
 
@@ -5181,8 +5232,8 @@ fn slumbering_walker_entry_counters_and_optional_named_removal_precede_reflexive
         );
         reject_atomic(
             &mut g,
-            Action::ChooseCounterRemoval {
-                counters: Counters::default(),
+            Action::SelectTargetCounter {
+                counter: CounterKind::Charge,
             },
         );
         reject_atomic(
@@ -5193,10 +5244,11 @@ fn slumbering_walker_entry_counters_and_optional_named_removal_precede_reflexive
         );
         checked(
             &mut g,
-            Action::ChooseCounterRemoval {
-                counters: Counters::of(CounterKind::Soul, 1),
+            Action::SelectTargetCounter {
+                counter: CounterKind::Soul,
             },
         );
+        checked(&mut g, Action::FinishTargetCounterRemoval);
         g.prepare_triggers();
         reject_atomic(
             &mut g,
@@ -5239,7 +5291,7 @@ fn slumbering_walker_decline_no_counters_and_old_source_incarnation_never_create
         let choice = advance_to_tap_payment(&mut g);
         assert_eq!(choice, mode == 0);
         if choice {
-            checked(&mut g, Action::DeclineEffectPayment);
+            checked(&mut g, Action::FinishTargetCounterRemoval);
         }
         settle(&mut g);
         assert_eq!(g.object_view(target).zone, Zone::Graveyard);
@@ -5260,10 +5312,11 @@ fn slumbering_walker_may_pay_without_a_graveyard_target_and_blossombind_does_not
     assert!(walker_end_choice(&mut g));
     checked(
         &mut g,
-        Action::ChooseCounterRemoval {
-            counters: Counters::of(CounterKind::MinusOne, 1),
+        Action::SelectTargetCounter {
+            counter: CounterKind::MinusOne,
         },
     );
+    checked(&mut g, Action::FinishTargetCounterRemoval);
     settle(&mut g);
     assert_eq!(g.counter_count(source, CounterKind::MinusOne), 1);
     assert_eq!(
@@ -7178,20 +7231,16 @@ fn morningtides_light_prevention_orders_with_doubling_excludes_unpreventable_and
             }]);
             assert!(g.advance_replacements(false));
             assert_eq!(g.actor(), Some(p));
-            assert_eq!(
-                g.observe(p)
-                    .replacement_choice
-                    .as_ref()
-                    .unwrap()
-                    .effects
-                    .len(),
-                2
-            );
+            let choice = g.observe(p).replacement_choice.unwrap();
+            assert_eq!(choice.effects.len(), 1);
+            assert_eq!(choice.damage_preventions.len(), 1);
+            assert_eq!(choice.effects[0].source.card, doubler);
+            assert_eq!(choice.damage_preventions[0].source.card, source);
             let selected = if prevent_first { source } else { doubler };
             let action = g
                 .legal_actions()
                 .into_iter()
-                .find(|a| matches!(a,Action::ChooseReplacement{source,..} if source.card==selected))
+                .find(|a| matches!(a,Action::ChooseReplacement{source,..} | Action::ChooseDamagePrevention {source,..} if source.card==selected))
                 .unwrap();
             checked(&mut g, action);
             assert!(g.state.replacements.is_none());
@@ -7603,7 +7652,13 @@ fn taster_advance_to_choice(g: &mut Game) -> bool {
     for _ in 0..60 {
         if g.actor()
             .and_then(|actor| g.observe(actor).hand_choice)
-            .is_some_and(|view| view.kind == HandChoiceKind::RevealSubsetForControlledCast)
+            .is_some_and(|view| {
+                matches!(
+                    view.kind,
+                    HandChoiceKind::RevealSubsetForControlledCast
+                        | HandChoiceKind::ExileRevealedForControlledCast
+                )
+            })
         {
             return true;
         }
@@ -7656,10 +7711,16 @@ fn taster_single(p: Player, name: &str) -> (Game, CardId, CardId) {
     );
     let source = spell(&mut g, p, "Taster of Wares", &[]);
     assert!(taster_advance_to_choice(&mut g));
-    assert_eq!(g.actor(), Some(p.other()));
-    assert_eq!(
-        g.observe(p.other()).hand_choice.as_ref().unwrap().required,
-        1
+    assert_eq!(g.actor(), Some(p));
+    let choice = g.observe(p).hand_choice.unwrap();
+    assert_eq!(choice.kind, HandChoiceKind::ExileRevealedForControlledCast);
+    assert_eq!(choice.required, 1);
+    assert!(g.observe(p.other()).hand_choice.is_none());
+    assert!(
+        g.observe(p)
+            .objects
+            .iter()
+            .any(|view| view.reference == g.object_ref(stolen))
     );
     taster_reveal(&mut g, stolen);
     settle(&mut g);
@@ -7940,9 +8001,11 @@ fn taster_of_wares_counts_live_goblins_at_resolution_and_permission_requires_exa
                 assert_eq!(choice, other_goblin);
                 if choice {
                     assert_eq!(
-                        g.observe(p.other()).hand_choice.as_ref().unwrap().required,
-                        1
+                        g.observe(p).hand_choice.as_ref().unwrap().kind,
+                        HandChoiceKind::ExileRevealedForControlledCast
                     );
+                    assert_eq!(g.actor(), Some(p));
+                    assert!(g.observe(p.other()).hand_choice.is_none());
                     taster_reveal(&mut g, stolen);
                     settle(&mut g);
                     assert_eq!(g.object_view(stolen).zone, Zone::Exile);
@@ -7993,7 +8056,7 @@ fn taster_of_wares_any_type_intent_survives_sacrificing_source_as_the_stolen_spe
             }
             let actions = g.legal_actions();
             let witness = g.object_ref(source);
-            let action=actions.iter().find(|a|matches!(a,Action::ChooseSpellCost{cost:0})).or_else(||actions.iter().find(|a|matches!(a,Action::ChooseTarget{target:Target::Card(id)} if *id==target))).or_else(||actions.iter().find(|a|matches!(a,Action::ChooseAdditionalCost{object} if *object==witness))).or_else(||actions.iter().find(|a|matches!(a,Action::PayCosts{..} | Action::FinishTargets))).unwrap_or_else(|| panic!("pending {:?}, actions {:?}", g.state.pending, actions)).clone();
+            let action=actions.iter().find(|a|matches!(a,Action::ChooseSpellCost{cost:0})).or_else(||actions.iter().find(|a|matches!(a,Action::ChooseTarget{target:Target::Card(id)} if *id==target))).or_else(||actions.iter().find(|a|matches!(a,Action::ChooseAdditionalCost{object} if *object==witness))).or_else(||actions.iter().find(|a|matches!(a,Action::PayCosts{..} | Action::FinishTargets | Action::BeginOrderedCosts | Action::ChooseCastCost { .. }))).unwrap_or_else(|| panic!("pending {:?}, actions {:?}", g.state.pending, actions)).clone();
             checked(&mut g, action);
         }
         assert!(g.state.announcing.is_none());
@@ -8051,7 +8114,12 @@ fn taster_of_wares_source_not_controlled_when_permission_would_be_created_still_
         );
         assert!(taster_advance_to_choice(&mut g));
         assert_eq!(g.object_view(source).controller, p.other());
-        assert_eq!(g.observe(p.other()).hand_choice.unwrap().required, 1);
+        assert_eq!(g.actor(), Some(p));
+        assert_eq!(
+            g.observe(p).hand_choice.unwrap().kind,
+            HandChoiceKind::ExileRevealedForControlledCast
+        );
+        assert!(g.observe(p.other()).hand_choice.is_none());
         taster_reveal(&mut g, stolen);
         settle(&mut g);
         assert_eq!(g.object_view(stolen).zone, Zone::Exile);
@@ -8094,8 +8162,11 @@ fn taster_of_wares_old_trigger_cannot_bind_permission_to_a_new_source_incarnatio
             returned,
             "new ETB must resolve first"
         );
-        taster_reveal(&mut g, negate);
-        taster_reveal(&mut g, shock);
+        assert_eq!(g.actor(), Some(p));
+        let choice = g.observe(p).hand_choice.unwrap();
+        assert_eq!(choice.kind, HandChoiceKind::ExileRevealedForControlledCast);
+        assert_eq!(choice.candidates.len(), 2);
+        assert!(g.observe(p.other()).hand_choice.is_none());
         let selected = g.object_ref(negate);
         checked(
             &mut g,
