@@ -509,9 +509,17 @@ fn gristle_glutton_mandatory_blight_pays_before_forced_discard_and_draw() {
                 "summoning sickness"
             );
             g.state.objects[id as usize].summoning_sick = false;
+            let land = named(&mut g, p, "Forest", Zone::Battlefield);
             let discarded = discard.then(|| named(&mut g, p, "Forest", Zone::Hand));
             let library = g.state.players[p.index()].library.len();
-            activate_with_blight(&mut g, id, id);
+            checked(&mut g, activation);
+            assert!(g.observe(p.other()).additional_cost.is_none());
+            let object = g.object_ref(id);
+            checked(&mut g, Action::ChooseAdditionalCost { object });
+            if g.state.announcing.is_some() {
+                reject(&mut g, Action::TapMana { card: land });
+                checked(&mut g, Action::PayCosts { payment: [0; 6] });
+            }
             assert!(g.state.objects[id as usize].tapped);
             assert_eq!(g.counter_count(id, CounterKind::MinusOne), 1);
             settle(&mut g);
