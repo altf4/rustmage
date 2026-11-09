@@ -12,7 +12,7 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/s/SaplingNursery.java",
   "java_sha256": "5c30973b7764166448bb8e045b39aef547d12ecb8415cb49ef1f1790e4284f73",
-  "rules_tests": "src/engine_requested_sapling_tests.rs",
+  "rules_tests": "tests/ecl_cards/green_colorless.rs",
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",

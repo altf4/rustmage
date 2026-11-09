@@ -34,5 +34,5 @@
       "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
     }
   ],
-  "rules_tests": "src/assurance/hartford_blight.rs"
+  "rules_tests": "tests/ecl_cards/black_red.rs"
 }

@@ -39,5 +39,5 @@
       "sha256": "f5639c2dd9f1db080bcbece4a33a6decc88d7db4cb79676facb2b95e9e660839"
     }
   ],
-  "rules_tests": "src/assurance/requested_pyrrhic_strike.rs"
+  "rules_tests": "tests/ecl_cards/white_blue.rs"
 }
