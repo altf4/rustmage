@@ -888,3 +888,147 @@ fn fixed_land_tap_bonus_requires_positive_output_in_actual_and_projected_worlds(
         assert!(!raw.state.objects[land as usize].tapped);
     }
 }
+
+const EXTERNAL_TAP_MANA: CardRules = CardRules {
+    effect: Effect::Creature(2, 2),
+    activated: &[ActivatedAbility {
+        cost: ActivationCost {
+            tap: true,
+            additional: Some(AdditionalCost {
+                kind: EffectChoiceKind::TapPermanents(1),
+                filter: SacrificeFilter {
+                    other: false,
+                    ..FILTER
+                },
+            }),
+            ..ActivationCost::ZERO
+        },
+        program: &[Instruction::AddMana(ManaProduction::Fixed([
+            0, 0, 0, 1, 0, 0,
+        ]))],
+        ..BASE
+    }],
+    ..CardRules::EMPTY
+};
+
+fn announce_external_tap_mana(card: CardId) -> Action {
+    Action::AnnounceMana {
+        card,
+        ability: 0,
+        counter_payment: Counters::default(),
+        production: [0, 0, 0, 1, 0, 0],
+    }
+}
+
+#[test]
+fn separate_tap_mana_cost_keeps_exact_sick_witness_and_owned_payment() {
+    let _rules = fixture_rules::activate(&[
+        (Card::GrizzlyBears, &EXTERNAL_TAP_MANA),
+        (Card::from_name("Shock").unwrap(), &DRAW),
+    ]);
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let spell = put(&mut g, p, "Shock", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        let cast = Action::AnnounceCast { card: spell };
+        // The source cannot pay both the tap symbol and the separate tap cost.
+        reject(&mut g, cast.clone());
+        let enemy = put(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
+        let tapped = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        g.state.objects[tapped as usize].tapped = true;
+        reject(&mut g, cast.clone());
+        let witness = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        g.state.objects[witness as usize].summoning_sick = true;
+        act(&mut g, cast);
+        act(&mut g, announce_external_tap_mana(source));
+        for card in [source, enemy, tapped] {
+            let object = g.object_ref(card);
+            reject(&mut g, Action::ChooseAdditionalCost { object });
+        }
+        let object = g.object_ref(witness);
+        let choice = Action::ChooseAdditionalCost { object };
+        let saved = g.snapshot();
+        let mut raw = {
+            let parent = g.clone();
+            parent.clone()
+        };
+        let mut indexed = g.clone();
+        drop(g);
+        let index = indexed
+            .legal_actions()
+            .iter()
+            .position(|a| *a == choice)
+            .unwrap();
+        indexed.apply_index(p, indexed.revision(), index).unwrap();
+        act(&mut raw, choice.clone());
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        pay(&mut raw);
+        pay(&mut raw);
+        assert!(raw.object_view(source).tapped);
+        assert!(raw.object_view(witness).tapped);
+        assert!(raw.state.objects[witness as usize].summoning_sick);
+        assert_eq!(raw.object_ref(witness), object);
+        assert_eq!(raw.object_view(spell).zone, Zone::Stack);
+        assert_eq!(raw.state.players[p.index()].mana, [0; 6]);
+        let paid = raw.snapshot();
+        raw.restore(&saved).unwrap();
+        assert!(!raw.object_view(source).tapped);
+        assert!(!raw.object_view(witness).tapped);
+        act(&mut raw, choice);
+        pay(&mut raw);
+        pay(&mut raw);
+        assert_eq!(raw.snapshot(), paid);
+    }
+}
+
+#[test]
+fn separate_tap_mana_cost_cannot_consume_the_enclosing_activation_tap() {
+    const PARENT: CardRules = CardRules {
+        effect: Effect::Creature(3, 3),
+        activated: &[ActivatedAbility {
+            cost: ActivationCost {
+                colored: [0, 0, 0, 1, 0, 0],
+                mana_component: true,
+                tap: true,
+                ..ActivationCost::ZERO
+            },
+            program: &[Instruction::Draw(PlayerSet::Controller, 1)],
+            ..BASE
+        }],
+        ..CardRules::EMPTY
+    };
+    let _rules = fixture_rules::activate(&[
+        (Card::GrizzlyBears, &EXTERNAL_TAP_MANA),
+        (Card::HillGiant, &PARENT),
+    ]);
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let parent = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+        g.state.players[p.index()].mana = [0; 6];
+        let activate = Action::AnnounceActivate {
+            card: parent,
+            ability: 0,
+            counter_payment: Counters::default(),
+        };
+        reject(&mut g, activate.clone());
+        let spare = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        g.state.objects[spare as usize].summoning_sick = true;
+        act(&mut g, activate);
+        act(&mut g, announce_external_tap_mana(source));
+        let object = g.object_ref(parent);
+        reject(&mut g, Action::ChooseAdditionalCost { object });
+        let object = g.object_ref(spare);
+        act(&mut g, Action::ChooseAdditionalCost { object });
+        pay(&mut g);
+        assert!(!g.object_view(parent).tapped);
+        pay(&mut g);
+        assert!(g.object_view(parent).tapped);
+        assert!(g.object_view(source).tapped);
+        assert!(g.object_view(spare).tapped);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        settle(&mut g);
+        assert_eq!(g.hand_count(p), 1);
+    }
+}

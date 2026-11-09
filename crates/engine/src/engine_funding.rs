@@ -926,6 +926,7 @@ impl<'g> FundingState<'g> {
         let mut subtypes = Vec::new();
         let mut graveyard_mana_cost = false;
         let mut sacrifice_mana_cost = false;
+        let mut tap_mana_cost = false;
         let mut power_sensitive = false;
         let mut color_count_sensitive = false;
         // Loyalty thresholds must retain all battlefield objects: a projected
@@ -987,6 +988,9 @@ impl<'g> FundingState<'g> {
                         sacrifice_mana_cost |= ability.cost.additional.is_some_and(|cost| {
                             cost.kind.payment_kind() == EffectChoiceKind::Sacrifice
                         });
+                        tap_mana_cost |= ability.cost.additional.is_some_and(|cost| {
+                            matches!(cost.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
+                        });
                         graveyard_mana_cost |= ability
                             .cost
                             .additional
@@ -1035,7 +1039,7 @@ impl<'g> FundingState<'g> {
                         && game.state.linked_choices.as_ref().is_some_and(|data|
                             data.null_cast_links.iter().any(|link| link.source.card == *id as CardId))
                     || object.zone == Zone::Battlefield
-                        && (color_count_sensitive || life_replacement_possible || loyalty_threshold_sensitive || sacrifice_mana_cost || game.sacrifice_prohibition_source(*id as CardId) || zone_replacements::card_provides_prevention(object.card) || {
+                        && (color_count_sensitive || life_replacement_possible || loyalty_threshold_sensitive || sacrifice_mana_cost || tap_mana_cost || game.sacrifice_prohibition_source(*id as CardId) || zone_replacements::card_provides_prevention(object.card) || {
                                 #[cfg(feature = "test-support")] { zone_replacements::TEST_PREVENT_PROVIDER.with(|p| p.get() == Some(game.object_ref(*id as CardId))) }
                                 #[cfg(not(feature = "test-support"))] { false }
                             } || game.state.controls.is_some() || object.card.has_cast_origin_abilities() || object.card.borrows_activations()
@@ -2050,7 +2054,9 @@ impl<'g> FundingState<'g> {
                 let external = if let Some(spec) = ability.cost.additional {
                     if !matches!(
                         spec.kind.payment_kind(),
-                        EffectChoiceKind::ExileGraveyard | EffectChoiceKind::Sacrifice
+                        EffectChoiceKind::ExileGraveyard
+                            | EffectChoiceKind::Sacrifice
+                            | EffectChoiceKind::TapPermanents(1)
                     ) {
                         continue;
                     }
@@ -2060,6 +2066,11 @@ impl<'g> FundingState<'g> {
                             self.cost_object(spec, object, self.reference(entry.id))
                                 // A permanent cannot pay two distinct departure costs.
                                 && (!(ability.cost.sacrifice || ability.cost.exile_self) || r.id != entry.id)
+                                // Separate tap costs require distinct untapped
+                                // objects, including the enclosing ability's source.
+                                && (!matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
+                                    || (!goal.reserves_source_tap(object)
+                                        && (!ability.cost.tap || r.id != entry.id)))
                         })
                         .map(|(resource, r)| ExternalManaCost {
                             resource,
@@ -3272,12 +3283,12 @@ impl<'g> FundingState<'g> {
         }
         upper
     }
-    /// A fixed battlefield whose only potential mana grants are spell-only
-    /// and ineligible for this payment cannot improve it by tapping those sources.
-    /// This deliberately conservative shortcut falls back to the normal search
-    /// whenever an ability, type, controller, copy, or tap-triggered mana may
-    /// change the available sources during payment.
-    fn fixed_ineligible_spell_mana_cannot_pay(&self, goal: &FundingGoal) -> bool {
+    /// In a fixed world without a mana converter, only final-purpose-eligible
+    /// production can fund this payment. Bound each source's alternative tap
+    /// outputs once for quantity, and independently for each required color.
+    /// Dynamic sources, grants, entries and characteristic changes fall back to
+    /// exact search. These bounds never remove mana lots or payment choices.
+    fn fixed_mana_cannot_pay(&self, goal: &FundingGoal) -> bool {
         use crate::cards::{ManaRestriction, StaticAbilityFragment};
         let purpose = self.payment_purpose(goal);
         if !matches!(
@@ -3303,15 +3314,24 @@ impl<'g> FundingState<'g> {
             || self.game.state.temporary_copies.is_some()
             || self.copy_recipes.is_some()
             || self.game.state.crew.is_some()
-            || !self.game.state.attachment_sources.is_empty()
+            || self.resources.iter().any(|resource| {
+                resource
+                    .object
+                    .card
+                    .graveyard_activation_subtype()
+                    .is_some()
+            })
             || !self.game.state.tap_sources.is_empty()
             || self.land_tap_bonus_upper() != [0; 6]
+            || matches!(purpose, mana_lots::Purpose::Spell(spell)
+                if spell.spend_any_mana || spell.linked_mana_source.is_some())
             || self.roles().is_some_and(|r| {
                 !r.source_linked_effects.is_empty()
                     || !r.resolved_ability_modifications.is_empty()
                     || !r.ability_removal_sources.is_empty()
                     || !r.characteristic_sources.is_empty()
                     || !r.basic_land_types.is_empty()
+                    || !r.creature_types.is_empty()
                     || !r.animations.is_empty()
                     || !r.live_static.is_empty()
             })
@@ -3319,55 +3339,164 @@ impl<'g> FundingState<'g> {
             return false;
         }
         let mut upper = mana_lots::available(self.mana, &self.lots, purpose);
-        for (id, object) in self.game.state.objects.iter().enumerate() {
+        let mut quantity = upper.into_iter().fold(0u128, u128::saturating_add);
+        // Plain creatures need not be mana resources. Count every exact owned
+        // untapped body, including sick creatures and the source itself: other
+        // filters and reservations can only shrink this generous witness pool.
+        let mut creature_tap_upper = None;
+        for (id, _) in self.game.state.objects.iter().enumerate() {
+            let id = id as CardId;
+            let object = self.object(id);
             if object.zone != Zone::Battlefield {
                 continue;
             }
-            let object = self.object(id as CardId);
             if object.card.borrows_activations()
-                || object
-                    .card
-                    .activations()
-                    .iter()
-                    .any(|a| a.mana_production().is_some())
+                || object.card.has_cast_origin_abilities()
+                || object.card.static_ability_groups().iter().any(|group| {
+                    group.fragments.iter().any(|fragment| {
+                        match fragment {
+                            // These attachments can only remove stats or added
+                            // creature subtypes on departure. Fixed production
+                            // below is independent of both. A converter still
+                            // disables the bound, even if currently ineligible.
+                            StaticAbilityFragment::AttachmentStats(_)
+                            | StaticAbilityFragment::AttachedAllCreatureTypes => false,
+                            StaticAbilityFragment::LandMana {
+                                production: ManaProduction::Tagged { quality, .. },
+                                ..
+                            } => {
+                                !matches!(
+                                    quality.restriction,
+                                    ManaRestriction::CastFromExile
+                                        | ManaRestriction::ArtifactSpell
+                                        | ManaRestriction::InstantSorcery
+                                        | ManaRestriction::NoncreatureSpell
+                                        | ManaRestriction::PlaneswalkerSpell
+                                        | ManaRestriction::SpellSubtype(_)
+                                        | ManaRestriction::ChosenCreatureSpell
+                                ) || mana_lots::Quality::capture(self, id, **quality)
+                                    .eligible(purpose)
+                            }
+                            _ => true,
+                        }
+                    })
+                })
             {
                 return false;
             }
-            if object.card.static_ability_groups().iter().any(|group| {
-                group.fragments.iter().any(|fragment| {
-                    !matches!(fragment, StaticAbilityFragment::LandMana {
-                        production: ManaProduction::Tagged { quality, .. }, ..
-                    } if matches!(quality.restriction,
-                        ManaRestriction::CastFromExile | ManaRestriction::ArtifactSpell | ManaRestriction::InstantSorcery
-                        | ManaRestriction::NoncreatureSpell | ManaRestriction::PlaneswalkerSpell
-                        | ManaRestriction::SpellSubtype(_) | ManaRestriction::ChosenCreatureSpell)
-                        && !mana_lots::Quality::capture(self, id as CardId, **quality).eligible(purpose))
-                })
-            }) {
-                return false;
-            }
+            let mut tap_colors = [0u128; 6];
+            let mut tap_quantity = 0;
             if object.controller == goal.actor && !object.tapped {
-                // Count every intrinsic color independently. This may count a
-                // single land several times, so it only raises the bound.
                 if let Some(color) =
-                    ability_world::CharacteristicWorld::intrinsic_mana_color(self, id as CardId)
+                    ability_world::CharacteristicWorld::intrinsic_mana_color(self, id)
                 {
-                    upper[color] = upper[color].saturating_add(1);
+                    tap_colors[color] = 1;
+                    tap_quantity = 1;
                 }
-                for grant in ability_world::CharacteristicWorld::granted_mana(self, id as CardId) {
+                for grant in ability_world::CharacteristicWorld::granted_mana(self, id) {
                     if grant.subtype_derived {
-                        self.production_upper(grant.production).visit(|mana| {
-                            for (amount, produced) in upper.iter_mut().zip(mana) {
-                                *amount = amount.saturating_add(u128::from(produced));
+                        grant.production.visit(|mana| {
+                            for (amount, produced) in tap_colors.iter_mut().zip(mana) {
+                                *amount = (*amount).max(u128::from(produced));
                             }
+                            tap_quantity = tap_quantity.max(mana.into_iter().map(u128::from).sum());
                             false
                         });
                     }
                 }
             }
+            for ability in object.card.activations() {
+                let Some(production) = ability.mana_production() else {
+                    continue;
+                };
+                let cost = ability.cost;
+                if ability.source_zone() != Zone::Battlefield
+                    || !cost.tap
+                    || cost.sacrifice
+                    || cost.exile_self
+                    || cost.discard
+                    || cost.additional.is_some_and(|spec| {
+                        !matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
+                    })
+                    || cost.mana_options().any(|mana| {
+                        mana.generic != 0 || mana.colored.into_iter().any(|amount| amount != 0)
+                    })
+                {
+                    return false;
+                }
+                // Compute maxima directly; do not enumerate a combinatorial
+                // production domain just to obtain a conservative upper bound.
+                let (colors, amount) = match production.base() {
+                    ManaProduction::Fixed(mana) => (
+                        mana.map(u128::from),
+                        mana.into_iter().map(u128::from).sum::<u128>(),
+                    ),
+                    ManaProduction::Choice { mask, amount }
+                    | ManaProduction::Combination { mask, amount } => (
+                        std::array::from_fn(|color| {
+                            if mask & (1 << color) != 0 {
+                                u128::from(amount)
+                            } else {
+                                0
+                            }
+                        }),
+                        if mask & 63 != 0 {
+                            u128::from(amount)
+                        } else {
+                            0
+                        },
+                    ),
+                    _ => return false,
+                };
+                if object.controller != goal.actor || (cost.tap && object.tapped) {
+                    continue;
+                }
+                if let ManaProduction::Tagged { quality, .. } = production
+                    && !mana_lots::Quality::capture(self, id, *quality).eligible(purpose)
+                {
+                    continue;
+                }
+                if let Some(spec) = cost.additional
+                    && let EffectChoiceKind::TapPermanents(amount) = spec.kind
+                    && spec.filter.kinds == 1
+                    && *creature_tap_upper.get_or_insert_with(|| {
+                        self.game
+                            .state
+                            .objects
+                            .iter()
+                            .enumerate()
+                            .filter(|(id, _)| {
+                                let object = self.object(*id as CardId);
+                                object.zone == Zone::Battlefield
+                                    && object.controller == goal.actor
+                                    && !object.tapped
+                                    && ability_world::CharacteristicWorld::kinds(
+                                        self,
+                                        *id as CardId,
+                                    ) & 1
+                                        != 0
+                            })
+                            .count()
+                    }) < usize::from(amount)
+                {
+                    continue;
+                }
+                // Every admitted mana cost taps without a departure or
+                // conversion. It can neither re-enter nor untap a source.
+                for (bound, amount) in tap_colors.iter_mut().zip(colors) {
+                    *bound = (*bound).max(amount);
+                }
+                tap_quantity = tap_quantity.max(amount);
+            }
+            for (bound, amount) in upper.iter_mut().zip(tap_colors) {
+                *bound = bound.saturating_add(amount);
+            }
+            quantity = quantity.saturating_add(tap_quantity);
         }
         let adjusted = cast_origins::payment_goal(self, goal, purpose);
-        !payable(upper, adjusted.required, adjusted.generic)
+        let required = u128::from(adjusted.generic)
+            + adjusted.required.into_iter().map(u128::from).sum::<u128>();
+        quantity < required || !payable(upper, adjusted.required, adjusted.generic)
     }
     /// A flexible producer can contribute to several individual color bounds,
     /// but it cannot produce its full amount for all those colors at once.
@@ -3525,7 +3654,7 @@ impl<'g> FundingState<'g> {
             // mana. Exact moves/visited states still determine reachability.
             return true;
         }
-        if self.fixed_ineligible_spell_mana_cannot_pay(goal) {
+        if self.fixed_mana_cannot_pay(goal) {
             return false;
         }
         // A virtual sacrifice can supply a previously absent graveyard mana

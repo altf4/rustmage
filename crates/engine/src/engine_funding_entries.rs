@@ -2486,7 +2486,13 @@ impl<'g> FundingState<'g> {
                 if !world.cost_object(spec, selected.object, source) {
                     return false;
                 }
-                world.cost_departures(&[selected.object], selected.destination(), emit)
+                if spec.kind.payment_kind() == EffectChoiceKind::TapPermanents(1) {
+                    let mut next = world.clone();
+                    next.resources[selected.resource].object.tapped = true;
+                    emit(&next)
+                } else {
+                    world.cost_departures(&[selected.object], selected.destination(), emit)
+                }
             } else {
                 emit(world)
             }
@@ -2728,7 +2734,27 @@ impl<'g> FundingState<'g> {
                 if found {
                     return;
                 }
-                let external = a.additional.and_then(|object| {
+                let selected = a.additional.or_else(|| {
+                    if a.additional_paid
+                        || a.additional_cost()?.kind.payment_kind()
+                            != EffectChoiceKind::TapPermanents(1)
+                    {
+                        return None;
+                    }
+                    // Candidate-group previews precede the immutable
+                    // announcement update. Retain that exact proposed witness.
+                    let group = self
+                        .cost_group
+                        .as_ref()
+                        .filter(|(spec, _)| {
+                            spec.kind.payment_kind() == EffectChoiceKind::TapPermanents(1)
+                        })
+                        .map(|(_, group)| group.as_slice())
+                        .or_else(|| a.additional_group.as_deref().map(Vec::as_slice))?;
+                    let [object] = group else { return None };
+                    Some(*object)
+                });
+                let external = selected.and_then(|object| {
                     self.resources
                         .iter()
                         .position(|r| {
@@ -2740,7 +2766,7 @@ impl<'g> FundingState<'g> {
                             kind: a.additional_cost().expect("selected mana cost").kind,
                         })
                 });
-                if a.additional.is_some() && external.is_none() {
+                if selected.is_some() && external.is_none() {
                     return;
                 }
                 let step = FundingMove {
@@ -2788,6 +2814,14 @@ impl<'g> FundingState<'g> {
                             .is_some_and(|pending| w.guided_mana_resume_fundable(pending));
                     };
                     let mut next = w.clone();
+                    if a.additional_cost().is_some_and(|spec| {
+                        spec.kind.payment_kind() == EffectChoiceKind::TapPermanents(1)
+                    }) {
+                        // The child's exact tap was just paid. Its reservation
+                        // cannot survive as a fresh unpaid parent cost. The
+                        // parent's own selections are installed below.
+                        next.cost_group = None;
+                    }
                     next.set_funding_continuation(
                         &parent.announcement,
                         outer,
