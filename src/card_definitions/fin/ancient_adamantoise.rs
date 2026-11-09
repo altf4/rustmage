@@ -7,11 +7,13 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         TriggeredAbility {
             condition: TriggerCondition::Ward,
             targets: TargetPlan::NONE,
-            program: &[Instruction::CounterUnlessPay {
-                cost: generic(3),
+            program: &[Instruction::CounterUnlessPayCosts {
                 subject: CounterSubject::Related,
+                costs: &[ResolutionCost {
+                    mana: generic(3),
+                    ..ResolutionCost::FREE
+                }],
                 exile: false,
-                unpaid_skip: 0,
             }],
         },
         TriggeredAbility {
