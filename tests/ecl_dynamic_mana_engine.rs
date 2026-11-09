@@ -1179,3 +1179,168 @@ fn selective_rollback_retains_exact_separate_tap_cost_and_owned_mana() {
         assert_eq!(g.snapshot(), kept);
     }
 }
+
+#[test]
+fn acquired_separate_tap_mana_is_unique_and_preserves_parent_tap_reservations() {
+    const W: Mana = [1, 0, 0, 0, 0, 0];
+    const DONOR: CardRules = CardRules {
+        effect: Effect::Permanent,
+        activated: &[
+            ActivatedAbility {
+                program: &[Instruction::AddMana(ManaProduction::Fixed(W))],
+                ..EXTERNAL_TAP_MANA.activated[0]
+            },
+            ActivatedAbility {
+                cost: ActivationCost {
+                    tap: true,
+                    ..ActivationCost::ZERO
+                },
+                program: &[Instruction::AddMana(ManaProduction::Fixed(W))],
+                ..BASE
+            },
+        ],
+        ..CardRules::EMPTY
+    };
+    const PARENT: CardRules = CardRules {
+        effect: Effect::Creature(3, 3),
+        activated: &[ActivatedAbility {
+            cost: ActivationCost {
+                colored: W,
+                mana_component: true,
+                tap: true,
+                ..ActivationCost::ZERO
+            },
+            program: &[Instruction::Draw(PlayerSet::Controller, 1)],
+            ..BASE
+        }],
+        ..CardRules::EMPTY
+    };
+    let donor_definition = Card::from_name("Gilded Lotus").unwrap();
+    let _rules = fixture_rules::activate(&[(donor_definition, &DONOR), (Card::HillGiant, &PARENT)]);
+    for p in [Player::P0, Player::P1] {
+        for borrowed in [false, true] {
+            let mut g = scenario(p);
+            let (source, external, ordinary) = if borrowed {
+                let donor = put(&mut g, p, "Gilded Lotus", Zone::Battlefield);
+                let source = put(&mut g, p, "Territory Forge", Zone::Hand);
+                cast(&mut g, source, None);
+                for _ in 0..48 {
+                    if g.state.pending == Pending::Priority
+                        && g.state.stack.is_empty()
+                        && g.state.pending_triggers.is_empty()
+                        && g.state.resolving.is_none()
+                    {
+                        break;
+                    }
+                    let target = Action::ChooseTarget {
+                        target: Target::Card(donor),
+                    };
+                    if g.legal_actions().contains(&target) {
+                        act(&mut g, target);
+                    } else if g.legal_actions().contains(&Action::FinishTargets) {
+                        act(&mut g, Action::FinishTargets);
+                    } else {
+                        choose(&mut g, |action| {
+                            matches!(action, Action::Pass | Action::PutTrigger { .. })
+                        });
+                    }
+                }
+                assert_eq!(g.object_view(donor).zone, Zone::Exile);
+                let exiled = g.object_ref(donor);
+                let action = |ability| Action::AnnounceBorrowedMana {
+                    card: source,
+                    exiled,
+                    ability,
+                    counter_payment: Counters::default(),
+                    production: W,
+                };
+                (source, action(0), action(1))
+            } else {
+                let source = put(&mut g, p, "Short Bow", Zone::Battlefield);
+                let object = g.object_ref(source);
+                let mut grant = |ability| {
+                    let timestamp = g.next_role_timestamp();
+                    g.grant_recipient_ability(
+                        object,
+                        donor_definition,
+                        SelfGrantedAbilityKind::Activated { ability },
+                        timestamp,
+                        None,
+                    );
+                    Action::AnnounceSelfGrantedMana {
+                        source: object,
+                        grant_timestamp: timestamp,
+                        counter_payment: Counters::default(),
+                        production: W,
+                    }
+                };
+                (source, grant(0), grant(1))
+            };
+            let parent = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+            let plains = put(&mut g, p, "Plains", Zone::Battlefield);
+            g.state.players[p.index()].mana = [0; 6];
+            act(
+                &mut g,
+                Action::AnnounceActivate {
+                    card: parent,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            // The parent can use Plains, but its own reserved tap cannot also
+            // pay the acquired Drum cost. A packet without a witness is illegal.
+            assert!(!g.legal_actions().contains(&external));
+            reject(&mut g, external.clone());
+            assert!(
+                g.legal_actions()
+                    .contains(&Action::TapMana { card: plains })
+            );
+            assert_eq!(
+                g.legal_actions().iter().filter(|a| **a == ordinary).count(),
+                1
+            );
+            let first = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            let second = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            for card in [first, second] {
+                g.state.objects[card as usize].summoning_sick = true;
+            }
+            let actions = g.legal_actions();
+            assert_eq!(actions.iter().filter(|a| **a == external).count(), 1);
+            // The non-external granted activation also overlaps both visitors;
+            // it remains one distinct action rather than being discarded.
+            assert_eq!(actions.iter().filter(|a| **a == ordinary).count(), 1);
+            let saved = g.snapshot();
+            let mut indexed = g.clone();
+            let index = actions.iter().position(|a| *a == external).unwrap();
+            indexed.apply_index(p, indexed.revision(), index).unwrap();
+            act(&mut g, external.clone());
+            assert_eq!(g.snapshot(), indexed.snapshot());
+            let object = g.object_ref(parent);
+            reject(&mut g, Action::ChooseAdditionalCost { object });
+            for (chosen, other) in [(first, second), (second, first)] {
+                let mut branch = g.clone();
+                let object = branch.object_ref(chosen);
+                act(&mut branch, Action::ChooseAdditionalCost { object });
+                pay(&mut branch);
+                assert_eq!(branch.state.players[p.index()].mana, W);
+                assert!(!branch.object_view(parent).tapped);
+                assert!(!branch.object_view(plains).tapped);
+                pay(&mut branch);
+                assert!(branch.object_view(source).tapped);
+                assert!(branch.object_view(parent).tapped);
+                assert!(branch.object_view(chosen).tapped);
+                assert!(!branch.object_view(other).tapped);
+                assert!(branch.state.objects[chosen as usize].summoning_sick);
+                assert_eq!(branch.state.players[p.index()].mana, [0; 6]);
+                settle(&mut branch);
+                assert_eq!(branch.hand_count(p), 1);
+            }
+            g.restore(&saved).unwrap();
+            assert!(!g.object_view(source).tapped);
+            assert_eq!(
+                g.legal_actions().iter().filter(|a| **a == external).count(),
+                1
+            );
+        }
+    }
+}

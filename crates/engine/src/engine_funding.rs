@@ -5595,6 +5595,17 @@ impl Game {
         let mut candidate =
             self.payment_announcement(packet.clone(), counters, Some(production), None);
         let parents = self.deferred_mana_parents();
+        if !parents.is_empty()
+            && candidate
+                .additional_cost()
+                .is_some_and(|spec| spec.kind.payment_kind() == EffectChoiceKind::TapPermanents(1))
+        {
+            // During a parent payment, this family is enumerated by exact
+            // FundingMoves, including deferred mana components. An unselected
+            // packet has no external witness to project into its continuation;
+            // it must not invent output or spend an ancestor's reserved tap.
+            return false;
+        }
         let options = candidate.cost_options().count();
         (0..options).any(|slot| {
             candidate.select_cost(slot);
@@ -5846,6 +5857,27 @@ impl Game {
         if !state.mana_window_open(&goal) {
             return false;
         }
+        // Acquired abilities can appear in both the exact funding moves and
+        // the deferred packet fallback. Share one announcement set across the
+        // two visitors, while retaining distinct actions and fallback-only
+        // routes. Ordinary direct mana actions need no allocation here.
+        let mut announced = Vec::new();
+        let mut emit_once = |action: Action| {
+            if matches!(
+                action,
+                Action::AnnounceMana { .. }
+                    | Action::AnnounceGrantedMana { .. }
+                    | Action::AnnounceBorrowedMana { .. }
+                    | Action::AnnounceGraveyardBorrowedMana { .. }
+                    | Action::AnnounceSelfGrantedMana { .. }
+            ) {
+                if announced.contains(&action) {
+                    return false;
+                }
+                announced.push(action.clone());
+            }
+            emit(action)
+        };
         if state.visit_distinct_actions(
             &goal,
             |step| {
@@ -5857,11 +5889,11 @@ impl Game {
                     )
                 })
             },
-            emit,
+            &mut emit_once,
         ) {
             return true;
         }
-        self.visit_deferred_indexed_mana(emit)
+        self.visit_deferred_indexed_mana(&mut emit_once)
     }
 }
 
