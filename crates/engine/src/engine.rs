@@ -7893,7 +7893,7 @@ impl Game {
                 } else {
                     self.add_quality_mana(actor, production, quality);
                     self.finish_mana_tap_bonus(actor, item.tap_mana_bonus(self), production);
-                    self.committed_mana_reflexive(&item);
+                    self.committed_mana_followups(&item);
                     self.reopen_evidence_after_mana_sacrifice(card);
                 }
             }
@@ -8033,7 +8033,7 @@ impl Game {
                 } else {
                     self.add_quality_mana(actor, production, quality);
                     self.finish_mana_tap_bonus(actor, item.tap_mana_bonus(self), production);
-                    self.committed_mana_reflexive(&item);
+                    self.committed_mana_followups(&item);
                     self.reopen_evidence_after_mana_sacrifice(card);
                 }
             }

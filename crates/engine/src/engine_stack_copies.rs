@@ -277,6 +277,10 @@ impl Game {
         delayed.targets.clear();
         delayed.clear_initiating_event_references();
         delayed.target_type_slots = None;
+        self.record_cast_mana_delayed_stack_trigger(&delayed);
+        self.push_delayed_stack_trigger(delayed);
+    }
+    pub(super) fn push_delayed_stack_trigger(&mut self, delayed: SpellView) {
         self.state
             .stack_copy_data
             .get_or_insert_with(Default::default)

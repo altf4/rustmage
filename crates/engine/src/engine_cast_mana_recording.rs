@@ -58,6 +58,7 @@ impl Game {
             moves: Vec::new(),
             allocations: Vec::new(),
             triggers: Vec::new(),
+            delayed_stack_triggers: Vec::new(),
             irreversible: false,
         };
         rollback.capture = Some(Box::new(ManaCapture {
@@ -337,6 +338,16 @@ impl Game {
             capture.event.irreversible |= plan.shuffle.is_some()
                 || plan.destination == Zone::Library
                 || before.zone == Zone::Library && plan.destination != Zone::Stack;
+        }
+    }
+    pub(super) fn record_cast_mana_delayed_stack_trigger(&mut self, trigger: &SpellView) {
+        if let Some(capture) = self
+            .state
+            .cast_rollback
+            .as_mut()
+            .and_then(|r| r.capture.as_mut())
+        {
+            capture.event.delayed_stack_triggers.push(trigger.clone());
         }
     }
     pub(super) fn record_cast_mana_allocation(&mut self, id: CardId, generation: u64) {

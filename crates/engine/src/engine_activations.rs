@@ -207,7 +207,7 @@ impl Game {
             } => {
                 self.add_quality_mana(actor, production, quality);
                 self.finish_mana_tap_bonus(actor, payment.item.tap_mana_bonus(self), production);
-                self.committed_mana_reflexive(&payment.item);
+                self.committed_mana_followups(&payment.item);
                 self.reopen_evidence_after_mana_sacrifice(card);
             }
             ActivationPaymentCompletion::AlreadyOnStack => {

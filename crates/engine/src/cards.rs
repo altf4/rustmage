@@ -5837,7 +5837,7 @@ impl ActivatedAbility {
             [Instruction::AddMana(production)]
             | [
                 Instruction::AddMana(production),
-                Instruction::Reflexive { .. },
+                Instruction::Reflexive { .. } | Instruction::CopyNextInstantSorcery { .. },
             ] if !self.targets.has_targets() => Some(*production),
             _ => None,
         }

@@ -3109,7 +3109,7 @@ impl Game {
                 return;
             }
             self.add_announced_mana(&announcement.item, production);
-            self.committed_mana_reflexive(&announcement.item);
+            self.committed_mana_followups(&announcement.item);
             if self.restore_mana_announcement() {
                 return;
             }

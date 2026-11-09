@@ -66,6 +66,8 @@ pub(super) struct ManaEvent {
     pub moves: Vec<FrozenZoneMove>,
     pub allocations: Vec<(CardId, u64)>,
     pub triggers: Vec<SpellView>,
+    /// Waiting callbacks retain the actual activation packet and departure facts.
+    pub delayed_stack_triggers: Vec<SpellView>,
     pub irreversible: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -80,6 +82,7 @@ impl ManaEvent {
             + self
                 .triggers
                 .iter()
+                .chain(&self.delayed_stack_triggers)
                 .map(|item| std::mem::size_of::<SpellView>() + item.owned_bytes())
                 .sum::<usize>()
             + self.spent_lots.len() * std::mem::size_of::<(mana_lots::Quality, Mana)>()
@@ -611,6 +614,9 @@ impl Game {
                     .capacity("retained trigger IDs exhausted"),
             );
             self.state.pending_triggers.push(trigger.clone());
+        }
+        for trigger in &event.delayed_stack_triggers {
+            self.push_delayed_stack_trigger(trigger.clone());
         }
         true
     }
