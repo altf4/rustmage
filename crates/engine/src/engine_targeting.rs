@@ -2630,6 +2630,7 @@ impl Game {
             production,
             origin_counter_cost,
             None,
+            None,
         );
     }
 
@@ -2640,6 +2641,7 @@ impl Game {
         production: Option<Mana>,
         origin_counter_cost: Option<u16>,
         origin_additional_cost: Option<Card>,
+        origin_life_cost: Option<u32>,
     ) {
         let source = item.source.expect("payment announcement has object source");
         if matches!(item.kind, StackKind::ActivatedAbility { .. })
@@ -2697,6 +2699,9 @@ impl Game {
         let mut announcement =
             self.payment_announcement(item, counters, production, origin_counter_cost);
         announcement.origin_additional_cost = origin_additional_cost;
+        if let Some(life) = origin_life_cost {
+            announcement.add_origin_life_cost(life);
+        }
         // Fixed direct mana keeps its hot path. An announced fixed ability in
         // a guided/optional payment window must own that window through costs.
         if announcement.mana_output.is_none()

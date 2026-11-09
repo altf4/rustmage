@@ -279,7 +279,8 @@ impl Game {
             | Action::Cast { card, .. }
             | Action::BeginCast { card, .. } => card,
             Action::CastExiledDuringResolution { object, .. }
-            | Action::CastFreeDuringResolution { object, .. } => object.card,
+            | Action::CastFreeDuringResolution { object, .. }
+            | Action::AnnounceGraveyardWithLife { object, .. } => object.card,
             Action::PlayGraveyardPermanent { card, .. }
                 if !self.state.objects[card as usize].card.is_land() =>
             {

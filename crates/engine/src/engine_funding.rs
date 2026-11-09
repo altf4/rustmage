@@ -4920,6 +4920,9 @@ impl Game {
         if a.self_graveyard_cast_cost().is_some() {
             return self.self_graveyard_announcement_fundable(a, cost);
         }
+        if a.has_ordered_life_cost() {
+            return self.behold_announcement_fundable(a, cost);
+        }
         if a.item.cast.is_some_and(|c| c.method.is_harmonize()) {
             let mut selected = a.clone();
             selected.cost = Some(cost);
@@ -5878,6 +5881,7 @@ impl Game {
                 .is_some_and(|s| matches!(s.kind.payment_kind(), EffectChoiceKind::BlightCost(_)))
             || announcement.has_compound_sneak_cost()
             || announcement.self_graveyard_cast_cost().is_some()
+            || announcement.has_ordered_life_cost()
             || announcement.linked_origin_counter_cost().is_some()
             || announcement
                 .additional_cost()

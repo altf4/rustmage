@@ -336,6 +336,7 @@ impl Game {
             flash_surcharge,
             origin_counter_cost,
             None,
+            None,
             false,
         )
     }
@@ -354,6 +355,7 @@ impl Game {
             face,
             sorcery,
             flash_surcharge,
+            None,
             None,
             None,
             true,
@@ -383,6 +385,7 @@ impl Game {
             flash_surcharge,
             None,
             Some(object.card),
+            None,
             false,
         )
     }
@@ -390,7 +393,7 @@ impl Game {
         clippy::too_many_arguments,
         reason = "Independent origin permission selects its own cost modifiers"
     )]
-    fn permitted_cast_with_origin_rules(
+    pub(super) fn permitted_cast_with_origin_rules(
         &self,
         actor: Player,
         card: CardId,
@@ -400,6 +403,7 @@ impl Game {
         flash_surcharge: bool,
         origin_counter_cost: Option<u16>,
         origin_additional_cost: Option<Card>,
+        origin_life_cost: Option<u32>,
         independent_free: bool,
     ) -> bool {
         let object = &self.state.objects[card as usize];
@@ -514,7 +518,7 @@ impl Game {
                 return false;
             }
         }
-        if definition.x_symbols() > 0
+        let scalar_x = definition.x_symbols() > 0
             && !matches!(
                 method,
                 CastMethod::LinkedExileCounterCost
@@ -528,8 +532,8 @@ impl Game {
                     | CastMethod::Mayhem
                     | CastMethod::Miracle
                     | CastMethod::Sneak
-            )
-        {
+            );
+        if scalar_x && origin_life_cost.is_none() {
             return !self
                 .scalar_x_intervals_for_definition(actor, card, definition)
                 .is_empty();
@@ -579,14 +583,19 @@ impl Game {
             harmonize_discount: 0,
             additional_paid: false,
         };
+        if let Some(life) = origin_life_cost {
+            a.add_origin_life_cost(life);
+        }
         if matches!(
             method,
             CastMethod::GraveyardAdditionalCosts | CastMethod::LinkedExileCounterCost
         ) || origin_additional_cost.is_some()
+            || origin_life_cost.is_some()
         {
             a.initialize_cast_costs(convoke::cost_potential(self, definition));
         }
-        if method == CastMethod::LinkedExileCounterCost && definition.x_symbols() > 0 {
+        if definition.x_symbols() > 0 && (method == CastMethod::LinkedExileCounterCost || scalar_x)
+        {
             return !self
                 .scalar_x_intervals_with_announcement(actor, card, definition, Some(&a))
                 .is_empty();

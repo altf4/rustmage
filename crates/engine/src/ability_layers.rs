@@ -169,6 +169,13 @@ pub enum StaticAbilityFragment {
     CastSubtypesFromLibraryTopWithCounter(&'static [&'static str]),
     PlayLandFromLibraryTop,
     PlayLandFromGraveyard,
+    /// Cast a matching spell from your graveyard with an additional life cost.
+    /// The permanent enters with the specified counter if cast this way.
+    CastFromGraveyardWithLife {
+        filter: CastFilter,
+        life: u32,
+        entry_counter: CounterKind,
+    },
     SpendAnyManaForCreatures,
     SpellImprovise(CastFilter),
     /// Controlled matching spells have delve while this provider's rule is available.

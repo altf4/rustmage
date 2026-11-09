@@ -883,6 +883,14 @@ define_actions! {
     AnnounceCounterGraveyard { card: CardId },
     AnnounceGraveyardAdditionalCosts { card: CardId },
     AnnounceGraveyardFinality { card: CardId, sneak: bool },
+    AnnounceGraveyardWithLife {
+        object: ObjectRef,
+        face: CastFace,
+        method: CastMethod,
+        flash_surcharge: bool,
+        life: u32,
+        entry_counter: CounterKind,
+    },
     ChooseCreatureCounterCost { object: ObjectRef, counter: CounterKind },
     AnnounceAttachedAbility { grantor: ObjectRef, ability: u16 },
     AnnouncePlaneswalkerGrant { source: ObjectRef, grantor: ObjectRef, ability: u16 },
@@ -1413,7 +1421,7 @@ impl PlayerState {
 
 /// How an actual spell was cast; abilities have no cast information.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum CastMethod {
     Normal,
     GraveyardCounterCost,
@@ -5460,6 +5468,12 @@ impl Game {
                     s.casting_prohibited || self.static_casting_prohibited(actor);
                 let free_hand_cast = self.free_hand_cast_available(actor);
                 let limited_hand_casts = self.limited_free_hand_permissions(actor);
+                let graveyard_life_casts =
+                    if casting_prohibited || self.nonhand_cast_prohibited(actor) {
+                        Vec::new()
+                    } else {
+                        self.graveyard_life_cast_rules(actor)
+                    };
                 if self.visit_graveyard_permanent_plays(
                     actor,
                     sorcery,
@@ -5660,6 +5674,15 @@ impl Game {
                         && self.disguise_cast_fundable(actor, card)
                         && emit(Action::AnnounceDisguise { card })
                     {
+                        return true;
+                    }
+                    if self.visit_graveyard_life_casts(
+                        actor,
+                        card,
+                        sorcery,
+                        &graveyard_life_casts,
+                        &mut emit,
+                    ) {
                         return true;
                     }
                     // This check follows face-down disguise: the face-down spell
@@ -7380,6 +7403,7 @@ impl Game {
                     None,
                     origin_counter_cost,
                     origin_additional_cost,
+                    None,
                 );
             }
             Action::AnnounceExileFree {
@@ -7510,6 +7534,23 @@ impl Game {
                     .facts
                     .power = 0;
                 self.open_payment_announcement(item, Counters::default(), None);
+            }
+            Action::AnnounceGraveyardWithLife {
+                object,
+                face,
+                method,
+                flash_surcharge,
+                life,
+                entry_counter,
+            } => {
+                self.start_graveyard_life_cast(
+                    actor,
+                    object.card,
+                    face,
+                    method,
+                    flash_surcharge,
+                    (life, entry_counter),
+                );
             }
             Action::AnnounceGraveyardFinality { card, sneak } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);

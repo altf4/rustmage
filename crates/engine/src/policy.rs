@@ -359,6 +359,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceCounterGraveyard { .. }
             | Action::AnnounceGraveyardAdditionalCosts { .. }
             | Action::AnnounceGraveyardFinality { .. }
+            | Action::AnnounceGraveyardWithLife { .. }
             | Action::AnnounceCast { .. }
             | Action::AnnounceFlashSurcharge { .. }
             | Action::AnnounceWarp { .. }
