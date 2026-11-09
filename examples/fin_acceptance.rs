@@ -686,7 +686,7 @@ fn main() -> Result<(), &'static str> {
     }
     let report = serde_json::json!({
         "mode": if verify { "verified FIN-only Standard games" } else { "optimized FIN-only Standard simulation" },
-        "physical_members": 312,
+        "set_identities": 312,
         "deck_legal_members": members.len(),
         "pool_games": cases.iter().filter(|case| case.scope == "entire deck-legal pool").count(),
         "theme_games": cases.iter().filter(|case| case.scope == "mechanic themes").count(),
