@@ -1951,6 +1951,11 @@ pub enum Instruction {
     /// A normal token copy with source-independent next-end-step sacrifice.
     CreateCopyWithDelayedSacrifice,
     CreateHastyCopyWithDelayedSacrifice,
+    /// Copy the target, grant haste, offer each resulting Saga extra lore,
+    /// then sacrifice the exact tokens at the controller's next end step.
+    CreateHastyCopyWithSagaLore {
+        maximum: u8,
+    },
     CreateHastyTokensDestroyedAtEnd {
         token: Card,
         amount: AmountValue,

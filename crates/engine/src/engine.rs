@@ -318,9 +318,9 @@ pub mod sagas;
 #[path = "engine_shield_harness.rs"]
 pub mod shield_harness;
 pub use replacements::{
-    CreatedTokenChoiceView, DamageEventOrderView, DamagePreventionKind, DamagePreventionView,
-    PlayerCounterPlacementView, ProliferateReplacementView, ReplacementChoiceView,
-    ReplacementEffectView, SelfPlayerCounterReplacement, TokenGroupView,
+    CopiedSagaLoreView, CreatedTokenChoiceView, DamageEventOrderView, DamagePreventionKind,
+    DamagePreventionView, PlayerCounterPlacementView, ProliferateReplacementView,
+    ReplacementChoiceView, ReplacementEffectView, SelfPlayerCounterReplacement, TokenGroupView,
 };
 
 use crate::shared_vec::SharedVec;
@@ -824,6 +824,7 @@ define_actions! {
     ChooseDamageSource { source: ObjectRef },
     ChooseStackDamageSource { id: u64 },
     ChooseCreatedToken { object: ObjectRef },
+    ChooseCopiedSagaLore { object: ObjectRef, amount: u8 },
     ChooseEndure { put_counters: bool },
     BeginConvoke,
     ChooseHarmonizer { object: Option<ObjectRef> },
@@ -2561,6 +2562,9 @@ enum Pending {
     CreatedToken {
         player: Player,
     },
+    CopiedSagaLore {
+        player: Player,
+    },
     Endure {
         player: Player,
         source: ObjectRef,
@@ -3678,6 +3682,8 @@ pub struct Observation {
     pub zone_replacement_choice: Option<ZoneReplacementChoiceView>,
     pub zone_reveals: Vec<ZoneRevealView>,
     pub created_token_choice: Option<CreatedTokenChoiceView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub copied_saga_lore: Option<CopiedSagaLoreView>,
     /// Complete exact numeric cost-payment space, visible only to its actor.
     pub mana_payment: Option<ManaPaymentDomain>,
     pub endure_choice: Option<EndureChoiceView>,
@@ -4307,6 +4313,7 @@ impl Game {
             | Pending::ManaLotSpend { player }
             | Pending::Replacement { player }
             | Pending::CreatedToken { player }
+            | Pending::CopiedSagaLore { player }
             | Pending::PlotPayment { player }
             | Pending::FaceUpPayment { player }
             | Pending::EvidenceIntent { player }
@@ -4866,6 +4873,17 @@ impl Game {
             Pending::CreatedToken { .. } => {
                 if self.visit_created_token_actions(&mut emit) {
                     return true;
+                }
+            }
+            Pending::CopiedSagaLore { .. } => {
+                let choice = self.copied_saga_lore_choice().unwrap();
+                for amount in 0..=choice.maximum {
+                    if emit(Action::ChooseCopiedSagaLore {
+                        object: choice.object,
+                        amount,
+                    }) {
+                        return true;
+                    }
                 }
             }
             Pending::Endure { .. } => {
@@ -7057,6 +7075,9 @@ impl Game {
             Action::ChooseStackDamageSource { id } => self
                 .finish_source_prevention_choice(DamageSourceRef::StackObject { stack_object: id }),
             Action::ChooseCreatedToken { object } => self.choose_created_token(object),
+            Action::ChooseCopiedSagaLore { object, amount } => {
+                self.choose_copied_saga_lore(object, amount)
+            }
             Action::ChooseLibraryDestination {
                 object,
                 destination,
@@ -11094,6 +11115,7 @@ impl Game {
             zone_replacement_choice: self.zone_choice_view(viewer),
             zone_reveals: self.zone_reveals(),
             created_token_choice: self.created_token_choice(),
+            copied_saga_lore: self.copied_saga_lore_choice(),
             mana_lots: self.mana_lot_views(),
             inert_mana_copy_sources: self.inert_mana_copy_source_views(),
             mana_lot_spend: owns_choice.then(|| self.mana_lot_spend_range()).flatten(),
@@ -11338,6 +11360,7 @@ impl Game {
                 Pending::ZoneReplacement { .. } => "zone_replacement",
                 Pending::Replacement { .. } => "replacement",
                 Pending::CreatedToken { .. } => "created_token",
+                Pending::CopiedSagaLore { .. } => "copied_saga_lore",
                 Pending::ResolutionMana { .. } => "resolution_mana",
                 Pending::AttackPayment { .. } => "attack_payment",
                 Pending::ResolutionLife { .. } => "resolution_life",

@@ -252,6 +252,9 @@ pub(super) enum TokenCompletion {
     /// Evaluate the controller's graveyard after this creation event completes.
     GraveyardGroups(std::num::NonZeroU16),
     TemporaryCopy(Box<SpellView>),
+    CopiedSagaLore {
+        maximum: u8,
+    },
     TemporaryTokens(Box<temporary_tokens::TokenInstructions>),
     AnimateNoncreatures(AnimationSpec),
     Keywords {
@@ -372,11 +375,18 @@ enum Work {
         ready: Vec<TokenBatch>,
         remaining: VecDeque<TokenBatch>,
     },
-    /// Exact fixed-token results; surrounding instructions wait for entry choices.
+    /// Exact token results; surrounding instructions wait for entry choices.
     CreatedTokens {
         player: Player,
         created: Vec<ObjectRef>,
         completion: Box<TokenCompletion>,
+    },
+    /// Continue only after token creation and entry replacements have committed.
+    CopiedSagaLore {
+        player: Player,
+        created: Vec<ObjectRef>,
+        next: usize,
+        maximum: u8,
     },
     AmassSubtype {
         source: ObjectRef,
@@ -509,7 +519,8 @@ impl ReplacementState {
                                 .map(&token_bytes)
                                 .sum::<usize>()
                     }
-                    Work::CreatedGraveyardCounters { created, .. } => {
+                    Work::CreatedGraveyardCounters { created, .. }
+                    | Work::CopiedSagaLore { created, .. } => {
                         created.len() * std::mem::size_of::<ObjectRef>()
                     }
                     Work::DestroyAndCreate { targets, .. } => {
@@ -2690,6 +2701,33 @@ impl Game {
                         self.complete_created_tokens(&mut state, player, *completion, created);
                         continue;
                     }
+                    Some(Work::CopiedSagaLore {
+                        player,
+                        created,
+                        next,
+                        maximum,
+                    }) => {
+                        if maximum != 0
+                            && let Some(offset) = created[next..].iter().position(|&object| {
+                                self.on_battlefield(object.card)
+                                    && self.object_ref(object.card) == object
+                                    && self.has_subtype(object.card, "Saga")
+                            })
+                        {
+                            state.work.push_front(Work::CopiedSagaLore {
+                                player,
+                                created,
+                                next: next + offset,
+                                maximum,
+                            });
+                            self.state.pending = Pending::CopiedSagaLore { player };
+                            self.state.replacements = Some(state);
+                            return true;
+                        }
+                        let item = self.state.resolving.as_ref().unwrap().item.clone();
+                        self.register_delayed_sacrifice_when(&item, created, false, true);
+                        continue;
+                    }
                     Some(Work::CreatedGraveyardCounters {
                         player,
                         created,
@@ -3259,6 +3297,17 @@ impl Game {
                 self.on_battlefield(object.card) && self.object_ref(object.card) == *object
             })
             .collect();
+        if let TokenCompletion::CopiedSagaLore { maximum } = completion {
+            if !created.is_empty() {
+                state.work.push_front(Work::CopiedSagaLore {
+                    player,
+                    created,
+                    next: 0,
+                    maximum,
+                });
+            }
+            return;
+        }
         if matches!(completion, TokenCompletion::Mobilize) {
             let item = self.state.resolving.as_ref().unwrap().item.clone();
             self.register_delayed_sacrifice(&item, created.clone());
@@ -3319,21 +3368,7 @@ impl Game {
             });
         }
         if let Some(counters) = counters {
-            let placements = self.created_token_counter_placements(player, &created, &counters);
-            if !placements.is_empty() {
-                state.work.push_front(Work::Counters(CounterBatch {
-                    player_events: player_counter_events::PlayerCounterEvents::default(),
-                    self_effects: Vec::new(),
-                    player_placed_by: None,
-                    player_effect: [true; 2],
-                    next_player: 0,
-                    proliferated: None,
-                    completion: None,
-                    placements,
-                    next: 0,
-                    used: Vec::new(),
-                }));
-            }
+            self.queue_created_token_counters(state, player, &created, &counters);
         }
         if let TokenCompletion::Keywords { source, keywords } = completion {
             let ids = created.iter().map(|r| r.card).collect::<Vec<_>>();
@@ -3396,6 +3431,68 @@ impl Game {
             }
         }
     }
+    fn queue_created_token_counters(
+        &self,
+        state: &mut ReplacementState,
+        player: Player,
+        created: &[ObjectRef],
+        counters: &Counters,
+    ) {
+        let placements = self.created_token_counter_placements(player, created, counters);
+        if !placements.is_empty() {
+            state.work.push_front(Work::Counters(CounterBatch {
+                player_events: player_counter_events::PlayerCounterEvents::default(),
+                self_effects: Vec::new(),
+                player_placed_by: None,
+                player_effect: [true; 2],
+                next_player: 0,
+                proliferated: None,
+                completion: None,
+                placements,
+                next: 0,
+                used: Vec::new(),
+            }));
+        }
+    }
+
+    pub(super) fn copied_saga_lore_choice(&self) -> Option<CopiedSagaLoreView> {
+        if !matches!(self.state.pending, Pending::CopiedSagaLore { .. }) {
+            return None;
+        }
+        let Work::CopiedSagaLore {
+            created,
+            next,
+            maximum,
+            ..
+        } = self.state.replacements.as_ref()?.work.front()?
+        else {
+            return None;
+        };
+        Some(CopiedSagaLoreView {
+            object: created[*next],
+            maximum: *maximum,
+        })
+    }
+
+    pub(super) fn choose_copied_saga_lore(&mut self, object: ObjectRef, amount: u8) {
+        let mut state = self.state.replacements.take().unwrap();
+        let Some(Work::CopiedSagaLore { player, next, .. }) = state.work.front_mut() else {
+            unreachable!("owned copy lore choice");
+        };
+        let player = *player;
+        *next += 1;
+        if amount != 0 && !counters_prohibited(self, object) {
+            self.queue_created_token_counters(
+                &mut state,
+                player,
+                &[object],
+                &Counters::of(CounterKind::Lore, u64::from(amount)),
+            );
+        }
+        self.state.replacements = Some(state);
+        self.advance_replacements(true);
+    }
+
     pub(super) fn choose_created_token(&mut self, object: ObjectRef) {
         let state = self.state.replacements.as_mut().unwrap();
         let (source, _, _) = state.attachment.take().unwrap();
@@ -3940,6 +4037,12 @@ impl Game {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Serialize)]
+pub struct CopiedSagaLoreView {
+    pub object: ObjectRef,
+    pub maximum: u8,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, Serialize)]
 pub struct CreatedTokenChoiceView {
     pub source: ObjectRef,
     pub candidates: Vec<ObjectRef>,
@@ -4143,6 +4246,21 @@ impl Game {
     fn create_replacement_copy_groups(&mut self, batch: &TokenBatch) -> Vec<ObjectRef> {
         let mut moves =
             self.allocate_copy_group_entries(batch.player, &batch.groups, &batch.recipes);
+        if matches!(batch.completion, TokenCompletion::CopiedSagaLore { .. }) {
+            let source = self
+                .state
+                .resolving
+                .as_ref()
+                .unwrap()
+                .item
+                .source
+                .unwrap()
+                .object;
+            for movement in &mut moves {
+                movement.keywords_after = Some((source, Keywords::HASTE));
+                movement.keywords_after_permanent = true;
+            }
+        }
         let mut index = 0;
         for (group_index, group) in batch.groups.iter().enumerate() {
             let recipient = match &batch.completion {

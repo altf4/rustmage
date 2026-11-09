@@ -187,6 +187,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::ChooseStackDamageSource { .. }
             | Action::ChooseDamageEvent { .. } => 120,
             Action::ChooseCreatedToken { .. } => 120,
+            Action::ChooseCopiedSagaLore { amount, .. } => 120 + i128::from(*amount),
             Action::ChooseEndure { put_counters } => {
                 if *put_counters {
                     40

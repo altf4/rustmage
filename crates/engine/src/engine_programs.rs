@@ -6247,6 +6247,16 @@ impl Game {
                         self.stage_temporary_copy_creation(&item, recipe);
                     }
                 }
+                Instruction::CreateHastyCopyWithSagaLore { maximum } => {
+                    if let Some(recipe) = self.recipe_for_subject(&item, Subject::Targets) {
+                        self.stage_copy_creation_inner(
+                            item.controller,
+                            recipe,
+                            1,
+                            replacements::TokenCompletion::CopiedSagaLore { maximum },
+                        );
+                    }
+                }
                 Instruction::CreateTemporaryArtifactCopy => {
                     if let Some(recipe) = self.recipe_for_subject(&item, Subject::Targets) {
                         self.stage_temporary_copy_creation(
