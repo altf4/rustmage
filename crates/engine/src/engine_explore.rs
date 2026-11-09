@@ -191,7 +191,8 @@ impl Game {
         // CR701.44a: the counter precedes the optional revealed-card choice.
         // The old source may still explore under LKI; a new incarnation is not it.
         let counter_added = self.on_battlefield(explorer.object.card)
-            && self.object_ref(explorer.object.card) == explorer.object;
+            && self.object_ref(explorer.object.card) == explorer.object
+            && !replacements::counters_prohibited(self, explorer.object);
         if counter_added {
             self.effect_counter_by(
                 explorer.object.card,

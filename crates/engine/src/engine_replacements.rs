@@ -2124,7 +2124,7 @@ impl Game {
         amount: u64,
         mode: ResumeMode,
     ) {
-        if amount == 0 || counters_prohibited(self, self.object_ref(id)) {
+        if amount == 0 {
             return;
         }
         let placed_by = self
@@ -2144,7 +2144,7 @@ impl Game {
         placed_by: Player,
         mode: ResumeMode,
     ) {
-        if amount == 0 {
+        if amount == 0 || counters_prohibited(self, self.object_ref(id)) {
             return;
         }
         if self.state.replacements.is_none()

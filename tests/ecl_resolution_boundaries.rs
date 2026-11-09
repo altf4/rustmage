@@ -191,9 +191,14 @@ fn copy_exception_changeling_needs_a_creature_or_kindred_card_type() {
 fn owner_library_moves_uncounterable_spells_and_copies_with_exact_owned_choices() {
     let _scope = fixture_rules::activate(&[(Card::Shock, &LIBRARY)]);
     for p in [Player::P0, Player::P1] {
-        for copy in [false, true] {
+        for (copy, empty_library) in [(false, false), (false, true), (true, false)] {
             for destination in [LibraryDestination::Top, LibraryDestination::Bottom] {
                 let mut g = scenario(p);
+                if empty_library {
+                    while let Some(card) = g.top_library_card(p) {
+                        g.move_object(card, Zone::Graveyard);
+                    }
+                }
                 let original = put(&mut g, p, "Sphinx of the Final Word", Zone::Hand);
                 cast(&mut g, original, None);
                 assert!(!g.counter_stack_item(g.state.stack.last().unwrap().id, false));
@@ -208,8 +213,10 @@ fn owner_library_moves_uncounterable_spells_and_copies_with_exact_owned_choices(
                     (original, Target::Spell(original))
                 };
                 let library = g.state.players[p.index()].library.clone();
-                let prior_top = g.object_ref(g.top_library_card(p).unwrap());
-                g.remember_private_library_top(p, p, prior_top);
+                let prior_top = g.top_library_card(p).map(|id| g.object_ref(id));
+                if let Some(prior) = prior_top {
+                    g.remember_private_library_top(p, p, prior);
+                }
                 act(&mut g, Action::Pass);
                 let bounce = put(&mut g, p.other(), "Shock", Zone::Hand);
                 cast(&mut g, bounce, Some(bound));
@@ -234,14 +241,23 @@ fn owner_library_moves_uncounterable_spells_and_copies_with_exact_owned_choices(
                     },
                 );
                 settle(&mut g);
-                if copy || destination == LibraryDestination::Bottom {
+                if copy || destination == LibraryDestination::Bottom && !empty_library {
                     assert_eq!(
                         g.observe(p).known_library_top[p.index()]
                             .as_ref()
                             .map(|top| top.object),
-                        Some(prior_top)
+                        prior_top
                     );
                     assert!(g.observe(p.other()).known_library_top[p.index()].is_none());
+                } else {
+                    for viewer in [p, p.other()] {
+                        assert_eq!(
+                            g.observe(viewer).known_library_top[p.index()]
+                                .as_ref()
+                                .map(|top| top.object),
+                            Some(g.object_ref(target))
+                        );
+                    }
                 }
                 if copy {
                     assert_eq!(g.object_view(target).zone, Zone::Outside);
@@ -261,6 +277,76 @@ fn owner_library_moves_uncounterable_spells_and_copies_with_exact_owned_choices(
                 }
             }
         }
+    }
+}
+
+#[test]
+fn explore_reveals_and_moves_the_card_even_when_placement_is_prohibited() {
+    const EXPLORE: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
+            &[Instruction::Explore(Subject::Targets)],
+        ),
+        ..CardRules::EMPTY
+    };
+    let _scope =
+        fixture_rules::activate(&[(Card::Shock, &EXPLORE), (card("Ghost Vacuum"), &BARRIER)]);
+    for p in [Player::P0, Player::P1] {
+        for prohibited in [false, true] {
+            let mut g = scenario(p);
+            let creature = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+            if prohibited {
+                put(&mut g, p, "Ghost Vacuum", Zone::Battlefield);
+            }
+            let nonland = put(&mut g, p, "Opt", Zone::Library);
+            let spell = put(&mut g, p, "Shock", Zone::Hand);
+            cast(&mut g, spell, Some(Target::Card(creature)));
+            act(&mut g, Action::Pass);
+            act(&mut g, Action::Pass);
+            let choice = g.observe(p).explore_choice.unwrap();
+            assert_eq!(choice.revealed.object, g.object_ref(nonland));
+            assert_eq!(choice.counter_added, !prohibited);
+            owned(
+                &mut g,
+                Action::ChooseExplore {
+                    object: choice.revealed.object,
+                    graveyard: true,
+                },
+            );
+            assert_eq!(g.object_view(nonland).zone, Zone::Graveyard);
+            assert_eq!(
+                g.counter_count(creature, CounterKind::PlusOne),
+                u64::from(!prohibited)
+            );
+            assert_eq!(
+                g.observe(p).last_explore.unwrap().counter_added,
+                !prohibited
+            );
+        }
+    }
+}
+
+#[test]
+fn an_impossible_optional_counter_takes_the_otherwise_cast_route() {
+    let _scope = fixture_rules::activate(&[(card("Ghost Vacuum"), &BARRIER)]);
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let widow = put(&mut g, p, "Black Widow, Super Spy", Zone::Battlefield);
+        put(&mut g, p, "Ghost Vacuum", Zone::Battlefield);
+        let nonland = put(&mut g, p.other(), "Opt", Zone::Library);
+        g.apply_damage_batch(&[DamageEvent {
+            source: g.damage_source(widow),
+            target: Target::Player(p.other()),
+            amount: 2,
+            combat: true,
+            preventable: true,
+        }]);
+        g.prepare_triggers();
+        settle(&mut g);
+        assert_eq!(g.counter_count(widow, CounterKind::PlusOne), 0);
+        assert_eq!(g.object_view(nonland).zone, Zone::Exile);
+        assert!(g.can_cast_exiled_card(p, nonland));
+        assert!(!g.can_cast_exiled_card(p.other(), nonland));
     }
 }
 

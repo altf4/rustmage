@@ -127,10 +127,7 @@ impl Game {
             if event.was_card
                 && (destination == LibraryDestination::Top
                     || matches!(destination, LibraryDestination::NthFromTop(1))
-                    || (matches!(destination, LibraryDestination::NthFromTop(_))
-                        && old_top_position.is_none())
-                    || (destination == LibraryDestination::SecondFromTop
-                        && old_top_position.is_none()))
+                    || old_top_position.is_none())
             {
                 self.remember_library_top(owner, event.after);
             } else if let Some(prior) = prior_top
