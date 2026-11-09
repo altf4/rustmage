@@ -108,6 +108,8 @@ fn each_qualified_vehicle_offers_its_own_first_combat_payment() {
     let mut game = scenario(player);
     let pilot = put(&mut game, player, "Hill Giant", Zone::Battlefield);
     let other = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let mana = ["Mountain", "Forest", "Forest"]
+        .map(|name| put(&mut game, player, name, Zone::Battlefield));
     let vehicles = [pilot, pilot, other].map(|crewer| {
         let vehicle = put(&mut game, player, "Broadcast Rambler", Zone::Battlefield);
         assert!(!game.object_view(vehicle).is_creature());
@@ -152,6 +154,9 @@ fn each_qualified_vehicle_offers_its_own_first_combat_payment() {
     assert!(vehicles.iter().all(|&id| !game.object_view(id).tapped));
 
     pass_pair(&mut game);
+    for card in mana {
+        act(&mut game, Action::TapMana { card });
+    }
     choose(&mut game, |action| {
         matches!(action, Action::PayResolutionMana { .. })
     });

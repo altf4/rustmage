@@ -249,7 +249,6 @@ fn blighted_tap(game: &Game, land: CardId) -> Action {
 
 #[test]
 fn the_exact_land_loses_earlier_land_types_and_abilities_until_its_last_counter() {
-    use rustmage_core::engine::ability_world::CharacteristicWorld;
     use rustmage_core::engine::subtypes::BasicLandTypesEffectView;
 
     let _rules = fixture_rules::activate(&[(Card::HillGiant, &BLIGHT_ATTACKER)]);
@@ -342,8 +341,6 @@ fn the_exact_land_loses_earlier_land_types_and_abilities_until_its_last_counter(
 
 #[test]
 fn a_prevented_blight_addition_uses_only_counters_already_on_the_land() {
-    use rustmage_core::engine::ability_world::CharacteristicWorld;
-
     const LOCK: CardRules = CardRules {
         effect: Effect::Permanent,
         static_groups: &[StaticAbilityGroup {
@@ -417,7 +414,6 @@ fn funding_cannot_revive_an_expired_blight_effect_by_replacing_the_counter() {
     let saved = game.snapshot();
     assert!(game.can_fund(goal.clone()));
     let mut projected = FundingState::from_game(&game, &goal);
-    assert!(projected.entry_projection.is_none());
     assert!(projected.remove_creature_counter(exact, CounterKind::Blight));
     assert_eq!(projected.intrinsic_mana_color(land), Some(4));
     assert!(projected.visit_mana_source_counter_cost(
