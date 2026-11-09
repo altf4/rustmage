@@ -612,6 +612,11 @@ impl Game {
             AmountValue::EquippedCreaturesYouControl => {
                 self.equipped_creature_count(item.controller)
             }
+            AmountValue::DeclaredAttackerCount => item
+                .reflexive_subject
+                .as_deref()
+                .filter(|subjects| !subjects.action)
+                .map_or(0, |subjects| 1 + subjects.additional_objects.len() as u128),
             AmountValue::SourceEquipmentCount => self.source_equipment_quantity(item),
             AmountValue::SourcePower => item.source.map_or(0, |source| {
                 if self.on_battlefield(source.id) && self.object_ref(source.id) == source.object {

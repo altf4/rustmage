@@ -2807,6 +2807,8 @@ pub enum Instruction {
     /// Privately look at top one; optionally reveal a land to hand, otherwise
     /// optionally put that same exact card into the graveyard.
     LookTopLandThenMayGraveyard,
+    /// Privately look, optionally take a card, then put any remaining lands in tapped and put the rest in the graveyard.
+    LookTopOneToHandThenLandsTapped(AmountValue),
     CastLibraryTopUpToAttackingPower(u16),
     /// Privately offer one immediate free spell from hand with at most this mana value.
     CastHandFreeUpTo(AmountValue),
@@ -3850,6 +3852,8 @@ pub enum AmountValue {
     GreatestCreaturePower(CreatureFilter),
     /// Count each current equipped creature controlled by this player once.
     EquippedCreaturesYouControl,
+    /// Frozen qualifying subjects of one attack declaration.
+    DeclaredAttackerCount,
     SourceEquipmentCount,
     #[allow(
         dead_code,
@@ -5550,6 +5554,8 @@ pub enum TriggerCondition {
     ControlledCreatureAttacks,
     /// One attack by a Vehicle whose Crew cost this exact source paid this turn.
     CrewedVehicleAttacks,
+    /// Once per declaration, retaining the exact declared attackers of this subtype.
+    ControlledSubtypeAttackDeclaration(&'static str),
     ControlledCreatureAttacksPlayerAlone,
     /// Once per opponent-controlled blocker meeting either stat ceiling.
     OpponentCreatureBlocksSmall,

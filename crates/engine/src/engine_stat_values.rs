@@ -690,6 +690,7 @@ impl Game {
             | AmountValue::SourcePower
             | AmountValue::SourceToughness
             | AmountValue::SourceEquipmentCount
+            | AmountValue::DeclaredAttackerCount
             | AmountValue::LifeEventAmount
             | AmountValue::DiscardEventAmount
             | AmountValue::DamageEventAmount

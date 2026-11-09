@@ -9,6 +9,7 @@ use crate::cards::{
 pub(super) enum TopLandStage {
     Hand,
     Graveyard,
+    HandThenLands,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -138,6 +139,40 @@ impl Game {
         }));
         self.state.pending = Pending::EffectLibrarySelection { player: owner };
         true
+    }
+    pub(super) fn start_top_hand_then_lands(
+        &mut self,
+        item: &SpellView,
+        amount: AmountValue,
+    ) -> bool {
+        let pending = self.start_library_selection_to(
+            item,
+            LibrarySelectionEffect {
+                spec: LibrarySelectionSpec {
+                    look: 0,
+                    count: LibrarySelectionCount::Fixed(1),
+                    filter: LibrarySelectionFilter::Any,
+                    optional: true,
+                    reveal: false,
+                    remainder: LibraryRemainder::Keep,
+                },
+                look: LibraryLook::Amount(amount),
+                destination: LibraryPickDestination::Hand,
+                public: false,
+                maximum_mana_value: None,
+            },
+        );
+        if pending {
+            self.state
+                .resolving
+                .as_mut()
+                .unwrap()
+                .selection
+                .as_mut()
+                .unwrap()
+                .top_land = Some(TopLandStage::HandThenLands);
+        }
+        pending
     }
     pub(super) fn start_library_selection(
         &mut self,
@@ -504,6 +539,10 @@ impl Game {
             .selection
             .as_mut()
             .unwrap();
+        if f.top_land == Some(TopLandStage::HandThenLands) {
+            self.continue_top_hand_then_lands(owner);
+            return true;
+        }
         if f.top_land == Some(TopLandStage::Hand) && f.selected.is_empty() {
             f.top_land = Some(TopLandStage::Graveyard);
             f.destination = LibraryPickDestination::Graveyard;
@@ -528,6 +567,44 @@ impl Game {
             self.commit_library_selection(owner);
             false
         }
+    }
+    fn continue_top_hand_then_lands(&mut self, owner: Player) {
+        let mut frame = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .selection
+            .take()
+            .unwrap();
+        if let Some(chosen) = frame.selected.pop() {
+            assert_eq!(self.object_ref(chosen.card), chosen);
+            assert_eq!(self.state.objects[chosen.card as usize].zone, Zone::Library);
+            let events = self.move_objects_raw(&[chosen.card], Zone::Hand);
+            self.finish_zone_events(&events, &[]);
+        }
+        // The first stage's candidate list is the entire original looked set.
+        // A prevented hand move leaves that exact card eligible for this stage.
+        frame.remaining = std::mem::take(&mut frame.eligible);
+        frame.remaining.retain(|&card| {
+            self.object_ref(card.card) == card
+                && self.state.objects[card.card as usize].zone == Zone::Library
+        });
+        frame.eligible = frame
+            .remaining
+            .iter()
+            .copied()
+            .filter(|card| self.state.objects[card.card as usize].card.is_land())
+            .collect();
+        frame.top_land = None;
+        frame.destination = LibraryPickDestination::BattlefieldTapped;
+        frame.spec.filter = LibrarySelectionFilter::Kinds(2);
+        frame.spec.count = LibrarySelectionCount::All;
+        frame.spec.remainder = LibraryRemainder::Graveyard;
+        frame.maximum = frame.eligible.len();
+        self.state.resolving.as_mut().unwrap().selection = Some(frame);
+        // Keep the same private choice boundary even when no looked land qualifies.
+        self.state.pending = Pending::EffectLibrarySelection { player: owner };
     }
     fn commit_library_selection(&mut self, owner: Player) {
         let mut f = self

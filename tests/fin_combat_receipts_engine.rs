@@ -353,3 +353,151 @@ fn attack_damage_keeps_the_defending_player_and_counts_current_equipped_creature
         assert_eq!(game.state.players[player.index()].life, 20);
     }
 }
+
+const BIRD_OBSERVER: CardRules = CardRules {
+    effect: Effect::Creature(3, 5),
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::ControlledSubtypeAttackDeclaration("Bird"),
+            targets: TargetPlan::NONE,
+            program: &[Instruction::LookTopOneToHandThenLandsTapped(
+                AmountValue::DeclaredAttackerCount,
+            )],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::LandEntersYou,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::Grow {
+                subject: Subject::Source,
+                power: 1,
+                toughness: 0,
+            }],
+        },
+    ],
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn declared_birds_freeze_one_private_look_then_land_choices_commit_together() {
+    let _rules = fixture_rules::activate(&[(Card::HillGiant, &BIRD_OBSERVER)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let observer = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    let birds = [0; 4].map(|_| put(&mut game, player, "Healer's Hawk", Zone::Battlefield));
+    let nonbird = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let [spell, mountain, market, swamp] = ["Opt", "Mountain", "Night Market", "Swamp"]
+        .map(|name| put(&mut game, player, name, Zone::Library));
+    game.begin_step(Step::BeginCombat);
+    declare(
+        &mut game,
+        &[birds[0], birds[1], birds[2], birds[3], nonbird],
+    );
+    assert_eq!(game.state.stack.len(), 1);
+    game.move_object(birds[1], Zone::Graveyard);
+    pass_pair(&mut game);
+    let view = game.observe(player).library_selection.unwrap();
+    assert_eq!(view.destination, "hand");
+    assert_eq!(view.remaining.len(), 4);
+    assert_eq!(view.candidates.len(), 4);
+    assert!(game.observe(player.other()).library_selection.is_none());
+
+    let before = game.snapshot();
+    let mut declined = game.clone();
+    let selected = Action::SelectLibrary { card: swamp };
+    let revision = game.revision();
+    let index = game
+        .legal_actions()
+        .iter()
+        .position(|a| *a == selected)
+        .unwrap();
+    let mut indexed = game.clone();
+    indexed.apply_index(player, revision, index).unwrap();
+    act(&mut game, selected);
+    act(&mut game, Action::FinishLibrarySelection);
+    act(&mut indexed, Action::FinishLibrarySelection);
+    assert_eq!(game.snapshot(), indexed.snapshot());
+    indexed.restore(&before).unwrap();
+    assert_eq!(
+        indexed.apply_index(player, revision, index),
+        Err(Error::StaleRevision)
+    );
+
+    assert_eq!(game.object_view(swamp).zone, Zone::Hand);
+    assert!(
+        !game
+            .observe(player.other())
+            .objects
+            .iter()
+            .any(|object| object.id == swamp)
+    );
+    let view = game.observe(player).library_selection.unwrap();
+    assert_eq!(view.destination, "battlefield_tapped");
+    assert_eq!(view.remainder, "graveyard");
+    assert_eq!(
+        view.candidates,
+        [game.object_ref(market), game.object_ref(mountain)]
+    );
+    assert!(game.observe(player.other()).library_selection.is_none());
+    reject(&mut game, Action::SelectLibrary { card: spell });
+    reject(&mut game, Action::SelectLibrary { card: swamp });
+    act(&mut game, Action::SelectLibrary { card: mountain });
+    act(&mut game, Action::SelectLibrary { card: market });
+    act(&mut game, Action::FinishLibrarySelection);
+    assert_eq!(game.state.pending, Pending::EntryValue { player });
+    for card in [mountain, market, spell] {
+        assert_eq!(game.object_view(card).zone, Zone::Library);
+    }
+    assert!(game.state.stack.is_empty());
+    act(
+        &mut game,
+        Action::ChooseEntryValue {
+            value: EntryChoiceValue::Color(ChoiceColor::Blue),
+        },
+    );
+    for card in [market, mountain] {
+        let object = game.object_view(card);
+        assert_eq!(object.zone, Zone::Battlefield);
+        assert!(object.tapped);
+    }
+    assert_eq!(game.object_view(spell).zone, Zone::Graveyard);
+    assert_eq!(game.state.pending, Pending::OrderTriggers { player });
+    choose(&mut game, |action| {
+        matches!(action, Action::PutTrigger { .. })
+    });
+    assert_eq!(game.state.stack.len(), 2);
+    settle(&mut game);
+    assert_eq!(stats(&game, observer), (5, 5));
+
+    act(&mut declined, Action::FinishLibrarySelection);
+    act(&mut declined, Action::FinishLibrarySelection);
+    for card in [swamp, market, mountain, spell] {
+        assert_eq!(declined.object_view(card).zone, Zone::Graveyard);
+    }
+    assert!(declined.state.stack.is_empty());
+    assert_eq!(stats(&declined, observer), (3, 5));
+}
+
+#[test]
+fn declined_hand_and_land_steps_keep_a_private_choice_when_no_land_qualifies() {
+    let _rules = fixture_rules::activate(&[(Card::HillGiant, &BIRD_OBSERVER)]);
+    let player = Player::P1;
+    let mut game = scenario(player);
+    put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    let bird = put(&mut game, player, "Healer's Hawk", Zone::Battlefield);
+    let card = put(&mut game, player, "Opt", Zone::Library);
+    game.begin_step(Step::BeginCombat);
+    declare(&mut game, &[bird]);
+    pass_pair(&mut game);
+    act(&mut game, Action::FinishLibrarySelection);
+    assert_eq!(
+        game.state.pending,
+        Pending::EffectLibrarySelection { player }
+    );
+    assert_eq!(
+        game.legal_actions(),
+        [Action::Concede, Action::FinishLibrarySelection]
+    );
+    assert!(game.observe(player.other()).library_selection.is_none());
+    act(&mut game, Action::FinishLibrarySelection);
+    assert_eq!(game.object_view(card).zone, Zone::Graveyard);
+}

@@ -143,6 +143,7 @@ impl Game {
                     | TriggerCondition::ControlledCreatureAttacksAlone
                     | TriggerCondition::ControlledCreatureAttacksOrBlocks
                     | TriggerCondition::ControlledCreatureAttacks
+                    | TriggerCondition::ControlledSubtypeAttackDeclaration(_)
                     | TriggerCondition::ControlledCreatureAttacksPlayerAlone
                     | TriggerCondition::OpponentCreatureBlocksSmall
                     | TriggerCondition::ControlledEquippedCreatureAttacks

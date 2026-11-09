@@ -1077,6 +1077,7 @@ impl Game {
                     | TriggerCondition::SelfAttacksOrBlocks
                     | TriggerCondition::ControlledCreatureAttacks
                     | TriggerCondition::CrewedVehicleAttacks
+                    | TriggerCondition::ControlledSubtypeAttackDeclaration(_)
                     | TriggerCondition::ControlledCreatureAttacksPlayerAlone
                     | TriggerCondition::OpponentCreatureBlocksSmall
                     | TriggerCondition::ControlledEquippedCreatureAttacks
@@ -2486,6 +2487,28 @@ impl Game {
                                 .unwrap()
                                 .refer_objects(matching);
                         }
+                    }
+                }
+                if let TriggerCondition::ControlledSubtypeAttackDeclaration(subtype) =
+                    ability.condition.event()
+                {
+                    let matching: Vec<_> = declared
+                        .iter()
+                        .filter(|attack| self.has_subtype(attack.card, subtype))
+                        .map(|attack| self.object_ref(attack.card))
+                        .collect();
+                    if let Some((&object, rest)) = matching.split_first()
+                        && self.queue_attack_trigger(&source, index)
+                    {
+                        self.state
+                            .pending_triggers
+                            .last_mut()
+                            .unwrap()
+                            .reflexive_subject = Some(Box::new(ReflexiveSubjectView {
+                            object,
+                            action: false,
+                            additional_objects: rest.to_vec(),
+                        }));
                     }
                 }
                 if let TriggerCondition::AttackDeclared {
@@ -5756,6 +5779,11 @@ impl Game {
                 }
                 Instruction::LookTopLandThenMayGraveyard => {
                     if self.start_top_land_then_graveyard(&item) {
+                        return;
+                    }
+                }
+                Instruction::LookTopOneToHandThenLandsTapped(amount) => {
+                    if self.start_top_hand_then_lands(&item, amount) {
                         return;
                     }
                 }
