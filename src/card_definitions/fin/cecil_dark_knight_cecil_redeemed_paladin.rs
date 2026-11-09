@@ -1,16 +1,26 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Creature(2, 3),
+    keywords: Keywords::DEATHTOUCH,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SourceDealtDamage,
+        targets: TargetPlan::NONE,
+        program: &[
+            Instruction::LoseLifeScaled(PlayerSet::Controller, AmountValue::DamageEventAmount),
+            Instruction::If {
+                guard: StepGuard::Expression {
+                    value: StatValue::ControllerLifeAtMostHalfStarting,
+                    minimum: Some(1),
+                    maximum: None,
+                },
+                skip: 2,
+            },
+            Instruction::UntapSource,
+            Instruction::TransformSource,
+        ],
+    }],
+    extras: &CardExtras {
+        transforming_double_face: true,
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::LIFELINK.union(Keywords::DEATHTOUCH),
     ..CardRules::EMPTY
 };

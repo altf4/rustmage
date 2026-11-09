@@ -3,7 +3,7 @@
   "catalogue_id": 5505,
   "oracle_id": null,
   "facts_sha256": null,
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "105c88d3c5c1dffd2b7b3b58e32071a078688937c327bf8a20e570a838508088",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/c/CrystalFragments.java",
@@ -12,5 +12,13 @@
     "oracle_id": "b291d046-7649-4a05-98c4-224ecaece912",
     "index": 1,
     "sha256": "f1e86d5fb9600e761387875ec467a87b961414be65ea7d790cdf2a5539c064f4"
-  }
+  },
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PreventAllDamageToAllEffect.java",
+      "sha256": "a1f5430c82b64c3358c7961f03ded85b2526b86d45c7bef1db07b99a3fd6bf14"
+    }
+  ]
 }

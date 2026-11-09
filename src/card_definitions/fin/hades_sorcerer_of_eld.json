@@ -3,7 +3,7 @@
   "catalogue_id": 5507,
   "oracle_id": null,
   "facts_sha256": null,
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "ff135ae9a773f80ada7f380b8e078339ab8ef24129e2026e2925c8cca9526c30",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/e/EmetSelchUnsundered.java",
@@ -12,5 +12,18 @@
     "oracle_id": "3b102ccc-7629-457c-aba6-e9b00fd50c85",
     "index": 1,
     "sha256": "1fa52aac1670bc9791203ca99643517f3bbe90149bc2011c8b54cbb7fad88671"
-  }
+  },
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ruleModifying/PlayFromGraveyardControllerEffect.java",
+      "sha256": "72cc948dd1f65f347eb25cc2f8b19dab87326c3aa0ae77945c2fd4b6e142c6a4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/replacement/GraveyardFromAnywhereExileReplacementEffect.java",
+      "sha256": "f2234484cde3a8148ea5ea49244dea8bb74ef2106f5682453a85341448c85a78"
+    }
+  ]
 }

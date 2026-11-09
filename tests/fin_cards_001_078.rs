@@ -1323,3 +1323,344 @@ fn demon_wall_can_attack_after_its_counter_activation_and_keeps_defender_and_men
     attack(&mut game, wall);
     assert!(game.object_view(wall).tapped);
 }
+
+#[test]
+fn balthier_boosts_the_vehicle_and_buys_only_the_first_combat_followup() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let pilot = put(&mut game, player, "Balthier and Fran", Zone::Battlefield);
+    let ship = put(&mut game, player, "Cargo Ship", Zone::Battlefield);
+    let lands = ["Mountain", "Forest", "Forest"]
+        .map(|name| put(&mut game, player, name, Zone::Battlefield));
+    assert!(
+        game.keywords(ship)
+            .contains(Keywords::REACH.union(Keywords::VIGILANCE))
+    );
+    act(&mut game, announce_ability(ship, 1));
+    if matches!(game.state.pending, Pending::PayCosts { .. }) {
+        pay(&mut game);
+    }
+    let object = game.object_ref(pilot);
+    act(&mut game, Action::ChooseCrewer { object });
+    act(&mut game, Action::FinishCrew);
+    settle(&mut game);
+    assert_eq!(stats(&game, ship), (3, 4));
+
+    reach(&mut game, |a| *a == Action::Attack { card: ship });
+    act(&mut game, Action::Attack { card: ship });
+    act(&mut game, Action::FinishAttackers);
+    assert!(!game.object_view(ship).tapped);
+    reach(&mut game, |a| *a == Action::DeclineResolutionMana);
+    for card in lands {
+        act(&mut game, Action::TapMana { card });
+    }
+    choose(&mut game, |a| matches!(a, Action::PayResolutionMana { .. }));
+    assert_eq!(game.observe(player).additional_combats, 1);
+    for _ in 0..16 {
+        if game.state.step == Step::BeginCombat {
+            break;
+        }
+        choose(&mut game, |a| {
+            matches!(a, Action::Pass | Action::FinishBlockers)
+        });
+    }
+    assert_eq!(game.state.step, Step::BeginCombat);
+    assert!(!game.first_combat_phase());
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Attack { card: ship });
+    act(&mut game, Action::FinishAttackers);
+    assert!(game.state.stack.is_empty());
+}
+
+#[test]
+fn cecil_loses_the_damage_amount_then_transforms_and_protects_only_other_attackers() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let cecil = put(
+        &mut game,
+        player,
+        "Cecil, Dark Knight // Cecil, Redeemed Paladin",
+        Zone::Battlefield,
+    );
+    let ally = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let idle = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    game.state.players[player.index()].life = 12;
+    assert!(game.keywords(cecil).contains(Keywords::DEATHTOUCH));
+    let exact = game.object_ref(cecil);
+    attack(&mut game, cecil);
+    assert!(game.object_view(cecil).tapped);
+    act(&mut game, Action::FinishBlockers);
+    pass_pair(&mut game);
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].life, 10);
+    assert_eq!(game.state.players[player.other().index()].life, 18);
+    assert_eq!(game.object_ref(cecil), exact);
+    assert_eq!(game.object_view(cecil).card, Card(5503));
+    assert!(!game.object_view(cecil).tapped);
+    assert!(game.keywords(cecil).contains(Keywords::LIFELINK));
+
+    for _ in 0..2 {
+        game.state.step = Step::End;
+        game.state.priority = game.state.active;
+        pass_pair(&mut game);
+    }
+    assert_eq!(game.state.active, player);
+    reach(&mut game, |a| *a == Action::Attack { card: cecil });
+    act(&mut game, Action::Attack { card: cecil });
+    act(&mut game, Action::Attack { card: ally });
+    act(&mut game, Action::FinishAttackers);
+    settle(&mut game);
+    assert!(game.keywords(ally).contains(Keywords::INDESTRUCTIBLE));
+    assert!(!game.keywords(idle).contains(Keywords::INDESTRUCTIBLE));
+    assert!(!game.keywords(cecil).contains(Keywords::INDESTRUCTIBLE));
+    pass_pair(&mut game);
+    act(&mut game, Action::FinishBlockers);
+    pass_pair(&mut game);
+    assert_eq!(game.state.players[player.index()].life, 14);
+}
+
+#[test]
+fn choco_freezes_the_bird_attack_count_and_splits_the_private_top_window() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let choco = put(
+        &mut game,
+        player,
+        "Choco, Seeker of Paradise",
+        Zone::Battlefield,
+    );
+    let hawk = put(&mut game, player, "Healer's Hawk", Zone::Battlefield);
+    let other_bird = put(&mut game, player, "Ambrosia Whiteheart", Zone::Battlefield);
+    let plain = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let mill = put(&mut game, player, "Shock", Zone::Library);
+    let land = put(&mut game, player, "Forest", Zone::Library);
+    let hand = put(&mut game, player, "Island", Zone::Library);
+    reach(&mut game, |a| *a == Action::Attack { card: choco });
+    for card in [choco, hawk, other_bird, plain] {
+        act(&mut game, Action::Attack { card });
+    }
+    act(&mut game, Action::FinishAttackers);
+    game.move_object(hawk, Zone::Exile);
+    let choice = Action::SelectLibrary { card: hand };
+    reach(&mut game, |a| *a == choice);
+    assert_eq!(
+        game.observe(player)
+            .library_selection
+            .unwrap()
+            .remaining
+            .len(),
+        3
+    );
+    assert!(game.observe(player.other()).library_selection.is_none());
+    act(&mut game, choice);
+    act(&mut game, Action::FinishLibrarySelection);
+    reject(&mut game, Action::SelectLibrary { card: mill });
+    act(&mut game, Action::SelectLibrary { card: land });
+    act(&mut game, Action::FinishLibrarySelection);
+    settle_triggers(&mut game);
+    assert_eq!(game.object_view(hand).zone, Zone::Hand);
+    assert_eq!(game.object_view(land).zone, Zone::Battlefield);
+    assert!(game.object_view(land).tapped);
+    assert_eq!(game.object_view(mill).zone, Zone::Graveyard);
+    assert_eq!(stats(&game, choco), (4, 5));
+}
+
+fn add_lore(game: &mut Game, player: Player, saga: CardId) {
+    let spell = put(game, player, "Clash of the Eikons", Zone::Hand);
+    act(game, Action::AnnounceCast { card: spell });
+    act(game, Action::ChooseMode { mode: 2 });
+    act(game, target(saga));
+    pay(game);
+}
+
+#[test]
+fn clive_wheels_by_red_devotion_and_ifrit_fights_then_returns_after_chapter_three() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let clive = put(
+        &mut game,
+        player,
+        "Clive, Ifrit's Dominant // Ifrit, Warden of Inferno",
+        Zone::Hand,
+    );
+    let discard = put(&mut game, player, "Grizzly Bears", Zone::Hand);
+    put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    let opponent = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
+    cast(&mut game, clive, None);
+    let wheel = Action::ChooseOptional { accept: true };
+    reach(&mut game, |a| *a == wheel);
+    act(&mut game, wheel);
+    settle(&mut game);
+    assert_eq!(game.object_view(discard).zone, Zone::Graveyard);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 3);
+
+    game.state.objects[clive as usize].summoning_sick = false;
+    game.state.players[player.index()].mana = [0, 0, 0, 6, 2, 0];
+    let front = game.object_ref(clive);
+    let front_card = game.object_view(clive).card;
+    act(&mut game, announce_ability(clive, 0));
+    pay(&mut game);
+    reach(&mut game, |a| *a == target(opponent));
+    act(&mut game, target(opponent));
+    if game.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut game, Action::FinishTargets);
+    }
+    settle(&mut game);
+    assert_eq!(game.object_view(clive).card, Card(5504));
+    assert_ne!(game.object_ref(clive), front);
+    assert_eq!(game.object_view(clive).counters.lore, 1);
+    assert_eq!(game.object_view(opponent).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(clive).damage, 3);
+
+    game.state.players[player.index()].mana[4] = 2;
+    let red = game.state.players[player.index()].mana[3];
+    add_lore(&mut game, player, clive);
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].mana[3], red + 4);
+    assert_eq!(game.object_view(clive).counters.lore, 2);
+    let back = game.object_ref(clive);
+    add_lore(&mut game, player, clive);
+    let decline = Action::ChooseOptional { accept: false };
+    reach(&mut game, |a| *a == decline);
+    act(&mut game, decline);
+    settle(&mut game);
+    assert_ne!(game.object_ref(clive), back);
+    assert_eq!(game.object_view(clive).card, front_card);
+    assert_eq!(game.object_view(clive).counters.lore, 0);
+    assert_eq!(game.state.players[player.index()].mana[3], red + 8);
+}
+
+#[test]
+fn alexander_detaches_and_prevents_creature_damage_then_taps_opposing_creatures() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let crystal = put(
+        &mut game,
+        player,
+        "Crystal Fragments // Summon: Alexander",
+        Zone::Hand,
+    );
+    let bear = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let giant = put(&mut game, opponent, "Hill Giant", Zone::Battlefield);
+    cast(&mut game, crystal, None);
+    settle(&mut game);
+    act(&mut game, announce_ability(crystal, 1));
+    act(&mut game, target(bear));
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(stats(&game, bear), (3, 3));
+
+    act(&mut game, announce_ability(crystal, 0));
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(crystal).card, Card(5505));
+    assert_eq!(game.object_view(crystal).counters.lore, 1);
+    assert_eq!(game.object_view(crystal).attached_to, None);
+    assert_eq!(stats(&game, bear), (2, 2));
+    assert!(game.keywords(crystal).contains(Keywords::FLYING));
+
+    act(&mut game, Action::Pass);
+    let shock = put(&mut game, opponent, "Shock", Zone::Hand);
+    cast(&mut game, shock, Some(Target::Card(bear)));
+    settle(&mut game);
+    assert_eq!(game.object_view(bear).damage, 0);
+    assert_eq!(game.object_view(bear).zone, Zone::Battlefield);
+    add_lore(&mut game, player, crystal);
+    settle(&mut game);
+    assert_eq!(game.object_view(crystal).counters.lore, 2);
+    add_lore(&mut game, player, crystal);
+    settle(&mut game);
+    assert!(game.object_view(giant).tapped);
+    assert!(!game.object_view(bear).tapped);
+    assert_eq!(game.object_view(crystal).zone, Zone::Graveyard);
+}
+
+#[test]
+fn edgar_draws_for_own_artifacts_and_forces_every_coin_in_the_first_batch() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let edgar = put(&mut game, player, "Edgar, King of Figaro", Zone::Hand);
+    put(&mut game, player, "Swiftfoot Boots", Zone::Battlefield);
+    put(&mut game, player, "Cargo Ship", Zone::Battlefield);
+    put(&mut game, opponent, "Gold Pan", Zone::Battlefield);
+    cast(&mut game, edgar, None);
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 2);
+
+    let ral = put(
+        &mut game,
+        player,
+        "Ral Zarek, Guest Lecturer",
+        Zone::Battlefield,
+    );
+    game.state.objects[ral as usize].counters.loyalty = 8;
+    let rng = game.state.rng;
+    act(&mut game, announce_ability(ral, 3));
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Player(opponent),
+        },
+    );
+    if matches!(game.state.pending, Pending::PayCosts { .. }) {
+        pay(&mut game);
+    }
+    settle(&mut game);
+    assert_eq!(game.state.turn_skips.as_deref(), Some(&[0, 5]));
+    assert_eq!(game.state.rng, rng);
+}
+
+#[test]
+fn emet_rechecks_fourteen_cards_and_hades_plays_graveyard_cards_with_exile_replacement() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let emet = put(
+        &mut game,
+        player,
+        "Emet-Selch, Unsundered // Hades, Sorcerer of Eld",
+        Zone::Hand,
+    );
+    let discard = put(&mut game, player, "Grizzly Bears", Zone::Hand);
+    let shock = put(&mut game, player, "Shock", Zone::Graveyard);
+    let land = put(&mut game, player, "Forest", Zone::Graveyard);
+    for _ in 0..11 {
+        put(&mut game, player, "Island", Zone::Graveyard);
+    }
+    cast(&mut game, emet, None);
+    let discard_action = Action::Discard { card: discard };
+    reach(&mut game, |a| *a == discard_action);
+    act(&mut game, discard_action);
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 1);
+    assert_eq!(game.object_view(discard).zone, Zone::Graveyard);
+    assert!(game.keywords(emet).contains(Keywords::VIGILANCE));
+
+    game.begin_step(Step::Upkeep);
+    game.give_priority();
+    let exact = game.object_ref(emet);
+    let mut thirteen = game.clone();
+    thirteen.move_object(discard, Zone::Exile);
+    settle(&mut thirteen);
+    assert_eq!(stats(&thirteen, emet), (2, 4));
+    let accept = Action::ChooseOptional { accept: true };
+    reach(&mut game, |a| *a == accept);
+    act(&mut game, accept);
+    settle(&mut game);
+    assert_eq!(game.object_ref(emet), exact);
+    assert_eq!(game.object_view(emet).card, Card(5507));
+    assert!(game.keywords(emet).contains(Keywords::VIGILANCE));
+
+    game.state.step = Step::Main1;
+    act(&mut game, Action::PlayLand { card: land });
+    assert_eq!(game.object_view(land).zone, Zone::Battlefield);
+    cast(&mut game, shock, Some(Target::Player(opponent)));
+    settle(&mut game);
+    assert_eq!(game.object_view(shock).zone, Zone::Exile);
+    assert_eq!(game.state.players[opponent.index()].life, 18);
+    game.move_object(land, Zone::Graveyard);
+    assert_eq!(game.object_view(land).zone, Zone::Exile);
+}

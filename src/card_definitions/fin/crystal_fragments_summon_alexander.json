@@ -3,10 +3,22 @@
   "catalogue_id": 919,
   "oracle_id": "b291d046-7649-4a05-98c4-224ecaece912",
   "facts_sha256": "2d005582a28ea329000c88e54565b7bba55701d657e9aa594fcf9189ff2ca23f",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "cd0e4b1d847008f33cabfa2845e18a6e02aa38209dd0ba4be6411eb957f751a4"
-  },
-  "physical_metadata_sha256": "4ddef280e1d4b6de42d06a968defaf01fdd75016e9626df54bba6c91f472cf8e"
+  "complete": true,
+  "physical_metadata_sha256": "4ddef280e1d4b6de42d06a968defaf01fdd75016e9626df54bba6c91f472cf8e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CrystalFragments.java",
+  "java_sha256": "e9b9485784b72245c1a231a452489a48165628f29e96cc0f4fe0cf2d0942039d",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+      "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileAndReturnSourceEffect.java",
+      "sha256": "6ec468489e92a265df2d43e4fc20ef9b7d4acef8864a6eae9e6d19d4ead73c9a"
+    }
+  ]
 }

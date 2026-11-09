@@ -3,7 +3,7 @@
   "catalogue_id": 5503,
   "oracle_id": null,
   "facts_sha256": null,
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "8e4eadd608f784c0d7da2cb4b9d61fcf3eed9d928e58702d032564b7a431dc47",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/c/CecilDarkKnight.java",
@@ -12,5 +12,13 @@
     "oracle_id": "e4719557-d94e-490f-8a56-c1867a01d2ef",
     "index": 1,
     "sha256": "ffd6c05bdc0320db91554c6b40020978e15fabc07cc7a947656d0ba24e32ad1d"
-  }
+  },
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsDamageSourceTriggeredAbility.java",
+      "sha256": "ba04667ea4fdc38e7cf38bb39144db6f12d638a959d9e15c36241b7c547d4739"
+    }
+  ]
 }

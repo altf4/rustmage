@@ -3,10 +3,17 @@
   "catalogue_id": 772,
   "oracle_id": "ceba3d03-be5a-4dd7-b829-7db216a0f44e",
   "facts_sha256": "6c0c31d83f19d69984cad8c9f05176f5250cc64b931bd238576d67c631f03ec0",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "7e55c70e894dc191857d89dd035335b21ff58ee7c4dee73e730bb4e73f330a46"
-  },
-  "physical_metadata_sha256": "5f5ef041722bb7a5d01bc6bd0de70a96cb1a327cd4c2999e081434c2554fb813"
+  "complete": true,
+  "physical_metadata_sha256": "5f5ef041722bb7a5d01bc6bd0de70a96cb1a327cd4c2999e081434c2554fb813",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CliveIfritsDominant.java",
+  "java_sha256": "b94a41d5731bced65d83a7c43e21f291f3e1895bbcefedbe2c8e7f0628cef333",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileAndReturnSourceEffect.java",
+      "sha256": "6ec468489e92a265df2d43e4fc20ef9b7d4acef8864a6eae9e6d19d4ead73c9a"
+    }
+  ]
 }
