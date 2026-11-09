@@ -3898,7 +3898,10 @@ impl Game {
         if hits.clone().nth(1).is_none()
             || !hits.clone().any(|(_, hit)| {
                 !self.damage_replacements(hit, &[]).is_empty()
-                    || !self.damage_preventions(hit, &[shield]).is_empty()
+                    || self
+                        .damage_preventions(hit, &[])
+                        .into_iter()
+                        .any(|choice| choice.kind != DamagePreventionKind::ShieldCounter)
             })
         {
             return Vec::new();
