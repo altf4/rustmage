@@ -989,6 +989,7 @@ pub(super) fn basic_land_timeline<W: super::ability_world::CharacteristicWorld +
         Land(bool),
         Add(crate::cards::BasicLandType),
         Set(crate::cards::BasicLandType),
+        Clear,
     }
     let object = world.object(id);
     let reference = world.reference(id);
@@ -1003,6 +1004,18 @@ pub(super) fn basic_land_timeline<W: super::ability_world::CharacteristicWorld +
             .flat_map(|state| &state.basic_land_types)
             .filter(|row| row.recipient == reference)
             .map(|row| (row.timestamp, Event::Add(row.kind))),
+    );
+    events.extend(
+        world
+            .roles()
+            .into_iter()
+            .flat_map(|state| &state.source_linked_effects)
+            .filter(|row| {
+                row.recipient == reference
+                    && row.kind == SourceLinkedEffectKind::BlankLandWhileBlighted
+                    && source_linked_effects::active(world, row)
+            })
+            .map(|row| (row.timestamp, Event::Clear)),
     );
     if object.card.static_ability_groups().iter().any(|group| {
         group
@@ -1069,6 +1082,11 @@ pub(super) fn basic_land_timeline<W: super::ability_world::CharacteristicWorld +
                 present = 1 << kind.index();
                 lost_original_types = true;
                 ability_changes.push((*time, BasicLandAbilityChange::Set(kind)));
+            }
+            Event::Clear => {
+                present = 0;
+                lost_original_types = true;
+                // The same timestamp's layer-six removal clears every ability.
             }
             Event::Add(_) | Event::Set(_) => {}
         }

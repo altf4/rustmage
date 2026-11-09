@@ -9876,6 +9876,12 @@ impl Game {
                 Instruction::RemoveTargetAbilitiesUntilEndOfTurn => {
                     self.remove_target_abilities_until_end_of_turn(&item);
                 }
+                Instruction::BlankTargetLandWhileBlighted => {
+                    self.resolve_source_linked_effect(
+                        &item,
+                        SourceLinkedEffectKind::BlankLandWhileBlighted,
+                    );
+                }
                 Instruction::RemoveTargetAbilitiesUntilSourceLeaves => {
                     self.resolve_source_linked_effect(
                         &item,

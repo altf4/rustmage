@@ -119,6 +119,14 @@ impl Game {
                 None,
             );
         }
+        if source_linked_effects::blighted_land_expired(self, object) {
+            self.state
+                .roles
+                .as_mut()
+                .unwrap()
+                .forget_blighted_land(object);
+            self.refresh_copy_grant_availability();
+        }
         if before_time > 0 && self.counter_count(id, CounterKind::Time) == 0 {
             self.queue_suspend_cast(object);
         }

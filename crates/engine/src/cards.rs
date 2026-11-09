@@ -3496,6 +3496,8 @@ pub enum Instruction {
     GainControlAndPreventCombatWhileSourceControlled,
     RemoveTargetAbilitiesUntilSourceLeaves,
     RemoveTargetAbilitiesUntilEndOfTurn,
+    /// Apply the exact land's source-independent duration after placing its blight counter.
+    BlankTargetLandWhileBlighted,
     GrantTargetHexproofUntilSourceLeaves,
     DamageEachPlayerPerNonbasicLand,
     PreventTargetDamageUntilSourceLeaves,

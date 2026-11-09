@@ -2304,6 +2304,19 @@ impl<'g> FundingState<'g> {
             p.roles.source_linked_effects = retained;
         }
     }
+    fn expire_projected_blighted_land(&mut self, recipient: ObjectRef) {
+        if source_linked_effects::blighted_land_expired(self, recipient) {
+            // Own the expired role before any later counter payment can add
+            // a blight counter back to the same exact land.
+            self.prepare_entry_projection();
+            self.entry_projection
+                .as_mut()
+                .unwrap()
+                .roles
+                .forget_blighted_land(recipient);
+            self.refresh_control_projection();
+        }
+    }
     fn remember_payment_departure(&mut self, id: CardId) {
         let reference = self.reference(id);
         if let Some(p) = &mut self.entry_projection {
@@ -2456,6 +2469,9 @@ impl<'g> FundingState<'g> {
             counters.pay(&step.counters);
             object.counters = counters.hot();
             live_counters::set(&mut self.named_counters, reference, counters.named);
+            if step.counters.get(CounterKind::Blight) != 0 {
+                self.expire_projected_blighted_land(reference);
+            }
             if cost.sacrifice || cost.exile_self || cost.discard {
                 departure = Some(if cost.exile_self {
                     Zone::Exile
@@ -6449,6 +6465,9 @@ impl FundingState<'_> {
         counters.remove(kind, 1);
         self.resources[index].object.counters = counters.hot();
         live_counters::set(&mut self.named_counters, r, counters.named);
+        if kind == CounterKind::Blight {
+            self.expire_projected_blighted_land(r);
+        }
         true
     }
     fn creature_counter_payment_possible(

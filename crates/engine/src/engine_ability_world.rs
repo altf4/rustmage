@@ -1006,6 +1006,7 @@ pub(super) trait CharacteristicWorld {
                         row.kind,
                         SourceLinkedEffectKind::RemoveAbilities
                             | SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn
+                            | SourceLinkedEffectKind::BlankLandWhileBlighted
                     ) && source_linked_effects::active(self, row)
                 })
                 || state.ability_removal_sources.iter().any(|&source| {
