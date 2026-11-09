@@ -1031,6 +1031,7 @@ impl Game {
                     | TriggerCondition::SelfCreatureDies
                     | TriggerCondition::SelfLeaves
                     | TriggerCondition::PermanentLeaves(_)
+                    | TriggerCondition::ChosenCreatureLeaves
                     | TriggerCondition::ReturnDeath(_)
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::CreatureDiesWithCounters { .. }
@@ -6188,6 +6189,24 @@ impl Game {
                 } => {
                     if self.start_effect_choice(&item, kind, players, filter, amount, optional_skip)
                     {
+                        return;
+                    }
+                }
+                Instruction::ChooseOpposingCreatureForDeparture {
+                    other_power,
+                    other_toughness,
+                } => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::LinkedCreature {
+                            other_power,
+                            other_toughness,
+                        },
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        1,
+                        None,
+                    ) {
                         return;
                     }
                 }

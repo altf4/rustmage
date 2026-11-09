@@ -203,6 +203,13 @@ impl Game {
                 && choice.selected[player.index()].is_empty()
                 && self.equipment_can_attach(choice.source, object);
         }
+        if matches!(choice.kind, EffectChoiceKind::LinkedCreature { .. }) {
+            return o.controller != player
+                && self.on_battlefield(object.card)
+                && self.object_ref(object.card) == object
+                && self.is_creature(object.card)
+                && choice.selected[player.index()].is_empty();
+        }
         if matches!(
             choice.kind,
             EffectChoiceKind::Blight(_) | EffectChoiceKind::BlightCost(_)
@@ -1676,6 +1683,22 @@ impl Game {
             if let Some(&recipient) = choice.selected[player.index()].first() {
                 self.attach_equipment(choice.source, recipient);
             }
+            return false;
+        }
+        if let EffectChoiceKind::LinkedCreature {
+            other_power,
+            other_toughness,
+        } = choice.kind
+        {
+            let controller = self.state.resolving.as_ref().unwrap().item.controller;
+            let selected = choice.selected[controller.index()].first().copied();
+            self.finish_chosen_creature(
+                selected,
+                Stats {
+                    power: i128::from(other_power),
+                    toughness: i128::from(other_toughness),
+                },
+            );
             return false;
         }
         // A ward cost is paid as one event: revalidate the complete selection

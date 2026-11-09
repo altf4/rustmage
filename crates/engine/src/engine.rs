@@ -1165,6 +1165,7 @@ define_actions! {
     FinishLibrarySelection,
     ChooseEquipmentAttachment { equipment: Option<ObjectRef> },
     ChooseEquipmentRecipient { recipient: ObjectRef },
+    ChooseLinkedCreature { object: ObjectRef },
     OrderLibraryBottom { card: CardId },
     ArrangeLibrary {
         card: CardId,
@@ -3249,7 +3250,7 @@ struct EntryIdentity {
 struct ZoneObservers {
     graveyard: Option<std::sync::Arc<[ObjectView]>>,
     returned_hand: Option<std::sync::Arc<[ObjectView]>>,
-    battlefield_departure: Option<std::sync::Arc<[ObjectView]>>,
+    battlefield_departure: Option<std::sync::Arc<[battlefield_departures::DepartureObserver]>>,
 }
 
 /// A single zone transition with the departing object's last-known characteristics.
@@ -3271,7 +3272,8 @@ pub struct ZoneChange {
     pub(super) entry_counter_player: Option<Player>,
     pub(super) graveyard_observers: Option<std::sync::Arc<[ObjectView]>>,
     pub(super) returned_hand_observers: Option<std::sync::Arc<[ObjectView]>>,
-    pub(super) battlefield_departure_observers: Option<std::sync::Arc<[ObjectView]>>,
+    pub(super) battlefield_departure_observers:
+        Option<std::sync::Arc<[battlefield_departures::DepartureObserver]>>,
     pub gift: Option<Box<GiftContext>>,
     pub was_cast: bool,
     pub(super) cast_origin: Option<Zone>,
@@ -3682,6 +3684,8 @@ pub struct Observation {
     pub hand_deployment: Option<HandDeploymentView>,
     pub keep_types: Option<KeepTypesView>,
     pub linked_exile: Vec<LinkedExileView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub chosen_creature_links: Vec<ChosenCreatureLinkView>,
     pub dream_exiles: Vec<DreamExileView>,
     pub linked_free_cast_uses: Vec<LinkedFreeCastUseView>,
     pub linked_free_cast_approvals: Vec<LinkedFreeCastApprovalView>,
@@ -5351,6 +5355,9 @@ impl Game {
                             }
                             EffectChoiceKind::EquipmentRecipient => {
                                 Action::ChooseEquipmentRecipient { recipient: object }
+                            }
+                            EffectChoiceKind::LinkedCreature { .. } => {
+                                Action::ChooseLinkedCreature { object }
                             }
                             EffectChoiceKind::HandExileCopy
                             | EffectChoiceKind::HandCreature
@@ -8533,6 +8540,7 @@ impl Game {
             | Action::ChooseJace { object }
             | Action::ChoosePowerDifferenceCreature { object }
             | Action::ChooseEquipmentRecipient { recipient: object }
+            | Action::ChooseLinkedCreature { object }
             | Action::SelectGraveyardReturn { object }
             | Action::ChooseEffectObject { object }
             | Action::SelectLand { object }
@@ -9770,6 +9778,9 @@ impl Game {
             state
                 .harnessed
                 .retain(|reference| *reference != before.reference);
+            state
+                .chosen_creature_links
+                .retain(|link| link.source != before.reference);
         }
         self.forget_face_change(before.reference);
         self.forget_meld_departure_order(before.reference);
@@ -11263,6 +11274,10 @@ impl Game {
                     .filter(|link| self.can_view_hideaway(viewer, link.exiled))
                     .collect()
             }),
+            chosen_creature_links: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |roles| roles.chosen_creature_links.clone()),
             casting_prohibited: s.casting_prohibited || self.static_casting_prohibited(viewer),
             prohibit_opponent_nonhand_casts: s.roles.as_ref().and_then(|roles| {
                 roles
@@ -12856,6 +12871,7 @@ pub mod graveyard_symbol_cost;
 #[doc(hidden)]
 #[path = "engine_battlefield_departures.rs"]
 mod battlefield_departures;
+pub use battlefield_departures::ChosenCreatureLinkView;
 
 #[doc(hidden)]
 #[path = "engine_death_return.rs"]

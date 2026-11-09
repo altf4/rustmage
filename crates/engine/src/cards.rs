@@ -1087,6 +1087,11 @@ pub enum EffectChoiceKind {
     KeepSharedCreatureTypes,
     /// Choose one legal controlled creature for the resolving Equipment source.
     EquipmentRecipient,
+    /// Choose a creature an opponent controls, linked to a departure trigger.
+    LinkedCreature {
+        other_power: i32,
+        other_toughness: i32,
+    },
     /// One mandatory-if-possible nontarget recipient for the current color.
     ColorCounter {
         color: ChoiceColor,
@@ -2830,6 +2835,11 @@ pub enum Instruction {
         filter: SacrificeFilter,
         amount: u16,
         optional_skip: Option<usize>,
+    },
+    /// Choose and link an opposing creature, then change other creatures' stats this turn.
+    ChooseOpposingCreatureForDeparture {
+        other_power: i32,
+        other_toughness: i32,
     },
     SelectGroup(u16),
     Fight {
@@ -5407,6 +5417,8 @@ pub enum TriggerCondition {
     SelfNontokenEnters,
     SelfLeaves,
     PermanentLeaves(DepartureFilter),
+    /// The linked battlefield incarnation leaves, regardless of its current types.
+    ChosenCreatureLeaves,
     SelfEntersOrDies,
     SelfAttacks,
     /// Intervening equipped clause, with exact source-departure quantities.

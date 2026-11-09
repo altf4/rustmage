@@ -77,6 +77,7 @@ pub(super) struct RoleState {
     pub player_damage_shields: Vec<return_links::PlayerDamageShieldView>,
     pub creature_damage_shields: Vec<CreatureDamageShieldView>,
     pub damage_doublers: Vec<DamageDoublerView>,
+    pub chosen_creature_links: Vec<ChosenCreatureLinkView>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl RoleState {
@@ -116,6 +117,7 @@ impl RoleState {
                 * std::mem::size_of::<return_links::PlayerDamageShieldView>()
             + self.creature_damage_shields.len() * std::mem::size_of::<CreatureDamageShieldView>()
             + self.damage_doublers.len() * std::mem::size_of::<DamageDoublerView>()
+            + self.chosen_creature_links.len() * std::mem::size_of::<ChosenCreatureLinkView>()
             + self.exile_grant_cast_history.len() * std::mem::size_of::<ObjectRef>()
             + self.resolved_ability_modifications.len()
                 * std::mem::size_of::<ResolvedAbilityModificationView>()
