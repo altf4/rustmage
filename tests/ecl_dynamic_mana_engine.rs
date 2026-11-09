@@ -1201,6 +1201,13 @@ fn acquired_separate_tap_mana_is_unique_and_preserves_parent_tap_reservations() 
         ],
         ..CardRules::EMPTY
     };
+    const GRANTED_DONOR: CardRules = CardRules {
+        extras: &CardExtras {
+            self_granted_activation_templates: &[0, 1],
+            ..CardExtras::EMPTY
+        },
+        ..DONOR
+    };
     const PARENT: CardRules = CardRules {
         effect: Effect::Creature(3, 3),
         activated: &[ActivatedAbility {
@@ -1216,7 +1223,11 @@ fn acquired_separate_tap_mana_is_unique_and_preserves_parent_tap_reservations() 
         ..CardRules::EMPTY
     };
     let donor_definition = Card::from_name("Gilded Lotus").unwrap();
-    let _rules = fixture_rules::activate(&[(donor_definition, &DONOR), (Card::HillGiant, &PARENT)]);
+    let _rules = fixture_rules::activate(&[
+        (donor_definition, &DONOR),
+        (Card::LlanowarElves, &GRANTED_DONOR),
+        (Card::HillGiant, &PARENT),
+    ]);
     for p in [Player::P0, Player::P1] {
         for borrowed in [false, true] {
             let mut g = scenario(p);
@@ -1262,7 +1273,7 @@ fn acquired_separate_tap_mana_is_unique_and_preserves_parent_tap_reservations() 
                     let timestamp = g.next_role_timestamp();
                     g.grant_recipient_ability(
                         object,
-                        donor_definition,
+                        Card::LlanowarElves,
                         SelfGrantedAbilityKind::Activated { ability },
                         timestamp,
                         None,
