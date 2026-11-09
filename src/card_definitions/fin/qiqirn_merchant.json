@@ -3,10 +3,14 @@
   "catalogue_id": 3299,
   "oracle_id": "560cb970-1c1b-4ba7-8352-bc67b4ea7843",
   "facts_sha256": "70e6a6388437715cf51521ca5bce87c00e366bd33c20148a6c25e5570d172423",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cb0f596fa2602ff976afedf09341af07987f33b84a770f821b1484d5adf4abae"
   },
-  "physical_metadata_sha256": "b4f561f60b5ada86d0e656a5fe4cf05f723e48f2328a88186c6c34ec30b99954"
+  "physical_metadata_sha256": "b4f561f60b5ada86d0e656a5fe4cf05f723e48f2328a88186c6c34ec30b99954",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/q/QiqirnMerchant.java",
+  "java_sha256": "ee958549b152ab6ae0e8da6b5ce76df5b64ad775f60a8e77a04d4500d4b500bd",
+  "rules_tests": "tests/fin_cards_157_234.rs"
 }
