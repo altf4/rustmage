@@ -333,6 +333,313 @@ fn target_trigger(game: &mut Game, target: Target) {
     choose_targets(game, &[target]);
 }
 
+fn settle_ordered(game: &mut Game) {
+    while matches!(game.state.pending, Pending::OrderTriggers { .. }) {
+        choose(game, |action| matches!(action, Action::PutTrigger { .. }));
+    }
+    settle(game);
+}
+
+#[test]
+fn admitted_cast_watchers_use_actual_mana_and_the_rapier_buffs_its_wizard() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let rapier = put(&mut game, player, "Red Mage's Rapier", Zone::Hand);
+    cast(&mut game, rapier, None);
+    settle(&mut game);
+    let hero = battlefield_tokens(&game, Card(5328))[0];
+    assert_eq!(
+        game.object_view(rapier).attached_to,
+        Some(game.object_ref(hero))
+    );
+    assert!(game.has_subtype(hero, "Wizard"));
+    let prompto = put(&mut game, player, "Prompto Argentum", Zone::Battlefield);
+    let sahagin = put(&mut game, player, "Sahagin", Zone::Battlefield);
+    let shantotto = put(
+        &mut game,
+        player,
+        "Shantotto, Tactician Magician",
+        Zone::Battlefield,
+    );
+    assert!(game.keywords(prompto).contains(Keywords::HASTE));
+
+    for (spell, power, treasures) in [("Swiftfoot Boots", 2, 0), ("Ring of the Lucii", 6, 1)] {
+        let card = put(&mut game, player, spell, Zone::Hand);
+        cast(&mut game, card, None);
+        settle_ordered(&mut game);
+        assert_eq!(stats(&game, shantotto).0, power);
+        assert_eq!(game.hand_count(player), treasures);
+        assert_eq!(battlefield_tokens(&game, Card(5302)).len(), treasures);
+        assert_eq!(
+            game.counter_count(sahagin, CounterKind::PlusOne),
+            treasures as u64
+        );
+    }
+    assert_eq!(stats(&game, hero), (5, 1));
+    assert!(game.keywords(sahagin).contains(Keywords::CANT_BE_BLOCKED));
+    game.finish_cleanup();
+    assert!(!game.keywords(sahagin).contains(Keywords::CANT_BE_BLOCKED));
+    assert_eq!(stats(&game, hero), (1, 1));
+    assert_eq!(stats(&game, shantotto), (0, 4));
+}
+
+#[test]
+fn admitted_trader_makes_treasure_and_quinas_extra_frog_can_pay_its_own_activation() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let quina = put(&mut game, player, "Quina, Qu Gourmet", Zone::Battlefield);
+    let trader = put(&mut game, player, "Namazu Trader", Zone::Hand);
+    let top = put(&mut game, player, "Shock", Zone::Library);
+    cast(&mut game, trader, None);
+    settle(&mut game);
+    let treasure = battlefield_tokens(&game, Card(5302))[0];
+    let frog = battlefield_tokens(&game, Card(5264))[0];
+    assert_eq!(game.state.players[player.index()].life, 19);
+    assert_eq!(stats(&game, frog), (1, 1));
+    assert!(game.has_subtype(frog, "Frog"));
+    act(
+        &mut game,
+        Action::AnnounceActivate {
+            card: quina,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    let treasure_ref = game.object_ref(treasure);
+    reject(
+        &mut game,
+        Action::ChooseAdditionalCost {
+            object: treasure_ref,
+        },
+    );
+    let object = game.object_ref(frog);
+    act(&mut game, Action::ChooseAdditionalCost { object });
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.counter_count(quina, CounterKind::PlusOne), 1);
+
+    game.state.objects[trader as usize].summoning_sick = false;
+    attack(&mut game, &[trader]);
+    let payment = Action::Sacrifice {
+        object: game.object_ref(treasure),
+    };
+    reach_action(&mut game, &payment);
+    let trader_ref = game.object_ref(trader);
+    reject(&mut game, Action::Sacrifice { object: trader_ref });
+    let mut declined = game.clone();
+    act(&mut declined, Action::DeclineEffectPayment);
+    assert_eq!(declined.object_view(top).zone, Zone::Library);
+    act(&mut game, payment);
+    assert!(game.observe(player.other()).library_choice.is_none());
+    act(
+        &mut game,
+        Action::ArrangeLibrary {
+            card: top,
+            destination: LibraryDestination::Graveyard,
+        },
+    );
+    choose(&mut game, |action| {
+        matches!(
+            action,
+            Action::ArrangeLibrary {
+                destination: LibraryDestination::Top,
+                ..
+            }
+        )
+    });
+    assert_eq!(game.object_view(top).zone, Zone::Graveyard);
+}
+
+#[test]
+fn admitted_pupu_puts_a_town_without_a_land_play_and_samples_only_base_power() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let ship = put(&mut game, player, "PuPu UFO", Zone::Battlefield);
+    let town = put(&mut game, player, "Rabanastre, Royal City", Zone::Hand);
+    put(
+        &mut game,
+        player,
+        "Sharlayan, Nation of Scholars",
+        Zone::Battlefield,
+    );
+    put(
+        &mut game,
+        player.other(),
+        "Sharlayan, Nation of Scholars",
+        Zone::Battlefield,
+    );
+    assert!(game.keywords(ship).contains(Keywords::FLYING));
+    game.state.land_played = true;
+    choose(
+        &mut game,
+        |action| matches!(action, Action::Activate { card, ability: 0, .. } if *card == ship),
+    );
+    let place = Action::PutHandLand {
+        object: game.object_ref(town),
+    };
+    reach_action(&mut game, &place);
+    let mut decline = game.clone();
+    act(&mut decline, Action::DeclineEffectPayment);
+    assert_eq!(decline.object_view(town).zone, Zone::Hand);
+    act(&mut game, place);
+    assert_eq!(game.object_view(town).zone, Zone::Battlefield);
+    assert!(game.object_view(town).tapped);
+    assert!(game.state.land_played);
+    game.add_counter(ship, CounterKind::PlusOne, 1);
+    choose(
+        &mut game,
+        |action| matches!(action, Action::Activate { card, ability: 1, .. } if *card == ship),
+    );
+    settle(&mut game);
+    assert_eq!(stats(&game, ship), (3, 5));
+    game.move_object(town, Zone::Exile);
+    assert_eq!(stats(&game, ship), (3, 5));
+    game.finish_cleanup();
+    assert_eq!(stats(&game, ship), (1, 5));
+}
+
+#[test]
+fn admitted_town_mana_is_exact_and_starting_town_has_two_distinct_prices() {
+    let player = Player::P0;
+    for (town, color) in [
+        ("Rabanastre, Royal City", 3),
+        ("Sharlayan, Nation of Scholars", 1),
+    ] {
+        let mut game = scenario(player);
+        let town = put(&mut game, player, town, Zone::Hand);
+        act(&mut game, Action::PlayLand { card: town });
+        assert!(game.object_view(town).tapped);
+        game.untap_active_player();
+        let productions: Vec<_> = game
+            .legal_actions()
+            .into_iter()
+            .filter_map(|action| match action {
+                Action::ActivateMana {
+                    card,
+                    ability: 0,
+                    production,
+                    ..
+                } if card == town => Some(production),
+                _ => None,
+            })
+            .collect();
+        let mut other = [0; 6];
+        other[color] = 1;
+        assert_eq!(productions, [[1, 0, 0, 0, 0, 0], other]);
+    }
+    for (turn, tapped) in [(3, false), (4, true)] {
+        let mut game = scenario(player);
+        game.state.players[player.index()].turns_started = turn;
+        let town = put(&mut game, player, "Starting Town", Zone::Hand);
+        act(&mut game, Action::PlayLand { card: town });
+        assert_eq!(game.object_view(town).tapped, tapped);
+        if !tapped {
+            let produce = |ability, production| Action::ActivateMana {
+                card: town,
+                ability,
+                production,
+                payment: [0; 6],
+                counter_payment: Counters::default(),
+            };
+            let mut colorless = game.clone();
+            act(&mut colorless, produce(0, [0, 0, 0, 0, 0, 1]));
+            assert_eq!(colorless.state.players[player.index()].life, 20);
+            reject(&mut game, produce(1, [0, 0, 0, 0, 0, 1]));
+            act(&mut game, produce(1, [0, 1, 0, 0, 0, 0]));
+            assert_eq!(game.state.players[player.index()].life, 19);
+            assert_eq!(game.state.players[player.index()].mana[1], 9);
+        }
+    }
+}
+
+#[test]
+fn admitted_restoration_modes_pay_the_printed_tiers_and_protection_interacts_with_removal() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let protection = Keywords::HEXPROOF.union(Keywords::INDESTRUCTIBLE);
+    for (mode, white, generic, gain) in [(0, 1, 0, 0), (1, 1, 1, 3), (2, 2, 3, 6)] {
+        let mut game = scenario(player);
+        let creature = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let enemy = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+        let own_land = put(&mut game, player, "Plains", Zone::Battlefield);
+        let spell = put(&mut game, player, "Restoration Magic", Zone::Hand);
+        act(&mut game, Action::AnnounceCast { card: spell });
+        act(&mut game, Action::ChooseMode { mode });
+        if mode != 2 {
+            choose_targets(&mut game, &[Target::Card(creature)]);
+        }
+        let payment = game.observe(player).payment_request.unwrap();
+        assert_eq!(payment.generic, generic);
+        assert_eq!(payment.required[0], white);
+        pay(&mut game);
+        if mode == 1 {
+            let mut missing = game.clone();
+            missing.move_object(creature, Zone::Exile);
+            settle(&mut missing);
+            assert_eq!(missing.state.players[player.index()].life, 20);
+        }
+        settle(&mut game);
+        assert_eq!(game.state.players[player.index()].life, 20 + gain);
+        assert!(game.keywords(creature).contains(protection));
+        assert_eq!(game.keywords(own_land).contains(protection), mode == 2);
+        assert!(!game.keywords(enemy).intersects(protection));
+        if mode == 1 {
+            let intervention = put(&mut game, player, "Sephiroth's Intervention", Zone::Hand);
+            cast(&mut game, intervention, Some(Target::Card(creature)));
+            settle(&mut game);
+            assert_eq!(game.object_view(creature).zone, Zone::Battlefield);
+            assert_eq!(game.state.players[player.index()].life, 25);
+            let overkill = put(&mut game, player, "Overkill", Zone::Hand);
+            cast(&mut game, overkill, Some(Target::Card(creature)));
+            settle(&mut game);
+            assert_eq!(game.object_view(creature).zone, Zone::Graveyard);
+        } else {
+            game.finish_cleanup();
+            assert!(!game.keywords(creature).intersects(protection));
+        }
+    }
+}
+
+#[test]
+fn admitted_revelation_keeps_the_picked_card_private_and_reinforcements_mill_then_gain() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let third = put(&mut game, player, "Mountain", Zone::Library);
+    let kept = put(&mut game, player, "Island", Zone::Library);
+    let top = put(&mut game, player, "Swamp", Zone::Library);
+    let spell = put(&mut game, player, "Resentful Revelation", Zone::Graveyard);
+    act(&mut game, Action::AnnounceFlashback { card: spell });
+    pay(&mut game);
+    passes(&mut game);
+    assert!(game.observe(player.other()).library_selection.is_none());
+    act(&mut game, Action::SelectLibrary { card: kept });
+    act(&mut game, Action::FinishLibrarySelection);
+    assert_eq!(game.object_view(spell).zone, Zone::Exile);
+    assert_eq!(game.object_view(kept).zone, Zone::Hand);
+    assert!(
+        !game
+            .observe(player.other())
+            .known_hand
+            .contains(&game.object_ref(kept))
+    );
+    for id in [third, top] {
+        assert_eq!(game.object_view(id).zone, Zone::Graveyard);
+    }
+    let mill = [
+        put(&mut game, player, "Plains", Zone::Library),
+        put(&mut game, player, "Mountain", Zone::Library),
+        put(&mut game, player, "Island", Zone::Library),
+    ];
+    let creature = put(&mut game, player, "Shinra Reinforcements", Zone::Hand);
+    game.state.players[player.index()].mana = [8; 6];
+    cast(&mut game, creature, None);
+    settle(&mut game);
+    for id in mill {
+        assert_eq!(game.object_view(id).zone, Zone::Graveyard);
+    }
+    assert_eq!(game.state.players[player.index()].life, 23);
+}
+
 #[test]
 fn schemes_returns_the_exact_public_owned_flashback_card_and_makes_red_mana() {
     let player = Player::P0;
