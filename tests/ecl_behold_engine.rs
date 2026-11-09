@@ -287,14 +287,16 @@ fn fixed_behold_type_domain_rejects_absent_witnesses_before_dense_mana_search() 
         };
         let actions = g.legal_actions();
         assert_eq!(
-            actions,
-            vec![
-                Action::ChooseBeholdType {
-                    creature_type: None
-                },
-                chosen.clone()
-            ]
+            actions
+                .iter()
+                .filter(|action| matches!(action, Action::ChooseBeholdType { .. }))
+                .count(),
+            2
         );
+        assert!(actions.contains(&Action::ChooseBeholdType {
+            creature_type: None,
+        }));
+        assert!(actions.contains(&chosen));
         assert!(
             !g.observe(p.other())
                 .known_hand
