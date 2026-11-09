@@ -20,15 +20,18 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 max_mana: u32::MAX,
             }),
             TargetSpec::one(TargetRule::Filtered {
-                base: &TargetRule::Object {
-                    zone: TargetZone::Graveyard,
-                    kinds: 1 | 2 | 16 | 32 | 64 | 256,
-                    relation: 0,
-                    other: false,
-                    nonland: false,
-                    tapped: false,
-                    min_mana: 0,
-                    max_mana: u32::MAX,
+                base: &TargetRule::Filtered {
+                    base: &TargetRule::Object {
+                        zone: TargetZone::Graveyard,
+                        kinds: 0,
+                        relation: 0,
+                        other: false,
+                        nonland: false,
+                        tapped: false,
+                        min_mana: 0,
+                        max_mana: u32::MAX,
+                    },
+                    predicate: &TargetPredicate::Permanent,
                 },
                 predicate: &TargetPredicate::Nonlegendary,
             }),
