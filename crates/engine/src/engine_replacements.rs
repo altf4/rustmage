@@ -1213,6 +1213,25 @@ impl Game {
                                 && self.is_creature(recipient.card)
                         })
                     }
+                    ReplacementSpec::RedirectControlledDamageToSource => {
+                        // CR 614.9: both permanent endpoints must be able to take damage.
+                        let can_receive_damage = |id| {
+                            self.on_battlefield(id)
+                                && self.current_kinds(id) & (1 | 64 | crate::cards::BATTLE_KIND)
+                                    != 0
+                        };
+                        can_receive_damage(id)
+                            && match event.target {
+                                Target::Player(player) => player == object.controller,
+                                Target::Card(target) => {
+                                    target != id
+                                        && can_receive_damage(target)
+                                        && self.state.objects[target as usize].controller
+                                            == object.controller
+                                }
+                                _ => false,
+                            }
+                    }
                     ReplacementSpec::HealPreviousDamageToSelf => {
                         matches!(event.target, Target::Card(target) if self.on_battlefield(target) && self.object_ref(target) == source)
                     }
@@ -1258,16 +1277,21 @@ impl Game {
         if event.amount <= 0 {
             return Vec::new();
         }
+        let prevention_allowed = event.preventable && !self.damage_prevention_prohibited();
         let mut out = Vec::new();
-        if let Target::Card(id) = event.target
-            && self.counter_count(id, CounterKind::Shield) > 0
-            && !used.contains(&(self.object_ref(id), DamagePreventionKind::ShieldCounter))
-        {
-            out.push(DamagePreventionView {
-                source: self.object_ref(id),
-                source_card: self.state.objects[id as usize].card,
-                kind: DamagePreventionKind::ShieldCounter,
-            });
+        if let Target::Card(id) = event.target {
+            let source = self.object_ref(id);
+            let kind = DamagePreventionKind::ShieldCounter;
+            let used_for_batch = used.contains(&(source, kind));
+            if (!used_for_batch && self.counter_count(id, CounterKind::Shield) > 0)
+                || (used_for_batch && prevention_allowed)
+            {
+                out.push(DamagePreventionView {
+                    source,
+                    source_card: self.state.objects[id as usize].card,
+                    kind,
+                });
+            }
         }
         // CR615.12a still applies a next-instance effect once to an
         // unpreventable event. It neither prevents damage nor consumes the
@@ -1277,7 +1301,7 @@ impl Game {
                 .into_iter()
                 .filter(|choice| !used.contains(&(choice.source, choice.kind))),
         );
-        if !event.preventable || self.damage_prevention_prohibited() {
+        if !prevention_allowed {
             return out;
         }
         if let Some(roles) = &self.state.roles {
@@ -1380,6 +1404,9 @@ impl Game {
                     heals.push(choice.source);
                 }
             }
+            ReplacementSpec::RedirectControlledDamageToSource => {
+                event.target = Target::Card(choice.source.card);
+            }
             ReplacementSpec::PreventOtherCreatureNoncombatDamage
             | ReplacementSpec::PreventAllDamageToSelf => event.amount = 0,
             _ => unreachable!(),
@@ -1393,12 +1420,16 @@ impl Game {
     }
     fn apply_damage_replacement(&self, choice: DamageReplacement, batch: &mut DamageBatch) {
         let event = &mut batch.events[batch.next];
+        let original_target = event.target;
         match choice {
             DamageReplacement::Printed(effect) => {
                 self.modify_damage(effect, event, &mut batch.heals)
             }
             DamageReplacement::Resolved(_) => Self::double_damage(event),
         }
+        // A redirected packet may now share a recipient with another row.
+        // Keep the packet in place with its already-applied replacements.
+        batch.ordered_event |= event.target != original_target;
         batch.used.push(choice.id());
     }
     fn apply_chosen_damage_replacement(&self, id: DamageReplacementId, batch: &mut DamageBatch) {
@@ -3761,11 +3792,15 @@ impl Game {
     }
     fn apply_damage_prevention(&mut self, choice: DamagePreventionView, batch: &mut DamageBatch) {
         let prevention_allowed = !self.damage_prevention_prohibited();
+        let key = (choice.source, choice.kind);
         if choice.kind == DamagePreventionKind::ShieldCounter {
             // CR 122.1c: one effect covers all simultaneous damage to the
-            // permanent. Keep its used key for the batch even if some hits
-            // cannot be prevented and the permanent still has more counters.
-            self.remove_shield(choice.source.card);
+            // permanent, including packets redirected here after the shield
+            // counter was removed. Consume only one counter for the batch.
+            if !batch.used_preventions.contains(&key) {
+                self.remove_shield(choice.source.card);
+                batch.used_preventions.push(key);
+            }
             if prevention_allowed {
                 let target = batch.events[batch.next].target;
                 for event in &mut batch.events[batch.next..] {
@@ -3782,8 +3817,8 @@ impl Game {
                 }
                 event.amount = 0;
             }
+            batch.used_preventions.push(key);
         }
-        batch.used_preventions.push((choice.source, choice.kind));
     }
     fn damage_event_order(&self, batch: &DamageBatch) -> Vec<DamageEventOrderView> {
         if batch.ordered_event {

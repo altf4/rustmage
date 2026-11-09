@@ -4101,6 +4101,8 @@ pub enum ReplacementSpec {
         amount: u16,
     },
     DoubleEquippedDamage,
+    /// Redirect damage to the provider's controller or their other permanents to the provider.
+    RedirectControlledDamageToSource,
     HealPreviousDamageToSelf,
     PreventOtherCreatureNoncombatDamage,
     PreventAllDamageToSelf,

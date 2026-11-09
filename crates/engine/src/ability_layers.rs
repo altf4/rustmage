@@ -283,6 +283,8 @@ pub enum StaticAbilityFragment {
     FirstCoinFlipsHeads,
     CantGainLife,
     DamageCantBePrevented,
+    /// This exact permanent keeps marked damage as the cleanup step removes other damage.
+    RetainDamageDuringCleanup,
     NoMaximumHandSize,
     MaximumHandSize(u16),
     AdditionalLandPlays(u16),

@@ -318,6 +318,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::AdditionalLandPlays(_)
                             | crate::cards::StaticAbilityFragment::ConditionalAdditionalLandPlays { .. }
                             | crate::cards::StaticAbilityFragment::DamageCantBePrevented
+                            | crate::cards::StaticAbilityFragment::RetainDamageDuringCleanup
                             | crate::cards::StaticAbilityFragment::CantGainLife
                             | crate::cards::StaticAbilityFragment::ChosenModifier(..)
                             | crate::cards::StaticAbilityFragment::ChosenTypeKeywords(..)

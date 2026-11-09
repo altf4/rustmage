@@ -10532,6 +10532,23 @@ impl Game {
 
     fn finish_cleanup(&mut self) {
         let control_watch = self.freeze_control_watch();
+        // CR 514.2: decide which abilities apply before damage removal and the
+        // expiration of until-end-of-turn effects happen simultaneously.
+        let retained_damage: Vec<_> = self
+            .state
+            .static_sources
+            .iter()
+            .copied()
+            .filter(|&id| {
+                self.state.objects[id as usize].damage > 0
+                    && self.active_rule_fragment(id, |fragment| {
+                        matches!(
+                            fragment,
+                            crate::cards::StaticAbilityFragment::RetainDamageDuringCleanup
+                        )
+                    })
+            })
+            .collect();
         if let Some(rules) = &mut self.state.combat_rules {
             rules.must_be_blocked.clear();
             rules.must_attack_this_combat.clear();
@@ -10586,8 +10603,10 @@ impl Game {
             |p| !matches!(p.expiry, ExilePlayExpiry::Turn(turn) if turn <= self.state.turn),
         );
         // Damage removal and expiration of until-end-of-turn effects are simultaneous.
-        for obj in &mut self.state.objects {
-            obj.damage = 0;
+        for (index, obj) in self.state.objects.iter_mut().enumerate() {
+            if !retained_damage.contains(&(index as CardId)) {
+                obj.damage = 0;
+            }
             obj.deathtouch_since_sba = false;
             obj.growth = Stats::default();
             obj.gained_keywords = Keywords::NONE;
@@ -10615,7 +10634,8 @@ impl Game {
                 || expired_vehicles
                 || expired_animations
                 || expired_copies
-                || expired_legend_rule)
+                || expired_legend_rule
+                || !retained_damage.is_empty())
                 && self.sba_required()
             || self.state.objects.iter().enumerate().any(|(id, obj)| {
                 obj.zone == Zone::Battlefield
