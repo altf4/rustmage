@@ -50,7 +50,7 @@ fn ecl_twinflame_paid_body_additive_providers_and_frozen_counts_after_departure(
                 g.move_object(provider, Zone::Exile);
             }
             g.prepare_triggers();
-            assert_eq!(count(&g, id), amount as usize + 1);
+            assert_eq!(count(&g, id), amount + 1);
             let items: Vec<_> = g
                 .state
                 .ordering_triggers
@@ -66,11 +66,11 @@ fn ecl_twinflame_paid_body_additive_providers_and_frozen_counts_after_departure(
             let mut ids: Vec<_> = items.iter().map(|i| i.id).collect();
             ids.sort_unstable();
             ids.dedup();
-            assert_eq!(ids.len(), amount as usize + 1);
+            assert_eq!(ids.len(), amount + 1);
             assert!(items.iter().all(|item| item.additional_triggers == 0));
             // No re-expansion when the same batch is prepared again.
             g.prepare_triggers();
-            assert_eq!(count(&g, id), amount as usize + 1);
+            assert_eq!(count(&g, id), amount + 1);
             settle(&mut g);
             // Providers departed, so vivid sees only black at resolution.
             assert_eq!(
