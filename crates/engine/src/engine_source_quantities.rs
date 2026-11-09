@@ -63,7 +63,7 @@ fn selected(program: &[Instruction]) -> SelectedQuantities {
             }
             Instruction::CounterUnlessPayCosts { costs, .. }
             | Instruction::MayPayCosts { costs, .. } => {
-                for cost in *costs {
+                for cost in costs {
                     for value in cost.extra_generic.into_iter().chain(cost.life) {
                         amount(value, &mut result);
                     }
