@@ -509,6 +509,7 @@ fn cargo_ship_crews_for_one_and_its_colorless_mana_funds_equip() {
 
     let colorless = [0, 0, 0, 0, 0, 1];
     let mut restricted = game.clone();
+    restricted.state.objects[pilot as usize].tapped = true;
     restricted.state.players[player.index()].mana = [0, 0, 0, 1, 0, 2];
     act(&mut restricted, mana(ship, colorless));
     reject(&mut restricted, Action::AnnounceCast { card: giant });
