@@ -1,9 +1,9 @@
 # Rustmage
 
-Rustmage is a Magic: The Gathering rules engine written in Rust for reinforcement
-learning and game-tree search. It runs in the same process as your training or
-search code, providing a simulation environment for developing and evaluating
-bots that play Magic.
+Rustmage is a Magic: The Gathering rules engine written in Rust. 
+It aims to be an extremely efficient rules enforcement engine that runs in the 
+same process as your application. Rustmage is not a server, but you could make
+one using it!
 
 A program creates a game, reads a player's observation, and chooses an action.
 Rustmage enforces the rules, resolves the consequences, and advances to the next
@@ -22,8 +22,10 @@ Your application supplies the bot, learning algorithm, and reward function;
 Rustmage supplies the game rules and state transitions.
 
 Card behavior is authored directly in Rust, organized by set, and built on shared
-abilities, effects, targets, and costs. XMage's implementations and authoritative
-Oracle text guide that work. Gameplay executes deterministic Rust code.
+abilities, effects, targets, and costs. Implementations attempt to favor rules
+being placed in the core engine, with cards merely picking from sets of common 
+abilities. However, there are many mechanically unique effects that keep this
+from being universal. 
 
 The Cargo workspace keeps the shared engine, per-set definitions and integration
 tests in separate compilation units. Applications still use one `rustmage`
@@ -52,20 +54,6 @@ environment activated (`python3` can be used instead of `python`). The example
 plays a Standard game and prints its terminal outcome. The `rustmage` executable
 is a JSON-lines diagnostic client; it expects a configuration on stdin.
 
-The guard serializes builds across worktrees and limits Cargo and test concurrency
-to one. It uses a hard 6 GiB cgroup limit when a Linux user systemd manager is
-available. Other hosts use a 6 GiB aggregate RSS watchdog, sampled every 100 ms.
-That budget can overshoot between samples; it is not a hard allocation cap.
-Run markers recover detached children, and a live supervisor is required for
-compiler admission. This prevents accidental unmanaged builds, not deliberate
-escape by processes that remove their markers or forcibly kill the supervisors.
-Windows builds bootstrap a small native compiler launcher inside the guard,
-avoiding shell limits on long compiler argument lists.
-After each compiler exits, its owned MSVC telemetry helper is stopped; unexpected
-surviving processes still fail the build. MSVC PDB endpoints are isolated per run.
-`--backend cgroup` requires hard Linux containment; `--backend portable` selects
-the watchdog. Once cgroup setup starts, failures stop the build.
-
 Build outputs are reused under `~/.cache/rustmage-targets` unless
 `CARGO_TARGET_DIR` is set. Reports remain under `~/.cache/rustmage-build-reports`.
 
@@ -75,15 +63,6 @@ step). Set `RUSTMAGE_XMAGE_SOURCE` to that checkout and run:
 ```sh
 python scripts/validate.py --release --python smoke
 ```
-
-Validation retains a hashed native library snapshot (`.so`, `.dylib`, or `.dll`)
-with its report. The build never requires Java or a running XMage server.
-The default validation deadline is 60 minutes; `--timeout` sets a different total
-budget. Compiler phases allow cold native caches to warm, while each gameplay
-test retains its own bounded runtime.
-
-Card provenance that cites a path under `docs/` refers to evidence retained in
-[the repository history](https://github.com/altf4/rustmage/tree/b072c7932fc363b51938d429b99cb1b43d4beca7/docs).
 
 ## Standard set tracker
 
@@ -95,9 +74,8 @@ Card provenance that cites a path under `docs/` refers to evidence retained in
 
 `██████████████░░░░░░`
 
-The tracker uses the repository's frozen **2026-10-15 tabletop/MTGO Standard
-snapshot** ([inventory](data/standard/xmage-inventory.json)). “Complete” marks an
-accepted whole-set implementation with published rules and game validation.
+Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
+([inventory](data/standard/xmage-inventory.json)), rather than live format legality.
 
 <!-- Refresh supported counts from this checkout's generated coverage report
      and pinned set membership. Deduplicate the overall count by physical
@@ -127,12 +105,3 @@ accepted whole-set implementation with published rules and game validation.
 | The Lost Caverns of Ixalan | LCI | 117/291 (40%) | ⏳ Partial |
 | Wilds of Eldraine | WOE | 156/281 (56%) | ⏳ Partial |
 
-Supported counts use this checkout's admission flags and full physical set
-membership from pinned XMage tables and Oracle facts, including reprints and
-starter products. Totals include banned members, and cosmetic printings count
-once.
-
-Refresh the counts when card support changes; update the status and summary
-when a set passes full acceptance. When refreshing the Standard
-snapshot, reconcile this list against `set_tables` in the pinned inventory. Reprints may belong to multiple sets, so
-set card counts must not be added to estimate unique Standard coverage.
