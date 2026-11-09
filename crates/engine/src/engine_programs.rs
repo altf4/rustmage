@@ -1071,6 +1071,7 @@ impl Game {
                     | TriggerCondition::ControlledCreatureAttacksAlone
                     | TriggerCondition::ControlledCreatureAttacksOrBlocks
                     | TriggerCondition::DelayedCreatureAttacksAlone
+                    | TriggerCondition::DelayedCreatureAttacksSubtypeAny(_)
                     | TriggerCondition::SelfAttacksOrBlocks
                     | TriggerCondition::ControlledCreatureAttacks
                     | TriggerCondition::ControlledCreatureAttacksPlayerAlone
@@ -2295,16 +2296,34 @@ impl Game {
                 .as_deref()
                 .into_iter()
                 .flatten()
-                .filter(|item| item.controller == actor)
-                .cloned()
-                .collect();
-            for mut packet in packets {
-                if let StackKind::TriggeredAbility { ability } = packet.kind
-                    && packet.trigger_definition().triggers()[usize::from(ability)]
+                .filter_map(|item| {
+                    let StackKind::TriggeredAbility { ability } = item.kind else {
+                        return None;
+                    };
+                    let event = item.trigger_definition().triggers()[usize::from(ability)]
                         .condition
-                        .event()
-                        == TriggerCondition::DelayedCreatureAttacksAlone
-                {
+                        .event();
+                    (item.controller == actor
+                        || matches!(event, TriggerCondition::DelayedCreatureAttacksSubtypeAny(_)))
+                    .then(|| (item.clone(), event))
+                })
+                .collect();
+            for (mut packet, event) in packets {
+                if let TriggerCondition::DelayedCreatureAttacksSubtypeAny(subtypes) = event {
+                    for attack in declared {
+                        if subtypes
+                            .iter()
+                            .any(|name| self.has_subtype(attack.card, name))
+                        {
+                            let mut trigger = packet.clone();
+                            trigger.id = self.next_stack_id();
+                            trigger.entering_object = Some(self.object_ref(attack.card));
+                            self.state.pending_triggers.push(trigger);
+                        }
+                    }
+                    continue;
+                }
+                if event == TriggerCondition::DelayedCreatureAttacksAlone {
                     let Some(attacker) = alone else { continue };
                     packet.entering_object = Some(attacker);
                 }
@@ -9962,7 +9981,15 @@ impl Game {
                     }
                     self.move_target_batch(&targets, Zone::Hand);
                 }
-                Instruction::ReturnCreaturesWithoutSubtype(subtype) => {
+                Instruction::ReturnCreaturesWithoutSubtype(_)
+                | Instruction::ReturnCreaturesWithoutSubtypes(_) => {
+                    let subtypes = match &instruction {
+                        Instruction::ReturnCreaturesWithoutSubtype(subtype) => {
+                            std::slice::from_ref(subtype)
+                        }
+                        Instruction::ReturnCreaturesWithoutSubtypes(subtypes) => *subtypes,
+                        _ => unreachable!(),
+                    };
                     let ids: Vec<_> = self
                         .state
                         .objects
@@ -9971,7 +9998,9 @@ impl Game {
                         .filter(|(id, object)| {
                             object.zone == Zone::Battlefield
                                 && self.is_creature(*id as CardId)
-                                && !self.has_subtype(*id as CardId, subtype)
+                                && !subtypes
+                                    .iter()
+                                    .any(|name| self.has_subtype(*id as CardId, name))
                         })
                         .map(|(id, _)| id as CardId)
                         .collect();

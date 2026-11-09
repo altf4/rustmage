@@ -3250,6 +3250,8 @@ pub enum Instruction {
     ReturnAllTargetsToHand,
     /// Return every creature lacking the named subtype in one simultaneous batch.
     ReturnCreaturesWithoutSubtype(&'static str),
+    /// Return all creatures that have none of these live subtypes.
+    ReturnCreaturesWithoutSubtypes(&'static [&'static str]),
     /// Freeze successful returns, then one token-creation trigger next upkeep.
     ReturnTargetsCreateNextUpkeep {
         token: Card,
@@ -5256,6 +5258,8 @@ pub enum TriggerCondition {
     /// A completed declaration with exactly one controlled creature, whether this source attacked or not.
     ControlledCreatureAttacksAlone,
     DelayedCreatureAttacksAlone,
+    /// One delayed trigger per qualifying declared attacker of either player.
+    DelayedCreatureAttacksSubtypeAny(&'static [&'static str]),
     /// One event for each creature declared attacking by the source controller.
     ControlledCreatureAttacks,
     ControlledCreatureAttacksPlayerAlone,
