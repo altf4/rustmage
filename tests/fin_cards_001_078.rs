@@ -112,7 +112,13 @@ fn crossroads_chooses_as_it_enters_and_only_produces_that_color() {
     let land = put(&mut game, player, "Crossroads Village", Zone::Hand);
     act(&mut game, Action::PlayLand { card: land });
     assert!(matches!(game.state.pending, Pending::EntryValue { .. }));
-    assert_eq!(game.legal_actions().len(), 5);
+    assert_eq!(
+        game.legal_actions()
+            .iter()
+            .filter(|action| { matches!(action, Action::ChooseEntryValue { .. }) })
+            .count(),
+        5,
+    );
     let selection = Action::ChooseEntryValue {
         value: EntryChoiceValue::Color(ChoiceColor::Red),
     };

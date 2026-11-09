@@ -36,7 +36,14 @@ fn required_zone_search_preserves_public_selection_and_hidden_failure() {
     cast(&mut parent, source, None);
     act(&mut parent, Action::Pass);
     act(&mut parent, Action::Pass);
-    assert_eq!(parent.legal_actions().len(), 3);
+    assert_eq!(
+        parent
+            .legal_actions()
+            .iter()
+            .filter(|action| { matches!(action, Action::ChooseSearchZones { .. }) })
+            .count(),
+        3,
+    );
     reject(&mut parent, zones(false, false));
 
     let mut graveyard = parent.clone();

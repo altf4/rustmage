@@ -40,7 +40,7 @@ fn swallowed_by_leviathan_surveils_then_prices_the_exact_spell() {
     cast(&mut game, victim, None);
     let id = game.state.stack.last().unwrap().id;
     act(&mut game, Action::Pass);
-    cast(&mut game, counter, Some(Target::Stack(id)));
+    cast(&mut game, counter, Some(Target::Spell(victim)));
     pass_pair(&mut game);
     assert!(game.observe(caster).library_choice.is_some());
     assert!(game.observe(payer).library_choice.is_none());
