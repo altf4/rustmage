@@ -5541,7 +5541,8 @@
     2,
     17,
     5,
-    0
+    0,
+    4
   ],
   "aliases": [
     [
@@ -6447,6 +6448,10 @@
     [
       "@token/fin-darkstar",
       5534
+    ],
+    [
+      "@token/fin-horror-black",
+      5536
     ],
     [
       "@token/fin-robot-warrior-blue",
@@ -29625,6 +29630,12 @@
       "name": "Darkstar",
       "subtypes": "Dog",
       "colors": 5
+    },
+    {
+      "factory_identity": "@token/fin-horror-black",
+      "name": "Horror Token",
+      "subtypes": "Horror",
+      "colors": 4
     }
   ],
   "emblems": [
@@ -188740,6 +188751,33 @@
       "standard_legal": false,
       "legendary": false,
       "kind": 0,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5536,
+      "module": "card_5536",
+      "path": "synthetic/token_fin_horror_black.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/fin-horror-black",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Horror",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
       "basic": false,
       "mana_color": null,
       "colored": [

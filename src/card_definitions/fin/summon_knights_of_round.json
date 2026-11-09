@@ -3,10 +3,35 @@
   "catalogue_id": 4222,
   "oracle_id": "73122880-d7f4-422f-a336-18773bcb7bfe",
   "facts_sha256": "721fba13c8c941b5731b7e3d54482a6f95aba55a931b390dd0047baaf9557301",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7281b886c85db0a3957b7ba9214d5bc337285560324474136f4aef9b3c1d0146"
   },
-  "physical_metadata_sha256": "9aef79b52fc98afc72bb01b1634987a8cc58333e5bbecd5a51fa9c9c17f649f6"
+  "physical_metadata_sha256": "9aef79b52fc98afc72bb01b1634987a8cc58333e5bbecd5a51fa9c9c17f649f6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SummonKnightsOfRound.java",
+  "java_sha256": "36015b96dc0320ab7e1df7eb04381ddbf2ba8d0d67d1f6acc897c40eee3c3548",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SagaAbility.java",
+      "sha256": "d907d96e4141a58d82f32fdb512e6426ed2cbd669544ade67f94b062dc7a8c80"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAllEffect.java",
+      "sha256": "064c925d60c97db41aa0444db30fd482c857b12e3bf8c0635f990dfd4a7094d5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/WaylayToken.java",
+      "sha256": "3112f4caf439566ba16f9ca087b5b60bd51b62f73ef5516464c6d13be793b90b"
+    }
+  ]
 }

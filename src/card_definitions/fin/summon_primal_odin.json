@@ -3,10 +3,35 @@
   "catalogue_id": 4225,
   "oracle_id": "032f59c3-9f47-4db3-a43c-065a99ed7efe",
   "facts_sha256": "637092584c960bbc5adb551413b8c18daee40cfb6091778da4be54d928772f28",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "82ad1fe51a7f5257f08074523e614f4f3b1eeb38299432269b8cadfb1d5b029d"
   },
-  "physical_metadata_sha256": "372d3a6a51cdf4d3ff7c7fa6e32959f67853af2c989c38b90280399ea22eeb09"
+  "physical_metadata_sha256": "372d3a6a51cdf4d3ff7c7fa6e32959f67853af2c989c38b90280399ea22eeb09",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SummonPrimalOdin.java",
+  "java_sha256": "9ff82b787e94885e21e248c64002bc827796af4dc4d1317fa11719ea83996873",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SagaAbility.java",
+      "sha256": "d907d96e4141a58d82f32fdb512e6426ed2cbd669544ade67f94b062dc7a8c80"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseGameTargetPlayerEffect.java",
+      "sha256": "5a73e4604a2c62da88b1473ce368396ca832acb06be56da40cb57fe5c20b54a4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    }
+  ]
 }

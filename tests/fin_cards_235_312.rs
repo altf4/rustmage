@@ -339,3 +339,414 @@ fn the_pinned_tokens_and_emblem_supply_their_printed_characteristics_and_trigger
     assert_eq!(game.state.players[opponent.index()].life, 18);
     assert_eq!(game.state.players[player.index()].life, 21);
 }
+
+fn advance_chapter(game: &mut Game) {
+    game.begin_step(Step::Main1);
+    game.prepare_triggers();
+}
+
+fn attack_with(game: &mut Game, attackers: &[CardId]) {
+    game.begin_step(Step::BeginCombat);
+    pass_pair(game);
+    for &card in attackers {
+        act(game, Action::Attack { card });
+    }
+    act(game, Action::FinishAttackers);
+}
+
+fn battlefield_tokens(game: &Game, factory: u16) -> Vec<CardId> {
+    let token = Card::from_catalogue_id(factory);
+    game.state
+        .objects
+        .iter()
+        .enumerate()
+        .filter_map(|(id, object)| {
+            (object.zone == Zone::Battlefield && object.card == token && object.is_token())
+                .then_some(id as CardId)
+        })
+        .collect()
+}
+
+#[test]
+fn fenrir_searches_a_basic_then_rewards_the_next_creature_and_a_power_tie() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let saga = put(&mut game, player, "Summon: Fenrir", Zone::Hand);
+    let town = put(&mut game, player, "Vector, Imperial Capital", Zone::Library);
+    let forest = put(&mut game, player, "Forest", Zone::Library);
+    cast(&mut game, saga, None);
+    pass_pair(&mut game);
+    pass_pair(&mut game);
+    assert!(game.observe(player.other()).library_selection.is_none());
+    reject(&mut game, Action::SelectLibrary { card: town });
+    act(&mut game, Action::SelectLibrary { card: forest });
+    act(&mut game, Action::FinishLibrarySelection);
+    assert_eq!(game.object_view(forest).zone, Zone::Battlefield);
+    assert!(game.object_view(forest).tapped);
+
+    advance_chapter(&mut game);
+    settle(&mut game);
+    let equipment = put(&mut game, player, "Swiftfoot Boots", Zone::Hand);
+    cast(&mut game, equipment, None);
+    settle(&mut game);
+    assert_eq!(game.observe(player).delayed_spell_copies.len(), 1);
+    for expected in [1, 0] {
+        let bear = put(&mut game, player, "Grizzly Bears", Zone::Hand);
+        cast(&mut game, bear, None);
+        settle(&mut game);
+        assert_eq!(game.counter_count(bear, CounterKind::PlusOne), expected);
+    }
+
+    put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
+    advance_chapter(&mut game);
+    let mut behind = game.clone();
+    put(
+        &mut behind,
+        player.other(),
+        "Ghalta, Primal Hunger",
+        Zone::Battlefield,
+    );
+    let hand = game.hand_count(player);
+    settle(&mut behind);
+    settle(&mut game);
+    assert_eq!(behind.hand_count(player), hand);
+    assert_eq!(game.hand_count(player), hand + 1);
+    assert_eq!(game.object_view(saga).zone, Zone::Graveyard);
+}
+
+#[test]
+fn cerberus_surveils_then_copies_once_and_twice_with_independent_targets() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let saga = put(&mut game, player, "Summon: G.F. Cerberus", Zone::Hand);
+    let top = put(&mut game, player, "Shock", Zone::Library);
+    cast(&mut game, saga, None);
+    pass_pair(&mut game);
+    pass_pair(&mut game);
+    assert!(game.observe(opponent).library_choice.is_none());
+    act(
+        &mut game,
+        Action::ArrangeLibrary {
+            card: top,
+            destination: LibraryDestination::Graveyard,
+        },
+    );
+    assert_eq!(game.object_view(top).zone, Zone::Graveyard);
+
+    for count in [1, 2] {
+        advance_chapter(&mut game);
+        settle(&mut game);
+        assert_eq!(
+            game.object_view(saga).zone,
+            if count == 2 {
+                Zone::Graveyard
+            } else {
+                Zone::Battlefield
+            }
+        );
+        let original = put(&mut game, opponent, "Grizzly Bears", Zone::Battlefield);
+        let spell = put(&mut game, player, "Unsummon", Zone::Hand);
+        let other: Vec<_> = (0..count)
+            .map(|_| put(&mut game, opponent, "Bear Cub", Zone::Battlefield))
+            .collect();
+        cast(&mut game, spell, Some(Target::Card(original)));
+        pass_pair(&mut game);
+        for (index, &target) in other.iter().enumerate() {
+            let choice = game.observe(player).retarget.unwrap();
+            assert_eq!(choice.remaining_copies, (other.len() - index - 1) as u64);
+            assert_eq!(choice.original[0].target, Target::Card(original));
+            act(
+                &mut game,
+                Action::SetStackTarget {
+                    index: 0,
+                    target: Target::Card(target),
+                },
+            );
+            act(&mut game, Action::FinishStackTargets);
+        }
+        settle(&mut game);
+        for target in other.into_iter().chain([original]) {
+            assert_eq!(game.object_view(target).zone, Zone::Hand);
+        }
+        assert!(game.observe(player).delayed_spell_copies.is_empty());
+    }
+}
+
+#[test]
+fn knights_of_round_make_four_batches_and_leave_indestructible_counters() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let saga = put(&mut game, player, "Summon: Knights of Round", Zone::Hand);
+    let friend = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let opponent = put(
+        &mut game,
+        player.other(),
+        "Grizzly Bears",
+        Zone::Battlefield,
+    );
+    cast(&mut game, saga, None);
+    settle(&mut game);
+    assert!(game.keywords(saga).contains(Keywords::INDESTRUCTIBLE));
+    for chapter in 1..=4 {
+        assert_eq!(battlefield_tokens(&game, 5236).len(), 3 * chapter);
+        if chapter < 4 {
+            advance_chapter(&mut game);
+            settle(&mut game);
+        }
+    }
+    let tokens = battlefield_tokens(&game, 5236);
+    for &token in &tokens {
+        let view = game.object_view(token);
+        assert!(view.has_subtype("Knight"));
+        assert_eq!(view.colors, 1);
+        assert_eq!(stats(&game, token), (2, 2));
+        assert!(!game.keywords(token).contains(Keywords::VIGILANCE));
+    }
+
+    advance_chapter(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(saga).zone, Zone::Graveyard);
+    assert_eq!(game.counter_count(opponent, CounterKind::Indestructible), 0);
+    assert_eq!(stats(&game, opponent), (2, 2));
+    for creature in tokens.iter().copied().chain([friend]) {
+        assert_eq!(game.counter_count(creature, CounterKind::Indestructible), 1);
+        assert_eq!(stats(&game, creature), (4, 4));
+    }
+    game.finish_cleanup();
+    for creature in tokens.into_iter().chain([friend]) {
+        assert!(game.keywords(creature).contains(Keywords::INDESTRUCTIBLE));
+        assert_eq!(stats(&game, creature), (2, 2));
+    }
+}
+
+#[test]
+fn leviathan_preserves_sea_creatures_and_uses_ward_and_the_two_attack_chapters() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let saga = put(&mut game, player, "Summon: Leviathan", Zone::Hand);
+    let bear = put(&mut game, opponent, "Grizzly Bears", Zone::Battlefield);
+    let octopus = put(
+        &mut game,
+        player,
+        "Ultros, Obnoxious Octopus",
+        Zone::Battlefield,
+    );
+    let changeling = put(&mut game, player, "Three Tree Mascot", Zone::Battlefield);
+    cast(&mut game, saga, None);
+    settle(&mut game);
+    assert_eq!(game.object_view(bear).zone, Zone::Hand);
+    assert_eq!(game.object_view(octopus).zone, Zone::Battlefield);
+    assert_eq!(game.object_view(changeling).zone, Zone::Battlefield);
+    let shock = put(&mut game, opponent, "Shock", Zone::Hand);
+    act(&mut game, Action::Pass);
+    cast(&mut game, shock, Some(Target::Card(saga)));
+    pass_pair(&mut game);
+    assert_eq!(
+        game.observe(opponent)
+            .resolution_payment
+            .unwrap()
+            .cost
+            .generic,
+        2
+    );
+    act(&mut game, Action::DeclineResolutionMana);
+    assert_eq!(game.object_view(shock).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(saga).damage, 0);
+
+    for lore in [1, 2] {
+        let mut branch = game.clone();
+        branch.set_counters(saga, Counters::of(CounterKind::Lore, lore));
+        advance_chapter(&mut branch);
+        settle(&mut branch);
+        if lore == 2 {
+            assert_eq!(branch.object_view(saga).zone, Zone::Graveyard);
+        }
+        let before = branch.hand_count(player);
+        attack_with(&mut branch, &[octopus, changeling]);
+        for _ in 0..10 {
+            if branch.state.pending == Pending::Priority
+                && branch.state.stack.is_empty()
+                && branch.state.pending_triggers.is_empty()
+            {
+                break;
+            }
+            choose(&mut branch, |action| {
+                matches!(action, Action::Pass | Action::PutTrigger { .. })
+            });
+        }
+        assert_eq!(branch.hand_count(player), before + 2);
+    }
+}
+
+#[test]
+fn odin_destroys_an_enemy_then_grants_a_combat_trigger_and_draws_at_the_end() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let saga = put(&mut game, player, "Summon: Primal Odin", Zone::Hand);
+    let friend = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let victim = put(&mut game, opponent, "Hill Giant", Zone::Battlefield);
+    cast(&mut game, saga, None);
+    pass_pair(&mut game);
+    assert!(!game.legal_actions().contains(&Action::ChooseTarget {
+        target: Target::Card(friend)
+    }));
+    trigger_target(&mut game, Target::Card(victim));
+    settle(&mut game);
+    assert_eq!(game.object_view(victim).zone, Zone::Graveyard);
+    let mut prior = game.clone();
+    advance_chapter(&mut game);
+    settle(&mut game);
+    let mut finale = game.clone();
+    advance_chapter(&mut finale);
+    settle(&mut finale);
+    assert_eq!(finale.hand_count(player), 2);
+    assert_eq!(finale.object_view(saga).zone, Zone::Graveyard);
+    for p in [player, opponent] {
+        assert_eq!(finale.state.players[p.index()].life, 18);
+    }
+
+    for branch in [&mut prior, &mut game] {
+        branch.state.objects[saga as usize].summoning_sick = false;
+        attack_with(branch, &[saga]);
+        pass_pair(branch);
+        act(branch, Action::FinishBlockers);
+        pass_pair(branch);
+        settle(branch);
+        assert_eq!(branch.state.players[opponent.index()].life, 15);
+    }
+    assert_eq!(prior.outcome(), None);
+    assert_eq!(game.outcome(), Some(Outcome::Winner(player)));
+}
+
+#[test]
+fn titan_mills_and_recovers_own_lands_then_counts_them_at_resolution() {
+    let player = Player::P1;
+    let mut game = scenario(player);
+    let saga = put(&mut game, player, "Summon: Titan", Zone::Hand);
+    let friend = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let enemy = put(
+        &mut game,
+        player.other(),
+        "Grizzly Bears",
+        Zone::Battlefield,
+    );
+    let opposing_land = put(&mut game, player.other(), "Forest", Zone::Graveyard);
+    let old_land = put(&mut game, player, "Plains", Zone::Graveyard);
+    put(&mut game, player, "Forest", Zone::Battlefield);
+    for _ in 0..4 {
+        put(&mut game, player, "Shock", Zone::Library);
+    }
+    let milled_land = put(&mut game, player, "Forest", Zone::Library);
+    cast(&mut game, saga, None);
+    settle(&mut game);
+    assert!(
+        game.keywords(saga)
+            .contains(Keywords::REACH.union(Keywords::TRAMPLE))
+    );
+    assert_eq!(game.object_view(milled_land).zone, Zone::Graveyard);
+    assert_eq!(game.state.players[player.index()].library.len(), 8);
+    advance_chapter(&mut game);
+    settle(&mut game);
+    for land in [old_land, milled_land] {
+        let view = game.object_view(land);
+        assert_eq!(view.zone, Zone::Battlefield);
+        assert!(view.tapped);
+    }
+    assert_eq!(game.object_view(opposing_land).zone, Zone::Graveyard);
+    advance_chapter(&mut game);
+    for illegal in [saga, enemy] {
+        assert!(!game.legal_actions().contains(&Action::ChooseTarget {
+            target: Target::Card(illegal)
+        }));
+    }
+    trigger_target(&mut game, Target::Card(friend));
+    let late = put(&mut game, player, "Plains", Zone::Hand);
+    game.move_object(late, Zone::Battlefield);
+    settle(&mut game);
+    assert_eq!(stats(&game, friend), (6, 6));
+    assert!(game.keywords(friend).contains(Keywords::TRAMPLE));
+    assert_eq!(game.object_view(saga).zone, Zone::Graveyard);
+    game.finish_cleanup();
+    assert_eq!(stats(&game, friend), (2, 2));
+    assert!(!game.keywords(friend).contains(Keywords::TRAMPLE));
+}
+
+#[test]
+fn final_days_counts_own_creatures_for_the_flashback_horror_batch() {
+    let player = Player::P0;
+    for flashback in [false, true] {
+        let mut game = scenario(player);
+        for name in ["Bear Cub", "Grizzly Bears", "Hill Giant", "Forest"] {
+            put(&mut game, player, name, Zone::Graveyard);
+        }
+        put(&mut game, player.other(), "Grizzly Bears", Zone::Graveyard);
+        let spell = put(
+            &mut game,
+            player,
+            "The Final Days",
+            if flashback {
+                Zone::Graveyard
+            } else {
+                Zone::Hand
+            },
+        );
+        if flashback {
+            act(&mut game, Action::AnnounceFlashback { card: spell });
+            pay(&mut game);
+        } else {
+            cast(&mut game, spell, None);
+        }
+        settle(&mut game);
+        let tokens = battlefield_tokens(&game, 5536);
+        assert_eq!(tokens.len(), if flashback { 3 } else { 2 });
+        for token in tokens {
+            let view = game.object_view(token);
+            assert!(view.tapped && view.has_subtype("Horror"));
+            assert_eq!((view.colors, view.controller), (4, player));
+            assert_eq!(stats(&game, token), (2, 2));
+        }
+        assert_eq!(
+            game.object_view(spell).zone,
+            if flashback {
+                Zone::Exile
+            } else {
+                Zone::Graveyard
+            }
+        );
+    }
+}
+
+#[test]
+fn ultima_destroys_both_types_and_ends_the_turn_before_a_death_trigger_stacks() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let rat = put(&mut game, player, "Undercity Dire Rat", Zone::Battlefield);
+    let artifact = put(&mut game, opponent, "Swiftfoot Boots", Zone::Battlefield);
+    let both = put(&mut game, opponent, "Three Tree Mascot", Zone::Battlefield);
+    let indestructible = put(
+        &mut game,
+        player,
+        "Summon: Knights of Round",
+        Zone::Battlefield,
+    );
+    let land = put(&mut game, opponent, "Forest", Zone::Battlefield);
+    let enchantment = put(&mut game, player, "Nowhere to Run", Zone::Battlefield);
+    let spell = put(&mut game, player, "Ultima", Zone::Hand);
+    let turn = game.state.turn;
+    cast(&mut game, spell, None);
+    settle(&mut game);
+    for id in [rat, artifact, both] {
+        assert_eq!(game.object_view(id).zone, Zone::Graveyard);
+    }
+    for id in [indestructible, land, enchantment] {
+        assert_eq!(game.object_view(id).zone, Zone::Battlefield);
+    }
+    assert_eq!(game.object_view(spell).zone, Zone::Exile);
+    assert!(battlefield_tokens(&game, 5302).is_empty());
+    assert_eq!(game.state.turn, turn + 1);
+    assert_eq!(game.state.active, opponent);
+}
