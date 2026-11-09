@@ -3167,6 +3167,8 @@ pub enum Instruction {
         maximum: AmountValue,
     },
     SearchLibraryAndOrGraveyardToHand(SearchFilter),
+    /// Search at least one selected zone for one qualified card.
+    SearchRequiredLibraryAndOrGraveyardToHand(SearchFilter),
     /// Qualified battlefield search using the frozen mana value of a paid sacrifice.
     SearchSacrificedManaValue {
         kinds: u16,

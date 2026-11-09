@@ -7174,8 +7174,11 @@ impl Game {
                     self.start_zone_search(&item, filter, counter, haste_at);
                     return;
                 }
-                Instruction::SearchLibraryAndOrGraveyardToHand(filter) => {
-                    self.start_zone_hand_search(&item, filter);
+                Instruction::SearchLibraryAndOrGraveyardToHand(filter)
+                | Instruction::SearchRequiredLibraryAndOrGraveyardToHand(filter) => {
+                    let may_decline =
+                        matches!(instruction, Instruction::SearchLibraryAndOrGraveyardToHand(_));
+                    self.start_zone_hand_search(&item, filter, may_decline);
                     return;
                 }
                 Instruction::SearchHandAndOrLibrary(filter) => {

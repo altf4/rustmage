@@ -13,6 +13,7 @@ pub(super) struct ZoneSearch {
     zones: Option<(bool, bool)>,
     selected: Option<ObjectRef>,
     to_hand: bool,
+    may_decline_zones: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Serialize)]
@@ -60,21 +61,29 @@ impl Game {
             zones: None,
             selected: None,
             to_hand: false,
+            may_decline_zones: false,
         }));
         self.state.pending = Pending::LibraryGraveyardSearch {
             player: item.controller,
         };
     }
-    pub(super) fn start_zone_hand_search(&mut self, item: &SpellView, filter: SearchFilter) {
+    pub(super) fn start_zone_hand_search(
+        &mut self,
+        item: &SpellView,
+        filter: SearchFilter,
+        may_decline_zones: bool,
+    ) {
         self.start_zone_search(item, filter, CounterKind::PlusOne, None);
-        self.state
+        let Some(search) = self
+            .state
             .linked_choices
             .as_mut()
-            .unwrap()
-            .zone_search
-            .as_mut()
-            .unwrap()
-            .to_hand = true;
+            .and_then(|data| data.zone_search.as_mut())
+        else {
+            return;
+        };
+        search.to_hand = true;
+        search.may_decline_zones = may_decline_zones;
     }
     fn zone_search(&self) -> Option<&ZoneSearch> {
         self.state.linked_choices.as_ref()?.zone_search.as_deref()
@@ -108,7 +117,7 @@ impl Game {
     pub(super) fn visit_zone_search(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
         let s = self.zone_search().unwrap();
         if s.zones.is_none() {
-            if s.to_hand
+            if s.may_decline_zones
                 && emit(Action::ChooseSearchZones {
                     library: false,
                     graveyard: false,
