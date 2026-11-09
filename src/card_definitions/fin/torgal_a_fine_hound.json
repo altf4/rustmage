@@ -3,10 +3,35 @@
   "catalogue_id": 4640,
   "oracle_id": "9d6ab594-aea9-4f13-8802-f3794ee45425",
   "facts_sha256": "5cf7367d6113cd98c1de86141795f2918c7cac88e3bf461e55cd0f076ab6e2fc",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6353db1bdaa2a27edd31ba1fd681fba90981687cee80f057e5d0210d36223a2c"
   },
-  "physical_metadata_sha256": "dad89476e53044d0bc3ae2fffcda4589c64daaf1b87093d995b405f143f2b6c6"
+  "physical_metadata_sha256": "dad89476e53044d0bc3ae2fffcda4589c64daaf1b87093d995b405f143f2b6c6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TorgalAFineHound.java",
+  "java_sha256": "f056aa94318394e9b02664860b52f206241d9eeb4b4fc1f76da0d1696fe10aa1",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+      "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+      "sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/events/EntersTheBattlefieldEvent.java",
+      "sha256": "4cc0d9b3979ef54306666a8b28ffcc7fe39e132df0402621ddd382d17c363200"
+    }
+  ]
 }

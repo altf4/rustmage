@@ -1,17 +1,37 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from the paired Oracle and pinned XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Permanent,
     keywords: Keywords::FLYING,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::ManaSpent {
+            minimum: 4,
+            increment: false,
+            event: &TriggerCondition::SpellCast {
+                relation: CastRelation::You,
+                filter: CastFilter::Noncreature,
+                ordinal: None,
+            },
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::AnimateSource(AnimationSpec {
+            artifact: true,
+            creature_types: AnimationCreatureTypes::Unchanged,
+            base: None,
+            keywords: Keywords::NONE,
+            duration: AnimationDuration::EndOfTurn,
+        })],
+    }],
+    activated: &[ActivatedAbility {
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        origin: ActivationOrigin::Battlefield,
+        cycling: false,
+        cost: ActivationCost::ZERO,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::Crew { minimum: 2 }],
+        sorcery: false,
+        once_per_turn: false,
+    }],
     extras: &CardExtras {
         vehicle_stats: Some(Stats {
             power: 5,

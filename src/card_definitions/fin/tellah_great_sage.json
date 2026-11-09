@@ -3,10 +3,45 @@
   "catalogue_id": 4356,
   "oracle_id": "1a080b26-c766-4f7c-9198-4974d2133f75",
   "facts_sha256": "95876ab400de87e546edf1540c7bf0bdd58413f3c8381a4be355253be6936476",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "313944dbaf4f3b41dbb4ed8ddf67a16432f3e170d0505457534aa36aa6d7c897"
   },
-  "physical_metadata_sha256": "89b9751cd73ec163c3e4187831d1ceee481b4d0fd56ae9354a318c61e30589a7"
+  "physical_metadata_sha256": "89b9751cd73ec163c3e4187831d1ceee481b4d0fd56ae9354a318c61e30589a7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TellahGreatSage.java",
+  "java_sha256": "4ba7e6db9468c453121fa028481b32784e00b07e20d0ec40465f691a494b1417",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/HeroToken.java",
+      "sha256": "ae85d8ad9709b08a990352247abee6a63ab13b152ca1caf9c541a85c32b59dcc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeSourceEffect.java",
+      "sha256": "67db08baf9a6cc6c7fad953388bdd2adb74e4c9af4c5e2f5483c8cc546bbb098"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+      "sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ]
 }

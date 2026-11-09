@@ -971,6 +971,7 @@ fn masamune_requires_an_available_block_and_doubles_its_bearers_death_trigger() 
     assert_eq!(game.object_view(blocker).zone, Zone::Graveyard);
     assert_eq!(game.object_view(rat).damage, 0);
 
+    game.state.players[player.index()].mana[3] = 1;
     let shock = put(&mut game, player, "Shock", Zone::Hand);
     cast(&mut game, shock, Some(Target::Card(rat)));
     for _ in 0..16 {
@@ -1027,4 +1028,326 @@ fn ultima_origin_replaces_the_attacked_lands_abilities_and_doubles_its_colorless
     assert_eq!(game.state.players[player.index()].mana[5], 3);
     game.pay_counters(town, &Counters::of(CounterKind::Blight, 1));
     assert!(game.object_view(town).has_subtype("Town"));
+}
+
+fn ability(source: CardId, index: u16) -> Action {
+    Action::AnnounceActivate {
+        card: source,
+        ability: index,
+        counter_payment: Counters::default(),
+    }
+}
+
+fn tap_production(source: CardId, production: Mana) -> Action {
+    Action::ActivateMana {
+        card: source,
+        ability: 0,
+        payment: [0; 6],
+        counter_payment: Counters::default(),
+        production,
+    }
+}
+
+fn crew_with(game: &mut Game, vehicle: CardId, pilot: CardId) {
+    activate(game, vehicle);
+    if matches!(game.state.pending, Pending::PayCosts { .. }) {
+        pay(game);
+    }
+    let object = game.object_ref(pilot);
+    act(game, Action::ChooseCrewer { object });
+    act(game, Action::FinishCrew);
+    settle(game);
+}
+
+#[test]
+fn tellah_samples_mana_spent_at_each_threshold_and_keeps_the_damage_after_sacrifice() {
+    let player = Player::P0;
+    let opponent = player.other();
+    for spent in [1, 4, 8] {
+        let mut game = scenario(opponent);
+        let tellah = put(&mut game, player, "Tellah, Great Sage", Zone::Battlefield);
+        let victim = put(&mut game, opponent, "Opt", Zone::Hand);
+        let counter = put(&mut game, player, "Syncopate", Zone::Hand);
+        cast(&mut game, victim, None);
+        act(&mut game, Action::Pass);
+        act(&mut game, Action::AnnounceCast { card: counter });
+        act(&mut game, Action::ChooseX { value: spent - 1 });
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Spell(victim),
+            },
+        );
+        pay(&mut game);
+        pass_pair(&mut game);
+        assert_eq!(battlefield_tokens(&game, 5328).len(), 1);
+        assert_eq!(game.hand_count(player), if spent >= 4 { 2 } else { 0 });
+        assert_eq!(
+            game.object_view(tellah).zone,
+            if spent == 8 {
+                Zone::Graveyard
+            } else {
+                Zone::Battlefield
+            }
+        );
+        assert_eq!(
+            game.state.players[opponent.index()].life,
+            if spent == 8 { 12 } else { 20 }
+        );
+        assert_eq!(game.object_view(victim).zone, Zone::Stack);
+    }
+}
+
+#[test]
+fn emperor_restricts_its_mana_and_transforms_after_its_third_counter() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let emperor = put(
+        &mut game,
+        player,
+        "The Emperor of Palamecia",
+        Zone::Battlefield,
+    );
+    let front = game.object_view(emperor).card;
+    let exact = game.object_ref(emperor);
+    let creature = put(&mut game, player, "Hill Giant", Zone::Hand);
+    let shock = put(&mut game, player, "Shock", Zone::Hand);
+    let land = put(&mut game, player, "Forest", Zone::Graveyard);
+    let artifact = put(&mut game, player, "Swiftfoot Boots", Zone::Graveyard);
+    put(&mut game, player, "Grizzly Bears", Zone::Graveyard);
+    put(&mut game, opponent, "Opt", Zone::Graveyard);
+    game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 3];
+    reject(&mut game, tap_production(emperor, [0, 0, 0, 0, 1, 0]));
+    act(&mut game, tap_production(emperor, [0, 0, 0, 1, 0, 0]));
+    reject(&mut game, Action::AnnounceCast { card: creature });
+    cast(&mut game, shock, Some(Target::Player(opponent)));
+    settle(&mut game);
+    assert_eq!(game.state.players[opponent.index()].life, 18);
+    assert_eq!(game.counter_count(emperor, CounterKind::PlusOne), 0);
+
+    game.set_counters(emperor, Counters::of(CounterKind::PlusOne, 2));
+    game.state.players[player.index()].mana = [8; 6];
+    let enough = put(&mut game, player, "The Final Days", Zone::Hand);
+    cast(&mut game, enough, None);
+    settle(&mut game);
+    assert_eq!(game.object_ref(emperor), exact);
+    assert_eq!(game.object_view(emperor).card, front.back_face().unwrap());
+    assert_eq!(game.counter_count(emperor, CounterKind::PlusOne), 3);
+    assert_eq!(stats(&game, emperor), (6, 6));
+
+    game.untap_objects(&[emperor], untap_rules::UntapCause::Effect);
+    attack_with(&mut game, &[emperor]);
+    settle(&mut game);
+    assert_eq!(game.state.players[opponent.index()].life, 15);
+    assert_eq!(game.object_view(land).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(artifact).zone, Zone::Graveyard);
+}
+
+#[test]
+fn gold_saucer_draws_after_two_exact_artifacts_and_coin_result_replays() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let saucer = put(&mut game, player, "The Gold Saucer", Zone::Hand);
+    let first = put(&mut game, player, "Swiftfoot Boots", Zone::Battlefield);
+    let second = put(&mut game, player, "Short Bow", Zone::Battlefield);
+    let nonartifact = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    act(&mut game, Action::PlayLand { card: saucer });
+    let mut mana = game.clone();
+    mana.state.players[player.index()].mana = [0; 6];
+    act(&mut mana, tap_production(saucer, [0, 0, 0, 0, 0, 1]));
+    assert_eq!(mana.state.players[player.index()].mana[5], 1);
+
+    let mut coin = game.clone();
+    let mut rng = coin.state.rng;
+    let won = rng.below(2) == 1;
+    act(&mut coin, ability(saucer, 1));
+    pay(&mut coin);
+    act(&mut coin, Action::Pass);
+    let frozen = coin.snapshot();
+    let index = coin
+        .legal_actions()
+        .iter()
+        .position(|action| *action == Action::Pass)
+        .unwrap();
+    let mut indexed = coin.clone();
+    indexed
+        .apply_index(player.other(), indexed.revision(), index)
+        .unwrap();
+    assert_eq!(coin.snapshot(), frozen);
+    act(&mut coin, Action::Pass);
+    assert_eq!(coin.snapshot(), indexed.snapshot());
+    assert_eq!(coin.state.rng, rng);
+    assert_eq!(battlefield_tokens(&coin, 5302).len(), usize::from(won));
+
+    act(&mut game, ability(saucer, 2));
+    let illegal = game.object_ref(nonartifact);
+    reject(&mut game, Action::ChooseAdditionalCost { object: illegal });
+    let first_cost = Action::ChooseAdditionalCost {
+        object: game.object_ref(first),
+    };
+    act(&mut game, first_cost.clone());
+    reject(&mut game, first_cost);
+    let object = game.object_ref(second);
+    act(&mut game, Action::ChooseAdditionalCost { object });
+    pay(&mut game);
+    for id in [first, second] {
+        assert_eq!(game.object_view(id).zone, Zone::Graveyard);
+    }
+    assert!(game.object_view(saucer).tapped);
+    settle(&mut game);
+    assert_eq!(game.hand_count(player), 1);
+}
+
+#[test]
+fn lunar_whale_exposes_the_top_privately_and_allows_normal_play_after_its_attack() {
+    let player = Player::P1;
+    let mut game = scenario(player);
+    let whale = put(&mut game, player, "The Lunar Whale", Zone::Battlefield);
+    let pilot = put(&mut game, player, "Llanowar Elves", Zone::Battlefield);
+    let equipment = put(&mut game, player, "Swiftfoot Boots", Zone::Library);
+    let land = put(&mut game, player, "Island", Zone::Library);
+    let play = Action::PlayLand { card: land };
+    assert_eq!(
+        game.observe(player).known_library_top[player.index()]
+            .unwrap()
+            .object,
+        game.object_ref(land),
+    );
+    assert!(game.observe(player.other()).known_library_top[player.index()].is_none());
+    reject(&mut game, play.clone());
+    crew_with(&mut game, whale, pilot);
+    assert_eq!(stats(&game, whale), (3, 5));
+    assert!(game.keywords(whale).contains(Keywords::FLYING));
+    attack_with(&mut game, &[whale]);
+    reject(&mut game, play.clone());
+
+    game.state.attackers.clear();
+    game.state.step = Step::Main2;
+    game.state.priority = player;
+    let mut blinked = game.clone();
+    blinked.move_object(whale, Zone::Exile);
+    blinked.move_object(whale, Zone::Battlefield);
+    reject(&mut blinked, play.clone());
+    act(&mut game, play);
+    assert_eq!(game.object_view(land).zone, Zone::Battlefield);
+    game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 2];
+    cast(&mut game, equipment, None);
+    settle(&mut game);
+    assert_eq!(game.object_view(equipment).zone, Zone::Battlefield);
+    assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+}
+
+#[test]
+fn prima_vista_animates_only_after_a_qualifying_paid_noncreature_spell_or_crew() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let vista = put(&mut game, player, "The Prima Vista", Zone::Battlefield);
+    let pilot = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let mut crewed = game.clone();
+    crew_with(&mut crewed, vista, pilot);
+    assert_eq!(stats(&crewed, vista), (5, 3));
+    assert!(crewed.object_view(vista).is_creature());
+    for name in ["Hill Giant", "Swiftfoot Boots"] {
+        let spell = put(&mut game, player, name, Zone::Hand);
+        cast(&mut game, spell, None);
+        settle(&mut game);
+        assert!(!game.object_view(vista).is_creature());
+    }
+    let days = put(&mut game, player, "The Final Days", Zone::Hand);
+    cast(&mut game, days, None);
+    pass_pair(&mut game);
+    assert_eq!(game.object_view(days).zone, Zone::Stack);
+    assert_eq!(game.object_view(vista).kinds & 17, 17);
+    assert_eq!(stats(&game, vista), (5, 3));
+    assert!(game.keywords(vista).contains(Keywords::FLYING));
+    settle(&mut game);
+    game.finish_cleanup();
+    assert!(!game.object_view(vista).is_creature());
+}
+
+#[test]
+fn regalia_reveals_only_through_the_first_land_and_replays_the_random_bottom() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let vehicle = put(&mut game, player, "The Regalia", Zone::Hand);
+    let pilot = put(&mut game, player, "Llanowar Elves", Zone::Battlefield);
+    let untouched = put(&mut game, player, "Forest", Zone::Library);
+    let land = put(&mut game, player, "Island", Zone::Library);
+    let middle = put(&mut game, player, "Opt", Zone::Library);
+    let top = put(&mut game, player, "Shock", Zone::Library);
+    cast(&mut game, vehicle, None);
+    settle(&mut game);
+    crew_with(&mut game, vehicle, pilot);
+    assert_eq!(stats(&game, vehicle), (4, 4));
+    assert!(game.keywords(vehicle).contains(Keywords::HASTE));
+    attack_with(&mut game, &[vehicle]);
+    pass_pair(&mut game);
+    let reveal = game.observe(player.other()).library_selection.unwrap();
+    assert_eq!(
+        reveal
+            .remaining
+            .iter()
+            .map(|view| view.id)
+            .collect::<Vec<_>>(),
+        vec![top, middle, land]
+    );
+    assert_eq!(reveal.candidates, vec![game.object_ref(land)]);
+    reject(&mut game, Action::SelectLibrary { card: top });
+    let mut replay = game.clone();
+    for branch in [&mut game, &mut replay] {
+        act(branch, Action::SelectLibrary { card: land });
+        if branch
+            .legal_actions()
+            .contains(&Action::FinishLibrarySelection)
+        {
+            act(branch, Action::FinishLibrarySelection);
+        }
+        settle(branch);
+        let view = branch.object_view(land);
+        assert_eq!(view.zone, Zone::Battlefield);
+        assert!(view.tapped);
+        assert_eq!(branch.top_library_card(player), Some(untouched));
+        let bottom = &branch.state.players[player.index()].library[..2];
+        assert!(bottom.contains(&top) && bottom.contains(&middle));
+    }
+    assert_eq!(game.snapshot(), replay.snapshot());
+}
+
+#[test]
+fn torgal_counts_each_live_dog_or_wolf_for_only_the_first_human_spell() {
+    let player = Player::P1;
+    let mut game = scenario(player);
+    let torgal = put(&mut game, player, "Torgal, A Fine Hound", Zone::Battlefield);
+    let changeling = put(&mut game, player, "Three Tree Mascot", Zone::Battlefield);
+    let dog = put(&mut game, player, "Chrome Companion", Zone::Battlefield);
+    put(
+        &mut game,
+        player.other(),
+        "Chrome Companion",
+        Zone::Battlefield,
+    );
+    assert!(
+        game.object_view(changeling).has_subtype("Dog")
+            && game.object_view(changeling).has_subtype("Wolf")
+    );
+    let first = put(&mut game, player, "Zell Dincht", Zone::Hand);
+    let second = put(
+        &mut game,
+        player,
+        "Lightning, Security Sergeant",
+        Zone::Hand,
+    );
+    cast(&mut game, first, None);
+    pass_pair(&mut game);
+    assert_eq!(game.object_view(first).zone, Zone::Stack);
+    game.move_object(dog, Zone::Graveyard);
+    settle(&mut game);
+    assert_eq!(game.counter_count(first, CounterKind::PlusOne), 2);
+    cast(&mut game, second, None);
+    settle(&mut game);
+    assert_eq!(game.counter_count(second, CounterKind::PlusOne), 0);
+    game.state.players[player.index()].mana = [0; 6];
+    act(&mut game, tap_production(torgal, [0, 0, 1, 0, 0, 0]));
+    assert_eq!(game.state.players[player.index()].mana[2], 1);
 }

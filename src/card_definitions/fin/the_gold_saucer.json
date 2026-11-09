@@ -3,10 +3,35 @@
   "catalogue_id": 4450,
   "oracle_id": "93e38650-ce22-4ab9-b79d-cc7b6477c075",
   "facts_sha256": "1384127b84f179c05bcb0233fdd27d32f31bb104b66a2c925eacae79b77a8501",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3ec71c2c9af04a1c92f1345d20ac4a5b54617748679f653946e9a5e0fb66f10f"
   },
-  "physical_metadata_sha256": "ce8b2ebbee3f0b6919491ecbcc28d6de5b5f1ad86b13a285c1ca2646618de5fd"
+  "physical_metadata_sha256": "ce8b2ebbee3f0b6919491ecbcc28d6de5b5f1ad86b13a285c1ca2646618de5fd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheGoldSaucer.java",
+  "java_sha256": "ec89f523cefdcd1fe93bd66f2444484cc74e212aca28676637436dfb9f0cd87d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/FlipCoinEffect.java",
+      "sha256": "f8c818895c819aed4336605f47e246fd0765a121becc3555c66c0fbede180cad"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/TreasureToken.java",
+      "sha256": "76bcec2847fbc47566c41b561b5bf8890073a94cc1da9cda19b369ff69782d2e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/ColorlessManaAbility.java",
+      "sha256": "4987cb71ee89f496075de0f3a30824281e53300d701d9c7442230e7a7ec2e03a"
+    }
+  ]
 }

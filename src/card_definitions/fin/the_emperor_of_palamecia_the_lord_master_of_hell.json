@@ -3,10 +3,35 @@
   "catalogue_id": 4440,
   "oracle_id": "042c01ec-9f1f-432b-bea9-d64d822cd91e",
   "facts_sha256": "3eee6ddb68f91d6bec8a82e238e990bb2dc469dbd73483327fd8f831bee64c9e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c2b2d2bd4ee973b8445fe1e7dc67aaf3419fdcc5ee9d56c9bf486a9dc7b2ab77"
   },
-  "physical_metadata_sha256": "f99125c7532d51cd428c87bd51c0b723dc6fadbc84dcf7d1345acd484089e48d"
+  "physical_metadata_sha256": "f99125c7532d51cd428c87bd51c0b723dc6fadbc84dcf7d1345acd484089e48d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheEmperorOfPalamecia.java",
+  "java_sha256": "c8a9d56ff7dea8a423bf07d5974071036fc8704eac4c8983a77f222bad781b55",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SourceHasCounterCondition.java",
+      "sha256": "1d9315e6b952df62a1bbe5cf57ce6d75c095866a5a3d8d661cf45a7b44e3b549"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/conditional/ConditionalSpellManaBuilder.java",
+      "sha256": "ce56830a429737325b5010a205e0d800b41ac7f2e4c59367598f4fa99e1d246e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TransformSourceEffect.java",
+      "sha256": "cb657dfa68c243833de4af4fd66287c1e8491c1d8846ca1897f3146799dd482e"
+    }
+  ]
 }
