@@ -222,8 +222,8 @@ fn gaius_uses_three_distinct_sacrifice_filters_and_collects_apnap_choices() {
         let gaius = put(&mut game, p, "Gaius van Baelsar", Zone::Hand);
         cast(&mut game, gaius, None);
         passes(&mut game);
-        passes(&mut game);
         act(&mut game, Action::ChooseMode { mode });
+        passes(&mut game);
         for actor in [p, p.other()] {
             assert_eq!(game.actor(), Some(actor));
             let invalid = game.object_ref(cohorts[actor.index()][(usize::from(mode) + 1) % 3]);
@@ -407,9 +407,9 @@ fn ordered_triggers(game: &mut Game) {
 fn ice_magic_prices_all_tiers_and_uses_the_targets_owner() {
     let p = Player::P0;
     for (mode, blue, generic, expected) in [
-        (0, 1, 0, Zone::Hand),
-        (1, 1, 2, Zone::Library),
-        (2, 2, 5, Zone::Library),
+        (0, 1, 1, Zone::Hand),
+        (1, 1, 3, Zone::Library),
+        (2, 2, 6, Zone::Library),
     ] {
         let mut game = scenario(p);
         let spell = put(&mut game, p, "Ice Magic", Zone::Hand);
@@ -529,7 +529,7 @@ fn faith_and_grief_returns_legal_artifacts_or_enchantments_before_playing_ishgar
     pay(&mut game);
     game.move_object(artifact, Zone::Exile);
     settle(&mut game);
-    assert_eq!(game.object_view(enchantment).zone, Zone::Battlefield);
+    assert_eq!(game.object_view(enchantment).zone, Zone::Hand);
     assert_eq!(game.object_view(artifact).zone, Zone::Exile);
     assert_eq!(game.object_view(town).zone, Zone::Exile);
     act(&mut game, Action::PlayLand { card: town });
