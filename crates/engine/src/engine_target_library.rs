@@ -46,7 +46,86 @@ pub struct TargetLibraryMovement {
     pub destination: LibraryDestination,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+struct LibraryTopKnowledge {
+    public: Option<ObjectRef>,
+    private: Option<(ObjectRef, u8)>,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    fn capture_library_top_knowledge(&self, owner: Player) -> LibraryTopKnowledge {
+        LibraryTopKnowledge {
+            public: self.public_library_top(owner),
+            private: self
+                .state
+                .library_top
+                .as_ref()
+                .and_then(|state| state.private_known_top.as_ref())
+                .and_then(|tops| tops[owner.index()]),
+        }
+    }
+    fn restore_library_top_knowledge(&mut self, owner: Player, prior: LibraryTopKnowledge) {
+        let still_top = |game: &Game, object: ObjectRef| {
+            game.top_library_card(owner) == Some(object.card)
+                && game.object_ref(object.card) == object
+        };
+        if let Some(object) = prior.public
+            && still_top(self, object)
+        {
+            self.remember_library_top(owner, object);
+        }
+        if let Some((object, viewers)) = prior.private
+            && still_top(self, object)
+        {
+            for viewer in [Player::P0, Player::P1] {
+                if viewers & (1 << viewer.index()) != 0 {
+                    self.remember_private_library_top(owner, viewer, object);
+                }
+            }
+        }
+    }
+    pub(super) fn put_departed_source_on_library_bottom(&mut self, item: &SpellView) {
+        let mut cards: Vec<_> = self.departed_source_in_graveyard(item).collect();
+        let Some(&first) = cards.first() else {
+            return;
+        };
+        let owner = self.state.objects[first as usize].owner;
+        if let &[first, second] = cards.as_slice() {
+            // A single melded permanent can yield both physical cards. They
+            // enter the same library together in their owner's private order.
+            let components = [self.object_ref(first), self.object_ref(second)];
+            let chosen = self.order_meld_components(MeldOrderingChoice {
+                permanent: item.source_move.as_ref().unwrap().before,
+                destination: Zone::Library,
+                player: owner,
+                components,
+                front_cards: [first, second].map(|id| self.state.objects[id as usize].card),
+            });
+            if chosen == components[1] {
+                cards.swap(0, 1);
+            }
+        }
+        let prior = self.capture_library_top_knowledge(owner);
+        let prior_top = self.top_library_card(owner);
+        let events = self.move_objects_raw(&cards, Zone::Library);
+        let moved: Vec<_> = events
+            .iter()
+            .filter(|event| event.moved && event.destination == Zone::Library)
+            .map(|event| event.after)
+            .collect();
+        if !moved.is_empty() {
+            self.place_library_bottom(owner, &moved);
+            if prior_top.is_none() {
+                if moved.len() == 1 {
+                    self.remember_library_top(owner, moved[0]);
+                } else {
+                    self.remember_private_library_top(owner, owner, moved[0]);
+                }
+            }
+            self.restore_library_top_knowledge(owner, prior);
+        }
+        self.finish_zone_events(&events, &[]);
+    }
     pub(super) fn valid_library_target(&self, item: &SpellView, bound: BoundTarget) -> bool {
         matches!(
             bound.target,
@@ -74,13 +153,7 @@ impl Game {
         let owner = self.state.objects[object.card as usize].owner;
         let card = self.state.objects[object.card as usize].card;
         let physical = self.state.objects[object.card as usize].is_card();
-        let prior_top = self.public_library_top(owner);
-        let prior_private_top = self
-            .state
-            .library_top
-            .as_ref()
-            .and_then(|state| state.private_known_top.as_ref())
-            .and_then(|tops| tops[owner.index()]);
+        let prior = self.capture_library_top_knowledge(owner);
         let nth_position = if let LibraryDestination::NthFromTop(n) = destination {
             assert!(n > 0, "library positions are one-based");
             self.state.players[owner.index()]
@@ -134,24 +207,8 @@ impl Game {
                 } else {
                     self.remember_library_top(owner, event.after);
                 }
-            } else if let Some(prior) = prior_top
-                && self.top_library_card(owner) == Some(prior.card)
-                && self.object_ref(prior.card) == prior
-            {
-                self.remember_library_top(owner, prior);
             }
-            // Insertion away from the top preserves every original viewer's
-            // exact knowledge, including knowledge private to one player.
-            if let Some((prior, viewers)) = prior_private_top
-                && self.top_library_card(owner) == Some(prior.card)
-                && self.object_ref(prior.card) == prior
-            {
-                for viewer in [Player::P0, Player::P1] {
-                    if viewers & (1 << viewer.index()) != 0 {
-                        self.remember_private_library_top(owner, viewer, prior);
-                    }
-                }
-            }
+            self.restore_library_top_knowledge(owner, prior);
             // Publish only this targeted public movement. This is a historical
             // record; later private looks, rearrangements and draws leave it alone.
             self.state.last_target_library_move = Some(Box::new(TargetLibraryMovement {

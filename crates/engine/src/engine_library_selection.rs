@@ -966,7 +966,7 @@ impl Game {
             }
         }
     }
-    fn place_library_bottom(&mut self, owner: Player, order: &[ObjectRef]) {
+    pub(super) fn place_library_bottom(&mut self, owner: Player, order: &[ObjectRef]) {
         let library = &mut self.state.players[owner.index()].library;
         library.retain(|id| !order.iter().any(|r| r.card == *id));
         library.splice(0..0, order.iter().rev().map(|r| r.card));

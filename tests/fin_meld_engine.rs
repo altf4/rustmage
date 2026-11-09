@@ -645,3 +645,81 @@ fn death_returns_each_exact_card_and_one_replacement_redirects_both() {
         assert_eq!(branch.object_view(partner).zone, partner_zone);
     }
 }
+
+#[test]
+fn a_death_instruction_bottoms_both_exact_meld_fronts_in_private_owner_order() {
+    const BOTTOM: CardRules = CardRules {
+        triggers: &[TriggeredAbility {
+            condition: TriggerCondition::SelfDies,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::PutDepartedSourceOnLibraryBottom],
+        }],
+        ..COMBINED
+    };
+    let _rules = fixture_rules::activate(&[
+        (PAIR.source, &SOURCE),
+        (PAIR.partner, &PARTNER),
+        (PAIR.combined, &BOTTOM),
+        (Card::from_name("Opt").unwrap(), &DESTROY),
+    ]);
+    let owner = Player::P1;
+    let (mut game, source, partner) = setup_pair(owner);
+    choose_partner(&mut game, partner);
+    resolve_targeting_spell(&mut game, owner, "Opt", source);
+    let initial = game.observe(owner).meld_ordering_choice.unwrap();
+    assert_eq!(initial.destination, Zone::Graveyard);
+    act(
+        &mut game,
+        Action::ChooseMeldOrder {
+            first: initial.components[0],
+        },
+    );
+    assert_eq!(game.state.stack.len(), 1);
+
+    let mut partial = game.clone();
+    partial.move_object(partner, Zone::Exile);
+    partial.move_object(partner, Zone::Graveyard);
+    settle(&mut partial);
+    assert_eq!(partial.state.players[owner.index()].library[0], source);
+    assert_eq!(partial.object_view(partner).zone, Zone::Graveyard);
+
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    let choice = game.observe(owner).meld_ordering_choice.unwrap();
+    assert_eq!(choice.destination, Zone::Library);
+    assert!(game.observe(owner.other()).meld_ordering_choice.is_none());
+    assert_eq!(
+        choice.components,
+        [game.object_ref(source), game.object_ref(partner)]
+    );
+    for id in [source, partner] {
+        assert_eq!(game.object_view(id).zone, Zone::Graveyard);
+    }
+    let mut opposite = game.clone();
+    act(
+        &mut game,
+        Action::ChooseMeldOrder {
+            first: choice.components[0],
+        },
+    );
+    act(
+        &mut opposite,
+        Action::ChooseMeldOrder {
+            first: choice.components[1],
+        },
+    );
+    assert_eq!(
+        &game.state.players[owner.index()].library[..2],
+        &[partner, source]
+    );
+    assert_eq!(
+        &opposite.state.players[owner.index()].library[..2],
+        &[source, partner]
+    );
+    assert_eq!(game.object_view(source).card, PAIR.source);
+    assert_eq!(game.object_view(partner).card, PAIR.partner);
+    assert_eq!(
+        game.top_library_card(owner),
+        opposite.top_library_card(owner)
+    );
+}

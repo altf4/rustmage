@@ -84,7 +84,7 @@ pub(super) struct LibraryChoice {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    fn departed_source_in_graveyard<'a>(
+    pub(super) fn departed_source_in_graveyard<'a>(
         &'a self,
         item: &'a SpellView,
     ) -> impl Iterator<Item = CardId> + 'a {
@@ -4985,6 +4985,9 @@ impl Game {
                 }
                 Instruction::ReturnDeathCard(kind) => self.return_death_card(&item, kind),
                 Instruction::ReturnEventCardToHand => self.return_event_card_to_hand(&item),
+                Instruction::PutDepartedSourceOnLibraryBottom => {
+                    self.put_departed_source_on_library_bottom(&item)
+                }
                 Instruction::ReturnEventCardToBattlefieldTapped => {
                     self.resolve_delayed_return(&item)
                 }

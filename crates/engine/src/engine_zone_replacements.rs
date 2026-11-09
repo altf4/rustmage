@@ -670,7 +670,23 @@ impl Game {
         meld: meld::MeldEntry,
         destination: Zone,
     ) -> bool {
-        let components = [before.reference, meld.companion];
+        let player = if destination == Zone::Exile {
+            self.state
+                .resolving
+                .as_ref()
+                .map_or(self.state.active, |resolution| resolution.item.controller)
+        } else {
+            before.owner
+        };
+        self.order_meld_components(MeldOrderingChoice {
+            permanent: before.reference,
+            destination,
+            player,
+            components: [before.reference, meld.companion],
+            front_cards: meld.front_cards,
+        }) == meld.companion
+    }
+    pub(super) fn order_meld_components(&mut self, choice: MeldOrderingChoice) -> ObjectRef {
         if let Some(pick) = self.next_ordered_pick() {
             let Pick::MeldOrder {
                 permanent,
@@ -680,25 +696,14 @@ impl Game {
             else {
                 unreachable!("exact meld ordering replay prefix");
             };
-            assert_eq!((permanent, replayed), (before.reference, destination));
-            assert!(components.contains(&first));
-            return first == meld.companion;
+            assert_eq!(
+                (permanent, replayed),
+                (choice.permanent, choice.destination)
+            );
+            assert!(choice.components.contains(&first));
+            return first;
         }
-        let player = if destination == Zone::Exile {
-            self.state
-                .resolving
-                .as_ref()
-                .map_or(self.state.active, |resolution| resolution.item.controller)
-        } else {
-            before.owner
-        };
-        std::panic::resume_unwind(Box::new(Request::MeldOrder(MeldOrderingChoice {
-            permanent: before.reference,
-            destination,
-            player,
-            components,
-            front_cards: meld.front_cards,
-        })));
+        std::panic::resume_unwind(Box::new(Request::MeldOrder(choice)));
     }
     fn plan_zone_move_unrecorded(
         &mut self,

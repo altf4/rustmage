@@ -366,3 +366,75 @@ fn spell_return_adds_counter_only_after_actual_exile() {
         zone_replacements::TEST_REDIRECT_EXILE_TO_BATTLEFIELD.with(|v| v.set(None));
     }
 }
+
+#[test]
+fn the_dying_back_face_moves_its_exact_graveyard_front_to_its_owner_bottom() {
+    const DEATH: CardRules = CardRules {
+        effect: Effect::Creature(5, 5),
+        keywords: Keywords::FLYING,
+        triggers: &[TriggeredAbility {
+            condition: TriggerCondition::SelfDies,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::PutDepartedSourceOnLibraryBottom],
+        }],
+        ..CardRules::EMPTY
+    };
+    let front = Card::from_name(FRONT).unwrap();
+    let back = front.back_face().unwrap();
+    let _rules = fixture_rules::activate(&[(front, &GRAVEYARD_RULES), (back, &DEATH)]);
+    let owner = Player::P0;
+    let controller = owner.other();
+    let mut game = scenario(owner);
+    let card = spawn(&mut game, owner, front, Zone::Graveyard);
+    activate(&mut game, card);
+    settle(&mut game);
+    let permanent = game.object_ref(card);
+    assert_eq!(game.object_view(card).card, back);
+    game.record_control(permanent, controller, None);
+    game.move_object(card, Zone::Graveyard);
+    game.prepare_triggers();
+    let departed = game.object_ref(card);
+    assert_eq!(game.object_view(card).card, front);
+    let trigger = game.state.stack.last().unwrap();
+    assert_eq!(trigger.controller, controller);
+    assert!(trigger.targets.is_empty());
+    assert_eq!(trigger.source_move.as_ref().unwrap().after, departed);
+
+    let top = game.object_ref(game.top_library_card(owner).unwrap());
+    game.remember_private_library_top(owner, owner, top);
+    let other_library = game.state.players[controller.index()].library.clone();
+    let mut stale = game.clone();
+    stale.move_object(card, Zone::Exile);
+    stale.move_object(card, Zone::Graveyard);
+    assert_ne!(stale.object_ref(card), departed);
+    settle(&mut stale);
+    assert_eq!(stale.object_view(card).zone, Zone::Graveyard);
+
+    act(&mut game, Action::Pass);
+    let saved = game.snapshot();
+    let payer = game.actor().unwrap();
+    let revision = game.revision();
+    let index = game
+        .legal_actions()
+        .iter()
+        .position(|a| *a == Action::Pass)
+        .unwrap();
+    let mut indexed = game.clone();
+    indexed.apply_index(payer, revision, index).unwrap();
+    act(&mut game, Action::Pass);
+    assert_eq!(game.snapshot(), indexed.snapshot());
+    assert_eq!(game.state.players[owner.index()].library[0], card);
+    assert_eq!(game.object_view(card).card, front);
+    assert_eq!(game.private_library_top(owner, owner), Some(top));
+    assert_eq!(game.private_library_top(controller, owner), None);
+    assert_eq!(
+        game.state.players[controller.index()].library,
+        other_library
+    );
+    assert!(game.observe(controller).last_target_library_move.is_none());
+    indexed.restore(&saved).unwrap();
+    assert_eq!(
+        indexed.apply_index(payer, revision, index),
+        Err(Error::StaleRevision)
+    );
+}

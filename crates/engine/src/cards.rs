@@ -2789,6 +2789,8 @@ pub enum Instruction {
     PreventTargetActivationsWhileTapped,
     /// Return the exact resulting graveyard card captured from this death event.
     ReturnEventCardToHand,
+    /// Put the physical cards from this source's actual death on their owner's library bottom.
+    PutDepartedSourceOnLibraryBottom,
     /// Return the exact death-event card tapped under its owner’s control.
     ReturnEventCardToBattlefieldTapped,
     PutSourceOnLibraryTop {
