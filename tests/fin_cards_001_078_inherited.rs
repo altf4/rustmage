@@ -471,3 +471,400 @@ fn capital_city_can_make_colorless_filter_mana_or_cycle() {
     assert_eq!(g.object_view(spare).zone, Zone::Graveyard);
     assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 1);
 }
+
+#[test]
+fn bards_bow_and_dragoons_lance_move_their_stats_types_and_keywords_with_equip() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let bard = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+    let knight = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+    let (bow, bow_hero) = job(&mut g, p, "Bard's Bow");
+    let (lance, lance_hero) = job(&mut g, p, "Dragoon's Lance");
+    assert_eq!(stats(&g, bow_hero), (3, 3));
+    assert!(g.has_subtype(bow_hero, "Bard"));
+    assert!(g.keywords(bow_hero).contains(Keywords::REACH));
+    assert_eq!(stats(&g, lance_hero), (2, 1));
+    assert!(g.has_subtype(lance_hero, "Knight"));
+    assert!(g.keywords(lance_hero).contains(Keywords::FLYING));
+
+    activate(&mut g, bow, 0, Some(bard));
+    settle(&mut g);
+    activate(&mut g, lance, 0, Some(knight));
+    settle(&mut g);
+    assert_eq!(stats(&g, bow_hero), (1, 1));
+    assert_eq!(stats(&g, lance_hero), (1, 1));
+    assert!(!g.has_subtype(bow_hero, "Bard"));
+    assert!(!g.has_subtype(lance_hero, "Knight"));
+    assert_eq!(stats(&g, bard), (4, 4));
+    assert_eq!(stats(&g, knight), (4, 3));
+    assert!(g.has_subtype(bard, "Bard"));
+    assert!(g.has_subtype(knight, "Knight"));
+    assert!(g.keywords(knight).contains(Keywords::FLYING));
+    g.state.active = p.other();
+    assert!(!g.keywords(knight).contains(Keywords::FLYING));
+    assert!(g.keywords(bard).contains(Keywords::REACH));
+}
+
+#[test]
+fn choco_comet_deals_its_paid_x_and_the_racetrack_triggers_on_each_own_land() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let comet = put(&mut g, p, "Choco-Comet", Zone::Hand);
+    let racetrack = put(&mut g, p, "Chocobo Racetrack", Zone::Battlefield);
+    assert_eq!(g.object_view(racetrack).zone, Zone::Battlefield);
+    act(&mut g, Action::AnnounceCast { card: comet });
+    act(&mut g, Action::ChooseX { value: 3 });
+    act(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Player(p.other()),
+        },
+    );
+    pay(&mut g);
+    settle(&mut g);
+    assert_eq!(g.state.players[p.other().index()].life, 17);
+    let first = tokens(&g, p, Card(5269))[0];
+    let opposing_land = put(&mut g, p.other(), "Island", Zone::Hand);
+    g.move_object(opposing_land, Zone::Battlefield);
+    assert_eq!(tokens(&g, p, Card(5269)).len(), 1);
+
+    let land = put(&mut g, p, "Forest", Zone::Hand);
+    act(&mut g, Action::PlayLand { card: land });
+    for _ in 0..12 {
+        if g.state.pending == Pending::Priority && g.state.stack.is_empty() {
+            break;
+        }
+        choose(&mut g, |a| {
+            matches!(a, Action::PutTrigger { .. } | Action::Pass)
+        });
+    }
+    let birds = tokens(&g, p, Card(5269));
+    assert_eq!(birds.len(), 2);
+    assert_eq!(stats(&g, first), (3, 2));
+    assert_eq!(
+        stats(&g, *birds.iter().find(|&&id| id != first).unwrap()),
+        (2, 2)
+    );
+}
+
+#[test]
+fn cloudbound_moogle_can_counter_an_opposing_creature_or_plainscycle() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let first = put(&mut g, p, "Cloudbound Moogle", Zone::Hand);
+    let second = put(&mut g, p, "Cloudbound Moogle", Zone::Hand);
+    let recipient = put(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+    let land = put(&mut g, p, "Sacred Foundry", Zone::Library);
+    cast(&mut g, first, None);
+    reach(&mut g, |a| {
+        *a == Action::ChooseTarget {
+            target: Target::Card(recipient),
+        }
+    });
+    target(&mut g, recipient);
+    settle(&mut g);
+    assert!(g.keywords(first).contains(Keywords::FLYING));
+    assert_eq!(g.object_view(recipient).counters.plus_one, 1);
+    activate(&mut g, second, 0, None);
+    choose_search(&mut g, land);
+    assert_eq!(g.object_view(second).zone, Zone::Graveyard);
+    assert!(
+        g.observe(p.other())
+            .known_hand
+            .contains(&g.object_ref(land))
+    );
+}
+
+#[test]
+fn coeurl_can_tap_an_artifact_creature_and_cannot_target_an_enchantment_creature() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let cat = put(&mut g, p, "Coeurl", Zone::Battlefield);
+    let artifact = put(&mut g, p.other(), "Magitek Infantry", Zone::Battlefield);
+    let enchantment = put(&mut g, p.other(), "Summon: Fat Chocobo", Zone::Battlefield);
+    act(&mut g, activation(cat, 0));
+    reject(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(enchantment),
+        },
+    );
+    target(&mut g, artifact);
+    pay(&mut g);
+    assert!(g.object_view(cat).tapped);
+    settle(&mut g);
+    assert!(g.object_view(artifact).tapped);
+    assert!(!g.object_view(enchantment).tapped);
+}
+
+#[test]
+fn coliseum_behemoth_can_destroy_an_artifact_or_draw_on_entry() {
+    let p = Player::P0;
+    for mode in 0..2 {
+        let mut g = scenario(p);
+        let behemoth = put(&mut g, p, "Coliseum Behemoth", Zone::Hand);
+        let artifact = put(&mut g, p.other(), "Swiftfoot Boots", Zone::Battlefield);
+        cast(&mut g, behemoth, None);
+        let choice = Action::ChooseMode { mode };
+        reach(&mut g, |a| *a == choice);
+        act(&mut g, choice);
+        if mode == 0 {
+            target(&mut g, artifact);
+        }
+        settle(&mut g);
+        assert_eq!(stats(&g, behemoth), (7, 7));
+        assert!(g.keywords(behemoth).contains(Keywords::TRAMPLE));
+        assert_eq!(
+            g.object_view(artifact).zone,
+            if mode == 0 {
+                Zone::Graveyard
+            } else {
+                Zone::Battlefield
+            }
+        );
+        assert_eq!(
+            g.state.players[p.index()].cards_drawn_this_turn,
+            u64::from(mode)
+        );
+    }
+}
+
+#[test]
+fn combat_tutorial_can_give_the_draws_to_an_opponent_and_the_counter_to_yours() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let spell = put(&mut g, p, "Combat Tutorial", Zone::Hand);
+    let ours = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+    let theirs = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
+    act(&mut g, Action::AnnounceCast { card: spell });
+    act(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Player(p.other()),
+        },
+    );
+    reject(
+        &mut g,
+        Action::ChooseTarget {
+            target: Target::Card(theirs),
+        },
+    );
+    target(&mut g, ours);
+    if g.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut g, Action::FinishTargets);
+    }
+    pay(&mut g);
+    settle(&mut g);
+    assert_eq!(g.state.players[p.other().index()].cards_drawn_this_turn, 2);
+    assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 0);
+    assert_eq!(g.object_view(ours).counters.plus_one, 1);
+}
+
+#[test]
+fn commune_reveals_one_qualified_card_and_places_the_others_in_the_chosen_order() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let spell = put(&mut g, p, "Commune with Beavers", Zone::Hand);
+    let instant = put(&mut g, p, "Shock", Zone::Library);
+    let land = put(&mut g, p, "Island", Zone::Library);
+    let artifact = put(&mut g, p, "Short Bow", Zone::Library);
+    cast(&mut g, spell, None);
+    let find = Action::SelectLibrary { card: artifact };
+    reach(&mut g, |a| *a == find);
+    assert!(g.observe(p.other()).library_selection.is_none());
+    reject(&mut g, Action::SelectLibrary { card: instant });
+    act(&mut g, find);
+    act(&mut g, Action::FinishLibrarySelection);
+    act(&mut g, Action::OrderLibraryBottom { card: land });
+    act(&mut g, Action::OrderLibraryBottom { card: instant });
+    settle(&mut g);
+    assert_eq!(&g.state.players[p.index()].library[..2], &[instant, land]);
+    assert_eq!(g.object_view(artifact).zone, Zone::Hand);
+    assert!(
+        g.observe(p.other())
+            .known_hand
+            .contains(&g.object_ref(artifact))
+    );
+}
+
+#[test]
+fn coral_sword_flashes_in_and_its_first_strike_outlasts_the_attachment() {
+    let p = Player::P0;
+    let mut g = scenario(p.other());
+    let sword = put(&mut g, p, "Coral Sword", Zone::Hand);
+    let bearer = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+    let new_bearer = put(&mut g, p, "Hill Giant", Zone::Battlefield);
+    act(&mut g, Action::Pass);
+    cast(&mut g, sword, None);
+    reach(&mut g, |a| {
+        *a == Action::ChooseTarget {
+            target: Target::Card(bearer),
+        }
+    });
+    target(&mut g, bearer);
+    settle(&mut g);
+    assert_eq!(stats(&g, bearer), (3, 2));
+    assert!(g.keywords(bearer).contains(Keywords::FIRST_STRIKE));
+    g.state.active = p;
+    g.state.priority = p;
+    activate(&mut g, sword, 0, Some(new_bearer));
+    settle(&mut g);
+    assert_eq!(stats(&g, bearer), (2, 2));
+    assert_eq!(stats(&g, new_bearer), (4, 3));
+    assert!(g.keywords(bearer).contains(Keywords::FIRST_STRIKE));
+    assert!(!g.keywords(new_bearer).contains(Keywords::FIRST_STRIKE));
+}
+
+#[test]
+fn dark_knights_greatsword_re_equips_once_per_turn_by_paying_three_life() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let (blade, hero) = job(&mut g, p, "Dark Knight's Greatsword");
+    let bearer = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+    assert_eq!(stats(&g, hero), (4, 1));
+    assert!(g.has_subtype(hero, "Knight"));
+    activate(&mut g, blade, 0, Some(bearer));
+    settle(&mut g);
+    assert_eq!(g.state.players[p.index()].life, 17);
+    assert_eq!(stats(&g, bearer), (5, 2));
+    assert!(g.has_subtype(bearer, "Knight"));
+    assert!(!g.has_subtype(hero, "Knight"));
+    reject(&mut g, activation(blade, 0));
+}
+
+#[test]
+fn dragoons_wyvern_and_dwarven_castle_guard_create_heroes_at_entry_and_death() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let wyvern = put(&mut g, p, "Dragoon's Wyvern", Zone::Hand);
+    let guard = put(&mut g, p, "Dwarven Castle Guard", Zone::Hand);
+    cast(&mut g, wyvern, None);
+    settle(&mut g);
+    assert!(g.keywords(wyvern).contains(Keywords::FLYING));
+    assert_eq!(tokens(&g, p, Card(5328)).len(), 1);
+    cast(&mut g, guard, None);
+    settle(&mut g);
+    assert_eq!(tokens(&g, p, Card(5328)).len(), 1);
+    let shock = put(&mut g, p, "Shock", Zone::Hand);
+    cast(&mut g, shock, Some(Target::Card(guard)));
+    settle(&mut g);
+    assert_eq!(g.object_view(guard).zone, Zone::Graveyard);
+    assert_eq!(tokens(&g, p, Card(5328)).len(), 2);
+}
+
+#[test]
+fn dreams_of_laguna_surveys_before_drawing_and_exiles_its_flashback() {
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let dreams = put(&mut g, p, "Dreams of Laguna", Zone::Graveyard);
+    let drawn = put(&mut g, p, "Island", Zone::Library);
+    let rejected = put(&mut g, p, "Shock", Zone::Library);
+    act(&mut g, Action::AnnounceFlashback { card: dreams });
+    pay(&mut g);
+    pass_pair(&mut g);
+    act(
+        &mut g,
+        Action::ArrangeLibrary {
+            card: rejected,
+            destination: LibraryDestination::Graveyard,
+        },
+    );
+    settle(&mut g);
+    assert_eq!(g.object_view(dreams).zone, Zone::Exile);
+    assert_eq!(g.object_view(rejected).zone, Zone::Graveyard);
+    assert_eq!(g.object_view(drawn).zone, Zone::Hand);
+    assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 1);
+}
+
+#[test]
+fn eject_cant_be_countered_and_returns_a_stolen_permanent_to_its_owner() {
+    let p = Player::P0;
+    let opponent = p.other();
+    let mut g = scenario(p);
+    let eject = put(&mut g, p, "Eject", Zone::Hand);
+    let negate = put(&mut g, opponent, "Negate", Zone::Hand);
+    let stolen = put(&mut g, opponent, "Grizzly Bears", Zone::Battlefield);
+    g.record_control(g.object_ref(stolen), p, None);
+    cast(&mut g, eject, Some(Target::Card(stolen)));
+    act(&mut g, Action::Pass);
+    cast(&mut g, negate, Some(Target::Spell(eject)));
+    settle(&mut g);
+    let seen = g.observe(opponent);
+    assert!(
+        seen.objects
+            .iter()
+            .any(|o| o.id == stolen && o.zone == Zone::Hand && o.owner == opponent)
+    );
+    assert_eq!(g.state.players[p.index()].cards_drawn_this_turn, 1);
+}
+
+#[test]
+fn esper_origins_returns_only_from_flashback_and_maduins_lore_completes_the_saga() {
+    let p = Player::P0;
+    for flashback in [false, true] {
+        let mut g = scenario(p);
+        let source = put(
+            &mut g,
+            p,
+            "Esper Origins",
+            if flashback {
+                Zone::Graveyard
+            } else {
+                Zone::Hand
+            },
+        );
+        let bear = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let mill = put(&mut g, p, "Shock", Zone::Library);
+        let permanent = put(&mut g, p, "Island", Zone::Library);
+        if flashback {
+            act(&mut g, Action::AnnounceFlashback { card: source });
+            pay(&mut g);
+        } else {
+            cast(&mut g, source, None);
+        }
+        pass_pair(&mut g);
+        act(
+            &mut g,
+            Action::ArrangeLibrary {
+                card: mill,
+                destination: LibraryDestination::Graveyard,
+            },
+        );
+        act(
+            &mut g,
+            Action::ArrangeLibrary {
+                card: permanent,
+                destination: LibraryDestination::Top,
+            },
+        );
+        settle(&mut g);
+        assert_eq!(g.state.players[p.index()].life, 22);
+        assert_eq!(g.object_view(mill).zone, Zone::Graveyard);
+        if !flashback {
+            assert_eq!(g.object_view(source).zone, Zone::Graveyard);
+            assert_eq!(g.object_view(permanent).zone, Zone::Library);
+            continue;
+        }
+        assert_eq!(g.object_view(source).zone, Zone::Battlefield);
+        assert_eq!(g.object_view(source).card.name(), "Summon: Esper Maduin");
+        assert_eq!(g.object_view(source).counters.lore, 1);
+        assert_eq!(g.object_view(source).counters.get(CounterKind::Finality), 1);
+        assert_eq!(g.object_view(permanent).zone, Zone::Hand);
+        let before = g.state.players[p.index()].mana[4];
+        for lore in 2..=3 {
+            let clash = put(&mut g, p, "Clash of the Eikons", Zone::Hand);
+            act(&mut g, Action::AnnounceCast { card: clash });
+            act(&mut g, Action::ChooseMode { mode: 2 });
+            target(&mut g, source);
+            pay(&mut g);
+            settle(&mut g);
+            if lore == 2 {
+                assert_eq!(g.state.players[p.index()].mana[4], before + 1);
+                assert_eq!(g.object_view(source).counters.lore, 2);
+            }
+        }
+        assert_eq!(stats(&g, bear), (4, 4));
+        assert!(g.keywords(bear).contains(Keywords::TRAMPLE));
+        assert_eq!(g.object_view(source).zone, Zone::Exile);
+    }
+}
