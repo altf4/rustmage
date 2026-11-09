@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "64324a0048f10d29bc7601a7fdf2ae3a4bc6592263935b10ffdf2d6784932be6",
+  "catalogue_version": "65fcffafee21a1d56364f0a634a43a4e0274554bbdcdbaa0e0c03cd4a5c276f0",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 3737,
-  "implemented_total": 3746,
+  "implemented_standard_cards": 3744,
+  "implemented_total": 3753,
   "token_definitions": 169,
   "emblem_definitions": 12,
   "adventure_definitions": 53,
@@ -64,8 +64,8 @@
     },
     "fin": {
       "total": 304,
-      "complete": 291,
-      "gated": 13
+      "complete": 298,
+      "gated": 6
     },
     "fra": {
       "total": 285,
@@ -35310,8 +35310,8 @@
     {
       "name": "Terra, Magical Adept // Esper Terra",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/terra_magical_adept_esper_terra.rs",
       "set": "fin"
     },
@@ -37526,8 +37526,8 @@
     {
       "name": "Traveling Chocobo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/traveling_chocobo.rs",
       "set": "fin"
     },
@@ -37670,8 +37670,8 @@
     {
       "name": "Triple Triad",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/triple_triad.rs",
       "set": "fin"
     },
@@ -38166,8 +38166,8 @@
     {
       "name": "Ultimecia, Time Sorceress // Ultimecia, Omnipotent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/ultimecia_time_sorceress_ultimecia_omnipotent.rs",
       "set": "fin"
     },
@@ -38422,8 +38422,8 @@
     {
       "name": "Unexpected Request",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/unexpected_request.rs",
       "set": "fin"
     },
@@ -38766,8 +38766,8 @@
     {
       "name": "Vaan, Street Thief",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/vaan_street_thief.rs",
       "set": "fin"
     },
@@ -38966,8 +38966,8 @@
     {
       "name": "Vanille, Cheerful l'Cie",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/vanille_cheerful_l_cie.rs",
       "set": "fin"
     },
