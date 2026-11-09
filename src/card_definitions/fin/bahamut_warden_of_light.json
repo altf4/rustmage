@@ -3,7 +3,7 @@
   "catalogue_id": 5506,
   "oracle_id": null,
   "facts_sha256": null,
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "b823e0014fa6de6024899d814891486ddd25af7b08cf3aaa84a9c666e2083191",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/d/DionBahamutsDominant.java",
@@ -12,5 +12,18 @@
     "oracle_id": "4a0cc2a2-3711-473a-b2c5-b1e52b34e4fb",
     "index": 1,
     "sha256": "08118fd6f8c09b3baae7e3e297c198662d240a080b4b0f4ea963c7ff8db5eaf6"
-  }
+  },
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAllEffect.java",
+      "sha256": "064c925d60c97db41aa0444db30fd482c857b12e3bf8c0635f990dfd4a7094d5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileSourceAndReturnFaceUpEffect.java",
+      "sha256": "b21e4ea6281cceadcd71cb6e364b2016f7e116a315d161f280087d27e4a62f35"
+    }
+  ]
 }

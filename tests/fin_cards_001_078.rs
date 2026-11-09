@@ -1665,3 +1665,103 @@ fn emet_rechecks_fourteen_cards_and_hades_plays_graveyard_cards_with_exile_repla
     game.move_object(land, Zone::Graveyard);
     assert_eq!(game.object_view(land).zone, Zone::Exile);
 }
+
+#[test]
+fn ardyn_copies_a_successfully_exiled_creature_as_a_black_demon_with_its_printed_ability() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let ardyn = put(&mut game, player, "Ardyn, the Usurper", Zone::Hand);
+    let creature = put(&mut game, opponent, "Meteor Golem", Zone::Graveyard);
+    let victim = put(&mut game, opponent, "Swiftfoot Boots", Zone::Battlefield);
+    cast(&mut game, ardyn, None);
+    settle(&mut game);
+    reach(&mut game, |a| *a == target(creature));
+    let mut skipped = game.clone();
+    act(&mut skipped, Action::FinishTargets);
+    settle(&mut skipped);
+    assert_eq!(skipped.object_view(creature).zone, Zone::Graveyard);
+
+    act(&mut game, target(creature));
+    if game.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut game, Action::FinishTargets);
+    }
+    reach(&mut game, |a| *a == target(victim));
+    act(&mut game, target(victim));
+    settle(&mut game);
+    assert_eq!(game.object_view(creature).zone, Zone::Exile);
+    assert_eq!(game.object_view(victim).zone, Zone::Graveyard);
+    let golem = Card::from_name("Meteor Golem").unwrap();
+    let copies = tokens(&game, player, golem);
+    assert_eq!(copies.len(), 1);
+    let copy = game.object_view(copies[0]);
+    assert!(copy.is_token());
+    assert_eq!(copy.kinds, 1);
+    assert_eq!(copy.colors, 1 << 2);
+    assert!(copy.has_subtype("Demon"));
+    assert!(!copy.has_subtype("Golem"));
+    assert_eq!(stats(&game, copy.id), (5, 5));
+    assert!(
+        game.keywords(copy.id).contains(
+            Keywords::MENACE
+                .union(Keywords::LIFELINK)
+                .union(Keywords::HASTE)
+        )
+    );
+}
+
+#[test]
+fn dion_gives_knights_flying_and_bahamuts_chapters_keep_exact_recipients_and_targeting() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let dion = put(
+        &mut game,
+        player,
+        "Dion, Bahamut's Dominant // Bahamut, Warden of Light",
+        Zone::Hand,
+    );
+    let other = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let victim = put(&mut game, opponent, "Swiftfoot Boots", Zone::Battlefield);
+    let original = game.object_view(dion).card;
+    cast(&mut game, dion, None);
+    settle(&mut game);
+    let knight = tokens(&game, player, Card(5236))[0];
+    assert_eq!(stats(&game, knight), (2, 2));
+    assert!(game.keywords(dion).contains(Keywords::FLYING));
+    assert!(game.keywords(knight).contains(Keywords::FLYING));
+    assert!(!game.keywords(other).contains(Keywords::FLYING));
+    let mut off_turn = game.clone();
+    off_turn.state.active = opponent;
+    assert!(!off_turn.keywords(dion).contains(Keywords::FLYING));
+    assert!(!off_turn.keywords(knight).contains(Keywords::FLYING));
+
+    game.state.objects[dion as usize].summoning_sick = false;
+    act(&mut game, announce_ability(dion, 0));
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(dion).card, Card(5506));
+    assert_eq!(game.object_view(dion).counters.lore, 1);
+    assert_eq!(game.object_view(dion).counters.plus_one, 0);
+    for recipient in [knight, other] {
+        assert_eq!(game.object_view(recipient).counters.plus_one, 1);
+        assert!(game.keywords(recipient).contains(Keywords::FLYING));
+    }
+    add_lore(&mut game, player, dion);
+    settle(&mut game);
+    assert_eq!(game.object_view(knight).counters.plus_one, 2);
+
+    let back = game.object_ref(dion);
+    add_lore(&mut game, player, dion);
+    reach(&mut game, |a| *a == target(victim));
+    act(&mut game, target(victim));
+    let mut stale_target = game.clone();
+    stale_target.move_object(victim, Zone::Exile);
+    settle(&mut stale_target);
+    assert_eq!(stale_target.object_view(dion).zone, Zone::Graveyard);
+    settle(&mut game);
+    assert_eq!(game.object_view(victim).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(dion).card, original);
+    assert_ne!(game.object_ref(dion), back);
+    assert_eq!(tokens(&game, player, Card(5236)).len(), 2);
+}

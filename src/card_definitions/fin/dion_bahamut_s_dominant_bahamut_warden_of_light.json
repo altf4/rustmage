@@ -3,10 +3,22 @@
   "catalogue_id": 1083,
   "oracle_id": "4a0cc2a2-3711-473a-b2c5-b1e52b34e4fb",
   "facts_sha256": "1a2954b32b5e442734df593a779d76645fce8daf6fc6505b8294293c6a1feab6",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "86ec872a046a920c68bd7b544d5868c5135a71e8afad869d0e89103d90e47f5b"
-  },
-  "physical_metadata_sha256": "3e39be5e671582f162a3ec9a483144d65d4671ad8efa8f7bf045625176ab9647"
+  "complete": true,
+  "physical_metadata_sha256": "3e39be5e671582f162a3ec9a483144d65d4671ad8efa8f7bf045625176ab9647",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DionBahamutsDominant.java",
+  "java_sha256": "d31e4854d6432e93f146b30dec84acfa4b8c534e8622551e581b20c358a0195a",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/WaylayToken.java",
+      "sha256": "3112f4caf439566ba16f9ca087b5b60bd51b62f73ef5516464c6d13be793b90b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileAndReturnSourceEffect.java",
+      "sha256": "6ec468489e92a265df2d43e4fc20ef9b7d4acef8864a6eae9e6d19d4ead73c9a"
+    }
+  ]
 }

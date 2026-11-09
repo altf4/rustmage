@@ -3,10 +3,22 @@
   "catalogue_id": 218,
   "oracle_id": "9ae13026-960a-4d31-b775-d47209a1e313",
   "facts_sha256": "2fecf2e69015de4fc7117b6d7184b85c6ded678dda052cb2d17a9600173f91b9",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "f701c733b258a9c10e62cc8aa0e86580367688b8108b867cee13c98b72f5a7d8"
-  },
-  "physical_metadata_sha256": "a27b833051d92c26f612186c64945554dfd42ba0609e63640deab2eae3ccadad"
+  "complete": true,
+  "physical_metadata_sha256": "a27b833051d92c26f612186c64945554dfd42ba0609e63640deab2eae3ccadad",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/ArdynTheUsurper.java",
+  "java_sha256": "8437ec547684346c6e47b8692497cdff1e7a696ade20bb8e88f8af0b1fad4d6b",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfCombatTriggeredAbility.java",
+      "sha256": "c8f16a3b46db04f428d1bebc9c1ee8171d14dc9879ff0f6f825a2b49909f2f41"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenCopyTargetEffect.java",
+      "sha256": "d04e58fdcda406a60d92c760243fca54440f13ec1fc94517c97eb9b360b9a158"
+    }
+  ]
 }
