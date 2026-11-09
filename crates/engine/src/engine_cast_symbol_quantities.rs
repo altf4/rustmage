@@ -1,4 +1,4 @@
-//! Retain an existing cast event only for programs consuming its mana value or symbols.
+//! Retain a cast event for programs consuming its identity, mana value or symbols.
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn amount(value: AmountValue) -> bool {
@@ -20,13 +20,14 @@ pub(super) fn selected(program: &[Instruction]) -> bool {
         | Instruction::SelectLibraryThenMayTransform(effect) => {
             effect.maximum_mana_value.is_some_and(amount)
         }
+        Instruction::AddCastEntryCounters { .. }
+        | Instruction::AddCastEntryCountersForControlledSubtypes { .. } => true,
         Instruction::UpToTargets(value)
         | Instruction::IfAmountAtLeast { value, .. }
         | Instruction::IfAmountParity { value, .. }
         | Instruction::PutLandCards { maximum: value, .. }
         | Instruction::DestroyTargetsAtMostManaValue(value)
         | Instruction::DiscardScaled(_, value)
-        | Instruction::AddCastEntryCounters { amount: value, .. }
         | Instruction::SearchScaled { maximum: value, .. }
         | Instruction::DrawThenDiscardIfDrew { amount: value, .. }
         | Instruction::SetCreatureForm { base: value, .. }

@@ -1687,6 +1687,13 @@ impl Game {
                         .checked_sub(player.creature_spells_cast_this_turn)
                         .is_some_and(|count| count == wanted)
             }
+            CastFilter::FirstQualifiedCreature(qualifier) => {
+                qualifier.matches(card)
+                    && self.state.players[caster.index()]
+                        .turn_facts
+                        .qualified_creature_cast_count(qualifier)
+                        == 1
+            }
             CastFilter::InstantSorceryOrdinal(wanted) => {
                 CastFilter::InstantSorcery.matches(card)
                     && self.state.players[caster.index()].instant_sorcery_cast_this_turn == wanted
@@ -1896,20 +1903,20 @@ impl Game {
                 .and_then(|source| self.state.objects.get(source.id as usize))
                 .map(|object| object.owner)
         });
-        self.state.players[caster.index()]
-            .turn_facts
-            .cast_card_kinds |= card.kind_mask();
-        let count = &mut self.state.players[caster.index()].spells_cast_this_turn;
+        let player = &mut self.state.players[caster.index()];
+        player.turn_facts.cast_card_kinds |= card.kind_mask();
+        let count = &mut player.spells_cast_this_turn;
         *count = count.checked_add(1).capacity("spell count exhausted");
         let ordinal = *count;
         if CastFilter::InstantSorcery.matches(card) {
-            let count = &mut self.state.players[caster.index()].instant_sorcery_cast_this_turn;
+            let count = &mut player.instant_sorcery_cast_this_turn;
             *count = count
                 .checked_add(1)
                 .capacity("qualifying spell count exhausted");
         }
         if CastFilter::Creature.matches(card) {
-            let count = &mut self.state.players[caster.index()].creature_spells_cast_this_turn;
+            player.turn_facts.record_qualified_creature_cast(card);
+            let count = &mut player.creature_spells_cast_this_turn;
             *count = count
                 .checked_add(1)
                 .capacity("creature spell count exhausted");
@@ -8021,6 +8028,9 @@ impl Game {
                 }
                 Instruction::AddCastEntryCounters { kind, amount } => {
                     self.add_cast_entry_counters(&item, kind, amount)
+                }
+                Instruction::AddCastEntryCountersForControlledSubtypes { kind, subtypes } => {
+                    self.add_cast_entry_counters_for_subtypes(&item, kind, subtypes)
                 }
                 Instruction::Recruit { token } => {
                     let player = item.controller;

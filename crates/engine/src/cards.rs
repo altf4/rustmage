@@ -3552,6 +3552,12 @@ pub enum Instruction {
         kind: CounterKind,
         amount: AmountValue,
     },
+    /// Count each permanent controlled by the trigger's controller with any
+    /// listed subtype as the exact triggering spell enters.
+    AddCastEntryCountersForControlledSubtypes {
+        kind: CounterKind,
+        subtypes: &'static [&'static str],
+    },
     /// Draw, discard, and create a Human Soldier if a nonland was discarded.
     Recruit {
         token: Card,
@@ -4689,6 +4695,28 @@ pub enum CastTarget {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum CreatureCastQualifier {
+    Human,
+    Legendary,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl CreatureCastQualifier {
+    pub(crate) const ALL: [Self; 2] = [Self::Human, Self::Legendary];
+
+    pub(crate) const fn index(self) -> usize {
+        self as usize
+    }
+
+    pub(crate) fn matches(self, card: Card) -> bool {
+        card.is_creature()
+            && match self {
+                Self::Human => card.has_subtype("Human"),
+                Self::Legendary => card.is_legendary(),
+            }
+    }
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum CastFilter {
     SourceChosenCreatureType,
     CreatureToughnessGreaterThanPower,
@@ -4713,6 +4741,8 @@ pub enum CastFilter {
     InstantSorceryOrdinal(u64),
     /// Actual per-caster ordinal, including casts before the observer entered.
     NonCreatureOrdinal(u64),
+    /// The caster's first matching creature spell this turn.
+    FirstQualifiedCreature(CreatureCastQualifier),
     InstantSorcery,
     Sorcery,
     Artifact,
@@ -4774,7 +4804,8 @@ impl CastFilter {
             | Self::TargetCount { .. }
             | Self::Targeted { .. }
             | Self::InstantSorceryOrdinal(_)
-            | Self::NonCreatureOrdinal(_) => false,
+            | Self::NonCreatureOrdinal(_)
+            | Self::FirstQualifiedCreature(_) => false,
             Self::Multicolored => card.colors().count_ones() >= 2,
             Self::Colors { filter, mask } => {
                 card.colors() & mask != 0 && filter.matches_mana_value(card, mana_value)
