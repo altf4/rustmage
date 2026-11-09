@@ -28,7 +28,7 @@ fn trigger_target(game: &mut Game, target: Target) {
 }
 
 #[test]
-fn swallowed_by_leviathan_surveille_then_prices_the_exact_spell() {
+fn swallowed_by_leviathan_surveils_then_prices_the_exact_spell() {
     let caster = Player::P1;
     let payer = caster.other();
     let mut game = scenario(payer);

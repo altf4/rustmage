@@ -11,5 +11,17 @@
   "physical_metadata_sha256": "1d776f926f12f40c2989c4336215c3833ea33c30f73a43ad79bba9feb8937639",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/y/YshtolaRhul.java",
-  "java_sha256": "6121fb917fbba904778d5c10cc0bb73fa22928581a29c21328a118cfda3fbd05"
+  "java_sha256": "6121fb917fbba904778d5c10cc0bb73fa22928581a29c21328a118cfda3fbd05",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileThenReturnTargetEffect.java",
+      "sha256": "4217e01de7184be471a8a30f82298a81946260b08b239d049ab3b6700d034418"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    }
+  ]
 }

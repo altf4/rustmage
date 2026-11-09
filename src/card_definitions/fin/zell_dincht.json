@@ -11,5 +11,22 @@
   "physical_metadata_sha256": "29667407be307b2b2672901b41bcdb8882f946475608904cc4212866b02580d3",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/z/ZellDincht.java",
-  "java_sha256": "fda1c080d692dcc554210efd26cde45baad85138038aba11a48bfa2f15f5b442"
+  "java_sha256": "fda1c080d692dcc554210efd26cde45baad85138038aba11a48bfa2f15f5b442",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/LandsYouControlCount.java",
+      "sha256": "5d39300c382c862538f44ba6be1565cb60cfed952c2a95515f3d4b9daee3483e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandChosenControlledPermanentEffect.java",
+      "sha256": "cd5116fb484980f9f071850ceebac76fb441d1c4ff4c991107cc60f42c8e628d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/PlayAdditionalLandsControllerEffect.java",
+      "sha256": "a7b2413a24959fbde172621336f4f48cb1ef76bc4254b922b272bfe2bef30664"
+    }
+  ]
 }
