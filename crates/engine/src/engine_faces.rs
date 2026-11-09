@@ -135,14 +135,20 @@ impl Game {
         under_owner: bool,
     ) {
         if let Some(source) = item.source
-            && let Some(entry) = self.exile_for_source_return(
-                source.object,
-                Zone::Battlefield,
-                transformed,
-                (!under_owner).then_some(item.controller),
-            )
+            && let Some(event) = self.exile_moving_source(source.object, Zone::Battlefield)
         {
-            self.stage_entries(vec![entry], None);
+            let entries = event
+                .objects_after()
+                .filter_map(|object| {
+                    self.source_return_entry(
+                        object,
+                        Zone::Exile,
+                        transformed,
+                        (!under_owner).then_some(item.controller),
+                    )
+                })
+                .collect();
+            self.stage_entries(entries, None);
         }
     }
 
@@ -166,16 +172,18 @@ impl Game {
         transformed: bool,
         controller: Option<Player>,
     ) -> Option<entries::EntryMove> {
+        let event = self.exile_moving_source(object, origin)?;
+        self.source_return_entry(event.after, Zone::Exile, transformed, controller)
+    }
+
+    fn exile_moving_source(&mut self, object: ObjectRef, origin: Zone) -> Option<ZoneChange> {
         if self.object_ref(object.card) != object
             || self.state.objects[object.card as usize].zone != origin
         {
             return None;
         }
         let event = self.move_object(object.card, Zone::Exile);
-        if !event.moved || event.destination != Zone::Exile {
-            return None;
-        }
-        self.source_return_entry(event.after, Zone::Exile, transformed, controller)
+        (event.moved && event.destination == Zone::Exile).then_some(event)
     }
 
     /// Craft pays by moving the source to exile before the ability resolves.

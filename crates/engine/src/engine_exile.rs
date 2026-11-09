@@ -451,12 +451,14 @@ impl Game {
         let events = self.move_objects_raw(&ids, Zone::Exile);
         for event in &events {
             if event.moved && event.destination == Zone::Exile {
-                self.state.exile_links.push(ExileLink {
-                    ability_origin,
-                    source,
-                    exiled: event.after,
-                    return_zone: event.before.zone,
-                });
+                self.state
+                    .exile_links
+                    .extend(event.objects_after().map(|exiled| ExileLink {
+                        ability_origin,
+                        source,
+                        exiled,
+                        return_zone: event.before.zone,
+                    }));
             }
         }
         self.finish_zone_events(&events, &[]);

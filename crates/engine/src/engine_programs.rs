@@ -84,13 +84,32 @@ pub(super) struct LibraryChoice {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    fn departed_source_in_graveyard(&self, item: &SpellView) -> Option<CardId> {
-        let event = item.source_move.as_ref()?;
-        (event.destination == Zone::Graveyard
-            && self.object_ref(event.after.card) == event.after
-            && self.state.objects[event.after.card as usize].zone == Zone::Graveyard
-            && self.state.objects[event.after.card as usize].is_card())
-        .then_some(event.after.card)
+    fn departed_source_in_graveyard<'a>(
+        &'a self,
+        item: &'a SpellView,
+    ) -> impl Iterator<Item = CardId> + 'a {
+        item.source_move
+            .iter()
+            .filter(|event| event.destination == Zone::Graveyard)
+            .flat_map(|event| event.objects_after())
+            .filter(|&object| {
+                self.object_ref(object.card) == object
+                    && self.state.objects[object.card as usize].zone == Zone::Graveyard
+                    && self.state.objects[object.card as usize].is_card()
+            })
+            .map(|object| object.card)
+    }
+    fn exile_departed_source(&mut self, item: &SpellView) -> bool {
+        let ids = self.departed_source_in_graveyard(item).collect::<Vec<_>>();
+        if ids.is_empty() {
+            return false;
+        }
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        let moved = events
+            .iter()
+            .any(|event| event.moved && event.destination == Zone::Exile);
+        self.finish_zone_events(&events, &[]);
+        moved
     }
 
     pub(super) fn entering_subject(&self, item: &SpellView) -> Option<CardId> {
@@ -865,17 +884,15 @@ impl Game {
                             )
                         }) {
                             self.state.pending_triggers.last_mut().unwrap().return_link =
-                                Some(Box::new(ReturnLinkView {
-                                    exile_after: false,
-                                    additional_returning: None,
-                                    object: event.after,
-                                    zone: Zone::Graveyard,
-                                    controller: event.before.owner,
-                                    counter: None,
-                                    tapped: ability.program.iter().any(|i| {
+                                Some(Box::new(ReturnLinkView::from_event(
+                                    event,
+                                    event.before.owner,
+                                    None,
+                                    ability.program.iter().any(|i| {
                                         matches!(i, Instruction::ReturnEventCardToBattlefieldTapped)
                                     }),
-                                }));
+                                    false,
+                                )));
                         }
                         if ability.program.iter().any(|i| {
                             matches!(i, Instruction::ScheduleSacrificedArtifactCopy { .. })
@@ -1281,7 +1298,7 @@ impl Game {
             event.destination,
             Zone::Battlefield | Zone::Stack | Zone::Graveyard | Zone::Exile | Zone::Command
         ) {
-            packet.refer_objects([event.after]);
+            packet.refer_objects(event.objects_after());
         }
         // Only the movement which actually triggered this ability may bind its
         // new source. Unrelated simultaneous observer deaths do not qualify.
@@ -1293,12 +1310,7 @@ impl Game {
             )
         {
             self.state.pending_triggers.last_mut().unwrap().source_move =
-                Some(Box::new(TriggerSourceMoveView {
-                    before: event.before.reference,
-                    after: event.after,
-                    origin: event.before.zone,
-                    destination: event.destination,
-                }));
+                Some(Box::new(event.source_movement()));
         }
         true
     }
@@ -7952,13 +7964,11 @@ impl Game {
                     self.exile_targets_play(&item, true, true, true)
                 }
                 Instruction::ExileDepartedSource => {
-                    if let Some(id) = self.departed_source_in_graveyard(&item) {
-                        self.move_object(id, Zone::Exile);
-                    }
+                    self.exile_departed_source(&item);
                 }
                 Instruction::MayExileDepartedSource { skip } => {
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");
-                    if self.departed_source_in_graveyard(&item).is_some() {
+                    if self.departed_source_in_graveyard(&item).next().is_some() {
                         self.state.pending = Pending::EffectOptional {
                             player: item.controller,
                             skip_to,
@@ -7968,8 +7978,7 @@ impl Game {
                     self.state.resolving.as_mut().unwrap().pc = skip_to;
                 }
                 Instruction::ExileDepartedSourceReflexive { ability } => {
-                    if let Some(id) = self.departed_source_in_graveyard(&item) {
-                        self.move_object(id, Zone::Exile);
+                    if self.exile_departed_source(&item) {
                         self.queue_reflexive(&item, ability, None);
                     }
                 }

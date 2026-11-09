@@ -46,13 +46,13 @@ impl Game {
             }
             let cards: Vec<_> = qualifying
                 .iter()
-                .filter_map(|event| {
-                    (event.was_card
-                        && self.object_ref(event.after.card) == event.after
-                        && self.state.objects[event.after.card as usize].zone == Zone::Exile
-                        && self.state.objects[event.after.card as usize].is_card()
-                        && self.current_kinds(event.after.card) & 1 != 0)
-                        .then_some(event.after)
+                .filter(|event| event.was_card)
+                .flat_map(|event| event.objects_after())
+                .filter(|&object| {
+                    self.object_ref(object.card) == object
+                        && self.state.objects[object.card as usize].zone == Zone::Exile
+                        && self.state.objects[object.card as usize].is_card()
+                        && self.current_kinds(object.card) & 1 != 0
                 })
                 .collect();
             for (index, ability) in source.card.triggers().iter().enumerate() {
@@ -227,19 +227,33 @@ impl Game {
     /// Ordinary from-anywhere triggers inspect the committed new zone, not dying
     /// characteristics or pre-event observers. Tokens never become creature cards.
     pub(super) fn creature_cards_enter_graveyard_triggers(&mut self, events: &[ZoneChange]) {
-        let entered = std::array::from_fn::<_, 2, _>(|seat| {
-            events.iter().any(|e| {
-                e.moved
-                    && e.destination == Zone::Graveyard
-                    && e.before.zone != Zone::Graveyard
-                    && e.before.owner.index() == seat
-                    && e.was_card
-                    && self.object_ref(e.after.card) == e.after
-                    && self.state.objects[e.after.card as usize].zone == Zone::Graveyard
-                    && self.current_kinds(e.after.card) & 1 != 0
-            })
+        self.card_arrivals_in_graveyard(
+            events,
+            1,
+            TriggerCondition::CreatureCardsEnterYourGraveyard,
+        );
+    }
+
+    pub(super) fn permanent_cards_enter_graveyard_triggers(&mut self, events: &[ZoneChange]) {
+        self.card_arrivals_in_graveyard(
+            events,
+            1 | 2 | 16 | 32 | 64 | 256,
+            TriggerCondition::PermanentCardsEnterYourGraveyard,
+        );
+    }
+
+    fn card_arrivals_in_graveyard(
+        &mut self,
+        events: &[ZoneChange],
+        kinds: u16,
+        condition: TriggerCondition,
+    ) {
+        let entered: [bool; 2] = [Player::P0, Player::P1].map(|owner| {
+            self.graveyard_arrivals(events, owner, kinds)
+                .next()
+                .is_some()
         });
-        if !entered.iter().any(|v| *v) {
+        if !entered.into_iter().any(|value| value) {
             return;
         }
         let sources = self.indexed_trigger_sources(&self.state.death_sources);
@@ -249,80 +263,42 @@ impl Game {
             }
             let definition = grant.as_ref().map_or(source.card, |g| g.granting_card);
             for (index, ability) in definition.triggers().iter().enumerate() {
-                if ability.condition.event() == TriggerCondition::CreatureCardsEnterYourGraveyard {
-                    let matching: Vec<_> = events
-                        .iter()
-                        .filter(|e| {
-                            e.moved
-                                && e.destination == Zone::Graveyard
-                                && e.before.zone != Zone::Graveyard
-                                && e.before.owner == source.controller
-                                && e.was_card
-                                && self.object_ref(e.after.card) == e.after
-                                && self.state.objects[e.after.card as usize].zone == Zone::Graveyard
-                                && self.current_kinds(e.after.card) & 1 != 0
-                        })
-                        .map(|e| e.after)
-                        .collect();
-                    if self.queue_trigger_from(&source, index, grant.map(Box::new)) {
-                        self.state
-                            .pending_triggers
-                            .last_mut()
-                            .unwrap()
-                            .refer_objects(matching);
-                    }
+                if ability.condition.event() != condition {
+                    continue;
+                }
+                let matching = self
+                    .graveyard_arrivals(events, source.controller, kinds)
+                    .collect::<Vec<_>>();
+                if self.queue_trigger_from(&source, index, grant.map(Box::new)) {
+                    self.state
+                        .pending_triggers
+                        .last_mut()
+                        .unwrap()
+                        .refer_objects(matching);
                 }
             }
         }
     }
-    pub(super) fn permanent_cards_enter_graveyard_triggers(&mut self, events: &[ZoneChange]) {
-        let entered = std::array::from_fn::<_, 2, _>(|seat| {
-            events.iter().any(|e| {
-                e.moved
-                    && e.destination == Zone::Graveyard
-                    && e.before.zone != Zone::Graveyard
-                    && e.before.owner.index() == seat
-                    && e.was_card
-                    && self.object_ref(e.after.card) == e.after
-                    && self.state.objects[e.after.card as usize].zone == Zone::Graveyard
-                    && self.current_kinds(e.after.card) & (1 | 2 | 16 | 32 | 64 | 256) != 0
+    fn graveyard_arrivals<'a>(
+        &'a self,
+        events: &'a [ZoneChange],
+        owner: Player,
+        kinds: u16,
+    ) -> impl Iterator<Item = ObjectRef> + 'a {
+        events
+            .iter()
+            .filter(move |event| {
+                event.moved
+                    && event.destination == Zone::Graveyard
+                    && event.before.zone != Zone::Graveyard
+                    && event.before.owner == owner
+                    && event.was_card
             })
-        });
-        if !entered.iter().any(|v| *v) {
-            return;
-        }
-        let sources = self.indexed_trigger_sources(&self.state.death_sources);
-        for (source, grant) in sources {
-            if source.zone != Zone::Battlefield || !entered[source.controller.index()] {
-                continue;
-            }
-            let definition = grant.as_ref().map_or(source.card, |g| g.granting_card);
-            for (index, ability) in definition.triggers().iter().enumerate() {
-                if ability.condition.event() == TriggerCondition::PermanentCardsEnterYourGraveyard {
-                    let matching: Vec<_> = events
-                        .iter()
-                        .filter(|e| {
-                            e.moved
-                                && e.destination == Zone::Graveyard
-                                && e.before.zone != Zone::Graveyard
-                                && e.before.owner == source.controller
-                                && e.was_card
-                                && self.object_ref(e.after.card) == e.after
-                                && self.state.objects[e.after.card as usize].zone == Zone::Graveyard
-                                && self.current_kinds(e.after.card) & (1 | 2 | 16 | 32 | 64 | 256)
-                                    != 0
-                        })
-                        .map(|e| e.after)
-                        .collect();
-                    if self.queue_trigger_from(&source, index, grant.map(Box::new)) {
-                        self.state
-                            .pending_triggers
-                            .last_mut()
-                            .unwrap()
-                            .refer_objects(matching);
-                    }
-                }
-            }
-        }
+            .flat_map(ZoneChange::objects_after)
+            .filter(move |&object| {
+                self.object_ref(object.card) == object
+                    && self.state.objects[object.card as usize].zone == Zone::Graveyard
+                    && self.current_kinds(object.card) & kinds != 0
+            })
     }
 }

@@ -274,3 +274,111 @@ fn stolen_partners_fail_the_intervening_condition_and_a_named_copy_cannot_meld()
     assert_eq!(game.object_view(copy).card, Card::GrizzlyBears);
     assert!(game.observe(player).melded_permanents.is_empty());
 }
+
+const BLINK: CardRules =
+    one_creature(&[Instruction::BlinkFollowingPublicMove { all_groups: false }]);
+const COMBINED_RETURNS: CardRules = CardRules {
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfDies,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::ReturnEventCardToHand],
+    }],
+    ..COMBINED
+};
+
+#[test]
+fn one_blink_returns_both_fronts_and_owned_meld_order_replays() {
+    let _rules = fixture_rules::activate(&[
+        (PAIR.source, &SOURCE),
+        (PAIR.partner, &PARTNER),
+        (PAIR.combined, &COMBINED),
+        (Card::from_name("Opt").unwrap(), &BLINK),
+    ]);
+    let player = Player::P0;
+    let (mut game, source, partner) = setup_pair(player);
+    choose_partner(&mut game, partner);
+    let permanent = game.object_ref(source);
+    resolve_targeting_spell(&mut game, player, "Opt", source);
+    let order = game.observe(player).meld_ordering_choice.unwrap();
+    let action = Action::ChooseMeldOrder {
+        first: order.components[1],
+    };
+    let revision = game.revision();
+    let index = game
+        .legal_actions()
+        .iter()
+        .position(|candidate| *candidate == action)
+        .unwrap();
+    let saved = game.snapshot();
+    let mut indexed = game.clone();
+    act(&mut game, action);
+    indexed.apply_index(player, revision, index).unwrap();
+    assert_eq!(game.snapshot(), indexed.snapshot());
+    indexed.restore(&saved).unwrap();
+    assert_eq!(
+        indexed.apply_index(player, revision, index),
+        Err(Error::StaleRevision)
+    );
+    settle(&mut game);
+    for (card, face) in [(source, PAIR.source), (partner, PAIR.partner)] {
+        assert_eq!(game.object_view(card).zone, Zone::Battlefield);
+        assert_eq!(game.object_view(card).card, face);
+    }
+    assert_ne!(game.object_ref(source), permanent);
+    assert!(game.observe(player).melded_permanents.is_empty());
+}
+
+#[test]
+fn death_returns_each_exact_card_and_one_replacement_redirects_both() {
+    let _rules = fixture_rules::activate(&[
+        (PAIR.source, &SOURCE),
+        (PAIR.partner, &PARTNER),
+        (PAIR.combined, &COMBINED_RETURNS),
+        (Card::from_name("Opt").unwrap(), &DESTROY),
+    ]);
+    let player = Player::P0;
+    let (mut game, source, partner) = setup_pair(player);
+    choose_partner(&mut game, partner);
+    for (stale, replaced) in [(false, false), (true, false), (false, true)] {
+        let mut branch = game.clone();
+        if replaced {
+            put(
+                &mut branch,
+                player.other(),
+                "Rest in Peace",
+                Zone::Battlefield,
+            );
+        }
+        resolve_targeting_spell(&mut branch, player, "Opt", source);
+        let order = branch.observe(player).meld_ordering_choice.unwrap();
+        assert_eq!(
+            order.destination,
+            if replaced {
+                Zone::Exile
+            } else {
+                Zone::Graveyard
+            }
+        );
+        act(
+            &mut branch,
+            Action::ChooseMeldOrder {
+                first: order.components[0],
+            },
+        );
+        if stale {
+            branch.move_object(partner, Zone::Exile);
+            branch.move_object(partner, Zone::Graveyard);
+        }
+        settle(&mut branch);
+        assert_eq!(
+            branch.object_view(source).zone,
+            if replaced { Zone::Exile } else { Zone::Hand }
+        );
+        let partner_zone = match (stale, replaced) {
+            (_, true) => Zone::Exile,
+            (true, false) => Zone::Graveyard,
+            (false, false) => Zone::Hand,
+        };
+        assert_eq!(branch.object_view(partner).zone, partner_zone);
+    }
+}

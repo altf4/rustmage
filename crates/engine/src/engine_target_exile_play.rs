@@ -27,7 +27,9 @@ impl Game {
                 && !event.before.is_token()
                 && !self.state.objects[event.after.card as usize].is_spell_copy()
             {
-                self.grant_airbend_permission(event.before.owner, event.after);
+                for exiled in event.objects_after() {
+                    self.grant_airbend_permission(event.before.owner, exiled);
+                }
             }
         }
         self.finish_zone_events(&events, &[]);
@@ -73,6 +75,7 @@ impl Game {
         let moved = events
             .iter()
             .filter(|event| event.moved && event.destination == Zone::Exile)
+            .flat_map(ZoneChange::objects_after)
             .count();
         self.state.resolving.as_mut().unwrap().moved_count =
             Some(u64::try_from(moved).capacity("exiled card count exhausted"));
@@ -82,15 +85,14 @@ impl Game {
                 && !event.before.is_token()
                 && !self.state.objects[event.after.card as usize].is_spell_copy()
             {
-                self.grant_exile_play_permission(
-                    if owners {
-                        event.before.owner
-                    } else {
-                        item.controller
-                    },
-                    event.after,
-                    next_turn,
-                );
+                let player = if owners {
+                    event.before.owner
+                } else {
+                    item.controller
+                };
+                for exiled in event.objects_after() {
+                    self.grant_exile_play_permission(player, exiled, next_turn);
+                }
             }
         }
         self.finish_zone_events(&events, &[]);

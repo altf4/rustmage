@@ -1283,12 +1283,7 @@ impl Game {
                         | Instruction::ReturnCraftedSourceTransformed
                 )
             }) {
-                item.source_move = Some(Box::new(TriggerSourceMoveView {
-                    before: event.before.reference,
-                    after: event.after,
-                    origin: event.before.zone,
-                    destination: event.destination,
-                }));
+                item.source_move = Some(Box::new(event.source_movement()));
             }
         } else if cost.discard {
             if definition.cycling {

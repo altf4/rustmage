@@ -35,12 +35,7 @@ impl Game {
                     && event.before.zone == Zone::Battlefield
                     && matches!(event.destination, Zone::Graveyard | Zone::Exile)
             }) {
-                item.source_move = Some(Box::new(TriggerSourceMoveView {
-                    before: event.before.reference,
-                    after: event.after,
-                    origin: event.before.zone,
-                    destination: event.destination,
-                }));
+                item.source_move = Some(Box::new(event.source_movement()));
             }
         }
         for item in self

@@ -1544,6 +1544,18 @@ pub struct TriggerSourceMoveView {
     pub after: ObjectRef,
     pub origin: Zone,
     pub destination: Zone,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub melded_after: Option<[ObjectRef; 2]>,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl TriggerSourceMoveView {
+    pub(super) fn objects_after(&self) -> impl Iterator<Item = ObjectRef> {
+        self.melded_after
+            .map_or([Some(self.after), None], |cards| cards.map(Some))
+            .into_iter()
+            .flatten()
+    }
 }
 
 /// A successful action's non-targeted subject, separate from source LKI.
@@ -3275,6 +3287,15 @@ pub struct ZoneChange {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ZoneChange {
+    pub(super) fn source_movement(&self) -> TriggerSourceMoveView {
+        TriggerSourceMoveView {
+            before: self.before.reference,
+            after: self.after,
+            origin: self.before.zone,
+            destination: self.destination,
+            melded_after: self.melded_after,
+        }
+    }
     pub(super) fn objects_after(&self) -> impl Iterator<Item = ObjectRef> {
         self.melded_after
             .map_or([Some(self.after), None], |cards| cards.map(Some))
