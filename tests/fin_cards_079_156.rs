@@ -659,13 +659,20 @@ fn gilgamesh_can_attach_only_an_equipment_from_his_current_cohort() {
     let source = put(&mut game, p, "Gilgamesh, Master-at-Arms", Zone::Hand);
     let old = put(&mut game, p, "Short Bow", Zone::Battlefield);
     let equipment = put(&mut game, p, "Swiftfoot Boots", Zone::Library);
+    let second = put(&mut game, p, "Lavaspur Boots", Zone::Library);
     let land = put(&mut game, p, "Island", Zone::Library);
     cast(&mut game, source, None);
     reach_library_selection(&mut game);
     assert!(game.observe(p.other()).library_selection.is_none());
     reject(&mut game, Action::SelectLibrary { card: land });
     act(&mut game, Action::SelectLibrary { card: equipment });
+    act(&mut game, Action::SelectLibrary { card: second });
     act(&mut game, Action::FinishLibrarySelection);
+    while matches!(game.state.pending, Pending::EntryTimestamp { .. }) {
+        choose(&mut game, |action| {
+            matches!(action, Action::ChooseEntryTimestamp { .. })
+        });
+    }
     pass_pair(&mut game);
     let recipient = game.object_ref(source);
     act(&mut game, Action::ChooseEquipmentRecipient { recipient });
@@ -684,6 +691,7 @@ fn gilgamesh_can_attach_only_an_equipment_from_his_current_cohort() {
         },
     );
     assert_eq!(game.object_view(equipment).attached_to, Some(recipient));
+    assert_eq!(game.object_view(second).attached_to, None);
     assert_eq!(game.object_view(old).attached_to, None);
 }
 
@@ -798,7 +806,7 @@ fn ignis_puts_a_land_in_tapped_and_creates_food_only_for_an_exiled_creature() {
                 .objects
                 .iter()
                 .filter(|object| {
-                    object.zone == Zone::Battlefield && object.card.name() == "Food"
+                    object.zone == Zone::Battlefield && object.card == Card::from_catalogue_id(5246)
                 })
                 .count(),
             food
@@ -902,8 +910,13 @@ fn minwu_counts_cleric_permanents_even_when_they_arent_creatures() {
     let p = Player::P1;
     let mut game = scenario(p);
     let minwu = put(&mut game, p, "Minwu, White Mage", Zone::Battlefield);
-    let cleric = put(&mut game, p, "Lifecreed Duo", Zone::Battlefield);
-    let foe = put(&mut game, p.other(), "Lifecreed Duo", Zone::Battlefield);
+    let cleric = put(&mut game, p, "Hinterland Sanctifier", Zone::Battlefield);
+    let foe = put(
+        &mut game,
+        p.other(),
+        "Hinterland Sanctifier",
+        Zone::Battlefield,
+    );
     let bear = put(&mut game, p, "Grizzly Bears", Zone::Battlefield);
     let mut kindred = CopyRecipe::new(game.object_view(cleric).card);
     kindred.overrides = Some(CopyOverrides {
