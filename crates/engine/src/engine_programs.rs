@@ -7951,6 +7951,11 @@ impl Game {
                 Instruction::ExileTargetsAndTopPlayForOwners => {
                     self.exile_targets_play(&item, true, true, true)
                 }
+                Instruction::ExileDepartedSource => {
+                    if let Some(id) = self.departed_source_in_graveyard(&item) {
+                        self.move_object(id, Zone::Exile);
+                    }
+                }
                 Instruction::MayExileDepartedSource { skip } => {
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");
                     if self.departed_source_in_graveyard(&item).is_some() {

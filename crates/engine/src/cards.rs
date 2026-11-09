@@ -3286,6 +3286,8 @@ pub enum Instruction {
     },
     ExileTargetsAndTopPlayForOwners,
     ExileUntilSourceLeaves,
+    /// Exile the exact graveyard incarnation captured by this source's death trigger.
+    ExileDepartedSource,
     MayExileDepartedSource {
         skip: usize,
     },
