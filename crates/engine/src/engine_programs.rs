@@ -1032,6 +1032,7 @@ impl Game {
                     | TriggerCondition::SelfLeaves
                     | TriggerCondition::PermanentLeaves(_)
                     | TriggerCondition::ChosenCreatureLeaves
+                    | TriggerCondition::ChosenPlayerLosesGame
                     | TriggerCondition::ReturnDeath(_)
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::CreatureDiesWithCounters { .. }
@@ -8288,6 +8289,13 @@ impl Game {
                     self.end_turn_effect();
                     return;
                 }
+                Instruction::WinGame => {
+                    self.try_win_game(item.controller);
+                    if self.state.outcome.is_some() {
+                        self.state.resolving = None;
+                        return;
+                    }
+                }
                 Instruction::WinIfLibraryEmpty => {
                     if self.library_card_count(item.controller) == 0 {
                         self.try_win_game(item.controller);
@@ -8312,7 +8320,9 @@ impl Game {
                     for player in self.program_players(set, &item) {
                         lost[player.index()] = true;
                     }
-                    self.commit_game_losses(self.allowed_game_losses(lost));
+                    let lost = self.allowed_game_losses(lost);
+                    self.chosen_player_loss_triggers(lost);
+                    self.commit_game_losses(lost);
                     if self.state.outcome.is_some() {
                         self.state.resolving = None;
                         self.state.pending = Pending::Terminal;

@@ -4679,8 +4679,10 @@ impl Game {
             return Err(Error::GameOver);
         }
         if action == Action::Concede {
-            self.state.outcome = Some(Outcome::Winner(actor.other()));
-            self.state.pending = Pending::Terminal;
+            let mut lost = [false; 2];
+            lost[actor.index()] = true;
+            self.chosen_player_loss_triggers(lost);
+            self.commit_game_losses(lost);
         } else {
             if self.semantic_actor() != Some(actor) {
                 return Err(Error::WrongActor);

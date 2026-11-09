@@ -1145,14 +1145,9 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             exhausted_abilities: obj.used_abilities & obj.card.exhaust_mask(),
             entered_this_turn: CharacteristicWorld::entered_this_turn(self, self.object_ref(id)),
             power_up_uses: self.power_up_use_views(self.object_ref(id)),
-            face: FaceView::from_faces(
-                self.recipe(id).face_structure(),
-                if obj.zone == Zone::Battlefield {
-                    self.transform_serial(self.object_ref(id))
-                } else {
-                    0
-                },
-            ),
+            face: self
+                .game()
+                .face_view(self.object_ref(id), self.recipe(id).face_structure()),
             attached_to: obj.attached_to,
             modified: self.is_modified(id),
             attacking: CharacteristicWorld::attacking(self, id),

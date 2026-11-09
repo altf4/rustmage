@@ -180,6 +180,7 @@ pub struct Card(u16);
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum AsTransformEffect {
     CreateEmblem(Card),
+    ChooseOpponent,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -2451,6 +2452,7 @@ pub enum Instruction {
     ModalOncePerTurn(&'static [SpellMode]),
     /// Immediately lose the game, independently of life total or state-based actions.
     LoseGame(PlayerSet),
+    WinGame,
     /// Win if the resolving controller has no cards in their library.
     WinIfLibraryEmpty,
     WinIfDistinctSubtypeNames {
@@ -5421,6 +5423,8 @@ pub enum TriggerCondition {
     PermanentLeaves(DepartureFilter),
     /// The linked battlefield incarnation leaves, regardless of its current types.
     ChosenCreatureLeaves,
+    /// The opponent selected by this face's as-transform ability loses the game.
+    ChosenPlayerLosesGame,
     SelfEntersOrDies,
     SelfAttacks,
     /// Intervening equipped clause, with exact source-departure quantities.

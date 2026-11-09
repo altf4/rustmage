@@ -5,6 +5,14 @@ use super::*;
 pub(super) struct FaceChange {
     object: ObjectRef,
     serial: u64,
+    chosen_opponent: Option<ChosenTransformOpponent>,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct ChosenTransformOpponent {
+    player: Player,
+    definition: Card,
+    origin: Option<u64>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) type Rows = Option<SharedVec<FaceChange>>;
@@ -20,10 +28,12 @@ pub struct FaceView {
     pub physical_card: Card,
     pub back: bool,
     pub transforms: u64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub chosen_opponent: Option<Player>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-impl FaceView {
-    pub(super) fn from_faces(faces: CopyFaces, transforms: u64) -> Option<Self> {
+impl Game {
+    pub(super) fn face_view(&self, object: ObjectRef, faces: CopyFaces) -> Option<FaceView> {
         let CopyFaces::Double {
             physical_front,
             back_up,
@@ -32,15 +42,15 @@ impl FaceView {
         else {
             return None;
         };
-        Some(Self {
+        let change = self.face_change(object);
+        Some(FaceView {
             physical_card: physical_front,
             back: back_up,
-            transforms,
+            transforms: change.map_or(0, |row| row.serial),
+            chosen_opponent: change.and_then(|row| self.active_transform_opponent(row)),
         })
     }
-}
-#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-impl Game {
+
     /// A natural transformed back uses its front's mana cost; copying that
     /// back face instead yields zero, even on another double-faced permanent.
     pub(super) fn object_mana_value(&self, id: CardId) -> u64 {
@@ -72,11 +82,22 @@ impl Game {
         }
     }
     pub(super) fn transform_serial(&self, object: ObjectRef) -> u64 {
+        self.face_change(object).map_or(0, |row| row.serial)
+    }
+    fn face_change(&self, object: ObjectRef) -> Option<&FaceChange> {
         self.state
             .face_changes
             .as_ref()
             .and_then(|r| r.iter().find(|r| r.object == object))
-            .map_or(0, |r| r.serial)
+    }
+    fn active_transform_opponent(&self, row: &FaceChange) -> Option<Player> {
+        let choice = row.chosen_opponent?;
+        let source = self.state.objects.get(row.object.card as usize)?;
+        (source.zone == Zone::Battlefield
+            && source.generation == row.object.generation
+            && source.card == choice.definition
+            && self.copy_ability_origin(row.object) == choice.origin)
+            .then_some(choice.player)
     }
     pub(super) fn forget_face_change(&mut self, object: ObjectRef) {
         if let Some(rows) = &mut self.state.face_changes {
@@ -277,7 +298,11 @@ impl Game {
         self.state
             .face_changes
             .get_or_insert_default()
-            .push(FaceChange { object, serial });
+            .push(FaceChange {
+                object,
+                serial,
+                chosen_opponent: None,
+            });
         if !self.transform_under_temporary_copy(object, other) {
             self.forget_hand_size_source(object);
             self.remove_face_providers(object.card);
@@ -291,16 +316,63 @@ impl Game {
         }
         // CR 712.20 uses the resulting characteristics within this event,
         // before publishing the transform to observers.
-        if let Some(crate::cards::AsTransformEffect::CreateEmblem(factory)) = self.state.objects
-            [object.card as usize]
-            .card
-            .as_transform_effect()
+        let definition = self.state.objects[object.card as usize].card;
+        if let Some(effect) = definition.as_transform_effect()
             && ability_world::CharacteristicWorld::printed_abilities_available(self, object.card)
         {
-            self.create_emblem(controller, factory);
+            match effect {
+                crate::cards::AsTransformEffect::CreateEmblem(factory) => {
+                    self.create_emblem(controller, factory);
+                }
+                crate::cards::AsTransformEffect::ChooseOpponent => {
+                    // The engine has exactly two player seats, so this mandatory
+                    // nontargeted choice has one result.
+                    let choice = ChosenTransformOpponent {
+                        player: controller.other(),
+                        definition,
+                        origin: self.copy_ability_origin(object),
+                    };
+                    self.state
+                        .face_changes
+                        .as_mut()
+                        .unwrap()
+                        .iter_mut()
+                        .find(|row| row.object == object)
+                        .unwrap()
+                        .chosen_opponent = Some(choice);
+                }
+            }
         }
         self.refresh_controllers_after(Some(control_watch));
         self.queue_self_transform_triggers(object);
+    }
+    pub(super) fn chosen_player_loss_triggers(&mut self, lost: [bool; 2]) {
+        let loser = match lost {
+            [true, false] => Player::P0,
+            [false, true] => Player::P1,
+            // A simultaneous loss is a draw (CR 104.4a and 603.9).
+            _ => return,
+        };
+        let sources: Vec<_> = self
+            .state
+            .face_changes
+            .as_ref()
+            .into_iter()
+            .flat_map(|rows| rows.iter())
+            .filter(|row| self.active_transform_opponent(row) == Some(loser))
+            .map(|row| self.object_view(row.object.card))
+            .collect();
+        for source in sources {
+            for (index, ability) in source.card.triggers().iter().enumerate() {
+                if ability.condition.event() == TriggerCondition::ChosenPlayerLosesGame
+                    && self.queue_trigger(&source, index)
+                {
+                    self.state.pending_triggers.last_mut().unwrap().event_player = Some(loser);
+                }
+            }
+        }
+        // The last opponent's loss ends a two-player game immediately.
+        // These observed triggers never reach a priority window (CR 104.2a).
     }
     fn queue_self_transform_triggers(&mut self, object: ObjectRef) {
         let source = self.object_view(object.card);

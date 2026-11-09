@@ -509,6 +509,9 @@ impl Game {
     }
 
     fn commit_sba_batch(&mut self, mut batch: SbaBatch) {
+        // Player loss looks back before all simultaneous state-based actions
+        // (CR 603.10f), including death of the observing permanent.
+        self.chosen_player_loss_triggers(batch.lost);
         for group in &batch.groups {
             let keep = group.keep.expect("every legend choice precedes the event");
             batch.deaths.extend(
