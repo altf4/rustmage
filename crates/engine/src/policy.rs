@@ -221,7 +221,9 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::SelectResolutionExile { .. } => 50,
             Action::ProliferatePermanent { .. } | Action::ProliferatePlayer { .. } => 50,
             Action::FinishProliferate => 0,
-            Action::FinishGraveyardReturn | Action::FinishLandSelection => -1,
+            Action::FinishGraveyardReturn
+            | Action::FinishLandSelection
+            | Action::FinishEffectChoice => -1,
             Action::DeclineHandEntry | Action::FinishHandSelection => -1,
             Action::BottomHandCard { .. } => 10,
             Action::ChooseBlight { pay } => i128::from(*pay) * 40,

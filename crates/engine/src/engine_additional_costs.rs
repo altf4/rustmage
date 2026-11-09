@@ -1235,6 +1235,7 @@ impl Game {
             | EffectChoiceKind::KeepSharedCreatureTypes
             | EffectChoiceKind::ColorCounter { .. }
             | EffectChoiceKind::CountersOnTarget { .. }
+            | EffectChoiceKind::RemoveLoreForSourceCounters(_)
             | EffectChoiceKind::PowerDifferenceBoost
             | EffectChoiceKind::OptionalBeholdType(_)
             | EffectChoiceKind::FilteredCost { .. }

@@ -529,6 +529,11 @@ impl Game {
             && f.tokens.is_none_or(|token| o.is_token() == token)
             && f.subtype
                 .is_none_or(|subtype| self.has_subtype(object.card, subtype))
+            && (!matches!(
+                choice.kind,
+                EffectChoiceKind::RemoveLoreForSourceCounters(_)
+            ) || (self.counter_count(object.card, CounterKind::Lore) > 0
+                && self.has_subtype(object.card, "Saga")))
     }
 
     pub(super) fn start_half_choice(&mut self, item: &SpellView, kind: EffectChoiceKind) -> bool {
@@ -1164,6 +1169,19 @@ impl Game {
             assert_eq!(amount, 1, "one alternative resolution cost");
             assert_eq!(players, PlayerSet::Controller, "captured resolution payer");
         }
+        let any_number = matches!(kind, EffectChoiceKind::RemoveLoreForSourceCounters(_));
+        if any_number {
+            assert_eq!(
+                players,
+                PlayerSet::Controller,
+                "lore choice belongs to the controller"
+            );
+            assert_eq!(amount, 0, "lore choice has no minimum");
+            assert!(
+                optional_skip.is_none(),
+                "lore choice finishes with any subset"
+            );
+        }
         let pc = self.state.resolving.as_ref().unwrap().pc;
         if matches!(kind, EffectChoiceKind::ExileSourceAndNamed { .. })
             && item.source.is_none_or(|source| {
@@ -1257,8 +1275,12 @@ impl Game {
                     self.effect_choice_candidate(&choice, player, self.object_ref(*id as CardId))
                 })
                 .count();
-            if kind == EffectChoiceKind::PowerDifferenceBoost && available == 0 {
+            if available == 0 && (any_number || kind == EffectChoiceKind::PowerDifferenceBoost) {
                 return false;
+            }
+            if any_number {
+                choice.amount = u32::try_from(available).capacity("choice count exhausted");
+                continue;
             }
             if let Some(skip_to) = choice.skip_to
                 && !private_optional_discard
@@ -1377,6 +1399,7 @@ impl Game {
         if matches!(
             choice.kind.payment_kind(),
             EffectChoiceKind::CoverUpSearch { .. }
+                | EffectChoiceKind::RemoveLoreForSourceCounters(_)
         ) {
             self.state.pending = Pending::EffectChoice {
                 player: self.state.resolving.as_ref().unwrap().item.controller,
@@ -2056,6 +2079,30 @@ impl Game {
         }
     }
 
+    pub(super) fn finish_lore_counter_selection(&mut self) {
+        let resolution = self.state.resolving.as_mut().unwrap();
+        let player = resolution.item.controller;
+        let mut choice = resolution.choice.take().unwrap();
+        let EffectChoiceKind::RemoveLoreForSourceCounters(kind) = choice.kind else {
+            unreachable!("lore counter selection");
+        };
+        let selected = std::mem::take(&mut choice.selected[player.index()]);
+        let lore = Counters::of(CounterKind::Lore, 1);
+        let mut removed = 0;
+        for object in selected {
+            if self.effect_choice_candidate(&choice, player, object) {
+                self.pay_counters(object.card, &lore);
+                removed += 1;
+            }
+        }
+        if removed != 0 {
+            self.effect_counters(
+                vec![(choice.source, Counters::of(kind, removed))],
+                replacements::ResumeMode::Program,
+            );
+        }
+    }
+
     pub(super) fn choose_effect_object(&mut self, player: Player, object: ObjectRef) {
         if self
             .state
@@ -2276,7 +2323,11 @@ impl Game {
         Some(EffectChoiceView {
             kind: choice.kind,
             amount: choice.amount,
-            optional: choice.skip_to.is_some(),
+            optional: choice.skip_to.is_some()
+                || matches!(
+                    choice.kind,
+                    EffectChoiceKind::RemoveLoreForSourceCounters(_)
+                ),
             required: choice.required,
             selected: std::array::from_fn(|index| {
                 choice.selected[index]

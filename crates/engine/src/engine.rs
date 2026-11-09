@@ -848,6 +848,7 @@ define_actions! {
     SelectGraveyardReturn { object: ObjectRef },
     FinishGraveyardReturn,
     ChooseEffectObject { object: ObjectRef },
+    FinishEffectChoice,
     AnnounceSourceGrant { source: ObjectRef, ability: u16 },
     SelectResolutionExile { object: ObjectRef },
     ProliferatePermanent { object: ObjectRef },
@@ -5174,6 +5175,13 @@ impl Game {
                 {
                     return true;
                 }
+                if matches!(
+                    choice.kind,
+                    EffectChoiceKind::RemoveLoreForSourceCounters(_)
+                ) && emit(Action::FinishEffectChoice)
+                {
+                    return true;
+                }
                 if matches!(choice.kind, EffectChoiceKind::GraveyardCreatures { .. })
                     && emit(Action::FinishGraveyardReturn)
                 {
@@ -5233,7 +5241,8 @@ impl Game {
                                 Action::SelectGraveyardReturn { object }
                             }
                             EffectChoiceKind::ReturnToHand
-                            | EffectChoiceKind::CountersOnTarget { .. } => {
+                            | EffectChoiceKind::CountersOnTarget { .. }
+                            | EffectChoiceKind::RemoveLoreForSourceCounters(_) => {
                                 Action::ChooseEffectObject { object }
                             }
                             EffectChoiceKind::ColorCounter { .. } => {
@@ -8403,6 +8412,10 @@ impl Game {
             | Action::SelectLand { object }
             | Action::SelectResolutionExile { object }
             | Action::BottomHandCard { object } => self.choose_effect_object(actor, object),
+            Action::FinishEffectChoice => {
+                self.finish_lore_counter_selection();
+                self.run_program();
+            }
             Action::FinishGraveyardReturn => {
                 self.finish_graveyard_return_selection();
                 self.run_program();

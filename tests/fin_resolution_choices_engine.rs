@@ -484,3 +484,176 @@ fn chosen_target_uses_counter_prohibition_and_resumable_replacements() {
         assert_eq!(game.state.players[player.index()].life, 21);
     }
 }
+
+const LORE_CHOICE: EffectChoiceKind =
+    EffectChoiceKind::RemoveLoreForSourceCounters(CounterKind::PlusOne);
+
+const ATTACK_FOR_LORE: CardRules = CardRules {
+    effect: Effect::Creature(2, 2),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfAttacks,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::ChooseObjects {
+            kind: LORE_CHOICE,
+            players: PlayerSet::Controller,
+            filter: ANY,
+            amount: 0,
+            optional_skip: None,
+        }],
+    }],
+    ..CardRules::EMPTY
+};
+
+fn lore_saga(game: &mut Game, owner: Player, lore: u64) -> CardId {
+    let saga = put(game, owner, "Awaken the Honored Dead", Zone::Battlefield);
+    game.set_counters(saga, Counters::of(CounterKind::Lore, lore));
+    saga
+}
+
+fn attack_for_lore(game: &mut Game, source: CardId) {
+    game.state.step = Step::Attackers;
+    game.state.pending = Pending::Attackers;
+    act(game, Action::Attack { card: source });
+    act(game, Action::FinishAttackers);
+}
+
+#[test]
+fn lore_removal_chooses_any_subset_of_distinct_controlled_sagas() {
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &ATTACK_FOR_LORE)]);
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut parent = scenario(player);
+    let source = put(&mut parent, player, "Grizzly Bears", Zone::Battlefield);
+    parent.set_counters(source, Counters::of(CounterKind::Lore, 1));
+    let protected = lore_saga(&mut parent, player, 2);
+    parent.state.objects[protected as usize].gained_keywords = Keywords::PROTECTION_EVERYTHING;
+    let stolen = lore_saga(&mut parent, opponent, 1);
+    parent.state.objects[stolen as usize].controller = player;
+    let opposing = lore_saga(&mut parent, opponent, 2);
+    let empty = lore_saga(&mut parent, player, 0);
+    let enchantment = TargetRule::Object {
+        zone: TargetZone::Battlefield,
+        kinds: 32,
+        relation: 0,
+        other: false,
+        nonland: false,
+        tapped: false,
+        min_mana: 0,
+        max_mana: u32::MAX,
+    };
+    for (saga, targetable) in [(protected, false), (stolen, true)] {
+        assert_eq!(
+            parent.activation_target_matches(
+                enchantment,
+                player,
+                parent.object_ref(source),
+                Target::Card(saga),
+            ),
+            targetable
+        );
+    }
+    attack_for_lore(&mut parent, source);
+    await_choice(&mut parent, player);
+
+    let candidates = [protected, stolen].map(|id| parent.object_ref(id));
+    for viewer in [player, opponent] {
+        let view = parent.observe(viewer).effect_choice.unwrap();
+        assert_eq!(view.kind, LORE_CHOICE);
+        assert_eq!(view.candidates, candidates);
+        assert_eq!(view.amount, 2);
+        assert_eq!(view.required, [0, 0]);
+        assert!(view.optional);
+    }
+    for object in [opposing, empty, source].map(|id| parent.object_ref(id)) {
+        reject(&mut parent, Action::ChooseEffectObject { object });
+    }
+    reject(&mut parent, Action::ChooseOptional { accept: false });
+
+    let initial = parent.snapshot();
+    let mut raw = parent.clone();
+    let mut indexed = parent.clone();
+    drop(parent);
+    for action in [
+        Action::ChooseEffectObject {
+            object: candidates[0],
+        },
+        Action::ChooseEffectObject {
+            object: candidates[1],
+        },
+        Action::FinishEffectChoice,
+    ] {
+        let revision = indexed.revision();
+        let index = indexed
+            .legal_actions()
+            .iter()
+            .position(|legal| *legal == action)
+            .unwrap();
+        act(&mut raw, action.clone());
+        indexed.apply_index(player, revision, index).unwrap();
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        if matches!(action, Action::ChooseEffectObject { .. }) {
+            reject(&mut raw, action);
+            assert_eq!(raw.counter_count(protected, CounterKind::Lore), 2);
+            assert_eq!(raw.counter_count(stolen, CounterKind::Lore), 1);
+            assert_eq!(raw.counter_count(source, CounterKind::PlusOne), 0);
+        }
+    }
+    settle(&mut raw);
+    settle(&mut indexed);
+    assert_eq!(raw.snapshot(), indexed.snapshot());
+    assert_eq!(raw.counter_count(protected, CounterKind::Lore), 1);
+    assert_eq!(raw.counter_count(stolen, CounterKind::Lore), 0);
+    assert_eq!(raw.counter_count(opposing, CounterKind::Lore), 2);
+    assert_eq!(raw.counter_count(source, CounterKind::Lore), 1);
+    assert_eq!(raw.counter_count(source, CounterKind::PlusOne), 2);
+    assert_eq!(raw.state.players[player.index()].library.len(), 8);
+
+    raw.restore(&initial).unwrap();
+    act(&mut raw, Action::FinishEffectChoice);
+    settle(&mut raw);
+    assert_eq!(raw.counter_count(protected, CounterKind::Lore), 2);
+    assert_eq!(raw.counter_count(stolen, CounterKind::Lore), 1);
+    assert_eq!(raw.counter_count(source, CounterKind::PlusOne), 0);
+
+    indexed.move_object(stolen, Zone::Exile);
+    indexed.move_object(empty, Zone::Exile);
+    indexed.begin_step(Step::Main1);
+    indexed.give_priority();
+    indexed.prepare_triggers();
+    settle(&mut indexed);
+    assert_eq!(indexed.counter_count(protected, CounterKind::Lore), 2);
+    assert_eq!(indexed.state.players[player.index()].library.len(), 5);
+}
+
+#[test]
+fn lore_reward_counts_actual_removals_and_requires_the_original_source() {
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &ATTACK_FOR_LORE)]);
+    let player = Player::P1;
+    for stale_source in [false, true] {
+        let mut game = scenario(player);
+        let source = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+        let original = game.object_ref(source);
+        let retained = lore_saga(&mut game, player, 2);
+        let departing = lore_saga(&mut game, player, 1);
+        put(&mut game, player, "Doubling Season", Zone::Battlefield);
+        attack_for_lore(&mut game, source);
+        if stale_source {
+            game.move_object(source, Zone::Exile);
+            game.move_object(source, Zone::Battlefield);
+            assert_ne!(game.object_ref(source), original);
+        }
+        await_choice(&mut game, player);
+        for object in [retained, departing].map(|id| game.object_ref(id)) {
+            act(&mut game, Action::ChooseEffectObject { object });
+        }
+        game.move_object(departing, Zone::Exile);
+        act(&mut game, Action::FinishEffectChoice);
+        settle(&mut game);
+        assert_eq!(game.counter_count(retained, CounterKind::Lore), 1);
+        assert_eq!(game.object_view(departing).zone, Zone::Exile);
+        assert_eq!(
+            game.counter_count(source, CounterKind::PlusOne),
+            if stale_source { 0 } else { 2 }
+        );
+    }
+}

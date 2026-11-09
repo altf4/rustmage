@@ -1076,6 +1076,9 @@ pub enum EffectChoiceKind {
         kind: CounterKind,
         amount: u32,
     },
+    /// Choose any number of controlled Sagas and remove one lore counter from each.
+    /// Use a controller choice with amount zero and no skip. Each removal earns a source counter.
+    RemoveLoreForSourceCounters(CounterKind),
     /// Apply one ordinary payment operation with an additional typed OR filter.
     FilteredCost {
         action: CostAction,
