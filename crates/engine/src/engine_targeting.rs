@@ -2691,7 +2691,7 @@ impl Game {
         }
         let plan = self.target_spec(&item);
         assert!(
-            matches!(item.kind, StackKind::ActivatedAbility { ability } if item.x.is_none() && source.card.activation(ability).nonmana_x())
+            matches!(item.kind, StackKind::ActivatedAbility { ability } if item.x.is_none() && source.card.activation(ability).declares_target_value_x())
                 || self.item_targets_available(&item, plan)
                 || source.card.gift().is_some_and(|gift| {
                     self.item_targets_available(&item, gift.promised_targets)

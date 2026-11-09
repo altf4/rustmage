@@ -8268,22 +8268,16 @@ impl Game {
                 {
                     a.add_cast_cost_clause(CastCostClause::Life(value));
                 }
-                if self
-                    .state
-                    .announcing
-                    .as_ref()
-                    .unwrap()
-                    .item
+                let a = self.state.announcing.as_ref().unwrap();
+                if a.item
                     .source
                     .expect("object-backed announcement")
                     .card
                     .targets_up_to_x()
-                    || self
-                        .exact_x_targets(&self.state.announcing.as_ref().unwrap().item)
-                        .is_some()
-                    || self.state.announcing.as_ref().unwrap().nonmana_x()
+                    || self.exact_x_targets(&a.item).is_some()
+                    || a.declares_target_value_x()
                 {
-                    let plan = self.target_spec(&self.state.announcing.as_ref().unwrap().item);
+                    let plan = self.target_spec(&a.item);
                     self.state.announcing.as_mut().unwrap().plan = plan;
                 }
                 self.continue_announcement_choices(false);

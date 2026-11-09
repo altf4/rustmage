@@ -354,8 +354,8 @@ impl Game {
         let a = self.state.announcing.as_ref()?;
         let mut intervals = if a.blight_x_cost() {
             self.blight_x_intervals(a)
-        } else if a.nonmana_x() {
-            self.nonmana_x_intervals(a)
+        } else if a.declares_target_value_x() {
+            self.target_value_x_intervals(a)
         } else if a.item.kind == StackKind::Spell
             && a.item
                 .source

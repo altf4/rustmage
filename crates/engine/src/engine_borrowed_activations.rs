@@ -578,7 +578,7 @@ impl Game {
                         Some(Instruction::Modal(modes)) => Some(*modes),
                         _ => None,
                     };
-                    let targets_available = ability.nonmana_x()
+                    let targets_available = ability.declares_target_value_x()
                         || modes.map_or_else(
                             || self.targets_available(ability.targets, actor, descriptor.source),
                             |modes| {

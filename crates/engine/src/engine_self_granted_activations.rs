@@ -99,7 +99,8 @@ impl Game {
                 continue;
             }
             let packet = self.self_granted_activation_packet(*row);
-            if (rules.nonmana_x() || self.targets_available(rules.targets, actor, row.recipient))
+            if (rules.declares_target_value_x()
+                || self.targets_available(rules.targets, actor, row.recipient))
                 && self.visit_activation_counter_payments(
                     actor,
                     rules,
