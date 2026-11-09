@@ -61,6 +61,14 @@ fn selected(program: &[Instruction]) -> SelectedQuantities {
                     result.attached_equipment |= nested.attached_equipment;
                 }
             }
+            Instruction::CounterUnlessPayCosts { costs, .. }
+            | Instruction::MayPayCosts { costs, .. } => {
+                for cost in *costs {
+                    for value in cost.extra_generic.into_iter().chain(cost.life) {
+                        amount(value, &mut result);
+                    }
+                }
+            }
             Instruction::SetBaseStatsFromSource { .. } => result.toughness = true,
             Instruction::AttachPriorSourceEquipment { .. } => result.attached_equipment = true,
             Instruction::SelectLibraryTo(effect)
@@ -100,7 +108,6 @@ fn selected(program: &[Instruction]) -> SelectedQuantities {
             | Instruction::AddCombatRedScaled(value)
             | Instruction::Mobilize { amount: value, .. }
             | Instruction::CounterUnlessPayScaled { amount: value, .. }
-            | Instruction::CounterRelatedUnlessPayLifeScaled(value)
             | Instruction::CastHandFreeUpTo(value)
             | Instruction::PutCountersScaled { amount: value, .. }
             | Instruction::PutPermanentCountersScaled { amount: value, .. }

@@ -6221,47 +6221,55 @@ impl Game {
         if request.discard_only {
             return false;
         }
-        if request
-            .life
-            .is_some_and(|life| self.state.players[request.payer.index()].life < i128::from(life))
-        {
+        if self.visit_resolution_cost_selections(request, emit) {
+            return true;
+        }
+        let goal_for = |cost: ManaCost| FundingGoal {
+            reserve: None,
+            actor: request.payer,
+            required: cost.colored,
+            generic: cost.generic,
+            source: None,
+        };
+        let costs = || std::iter::once(request.cost).chain(request.alternatives.iter().copied());
+        let can_pay_life = request.life.is_none_or(|life| {
+            life == 0 || self.state.players[request.payer.index()].life >= life
+        });
+        if !can_pay_life && request.choices.is_none() {
             return false;
         }
-        for cost in std::iter::once(request.cost).chain(request.alternatives.iter().copied()) {
-            let goal = FundingGoal {
-                reserve: None,
-                actor: request.payer,
-                required: cost.colored,
-                generic: cost.generic,
-                source: None,
-            };
-            let state = FundingState::from_game(self, &goal);
-            if visit_funding_payments(
-                mana_lots::available(state.mana, &state.lots, state.purpose),
-                goal.required,
-                goal.generic,
-                |payment| {
-                    emit(Action::PayResolutionMana {
-                        payment: concrete_payment(payment),
-                    })
-                },
-            ) {
-                return true;
+        if request.route_selected() && can_pay_life && self.resolution_objects_ready(request) {
+            for goal in costs().map(goal_for) {
+                let state = FundingState::from_game(self, &goal);
+                if visit_funding_payments(
+                    mana_lots::available(state.mana, &state.lots, state.purpose),
+                    goal.required,
+                    goal.generic,
+                    |payment| {
+                        emit(Action::PayResolutionMana {
+                            payment: concrete_payment(payment),
+                        })
+                    },
+                ) {
+                    return true;
+                }
             }
         }
-        // A payment request grants a mana-ability window even if it is declined.
-        // Emit the shared window once regardless of the number of hybrid choices.
-        let Some(goal) = std::iter::once(request.cost)
-            .chain(request.alternatives.iter().copied())
-            .map(|cost| FundingGoal {
-                reserve: None,
-                actor: request.payer,
-                required: cost.colored,
-                generic: cost.generic,
-                source: None,
-            })
-            .find(FundingGoal::requires_mana)
-        else {
+        // An offered mana cost opens the same window before the final payment,
+        // including while its nonmana selections are still incomplete.
+        let goal = if request.route_selected() {
+            costs().map(goal_for).find(FundingGoal::requires_mana)
+        } else {
+            request
+                .choices
+                .as_ref()
+                .unwrap()
+                .options
+                .iter()
+                .map(|choice| goal_for(choice.mana))
+                .find(FundingGoal::requires_mana)
+        };
+        let Some(goal) = goal else {
             return false;
         };
         let mut state = FundingState::from_game(self, &goal);

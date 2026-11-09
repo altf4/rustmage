@@ -62,7 +62,7 @@ pub use rustmage_core::engine::{
     PendingPaymentView, Player, PlayerCastGrantsView, PlayerControlView, PlayerCounterAmountView,
     PlayerCounterPlacementView, PlayerView, PlotPaymentView, PlottedCard, PowerUpUseView,
     PreparationView, ProliferateReplacementView, RecoveryChoiceView, ReflexiveSubjectView,
-    ReplacementChoiceView, ReplacementEffectView, ResolutionFreeCasts, ResolutionPaidCast,
+    ReplacementChoiceView, ReplacementEffectView, ResolutionCostView, ResolutionFreeCasts, ResolutionPaidCast,
     ResolutionPaymentView, ResolvedAbilityModificationView, ResolvedSpellNameView,
     ResolvedStatSubjectView, RetargetView, ReturnCardView, ReturnLinkView, RevealedLibraryCard,
     RoleGroupView, RoleTimestampView, SaddleChoiceView, SearchChoiceView,

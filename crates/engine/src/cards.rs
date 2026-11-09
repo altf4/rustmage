@@ -1401,7 +1401,7 @@ impl EffectChoiceKind {
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct SacrificeFilter {
     pub keywords: Keywords,
     pub source_only: bool,
@@ -1415,7 +1415,7 @@ pub struct SacrificeFilter {
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct AdditionalCost {
     pub kind: EffectChoiceKind,
     pub filter: SacrificeFilter,
@@ -1541,6 +1541,42 @@ pub enum MillAmount {
 pub struct ManaCost {
     pub colored: Mana,
     pub generic: u32,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl ManaCost {
+    pub const ZERO: Self = Self {
+        colored: [0; 6],
+        generic: 0,
+    };
+}
+
+/// A fixed number of distinct objects, selected by the player paying a cost.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct ResolutionObjectCost {
+    pub cost: AdditionalCost,
+    pub count: u16,
+}
+
+/// One way to pay a cost asked for by a resolving spell or ability.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct ResolutionCost {
+    pub mana: ManaCost,
+    pub extra_generic: Option<AmountValue>,
+    pub life: Option<AmountValue>,
+    pub objects: Option<ResolutionObjectCost>,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl ResolutionCost {
+    pub const FREE: Self = Self {
+        mana: ManaCost::ZERO,
+        extra_generic: None,
+        life: None,
+        objects: None,
+    };
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -2058,8 +2094,6 @@ pub enum Instruction {
         exile_instants_sorceries: bool,
     },
     CounterRelatedUnlessPayLife(u32),
-    /// Pay the amount sampled as this ability resolves, using exact source LKI.
-    CounterRelatedUnlessPayLifeScaled(AmountValue),
     /// Ask the triggering opponent to pay by getting poison counters.
     MayPayWardPoison {
         amount: u16,
@@ -2298,6 +2332,10 @@ pub enum Instruction {
     },
     MayPayMana {
         cost: ManaCost,
+        skip: usize,
+    },
+    MayPayCosts {
+        costs: &'static [ResolutionCost],
         skip: usize,
     },
     MayPayManaAlternatives {
@@ -2702,6 +2740,11 @@ pub enum Instruction {
         subject: CounterSubject,
         exile: bool,
         unpaid_skip: usize,
+    },
+    CounterUnlessPayCosts {
+        subject: CounterSubject,
+        costs: &'static [ResolutionCost],
+        exile: bool,
     },
     ReturnSourceToHand(TargetZone),
     ReturnSourceFromFirstPublicZoneToHand,

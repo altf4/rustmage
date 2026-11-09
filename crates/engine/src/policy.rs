@@ -402,7 +402,9 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::PayPlot { .. }
             | Action::PayFaceUp { .. }
             | Action::PayAttackCost { .. } => 100,
-            Action::ChooseSpellCost { .. } | Action::ChooseActivationCost { .. } => 50,
+            Action::ChooseSpellCost { .. }
+            | Action::ChooseActivationCost { .. }
+            | Action::ChooseResolutionCost { .. } => 50,
             Action::ChooseMode { .. } => 50,
             Action::ChooseOutsideCard { .. }
             | Action::ChooseOutsideBasic { .. }

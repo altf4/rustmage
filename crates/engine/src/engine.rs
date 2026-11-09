@@ -1023,6 +1023,7 @@ define_actions! {
     AnnounceGrantedFlashback { card: CardId, flash_surcharge: bool },
     PayResolutionLife,
     DeclineResolutionLife,
+    ChooseResolutionCost { index: u16 },
     AnnounceExile {
         card: CardId,
     },
@@ -7267,6 +7268,12 @@ impl Game {
                 grantor,
                 ability,
             } => self.announce_planeswalker_grant(source, grantor, ability),
+            Action::ChooseResolutionCost { index } => self.choose_resolution_cost(index),
+            Action::ChooseAdditionalCost { object }
+                if matches!(self.state.pending, Pending::ResolutionMana { .. }) =>
+            {
+                self.choose_resolution_cost_object(object)
+            }
             Action::ChooseAdditionalCost { object } => self.choose_additional_cost(object),
             Action::FinishAdditionalCostGroup => self.finish_additional_cost_group(),
             Action::FinishCraftMaterials => self.finish_graveyard_symbol_cost(),
@@ -12032,15 +12039,7 @@ impl Game {
                 .resolving
                 .as_ref()
                 .and_then(|r| r.mana_payment.as_deref())
-                .map(|p| resolution_mana::ResolutionPaymentView {
-                    payer: p.payer,
-                    cost: p.cost,
-                    alternatives: p.alternatives.to_vec(),
-                    life: p.life,
-                    discard_only: p.discard_only,
-                    victim: p.victim,
-                    exile: p.exile,
-                }),
+                .map(|p| p.view(self.shares_information(viewer, p.payer))),
             payment_request: self.announcement_payment_request(viewer),
             targeting_group: if owns_choice && matches!(s.pending, Pending::Targets { .. }) {
                 s.announcing.as_ref().map(|announcement| announcement.group)
@@ -12617,9 +12616,7 @@ impl Game {
                         + resolution.evidence.as_ref().map_or(0, |f| f.bytes())
                         + resolution.connive.as_ref().map_or(0, |c| c.bytes())
                         + resolution.proliferate.as_ref().map_or(0, |p| p.bytes())
-                        + resolution.mana_payment.as_ref().map_or(0, |_| {
-                            std::mem::size_of::<resolution_mana::ResolutionPayment>()
-                        })
+                        + resolution.mana_payment.as_ref().map_or(0, |p| p.bytes())
                         + resolution.milled.len() * std::mem::size_of::<ObjectRef>()
                         + resolution.remembered_creatures.as_ref().map_or(0, |rows| {
                             std::mem::size_of::<Vec<ObjectRef>>()
@@ -12752,7 +12749,7 @@ pub use entries::{
 };
 pub use entry_tap::{EntryTapEffect, EntryTapKind, EntryTapView};
 
-pub use resolution_mana::ResolutionPaymentView;
+pub use resolution_mana::{ResolutionCostView, ResolutionPaymentView};
 
 pub use discard_events::DiscardTriggerView;
 

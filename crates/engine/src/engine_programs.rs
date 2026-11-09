@@ -5527,10 +5527,8 @@ impl Game {
                         return;
                     }
                 }
-                Instruction::CounterRelatedUnlessPayLifeScaled(amount) => {
-                    let life = i128::try_from(self.item_amount(amount, &item))
-                        .capacity("life payment exhausted");
-                    if self.start_resolution_life(&item, life) {
+                Instruction::CounterUnlessPayCosts { subject, costs, exile } => {
+                    if self.start_resolution_costs(&item, Some(subject), costs, exile, 0) {
                         return;
                     }
                 }
@@ -7746,6 +7744,10 @@ impl Game {
                     self.state.pending = Pending::ResolutionX {
                         player: item.controller,
                     };
+                    return;
+                }
+                Instruction::MayPayCosts { costs, skip } => {
+                    self.start_resolution_costs(&item, None, costs, false, skip);
                     return;
                 }
                 Instruction::MayPayMana { cost, skip } => {

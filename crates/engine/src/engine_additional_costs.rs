@@ -146,7 +146,10 @@ impl Game {
                 spec.kind.payment_kind(),
                 EffectChoiceKind::ExileControlledOrGraveyard
                     | EffectChoiceKind::ExileCraftNonlands(_)
+                    | EffectChoiceKind::ExileGraveyard
+                    | EffectChoiceKind::ExileGraveyardCards(_)
                     | EffectChoiceKind::ExileGraveyardRange { .. }
+                    | EffectChoiceKind::ExileGraveyardSymbols { .. }
             )
             && ability_world::CharacteristicWorld::graveyard_exile_prohibited(self, object.card)
         {
