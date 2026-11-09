@@ -450,6 +450,10 @@ fn a_death_return_tapped_uses_the_resolving_controller_and_the_exact_graveyard_f
         }],
         ..CardRules::EMPTY
     };
+    const FRONT_RETURN: CardRules = CardRules {
+        effect: Effect::Creature(3, 2),
+        ..GRAVEYARD_RULES
+    };
     const COPY: CardRules = CardRules {
         effect: Effect::Spell(
             TargetPlan::Single(TargetSpec::one(TargetRule::Ability)),
@@ -461,7 +465,7 @@ fn a_death_return_tapped_uses_the_resolving_controller_and_the_exact_graveyard_f
     let back = front.back_face().unwrap();
     let copier = Card::from_name("Negate").unwrap();
     let _rules =
-        fixture_rules::activate(&[(front, &GRAVEYARD_RULES), (back, &DEATH), (copier, &COPY)]);
+        fixture_rules::activate(&[(front, &FRONT_RETURN), (back, &DEATH), (copier, &COPY)]);
     let owner = Player::P0;
     let controller = owner.other();
     let mut game = scenario(owner);
