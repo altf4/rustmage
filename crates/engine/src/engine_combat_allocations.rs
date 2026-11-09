@@ -7,6 +7,13 @@ pub struct CombatDamagePlayerView {
     pub source: ObjectRef,
     pub player: Player,
 }
+/// Actual player combat damage by recipient seat during the current turn.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
+pub struct PlayerCombatDamageView {
+    pub amounts: [u128; 2],
+    pub by_legendary_creature: [bool; 2],
+}
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct CombatRulesState {
@@ -25,6 +32,7 @@ pub(super) struct CombatRulesState {
     pub sneak_entries: Option<SharedVec<ObjectRef>>,
     pub must_attack_this_combat: Vec<ObjectRef>,
     pub damaged_players: Vec<CombatDamagePlayerView>,
+    pub player_damage_this_turn: PlayerCombatDamageView,
     excess: Option<ExcessDamage>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -260,14 +268,16 @@ impl Game {
                     source: event.source.reference,
                     player,
                 };
-                let rows = &mut self
-                    .state
-                    .combat_rules
-                    .get_or_insert_with(Default::default)
-                    .damaged_players;
-                if !rows.contains(&row) {
-                    rows.push(row);
+                let rules = self.state.combat_rules.get_or_insert_with(Default::default);
+                if !rules.damaged_players.contains(&row) {
+                    rules.damaged_players.push(row);
                 }
+                let history = &mut rules.player_damage_this_turn;
+                let recipient = player.index();
+                history.amounts[recipient] = history.amounts[recipient]
+                    .checked_add(event.amount.unsigned_abs())
+                    .capacity("player combat damage history exhausted");
+                history.by_legendary_creature[recipient] |= event.source.facts.legendary_creature;
             }
             let target = match event.target {
                 Target::Card(id) => Some(self.object_ref(id)),
@@ -287,6 +297,21 @@ impl Game {
                     .capacity("excess damage exhausted");
             }
         }
+    }
+    pub(super) fn player_combat_damage_this_turn(&self) -> Option<&PlayerCombatDamageView> {
+        self.state
+            .combat_rules
+            .as_ref()
+            .map(|rules| &rules.player_damage_this_turn)
+            .filter(|history| history.amounts != [0; 2])
+    }
+    pub(super) fn any_player_combat_damage_at_least(&self, minimum: u128) -> bool {
+        self.player_combat_damage_this_turn()
+            .is_some_and(|history| history.amounts.into_iter().any(|amount| amount >= minimum))
+    }
+    pub(super) fn player_was_dealt_legendary_combat_damage(&self, player: Player) -> bool {
+        self.player_combat_damage_this_turn()
+            .is_some_and(|history| history.by_legendary_creature[player.index()])
     }
     pub(super) fn tracked_excess_damage(&self) -> u64 {
         let amount = self

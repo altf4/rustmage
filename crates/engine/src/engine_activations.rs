@@ -300,6 +300,9 @@ impl Game {
             ActivationGuard::OpponentNoncombatDamageThisTurn => {
                 self.state.players[actor.other().index()].noncombat_damage_this_turn
             }
+            ActivationGuard::OpponentWasDealtLegendaryCombatDamageThisTurn => {
+                self.player_was_dealt_legendary_combat_damage(actor.other())
+            }
             ActivationGuard::SourceSolved => self.case_solved(self.object_ref(source)),
             ActivationGuard::Always => true,
             ActivationGuard::SourceAttackedThisTurn => self

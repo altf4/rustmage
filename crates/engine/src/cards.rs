@@ -4936,6 +4936,7 @@ pub enum StepGuard {
     FirstCombatPhase,
     SourceSneakedThisTurn,
     UnsolvedLifeGainedAtLeast(u128),
+    AnyPlayerCombatDamageAtLeast(u128),
     /// Trigger-time attachment relation; wrap the step event in When.
     AttachedControllerTurn,
     PermanentLeftBattlefieldThisTurn,
@@ -5693,6 +5694,7 @@ pub enum ActivationGuard {
     CastInstantSorceryThisTurn,
     ScriedOrSurveilledThisTurn,
     OpponentNoncombatDamageThisTurn,
+    OpponentWasDealtLegendaryCombatDamageThisTurn,
     SourceAttackedThisTurn,
     Always,
     OwnTurn,
@@ -5726,6 +5728,7 @@ impl ActivationGuard {
             | Self::CastInstantSorceryThisTurn
             | Self::ScriedOrSurveilledThisTurn
             | Self::OpponentNoncombatDamageThisTurn
+            | Self::OpponentWasDealtLegendaryCombatDamageThisTurn
             | Self::OwnTurn
             | Self::OwnTurnAfterGraveyardDeparture
             | Self::ControlLandsAtLeast(_)

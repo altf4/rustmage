@@ -459,6 +459,9 @@ impl FundingState<'_> {
             StepGuard::UnsolvedLifeGainedAtLeast(n) => {
                 !self.game.case_solved(source) && state.life_gained_this_turn >= n
             }
+            StepGuard::AnyPlayerCombatDamageAtLeast(minimum) => {
+                self.game.any_player_combat_damage_at_least(minimum)
+            }
             StepGuard::DeclaredAttackSubtypesAll(subtypes) => {
                 self.game.declared_attack_subtypes_all(player, subtypes)
             }

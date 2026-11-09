@@ -1573,6 +1573,9 @@ impl<'g> FundingState<'g> {
             ActivationGuard::OpponentNoncombatDamageThisTurn => {
                 self.game.state.players[actor.other().index()].noncombat_damage_this_turn
             }
+            ActivationGuard::OpponentWasDealtLegendaryCombatDamageThisTurn => self
+                .game
+                .player_was_dealt_legendary_combat_damage(actor.other()),
             ActivationGuard::SourceSolved => self.game.case_solved(self.reference(source)),
             ActivationGuard::SourceAttackedThisTurn => self
                 .game

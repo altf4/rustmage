@@ -392,6 +392,9 @@ impl Game {
             StepGuard::UnsolvedLifeGainedAtLeast(n) => {
                 return !self.case_solved(source) && p.life_gained_this_turn >= n;
             }
+            StepGuard::AnyPlayerCombatDamageAtLeast(minimum) => {
+                return self.any_player_combat_damage_at_least(minimum);
+            }
             StepGuard::DeclaredAttackSubtypesAll(subtypes) => {
                 return self.declared_attack_subtypes_all(player, subtypes);
             }

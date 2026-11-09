@@ -51,6 +51,7 @@ impl Game {
             colors: ability_world::CharacteristicWorld::colors(self, id),
             power: stats.power,
             power_above_base: creature && stats.power > base.power,
+            legendary_creature: creature && ability_world::CharacteristicWorld::legendary(self, id),
             granted_subtypes: self.granted_subtypes(id),
             card: if object.zone == Zone::Stack {
                 self.effective_spell_card(id)

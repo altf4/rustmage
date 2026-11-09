@@ -406,7 +406,7 @@ pub use target_library::{TargetLibraryMovement, TargetLibraryView};
 #[doc(hidden)]
 #[path = "engine_combat_allocations.rs"]
 pub mod combat_allocations;
-pub use combat_allocations::CombatDamagePlayerView;
+pub use combat_allocations::{CombatDamagePlayerView, PlayerCombatDamageView};
 #[doc(hidden)]
 #[path = "engine_combat_schedule.rs"]
 pub mod combat_schedule;
@@ -2460,6 +2460,8 @@ pub struct DamageFacts {
     pub colors: u8,
     pub power: i128,
     pub power_above_base: bool,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub legendary_creature: bool,
     pub granted_subtypes: GrantedSubtypes,
     pub card: Card,
     pub battlefield: bool,
@@ -2484,6 +2486,9 @@ impl DamageFacts {
             colors: view.colors,
             power: view.power,
             power_above_base: view.power_above_base,
+            legendary_creature: view.zone == Zone::Battlefield
+                && view.kinds & 1 != 0
+                && view.is_legendary(),
             granted_subtypes: view.granted_subtypes,
             card: view.card,
             token: view.is_token(),
@@ -3709,6 +3714,8 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub must_attack_this_combat: Vec<ObjectRef>,
     pub combat_damaged_players: Vec<combat_allocations::CombatDamagePlayerView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub player_combat_damage_this_turn: Option<PlayerCombatDamageView>,
     pub animations: Vec<AnimationView>,
     pub temporary_controls: Vec<TemporaryControlView>,
     pub casting_prohibited: bool,
@@ -11488,6 +11495,7 @@ impl Game {
                 .combat_rules
                 .as_ref()
                 .map_or_else(Vec::new, |r| r.damaged_players.clone()),
+            player_combat_damage_this_turn: self.player_combat_damage_this_turn().copied(),
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
             cards_exiled_this_turn: s.cards_exiled_this_turn,
             creatures_died_this_turn: s.creatures_died_this_turn,
