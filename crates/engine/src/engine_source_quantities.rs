@@ -12,6 +12,9 @@ pub struct SourceQuantityView {
     pub chosen_creature_type: Option<crate::cards::CreatureType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub equipment_count: Option<u64>,
+    /// Exact Equipment incarnations attached to the source before departure.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub attached_equipment: Option<Box<[ObjectRef]>>,
     /// Signed source facts for an intervening creature-stat comparison.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub creature_comparison: Option<CreatureComparisonFacts>,
@@ -22,6 +25,7 @@ struct SelectedQuantities {
     power: bool,
     toughness: bool,
     equipment: bool,
+    attached_equipment: bool,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -54,9 +58,11 @@ fn selected(program: &[Instruction]) -> SelectedQuantities {
                     result.power |= nested.power;
                     result.toughness |= nested.toughness;
                     result.equipment |= nested.equipment;
+                    result.attached_equipment |= nested.attached_equipment;
                 }
             }
             Instruction::SetBaseStatsFromSource { .. } => result.toughness = true,
+            Instruction::AttachPriorSourceEquipment { .. } => result.attached_equipment = true,
             Instruction::SelectLibraryTo(effect)
             | Instruction::SelectLibraryThenMayTransform(effect) => {
                 if let Some(value) = effect.maximum_mana_value {
@@ -134,19 +140,27 @@ impl Game {
     }
     pub(super) fn source_equipment_count(&self, source: ObjectRef) -> Option<u64> {
         (self.on_battlefield(source.card) && self.object_ref(source.card) == source).then(|| {
-            self.state
-                .objects
-                .iter()
-                .enumerate()
-                .filter(|(id, object)| {
-                    object.zone == Zone::Battlefield
-                        && object.attached_to == Some(source)
-                        && self.has_subtype(*id as CardId, "Equipment")
-                })
+            self.source_equipment_refs(source)
                 .count()
                 .try_into()
                 .capacity("equipment quantity exhausted")
         })
+    }
+    pub(super) fn source_equipment_refs(
+        &self,
+        source: ObjectRef,
+    ) -> impl Iterator<Item = ObjectRef> + '_ {
+        self.state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(move |(id, object)| {
+                let id = id as CardId;
+                (object.zone == Zone::Battlefield
+                    && object.attached_to == Some(source)
+                    && self.has_subtype(id, "Equipment"))
+                .then(|| self.object_ref(id))
+            })
     }
     pub(super) fn source_quantity_facts(
         &self,
@@ -176,6 +190,9 @@ impl Game {
                 equipment_count: quantities
                     .equipment
                     .then(|| self.source_equipment_count(source.reference).unwrap_or(0)),
+                attached_equipment: quantities
+                    .attached_equipment
+                    .then(|| self.source_equipment_refs(source.reference).collect()),
             })
         })
     }
@@ -244,6 +261,9 @@ impl Game {
         if saved.equipment_count.is_some() {
             saved.equipment_count = Some(self.source_equipment_count(source).unwrap_or(0));
         }
+        if saved.attached_equipment.is_some() {
+            saved.attached_equipment = Some(self.source_equipment_refs(source).collect());
+        }
     }
     /// Freeze before ANY member commits. Live queries remain authoritative until
     /// the source actually leaves; a failed/skipped move cannot bind a new object.
@@ -272,6 +292,7 @@ impl Game {
                         selected.power |= facts.power.is_some();
                         selected.toughness |= facts.toughness.is_some();
                         selected.equipment |= facts.equipment_count.is_some();
+                        selected.attached_equipment |= facts.attached_equipment.is_some();
                     }
                 }
                 (selected != SelectedQuantities::default()).then(|| {
@@ -289,6 +310,9 @@ impl Game {
                             equipment_count: selected.equipment.then(|| {
                                 self.source_equipment_count(source.reference).unwrap_or(0)
                             }),
+                            attached_equipment: selected
+                                .attached_equipment
+                                .then(|| self.source_equipment_refs(source.reference).collect()),
                         },
                     )
                 })
@@ -332,6 +356,9 @@ impl Game {
                 }
                 if saved.equipment_count.is_some() {
                     saved.equipment_count = frozen.equipment_count;
+                }
+                if saved.attached_equipment.is_some() {
+                    saved.attached_equipment = frozen.attached_equipment.clone();
                 }
             }
         }

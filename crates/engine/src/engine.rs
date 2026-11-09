@@ -1955,10 +1955,12 @@ impl SpellView {
             + self.copy_event.as_ref().map_or(0, |event| {
                 std::mem::size_of::<stack_copies::CopyEvent>() + event.spell.owned_bytes()
             })
-            + self
-                .source_quantity_lki
-                .as_ref()
-                .map_or(0, |_| std::mem::size_of::<SourceQuantityView>())
+            + self.source_quantity_lki.as_ref().map_or(0, |facts| {
+                std::mem::size_of::<SourceQuantityView>()
+                    + facts.attached_equipment.as_ref().map_or(0, |equipment| {
+                        equipment.len() * std::mem::size_of::<ObjectRef>()
+                    })
+            })
             + self.source_counter_lki.as_ref().map_or(0, |facts| {
                 std::mem::size_of::<Vec<SourceCounterQuantityView>>()
                     + facts.len() * std::mem::size_of::<SourceCounterQuantityView>()

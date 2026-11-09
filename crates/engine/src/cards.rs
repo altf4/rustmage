@@ -2874,6 +2874,10 @@ pub enum Instruction {
         recipient: u16,
         required_subtype: Option<&'static str>,
     },
+    /// Attach one surviving Equipment that was attached to the exact sacrificed source.
+    AttachPriorSourceEquipment {
+        recipient: u16,
+    },
     AttachEquipmentByGroups {
         equipment: u16,
         recipient: u16,

@@ -439,6 +439,7 @@ impl Game {
             power: None,
             toughness: None,
             equipment_count: None,
+            attached_equipment: None,
             creature_comparison: Some(CreatureComparisonFacts::from_view(source)),
         }));
         p.set_event_object(EventObjectView {

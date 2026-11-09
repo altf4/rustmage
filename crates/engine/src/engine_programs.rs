@@ -3561,6 +3561,7 @@ impl Game {
                 Instruction::Fight { .. }
                     | Instruction::RevealTargetHandExileUntilSourceLeaves
                     | Instruction::MayAttachControlledEquipment { .. }
+                    | Instruction::AttachPriorSourceEquipment { .. }
                     | Instruction::AttachEquipmentByGroups { .. }
                     | Instruction::AttachEquipmentGroupsReflexive { .. }
                     | Instruction::ReturnAllTargetsToHand
@@ -5945,6 +5946,11 @@ impl Game {
                     required_subtype,
                 } => {
                     if self.may_attach_controlled_equipment(&item, recipient, required_subtype) {
+                        return;
+                    }
+                }
+                Instruction::AttachPriorSourceEquipment { recipient } => {
+                    if self.attach_prior_source_equipment(&item, recipient) {
                         return;
                     }
                 }
