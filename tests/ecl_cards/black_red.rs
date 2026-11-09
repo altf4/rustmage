@@ -1293,17 +1293,12 @@ fn burning_curiosity_paid_witness_can_produce_mana_and_permissions_last_through_
                 let b = named(&mut g, p, "Mountain", Zone::Battlefield);
                 g.state.players[p.index()].mana = [0; 6];
                 checked(&mut g, Action::AnnounceCast { card: id });
-                let object = Some(g.object_ref(witness));
-                checked(
-                    &mut g,
-                    Action::ChooseBlight {
-                        pay: object.is_some(),
-                    },
-                );
+                let object = g.object_ref(witness);
+                checked(&mut g, Action::ChooseBlight { pay: true });
                 for card in [witness, a, b] {
                     checked(&mut g, Action::TapMana { card });
                 }
-                pay_optional_blight(&mut g, object.unwrap());
+                pay_optional_blight(&mut g, object);
                 kindle_pay(&mut g);
                 assert_eq!(g.state.objects[witness as usize].zone, Zone::Graveyard);
             } else {
@@ -1867,20 +1862,15 @@ fn collective_inferno_uses_chosen_type_incarnation_and_departed_source_lki() {
         let source = named(&mut g, p, "Fear of Lost Teeth", Zone::Battlefield);
         let id = named(&mut g, p, "Cinder Strike", Zone::Hand);
         checked(&mut g, Action::AnnounceCast { card: id });
-        let object = Some(g.object_ref(source));
-        checked(
-            &mut g,
-            Action::ChooseBlight {
-                pay: object.is_some(),
-            },
-        );
+        let object = g.object_ref(source);
+        checked(&mut g, Action::ChooseBlight { pay: true });
         checked(
             &mut g,
             Action::ChooseTarget {
                 target: Target::Card(source),
             },
         );
-        pay_optional_blight(&mut g, object.unwrap());
+        pay_optional_blight(&mut g, object);
         kindle_pay(&mut g);
         assert_eq!(g.state.objects[source as usize].zone, Zone::Graveyard);
         for _ in 0..50 {
