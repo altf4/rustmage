@@ -171,9 +171,28 @@ impl Game {
         actor: Player,
         id: CardId,
         sorcery: bool,
-        definition: Card,
+        face: CastFace,
     ) -> bool {
         let object = &self.state.objects[id as usize];
+        let definition = match face {
+            CastFace::Adventure => object.card.adventure_spell(),
+            CastFace::Omen => object.card.omen_spell(),
+            _ => unreachable!("alternate spell face"),
+        };
+        let Some(definition) = definition else {
+            return false;
+        };
+        if object.zone == Zone::Library {
+            return self.can_cast_library_face(actor, id, definition)
+                && self.permitted_cast_available(
+                    actor,
+                    id,
+                    CastMethod::Normal,
+                    face,
+                    sorcery,
+                    false,
+                );
+        }
         // Adventure's own permission is normal-only. Another generic permission
         // remains independently usable; never deny by an "on adventure" flag.
         let generic_exile = object.zone == Zone::Exile && self.can_cast_exiled_card(actor, id);

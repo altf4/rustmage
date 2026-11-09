@@ -5482,9 +5482,8 @@ impl Game {
                         Zone::Battlefield => obj.controller == actor,
                         Zone::Hand | Zone::Graveyard => obj.owner == actor,
                         Zone::Library => {
-                            self.can_cast_library_top(actor, card)
+                            self.has_library_spell_face(actor, card)
                                 || self.can_play_static_land(actor, card)
-                                || self.turn_free_library_origin(actor, card)
                         }
                         Zone::Exile => {
                             plotted = sorcery && self.has_plotted_permission(actor, card);
@@ -5656,7 +5655,9 @@ impl Game {
                     }
                     // This check follows face-down disguise: the face-down spell
                     // has no printed restriction from its underlying card.
-                    if !self.spell_graveyard_requirement_holds(actor, card, obj.card) {
+                    let front_allowed =
+                        self.spell_graveyard_requirement_holds(actor, card, obj.card);
+                    if obj.zone != Zone::Library && !front_allowed {
                         continue;
                     }
                     if !casting_prohibited
@@ -5683,13 +5684,7 @@ impl Game {
                     {
                         return true;
                     }
-                    if obj.card.adventure_spell().is_some()
-                        && self.alternate_cast_available(
-                            actor,
-                            card,
-                            sorcery,
-                            obj.card.adventure_spell().unwrap(),
-                        )
+                    if self.alternate_cast_available(actor, card, sorcery, CastFace::Adventure)
                         && emit(Action::AnnounceAdventure { card })
                     {
                         return true;
@@ -5700,8 +5695,7 @@ impl Game {
                     {
                         return true;
                     }
-                    if let Some(definition) = obj.card.omen_spell()
-                        && self.alternate_cast_available(actor, card, sorcery, definition)
+                    if self.alternate_cast_available(actor, card, sorcery, CastFace::Omen)
                         && emit(Action::AnnounceOmen { card })
                     {
                         return true;
@@ -5924,6 +5918,9 @@ impl Game {
                         && emit(Action::AnnounceHarmonize { card })
                     {
                         return true;
+                    }
+                    if !front_allowed {
+                        continue;
                     }
                     let flashback =
                         obj.zone == Zone::Graveyard && obj.card.flashback_cost().is_some();

@@ -16,6 +16,8 @@ impl Card {
                         | StaticAbilityFragment::CascadeFromHand { .. }
                         | StaticAbilityFragment::LookAtLibraryTop
                         | StaticAbilityFragment::CastCreatureFromLibraryTop
+                        | StaticAbilityFragment::CastFromLibraryTop(_)
+                        | StaticAbilityFragment::PlayFromLibraryTopAfterAttacking
                         | StaticAbilityFragment::CastSubtypesFromLibraryTopWithCounter(_)
                         | StaticAbilityFragment::PlayLandFromLibraryTop
                         | StaticAbilityFragment::PlayLandFromGraveyard
@@ -37,36 +39,111 @@ pub(super) fn has_fragment<W: ability_world::CharacteristicWorld + ?Sized>(
     player: Player,
     predicate: impl Fn(&StaticAbilityFragment) -> bool,
 ) -> bool {
+    has_fragment_from(world, player, |_, fragment| predicate(fragment))
+}
+fn has_fragment_from<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    player: Player,
+    predicate: impl Fn(CardId, &StaticAbilityFragment) -> bool,
+) -> bool {
     world.static_sources().iter().any(|&id| {
         let object = world.object(id);
+        let matches = |fragment: &StaticAbilityFragment| predicate(id, fragment);
         object.zone == Zone::Battlefield
             && object.controller == player
             && object
                 .card
                 .static_ability_groups()
                 .iter()
-                .any(|g| g.fragments.iter().any(&predicate))
-            && world.fragment_available(id, &predicate)
+                .any(|g| g.fragments.iter().any(matches))
+            && world.fragment_available(id, matches)
     })
 }
-/// A live rule changes only the origin of an ordinary land play. It never grants
-/// a spell cast, a per-source allowance, or an action during mana payment.
+fn source_attacked<W: ability_world::CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> bool {
+    world
+        .game()
+        .state
+        .attacked_this_turn
+        .contains(&world.reference(id))
+}
+/// The land route changes only its origin. Timing and the land allowance are
+/// checked by the ordinary play action.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn land_origin_available<W: ability_world::CharacteristicWorld + ?Sized>(
     world: &W,
     player: Player,
     origin: Zone,
 ) -> bool {
-    has_fragment(world, player, |f| {
-        matches!(
-            (origin, f),
-            (Zone::Library, StaticAbilityFragment::PlayLandFromLibraryTop)
-                | (
-                    Zone::Graveyard,
-                    StaticAbilityFragment::PlayLandFromGraveyard
-                )
-        )
+    has_fragment_from(world, player, |id, fragment| match (origin, fragment) {
+        (Zone::Library, StaticAbilityFragment::PlayFromLibraryTopAfterAttacking) => {
+            source_attacked(world, id)
+        }
+        (Zone::Library, StaticAbilityFragment::PlayLandFromLibraryTop)
+        | (Zone::Graveyard, StaticAbilityFragment::PlayLandFromGraveyard) => true,
+        _ => false,
     })
+}
+fn is_library_top<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    player: Player,
+    card: CardId,
+) -> bool {
+    let object = world.object(card);
+    object.zone == Zone::Library
+        && object.owner == player
+        && object.is_card()
+        && world.game().state.players[player.index()]
+            .library
+            .iter()
+            .rev()
+            .copied()
+            .find(|&id| {
+                let candidate = world.object(id);
+                candidate.zone == Zone::Library && candidate.is_card()
+            })
+            == Some(card)
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn ordinary_library_spell_permission<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    player: Player,
+    definition: Card,
+) -> bool {
+    !definition.is_land()
+        && has_fragment_from(world, player, |id, fragment| match fragment {
+            StaticAbilityFragment::CastCreatureFromLibraryTop => definition.is_creature(),
+            StaticAbilityFragment::CastFromLibraryTop(filter) => filter.matches(definition),
+            StaticAbilityFragment::PlayFromLibraryTopAfterAttacking => source_attacked(world, id),
+            _ => false,
+        })
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn library_spell_with_counter_permission<
+    W: ability_world::CharacteristicWorld + ?Sized,
+>(
+    world: &W,
+    player: Player,
+    definition: Card,
+) -> bool {
+    !definition.is_land()
+        && has_fragment(world, player, |fragment| match fragment {
+            StaticAbilityFragment::CastSubtypesFromLibraryTopWithCounter(types) => {
+                types.iter().any(|subtype| definition.has_subtype(subtype))
+                    || definition.keywords().contains(Keywords::CHANGELING)
+            }
+            _ => false,
+        })
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn library_spell_origin_available<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    player: Player,
+    card: CardId,
+    definition: Card,
+) -> bool {
+    is_library_top(world, player, card)
+        && (ordinary_library_spell_permission(world, player, definition)
+            || library_spell_with_counter_permission(world, player, definition))
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn spends_any_type<W: ability_world::CharacteristicWorld + ?Sized>(
@@ -137,7 +214,7 @@ impl Game {
             && object.card.is_land()
             && object.is_card()
             && land_origin_available(self, player, object.zone)
-            && (object.zone != Zone::Library || self.top_library_card(player) == Some(card))
+            && (object.zone != Zone::Library || is_library_top(self, player, card))
     }
     pub(super) fn can_cast_library_top(&self, player: Player, card: CardId) -> bool {
         self.can_cast_library_face(player, card, self.state.objects[card as usize].card)
@@ -148,33 +225,30 @@ impl Game {
         card: CardId,
         definition: Card,
     ) -> bool {
-        let object = &self.state.objects[card as usize];
-        self.library_subtype_cast_permission(player, card, definition)
-            || (object.owner == player
-                && object.zone == Zone::Library
-                && definition.is_creature()
-                && self.top_library_card(player) == Some(card)
-                && has_fragment(self, player, |f| {
-                    matches!(f, StaticAbilityFragment::CastCreatureFromLibraryTop)
-                }))
+        library_spell_origin_available(self, player, card, definition)
     }
-    pub(super) fn library_subtype_cast_permission(
-        &self,
-        player: Player,
-        card: CardId,
-        definition: Card,
-    ) -> bool {
-        let object = &self.state.objects[card as usize];
-        object.owner == player
-            && object.zone == Zone::Library
-            && self.top_library_card(player) == Some(card)
-            && has_fragment(self, player, |fragment| match fragment {
-                StaticAbilityFragment::CastSubtypesFromLibraryTopWithCounter(types) => {
-                    types.iter().any(|subtype| definition.has_subtype(subtype))
-                        || definition.keywords().contains(Keywords::CHANGELING)
-                }
-                _ => false,
-            })
+    pub(super) fn has_library_spell_face(&self, player: Player, card: CardId) -> bool {
+        if !is_library_top(self, player, card) {
+            return false;
+        }
+        let physical = self.state.objects[card as usize].card;
+        [
+            Some(physical),
+            physical.adventure_spell(),
+            physical.omen_spell(),
+            physical
+                .back_face()
+                .filter(|_| !physical.transforming_double_face()),
+            physical.disguise_cost().map(|_| {
+                Card::from_name("@face-down/disguise").expect("pinned catalogue identity")
+            }),
+        ]
+        .into_iter()
+        .flatten()
+        .any(|definition| {
+            ordinary_library_spell_permission(self, player, definition)
+                || library_spell_with_counter_permission(self, player, definition)
+        })
     }
     pub(super) fn can_look_library_top(&self, player: Player) -> bool {
         has_fragment(self, player, |f| {

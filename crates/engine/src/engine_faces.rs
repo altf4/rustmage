@@ -92,7 +92,10 @@ impl Game {
             Zone::Hand => o.owner == actor && o.is_card(),
             Zone::Graveyard => self.has_graveyard_cast(actor, id, GraveyardCastKind::Cast),
             Zone::Exile => self.can_play_exiled(actor, id),
-            Zone::Library => self.can_cast_library_top(actor, id),
+            Zone::Library => o
+                .card
+                .back_face()
+                .is_some_and(|definition| self.can_cast_library_face(actor, id, definition)),
             _ => false,
         };
         allowed

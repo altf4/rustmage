@@ -162,6 +162,10 @@ pub enum StaticAbilityFragment {
     },
     LookAtLibraryTop,
     CastCreatureFromLibraryTop,
+    /// An ordinary cast from the current top, using the chosen spell face.
+    CastFromLibraryTop(CastFilter),
+    /// Ordinary land plays and spell casts after this exact source attacked.
+    PlayFromLibraryTopAfterAttacking,
     CastSubtypesFromLibraryTopWithCounter(&'static [&'static str]),
     PlayLandFromLibraryTop,
     PlayLandFromGraveyard,

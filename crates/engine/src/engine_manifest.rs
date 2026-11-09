@@ -252,7 +252,11 @@ impl Game {
             Zone::Hand => object.owner == player,
             Zone::Graveyard => self.has_graveyard_cast(player, id, GraveyardCastKind::Cast),
             Zone::Exile => !object.is_spell_copy() && self.can_play_exiled(player, id),
-            Zone::Library => self.can_cast_library_top(player, id),
+            Zone::Library => self.can_cast_library_face(
+                player,
+                id,
+                Card::from_name("@face-down/disguise").expect("pinned catalogue identity"),
+            ),
             _ => false,
         };
         origin_permitted && self.disguise_mana_fundable(player, id)
