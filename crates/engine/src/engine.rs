@@ -318,9 +318,10 @@ pub mod sagas;
 #[path = "engine_shield_harness.rs"]
 pub mod shield_harness;
 pub use replacements::{
-    CopiedSagaLoreView, CreatedTokenChoiceView, DamageEventOrderView, DamagePreventionKind,
-    DamagePreventionView, PlayerCounterPlacementView, ProliferateReplacementView,
-    ReplacementChoiceView, ReplacementEffectView, SelfPlayerCounterReplacement, TokenGroupView,
+    CopiedSagaLoreView, CreatedTokenChoiceView, DamageDoublerView, DamageEventOrderView,
+    DamagePreventionKind, DamagePreventionView, PlayerCounterPlacementView,
+    ProliferateReplacementView, ReplacementChoiceView, ReplacementEffectView,
+    SelfPlayerCounterReplacement, TokenGroupView,
 };
 
 use crate::shared_vec::SharedVec;
@@ -817,6 +818,7 @@ define_actions! {
     FinishEvidence,
     DeclineEvidence,
     ChooseReplacement { source: ObjectRef, ability: u16 },
+    ChooseResolvedDamageReplacement { effect: u64 },
     ChooseDrawReplacement { source: ObjectRef },
     ChooseSelfCounterReplacement { effect: u16 },
     ChooseDamagePrevention { source: ObjectRef, prevention: DamagePreventionKind },
@@ -3801,6 +3803,8 @@ pub struct Observation {
     pub chosen_source_shields: Option<Vec<ChosenSourceShieldView>>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub player_damage_shields: Vec<return_links::PlayerDamageShieldView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub damage_doublers: Vec<DamageDoublerView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub resolved_ability_modifications: Option<Vec<ResolvedAbilityModificationView>>,
     pub legend_choices: Vec<LegendGroupView>,
@@ -7062,6 +7066,9 @@ impl Game {
             Action::ChooseReplacement { source, ability } => {
                 self.choose_replacement(source, ability)
             }
+            Action::ChooseResolvedDamageReplacement { effect } => {
+                self.choose_resolved_damage_replacement(effect)
+            }
             Action::ChooseSelfCounterReplacement { effect } => {
                 self.choose_self_counter_replacement(effect)
             }
@@ -10210,6 +10217,9 @@ impl Game {
             roles
                 .player_damage_shields
                 .retain(|shield| shield.controller != self.state.active);
+            roles
+                .damage_doublers
+                .retain(|effect| effect.controller != self.state.active);
         }
         self.expire_source_land_forms(self.state.active);
         self.expire_next_turn_stats(self.state.active);
@@ -11694,6 +11704,10 @@ impl Game {
                 .roles
                 .as_ref()
                 .map_or_else(Vec::new, |roles| roles.player_damage_shields.clone()),
+            damage_doublers: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |roles| roles.damage_doublers.clone()),
             resolved_ability_modifications: self.resolved_ability_modification_views(),
             role_timestamps: s
                 .roles

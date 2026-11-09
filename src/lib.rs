@@ -16,6 +16,7 @@ pub use rustmage_core::engine::effect_choices::PowerDifferenceView;
 pub use rustmage_core::engine::exhaust::GrantedExhaustUseView;
 pub use rustmage_core::engine::return_links::PlayerDamageShieldView;
 pub use rustmage_core::engine::temporary_copy::RetainedActivationOrigin;
+pub use rustmage_core::engine::{CopiedSagaLoreView, DamageDoublerView};
 pub use rustmage_core::engine::{
     AbilityAvailabilityView, AbilityResolutionView, AbilitySourceTimestampView, Action,
     ActivationCostRoute, AdditionalCostView, AdditionalEndStepsView, AdventurePermission,

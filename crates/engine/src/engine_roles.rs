@@ -73,6 +73,7 @@ pub(super) struct RoleState {
     pub harnessed: Vec<ObjectRef>,
     pub source_prevention: Option<Box<source_prevention::SourcePreventionState>>,
     pub player_damage_shields: Vec<return_links::PlayerDamageShieldView>,
+    pub damage_doublers: Vec<DamageDoublerView>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl RoleState {
@@ -110,6 +111,7 @@ impl RoleState {
             + self.source_linked_effects.len() * std::mem::size_of::<SourceLinkedEffectView>()
             + self.player_damage_shields.len()
                 * std::mem::size_of::<return_links::PlayerDamageShieldView>()
+            + self.damage_doublers.len() * std::mem::size_of::<DamageDoublerView>()
             + self.exile_grant_cast_history.len() * std::mem::size_of::<ObjectRef>()
             + self.resolved_ability_modifications.len()
                 * std::mem::size_of::<ResolvedAbilityModificationView>()

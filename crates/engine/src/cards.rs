@@ -1813,6 +1813,8 @@ pub enum Instruction {
     BlinkAttacking,
     BlinkGroupTappedUntilEndStep,
     PreventPlayerDamageUntilNextTurn,
+    /// Until your next turn, double damage to the damaged player or their permanents.
+    DoubleDamageToDamagedPlayerUntilNextTurn,
     BlinkUntilEndStep {
         under_owner: bool,
     },

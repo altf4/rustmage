@@ -4881,6 +4881,9 @@ impl Game {
                 Instruction::PreventPlayerDamageUntilNextTurn => {
                     self.prevent_player_damage_until_next_turn(&item)
                 }
+                Instruction::DoubleDamageToDamagedPlayerUntilNextTurn => {
+                    self.double_damage_to_damaged_player_until_next_turn(&item)
+                }
                 Instruction::BlinkUntilEndStep { under_owner } => {
                     self.blink_until_end_step(&item, under_owner)
                 }

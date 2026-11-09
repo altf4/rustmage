@@ -181,6 +181,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             Action::ChooseEntryTimestamp { .. } => 120,
             Action::ChooseDrawReplacement { .. }
             | Action::ChooseReplacement { .. }
+            | Action::ChooseResolvedDamageReplacement { .. }
             | Action::ChooseSelfCounterReplacement { .. }
             | Action::ChooseDamagePrevention { .. }
             | Action::ChooseDamageSource { .. }
