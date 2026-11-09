@@ -1,16 +1,11 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Directly authored from the paired Oracle and pinned XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(7, 7),
     keywords: Keywords::FLYING,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfEntersOrAttacks,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::CopyRandomGraveyardPermanentUntilNonland],
+    }],
     ..CardRules::EMPTY
 };

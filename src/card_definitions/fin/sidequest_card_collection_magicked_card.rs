@@ -1,16 +1,44 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Directly authored from the paired Oracle and pinned XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Permanent,
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::SelfEnters,
+            targets: TargetPlan::NONE,
+            program: &[
+                Instruction::Draw(PlayerSet::Controller, 3),
+                Instruction::Discard(PlayerSet::Controller, 2),
+            ],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::InterveningIf {
+                guard: StepGuard::Expression {
+                    value: StatValue::Count(CountFilter {
+                        zone: CountZone::Graveyard,
+                        relation: 0,
+                        kind: 0,
+                        exclude: 0,
+                        subtype: None,
+                        basic: false,
+                        other: false,
+                        cards_only: true,
+                    }),
+                    minimum: Some(8),
+                    maximum: None,
+                },
+                event: &TriggerCondition::AtStep {
+                    step: TriggerStep::End,
+                    relation: CastRelation::You,
+                    guard: StepGuard::Always,
+                },
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::TransformSource],
+        },
+    ],
+    extras: &CardExtras {
+        transforming_double_face: true,
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::FLYING,
     ..CardRules::EMPTY
 };

@@ -334,6 +334,305 @@ fn target_trigger(game: &mut Game, target: Target) {
 }
 
 #[test]
+fn card_collection_discards_two_then_transforms_only_if_eight_cards_remain() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    for _ in 0..6 {
+        put(&mut game, player, "Forest", Zone::Graveyard);
+    }
+    let crew = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let first = put(&mut game, player, "Island", Zone::Hand);
+    let second = put(&mut game, player, "Mountain", Zone::Hand);
+    let quest = put(
+        &mut game,
+        player,
+        "Sidequest: Card Collection // Magicked Card",
+        Zone::Hand,
+    );
+    cast(&mut game, quest, None);
+    let discard = Action::Discard { card: first };
+    reach_action(&mut game, &discard);
+    assert_eq!(game.hand_count(player), 5);
+    act(&mut game, discard);
+    assert_eq!(game.object_view(first).zone, Zone::Hand);
+    act(&mut game, Action::Discard { card: second });
+    assert_eq!(game.hand_count(player), 3);
+    for id in [first, second] {
+        assert_eq!(game.object_view(id).zone, Zone::Graveyard);
+    }
+    game.begin_step(Step::End);
+    game.give_priority();
+    let mut fewer = game.clone();
+    fewer.move_object(first, Zone::Exile);
+    settle(&mut fewer);
+    assert_eq!(
+        fewer.object_view(quest).name(),
+        "Sidequest: Card Collection"
+    );
+    settle(&mut game);
+    assert_eq!(game.object_view(quest).name(), "Magicked Card");
+    assert!(!game.is_creature(quest));
+    act(
+        &mut game,
+        Action::AnnounceActivate {
+            card: quest,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    let object = game.object_ref(crew);
+    act(&mut game, Action::ChooseCrewer { object });
+    act(&mut game, Action::FinishCrew);
+    settle(&mut game);
+    assert!(game.object_view(crew).tapped);
+    assert_eq!(stats(&game, quest), (4, 4));
+    assert!(game.keywords(quest).contains(Keywords::FLYING));
+}
+
+#[test]
+fn hunt_the_mark_counts_the_treasure_it_creates_after_an_opponent_controlled_death() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let treasure = Card(5302);
+    let cost = spawn(&mut game, player, treasure, Zone::Battlefield);
+    spawn(&mut game, player, treasure, Zone::Battlefield);
+    let prey = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    game.record_control(game.object_ref(prey), opponent, None);
+    let quest = put(
+        &mut game,
+        player,
+        "Sidequest: Hunt the Mark // Yiazmat, Ultimate Mark",
+        Zone::Hand,
+    );
+    cast(&mut game, quest, None);
+    target_trigger(&mut game, Target::Card(prey));
+    settle(&mut game);
+    assert_eq!(game.object_view(prey).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(prey).owner, player);
+    game.begin_step(Step::End);
+    game.give_priority();
+    settle(&mut game);
+    assert_eq!(battlefield_tokens(&game, treasure).len(), 3);
+    assert_eq!(game.object_view(quest).name(), "Yiazmat, Ultimate Mark");
+
+    let activation = Action::AnnounceActivate {
+        card: quest,
+        ability: 0,
+        counter_payment: Counters::default(),
+    };
+    let mut tapped = game.clone();
+    tapped.state.objects[quest as usize].tapped = true;
+    assert!(tapped.legal_actions().contains(&activation));
+    act(&mut game, activation);
+    let source = game.object_ref(quest);
+    reject(&mut game, Action::ChooseAdditionalCost { object: source });
+    let object = game.object_ref(cost);
+    act(&mut game, Action::ChooseAdditionalCost { object });
+    pay(&mut game);
+    assert!(!game.object_view(quest).tapped);
+    settle(&mut game);
+    assert!(game.object_view(quest).tapped);
+    assert!(game.keywords(quest).contains(Keywords::INDESTRUCTIBLE));
+    game.finish_cleanup();
+    assert!(!game.keywords(quest).contains(Keywords::INDESTRUCTIBLE));
+}
+
+#[test]
+fn play_blitzball_counts_actual_combat_damage_then_attaches_without_targeting() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let front = "Sidequest: Play Blitzball // World Champion, Celestial Weapon";
+    let quest = put(&mut game, player, front, Zone::Battlefield);
+    let attacker = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let second = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let recipient = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    let opponent_creature = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let reference = game.object_ref(quest);
+    let attached = game.object_ref(recipient);
+    game.grant_keyword_effects(&[recipient], attached, Keywords::HEXPROOF);
+    passes(&mut game);
+    target_trigger(&mut game, Target::Card(attacker));
+    settle(&mut game);
+    assert_eq!(stats(&game, attacker), (4, 2));
+
+    let mut short = game.clone();
+    for (branch, attackers, damage) in [
+        (&mut short, vec![attacker], 4),
+        (&mut game, vec![attacker, second], 6),
+    ] {
+        attack(branch, &attackers);
+        passes(branch);
+        act(branch, Action::FinishBlockers);
+        passes(branch);
+        assert_eq!(branch.state.players[opponent.index()].life, 20 - damage);
+        passes(branch);
+        assert_eq!(branch.state.step, Step::EndCombat);
+    }
+    assert!(short.state.stack.is_empty());
+    assert_eq!(short.object_view(quest).name(), "Sidequest: Play Blitzball");
+    assert!(game.state.stack[0].targets.is_empty());
+    passes(&mut game);
+    assert_eq!(game.object_ref(quest), reference);
+    assert_eq!(
+        game.object_view(quest).name(),
+        "World Champion, Celestial Weapon"
+    );
+    let illegal = game.object_ref(opponent_creature);
+    reject(
+        &mut game,
+        Action::ChooseEquipmentRecipient { recipient: illegal },
+    );
+    act(
+        &mut game,
+        Action::ChooseEquipmentRecipient {
+            recipient: attached,
+        },
+    );
+    assert_eq!(game.object_view(quest).attached_to, Some(attached));
+    assert_eq!(stats(&game, recipient), (5, 3));
+    assert!(game.keywords(recipient).contains(Keywords::DOUBLE_STRIKE));
+}
+
+#[test]
+fn raise_a_chocobo_transforms_with_four_birds_and_the_fetched_land_buffs_the_group() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let front = "Sidequest: Raise a Chocobo // Black Chocobo";
+    let quest = put(&mut game, player, front, Zone::Hand);
+    cast(&mut game, quest, None);
+    settle(&mut game);
+    let birds = battlefield_tokens(&game, Card(5269));
+    assert_eq!(birds.len(), 1);
+    let token = birds[0];
+    assert_eq!(stats(&game, token), (2, 2));
+    let mut other_bird = token;
+    for _ in 0..3 {
+        other_bird = put(&mut game, player, "Healer's Hawk", Zone::Battlefield);
+    }
+    let bear = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let enemy = put(
+        &mut game,
+        player.other(),
+        "Healer's Hawk",
+        Zone::Battlefield,
+    );
+    let land = put(&mut game, player, "Rabanastre, Royal City", Zone::Library);
+    game.begin_step(Step::Main1);
+    game.give_priority();
+    let mut fewer = game.clone();
+    fewer.move_object(other_bird, Zone::Exile);
+    settle(&mut fewer);
+    assert_eq!(
+        fewer.object_view(quest).name(),
+        "Sidequest: Raise a Chocobo"
+    );
+
+    let search = Action::ChooseSearch { card: land };
+    reach_action(&mut game, &search);
+    assert_eq!(game.object_view(quest).name(), "Black Chocobo");
+    act(&mut game, search);
+    if game.legal_actions().contains(&Action::FinishSearch) {
+        act(&mut game, Action::FinishSearch);
+    }
+    if matches!(game.state.pending, Pending::OrderTriggers { .. }) {
+        choose(&mut game, |action| {
+            matches!(action, Action::PutTrigger { .. })
+        });
+    }
+    settle(&mut game);
+    assert!(game.object_view(land).tapped);
+    assert_eq!(game.object_view(land).zone, Zone::Battlefield);
+    assert_eq!(stats(&game, quest), (3, 2));
+    assert_eq!(stats(&game, token), (4, 2));
+    assert_eq!(stats(&game, other_bird), (2, 1));
+    assert_eq!(stats(&game, bear), (2, 2));
+    assert_eq!(stats(&game, enemy), (1, 1));
+}
+
+#[test]
+fn sin_repeats_for_each_land_in_its_own_graveyard_and_replays_the_random_resolution() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let lands = [
+        put(&mut game, player, "Forest", Zone::Graveyard),
+        put(&mut game, player, "Island", Zone::Graveyard),
+    ];
+    let spell = put(&mut game, player, "Opt", Zone::Graveyard);
+    let enemy = put(&mut game, player.other(), "Forest", Zone::Graveyard);
+    let sin = put(&mut game, player, "Sin, Spira's Punishment", Zone::Hand);
+    cast(&mut game, sin, None);
+    passes(&mut game);
+    assert!(game.keywords(sin).contains(Keywords::FLYING));
+    act(&mut game, Action::Pass);
+    let revision = game.revision();
+    let saved = game.snapshot();
+    let index = game
+        .legal_actions()
+        .iter()
+        .position(|action| *action == Action::Pass)
+        .unwrap();
+    let mut replay = game.clone();
+    let actor = game.actor().unwrap();
+    act(&mut game, Action::Pass);
+    replay.apply_index(actor, revision, index).unwrap();
+    assert_eq!(game.snapshot(), replay.snapshot());
+    replay.restore(&saved).unwrap();
+    act(&mut replay, Action::Pass);
+    assert_eq!(game.snapshot(), replay.snapshot());
+    for land in lands {
+        let card = game.object_view(land).card;
+        assert_eq!(game.object_view(land).zone, Zone::Exile);
+        let copies = battlefield_tokens(&game, card);
+        assert_eq!(copies.len(), 1);
+        assert!(game.object_view(copies[0]).tapped);
+    }
+    for id in [spell, enemy] {
+        assert_eq!(game.object_view(id).zone, Zone::Graveyard);
+    }
+}
+
+#[test]
+fn sleep_magic_freezes_the_untap_step_and_is_sacrificed_only_after_actual_damage() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let creature = put(&mut game, opponent, "Hill Giant", Zone::Battlefield);
+    let other = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let aura = put(&mut game, player, "Sleep Magic", Zone::Hand);
+    cast(&mut game, aura, Some(Target::Card(creature)));
+    settle(&mut game);
+    assert_eq!(
+        game.object_view(aura).attached_to,
+        Some(game.object_ref(creature))
+    );
+    assert!(game.object_view(creature).tapped);
+    let mut next = game.clone();
+    next.state.active = opponent;
+    next.untap_active_player();
+    assert!(next.object_view(creature).tapped);
+
+    game.add_counter(creature, CounterKind::Shield, 1);
+    for target in [other, creature, creature] {
+        let shock = put(&mut game, player, "Shock", Zone::Hand);
+        cast(&mut game, shock, Some(Target::Card(target)));
+        settle(&mut game);
+        let damage = game.object_view(creature).damage;
+        assert_eq!(
+            game.object_view(aura).zone,
+            if damage == 0 {
+                Zone::Battlefield
+            } else {
+                Zone::Graveyard
+            }
+        );
+    }
+    assert_eq!(game.object_view(creature).damage, 2);
+    assert_eq!(game.object_view(aura).zone, Zone::Graveyard);
+}
+
+#[test]
 fn sandworm_gives_the_destroyed_lands_controller_the_optional_basic_search() {
     let player = Player::P0;
     let opponent = player.other();

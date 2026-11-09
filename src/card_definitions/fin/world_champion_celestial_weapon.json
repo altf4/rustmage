@@ -3,7 +3,7 @@
   "catalogue_id": 5520,
   "oracle_id": null,
   "facts_sha256": null,
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "4488e4b4bafd722f79ed28e018697a44fa3d1faef180803dec0964bfcfc379c4",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/s/SidequestPlayBlitzball.java",
@@ -12,5 +12,6 @@
     "oracle_id": "9c0255ff-6579-4ce4-810d-01df9922ab33",
     "index": 1,
     "sha256": "f672c5cae9fbdfe412f985d62a096d54b95ba289e28ae5e9879cdc81f9fa54ef"
-  }
+  },
+  "rules_tests": "tests/fin_cards_157_234.rs"
 }

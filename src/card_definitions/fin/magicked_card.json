@@ -3,7 +3,7 @@
   "catalogue_id": 5517,
   "oracle_id": null,
   "facts_sha256": null,
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "98ff126b226948dbac7f4c00a52c1cd8772fcdde628f70eccddfa9eefbe39527",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/s/SidequestCardCollection.java",
@@ -12,5 +12,6 @@
     "oracle_id": "0c2095b0-478d-45b4-a34d-b19eb77cea4c",
     "index": 1,
     "sha256": "dacac3d53aa737b7dfa4e088c5c4a4e87fbd6df4c62f903cfe1986546238e4a1"
-  }
+  },
+  "rules_tests": "tests/fin_cards_157_234.rs"
 }

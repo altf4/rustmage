@@ -3,10 +3,14 @@
   "catalogue_id": 3862,
   "oracle_id": "9c0255ff-6579-4ce4-810d-01df9922ab33",
   "facts_sha256": "1bd4fec7af98df88f7e7737d775c5a94403324c79b5cd1be23b145f702367324",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "af06afe611cf13791400b87dd206ea1497aa51d400e5bd5e1e94373beeb354a7"
   },
-  "physical_metadata_sha256": "391e7db313e4caf793c7e1f9ec203283424c7dae3dde7459b8b189952935609b"
+  "physical_metadata_sha256": "391e7db313e4caf793c7e1f9ec203283424c7dae3dde7459b8b189952935609b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SidequestPlayBlitzball.java",
+  "java_sha256": "70fcb25987e3d4d4893703f12c3614dbc045a1a35506774744c4c1492b4df928",
+  "rules_tests": "tests/fin_cards_157_234.rs"
 }
