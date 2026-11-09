@@ -1,6 +1,6 @@
 //! Frozen public event facts, recorded even before an observing permanent exists.
 use super::*;
-use crate::cards::{CastFilter, CreatureCastQualifier, TriggeredAbility};
+use crate::cards::{CastFilter, CreatureCastQualifier, StaticAbilityFragment, TriggeredAbility};
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
@@ -181,10 +181,14 @@ impl Game {
             o.zone == Zone::Battlefield
                 && (o.card.triggers().iter().any(trigger_uses_facts)
                     || o.card.static_ability_groups().iter().any(|group| {
-                        group.fragments.iter().any(|fragment| {
-                            matches!(fragment,
-                                crate::cards::StaticAbilityFragment::KeywordGrant(_, grant)
-                                    if grant.condition == Some(StatValue::ArtifactEnteredThisTurn))
+                        group.fragments.iter().any(|fragment| match fragment {
+                            StaticAbilityFragment::KeywordGrant(_, grant) => {
+                                grant.condition == Some(StatValue::ArtifactEnteredThisTurn)
+                            }
+                            StaticAbilityFragment::CostReduction(_, rule) => {
+                                matches!(rule.filter, CastFilter::FirstQualifiedCreature(_))
+                            }
+                            _ => false,
                         })
                     }))
         }) || self

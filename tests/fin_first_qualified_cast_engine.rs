@@ -1,7 +1,7 @@
 //! First qualified creature casts and exact, live cast-entry counter receipts.
 mod support;
 use rustmage as _;
-use rustmage_core::cards::authored::CardRules;
+use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
 use support::*;
 
@@ -163,4 +163,135 @@ fn countered_cast_before_observer_consumes_first_slot_until_the_next_turn() {
             [1, 0]
         );
     }
+}
+
+const LEGENDARY_REDUCTION: SpellReduction = SpellReduction {
+    source_only: false,
+    filter: CastFilter::FirstQualifiedCreature(CreatureCastQualifier::Legendary),
+    amount: SpellReductionAmount::Fixed(2),
+    turn: CostTurn::Any,
+    guard: StepGuard::Always,
+};
+const REDUCTION_GROUPS: &[StaticAbilityGroup] = &[StaticAbilityGroup {
+    line: 0,
+    first_layer: AbilityLayer::Rule,
+    fragments: &[StaticAbilityFragment::CostReduction(0, LEGENDARY_REDUCTION)],
+}];
+const REDUCER: CardRules = CardRules {
+    effect: Effect::Creature(2, 2),
+    static_groups: REDUCTION_GROUPS,
+    extras: &CardExtras {
+        static_ability_groups: REDUCTION_GROUPS,
+        cost_reductions: &[LEGENDARY_REDUCTION],
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn first_legendary_creature_reduces_projected_and_paid_generic_cost() {
+    let _rules = fixture_rules::activate(&[(Card::from_name("Wargling").unwrap(), &REDUCER)]);
+    let player = Player::P0;
+    let mut parent = scenario(player);
+    let provider = put(&mut parent, player, "Wargling", Zone::Battlefield);
+    for name in ["Grizzly Bears", "Captain America's Shield"] {
+        let unqualified = put(&mut parent, player, name, Zone::Hand);
+        cast(&mut parent, unqualified, None);
+        settle(&mut parent);
+    }
+    let first = put(&mut parent, player, "Yargle, Glutton of Urborg", Zone::Hand);
+    let lands = [
+        put(&mut parent, player, "Swamp", Zone::Battlefield),
+        put(&mut parent, player, "Forest", Zone::Battlefield),
+        put(&mut parent, player, "Forest", Zone::Battlefield),
+    ];
+    parent.state.players[player.index()].mana = [0; 6];
+    let announce_first = Action::AnnounceCast { card: first };
+    let mut absent = parent.clone();
+    absent.move_object(provider, Zone::Graveyard);
+    reject(&mut absent, announce_first.clone());
+    act(&mut parent, announce_first);
+    let observation = parent.observe(player);
+    let request = observation.payment_request.unwrap();
+    assert_eq!(request.required, [0, 0, 1, 0, 0, 0]);
+    assert_eq!(request.generic, 2);
+    assert_eq!(
+        observation.turn_facts.unwrap()[player.index()].qualified_creature_casts,
+        [0, 0]
+    );
+    for land in lands {
+        act(&mut parent, Action::TapMana { card: land });
+    }
+
+    let revision = parent.revision();
+    let (index, action) = parent
+        .legal_actions()
+        .into_iter()
+        .enumerate()
+        .find(|(_, action)| matches!(action, Action::PayCosts { .. }))
+        .unwrap();
+    let mut raw = parent.clone();
+    let mut indexed = parent.clone();
+    drop(parent);
+    act(&mut raw, action);
+    indexed.apply_index(player, revision, index).unwrap();
+    assert_eq!(raw.snapshot(), indexed.snapshot());
+    assert_eq!(raw.state.stack.last().unwrap().mana_value(), 5);
+    assert_eq!(raw.state.players[player.index()].mana, [0; 6]);
+    assert_eq!(
+        raw.observe(player).turn_facts.unwrap()[player.index()].qualified_creature_casts,
+        [0, 1]
+    );
+    settle(&mut raw);
+
+    let second = put(&mut raw, player, "Yargle, Goliath of Otaria", Zone::Hand);
+    raw.state.players[player.index()].mana = [0, 1, 0, 0, 2, 0];
+    let announce_second = Action::AnnounceCast { card: second };
+    reject(&mut raw, announce_second.clone());
+    raw.state.players[player.index()].mana = [0, 1, 0, 0, 4, 0];
+    act(&mut raw, announce_second);
+    assert_eq!(raw.observe(player).payment_request.unwrap().generic, 4);
+    pay(&mut raw);
+    settle(&mut raw);
+    assert_eq!(raw.object_view(second).zone, Zone::Battlefield);
+}
+
+#[test]
+fn a_prior_countered_legend_consumes_the_discount_for_that_player_and_turn() {
+    let _rules = fixture_rules::activate(&[(Card::from_name("Wargling").unwrap(), &REDUCER)]);
+    let player = Player::P1;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let first = put(&mut game, player, "Yargle, Glutton of Urborg", Zone::Hand);
+    cast(&mut game, first, None);
+    let stack_id = game.state.stack[0].id;
+    act(&mut game, Action::Pass);
+    let scatter = put(&mut game, opponent, "Essence Scatter", Zone::Hand);
+    cast(&mut game, scatter, Some(Target::Stack(stack_id)));
+    settle(&mut game);
+    assert_eq!(game.object_view(first).zone, Zone::Graveyard);
+
+    put(&mut game, player, "Wargling", Zone::Battlefield);
+    let flash_legend = put(&mut game, player, "Agent Venom", Zone::Hand);
+    let black = [0, 0, 1, 0, 0, 0];
+    game.state.players[player.index()].mana = black;
+    let announce = Action::AnnounceCast { card: flash_legend };
+    reject(&mut game, announce.clone());
+
+    start_next_turn(&mut game);
+    let opposing_legend = put(&mut game, opponent, "Agent Venom", Zone::Hand);
+    cast(&mut game, opposing_legend, None);
+    settle(&mut game);
+    act(&mut game, Action::Pass);
+    assert_eq!(game.actor(), Some(player));
+
+    game.state.players[player.index()].mana = black;
+    act(&mut game, announce);
+    let request = game.observe(player).payment_request.unwrap();
+    assert_eq!(request.required, black);
+    assert_eq!(request.generic, 0);
+    pay(&mut game);
+    assert_eq!(game.state.stack.last().unwrap().mana_value(), 3);
+    settle(&mut game);
+    assert_eq!(game.object_view(flash_legend).zone, Zone::Battlefield);
 }
