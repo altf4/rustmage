@@ -241,6 +241,49 @@ impl Game {
         self.state.nightmare_cull = Some(Default::default());
         self.stage_copy_creation(item.controller, recipe, 1);
     }
+    pub(super) fn exile_and_copy_creature_as(
+        &mut self,
+        item: &SpellView,
+        base: (i16, i16),
+        color: crate::cards::ChoiceColor,
+        subtype: &'static str,
+    ) {
+        let Some(id) = item.targets.iter().find_map(|bound| {
+            let Target::Card(id) = bound.target else {
+                return None;
+            };
+            let object = self.state.objects.get(id as usize)?;
+            (self.same_target_object(*bound)
+                && object.zone == Zone::Graveyard
+                && object.is_card()
+                && object.card.is_creature())
+            .then_some(id)
+        }) else {
+            return;
+        };
+        let definition = self.state.objects[id as usize].card;
+        let event = self.move_object(id, Zone::Exile);
+        if !event.moved || event.destination != Zone::Exile || self.object_ref(id) != event.after {
+            return;
+        }
+        let mut recipe = CopyRecipe::new(definition).with_exceptions(CopyExceptions {
+            base: Some(base),
+            ..CopyExceptions::NONE
+        });
+        recipe.overrides = Some(CopyOverrides {
+            kinds: Some(1),
+            types: Some(CopyTypes {
+                replace: true,
+                ..CopyTypes::default()
+            }),
+            ..CopyOverrides::NONE
+        });
+        recipe.color_override = Some(1 << color.index());
+        recipe.replacement_subtype = Some(
+            crate::cards::CreatureType::from_name(subtype).expect("valid copy creature subtype"),
+        );
+        self.stage_copy_creation(item.controller, recipe, 1);
+    }
     pub(super) fn exile_other_nightmares(&mut self, player: Player) {
         let Some(cull) = self.state.nightmare_cull.take() else {
             return;

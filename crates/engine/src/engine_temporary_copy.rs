@@ -209,6 +209,9 @@ impl Game {
         };
         let old = recipe.overrides.unwrap_or(CopyOverrides::NONE);
         let incoming = spec.overrides;
+        if incoming.types.is_some_and(|types| types.replace) {
+            recipe.replacement_subtype = None;
+        }
         let types = incoming
             .types
             .map(|value| {

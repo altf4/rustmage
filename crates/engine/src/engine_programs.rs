@@ -6606,6 +6606,11 @@ impl Game {
                     self.sacrifice_source_reflexive(&item, ability);
                 }
                 Instruction::ExileAndCopyNightmare => self.exile_and_copy_nightmare(&item),
+                Instruction::ExileAndCopyCreatureAs {
+                    base,
+                    color,
+                    subtype,
+                } => self.exile_and_copy_creature_as(&item, base, color, subtype),
                 Instruction::ExileOtherNightmares => self.exile_other_nightmares(item.controller),
                 Instruction::DamageDivided { .. } | Instruction::DamageDividedScaled(_) => {
                     self.damage_divided(&item)

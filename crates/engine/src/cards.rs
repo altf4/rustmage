@@ -2435,6 +2435,12 @@ pub enum Instruction {
         ability: u16,
     },
     ExileAndCopyNightmare,
+    /// Exile the exact creature card, then copy it only if it actually reached exile.
+    ExileAndCopyCreatureAs {
+        base: (i16, i16),
+        color: ChoiceColor,
+        subtype: &'static str,
+    },
     ExileOtherNightmares,
     DamageDivided {
         total: u16,
