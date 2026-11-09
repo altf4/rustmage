@@ -360,8 +360,10 @@ fn card_collection_discards_two_then_transforms_only_if_eight_cards_remain() {
     for id in [first, second] {
         assert_eq!(game.object_view(id).zone, Zone::Graveyard);
     }
-    game.begin_step(Step::End);
-    game.give_priority();
+    game.state.step = Step::Main2;
+    passes(&mut game);
+    assert_eq!(game.state.step, Step::End);
+    assert_eq!(game.state.stack.len(), 1);
     let mut fewer = game.clone();
     fewer.move_object(first, Zone::Exile);
     settle(&mut fewer);
@@ -410,12 +412,15 @@ fn hunt_the_mark_counts_the_treasure_it_creates_after_an_opponent_controlled_dea
     settle(&mut game);
     assert_eq!(game.object_view(prey).zone, Zone::Graveyard);
     assert_eq!(game.object_view(prey).owner, player);
-    game.begin_step(Step::End);
-    game.give_priority();
+    game.state.step = Step::Main2;
+    passes(&mut game);
+    assert_eq!(game.state.step, Step::End);
+    assert_eq!(game.state.stack.len(), 1);
     settle(&mut game);
     assert_eq!(battlefield_tokens(&game, treasure).len(), 3);
     assert_eq!(game.object_view(quest).name(), "Yiazmat, Ultimate Mark");
 
+    game.state.players[player.index()].mana = [8; 6];
     let activation = Action::AnnounceActivate {
         card: quest,
         ability: 0,
