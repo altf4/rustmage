@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "5dd69feb8570d60c1761ea39d713f4ce7864ffc0f9f7d19dd584cd83db26c890",
+  "catalogue_version": "40912d0460a1869528f9564fec0e3f8e006766d98b59dadbe24afe0f77a4ad60",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 3714,
-  "implemented_total": 3723,
+  "implemented_standard_cards": 3730,
+  "implemented_total": 3739,
   "token_definitions": 169,
   "emblem_definitions": 12,
   "adventure_definitions": 53,
@@ -64,8 +64,8 @@
     },
     "fin": {
       "total": 304,
-      "complete": 268,
-      "gated": 36
+      "complete": 284,
+      "gated": 20
     },
     "fra": {
       "total": 285,
@@ -758,8 +758,8 @@
     {
       "name": "Aerith Gainsborough",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/aerith_gainsborough.rs",
       "set": "fin"
     },
@@ -1166,8 +1166,8 @@
     {
       "name": "Al Bhed Salvagers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/al_bhed_salvagers.rs",
       "set": "fin"
     },
@@ -2670,8 +2670,8 @@
     {
       "name": "Balamb Garden, SeeD Academy // Balamb Garden, Airborne",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/balamb_garden_seed_academy_balamb_garden_airborne.rs",
       "set": "fin"
     },
@@ -2926,8 +2926,8 @@
     {
       "name": "Bartz and Boko",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/bartz_and_boko.rs",
       "set": "fin"
     },
@@ -6134,8 +6134,8 @@
     {
       "name": "Chocobo Kick",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/chocobo_kick.rs",
       "set": "fin"
     },
@@ -6206,8 +6206,8 @@
     {
       "name": "Cid, Timeless Artificer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/cid_timeless_artificer.rs",
       "set": "fin"
     },
@@ -6318,8 +6318,8 @@
     {
       "name": "Clash of the Eikons",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/clash_of_the_eikons.rs",
       "set": "fin"
     },
@@ -7902,8 +7902,8 @@
     {
       "name": "Dark Confidant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/dark_confidant.rs",
       "set": "fin"
     },
@@ -8502,8 +8502,8 @@
     {
       "name": "Demon Wall",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/demon_wall.rs",
       "set": "fin"
     },
@@ -35046,8 +35046,8 @@
     {
       "name": "Tellah, Great Sage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/tellah_great_sage.rs",
       "set": "fin"
     },
@@ -35718,8 +35718,8 @@
     {
       "name": "The Emperor of Palamecia // The Lord Master of Hell",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/the_emperor_of_palamecia_the_lord_master_of_hell.rs",
       "set": "fin"
     },
@@ -35798,8 +35798,8 @@
     {
       "name": "The Gold Saucer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/the_gold_saucer.rs",
       "set": "fin"
     },
@@ -35958,8 +35958,8 @@
     {
       "name": "The Lunar Whale",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/the_lunar_whale.rs",
       "set": "fin"
     },
@@ -36086,8 +36086,8 @@
     {
       "name": "The Prima Vista",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/the_prima_vista.rs",
       "set": "fin"
     },
@@ -36110,8 +36110,8 @@
     {
       "name": "The Regalia",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/the_regalia.rs",
       "set": "fin"
     },
@@ -37318,8 +37318,8 @@
     {
       "name": "Torgal, A Fine Hound",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/torgal_a_fine_hound.rs",
       "set": "fin"
     },
