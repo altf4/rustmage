@@ -813,7 +813,9 @@ impl Game {
                                 TriggerCondition::SacrificedByAny { .. } => (None, false),
                                 _ => unreachable!(),
                             };
-                            event.sacrificed_by.is_some_and(|actor| player.is_none_or(|p| p == actor))
+                            event
+                                .sacrificed_by
+                                .is_some_and(|actor| player.is_none_or(|p| p == actor))
                                 && (!own_turn || self.state.active == source.controller)
                                 && (!f.source_only || source.reference == event.before.reference)
                                 && (!f.other || source.reference != event.before.reference)
@@ -3199,65 +3201,62 @@ impl Game {
         let reads_target_legendary_kind = program
             .iter()
             .any(|instruction| matches!(instruction, Instruction::DrawIfTargetLegendaryKind(_)));
-        let reads_target_card = program
-            .iter()
-            .any(|instruction| {
-                matches!(
-                    instruction,
-                    Instruction::EnsureGoblinArmyFor(PlayerSet::TargetController)
-                        | Instruction::AmassGoblinsScaled {
-                            player: PlayerSet::TargetController,
-                            ..
-                        }
-                        | Instruction::DrawIfTargetController
-                        | Instruction::CreateTokensFor {
-                            players: PlayerSet::TargetController,
-                            ..
-                        }
-                        | Instruction::DrawTargetControllerIfNotAttacking
-                        | Instruction::DrawIfTargetLegendaryKind(_)
-                        | Instruction::LoseLifeTargetCardManaValue(_)
-                        | Instruction::MayTargetController { .. }
-                        | Instruction::SearchTargetController(_)
-                        | Instruction::SearchTargetControllerWithEntryCounters { .. }
-                        | Instruction::LoseLifeTargetController(_)
-                        | Instruction::DamageTargetController(_)
-                        | Instruction::DecreaseLeadingSpeed {
-                            players: PlayerSet::TargetController,
-                            ..
-                        }
-                )
-            });
-        let target_card_facts = (reads_target_power || reads_target_card)
-            .then(|| {
-                Box::new(
-                    item.targets
-                        .iter()
-                        .filter_map(|bound| match bound.target {
-                            Target::Card(card) => Some(TargetCardFacts {
-                                group: bound.group,
-                                power: if reads_target_power && self.is_creature(card) {
-                                    self.stats(card).power
-                                } else {
-                                    0
-                                },
-                                controller: self.state.objects[card as usize].controller,
-                                legendary: reads_target_legendary_kind
-                                    && ability_world::CharacteristicWorld::legendary(self, card),
-                                kinds: if reads_target_legendary_kind {
-                                    self.object_kinds(card, &self.state.objects[card as usize])
-                                } else {
-                                    0
-                                },
-                                mana_value: self.object_mana_value(card),
-                                attacking: reads_target_attacking
-                                    && self.state.attackers.iter().any(|a| a.card == card),
-                            }),
-                            _ => None,
-                        })
-                        .collect(),
-                )
-            });
+        let reads_target_card = program.iter().any(|instruction| {
+            matches!(
+                instruction,
+                Instruction::EnsureGoblinArmyFor(PlayerSet::TargetController)
+                    | Instruction::AmassGoblinsScaled {
+                        player: PlayerSet::TargetController,
+                        ..
+                    }
+                    | Instruction::DrawIfTargetController
+                    | Instruction::CreateTokensFor {
+                        players: PlayerSet::TargetController,
+                        ..
+                    }
+                    | Instruction::DrawTargetControllerIfNotAttacking
+                    | Instruction::DrawIfTargetLegendaryKind(_)
+                    | Instruction::LoseLifeTargetCardManaValue(_)
+                    | Instruction::MayTargetController { .. }
+                    | Instruction::SearchTargetController(_)
+                    | Instruction::SearchTargetControllerWithEntryCounters { .. }
+                    | Instruction::LoseLifeTargetController(_)
+                    | Instruction::DamageTargetController(_)
+                    | Instruction::DecreaseLeadingSpeed {
+                        players: PlayerSet::TargetController,
+                        ..
+                    }
+            )
+        });
+        let target_card_facts = (reads_target_power || reads_target_card).then(|| {
+            Box::new(
+                item.targets
+                    .iter()
+                    .filter_map(|bound| match bound.target {
+                        Target::Card(card) => Some(TargetCardFacts {
+                            group: bound.group,
+                            power: if reads_target_power && self.is_creature(card) {
+                                self.stats(card).power
+                            } else {
+                                0
+                            },
+                            controller: self.state.objects[card as usize].controller,
+                            legendary: reads_target_legendary_kind
+                                && ability_world::CharacteristicWorld::legendary(self, card),
+                            kinds: if reads_target_legendary_kind {
+                                self.object_kinds(card, &self.state.objects[card as usize])
+                            } else {
+                                0
+                            },
+                            mana_value: self.object_mana_value(card),
+                            attacking: reads_target_attacking
+                                && self.state.attackers.iter().any(|a| a.card == card),
+                        }),
+                        _ => None,
+                    })
+                    .collect(),
+            )
+        });
         self.state.resolving = Some(Resolution {
             power_difference: None,
             chosen_color: None,
@@ -5578,7 +5577,11 @@ impl Game {
                         return;
                     }
                 }
-                Instruction::CounterUnlessPayCosts { subject, costs, exile } => {
+                Instruction::CounterUnlessPayCosts {
+                    subject,
+                    costs,
+                    exile,
+                } => {
                     if self.start_resolution_costs(&item, Some(subject), costs, exile, 0) {
                         return;
                     }
@@ -6561,7 +6564,13 @@ impl Game {
                         instruction,
                         Instruction::PutLegendaryPermanentCountersScaled { .. }
                     );
-                    self.put_permanent_counters_scaled(&item, filters, kind, amount, legendary_only);
+                    self.put_permanent_counters_scaled(
+                        &item,
+                        filters,
+                        kind,
+                        amount,
+                        legendary_only,
+                    );
                 }
                 Instruction::CreateCopyToken { subject, amount }
                 | Instruction::CreateCopyTokenWithExceptions {
@@ -7201,8 +7210,10 @@ impl Game {
                 }
                 Instruction::SearchLibraryAndOrGraveyardToHand(filter)
                 | Instruction::SearchRequiredLibraryAndOrGraveyardToHand(filter) => {
-                    let may_decline =
-                        matches!(instruction, Instruction::SearchLibraryAndOrGraveyardToHand(_));
+                    let may_decline = matches!(
+                        instruction,
+                        Instruction::SearchLibraryAndOrGraveyardToHand(_)
+                    );
                     self.start_zone_hand_search(&item, filter, may_decline);
                     return;
                 }
@@ -8288,7 +8299,8 @@ impl Game {
                 Instruction::May { skip } | Instruction::MayDraw { skip } => {
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");
                     assert!(skip_to <= resolution.program.len());
-                    if matches!(instruction, Instruction::MayDraw { .. }) && self.draws_prohibited() {
+                    if matches!(instruction, Instruction::MayDraw { .. }) && self.draws_prohibited()
+                    {
                         self.state.resolving.as_mut().unwrap().pc = skip_to;
                         continue;
                     }

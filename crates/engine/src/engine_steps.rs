@@ -501,7 +501,8 @@ impl Game {
             StepGuard::Attacked => return p.attacked_this_turn,
             StepGuard::CreatureDied => return self.state.creatures_died_this_turn > 0,
             StepGuard::OpponentControlledCreatureDied => {
-                return self.state.players[player.other().index()].controlled_creature_died_this_turn;
+                return self.state.players[player.other().index()]
+                    .controlled_creature_died_this_turn;
             }
             StepGuard::OpponentLostLife => {
                 return self.state.players[player.other().index()].life_lost_this_turn > 0;

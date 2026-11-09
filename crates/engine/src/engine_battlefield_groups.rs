@@ -258,7 +258,9 @@ impl Game {
         let affected = self
             .battlefield_group(item, filters)
             .into_iter()
-            .filter(|&id| !legendary_only || ability_world::CharacteristicWorld::legendary(self, id))
+            .filter(|&id| {
+                !legendary_only || ability_world::CharacteristicWorld::legendary(self, id)
+            })
             .map(|id| {
                 let mut counters = Counters::default();
                 counters.add(kind, count);

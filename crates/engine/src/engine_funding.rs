@@ -6262,7 +6262,10 @@ impl Game {
         // An offered mana cost opens the same window before the final payment,
         // including while its nonmana selections are still incomplete.
         let goal = if let Some(choices) = &request.choices {
-            choices.options.iter().map(|choice| goal_for(choice.mana))
+            choices
+                .options
+                .iter()
+                .map(|choice| goal_for(choice.mana))
                 .find(FundingGoal::requires_mana)
         } else {
             costs().map(goal_for).find(FundingGoal::requires_mana)

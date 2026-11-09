@@ -1056,9 +1056,11 @@ impl FundingState<'_> {
                     object.zone == Zone::Library && object.is_card()
                 })
                 .map(|id| self.reference(id));
-            if let Some(cards) =
-                entries::life_replacement_exile_cards(library, usize::try_from(amount).unwrap_or(usize::MAX), entering)
-            {
+            if let Some(cards) = entries::life_replacement_exile_cards(
+                library,
+                usize::try_from(amount).unwrap_or(usize::MAX),
+                entering,
+            ) {
                 if !cards.is_empty() {
                     let mut result = None;
                     self.cost_departures(&cards, Zone::Exile, &mut |world| {

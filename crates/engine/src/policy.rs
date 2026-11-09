@@ -404,7 +404,11 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::PayAttackCost { .. } => 100,
             Action::ChooseSpellCost { .. } | Action::ChooseActivationCost { .. } => 50,
             Action::ChooseResolutionCost { .. } => {
-                if observation.resolution_payment.as_ref().is_some_and(|request| request.selected_cost.is_some()) {
+                if observation
+                    .resolution_payment
+                    .as_ref()
+                    .is_some_and(|request| request.selected_cost.is_some())
+                {
                     -2
                 } else {
                     50
