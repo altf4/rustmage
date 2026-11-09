@@ -242,7 +242,8 @@ fn behold_funding_probe(
     let cast = a.item.cast.as_mut().unwrap();
     cast.behold_type_declared = true;
     cast.beheld_type = kind;
-    a.cost = a.cost_options().next();
+    let cost = a.cost_options().next();
+    a.cost = cost;
     a.cast_costs = Some(Box::default());
     a.initialize_cast_costs(false);
     let goal = g.funding_goal(&a);
