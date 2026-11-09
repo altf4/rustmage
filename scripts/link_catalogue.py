@@ -61,7 +61,7 @@ def load(root=ROOT):
                   if c['category'] in ('physical', 'meld_face') and c['oracle_id']]
     by_oracle = {c['oracle_id']: c for c in identities}
     if len(identities) != len(by_oracle):
-        raise ValueError('duplicate physical or meld Oracle identity in catalogue')
+        raise ValueError('duplicate physical Oracle identity or meld result in catalogue')
     by_id={c['index']:c for c in metadata['cards']}
     records={};fingerprint=bytearray(canonical(metadata))
     directory=root/'src/card_definitions'
