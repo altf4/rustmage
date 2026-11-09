@@ -334,6 +334,314 @@ fn target_trigger(game: &mut Game, target: Target) {
 }
 
 #[test]
+fn schemes_returns_the_exact_public_owned_flashback_card_and_makes_red_mana() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let spell = put(&mut game, player, "Sorceress's Schemes", Zone::Graveyard);
+    let exiled = put(&mut game, player, "Resentful Revelation", Zone::Exile);
+    let hidden = put(&mut game, player, "Resentful Revelation", Zone::Exile);
+    game.remember_face_down_exile(game.object_ref(hidden), 1 << player.index(), None);
+    let foreign = put(
+        &mut game,
+        player.other(),
+        "Resentful Revelation",
+        Zone::Exile,
+    );
+    let plain = put(&mut game, player, "Shock", Zone::Exile);
+    act(&mut game, Action::AnnounceFlashback { card: spell });
+    for card in [hidden, foreign, plain] {
+        reject(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(card),
+            },
+        );
+    }
+    choose_targets(&mut game, &[Target::Card(exiled)]);
+    pay(&mut game);
+    let red = game.state.players[player.index()].mana[3];
+    let mut stale = game.clone();
+    stale.move_object(exiled, Zone::Graveyard);
+    stale.move_object(exiled, Zone::Exile);
+    settle(&mut stale);
+    assert_eq!(stale.object_view(exiled).zone, Zone::Exile);
+    assert_eq!(stale.state.players[player.index()].mana[3], red);
+    settle(&mut game);
+    assert_eq!(game.object_view(exiled).zone, Zone::Hand);
+    assert_eq!(game.object_view(spell).zone, Zone::Exile);
+    assert_eq!(game.state.players[player.index()].mana[3], red + 1);
+}
+
+#[test]
+fn squall_returns_two_small_permanents_via_the_two_damage_steps_when_attacking_alone() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let squall = put(
+        &mut game,
+        player,
+        "Squall, SeeD Mercenary",
+        Zone::Battlefield,
+    );
+    let land = put(&mut game, player, "Rabanastre, Royal City", Zone::Graveyard);
+    let artifact = put(&mut game, player, "Swiftfoot Boots", Zone::Graveyard);
+    let oversized = put(&mut game, player, "Hill Giant", Zone::Graveyard);
+    let instant = put(&mut game, player, "Shock", Zone::Graveyard);
+    let foreign = put(&mut game, opponent, "Forest", Zone::Graveyard);
+    attack(&mut game, &[squall]);
+    settle(&mut game);
+    assert!(game.keywords(squall).contains(Keywords::DOUBLE_STRIKE));
+    passes(&mut game);
+    act(&mut game, Action::FinishBlockers);
+    passes(&mut game);
+    assert_eq!(game.state.players[opponent.index()].life, 17);
+    for card in [oversized, instant, foreign] {
+        reject(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(card),
+            },
+        );
+    }
+    target_trigger(&mut game, Target::Card(land));
+    settle(&mut game);
+    assert_eq!(game.object_view(land).zone, Zone::Battlefield);
+    assert!(game.object_view(land).tapped);
+    passes(&mut game);
+    assert_eq!(game.state.players[opponent.index()].life, 14);
+    target_trigger(&mut game, Target::Card(artifact));
+    settle(&mut game);
+    assert_eq!(game.object_view(artifact).zone, Zone::Battlefield);
+}
+
+#[test]
+fn stiltzkin_draws_only_after_the_targeted_opponent_actually_gets_the_other_permanent() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let moogle = put(
+        &mut game,
+        player,
+        "Stiltzkin, Moogle Merchant",
+        Zone::Battlefield,
+    );
+    let gift = put(&mut game, player, "Forest", Zone::Battlefield);
+    assert!(game.keywords(moogle).contains(Keywords::LIFELINK));
+    act(
+        &mut game,
+        Action::AnnounceActivate {
+            card: moogle,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Player(player),
+        },
+    );
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Player(opponent),
+        },
+    );
+    if game.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut game, Action::FinishTargets);
+    }
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(moogle),
+        },
+    );
+    choose_targets(&mut game, &[Target::Card(gift)]);
+    pay(&mut game);
+    assert!(game.object_view(moogle).tapped);
+    let mut departed = game.clone();
+    departed.move_object(gift, Zone::Exile);
+    settle(&mut departed);
+    assert_eq!(departed.hand_count(player), 0);
+    settle(&mut game);
+    assert_eq!(game.object_view(gift).controller, opponent);
+    assert_eq!(game.object_view(gift).owner, player);
+    assert_eq!(game.hand_count(player), 1);
+    game.finish_cleanup();
+    assert_eq!(game.object_view(gift).controller, opponent);
+}
+
+#[test]
+fn stolen_uniform_steals_even_without_the_recipient_and_unattaches_in_cleanup_on_control_loss() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let creature = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let equipment = put(&mut game, opponent, "Swiftfoot Boots", Zone::Battlefield);
+    let spell = put(&mut game, player, "Stolen Uniform", Zone::Hand);
+    act(&mut game, Action::AnnounceCast { card: spell });
+    for id in [creature, equipment] {
+        let action = Action::ChooseTarget {
+            target: Target::Card(id),
+        };
+        if !game.legal_actions().contains(&action) {
+            act(&mut game, Action::FinishTargets);
+        }
+        act(&mut game, action);
+    }
+    if game.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut game, Action::FinishTargets);
+    }
+    pay(&mut game);
+    let mut gone = game.clone();
+    gone.move_object(creature, Zone::Exile);
+    settle(&mut gone);
+    assert_eq!(gone.object_view(equipment).controller, player);
+    assert_eq!(gone.object_view(equipment).attached_to, None);
+    settle(&mut game);
+    let attached = Some(game.object_ref(creature));
+    assert_eq!(game.object_view(equipment).controller, player);
+    assert_eq!(game.object_view(equipment).attached_to, attached);
+    game.state.step = Step::End;
+    passes(&mut game);
+    assert_eq!(game.state.step, Step::Cleanup);
+    assert_eq!(game.object_view(equipment).controller, opponent);
+    assert_eq!(game.object_view(equipment).attached_to, attached);
+    assert_eq!(game.state.stack.len(), 1);
+    settle(&mut game);
+    assert_eq!(game.object_view(equipment).attached_to, None);
+}
+
+#[test]
+fn sanctum_has_flash_and_stops_even_the_enchanted_artifacts_mana_ability() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(opponent);
+    let artifact = put(&mut game, opponent, "Hedron Archive", Zone::Battlefield);
+    let aura = put(&mut game, player, "Stuck in Summoner's Sanctum", Zone::Hand);
+    act(&mut game, Action::Pass);
+    cast(&mut game, aura, Some(Target::Card(artifact)));
+    settle(&mut game);
+    assert_eq!(
+        game.object_view(aura).attached_to,
+        Some(game.object_ref(artifact))
+    );
+    assert!(game.object_view(artifact).tapped);
+    game.untap_active_player();
+    assert!(game.object_view(artifact).tapped);
+    game.state.objects[artifact as usize].tapped = false;
+    game.give_priority();
+    let mana = Action::ActivateMana {
+        card: artifact,
+        ability: 0,
+        payment: [0; 6],
+        counter_payment: Counters::default(),
+        production: [0, 0, 0, 0, 0, 2],
+    };
+    reject(&mut game, mana.clone());
+    let draw = Action::AnnounceActivate {
+        card: artifact,
+        ability: 1,
+        counter_payment: Counters::default(),
+    };
+    reject(&mut game, draw.clone());
+    game.move_object(aura, Zone::Graveyard);
+    assert!(game.legal_actions().contains(&draw));
+    act(&mut game, mana);
+    assert!(game.object_view(artifact).tapped);
+}
+
+fn place_next_lore(game: &mut Game) {
+    game.state.step = Step::Draw;
+    passes(game);
+    assert_eq!(game.state.step, Step::Main1);
+}
+
+#[test]
+fn bahamut_destroys_up_to_one_nonland_then_draws_and_deals_its_other_mana_value_total() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let victim = put(&mut game, opponent, "Swiftfoot Boots", Zone::Battlefield);
+    let land = put(&mut game, opponent, "Island", Zone::Battlefield);
+    put(&mut game, opponent, "Hill Giant", Zone::Battlefield);
+    put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    put(&mut game, player, "Swiftfoot Boots", Zone::Battlefield);
+    put(&mut game, player, "Forest", Zone::Battlefield);
+    let bahamut = put(&mut game, player, "Summon: Bahamut", Zone::Hand);
+    cast(&mut game, bahamut, None);
+    target_trigger(&mut game, Target::Card(victim));
+    settle(&mut game);
+    assert_eq!(game.object_view(victim).zone, Zone::Graveyard);
+    assert_eq!(game.counter_count(bahamut, CounterKind::Lore), 1);
+    assert!(game.keywords(bahamut).contains(Keywords::FLYING));
+
+    place_next_lore(&mut game);
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(land),
+        },
+    );
+    act(&mut game, Action::FinishTargets);
+    settle(&mut game);
+    place_next_lore(&mut game);
+    settle(&mut game);
+    assert_eq!(game.hand_count(player), 2);
+    let reference = game.object_ref(bahamut);
+    game.grant_keyword_effects(&[bahamut], reference, Keywords::LIFELINK);
+    place_next_lore(&mut game);
+    assert_eq!(game.state.stack.len(), 1);
+    game.move_object(bahamut, Zone::Exile);
+    settle(&mut game);
+    assert_eq!(game.state.players[opponent.index()].life, 14);
+    assert_eq!(game.state.players[player.index()].life, 26);
+}
+
+#[test]
+fn brynhildr_allows_the_lore_turn_play_and_grants_haste_only_to_the_next_creature() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let land = put(&mut game, player, "Island", Zone::Library);
+    let saga = put(&mut game, player, "Summon: Brynhildr", Zone::Hand);
+    cast(&mut game, saga, None);
+    settle(&mut game);
+    assert_eq!(game.counter_count(saga, CounterKind::Lore), 1);
+    assert_eq!(game.object_view(land).zone, Zone::Exile);
+    act(&mut game, Action::PlayLand { card: land });
+    assert_eq!(game.object_view(land).zone, Zone::Battlefield);
+
+    place_next_lore(&mut game);
+    settle(&mut game);
+    assert_eq!(game.observe(player).delayed_spell_copies.len(), 1);
+    game.state.players[player.index()].mana = [8; 6];
+    let shock = put(&mut game, player, "Shock", Zone::Hand);
+    cast(&mut game, shock, Some(Target::Player(opponent)));
+    settle(&mut game);
+    assert_eq!(game.observe(player).delayed_spell_copies.len(), 1);
+    place_next_lore(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(saga).zone, Zone::Graveyard);
+    assert_eq!(game.observe(player).delayed_spell_copies.len(), 2);
+    game.state.players[player.index()].mana = [8; 6];
+    let first = put(&mut game, player, "Bear Cub", Zone::Hand);
+    cast(&mut game, first, None);
+    assert_eq!(game.state.ordering_triggers.len(), 2);
+    choose(&mut game, |action| {
+        matches!(action, Action::PutTrigger { .. })
+    });
+    settle(&mut game);
+    assert!(game.keywords(first).contains(Keywords::HASTE));
+    let second = put(&mut game, player, "Hill Giant", Zone::Hand);
+    cast(&mut game, second, None);
+    settle(&mut game);
+    assert!(!game.keywords(second).contains(Keywords::HASTE));
+    game.finish_cleanup();
+    assert!(!game.keywords(first).contains(Keywords::HASTE));
+}
+
+#[test]
 fn card_collection_discards_two_then_transforms_only_if_eight_cards_remain() {
     let player = Player::P0;
     let mut game = scenario(player);
