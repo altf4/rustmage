@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "40912d0460a1869528f9564fec0e3f8e006766d98b59dadbe24afe0f77a4ad60",
+  "catalogue_version": "64324a0048f10d29bc7601a7fdf2ae3a4bc6592263935b10ffdf2d6784932be6",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 3730,
-  "implemented_total": 3739,
+  "implemented_standard_cards": 3737,
+  "implemented_total": 3746,
   "token_definitions": 169,
   "emblem_definitions": 12,
   "adventure_definitions": 53,
@@ -64,8 +64,8 @@
     },
     "fin": {
       "total": 304,
-      "complete": 284,
-      "gated": 20
+      "complete": 291,
+      "gated": 13
     },
     "fra": {
       "total": 285,
@@ -2726,8 +2726,8 @@
     {
       "name": "Balthier and Fran",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/balthier_and_fran.rs",
       "set": "fin"
     },
@@ -5742,8 +5742,8 @@
     {
       "name": "Cecil, Dark Knight // Cecil, Redeemed Paladin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/cecil_dark_knight_cecil_redeemed_paladin.rs",
       "set": "fin"
     },
@@ -6118,8 +6118,8 @@
     {
       "name": "Choco, Seeker of Paradise",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/choco_seeker_of_paradise.rs",
       "set": "fin"
     },
@@ -6374,8 +6374,8 @@
     {
       "name": "Clive, Ifrit's Dominant // Ifrit, Warden of Inferno",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/clive_ifrit_s_dominant_ifrit_warden_of_inferno.rs",
       "set": "fin"
     },
@@ -7550,8 +7550,8 @@
     {
       "name": "Crystal Fragments // Summon: Alexander",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/crystal_fragments_summon_alexander.rs",
       "set": "fin"
     },
@@ -10302,8 +10302,8 @@
     {
       "name": "Edgar, King of Figaro",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/edgar_king_of_figaro.rs",
       "set": "fin"
     },
@@ -10750,8 +10750,8 @@
     {
       "name": "Emet-Selch, Unsundered // Hades, Sorcerer of Eld",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/emet_selch_unsundered_hades_sorcerer_of_eld.rs",
       "set": "fin"
     },
