@@ -1,0 +1,16 @@
+{
+  "name": "Cooking Campsite",
+  "catalogue_id": 5518,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "7763c10ff4b8225fb48cc326d740427088ecfb6c5d916e827c08f236f1469a51",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SidequestCatchAFish.java",
+  "java_sha256": "5763cd42723fcea332b2c0a2b6935a86908f81795b95dac3418fba7d6f9a5052",
+  "oracle_face": {
+    "oracle_id": "bd7c328e-0380-46f8-bb85-7bf4e201b7ac",
+    "index": 1,
+    "sha256": "500ea883beef66b5db1e26700f157fefae6813ad9e555e25124e257fcc5e4950"
+  }
+}

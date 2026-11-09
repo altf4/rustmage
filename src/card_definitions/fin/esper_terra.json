@@ -1,0 +1,16 @@
+{
+  "name": "Esper Terra",
+  "catalogue_id": 5522,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "40cef6f2318329b9c990357d88b705d7ef32bdf79566deb55c40b8cf93b55371",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TerraMagicalAdept.java",
+  "java_sha256": "a665f8b1c20bd02ada1790c4c719add0f453a3cf1e4855c6c1ea4323613b48c1",
+  "oracle_face": {
+    "oracle_id": "54ca5904-9099-497a-9684-101656025487",
+    "index": 1,
+    "sha256": "338f194883e59aedae73150e7ddf1bf8375934f33aa42f70cda901c649fea4d7"
+  }
+}

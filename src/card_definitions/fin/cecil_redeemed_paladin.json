@@ -1,0 +1,16 @@
+{
+  "name": "Cecil, Redeemed Paladin",
+  "catalogue_id": 5503,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "8e4eadd608f784c0d7da2cb4b9d61fcf3eed9d928e58702d032564b7a431dc47",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CecilDarkKnight.java",
+  "java_sha256": "1152a90ca48941a3d40558830a34ee91c1c8b03cc4ad84f7b4bd3ecc3d6d3d24",
+  "oracle_face": {
+    "oracle_id": "e4719557-d94e-490f-8a56-c1867a01d2ef",
+    "index": 1,
+    "sha256": "ffd6c05bdc0320db91554c6b40020978e15fabc07cc7a947656d0ba24e32ad1d"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "@token/fin-darkstar",
+  "catalogue_id": 5534,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "3eb4798f432c25e5cb3896de3a7487ebe3dc6b25520049ec8d573b2116ba0e27",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/DarkstarToken.java",
+  "java_sha256": "cdf2b4a1da6817943efe66ddb2b95de0bce1bbd08eaffd6e920404f8e9bf51bc"
+}

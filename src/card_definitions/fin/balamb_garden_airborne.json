@@ -1,0 +1,16 @@
+{
+  "name": "Balamb Garden, Airborne",
+  "catalogue_id": 5502,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "0da5c47bfb9af60b530aadea58dd1d1181cc61d07c0f585dfa233487d1594777",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BalambGardenSeeDAcademy.java",
+  "java_sha256": "982b4e3036046a8fc036dfc8ec5df657cb8419e4736fc215bbdf5f37a4f921aa",
+  "oracle_face": {
+    "oracle_id": "8b84fec5-617c-4088-8250-2ba1f1f9479a",
+    "index": 1,
+    "sha256": "0a009330603797274e18f104edad33e69be4ecfe067eb564715df1dc07ddb4c9"
+  }
+}

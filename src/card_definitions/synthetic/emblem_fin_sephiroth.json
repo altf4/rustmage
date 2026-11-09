@@ -1,0 +1,11 @@
+{
+  "name": "@emblem/fin-sephiroth",
+  "catalogue_id": 5535,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "dda3d7acf88c8c9b58c9ad0f926048e267223bfbf214230ba78c55e1990786b5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/command/emblems/SephirothOneWingedAngelEmblem.java",
+  "java_sha256": "0b333ff8e4a4ab48128f350d55e2c9ed90d040093fdb2553b8ab603f20d86ae0"
+}

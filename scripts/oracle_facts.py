@@ -20,6 +20,13 @@ def digest(value):
                                      separators=(',', ':')).encode()).hexdigest()
 
 
+def is_meld_result(card):
+    return card.get('layout') == 'meld' and any(
+        part['component'] == 'meld_result' and part['name'] == card['name']
+        for part in card.get('all_parts', ())
+    )
+
+
 def load(root):
     """Return all facts and the unchanged set of legally Standard Oracle IDs.
 

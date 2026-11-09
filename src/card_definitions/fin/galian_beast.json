@@ -1,0 +1,16 @@
+{
+  "name": "Galian Beast",
+  "catalogue_id": 5526,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "2bd73c1b1f9650f6b7d2b13357239aafd6dcb0ac7fc92fd93cbd6043f89f6be4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VincentValentine.java",
+  "java_sha256": "f892931d09bd5db7f51db430ed616982127d7238844a09065e750f6767820df3",
+  "oracle_face": {
+    "oracle_id": "f40e6bbf-1fed-4ec5-869d-18c2dd396d14",
+    "index": 1,
+    "sha256": "ffdcad376ba8b485cb9e60e6d978c2c1e45a420c1c61cf20e8d7e39d35600189"
+  }
+}

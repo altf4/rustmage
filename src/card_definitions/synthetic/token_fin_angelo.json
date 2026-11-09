@@ -1,0 +1,11 @@
+{
+  "name": "@token/fin-angelo",
+  "catalogue_id": 5533,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "7a64c6a9edbacd0a3fa8cd35b355fd8c8ad07861a081fa8708880041c6bee2f5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/AngeloToken.java",
+  "java_sha256": "e9cfd7fe88dd28922a25e433876208519add2e11779c7ceac9594531cab07e72"
+}

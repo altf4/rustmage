@@ -1,0 +1,16 @@
+{
+  "name": "Phoenix, Warden of Fire",
+  "catalogue_id": 5512,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "603e4ac38f274e2b56ffb61199b8dae01ddfa328cb41263ad09ad6423337d3cf",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/j/JoshuaPhoenixsDominant.java",
+  "java_sha256": "76a40d857413c7e3b07436bfc71440acd1d7c7b2604424bed1ed93d23652a89f",
+  "oracle_face": {
+    "oracle_id": "f4629329-a79b-4460-a1bc-9ae0f59adf5a",
+    "index": 1,
+    "sha256": "363cab112b792e7ec477499366b847fcc31b567c96a701c18a476b569a434955"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Neo Exdeath, Dimension's End",
+  "catalogue_id": 5508,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "c6a720c30828e511c7cef93c2b3beb8d7dd3a136c220ba71610502d5f62cbcf2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/ExdeathVoidWarlock.java",
+  "java_sha256": "8a729082956c385f75c0c080e928d89d0d5599d7638398c2e4eddcce7060ca7f",
+  "oracle_face": {
+    "oracle_id": "98c9d798-8c48-4a2d-a076-ce17d31df6f5",
+    "index": 1,
+    "sha256": "591ffc9a18a1eb48d93ff14f5a2fb9b9b81f3ce71ba277f9d688f0422ddaa860"
+  }
+}

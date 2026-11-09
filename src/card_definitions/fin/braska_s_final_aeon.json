@@ -1,0 +1,16 @@
+{
+  "name": "Braska's Final Aeon",
+  "catalogue_id": 5510,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "abf92a8cd76809647d6910b84ad7d0a719a1ff000adbe518506385671cd04c5a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/j/JechtReluctantGuardian.java",
+  "java_sha256": "1711992e014747ca39d6ac4cc5e4dc6bbb594566d2e251c8f65b30e3030f3d1f",
+  "oracle_face": {
+    "oracle_id": "b6cebf8d-37e1-42de-b3f1-1c174ab17ac8",
+    "index": 1,
+    "sha256": "d310ec4fd69b90c6fcfc10d2ad65c1cd325892d1497dcec00d28dad50ab6593a"
+  }
+}

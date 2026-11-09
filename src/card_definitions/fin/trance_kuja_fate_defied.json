@@ -1,0 +1,16 @@
+{
+  "name": "Trance Kuja, Fate Defied",
+  "catalogue_id": 5514,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "51a4b323c368a1747b10cbc631ac303461943e9c04013ae23c3f9ae8a9ceb26a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KujaGenomeSorcerer.java",
+  "java_sha256": "2c4c5c1f6e37d21b0754e849d7c6e1db56d93ed31455b9b4cc3277c02364957b",
+  "oracle_face": {
+    "oracle_id": "3998a60d-9521-4100-8d41-3e612972a3de",
+    "index": 1,
+    "sha256": "030e0b6569ddc12223d57093325ad97944689b0b0684aaa8ed52416c16a3c1c4"
+  }
+}

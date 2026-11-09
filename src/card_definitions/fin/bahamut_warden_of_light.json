@@ -1,0 +1,16 @@
+{
+  "name": "Bahamut, Warden of Light",
+  "catalogue_id": 5506,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "b823e0014fa6de6024899d814891486ddd25af7b08cf3aaa84a9c666e2083191",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DionBahamutsDominant.java",
+  "java_sha256": "d31e4854d6432e93f146b30dec84acfa4b8c534e8622551e581b20c358a0195a",
+  "oracle_face": {
+    "oracle_id": "4a0cc2a2-3711-473a-b2c5-b1e52b34e4fb",
+    "index": 1,
+    "sha256": "08118fd6f8c09b3baae7e3e297c198662d240a080b4b0f4ea963c7ff8db5eaf6"
+  }
+}

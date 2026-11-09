@@ -1,0 +1,15 @@
+{
+  "name": "Vivi Ornitier",
+  "catalogue_id": 4923,
+  "oracle_id": "0452be2a-e97a-4269-a9e3-b616265ecb2e",
+  "facts_sha256": "1e75a13ef090ae3a1ebd5dbc7acc4786a0ef46eee2c7c8ef5af3290ae540915f",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "4bb2e339c3de900e3b869b9aaddfba8044367d8c0621ec8e67b55cc0fe6027b4"
+  },
+  "physical_metadata_sha256": "1d88ca12790778800346b2cf27a99cc8da0f500b3eb8d12e33e7d3609c65d971",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/ViviOrnitier.java",
+  "java_sha256": "6700e74f4a468323b8d4f922d1eb1d2bac016d150165d26e1753524401eb58d6"
+}

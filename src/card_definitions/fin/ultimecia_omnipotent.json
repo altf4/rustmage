@@ -1,0 +1,16 @@
+{
+  "name": "Ultimecia, Omnipotent",
+  "catalogue_id": 5524,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "c06f54f17c48b4e0bbbb95ae26e283b60630c6af0f57a7e0eb19d9eacd1bdc4d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UltimeciaTimeSorceress.java",
+  "java_sha256": "fa237fdd2cccc1bb57c03722e61971237fcb9a93018a6cbd16c97b1e3b2033ef",
+  "oracle_face": {
+    "oracle_id": "70773879-b773-4e81-99ca-8f4bba478962",
+    "index": 1,
+    "sha256": "db9e51e60c28285de2f7898f507c44dd39d561810bd820fc8b0885869cabe519"
+  }
+}

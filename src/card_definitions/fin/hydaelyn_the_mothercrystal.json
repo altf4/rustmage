@@ -1,0 +1,16 @@
+{
+  "name": "Hydaelyn, the Mothercrystal",
+  "catalogue_id": 5525,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "382309b2b02f42dee61ad2eee976dd5670e9563e0107d4889fc6f365e6214b47",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VenatHeartOfHydaelyn.java",
+  "java_sha256": "c939cd72cfe89e49883d8614a64c4e5b0263e1922186adc41d32eb32f9d152bc",
+  "oracle_face": {
+    "oracle_id": "2e5adbcf-6b5c-4ded-a339-8757040ef878",
+    "index": 1,
+    "sha256": "a5d7213dc0728b3a41aa62dc8fa31aa319e1b56d32dd870f1fc0ab3e14288444"
+  }
+}

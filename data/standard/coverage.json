@@ -1,12 +1,12 @@
 {
   "schema": 1,
-  "catalogue_version": "2ff279eb9c74c8860c2c9c54ba1ebdbb3a427af2d320ae46f302cecfd73c469f",
-  "standard_legal_cards": 5164,
+  "catalogue_version": "020dd0758e75606b0fcb2f373c810220890e28696edf649960208b34151e5f05",
+  "standard_legal_cards": 5163,
   "implemented_standard_cards": 3576,
   "implemented_total": 3583,
-  "token_definitions": 164,
-  "emblem_definitions": 11,
-  "adventure_definitions": 50,
+  "token_definitions": 168,
+  "emblem_definitions": 12,
+  "adventure_definitions": 53,
   "omen_definitions": 13,
   "definition_ownership": {
     "afr": {
@@ -63,8 +63,8 @@
       "complete": 427
     },
     "fin": {
-      "total": 305,
-      "gated": 175,
+      "total": 304,
+      "gated": 174,
       "complete": 130
     },
     "fra": {
@@ -26949,7 +26949,7 @@
     },
     {
       "name": "Ragnarok, Divine Deliverance",
-      "standard_legal": true,
+      "standard_legal": false,
       "implemented": false,
       "implementation": null,
       "definition": "src/card_definitions/fin/ragnarok_divine_deliverance.rs",
@@ -39584,8 +39584,8 @@
       "standard_legal": false,
       "implemented": false,
       "implementation": null,
-      "definition": "src/card_definitions/legacy/vivi_ornitier.rs",
-      "set": "legacy"
+      "definition": "src/card_definitions/fin/vivi_ornitier.rs",
+      "set": "fin"
     },
     {
       "name": "Vivien Reid",

@@ -341,7 +341,10 @@ class CatalogueFactsTests(_FactsFixture):
         engine = ROOT/'crates/engine/src/catalogue_accessors.rs'
         self.assertEqual(outputs[engine], engine.read_text())
         coverage = json.loads(outputs[ROOT/'data/standard/coverage.json'])
-        self.assertEqual(coverage['standard_legal_cards'], len(standard_ids))
+        meld_results = sum(oracle_facts.is_meld_result(facts[oracle_id]) for oracle_id in standard_ids)
+        self.assertEqual(coverage['standard_legal_cards'], len(standard_ids) - meld_results)
+        meld = next(c for c in coverage['cards'] if c['name'] == 'Ragnarok, Divine Deliverance')
+        self.assertFalse(meld['standard_legal'])
         row = next(c for c in coverage['cards'] if c['name'] == 'Cori-Steel Cutter')
         self.assertEqual((row['set'], row['implemented'], row['standard_legal']),
                          ('tdm', records[849]['complete'], False))

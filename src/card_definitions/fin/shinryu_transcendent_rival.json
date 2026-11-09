@@ -1,0 +1,16 @@
+{
+  "name": "Shinryu, Transcendent Rival",
+  "catalogue_id": 5527,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "b95289198146d8aadcda292fe3c97a3ac323f58ff1665e86ec8df19df9fe9a21",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/z/ZenosYaeGalvus.java",
+  "java_sha256": "5eddff35e5017be6fc91b1969e0b79b52db7de4f935f0a1b6c0f17956666646c",
+  "oracle_face": {
+    "oracle_id": "8f52fc65-a914-421a-9426-21eb520d55d5",
+    "index": 1,
+    "sha256": "668dec7b6eb87d7377ff8f9f851bbd83337fde0536fe39c882685634a4948861"
+  }
+}

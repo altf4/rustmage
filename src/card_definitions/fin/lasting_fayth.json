@@ -1,0 +1,16 @@
+{
+  "name": "Lasting Fayth",
+  "catalogue_id": 5530,
+  "oracle_id": "5f2b3ea8-99ee-47a4-8a1c-4b27478d524c",
+  "facts_sha256": "f130a9088d0d8067a5091b8b4023a2eed2e4117452d75b05599aaa180ff44fd3",
+  "complete": false,
+  "physical_metadata_sha256": "813dcc95052b509bb39808b2fca3e85d25ed606412e010d8302295d679c90f74",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/z/ZanarkandAncientMetropolis.java",
+  "java_sha256": "c53519073c3ce2b844166b008330752e2c46320ed57f06c6a9ae36b4de6c3a8f",
+  "oracle_face": {
+    "oracle_id": "5f2b3ea8-99ee-47a4-8a1c-4b27478d524c",
+    "index": 1,
+    "sha256": "a13c35578c0711abb96427df429adfeff7a6cc621f267969737fbcf39def8327"
+  }
+}

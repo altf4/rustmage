@@ -1,0 +1,16 @@
+{
+  "name": "Summon: Alexander",
+  "catalogue_id": 5505,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "105c88d3c5c1dffd2b7b3b58e32071a078688937c327bf8a20e570a838508088",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CrystalFragments.java",
+  "java_sha256": "e9b9485784b72245c1a231a452489a48165628f29e96cc0f4fe0cf2d0942039d",
+  "oracle_face": {
+    "oracle_id": "b291d046-7649-4a05-98c4-224ecaece912",
+    "index": 1,
+    "sha256": "f1e86d5fb9600e761387875ec467a87b961414be65ea7d790cdf2a5539c064f4"
+  }
+}

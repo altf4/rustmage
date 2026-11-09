@@ -1,0 +1,16 @@
+{
+  "name": "Kefka, Ruler of Ruin",
+  "catalogue_id": 5513,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "de56e29017789915cbeec3846b3b9c35642eb417f04f5d5ffa0b3e8224884004",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KefkaCourtMage.java",
+  "java_sha256": "9ecce5edc00d31bb455284e46e5a26ad044cc26a05a756c2587b2a149a5068f6",
+  "oracle_face": {
+    "oracle_id": "6d3ca5cb-781d-4608-b7f1-38c020536376",
+    "index": 1,
+    "sha256": "5d0a3cbd9b62f5d3bd8f715b53ea0584bfe9d665b6751ca824128b2664d450e6"
+  }
+}

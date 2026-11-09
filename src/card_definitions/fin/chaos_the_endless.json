@@ -1,0 +1,16 @@
+{
+  "name": "Chaos, the Endless",
+  "catalogue_id": 5509,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "29253785354eed0d4e31dd7bd1a2550ac8d987d7a24687d80090347944a9e355",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GarlandKnightOfCornelia.java",
+  "java_sha256": "33e4277cfe83e8345513c92fc38b88ee5650d2134685297345cebc5d0a9a8d18",
+  "oracle_face": {
+    "oracle_id": "75e930dd-32e9-4c39-81a7-d833a3976b8d",
+    "index": 1,
+    "sha256": "cf82101156e073dc9826da85f533652db9f25a809ff8c7c49b645644c0ddc094"
+  }
+}
