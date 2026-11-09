@@ -226,14 +226,13 @@ impl Game {
                 self.state.temporary_controls = None;
             }
         }
-        let expired_controls = self.state.controls.as_mut().is_some_and(|state| {
+        self.state.controls.as_mut().is_some_and(|state| {
             let count = state.effects.len();
             state
                 .effects
                 .retain(|row| !expired(row.expires_turn, row.expires_after_next_turn));
             state.effects.len() != count
-        });
-        expired_controls
+        })
     }
     pub(super) fn temporary_control_bytes(&self) -> usize {
         self.state.temporary_controls.as_ref().map_or(0, |v| {

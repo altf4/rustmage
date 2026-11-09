@@ -79,10 +79,10 @@ impl Game {
             })
     }
     pub(super) fn unattach_event_object(&mut self, item: &SpellView) {
-        if let Some(event) = &item.event_object {
-            if self.unattach(event.object) {
-                self.refresh_controllers();
-            }
+        if let Some(event) = &item.event_object
+            && self.unattach(event.object)
+        {
+            self.refresh_controllers();
         }
     }
     pub(super) fn unattach(&mut self, object: ObjectRef) -> bool {

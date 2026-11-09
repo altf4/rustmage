@@ -303,13 +303,10 @@ impl Game {
         let events = self.move_objects_raw(&[id], Zone::Exile);
         let returning = events
             .iter()
-            .filter_map(|event| {
-                (small
-                    && event.moved
-                    && event.destination == Zone::Exile
-                    && !event.before.is_token())
-                .then(|| ReturnLinkView::from_event(event, item.controller, None, true, true))
+            .filter(|event| {
+                small && event.moved && event.destination == Zone::Exile && !event.before.is_token()
             })
+            .map(|event| ReturnLinkView::from_event(event, item.controller, None, true, true))
             .collect();
         self.state
             .resolving
@@ -373,25 +370,25 @@ impl Game {
         let events = self.move_objects_raw(&ids, Zone::Exile);
         let returning = events
             .iter()
-            .filter_map(|event| {
-                (event.moved
+            .filter(|event| {
+                event.moved
                     && !event.before.is_token()
                     && (event.destination == Zone::Exile
                         || follow_public_move
-                            && matches!(event.destination, Zone::Graveyard | Zone::Command)))
-                .then(|| {
-                    ReturnLinkView::from_event(
-                        event,
-                        if attacking {
-                            item.controller
-                        } else {
-                            event.before.owner
-                        },
-                        counter,
-                        tapped,
-                        false,
-                    )
-                })
+                            && matches!(event.destination, Zone::Graveyard | Zone::Command))
+            })
+            .map(|event| {
+                ReturnLinkView::from_event(
+                    event,
+                    if attacking {
+                        item.controller
+                    } else {
+                        event.before.owner
+                    },
+                    counter,
+                    tapped,
+                    false,
+                )
             })
             .collect();
         // Departure events can themselves stage a choice-bearing linked return.
