@@ -308,6 +308,11 @@ fn fixed_behold_type_domain_rejects_absent_witnesses_before_dense_mana_search() 
                 }
             }
         }
+        // Keep the real cast focused on the witness and reveal rules after
+        // the dense probes have exercised every type with all lands ready.
+        for &land in &lands[1..] {
+            g.state.objects[land as usize].tapped = true;
+        }
         act(&mut g, Action::AnnounceCast { card: source });
         let chosen = Action::ChooseBeholdType {
             creature_type: Some(bear),
