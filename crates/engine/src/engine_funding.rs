@@ -3390,12 +3390,17 @@ impl<'g> FundingState<'g> {
                 || object.card.static_ability_groups().iter().any(|group| {
                     group.fragments.iter().any(|fragment| {
                         match fragment {
-                            // Fixed production below is independent of
-                            // stats and intrinsic keyword abilities. These
-                            // attachments cannot add mana routes either.
+                            // These groups cannot add mana routes. The
+                            // admitted production recipes do not read stats,
+                            // and no land play or phase change can occur here.
                             StaticAbilityFragment::IntrinsicKeywords(_)
+                            | StaticAbilityFragment::Changeling
                             | StaticAbilityFragment::AttachmentStats(_)
-                            | StaticAbilityFragment::AttachedAllCreatureTypes => false,
+                            | StaticAbilityFragment::AttachedAllCreatureTypes
+                            | StaticAbilityFragment::AdditionalLandPlays(_)
+                            | StaticAbilityFragment::StaticModifier(..)
+                            | StaticAbilityFragment::ScalingModifier(..)
+                            | StaticAbilityFragment::ControlledCreatureScaling { .. } => false,
                             StaticAbilityFragment::LandMana {
                                 production: ManaProduction::Tagged { quality, .. },
                                 ..
@@ -3483,7 +3488,12 @@ impl<'g> FundingState<'g> {
                     ),
                     _ => return false,
                 };
-                if object.controller != goal.actor || (cost.tap && object.tapped) {
+                // The route audit above uses all printed templates. In
+                // this fixed world a removed printed ability cannot return.
+                if object.controller != goal.actor
+                    || object.tapped
+                    || !ability_world::CharacteristicWorld::printed_abilities_available(self, id)
+                {
                     continue;
                 }
                 if let ManaProduction::Tagged { quality, .. } = production

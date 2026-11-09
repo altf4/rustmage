@@ -59,9 +59,18 @@ fn world_for(g: &Game, p: Player, card: CardId) -> (FundingState<'_>, FundingGoa
 fn restricted_mana_rejects_impossible_aurora_and_keeps_elemental() {
     for p in [Player::P0, Player::P1] {
         let (mut g, aurora, prism) = position(p, false);
+        named(&mut g, p.other(), "Firdoch Core", Zone::Battlefield);
+        named(
+            &mut g,
+            p.other(),
+            "Prismatic Undercurrents",
+            Zone::Battlefield,
+        );
         let (world, goal) = world_for(&g, p, aurora);
         assert!(world.total_mana_upper() >= 7);
-        assert!(!world.reachable(&goal, &mut HashSet::new()));
+        let mut visited = HashSet::new();
+        assert!(!world.reachable(&goal, &mut visited));
+        assert!(visited.is_empty());
         let flame = g
             .state
             .objects
@@ -283,6 +292,65 @@ fn restricted_white_converter_fallback_keeps_actual_double_white_payment() {
         assert!(g.state.announcing.is_none());
         settle(&mut g);
         assert_eq!(g.state.objects[spell as usize].zone, Zone::Battlefield);
+    }
+}
+
+#[test]
+fn scaling_creatures_and_fixed_ability_removal_preserve_white_mana_bound() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        for _ in 0..4 {
+            named(&mut g, p, "Forest", Zone::Battlefield);
+            named(&mut g, p, "Swamp", Zone::Battlefield);
+        }
+        named(&mut g, p.other(), "Moon-Vigil Adherents", Zone::Battlefield);
+        let abigale = named(
+            &mut g,
+            p.other(),
+            "Abigale, Eloquent First-Year",
+            Zone::Battlefield,
+        );
+        let blanked = named(&mut g, p, "Great Forest Druid", Zone::Battlefield);
+        let live = named(&mut g, p, "Great Forest Druid", Zone::Battlefield);
+        g.state.objects[live as usize].tapped = true;
+        g.remove_abilities_exact(
+            &[g.object_ref(blanked)],
+            g.object_ref(abigale),
+            p.other(),
+            AnimationDuration::Permanent,
+        );
+        g.state.players[p.index()].mana = [0; 6];
+        let rhys = named(&mut g, p, "Rhys, the Evermore", Zone::Hand);
+        let eirdu = named(&mut g, p, "Eirdu, Carrier of Dawn", Zone::Hand);
+
+        let (world, goal) = world_for(&g, p, rhys);
+        let mut visited = HashSet::new();
+        assert!(!world.reachable(&goal, &mut visited));
+        assert!(visited.is_empty());
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceCast { card: rhys })
+        );
+
+        g.state.objects[live as usize].tapped = false;
+        assert!(
+            g.legal_actions()
+                .contains(&Action::AnnounceCast { card: rhys })
+        );
+        let (world, goal) = world_for(&g, p, eirdu);
+        let mut visited = HashSet::new();
+        assert_eq!(goal.required[0], 2);
+        assert!(!world.reachable(&goal, &mut visited));
+        assert!(visited.is_empty());
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceCast { card: eirdu })
+        );
+        named(&mut g, p, "Plains", Zone::Battlefield);
+        assert!(
+            g.legal_actions()
+                .contains(&Action::AnnounceCast { card: eirdu })
+        );
     }
 }
 
