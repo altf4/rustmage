@@ -46,6 +46,8 @@ pub enum AdditionalTriggerScope {
     SourceAndAttachedEquipment,
     /// A land or this subtype entering caused a controlled permanent's trigger.
     ControlledLandOrSubtypeEntry(&'static str),
+    /// Grant the bearer a multiplier for death triggers of itself and emblems it owns.
+    EquippedCreatureAndOwnedEmblemDeath,
     /// Only abilities triggered by a creature attacking, never other events.
     ControlledPermanentAttack,
 }
@@ -366,6 +368,8 @@ pub enum StaticAbilityFragment {
     AttachmentStats(Stats),
     AttachmentTurnStats(Stats),
     AttachmentKeywords(Keywords),
+    AttachmentAttackingKeywords(Keywords),
+    AttachedAttackerMustBeBlocked,
     AttachmentRule(Keywords),
     AttachedTurnKeywords(Keywords),
     /// Stable index into the granting definition's immutable trigger array.

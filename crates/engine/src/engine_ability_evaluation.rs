@@ -79,6 +79,12 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             value
         }
+        StaticAbilityFragment::AttachmentAttackingKeywords(value) => {
+            if !world.attacking(id) || !world.attached(source, id) {
+                return None;
+            }
+            value
+        }
         StaticAbilityFragment::AttachedTurnKeywords(value) => {
             if provider.controller != world.game().state.active || !world.attached(source, id) {
                 return None;
@@ -200,6 +206,26 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 recipient: id,
                 keywords: Keywords::NONE,
                 abilities: vec![key(ability)],
+                mana: Vec::new(),
+            });
+        }
+        StaticAbilityFragment::AdditionalTriggers {
+            scope: crate::cards::AdditionalTriggerScope::EquippedCreatureAndOwnedEmblemDeath,
+            ..
+        } => {
+            if !world.is_equipment(source.card) || !world.attached(source, id) {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: vec![GrantedAbilityKey {
+                    source,
+                    kind: GrantedAbilityKind::EquippedCreatureDeathMultiplier,
+                    granting_card: provider.card,
+                    grantor_controller: provider.controller,
+                    timestamp: time,
+                }],
                 mana: Vec::new(),
             });
         }
@@ -434,6 +460,16 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
                     ) || (matches!(fragment, StaticAbilityFragment::EntryMode(_)) && source.card.has_layer6_provider()))
                 })
         })
+        || world.static_sources().iter().any(|&id| {
+            let source = world.object(id);
+            source.zone == Zone::Battlefield
+                && source.attached_to.is_some_and(|recipient| world.attacking(recipient.card))
+                && source.card.static_ability_groups().iter().any(|group| {
+                    group.fragments.iter().any(|fragment| {
+                        matches!(fragment, StaticAbilityFragment::AttachmentAttackingKeywords(_))
+                    })
+                })
+        })
         // External attachment rules must participate even without ability removal.
         // They are deliberately absent from EquipmentSpec's granted abilities.
         || world.attachment_sources().iter().any(|&id| {
@@ -612,6 +648,11 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::SourceCounterSubtype { .. }
                         | StaticAbilityFragment::SourceCounterCreature { .. }
                         | StaticAbilityFragment::AttachmentKeywords(..)
+                        | StaticAbilityFragment::AttachmentAttackingKeywords(..)
+                        | StaticAbilityFragment::AdditionalTriggers {
+                            scope: crate::cards::AdditionalTriggerScope::EquippedCreatureAndOwnedEmblemDeath,
+                            ..
+                        }
                         | StaticAbilityFragment::AttachedTurnKeywords(..)
                         | StaticAbilityFragment::SourceMaxSpeedActivation(..)
                         | StaticAbilityFragment::SourceEntryModeActivation { .. }
@@ -920,6 +961,7 @@ pub(super) fn apply_rule_effects<W: CharacteristicWorld + ?Sized>(
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum GrantedStaticRule {
     PlaneswalkerAttackLimit,
+    EquippedCreatureDeathMultiplier,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

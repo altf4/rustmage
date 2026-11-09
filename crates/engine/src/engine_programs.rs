@@ -1279,6 +1279,18 @@ impl Game {
         if !self.queue_trigger_from(source, index, grant) {
             return false;
         }
+        if source.additional_creature_death_triggers != 0 && event.is_creature_death() {
+            let packet = self.state.pending_triggers.last().unwrap();
+            let cause = packet.trigger_definition().triggers()[index]
+                .condition
+                .event();
+            if !matches!(
+                cause,
+                TriggerCondition::Sacrificed { .. } | TriggerCondition::SacrificedByOpponent { .. }
+            ) {
+                self.add_event_trigger_multiplicity(source.additional_creature_death_triggers);
+            }
+        }
         if event.moved
             && event.destination == Zone::Battlefield
             && source.reference == event.after

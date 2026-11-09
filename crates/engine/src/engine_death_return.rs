@@ -2,6 +2,16 @@
 //! their program branch before linked zone events can suspend the resolution.
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl ZoneChange {
+    pub(super) fn is_creature_death(&self) -> bool {
+        self.moved
+            && self.before.zone == Zone::Battlefield
+            && self.destination == Zone::Graveyard
+            && self.before.is_creature()
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn death_batch_triggers(&mut self, events: &[ZoneChange], sources: &[ObjectView]) {
         for source in sources {
@@ -57,6 +67,14 @@ impl Game {
                     // This queues one annotated original. Its frozen multiplicity
                     // witness expands only after all event annotations are complete.
                     if self.queue_zone_trigger_from(source, index, event, None) {
+                        if source.additional_creature_death_triggers != 0
+                            && !event.is_creature_death()
+                            && matching.iter().any(|event| event.is_creature_death())
+                        {
+                            self.add_event_trigger_multiplicity(
+                                source.additional_creature_death_triggers,
+                            );
+                        }
                         let packet = self.state.pending_triggers.last_mut().unwrap();
                         for event in matching {
                             packet.refer_zone_event(event);

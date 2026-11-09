@@ -422,7 +422,42 @@ impl Game {
             && self
                 .characteristic_query()
                 .continuous_fragment_available(id, matches_requirement);
+        let attached_requirements = if self
+            .state
+            .attackers
+            .iter()
+            .any(|attacker| attacker.card == id)
+        {
+            use ability_world::CharacteristicWorld;
+            let query = self.characteristic_query();
+            let recipient = self.object_ref(id);
+            self.state
+                .static_sources
+                .iter()
+                .filter(|&&source| {
+                    let object = &self.state.objects[source as usize];
+                    let applies = |fragment: &crate::cards::StaticAbilityFragment| {
+                        matches!(
+                            fragment,
+                            crate::cards::StaticAbilityFragment::AttachedAttackerMustBeBlocked
+                        )
+                    };
+                    object.attached_to == Some(recipient)
+                        && query.is_equipment(source)
+                        && query.attached(self.object_ref(source), id)
+                        && object
+                            .card
+                            .static_ability_groups()
+                            .iter()
+                            .any(|group| group.fragments.iter().any(applies))
+                        && query.continuous_fragment_available(source, applies)
+                })
+                .count()
+        } else {
+            0
+        };
         usize::from(static_requirement)
+            + attached_requirements
             + self.state.combat_rules.as_ref().map_or(0, |rules| {
                 rules
                     .must_be_blocked

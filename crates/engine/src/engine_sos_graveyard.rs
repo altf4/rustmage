@@ -270,6 +270,18 @@ impl Game {
                     .graveyard_arrivals(events, source.controller, kinds)
                     .collect::<Vec<_>>();
                 if self.queue_trigger_from(&source, index, grant.map(Box::new)) {
+                    if source.additional_creature_death_triggers != 0
+                        && events.iter().any(|event| {
+                            event.is_creature_death()
+                                && event
+                                    .objects_after()
+                                    .any(|object| matching.contains(&object))
+                        })
+                    {
+                        self.add_event_trigger_multiplicity(
+                            source.additional_creature_death_triggers,
+                        );
+                    }
                     self.state
                         .pending_triggers
                         .last_mut()

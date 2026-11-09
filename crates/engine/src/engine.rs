@@ -3134,6 +3134,8 @@ pub struct ObjectView {
     // never Deserialize); supported snapshots own State and retain this value.
     #[serde(skip)]
     pub(crate) additional_triggers: usize,
+    #[serde(skip)]
+    pub(crate) additional_creature_death_triggers: usize,
     pub prepared: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub harnessed: Option<bool>,

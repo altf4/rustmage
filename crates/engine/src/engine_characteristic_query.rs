@@ -1058,6 +1058,22 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                     .contains(&timestamp)
             })
     }
+    pub(super) fn equipped_death_multiplier_available(
+        &self,
+        bearer: CardId,
+        source: ObjectRef,
+    ) -> bool {
+        self.evaluation.as_ref().is_none_or(|value| {
+            value.result.objects[bearer as usize]
+                .grants
+                .iter()
+                .any(|grant| {
+                    grant.source == source
+                        && grant.kind
+                            == ability_order::GrantedAbilityKind::EquippedCreatureDeathMultiplier
+                })
+        })
+    }
     pub(super) fn ability_availability(&self, id: CardId) -> Option<Box<AbilityAvailabilityView>> {
         if !self.on_battlefield(id) {
             return None;
@@ -1077,6 +1093,9 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         _ => None,
                     },
                     static_rule: match grant.kind {
+                        ability_order::GrantedAbilityKind::EquippedCreatureDeathMultiplier => Some(
+                            ability_evaluation::GrantedStaticRule::EquippedCreatureDeathMultiplier,
+                        ),
                         ability_order::GrantedAbilityKind::PlaneswalkerAttackLimit => {
                             Some(ability_evaluation::GrantedStaticRule::PlaneswalkerAttackLimit)
                         }
@@ -1103,6 +1122,8 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         };
         ObjectView {
             additional_triggers: trigger_multiplicity::additional_triggers(self, id),
+            additional_creature_death_triggers:
+                trigger_multiplicity::additional_creature_death_triggers(self, id),
             active_entry_mode: entry_modes::active_mode(self, self.object_ref(id)),
             prepared: self.is_prepared(self.object_ref(id)),
             harnessed: CharacteristicWorld::harnessed(self, id).then_some(true),

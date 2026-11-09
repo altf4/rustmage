@@ -38,6 +38,7 @@ enum TriggerCause<'a> {
     Ordinary,
     Attack,
     Entry(&'a [ObjectRef]),
+    CreatureDeath,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -54,6 +55,12 @@ pub(super) fn additional_attack_triggers<W: CharacteristicWorld + ?Sized>(
 ) -> usize {
     additional_triggers_for_event(query, id, TriggerCause::Attack)
 }
+pub(super) fn additional_creature_death_triggers<W: CharacteristicWorld + ?Sized>(
+    query: &characteristic_query::CharacteristicQuery<'_, W>,
+    id: CardId,
+) -> usize {
+    additional_triggers_for_event(query, id, TriggerCause::CreatureDeath)
+}
 fn additional_triggers_for_event<W: CharacteristicWorld + ?Sized>(
     query: &characteristic_query::CharacteristicQuery<'_, W>,
     id: CardId,
@@ -64,7 +71,10 @@ fn additional_triggers_for_event<W: CharacteristicWorld + ?Sized>(
         return 0;
     }
     let recipient = query.object(id);
-    if recipient.zone != Zone::Battlefield {
+    let emblem = matches!(cause, TriggerCause::CreatureDeath)
+        && recipient.zone == Zone::Command
+        && recipient.card.is_emblem();
+    if recipient.zone != Zone::Battlefield && !emblem {
         return 0;
     }
     let mut extra = 0usize;
@@ -85,6 +95,9 @@ fn additional_triggers_for_event<W: CharacteristicWorld + ?Sized>(
                     }
                     AdditionalTriggerScope::ControlledLandOrSubtypeEntry(_) => {
                         matches!(cause, TriggerCause::Entry(_))
+                    }
+                    AdditionalTriggerScope::EquippedCreatureAndOwnedEmblemDeath => {
+                        matches!(cause, TriggerCause::CreatureDeath)
                     }
                     _ => matches!(cause, TriggerCause::Ordinary),
                 };
@@ -126,6 +139,17 @@ fn additional_triggers_for_event<W: CharacteristicWorld + ?Sized>(
                         } else {
                             equipped(id)
                         }
+                    }
+                    AdditionalTriggerScope::EquippedCreatureAndOwnedEmblemDeath => {
+                        object.attached_to.is_some_and(|bearer| {
+                            let source = query.reference(provider);
+                            (query.reference(id) == bearer
+                                || (emblem
+                                    && query.object(bearer.card).controller == recipient.owner))
+                                && query.is_equipment(provider)
+                                && query.attached(source, bearer.card)
+                                && query.equipped_death_multiplier_available(bearer.card, source)
+                        })
                     }
                     AdditionalTriggerScope::ControlledLandOrSubtypeEntry(subtype) => {
                         let TriggerCause::Entry(entrants) = cause else {
@@ -188,13 +212,25 @@ impl Game {
         {
             return;
         }
+        let extra = additional_triggers_for_event(
+            &self.characteristic_query(),
+            source.id,
+            TriggerCause::Entry(entrants),
+        );
+        self.add_event_trigger_multiplicity(extra);
+    }
+
+    pub(super) fn add_event_trigger_multiplicity(&mut self, extra: usize) {
+        if extra == 0 {
+            return;
+        }
         let packet = self
             .state
             .pending_triggers
-            .last()
-            .expect("queued entry trigger");
+            .last_mut()
+            .expect("queued event trigger");
         let StackKind::TriggeredAbility { ability } = packet.kind else {
-            unreachable!("entry trigger kind")
+            unreachable!("event trigger kind")
         };
         if packet.trigger_definition().triggers()[usize::from(ability)]
             .condition
@@ -202,12 +238,6 @@ impl Game {
         {
             return;
         }
-        let extra = additional_triggers_for_event(
-            &self.characteristic_query(),
-            source.id,
-            TriggerCause::Entry(entrants),
-        );
-        let packet = self.state.pending_triggers.last_mut().unwrap();
         packet.additional_triggers = packet
             .additional_triggers
             .checked_add(extra)

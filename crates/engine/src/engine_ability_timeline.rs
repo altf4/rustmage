@@ -102,6 +102,11 @@ impl Card {
                             | StaticAbilityFragment::ControlledSubtypeKeywords { .. }
                             | StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. }
                             | StaticAbilityFragment::AttachmentKeywords(..)
+                            | StaticAbilityFragment::AttachmentAttackingKeywords(..)
+                            | StaticAbilityFragment::AdditionalTriggers {
+                                scope: crate::cards::AdditionalTriggerScope::EquippedCreatureAndOwnedEmblemDeath,
+                                ..
+                            }
                             | StaticAbilityFragment::AttachedTurnKeywords(..)
                             | StaticAbilityFragment::HarnessedTrigger(..)
                             | StaticAbilityFragment::ConditionalWard { .. }

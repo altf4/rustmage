@@ -292,6 +292,8 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ConditionalDoubleDraw(_)
                             | crate::cards::StaticAbilityFragment::AdditionalDrawWithAtMostOneCard
                             | crate::cards::StaticAbilityFragment::AdditionalTriggers { .. }
+                            | crate::cards::StaticAbilityFragment::AttachmentAttackingKeywords(..)
+                            | crate::cards::StaticAbilityFragment::AttachedAttackerMustBeBlocked
                             | crate::cards::StaticAbilityFragment::AttackControllerTax { .. }
                             | crate::cards::StaticAbilityFragment::OpponentNoncreatureSpellTax(_)
                             | crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(_)
