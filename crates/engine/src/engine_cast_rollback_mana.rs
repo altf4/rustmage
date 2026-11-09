@@ -524,7 +524,7 @@ impl Game {
             self.set_color_effects(
                 &[source.card],
                 colors,
-                crate::cards::AnimationDuration::Permanent,
+                crate::cards::AnimationDuration::EndOfTurn,
             );
         }
         self.add_quality_mana(event.actor, event.production, event.quality);

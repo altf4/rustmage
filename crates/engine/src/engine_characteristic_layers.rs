@@ -990,7 +990,7 @@ impl Game {
                 .fold(0, |mask, (i, n)| mask | if *n > 0 { 1 << i } else { 0 });
             if colors != 0 {
                 self.record_cast_mana_recolor(colors);
-                self.set_color_effects(&[source.card], colors, AnimationDuration::Permanent);
+                self.set_color_effects(&[source.card], colors, AnimationDuration::EndOfTurn);
             }
         }
     }

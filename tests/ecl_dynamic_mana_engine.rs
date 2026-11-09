@@ -697,6 +697,22 @@ fn selective_rollback_retains_source_recolor_only_with_its_paid_mana_event() {
         assert_eq!(reversed.object_view(source).colors, 0);
         assert_eq!(reversed.state.players[p.index()].mana, [0, 0, 0, 0, 0, 3]);
         assert_eq!(reversed.state.objects[source as usize].used_abilities, 0);
+        // Keeping the mana event also keeps its color change, with the original
+        // until-end-of-turn duration; selective replay cannot make it permanent.
+        let turn = g.state.turn;
+        for _ in 0..48 {
+            if g.state.turn != turn {
+                break;
+            }
+            choose(&mut g, |action| {
+                matches!(
+                    action,
+                    Action::Pass | Action::FinishAttackers | Action::FinishBlockers
+                )
+            });
+        }
+        assert_ne!(g.state.turn, turn);
+        assert_eq!(g.object_view(source).colors, 0);
     }
 }
 #[test]

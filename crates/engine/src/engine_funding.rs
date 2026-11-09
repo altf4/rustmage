@@ -2547,9 +2547,12 @@ impl<'g> FundingState<'g> {
                 self.prepare_entry_projection();
                 let roles = &mut self.entry_projection.as_mut().unwrap().roles;
                 let timestamp = roles.next_timestamp();
-                roles
-                    .animations
-                    .push(AnimationView::color(source, timestamp, colors, None));
+                roles.animations.push(AnimationView::color(
+                    source,
+                    timestamp,
+                    colors,
+                    Some(self.game.state.turn),
+                ));
             }
         }
     }
