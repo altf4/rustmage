@@ -91,7 +91,10 @@ fn settle_entries(game: &mut Game) {
         choose(game, |action| {
             matches!(
                 action,
-                Action::Pass | Action::PutTrigger { .. } | Action::ChooseCreatedToken { .. }
+                Action::Pass
+                    | Action::ChooseEntryTimestamp { .. }
+                    | Action::PutTrigger { .. }
+                    | Action::ChooseCreatedToken { .. }
             )
         });
     }
