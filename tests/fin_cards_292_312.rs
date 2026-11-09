@@ -370,3 +370,217 @@ fn zodiark_excludes_gods_rounds_each_quota_down_and_counts_actual_sacrifices() {
     }
     assert_eq!(game.counter_count(zodiark, CounterKind::PlusOne), 3);
 }
+
+#[test]
+fn vincents_limit_break_pays_each_tier_and_returns_the_exact_creature_to_its_owner_tapped() {
+    let p = Player::P0;
+    for (mode, generic, power) in [(0, 1, 3), (1, 2, 5), (2, 4, 7)] {
+        let mut game = scenario(p);
+        let bear = put(&mut game, p.other(), "Grizzly Bears", Zone::Battlefield);
+        game.record_control(game.object_ref(bear), p, None);
+        game.add_counter(bear, CounterKind::PlusOne, 1);
+        let spell = put(&mut game, p, "Vincent's Limit Break", Zone::Hand);
+        game.state.players[p.index()].mana = [0, 0, 1, 0, 0, generic];
+        act(&mut game, Action::AnnounceCast { card: spell });
+        act(&mut game, Action::ChooseMode { mode });
+        select_target(&mut game, bear);
+        pay(&mut game);
+        assert_eq!(game.state.players[p.index()].mana, [0; 6]);
+        settle(&mut game);
+        assert_eq!(stats(&game, bear), (power + 1, 3));
+        let original = game.object_ref(bear);
+        game.move_object(bear, Zone::Graveyard);
+        game.prepare_triggers();
+        settle(&mut game);
+        let returned = game.object_view(bear);
+        assert_ne!(returned.reference, original);
+        assert_eq!(returned.controller, p.other());
+        assert_eq!(returned.zone, Zone::Battlefield);
+        assert!(returned.tapped);
+        assert_eq!(stats(&game, bear), (2, 2));
+    }
+}
+
+#[test]
+fn warriors_sword_and_white_mages_staff_transfer_their_job_grants() {
+    let p = Player::P1;
+    for (name, subtype, bonus) in [
+        ("Warrior's Sword", "Warrior", (3, 2)),
+        ("White Mage's Staff", "Cleric", (1, 1)),
+    ] {
+        let mut game = scenario(p);
+        let equipment = put(&mut game, p, name, Zone::Hand);
+        let bear = put(&mut game, p, "Grizzly Bears", Zone::Battlefield);
+        cast(&mut game, equipment, None);
+        settle(&mut game);
+        let hero = game.object_view(equipment).attached_to.unwrap().card;
+        assert!(game.object_view(hero).has_subtype("Hero"));
+        assert!(game.object_view(hero).has_subtype(subtype));
+        assert_eq!(stats(&game, hero), (1 + bonus.0, 1 + bonus.1));
+        announce_ability(&mut game, equipment);
+        select_target(&mut game, bear);
+        pay(&mut game);
+        settle(&mut game);
+        assert!(!game.object_view(hero).has_subtype(subtype));
+        assert_eq!(stats(&game, hero), (1, 1));
+        assert!(game.object_view(bear).has_subtype(subtype));
+        assert_eq!(stats(&game, bear), (2 + bonus.0, 2 + bonus.1));
+        if subtype == "Cleric" {
+            game.begin_step(Step::BeginCombat);
+            pass_pair(&mut game);
+            act(&mut game, Action::Attack { card: bear });
+            act(&mut game, Action::FinishAttackers);
+            settle(&mut game);
+            assert_eq!(game.state.players[p.index()].life, 21);
+        }
+    }
+}
+
+#[test]
+fn wastes_and_windurst_offer_only_their_printed_mana() {
+    let p = Player::P0;
+    let mut game = scenario(p);
+    let wastes = put(&mut game, p, "Wastes", Zone::Hand);
+    act(&mut game, Action::PlayLand { card: wastes });
+    let view = game.object_view(wastes);
+    assert!(!view.tapped && view.card.is_basic_land());
+    for basic in ["Plains", "Island", "Swamp", "Mountain", "Forest"] {
+        assert!(!view.has_subtype(basic));
+    }
+    game.state.players[p.index()].mana = [0; 6];
+    let colorless = [0, 0, 0, 0, 0, 1];
+    act(
+        &mut game,
+        Action::ActivateMana {
+            card: wastes,
+            ability: 0,
+            payment: [0; 6],
+            counter_payment: Counters::default(),
+            production: colorless,
+        },
+    );
+    assert_eq!(game.state.players[p.index()].mana, colorless);
+
+    let mut game = scenario(p);
+    let town = put(&mut game, p, "Windurst, Federation Center", Zone::Hand);
+    act(&mut game, Action::PlayLand { card: town });
+    assert!(game.object_view(town).tapped && game.object_view(town).has_subtype("Town"));
+    game.state.objects[town as usize].tapped = false;
+    game.state.players[p.index()].mana = [0; 6];
+    for production in [[1, 0, 0, 0, 0, 0], [0, 0, 0, 0, 1, 0]] {
+        let mut branch = game.clone();
+        act(
+            &mut branch,
+            Action::ActivateMana {
+                card: town,
+                ability: 0,
+                payment: [0; 6],
+                counter_payment: Counters::default(),
+                production,
+            },
+        );
+        assert_eq!(branch.state.players[p.index()].mana, production);
+    }
+}
+
+#[test]
+fn white_auracite_produces_white_and_keeps_the_exile_link_only_while_present() {
+    let p = Player::P0;
+    let mut game = scenario(p);
+    let source = put(&mut game, p, "White Auracite", Zone::Hand);
+    let victim = put(&mut game, p.other(), "Hill Giant", Zone::Battlefield);
+    let original = game.object_ref(victim);
+    cast(&mut game, source, None);
+    pass_pair(&mut game);
+    select_target(&mut game, victim);
+    let mut early = game.clone();
+    early.move_object(source, Zone::Graveyard);
+    settle(&mut early);
+    assert_eq!(early.object_ref(victim), original);
+    assert_eq!(early.object_view(victim).zone, Zone::Battlefield);
+
+    game.state.players[p.index()].mana = [0; 6];
+    let white = [1, 0, 0, 0, 0, 0];
+    act(
+        &mut game,
+        Action::ActivateMana {
+            card: source,
+            ability: 0,
+            payment: [0; 6],
+            counter_payment: Counters::default(),
+            production: white,
+        },
+    );
+    assert_eq!(game.state.players[p.index()].mana, white);
+    settle(&mut game);
+    assert_eq!(game.object_view(victim).zone, Zone::Exile);
+    game.move_object(source, Zone::Graveyard);
+    assert_eq!(game.object_view(victim).zone, Zone::Battlefield);
+    assert_ne!(game.object_ref(victim), original);
+}
+
+#[test]
+fn world_map_searches_basic_or_any_land_for_the_printed_fee() {
+    let p = Player::P0;
+    for (ability, fee) in [(0, 1), (1, 3)] {
+        let mut game = scenario(p);
+        let map = put(&mut game, p, "World Map", Zone::Battlefield);
+        let basic = put(&mut game, p, "Island", Zone::Library);
+        let nonbasic = put(&mut game, p, "Windurst, Federation Center", Zone::Library);
+        game.state.players[p.index()].mana = [0, 0, 0, 0, 0, fee];
+        act(
+            &mut game,
+            Action::AnnounceActivate {
+                card: map,
+                ability,
+                counter_payment: Counters::default(),
+            },
+        );
+        pay(&mut game);
+        assert_eq!(game.object_view(map).zone, Zone::Graveyard);
+        assert_eq!(game.state.players[p.index()].mana, [0; 6]);
+        pass_pair(&mut game);
+        assert!(game.observe(p.other()).search_choice.is_none());
+        if ability == 0 {
+            reject(&mut game, Action::ChooseSearch { card: nonbasic });
+        }
+        let card = if ability == 0 { basic } else { nonbasic };
+        act(&mut game, Action::ChooseSearch { card });
+        act(&mut game, Action::FinishSearch);
+        assert_eq!(game.object_view(card).zone, Zone::Hand);
+        assert_eq!(game.observe(p.other()).known_hand.len(), 1);
+    }
+}
+
+#[test]
+fn xande_counts_noncreature_nonland_graveyard_cards_and_updates_live() {
+    let p = Player::P0;
+    let mut game = scenario(p);
+    let xande = put(&mut game, p, "Xande, Dark Mage", Zone::Battlefield);
+    let spell = put(&mut game, p, "Opt", Zone::Graveyard);
+    put(&mut game, p, "Short Bow", Zone::Graveyard);
+    put(&mut game, p, "Spelunking", Zone::Graveyard);
+    put(&mut game, p, "Forest", Zone::Graveyard);
+    put(&mut game, p, "Clockwork Percussionist", Zone::Graveyard);
+    put(&mut game, p.other(), "Opt", Zone::Graveyard);
+    assert!(game.keywords(xande).contains(Keywords::MENACE));
+    assert_eq!(stats(&game, xande), (6, 6));
+    game.move_object(spell, Zone::Exile);
+    assert_eq!(stats(&game, xande), (5, 5));
+}
+
+#[test]
+fn youre_not_alone_checks_own_creature_count_at_resolution_and_can_target_an_opponent() {
+    let p = Player::P1;
+    let mut game = scenario(p);
+    let spell = put(&mut game, p, "You're Not Alone", Zone::Hand);
+    let own = [(); 3].map(|_| put(&mut game, p, "Grizzly Bears", Zone::Battlefield));
+    let enemy = put(&mut game, p.other(), "Grizzly Bears", Zone::Battlefield);
+    cast(&mut game, spell, Some(Target::Card(enemy)));
+    let mut smaller = game.clone();
+    smaller.move_object(own[0], Zone::Graveyard);
+    settle(&mut smaller);
+    settle(&mut game);
+    assert_eq!(stats(&smaller, enemy), (4, 4));
+    assert_eq!(stats(&game, enemy), (6, 6));
+}
