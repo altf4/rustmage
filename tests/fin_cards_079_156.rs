@@ -604,3 +604,319 @@ fn scythe_requires_a_block_and_grants_first_strike_only_after_optional_attachmen
     assert!(game.keywords(target).contains(Keywords::FIRST_STRIKE));
     assert_eq!(game.block_requirement_weight(target), 1);
 }
+
+fn reach_library_selection(game: &mut Game) {
+    for _ in 0..12 {
+        if matches!(game.state.pending, Pending::EffectLibrarySelection { .. }) {
+            return;
+        }
+        choose(game, |action| {
+            matches!(action, Action::Pass | Action::PutTrigger { .. })
+        });
+    }
+    panic!("resolution did not reach library selection");
+}
+
+fn arrange_top(game: &mut Game, destination: LibraryDestination) {
+    choose(
+        game,
+        |action| matches!(action, Action::ArrangeLibrary { destination: option, .. } if *option == destination),
+    );
+}
+
+#[test]
+fn from_father_to_son_uses_the_cast_origin_for_the_vehicles_destination() {
+    let p = Player::P0;
+    for (origin, destination, spell_destination) in [
+        (Zone::Hand, Zone::Hand, Zone::Graveyard),
+        (Zone::Graveyard, Zone::Battlefield, Zone::Exile),
+    ] {
+        let mut game = scenario(p);
+        let spell = put(&mut game, p, "From Father to Son", origin);
+        let found = put(&mut game, p, "Broadcast Rambler", Zone::Library);
+        let other = put(&mut game, p, "Swiftfoot Boots", Zone::Library);
+        if origin == Zone::Hand {
+            cast(&mut game, spell, None);
+        } else {
+            act(&mut game, Action::AnnounceFlashback { card: spell });
+            pay(&mut game);
+        }
+        pass_pair(&mut game);
+        assert!(game.observe(p).search_choice.is_some());
+        assert!(game.observe(p.other()).search_choice.is_none());
+        reject(&mut game, Action::ChooseSearch { card: other });
+        act(&mut game, Action::ChooseSearch { card: found });
+        act(&mut game, Action::FinishSearch);
+        assert_eq!(game.object_view(found).zone, destination);
+        assert_eq!(game.object_view(spell).zone, spell_destination);
+    }
+}
+
+#[test]
+fn gilgamesh_can_attach_only_an_equipment_from_his_current_cohort() {
+    let p = Player::P1;
+    let mut game = scenario(p);
+    let source = put(&mut game, p, "Gilgamesh, Master-at-Arms", Zone::Hand);
+    let old = put(&mut game, p, "Short Bow", Zone::Battlefield);
+    let equipment = put(&mut game, p, "Swiftfoot Boots", Zone::Library);
+    let land = put(&mut game, p, "Island", Zone::Library);
+    cast(&mut game, source, None);
+    reach_library_selection(&mut game);
+    assert!(game.observe(p.other()).library_selection.is_none());
+    reject(&mut game, Action::SelectLibrary { card: land });
+    act(&mut game, Action::SelectLibrary { card: equipment });
+    act(&mut game, Action::FinishLibrarySelection);
+    pass_pair(&mut game);
+    let recipient = game.object_ref(source);
+    act(&mut game, Action::ChooseEquipmentRecipient { recipient });
+    let unrelated = game.object_ref(old);
+    reject(
+        &mut game,
+        Action::ChooseEquipmentAttachment {
+            equipment: Some(unrelated),
+        },
+    );
+    let equipment_ref = game.object_ref(equipment);
+    act(
+        &mut game,
+        Action::ChooseEquipmentAttachment {
+            equipment: Some(equipment_ref),
+        },
+    );
+    assert_eq!(game.object_view(equipment).attached_to, Some(recipient));
+    assert_eq!(game.object_view(old).attached_to, None);
+}
+
+#[test]
+fn golbez_surveils_for_an_artifact_and_checks_eight_again_at_resolution() {
+    let p = Player::P0;
+    let mut game = scenario(p);
+    put(&mut game, p, "Golbez, Crystal Collector", Zone::Battlefield);
+    let entrant = put(&mut game, p, "Short Bow", Zone::Hand);
+    let top = game.top_library_card(p).unwrap();
+    cast(&mut game, entrant, None);
+    pass_pair(&mut game);
+    pass_pair(&mut game);
+    arrange_top(&mut game, LibraryDestination::Graveyard);
+    assert_eq!(game.object_view(top).zone, Zone::Graveyard);
+    let artifacts = [(); 7].map(|_| put(&mut game, p, "Short Bow", Zone::Battlefield));
+    let creature = put(&mut game, p, "Hill Giant", Zone::Graveyard);
+    game.begin_step(Step::End);
+    game.prepare_triggers();
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(creature),
+        },
+    );
+    let mut seven = game.clone();
+    seven.move_object(artifacts[0], Zone::Graveyard);
+    settle(&mut seven);
+    assert_eq!(seven.object_view(creature).zone, Zone::Hand);
+    assert_eq!(seven.state.players[p.other().index()].life, 20);
+    settle(&mut game);
+    assert_eq!(game.object_view(creature).zone, Zone::Hand);
+    assert_eq!(game.state.players[p.other().index()].life, 17);
+}
+
+fn cycle_for_watery_grave(name: &str) {
+    let p = Player::P0;
+    let mut game = scenario(p);
+    let source = put(&mut game, p, name, Zone::Hand);
+    let found = put(&mut game, p, "Watery Grave", Zone::Library);
+    let forest = game.state.players[p.index()].library[0];
+    announce_ability(&mut game, source, 0);
+    pay(&mut game);
+    assert_eq!(game.object_view(source).zone, Zone::Graveyard);
+    pass_pair(&mut game);
+    reject(&mut game, Action::ChooseSearch { card: forest });
+    act(&mut game, Action::ChooseSearch { card: found });
+    act(&mut game, Action::FinishSearch);
+    assert_eq!(game.object_view(found).zone, Zone::Hand);
+}
+
+#[test]
+fn ice_flan_stuns_an_enemy_artifact_and_cycles_for_nonbasic_islands() {
+    let p = Player::P0;
+    let mut game = scenario(p);
+    let flan = put(&mut game, p, "Ice Flan", Zone::Hand);
+    let artifact = put(&mut game, p.other(), "Short Bow", Zone::Battlefield);
+    let ally = put(&mut game, p, "Short Bow", Zone::Battlefield);
+    cast(&mut game, flan, None);
+    pass_pair(&mut game);
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(ally),
+        },
+    );
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(artifact),
+        },
+    );
+    settle(&mut game);
+    assert!(game.object_view(artifact).tapped);
+    assert_eq!(game.object_view(artifact).counters.stun, 1);
+    cycle_for_watery_grave("Ice Flan");
+}
+
+#[test]
+fn ignis_puts_a_land_in_tapped_and_creates_food_only_for_an_exiled_creature() {
+    let p = Player::P1;
+    let mut game = scenario(p);
+    let ignis = put(&mut game, p, "Ignis Scientia", Zone::Hand);
+    let land = put(&mut game, p, "Island", Zone::Library);
+    let nonland = put(&mut game, p, "Opt", Zone::Library);
+    cast(&mut game, ignis, None);
+    reach_library_selection(&mut game);
+    assert!(game.observe(p.other()).library_selection.is_none());
+    reject(&mut game, Action::SelectLibrary { card: nonland });
+    act(&mut game, Action::SelectLibrary { card: land });
+    act(&mut game, Action::FinishLibrarySelection);
+    assert_eq!(game.object_view(land).zone, Zone::Battlefield);
+    assert!(game.object_view(land).tapped);
+    game.state.objects[ignis as usize].summoning_sick = false;
+    let creature = put(&mut game, p.other(), "Grizzly Bears", Zone::Graveyard);
+    let spell = put(&mut game, p, "Opt", Zone::Graveyard);
+    for (target, food) in [(creature, 1), (spell, 0)] {
+        let mut branch = game.clone();
+        announce_ability(&mut branch, ignis, 0);
+        act(
+            &mut branch,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        pay(&mut branch);
+        settle(&mut branch);
+        assert_eq!(branch.object_view(target).zone, Zone::Exile);
+        assert_eq!(
+            branch
+                .state
+                .objects
+                .iter()
+                .filter(|object| {
+                    object.zone == Zone::Battlefield && object.card.name() == "Food"
+                })
+                .count(),
+            food
+        );
+    }
+}
+
+#[test]
+fn malboro_discard_life_loss_and_exile_are_ordered_and_swampcycling_finds_duals() {
+    let p = Player::P0;
+    let mut game = scenario(p);
+    let victim = p.other();
+    let malboro = put(&mut game, p, "Malboro", Zone::Hand);
+    let discard = put(&mut game, victim, "Opt", Zone::Hand);
+    let exiled = game.state.players[victim.index()]
+        .library
+        .iter()
+        .rev()
+        .take(3)
+        .copied()
+        .collect::<Vec<_>>();
+    cast(&mut game, malboro, None);
+    pass_pair(&mut game);
+    pass_pair(&mut game);
+    assert_eq!(game.actor(), Some(victim));
+    assert_eq!(game.state.players[victim.index()].life, 20);
+    act(&mut game, Action::Discard { card: discard });
+    assert_eq!(game.object_view(discard).zone, Zone::Graveyard);
+    assert_eq!(game.state.players[victim.index()].life, 18);
+    for card in exiled {
+        assert_eq!(game.object_view(card).zone, Zone::Exile);
+    }
+    cycle_for_watery_grave("Malboro");
+}
+
+#[test]
+fn matoya_draws_once_for_either_scry_or_surveil() {
+    let p = Player::P1;
+    for (spell, destination) in [
+        ("Opt", LibraryDestination::Bottom),
+        ("Dreams of Laguna", LibraryDestination::Graveyard),
+    ] {
+        let mut game = scenario(p);
+        put(&mut game, p, "Matoya, Archon Elder", Zone::Battlefield);
+        let spell = put(&mut game, p, spell, Zone::Hand);
+        let before = game.state.players[p.index()].cards_drawn_this_turn;
+        cast(&mut game, spell, None);
+        pass_pair(&mut game);
+        arrange_top(&mut game, destination);
+        settle(&mut game);
+        assert_eq!(
+            game.state.players[p.index()].cards_drawn_this_turn,
+            before + 2
+        );
+    }
+}
+
+#[test]
+fn memories_returning_publicly_alternates_and_keeps_the_flashback_exit() {
+    let p = Player::P0;
+    let mut game = scenario(p);
+    let spell = put(&mut game, p, "Memories Returning", Zone::Graveyard);
+    let cards = [
+        "Forest",
+        "Opt",
+        "Grizzly Bears",
+        "Island",
+        "Swiftfoot Boots",
+    ]
+    .map(|name| put(&mut game, p, name, Zone::Library));
+    act(&mut game, Action::AnnounceFlashback { card: spell });
+    pay(&mut game);
+    pass_pair(&mut game);
+    let cohort = game.observe(p).library_selection.unwrap();
+    assert!(cohort.public);
+    assert_eq!(
+        game.observe(p.other())
+            .library_selection
+            .unwrap()
+            .candidates,
+        cohort.candidates
+    );
+    for (index, &card) in cards[..4].iter().enumerate() {
+        assert_eq!(
+            game.actor(),
+            Some(if index % 2 == 0 { p } else { p.other() })
+        );
+        act(&mut game, Action::SelectLibrary { card });
+    }
+    assert_eq!(game.object_view(spell).zone, Zone::Exile);
+    for card in [cards[0], cards[2], cards[4]] {
+        assert_eq!(game.object_view(card).zone, Zone::Hand);
+    }
+    for card in [cards[1], cards[3]] {
+        assert_eq!(game.object_view(card).zone, Zone::Library);
+    }
+}
+
+#[test]
+fn minwu_counts_cleric_permanents_even_when_they_arent_creatures() {
+    let p = Player::P1;
+    let mut game = scenario(p);
+    let minwu = put(&mut game, p, "Minwu, White Mage", Zone::Battlefield);
+    let cleric = put(&mut game, p, "Lifecreed Duo", Zone::Battlefield);
+    let foe = put(&mut game, p.other(), "Lifecreed Duo", Zone::Battlefield);
+    let bear = put(&mut game, p, "Grizzly Bears", Zone::Battlefield);
+    let mut kindred = CopyRecipe::new(game.object_view(cleric).card);
+    kindred.overrides = Some(CopyOverrides {
+        kinds: Some(32 | 128),
+        ..CopyOverrides::NONE
+    });
+    game.apply_temporary_copy(game.object_ref(cleric), kindred, CopyDeadline::EndOfTurn);
+    assert!(!game.object_view(cleric).is_creature());
+    assert!(game.object_view(cleric).has_subtype("Cleric"));
+    game.gain_life(p, 3);
+    game.prepare_triggers();
+    settle(&mut game);
+    for (card, count) in [(minwu, 1), (cleric, 1), (foe, 0), (bear, 0)] {
+        assert_eq!(game.object_view(card).counters.plus_one, count);
+    }
+}

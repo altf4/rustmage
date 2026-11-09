@@ -3,10 +3,45 @@
   "catalogue_id": 2120,
   "oracle_id": "3b7120a6-700b-4c61-bea4-a835f0cc0bcb",
   "facts_sha256": "687d40089e80db907b794da0bda83a5bffe0c86548b3ca1f70ec3f2e40c5680b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "540580c856fc2841e84e9b29cd8816a7b020a80752ed5add132c9b2188106833"
   },
-  "physical_metadata_sha256": "4b9b8ea35eef794c4d6da2e6ea0a3bdbad9f9f2e3317a0a6bf2fa37fc8fdda27"
+  "physical_metadata_sha256": "4b9b8ea35eef794c4d6da2e6ea0a3bdbad9f9f2e3317a0a6bf2fa37fc8fdda27",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/IceFlan.java",
+  "java_sha256": "70dc2b226448a47b70b0ad637f0f7f353c2e2745581a9a77409bf729669b23e1",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+      "sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/IslandcyclingAbility.java",
+      "sha256": "867746f55d6c9731a3fbdbdf7786356a78d0e75d29dc2224c8138169170aa46a"
+    }
+  ]
 }
