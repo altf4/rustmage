@@ -437,6 +437,7 @@ enum Work {
     DamageResults {
         events: Vec<DamageEvent>,
         remembering: Option<u64>,
+        gains: Vec<LifeTriggerView>,
     },
     Counters(CounterBatch),
     Tokens(TokenBatch),
@@ -539,8 +540,9 @@ impl ReplacementState {
                                 * std::mem::size_of::<(ObjectRef, DamagePreventionKind)>()
                             + b.used.len() * std::mem::size_of::<DamageReplacementId>()
                     }
-                    Work::DamageResults { events, .. } => {
+                    Work::DamageResults { events, gains, .. } => {
                         events.len() * std::mem::size_of::<DamageEvent>()
+                            + gains.len() * std::mem::size_of::<LifeTriggerView>()
                     }
                     Work::Proliferate(b) => b.used.len() * std::mem::size_of::<(ObjectRef, u16)>(),
                     Work::Counters(b) => counter_bytes(b),
@@ -2866,8 +2868,9 @@ impl Game {
                     Some(Work::DamageResults {
                         events,
                         remembering,
+                        gains,
                     }) => {
-                        self.commit_unprevented_damage_batch(&events, remembering);
+                        self.commit_unprevented_damage_batch(&events, remembering, &gains);
                         continue;
                     }
                     Some(Work::Counters(batch)) => state.active = Some(Event::Counters(batch)),
@@ -3009,14 +3012,19 @@ impl Game {
                             .into_iter()
                             .filter(|event| !self.damage_event_prevented(event))
                             .collect();
-                        self.prepare_damage_results(&events);
+                        let gains = self.prepare_damage_results(&events);
                         let placements = self.wither_damage_counters(&events);
                         if placements.is_empty() {
-                            self.commit_unprevented_damage_batch(&events, batch.remembering);
+                            self.commit_unprevented_damage_batch(
+                                &events,
+                                batch.remembering,
+                                &gains,
+                            );
                         } else {
                             state.work.push_front(Work::DamageResults {
                                 events,
                                 remembering: batch.remembering,
+                                gains,
                             });
                             state.work.push_front(Work::Counters(CounterBatch {
                                 player_events: Default::default(),

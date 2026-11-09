@@ -611,44 +611,10 @@ impl Game {
         }
     }
 
-    pub(super) fn gain_life(&mut self, player: Player, amount: i128) {
+    pub(super) fn commit_life_gain(&mut self, player: Player, amount: i128) {
         if amount <= 0 {
             return;
         }
-        // These additive replacements commute; each available source applies once.
-        // Prohibition takes precedence and creates no life-gain event (CR101.2).
-        let query = self.characteristic_query();
-        let mut additional = 0i128;
-        for &id in &self.state.static_sources {
-            let source = &self.state.objects[id as usize];
-            for group in source.card.static_ability_groups() {
-                for fragment in group.fragments {
-                    match fragment {
-                        StaticAbilityFragment::CantGainLife
-                            if query.continuous_fragment_available(id, |f| {
-                                matches!(f, StaticAbilityFragment::CantGainLife)
-                            }) =>
-                        {
-                            return;
-                        }
-                        StaticAbilityFragment::LifeGainAdditional(n)
-                            if source.controller == player
-                                && query.continuous_fragment_available(id, |f| {
-                                    matches!(f, StaticAbilityFragment::LifeGainAdditional(_))
-                                }) =>
-                        {
-                            additional = additional
-                                .checked_add(i128::from(*n))
-                                .capacity("life replacement exhausted");
-                        }
-                        _ => {}
-                    }
-                }
-            }
-        }
-        let amount = amount
-            .checked_add(additional)
-            .capacity("life replacement exhausted");
         let state = &mut self.state.players[player.index()];
         state.life = state
             .life
@@ -8262,9 +8228,12 @@ impl Game {
                         }
                         _ => unreachable!(),
                     };
-                    let players: Vec<_> = self.program_players(set, &item).collect();
-                    for player in players {
-                        self.gain_life(player, amount);
+                    let gains: Vec<_> = self
+                        .program_players(set, &item)
+                        .map(|player| (player, self.plan_life_gain(player, amount)))
+                        .collect();
+                    for (player, gain) in gains {
+                        self.commit_life_gain(player, gain);
                     }
                 }
                 Instruction::LoseLifeTargetController(amount)

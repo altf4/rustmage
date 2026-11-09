@@ -276,6 +276,7 @@ pub enum StaticAbilityFragment {
         minimum: u16,
     },
     LifeGainAdditional(u16),
+    LifeGainDouble,
     /// Add to an opponent's positive mill event.
     OpponentMillAdditional(u16),
     /// The controller's first positive batch of coin flips comes up heads and is won.

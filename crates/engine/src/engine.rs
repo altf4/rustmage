@@ -112,6 +112,9 @@ pub mod endgame;
 #[path = "engine_library_entry_counter.rs"]
 pub mod library_entry_counter;
 #[doc(hidden)]
+#[path = "engine_life_gain.rs"]
+pub mod life_gain;
+#[doc(hidden)]
 #[path = "engine_limited_exile.rs"]
 pub mod limited_exile;
 #[doc(hidden)]
@@ -120,6 +123,7 @@ pub mod linked_choices;
 #[doc(hidden)]
 #[path = "engine_linked_exile_effects.rs"]
 pub mod linked_exile_effects;
+pub use life_gain::{LifeGainReplacement, LifeGainReplacementChoice, LifeGainReplacementEffect};
 #[doc(hidden)]
 #[path = "engine_zone_replacements.rs"]
 pub mod zone_replacements;
@@ -2507,13 +2511,6 @@ pub struct LifeTriggerView {
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-struct LifeGainEvent {
-    source: DamageSource,
-    amount: i128,
-}
-
-#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
     Proliferate {
@@ -2550,6 +2547,9 @@ enum Pending {
         player: Player,
     },
     ZoneReplacement {
+        player: Player,
+    },
+    LifeGainReplacement {
         player: Player,
     },
     Retarget {
@@ -3682,6 +3682,8 @@ pub struct Observation {
     pub solved_cases: Vec<ObjectRef>,
     pub replacement_choice: Option<ReplacementChoiceView>,
     pub zone_replacement_choice: Option<ZoneReplacementChoiceView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub life_gain_replacement_choice: Option<LifeGainReplacementChoice>,
     pub zone_reveals: Vec<ZoneRevealView>,
     pub created_token_choice: Option<CreatedTokenChoiceView>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4276,6 +4278,7 @@ impl Game {
         if game.state.objects.iter().any(|o| {
             o.card.zone_replacement().is_some()
                 || zone_replacements::card_provides_prevention(o.card)
+                || life_gain::can_double(o.card)
         }) {
             game.state.zone_rules = Some(Box::default());
         }
@@ -4314,6 +4317,7 @@ impl Game {
             Pending::MiracleReveal { player }
             | Pending::ResolutionCasts { player }
             | Pending::ZoneReplacement { player }
+            | Pending::LifeGainReplacement { player }
             | Pending::ManaLotSpend { player }
             | Pending::Replacement { player }
             | Pending::CreatedToken { player }
@@ -4837,8 +4841,8 @@ impl Game {
             }
             Pending::HandLibrarySearch { .. } => return self.visit_hand_library_search(&mut emit),
             Pending::LibraryGraveyardSearch { .. } => return self.visit_zone_search(&mut emit),
-            Pending::ZoneReplacement { .. } => {
-                if self.zone_choice_actions(&mut emit) {
+            Pending::ZoneReplacement { .. } | Pending::LifeGainReplacement { .. } => {
+                if self.ordered_event_choice_actions(&mut emit) {
                     return true;
                 }
             }
@@ -7064,7 +7068,11 @@ impl Game {
             Action::ChooseZoneReplacement { effect } => self.choose_zone_replacement(effect),
             Action::ChooseDrawReplacement { source } => self.choose_draw_replacement(source),
             Action::ChooseReplacement { source, ability } => {
-                self.choose_replacement(source, ability)
+                if matches!(self.state.pending, Pending::LifeGainReplacement { .. }) {
+                    self.choose_life_gain_replacement(source, ability);
+                } else {
+                    self.choose_replacement(source, ability);
+                }
             }
             Action::ChooseResolvedDamageReplacement { effect } => {
                 self.choose_resolved_damage_replacement(effect)
@@ -10572,15 +10580,11 @@ impl Game {
         }
     }
 
-    fn apply_damage_batch(&mut self, events: &[DamageEvent]) -> Vec<LifeGainEvent> {
-        self.apply_damage_batch_recording(events, None)
+    fn apply_damage_batch(&mut self, events: &[DamageEvent]) {
+        self.apply_damage_batch_recording(events, None);
     }
 
-    fn apply_damage_batch_recording(
-        &mut self,
-        events: &[DamageEvent],
-        remembering: Option<u64>,
-    ) -> Vec<LifeGainEvent> {
+    fn apply_damage_batch_recording(&mut self, events: &[DamageEvent], remembering: Option<u64>) {
         if self.damage_replacement_candidates_exist(events)
             || events.iter().any(|event| {
                 event.amount > 0
@@ -10589,9 +10593,8 @@ impl Game {
             })
         {
             self.stage_damage_replacements(events, remembering);
-            Vec::new()
         } else {
-            self.commit_damage_batch(events, remembering)
+            self.commit_damage_batch(events, remembering);
         }
     }
 
@@ -10640,11 +10643,7 @@ impl Game {
             )
     }
 
-    fn commit_damage_batch(
-        &mut self,
-        events: &[DamageEvent],
-        remembering: Option<u64>,
-    ) -> Vec<LifeGainEvent> {
+    fn commit_damage_batch(&mut self, events: &[DamageEvent], remembering: Option<u64>) {
         // Avoid allocating on the ordinary, unprevented damage path.
         let dealt = events
             .iter()
@@ -10657,13 +10656,41 @@ impl Game {
                     .collect::<Vec<_>>()
             });
         let events = dealt.as_deref().unwrap_or(events);
-        self.prepare_damage_results(events);
-        self.commit_unprevented_damage_batch(events, remembering)
+        let gains = self.prepare_damage_results(events);
+        self.commit_unprevented_damage_batch(events, remembering, &gains);
     }
 
-    fn prepare_damage_results(&mut self, events: &[DamageEvent]) {
+    fn prepare_damage_results(&mut self, events: &[DamageEvent]) -> Vec<LifeTriggerView> {
+        // Lifelink is simultaneous with the other damage results. Freeze
+        // per-source gains after prevention, and settle their replacement
+        // choices before exposing any of the damage results.
+        let mut gains: Vec<LifeTriggerView> = Vec::new();
+        let mut indices = std::collections::BTreeMap::<DamageSource, usize>::new();
+        for event in events {
+            if event.amount <= 0 || !event.source.keywords.contains(Keywords::LIFELINK) {
+                continue;
+            }
+            if let Some(&index) = indices.get(&event.source) {
+                gains[index].amount = gains[index]
+                    .amount
+                    .checked_add(event.amount)
+                    .capacity("life gain representation exhausted");
+            } else {
+                indices.insert(event.source, gains.len());
+                gains.push(LifeTriggerView {
+                    player: event.source.controller,
+                    amount: event.amount,
+                });
+            }
+        }
+        for player in [self.state.active, self.state.active.other()] {
+            for gain in gains.iter_mut().filter(|gain| gain.player == player) {
+                gain.amount = self.plan_life_gain(player, gain.amount);
+            }
+        }
         self.refresh_excess_threshold(events);
         self.source_damage_triggers(events);
+        gains
     }
 
     /// Prevention and pre-damage thresholds are already fixed, including when
@@ -10672,11 +10699,9 @@ impl Game {
         &mut self,
         events: &[DamageEvent],
         remembering: Option<u64>,
-    ) -> Vec<LifeGainEvent> {
+        gains: &[LifeTriggerView],
+    ) {
         let mut losses = [0i128; 2];
-        let mut gains: Vec<LifeGainEvent> = Vec::new();
-        let mut gain_indices: std::collections::BTreeMap<DamageSource, usize> =
-            std::collections::BTreeMap::new();
         for event in events {
             if event.amount <= 0 {
                 continue;
@@ -10759,28 +10784,12 @@ impl Game {
                     source.dealt_combat_damage_this_incarnation = true;
                 }
             }
-            if event.source.keywords.contains(Keywords::LIFELINK) {
-                // One source damaging multiple objects simultaneously causes a
-                // single life-gain event; distinct sources remain distinct.
-                if let Some(&index) = gain_indices.get(&event.source) {
-                    gains[index].amount = gains[index]
-                        .amount
-                        .checked_add(event.amount)
-                        .capacity("life gain representation exhausted");
-                } else {
-                    gain_indices.insert(event.source, gains.len());
-                    gains.push(LifeGainEvent {
-                        source: event.source,
-                        amount: event.amount,
-                    });
-                }
-            }
         }
         for player in [Player::P0, Player::P1] {
             self.life_lost_event(player, losses[player.index()]);
         }
-        for gain in &gains {
-            self.gain_life(gain.source.controller, gain.amount);
+        for gain in gains {
+            self.commit_life_gain(gain.player, gain.amount);
         }
         self.record_combat_and_excess_damage(events);
         self.creature_damage_events(events);
@@ -10788,7 +10797,6 @@ impl Game {
         self.player_damage_triggers(events);
         self.delayed_target_combat_damage(events);
         // Trigger events are recorded before SBAs, after the whole damage batch.
-        gains
     }
 
     fn combatants(&self) -> Vec<CardId> {
@@ -11123,6 +11131,7 @@ impl Game {
             damage_prevention_prohibited: self.damage_prevention_prohibited(),
             replacement_choice: self.replacement_choice(viewer),
             zone_replacement_choice: self.zone_choice_view(viewer),
+            life_gain_replacement_choice: self.life_gain_choice_view(viewer),
             zone_reveals: self.zone_reveals(),
             created_token_choice: self.created_token_choice(),
             copied_saga_lore: self.copied_saga_lore_choice(),
@@ -11368,6 +11377,7 @@ impl Game {
                 Pending::ResolutionCasts { .. } => "resolution_casts",
                 Pending::ManaLotSpend { .. } => "mana_lot_spend",
                 Pending::ZoneReplacement { .. } => "zone_replacement",
+                Pending::LifeGainReplacement { .. } => "life_gain_replacement",
                 Pending::Replacement { .. } => "replacement",
                 Pending::CreatedToken { .. } => "created_token",
                 Pending::CopiedSagaLore { .. } => "copied_saga_lore",

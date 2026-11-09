@@ -310,6 +310,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::CounterProhibition(_)
                             | crate::cards::StaticAbilityFragment::PlayerCounterProhibition { .. }
                             | crate::cards::StaticAbilityFragment::LifeGainAdditional(_)
+                            | crate::cards::StaticAbilityFragment::LifeGainDouble
                             | crate::cards::StaticAbilityFragment::OpponentMillAdditional(_)
                             | crate::cards::StaticAbilityFragment::FirstCoinFlipsHeads
                             | crate::cards::StaticAbilityFragment::NoMaximumHandSize

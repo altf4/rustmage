@@ -55,7 +55,7 @@ pub struct ZoneReplacementChoiceView {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
-pub(super) struct Request {
+pub(super) struct ZoneRequest {
     object: ObjectRef,
     requested: Zone,
     affected: Player,
@@ -64,12 +64,35 @@ pub(super) struct Request {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
-struct Pick {
+struct ZonePick {
     object: ObjectRef,
     requested: Zone,
     effect: ZoneReplacementKind,
     player: Player,
     public: bool,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) enum Request {
+    Zone(ZoneRequest),
+    LifeGain(LifeGainReplacementChoice),
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum Pick {
+    Zone(ZonePick),
+    LifeGain {
+        player: Player,
+        amount: i128,
+        source: ObjectRef,
+        ability: u16,
+    },
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy)]
+enum Selection {
+    Zone(ZoneReplacementKind),
+    LifeGain { source: ObjectRef, ability: u16 },
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -114,7 +137,7 @@ pub(super) fn test_checkpoint(state: State, object: ObjectRef, owner: Player) ->
                 action: Action::Pass,
                 picks: SharedVec::default(),
             },
-            request: Request {
+            request: Request::Zone(ZoneRequest {
                 object,
                 requested: Zone::Graveyard,
                 affected: owner,
@@ -126,7 +149,7 @@ pub(super) fn test_checkpoint(state: State, object: ObjectRef, owner: Player) ->
                     choices: vec![ZoneReplacementKind::Prevent],
                     prior_public_choices: Vec::new(),
                 },
-            },
+            }),
         })),
         ..ZoneState::default()
     }
@@ -221,7 +244,14 @@ impl ZoneState {
             + self.choice.as_ref().map_or(0, |c| {
                 std::mem::size_of::<Choice>()
                     + base_bytes(&c.base)
-                    + c.request.view.choices.len() * std::mem::size_of::<ZoneReplacementKind>()
+                    + match &c.request {
+                        Request::Zone(request) => {
+                            request.view.choices.len() * std::mem::size_of::<ZoneReplacementKind>()
+                        }
+                        Request::LifeGain(request) => {
+                            request.effects.len() * std::mem::size_of::<LifeGainReplacementEffect>()
+                        }
+                    }
             })
             + self
                 .replay
@@ -290,7 +320,10 @@ impl Game {
     }
 
     pub(super) fn register_zone_rule_card(&mut self, card: Card) {
-        if card.zone_replacement().is_some() || card_provides_prevention(card) {
+        if card.zone_replacement().is_some()
+            || card_provides_prevention(card)
+            || life_gain::can_double(card)
+        {
             self.state.zone_rules.get_or_insert_default();
         }
     }
@@ -313,46 +346,110 @@ impl Game {
             .map_or_else(Vec::new, |r| r.reveals.to_vec())
     }
     pub(super) fn zone_choice_view(&self, viewer: Player) -> Option<ZoneReplacementChoiceView> {
-        let Pending::ZoneReplacement { player } = self.state.pending else {
+        if !matches!(self.state.pending, Pending::ZoneReplacement { .. }) {
+            return None;
+        }
+        let choice = self.state.zone_rules.as_ref()?.choice.as_ref()?;
+        let Request::Zone(request) = &choice.request else {
             return None;
         };
-        self.shares_information(viewer, player).then(|| {
-            let choice = self
-                .state
-                .zone_rules
-                .as_ref()
-                .unwrap()
-                .choice
-                .as_ref()
-                .unwrap();
-            let mut view = choice.request.view.clone();
+        self.shares_information(viewer, request.affected).then(|| {
+            let mut view = request.view.clone();
             view.prior_public_choices = choice
                 .base
                 .picks
                 .iter()
-                .filter(|pick| pick.public)
-                .map(|pick| ZoneReplacementPickView {
-                    object: pick.object,
-                    player: pick.player,
-                    effect: pick.effect,
+                .filter_map(|pick| {
+                    let Pick::Zone(pick) = pick else {
+                        return None;
+                    };
+                    pick.public.then_some(ZoneReplacementPickView {
+                        object: pick.object,
+                        player: pick.player,
+                        effect: pick.effect,
+                    })
                 })
                 .collect();
             view
         })
     }
-    pub(super) fn zone_choice_actions(&self, mut emit: impl FnMut(Action) -> bool) -> bool {
-        self.state
+    pub(super) fn life_gain_choice_view(
+        &self,
+        viewer: Player,
+    ) -> Option<LifeGainReplacementChoice> {
+        if !matches!(self.state.pending, Pending::LifeGainReplacement { .. }) {
+            return None;
+        }
+        let choice = self.state.zone_rules.as_ref()?.choice.as_ref()?;
+        let Request::LifeGain(request) = &choice.request else {
+            return None;
+        };
+        self.shares_information(viewer, request.player)
+            .then(|| request.clone())
+    }
+    pub(super) fn ordered_event_choice_actions(
+        &self,
+        mut emit: impl FnMut(Action) -> bool,
+    ) -> bool {
+        let choice = self
+            .state
             .zone_rules
             .as_ref()
             .unwrap()
             .choice
             .as_ref()
-            .unwrap()
-            .request
-            .view
-            .choices
-            .iter()
-            .any(|&effect| emit(Action::ChooseZoneReplacement { effect }))
+            .unwrap();
+        match &choice.request {
+            Request::Zone(request) => request
+                .view
+                .choices
+                .iter()
+                .any(|&effect| emit(Action::ChooseZoneReplacement { effect })),
+            Request::LifeGain(request) => request.effects.iter().any(|effect| {
+                emit(Action::ChooseReplacement {
+                    source: effect.source,
+                    ability: effect.ability,
+                })
+            }),
+        }
+    }
+    fn next_ordered_pick(&mut self) -> Option<Pick> {
+        let replay = self.state.zone_rules.as_mut()?.replay.as_mut()?;
+        let pick = *replay.base.picks.get(replay.next)?;
+        replay.next += 1;
+        Some(pick)
+    }
+    pub(super) fn select_life_gain_replacement(
+        &mut self,
+        player: Player,
+        amount: i128,
+        effects: &[LifeGainReplacementEffect],
+    ) -> usize {
+        if let Some(pick) = self.next_ordered_pick() {
+            let Pick::LifeGain {
+                player: chooser,
+                amount: before,
+                source,
+                ability,
+            } = pick
+            else {
+                unreachable!("exact life gain replay prefix");
+            };
+            assert_eq!(
+                (chooser, before),
+                (player, amount),
+                "exact life gain replay prefix"
+            );
+            return effects
+                .iter()
+                .position(|effect| effect.source == source && effect.ability == ability)
+                .expect("live life gain replacement");
+        }
+        std::panic::resume_unwind(Box::new(Request::LifeGain(LifeGainReplacementChoice {
+            player,
+            amount,
+            effects: effects.to_vec(),
+        })));
     }
     pub(super) fn freeze_zone_rules(
         &self,
@@ -576,13 +673,10 @@ impl Game {
             }
             [effect] => *effect,
             _ => {
-                if let Some(replay) = self
-                    .state
-                    .zone_rules
-                    .as_mut()
-                    .and_then(|r| r.replay.as_mut())
-                    && let Some(pick) = replay.base.picks.get(replay.next)
-                {
+                if let Some(pick) = self.next_ordered_pick() {
+                    let Pick::Zone(pick) = pick else {
+                        unreachable!("exact zone replay prefix");
+                    };
                     assert_eq!(
                         (pick.object, pick.requested),
                         (before.reference, requested),
@@ -592,10 +686,9 @@ impl Game {
                         choices.contains(&pick.effect),
                         "live zone replacement choice"
                     );
-                    replay.next += 1;
                     return Self::zone_plan(pick.effect, &rules, exile_on_stack_exit);
                 }
-                let request = Request {
+                let request = Request::Zone(ZoneRequest {
                     object: before.reference,
                     requested,
                     affected: affected_player(before),
@@ -611,7 +704,7 @@ impl Game {
                         choices,
                         prior_public_choices: Vec::new(),
                     },
-                };
+                });
                 // Private typed unwind uses the existing action checkpoint and never calls the panic hook.
                 std::panic::resume_unwind(Box::new(request));
             }
@@ -721,14 +814,26 @@ impl Game {
                 picks: SharedVec::default(),
             }
         };
-        let affected = request.affected;
+        self.state.pending = match &request {
+            Request::Zone(zone) => Pending::ZoneReplacement {
+                player: zone.affected,
+            },
+            Request::LifeGain(life) => Pending::LifeGainReplacement {
+                player: life.player,
+            },
+        };
         self.state.zone_rules.get_or_insert_default().choice =
             Some(Box::new(Choice { base, request }));
-        self.state.pending = Pending::ZoneReplacement { player: affected };
         self.revision = next_revision;
         Ok(())
     }
     pub(super) fn choose_zone_replacement(&mut self, effect: ZoneReplacementKind) {
+        self.choose_ordered_event(Selection::Zone(effect));
+    }
+    pub(super) fn choose_life_gain_replacement(&mut self, source: ObjectRef, ability: u16) {
+        self.choose_ordered_event(Selection::LifeGain { source, ability });
+    }
+    fn choose_ordered_event(&mut self, selection: Selection) {
         let foreign_cast_choice = self.foreign_cast_choice_pending();
         let choice = self
             .state
@@ -739,12 +844,23 @@ impl Game {
             .take()
             .unwrap();
         let mut base = choice.base;
-        base.picks.push(Pick {
-            object: choice.request.object,
-            requested: choice.request.requested,
-            effect,
-            player: choice.request.affected,
-            public: choice.request.public,
+        base.picks.push(match (choice.request, selection) {
+            (Request::Zone(request), Selection::Zone(effect)) => Pick::Zone(ZonePick {
+                object: request.object,
+                requested: request.requested,
+                effect,
+                player: request.affected,
+                public: request.public,
+            }),
+            (Request::LifeGain(request), Selection::LifeGain { source, ability }) => {
+                Pick::LifeGain {
+                    player: request.player,
+                    amount: request.amount,
+                    source,
+                    ability,
+                }
+            }
+            _ => unreachable!("choice for the active event"),
         });
         let actor = base.actor;
         let action = base.action.clone();
