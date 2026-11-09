@@ -3,10 +3,22 @@
   "catalogue_id": 1389,
   "oracle_id": "264f944b-386b-4378-9764-4a8bde246809",
   "facts_sha256": "e846aca0566477096033a439454931ee6cd8e64607a9b5658d05164cc2bee895",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "5ebd7ee9d4493f4f8512d19e49067f5770ffb0c08cda27e1e6781ac601bb074d"
-  },
-  "physical_metadata_sha256": "691d90f31cc98cf22a79328a798dc5efb1656158e7655a6cc45f0781c2eccf53"
+  "complete": true,
+  "physical_metadata_sha256": "691d90f31cc98cf22a79328a798dc5efb1656158e7655a6cc45f0781c2eccf53",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EvilReawakened.java",
+  "java_sha256": "2fb19048310e5598f310038606a69a68c50fd91d54ced112c67d48fda515cf61",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldWithCounterTargetEffect.java",
+      "sha256": "0e7f52f88746be4b6bbb9acafadcf25b3ad14633151a2868726600cb1af9434c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    }
+  ]
 }

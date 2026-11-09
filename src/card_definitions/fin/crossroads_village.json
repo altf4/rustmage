@@ -3,10 +3,22 @@
   "catalogue_id": 893,
   "oracle_id": "b26cfeb0-7bbe-4d93-8eed-e832f175a80c",
   "facts_sha256": "80c2ee53705b1483b3cf775b11de5f248326df038e8f0724673d9ba68055bfaf",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "1006fc66817a4ca49b44dcaa3c3f63ceca5c7ce1efdebb292800ea4ea9f94695"
-  },
-  "physical_metadata_sha256": "ed7c330068ca352d4f5304fa09ca9ced6aa59c7d175e98b8acd1eae9e9f47325"
+  "complete": true,
+  "physical_metadata_sha256": "ed7c330068ca352d4f5304fa09ca9ced6aa59c7d175e98b8acd1eae9e9f47325",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CrossroadsVillage.java",
+  "java_sha256": "55597818204a23ee88834b434c29f27d654129575ebf8cb76a3dafd3ebf1ca53",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedAsItEntersChooseColorAbility.java",
+      "sha256": "ae5f335e82c104afe8d7165f2d404c4ad5e1972a28225b7b9af732c30e8b125d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaChosenColorEffect.java",
+      "sha256": "e129dbded6a8eeaa978804934e34f9b3c5992ad5c560692e1fa5120b8c3f2e48"
+    }
+  ]
 }

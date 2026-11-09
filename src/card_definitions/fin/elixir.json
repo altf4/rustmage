@@ -3,10 +3,22 @@
   "catalogue_id": 1289,
   "oracle_id": "3e978db3-77ef-4b93-8f8f-e414e27254bd",
   "facts_sha256": "c4f4907c229e448b08dd8419ea27c605f51aa9e8cbb10a5c4fa6435ce491a424",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "899af828be578cef84e3c1e1cc3617dd5b17299cf2b7f51ec16bb0d40c4ed085"
-  },
-  "physical_metadata_sha256": "eed909e63b8fd905e997adc1f0ce380707154dd4bf8dacc5e51b92b401555267"
+  "complete": true,
+  "physical_metadata_sha256": "eed909e63b8fd905e997adc1f0ce380707154dd4bf8dacc5e51b92b401555267",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/Elixir.java",
+  "java_sha256": "583b12972875f3e3fdff4522f11a371639ce205ebfc01c66bce4933cc0a073dc",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedAbility.java",
+      "sha256": "147582b81a6ea9f26c8835600282fe7311c08dcb1ff983b26587e455c2c4514a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceCost.java",
+      "sha256": "1cd064f3443f1a13cffbc141dbc6ddd71762a8a7a6b4c4d2aad6b432bf870d73"
+    }
+  ]
 }
