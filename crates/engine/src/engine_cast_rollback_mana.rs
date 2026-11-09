@@ -445,13 +445,22 @@ impl Game {
                     return false;
                 }
                 if let Some((spec, external)) = additional {
-                    let zone = match spec.kind.payment_kind() {
-                        EffectChoiceKind::Sacrifice => Zone::Battlefield,
+                    let kind = spec.kind.payment_kind();
+                    let zone = match kind {
+                        EffectChoiceKind::Sacrifice | EffectChoiceKind::TapPermanents(1) => {
+                            Zone::Battlefield
+                        }
                         EffectChoiceKind::ExileGraveyard => Zone::Graveyard,
                         _ => return false,
                     };
+                    let Some(object) = self.state.objects.get(external.card as usize) else {
+                        return false;
+                    };
                     if self.object_ref(external.card) != *external
-                        || self.state.objects[external.card as usize].zone != zone
+                        || object.zone != zone
+                        || (kind == EffectChoiceKind::TapPermanents(1)
+                            && cost.tap
+                            && *external == source)
                         || !self.additional_candidate(*spec, event.actor, source, *external)
                     {
                         return false;
@@ -495,14 +504,19 @@ impl Game {
                 additional,
             } => {
                 // Match actual announcement order: source tap/mana/counter
-                // costs precede an external sacrifice; graveyard exile is paid
-                // before those source costs. The replay hooks apply the frozen
-                // replacement/entry/trigger receipts for the real operation.
+                // costs precede an external sacrifice; graveyard exile and a
+                // separate tap cost are paid before those source costs. The
+                // replay hooks apply the frozen replacement/entry/trigger
+                // receipts for the real operation.
                 let sacrifice = additional.is_some_and(|(spec, _)| {
                     spec.kind.payment_kind() == EffectChoiceKind::Sacrifice
                 });
-                if !sacrifice && let Some((_, external)) = additional {
-                    self.move_object(external.card, Zone::Exile);
+                if !sacrifice && let Some((spec, external)) = additional {
+                    if spec.kind.payment_kind() == EffectChoiceKind::TapPermanents(1) {
+                        self.tap_objects(&[external.card]);
+                    } else {
+                        self.move_object(external.card, Zone::Exile);
+                    }
                 }
                 let mut item = (**item).clone();
                 if self

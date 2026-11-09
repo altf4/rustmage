@@ -1085,3 +1085,97 @@ fn separate_tap_mana_witnesses_share_one_announcement_and_distinct_owned_choices
         }
     }
 }
+
+#[test]
+fn selective_rollback_retains_exact_separate_tap_cost_and_owned_mana() {
+    let _rules = fixture_rules::activate(&[
+        (Card::GrizzlyBears, &EXTERNAL_TAP_MANA),
+        (Card::from_name("Shock").unwrap(), &DRAW),
+    ]);
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let witness = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let spell = put(&mut g, p, "Shock", Zone::Hand);
+        g.state.objects[witness as usize].summoning_sick = true;
+        g.state.players[p.index()].mana = [0; 6];
+        let object = g.object_ref(witness);
+        // Reach the same completed-event boundary as a failed foreign entry
+        // choice, with the actual additional choice and mana ability payment.
+        g.state.cast_rollback = Some(Box::new(cast_rollback::CastRollback::new(
+            g.state.clone(),
+            p,
+            spell,
+        )));
+        act(&mut g, Action::AnnounceCast { card: spell });
+        act(&mut g, announce_external_tap_mana(source));
+        act(&mut g, Action::ChooseAdditionalCost { object });
+        pay(&mut g);
+        assert!(g.object_view(source).tapped);
+        assert!(g.object_view(witness).tapped);
+        assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 1, 0, 0]);
+        let receipt = &g.state.cast_rollback.as_ref().unwrap().events[0];
+        let cast_rollback_mana::ManaEventKind::Activated { additional, .. } = &receipt.kind else {
+            panic!("expected paid activated mana receipt");
+        };
+        assert_eq!(
+            *additional,
+            Some((
+                EXTERNAL_TAP_MANA.activated[0].cost.additional.unwrap(),
+                object
+            ))
+        );
+        g.finish_cast_rollback(false);
+        let saved = g.snapshot();
+        let action = Action::ChooseManaRollback { keep: true };
+        let mut indexed = g.clone();
+        let index = indexed
+            .legal_actions()
+            .iter()
+            .position(|candidate| *candidate == action)
+            .expect("the exact untapped witness permits retaining its paid event");
+        indexed.apply_index(p, indexed.revision(), index).unwrap();
+        act(&mut g, action.clone());
+        assert_eq!(g.snapshot(), indexed.snapshot());
+        assert!(g.object_view(source).tapped);
+        assert!(g.object_view(witness).tapped);
+        assert!(g.state.objects[witness as usize].summoning_sick);
+        assert_eq!(g.object_ref(witness), object);
+        assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 1, 0, 0]);
+        assert_eq!(g.object_view(spell).zone, Zone::Hand);
+        let kept = g.snapshot();
+        g.restore(&saved).unwrap();
+        for invalid in 0..4 {
+            let mut rejected = g.clone();
+            match invalid {
+                0 => rejected.state.objects[witness as usize].tapped = true,
+                1 => rejected.state.objects[witness as usize].controller = p.other(),
+                2 => rejected.state.objects[witness as usize].generation += 1,
+                _ => {
+                    // Even a creature source cannot pay its tap symbol and the
+                    // separate tap cost with the same permanent.
+                    let source = rejected.object_ref(source);
+                    let receipt = &mut rejected.state.cast_rollback.as_mut().unwrap().events[0];
+                    let cast_rollback_mana::ManaEventKind::Activated { additional, .. } =
+                        &mut receipt.kind
+                    else {
+                        unreachable!();
+                    };
+                    additional.as_mut().unwrap().1 = source;
+                }
+            }
+            assert!(
+                !rejected.legal_actions().contains(&action),
+                "invalid witness {invalid}"
+            );
+            reject(&mut rejected, action.clone());
+        }
+        act(&mut g, Action::ChooseManaRollback { keep: false });
+        assert!(!g.object_view(source).tapped);
+        assert!(!g.object_view(witness).tapped);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        g.restore(&saved).unwrap();
+        act(&mut g, action);
+        assert_eq!(g.snapshot(), kept);
+    }
+}
