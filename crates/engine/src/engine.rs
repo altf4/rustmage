@@ -1164,6 +1164,7 @@ define_actions! {
     SelectLibrary { card: CardId },
     FinishLibrarySelection,
     ChooseEquipmentAttachment { equipment: Option<ObjectRef> },
+    ChooseEquipmentRecipient { recipient: ObjectRef },
     OrderLibraryBottom { card: CardId },
     ArrangeLibrary {
         card: CardId,
@@ -5348,6 +5349,9 @@ impl Game {
                             EffectChoiceKind::PowerDifferenceBoost => {
                                 Action::ChoosePowerDifferenceCreature { object }
                             }
+                            EffectChoiceKind::EquipmentRecipient => {
+                                Action::ChooseEquipmentRecipient { recipient: object }
+                            }
                             EffectChoiceKind::HandExileCopy
                             | EffectChoiceKind::HandCreature
                             | EffectChoiceKind::HandCreatureAttacking { .. }
@@ -8528,6 +8532,7 @@ impl Game {
             | Action::ChooseArmy { object }
             | Action::ChooseJace { object }
             | Action::ChoosePowerDifferenceCreature { object }
+            | Action::ChooseEquipmentRecipient { recipient: object }
             | Action::SelectGraveyardReturn { object }
             | Action::ChooseEffectObject { object }
             | Action::SelectLand { object }

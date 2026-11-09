@@ -6004,6 +6004,18 @@ impl Game {
                         );
                     }
                 }
+                Instruction::AttachSourceToControlledCreature => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::EquipmentRecipient,
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        1,
+                        None,
+                    ) {
+                        return;
+                    }
+                }
                 Instruction::EnsureJaceToken => self.ensure_jace_token(item.controller),
                 Instruction::EmpowerJace(amount) => {
                     if self.empower_jace(&item, u64::from(amount)) {

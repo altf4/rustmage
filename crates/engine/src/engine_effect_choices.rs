@@ -198,6 +198,11 @@ impl Game {
             return false;
         }
         let o = &self.state.objects[object.card as usize];
+        if choice.kind == EffectChoiceKind::EquipmentRecipient {
+            return o.controller == player
+                && choice.selected[player.index()].is_empty()
+                && self.equipment_can_attach(choice.source, object);
+        }
         if matches!(
             choice.kind,
             EffectChoiceKind::Blight(_) | EffectChoiceKind::BlightCost(_)
@@ -1666,6 +1671,13 @@ impl Game {
             .choice
             .take()
             .unwrap();
+        if choice.kind == EffectChoiceKind::EquipmentRecipient {
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            if let Some(&recipient) = choice.selected[player.index()].first() {
+                self.attach_equipment(choice.source, recipient);
+            }
+            return false;
+        }
         // A ward cost is paid as one event: revalidate the complete selection
         // before making any sacrifice, including live restrictions.
         let ward = self

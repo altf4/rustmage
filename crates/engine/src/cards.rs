@@ -1076,6 +1076,8 @@ pub enum EffectChoiceKind {
     /// Choose two controlled creatures, or as many as possible.
     PowerDifferenceBoost,
     KeepSharedCreatureTypes,
+    /// Choose one legal controlled creature for the resolving Equipment source.
+    EquipmentRecipient,
     /// One mandatory-if-possible nontarget recipient for the current color.
     ColorCounter {
         color: ChoiceColor,
@@ -2734,6 +2736,8 @@ pub enum Instruction {
     SelectMilled(MilledSelectionSpec),
     SelectTargetPlayerMilled(MilledSelectionSpec),
     AttachSource,
+    /// Attach the exact source Equipment to a creature you control without targeting.
+    AttachSourceToControlledCreature,
     AttachSourceReflexive {
         ability: u16,
     },
