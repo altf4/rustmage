@@ -7179,6 +7179,13 @@ impl Game {
                 Instruction::ExileSourceReturnTransformed { counter } => {
                     self.exile_source_return_transformed(&item, counter)
                 }
+                Instruction::ExileBattlefieldSourceReturn {
+                    transformed,
+                    under_owner,
+                } => self.exile_battlefield_source_return(&item, transformed, under_owner),
+                Instruction::ReturnGraveyardSourceTransformed => {
+                    self.return_graveyard_source_transformed(&item)
+                }
                 Instruction::ReturnCraftedSourceTransformed => {
                     self.return_crafted_source_transformed(&item)
                 }

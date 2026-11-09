@@ -1,4 +1,4 @@
-//! Modal faces share one physical object; transformation is never a zone transition.
+//! In-place face changes and exact physical-card entry effects.
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -108,8 +108,7 @@ impl Game {
                 false,
             )
     }
-    /// Exile the resolving physical card, then return its exact new incarnation
-    /// with its back face projected throughout entry replacement processing.
+    /// Exile the resolving physical card and apply its added entry counter.
     pub(super) fn exile_source_return_transformed(
         &mut self,
         item: &SpellView,
@@ -118,40 +117,69 @@ impl Game {
         let Some(source) = item.source else {
             return;
         };
-        if item.is_copy
-            || self.object_ref(source.id) != source.object
-            || self.state.objects[source.id as usize].zone != Zone::Stack
+        if item.is_copy || source.card.back_face().is_none() {
+            return;
+        }
+        if let Some(mut entry) =
+            self.exile_for_source_return(source.object, Zone::Stack, true, None)
         {
-            return;
+            entry.effect_counter = Some((counter, 1));
+            self.stage_entries(vec![entry], None);
         }
-        let Some(back) = source.card.back_face() else {
-            return;
-        };
-        let event = self.move_object(source.id, Zone::Exile);
-        if !event.moved
-            || event.destination != Zone::Exile
-            || self.object_ref(source.id) != event.after
-        {
-            return;
-        }
-        let mut movement = self.entry_move(source.id, Zone::Battlefield, false);
-        movement.controller = self.state.objects[source.id as usize].owner;
-        movement.source_before = Some(Box::new(movement.before.clone()));
-        movement.before.card = back;
-        movement.before.kinds = back.kind_mask();
-        movement.before.colors = back.colors();
-        movement.before.name = back.name();
-        movement.before.keywords = back.keywords();
-        if let Effect::Creature(power, toughness) = back.effect() {
-            movement.before.power = i128::from(power);
-            movement.before.toughness = i128::from(toughness);
-        }
-        movement.effect_counter = Some((counter, 1));
-        self.stage_entries(vec![movement], None);
     }
+
+    pub(super) fn exile_battlefield_source_return(
+        &mut self,
+        item: &SpellView,
+        transformed: bool,
+        under_owner: bool,
+    ) {
+        if let Some(source) = item.source
+            && let Some(entry) = self.exile_for_source_return(
+                source.object,
+                Zone::Battlefield,
+                transformed,
+                (!under_owner).then_some(item.controller),
+            )
+        {
+            self.stage_entries(vec![entry], None);
+        }
+    }
+
+    pub(super) fn return_graveyard_source_transformed(&mut self, item: &SpellView) {
+        if let Some(source) = item.source
+            && let Some(entry) = self.source_return_entry(
+                source.object,
+                Zone::Graveyard,
+                true,
+                Some(item.controller),
+            )
+        {
+            self.stage_entries(vec![entry], None);
+        }
+    }
+
+    fn exile_for_source_return(
+        &mut self,
+        object: ObjectRef,
+        origin: Zone,
+        transformed: bool,
+        controller: Option<Player>,
+    ) -> Option<entries::EntryMove> {
+        if self.object_ref(object.card) != object
+            || self.state.objects[object.card as usize].zone != origin
+        {
+            return None;
+        }
+        let event = self.move_object(object.card, Zone::Exile);
+        if !event.moved || event.destination != Zone::Exile {
+            return None;
+        }
+        self.source_return_entry(event.after, Zone::Exile, transformed, controller)
+    }
+
     /// Craft pays by moving the source to exile before the ability resolves.
-    /// Only that exact resulting incarnation can return; an intervening zone
-    /// change or a replacement destination cannot bind a later object.
+    /// Only the exile incarnation recorded by that payment can return.
     pub(super) fn return_crafted_source_transformed(&mut self, item: &SpellView) {
         let Some(source) = item.source else {
             return;
@@ -163,31 +191,52 @@ impl Game {
         }) else {
             return;
         };
-        let object = movement.after;
-        if self.object_ref(object.card) != object
-            || self.state.objects[object.card as usize].zone != Zone::Exile
-            || self.state.objects[object.card as usize].is_token()
-        {
-            return;
+        if let Some(mut entry) = self.source_return_entry(movement.after, Zone::Exile, true, None) {
+            entry.craft_materials = item.craft_materials.clone();
+            self.stage_entries(vec![entry], None);
         }
-        let Some(back) = self.state.objects[object.card as usize].card.back_face() else {
-            return;
-        };
-        let mut entry = self.entry_move(object.card, Zone::Battlefield, false);
-        entry.craft_materials = item.craft_materials.clone();
-        entry.controller = self.state.objects[object.card as usize].owner;
-        entry.source_before = Some(Box::new(entry.before.clone()));
-        entry.before.card = back;
-        entry.before.kinds = back.kind_mask();
-        entry.before.colors = back.colors();
-        entry.before.name = back.name();
-        entry.before.keywords = back.keywords();
-        if let Effect::Creature(power, toughness) = back.effect() {
-            entry.before.power = i128::from(power);
-            entry.before.toughness = i128::from(toughness);
-        }
-        self.stage_entries(vec![entry], None);
     }
+
+    /// The zone change has restored printed identity. Project the entering face
+    /// for replacements and choices while retaining the actual pre-entry view.
+    fn source_return_entry(
+        &self,
+        object: ObjectRef,
+        origin: Zone,
+        transformed: bool,
+        controller: Option<Player>,
+    ) -> Option<entries::EntryMove> {
+        let card = &self.state.objects[object.card as usize];
+        if self.object_ref(object.card) != object || card.zone != origin || !card.is_card() {
+            return None;
+        }
+        let front = card.card.front_face();
+        let face = if transformed {
+            front.back_face()?
+        } else {
+            front
+        };
+        if face.kind_mask() & (1 | 2 | 16 | 32 | 64 | crate::cards::BATTLE_KIND) == 0 {
+            return None;
+        }
+
+        let mut entry = self.entry_move(object.card, Zone::Battlefield, false);
+        entry.controller = controller.unwrap_or(card.owner);
+        if transformed {
+            entry.source_before = Some(Box::new(entry.before.clone()));
+            entry.before.card = face;
+            entry.before.kinds = face.kind_mask();
+            entry.before.colors = face.colors();
+            entry.before.name = face.name();
+            entry.before.keywords = face.keywords();
+            (entry.before.power, entry.before.toughness) = match face.effect() {
+                Effect::Creature(power, toughness) => (i128::from(power), i128::from(toughness)),
+                _ => (0, 0),
+            };
+        }
+        Some(entry)
+    }
+
     pub(super) fn transform_source(&mut self, item: &SpellView) {
         let Some(source) = item.source else {
             return;

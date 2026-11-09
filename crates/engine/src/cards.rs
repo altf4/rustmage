@@ -1611,6 +1611,14 @@ pub enum Instruction {
     ExileSourceReturnTransformed {
         counter: CounterKind,
     },
+    /// Exile the exact battlefield source, then return that physical card if the
+    /// exile actually occurred. The resolving player is the default controller.
+    ExileBattlefieldSourceReturn {
+        transformed: bool,
+        under_owner: bool,
+    },
+    /// Return the exact physical source from its owner's graveyard back face up.
+    ReturnGraveyardSourceTransformed,
     /// Return the exact source incarnation exiled as an activation cost, transformed.
     ReturnCraftedSourceTransformed,
     /// Privately exile top cards; paid play remains conditional on a current subtype.
