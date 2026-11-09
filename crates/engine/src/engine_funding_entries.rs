@@ -1553,7 +1553,13 @@ impl FundingState<'_> {
                 card: row.id,
                 generation: o.generation,
             };
-            let manifested = &mut next.entry_projection.as_mut().unwrap().manifested;
+            let projection = next.entry_projection.as_mut().unwrap();
+            if m.before.zone == Zone::Stack {
+                projection
+                    .roles
+                    .continue_stack_keywords(m.before.reference, source, m.destination);
+            }
+            let manifested = &mut projection.manifested;
             manifested.retain(|(object, _)| *object != m.before.reference);
             if m.destination == Zone::Battlefield
                 && let Some(physical) = m.manifest_original

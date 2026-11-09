@@ -1809,8 +1809,12 @@ pub enum Instruction {
         relation: CastRelation,
         ability: u16,
     },
-    /// Register a one-shot, any-type next-spell callback until cleanup.
+    /// Register a one-shot, any-type next-spell callback this turn.
     CopyNextSpell {
+        ability: u16,
+    },
+    /// Register a trigger for the next creature spell you cast this turn.
+    DelayNextCreatureSpell {
         ability: u16,
     },
     CopyNextInstantSorcery {
@@ -3139,6 +3143,8 @@ pub enum Instruction {
     },
     /// Grant to the exact, non-target creature subjects frozen by a cast event.
     GrantCastCreatureKeywords(Keywords),
+    /// Give the exact triggering spell haste until cleanup, including the permanent it becomes.
+    GrantCastSpellHaste,
     /// Bestow a real self-owned static ability, rather than a resolved stat modifier.
     GrantSelfAbility(crate::engine::SelfGrantedAbilityKind),
     GrantPermanentSelfAbility(crate::engine::SelfGrantedAbilityKind),
@@ -5205,6 +5211,8 @@ pub enum TriggerCondition {
     DelayedSpellCastSourcePower,
     /// Source-independent one-shot callback for the next spell of any type.
     DelayedSpellCastAny,
+    /// Source-independent one-shot callback for the next creature spell.
+    DelayedSpellCastCreature,
     SpellCast {
         relation: CastRelation,
         filter: CastFilter,

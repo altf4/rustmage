@@ -1,5 +1,6 @@
-//! Owned spell-copy packets and incremental changes to existing targets.
+//! Owned spell-copy packets, delayed cast triggers, and changes to existing targets.
 use super::*;
+use crate::cards::CastFilter;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -27,6 +28,7 @@ pub struct RetargetView {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct CopyState {
+    /// Source-independent stack event callbacks, including one-shot cast triggers.
     delayed: Vec<SpellView>,
     retarget: Option<Retarget>,
 }
@@ -265,9 +267,11 @@ impl Game {
                 _ => false,
             })
     }
-    pub(super) fn remember_next_spell_copy(&mut self, item: &SpellView, ability: u16) {
+    pub(super) fn register_delayed_stack_trigger(&mut self, item: &SpellView, ability: u16) {
         let mut delayed = item.clone();
         delayed.kind = StackKind::TriggeredAbility { ability };
+        // CR 603.2d: multipliers for the initiating ability do not apply here.
+        delayed.additional_triggers = 0;
         delayed.cast = None;
         delayed.is_copy = false;
         delayed.targets.clear();
@@ -394,19 +398,30 @@ impl Game {
             }
         }
     }
-    pub(super) fn capture_copy_cast(&mut self, stack: Option<usize>, first_trigger: usize) {
+    pub(super) fn capture_cast_callbacks(
+        &mut self,
+        stack: Option<usize>,
+        first_trigger: usize,
+        cast_event: Option<CastPaymentEvent>,
+    ) {
         let Some(index) = stack else { return };
         let spell = self.state.stack[index].clone();
-        let instant_or_sorcery = crate::cards::CastFilter::InstantSorcery
+        let instant_or_sorcery = CastFilter::InstantSorcery
             .matches(spell.source.expect("object-backed spell or trigger").card);
-        self.capture_copy_cast_classified(spell, first_trigger, instant_or_sorcery);
+        self.capture_cast_callbacks_classified(
+            spell,
+            first_trigger,
+            instant_or_sorcery,
+            cast_event,
+        );
     }
 
-    fn capture_copy_cast_classified(
+    fn capture_cast_callbacks_classified(
         &mut self,
         spell: SpellView,
         first_trigger: usize,
         instant_or_sorcery: bool,
+        cast_event: Option<CastPaymentEvent>,
     ) {
         let repeated = self
             .state
@@ -469,20 +484,25 @@ impl Game {
                 }));
             }
         }
-        // Existing narrow callbacks keep their instant/sorcery population;
-        // a one-shot any-spell callback observes permanent spells as well.
         let Some(state) = &mut self.state.stack_copy_data else {
             return;
         };
+        let creature_cast = cast_event.filter(|event| CastFilter::Creature.matches(event.card));
         let mut delayed = std::mem::take(&mut state.delayed);
         let mut retained = Vec::new();
         for mut trigger in delayed.drain(..) {
-            let any_type = matches!(trigger.kind, StackKind::TriggeredAbility { ability }
-                if trigger.trigger_definition().triggers()[usize::from(ability)]
-                    .condition.event() == TriggerCondition::DelayedSpellCastAny);
-            if delayed_copy_all_spells(&trigger)
-                || delayed_copy_exhaust(&trigger)
-                || (!instant_or_sorcery && !any_type)
+            let StackKind::TriggeredAbility { ability } = trigger.kind else {
+                unreachable!("registered delayed callback is a triggered ability");
+            };
+            let condition = trigger.trigger_definition().triggers()[usize::from(ability)]
+                .condition
+                .event();
+            let matching_type = match condition {
+                TriggerCondition::DelayedSpellCastCreature => creature_cast.is_some(),
+                TriggerCondition::DelayedSpellCastAny => true,
+                _ => instant_or_sorcery,
+            };
+            if delayed_copy_all_spells(&trigger) || delayed_copy_exhaust(&trigger) || !matching_type
             {
                 retained.push(trigger);
                 continue;
@@ -525,10 +545,17 @@ impl Game {
                 })
             {
                 trigger.id = self.next_stack_id();
-                trigger.copy_event = Some(Box::new(CopyEvent {
-                    spell: spell.clone(),
-                    amount: 1,
-                }));
+                if condition == TriggerCondition::DelayedSpellCastCreature {
+                    let event = creature_cast.expect("matched committed creature cast");
+                    trigger.refer_objects([event.object]);
+                    trigger.cast_event = Some(Box::new(event));
+                    trigger.x = spell.x;
+                } else {
+                    trigger.copy_event = Some(Box::new(CopyEvent {
+                        spell: spell.clone(),
+                        amount: 1,
+                    }));
+                }
                 self.state.pending_triggers.push(trigger);
             } else {
                 retained.push(trigger);
@@ -547,7 +574,7 @@ impl Game {
         // Preserve an actual spell object and stack id, while substituting the
         // existing prepared-face marker. Classification is explicitly non-instant.
         spell.source.as_mut().unwrap().card = Card::test_index(5458);
-        self.capture_copy_cast_classified(spell, first_trigger, false);
+        self.capture_cast_callbacks_classified(spell, first_trigger, false, None);
     }
     pub(super) fn allocate_spell_copy(
         &mut self,

@@ -110,6 +110,21 @@ impl SpellView {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn live_cast_spell(&self, item: &SpellView) -> Option<ObjectRef> {
+        let event = item.cast_event.as_deref()?;
+        self.state
+            .stack
+            .iter()
+            .any(|spell| {
+                spell.kind == StackKind::Spell
+                    && spell.id == event.stack_id
+                    && !spell.is_copy
+                    && spell
+                        .source
+                        .is_some_and(|source| source.object == event.object)
+            })
+            .then_some(event.object)
+    }
     pub(super) fn item_cast_payment(&self, item: &SpellView) -> Mana {
         item.cast_event
             .as_ref()

@@ -24,20 +24,12 @@ impl Game {
         kind: CounterKind,
         amount: AmountValue,
     ) {
-        let Some(event) = item.cast_event.as_deref() else {
+        let Some(spell) = self.live_cast_spell(item) else {
             return;
         };
-        if !self.state.stack.iter().any(|spell| {
-            spell.kind == StackKind::Spell
-                && spell
-                    .source
-                    .is_some_and(|source| source.object == event.object)
-        }) {
-            return;
-        }
         let amount =
             u64::try_from(self.item_amount(amount, item)).capacity("cast entry counters exhausted");
-        self.record_cast_entry_counters(event.object, kind, amount);
+        self.record_cast_entry_counters(spell, kind, amount);
     }
     pub(super) fn record_cast_entry_counters(
         &mut self,

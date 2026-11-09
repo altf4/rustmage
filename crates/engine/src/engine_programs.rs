@@ -1011,6 +1011,7 @@ impl Game {
                     | TriggerCondition::FoodsSacrificed
                     | TriggerCondition::Reflexive
                     | TriggerCondition::DelayedSpellCastAny
+                    | TriggerCondition::DelayedSpellCastCreature
                     | TriggerCondition::DelayedSpellCastSourcePower
                     | TriggerCondition::Ward
                     | TriggerCondition::SelfTargeted { .. }
@@ -2084,7 +2085,7 @@ impl Game {
         }
         self.temporary_cast_triggers(caster, card, stack);
         self.capture_cast_creature_subjects(stack, first_trigger);
-        self.capture_copy_cast(stack, first_trigger);
+        self.capture_cast_callbacks(stack, first_trigger, cast_event);
         if let Some(index) = stack {
             self.capture_mana_copies(index);
         }
@@ -3830,15 +3831,12 @@ impl Game {
                         self.stage_copy_creation(item.controller, *recipe, 1);
                     }
                 }
-                Instruction::CopyNextExhaustAbility { ability } => {
-                    self.remember_next_spell_copy(&item, ability)
-                }
                 Instruction::CopyNextSpell { ability }
-                | Instruction::CopyNextInstantSorcery { ability } => {
-                    self.remember_next_spell_copy(&item, ability)
-                }
-                Instruction::CopySpellsThisTurn { ability } => {
-                    self.remember_next_spell_copy(&item, ability)
+                | Instruction::CopyNextInstantSorcery { ability }
+                | Instruction::CopyNextExhaustAbility { ability }
+                | Instruction::CopySpellsThisTurn { ability }
+                | Instruction::DelayNextCreatureSpell { ability } => {
+                    self.register_delayed_stack_trigger(&item, ability)
                 }
                 Instruction::ExileTargetsCopyFreeWithBudget { mana_value } => {
                     if self.exile_targets_copy_free_with_budget(&item, mana_value) {
@@ -8973,6 +8971,11 @@ impl Game {
                 }
                 Instruction::GrantCastCreatureKeywords(keywords) => {
                     self.grant_cast_creature_keywords(&item, keywords);
+                }
+                Instruction::GrantCastSpellHaste => {
+                    if let Some(spell) = self.live_cast_spell(&item) {
+                        self.grant_stack_keywords(spell, Keywords::HASTE);
+                    }
                 }
                 Instruction::RegisterEarthbendReturn => self.register_earthbend_return(&item),
                 Instruction::AnimateEarthbendTargets => self.animate_earthbend_targets(&item),
