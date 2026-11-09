@@ -229,14 +229,18 @@ fn behold_funding_probe(
     source: CardId,
     kind: Option<CreatureType>,
 ) -> (bool, bool, usize) {
-    let item = g.cast_preview(
+    let origin = g.state.objects[source as usize].zone;
+    let mut item = g.cast_preview(
         p,
         source,
-        Zone::Hand,
+        origin,
         g.object_ref(source),
         g.state.next_stack_id,
         [0; 6],
     );
+    if origin == Zone::Graveyard {
+        item.cast.as_mut().unwrap().method = CastMethod::Flashback;
+    }
     let mut a = g.payment_announcement(item, Counters::default(), None, None);
     a.item.x = Some(0);
     let cast = a.item.cast.as_mut().unwrap();
@@ -576,5 +580,97 @@ fn behold_witness_deficit_falls_back_for_a_mana_source_linked_return() {
                 .known_hand
                 .contains(&g.object_ref(hand))
         );
+    }
+}
+
+#[test]
+fn damage_only_replacement_keeps_flashback_behold_deficits_bounded() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        for _ in 0..12 {
+            put(&mut g, p, "Mountain", Zone::Battlefield);
+        }
+        let inferno = put(&mut g, p, "Collective Inferno", Zone::Battlefield);
+        g.set_entry_value(
+            g.object_ref(inferno),
+            EntryChoiceValue::CreatureType(CreatureType::from_name("Elemental").unwrap()),
+        );
+        assert!(g.state.static_sources.contains(&inferno));
+        assert!(
+            g.state.objects[inferno as usize]
+                .card
+                .static_ability_groups()
+                .iter()
+                .flat_map(|group| group.fragments)
+                .any(|fragment| matches!(
+                    fragment,
+                    StaticAbilityFragment::Replacement(
+                        _,
+                        ReplacementSpec::DoubleControlledChosenTypeDamage
+                    )
+                ))
+        );
+        let first = put(&mut g, p, "Flamebraider", Zone::Battlefield);
+        let source = put(&mut g, p, "Kindle the Inner Flame", Zone::Graveyard);
+        g.state.players[p.index()].mana = [0; 6];
+        assert_eq!(behold_funding_probe(&g, p, source, None), (true, false, 0));
+        reject(&mut g, Action::AnnounceFlashback { card: source });
+        let second = put(&mut g, p, "Flamebraider", Zone::Battlefield);
+        assert_eq!(behold_funding_probe(&g, p, source, None), (true, false, 0));
+        reject(&mut g, Action::AnnounceFlashback { card: source });
+        let third = put(&mut g, p, "Flamebraider", Zone::Hand);
+        let (deficit, payable, _) = behold_funding_probe(&g, p, source, None);
+        assert!(!deficit && payable);
+        act(&mut g, Action::AnnounceFlashback { card: source });
+        act(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(first),
+            },
+        );
+        act(
+            &mut g,
+            Action::ActivateMana {
+                card: first,
+                ability: 0,
+                counter_payment: Counters::default(),
+                payment: [0; 6],
+                production: [0, 0, 0, 2, 0, 0],
+            },
+        );
+        act(&mut g, Action::BeginOrderedCosts);
+        let clause = g
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .cast_costs
+            .as_ref()
+            .unwrap()
+            .clauses
+            .iter()
+            .position(|row| !row.paid && row.clause == CastCostClause::Additional)
+            .unwrap() as u16;
+        act(&mut g, Action::ChooseCastCost { clause });
+        let first_ref = g.object_ref(first);
+        act(&mut g, Action::ChooseAdditionalCost { object: first_ref });
+        reject(&mut g, Action::ChooseAdditionalCost { object: first_ref });
+        for witness in [second, third] {
+            let object = g.object_ref(witness);
+            act(&mut g, Action::ChooseAdditionalCost { object });
+        }
+        finish_cast(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Stack);
+        assert!(g.object_view(first).tapped);
+        assert!(!g.object_view(second).tapped);
+        assert_eq!(g.object_view(third).zone, Zone::Hand);
+        assert!(
+            g.observe(p.other())
+                .known_hand
+                .contains(&g.object_ref(third))
+        );
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        settle(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Exile);
     }
 }

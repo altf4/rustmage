@@ -381,6 +381,12 @@ impl FundingState<'_> {
                                 | AttachedChosenColor
                                 | BasicLandTapManaBonus(_)
                                 | ControlledLandTapManaBonus(_) => false,
+                                // This replacement changes only damage amounts;
+                                // pure tap/AddMana payments never deal damage.
+                                Replacement(
+                                    _,
+                                    crate::cards::ReplacementSpec::DoubleControlledChosenTypeDamage,
+                                ) => false,
                                 AttachmentMana(production)
                                 | AttachmentManaBonus(production)
                                 | LandMana { production, .. } => !read_only_output(production),
