@@ -1707,6 +1707,7 @@ pub enum TurnCallbackEvent {
 /// Quantity frozen at the triggering cast, independently of later spells/copies.
 pub enum SpellCopyCount {
     One,
+    Fixed(u16),
     EarlierSpellsThisTurn,
 }
 
@@ -1808,6 +1809,7 @@ pub enum Instruction {
     },
     RevealTopDrawIfArtifact,
     RevealTopMoveIfPermanent,
+    RevealTopToHandLoseManaValue,
     ExileSourceReturnTransformed {
         counter: CounterKind,
     },

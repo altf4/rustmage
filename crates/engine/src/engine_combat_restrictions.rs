@@ -158,22 +158,27 @@ impl Game {
                         && self.continuous_fragment_available(source, |fragment| matches!(fragment,
                             crate::cards::StaticAbilityFragment::ControlledAttackWithoutDefender))
                 })
-                || (self.state.players[actor.index()].scried_or_surveilled_this_turn
-                    && object.card.static_ability_groups().iter().any(|group| {
-                        group.fragments.iter().any(|fragment| {
-                            matches!(
-                                fragment,
-                                crate::cards::StaticAbilityFragment::AttackWithoutDefenderIfScried
-                            )
-                        })
-                    })
-                    && self.continuous_fragment_available(id, |fragment| {
-                        matches!(
-                            fragment,
-                            crate::cards::StaticAbilityFragment::AttackWithoutDefenderIfScried
-                        )
-                    })))
+                || self.source_ignores_defender(actor, id))
             && !self.combat_restricted(id, true)
+    }
+
+    fn source_ignores_defender(&self, player: Player, id: CardId) -> bool {
+        use crate::cards::StaticAbilityFragment;
+        let card = self.state.objects[id as usize].card;
+        card.static_ability_groups().iter().any(|group| {
+            group.fragments.iter().any(|fragment| {
+                let applies = match *fragment {
+                    StaticAbilityFragment::AttackWithoutDefenderIfScried => {
+                        self.state.players[player.index()].scried_or_surveilled_this_turn
+                    }
+                    StaticAbilityFragment::AttackWithoutDefenderIf(value) => {
+                        self.stat_value(value, self.object_ref(id), player) != 0
+                    }
+                    _ => false,
+                };
+                applies && self.continuous_fragment_available(id, |active| active == fragment)
+            })
+        })
     }
 
     pub(super) fn attacks_each_combat(&self, id: CardId) -> bool {

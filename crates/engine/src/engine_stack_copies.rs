@@ -1,6 +1,6 @@
 //! Owned spell-copy packets, delayed cast triggers, and changes to existing targets.
 use super::*;
-use crate::cards::CastFilter;
+use crate::cards::{CastFilter, SpellCopyCount};
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -464,13 +464,15 @@ impl Game {
             .instant_sorcery_cast_this_turn
             .saturating_sub(1);
         let earlier_spells = self.earlier_spells_this_turn();
+        let copy_count = |count| match count {
+            SpellCopyCount::One => 1,
+            SpellCopyCount::Fixed(amount) => u64::from(amount),
+            SpellCopyCount::EarlierSpellsThisTurn => earlier_spells,
+        };
         for trigger in &mut self.state.pending_triggers[first_trigger..] {
             if let Some((_, program)) = trigger.program()
                 && let Some(amount) = program.iter().find_map(|i| match i {
-                    Instruction::CopyCapturedSpell { count, .. } => Some(match count {
-                        crate::cards::SpellCopyCount::One => 1,
-                        crate::cards::SpellCopyCount::EarlierSpellsThisTurn => earlier_spells,
-                    }),
+                    Instruction::CopyCapturedSpell { count, .. } => Some(copy_count(*count)),
                     Instruction::CopyCastSpell {
                         prior_spells: false,
                     } => Some(1),
@@ -501,9 +503,8 @@ impl Game {
             let StackKind::TriggeredAbility { ability } = trigger.kind else {
                 unreachable!("registered delayed callback is a triggered ability");
             };
-            let condition = trigger.trigger_definition().triggers()[usize::from(ability)]
-                .condition
-                .event();
+            let ability = &trigger.trigger_definition().triggers()[usize::from(ability)];
+            let condition = ability.condition.event();
             let matching_type = match condition {
                 TriggerCondition::DelayedSpellCastCreature => creature_cast.is_some(),
                 TriggerCondition::DelayedSpellCastAny => true,
@@ -558,9 +559,19 @@ impl Game {
                     trigger.cast_event = Some(Box::new(event));
                     trigger.x = spell.x;
                 } else {
+                    let amount = ability
+                        .program
+                        .iter()
+                        .find_map(|instruction| match instruction {
+                            Instruction::CopyCapturedSpell { count, .. } => {
+                                Some(copy_count(*count))
+                            }
+                            _ => None,
+                        })
+                        .unwrap_or(1);
                     trigger.copy_event = Some(Box::new(CopyEvent {
                         spell: spell.clone(),
-                        amount: 1,
+                        amount,
                     }));
                 }
                 self.state.pending_triggers.push(trigger);

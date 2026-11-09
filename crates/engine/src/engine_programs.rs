@@ -7511,6 +7511,9 @@ impl Game {
                 }
                 Instruction::RevealTopDrawIfArtifact => self.reveal_top_draw_if_artifact(&item),
                 Instruction::RevealTopMoveIfPermanent => self.reveal_top_move_if_permanent(&item),
+                Instruction::RevealTopToHandLoseManaValue => {
+                    self.reveal_top_to_hand_lose_mana_value(&item)
+                }
                 Instruction::ExileSourceReturnTransformed { counter } => {
                     self.exile_source_return_transformed(&item, counter)
                 }

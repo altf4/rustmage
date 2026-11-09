@@ -272,3 +272,68 @@ fn retained_mana_keeps_only_its_exact_waiting_callback() {
     assert_eq!(reversed.object_ref(source), reference);
     assert_eq!(reversed.observe(player).delayed_spell_copies, waiting[..1]);
 }
+
+const MANA_COPY_TWICE: CardRules = CardRules {
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::Reflexive,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::CopyCapturedSpell {
+            count: SpellCopyCount::Fixed(2),
+            retarget: true,
+        }],
+    }],
+    ..MANA_COPY
+};
+
+#[test]
+fn delayed_copy_count_captures_two_independently_retargeted_copies() {
+    let _rules = fixture_rules::activate(&[(Card::from_name(SOURCE).unwrap(), &MANA_COPY_TWICE)]);
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    game.state.players[player.index()].mana = ZERO;
+    let source = put(&mut game, player, SOURCE, Zone::Battlefield);
+    let original_target = put(&mut game, opponent, "Grizzly Bears", Zone::Battlefield);
+    let first = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let second = put(&mut game, opponent, "Hill Giant", Zone::Battlefield);
+    let original = put(&mut game, player, "Unsummon", Zone::Hand);
+    act(&mut game, Action::AnnounceCast { card: original });
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(original_target),
+        },
+    );
+    if game.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut game, Action::FinishTargets);
+    }
+    act(&mut game, mana(source));
+    pay(&mut game);
+    act(&mut game, Action::Pass);
+    let negate = put(&mut game, opponent, "Negate", Zone::Hand);
+    cast(&mut game, negate, Some(Target::Spell(original)));
+    pass_pair(&mut game);
+    assert_eq!(game.object_view(original).zone, Zone::Graveyard);
+    pass_pair(&mut game);
+
+    for (target, remaining) in [(first, 1), (second, 0)] {
+        let retarget = game.observe(player).retarget.unwrap();
+        assert_eq!(retarget.remaining_copies, remaining);
+        assert!(retarget.item.is_copy);
+        assert_eq!(retarget.original[0].target, Target::Card(original_target));
+        act(
+            &mut game,
+            Action::SetStackTarget {
+                index: 0,
+                target: Target::Card(target),
+            },
+        );
+        act(&mut game, Action::FinishStackTargets);
+    }
+    assert_eq!(game.state.stack.len(), 2);
+    settle(&mut game);
+    assert_eq!(game.object_view(original_target).zone, Zone::Battlefield);
+    assert_eq!(game.object_view(first).zone, Zone::Hand);
+    assert_eq!(game.object_view(second).zone, Zone::Hand);
+    assert_eq!(game.state.players[player.index()].spells_cast_this_turn, 1);
+}
