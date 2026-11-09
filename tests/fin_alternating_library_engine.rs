@@ -234,3 +234,61 @@ fn flashback_reuses_the_same_split_and_exiles_on_resolution_or_counter() {
     assert_eq!(game.object_view(spell).zone, Zone::Exile);
     assert_eq!(game.observe(player.other()).known_hand.len(), 3);
 }
+
+#[test]
+fn a_prevented_hand_move_leaves_its_card_revealed_and_keeps_the_five_step_limit() {
+    struct ResetPrevention;
+    impl Drop for ResetPrevention {
+        fn drop(&mut self) {
+            zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|rule| rule.set(None));
+        }
+    }
+
+    let _rules = fixture_rules::activate(&[(memories(), &MEMORIES)]);
+    let _reset = ResetPrevention;
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let [first, second, third, fourth, fifth] = [
+        "Island",
+        "Shock",
+        "Grizzly Bears",
+        "Forest",
+        "Swiftfoot Boots",
+    ]
+    .map(|name| put(&mut game, player, name, Zone::Library));
+    let blocked = game.object_ref(first);
+    zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|rule| rule.set(Some(blocked)));
+    let spell = spawn(&mut game, player, memories(), Zone::Hand);
+    cast(&mut game, spell, None);
+    pass_pair(&mut game);
+
+    select(&mut game, first);
+    assert_eq!(game.actor(), Some(opponent));
+    assert_eq!(game.object_ref(first), blocked);
+    assert_eq!(game.object_view(first).zone, Zone::Library);
+    assert!(
+        game.observe(opponent)
+            .library_selection
+            .unwrap()
+            .candidates
+            .contains(&blocked)
+    );
+
+    select(&mut game, second);
+    select(&mut game, third);
+    select(&mut game, fourth);
+    assert_eq!(game.actor(), Some(player));
+    let view = game.observe(player).library_selection.unwrap();
+    assert_eq!(view.candidates, [game.object_ref(fifth), blocked]);
+    select(&mut game, fifth);
+    assert_eq!(game.state.pending, Pending::Priority);
+    assert_eq!(game.object_view(first).zone, Zone::Library);
+    assert_eq!(
+        game.state.players[player.index()].library[..2],
+        [fourth, second]
+    );
+    for id in [third, fifth] {
+        assert_eq!(game.object_view(id).zone, Zone::Hand);
+    }
+}

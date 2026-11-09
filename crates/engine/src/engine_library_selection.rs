@@ -19,9 +19,16 @@ enum AlternatingLibraryPick {
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct AlternatingLibraryPicks {
+    next: AlternatingLibraryPick,
+    steps_left: u16,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct LibrarySelection {
-    alternating: Option<AlternatingLibraryPick>,
+    alternating: Option<AlternatingLibraryPicks>,
     pub top_land: Option<TopLandStage>,
     pub spec: LibrarySelectionSpec,
     pub owner: Player,
@@ -456,13 +463,16 @@ impl Game {
             return false;
         }
         let resolution = self.state.resolving.as_mut().unwrap();
-        resolution.selection.as_mut().unwrap().alternating = Some(AlternatingLibraryPick::Hand);
+        resolution.selection.as_mut().unwrap().alternating = Some(AlternatingLibraryPicks {
+            next: AlternatingLibraryPick::Hand,
+            steps_left: look,
+        });
         self.advance_alternating_library_picks()
     }
 
     fn advance_alternating_library_picks(&mut self) -> bool {
         loop {
-            let (owner, pick, remaining, known_top) = {
+            let (owner, sequence, remaining, known_top) = {
                 let objects = &self.state.objects;
                 let resolution = self.state.resolving.as_mut().unwrap();
                 let frame = resolution.selection.as_mut().unwrap();
@@ -489,15 +499,15 @@ impl Game {
             {
                 self.remember_library_top(owner, top);
             }
-            match remaining {
-                0 => {
+            match (sequence.steps_left, remaining) {
+                (0, _) | (_, 0) => {
                     self.state.resolving.as_mut().unwrap().selection = None;
                     return false;
                 }
-                1 => self.commit_alternating_library_pick(known_top.unwrap().card),
+                (_, 1) => self.commit_alternating_library_pick(known_top.unwrap().card),
                 _ => {
                     self.state.pending = Pending::EffectLibrarySelection {
-                        player: match pick {
+                        player: match sequence.next {
                             AlternatingLibraryPick::Hand => owner,
                             AlternatingLibraryPick::Bottom => owner.other(),
                         },
@@ -513,15 +523,24 @@ impl Game {
             let resolution = self.state.resolving.as_mut().unwrap();
             let frame = resolution.selection.as_mut().unwrap();
             let index = frame.remaining.iter().position(|r| r.card == card).unwrap();
-            let object = frame.remaining.remove(index);
-            let pick = frame.alternating.unwrap();
-            frame.alternating = Some(match pick {
+            let object = frame.remaining[index];
+            let sequence = frame.alternating.as_mut().unwrap();
+            let pick = sequence.next;
+            sequence.steps_left = if frame.remaining.len() == 1 {
+                0
+            } else {
+                sequence.steps_left - 1
+            };
+            sequence.next = match pick {
+                // The next step prunes actual departures. A prevented hand
+                // move leaves the same revealed card eligible for another pick.
                 AlternatingLibraryPick::Hand => AlternatingLibraryPick::Bottom,
                 AlternatingLibraryPick::Bottom => {
+                    frame.remaining.remove(index);
                     frame.bottom.push(object);
                     AlternatingLibraryPick::Hand
                 }
-            });
+            };
             (frame.owner, object, pick)
         };
         assert!(exact_library_card(&self.state.objects, owner, object));
@@ -1077,7 +1096,12 @@ impl Game {
             reveal: f.spec.reveal,
             public: f.public,
             destination: match f.destination {
-                _ if f.alternating == Some(AlternatingLibraryPick::Bottom) => "bottom",
+                _ if f
+                    .alternating
+                    .is_some_and(|picks| picks.next == AlternatingLibraryPick::Bottom) =>
+                {
+                    "bottom"
+                }
                 LibraryPickDestination::BattlefieldIfManaValueAtMostElseHand(_) => {
                     unreachable!("normalized before frame creation")
                 }
