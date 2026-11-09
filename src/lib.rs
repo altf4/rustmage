@@ -14,6 +14,7 @@ use rustmage_core::cards;
 pub use rustmage_core::cards::RetainedCopyActivation;
 pub use rustmage_core::engine::effect_choices::PowerDifferenceView;
 pub use rustmage_core::engine::exhaust::GrantedExhaustUseView;
+pub use rustmage_core::engine::replacements::CreatureDamageShieldView;
 pub use rustmage_core::engine::return_links::PlayerDamageShieldView;
 pub use rustmage_core::engine::temporary_copy::RetainedActivationOrigin;
 pub use rustmage_core::engine::{

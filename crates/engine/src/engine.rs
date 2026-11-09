@@ -326,8 +326,8 @@ pub mod sagas;
 #[path = "engine_shield_harness.rs"]
 pub mod shield_harness;
 pub use replacements::{
-    CopiedSagaLoreView, CreatedTokenChoiceView, DamageDoublerView, DamageEventOrderView,
-    DamagePreventionKind, DamagePreventionView, PlayerCounterPlacementView,
+    CopiedSagaLoreView, CreatedTokenChoiceView, CreatureDamageShieldView, DamageDoublerView,
+    DamageEventOrderView, DamagePreventionKind, DamagePreventionView, PlayerCounterPlacementView,
     ProliferateReplacementView, ReplacementChoiceView, ReplacementEffectView,
     SelfPlayerCounterReplacement, TokenGroupView,
 };
@@ -3855,6 +3855,8 @@ pub struct Observation {
     pub chosen_source_shields: Option<Vec<ChosenSourceShieldView>>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub player_damage_shields: Vec<return_links::PlayerDamageShieldView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub creature_damage_shields: Vec<CreatureDamageShieldView>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub damage_doublers: Vec<DamageDoublerView>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10612,6 +10614,7 @@ impl Game {
         self.expire_keyword_effects();
         if let Some(roles) = &mut self.state.roles {
             roles.toughness_combat_damage = [false; 2];
+            roles.creature_damage_shields.clear();
         }
         self.state.death_exile_replacements = None;
         for player in &mut self.state.players {
@@ -11849,6 +11852,10 @@ impl Game {
                 .roles
                 .as_ref()
                 .map_or_else(Vec::new, |roles| roles.player_damage_shields.clone()),
+            creature_damage_shields: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |roles| roles.creature_damage_shields.clone()),
             damage_doublers: s
                 .roles
                 .as_ref()

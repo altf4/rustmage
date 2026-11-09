@@ -4869,6 +4869,9 @@ impl Game {
                 Instruction::PreventPlayerDamageUntilNextTurn => {
                     self.prevent_player_damage_until_next_turn(&item)
                 }
+                Instruction::PreventControlledCreatureDamageThisTurn => {
+                    self.prevent_controlled_creature_damage_this_turn(&item)
+                }
                 Instruction::DoubleDamageToDamagedPlayerUntilNextTurn => {
                     self.double_damage_to_damaged_player_until_next_turn(&item)
                 }

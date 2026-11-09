@@ -1825,6 +1825,8 @@ pub enum Instruction {
     BlinkAttacking,
     BlinkGroupTappedUntilEndStep,
     PreventPlayerDamageUntilNextTurn,
+    /// Prevent damage to creatures the resolving effect's controller controls this turn.
+    PreventControlledCreatureDamageThisTurn,
     /// Until your next turn, double damage to the damaged player or their permanents.
     DoubleDamageToDamagedPlayerUntilNextTurn,
     BlinkUntilEndStep {
