@@ -2816,6 +2816,8 @@ pub enum Instruction {
     PutDepartedSourceOnLibraryBottom,
     /// Return the exact death-event card tapped under its owner’s control.
     ReturnEventCardToBattlefieldTapped,
+    /// Return the exact death-event card tapped under this resolving ability's controller.
+    ReturnEventCardToBattlefieldTappedUnderControl,
     PutSourceOnLibraryTop {
         origin: TargetZone,
     },

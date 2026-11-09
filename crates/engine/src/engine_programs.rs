@@ -880,21 +880,24 @@ impl Game {
                         if matches!(ability.condition.event(), TriggerCondition::ReturnDeath(_)) {
                             self.capture_return_death(event);
                         }
-                        if ability.program.iter().any(|i| {
+                        let return_tapped = ability.program.iter().any(|instruction| {
                             matches!(
-                                i,
-                                Instruction::ReturnEventCardToHand
-                                    | Instruction::ReturnEventCardToBattlefieldTapped
+                                instruction,
+                                Instruction::ReturnEventCardToBattlefieldTapped
+                                    | Instruction::ReturnEventCardToBattlefieldTappedUnderControl
                             )
-                        }) {
+                        });
+                        if return_tapped
+                            || ability
+                                .program
+                                .contains(&Instruction::ReturnEventCardToHand)
+                        {
                             self.state.pending_triggers.last_mut().unwrap().return_link =
                                 Some(Box::new(ReturnLinkView::from_event(
                                     event,
                                     event.before.owner,
                                     None,
-                                    ability.program.iter().any(|i| {
-                                        matches!(i, Instruction::ReturnEventCardToBattlefieldTapped)
-                                    }),
+                                    return_tapped,
                                     false,
                                 )));
                         }
@@ -4993,10 +4996,11 @@ impl Game {
                 Instruction::PutDepartedSourceOnLibraryBottom => {
                     self.put_departed_source_on_library_bottom(&item)
                 }
-                Instruction::ReturnEventCardToBattlefieldTapped => {
-                    self.resolve_delayed_return(&item)
+                Instruction::ReturnEventCardToBattlefieldTapped
+                | Instruction::ResolveDelayedReturn => self.resolve_delayed_return(&item),
+                Instruction::ReturnEventCardToBattlefieldTappedUnderControl => {
+                    self.return_event_card_tapped_under_control(&item)
                 }
-                Instruction::ResolveDelayedReturn => self.resolve_delayed_return(&item),
                 Instruction::ReturnDelayedBattlefieldObjectsToHand => {
                     self.return_delayed_battlefield_objects_to_hand(&item);
                 }

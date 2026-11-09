@@ -438,3 +438,66 @@ fn the_dying_back_face_moves_its_exact_graveyard_front_to_its_owner_bottom() {
         Err(Error::StaleRevision)
     );
 }
+
+#[test]
+fn a_death_return_tapped_uses_the_resolving_controller_and_the_exact_graveyard_front() {
+    const DEATH: CardRules = CardRules {
+        effect: Effect::Creature(5, 5),
+        triggers: &[TriggeredAbility {
+            condition: TriggerCondition::SelfDies,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::ReturnEventCardToBattlefieldTappedUnderControl],
+        }],
+        ..CardRules::EMPTY
+    };
+    const COPY: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::Single(TargetSpec::one(TargetRule::Ability)),
+            &[Instruction::CopyTargetAbility { group: 0 }],
+        ),
+        ..CardRules::EMPTY
+    };
+    let front = Card::from_name(FRONT).unwrap();
+    let back = front.back_face().unwrap();
+    let copier = Card::from_name("Negate").unwrap();
+    let _rules =
+        fixture_rules::activate(&[(front, &GRAVEYARD_RULES), (back, &DEATH), (copier, &COPY)]);
+    let owner = Player::P0;
+    let controller = owner.other();
+    let mut game = scenario(owner);
+    let card = spawn(&mut game, owner, front, Zone::Graveyard);
+    activate(&mut game, card);
+    settle(&mut game);
+    assert_eq!(game.object_view(card).card, back);
+    game.record_control(game.object_ref(card), controller, None);
+    game.move_object(card, Zone::Graveyard);
+    game.prepare_triggers();
+    let departed = game.object_ref(card);
+    let trigger = game.state.stack.last().unwrap();
+    assert_eq!(trigger.controller, controller);
+    let trigger_id = trigger.id;
+
+    let mut stale = game.clone();
+    stale.move_object(card, Zone::Exile);
+    stale.move_object(card, Zone::Graveyard);
+    settle(&mut stale);
+    assert_eq!(stale.object_view(card).zone, Zone::Graveyard);
+
+    let mut copied = game.clone();
+    if copied.actor() != Some(owner) {
+        act(&mut copied, Action::Pass);
+    }
+    let copy = spawn(&mut copied, owner, copier, Zone::Hand);
+    cast(&mut copied, copy, Some(Target::Stack(trigger_id)));
+    settle(&mut copied);
+    settle(&mut game);
+    for (branch, expected) in [(&game, controller), (&copied, owner)] {
+        let returned = branch.object_view(card);
+        assert_ne!(returned.reference, departed);
+        assert_eq!(returned.zone, Zone::Battlefield);
+        assert_eq!(returned.card, front);
+        assert_eq!(returned.owner, owner);
+        assert_eq!(returned.controller, expected);
+        assert!(returned.tapped);
+    }
+}

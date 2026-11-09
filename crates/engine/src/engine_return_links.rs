@@ -579,6 +579,13 @@ impl Game {
             self.state.delayed_returns = Some(Box::new(retained));
         }
     }
+    pub(super) fn return_event_card_tapped_under_control(&mut self, item: &SpellView) {
+        if let Some(mut link) = item.return_link.as_deref().cloned() {
+            link.set_recipient_values(item.controller, None);
+            self.stage_linked_return(&link, None);
+        }
+    }
+
     pub(super) fn resolve_delayed_return(&mut self, item: &SpellView) {
         let Some(link) = &item.return_link else {
             return;
