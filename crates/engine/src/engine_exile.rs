@@ -523,7 +523,7 @@ impl Game {
         self.record_entry_turn_facts(events);
         self.record_creature_entry_history(events);
         self.queue_manifest_deaths(events);
-        self.creature_death_batch_triggers(events, death_sources);
+        self.death_batch_triggers(events, death_sources);
         self.creature_cards_enter_graveyard_triggers(events);
         self.permanent_cards_enter_graveyard_triggers(events);
         self.creatures_exiled_batch_triggers(events);

@@ -3,34 +3,54 @@
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    pub(super) fn creature_death_batch_triggers(
-        &mut self,
-        events: &[ZoneChange],
-        sources: &[ObjectView],
-    ) {
+    pub(super) fn death_batch_triggers(&mut self, events: &[ZoneChange], sources: &[ObjectView]) {
         for source in sources {
             for (index, ability) in source.card.triggers().iter().enumerate() {
-                let TriggerCondition::CreatureDiesBatch { filter } = ability.condition.event()
-                else {
+                let condition = ability.condition.event();
+                if !matches!(
+                    condition,
+                    TriggerCondition::CreatureDiesBatch { .. }
+                        | TriggerCondition::PermanentDiesBatch { .. }
+                ) {
                     continue;
-                };
+                }
                 let matching: Vec<_> = events
                     .iter()
                     .filter(|event| {
                         event.moved
                             && event.before.zone == Zone::Battlefield
                             && event.destination == Zone::Graveyard
-                            && event.before.is_creature()
-                            && filter.matches_characteristics(
-                                event.before.card,
-                                event.before.is_token(),
-                                event.before.kinds,
-                                event.before.granted_subtypes,
-                                event.before.controller == source.controller,
-                                event.before.reference == source.reference,
-                                event.before.attacking,
-                            )
-                            && event.before.keywords.contains(filter.keyword)
+                            && match condition {
+                                TriggerCondition::CreatureDiesBatch { filter } => {
+                                    event.before.is_creature()
+                                        && filter.matches_characteristics(
+                                            event.before.card,
+                                            event.before.is_token(),
+                                            event.before.kinds,
+                                            event.before.granted_subtypes,
+                                            event.before.controller == source.controller,
+                                            event.before.reference == source.reference,
+                                            event.before.attacking,
+                                        )
+                                        && event.before.keywords.contains(filter.keyword)
+                                }
+                                TriggerCondition::PermanentDiesBatch {
+                                    kinds,
+                                    relation,
+                                    other,
+                                } => {
+                                    let controlled = event.before.controller == source.controller;
+                                    let related = match relation {
+                                        CastRelation::You => controlled,
+                                        CastRelation::Opponent => !controlled,
+                                        CastRelation::Any => true,
+                                    };
+                                    related
+                                        && (!other || event.before.reference != source.reference)
+                                        && (kinds == 0 || event.before.kinds & kinds != 0)
+                                }
+                                _ => unreachable!("batch departure condition"),
+                            }
                     })
                     .collect();
                 if let Some(event) = matching.first() {

@@ -795,6 +795,10 @@ impl Game {
                                     .iter()
                                     .any(|subtype| event.before.has_subtype(subtype))
                         }
+                        TriggerCondition::ControlledPermanentWithSubtypeDies(subtype) => {
+                            source.controller == event.before.controller
+                                && event.before.has_subtype(subtype)
+                        }
                         TriggerCondition::Sacrificed { filter: f, .. }
                         | TriggerCondition::SacrificedByOpponent { filter: f } => {
                             let (player, own_turn) = match ability.condition.event() {
@@ -1031,10 +1035,12 @@ impl Game {
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::CreatureDiesWithCounters { .. }
                     | TriggerCondition::OtherControlledPermanentWithSubtypeDies { .. }
+                    | TriggerCondition::ControlledPermanentWithSubtypeDies(_)
                     | TriggerCondition::AttachedCreatureDies
                     | TriggerCondition::PermanentToGraveyard { .. }
                     | TriggerCondition::CreatureDiesWithMaximumStat { .. }
                     | TriggerCondition::CreatureDiesBatch { .. }
+                    | TriggerCondition::PermanentDiesBatch { .. }
                     | TriggerCondition::CreatureDiesFiltered { .. }
                     | TriggerCondition::CreatureDiesAttackState { .. }
                     | TriggerCondition::Sacrificed { .. }

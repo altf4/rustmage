@@ -5232,6 +5232,8 @@ pub enum TriggerCondition {
     OtherControlledPermanentWithSubtypeDies {
         subtypes: &'static [&'static str],
     },
+    /// Look back at a controlled permanent's subtype on death, including self.
+    ControlledPermanentWithSubtypeDies(&'static str),
     OtherCreatureCountersAdded {
         kind: CounterKind,
         excluded_subtype: &'static str,
@@ -5270,6 +5272,12 @@ pub enum TriggerCondition {
     /// One observer trigger for a simultaneous batch containing a matching death.
     CreatureDiesBatch {
         filter: CreatureFilter,
+    },
+    /// One trigger for a simultaneous graveyard move with any matching permanent.
+    PermanentDiesBatch {
+        kinds: u16,
+        relation: CastRelation,
+        other: bool,
     },
     CreatureDiesFiltered {
         filter: CreatureFilter,

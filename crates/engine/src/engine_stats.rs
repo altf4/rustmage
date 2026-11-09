@@ -212,10 +212,12 @@ impl Game {
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::CreatureDiesWithCounters { .. }
                     | TriggerCondition::OtherControlledPermanentWithSubtypeDies { .. }
+                    | TriggerCondition::ControlledPermanentWithSubtypeDies(_)
                     | TriggerCondition::AttachedCreatureDies
                     | TriggerCondition::PermanentToGraveyard { .. }
                     | TriggerCondition::CreatureDiesWithMaximumStat { .. }
                     | TriggerCondition::CreatureDiesBatch { .. }
+                    | TriggerCondition::PermanentDiesBatch { .. }
                     | TriggerCondition::CreatureDiesFiltered { .. }
                     | TriggerCondition::CreatureDiesAttackState { .. }
                     | TriggerCondition::FoodsSacrificed

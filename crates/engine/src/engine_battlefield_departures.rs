@@ -81,10 +81,11 @@ impl Game {
                 Instruction::GainLifeScaled(
                     _,
                     AmountValue::DeathEventToughness | AmountValue::DeathEventPower
-                ) | Instruction::ExileTopChoosePlayScaled {
-                    amount: AmountValue::DeathEventPower,
-                    ..
-                }
+                ) | Instruction::DrawScaled(_, AmountValue::DeathEventPower)
+                    | Instruction::ExileTopChoosePlayScaled {
+                        amount: AmountValue::DeathEventPower,
+                        ..
+                    }
             )
         }) {
             EventObjectFacts::CreatureComparison(CreatureComparisonFacts::from_view(&event.before))
