@@ -1240,6 +1240,7 @@ impl Game {
             | EffectChoiceKind::CountersOnTarget { .. }
             | EffectChoiceKind::RemoveLoreForSourceCounters(_)
             | EffectChoiceKind::EquipmentRecipient
+            | EffectChoiceKind::ReflexiveEquipmentRecipient { .. }
             | EffectChoiceKind::LinkedCreature { .. }
             | EffectChoiceKind::SacrificeSelection
             | EffectChoiceKind::MeldPartner(_)

@@ -1156,6 +1156,10 @@ pub enum EffectChoiceKind {
     KeepSharedCreatureTypes,
     /// Choose one legal controlled creature for the resolving Equipment source.
     EquipmentRecipient,
+    /// Choose a controlled creature for one Equipment from the exact reflexive event.
+    ReflexiveEquipmentRecipient {
+        subtype: &'static str,
+    },
     /// Choose a creature an opponent controls, linked to a departure trigger.
     LinkedCreature {
         other_power: i32,
@@ -2929,6 +2933,10 @@ pub enum Instruction {
     AttachPriorSourceEquipment {
         recipient: u16,
     },
+    /// Choose a legal creature of this subtype, then one Equipment from the reflexive event.
+    MayAttachReflexiveEquipment {
+        recipient_subtype: &'static str,
+    },
     AttachEquipmentByGroups {
         equipment: u16,
         recipient: u16,
@@ -3197,6 +3205,11 @@ pub enum Instruction {
     AlternateRevealedLibraryPicks(u16),
     /// Enter first; optionally transform the exact actual entrant before the remainder.
     SelectLibraryThenMayTransform(LibrarySelectionEffect),
+    /// Queue once with the exact Equipment that entered from the selection.
+    SelectLibraryThenReflexiveEquipment {
+        effect: LibrarySelectionEffect,
+        ability: u16,
+    },
     NoMaximumHandSize,
     ExileResolvingSpell,
     UntapLands(u16),

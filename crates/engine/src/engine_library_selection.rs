@@ -26,14 +26,21 @@ struct AlternatingLibraryPicks {
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum LibraryEntryCompletion {
+    None,
+    MayTransform,
+    ReflexiveEquipment(u16),
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct LibrarySelection {
     alternating: Option<AlternatingLibraryPicks>,
     pub top_land: Option<TopLandStage>,
     pub spec: LibrarySelectionSpec,
     pub owner: Player,
-    pub may_transform: bool,
-    pub entered: Option<ObjectRef>,
+    completion: LibraryEntryCompletion,
+    entered: Vec<ObjectRef>,
     pub transform_pending: bool,
     pub destination: LibraryPickDestination,
     /// The selected card is excluded from “the rest” even if its move is prevented.
@@ -54,7 +61,11 @@ pub(super) struct LibrarySelection {
 impl LibrarySelection {
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
-            + (self.remaining.len() + self.eligible.len() + self.selected.len() + self.bottom.len())
+            + (self.remaining.len()
+                + self.eligible.len()
+                + self.selected.len()
+                + self.bottom.len()
+                + self.entered.len())
                 * std::mem::size_of::<ObjectRef>()
     }
 }
@@ -136,8 +147,8 @@ impl Game {
                 remainder: LibraryRemainder::Keep,
             },
             owner,
-            may_transform: false,
-            entered: None,
+            completion: LibraryEntryCompletion::None,
+            entered: Vec::new(),
             transform_pending: false,
             destination: LibraryPickDestination::Hand,
             exclude_selected_from_remainder: true,
@@ -211,18 +222,21 @@ impl Game {
         item: &SpellView,
         effect: LibrarySelectionEffect,
     ) -> bool {
-        self.start_library_selection_completion(item, effect, false)
+        self.start_library_selection_completion(item, effect, LibraryEntryCompletion::None)
     }
     pub(super) fn start_library_selection_completion(
         &mut self,
         item: &SpellView,
         effect: LibrarySelectionEffect,
-        may_transform: bool,
+        completion: LibraryEntryCompletion,
     ) -> bool {
         assert!(
-            !may_transform
-                || (effect.destination == LibraryPickDestination::Battlefield
-                    && effect.spec.count == LibrarySelectionCount::Fixed(1))
+            completion == LibraryEntryCompletion::None
+                || effect.destination == LibraryPickDestination::Battlefield
+        );
+        assert!(
+            completion != LibraryEntryCompletion::MayTransform
+                || effect.spec.count == LibrarySelectionCount::Fixed(1)
         );
         let spec = effect.spec;
         let owner = item.controller;
@@ -392,8 +406,8 @@ impl Game {
             top_land: None,
             spec,
             owner,
-            may_transform,
-            entered: None,
+            completion,
+            entered: Vec::new(),
             transform_pending: false,
             destination,
             exclude_selected_from_remainder: matches!(
@@ -961,21 +975,35 @@ impl Game {
         let Some(frame) = self
             .state
             .resolving
-            .as_mut()
-            .and_then(|r| r.selection.as_mut())
+            .as_ref()
+            .and_then(|r| r.selection.as_ref())
+            .filter(|frame| frame.entering && frame.completion != LibraryEntryCompletion::None)
         else {
             return;
         };
-        if frame.entering
-            && frame.may_transform
-            && let Some(event) = events.iter().find(|event| {
+        let entered: Vec<_> = events
+            .iter()
+            .filter(|event| {
                 event.moved
                     && event.destination == Zone::Battlefield
                     && frame.selected.contains(&event.before.reference)
             })
-        {
-            frame.entered = Some(event.after);
-        }
+            .map(|event| event.after)
+            .filter(|object| {
+                frame.completion == LibraryEntryCompletion::MayTransform
+                    || (self.current_kinds(object.card) & 16 != 0
+                        && self.has_subtype(object.card, "Equipment"))
+            })
+            .collect();
+        self.state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .selection
+            .as_mut()
+            .unwrap()
+            .entered
+            .extend(entered);
     }
     pub(super) fn complete_library_entry_transform(&mut self, accept: bool) -> bool {
         if !self
@@ -995,7 +1023,7 @@ impl Game {
             .selection
             .take()
             .unwrap();
-        if accept && let Some(recipient) = frame.entered {
+        if accept && let Some(&recipient) = frame.entered.first() {
             self.transform_permanent(recipient);
         }
         self.commit_library_remainder(frame.owner, *frame);
@@ -1006,7 +1034,7 @@ impl Game {
         if !frame.transform_pending {
             return None;
         }
-        let object = frame.entered?;
+        let &object = frame.entered.first()?;
         (self.on_battlefield(object.card) && self.object_ref(object.card) == object).then(|| {
             EntryTransformChoiceView {
                 object: self.object_view(object.card),
@@ -1014,44 +1042,39 @@ impl Game {
         })
     }
     pub(super) fn finish_entered_library_selection(&mut self) -> bool {
-        if self
-            .state
-            .resolving
-            .as_ref()
-            .unwrap()
-            .selection
-            .as_ref()
-            .is_some_and(|f| f.entering)
+        let resolution = self.state.resolving.as_ref().unwrap();
+        let Some(frame) = resolution.selection.as_ref().filter(|frame| frame.entering) else {
+            return false;
+        };
+        if frame.completion == LibraryEntryCompletion::MayTransform
+            && frame
+                .entered
+                .first()
+                .is_some_and(|&object| self.can_transform_permanent(object))
         {
-            let recipient = self
-                .state
-                .resolving
-                .as_ref()
-                .unwrap()
-                .selection
-                .as_ref()
-                .unwrap()
-                .entered;
-            if recipient.is_some_and(|object| self.can_transform_permanent(object)) {
-                let resolution = self.state.resolving.as_mut().unwrap();
-                let frame = resolution.selection.as_mut().unwrap();
-                if frame.may_transform {
-                    frame.entering = false;
-                    frame.transform_pending = true;
-                    self.state.pending = Pending::EffectOptional {
-                        player: frame.owner,
-                        skip_to: resolution.pc,
-                    };
-                    return true;
-                }
-            }
             let resolution = self.state.resolving.as_mut().unwrap();
-            let frame = resolution.selection.take().unwrap();
-            let owner = frame.owner;
-            if frame.destination == LibraryPickDestination::LandsTappedRestHand {
-                self.library_selected_nonlands_to_hand(&frame);
-            } else {
-                self.commit_library_remainder(owner, *frame);
+            let frame = resolution.selection.as_mut().unwrap();
+            frame.entering = false;
+            frame.transform_pending = true;
+            self.state.pending = Pending::EffectOptional {
+                player: frame.owner,
+                skip_to: resolution.pc,
+            };
+            return true;
+        }
+        let resolution = self.state.resolving.as_mut().unwrap();
+        let mut frame = resolution.selection.take().unwrap();
+        if frame.destination == LibraryPickDestination::LandsTappedRestHand {
+            self.library_selected_nonlands_to_hand(&frame);
+        } else {
+            let completion = frame.completion;
+            let entered = std::mem::take(&mut frame.entered);
+            self.commit_library_remainder(frame.owner, *frame);
+            if let LibraryEntryCompletion::ReflexiveEquipment(ability) = completion
+                && !entered.is_empty()
+            {
+                let item = self.state.resolving.as_ref().unwrap().item.clone();
+                self.queue_reflexive_objects(&item, ability, entered);
             }
         }
         false

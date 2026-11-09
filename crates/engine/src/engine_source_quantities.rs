@@ -72,7 +72,8 @@ fn selected(program: &[Instruction]) -> SelectedQuantities {
             Instruction::SetBaseStatsFromSource { .. } => result.toughness = true,
             Instruction::AttachPriorSourceEquipment { .. } => result.attached_equipment = true,
             Instruction::SelectLibraryTo(effect)
-            | Instruction::SelectLibraryThenMayTransform(effect) => {
+            | Instruction::SelectLibraryThenMayTransform(effect)
+            | Instruction::SelectLibraryThenReflexiveEquipment { effect, .. } => {
                 if let Some(value) = effect.maximum_mana_value {
                     amount(value, &mut result);
                 }
@@ -448,7 +449,10 @@ fn reads_chosen_type(program: &[Instruction]) -> bool {
     program.iter().any(|instruction| match instruction {
         Instruction::SelectLibrary(spec) => filter(spec.filter),
         Instruction::SelectLibraryTo(effect)
-        | Instruction::SelectLibraryThenMayTransform(effect) => filter(effect.spec.filter),
+        | Instruction::SelectLibraryThenMayTransform(effect)
+        | Instruction::SelectLibraryThenReflexiveEquipment { effect, .. } => {
+            filter(effect.spec.filter)
+        }
         Instruction::Modal(modes)
         | Instruction::ModalOnce(modes)
         | Instruction::ModalOncePerTurn(modes)

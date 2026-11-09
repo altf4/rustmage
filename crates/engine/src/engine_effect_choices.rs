@@ -203,6 +203,16 @@ impl Game {
                 && choice.selected[player.index()].is_empty()
                 && self.equipment_can_attach(choice.source, object);
         }
+        if let EffectChoiceKind::ReflexiveEquipmentRecipient { subtype } = choice.kind {
+            return self.on_battlefield(object.card)
+                && o.controller == player
+                && choice.selected[player.index()].is_empty()
+                && self.has_subtype(object.card, subtype)
+                && self
+                    .reflexive_equipment_for(&self.state.resolving.as_ref().unwrap().item, object)
+                    .next()
+                    .is_some();
+        }
         if matches!(choice.kind, EffectChoiceKind::LinkedCreature { .. }) {
             return o.controller != player
                 && self.on_battlefield(object.card)
@@ -1683,6 +1693,16 @@ impl Game {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
             if let Some(&recipient) = choice.selected[player.index()].first() {
                 self.attach_equipment(choice.source, recipient);
+            }
+            return false;
+        }
+        if matches!(
+            choice.kind,
+            EffectChoiceKind::ReflexiveEquipmentRecipient { .. }
+        ) {
+            let item = self.state.resolving.as_ref().unwrap().item.clone();
+            if let Some(&recipient) = choice.selected[item.controller.index()].first() {
+                return self.choose_reflexive_equipment(&item, recipient);
             }
             return false;
         }

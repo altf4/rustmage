@@ -9,7 +9,8 @@ pub(super) struct ReturnAttachment {
     pub entering: bool,
     order: Option<Box<EquipmentOrder>>,
     reflexive: Option<u16>,
-    prior_equipment: Option<Box<[ObjectRef]>>,
+    exact_equipment: Option<Box<[ObjectRef]>>,
+    required: bool,
     selected: Option<Vec<ObjectRef>>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -22,7 +23,7 @@ struct EquipmentOrder {
 impl ReturnAttachment {
     pub(super) fn owned_bytes(&self) -> usize {
         std::mem::size_of::<Self>()
-            + self.prior_equipment.as_ref().map_or(0, |equipment| {
+            + self.exact_equipment.as_ref().map_or(0, |equipment| {
                 equipment.len() * std::mem::size_of::<ObjectRef>()
             })
             + self.selected.as_ref().map_or(0, |equipment| {
@@ -87,7 +88,8 @@ impl Game {
                 entering: false,
                 order: None,
                 reflexive: None,
-                prior_equipment: None,
+                exact_equipment: None,
+                required: false,
                 selected: any_number.then(Vec::new),
             }));
         self.advance_return_attachment()
@@ -104,20 +106,49 @@ impl Game {
         else {
             return false;
         };
-        let legal = |&equipment: &ObjectRef| self.equipment_can_attach(equipment, recipient);
-        let equipment: Vec<_> =
+        let mut equipment: Vec<_> =
             if self.on_battlefield(source.card) && self.object_ref(source.card) == source {
-                self.source_equipment_refs(source).filter(legal).collect()
+                self.source_equipment_refs(source).collect()
             } else {
                 item.source_quantity_lki
                     .as_ref()
                     .and_then(|facts| facts.attached_equipment.as_deref())
                     .unwrap_or(&[])
-                    .iter()
-                    .copied()
-                    .filter(legal)
-                    .collect()
+                    .to_vec()
             };
+        equipment.retain(|&equipment| self.equipment_can_attach(equipment, recipient));
+        self.choose_exact_equipment(item, recipient, equipment, true)
+    }
+
+    pub(super) fn reflexive_equipment_for<'a>(
+        &'a self,
+        item: &'a SpellView,
+        recipient: ObjectRef,
+    ) -> impl Iterator<Item = ObjectRef> + 'a {
+        item.reflexive_subject
+            .iter()
+            .flat_map(|subject| {
+                std::iter::once(subject.object).chain(subject.additional_objects.iter().copied())
+            })
+            .filter(move |&equipment| self.equipment_can_attach(equipment, recipient))
+    }
+
+    pub(super) fn choose_reflexive_equipment(
+        &mut self,
+        item: &SpellView,
+        recipient: ObjectRef,
+    ) -> bool {
+        let equipment = self.reflexive_equipment_for(item, recipient).collect();
+        self.choose_exact_equipment(item, recipient, equipment, false)
+    }
+
+    fn choose_exact_equipment(
+        &mut self,
+        item: &SpellView,
+        recipient: ObjectRef,
+        equipment: Vec<ObjectRef>,
+        required: bool,
+    ) -> bool {
         match equipment.as_slice() {
             [] => return false,
             [only] => {
@@ -126,15 +157,19 @@ impl Game {
             }
             _ => (),
         }
+        let Some(source) = item.source else {
+            return false;
+        };
         self.state.resolving.as_mut().unwrap().return_attachment =
             Some(Box::new(ReturnAttachment {
-                origin: source,
+                origin: source.object,
                 player: item.controller,
                 recipient: Some(recipient),
                 entering: false,
                 order: None,
                 reflexive: None,
-                prior_equipment: Some(equipment.into_boxed_slice()),
+                exact_equipment: Some(equipment.into_boxed_slice()),
+                required,
                 selected: None,
             }));
         self.advance_return_attachment()
@@ -185,7 +220,8 @@ impl Game {
                 recipient: Some(recipient),
                 entering: false,
                 reflexive,
-                prior_equipment: None,
+                exact_equipment: None,
+                required: false,
                 selected: None,
                 order: Some(Box::new(EquipmentOrder {
                     remaining,
@@ -211,7 +247,8 @@ impl Game {
                 entering: true,
                 order: None,
                 reflexive: None,
-                prior_equipment: None,
+                exact_equipment: None,
+                required: false,
                 selected: None,
             }));
         let mut movement = self.entry_move(source.id, Zone::Battlefield, false);
@@ -259,7 +296,7 @@ impl Game {
         {
             return false;
         }
-        if let Some(equipment) = frame.prior_equipment.as_deref() {
+        if let Some(equipment) = frame.exact_equipment.as_deref() {
             return equipment.iter().copied().any(|equipment| {
                 self.equipment_can_attach(equipment, recipient) && emit(equipment)
             });
@@ -358,9 +395,7 @@ impl Game {
                 })
             });
         }
-        if frame.prior_equipment.is_none()
-            && emit(Action::ChooseEquipmentAttachment { equipment: None })
-        {
+        if !frame.required && emit(Action::ChooseEquipmentAttachment { equipment: None }) {
             return true;
         }
         self.visit_attachment_candidates(frame, |equipment| {
@@ -433,7 +468,7 @@ impl Game {
             recipient: self.object_view(recipient.card),
             ordering: frame.order.as_ref().map(|_| true),
             candidates,
-            required: frame.prior_equipment.is_some(),
+            required: frame.required,
             selected: frame.selected.clone(),
             prior_public_order,
         })

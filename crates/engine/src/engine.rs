@@ -5338,6 +5338,7 @@ impl Game {
                         EffectChoiceKind::ReturnToHand
                             | EffectChoiceKind::ReturnGraveyardToHand { .. }
                             | EffectChoiceKind::CountersOnTarget { .. }
+                            | EffectChoiceKind::ReflexiveEquipmentRecipient { .. }
                     ) {
                         Action::ChooseOptional { accept: false }
                     } else {
@@ -5374,7 +5375,8 @@ impl Game {
                             EffectChoiceKind::PowerDifferenceBoost => {
                                 Action::ChoosePowerDifferenceCreature { object }
                             }
-                            EffectChoiceKind::EquipmentRecipient => {
+                            EffectChoiceKind::EquipmentRecipient
+                            | EffectChoiceKind::ReflexiveEquipmentRecipient { .. } => {
                                 Action::ChooseEquipmentRecipient { recipient: object }
                             }
                             EffectChoiceKind::LinkedCreature { .. } => {

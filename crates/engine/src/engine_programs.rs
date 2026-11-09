@@ -6012,6 +6012,20 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::MayAttachReflexiveEquipment { recipient_subtype } => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::ReflexiveEquipmentRecipient {
+                            subtype: recipient_subtype,
+                        },
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        1,
+                        Some(0),
+                    ) {
+                        return;
+                    }
+                }
                 Instruction::AttachEquipmentGroupsReflexive {
                     equipment,
                     recipient,
@@ -7625,7 +7639,20 @@ impl Game {
                     }
                 }
                 Instruction::SelectLibraryThenMayTransform(effect) => {
-                    if self.start_library_selection_completion(&item, effect, true) {
+                    if self.start_library_selection_completion(
+                        &item,
+                        effect,
+                        library_selection::LibraryEntryCompletion::MayTransform,
+                    ) {
+                        return;
+                    }
+                }
+                Instruction::SelectLibraryThenReflexiveEquipment { effect, ability } => {
+                    if self.start_library_selection_completion(
+                        &item,
+                        effect,
+                        library_selection::LibraryEntryCompletion::ReflexiveEquipment(ability),
+                    ) {
                         return;
                     }
                 }
