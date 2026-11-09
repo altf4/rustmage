@@ -2,6 +2,7 @@
 mod support;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
+use rustmage_core::engine::funding::{FundingGoal, FundingState};
 use rustmage_core::{cards::*, engine::*};
 use support::*;
 fn card(name: &str) -> Card {
