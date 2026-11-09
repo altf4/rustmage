@@ -19,6 +19,11 @@
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
       "path": "Mage/src/main/java/mage/abilities/effects/common/ExileSourceEffect.java",
       "sha256": "8a3f35805bee6f05c458c62e4e8cfa6892cc1ef97dbe23c1ff0e33c828cc028e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
     }
   ]
 }

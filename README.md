@@ -66,13 +66,13 @@ python scripts/validate.py --release --python smoke
 
 ## Standard set tracker
 
-**10 / 20 sets complete · 50%**
+**11 / 20 sets complete · 55%**
 
-`██████████░░░░░░░░░░`
+`███████████░░░░░░░░░`
 
-**3,576 / 5,164 unique Standard cards supported in this checkout · 69%**
+**3,750 / 5,163 unique Standard cards supported in this checkout · 73%**
 
-`██████████████░░░░░░`
+`███████████████░░░░░`
 
 Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
 ([inventory](data/standard/xmage-inventory.json)), rather than live format legality.
@@ -92,7 +92,7 @@ Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
 | Bloomburrow | BLB | 135/279 (48%) | ⏳ Partial |
 | Duskmourn: House of Horror | DSK | 91/276 (33%) | ⏳ Partial |
 | Edge of Eternities | EOE | 122/266 (46%) | ⏳ Partial |
-| Final Fantasy | FIN | 136/312 (44%) | ⏳ Partial |
+| Final Fantasy | FIN | 312/312 (100%) | ✅ Complete |
 | Marvel Super Heroes | MSH | 281/281 (100%) | ✅ Complete |
 | Marvel's Spider-Man | SPM | 82/193 (42%) | ⏳ Partial |
 | Murders at Karlov Manor | MKM | 86/279 (31%) | ⏳ Partial |

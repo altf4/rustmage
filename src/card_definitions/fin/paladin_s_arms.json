@@ -8,5 +8,15 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fb10d71a93319420de3085bb2113bb0d14aaf4e64d31af4fdbf54832ece6d8aa"
   },
-  "physical_metadata_sha256": "1dee2809de1e56f7693915f9594d3b855ffd4615c5380eff1d9a4048c7d0b667"
+  "physical_metadata_sha256": "1dee2809de1e56f7693915f9594d3b855ffd4615c5380eff1d9a4048c7d0b667",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PaladinsArms.java",
+  "java_sha256": "fa50834c0cec4ff8bfb0915311510173d18b2cb6922c3ec8ec036cffdbdbdbcc",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    }
+  ]
 }
