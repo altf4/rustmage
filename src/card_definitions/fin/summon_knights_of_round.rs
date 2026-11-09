@@ -9,15 +9,17 @@ const OTHER_CREATURES: CreatureFilter = CreatureFilter {
     artifact: false,
 };
 
+const CREATE_KNIGHTS: &[Instruction] = &[Instruction::CreateTokens {
+    token: Card(5236),
+    amount: 3,
+    tapped: false,
+}];
+
 const fn knights(number: u16) -> TriggeredAbility {
     TriggeredAbility {
         condition: TriggerCondition::Chapter { number },
         targets: TargetPlan::NONE,
-        program: &[Instruction::CreateTokens {
-            token: Card(5236),
-            amount: 3,
-            tapped: false,
-        }],
+        program: CREATE_KNIGHTS,
     }
 }
 
