@@ -111,10 +111,9 @@ fn first_human_spell_counts_live_distinct_dogs_or_wolves_on_its_exact_entry() {
     assert_eq!(indexed.counter_count(explorer, CounterKind::PlusOne), 3);
 
     raw.restore(&saved).unwrap();
-    let stack_id = raw.state.stack[0].id;
     act(&mut raw, Action::Pass);
     let scatter = put(&mut raw, opponent, "Essence Scatter", Zone::Hand);
-    cast(&mut raw, scatter, Some(Target::Stack(stack_id)));
+    cast(&mut raw, scatter, Some(Target::Spell(explorer)));
     settle(&mut raw);
     assert_eq!(raw.object_view(explorer).zone, Zone::Graveyard);
     assert!(raw.observe(player).cast_entry_counters.is_empty());
@@ -128,11 +127,10 @@ fn countered_cast_before_observer_consumes_first_slot_until_the_next_turn() {
     let mut game = scenario(player);
     let inspector = put(&mut game, player, "Novice Inspector", Zone::Hand);
     cast(&mut game, inspector, None);
-    let first_cast = game.state.stack[0].id;
     act(&mut game, Action::Pass);
     assert_eq!(game.actor(), Some(opponent));
     let scatter = put(&mut game, opponent, "Essence Scatter", Zone::Hand);
-    cast(&mut game, scatter, Some(Target::Stack(first_cast)));
+    cast(&mut game, scatter, Some(Target::Spell(inspector)));
     settle(&mut game);
     assert_eq!(game.object_view(inspector).zone, Zone::Graveyard);
 
@@ -264,10 +262,9 @@ fn a_prior_countered_legend_consumes_the_discount_for_that_player_and_turn() {
     let mut game = scenario(player);
     let first = put(&mut game, player, "Yargle, Glutton of Urborg", Zone::Hand);
     cast(&mut game, first, None);
-    let stack_id = game.state.stack[0].id;
     act(&mut game, Action::Pass);
     let scatter = put(&mut game, opponent, "Essence Scatter", Zone::Hand);
-    cast(&mut game, scatter, Some(Target::Stack(stack_id)));
+    cast(&mut game, scatter, Some(Target::Spell(first)));
     settle(&mut game);
     assert_eq!(game.object_view(first).zone, Zone::Graveyard);
 
