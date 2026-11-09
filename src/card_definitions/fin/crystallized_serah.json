@@ -3,7 +3,7 @@
   "catalogue_id": 5516,
   "oracle_id": null,
   "facts_sha256": null,
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "37e219fd441f2947c2b098cb161bfed6f76b329535e5ccdab9ac4f91ad19c963",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/s/SerahFarron.java",
@@ -12,5 +12,6 @@
     "oracle_id": "a8a7a3b7-015c-4fbd-8b90-e0ddf71663e4",
     "index": 1,
     "sha256": "b31fd8a818fe95fe3289e8d2c4c0095830a9c2c2a67153176984d5f7bdf51105"
-  }
+  },
+  "rules_tests": "tests/fin_cards_157_234.rs"
 }

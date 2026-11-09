@@ -3,10 +3,14 @@
   "catalogue_id": 3682,
   "oracle_id": "e92185f8-579c-4645-9cb8-ef5deb9eebc8",
   "facts_sha256": "ab67032362837db20819ac26752ad265266cd421fa72bd4fffc78fba73993ca9",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "beb45c1430672a3085e3ebceb2797e868b0fe03672fac21e347907b28e2399d5"
   },
-  "physical_metadata_sha256": "c7eddb061ead8a29f8ad1122625646cefcc75ed64f7b293a49bbe80c3fb9ad13"
+  "physical_metadata_sha256": "c7eddb061ead8a29f8ad1122625646cefcc75ed64f7b293a49bbe80c3fb9ad13",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/Sandworm.java",
+  "java_sha256": "2b8b84bd9ddcc103332937de3080c4b87b9631aa7c09631fb8fb5208c1d501de",
+  "rules_tests": "tests/fin_cards_157_234.rs"
 }

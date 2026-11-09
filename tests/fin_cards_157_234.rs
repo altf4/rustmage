@@ -328,6 +328,334 @@ fn battlefield_tokens(game: &Game, card: Card) -> Vec<CardId> {
         .collect()
 }
 
+fn target_trigger(game: &mut Game, target: Target) {
+    reach_action(game, &Action::ChooseTarget { target });
+    choose_targets(game, &[target]);
+}
+
+#[test]
+fn sandworm_gives_the_destroyed_lands_controller_the_optional_basic_search() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let land = put(
+        &mut game,
+        opponent,
+        "Rabanastre, Royal City",
+        Zone::Battlefield,
+    );
+    let basic = put(&mut game, opponent, "Island", Zone::Library);
+    let nonbasic = put(&mut game, opponent, "Rabanastre, Royal City", Zone::Library);
+    let worm = put(&mut game, player, "Sandworm", Zone::Hand);
+    cast(&mut game, worm, None);
+    target_trigger(&mut game, Target::Card(land));
+    passes(&mut game);
+    assert_eq!(game.object_view(land).zone, Zone::Graveyard);
+    assert!(game.keywords(worm).contains(Keywords::HASTE));
+    assert_eq!(game.actor(), Some(opponent));
+    let mut declined = game.clone();
+    act(&mut declined, Action::ChooseOptional { accept: false });
+    assert_eq!(declined.object_view(basic).zone, Zone::Library);
+    act(&mut game, Action::ChooseOptional { accept: true });
+    reject(&mut game, Action::ChooseSearch { card: nonbasic });
+    act(&mut game, Action::ChooseSearch { card: basic });
+    if game.legal_actions().contains(&Action::FinishSearch) {
+        act(&mut game, Action::FinishSearch);
+    }
+    assert_eq!(game.object_view(basic).controller, opponent);
+    assert_eq!(game.object_view(basic).zone, Zone::Battlefield);
+    assert!(game.object_view(basic).tapped);
+}
+
+#[test]
+fn sazh_reveals_a_bird_then_doubles_the_targets_counters_after_adding_one() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let bird = put(&mut game, player, "Sazh's Chocobo", Zone::Library);
+    let nonbasic = put(&mut game, player, "Rabanastre, Royal City", Zone::Library);
+    let source = put(&mut game, player, "Sazh Katzroy", Zone::Hand);
+    cast(&mut game, source, None);
+    let accept = Action::ChooseOptional { accept: true };
+    reach_action(&mut game, &accept);
+    act(&mut game, accept);
+    reject(&mut game, Action::ChooseSearch { card: nonbasic });
+    act(&mut game, Action::ChooseSearch { card: bird });
+    if game.legal_actions().contains(&Action::FinishSearch) {
+        act(&mut game, Action::FinishSearch);
+    }
+    assert_eq!(game.object_view(bird).zone, Zone::Hand);
+    assert!(
+        game.observe(player.other())
+            .known_hand
+            .contains(&game.object_ref(bird))
+    );
+    game.state.objects[source as usize].summoning_sick = false;
+    let opposing = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+    game.set_counters(opposing, Counters::of(CounterKind::PlusOne, 2));
+    attack(&mut game, &[source]);
+    target_trigger(&mut game, Target::Card(opposing));
+    settle(&mut game);
+    assert_eq!(game.counter_count(opposing, CounterKind::PlusOne), 6);
+}
+
+#[test]
+fn seifer_grants_double_strike_and_offers_a_small_graveyard_spell_after_combat_damage() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let seifer = put(&mut game, player, "Seifer Almasy", Zone::Battlefield);
+    let bear = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let shock = put(&mut game, player, "Shock", Zone::Graveyard);
+    let too_large = put(&mut game, player, "Nibelheim Aflame", Zone::Graveyard);
+    let mut other_attacks = game.clone();
+    attack(&mut other_attacks, &[bear]);
+    settle(&mut other_attacks);
+    assert!(
+        other_attacks
+            .keywords(bear)
+            .contains(Keywords::DOUBLE_STRIKE)
+    );
+    assert!(
+        !other_attacks
+            .keywords(seifer)
+            .contains(Keywords::DOUBLE_STRIKE)
+    );
+    attack(&mut game, &[seifer]);
+    settle(&mut game);
+    assert!(game.keywords(seifer).contains(Keywords::DOUBLE_STRIKE));
+    passes(&mut game);
+    act(&mut game, Action::FinishBlockers);
+    let target = Action::ChooseTarget {
+        target: Target::Card(shock),
+    };
+    reach_action(&mut game, &target);
+    assert_eq!(game.state.players[opponent.index()].life, 17);
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(too_large),
+        },
+    );
+    choose_targets(&mut game, &[Target::Card(shock)]);
+    passes(&mut game);
+    let object = game.object_ref(shock);
+    let mut declined = game.clone();
+    act(&mut declined, Action::FinishResolutionCasts);
+    assert_eq!(declined.object_view(shock).zone, Zone::Graveyard);
+    game.state.players[player.index()].mana = [0; 6];
+    act(
+        &mut game,
+        Action::CastExiledDuringResolution {
+            object,
+            face: CastFace::Normal,
+        },
+    );
+    choose_targets(&mut game, &[Target::Player(opponent)]);
+    if matches!(game.state.pending, Pending::PayCosts { .. }) {
+        pay(&mut game);
+    }
+    if game
+        .legal_actions()
+        .contains(&Action::FinishResolutionCasts)
+    {
+        act(&mut game, Action::FinishResolutionCasts);
+    }
+    settle(&mut game);
+    assert_eq!(game.object_view(shock).zone, Zone::Exile);
+    assert_eq!(game.state.players[opponent.index()].life, 15);
+}
+
+#[test]
+fn self_destruct_deals_its_creatures_damage_and_survives_loss_of_the_other_target() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let source = put(&mut game, player, "Healer's Hawk", Zone::Battlefield);
+    let other = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+    let spell = put(&mut game, player, "Self-Destruct", Zone::Hand);
+    act(&mut game, Action::AnnounceCast { card: spell });
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(source),
+        },
+    );
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(source),
+        },
+    );
+    choose_targets(&mut game, &[Target::Card(other)]);
+    pay(&mut game);
+    let mut stale_other = game.clone();
+    stale_other.move_object(other, Zone::Exile);
+    settle(&mut stale_other);
+    assert_eq!(stale_other.object_view(source).zone, Zone::Graveyard);
+    assert_eq!(stale_other.state.players[player.index()].life, 21);
+    let mut stale_source = game.clone();
+    stale_source.record_control(game.object_ref(source), player.other(), None);
+    settle(&mut stale_source);
+    assert_eq!(stale_source.object_view(source).zone, Zone::Battlefield);
+    assert_eq!(stale_source.object_view(other).damage, 0);
+    settle(&mut game);
+    assert_eq!(game.object_view(source).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(other).damage, 1);
+    assert_eq!(game.state.players[player.index()].life, 22);
+}
+
+#[test]
+fn sephiroth_creates_the_emblem_on_the_fourth_drain_and_draws_for_the_back_faces_sacrifices() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let front = "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel";
+    let back = "Sephiroth, One-Winged Angel";
+    let initial = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let source = put(&mut game, player, front, Zone::Hand);
+    cast(&mut game, source, None);
+    let sacrifice = Action::Sacrifice {
+        object: game.object_ref(initial),
+    };
+    reach_action(&mut game, &sacrifice);
+    act(&mut game, sacrifice);
+    target_trigger(&mut game, Target::Player(opponent));
+    settle(&mut game);
+    assert_eq!(game.hand_count(player), 1);
+    let reference = game.object_ref(source);
+    let emblem_count = |game: &Game| {
+        game.observe(player)
+            .objects
+            .into_iter()
+            .filter(|object| object.zone == Zone::Command && object.card == Card(5535))
+            .count()
+    };
+    for count in 2..=4 {
+        let bear = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+        let shock = put(&mut game, player, "Shock", Zone::Hand);
+        cast(&mut game, shock, Some(Target::Card(bear)));
+        target_trigger(&mut game, Target::Player(opponent));
+        settle(&mut game);
+        assert_eq!(game.state.players[player.index()].life, 20 + count);
+        assert_eq!(game.state.players[opponent.index()].life, 20 - count);
+        assert_eq!(emblem_count(&game), usize::from(count == 4));
+    }
+    assert_eq!(game.object_ref(source), reference);
+    assert_eq!(game.object_view(source).name(), back);
+    assert!(game.keywords(source).contains(Keywords::FLYING));
+    game.state.objects[source as usize].summoning_sick = false;
+    let fodder = [
+        put(&mut game, player, "Bear Cub", Zone::Battlefield),
+        put(&mut game, player, "Bear Cub", Zone::Battlefield),
+    ];
+    attack(&mut game, &[source]);
+    let finish = Action::FinishEffectChoice;
+    reach_action(&mut game, &finish);
+    let mut zero = game.clone();
+    act(&mut zero, finish.clone());
+    assert_eq!(zero.hand_count(player), 1);
+    reject(&mut game, Action::Sacrifice { object: reference });
+    for id in fodder {
+        let object = game.object_ref(id);
+        act(&mut game, Action::Sacrifice { object });
+        assert_eq!(game.object_view(id).zone, Zone::Battlefield);
+    }
+    act(&mut game, finish);
+    assert_eq!(game.hand_count(player), 3);
+    for id in fodder {
+        assert_eq!(game.object_view(id).zone, Zone::Graveyard);
+    }
+    for _ in 0..2 {
+        target_trigger(&mut game, Target::Player(opponent));
+    }
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].life, 26);
+    assert_eq!(game.state.players[opponent.index()].life, 14);
+}
+
+#[test]
+fn serah_checks_other_legends_on_resolution_and_preserves_the_first_cast_history_across_faces() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let front = "Serah Farron // Crystallized Serah";
+    let source = put(&mut game, player, front, Zone::Battlefield);
+    let sazh = put(&mut game, player, "Sazh Katzroy", Zone::Battlefield);
+    let bear = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let first = put(&mut game, player, "Yargle, Glutton of Urborg", Zone::Hand);
+    act(&mut game, Action::AnnounceCast { card: first });
+    assert_eq!(game.observe(player).payment_request.unwrap().generic, 2);
+    pay(&mut game);
+    settle(&mut game);
+    passes(&mut game);
+    assert_eq!(game.state.step, Step::BeginCombat);
+    let mut no_longer_qualified = game.clone();
+    no_longer_qualified.move_object(sazh, Zone::Exile);
+    settle(&mut no_longer_qualified);
+    assert!(no_longer_qualified.is_creature(source));
+    let accept = Action::ChooseOptional { accept: true };
+    reach_action(&mut game, &accept);
+    act(&mut game, accept);
+    assert_eq!(game.object_view(source).name(), "Crystallized Serah");
+    assert!(!game.is_creature(source));
+    assert_eq!(stats(&game, first), (11, 5));
+    assert_eq!(stats(&game, bear), (2, 2));
+    game.begin_step(Step::Main2);
+    game.give_priority();
+    game.state.players[player.index()].mana = [8; 6];
+    let second = put(&mut game, player, "Seifer Almasy", Zone::Hand);
+    act(&mut game, Action::AnnounceCast { card: second });
+    assert_eq!(game.observe(player).payment_request.unwrap().generic, 3);
+}
+
+#[test]
+fn seymour_draws_and_grows_only_after_its_controllers_upkeep_life_payment() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let source = put(&mut game, player, "Seymour Flux", Zone::Battlefield);
+    game.begin_step(Step::Upkeep);
+    game.give_priority();
+    let accept = Action::ChooseOptional { accept: true };
+    reach_action(&mut game, &accept);
+    let mut declined = game.clone();
+    act(&mut declined, Action::ChooseOptional { accept: false });
+    assert_eq!(declined.hand_count(player), 0);
+    assert_eq!(declined.state.players[player.index()].life, 20);
+    assert_eq!(declined.counter_count(source, CounterKind::PlusOne), 0);
+    act(&mut game, accept);
+    assert_eq!(game.hand_count(player), 1);
+    assert_eq!(game.state.players[player.index()].life, 19);
+    assert_eq!(game.counter_count(source, CounterKind::PlusOne), 1);
+}
+
+#[test]
+fn shambling_cieth_only_returns_from_the_exact_graveyard_after_a_paid_noncreature_cast_trigger() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let source = put(&mut game, player, "Shambling Cie'th", Zone::Graveyard);
+    let bear = put(&mut game, player, "Bear Cub", Zone::Hand);
+    cast(&mut game, bear, None);
+    assert_eq!(game.state.stack.len(), 1);
+    settle(&mut game);
+    let shock = put(&mut game, player, "Shock", Zone::Hand);
+    cast(&mut game, shock, Some(Target::Player(player.other())));
+    assert_eq!(game.state.stack.len(), 2);
+    let mut stale = game.clone();
+    stale.move_object(source, Zone::Exile);
+    stale.move_object(source, Zone::Graveyard);
+    passes(&mut game);
+    passes(&mut stale);
+    let payment = Action::PayResolutionMana {
+        payment: [0, 0, 1, 0, 0, 0],
+    };
+    act(&mut stale, payment.clone());
+    act(&mut game, payment);
+    assert_eq!(stale.object_view(source).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(source).zone, Zone::Hand);
+    settle(&mut game);
+    cast(&mut game, source, None);
+    settle(&mut game);
+    assert!(game.object_view(source).tapped);
+}
+
 #[test]
 fn omega_counts_its_nonbasic_lands_even_when_no_permanent_is_targeted() {
     let player = Player::P0;

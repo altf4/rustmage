@@ -3,10 +3,21 @@
   "catalogue_id": 3705,
   "oracle_id": "0e5b40dc-debf-48a1-8398-5ea00b5a5166",
   "facts_sha256": "6d3abac98936d5be36ee05c8f359dead29a4d70e74b1cd49299834c5a8c6a203",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2e521ececcdaa70c82122c3672522254dc8717a0613cadd7652782c69a512c7d"
   },
-  "physical_metadata_sha256": "56851a8f9ddf593fb42985afb0afa1065cfd898b2f406381722ed44a532dd00a"
+  "physical_metadata_sha256": "56851a8f9ddf593fb42985afb0afa1065cfd898b2f406381722ed44a532dd00a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SazhKatzroy.java",
+  "java_sha256": "9c03370c848b89b48524740dd57832a57054e1e334f1b6556573bdb335b400cc",
+  "rules_tests": "tests/fin_cards_157_234.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoubleCountersTargetEffect.java",
+      "sha256": "efd6157e6d2b9be74a5eac1be3519dc1e559d574429693499fb9bb709a9e0ead"
+    }
+  ]
 }

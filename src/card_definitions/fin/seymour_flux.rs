@@ -1,16 +1,23 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Directly authored from the paired Oracle and pinned XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Creature(5, 5),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::AtStep {
+            step: TriggerStep::Upkeep,
+            relation: CastRelation::You,
+            guard: StepGuard::Always,
+        },
+        targets: TargetPlan::NONE,
+        program: &[
+            Instruction::MayPayControllerLife { amount: 1, skip: 3 },
+            Instruction::LoseLife(PlayerSet::Controller, 1),
+            Instruction::Draw(PlayerSet::Controller, 1),
+            Instruction::PutCounters {
+                subject: Subject::Source,
+                kind: CounterKind::PlusOne,
+                amount: 1,
+            },
+        ],
+    }],
     ..CardRules::EMPTY
 };
