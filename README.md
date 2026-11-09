@@ -91,21 +91,18 @@ Card provenance that cites a path under `docs/` refers to evidence retained in
 
 `██████████░░░░░░░░░░`
 
-**3,576 / 5,164 unique Standard cards implemented across accepted branches · 69%**
+**3,576 / 5,164 unique Standard cards supported in this checkout · 69%**
 
 `██████████████░░░░░░`
 
-Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
-([inventory](data/standard/xmage-inventory.json)), rather than live format legality.
-“Complete” means an accepted whole-set implementation, with validation scope
-recorded in its published evidence; partial admission or catalogue entries do not
-establish set completion. Set completion is separate from integration into `main`.
+The tracker uses the repository's frozen **2026-10-15 tabletop/MTGO Standard
+snapshot** ([inventory](data/standard/xmage-inventory.json)). “Complete” marks an
+accepted whole-set implementation with published rules and game validation.
 
-<!-- Refresh supported counts from the union of accepted implementation branches,
-     using their pinned set membership and coverage reports. Deduplicate by physical
-     identity; never demote an accepted set using a checkout that lacks its merged
-     integration branch. Keep current-main admission separate from accepted coverage.
-     Reconcile set acceptance with its rules/game evidence and published PR. -->
+<!-- Refresh supported counts from this checkout's generated coverage report
+     and pinned set membership. Deduplicate the overall count by physical
+     identity. Reconcile set completion with its rules and game evidence and
+     published pull request. -->
 
 | Set | Code | Supported cards | Implementation status |
 | --- | --- | ---: | --- |
@@ -130,11 +127,10 @@ establish set completion. Set completion is separate from integration into `main
 | The Lost Caverns of Ixalan | LCI | 117/291 (40%) | ⏳ Partial |
 | Wilds of Eldraine | WOE | 156/281 (56%) | ⏳ Partial |
 
-Supported counts use the union of the accepted branches’ coverage reports
-and full physical set membership from pinned XMage tables and Oracle facts,
-including reprints and starter products. Banned members remain in the totals and
-count as unsupported when gated; cosmetic printings count once. Partial-set
-counts are admission flags, not full-set acceptance.
+Supported counts use this checkout's admission flags and full physical set
+membership from pinned XMage tables and Oracle facts, including reprints and
+starter products. Totals include banned members, and cosmetic printings count
+once.
 
 Refresh the counts when card support changes; update the status and summary
 when a set passes full acceptance. When refreshing the Standard

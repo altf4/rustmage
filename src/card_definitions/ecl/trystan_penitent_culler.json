@@ -3,7 +3,7 @@
   "catalogue_id": 5497,
   "oracle_id": null,
   "facts_sha256": null,
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "45827e5589d2419b9c5b94cefed5904b5b6ec02f7fc2766bd6886c5a0ff328b5",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/t/TrystanCallousCultivator.java",

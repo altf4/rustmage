@@ -3,7 +3,7 @@
   "catalogue_id": 5493,
   "oracle_id": null,
   "facts_sha256": null,
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "fe492aa601a468ced3cfec1bec0ad1fde407ec00ac3b94d6530160b2fcc3c2d0",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage/src/main/java/mage/game/permanent/token/ShapeshifterColorlessToken.java",

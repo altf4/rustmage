@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "2ed6fbfd6b319075d4dff18bccf52fa221fc9ca838136c5d5b1cab3745667454",
+  "catalogue_version": "2ff279eb9c74c8860c2c9c54ba1ebdbb3a427af2d320ae46f302cecfd73c469f",
   "standard_legal_cards": 5164,
-  "implemented_standard_cards": 3417,
-  "implemented_total": 3424,
+  "implemented_standard_cards": 3576,
+  "implemented_total": 3583,
   "token_definitions": 164,
   "emblem_definitions": 11,
   "adventure_definitions": 50,
@@ -46,8 +46,7 @@
     },
     "ecl": {
       "total": 267,
-      "gated": 159,
-      "complete": 108
+      "complete": 267
     },
     "eoc": {
       "total": 8,
@@ -447,8 +446,8 @@
     {
       "name": "Abigale, Eloquent First-Year",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/abigale_eloquent_first_year.rs",
       "set": "ecl"
     },
@@ -671,8 +670,8 @@
     {
       "name": "Adept Watershaper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/adept_watershaper.rs",
       "set": "ecl"
     },
@@ -2135,16 +2134,16 @@
     {
       "name": "Ashling's Command",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/ashling_s_command.rs",
       "set": "ecl"
     },
     {
       "name": "Ashling, Rekindled // Ashling, Rimebound",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/ashling_rekindled_ashling_rimebound.rs",
       "set": "ecl"
     },
@@ -2183,8 +2182,8 @@
     {
       "name": "Assert Perfection",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/assert_perfection.rs",
       "set": "ecl"
     },
@@ -2311,8 +2310,8 @@
     {
       "name": "Auntie's Sentence",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/auntie_s_sentence.rs",
       "set": "ecl"
     },
@@ -2351,8 +2350,8 @@
     {
       "name": "Aurora Awakener",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/aurora_awakener.rs",
       "set": "ecl"
     },
@@ -2783,8 +2782,8 @@
     {
       "name": "Barbed Bloodletter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/barbed_bloodletter.rs",
       "set": "ecl"
     },
@@ -2831,8 +2830,8 @@
     {
       "name": "Bark of Doran",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/bark_of_doran.rs",
       "set": "ecl"
     },
@@ -3791,8 +3790,8 @@
     {
       "name": "Blighted Blackthorn",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/blighted_blackthorn.rs",
       "set": "ecl"
     },
@@ -3863,8 +3862,8 @@
     {
       "name": "Bloodline Bidding",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/bloodline_bidding.rs",
       "set": "ecl"
     },
@@ -3903,8 +3902,8 @@
     {
       "name": "Bloom Tender",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/bloom_tender.rs",
       "set": "ecl"
     },
@@ -3959,8 +3958,8 @@
     {
       "name": "Blossombind",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/blossombind.rs",
       "set": "ecl"
     },
@@ -4015,8 +4014,8 @@
     {
       "name": "Boggart Mischief",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/boggart_mischief.rs",
       "set": "ecl"
     },
@@ -4031,8 +4030,8 @@
     {
       "name": "Bogslither's Embrace",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/bogslither_s_embrace.rs",
       "set": "ecl"
     },
@@ -4311,8 +4310,8 @@
     {
       "name": "Boulder Dash",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/boulder_dash.rs",
       "set": "ecl"
     },
@@ -4479,8 +4478,8 @@
     {
       "name": "Bre of Clan Stoutarm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/bre_of_clan_stoutarm.rs",
       "set": "ecl"
     },
@@ -4607,16 +4606,16 @@
     {
       "name": "Brigid's Command",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/brigid_s_command.rs",
       "set": "ecl"
     },
     {
       "name": "Brigid, Clachan's Heart // Brigid, Doun's Mind",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/brigid_clachan_s_heart_brigid_doun_s_mind.rs",
       "set": "ecl"
     },
@@ -4655,16 +4654,16 @@
     {
       "name": "Bristlebane Battler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/bristlebane_battler.rs",
       "set": "ecl"
     },
     {
       "name": "Bristlebane Outrider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/bristlebane_outrider.rs",
       "set": "ecl"
     },
@@ -4935,8 +4934,8 @@
     {
       "name": "Burning Curiosity",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/burning_curiosity.rs",
       "set": "ecl"
     },
@@ -5647,8 +5646,8 @@
     {
       "name": "Catharsis",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/catharsis.rs",
       "set": "ecl"
     },
@@ -5767,8 +5766,8 @@
     {
       "name": "Celestial Reunion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/celestial_reunion.rs",
       "set": "ecl"
     },
@@ -5855,40 +5854,40 @@
     {
       "name": "Champion of the Clachan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/champion_of_the_clachan.rs",
       "set": "ecl"
     },
     {
       "name": "Champion of the Path",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/champion_of_the_path.rs",
       "set": "ecl"
     },
     {
       "name": "Champion of the Weird",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/champion_of_the_weird.rs",
       "set": "ecl"
     },
     {
       "name": "Champions of the Perfect",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/champions_of_the_perfect.rs",
       "set": "ecl"
     },
     {
       "name": "Champions of the Shoal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/champions_of_the_shoal.rs",
       "set": "ecl"
     },
@@ -5959,8 +5958,8 @@
     {
       "name": "Chaos Spewer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/chaos_spewer.rs",
       "set": "ecl"
     },
@@ -6191,8 +6190,8 @@
     {
       "name": "Chronicle of Victory",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/chronicle_of_victory.rs",
       "set": "ecl"
     },
@@ -6215,8 +6214,8 @@
     {
       "name": "Cinder Strike",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/cinder_strike.rs",
       "set": "ecl"
     },
@@ -6559,8 +6558,8 @@
     {
       "name": "Collective Inferno",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/collective_inferno.rs",
       "set": "ecl"
     },
@@ -7271,8 +7270,8 @@
     {
       "name": "Creakwood Safewright",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/creakwood_safewright.rs",
       "set": "ecl"
     },
@@ -7303,8 +7302,8 @@
     {
       "name": "Crib Swap",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/crib_swap.rs",
       "set": "ecl"
     },
@@ -7639,8 +7638,8 @@
     {
       "name": "Curious Colossus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/curious_colossus.rs",
       "set": "ecl"
     },
@@ -8039,24 +8038,24 @@
     {
       "name": "Dawn-Blessed Pennant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/dawn_blessed_pennant.rs",
       "set": "ecl"
     },
     {
       "name": "Dawnhand Dissident",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/dawnhand_dissident.rs",
       "set": "ecl"
     },
     {
       "name": "Dawnhand Eulogist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/dawnhand_eulogist.rs",
       "set": "ecl"
     },
@@ -8295,8 +8294,8 @@
     {
       "name": "Deceit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/deceit.rs",
       "set": "ecl"
     },
@@ -8367,8 +8366,8 @@
     {
       "name": "Deepchannel Duelist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/deepchannel_duelist.rs",
       "set": "ecl"
     },
@@ -8399,8 +8398,8 @@
     {
       "name": "Deepway Navigator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/deepway_navigator.rs",
       "set": "ecl"
     },
@@ -9287,8 +9286,8 @@
     {
       "name": "Doran, Besieged by Time",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/doran_besieged_by_time.rs",
       "set": "ecl"
     },
@@ -9303,8 +9302,8 @@
     {
       "name": "Dose of Dawnglow",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/dose_of_dawnglow.rs",
       "set": "ecl"
     },
@@ -9631,16 +9630,16 @@
     {
       "name": "Dream Harvest",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/dream_harvest.rs",
       "set": "ecl"
     },
     {
       "name": "Dream Seizer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/dream_seizer.rs",
       "set": "ecl"
     },
@@ -10263,8 +10262,8 @@
     {
       "name": "Eclipsed Realms",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/eclipsed_realms.rs",
       "set": "ecl"
     },
@@ -10383,8 +10382,8 @@
     {
       "name": "Eirdu, Carrier of Dawn // Isilu, Carrier of Twilight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/eirdu_carrier_of_dawn_isilu_carrier_of_twilight.rs",
       "set": "ecl"
     },
@@ -10775,8 +10774,8 @@
     {
       "name": "Emptiness",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/emptiness.rs",
       "set": "ecl"
     },
@@ -10823,8 +10822,8 @@
     {
       "name": "Encumbered Reejerey",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/encumbered_reejerey.rs",
       "set": "ecl"
     },
@@ -10839,8 +10838,8 @@
     {
       "name": "End-Blaze Epiphany",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/end_blaze_epiphany.rs",
       "set": "ecl"
     },
@@ -11287,8 +11286,8 @@
     {
       "name": "Evershrike's Gift",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/evershrike_s_gift.rs",
       "set": "ecl"
     },
@@ -12255,8 +12254,8 @@
     {
       "name": "Figure of Fable",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/figure_of_fable.rs",
       "set": "ecl"
     },
@@ -12311,8 +12310,8 @@
     {
       "name": "Firdoch Core",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/firdoch_core.rs",
       "set": "ecl"
     },
@@ -12535,8 +12534,8 @@
     {
       "name": "Flamebraider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/flamebraider.rs",
       "set": "ecl"
     },
@@ -12575,8 +12574,8 @@
     {
       "name": "Flaring Cinder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/flaring_cinder.rs",
       "set": "ecl"
     },
@@ -12679,8 +12678,8 @@
     {
       "name": "Flitterwing Nuisance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/flitterwing_nuisance.rs",
       "set": "ecl"
     },
@@ -12919,8 +12918,8 @@
     {
       "name": "Foraging Wickermaw",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/foraging_wickermaw.rs",
       "set": "ecl"
     },
@@ -12991,8 +12990,8 @@
     {
       "name": "Formidable Speaker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/formidable_speaker.rs",
       "set": "ecl"
     },
@@ -13535,8 +13534,8 @@
     {
       "name": "Gallant Fowlknight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/gallant_fowlknight.rs",
       "set": "ecl"
     },
@@ -13791,8 +13790,8 @@
     {
       "name": "Gathering Stone",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/gathering_stone.rs",
       "set": "ecl"
     },
@@ -14319,8 +14318,8 @@
     {
       "name": "Glamer Gifter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/glamer_gifter.rs",
       "set": "ecl"
     },
@@ -14391,16 +14390,16 @@
     {
       "name": "Glen Elendra Guardian",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/glen_elendra_guardian.rs",
       "set": "ecl"
     },
     {
       "name": "Glen Elendra's Answer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/glen_elendra_s_answer.rs",
       "set": "ecl"
     },
@@ -14487,8 +14486,8 @@
     {
       "name": "Gloom Ripper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/gloom_ripper.rs",
       "set": "ecl"
     },
@@ -14599,8 +14598,8 @@
     {
       "name": "Goatnap",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/goatnap.rs",
       "set": "ecl"
     },
@@ -14807,8 +14806,8 @@
     {
       "name": "Goliath Daydreamer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/goliath_daydreamer.rs",
       "set": "ecl"
     },
@@ -15031,8 +15030,8 @@
     {
       "name": "Gravelgill Scoundrel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/gravelgill_scoundrel.rs",
       "set": "ecl"
     },
@@ -15263,8 +15262,8 @@
     {
       "name": "Gristle Glutton",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/gristle_glutton.rs",
       "set": "ecl"
     },
@@ -15335,16 +15334,16 @@
     {
       "name": "Grub's Command",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/grub_s_command.rs",
       "set": "ecl"
     },
     {
       "name": "Grub, Storied Matriarch // Grub, Notorious Auntie",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/grub_storied_matriarch_grub_notorious_auntie.rs",
       "set": "ecl"
     },
@@ -15511,8 +15510,8 @@
     {
       "name": "Gutsplitter Gang",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/gutsplitter_gang.rs",
       "set": "ecl"
     },
@@ -15799,8 +15798,8 @@
     {
       "name": "Harmonized Crescendo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/harmonized_crescendo.rs",
       "set": "ecl"
     },
@@ -16135,8 +16134,8 @@
     {
       "name": "Heirloom Auntie",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/heirloom_auntie.rs",
       "set": "ecl"
     },
@@ -16391,8 +16390,8 @@
     {
       "name": "Hexing Squelcher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/hexing_squelcher.rs",
       "set": "ecl"
     },
@@ -16503,8 +16502,8 @@
     {
       "name": "High Perfect Morcant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/high_perfect_morcant.rs",
       "set": "ecl"
     },
@@ -17295,8 +17294,8 @@
     {
       "name": "Illusion Spinners",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/illusion_spinners.rs",
       "set": "ecl"
     },
@@ -19039,16 +19038,16 @@
     {
       "name": "Kinbinding",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/kinbinding.rs",
       "set": "ecl"
     },
     {
       "name": "Kindle the Inner Flame",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/kindle_the_inner_flame.rs",
       "set": "ecl"
     },
@@ -19111,16 +19110,16 @@
     {
       "name": "Kinsbaile Aspirant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/kinsbaile_aspirant.rs",
       "set": "ecl"
     },
     {
       "name": "Kinscaer Sentry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/kinscaer_sentry.rs",
       "set": "ecl"
     },
@@ -19151,8 +19150,8 @@
     {
       "name": "Kirol, Attentive First-Year",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/kirol_attentive_first_year.rs",
       "set": "ecl"
     },
@@ -19207,8 +19206,8 @@
     {
       "name": "Kithkeeper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/kithkeeper.rs",
       "set": "ecl"
     },
@@ -19807,8 +19806,8 @@
     {
       "name": "Lasting Tarfire",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/lasting_tarfire.rs",
       "set": "ecl"
     },
@@ -19855,8 +19854,8 @@
     {
       "name": "Lavaleaper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/lavaleaper.rs",
       "set": "ecl"
     },
@@ -20287,8 +20286,8 @@
     {
       "name": "Liminal Hold",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/liminal_hold.rs",
       "set": "ecl"
     },
@@ -20431,8 +20430,8 @@
     {
       "name": "Lluwen, Imperfect Naturalist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/lluwen_imperfect_naturalist.rs",
       "set": "ecl"
     },
@@ -20463,8 +20462,8 @@
     {
       "name": "Loch Mare",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/loch_mare.rs",
       "set": "ecl"
     },
@@ -20951,8 +20950,8 @@
     {
       "name": "Lys Alana Dignitary",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/lys_alana_dignitary.rs",
       "set": "ecl"
     },
@@ -21423,8 +21422,8 @@
     {
       "name": "Maralen, Fae Ascendant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/maralen_fae_ascendant.rs",
       "set": "ecl"
     },
@@ -21743,8 +21742,8 @@
     {
       "name": "Meanders Guide",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/meanders_guide.rs",
       "set": "ecl"
     },
@@ -21839,8 +21838,8 @@
     {
       "name": "Meek Attack",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/meek_attack.rs",
       "set": "ecl"
     },
@@ -22479,16 +22478,16 @@
     {
       "name": "Mirrorform",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/mirrorform.rs",
       "set": "ecl"
     },
     {
       "name": "Mirrormind Crown",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/mirrormind_crown.rs",
       "set": "ecl"
     },
@@ -23031,16 +23030,16 @@
     {
       "name": "Morningtide's Light",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/morningtide_s_light.rs",
       "set": "ecl"
     },
     {
       "name": "Mornsong Aria",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/mornsong_aria.rs",
       "set": "ecl"
     },
@@ -23167,8 +23166,8 @@
     {
       "name": "Mudbutton Cursetosser",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/mudbutton_cursetosser.rs",
       "set": "ecl"
     },
@@ -23287,8 +23286,8 @@
     {
       "name": "Mutable Explorer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/mutable_explorer.rs",
       "set": "ecl"
     },
@@ -23431,8 +23430,8 @@
     {
       "name": "Nameless Inversion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/nameless_inversion.rs",
       "set": "ecl"
     },
@@ -23863,8 +23862,8 @@
     {
       "name": "Noggle the Mind",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/noggle_the_mind.rs",
       "set": "ecl"
     },
@@ -24335,8 +24334,8 @@
     {
       "name": "Omni-Changeling",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/omni_changeling.rs",
       "set": "ecl"
     },
@@ -25207,8 +25206,8 @@
     {
       "name": "Perfect Intimidation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/perfect_intimidation.rs",
       "set": "ecl"
     },
@@ -25271,8 +25270,8 @@
     {
       "name": "Personify",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/personify.rs",
       "set": "ecl"
     },
@@ -25607,8 +25606,8 @@
     {
       "name": "Pitiless Fists",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/pitiless_fists.rs",
       "set": "ecl"
     },
@@ -26111,8 +26110,8 @@
     {
       "name": "Prismabasher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/prismabasher.rs",
       "set": "ecl"
     },
@@ -26135,8 +26134,8 @@
     {
       "name": "Prismatic Undercurrents",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/prismatic_undercurrents.rs",
       "set": "ecl"
     },
@@ -26383,8 +26382,8 @@
     {
       "name": "Puca's Eye",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/puca_s_eye.rs",
       "set": "ecl"
     },
@@ -26431,8 +26430,8 @@
     {
       "name": "Pummeler for Hire",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/pummeler_for_hire.rs",
       "set": "ecl"
     },
@@ -26967,8 +26966,8 @@
     {
       "name": "Raiding Schemes",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/raiding_schemes.rs",
       "set": "ecl"
     },
@@ -27511,8 +27510,8 @@
     {
       "name": "Reaping Willow",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/reaping_willow.rs",
       "set": "ecl"
     },
@@ -27831,8 +27830,8 @@
     {
       "name": "Reluctant Dounguard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/reluctant_dounguard.rs",
       "set": "ecl"
     },
@@ -28191,8 +28190,8 @@
     {
       "name": "Retched Wretch",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/retched_wretch.rs",
       "set": "ecl"
     },
@@ -28327,8 +28326,8 @@
     {
       "name": "Rhys, the Evermore",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/rhys_the_evermore.rs",
       "set": "ecl"
     },
@@ -28407,16 +28406,16 @@
     {
       "name": "Rime Chill",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/rime_chill.rs",
       "set": "ecl"
     },
     {
       "name": "Rimefire Torque",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/rimefire_torque.rs",
       "set": "ecl"
     },
@@ -29359,8 +29358,8 @@
     {
       "name": "Safewright Cavalry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/safewright_cavalry.rs",
       "set": "ecl"
     },
@@ -29559,8 +29558,8 @@
     {
       "name": "Sanar, Innovative First-Year",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/sanar_innovative_first_year.rs",
       "set": "ecl"
     },
@@ -29895,8 +29894,8 @@
     {
       "name": "Scarblade's Malice",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/scarblade_s_malice.rs",
       "set": "ecl"
     },
@@ -30151,8 +30150,8 @@
     {
       "name": "Scuzzback Scrounger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/scuzzback_scrounger.rs",
       "set": "ecl"
     },
@@ -30463,8 +30462,8 @@
     {
       "name": "Selfless Safewright",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/selfless_safewright.rs",
       "set": "ecl"
     },
@@ -30639,8 +30638,8 @@
     {
       "name": "Shadow Urchin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/shadow_urchin.rs",
       "set": "ecl"
     },
@@ -30855,8 +30854,8 @@
     {
       "name": "Shimmerwilds Growth",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/shimmerwilds_growth.rs",
       "set": "ecl"
     },
@@ -31175,8 +31174,8 @@
     {
       "name": "Silvergill Mentor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/silvergill_mentor.rs",
       "set": "ecl"
     },
@@ -31655,8 +31654,8 @@
     {
       "name": "Slumbering Walker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/slumbering_walker.rs",
       "set": "ecl"
     },
@@ -31983,8 +31982,8 @@
     {
       "name": "Soul Immolation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/soul_immolation.rs",
       "set": "ecl"
     },
@@ -32015,8 +32014,8 @@
     {
       "name": "Soulbright Seeker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/soulbright_seeker.rs",
       "set": "ecl"
     },
@@ -32055,8 +32054,8 @@
     {
       "name": "Sourbread Auntie",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/sourbread_auntie.rs",
       "set": "ecl"
     },
@@ -32567,8 +32566,8 @@
     {
       "name": "Spinerock Tyrant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/spinerock_tyrant.rs",
       "set": "ecl"
     },
@@ -32615,8 +32614,8 @@
     {
       "name": "Spiral into Solitude",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/spiral_into_solitude.rs",
       "set": "ecl"
     },
@@ -32791,16 +32790,16 @@
     {
       "name": "Springleaf Drum",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/springleaf_drum.rs",
       "set": "ecl"
     },
     {
       "name": "Spry and Mighty",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/spry_and_mighty.rs",
       "set": "ecl"
     },
@@ -32903,8 +32902,8 @@
     {
       "name": "Stalactite Dagger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/stalactite_dagger.rs",
       "set": "ecl"
     },
@@ -33319,8 +33318,8 @@
     {
       "name": "Sting-Slinger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/sting_slinger.rs",
       "set": "ecl"
     },
@@ -34511,8 +34510,8 @@
     {
       "name": "Swat Away",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/swat_away.rs",
       "set": "ecl"
     },
@@ -34583,16 +34582,16 @@
     {
       "name": "Sygg's Command",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/sygg_s_command.rs",
       "set": "ecl"
     },
     {
       "name": "Sygg, Wanderwine Wisdom // Sygg, Wanderbrine Shield",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/sygg_wanderwine_wisdom_sygg_wanderbrine_shield.rs",
       "set": "ecl"
     },
@@ -34823,8 +34822,8 @@
     {
       "name": "Tam, Mindful First-Year",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/tam_mindful_first_year.rs",
       "set": "ecl"
     },
@@ -34943,8 +34942,8 @@
     {
       "name": "Taster of Wares",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/taster_of_wares.rs",
       "set": "ecl"
     },
@@ -35175,8 +35174,8 @@
     {
       "name": "Temporal Cleansing",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/temporal_cleansing.rs",
       "set": "ecl"
     },
@@ -35231,8 +35230,8 @@
     {
       "name": "Tend the Sprigs",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/tend_the_sprigs.rs",
       "set": "ecl"
     },
@@ -36455,8 +36454,8 @@
     {
       "name": "Thirst for Identity",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/thirst_for_identity.rs",
       "set": "ecl"
     },
@@ -36599,16 +36598,16 @@
     {
       "name": "Thoughtweft Charge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/thoughtweft_charge.rs",
       "set": "ecl"
     },
     {
       "name": "Thoughtweft Imbuer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/thoughtweft_imbuer.rs",
       "set": "ecl"
     },
@@ -37623,8 +37622,8 @@
     {
       "name": "Tributary Vaulter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/tributary_vaulter.rs",
       "set": "ecl"
     },
@@ -37767,16 +37766,16 @@
     {
       "name": "Trystan's Command",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/trystan_s_command.rs",
       "set": "ecl"
     },
     {
       "name": "Trystan, Callous Cultivator // Trystan, Penitent Culler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/trystan_callous_cultivator_trystan_penitent_culler.rs",
       "set": "ecl"
     },
@@ -37919,8 +37918,8 @@
     {
       "name": "Twilight Diviner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/twilight_diviner.rs",
       "set": "ecl"
     },
@@ -37959,8 +37958,8 @@
     {
       "name": "Twinflame Travelers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/twinflame_travelers.rs",
       "set": "ecl"
     },
@@ -38239,8 +38238,8 @@
     {
       "name": "Unbury",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/unbury.rs",
       "set": "ecl"
     },
@@ -39255,8 +39254,8 @@
     {
       "name": "Vibrance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/vibrance.rs",
       "set": "ecl"
     },
@@ -39399,8 +39398,8 @@
     {
       "name": "Vinebred Brawler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/vinebred_brawler.rs",
       "set": "ecl"
     },
@@ -39687,8 +39686,8 @@
     {
       "name": "Voracious Tome-Skimmer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/voracious_tome_skimmer.rs",
       "set": "ecl"
     },
@@ -39911,8 +39910,8 @@
     {
       "name": "Wanderbrine Trapper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/wanderbrine_trapper.rs",
       "set": "ecl"
     },
@@ -39943,8 +39942,8 @@
     {
       "name": "Wanderwine Farewell",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/wanderwine_farewell.rs",
       "set": "ecl"
     },
@@ -40063,8 +40062,8 @@
     {
       "name": "Warren Torchmaster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/warren_torchmaster.rs",
       "set": "ecl"
     },
@@ -40103,8 +40102,8 @@
     {
       "name": "Wary Farmer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/wary_farmer.rs",
       "set": "ecl"
     },
@@ -40687,8 +40686,8 @@
     {
       "name": "Wild Unraveling",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/wild_unraveling.rs",
       "set": "ecl"
     },
@@ -40847,8 +40846,8 @@
     {
       "name": "Winnowing",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/winnowing.rs",
       "set": "ecl"
     },
@@ -40951,8 +40950,8 @@
     {
       "name": "Wistfulness",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecl/wistfulness.rs",
       "set": "ecl"
     },

@@ -3,7 +3,7 @@
   "catalogue_id": 5496,
   "oracle_id": null,
   "facts_sha256": null,
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "5c0e41ae3aecc5564742d7aa84ee9b6bec4e5822c3d9669e95d8e593388219e5",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/a/AshlingRekindled.java",
