@@ -485,6 +485,15 @@ fn minstrel_untaps_the_fifth_town_and_travel_pays_only_its_two_blue_symbols() {
     act(&mut ordinary, Action::PlayLand { card: town });
     assert!(ordinary.object_view(town).tapped);
     act(&mut game, Action::PlayLand { card: town });
+    let source = game.object_ref(town);
+    act(
+        &mut game,
+        Action::ChooseEntryReplacement {
+            source,
+            intrinsic: true,
+        },
+    );
+    assert_eq!(game.object_view(town).zone, Zone::Battlefield);
     assert!(!game.object_view(town).tapped);
     let travel = put(&mut game, player, "Travel the Overworld", Zone::Hand);
     game.state.players[player.index()].mana = [0, 2, 0, 0, 0, 0];
