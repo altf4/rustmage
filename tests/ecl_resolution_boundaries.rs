@@ -197,19 +197,22 @@ fn owner_library_moves_uncounterable_spells_and_copies_with_exact_owned_choices(
                 let original = put(&mut g, p, "Sphinx of the Final Word", Zone::Hand);
                 cast(&mut g, original, None);
                 assert!(!g.counter_stack_item(g.state.stack.last().unwrap().id, false));
-                let target = if copy {
+                let (target, bound) = if copy {
                     let template = g.state.stack.last().unwrap().clone();
                     let packet = g.allocate_spell_copy(&template, p);
                     let id = packet.source.unwrap().id;
+                    let bound = Target::Stack(packet.id);
                     g.state.stack.push(packet);
-                    id
+                    (id, bound)
                 } else {
-                    original
+                    (original, Target::Spell(original))
                 };
                 let library = g.state.players[p.index()].library.clone();
+                let prior_top = g.object_ref(g.top_library_card(p).unwrap());
+                g.remember_private_library_top(p, p, prior_top);
                 act(&mut g, Action::Pass);
                 let bounce = put(&mut g, p.other(), "Shock", Zone::Hand);
-                cast(&mut g, bounce, Some(Target::Spell(target)));
+                cast(&mut g, bounce, Some(bound));
                 act(&mut g, Action::Pass);
                 act(&mut g, Action::Pass);
                 assert!(matches!(g.state.pending, Pending::TargetLibrary { .. }));
@@ -231,6 +234,15 @@ fn owner_library_moves_uncounterable_spells_and_copies_with_exact_owned_choices(
                     },
                 );
                 settle(&mut g);
+                if copy || destination == LibraryDestination::Bottom {
+                    assert_eq!(
+                        g.observe(p).known_library_top[p.index()]
+                            .as_ref()
+                            .map(|top| top.object),
+                        Some(prior_top)
+                    );
+                    assert!(g.observe(p.other()).known_library_top[p.index()].is_none());
+                }
                 if copy {
                     assert_eq!(g.object_view(target).zone, Zone::Outside);
                     assert_eq!(g.state.players[p.index()].library, library);
@@ -312,7 +324,7 @@ fn linked_return_uses_the_departed_ability_acquisition_and_original_owner() {
 }
 
 #[test]
-fn prohibited_counter_events_keep_replacement_choices_but_commit_no_counters() {
+fn prohibited_counter_placement_skips_amount_replacements_but_wither_damage_is_dealt() {
     let _scope = fixture_rules::activate(&[
         (card("Ghost Vacuum"), &BARRIER),
         (card("Short Bow"), &DOUBLE),
@@ -322,9 +334,9 @@ fn prohibited_counter_events_keep_replacement_choices_but_commit_no_counters() {
         for wither in [false, true] {
             let mut g = scenario(p);
             let target = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
-            put(&mut g, p, "Ghost Vacuum", Zone::Battlefield);
+            let barrier = put(&mut g, p, "Ghost Vacuum", Zone::Battlefield);
             let double = put(&mut g, p, "Short Bow", Zone::Battlefield);
-            let add = put(&mut g, p, "Swiftfoot Boots", Zone::Battlefield);
+            put(&mut g, p, "Swiftfoot Boots", Zone::Battlefield);
             if wither {
                 let dealer = put(&mut g, p.other(), "Hill Giant", Zone::Battlefield);
                 g.grant_keyword_effects(
@@ -347,12 +359,7 @@ fn prohibited_counter_events_keep_replacement_choices_but_commit_no_counters() {
                     replacements::ResumeMode::Pending,
                 );
             }
-            assert!(g.advance_replacements(false));
-            let choice = g.observe(p).replacement_choice.unwrap();
-            assert_eq!(choice.effects.len(), 2);
-            assert_eq!(g.actor(), Some(p));
-            let source = g.object_ref(double);
-            owned(&mut g, Action::ChooseReplacement { source, ability: 0 });
+            assert!(!g.advance_replacements(false));
             assert!(g.state.replacements.is_none());
             assert_eq!(g.counter_count(target, CounterKind::PlusOne), 0);
             assert_eq!(g.counter_count(target, CounterKind::MinusOne), 0);
@@ -361,16 +368,21 @@ fn prohibited_counter_events_keep_replacement_choices_but_commit_no_counters() {
                 g.state.players[p.other().index()].life,
                 if wither { 22 } else { 20 }
             );
-            g.move_object(double, Zone::Graveyard);
-            g.move_object(add, Zone::Graveyard);
+            g.move_object(barrier, Zone::Graveyard);
             g.effect_counter(
                 target,
                 CounterKind::PlusOne,
                 1,
                 replacements::ResumeMode::Pending,
             );
+            assert!(g.advance_replacements(false));
+            let choice = g.observe(p).replacement_choice.unwrap();
+            assert_eq!(choice.effects.len(), 2);
+            assert_eq!(g.actor(), Some(p));
+            let source = g.object_ref(double);
+            owned(&mut g, Action::ChooseReplacement { source, ability: 0 });
             assert!(g.state.replacements.is_none());
-            assert_eq!(g.counter_count(target, CounterKind::PlusOne), 0);
+            assert_eq!(g.counter_count(target, CounterKind::PlusOne), 3);
         }
     }
 }

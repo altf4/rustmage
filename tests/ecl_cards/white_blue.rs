@@ -2419,7 +2419,7 @@ fn blossombind_selected_land_untap_effect_honors_prohibition_before_stun() {
 }
 
 #[test]
-fn blossombind_keeps_applicable_counter_replacement_choices_but_commits_no_counters() {
+fn blossombind_disallows_replacements_of_an_impossible_counter_placement() {
     let mut g = setup(Player::P0);
     let bear = spawn(
         &mut g,
@@ -2427,7 +2427,7 @@ fn blossombind_keeps_applicable_counter_replacement_choices_but_commits_no_count
         Card::from_name("Bear Cub").unwrap(),
         Zone::Battlefield,
     );
-    spell(&mut g, Player::P0, "Blossombind", &[Target::Card(bear)]);
+    let aura = spell(&mut g, Player::P0, "Blossombind", &[Target::Card(bear)]);
     settle(&mut g);
     let doubling = spawn(
         &mut g,
@@ -2447,11 +2447,20 @@ fn blossombind_keeps_applicable_counter_replacement_choices_but_commits_no_count
         1,
         replacements::ResumeMode::Pending,
     );
+    assert!(!g.advance_replacements(false));
+    assert_eq!(g.counter_count(bear, CounterKind::PlusOne), 0);
+    g.move_object(aura, Zone::Graveyard);
+    g.effect_counter(
+        bear,
+        CounterKind::PlusOne,
+        1,
+        replacements::ResumeMode::Pending,
+    );
     assert!(g.advance_replacements(false));
     let source = g.object_ref(doubling);
     checked(&mut g, Action::ChooseReplacement { source, ability: 1 });
     settle(&mut g);
-    assert_eq!(g.counter_count(bear, CounterKind::PlusOne), 0);
+    assert_eq!(g.counter_count(bear, CounterKind::PlusOne), 3);
 }
 
 fn crescendo_type_choice(g: &mut Game) {

@@ -9623,13 +9623,14 @@ impl Game {
             self.forget_graveyard_cast_permission(before.reference);
             self.forget_embalm(before.reference);
         }
+        let enters_library = destination == Zone::Library && was_card;
         if (before.zone == Zone::Library && self.top_library_card(before.owner) == Some(id))
-            || destination == Zone::Library
+            || enters_library
         {
             self.library_top_changed(before.owner);
         }
         let revealed_top = self.public_library_top(before.owner) == Some(before.reference);
-        if before.zone == Zone::Library && revealed_top || destination == Zone::Library {
+        if before.zone == Zone::Library && revealed_top || enters_library {
             self.forget_library_top(before.owner);
         }
         if before.zone == Zone::Hand {

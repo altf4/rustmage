@@ -75,6 +75,12 @@ impl Game {
         let card = self.state.objects[object.card as usize].card;
         let physical = self.state.objects[object.card as usize].is_card();
         let prior_top = self.public_library_top(owner);
+        let prior_private_top = self
+            .state
+            .library_top
+            .as_ref()
+            .and_then(|state| state.private_known_top.as_ref())
+            .and_then(|tops| tops[owner.index()]);
         let nth_position = if let LibraryDestination::NthFromTop(n) = destination {
             assert!(n > 0, "library positions are one-based");
             self.state.players[owner.index()]
@@ -132,6 +138,18 @@ impl Game {
                 && self.object_ref(prior.card) == prior
             {
                 self.remember_library_top(owner, prior);
+            }
+            // Insertion away from the top preserves every original viewer's
+            // exact knowledge, including knowledge private to one player.
+            if let Some((prior, viewers)) = prior_private_top
+                && self.top_library_card(owner) == Some(prior.card)
+                && self.object_ref(prior.card) == prior
+            {
+                for viewer in [Player::P0, Player::P1] {
+                    if viewers & (1 << viewer.index()) != 0 {
+                        self.remember_private_library_top(owner, viewer, prior);
+                    }
+                }
             }
             // Publish only this targeted public movement. This is a historical
             // record; later private looks, rearrangements and draws leave it alone.
