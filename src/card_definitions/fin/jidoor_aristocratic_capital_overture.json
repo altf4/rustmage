@@ -3,10 +3,30 @@
   "catalogue_id": 2280,
   "oracle_id": "bd513d9d-5aa2-4860-bd86-8b5d9430f133",
   "facts_sha256": "8952da60b9bfb6361f4d66e8018a4553ee9ef691973217f5d0a36dd75062b74c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f068b97eaa02e34fce51378e582b0dec490b5ad46abcc4ec6dcafb62f3eb65c1"
   },
-  "physical_metadata_sha256": "ce03a0f92fe8e77b31d8f4e016fa727a6623df4f7a29b33d209a191bd225a75a"
+  "physical_metadata_sha256": "ce03a0f92fe8e77b31d8f4e016fa727a6623df4f7a29b33d209a191bd225a75a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/j/JidoorAristocraticCapital.java",
+  "java_sha256": "00ee72128bb9589f27e6bcb4b24827491462eff9caa632219ced51bb24b4fe98",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedAbility.java",
+      "sha256": "147582b81a6ea9f26c8835600282fe7311c08dcb1ff983b26587e455c2c4514a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillHalfLibraryTargetEffect.java",
+      "sha256": "22432759f3250caf0b63402e5b048ad2cd75f78e25531c47e8d85a2771bc0c26"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/BlueManaAbility.java",
+      "sha256": "8b0ffaec3d6002607e0a62e142031604a31556313e44830d9ad44026872cdf1f"
+    }
+  ]
 }

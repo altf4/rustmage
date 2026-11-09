@@ -920,3 +920,336 @@ fn minwu_counts_cleric_permanents_even_when_they_arent_creatures() {
         assert_eq!(game.object_view(card).counters.plus_one, count);
     }
 }
+
+#[test]
+fn exdeath_rechecks_six_permanents_and_neo_tracks_the_live_count() {
+    let p = Player::P1;
+    let mut game = scenario(p);
+    let exdeath = put(&mut game, p, "Exdeath, Void Warlock", Zone::Hand);
+    let front = game.object_view(exdeath).card;
+    let permanent = put(&mut game, p, "Forest", Zone::Graveyard);
+    for _ in 0..5 {
+        put(&mut game, p, "Short Bow", Zone::Graveyard);
+    }
+    put(&mut game, p, "Opt", Zone::Graveyard);
+    put(&mut game, p.other(), "Island", Zone::Graveyard);
+    cast(&mut game, exdeath, None);
+    settle(&mut game);
+    assert_eq!(game.state.players[p.index()].life, 23);
+    game.begin_step(Step::End);
+    game.prepare_triggers();
+    let mut five = game.clone();
+    five.move_object(permanent, Zone::Exile);
+    settle(&mut five);
+    assert_eq!(five.object_view(exdeath).card, front);
+    let before = game.object_ref(exdeath);
+    settle(&mut game);
+    assert_eq!(game.object_view(exdeath).card, front.back_face().unwrap());
+    assert_eq!(game.object_ref(exdeath), before);
+    assert!(game.keywords(exdeath).contains(Keywords::TRAMPLE));
+    assert_eq!(stats(&game, exdeath), (6, 3));
+    game.move_object(permanent, Zone::Exile);
+    assert_eq!(stats(&game, exdeath), (5, 3));
+}
+
+#[test]
+fn garland_surveils_and_chaos_returns_the_exact_card_to_its_owner_bottom() {
+    let p = Player::P0;
+    let mut game = scenario(p);
+    let garland = put(
+        &mut game,
+        p,
+        "Garland, Knight of Cornelia",
+        Zone::Battlefield,
+    );
+    let front = game.object_view(garland).card;
+    let opt = put(&mut game, p, "Opt", Zone::Hand);
+    let milled = game.top_library_card(p).unwrap();
+    cast(&mut game, opt, None);
+    pass_pair(&mut game);
+    arrange_top(&mut game, LibraryDestination::Graveyard);
+    assert_eq!(game.object_view(milled).zone, Zone::Graveyard);
+    pass_pair(&mut game);
+    arrange_top(&mut game, LibraryDestination::Top);
+    settle(&mut game);
+
+    game.move_object(garland, Zone::Graveyard);
+    let grave = game.object_ref(garland);
+    announce_ability(&mut game, garland, 0);
+    pay(&mut game);
+    settle(&mut game);
+    assert_ne!(game.object_ref(garland), grave);
+    assert_eq!(game.object_view(garland).card, front.back_face().unwrap());
+    assert!(game.keywords(garland).contains(Keywords::FLYING));
+    game.record_control(game.object_ref(garland), p.other(), None);
+    game.move_object(garland, Zone::Graveyard);
+    game.prepare_triggers();
+    let mut stale = game.clone();
+    stale.move_object(garland, Zone::Exile);
+    stale.move_object(garland, Zone::Graveyard);
+    settle(&mut stale);
+    assert_eq!(stale.object_view(garland).zone, Zone::Graveyard);
+    settle(&mut game);
+    assert_eq!(game.object_view(garland).card, front);
+    assert_eq!(game.state.players[p.index()].library[0], garland);
+}
+
+fn advance_chapter(game: &mut Game) {
+    game.begin_step(Step::Main1);
+    game.prepare_triggers();
+}
+
+#[test]
+fn jecht_can_decline_or_return_for_his_owner_and_run_braskas_chapters() {
+    let p = Player::P0;
+    let owner = p.other();
+    let mut game = scenario(p);
+    let jecht = put(
+        &mut game,
+        owner,
+        "Jecht, Reluctant Guardian",
+        Zone::Battlefield,
+    );
+    game.record_control(game.object_ref(jecht), p, None);
+    game.state.objects[jecht as usize].summoning_sick = false;
+    let front = game.object_view(jecht).card;
+    let old = game.object_ref(jecht);
+    let discard = put(&mut game, p, "Opt", Zone::Hand);
+    assert!(game.keywords(jecht).contains(Keywords::MENACE));
+    unblocked_damage(&mut game, &[jecht]);
+    pass_pair(&mut game);
+    let mut declined = game.clone();
+    act(&mut declined, Action::ChooseOptional { accept: false });
+    assert_eq!(declined.object_ref(jecht), old);
+    assert_eq!(declined.object_view(jecht).controller, p);
+    act(&mut game, Action::ChooseOptional { accept: true });
+    let braska = game.object_view(jecht);
+    assert_ne!(braska.reference, old);
+    assert_eq!(braska.card, front.back_face().unwrap());
+    assert_eq!(braska.controller, owner);
+    assert_eq!(braska.counters.lore, 1);
+    assert!(game.keywords(jecht).contains(Keywords::MENACE));
+    pass_pair(&mut game);
+    act(&mut game, Action::Discard { card: discard });
+    assert_eq!(game.hand_count(owner), 1);
+
+    game.state.active = owner;
+    game.state.priority = owner;
+    let second = put(&mut game, p, "Forest", Zone::Hand);
+    advance_chapter(&mut game);
+    pass_pair(&mut game);
+    act(&mut game, Action::Discard { card: second });
+    assert_eq!(game.hand_count(owner), 2);
+    let picks = ["Grizzly Bears", "Bear Cub", "Hill Giant"]
+        .map(|name| put(&mut game, p, name, Zone::Battlefield));
+    advance_chapter(&mut game);
+    pass_pair(&mut game);
+    for card in [picks[0], picks[2]] {
+        let object = game.object_ref(card);
+        act(&mut game, Action::Sacrifice { object });
+    }
+    assert_eq!(game.object_view(picks[0]).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(picks[1]).zone, Zone::Battlefield);
+    assert_eq!(game.object_view(picks[2]).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(jecht).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(jecht).card, front);
+}
+
+#[test]
+fn overture_mills_half_rounded_down_then_jidoor_can_enter_tapped() {
+    let p = Player::P1;
+    let mut game = scenario(p);
+    put(&mut game, p.other(), "Island", Zone::Library);
+    let land = put(&mut game, p, "Jidoor, Aristocratic Capital", Zone::Hand);
+    act(&mut game, Action::AnnounceAdventure { card: land });
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Player(p),
+        },
+    );
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Player(p.other()),
+        },
+    );
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.state.players[p.other().index()].library.len(), 5);
+    assert_eq!(game.state.players[p.index()].library.len(), 8);
+    assert_eq!(game.object_view(land).zone, Zone::Exile);
+    act(&mut game, Action::PlayLand { card: land });
+    assert!(game.object_view(land).tapped);
+    assert!(game.object_view(land).has_subtype("Town"));
+}
+
+#[test]
+fn jill_bounces_another_nonland_and_shiva_reenters_front_after_tapping_enemy_lands() {
+    let p = Player::P0;
+    let mut game = scenario(p);
+    let jill = put(&mut game, p, "Jill, Shiva's Dominant", Zone::Hand);
+    let front = game.object_view(jill).card;
+    let artifact = put(&mut game, p.other(), "Short Bow", Zone::Battlefield);
+    let attacker = put(&mut game, p, "Grizzly Bears", Zone::Battlefield);
+    let own_land = put(&mut game, p, "Island", Zone::Battlefield);
+    let enemy_land = put(&mut game, p.other(), "Forest", Zone::Battlefield);
+    cast(&mut game, jill, None);
+    pass_pair(&mut game);
+    for id in [jill, enemy_land] {
+        reject(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(id),
+            },
+        );
+    }
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(artifact),
+        },
+    );
+    settle(&mut game);
+    assert_eq!(game.object_view(artifact).zone, Zone::Hand);
+    game.state.objects[jill as usize].summoning_sick = false;
+    announce_ability(&mut game, jill, 0);
+    pay(&mut game);
+    pass_pair(&mut game);
+    assert_eq!(game.object_view(jill).card, front.back_face().unwrap());
+    assert_eq!(game.object_view(jill).counters.lore, 1);
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(attacker),
+        },
+    );
+    settle(&mut game);
+    assert!(game.keywords(attacker).contains(Keywords::CANT_BE_BLOCKED));
+    advance_chapter(&mut game);
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(jill),
+        },
+    );
+    settle(&mut game);
+    assert!(game.keywords(jill).contains(Keywords::CANT_BE_BLOCKED));
+
+    let shiva = game.object_ref(jill);
+    advance_chapter(&mut game);
+    pass_pair(&mut game);
+    assert_eq!(game.object_view(jill).card, front);
+    assert_ne!(game.object_ref(jill), shiva);
+    assert!(game.object_view(enemy_land).tapped);
+    assert!(!game.object_view(own_land).tapped);
+    act(&mut game, Action::FinishTargets);
+    settle(&mut game);
+}
+
+#[test]
+fn phoenix_lifelink_damage_and_rebirth_use_the_actual_chapter_and_mana_budget() {
+    let p = Player::P1;
+    let mut game = scenario(p);
+    let joshua = put(&mut game, p, "Joshua, Phoenix's Dominant", Zone::Hand);
+    let front = game.object_view(joshua).card;
+    let discard = put(&mut game, p, "Opt", Zone::Hand);
+    let kept = put(&mut game, p, "Island", Zone::Hand);
+    cast(&mut game, joshua, None);
+    pass_pair(&mut game);
+    pass_pair(&mut game);
+    act(&mut game, Action::Discard { card: discard });
+    act(&mut game, Action::DeclineEffectPayment);
+    assert_eq!(game.object_view(discard).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(kept).zone, Zone::Hand);
+    assert_eq!(game.hand_count(p), 2);
+    game.state.objects[joshua as usize].summoning_sick = false;
+    announce_ability(&mut game, joshua, 0);
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(joshua).card, front.back_face().unwrap());
+    assert!(game.keywords(joshua).contains(Keywords::FLYING));
+    assert_eq!(game.state.players[p.index()].life, 22);
+    assert_eq!(game.state.players[p.other().index()].life, 18);
+    advance_chapter(&mut game);
+    settle(&mut game);
+    assert_eq!(game.state.players[p.index()].life, 24);
+    assert_eq!(game.state.players[p.other().index()].life, 16);
+
+    let four = put(&mut game, p, "Hill Giant", Zone::Graveyard);
+    let two = put(&mut game, p, "Grizzly Bears", Zone::Graveyard);
+    let one = put(&mut game, p, "Llanowar Elves", Zone::Graveyard);
+    advance_chapter(&mut game);
+    for id in [four, two] {
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(id),
+            },
+        );
+    }
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(one),
+        },
+    );
+    act(&mut game, Action::FinishTargets);
+    pass_pair(&mut game);
+    while matches!(game.state.pending, Pending::EntryTimestamp { .. }) {
+        choose(&mut game, |action| {
+            matches!(action, Action::ChooseEntryTimestamp { .. })
+        });
+    }
+    assert_eq!(game.object_view(four).zone, Zone::Battlefield);
+    assert_eq!(game.object_view(two).zone, Zone::Battlefield);
+    assert_eq!(game.object_view(one).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(joshua).card, front);
+    pass_pair(&mut game);
+    act(&mut game, Action::DeclineEffectPayment);
+}
+
+#[test]
+fn kefka_draws_distinct_discard_types_then_ruler_counts_opponent_life_loss() {
+    let p = Player::P0;
+    let mut game = scenario(p);
+    let kefka = put(&mut game, p, "Kefka, Court Mage", Zone::Hand);
+    let front = game.object_view(kefka).card;
+    let artifact_creature = put(&mut game, p, "Clockwork Percussionist", Zone::Hand);
+    let artifact = put(&mut game, p.other(), "Short Bow", Zone::Hand);
+    let sacrifice = put(&mut game, p.other(), "Forest", Zone::Battlefield);
+    cast(&mut game, kefka, None);
+    pass_pair(&mut game);
+    pass_pair(&mut game);
+    act(
+        &mut game,
+        Action::Discard {
+            card: artifact_creature,
+        },
+    );
+    assert_eq!(game.object_view(artifact_creature).zone, Zone::Hand);
+    assert_eq!(game.actor(), Some(p.other()));
+    act(&mut game, Action::Discard { card: artifact });
+    assert_eq!(game.object_view(artifact_creature).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(artifact).zone, Zone::Graveyard);
+    assert_eq!(game.hand_count(p), 2);
+    announce_ability(&mut game, kefka, 0);
+    pay(&mut game);
+    pass_pair(&mut game);
+    assert_eq!(game.actor(), Some(p.other()));
+    let object = game.object_ref(sacrifice);
+    act(&mut game, Action::Sacrifice { object });
+    assert_eq!(game.object_view(sacrifice).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(kefka).card, front.back_face().unwrap());
+    assert!(game.keywords(kefka).contains(Keywords::FLYING));
+
+    game.lose_life(p.other(), 3);
+    game.prepare_triggers();
+    settle(&mut game);
+    assert_eq!(game.hand_count(p), 5);
+    game.state.active = p.other();
+    game.lose_life(p.other(), 2);
+    game.prepare_triggers();
+    settle(&mut game);
+    assert_eq!(game.hand_count(p), 5);
+}

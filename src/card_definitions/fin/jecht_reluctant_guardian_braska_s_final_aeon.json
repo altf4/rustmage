@@ -3,10 +3,50 @@
   "catalogue_id": 2261,
   "oracle_id": "b6cebf8d-37e1-42de-b3f1-1c174ab17ac8",
   "facts_sha256": "8d6f7506705d329e67758d1adb6c2ad2c99842e0305d54f34e5c3da02456845b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c30c02083349c4f8438fdec622f6001c67ff3991e95f15638f297c1e3e9c1d70"
   },
-  "physical_metadata_sha256": "10011c8d79c869f0c0f5122fd1e428139204f18101d8f47cfbda17ba1f2df8ad"
+  "physical_metadata_sha256": "10011c8d79c869f0c0f5122fd1e428139204f18101d8f47cfbda17ba1f2df8ad",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/j/JechtReluctantGuardian.java",
+  "java_sha256": "1711992e014747ca39d6ac4cc5e4dc6bbb594566d2e251c8f65b30e3030f3d1f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SagaAbility.java",
+      "sha256": "d907d96e4141a58d82f32fdb512e6426ed2cbd669544ade67f94b062dc7a8c80"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileAndReturnSourceEffect.java",
+      "sha256": "6ec468489e92a265df2d43e4fc20ef9b7d4acef8864a6eae9e6d19d4ead73c9a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeOpponentsEffect.java",
+      "sha256": "87271d2cfbecbfa5595745bae8136f2a9d23002b394f5583e5bec3c24842d759"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardEachPlayerEffect.java",
+      "sha256": "f8ba858157ec21e41dbda51ea2176cba7c3e46cd51af4ff57e12af803f8fa24c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    }
+  ]
 }
