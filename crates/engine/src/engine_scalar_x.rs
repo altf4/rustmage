@@ -609,6 +609,9 @@ impl Game {
                         .map_or(0, |fact| u128::from(fact.count))
                 }),
             AmountValue::SourceToughness => self.source_toughness(item),
+            AmountValue::EquippedCreaturesYouControl => {
+                self.equipped_creature_count(item.controller)
+            }
             AmountValue::SourceEquipmentCount => self.source_equipment_quantity(item),
             AmountValue::SourcePower => item.source.map_or(0, |source| {
                 if self.on_battlefield(source.id) && self.object_ref(source.id) == source.object {

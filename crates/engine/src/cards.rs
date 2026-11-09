@@ -3848,6 +3848,8 @@ pub enum AmountValue {
     /// Resolution-time derived quantity, floored at zero if no positive toughness exists.
     GreatestCreatureToughness,
     GreatestCreaturePower(CreatureFilter),
+    /// Count each current equipped creature controlled by this player once.
+    EquippedCreaturesYouControl,
     SourceEquipmentCount,
     #[allow(
         dead_code,
@@ -5525,6 +5527,8 @@ pub enum TriggerCondition {
     ChosenPlayerLosesGame,
     SelfEntersOrDies,
     SelfAttacks,
+    /// Capture the actual defending player for this exact attack declaration.
+    SelfAttacksDefendingPlayer,
     /// Intervening equipped clause, with exact source-departure quantities.
     SelfAttacksIfEquipped,
     SelfAttacksOrBlocks,

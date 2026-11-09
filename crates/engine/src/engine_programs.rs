@@ -1066,6 +1066,7 @@ impl Game {
                     | TriggerCondition::FirstAttackWithTotalPowerAtLeast(_)
                     | TriggerCondition::AttackPlayer(_)
                     | TriggerCondition::SelfAttacks
+                    | TriggerCondition::SelfAttacksDefendingPlayer
                     | TriggerCondition::SelfAttacksIfEquipped
                     | TriggerCondition::SelfFirstAttack
                     | TriggerCondition::SelfAttacksAlone
@@ -2817,6 +2818,7 @@ impl Game {
     pub(super) fn attack_triggers_for_declaration(
         &mut self,
         source: &ObjectView,
+        defender: Option<CombatDefender>,
         declared_count: usize,
         first_attack: bool,
     ) {
@@ -2839,8 +2841,10 @@ impl Game {
             }
         }
         for (index, ability) in source.card.triggers().iter().enumerate() {
-            if match ability.condition.event() {
+            let condition = ability.condition.event();
+            let matches = match condition {
                 TriggerCondition::SelfAttacks
+                | TriggerCondition::SelfAttacksDefendingPlayer
                 | TriggerCondition::SelfAttacksIfEquipped
                 | TriggerCondition::SelfAttacksOrBlocks
                 | TriggerCondition::SelfEntersOrAttacks => true,
@@ -2849,8 +2853,22 @@ impl Game {
                 TriggerCondition::SelfAttacksWhileSaddled
                 | TriggerCondition::SelfEntersOrAttacksWhileSaddled => source.saddled,
                 _ => false,
-            } {
-                self.queue_attack_trigger(source, index);
+            };
+            if matches
+                && self.queue_attack_trigger(source, index)
+                && condition == TriggerCondition::SelfAttacksDefendingPlayer
+            {
+                let player = match defender {
+                    Some(CombatDefender::Player(player)) => player,
+                    Some(CombatDefender::Planeswalker(object)) => {
+                        self.state.objects[object.card as usize].controller
+                    }
+                    Some(CombatDefender::Battle(object)) => self
+                        .battle_protector(object)
+                        .unwrap_or(self.state.active.other()),
+                    None => self.state.active.other(),
+                };
+                self.state.pending_triggers.last_mut().unwrap().event_player = Some(player);
             }
         }
     }

@@ -223,3 +223,133 @@ fn countering_crew_preserves_its_receipt_but_blinking_either_incarnation_does_no
     }
     assert_eq!(game.snapshot(), paid);
 }
+
+const DEFENDING_DAMAGE: CardRules = CardRules {
+    effect: Effect::Creature(4, 4),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfAttacksDefendingPlayer,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::DamagePlayersScaled(
+            PlayerSet::EventPlayer,
+            AmountValue::EquippedCreaturesYouControl,
+        )],
+    }],
+    ..CardRules::EMPTY
+};
+
+fn own_battle(game: &mut Game, player: Player) -> CardId {
+    let id = put(game, player, "Goblin Piker", Zone::Battlefield);
+    let mut recipe = CopyRecipe::new(Card::GoblinPiker);
+    recipe.overrides = Some(CopyOverrides {
+        kinds: Some(BATTLE_KIND),
+        ..CopyOverrides::NONE
+    });
+    let object = game.object_ref(id);
+    game.apply_temporary_copy(object, recipe, CopyDeadline::EndOfTurn);
+    game.add_counter(id, CounterKind::Defense, 9);
+    game.set_battle_protector(object, player.other());
+    id
+}
+
+#[test]
+fn attack_damage_keeps_the_defending_player_and_counts_current_equipped_creatures_once() {
+    const HEXPROOF: CardRules = CardRules {
+        effect: Effect::Permanent,
+        static_groups: &[StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::PlayerHexproof],
+        }],
+        ..CardRules::EMPTY
+    };
+    let hexproof = Card::from_name("Soul-Guide Lantern").unwrap();
+    let _rules =
+        fixture_rules::activate(&[(Card::HillGiant, &DEFENDING_DAMAGE), (hexproof, &HEXPROOF)]);
+    let player = Player::P1;
+    for kind in 0..3 {
+        let mut game = scenario(player);
+        let source = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+        let first = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+        let second = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let foreign = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+        let first_boots = put(&mut game, player, "Swiftfoot Boots", Zone::Battlefield);
+        let second_boots = put(
+            &mut game,
+            player.other(),
+            "Swiftfoot Boots",
+            Zone::Battlefield,
+        );
+        let foreign_boots = put(&mut game, player, "Swiftfoot Boots", Zone::Battlefield);
+        let first_ref = game.object_ref(first);
+        game.state.objects[first_boots as usize].attached_to = Some(first_ref);
+        game.state.objects[second_boots as usize].attached_to = Some(first_ref);
+        game.state.objects[foreign_boots as usize].attached_to = Some(game.object_ref(foreign));
+        spawn(&mut game, player.other(), hexproof, Zone::Battlefield);
+        let (attack, defender) = match kind {
+            1 => {
+                let walker = put(
+                    &mut game,
+                    player.other(),
+                    "Ajani, Caller of the Pride",
+                    Zone::Battlefield,
+                );
+                game.add_counter(walker, CounterKind::Loyalty, 4);
+                (
+                    Action::AttackPlaneswalker {
+                        card: source,
+                        defender: game.object_ref(walker),
+                    },
+                    Some(walker),
+                )
+            }
+            2 => {
+                let battle = own_battle(&mut game, player);
+                (
+                    Action::AttackBattle {
+                        card: source,
+                        defender: game.object_ref(battle),
+                    },
+                    Some(battle),
+                )
+            }
+            _ => (Action::Attack { card: source }, None),
+        };
+        game.state.step = Step::Attackers;
+        game.state.pending = Pending::Attackers;
+        act(&mut game, attack);
+        act(&mut game, Action::FinishAttackers);
+        let trigger = game.state.stack.last().unwrap();
+        assert!(trigger.targets.is_empty());
+        assert_eq!(trigger.event_player, Some(player.other()));
+
+        if let Some(defender) = defender {
+            game.move_object(defender, Zone::Graveyard);
+        }
+        game.move_object(source, Zone::Graveyard);
+        act(&mut game, Action::Pass);
+        let before = game.snapshot();
+        let mut indexed = game.clone();
+        let mut split = game.clone();
+        split.state.objects[second_boots as usize].attached_to = Some(split.object_ref(second));
+        let revision = game.revision();
+        let index = game
+            .legal_actions()
+            .iter()
+            .position(|action| *action == Action::Pass)
+            .unwrap();
+        indexed
+            .apply_index(player.other(), revision, index)
+            .unwrap();
+        act(&mut game, Action::Pass);
+        assert_eq!(game.snapshot(), indexed.snapshot());
+        indexed.restore(&before).unwrap();
+        assert_eq!(
+            indexed.apply_index(player.other(), revision, index),
+            Err(Error::StaleRevision)
+        );
+        act(&mut split, Action::Pass);
+        assert_eq!(game.state.players[player.other().index()].life, 19);
+        assert_eq!(split.state.players[player.other().index()].life, 18);
+        assert_eq!(game.state.players[player.index()].life, 20);
+    }
+}

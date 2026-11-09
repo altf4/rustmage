@@ -637,6 +637,7 @@ impl Game {
                     .capacity("effect sum exhausted")
             }),
             AmountValue::Fixed(n) => u128::from(n),
+            AmountValue::EquippedCreaturesYouControl => self.equipped_creature_count(owner),
             AmountValue::GreatestCreaturePower(filter) => {
                 let query = self.characteristic_query();
                 (0..self.state.objects.len())

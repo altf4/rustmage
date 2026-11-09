@@ -10292,11 +10292,12 @@ impl Game {
             .map(|a| a.card)
             .collect();
         let declared_count = self.state.selected_attackers.len();
-        self.commit_attackers_with(actor, pre_tapped, |game, card| {
+        self.commit_attackers_with(actor, pre_tapped, |game, attack| {
             game.attack_triggers_for_declaration(
-                &game.object_view(card),
+                &game.object_view(attack.card),
+                attack.defender,
                 declared_count,
-                first_attacks.contains(&card),
+                first_attacks.contains(&attack.card),
             );
         });
         self.give_priority();
@@ -10305,7 +10306,7 @@ impl Game {
         &mut self,
         actor: Player,
         pre_tapped: bool,
-        mut event: impl FnMut(&mut Self, CardId),
+        mut event: impl FnMut(&mut Self, &AttackDeclaration),
     ) {
         self.state.attack_declared = !self.state.selected_attackers.is_empty();
         self.state.players[actor.index()].attacked_this_turn |= self.state.attack_declared;
@@ -10329,7 +10330,7 @@ impl Game {
         }
         let power_event = self.record_attack_turn_facts(actor, &declared);
         for attack in &declared {
-            event(self, attack.card);
+            event(self, attack);
         }
         if self.state.attack_declared {
             self.declaration_triggers(actor, alone, &declared, power_event);
