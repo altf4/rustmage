@@ -491,6 +491,9 @@ impl FundingState<'_> {
             StepGuard::GainedAndLostLife => self.gained_life(player) && self.lost_life(player),
             StepGuard::Attacked => state.attacked_this_turn,
             StepGuard::CreatureDied => self.creatures_died > 0,
+            StepGuard::OpponentControlledCreatureDied => {
+                self.controlled_creatures_died[player.other().index()] > 0
+            }
             StepGuard::OpponentLostLife => self.lost_life(player.other()),
             StepGuard::CommittedCrimeThisTurn => state.committed_crime_this_turn,
             StepGuard::CardExiledThisTurn => {
@@ -531,6 +534,9 @@ impl FundingState<'_> {
                 } else {
                     movement.before.tapped
                 }
+            }
+            StepGuard::SourceEnteredThisTurn(entered) => {
+                CharacteristicWorld::entered_this_turn(self, source) == entered
             }
             StepGuard::SourceReceivedCounterThisTurn => counter_placement_history::any_placed(
                 &self.counter_placement_history,
