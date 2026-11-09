@@ -128,3 +128,28 @@ fn a_public_mill_replacement_keeps_the_actual_town_eligible() {
     assert_eq!(game.object_view(town).zone, Zone::Hand);
     assert_eq!(game.state.players[player.index()].life, 22);
 }
+
+#[test]
+fn preventing_a_selected_towns_hand_move_prevents_the_life_gain() {
+    struct ResetPrevention;
+    impl Drop for ResetPrevention {
+        fn drop(&mut self) {
+            zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|rule| rule.set(None));
+        }
+    }
+
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &GREETER)]);
+    let _reset = ResetPrevention;
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let town = put(&mut game, player, "Vector, Imperial Capital", Zone::Library);
+    await_greeter(&mut game, player);
+    let object = game.object_ref(town);
+    zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|rule| rule.set(Some(object)));
+    act(&mut game, Action::SelectMilled { object });
+    assert_eq!(game.state.pending, Pending::Priority);
+    assert_eq!(game.object_ref(town), object);
+    assert_eq!(game.object_view(town).zone, Zone::Graveyard);
+    assert_eq!(game.state.players[player.index()].life, 20);
+    assert!(!game.observe(player.other()).known_hand.contains(&object));
+}
