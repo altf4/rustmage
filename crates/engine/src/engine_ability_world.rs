@@ -1491,6 +1491,32 @@ impl CharacteristicWorld for CastDepartureWorld<'_> {
     }
 }
 
+/// An active provider for this player. Identical instances of protection are redundant.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn player_protection_source<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    player: Player,
+) -> Option<CardId> {
+    let grants_protection = |fragment: &crate::cards::StaticAbilityFragment| {
+        matches!(
+            fragment,
+            crate::cards::StaticAbilityFragment::PlayerProtectionFromOpponents
+        )
+    };
+    world.static_sources().iter().copied().find(|&id| {
+        let object = world.object(id);
+        object.zone == Zone::Battlefield
+            && object.controller == player
+            && object
+                .card
+                .static_ability_groups()
+                .iter()
+                .any(|group| group.fragments.iter().any(grants_protection))
+            && characteristic_query::CharacteristicQuery::in_world(world)
+                .continuous_fragment_available(id, grants_protection)
+    })
+}
+
 /// Evaluate the printed Aura restriction in either live or projected worlds.
 /// Shared live enchant restriction for actual attachment/SBA and speculative entry.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

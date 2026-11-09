@@ -10734,6 +10734,10 @@ impl Game {
         if event.combat && event.source.keywords.contains(Keywords::PREVENT_COMBAT_BY) {
             return true;
         }
+        if let Target::Player(player) = event.target {
+            return event.source.controller != player
+                && ability_world::player_protection_source(self, player).is_some();
+        }
         let Target::Card(id) = event.target else {
             return false;
         };

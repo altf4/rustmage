@@ -258,6 +258,7 @@ pub enum StaticAbilityFragment {
         keywords: Keywords,
     },
     PlayerHexproof,
+    PlayerProtectionFromOpponents,
     ActivateControlledCreaturesAsHaste,
     PlayerHexproofIfSourceCounter {
         kind: CounterKind,

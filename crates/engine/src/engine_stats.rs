@@ -300,6 +300,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::HarnessedTrigger(..)
                             | crate::cards::StaticAbilityFragment::PlayerHexproofIfSourceCounter { .. }
                             | crate::cards::StaticAbilityFragment::PlayerHexproof
+                            | crate::cards::StaticAbilityFragment::PlayerProtectionFromOpponents
                             | crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste
                             | crate::cards::StaticAbilityFragment::CantLoseGameAndOpponentsCantWin
                             | crate::cards::StaticAbilityFragment::ControlledSpellsUncounterable(_)

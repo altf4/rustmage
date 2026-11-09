@@ -2113,14 +2113,16 @@ impl Game {
         }
         match target {
             Target::Player(player) => {
-                (player == controller || !self.player_has_hexproof(player))
-                    && match rule {
-                        TargetRule::Any => true,
-                        TargetRule::Player { opponent_only } => {
-                            !opponent_only || player != controller
-                        }
-                        _ => false,
-                    }
+                let allowed = match rule {
+                    TargetRule::Any => true,
+                    TargetRule::Player { opponent_only } => !opponent_only || player != controller,
+                    _ => false,
+                };
+                // CR 702.16k uses the spell or ability controller when targeting.
+                allowed
+                    && (player == controller
+                        || (!self.player_has_hexproof(player)
+                            && ability_world::player_protection_source(world, player).is_none()))
             }
             Target::Stack(id) => self.stack_items_for_targets().any(|item| {
                 item.id == id && self.stack_target_rule_matches(rule, item, controller)

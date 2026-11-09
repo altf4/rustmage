@@ -1304,6 +1304,16 @@ impl Game {
         if !prevention_allowed {
             return out;
         }
+        if let Target::Player(player) = event.target
+            && event.source.controller != player
+            && let Some(source) = ability_world::player_protection_source(self, player)
+        {
+            out.push(DamagePreventionView {
+                source: self.object_ref(source),
+                source_card: self.state.objects[source as usize].card,
+                kind: DamagePreventionKind::ProtectionOpponents,
+            });
+        }
         if let Some(roles) = &self.state.roles {
             for shield in &roles.player_damage_shields {
                 if event.target == Target::Player(shield.controller)
