@@ -1,4 +1,4 @@
-//! Player-damage observers and frozen amounts; no source graph is cloned.
+//! Damage observers and frozen amounts; no source graph is cloned.
 use super::*;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -109,6 +109,52 @@ impl Game {
                         DamageQualification::PlusOne => facts.plus_one,
                         DamageQualification::Modified => facts.modified,
                     }
+            }
+        }
+    }
+
+    /// CR 120.4b: capture actual damage after prevention and before its results.
+    pub(super) fn source_damage_triggers(&mut self, events: &[DamageEvent]) {
+        if self.state.damage_sources.is_empty() {
+            return;
+        }
+        let mut hits = std::collections::BTreeMap::<ObjectRef, u128>::new();
+        for event in events {
+            let reference = event.source.reference;
+            if event.amount <= 0
+                || !self.on_battlefield(reference.card)
+                || self.object_ref(reference.card) != reference
+                || !self.state.objects[reference.card as usize]
+                    .card
+                    .triggers()
+                    .iter()
+                    .any(|ability| ability.condition.event() == TriggerCondition::SourceDealtDamage)
+            {
+                continue;
+            }
+            let total = hits.entry(reference).or_default();
+            *total = total
+                .checked_add(event.amount as u128)
+                .capacity("damage dealt amount exhausted");
+        }
+        for (reference, amount) in hits {
+            let source = self.object_view(reference.card);
+            for (index, ability) in source.card.triggers().iter().enumerate() {
+                if ability.condition.event() == TriggerCondition::SourceDealtDamage
+                    && self.queue_trigger(&source, index)
+                {
+                    self.state
+                        .pending_triggers
+                        .last_mut()
+                        .unwrap()
+                        .set_event_object(EventObjectView {
+                            object: reference,
+                            facts: EventObjectFacts::DamageDealt { amount },
+                            semantic_objects: None,
+                            conniver_creature: None,
+                            subtype_lki: None,
+                        });
+                }
             }
         }
     }

@@ -1024,6 +1024,7 @@ impl Game {
                     | TriggerCondition::SelfCycled
                     | TriggerCondition::Discarded { .. }
                     | TriggerCondition::ControlledCreatureCombatDamageOwnTurn
+                    | TriggerCondition::SourceDealtDamage
                     | TriggerCondition::SourceDealtCombatDamage
                     | TriggerCondition::SourceCombatDamagePlayerOrPlaneswalker
                     | TriggerCondition::AttachedDealtCombatDamage

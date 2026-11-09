@@ -2884,7 +2884,7 @@ impl Game {
                             .into_iter()
                             .filter(|event| !self.damage_event_prevented(event))
                             .collect();
-                        self.refresh_excess_threshold(&events);
+                        self.prepare_damage_results(&events);
                         let placements = self.wither_damage_counters(&events);
                         if placements.is_empty() {
                             self.commit_unprevented_damage_batch(&events, batch.remembering);

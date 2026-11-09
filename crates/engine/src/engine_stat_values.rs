@@ -474,6 +474,7 @@ impl Game {
             StatValue::ControllerLifeAboveStarting { minimum } => {
                 i128::from(life >= STARTING_LIFE + i128::from(minimum))
             }
+            StatValue::ControllerLifeAtMostHalfStarting => i128::from(life <= STARTING_LIFE / 2),
             StatValue::HasColor { filter, color } => i128::from(objects().any(|(id, o)| {
                 Self::count_object_matches(filter, source, owner, id, o, subtypes, kinds)
                     && colors(id) & (1u8 << color.index()) != 0

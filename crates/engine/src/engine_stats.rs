@@ -177,6 +177,7 @@ impl Game {
                 TriggerCondition::PlayerDamaged { .. }
                     | TriggerCondition::CreatureDamaged { .. }
                     | TriggerCondition::SelfDamaged
+                    | TriggerCondition::SourceDealtDamage
                     | TriggerCondition::SourceDealtCombatDamage
                     | TriggerCondition::AttachedDealtCombatDamage
                     | TriggerCondition::ControlledCreatureCombatDamageOwnTurn

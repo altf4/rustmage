@@ -573,7 +573,12 @@ impl Game {
                     .expect("damage-received amount requires its frozen packet")
                     .amount
             }
-            AmountValue::DamageEventAmount => item.damage_event.expect("saved damage event").amount,
+            AmountValue::DamageEventAmount => {
+                match item.event_object.as_deref().map(|event| &event.facts) {
+                    Some(EventObjectFacts::DamageDealt { amount }) => *amount,
+                    _ => item.damage_event.expect("saved damage event").amount,
+                }
+            }
             AmountValue::CreatureCombatDamageAmount => {
                 item.creature_combat_event
                     .as_ref()

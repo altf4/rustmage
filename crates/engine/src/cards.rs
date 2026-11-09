@@ -3838,6 +3838,8 @@ pub enum StatValue {
     ControllerLifeAboveStarting {
         minimum: u16,
     },
+    /// Whether the controller's current life is at most half their starting life.
+    ControllerLifeAtMostHalfStarting,
     /// Boolean presence, rather than number of distinct colors.
     HasColor {
         filter: CountFilter,
@@ -5138,6 +5140,8 @@ pub enum TriggerCondition {
         relation: CastRelation,
         spells_only: bool,
     },
+    /// One occurrence per simultaneous positive damage event by this exact source.
+    SourceDealtDamage,
     SourceDealtCombatDamage,
     SourceCombatDamagePlayerOrPlaneswalker,
     AttachedDealtCombatDamage,

@@ -10626,8 +10626,13 @@ impl Game {
                     .collect::<Vec<_>>()
             });
         let events = dealt.as_deref().unwrap_or(events);
-        self.refresh_excess_threshold(events);
+        self.prepare_damage_results(events);
         self.commit_unprevented_damage_batch(events, remembering)
+    }
+
+    fn prepare_damage_results(&mut self, events: &[DamageEvent]) {
+        self.refresh_excess_threshold(events);
+        self.source_damage_triggers(events);
     }
 
     /// Prevention and pre-damage thresholds are already fixed, including when

@@ -33,6 +33,10 @@ pub enum EventObjectFacts {
     /// Identity only; no private or unused event characteristics are captured.
     Identity,
     DamageActor(DamageSource),
+    /// Frozen amount this exact event object dealt in one simultaneous damage event.
+    DamageDealt {
+        amount: u128,
+    },
     /// Current or last-known controller of an exact untargeted object.
     Controller(Player),
     /// Exact untargeted entrant's current or latest battlefield copiable values.
@@ -317,7 +321,9 @@ impl Game {
                     e.subtype_lki = Some(damage.facts);
                 }
                 e.facts = match e.facts {
-                    EventObjectFacts::DeathCounters(_) | EventObjectFacts::CopiableGroup(_) => {
+                    EventObjectFacts::DeathCounters(_)
+                    | EventObjectFacts::CopiableGroup(_)
+                    | EventObjectFacts::DamageDealt { .. } => {
                         continue;
                     }
                     EventObjectFacts::Identity => EventObjectFacts::Identity,
