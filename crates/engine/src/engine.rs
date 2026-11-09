@@ -7232,7 +7232,7 @@ impl Game {
                     && resolution.pc > 0
                     && matches!(
                         resolution.program[resolution.pc - 1],
-                        Instruction::ExileTopMayCastPaid
+                        Instruction::ExileTopMayCastPaid | Instruction::ExileTopMayCastPaidFrom(_)
                     )
                 {
                     resolution.moved_count = Some(u64::from(
@@ -7672,6 +7672,16 @@ impl Game {
                     self.configure_harmonize_cast(&mut item, method);
                     self.open_payment_announcement(item, Counters::default(), None);
                 }
+            }
+            Action::AnnounceFlashback { card }
+                if matches!(self.state.pending, Pending::ResolutionCasts { .. }) =>
+            {
+                self.cast_during_resolution_with_cost(
+                    actor,
+                    self.object_ref(card),
+                    CastFace::Normal,
+                    Some(CastMethod::Flashback),
+                );
             }
             Action::AnnounceFlashback { card } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);

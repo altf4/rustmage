@@ -489,6 +489,8 @@ impl Game {
 pub struct ResolutionPaidCast {
     pub kinds: u8,
     pub exile_instants_sorceries: bool,
+    #[serde(skip_serializing_if = "is_false")]
+    pub spend_any_mana: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -571,8 +573,8 @@ impl Game {
         }
         false
     }
-    pub(super) fn exile_top_offer_paid_cast(&mut self, player: Player) -> bool {
-        let Some(card) = self.top_library_card(player) else {
+    pub(super) fn exile_top_offer_paid_cast(&mut self, player: Player, library: Player) -> bool {
+        let Some(card) = self.top_library_card(library) else {
             return false;
         };
         let event = self.move_object(card, Zone::Exile);
@@ -585,6 +587,7 @@ impl Game {
             paid: Some(ResolutionPaidCast {
                 kinds: u8::MAX,
                 exile_instants_sorceries: false,
+                spend_any_mana: false,
             }),
             casts_remaining: Some(1),
             pending_cast: None,
@@ -622,6 +625,7 @@ impl Game {
             paid: Some(ResolutionPaidCast {
                 kinds,
                 exile_instants_sorceries,
+                spend_any_mana: false,
             }),
             casts_remaining: Some(1),
             pending_cast: None,
@@ -638,7 +642,12 @@ impl Game {
             player: item.controller,
         };
     }
-    pub(super) fn offer_targeted_graveyard_free_cast(&mut self, item: &SpellView) -> bool {
+    pub(super) fn offer_targeted_graveyard_cast(
+        &mut self,
+        item: &SpellView,
+        paid: Option<ResolutionPaidCast>,
+        exile_on_graveyard: bool,
+    ) -> bool {
         let remaining: Vec<_> = item
             .targets
             .iter()
@@ -646,6 +655,7 @@ impl Game {
                 bound.object.filter(|object| {
                     self.same_target_object(*bound)
                         && self.state.objects[object.card as usize].zone == Zone::Graveyard
+                        && self.state.objects[object.card as usize].is_card()
                 })
             })
             .collect();
@@ -655,14 +665,14 @@ impl Game {
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
             uncast_to_hand: false,
             siege_transformed: false,
-            paid: None,
-            casts_remaining: None,
+            paid,
+            casts_remaining: paid.map(|_| 1),
             pending_cast: None,
             remaining_mana_value: None,
             alternative_cost: None,
             maximum_mana_value: None,
             origin: Zone::Graveyard,
-            exile_on_graveyard: true,
+            exile_on_graveyard,
             allow_lands: false,
             player: item.controller,
             remaining,
@@ -700,6 +710,17 @@ impl Game {
             allow_lands: false,
         }));
         self.state.pending = Pending::ResolutionCasts { player };
+    }
+    pub(super) fn resolution_offer_spends_any_mana(&self, actor: Player, card: CardId) -> bool {
+        self.state
+            .resolution_free_casts
+            .as_ref()
+            .is_some_and(|offer| {
+                offer.player == actor
+                    && offer.paid.is_some_and(|paid| paid.spend_any_mana)
+                    && self.state.objects[card as usize].zone == offer.origin
+                    && offer.remaining.contains(&self.object_ref(card))
+            })
     }
     pub(super) fn visit_resolution_casts(
         &self,
@@ -795,20 +816,39 @@ impl Game {
                 if !eligible {
                     continue;
                 }
-                if self.permitted_cast_available(
-                    player,
-                    object.card,
-                    if free.paid.is_some() {
-                        CastMethod::Normal
-                    } else if free.alternative_cost.is_some() {
-                        CastMethod::Miracle
-                    } else {
-                        CastMethod::Free
-                    },
-                    face,
-                    true,
-                    false,
-                ) && emit(Action::CastExiledDuringResolution { object, face })
+                if (free.paid.is_none()
+                    || definition.is_some_and(|card| !card.info().mana_cost.is_empty()))
+                    && self.permitted_cast_available(
+                        player,
+                        object.card,
+                        if free.paid.is_some() {
+                            CastMethod::Normal
+                        } else if free.alternative_cost.is_some() {
+                            CastMethod::Miracle
+                        } else {
+                            CastMethod::Free
+                        },
+                        face,
+                        true,
+                        false,
+                    )
+                    && emit(Action::CastExiledDuringResolution { object, face })
+                {
+                    return true;
+                }
+                if paid_graveyard
+                    && face == CastFace::Normal
+                    && physical.flashback_cost().is_some()
+                    && self.state.objects[object.card as usize].owner == player
+                    && self.permitted_cast_available(
+                        player,
+                        object.card,
+                        CastMethod::Flashback,
+                        face,
+                        true,
+                        false,
+                    )
+                    && emit(Action::AnnounceFlashback { card: object.card })
                 {
                     return true;
                 }
@@ -908,7 +948,9 @@ impl Game {
                 CastMethod::Free
             }
         });
-        item.cast.as_mut().unwrap().method = method;
+        let cast = item.cast.as_mut().unwrap();
+        cast.method = method;
+        cast.spend_any_mana |= paid.is_some_and(|paid| paid.spend_any_mana);
         if method.is_harmonize() {
             self.configure_harmonize_cast(&mut item, method);
         }
@@ -917,10 +959,15 @@ impl Game {
                 p.exile_instants_sorceries
                     && item.source.expect("cast spell has source").card.kind_mask() & (4 | 8) != 0
             });
-        if matches!(method, CastMethod::Free | CastMethod::Miracle)
-            && item.source.expect("cast spell has source").card.x_symbols() > 0
+        if matches!(
+            method,
+            CastMethod::Free | CastMethod::Miracle | CastMethod::Flashback
+        ) && item.source.expect("cast spell has source").card.x_symbols() > 0
         {
             item.x = Some(0);
+        }
+        if method == CastMethod::Flashback {
+            self.state.objects[object.card as usize].flashback = true;
         }
         self.remember_suspend_cast(object, item.id);
         self.open_payment_announcement(item, Counters::default(), None);

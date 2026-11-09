@@ -2436,7 +2436,8 @@ impl Game {
             reflexive_target_limit: None,
             attachment_trigger: None,
             cast: Some(CastInfo {
-                spend_any_mana: self.exile_cast_modifiers(actor, card).0,
+                spend_any_mana: self.exile_cast_modifiers(actor, card).0
+                    || self.resolution_offer_spends_any_mana(actor, card),
                 exile_on_graveyard: self.exile_cast_modifiers(actor, card).1,
                 caster: actor,
                 gift: None,

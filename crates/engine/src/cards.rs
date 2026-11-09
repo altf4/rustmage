@@ -1908,6 +1908,8 @@ pub enum Instruction {
     AllowJaceLoyaltyAnytime,
     /// Exile the controller’s top card, then offer one normal-cost cast.
     ExileTopMayCastPaid,
+    /// Exile the specified player's top card, then offer the controller one cast.
+    ExileTopMayCastPaidFrom(PlayerSet),
     /// Skip the following instructions if that offered cast committed.
     IfOfferedCastCommitted {
         skip: usize,
@@ -1917,6 +1919,11 @@ pub enum Instruction {
         maximum_casts: u16,
     },
     CastTargetedGraveyardFree,
+    /// Offer one paid cast of a surviving exact graveyard target during resolution.
+    CastTargetedGraveyardPaid {
+        spend_any_mana: bool,
+        exile_on_graveyard: bool,
+    },
     /// Optional paid cast from the controller’s graveyard, during resolution.
     CastGraveyard {
         kinds: u8,

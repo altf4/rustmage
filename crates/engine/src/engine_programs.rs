@@ -5381,7 +5381,20 @@ impl Game {
                     return;
                 }
                 Instruction::CastTargetedGraveyardFree => {
-                    if self.offer_targeted_graveyard_free_cast(&item) {
+                    if self.offer_targeted_graveyard_cast(&item, None, true) {
+                        return;
+                    }
+                }
+                Instruction::CastTargetedGraveyardPaid {
+                    spend_any_mana,
+                    exile_on_graveyard,
+                } => {
+                    let paid = ResolutionPaidCast {
+                        kinds: u8::MAX,
+                        exile_instants_sorceries: false,
+                        spend_any_mana,
+                    };
+                    if self.offer_targeted_graveyard_cast(&item, Some(paid), exile_on_graveyard) {
                         return;
                     }
                 }
@@ -5393,11 +5406,18 @@ impl Game {
                         return;
                     }
                 }
-                Instruction::ExileTopMayCastPaid => {
-                    // Reuse the owned resolution count to retain the committed result
-                    // across the cast announcement, mana payment and snapshots.
+                Instruction::ExileTopMayCastPaid | Instruction::ExileTopMayCastPaidFrom(_) => {
+                    // The result is set only when a child cast commits.
                     self.state.resolving.as_mut().unwrap().moved_count = Some(0);
-                    if self.exile_top_offer_paid_cast(item.controller) {
+                    let library = match instruction {
+                        Instruction::ExileTopMayCastPaidFrom(player) => {
+                            self.program_players(player, &item).next()
+                        }
+                        _ => Some(item.controller),
+                    };
+                    if let Some(library) = library
+                        && self.exile_top_offer_paid_cast(item.controller, library)
+                    {
                         return;
                     }
                 }

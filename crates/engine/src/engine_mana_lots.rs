@@ -1025,6 +1025,7 @@ impl Game {
                     .is_some_and(|cast| cast.method == CastMethod::Airbend)
         });
         source.spend_any_mana = (!airbend_announcement && self.exile_cast_modifiers(actor, card).0)
+            || self.resolution_offer_spends_any_mana(actor, card)
             || self.state.announcing.as_ref().is_some_and(|a| {
                 a.item
                     .source
