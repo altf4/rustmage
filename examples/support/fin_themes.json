@@ -1,0 +1,122 @@
+[
+  {
+    "name": "equipment and jobs",
+    "colors": "WR",
+    "cards": [
+      "Zack Fair",
+      "White Mage's Staff",
+      "Monk's Fist",
+      "Item Shopkeep",
+      "Giott, King of the Dwarves",
+      "Firion, Wild Rose Warrior",
+      "Weapons Vendor",
+      "Warrior's Sword",
+      "Lion Heart"
+    ]
+  },
+  {
+    "name": "sagas and transformed entry",
+    "colors": "WU",
+    "cards": [
+      "Adelbert Steiner",
+      "Il Mheg Pixie",
+      "Sahagin",
+      "Jill, Shiva's Dominant",
+      "Dion, Bahamut's Dominant",
+      "Venat, Heart of Hydaelyn",
+      "Summon: Primal Garuda",
+      "Summon: Shiva",
+      "Combat Tutorial"
+    ]
+  },
+  {
+    "name": "graveyard and meld",
+    "colors": "BG",
+    "cards": [
+      "Dark Confidant",
+      "Goobbue Gardener",
+      "Fang, Fearless l'Cie",
+      "Vanille, Cheerful l'Cie",
+      "Exdeath, Void Warlock",
+      "Jenova, Ancient Calamity",
+      "Magic Pot",
+      "Gysahl Greens",
+      "Prishe's Wanderings"
+    ]
+  },
+  {
+    "name": "noncreature casts and Adventure",
+    "colors": "UR",
+    "cards": [
+      "Sahagin",
+      "Shantotto, Tactician Magician",
+      "Mysidian Elder",
+      "Blazing Bomb",
+      "Lindblum, Industrial Regency",
+      "Fire Magic",
+      "Ice Magic",
+      "Haste Magic",
+      "Dreams of Laguna"
+    ]
+  },
+  {
+    "name": "vehicles, crew and lands",
+    "colors": "RG",
+    "cards": [
+      "Goobbue Gardener",
+      "Zell Dincht",
+      "Adventurer's Airship",
+      "Balthier and Fran",
+      "The Regalia",
+      "Traveling Chocobo",
+      "Sidequest: Raise a Chocobo",
+      "Gladiolus Amicitia",
+      "Gysahl Greens"
+    ]
+  },
+  {
+    "name": "landfall and enchantment creatures",
+    "colors": "GW",
+    "cards": [
+      "Garnet, Princess of Alexandria",
+      "Yuna, Hope of Spira",
+      "Torgal, A Fine Hound",
+      "Summon: Fat Chocobo",
+      "Summon: Primal Garuda",
+      "Zanarkand, Ancient Metropolis",
+      "Loporrit Scout",
+      "Gysahl Greens",
+      "White Mage's Staff"
+    ]
+  },
+  {
+    "name": "sacrifice, transformation and damage",
+    "colors": "BR",
+    "cards": [
+      "Hecteyes",
+      "Blazing Bomb",
+      "Garland, Knight of Cornelia",
+      "Kuja, Genome Sorcerer",
+      "Gaius van Baelsar",
+      "Vincent Valentine",
+      "Vincent's Limit Break",
+      "Vaan, Street Thief",
+      "Zodiark, Umbral God"
+    ]
+  },
+  {
+    "name": "artifact and graveyard permissions",
+    "colors": "UB",
+    "cards": [
+      "Golbez, Crystal Collector",
+      "Emet-Selch, Unsundered",
+      "Quistis Trepe",
+      "Shambling Cie'th",
+      "Jidoor, Aristocratic Capital",
+      "Memories Returning",
+      "Jecht, Reluctant Guardian",
+      "Magic Pot",
+      "Monk's Fist"
+    ]
+  }
+]
