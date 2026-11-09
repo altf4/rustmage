@@ -47,6 +47,7 @@ fn nibelheim_uses_the_creatures_lifelink_and_graveyard_cast_is_the_only_wheel() 
         let own = put(&mut game, player, "Bear Cub", Zone::Battlefield);
         let foe = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
         let extra = put(&mut game, player, "Island", Zone::Hand);
+        let other_extra = put(&mut game, player, "Short Bow", Zone::Hand);
         let spell = put(
             &mut game,
             player,
@@ -71,15 +72,17 @@ fn nibelheim_uses_the_creatures_lifelink_and_graveyard_cast_is_the_only_wheel() 
             assert_eq!(game.object_view(id).damage, 1);
         }
         assert_eq!(game.state.players[player.index()].life, 22);
-        assert_eq!(game.hand_count(player), if flashback { 4 } else { 1 });
-        assert_eq!(
-            game.object_view(extra).zone,
-            if flashback {
-                Zone::Graveyard
-            } else {
-                Zone::Hand
-            }
-        );
+        assert_eq!(game.hand_count(player), if flashback { 4 } else { 2 });
+        for id in [extra, other_extra] {
+            assert_eq!(
+                game.object_view(id).zone,
+                if flashback {
+                    Zone::Graveyard
+                } else {
+                    Zone::Hand
+                }
+            );
+        }
         assert_eq!(
             game.object_view(spell).zone,
             if flashback {
@@ -146,14 +149,14 @@ fn opera_grants_normal_land_play_and_the_other_card_expires_at_its_controllers_e
     assert_eq!(game.object_view(spell).zone, Zone::Exile);
     act(&mut game, Action::PlayLand { card: land });
     assert_eq!(game.object_view(land).zone, Zone::Battlefield);
-    assert!(game.legal_actions().iter().any(|action| {
-        matches!(action, Action::Cast { card, .. } | Action::AnnounceCast { card } if *card == spell)
-    }));
+    let announce = Action::AnnounceExile { card: spell };
+    let mut cast_branch = game.clone();
+    act(&mut cast_branch, announce.clone());
+    pay(&mut cast_branch);
+    assert_eq!(cast_branch.object_view(spell).zone, Zone::Stack);
     game.begin_step(Step::End);
     game.give_priority();
-    assert!(!game.legal_actions().iter().any(|action| {
-        matches!(action, Action::Cast { card, .. } | Action::AnnounceCast { card } if *card == spell)
-    }));
+    reject(&mut game, announce);
 }
 
 #[test]
@@ -233,15 +236,24 @@ fn poison_shrinks_each_side_or_reveals_a_hand_for_a_filtered_discard() {
     for id in [own, enemy] {
         assert_eq!(game.object_view(id).zone, Zone::Graveyard);
     }
-    let land = put(&mut game, player, "Island", Zone::Hand);
-    let artifact = put(&mut game, player, "Short Bow", Zone::Hand);
+    let opponent = player.other();
+    let land = put(&mut game, opponent, "Island", Zone::Hand);
+    let artifact = put(&mut game, opponent, "Short Bow", Zone::Hand);
     let poison = put(&mut game, player, "Poison the Waters", Zone::Hand);
-    cast_mode(&mut game, poison, 1, &[Target::Player(player)]);
+    cast_mode(&mut game, poison, 1, &[Target::Player(opponent)]);
+    assert!(game.observe(player).known_hand.is_empty());
     passes(&mut game);
     let land = game.object_ref(land);
-    reject(&mut game, Action::ChooseRevealedDiscard { object: land });
     let object = game.object_ref(artifact);
-    act(&mut game, Action::ChooseRevealedDiscard { object });
+    assert!(game.observe(player).known_hand.contains(&land));
+    assert!(game.observe(player).known_hand.contains(&object));
+    reject(&mut game, Action::ChooseHandCard { object: Some(land) });
+    act(
+        &mut game,
+        Action::ChooseHandCard {
+            object: Some(object),
+        },
+    );
     assert_eq!(game.object_view(artifact).zone, Zone::Graveyard);
     assert_eq!(game.object_view(land.card).zone, Zone::Hand);
 }

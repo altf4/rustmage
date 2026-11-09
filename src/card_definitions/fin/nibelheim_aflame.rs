@@ -8,7 +8,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 recipients: CreaturePowerDamageRecipients::OtherCreatures,
             },
             Instruction::IfCastFromGraveyard { skip: 2 },
-            Instruction::DiscardHand(PlayerSet::Controller),
+            Instruction::DiscardHandRememberCount(PlayerSet::Controller),
             Instruction::Draw(PlayerSet::Controller, 4),
         ],
     ),
