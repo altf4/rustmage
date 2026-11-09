@@ -3006,6 +3006,8 @@ pub enum Instruction {
     UntapControlledTokens,
     /// Untap every land currently controlled by the resolving player.
     UntapControlledLands,
+    /// Tap the current deduplicated non-targeted battlefield recipient union.
+    TapPermanentGroup(&'static [BattlefieldFilter]),
     /// Untap the current deduplicated non-targeted battlefield recipient union.
     UntapPermanentGroup(&'static [BattlefieldFilter]),
     /// Freeze controlled creatures with any kind of counter, then grant through cleanup.
@@ -3269,6 +3271,7 @@ pub enum Instruction {
         cards_group: u16,
     },
     DoubleTargetPower,
+    DoubleSourcePower,
     DrawAndProtectCounterCreatures,
     MultiplyTargetStats {
         factor: u8,

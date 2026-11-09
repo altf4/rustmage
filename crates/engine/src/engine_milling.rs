@@ -154,7 +154,9 @@ impl Game {
                 .flat_map(|group| group.fragments)
                 .fold(count, |count, fragment| match fragment {
                     StaticAbilityFragment::OpponentMillAdditional(additional)
-                        if self.active_rule_fragment(id, |candidate| candidate == fragment) =>
+                        if self.active_rule_fragment(id, |candidate| {
+                            std::ptr::eq(candidate, fragment)
+                        }) =>
                     {
                         count.saturating_add(usize::from(*additional))
                     }

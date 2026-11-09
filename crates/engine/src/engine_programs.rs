@@ -4244,17 +4244,17 @@ impl Game {
                     self.forget_library_top(item.controller);
                     self.shuffle_library_cards(item.controller);
                 }
-                Instruction::DoubleTargetPower => {
-                    let affected: Vec<_> = item
-                        .targets
-                        .iter()
-                        .filter(|b| self.same_target_object(**b))
-                        .filter_map(|b| match b.target {
-                            Target::Card(id) if self.is_creature(id) => {
-                                Some((id, self.stats(id).power))
-                            }
-                            _ => None,
-                        })
+                Instruction::DoubleTargetPower | Instruction::DoubleSourcePower => {
+                    let subject = if instruction == Instruction::DoubleSourcePower {
+                        Subject::Source
+                    } else {
+                        Subject::Targets
+                    };
+                    let affected: Vec<_> = self
+                        .keyword_subjects(&item, subject)
+                        .into_iter()
+                        .filter(|&id| self.is_creature(id))
+                        .map(|id| (id, self.stats(id).power))
                         .collect();
                     for (id, power) in affected {
                         self.state.objects[id as usize].growth += Stats {
@@ -8358,6 +8358,10 @@ impl Game {
                 }
                 Instruction::GrantLandManaUntilSourceCast => {
                     self.grant_land_mana_until_paid_source_cast(&item)
+                }
+                Instruction::TapPermanentGroup(filters) => {
+                    let recipients = self.battlefield_group(&item, filters);
+                    self.tap_objects(&recipients);
                 }
                 Instruction::UntapPermanentGroup(filters) => {
                     let recipients = self.battlefield_group(&item, filters);
