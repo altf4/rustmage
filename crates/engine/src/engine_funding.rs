@@ -3359,9 +3359,10 @@ impl<'g> FundingState<'g> {
             || self.land_tap_bonus_upper() != [0; 6]
             || matches!(purpose, mana_lots::Purpose::Spell(spell)
                 if spell.spend_any_mana || spell.linked_mana_source.is_some())
+            // Resolved ability removal follows a fixed incarnation. The
+            // tap-only routes below cannot end it or create a new recipient.
             || self.roles().is_some_and(|r| {
                 !r.source_linked_effects.is_empty()
-                    || !r.resolved_ability_modifications.is_empty()
                     || !r.ability_removal_sources.is_empty()
                     || !r.characteristic_sources.is_empty()
                     || !r.basic_land_types.is_empty()
@@ -3389,11 +3390,11 @@ impl<'g> FundingState<'g> {
                 || object.card.static_ability_groups().iter().any(|group| {
                     group.fragments.iter().any(|fragment| {
                         match fragment {
-                            // These attachments can only remove stats or added
-                            // creature subtypes on departure. Fixed production
-                            // below is independent of both. A converter still
-                            // disables the bound, even if currently ineligible.
-                            StaticAbilityFragment::AttachmentStats(_)
+                            // Fixed production below is independent of
+                            // stats and intrinsic keyword abilities. These
+                            // attachments cannot add mana routes either.
+                            StaticAbilityFragment::IntrinsicKeywords(_)
+                            | StaticAbilityFragment::AttachmentStats(_)
                             | StaticAbilityFragment::AttachedAllCreatureTypes => false,
                             StaticAbilityFragment::LandMana {
                                 production: ManaProduction::Tagged { quality, .. },

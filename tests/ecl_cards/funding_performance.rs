@@ -287,6 +287,59 @@ fn restricted_white_converter_fallback_keeps_actual_double_white_payment() {
 }
 
 #[test]
+fn end_blaze_keeps_a_bounded_x_search_after_abigale_removes_abilities() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        for name in [
+            "Island", "Island", "Island", "Swamp", "Swamp", "Swamp", "Mountain", "Mountain",
+        ] {
+            named(&mut g, p, name, Zone::Battlefield);
+        }
+        let abigale = named(
+            &mut g,
+            p.other(),
+            "Abigale, Eloquent First-Year",
+            Zone::Battlefield,
+        );
+        let seeker = named(&mut g, p, "Soulbright Seeker", Zone::Battlefield);
+        g.remove_abilities_exact(
+            &[g.object_ref(seeker)],
+            g.object_ref(abigale),
+            p.other(),
+            AnimationDuration::Permanent,
+        );
+        g.state.players[p.index()].mana = [0; 6];
+        let spell = named(&mut g, p, "End-Blaze Epiphany", Zone::Hand);
+
+        let (world, mut goal) = world_for(&g, p, spell);
+        goal.generic = 8;
+        let mut visited = HashSet::new();
+        assert!(!world.reachable(&goal, &mut visited));
+        assert!(
+            visited.is_empty(),
+            "the ninth mana is ruled out before search"
+        );
+
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        let before = g.snapshot();
+        let revision = g.revision();
+        assert_eq!(
+            g.apply(p, Action::ChooseX { value: 8 }),
+            Err(Error::IllegalAction)
+        );
+        assert_eq!(g.snapshot(), before);
+        assert_eq!(g.revision(), revision);
+        checked(&mut g, Action::ChooseX { value: 7 });
+        checked(
+            &mut g,
+            Action::ChooseTarget {
+                target: Target::Card(abigale),
+            },
+        );
+    }
+}
+
+#[test]
 fn absent_external_tap_witness_prunes_many_meek_attacks_but_fresh_creature_funds_actual_cost() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
