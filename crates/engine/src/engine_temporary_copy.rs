@@ -640,7 +640,6 @@ impl Game {
             assert_eq!(recipe.turn_face(), Some(other));
         }
         self.retimestamp_temporary_copy(object);
-        self.refresh_controllers();
         true
     }
     pub(super) fn forget_temporary_copy(&mut self, object: ObjectRef) {

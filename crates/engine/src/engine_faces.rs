@@ -251,6 +251,7 @@ impl Game {
     pub(super) fn can_transform_permanent(&self, object: ObjectRef) -> bool {
         self.on_battlefield(object.card)
             && self.object_ref(object.card) == object
+            && !self.is_face_down(object)
             && self
                 .physical_copy_faces(object)
                 .turned()
@@ -266,6 +267,8 @@ impl Game {
         if other.kind_mask() & (1 | 2 | 16 | 32 | 64 | 128) == 0 {
             return;
         }
+        let controller = self.state.objects[object.card as usize].controller;
+        let control_watch = self.freeze_control_watch();
         let serial = self
             .transform_serial(object)
             .checked_add(1)
@@ -275,20 +278,27 @@ impl Game {
             .face_changes
             .get_or_insert_default()
             .push(FaceChange { object, serial });
-        if self.transform_under_temporary_copy(object, other) {
-            self.queue_self_transform_triggers(object);
-            return;
+        if !self.transform_under_temporary_copy(object, other) {
+            self.forget_hand_size_source(object);
+            self.remove_face_providers(object.card);
+            self.state.objects[object.card as usize].card = other;
+            if let Some(mut recipe) = self.copy_recipe(object) {
+                assert_eq!(recipe.turn_face(), Some(other));
+                self.set_copy_recipe(object, recipe);
+            }
+            self.register_battlefield_providers(object.card);
+            self.retimestamp_self_granted_statics(object);
         }
-        let control_watch = self.freeze_control_watch();
-        self.forget_hand_size_source(object);
-        self.remove_face_providers(object.card);
-        self.state.objects[object.card as usize].card = other;
-        if let Some(mut recipe) = self.copy_recipe(object) {
-            assert_eq!(recipe.turn_face(), Some(other));
-            self.set_copy_recipe(object, recipe);
+        // CR 712.20 uses the resulting characteristics within this event,
+        // before publishing the transform to observers.
+        if let Some(crate::cards::AsTransformEffect::CreateEmblem(factory)) = self.state.objects
+            [object.card as usize]
+            .card
+            .as_transform_effect()
+            && ability_world::CharacteristicWorld::printed_abilities_available(self, object.card)
+        {
+            self.create_emblem(controller, factory);
         }
-        self.register_battlefield_providers(object.card);
-        self.retimestamp_self_granted_statics(object);
         self.refresh_controllers_after(Some(control_watch));
         self.queue_self_transform_triggers(object);
     }

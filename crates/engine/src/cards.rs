@@ -175,6 +175,13 @@ pub enum GraveyardCastKind {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Card(u16);
 
+/// An ability of the resulting face applied during the transform event.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum AsTransformEffect {
+    CreateEmblem(Card),
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Effect {
@@ -6230,6 +6237,9 @@ impl Card {
             .unwrap()
             .extras
             .transforming_double_face
+    }
+    pub(crate) fn as_transform_effect(self) -> Option<AsTransformEffect> {
+        authored::rules(self).and_then(|rules| rules.extras.as_transform)
     }
     pub fn back_face(self) -> Option<Card> {
         generated::back_face(self)
