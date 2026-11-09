@@ -870,7 +870,7 @@ fn admitted_pupu_puts_a_town_without_a_land_play_and_samples_only_base_power() {
     };
     reach_action(&mut game, &place);
     let mut decline = game.clone();
-    act(&mut decline, Action::DeclineEffectPayment);
+    act(&mut decline, Action::DeclineHandEntry);
     assert_eq!(decline.object_view(town).zone, Zone::Hand);
     act(&mut game, place);
     assert_eq!(game.object_view(town).zone, Zone::Battlefield);
