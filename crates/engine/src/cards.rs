@@ -2233,6 +2233,10 @@ pub enum Instruction {
     /// Copy the nonmana activated ability captured by this trigger, if it
     /// remains on the stack, with optional new targets.
     CopyCapturedActivatedAbility,
+    /// Flip once, advancing past the winning branch on a loss.
+    IfCoinFlipWon {
+        skip: usize,
+    },
     FlipCoinsSkipTurns {
         coins: u16,
     },

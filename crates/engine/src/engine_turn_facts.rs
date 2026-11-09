@@ -19,6 +19,9 @@ pub struct TurnFactsView {
     /// Actual committed activation history, retained even before a provider enters.
     #[serde(skip_serializing_if = "is_false")]
     pub exhaust_activated_this_turn: bool,
+    /// A nonempty coin-flip batch has taken place for this player this turn.
+    #[serde(skip_serializing_if = "is_false")]
+    pub coin_flipped_this_turn: bool,
 }
 
 fn is_false(value: &bool) -> bool {
@@ -145,38 +148,34 @@ impl Game {
         // Public opt-in only. Never scan hidden hands/libraries for observers.
         // Suppression does not hide a publicly known definition; old queued packets
         // keep the facts visible after their source leaves or changes controller.
-        let observer = self
-            .state
-            .players
-            .iter()
-            .any(|p| p.turn_facts.exhaust_activated_this_turn)
-            || self.state.objects.iter().any(|o| {
-                o.zone == Zone::Battlefield
-                    && (o.card.triggers().iter().any(trigger_uses_facts)
-                        || o.card.static_ability_groups().iter().any(|group| {
-                            group.fragments.iter().any(|fragment| {
-                                matches!(fragment,
+        let observer = self.state.players.iter().any(|p| {
+            p.turn_facts.exhaust_activated_this_turn || p.turn_facts.coin_flipped_this_turn
+        }) || self.state.objects.iter().any(|o| {
+            o.zone == Zone::Battlefield
+                && (o.card.triggers().iter().any(trigger_uses_facts)
+                    || o.card.static_ability_groups().iter().any(|group| {
+                        group.fragments.iter().any(|fragment| {
+                            matches!(fragment,
                                 crate::cards::StaticAbilityFragment::KeywordGrant(_, grant)
                                     if grant.condition == Some(StatValue::ArtifactEnteredThisTurn))
-                            })
-                        }))
-            })
-            || self
-                .state
-                .stack
-                .iter()
-                .chain(&self.state.pending_triggers)
-                .chain(&self.state.ordering_triggers)
-                .chain(self.state.resolving.iter().map(|r| &r.item))
-                .chain(self.state.announcing.iter().map(|a| &a.item))
-                .any(|item| match item.kind {
-                    StackKind::TriggeredAbility { ability } => item
-                        .trigger_definition()
-                        .triggers()
-                        .get(usize::from(ability))
-                        .is_some_and(trigger_uses_facts),
-                    _ => false,
-                });
+                        })
+                    }))
+        }) || self
+            .state
+            .stack
+            .iter()
+            .chain(&self.state.pending_triggers)
+            .chain(&self.state.ordering_triggers)
+            .chain(self.state.resolving.iter().map(|r| &r.item))
+            .chain(self.state.announcing.iter().map(|a| &a.item))
+            .any(|item| match item.kind {
+                StackKind::TriggeredAbility { ability } => item
+                    .trigger_definition()
+                    .triggers()
+                    .get(usize::from(ability))
+                    .is_some_and(trigger_uses_facts),
+                _ => false,
+            });
         observer.then(|| std::array::from_fn(|i| self.state.players[i].turn_facts))
     }
 }

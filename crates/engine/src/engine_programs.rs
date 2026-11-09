@@ -6366,6 +6366,11 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::IfCoinFlipWon { skip } => {
+                    if self.flip_coins(item.controller, 1) == 0 {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
                 Instruction::FlipCoinsSkipTurns { coins } => {
                     self.flip_coins_skip_turns(&item, coins)
                 }
