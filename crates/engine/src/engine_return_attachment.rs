@@ -104,7 +104,7 @@ impl Game {
         else {
             return false;
         };
-        let legal = |&equipment| self.equipment_can_attach(equipment, recipient);
+        let legal = |&equipment: &ObjectRef| self.equipment_can_attach(equipment, recipient);
         let equipment: Vec<_> =
             if self.on_battlefield(source.card) && self.object_ref(source.card) == source {
                 self.source_equipment_refs(source).filter(legal).collect()
