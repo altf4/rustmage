@@ -333,6 +333,91 @@ fn target_trigger(game: &mut Game, target: Target) {
     choose_targets(game, &[target]);
 }
 
+#[test]
+fn catch_a_fish_reveals_only_a_chosen_card_and_its_campsite_can_feed_the_team() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let front = "Sidequest: Catch a Fish // Cooking Campsite";
+    let quest = put(&mut game, player, front, Zone::Battlefield);
+    let top = put(&mut game, player, "Swiftfoot Boots", Zone::Library);
+    let own = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let second = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    let rival = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let foreign = put(&mut game, opponent, "Swiftfoot Boots", Zone::Battlefield);
+    let reference = game.object_ref(quest);
+    let mut ineligible = game.clone();
+    ineligible.state.objects[top as usize].card = Card::Forest;
+    let finish = Action::FinishLibrarySelection;
+    let select = Action::SelectLibrary { card: top };
+    for branch in [&mut game, &mut ineligible] {
+        branch.begin_step(Step::Upkeep);
+        branch.give_priority();
+        reach_action(branch, &finish);
+        assert!(branch.observe(opponent).library_selection.is_none());
+    }
+    reject(&mut ineligible, select.clone());
+    let mut declined = game.clone();
+    for branch in [&mut declined, &mut ineligible] {
+        act(branch, finish.clone());
+        assert_eq!(branch.object_view(top).zone, Zone::Library);
+        assert!(branch.observe(opponent).zone_reveals.is_empty());
+        assert!(battlefield_tokens(branch, Card(5246)).is_empty());
+        assert_eq!(branch.object_view(quest).name(), "Sidequest: Catch a Fish");
+    }
+    act(&mut game, select);
+    act(&mut game, finish);
+    assert_eq!(game.object_view(top).zone, Zone::Hand);
+    assert!(
+        game.observe(opponent)
+            .known_hand
+            .contains(&game.object_ref(top))
+    );
+    let food = battlefield_tokens(&game, Card(5246))[0];
+    assert!(game.has_subtype(food, "Food"));
+    assert_eq!(game.object_view(quest).name(), "Cooking Campsite");
+    assert_eq!(game.object_ref(quest), reference);
+
+    let mut mana = game.clone();
+    let white = mana.state.players[player.index()].mana[0];
+    choose(&mut mana, |action| {
+        matches!(
+            action,
+            Action::TapMana { card }
+            | Action::ActivateMana { card, ability: 0, production: [1, 0, 0, 0, 0, 0], .. }
+            if *card == quest
+        )
+    });
+    assert_eq!(mana.state.players[player.index()].mana[0], white + 1);
+    let grow = Action::AnnounceActivate {
+        card: quest,
+        ability: 1,
+        counter_payment: Counters::default(),
+    };
+    reject(&mut game, grow.clone());
+    game.state.step = Step::Main1;
+    game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 2];
+    reject(&mut game, grow.clone());
+    game.state.players[player.index()].mana[5] = 3;
+    act(&mut game, grow);
+    let other_artifact = game.object_ref(foreign);
+    reject(
+        &mut game,
+        Action::ChooseAdditionalCost {
+            object: other_artifact,
+        },
+    );
+    let object = game.object_ref(food);
+    act(&mut game, Action::ChooseAdditionalCost { object });
+    pay(&mut game);
+    assert!(game.object_view(quest).tapped);
+    settle(&mut game);
+    for id in [own, second] {
+        assert_eq!(game.counter_count(id, CounterKind::PlusOne), 1);
+    }
+    assert_eq!(game.counter_count(rival, CounterKind::PlusOne), 0);
+}
+
 fn settle_ordered(game: &mut Game) {
     while matches!(game.state.pending, Pending::OrderTriggers { .. }) {
         choose(game, |action| matches!(action, Action::PutTrigger { .. }));

@@ -3,10 +3,21 @@
   "catalogue_id": 3860,
   "oracle_id": "bd7c328e-0380-46f8-bb85-7bf4e201b7ac",
   "facts_sha256": "cabab541ea790ff33aa368f8c5cccdf0d0b8a80634a8bcedbf19eb86edef1c8a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "756273f49e46b29f63a66bf3ca19edab141cee7ff02a7b494746ab9b0be1eb8b"
   },
-  "physical_metadata_sha256": "6e928d8fd268b9724ea80d29b0c862c22914dbbc62429afa3bae98028309c11b"
+  "physical_metadata_sha256": "6e928d8fd268b9724ea80d29b0c862c22914dbbc62429afa3bae98028309c11b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SidequestCatchAFish.java",
+  "java_sha256": "5763cd42723fcea332b2c0a2b6935a86908f81795b95dac3418fba7d6f9a5052",
+  "rules_tests": "tests/fin_cards_157_234.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/FoodToken.java",
+      "sha256": "67fca2eef5afc92dc08eefebb5d25489a0ab37ac22ab3b1b06556b17e5f0b53a"
+    }
+  ]
 }
