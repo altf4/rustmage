@@ -115,6 +115,12 @@ impl Game {
         I: Iterator<Item = (CardId, &'a Object)>,
     {
         match value {
+            StatValue::CreatureEntriesThisTurn { other } => {
+                self.creature_entries_this_turn(owner, source, other)
+            }
+            StatValue::DeclaredSubtypeAttackersThisTurn(subtype) => {
+                self.declared_subtype_attackers(owner, subtype) as i128
+            }
             StatValue::ArtifactEnteredThisTurn => i128::from(
                 self.state.players[owner.index()]
                     .turn_facts
@@ -350,6 +356,22 @@ impl Game {
                             && o.zone == Zone::Battlefield
                     }),
             ),
+            StatValue::SourceUntapped => i128::from(objects().any(|(id, object)| {
+                id == source.card
+                    && object.generation == source.generation
+                    && object.zone == Zone::Battlefield
+                    && !object.tapped
+            })),
+            StatValue::CreaturesAttackingYou => objects()
+                .filter(|(id, object)| {
+                    object.zone == Zone::Battlefield
+                        && kinds(*id, object) & 1 != 0
+                        && self.state.attackers.iter().any(|attack| {
+                            attack.card == *id
+                                && attack.defender == Some(CombatDefender::Player(owner))
+                        })
+                })
+                .count() as i128,
             StatValue::SourceModified => i128::from(
                 objects()
                     .find(|(id, o)| *id == source.card && o.generation == source.generation)
@@ -665,6 +687,8 @@ impl Game {
             | AmountValue::DamageEventAmount
             | AmountValue::CreatureCombatDamageAmount
             | AmountValue::DepartureCounterCount(_)
+            | AmountValue::DeathEventPower
+            | AmountValue::DeathEventCounterTotal
             | AmountValue::DeathEventToughness
             | AmountValue::DamageReceivedAmount => 0, // Off-stack expressions have no cast parameter.
             AmountValue::Stat(value) => self.stat_value(value, source, owner).max(0) as u128,

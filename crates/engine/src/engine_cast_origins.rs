@@ -418,6 +418,8 @@ pub struct ResolutionPaidCast {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ResolutionFreeCasts {
     #[serde(skip_serializing_if = "is_false")]
+    pub uncast_to_hand: bool,
+    #[serde(skip_serializing_if = "is_false")]
     pub siege_transformed: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paid: Option<ResolutionPaidCast>,
@@ -440,6 +442,59 @@ pub struct ResolutionFreeCasts {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn finish_resolution_free_casts(&mut self) {
+        let Some(offer) = self.state.resolution_free_casts.take() else {
+            return;
+        };
+        if offer.uncast_to_hand {
+            for object in offer.remaining {
+                if self.object_ref(object.card) == object
+                    && self.state.objects[object.card as usize].zone == Zone::Exile
+                {
+                    let event = self.move_object(object.card, Zone::Hand);
+                    if event.moved
+                        && event.destination == Zone::Hand
+                        && !self.state.known_hand.contains(&event.after)
+                    {
+                        self.state.known_hand.push(event.after);
+                    }
+                }
+            }
+        }
+    }
+    pub(super) fn exile_nonland_life_free_cast(&mut self, player: Player) -> bool {
+        let cards = exile::top_library_cards(self, player, u128::MAX);
+        for id in cards {
+            if self.state.objects[id as usize].zone != Zone::Library {
+                continue;
+            }
+            let event = self.move_object(id, Zone::Exile);
+            if event.moved && event.destination == Zone::Exile && event.before.kinds & 2 == 0 {
+                self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+                    uncast_to_hand: true,
+                    siege_transformed: false,
+                    paid: None,
+                    casts_remaining: Some(1),
+                    pending_cast: None,
+                    remaining_mana_value: None,
+                    alternative_cost: None,
+                    maximum_mana_value: u64::try_from(
+                        self.state.players[player.index()].life_gained_this_turn,
+                    )
+                    .ok()
+                    .and_then(|value| value.checked_add(1)),
+                    origin: Zone::Exile,
+                    exile_on_graveyard: false,
+                    allow_lands: false,
+                    player,
+                    remaining: vec![event.after],
+                }));
+                self.state.pending = Pending::ResolutionCasts { player };
+                return true;
+            }
+        }
+        false
+    }
     pub(super) fn exile_top_offer_paid_cast(&mut self, player: Player) -> bool {
         let Some(card) = self.top_library_card(player) else {
             return false;
@@ -449,6 +504,7 @@ impl Game {
             return false;
         }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            uncast_to_hand: false,
             siege_transformed: false,
             paid: Some(ResolutionPaidCast {
                 kinds: u8::MAX,
@@ -485,6 +541,7 @@ impl Game {
             .map(|(id, _)| self.object_ref(id as CardId))
             .collect();
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            uncast_to_hand: false,
             siege_transformed: false,
             paid: Some(ResolutionPaidCast {
                 kinds,
@@ -520,6 +577,7 @@ impl Game {
             return false;
         }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            uncast_to_hand: false,
             siege_transformed: false,
             paid: None,
             casts_remaining: None,
@@ -551,6 +609,7 @@ impl Game {
             .collect();
         self.finish_zone_events(&events, &[]);
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            uncast_to_hand: false,
             siege_transformed: false,
             paid: None,
             casts_remaining: None,
@@ -852,6 +911,7 @@ impl Game {
             .ok()
             .and_then(|value| value.checked_add(1));
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            uncast_to_hand: false,
             siege_transformed: false,
             paid: None,
             casts_remaining: None,
@@ -903,6 +963,7 @@ impl Game {
             .collect();
         self.finish_zone_events(&events, &[]);
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            uncast_to_hand: false,
             siege_transformed: false,
             paid: None,
             casts_remaining: Some(maximum_casts),

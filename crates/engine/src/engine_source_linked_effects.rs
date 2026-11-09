@@ -166,6 +166,7 @@ impl Game {
             self.state.exile_permissions.insert(
                 index,
                 ExilePlayPermission {
+                    source: None,
                     object: source,
                     player: item.controller,
                     expiry: ExilePlayExpiry::WhileExiled,

@@ -31,26 +31,67 @@ fn is_false(value: &bool) -> bool {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn stack_item_is_counterable(&self, victim: &SpellView) -> bool {
+        victim.kind != StackKind::Spell
+            || victim.source.is_some_and(|source| {
+                !self
+                    .state
+                    .uncounterable_spell_ids
+                    .as_deref()
+                    .is_some_and(|ids| ids.contains(&victim.id))
+                    && !source.card.cannot_be_countered()
+                    && !self.controlled_spells_uncounterable(victim.controller, source.card)
+            })
+    }
+    /// One simultaneous counter event; copies and abilities each count once.
+    pub(super) fn counter_opponents_counted(&mut self, controller: Player) {
+        let victims: Vec<_> = self
+            .state
+            .stack
+            .iter()
+            .filter(|victim| {
+                victim.controller != controller && self.stack_item_is_counterable(victim)
+            })
+            .cloned()
+            .collect();
+        let spells: Vec<_> = victims
+            .iter()
+            .filter(|victim| victim.kind == StackKind::Spell)
+            .filter_map(|victim| victim.source.map(|source| source.id))
+            .collect();
+        for victim in victims
+            .iter()
+            .filter(|victim| victim.kind != StackKind::Spell)
+        {
+            self.retain_departing_activation_for_triggers(victim);
+        }
+        self.state.stack.retain(|item| {
+            !victims
+                .iter()
+                .any(|victim| victim.id == item.id && victim.kind != StackKind::Spell)
+        });
+        let events = self.move_objects_raw(&spells, Zone::Graveyard);
+        self.state.resolving.as_mut().unwrap().moved_count = Some(
+            victims
+                .len()
+                .try_into()
+                .capacity("countered item count exhausted"),
+        );
+        self.finish_zone_events(&events, &[]);
+    }
     /// Explicit counters share one check. Abilities are independent of their source spell.
     pub(super) fn counter_stack_item(&mut self, id: u64, exile: bool) -> bool {
         let Some(index) = self.state.stack.iter().position(|s| s.id == id) else {
             return false;
         };
         let victim = &self.state.stack[index];
+        if !self.stack_item_is_counterable(victim) {
+            return false;
+        }
         if victim.kind == StackKind::Spell {
             let Some(source) = victim.source else {
                 return false;
             };
-            if self
-                .state
-                .uncounterable_spell_ids
-                .as_deref()
-                .is_some_and(|ids| ids.contains(&victim.id))
-                || source.card.cannot_be_countered()
-                || self.controlled_spells_uncounterable(victim.controller, source.card)
-            {
-                return false;
-            }
             self.move_object(source.id, if exile { Zone::Exile } else { Zone::Graveyard });
         } else {
             let departed = self.state.stack.remove(index);
@@ -91,7 +132,9 @@ impl Game {
         let Some(reference) = bound.object else {
             return;
         };
-        if !self.on_battlefield(id) || item.targets.iter().any(|old| old.object == Some(reference))
+        if !self.on_battlefield(id)
+            || self.object_ref(id) != reference
+            || item.targets.iter().any(|old| old.object == Some(reference))
         {
             return;
         }
@@ -136,7 +179,7 @@ impl Game {
             // The active layer-one definition is materialized for copied providers.
             // Keep blank providers in this conservative gate: restored abilities
             // must work without reacquiring or rebuilding a derived ward cache.
-            let has_conditional = self.state.static_sources.iter().any(|&provider| {
+            let has_static_ward = self.state.static_sources.iter().any(|&provider| {
                 self.on_battlefield(provider)
                     && self.state.objects[provider as usize]
                         .card
@@ -147,31 +190,28 @@ impl Game {
                                 matches!(
                                     fragment,
                                     crate::cards::StaticAbilityFragment::ConditionalWard { .. }
+                                        | crate::cards::StaticAbilityFragment::ControlledCreatureTrigger { .. }
                                 )
                             })
                         })
             });
-            let conditional = if has_conditional {
-                self.characteristic_query().conditional_ward_grants(id)
+            let static_grants = if has_static_ward {
+                self.characteristic_query().static_ward_grants(id)
             } else {
                 Vec::new()
             };
-            for grant in conditional {
+            for grant in static_grants {
                 let event = Box::new(AttachmentTriggerView {
                     grantor: grant.grantor,
                     granting_card: grant.granting_card,
                     recipient: reference,
                     defender: None,
                     granted: true,
-                    origin: self.copy_ability_origin(grant.grantor),
+                    origin: self.copied_grant_origin(grant.grantor),
                 });
                 if self.queue_trigger_from(
                     &source,
-                    usize::from(
-                        grant
-                            .ability
-                            .expect("conditional ward has a trigger template"),
-                    ),
+                    usize::from(grant.ability.expect("static ward has a trigger template")),
                     Some(event),
                 ) {
                     self.state
@@ -344,19 +384,10 @@ impl Game {
         };
     }
     pub(super) fn start_resolution_life(&mut self, item: &SpellView, amount: u32) -> bool {
-        let related = item.related_stack.expect("ward stack association");
-        let Some(victim) = self
-            .state
-            .stack
-            .iter()
-            .find(|spell| spell.id == related.id)
-            .map(|spell| StackLink {
-                id: spell.id,
-                controller: spell.controller,
-            })
-        else {
-            return false;
-        };
+        // Ward's "that player" is fixed by the triggering event. The optional
+        // payment remains available even if another ward already countered the
+        // spell, or control of that spell subsequently changed (CR118.12a).
+        let victim = item.related_stack.expect("ward stack association");
         let resolution = self.state.resolving.as_mut().unwrap();
         resolution.mana_payment = Some(Box::new(ResolutionPayment {
             payer: victim.controller,

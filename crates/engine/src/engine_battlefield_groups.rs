@@ -3,6 +3,117 @@ use super::*;
 use crate::cards::AnimationSpec;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn remove_abilities_exact(
+        &mut self,
+        recipients: &[ObjectRef],
+        source: ObjectRef,
+        controller: Player,
+        duration: crate::cards::AnimationDuration,
+    ) {
+        let objects = &self.state.objects;
+        let mut live = recipients
+            .iter()
+            .copied()
+            .filter(|object| {
+                objects.get(object.card as usize).is_some_and(|recipient| {
+                    recipient.zone == Zone::Battlefield && recipient.generation == object.generation
+                })
+            })
+            .peekable();
+        if live.peek().is_none() {
+            return;
+        }
+        let roles = self.state.roles.get_or_insert_with(Default::default);
+        let timestamp = roles.next_timestamp();
+        for recipient in live {
+            match duration {
+                crate::cards::AnimationDuration::Permanent => roles
+                    .resolved_ability_modifications
+                    .push(ResolvedAbilityModificationView {
+                        recipient,
+                        source,
+                        keywords: Keywords::NONE,
+                        timestamp,
+                    }),
+                crate::cards::AnimationDuration::EndOfTurn => {
+                    roles.source_linked_effects.push(SourceLinkedEffectView {
+                        recipient,
+                        source,
+                        controller,
+                        kind: SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn,
+                        timestamp,
+                    })
+                }
+            }
+        }
+        self.refresh_copy_grant_availability();
+    }
+    pub(super) fn grant_chosen_creature_type_keywords(
+        &mut self,
+        item: &SpellView,
+        other: bool,
+        keywords: Keywords,
+    ) {
+        let Some(source) = item.source else { return };
+        let typ = self
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .chosen_creature_type
+            .expect("preceding creature-type choice");
+        let recipients: Vec<_> = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(id, object)| {
+                object.zone == Zone::Battlefield
+                    && object.controller == item.controller
+                    && (!other || self.object_ref(*id as CardId) != source.object)
+                    && self.has_subtype(*id as CardId, typ.name())
+            })
+            .map(|(id, _)| id as CardId)
+            .collect();
+        self.grant_keyword_effects(&recipients, source.object, keywords);
+    }
+    pub(super) fn set_player_creature_characteristics(
+        &mut self,
+        item: &SpellView,
+        players: PlayerSet,
+        types: &'static [&'static str],
+        power: i32,
+        toughness: i32,
+        remove: bool,
+    ) {
+        let Some(source) = item.source else { return };
+        let recipients: Vec<_> = self
+            .player_creature_recipients(players, item)
+            .into_iter()
+            .map(|id| self.object_ref(id))
+            .collect();
+        if remove {
+            self.remove_abilities_exact(
+                &recipients,
+                source.object,
+                item.controller,
+                crate::cards::AnimationDuration::Permanent,
+            );
+        }
+        for recipient in recipients {
+            self.change_object_form(
+                recipient,
+                AnimationSpec {
+                    artifact: false,
+                    creature_types: crate::cards::AnimationCreatureTypes::Additional(types),
+                    base: Some((i128::from(power), i128::from(toughness))),
+                    keywords: Keywords::NONE,
+                    duration: crate::cards::AnimationDuration::Permanent,
+                },
+                characteristic_layers::AnimationTypeMode::PreserveCardTypes,
+            );
+        }
+    }
     pub(super) fn grant_permanent_group_keywords(
         &mut self,
         item: &SpellView,

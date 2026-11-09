@@ -10,6 +10,15 @@ pub struct BeholdCostView {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Announcement {
+    pub(super) fn needs_behold_type(&self) -> bool {
+        self.item.kind == StackKind::Spell
+            && self.item.cast.is_some_and(|c| !c.behold_type_declared)
+            && self
+                .item
+                .source
+                .and_then(|s| s.card.additional_cost())
+                .is_some_and(|s| matches!(s.kind, EffectChoiceKind::OptionalBeholdType(_)))
+    }
     pub(super) fn needs_behold(&self) -> bool {
         self.pay_window
             && self.item.kind == StackKind::Spell
@@ -33,6 +42,28 @@ impl Announcement {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn behold_type_fundable(&self, kind: Option<crate::cards::CreatureType>) -> bool {
+        let mut a = self.state.announcing.as_ref().unwrap().clone();
+        let cast = a.item.cast.as_mut().unwrap();
+        cast.beheld_type = kind;
+        cast.behold_type_declared = true;
+        a.cost_options()
+            .any(|cost| self.behold_announcement_fundable(&a, cost))
+    }
+    pub(super) fn choose_behold_type(&mut self, kind: Option<crate::cards::CreatureType>) {
+        let cast = self
+            .state
+            .announcing
+            .as_mut()
+            .unwrap()
+            .item
+            .cast
+            .as_mut()
+            .unwrap();
+        cast.beheld_type = kind;
+        cast.behold_type_declared = true;
+        self.continue_announcement_choices(false);
+    }
     pub(super) fn behold_announcement_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
         if a.item.mode.is_none()
             && let Some(modes) = a.item.modes()
@@ -54,7 +85,7 @@ impl Game {
         let mut proposal = a.clone();
         proposal.cost = Some(cost);
         proposal.cast_costs.get_or_insert_with(Default::default);
-        proposal.initialize_cast_costs(improvise::potential(
+        proposal.initialize_cast_costs(convoke::cost_potential(
             self,
             proposal.item.source.unwrap().card,
         ));
@@ -105,7 +136,7 @@ impl Game {
         proposal.item.cast.as_mut().expect("cast receipt").beheld = Some(pay);
         // Intent precedes the mana equivalent; preview all permitted equivalents.
         proposal.cost = None;
-        proposal.initialize_cast_costs(improvise::potential(
+        proposal.initialize_cast_costs(convoke::cost_potential(
             self,
             proposal.item.source.unwrap().card,
         ));

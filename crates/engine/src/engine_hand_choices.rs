@@ -7,6 +7,8 @@ pub enum HandChoiceKind {
     DeployCreatures,
     DeployPermanents,
     RevealSubset,
+    RevealSubsetForControlledCast,
+    ExileRevealedForControlledCast,
     DiscardRevealed,
     /// Mandatory one-card choice from a publicly revealed hand, using a positive kind union.
     DiscardRevealedKinds {
@@ -226,6 +228,29 @@ impl Game {
         self.set_hand_interaction(interaction);
         true
     }
+    pub(super) fn start_hand_subset_controlled_cast(
+        &mut self,
+        item: &SpellView,
+        amount: AmountValue,
+    ) -> bool {
+        if !self.start_hand_subset_discard(item, amount) {
+            return false;
+        }
+        let hand = self
+            .state
+            .linked_choices
+            .as_mut()
+            .unwrap()
+            .hand
+            .as_mut()
+            .unwrap();
+        hand.kind = if hand.kind == HandChoiceKind::RevealSubset {
+            HandChoiceKind::RevealSubsetForControlledCast
+        } else {
+            HandChoiceKind::ExileRevealedForControlledCast
+        };
+        true
+    }
     pub(super) fn start_revealed_hand_exile(&mut self, item: &SpellView) -> bool {
         let Some(source) = item.source else {
             return false;
@@ -404,6 +429,8 @@ impl Game {
             HandChoiceKind::LookDiscardDraw
             | HandChoiceKind::DiscardNonlandReflexive { .. }
             | HandChoiceKind::RevealSubset
+            | HandChoiceKind::RevealSubsetForControlledCast
+            | HandChoiceKind::ExileRevealedForControlledCast
             | HandChoiceKind::DiscardRevealed => {
                 o.zone == Zone::Hand && Some(o.owner) == interaction.victim && o.is_card()
             }
@@ -498,12 +525,20 @@ impl Game {
             .hand
             .take()
             .unwrap();
-        if interaction.kind == HandChoiceKind::RevealSubset {
+        if matches!(
+            interaction.kind,
+            HandChoiceKind::RevealSubset | HandChoiceKind::RevealSubsetForControlledCast
+        ) {
             interaction.selected.push(object.unwrap());
             if interaction.selected.len() == interaction.required {
                 self.reveal_hand_refs(&interaction.selected);
                 interaction.candidates = std::mem::take(&mut interaction.selected);
-                interaction.kind = HandChoiceKind::DiscardRevealed;
+                interaction.kind =
+                    if interaction.kind == HandChoiceKind::RevealSubsetForControlledCast {
+                        HandChoiceKind::ExileRevealedForControlledCast
+                    } else {
+                        HandChoiceKind::DiscardRevealed
+                    };
                 interaction.actor = interaction.controller;
                 interaction.required = 1;
             }
@@ -512,6 +547,16 @@ impl Game {
         }
         if let Some(object) = object {
             match interaction.kind {
+                HandChoiceKind::ExileRevealedForControlledCast => {
+                    let event = self.move_object(object.card, Zone::Exile);
+                    if event.moved && event.destination == Zone::Exile {
+                        self.grant_source_bound_exile_cast(
+                            interaction.source,
+                            interaction.controller,
+                            event.after,
+                        );
+                    }
+                }
                 HandChoiceKind::DiscardNonlandReflexive { ability } => {
                     self.discard_batch_with_after(
                         &[object.card],
@@ -568,6 +613,7 @@ impl Game {
                             .get_or_insert_default()
                             .null_cast_links
                             .push(linked_choices::NullCastLink {
+                                exiled_turn: self.state.turn,
                                 source: interaction.source,
                                 exiled: event.after,
                                 ability_origin,
@@ -589,6 +635,7 @@ impl Game {
                             .get_or_insert_default()
                             .links
                             .push(LinkedExileView {
+                                exiled_turn: self.state.turn,
                                 source: interaction.source,
                                 exiled: event.after,
                                 ability_origin,
@@ -619,6 +666,7 @@ impl Game {
                     }
                 }
                 HandChoiceKind::RevealSubset
+                | HandChoiceKind::RevealSubsetForControlledCast
                 | HandChoiceKind::DeployCreatures
                 | HandChoiceKind::DeployPermanents => unreachable!(),
             }

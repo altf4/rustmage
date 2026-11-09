@@ -250,6 +250,8 @@ impl Game {
             | Action::AnnounceAirbend { card, .. }
             | Action::AnnounceExileLife { card, .. }
             | Action::AnnounceExileFree { card, .. }
+            | Action::AnnounceLinkedFree { card, .. }
+            | Action::AnnounceLinkedExileCounterCost { card, .. }
             | Action::AnnounceFlashSurcharge { card }
             | Action::AnnounceWarp { card }
             | Action::AnnounceDisguise { card }
@@ -441,6 +443,7 @@ impl Game {
                 self.commit_planned_zone_move(
                     before,
                     zone_replacements::Plan {
+                        completion: None,
                         destination: Zone::Library,
                         prevented: false,
                         shuffle: None,

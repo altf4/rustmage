@@ -3,10 +3,45 @@
   "catalogue_id": 707,
   "oracle_id": "4a220e0c-e463-4264-9a96-658cf842b82e",
   "facts_sha256": "585c3143b0bd04bfb1da882d4d8c0461498d9562969b3570fa82da4dad4f0ebf",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0186fc4007a8dbb5b79bc17eb0dd1225a3b9d02f24ef67d28bcc15e395a645ca"
   },
-  "physical_metadata_sha256": "4d3cbc075e74b4425edf6d57594b34e00fe147b314953f545adca0a4ee5145b6"
+  "physical_metadata_sha256": "4d3cbc075e74b4425edf6d57594b34e00fe147b314953f545adca0a4ee5145b6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ChampionOfTheClachan.java",
+  "java_sha256": "0038e8d9be005fd8c9793fb79b82c2b93db4e067f4f9f4e46251a21f80316531",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/BeholdAndExileCost.java",
+      "sha256": "b06597a0ae153b477ef98fa1c4739553b3daf4402db13e9f573747a52387128c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/constants/BeholdType.java",
+      "sha256": "b9b6ef548969c8e1bbde48ec05adb6ae62139ab3fbdd72a91f8154817dc17c2c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/LeavesBattlefieldTriggeredAbility.java",
+      "sha256": "c4061b0636d580e727a5f586192bff129fedfe84eaa6e1c1bc051c4981f2e274"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromExileForSourceEffect.java",
+      "sha256": "b0754ee22bda5e1936a52be104298ba4c6c54ac8252c2cf81054ec6da2959da6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    }
+  ]
 }

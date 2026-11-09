@@ -9,7 +9,9 @@ pub enum CastCostClause {
         selected: Option<ObjectRef>,
     },
     Casualty(u16),
+    Conspire(u16),
     Additional,
+    OriginCounters(u16),
     SneakReturn(Option<ObjectRef>),
     /// Exile the activated craft source as its own ordered cost component.
     CraftSource,
@@ -104,9 +106,23 @@ impl Announcement {
     }
     pub(super) fn initialize_cast_costs(&mut self, improvise: bool) {
         self.initialize_alternative_life();
+        if let Some(amount) = self.linked_origin_counter_cost() {
+            self.add_cast_cost_clause(CastCostClause::Mana);
+            self.add_cast_cost_clause(CastCostClause::OriginCounters(amount));
+        }
         if self.has_compound_sneak_cost() {
             self.add_cast_cost_clause(CastCostClause::Mana);
             self.add_cast_cost_clause(CastCostClause::SneakReturn(None));
+        }
+        if self.additional_cost().is_some_and(|s| {
+            matches!(
+                s.kind.payment_kind(),
+                EffectChoiceKind::BeholdMany(_)
+                    | EffectChoiceKind::BeholdAndExile
+                    | EffectChoiceKind::BlightCost(_)
+            )
+        }) {
+            self.add_cast_cost_clause(CastCostClause::Mana);
         }
         if self.nonmana_x() {
             self.add_cast_cost_clause(CastCostClause::Mana);
@@ -161,6 +177,19 @@ impl Announcement {
                     .unwrap()
                     .minimum,
             ));
+        }
+        let conspire: Vec<_> = self
+            .conspire
+            .as_deref()
+            .into_iter()
+            .flatten()
+            .enumerate()
+            .filter(|(_, r)| r.pay)
+            .map(|(i, _)| CastCostClause::Conspire(u16::try_from(i).expect("conspire index")))
+            .collect();
+        for clause in conspire {
+            self.add_cast_cost_clause(clause);
+            self.add_cast_cost_clause(CastCostClause::Mana);
         }
         let casualty: Vec<_> = self
             .casualty
@@ -233,7 +262,9 @@ impl Game {
             let clause = costs.clauses[usize::from(index)].clause;
             assert!(matches!(
                 clause,
-                CastCostClause::Additional | CastCostClause::Mana
+                CastCostClause::Additional
+                    | CastCostClause::Mana
+                    | CastCostClause::OriginCounters(_)
             ));
             costs.clauses[usize::from(index)].paid = true;
             costs.active = None;
@@ -241,10 +272,16 @@ impl Game {
                 costs.mana_paid = true;
                 self.pay_mana_contributors(a);
             }
+            if let CastCostClause::OriginCounters(amount) = clause {
+                let selected = a.creature_counter_cost.take().unwrap_or_default();
+                assert_eq!(selected.len(), usize::from(amount));
+                self.pay_selected_creature_counters(&mut a.item, &selected);
+                a.additional = None;
+            }
             if clause == CastCostClause::Additional {
                 a.additional_paid = true;
                 self.pay_additional_cost(a);
-                if self.state.entry_batch.is_some() {
+                if self.state.entry_batch.is_some() || self.state.replacements.is_some() {
                     return true;
                 }
             }
@@ -284,9 +321,7 @@ impl Game {
             CastCostClause::Mana => {
                 let delving = self.item_delve(&a.item);
                 let contributors = a.item.kind == StackKind::Spell
-                    && (a.item.source.unwrap().card.has_convoke()
-                        || self.item_improvise(&a.item)
-                        || delving);
+                    && (self.item_convoke(&a.item) || self.item_improvise(&a.item) || delving);
                 if contributors && a.convoke.is_none() {
                     a.convoke = Some(Box::new(convoke::ConvokeSelection {
                         remaining: a.total_cost.expect("locked mana cost"),
@@ -295,13 +330,7 @@ impl Game {
                         delved: Vec::new(),
                     }));
                 }
-                self.state.pending = if a
-                    .item
-                    .source
-                    .expect("cost announcement has object source")
-                    .card
-                    .has_convoke()
-                {
+                self.state.pending = if self.item_convoke(&a.item) {
                     Pending::Convoke {
                         player: a.item.controller,
                     }
@@ -369,6 +398,13 @@ impl Game {
                 self.state.announcing = Some(a);
                 self.finish_announcement();
             }
+            CastCostClause::Conspire(instance) => {
+                self.state.pending = Pending::ConspirePayment {
+                    player: a.item.controller,
+                    instance,
+                };
+                self.state.announcing = Some(a);
+            }
             CastCostClause::Casualty(instance) => {
                 self.state.pending = Pending::CasualtyPayment {
                     player: a.item.controller,
@@ -381,6 +417,20 @@ impl Game {
                     player: a.item.controller,
                 };
                 self.state.announcing = Some(a);
+            }
+            CastCostClause::OriginCounters(amount) => {
+                a.additional = None;
+                a.creature_counter_cost = Some(Box::new(Vec::new()));
+                let player = a.item.controller;
+                if amount == 0 {
+                    a.additional = Some(a.item.source.unwrap().object);
+                    self.state.pending = Pending::PayCosts { player };
+                    self.state.announcing = Some(a);
+                    self.resume_cast_cost_selection();
+                } else {
+                    self.state.pending = Pending::AdditionalCost { player };
+                    self.state.announcing = Some(a);
+                }
             }
             CastCostClause::Additional => {
                 let spec = a.additional_cost().unwrap();
@@ -402,6 +452,20 @@ impl Game {
                 }
             }
         }
+    }
+    pub(super) fn pay_conspire_clause(&mut self, objects: [ObjectRef; 2]) {
+        let Pending::ConspirePayment { instance, .. } = self.state.pending else {
+            unreachable!()
+        };
+        let a = self.state.announcing.as_mut().unwrap();
+        let row = &mut a.conspire.as_mut().unwrap()[usize::from(instance)];
+        row.objects = Some(objects);
+        row.paid = true;
+        let costs = a.cast_costs.as_mut().unwrap();
+        let active = costs.active.take().unwrap();
+        costs.clauses[usize::from(active)].paid = true;
+        self.tap_objects(&objects.map(|r| r.card));
+        self.finish_announcement();
     }
     pub(super) fn pay_casualty_clause(&mut self, object: ObjectRef) {
         let instance = match self.state.pending {

@@ -40,6 +40,7 @@ pub struct StaticAbilityGroup {
 pub enum AdditionalTriggerScope {
     ControlledSubtype(&'static str),
     ControlledCreatureSubtype(&'static str),
+    OtherControlledSubtype(&'static str),
     EquippedCreature,
     /// Only abilities triggered by a creature attacking, never other events.
     ControlledPermanentAttack,
@@ -65,6 +66,10 @@ pub enum StaticAbilityFragment {
     CastLinkedExileAtThreshold,
     /// Initiates its controller's persistent speed designation as a state-based action.
     StartYourEngines,
+    /// No player can draw cards while this rule ability is active.
+    CantDrawCards,
+    LinkedExileFreeCastBySubtypeUnion(&'static [&'static str]),
+    LinkedExileCreatureCounterCasting(u16),
     /// Use live toughness rather than power when paying Crew or Saddle costs.
     CrewSaddleWithToughness,
     /// A layer-six activated-ability template granted to this source at max speed.
@@ -77,6 +82,9 @@ pub enum StaticAbilityFragment {
     OtherControlledExhaustGenericReduction(u32),
     ArtifactTokenActivationReduction(u32),
     ControlledLandTapManaBonus(Mana),
+    AttachedChosenColor,
+    AttachmentManaBonus(ManaProduction),
+    BasicLandTapManaBonus(u16),
     /// Controlled instant and sorcery spells have split second.
     ControlledInstantSorcerySplitSecond,
     /// Permanents controlled by this source's controller cannot be sacrificed.
@@ -114,6 +122,8 @@ pub enum StaticAbilityFragment {
     AttachedCreaturePreventsSourceAttack,
     /// Controlled creatures with greater toughness assign combat damage using toughness.
     ControlledCombatDamageByGreaterToughness,
+    /// Attached creature assigns combat damage with toughness only when greater.
+    AttachmentCombatToughnessIfGreater,
     /// Add one independent blocking requirement for this creature.
     MustBeBlocked,
     /// This source assigns combat damage using the magnitude of negative power.
@@ -173,6 +183,8 @@ pub enum StaticAbilityFragment {
     ControlAttached,
     AttachedCharacteristics(&'static AttachedCharacteristics),
     ChosenCreatureType,
+    /// Layer-four type grant supplied by an attached permanent.
+    AttachedAllCreatureTypes,
     /// Add this source’s type to controlled creatures, optionally of a required subtype.
     ControlledCreatureSubtype {
         grant: CreatureSubtypeGrant,
@@ -200,11 +212,22 @@ pub enum StaticAbilityFragment {
     ChosenModifier(ChosenModifier),
     /// Grant keywords to creatures of the source's chosen creature type.
     ChosenTypeKeywords(Keywords),
+    /// Sample an earlier-layer quantity for each controlled creature's modifier.
+    ControlledCreatureScaling {
+        subtype: Option<&'static str>,
+        value: StatValue,
+        stats: Stats,
+    },
     /// Grant keywords to controlled battlefield permanents matching a live kind mask.
     /// Any creature attacking an opponent player of this source controller.
     OpponentPlayerAttackerKeywords(Keywords),
     ControlledPermanentKeywords {
         kinds: u16,
+        keywords: Keywords,
+    },
+    /// Live grant to tapped controlled creatures, including virtual payment taps.
+    ControlledTappedKeywords {
+        other: bool,
         keywords: Keywords,
     },
     /// Grant the immutable activated template to controlled planeswalkers.
@@ -233,6 +256,9 @@ pub enum StaticAbilityFragment {
     CantLoseGameAndOpponentsCantWin,
     QualifiedHexproof(SourceCharacteristicFilter),
     ControlledSpellsUncounterable(u16),
+    /// Each instance grants a distinct optional paired-tap copy cost.
+    NoncreatureConspire,
+    ConvokeCreatureSpells,
     ControlledSpellsCasualty {
         kinds: u16,
         minimum: u16,
@@ -318,6 +344,13 @@ pub enum StaticAbilityFragment {
     AttachedTurnKeywords(Keywords),
     /// Stable index into the granting definition's immutable trigger array.
     AttachmentTrigger(u16),
+    /// Each matching creature owns the indexed granted trigger template.
+    /// Scope is evaluated in layer six and frozen for departure events.
+    ControlledCreatureTrigger {
+        ability: u16,
+        other: bool,
+        nontoken: bool,
+    },
     /// A real Ward instance granted by a live conditional static ability.
     ConditionalWard {
         condition: StatValue,
@@ -425,8 +458,11 @@ pub enum UntapRestriction {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug)]
 pub enum PermanentForm {
-    /// Replace only creature subtypes while retaining all card types.
+    /// Replace only creature subtypes while retaining all card types and, for
+    /// an empty color list, the existing colors.
     Preserve,
+    /// Retain card types but set colors, including an explicit colorless result.
+    PreserveWithColors,
     Creature,
     Land,
     /// Add creature type without removing other card or creature types.

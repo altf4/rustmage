@@ -74,7 +74,11 @@ impl Game {
             .map(|r| {
                 (
                     r.object.card,
-                    r.recipe.exceptions.sacrifice_abilities,
+                    r.recipe
+                        .exceptions
+                        .sacrifice_abilities
+                        .checked_add(r.recipe.exceptions.sacrifice_only_abilities)
+                        .capacity("copy sacrifice abilities"),
                     r.recipe.exceptions.conditional_sacrifice_abilities,
                 )
             })

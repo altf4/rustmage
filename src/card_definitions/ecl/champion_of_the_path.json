@@ -3,10 +3,40 @@
   "catalogue_id": 708,
   "oracle_id": "b326ccd5-8ad2-441c-9d73-82ee6390dd36",
   "facts_sha256": "8a3e00601e6e45666b6e05fb1a5c7b355327bac22fc47c741c9f8bac9ef54cbd",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1754a0d4a932d61a7e8908c3ac9c470378ed045c6cfe1dec67e71c256882dfc9"
   },
-  "physical_metadata_sha256": "5fe5c66890accb9659507db61256469b2ffda5f8b6db2479372cf6e95ccfb582"
+  "physical_metadata_sha256": "5fe5c66890accb9659507db61256469b2ffda5f8b6db2479372cf6e95ccfb582",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ChampionOfThePath.java",
+  "java_sha256": "e6f01bf9ed4e27c7675459a23637f96558590ada464f434a90cd22f25977cc66",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/BeholdAndExileCost.java",
+      "sha256": "b06597a0ae153b477ef98fa1c4739553b3daf4402db13e9f573747a52387128c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/constants/BeholdType.java",
+      "sha256": "b9b6ef548969c8e1bbde48ec05adb6ae62139ab3fbdd72a91f8154817dc17c2c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/LeavesBattlefieldTriggeredAbility.java",
+      "sha256": "c4061b0636d580e727a5f586192bff129fedfe84eaa6e1c1bc051c4981f2e274"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromExileForSourceEffect.java",
+      "sha256": "b0754ee22bda5e1936a52be104298ba4c6c54ac8252c2cf81054ec6da2959da6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+      "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+    }
+  ]
 }

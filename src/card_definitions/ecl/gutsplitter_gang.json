@@ -3,10 +3,35 @@
   "catalogue_id": 1914,
   "oracle_id": "322c1c8f-ef8a-4a9f-b9ce-927720bad1d6",
   "facts_sha256": "6049961f382c424533dc6c9cf085d5055c4eb59b84c4213694ab2c805ff97901",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "56ffadcfd7394f294630d3a27ecd7bacf76fa483befa639469ec8063bb63619d"
   },
-  "physical_metadata_sha256": "a5bf942ec63aa5d4399bf75ec95bf8c935a4830a5759c6f2dfe93f64459f5274"
+  "physical_metadata_sha256": "a5bf942ec63aa5d4399bf75ec95bf8c935a4830a5759c6f2dfe93f64459f5274",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GutsplitterGang.java",
+  "java_sha256": "f7304a5739eee4440484f618216c92493118592a85f66a9e70bd63a4131ef6a6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/BlightCost.java",
+      "sha256": "33a0d3714068f004db969c35c375e95470b9eaf389f5b2dd73aae3c67b498cd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfFirstMainTriggeredAbility.java",
+      "sha256": "8ae6196917d9e2e958cd19a7a009d89c0462a680be928b607658ce76526eb93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+      "sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+    }
+  ]
 }

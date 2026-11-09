@@ -11,6 +11,13 @@ pub(super) struct TriggerMultiplicityState {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl TriggerMultiplicityState {
+    pub(super) fn providers(game: &Game) -> &[CardId] {
+        game.state
+            .trigger_multiplicity
+            .as_deref()
+            .map_or(&[], |state| &state.providers)
+    }
+
     pub(super) fn bytes(&self) -> usize {
         std::mem::size_of::<Self>() + self.providers.len() * std::mem::size_of::<CardId>()
     }
@@ -45,15 +52,16 @@ fn additional_triggers_for_event<W: CharacteristicWorld + ?Sized>(
     id: CardId,
     attack_only: bool,
 ) -> usize {
-    let Some(state) = &query.game().state.trigger_multiplicity else {
+    let providers = query.trigger_multiplier_sources();
+    if providers.is_empty() {
         return 0;
-    };
+    }
     let recipient = query.object(id);
     if recipient.zone != Zone::Battlefield {
         return 0;
     }
     let mut extra = 0usize;
-    for &provider in &state.providers {
+    for &provider in providers {
         let object = query.object(provider);
         if object.zone != Zone::Battlefield {
             continue;
@@ -73,8 +81,11 @@ fn additional_triggers_for_event<W: CharacteristicWorld + ?Sized>(
                 { continue; }
                 let applies = match scope {
                     AdditionalTriggerScope::ControlledSubtype(subtype)
+                    | AdditionalTriggerScope::OtherControlledSubtype(subtype)
                     | AdditionalTriggerScope::ControlledCreatureSubtype(subtype) => {
                         recipient.controller == object.controller
+                            && (!matches!(scope, AdditionalTriggerScope::OtherControlledSubtype(_))
+                                || provider != id)
                             && query.subtypes(id).has(recipient.card, subtype)
                             && (!matches!(
                                 scope,

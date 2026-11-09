@@ -70,6 +70,14 @@ impl Announcement {
                 add(object);
             }
         }
+        if let Some(conspire) = &self.conspire {
+            for row in conspire.iter() {
+                add(row.grant.source);
+                for object in row.objects.into_iter().flatten() {
+                    add(object);
+                }
+            }
+        }
         if let Some(casualty) = &self.casualty {
             for row in casualty.iter() {
                 add(row.grant.source);
@@ -253,7 +261,7 @@ impl EntryProjection {
             if card.static_ability_groups().iter().any(|g| {
                 g.fragments
                     .iter()
-                    .any(|f| matches!(f, F::AttachedCharacteristics(_)))
+                    .any(|f| matches!(f, F::AttachedCharacteristics(_) | F::AttachedChosenColor))
             }) {
                 self.roles.characteristic_sources.push(source);
             }
@@ -520,6 +528,12 @@ impl FundingState<'_> {
                 source,
                 player,
             ),
+            StepGuard::PutCounterOnCreatureThisTurn => {
+                counter_placement_history::placed_on_creature(
+                    &self.counter_placement_history,
+                    player,
+                )
+            }
             StepGuard::SourceCreature => {
                 self.reference(source.card) == source
                     && self.object(source.card).zone == Zone::Battlefield
@@ -1058,7 +1072,11 @@ impl FundingState<'_> {
             && self.reference(target.card) == target
             && !characteristic_query::CharacteristicQuery::in_world(self)
                 .keywords(target.card)
-                .protects_from(m.before.card.colors(), m.before.card.kind_mask())
+                .protects_from_controller(
+                    m.before.card.colors(),
+                    m.before.card.kind_mask(),
+                    o.controller != m.controller,
+                )
             && ability_world::aura_kind_matches(self, m.before.card, target.card)
             && match spec.relation {
                 0 => o.controller == m.controller,
@@ -1106,8 +1124,9 @@ impl FundingState<'_> {
                         .into_iter()
                         .map(EntryChoiceValue::BasicLandType),
                 ),
-                crate::cards::EntryChoiceKind::CreatureType => {
-                    choices.extend(crate::CREATURE_TYPES.iter().map(|name| {
+                crate::cards::EntryChoiceKind::CreatureType
+                | crate::cards::EntryChoiceKind::CreatureTypes(_) => {
+                    choices.extend(kind.creature_type_names().unwrap().iter().map(|name| {
                         EntryChoiceValue::CreatureType(
                             crate::cards::CreatureType::from_name(name).unwrap(),
                         )
@@ -1432,7 +1451,8 @@ impl FundingState<'_> {
             || m.enchantment_return
             || m.ghost_vacuum_after.is_some()
             || m.food_return.is_some()
-            || m.return_modification.is_some()
+            || m.return_modification
+                .is_some_and(|(kind, _)| kind != ReturnKind::WithoutAbilities)
             || CounterAmounts::from(&m.counters)
                 .keyword_amounts()
                 .iter()
@@ -1549,14 +1569,6 @@ impl FundingState<'_> {
                         .unwrap()
                         .battle_protectors
                         .push((source, protector));
-                }
-                if m.counters.has_any() {
-                    counter_placement_history::record(
-                        &mut next.counter_placement_history,
-                        source,
-                        m.controller,
-                        m.counters.plus_one > 0,
-                    );
                 }
                 let p = next.entry_projection.as_mut().unwrap();
                 if !p.static_sources.contains(&row.id) {
@@ -1757,7 +1769,11 @@ impl FundingState<'_> {
                     keywords: keywords.without(keywords.resolution_rules()),
                     rules: keywords.resolution_rules(),
                     timestamp,
-                    expires_turn: Some(turn),
+                    expires_turn: if m.keywords_after_permanent {
+                        None
+                    } else {
+                        Some(turn)
+                    },
                 });
                 let row = next
                     .resources
@@ -1802,6 +1818,22 @@ impl FundingState<'_> {
             }
         }
         for m in &moves {
+            if !m.skipped
+                && m.destination == Zone::Battlefield
+                && let Some((ReturnKind::WithoutAbilities, source)) = m.return_modification
+            {
+                let recipient = next.reference(m.before.id);
+                let p = next.entry_projection.as_mut().unwrap();
+                let timestamp = p.roles.next_timestamp();
+                p.roles
+                    .resolved_ability_modifications
+                    .push(ResolvedAbilityModificationView {
+                        recipient,
+                        source,
+                        keywords: Keywords::NONE,
+                        timestamp,
+                    });
+            }
             if !m.skipped
                 && m.destination == Zone::Battlefield
                 && let Some(source) = m.blank_with_haste_after
@@ -1861,6 +1893,20 @@ impl FundingState<'_> {
         }
         next.refresh_control_projection();
         next.refresh_enduring_projection();
+        for m in &moves {
+            if m.skipped || m.destination != Zone::Battlefield || !m.counters.has_any() {
+                continue;
+            }
+            let source = next.reference(m.before.id);
+            let on_creature = CharacteristicWorld::kinds(&next, source.card) & 1 != 0;
+            counter_placement_history::record(
+                &mut next.counter_placement_history,
+                source,
+                m.controller,
+                m.counters.plus_one > 0,
+                on_creature,
+            );
+        }
         if moves
             .iter()
             .any(|movement| movement.post_entry_counters.is_some())
@@ -1904,11 +1950,13 @@ impl FundingState<'_> {
                     None,
                 );
                 if amount.has_any() {
+                    let on_creature = CharacteristicWorld::kinds(&next, object.card) & 1 != 0;
                     counter_placement_history::record(
                         &mut next.counter_placement_history,
                         *object,
                         *player,
                         amount.plus_one > 0,
+                        on_creature,
                     );
                 }
             }
@@ -2031,13 +2079,15 @@ impl Game {
                 self,
                 &goal,
                 parent.announcement.item.kind == StackKind::Spell
-                    && parent
-                        .announcement
-                        .item
-                        .source
-                        .expect("cost announcement has object source")
-                        .card
-                        .has_convoke(),
+                    && convoke::potential(
+                        self,
+                        parent
+                            .announcement
+                            .item
+                            .source
+                            .expect("cost announcement has object source")
+                            .card,
+                    ),
             );
             world.set_purpose(self.purpose_for_item(&parent.announcement.item));
             world.set_payment_context(&parent.announcement);
@@ -2053,11 +2103,13 @@ impl Game {
                 self,
                 &goal,
                 a.item.kind == StackKind::Spell
-                    && a.item
-                        .source
-                        .expect("cost announcement has object source")
-                        .card
-                        .has_convoke(),
+                    && convoke::potential(
+                        self,
+                        a.item
+                            .source
+                            .expect("cost announcement has object source")
+                            .card,
+                    ),
             );
             world.set_purpose(self.purpose_for_item(&a.item));
             world.set_payment_context(a);
@@ -2221,6 +2273,78 @@ impl Game {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl<'g> FundingState<'g> {
+    fn visit_mana_source_counter_cost(
+        &self,
+        object: ObjectRef,
+        cost: Option<(CounterKind, u64)>,
+        emit: &mut dyn FnMut(&Self) -> bool,
+    ) -> bool {
+        let Some((kind, amount)) = cost.filter(|(_, amount)| *amount != 0) else {
+            return emit(self);
+        };
+        if self.reference(object.card) != object || replacements::counters_prohibited(self, object)
+        {
+            return false;
+        }
+        let recipient = self.object(object.card);
+        let placement = replacements::CounterPlacement {
+            object,
+            amount: Counters::of(kind, amount),
+            placed_by: self.actor,
+            card: recipient.card,
+            owner: recipient.owner,
+            controller: recipient.controller,
+            protector: self.battle_protector(object),
+            subtypes: self.subtypes(object.card),
+            kind: CharacteristicWorld::kinds(self, object.card),
+            power: self.power(object.card),
+            effect: false,
+            entry_index: None,
+            private: false,
+        };
+        replacements::counter_outcomes(
+            self,
+            &placement,
+            &mut Vec::new(),
+            &|placement| placement.clone(),
+            &mut |placed| {
+                let mut next = self.clone();
+                next.prepare_entry_projection();
+                let mut total = next.counter_amounts(object.card).to_owned();
+                let before = CounterAmounts::from(&total).keyword_amounts();
+                for kind in CounterKind::ALL {
+                    total.add(kind, placed.get(kind));
+                }
+                let after = CounterAmounts::from(&total).keyword_amounts();
+                next.resources
+                    .iter_mut()
+                    .find(|row| row.id == object.card)
+                    .unwrap()
+                    .object
+                    .counters = total.hot();
+                live_counters::set(&mut next.named_counters, object, total.named);
+                keyword_counters::sync_effects(
+                    &mut next.entry_projection.as_mut().unwrap().roles,
+                    object,
+                    before,
+                    after,
+                    None,
+                );
+                if placed.has_any() {
+                    counter_placement_history::record(
+                        &mut next.counter_placement_history,
+                        object,
+                        self.actor,
+                        placed.plus_one > 0,
+                        placement.kind & 1 != 0,
+                    );
+                }
+                next.refresh_control_projection();
+                next.refresh_enduring_projection();
+                emit(&next)
+            },
+        )
+    }
     pub(super) fn visit_applied(
         &self,
         step: &FundingMove,
@@ -2229,7 +2353,23 @@ impl<'g> FundingState<'g> {
         if step.output.as_ref().and_then(|o| o.deferred_cost).is_some() {
             return self.visit_deferred(step, emit);
         }
-        if step.external.is_none()
+        let source_counter_cost = step.ability.and_then(|index| {
+            let definition = step.frozen.as_deref().map_or_else(
+                || {
+                    step.self_grant.map_or_else(
+                        || {
+                            step.borrowed
+                                .map_or(self.resources[step.resource].object.card, |a| a.definition)
+                        },
+                        |g| g.0,
+                    )
+                },
+                |f| f.0,
+            );
+            definition.activation_put_counter(index)
+        });
+        if source_counter_cost.is_none()
+            && step.external.is_none()
             && self.cast_costs.is_none()
             && self.continuation.is_none()
             && self.entry_projection.is_none()
@@ -2249,8 +2389,11 @@ impl<'g> FundingState<'g> {
             && self.counter_count(self.resources[step.resource].id, CounterKind::Finality) == 0
         {
             let mut next = self.clone();
-            let bonus = next.apply(step, false);
-            if let Some(production) = next.singleton_output(step) {
+            let (bonus, tap_source) = next.apply(step, false);
+            let bonus = bonus.with_trigger_bonuses(&next, self.actor, tap_source);
+            if let Some(production) = next.singleton_output(step)
+                && let Some(bonus) = bonus.singleton(production)
+            {
                 next.add_funding_output(step, bonus, production);
                 return emit(&next);
             }
@@ -2292,7 +2435,7 @@ impl<'g> FundingState<'g> {
         // Keep the post-payment counter snapshot until replacement planning.
         // Paying away the final Finality counter must differ from sacrificing
         // a permanent which still has one after the counter cost.
-        let bonus = next.apply(step, true);
+        let (bonus, tap_source) = next.apply(step, true);
         let departed = source.object.zone != next.object(source.id).zone;
         let destination = next.object(source.id).zone;
         if departed {
@@ -2313,12 +2456,20 @@ impl<'g> FundingState<'g> {
                 return false;
             }
         }
-        next.visit_mana_cost_departures(
-            reference,
-            departed.then_some(destination),
-            external,
-            &mut |world| world.visit_output(step, bonus, emit),
-        )
+        // The executor taps before this source-counter event, then performs
+        // departure costs. Retain the captured tap bonus while replacements
+        // update the counter world used by subsequent costs and mana output.
+        next.visit_mana_source_counter_cost(reference, source_counter_cost, &mut |world| {
+            world.visit_mana_cost_departures(
+                reference,
+                departed.then_some(destination),
+                external,
+                &mut |world| {
+                    let bonus = bonus.with_trigger_bonuses(world, self.actor, tap_source);
+                    world.visit_output(step, bonus, emit)
+                },
+            )
+        })
     }
     pub(super) fn visit_mana_cost_departures(
         &self,
@@ -2335,7 +2486,13 @@ impl<'g> FundingState<'g> {
                 if !world.cost_object(spec, selected.object, source) {
                     return false;
                 }
-                world.cost_departures(&[selected.object], selected.destination(), emit)
+                if spec.kind.payment_kind() == EffectChoiceKind::TapPermanents(1) {
+                    let mut next = world.clone();
+                    next.resources[selected.resource].object.tapped = true;
+                    emit(&next)
+                } else {
+                    world.cost_departures(&[selected.object], selected.destination(), emit)
+                }
             } else {
                 emit(world)
             }
@@ -2577,7 +2734,27 @@ impl<'g> FundingState<'g> {
                 if found {
                     return;
                 }
-                let external = a.additional.and_then(|object| {
+                let selected = a.additional.or_else(|| {
+                    if a.additional_paid
+                        || a.additional_cost()?.kind.payment_kind()
+                            != EffectChoiceKind::TapPermanents(1)
+                    {
+                        return None;
+                    }
+                    // Candidate-group previews precede the immutable
+                    // announcement update. Retain that exact proposed witness.
+                    let group = self
+                        .cost_group
+                        .as_ref()
+                        .filter(|(spec, _)| {
+                            spec.kind.payment_kind() == EffectChoiceKind::TapPermanents(1)
+                        })
+                        .map(|(_, group)| group.as_slice())
+                        .or_else(|| a.additional_group.as_deref().map(Vec::as_slice))?;
+                    let [object] = group else { return None };
+                    Some(*object)
+                });
+                let external = selected.and_then(|object| {
                     self.resources
                         .iter()
                         .position(|r| {
@@ -2589,7 +2766,7 @@ impl<'g> FundingState<'g> {
                             kind: a.additional_cost().expect("selected mana cost").kind,
                         })
                 });
-                if a.additional.is_some() && external.is_none() {
+                if selected.is_some() && external.is_none() {
                     return;
                 }
                 let step = FundingMove {
@@ -2637,6 +2814,14 @@ impl<'g> FundingState<'g> {
                             .is_some_and(|pending| w.guided_mana_resume_fundable(pending));
                     };
                     let mut next = w.clone();
+                    if a.additional_cost().is_some_and(|spec| {
+                        spec.kind.payment_kind() == EffectChoiceKind::TapPermanents(1)
+                    }) {
+                        // The child's exact tap was just paid. Its reservation
+                        // cannot survive as a fresh unpaid parent cost. The
+                        // parent's own selections are installed below.
+                        next.cost_group = None;
+                    }
                     next.set_funding_continuation(
                         &parent.announcement,
                         outer,
@@ -2645,13 +2830,15 @@ impl<'g> FundingState<'g> {
                     next.continuation_memo = query.continuation_memo.clone();
                     next.set_purpose(self.game.purpose_for_item(&parent.announcement.item));
                     next.convoke = parent.announcement.item.kind == StackKind::Spell
-                        && parent
-                            .announcement
-                            .item
-                            .source
-                            .expect("cost announcement has object source")
-                            .card
-                            .has_convoke();
+                        && convoke::potential(
+                            self,
+                            parent
+                                .announcement
+                                .item
+                                .source
+                                .expect("cost announcement has object source")
+                                .card,
+                        );
                     next.set_payment_context(&parent.announcement);
                     next.reachable_with_evidence(
                         parent_goal.as_ref().expect("parent goal"),

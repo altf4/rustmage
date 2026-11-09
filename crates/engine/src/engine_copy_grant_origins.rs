@@ -102,6 +102,8 @@ pub(super) fn program_grant_active<W: ability_world::CharacteristicWorld + ?Size
                     || matches!(
                         fragment,
                         F::AttachmentTrigger(_)
+                            | F::ConditionalWard { .. }
+                            | F::ControlledCreatureTrigger { .. }
                             | F::SourceMaxSpeedActivation(_)
                             | F::AttachmentActivation { .. }
                             | F::ControlledPlaneswalkerActivation(_)

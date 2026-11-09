@@ -174,5 +174,9 @@ pub(super) fn can_attach<W: ability_world::CharacteristicWorld + ?Sized>(
         && world.kinds(target.card) & 1 != 0
         && !characteristic_query::CharacteristicQuery::in_world(world)
             .keywords(target.card)
-            .protects_from(world.colors(source.card), world.kinds(source.card))
+            .protects_from_controller(
+                world.colors(source.card),
+                world.kinds(source.card),
+                world.object(source.card).controller != world.object(target.card).controller,
+            )
 }

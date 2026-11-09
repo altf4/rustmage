@@ -115,6 +115,15 @@ impl Game {
                 && a.item.controller == actor
                 && a.item.source.is_some_and(|s| s.id == id && s.card == card)
         });
+        self.scalar_x_intervals_with_announcement(actor, id, card, current)
+    }
+    pub(super) fn scalar_x_intervals_with_announcement(
+        &self,
+        actor: Player,
+        id: CardId,
+        card: Card,
+        current: Option<&Announcement>,
+    ) -> Vec<XInterval> {
         let symbols = u64::from(card.x_symbols());
         if current.map_or(symbols, |a| u64::from(a.payment_x_symbols())) == 0 {
             return Vec::new();
@@ -174,6 +183,36 @@ impl Game {
                 }
             }
         }
+        if symbols > 0 {
+            let mut add_minimum = |minimum: u64| {
+                cuts.push(
+                    minimum
+                        .saturating_sub(card.fixed_mana_value())
+                        .div_ceil(symbols)
+                        .min(end),
+                )
+            };
+            if let Some(state) = &self.state.mana_lots {
+                for lot in &state.pools[actor.index()] {
+                    if let mana_lots::ManaRestrictionView::SpellManaValueAtLeast(minimum) =
+                        lot.quality.restriction
+                    {
+                        add_minimum(minimum);
+                    }
+                }
+            }
+            // A threshold also matters before the restricted producer has been tapped.
+            for object in &self.state.objects {
+                for ability in object.card.activations() {
+                    if let Some(ManaProduction::Tagged { quality, .. }) = ability.mana_production()
+                        && let crate::cards::ManaRestriction::SpellManaValueAtLeast(minimum) =
+                            quality.restriction
+                    {
+                        add_minimum(minimum);
+                    }
+                }
+            }
+        }
         cuts.sort_unstable();
         cuts.dedup();
         let (colored, generic) = card.cost();
@@ -188,7 +227,14 @@ impl Game {
             }
             self.scalar_x_total_for_definition(actor, id, base, x, card)
                 .is_some_and(|cost| {
-                    self.spell_can_fund_total_for_definition(actor, id, cost, None, card)
+                    self.spell_can_fund_total_at_value(
+                        actor,
+                        id,
+                        cost,
+                        None,
+                        card,
+                        Some(card.fixed_mana_value() + symbols * u64::from(x)),
+                    )
                 })
         };
         let mut intervals: Vec<XInterval> = Vec::new();
@@ -301,7 +347,9 @@ impl Game {
             return None;
         }
         let a = self.state.announcing.as_ref()?;
-        let mut intervals = if a.nonmana_x() {
+        let mut intervals = if a.blight_x_cost() {
+            self.blight_x_intervals(a)
+        } else if a.nonmana_x() {
             self.nonmana_x_intervals(a)
         } else if a.item.kind == StackKind::Spell
             && a.item
@@ -494,6 +542,24 @@ impl Game {
                     }
                 })
             }
+            AmountValue::DeathEventPower => item.event_object.as_ref().map_or(0, |event| {
+                if let EventObjectFacts::CreatureComparison(facts) = event.facts {
+                    if facts.creature {
+                        facts.power.max(0) as u128
+                    } else {
+                        0
+                    }
+                } else {
+                    0
+                }
+            }),
+            AmountValue::DeathEventCounterTotal => item.event_object.as_ref().map_or(0, |event| {
+                if let EventObjectFacts::DeathCounters(counters) = &event.facts {
+                    counters.total()
+                } else {
+                    0
+                }
+            }),
             AmountValue::DeathEventToughness => item.event_object.as_ref().map_or(0, |event| {
                 if let EventObjectFacts::CreatureComparison(facts) = event.facts {
                     facts.toughness.max(0) as u128

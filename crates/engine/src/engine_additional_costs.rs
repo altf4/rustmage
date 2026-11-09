@@ -159,6 +159,12 @@ impl Game {
         {
             return false;
         }
+        if !projected
+            && matches!(spec.kind.payment_kind(), EffectChoiceKind::BlightCost(n) if n > 0)
+            && replacements::counters_prohibited(self, object)
+        {
+            return false;
+        }
         let spec = spec.in_zone(o.zone);
         if matches!(
             spec.kind.payment_kind(),
@@ -172,7 +178,9 @@ impl Game {
             return false;
         }
         let controls_cost_object = match spec.kind.payment_kind() {
-            EffectChoiceKind::Behold => match o.zone {
+            EffectChoiceKind::Behold
+            | EffectChoiceKind::BeholdMany(_)
+            | EffectChoiceKind::BeholdAndExile => match o.zone {
                 Zone::Battlefield => o.controller == actor,
                 Zone::Hand => o.owner == actor,
                 _ => false,
@@ -185,7 +193,8 @@ impl Game {
             | EffectChoiceKind::ExileGraveyardCards(_)
             | EffectChoiceKind::ExileGraveyardRange { .. }
             | EffectChoiceKind::ExileGraveyardSymbols { .. } => o.owner == actor,
-            EffectChoiceKind::ExileControlled
+            EffectChoiceKind::BlightCost(_)
+            | EffectChoiceKind::ExileControlled
             | EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeRange { .. }
             | EffectChoiceKind::SacrificeDifferentNames(_)
@@ -265,7 +274,13 @@ impl Game {
             return false;
         }
         let zone = match spec.kind.payment_kind() {
-            EffectChoiceKind::Behold if matches!(o.zone, Zone::Battlefield | Zone::Hand) => o.zone,
+            EffectChoiceKind::Behold
+            | EffectChoiceKind::BeholdMany(_)
+            | EffectChoiceKind::BeholdAndExile
+                if matches!(o.zone, Zone::Battlefield | Zone::Hand) =>
+            {
+                o.zone
+            }
             EffectChoiceKind::ExileGraveyard
             | EffectChoiceKind::ExileGraveyardCards(_)
             | EffectChoiceKind::ExileGraveyardRange { .. }
@@ -274,7 +289,8 @@ impl Game {
             | EffectChoiceKind::DiscardNamed(_)
             | EffectChoiceKind::DiscardMatchingLegendary
             | EffectChoiceKind::DiscardLegendary => Zone::Hand,
-            EffectChoiceKind::ExileControlled
+            EffectChoiceKind::BlightCost(_)
+            | EffectChoiceKind::ExileControlled
             | EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeRange { .. }
             | EffectChoiceKind::SacrificeDifferentNames(_)
@@ -298,6 +314,9 @@ impl Game {
             && zone == Zone::Hand
             && !o.is_card()
         {
+            return false;
+        }
+        if matches!(spec.kind.payment_kind(), EffectChoiceKind::BlightCost(_)) && kinds & 1 == 0 {
             return false;
         }
         let f = spec.filter;
@@ -380,7 +399,21 @@ impl Game {
         route: Option<ForageRoute>,
         definition: Card,
     ) -> bool {
-        let purpose = self.spell_mana_purpose_for_card(actor, card, definition);
+        self.spell_can_fund_total_at_value(actor, card, cost, route, definition, None)
+    }
+    pub(super) fn spell_can_fund_total_at_value(
+        &self,
+        actor: Player,
+        card: CardId,
+        cost: ManaCost,
+        route: Option<ForageRoute>,
+        definition: Card,
+        mana_value: Option<u64>,
+    ) -> bool {
+        let mut purpose = self.spell_mana_purpose_for_card(actor, card, definition);
+        if let (mana_lots::Purpose::Spell(source), Some(value)) = (&mut purpose, mana_value) {
+            source.mana_value = value;
+        }
         let base = FundingGoal {
             actor,
             required: cost.colored,
@@ -401,11 +434,17 @@ impl Game {
         ) {
             return result;
         }
-        if definition.has_convoke() {
+        if convoke::potential(self, definition) {
             return self.can_fund_convoke_for(base, purpose);
         }
         if improvise::potential(self, definition) {
             return self.can_fund_contributions_for(base, purpose, false);
+        }
+        if definition
+            .additional_cost()
+            .is_some_and(|s| matches!(s.kind, EffectChoiceKind::OptionalBeholdType(_)))
+        {
+            return self.can_fund_for(base, purpose);
         }
         let Some(spec) = definition.additional_cost() else {
             return self.can_fund_for(base, purpose);
@@ -422,7 +461,8 @@ impl Game {
         }
         if matches!(
             spec.kind.payment_kind(),
-            EffectChoiceKind::TapPermanents(_)
+            EffectChoiceKind::BeholdMany(_)
+                | EffectChoiceKind::TapPermanents(_)
                 | EffectChoiceKind::ExileGraveyardCards(_)
                 | EffectChoiceKind::ExileGraveyardRange { .. }
                 | EffectChoiceKind::ExileGraveyardSymbols { .. }
@@ -464,7 +504,8 @@ impl Game {
             return self.can_fund_symbol_cost_group(goal, purpose, spec, source, chosen);
         }
         let amount = match spec.kind.payment_kind() {
-            EffectChoiceKind::TapPermanents(n)
+            EffectChoiceKind::BeholdMany(n)
+            | EffectChoiceKind::TapPermanents(n)
             | EffectChoiceKind::ExileGraveyardCards(n)
             | EffectChoiceKind::SacrificePermanents(n) => n,
             _ => unreachable!("group cost"),
@@ -559,6 +600,9 @@ impl Game {
         let Some(spec) = spec else {
             return self.can_fund(goal);
         };
+        if matches!(spec.kind.payment_kind(), EffectChoiceKind::BlightCost(_)) {
+            return self.preview_blight_activation(goal, spec);
+        }
         if spec.kind == EffectChoiceKind::DiscardHand {
             // Mana abilities run before the whole-hand payment, so no current
             // card is reserved: even an empty resulting hand is payable.
@@ -615,7 +659,8 @@ impl Game {
         }
         if matches!(
             spec.kind.payment_kind(),
-            EffectChoiceKind::TapPermanents(_)
+            EffectChoiceKind::BeholdMany(_)
+                | EffectChoiceKind::TapPermanents(_)
                 | EffectChoiceKind::ExileGraveyardCards(_)
                 | EffectChoiceKind::ExileGraveyardRange { .. }
                 | EffectChoiceKind::ExileGraveyardSymbols { .. }
@@ -667,7 +712,8 @@ impl Game {
             }
             if matches!(
                 spec.kind.payment_kind(),
-                EffectChoiceKind::TapPermanents(_)
+                EffectChoiceKind::BeholdMany(_)
+                    | EffectChoiceKind::TapPermanents(_)
                     | EffectChoiceKind::ExileGraveyardCards(_)
                     | EffectChoiceKind::ExileGraveyardRange { .. }
                     | EffectChoiceKind::ExileGraveyardSymbols { .. }
@@ -729,7 +775,8 @@ impl Game {
         }
         if matches!(
             spec.kind.payment_kind(),
-            EffectChoiceKind::TapPermanents(_)
+            EffectChoiceKind::BeholdMany(_)
+                | EffectChoiceKind::TapPermanents(_)
                 | EffectChoiceKind::ExileGraveyardCards(_)
                 | EffectChoiceKind::ExileGraveyardRange { .. }
                 | EffectChoiceKind::ExileGraveyardSymbols { .. }
@@ -821,7 +868,8 @@ impl Game {
             a.additional_group.get_or_insert_default().push(object);
             return;
         }
-        if let EffectChoiceKind::TapPermanents(amount)
+        if let EffectChoiceKind::BeholdMany(amount)
+        | EffectChoiceKind::TapPermanents(amount)
         | EffectChoiceKind::ExileGraveyardCards(amount)
         | EffectChoiceKind::SacrificeDifferentNames(amount)
         | EffectChoiceKind::SacrificePermanents(amount) =
@@ -918,6 +966,26 @@ impl Game {
                         .card,
                 ),
             );
+        }
+        if let EffectChoiceKind::BeholdMany(amount) = spec.kind {
+            let group = a
+                .additional_group
+                .as_deref()
+                .expect("selected behold group");
+            assert_eq!(group.len(), usize::from(amount));
+            for &object in group {
+                assert!(self.additional_candidate(
+                    spec,
+                    a.item.controller,
+                    a.item.source.unwrap().object,
+                    object
+                ));
+                if self.state.objects[object.card as usize].zone == Zone::Hand {
+                    self.remember_public_hand(object);
+                }
+            }
+            a.additional_paid = true;
+            return;
         }
         if let EffectChoiceKind::ExileCraftNonlands(minimum) = spec.kind.payment_kind() {
             let group = a
@@ -1139,12 +1207,35 @@ impl Game {
         }
         let spec = spec.in_zone(self.state.objects[object.card as usize].zone);
         match spec.kind.payment_kind() {
-            EffectChoiceKind::Behold => {
+            EffectChoiceKind::BlightCost(amount) => {
+                self.blight_counters(
+                    vec![(a.item.controller, object)],
+                    amount,
+                    false,
+                    replacements::ResumeMode::CastCosts,
+                );
+            }
+            EffectChoiceKind::Behold | EffectChoiceKind::BeholdAndExile => {
                 if self.state.objects[object.card as usize].zone == Zone::Hand {
                     self.remember_public_hand(object);
                 }
+                if spec.kind == EffectChoiceKind::BeholdAndExile {
+                    let event = self.move_object(object.card, Zone::Exile);
+                    if event.moved && event.destination == Zone::Exile {
+                        a.item
+                            .cast
+                            .as_mut()
+                            .expect("behold exile spell receipt")
+                            .behold_exiled = Some(event.after);
+                    }
+                }
             }
-            EffectChoiceKind::ColorCounter { .. }
+            EffectChoiceKind::Blight(_)
+            | EffectChoiceKind::BlightXCost
+            | EffectChoiceKind::KeepSharedCreatureTypes
+            | EffectChoiceKind::ColorCounter { .. }
+            | EffectChoiceKind::PowerDifferenceBoost
+            | EffectChoiceKind::OptionalBeholdType(_)
             | EffectChoiceKind::FilteredCost { .. }
             | EffectChoiceKind::SacrificeManaValue { .. }
             | EffectChoiceKind::DiscardHand
@@ -1170,11 +1261,15 @@ impl Game {
             | EffectChoiceKind::SacrificeRange { .. }
             | EffectChoiceKind::RemoveCreatureCounters(_)
             | EffectChoiceKind::RemoveCreatureCounter(_)
+            | EffectChoiceKind::BeholdMany(_)
             | EffectChoiceKind::TapPermanents(_)
             | EffectChoiceKind::UntapLands { .. }
             | EffectChoiceKind::HandExileCopy
             | EffectChoiceKind::HandPlot { .. }
             | EffectChoiceKind::HandCreature
+            | EffectChoiceKind::HandCreatureAttacking { .. }
+            | EffectChoiceKind::HandCreatureHasteSacrifice { .. }
+            | EffectChoiceKind::ExileFromHand
             | EffectChoiceKind::HandCreatureAndLand
             | EffectChoiceKind::HandPermanent { .. }
             | EffectChoiceKind::HandLand { .. }

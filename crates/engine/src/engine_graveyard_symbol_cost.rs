@@ -51,6 +51,7 @@ impl Game {
             })
             .collect();
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            uncast_to_hand: false,
             siege_transformed: false,
             paid: None,
             casts_remaining: None,
@@ -140,6 +141,7 @@ impl Game {
             .map(|card| self.allocate_card_copy(card, item.controller))
             .collect();
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            uncast_to_hand: false,
             siege_transformed: false,
             paid: None,
             casts_remaining: Some(maximum_casts),

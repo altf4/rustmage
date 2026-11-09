@@ -3,10 +3,28 @@
   "catalogue_id": 2451,
   "oracle_id": "ff5502d2-37f5-4ad5-bee2-3a03ec973268",
   "facts_sha256": "4e6bbe983f95e4d83332872543b47b3d6fc0247c79f1273d8c527931963e9841",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3c286a72b5bc19628a3d5aa9dbc037307a66d297410ae1a8f7cbe448a2e98c08"
   },
-  "physical_metadata_sha256": "0c3bdcfbd24b5d220c7398f96a9811e9c0cb9188b6866f2dc191f16448318e38"
+  "physical_metadata_sha256": "0c3bdcfbd24b5d220c7398f96a9811e9c0cb9188b6866f2dc191f16448318e38",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LastingTarfire.java",
+  "java_sha256": "7a576084e2cea100851eb559b01a6c6ae1693c0703fd7b9e7a45829f91a247e5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+      "sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe"
+    }
+  ],
+  "rules_sources": [
+    "https://media.wizards.com/2026/downloads/MagicCompRules%2020260619.pdf#122.6a"
+  ]
 }

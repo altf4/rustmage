@@ -3,10 +3,50 @@
   "catalogue_id": 3973,
   "oracle_id": "338747e8-bed8-4e60-8b19-5c2b80799477",
   "facts_sha256": "0b873ed7cf3e532bc3e4214090c6441c1d865ea166712c05ae2b921f6b8a2d63",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "29ee71d6765b3bed9396414ea29d6b6351335b24b25e74cfd6d18f00ced7f6aa"
   },
-  "physical_metadata_sha256": "213939535f6ff9e7d65b452631b92df206ab299862e9d2a62209230a18dad432"
+  "physical_metadata_sha256": "213939535f6ff9e7d65b452631b92df206ab299862e9d2a62209230a18dad432",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SoulImmolation.java",
+  "java_sha256": "7889df445dd4cf459127cd44b0502d222094b0ae29ab970692d611e5179e3dd8",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/BlightCost.java",
+      "sha256": "33a0d3714068f004db969c35c375e95470b9eaf389f5b2dd73aae3c67b498cd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/VariableCostImpl.java",
+      "sha256": "f8fe24d521c3af806859208892acaa863735ce99eda1d5ceaa3c489e5cfb882c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GreatestAmongPermanentsValue.java",
+      "sha256": "1fb2bb2baf97bbbf6aa1cf4669139b3d10d3fc3beb40a6f2c76fc403393fb299"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+      "sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageAllEffect.java",
+      "sha256": "0b4150468bb32f733a8cbc6485ae511b5141e87a1efc8b744911d62a7648c313"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+      "sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/CanHaveCounterAddedPredicate.java",
+      "sha256": "f5639c2dd9f1db080bcbece4a33a6decc88d7db4cb79676facb2b95e9e660839"
+    }
+  ]
 }

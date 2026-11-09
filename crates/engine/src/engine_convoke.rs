@@ -176,6 +176,77 @@ pub(super) fn payable_in<W: ability_world::CharacteristicWorld + ?Sized>(
     true
 }
 
+fn is_convoke_grant(fragment: &crate::cards::StaticAbilityFragment) -> bool {
+    matches!(
+        fragment,
+        crate::cards::StaticAbilityFragment::ConvokeCreatureSpells
+    )
+}
+
+fn provides_convoke(card: Card) -> bool {
+    card.static_ability_groups()
+        .iter()
+        .flat_map(|group| group.fragments)
+        .any(is_convoke_grant)
+}
+
+/// Public battlefield providers can regain abilities during payment; a public
+/// linked exile can return one. Hidden cards without such a route must not alter
+/// either speculative funding or the observable announcement/payment phases.
+/// Actual eligibility is always evaluated again in that world's current state.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn potential<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    card: Card,
+) -> bool {
+    card.has_convoke()
+        || card.kind_mask() & 1 != 0
+            && (0..world.game().state.objects.len()).any(|id| {
+                let id = id as CardId;
+                let object = world.object(id);
+                let reference = world.reference(id);
+                let public_route = object.zone == Zone::Battlefield && !world.face_down(id)
+                    || object.zone == Zone::Exile
+                        && !world.game().exiled_face_down(reference)
+                        && world.game().state.exile_links.iter().any(|link| {
+                            link.exiled == reference && link.return_zone == Zone::Battlefield
+                        });
+                public_route && provides_convoke(world.definition(id))
+            })
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn available<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    player: Player,
+    card: Card,
+) -> bool {
+    card.has_convoke()
+        || card.kind_mask() & 1 != 0
+            && world.static_sources().iter().any(|&id| {
+                let object = world.object(id);
+                object.zone == Zone::Battlefield
+                    && object.controller == player
+                    && provides_convoke(world.definition(id))
+                    && world.fragment_available(id, is_convoke_grant)
+            })
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn cost_potential<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    card: Card,
+) -> bool {
+    potential(world, card) || improvise::potential(world, card)
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    pub(super) fn item_convoke(&self, item: &SpellView) -> bool {
+        item.kind == StackKind::Spell
+            && item
+                .source
+                .is_some_and(|s| available(self, item.controller, s.card))
+    }
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn convoke_eligible(&self, p: Player, r: ObjectRef) -> bool {
@@ -196,13 +267,7 @@ impl Game {
         }
         let a = self.state.announcing.as_ref()?;
         let f = a.convoke.as_ref()?;
-        if !a
-            .item
-            .source
-            .expect("cost announcement has object source")
-            .card
-            .has_convoke()
-        {
+        if !self.item_convoke(&a.item) {
             return None;
         }
         let pool = self.available_mana(a.item.controller, self.purpose_for_item(&a.item));
@@ -325,11 +390,7 @@ impl Game {
                 return true;
             }
             if a.item.kind == StackKind::Spell
-                && a.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .card
-                    .has_convoke()
+                && self.item_convoke(&a.item)
                 && self.convoke_eligible(a.item.controller, object)
             {
                 for contribution in contributions() {
@@ -402,11 +463,13 @@ impl Game {
         let masks = improvise::masks(
             self,
             a.item.controller,
-            a.item
-                .source
-                .expect("cost announcement has object source")
-                .card
-                .has_convoke(),
+            convoke::potential(
+                self,
+                a.item
+                    .source
+                    .expect("cost announcement has object source")
+                    .card,
+            ),
             self.item_improvise(&a.item),
             &selected,
         );

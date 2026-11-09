@@ -44,6 +44,10 @@ pub(crate) fn put(g: &mut Game, owner: Player, name: &str, zone: Zone) -> CardId
             || name == "@test/manifest-observer",
         "unsupported fixture {name}"
     );
+    spawn(g, owner, card, zone)
+}
+
+pub(crate) fn spawn(g: &mut Game, owner: Player, card: Card, zone: Zone) -> CardId {
     let id = g.state.objects.len() as CardId;
     g.state.objects.push(Object {
         copy_kind: CopyKind::None,

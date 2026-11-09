@@ -65,7 +65,7 @@ impl Game {
     pub(super) fn blight_intent_fundable(&self, pay: bool) -> bool {
         let mut a = self.state.announcing.as_ref().unwrap().clone();
         a.item.cast.as_mut().unwrap().blight = Some(pay);
-        a.initialize_cast_costs(improvise::potential(
+        a.initialize_cast_costs(convoke::cost_potential(
             self,
             a.item
                 .source
@@ -126,5 +126,76 @@ impl Game {
         let player = a.item.controller;
         self.state.pending = Pending::CastCosts { player };
         self.blight_cost_counters(object, amount, player);
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Announcement {
+    pub(super) fn blight_x_cost(&self) -> bool {
+        self.item.kind == StackKind::Spell
+            && self.item.source.is_some_and(|source| {
+                source
+                    .card
+                    .additional_cost()
+                    .is_some_and(|cost| cost.kind == EffectChoiceKind::BlightXCost)
+            })
+    }
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    pub(super) fn preview_blight_activation(
+        &self,
+        goal: FundingGoal,
+        _spec: AdditionalCost,
+    ) -> bool {
+        let (source, index, counters, definition, slot) =
+            goal.source.as_ref().expect("blight activation");
+        let mut packet = self.activation_packet(goal.actor, source.card, *index);
+        packet.set_source_definition(*definition);
+        packet.borrowed_slot = *slot;
+        let mut proposal = self.payment_announcement(packet, counters.clone(), None, None);
+        proposal.cost = Some(ManaCost {
+            colored: goal.required,
+            generic: goal.generic,
+        });
+        proposal.total_cost = proposal.cost;
+        self.activation_packet_fundable(&proposal)
+    }
+    pub(super) fn blight_x_intervals(&self, a: &Announcement) -> Vec<XInterval> {
+        // Declaration takes place before mana abilities and payments. Paying
+        // counters later never changes this bound or the announced value.
+        let maximum = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(id, o)| {
+                o.zone == Zone::Battlefield
+                    && o.controller == a.item.controller
+                    && self.is_creature(*id as CardId)
+            })
+            .map(|(id, _)| self.stats(id as CardId).toughness)
+            .max()
+            .unwrap_or(0)
+            .clamp(0, i128::from(u32::MAX)) as u32;
+        let fundable = |x| {
+            a.cost_options()
+                .any(|cost| self.blight_x_cost_fundable(a, cost, x))
+        };
+        match (fundable(0), maximum > 0 && fundable(1)) {
+            (true, true) => vec![XInterval {
+                minimum: 0,
+                maximum,
+            }],
+            (true, false) => vec![XInterval {
+                minimum: 0,
+                maximum: 0,
+            }],
+            (false, true) => vec![XInterval {
+                minimum: 1,
+                maximum,
+            }],
+            (false, false) => Vec::new(),
+        }
     }
 }

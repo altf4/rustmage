@@ -3,10 +3,45 @@
   "catalogue_id": 2705,
   "oracle_id": "b9fff42d-31cf-4edf-8353-4a3b996bb77b",
   "facts_sha256": "71fef92f8b718d5322bd8cf8ff4f82db89f6a926c116bfa9b208861f8785df95",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7995aef5e3128e254a8291508e28766cb1396035afa02d77066fe046748f3e5c"
   },
-  "physical_metadata_sha256": "18f4c7ec2614cb1ba68369233f7eaff1c8c44675174a5f62f52c2f1d3ce7e149"
+  "physical_metadata_sha256": "18f4c7ec2614cb1ba68369233f7eaff1c8c44675174a5f62f52c2f1d3ce7e149",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MeekAttack.java",
+  "java_sha256": "bb2a50375d597e8618815b57728db90477b3d3bfba60b08c8e325699587fd291",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutCardIntoPlayWithHasteAndSacrificeEffect.java",
+      "sha256": "062840d31f1c69be0e6de0759cb8b66791f959c839e37680fb872b89542c5c61"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/AtTheBeginOfNextEndStepDelayedTriggeredAbility.java",
+      "sha256": "9f3272690e0ade9a48526bd13165b3015a71d8bbed9d86a997af960d5f3214a5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeTargetEffect.java",
+      "sha256": "c45c32e2c47bd7f62480c732af33864bcac93ec246a9cf7e292dd32a2d10917c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInHand.java",
+      "sha256": "0b88ed18c6053986dc57c50ac6363da0acacc35899724fae164813085a428f88"
+    }
+  ]
 }

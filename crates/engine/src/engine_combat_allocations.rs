@@ -462,7 +462,8 @@ impl Announcement {
     pub(super) fn has_x_cost(&self) -> bool {
         match self.item.kind {
             StackKind::Spell => {
-                self.payment_x_symbols() > 0
+                self.blight_x_cost()
+                    || self.payment_x_symbols() > 0
                     || self
                         .item
                         .source

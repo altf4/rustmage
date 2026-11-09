@@ -66,7 +66,8 @@ impl Game {
         let facts = if program.iter().any(|instruction| {
             matches!(
                 instruction,
-                Instruction::PutEventCountersOnTargets
+                Instruction::ExileDeathCounterTotalUntilNextEnd
+                    | Instruction::PutEventCountersOnTargets
                     | Instruction::CreateTokensScaled {
                         amount: AmountValue::DepartureCounterCount(_),
                         ..
@@ -77,7 +78,13 @@ impl Game {
         } else if program.iter().any(|instruction| {
             matches!(
                 instruction,
-                Instruction::GainLifeScaled(_, AmountValue::DeathEventToughness)
+                Instruction::GainLifeScaled(
+                    _,
+                    AmountValue::DeathEventToughness | AmountValue::DeathEventPower
+                ) | Instruction::ExileTopChoosePlayScaled {
+                    amount: AmountValue::DeathEventPower,
+                    ..
+                }
             )
         }) {
             EventObjectFacts::CreatureComparison(CreatureComparisonFacts::from_view(&event.before))

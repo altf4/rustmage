@@ -3,10 +3,30 @@
   "catalogue_id": 1542,
   "oracle_id": "c552bd73-ce75-40fd-9d80-9e90b6f45274",
   "facts_sha256": "4cd4a8bd67249fae94ea99cf423aca167282ff9489e55781e15771155244b124",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "25e3822fb5b5a936b5756a478cb1a0b4d079eedc9d365f532b806b7d849d4995"
   },
-  "physical_metadata_sha256": "77eba726eaa0f6e1fbfed0972bad7407efb33119e3c5fb6d0a8a07fa4851299c"
+  "physical_metadata_sha256": "77eba726eaa0f6e1fbfed0972bad7407efb33119e3c5fb6d0a8a07fa4851299c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/Flamebraider.java",
+  "java_sha256": "6a29cb8c86b0cce7c79da3eea1899856fe7da0e72f644ca591a39035551ddb5b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/ConditionalAnyColorManaAbility.java",
+      "sha256": "2042d72737462646216eea22a1ecdd05d338f1f2b3bfbb3c19fdb273f067c736"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddConditionalManaOfAnyColorEffect.java",
+      "sha256": "e9ae10c4ad12c5a3280946079ff7c3278e879af65f0a3afdb6f8841861797bed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/builder/ConditionalManaBuilder.java",
+      "sha256": "511937d592a02c2edb14e85d3408f3d7142cdace5e288881c8ac39aca03284cd"
+    }
+  ]
 }

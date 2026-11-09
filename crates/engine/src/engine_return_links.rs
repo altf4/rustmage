@@ -86,7 +86,10 @@ pub(super) fn modification(kind: ReturnKind) -> Option<(&'static [&'static str],
         ReturnKind::Demon => Some((&["Demon"], Keywords::NONE)),
         ReturnKind::Angel => Some((&["Angel"], Keywords::FLYING)),
         ReturnKind::HeroFinality => Some((&["Hero"], Keywords::NONE)),
-        ReturnKind::Revival | ReturnKind::FlyingRobot => None,
+        ReturnKind::Revival
+        | ReturnKind::FlyingRobot
+        | ReturnKind::WithoutAbilities
+        | ReturnKind::Persist => None,
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -99,10 +102,18 @@ impl Game {
     ) -> bool {
         let before = &event.before;
         match filter {
+            ReturnDeathFilter::SourceCounter { kind, minimum } => {
+                source.reference == before.reference && before.counters.get(kind) >= minimum
+            }
             ReturnDeathFilter::SourceNonDemon => {
                 before.is_creature()
                     && source.reference == before.reference
                     && !before.has_subtype("Demon")
+            }
+            ReturnDeathFilter::SourceWithoutCounter(kind) => {
+                before.is_creature()
+                    && source.reference == before.reference
+                    && before.counters.get(kind) == 0
             }
             ReturnDeathFilter::SourceRevival => {
                 before.is_creature()
@@ -117,6 +128,70 @@ impl Game {
                     && before.controller == source.controller
                     && !before.is_token()
                     && !before.has_subtype("Angel")
+            }
+        }
+    }
+    /// Both the grantor and recipient are from the same pre-departure world.
+    /// Reading live providers here would lose grants during simultaneous deaths.
+    pub(super) fn controlled_creature_death_triggers(
+        &mut self,
+        event: &ZoneChange,
+        sources: &[ObjectView],
+    ) {
+        use crate::cards::StaticAbilityFragment;
+        let recipient = &event.before;
+        if !event.moved
+            || recipient.zone != Zone::Battlefield
+            || event.destination != Zone::Graveyard
+            || !recipient.is_creature()
+        {
+            return;
+        }
+        for provider in sources {
+            if provider.zone != Zone::Battlefield || provider.controller != recipient.controller {
+                continue;
+            }
+            for fragment in provider
+                .card
+                .static_ability_groups()
+                .iter()
+                .flat_map(|group| group.fragments)
+            {
+                let StaticAbilityFragment::ControlledCreatureTrigger {
+                    ability,
+                    other,
+                    nontoken,
+                } = *fragment
+                else {
+                    continue;
+                };
+                if (other && provider.reference == recipient.reference)
+                    || (nontoken && recipient.is_token())
+                    || !recipient.grant_available(provider.reference, provider.card, ability, None)
+                {
+                    continue;
+                }
+                let index = usize::from(ability);
+                let trigger = provider.card.triggers()[index];
+                let TriggerCondition::ReturnDeath(filter) = trigger.condition.event() else {
+                    continue;
+                };
+                if !trigger.condition.is_granted()
+                    || !self.return_death_matches(filter, recipient, event)
+                {
+                    continue;
+                }
+                let grant = Box::new(AttachmentTriggerView {
+                    grantor: provider.reference,
+                    granting_card: provider.card,
+                    recipient: recipient.reference,
+                    defender: None,
+                    granted: true,
+                    origin: provider.copied_grant_origin(),
+                });
+                if self.queue_zone_trigger_from(recipient, index, event, Some(grant)) {
+                    self.capture_return_death(event);
+                }
             }
         }
     }
@@ -326,6 +401,14 @@ impl Game {
         true
     }
     pub(super) fn blink_until_end_step(&mut self, item: &SpellView, under_owner: bool) {
+        self.blink_group_until_end_step(item, under_owner, false);
+    }
+    pub(super) fn blink_group_until_end_step(
+        &mut self,
+        item: &SpellView,
+        under_owner: bool,
+        tapped: bool,
+    ) {
         let ids: Vec<_> = item
             .targets
             .iter()
@@ -340,19 +423,23 @@ impl Game {
         // returns may suspend entry choices only after the entire exile batch.
         let events = self.move_objects_raw(&ids, Zone::Exile);
         let mut returning = events.iter().filter_map(|event| {
-            (event.moved && event.destination == Zone::Exile && !event.before.is_token()).then_some(
-                ReturnCardView {
-                    object: event.after,
-                    zone: Zone::Exile,
-                    tapped: false,
-                    controller: if under_owner {
-                        event.before.owner
-                    } else {
-                        item.controller
-                    },
-                    counter: None,
+            (event.moved
+                && matches!(
+                    event.destination,
+                    Zone::Exile | Zone::Graveyard | Zone::Command
+                )
+                && !event.before.is_token())
+            .then_some(ReturnCardView {
+                object: event.after,
+                zone: event.destination,
+                tapped,
+                controller: if under_owner {
+                    event.before.owner
+                } else {
+                    item.controller
                 },
-            )
+                counter: None,
+            })
         });
         if let Some(first) = returning.next() {
             let companions: Vec<_> = returning.collect();
@@ -381,12 +468,20 @@ impl Game {
         };
         let mut link = (**link).clone();
         match kind {
+            ReturnKind::WithoutAbilities => {
+                link.counter = None;
+                self.stage_linked_return(&link, Some((kind, source.object)));
+            }
             ReturnKind::Revival => {
                 let amount = link.counter.expect("captured revival counters").1;
                 assert!(amount > 0);
                 link.counter = Some((CounterKind::Revival, amount - 1));
                 link.controller = item.controller;
                 self.register_delayed_return(item, link);
+            }
+            ReturnKind::Persist => {
+                link.counter = Some((CounterKind::MinusOne, 1));
+                self.stage_linked_return(&link, None);
             }
             ReturnKind::HeroFinality => {
                 link.counter = Some((CounterKind::Finality, 1));
@@ -490,6 +585,15 @@ impl Game {
         kind: ReturnKind,
         source: ObjectRef,
     ) {
+        if kind == ReturnKind::WithoutAbilities {
+            self.remove_abilities_exact(
+                &[recipient],
+                source,
+                self.state.objects[recipient.card as usize].controller,
+                crate::cards::AnimationDuration::Permanent,
+            );
+            return;
+        }
         if kind == ReturnKind::FlyingRobot {
             let timestamp = self.next_role_timestamp();
             self.state.roles.as_mut().unwrap().animations.push(
@@ -534,5 +638,28 @@ impl Game {
                     })
                     .sum::<usize>()
         })
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct PlayerDamageShieldView {
+    pub source: ObjectRef,
+    pub source_card: Card,
+    pub controller: Player,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    pub(super) fn prevent_player_damage_until_next_turn(&mut self, item: &SpellView) {
+        let source = item.source.expect("prevention source");
+        self.state
+            .roles
+            .get_or_insert_default()
+            .player_damage_shields
+            .push(PlayerDamageShieldView {
+                source: source.object,
+                source_card: source.card,
+                controller: item.controller,
+            });
     }
 }

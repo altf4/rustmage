@@ -72,6 +72,21 @@ pub(super) fn mana_loyalty_placement_prohibited<W: ability_world::Characteristic
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn printed_counter_placement_prohibited<
+    W: ability_world::CharacteristicWorld + ?Sized,
+>(
+    world: &W,
+    source: ObjectRef,
+    definition: Card,
+    ability: u16,
+) -> bool {
+    definition
+        .activation_put_counter(ability)
+        .is_some_and(|(_, amount)| amount != 0)
+        && replacements::counters_prohibited(world, source)
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn simple_loyalty_placement_prohibited<W: ability_world::CharacteristicWorld + ?Sized>(
     world: &W,
     source: ObjectRef,
@@ -191,7 +206,7 @@ impl Game {
                 quality,
             } => {
                 self.add_quality_mana(actor, production, quality);
-                self.produce_tap_mana_bonus(actor, payment.item.tap_mana_bonus());
+                self.finish_mana_tap_bonus(actor, payment.item.tap_mana_bonus(self), production);
                 self.committed_mana_reflexive(&payment.item);
                 self.reopen_evidence_after_mana_sacrifice(card);
             }
@@ -334,6 +349,12 @@ impl Game {
                         ))
                     })
                     >= minimum
+            }
+            ActivationGuard::ControlColorsAtLeast(minimum) => {
+                ability_world::controlled_colors(self, actor).count_ones() >= u32::from(minimum)
+            }
+            ActivationGuard::GraveyardSubtype(subtype) => {
+                ability_world::graveyard_subtype(self, actor, subtype)
             }
             ActivationGuard::ControlLandsAtLeast(minimum) => {
                 self.state
@@ -734,7 +755,14 @@ impl Game {
                     if self.first_equip_zero_available(actor, ability) {
                         return false;
                     }
-                    if mana_loyalty_placement_prohibited(self, self.object_ref(card), ability) {
+                    if mana_loyalty_placement_prohibited(self, self.object_ref(card), ability)
+                        || printed_counter_placement_prohibited(
+                            self,
+                            self.object_ref(card),
+                            object.card,
+                            index as u16,
+                        )
+                    {
                         return false;
                     }
                     if object
@@ -900,7 +928,7 @@ impl Game {
             borrowed_slot: None,
             self_granted_activation: None,
             target_controller_lki: None,
-            target_kinds_lki: None,
+            target_types_lki: None,
             target_type_slots: None,
             gift: None,
             reflexive_subject: None,
@@ -1195,7 +1223,7 @@ impl Game {
         if cost.tap {
             if definition.mana_production().is_some() {
                 let bonus = self.mana_tap_bonuses(item.controller, source.id);
-                item.mana_tap_bonus = (bonus != [0; 6]).then(|| Box::new(bonus));
+                item.mana_tap_bonus = bonus.has_any().then(|| Box::new(bonus));
             }
             self.tap_objects(&[source.id]);
         }

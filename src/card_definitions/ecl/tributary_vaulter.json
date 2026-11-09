@@ -3,10 +3,30 @@
   "catalogue_id": 4678,
   "oracle_id": "991f4eec-cf3e-4554-ba88-c44bb0d255f0",
   "facts_sha256": "d522a709b97adf41e00803e442ec47a56b141693a3fe0c5d13a12fd371168054",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c6c033661984d162efde7e65f96f8da07b02550c8e0fc8d0110735d19487c2bf"
   },
-  "physical_metadata_sha256": "9e2432a71be18c6822bcdf0ad2fc8405481ccb2dc0d929b4483d49aa36eca48f"
+  "physical_metadata_sha256": "9e2432a71be18c6822bcdf0ad2fc8405481ccb2dc0d929b4483d49aa36eca48f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TributaryVaulter.java",
+  "java_sha256": "32ce75c8c0f3a7f4fac73b5fdb031c3fa5c346ba852151f780323aa6ca11a050",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java",
+      "sha256": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ]
 }

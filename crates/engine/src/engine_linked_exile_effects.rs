@@ -41,6 +41,7 @@ impl Game {
                     .get_or_insert_default()
                     .links
                     .push(LinkedExileView {
+                        exiled_turn: self.state.turn,
                         source: source.object,
                         exiled: event.after,
                         ability_origin: item.source_ability_origin,
@@ -49,6 +50,15 @@ impl Game {
         }
     }
 
+    pub(super) fn exile_target_library_linked(&mut self, item: &SpellView, amount: u16) {
+        let ids = self
+            .program_players(PlayerSet::Targeted, item)
+            .flat_map(|p| exile::top_library_cards(self, p, u128::from(amount)))
+            .collect::<Vec<_>>();
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        self.remember_linked_exile_events(item, &events);
+        self.finish_zone_events(&events, &[]);
+    }
     pub(super) fn exile_controller_library_top_linked(&mut self, item: &SpellView, amount: u16) {
         let ids = exile::top_library_cards(self, item.controller, u128::from(amount));
         let events = self.move_objects_raw(&ids, Zone::Exile);
@@ -183,6 +193,7 @@ impl Game {
             return false;
         }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            uncast_to_hand: false,
             siege_transformed: false,
             paid: None,
             casts_remaining: Some(1),

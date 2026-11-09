@@ -3,10 +3,56 @@
   "catalogue_id": 4715,
   "oracle_id": "05d7222b-cc08-4f1f-8e35-6058599572ba",
   "facts_sha256": "1f88dc946f32636fab1c95d418d74c3f3c763005575b92fd36cee7008e03cd49",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "182c35feb40b44ca97a5e02d1c22514122c664afdc37a89de5c7d3ce1f01a6d8"
   },
-  "physical_metadata_sha256": "5b186b199e6bfebeb60c86c8443198de89b7fa6782802ce14e7a711942510a7a"
+  "physical_metadata_sha256": "5b186b199e6bfebeb60c86c8443198de89b7fa6782802ce14e7a711942510a7a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TwilightDiviner.java",
+  "java_sha256": "0f750f4c0d928315a2c9839a7b9ec5c4d013c2ef0bb7d8d6decc452f5181eed9",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/BatchTriggeredAbility.java",
+      "sha256": "e2891aafe6a447fbb1347f9b0a52cf2b8f79bc566e7518933f12bd4ed503ad86"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenCopyTargetEffect.java",
+      "sha256": "d04e58fdcda406a60d92c760243fca54440f13ec1fc94517c97eb9b360b9a158"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java",
+      "sha256": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/PermanentIdPredicate.java",
+      "sha256": "6777c307e24428991b0869703189d56b35a1889c36ebb1e4735f8eb1b5793098"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+      "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+    }
+  ],
+  "rules_discrepancy": "Oracle specifies a non-targeted copy of one of the exact creatures in the entry event. CR608.2h uses that incarnation's last battlefield copiable values if it departed; CR400.7 forbids rebinding a reentered incarnation. XMage TwilightDivinerEffect filters game.getPermanent and drops departed objects. Rust follows Oracle and CR608.2h/400.7, preserving departure-time copy effects under CR707.2. Primary rules: https://media.wizards.com/2026/downloads/MagicCompRules%2020260925.txt"
 }

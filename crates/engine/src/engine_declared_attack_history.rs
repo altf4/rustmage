@@ -1,6 +1,5 @@
-//! Public declaration facts are frozen only for subtype guards that actually
-//! exist. Live attackers and objects put onto the battlefield attacking never
-//! substitute for a historical declaration.
+//! Exact declaration facts support turn-duration counts and opt-in combat guards.
+//! Live attackers and creatures put onto the battlefield attacking do not count.
 use super::*;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -10,12 +9,26 @@ pub struct DeclaredAttackHistoryView {
     pub player: Player,
     /// Only queried public subtypes that were true at the declaration event.
     pub subtypes: Vec<&'static str>,
+    /// Complete public characteristics, including declarations before an observer enters.
+    pub definition: Card,
+    pub granted_subtypes: GrantedSubtypes,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct DeclaredAttackHistory {
     queried: Vec<&'static str>,
-    pub rows: Vec<DeclaredAttackHistoryView>,
+    rows: Vec<DeclaredAttackHistoryView>,
+    combat_start: usize,
+}
+
+impl DeclaredAttackHistory {
+    fn combat_rows(&self) -> &[DeclaredAttackHistoryView] {
+        &self.rows[self.combat_start..]
+    }
+
+    pub(super) fn combat_view(&self) -> Option<Vec<DeclaredAttackHistoryView>> {
+        (!self.queried.is_empty()).then(|| self.combat_rows().to_vec())
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn collect(condition: TriggerCondition, result: &mut Vec<&'static str>) {
@@ -96,9 +109,6 @@ impl Game {
                 );
             }
         }
-        if queried.is_empty() {
-            return;
-        }
         let rows = declared
             .iter()
             .map(|attack| DeclaredAttackHistoryView {
@@ -109,16 +119,44 @@ impl Game {
                     .copied()
                     .filter(|typ| self.has_subtype(attack.card, typ))
                     .collect(),
+                definition: self.state.objects[attack.card as usize].card,
+                granted_subtypes: self.granted_subtypes(attack.card),
             })
             .collect::<Vec<_>>();
         let history = self.state.declared_attack_history.get_or_insert_with(|| {
             Box::new(DeclaredAttackHistory {
                 queried: Vec::new(),
                 rows: Vec::new(),
+                combat_start: 0,
             })
         });
         history.queried = queried;
         history.rows.extend(rows);
+    }
+    pub(super) fn finish_declared_attack_combat(&mut self) {
+        if let Some(history) = &mut self.state.declared_attack_history {
+            history.combat_start = history.rows.len();
+            history.queried.clear();
+        }
+    }
+    pub(super) fn declared_subtype_attackers(&self, player: Player, subtype: &str) -> usize {
+        let Some(history) = &self.state.declared_attack_history else {
+            return 0;
+        };
+        let matches = |row: &DeclaredAttackHistoryView| {
+            row.player == player && row.granted_subtypes.has(row.definition, subtype)
+        };
+        history
+            .rows
+            .iter()
+            .enumerate()
+            .filter(|(index, row)| {
+                matches(row)
+                    && !history.rows[..*index]
+                        .iter()
+                        .any(|previous| previous.object == row.object && matches(previous))
+            })
+            .count()
     }
     pub(super) fn declared_attack_subtypes_all(&self, player: Player, subtypes: &[&str]) -> bool {
         subtypes.iter().all(|wanted| {
@@ -126,9 +164,9 @@ impl Game {
                 .declared_attack_history
                 .as_ref()
                 .is_some_and(|h| {
-                    h.rows.iter().any(|row| {
-                        row.player == player && row.subtypes.iter().any(|actual| actual == wanted)
-                    })
+                    h.combat_rows()
+                        .iter()
+                        .any(|row| row.player == player && row.subtypes.contains(wanted))
                 })
         })
     }

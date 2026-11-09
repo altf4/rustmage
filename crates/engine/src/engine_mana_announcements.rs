@@ -119,6 +119,7 @@ impl Game {
                                     .as_ref()
                                     .map_or(0, |_| std::mem::size_of::<ObjectRef>())
                                 + casualty::bytes(&a.casualty)
+                                + conspire::bytes(&a.conspire)
                                 + a.cast_costs.as_ref().map_or(0, |c| c.bytes())
                                 + a.convoke.as_ref().map_or(0, |v| v.bytes())
                                 + a.power_up_costs.as_ref().map_or(0, |v| v.bytes())

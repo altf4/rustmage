@@ -87,6 +87,7 @@ impl Game {
                 self.state.exile_permissions.insert(
                     at,
                     ExilePlayPermission {
+                        source: None,
                         object: event.after,
                         player,
                         expiry: ExilePlayExpiry::Turn(self.state.turn),

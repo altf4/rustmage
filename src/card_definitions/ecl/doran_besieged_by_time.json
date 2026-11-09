@@ -3,10 +3,30 @@
   "catalogue_id": 1136,
   "oracle_id": "dd35a377-0865-4b25-bd0f-aaead29a9f0e",
   "facts_sha256": "2a5daeeea350f76fde9e28e381c2a61d5baab0d8caac57045348c88814a02c43",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1a310a3d2202512ccbca8f75d96f482929340a4e081ae2203695de08322d9711"
   },
-  "physical_metadata_sha256": "8baeec824882a3768c7fb0393006953ab8dd301d5542a6f21d5b974e94e71c19"
+  "physical_metadata_sha256": "8baeec824882a3768c7fb0393006953ab8dd301d5542a6f21d5b974e94e71c19",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DoranBesiegedByTime.java",
+  "java_sha256": "c9d2ab74cef4b4ab8f114df253f2e48b3f1601bbfb285ad5abc04614b2da2ad5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ToughnessGreaterThanPowerPredicate.java",
+      "sha256": "880f39a9070e9495900154106d4c1194abd08d288cbb10b2ac93621452c1308c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellsCostReductionControllerEffect.java",
+      "sha256": "47783fefecfbb22810317538f30e9e92302add21ebff508bc21f43683a85ad06"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    }
+  ]
 }

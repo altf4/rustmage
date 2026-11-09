@@ -3,10 +3,30 @@
   "catalogue_id": 2904,
   "oracle_id": "d6911456-42cb-4b23-a560-dc98784530f5",
   "facts_sha256": "395e7b44764e83ed1b17ab934ad36c35cd1c6adba5a5d1277b0d713d43e67f5a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "13ac40900d0cc9b9afcf594af4ad080127319d86a2eb69a68a83b96e849b2b51"
   },
-  "physical_metadata_sha256": "8d76bc8e681027602a916a6828b0b3bd3881b65c5e9d7346314d33e7e5ce5b6f"
+  "physical_metadata_sha256": "8d76bc8e681027602a916a6828b0b3bd3881b65c5e9d7346314d33e7e5ce5b6f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/n/NamelessInversion.java",
+  "java_sha256": "37af249cb8b00c715fb0941ab393399f2a201a41322706cebb301e26a1fe5b18",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ChangelingAbility.java",
+      "sha256": "2a5c6f3233f1edbd054fad23cc7103334aa5bff6702da1f1e42ceb3a0cb8c177"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllCreatureTypesTargetEffect.java",
+      "sha256": "140cb54ed6b75831878ae45c3f43be0e6cfbd568dd59ade0f6f8e00d4b939441"
+    }
+  ]
 }

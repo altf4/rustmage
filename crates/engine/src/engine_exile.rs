@@ -8,6 +8,8 @@ use super::*;
 pub struct ExilePlayPermission {
     pub object: ObjectRef,
     pub player: Player,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source: Option<ObjectRef>,
     pub expiry: ExilePlayExpiry,
     pub spend_any_mana: bool,
     /// A cast permission never authorizes a land play.
@@ -149,6 +151,64 @@ impl Game {
                 )
             })
     }
+    pub(super) fn end_source_bound_exile_permissions(&mut self, source: ObjectRef) {
+        self.state
+            .exile_permissions
+            .retain(|row| row.source != Some(source));
+    }
+    pub(super) fn grant_source_bound_exile_cast(
+        &mut self,
+        source: ObjectRef,
+        player: Player,
+        object: ObjectRef,
+    ) {
+        if self.object_ref(source.card) != source
+            || !self.on_battlefield(source.card)
+            || self.state.objects[source.card as usize].controller != player
+            || self.object_ref(object.card) != object
+            || self.state.objects[object.card as usize].zone != Zone::Exile
+            || self.current_kinds(object.card) & 12 == 0
+        {
+            return;
+        }
+        self.grant_exile_play_permission(player, object, false);
+        let row = self
+            .state
+            .exile_permissions
+            .iter_mut()
+            .find(|r| r.object == object && r.player == player)
+            .unwrap();
+        row.source = Some(source);
+        row.cast_only = true;
+        row.spend_any_mana = true;
+        row.expiry = ExilePlayExpiry::WhileExiled;
+    }
+    pub(super) fn exile_until_mana_value_free_cast(
+        &mut self,
+        owner: Player,
+        player: Player,
+        minimum: u16,
+    ) {
+        let ids = top_library_cards(self, owner, u128::MAX);
+        let mut total = 0u128;
+        for id in ids {
+            if total >= u128::from(minimum) {
+                break;
+            }
+            if self.state.objects[id as usize].zone != Zone::Library {
+                continue;
+            }
+            let event = self.move_object(id, Zone::Exile);
+            if event.moved && event.destination == Zone::Exile {
+                total = total
+                    .checked_add(u128::from(ability_world::CharacteristicWorld::mana_value(
+                        self, id,
+                    )))
+                    .capacity("exiled mana value exhausted");
+                self.grant_exile_free_permission_until_end(player, event.after);
+            }
+        }
+    }
     pub(super) fn exile_targets_for_modified_cast(&mut self, item: &SpellView) {
         let ids = item
             .targets
@@ -227,8 +287,8 @@ impl Game {
         self.finish_zone_events(&events, &[]);
     }
 
-    pub(super) fn exile_top_play_until_next_end_step(&mut self, player: Player, amount: u16) {
-        let ids = top_library_cards(self, player, u128::from(amount));
+    pub(super) fn exile_top_play_until_next_end_step(&mut self, player: Player, amount: u128) {
+        let ids = top_library_cards(self, player, amount);
         let events = self.move_objects_raw(&ids, Zone::Exile);
         for event in &events {
             if event.moved && event.destination == Zone::Exile {
@@ -266,6 +326,7 @@ impl Game {
         self.state.exile_permissions.insert(
             at,
             ExilePlayPermission {
+                source: None,
                 object,
                 player,
                 expiry,
@@ -283,17 +344,10 @@ impl Game {
     pub(super) fn exile_top_choose_play(
         &mut self,
         player: Player,
-        amount: u16,
+        amount: u128,
         next_turn: bool,
     ) -> bool {
-        let ids: Vec<_> = self.state.players[player.index()]
-            .library
-            .iter()
-            .rev()
-            .filter(|&&id| self.state.objects[id as usize].is_card())
-            .take(usize::from(amount))
-            .copied()
-            .collect();
+        let ids = top_library_cards(self, player, amount);
         let events = self.move_objects_raw(&ids, Zone::Exile);
         self.state.resolving.as_mut().unwrap().milled = events
             .iter()
@@ -422,6 +476,7 @@ impl Game {
         }
         self.queue_earthbend_returns(events);
         self.record_entry_turn_facts(events);
+        self.record_creature_entry_history(events);
         self.queue_manifest_deaths(events);
         self.creature_death_batch_triggers(events, death_sources);
         self.creature_cards_enter_graveyard_triggers(events);
@@ -484,6 +539,7 @@ impl Game {
                 }
             })
         };
+        self.batch_graveyard_entry_triggers(events, &sources, entry_suppression);
         // One trigger per observing source for the entire simultaneous entry event.
         let mut token_entered = [Vec::new(), Vec::new()];
         for event in events {
@@ -575,6 +631,11 @@ impl Game {
                     .iter()
                     .map(|(object, amount, player)| (*object, amount, *player)),
             );
+        }
+        for event in events {
+            if event.moved && event.before.zone == Zone::Battlefield {
+                self.end_source_bound_exile_permissions(event.before.reference);
+            }
         }
         self.prune_linked_exiles();
         self.bind_first_public_source_moves(events);
@@ -677,6 +738,7 @@ impl Game {
         self.state.exile_permissions.insert(
             at,
             ExilePlayPermission {
+                source: None,
                 object,
                 player,
                 expiry,
@@ -741,6 +803,13 @@ impl Game {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn exile_permission_guard(&self, permission: &ExilePlayPermission) -> bool {
+        if permission.source.is_some_and(|source| {
+            self.object_ref(source.card) != source
+                || !self.on_battlefield(source.card)
+                || self.state.objects[source.card as usize].controller != permission.player
+        }) {
+            return false;
+        }
         permission.requires_subtype.is_none_or(|subtype| {
             self.state.objects.iter().enumerate().any(|(id, o)| {
                 o.zone == Zone::Battlefield
@@ -804,6 +873,7 @@ impl Game {
             self.state.exile_permissions.insert(
                 at,
                 ExilePlayPermission {
+                    source: None,
                     object: event.after,
                     player: item.controller,
                     expiry: ExilePlayExpiry::WhileExiled,
@@ -895,6 +965,7 @@ impl Game {
         self.state.exile_permissions.insert(
             at,
             ExilePlayPermission {
+                source: None,
                 object,
                 player,
                 expiry: ExilePlayExpiry::WhileExiled,

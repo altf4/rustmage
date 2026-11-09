@@ -99,11 +99,13 @@ impl Game {
             EntryChoiceKind::BasicLandType => crate::cards::BasicLandType::ALL
                 .into_iter()
                 .any(|kind| emit(EntryChoiceValue::BasicLandType(kind))),
-            EntryChoiceKind::CreatureType => crate::CREATURE_TYPES.iter().any(|name| {
-                emit(EntryChoiceValue::CreatureType(
-                    crate::cards::CreatureType::from_name(name).unwrap(),
-                ))
-            }),
+            kind @ (EntryChoiceKind::CreatureType | EntryChoiceKind::CreatureTypes(_)) => {
+                kind.creature_type_names().unwrap().iter().any(|name| {
+                    emit(EntryChoiceValue::CreatureType(
+                        crate::cards::CreatureType::from_name(name).unwrap(),
+                    ))
+                })
+            }
         }
     }
     pub(super) fn choose_entry_value(&mut self, value: EntryChoiceValue) {

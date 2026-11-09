@@ -42,6 +42,7 @@ pub(super) struct EntryMove {
     pub post_entry_counters: Option<(Player, &'static [(CounterKind, u64)])>,
     /// Timestamped ability grant after only this move actually enters.
     pub keywords_after: Option<(ObjectRef, Keywords)>,
+    pub keywords_after_permanent: bool,
     /// Source-independent abilities granted only after this actual successful return.
     pub attack_trigger_after: Option<Box<mayhem::ReturnedAbilityGrant>>,
     /// Only this surrounding return effect captures its actual public entry result.
@@ -70,6 +71,8 @@ pub(super) struct EntryMove {
     pub life_paid: Option<bool>,
     pub offspring_paid: bool,
     pub cast_payment: Option<Mana>,
+    pub evoked: bool,
+    pub behold_exiled: Option<ObjectRef>,
     pub cast_event: Option<Box<CastPaymentEvent>>,
     /// Explicit origin of an actual spell cast; absent for reanimation/put effects.
     pub cast_origin: Option<Zone>,
@@ -222,6 +225,7 @@ impl EntryMove {
             effect_counters: &[],
             post_entry_counters: None,
             keywords_after: None,
+            keywords_after_permanent: false,
             attack_trigger_after: None,
             equipment_after: false,
             blank_with_haste_after: None,
@@ -241,6 +245,8 @@ impl EntryMove {
             life_paid: None,
             offspring_paid: false,
             cast_payment: None,
+            evoked: false,
+            behold_exiled: None,
             cast_event: None,
             cast_origin: None,
             warp_controller: None,
@@ -417,9 +423,11 @@ impl Game {
         };
         self.on_battlefield(target.card)
             && self.object_ref(target.card) == target
-            && !self
-                .keywords(target.card)
-                .protects_from(colors, aura.kind_mask())
+            && !self.keywords(target.card).protects_from_controller(
+                colors,
+                aura.kind_mask(),
+                self.state.objects[target.card as usize].controller != controller,
+            )
             && ability_world::aura_kind_matches(self, aura, target.card)
             && match spec.relation {
                 0 => self.state.objects[target.card as usize].controller == controller,
@@ -994,6 +1002,7 @@ impl Game {
         let mut equipment_results = Vec::new();
         let mut keyword_results = Vec::new();
         let mut ability_results = Vec::new();
+        let mut return_ability_results = Vec::new();
         let mut attack_trigger_results = Vec::new();
         let mut food_results = Vec::new();
         let mut artifact_results = Vec::new();
@@ -1059,6 +1068,7 @@ impl Game {
                             .get_or_insert_default()
                             .links
                             .push(linked_choices::LinkedExileView {
+                                exiled_turn: self.state.turn,
                                 source: event.after,
                                 exiled,
                                 ability_origin,
@@ -1125,7 +1135,11 @@ impl Game {
                 && event.destination == Zone::Battlefield
                 && let Some((kind, source)) = movement.return_modification
             {
-                self.apply_return_modification(event.after, kind, source);
+                if kind == ReturnKind::WithoutAbilities {
+                    return_ability_results.push((event.after, source));
+                } else {
+                    self.apply_return_modification(event.after, kind, source);
+                }
             }
             if event.moved
                 && event.destination == Zone::Battlefield
@@ -1151,6 +1165,25 @@ impl Game {
                 self.record_sneak_entry(event.after);
             }
             event.was_cast = movement.cast_origin.is_some();
+            event.cast_origin = movement.cast_origin;
+            event.evoked = movement.evoked;
+            if event.moved
+                && event.destination == Zone::Battlefield
+                && let Some(exiled) = movement.behold_exiled
+                && self.object_ref(exiled.card) == exiled
+                && self.state.objects[exiled.card as usize].zone == Zone::Exile
+            {
+                self.state
+                    .linked_choices
+                    .get_or_insert_default()
+                    .links
+                    .push(LinkedExileView {
+                        exiled_turn: self.state.turn,
+                        source: event.after,
+                        exiled,
+                        ability_origin: None,
+                    });
+            }
             event.offspring_paid = movement.offspring_paid;
             event.kicked = movement.kicked;
             if event.moved && event.destination == Zone::Battlefield {
@@ -1163,7 +1196,12 @@ impl Game {
                 if event.destination == Zone::Battlefield
                     && let Some((source, keywords)) = movement.keywords_after
                 {
-                    keyword_results.push((event.after, source, keywords));
+                    keyword_results.push((
+                        event.after,
+                        source,
+                        keywords,
+                        movement.keywords_after_permanent,
+                    ));
                 }
                 if event.destination == Zone::Battlefield
                     && let Some(grant) = movement.attack_trigger_after
@@ -1376,11 +1414,29 @@ impl Game {
         } else {
             self.finish_zone_events(&events, &[]);
         }
+        // "Loses all abilities" follows the return event; it does not describe
+        // the entrant as having no abilities (CR 611.2e). Its entry abilities
+        // and replacements apply before this permanent, exact-object effect.
+        for (recipient, source) in return_ability_results {
+            if self.object_ref(recipient.card) == recipient && self.on_battlefield(recipient.card) {
+                self.apply_return_modification(recipient, ReturnKind::WithoutAbilities, source);
+            }
+        }
         // The entry event and its frozen trigger facts precede this subsequent
         // attachment. Packets cannot be stacked until the surrounding resolution ends.
-        for (recipient, source, keywords) in keyword_results {
+        for (recipient, source, keywords, permanent) in keyword_results {
             if self.object_ref(recipient.card) == recipient && self.on_battlefield(recipient.card) {
                 self.grant_keyword_effects(&[recipient.card], source, keywords);
+                if permanent {
+                    self.state
+                        .roles
+                        .as_mut()
+                        .unwrap()
+                        .keyword_effects
+                        .last_mut()
+                        .unwrap()
+                        .expires_turn = None;
+                }
             }
         }
         for (recipient, grant) in attack_trigger_results {
@@ -1842,7 +1898,8 @@ impl Game {
                 || m.enchantment_return
                 || m.ghost_vacuum_after.is_some()
                 || m.food_return.is_some()
-                || m.return_modification.is_some()
+                || m.return_modification
+                    .is_some_and(|(kind, _)| kind != ReturnKind::WithoutAbilities)
                 || m.before.card.base_stat_setter().is_some()
                 || !m.before.card.live_static_effects().is_empty()
                 || m.before.card.role().is_some()

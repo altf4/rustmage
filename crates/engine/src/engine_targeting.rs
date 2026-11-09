@@ -63,6 +63,8 @@ pub(super) struct Announcement {
         reason = "Rare casualty declarations use one pointer in ordinary announcements"
     )]
     pub casualty: Option<Box<Vec<CasualtyDeclaration>>>,
+    #[allow(clippy::box_collection, reason = "Rare conspire declarations are cold")]
+    pub conspire: Option<Box<Vec<ConspireDeclaration>>>,
     pub cast_costs: Option<Box<CastCostTransaction>>,
     pub evidence: Option<Box<evidence::EvidenceSelection>>,
     pub convoke: Option<Box<convoke::ConvokeSelection>>,
@@ -74,7 +76,16 @@ pub(super) struct Announcement {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Announcement {
+    pub(super) fn linked_origin_counter_cost(&self) -> Option<u16> {
+        self.item
+            .cast
+            .filter(|c| c.method == CastMethod::LinkedExileCounterCost)
+            .and(self.origin_counter_cost)
+    }
     pub(super) fn graveyard_origin_counter_cost(&self) -> Option<u16> {
+        if self.linked_origin_counter_cost().is_some() {
+            return None;
+        }
         self.origin_counter_cost.or_else(|| {
             self.item
                 .cast
@@ -138,6 +149,16 @@ impl Announcement {
                 .is_some_and(|source| source.card.additional_cost().is_some())
     }
     pub(super) fn additional_cost(&self) -> Option<AdditionalCost> {
+        if let Some(costs) = &self.cast_costs
+            && let Some(active) = costs.active
+            && let CastCostClause::OriginCounters(amount) =
+                costs.clauses[usize::from(active)].clause
+        {
+            return Some(Game::creature_counter_spec(amount));
+        }
+        self.printed_additional_cost()
+    }
+    pub(super) fn printed_additional_cost(&self) -> Option<AdditionalCost> {
         if self.activation_cost_route == ActivationCostRoute::FirstEquipZero {
             return None;
         }
@@ -184,13 +205,15 @@ impl Announcement {
             }
             StackKind::Spell
                 if self.item.cast.is_some_and(|c| match c.method {
-                    CastMethod::Normal => self.cost.is_some_and(|cost| {
-                        self.item
-                            .source
-                            .expect("object-backed announcement")
-                            .card
-                            .mana_alternative_replaces_additional(cost)
-                    }),
+                    CastMethod::Normal | CastMethod::LinkedExileCounterCost => {
+                        self.cost.is_some_and(|cost| {
+                            self.item
+                                .source
+                                .expect("object-backed announcement")
+                                .card
+                                .mana_alternative_replaces_additional(cost)
+                        })
+                    }
                     CastMethod::ExileLife
                     | CastMethod::Airbend
                     | CastMethod::Free
@@ -223,6 +246,17 @@ impl Announcement {
                     .filter(|cast| cast.kicker == Some(true))
                     .and_then(|_| card.kicker_additional_cost())
                     .or_else(|| card.additional_cost())
+                    .and_then(|mut cost| {
+                        if let EffectChoiceKind::OptionalBeholdType(amount) = cost.kind {
+                            let kind = self.item.cast?.beheld_type?;
+                            cost.kind = EffectChoiceKind::BeholdMany(amount);
+                            cost.filter.subtype = Some(kind.name());
+                        }
+                        if cost.kind == EffectChoiceKind::BlightXCost {
+                            cost.kind = EffectChoiceKind::BlightCost(self.item.x.unwrap_or(0));
+                        }
+                        Some(cost)
+                    })
             }
             StackKind::ActivatedAbility { ability } => self
                 .item
@@ -247,6 +281,7 @@ impl Announcement {
             | StackKind::CopyEndStepSacrifice
             | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
+            | StackKind::ConspireCopy
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
             | StackKind::DelayedTokenCreation { .. }
@@ -259,8 +294,14 @@ impl Announcement {
 
     fn cost_route_options(
         &self,
-    ) -> impl Iterator<Item = (ManaCost, ActivationCostRoute, Option<ActivationCostChoice>)> + '_
-    {
+    ) -> impl Iterator<
+        Item = (
+            ManaCost,
+            ActivationCostRoute,
+            Option<ActivationCostChoice>,
+            bool,
+        ),
+    > + '_ {
         let options = match self.item.kind {
             StackKind::Spell
                 if self
@@ -387,6 +428,7 @@ impl Announcement {
             | StackKind::CopyEndStepSacrifice
             | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
+            | StackKind::ConspireCopy
             | StackKind::DelayedSacrifice
             | StackKind::DelayedReturn
             | StackKind::DelayedTokenCreation { .. }
@@ -452,16 +494,28 @@ impl Announcement {
         // Choose the printed base or its replacement before applying the
         // shared cost modifiers. A route identity survives equal mana totals.
         options
-            .map(|cost| (cost, ActivationCostRoute::Printed))
+            .map(|cost| {
+                let evoked = self.item.cast.is_some_and(|c| {
+                    matches!(
+                        c.method,
+                        CastMethod::Normal | CastMethod::LinkedExileCounterCost
+                    )
+                }) && self
+                    .item
+                    .source
+                    .is_some_and(|s| s.card.evoke_costs().contains(&cost));
+                (cost, ActivationCostRoute::Printed, evoked)
+            })
             .chain(self.equip_zero_available.then_some((
                 ManaCost {
                     colored: [0; 6],
                     generic: 0,
                 },
                 ActivationCostRoute::FirstEquipZero,
+                false,
             )))
-            .flat_map(move |(cost, route)| {
-                std::iter::once((cost, route)).chain(
+            .flat_map(move |(cost, route, evoked)| {
+                std::iter::once((cost, route, evoked)).chain(
                     (self.item.kind == StackKind::Spell && self.fixed_alternative_cost().is_none())
                         .then(|| {
                             self.item
@@ -471,10 +525,10 @@ impl Announcement {
                                 .explicit_additional_mana()
                         })
                         .flatten()
-                        .map(move |extra| (Card::add_mana_cost(cost, extra), route)),
+                        .map(move |extra| (Card::add_mana_cost(cost, extra), route, evoked)),
                 )
             })
-            .flat_map(move |(cost, route)| {
+            .flat_map(move |(cost, route, evoked)| {
                 const ZERO: [ManaCost; 1] = [ManaCost {
                     colored: [0; 6],
                     generic: 0,
@@ -526,11 +580,12 @@ impl Announcement {
                                         reduction,
                                         route,
                                     }),
+                                evoked,
                             )
                         })
                     })
             })
-            .filter(|(cost, _, _)| {
+            .filter(|(cost, _, _, _)| {
                 self.item
                     .cast
                     .is_none_or(|cast| cast.method != CastMethod::GrantedFlashback)
@@ -565,7 +620,7 @@ impl Announcement {
                                 .1,
                         }
             })
-            .filter_map(|(cost, route, choice)| {
+            .filter_map(|(cost, route, choice, evoked)| {
                 Game::with_tiered_mana(
                     Game::with_flash_surcharge(
                         cost,
@@ -577,7 +632,7 @@ impl Announcement {
                     ),
                     &self.item,
                 )
-                .map(|cost| (cost, route, choice))
+                .map(|cost| (cost, route, choice, evoked))
             })
             .chain(
                 extra
@@ -594,18 +649,22 @@ impl Announcement {
                             &self.item,
                         )
                     })
-                    .map(|cost| (cost, ActivationCostRoute::Printed, None)),
+                    .map(|cost| (cost, ActivationCostRoute::Printed, None, false)),
             )
-            .filter_map(|(mut cost, route, choice)| {
+            .filter_map(|(mut cost, route, choice, evoked)| {
                 cost.generic = cost.generic.checked_add(self.behold_decline_generic())?;
-                Some((cost, route, choice))
+                Some((cost, route, choice, evoked))
             })
     }
     pub(super) fn cost_options(&self) -> impl Iterator<Item = ManaCost> + '_ {
-        self.cost_route_options().map(|(cost, _, _)| cost)
+        self.cost_route_options().map(|(cost, _, _, _)| cost)
     }
     pub(super) fn select_cost(&mut self, index: usize) {
-        let (cost, route, choice) = self.cost_route_options().nth(index).expect("cost option");
+        let (cost, route, choice, evoked) =
+            self.cost_route_options().nth(index).expect("cost option");
+        if let Some(cast) = &mut self.item.cast {
+            cast.evoked = evoked;
+        }
         self.cost = Some(cost);
         self.activation_cost_route = route;
         self.activation_choice = choice.map(Box::new);
@@ -726,6 +785,7 @@ impl Announcement {
                 | StackKind::CopyEndStepSacrifice
                 | StackKind::CopyEndStepConditionalSacrifice
                 | StackKind::CasualtyCopy
+                | StackKind::ConspireCopy
                 | StackKind::DelayedSacrifice
                 | StackKind::DelayedReturn
                 | StackKind::DelayedTokenCreation { .. }
@@ -744,6 +804,7 @@ struct TargetSourceCharacteristics<'a> {
     snapshot: Option<&'a DamageFacts>,
     attachment: Option<ObjectRef>,
     spell: Option<Card>,
+    chosen_creature_type: Option<Option<crate::cards::CreatureType>>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl<'a> TargetSourceCharacteristics<'a> {
@@ -753,6 +814,7 @@ impl<'a> TargetSourceCharacteristics<'a> {
             snapshot: None,
             attachment: None,
             spell: Some(definition),
+            chosen_creature_type: None,
         }
     }
     fn from_item(item: &'a SpellView) -> Self {
@@ -765,6 +827,10 @@ impl<'a> TargetSourceCharacteristics<'a> {
             snapshot: Some(&source.facts),
             attachment: item.source_attachment,
             spell: (item.kind == StackKind::Spell).then_some(source.card),
+            chosen_creature_type: item
+                .source_quantity_lki
+                .as_ref()
+                .map(|facts| facts.chosen_creature_type),
         }
     }
 }
@@ -938,64 +1004,14 @@ impl Game {
         source: ObjectRef,
         definition: Card,
     ) -> bool {
-        let qualification = Some(TargetSourceCharacteristics::for_spell(source, definition));
-        let available = |spec: TargetSpec| {
-            if spec.min == 0 {
-                return true;
-            }
-            let mut count = [0usize; 2];
-            let mut seen_kinds = 0u16;
-            self.visit_targets_in_world(world, spec.rule, actor, source, qualification, |target| {
-                if target == Target::Card(source.card) {
-                    return false;
-                }
-                if matches!(
-                    spec.rule,
-                    TargetRule::Grouped {
-                        constraint: TargetGroupConstraint::SharedCardType,
-                        ..
-                    }
-                ) {
-                    let Target::Card(id) = target else {
-                        return false;
-                    };
-                    let kinds = world.kinds(id);
-                    let available = seen_kinds & kinds != 0;
-                    seen_kinds |= kinds;
-                    return available;
-                }
-                let distinct = matches!(
-                    spec.rule,
-                    TargetRule::Grouped {
-                        constraint: TargetGroupConstraint::DifferentControllers,
-                        ..
-                    }
-                );
-                let bucket = if matches!(spec.rule, TargetRule::Grouped { .. }) {
-                    let Target::Card(id) = target else {
-                        return false;
-                    };
-                    let object = world.object(id);
-                    if distinct {
-                        object.controller.index()
-                    } else {
-                        object.owner.index()
-                    }
-                } else {
-                    0
-                };
-                count[bucket] += 1;
-                if distinct {
-                    spec.min <= 1 || spec.min <= 2 && count[0] > 0 && count[1] > 0
-                } else {
-                    count[bucket] >= usize::from(spec.min)
-                }
-            })
-        };
-        match plan {
-            TargetPlan::Single(spec) => available(spec),
-            TargetPlan::Groups(groups) => groups.iter().copied().all(available),
-        }
+        self.target_specs_available_in_world(
+            world,
+            plan,
+            actor,
+            source,
+            Some(TargetSourceCharacteristics::for_spell(source, definition)),
+            true,
+        )
     }
 
     pub(super) fn targets_available(
@@ -1026,13 +1042,49 @@ impl Game {
         source: ObjectRef,
         qualification: Option<TargetSourceCharacteristics<'_>>,
     ) -> bool {
+        self.target_specs_available_in_world(self, plan, actor, source, qualification, false)
+    }
+    fn target_specs_available_in_world<W: CharacteristicWorld + ?Sized>(
+        &self,
+        world: &W,
+        plan: TargetPlan,
+        actor: Player,
+        source: ObjectRef,
+        qualification: Option<TargetSourceCharacteristics<'_>>,
+        exclude_source: bool,
+    ) -> bool {
         let available = |spec: TargetSpec| {
             if spec.min == 0 {
                 return true;
             }
             let mut count = [0usize; 2];
             let mut seen_kinds = 0u16;
-            self.visit_targets_in_world(self, spec.rule, actor, source, qualification, |target| {
+            let mut seen_creature_types = None;
+            self.visit_targets_in_world(world, spec.rule, actor, source, qualification, |target| {
+                if exclude_source && target == Target::Card(source.card) {
+                    return false;
+                }
+                if matches!(
+                    spec.rule,
+                    TargetRule::Grouped {
+                        constraint: TargetGroupConstraint::SharedCreatureType,
+                        ..
+                    }
+                ) {
+                    let Target::Card(id) = target else {
+                        return false;
+                    };
+                    let types = world.subtypes(id);
+                    let definition = world.object(id).card;
+                    let seen = seen_creature_types
+                        .get_or_insert_with(|| vec![false; crate::cards::CREATURE_TYPES.len()]);
+                    return crate::cards::CREATURE_TYPES
+                        .iter()
+                        .zip(seen)
+                        .any(|(name, seen)| {
+                            types.has(definition, name) && std::mem::replace(seen, true)
+                        });
+                }
                 if matches!(
                     spec.rule,
                     TargetRule::Grouped {
@@ -1043,7 +1095,7 @@ impl Game {
                     let Target::Card(id) = target else {
                         return false;
                     };
-                    let kinds = self.current_kinds(id);
+                    let kinds = world.kinds(id);
                     let available = seen_kinds & kinds != 0;
                     seen_kinds |= kinds;
                     return available;
@@ -1059,7 +1111,7 @@ impl Game {
                     let Target::Card(id) = target else {
                         return false;
                     };
-                    let object = &self.state.objects[id as usize];
+                    let object = world.object(id);
                     if distinct {
                         object.controller.index()
                     } else {
@@ -1166,6 +1218,12 @@ impl Game {
             TargetGroupConstraint::SameGraveyard => object.zone == Zone::Graveyard && chosen.iter().filter(|b| b.group == group).all(|b| {
                 matches!(b.target, Target::Card(other) if self.state.objects.get(other as usize).is_some_and(|o| o.owner == object.owner))
             }),
+            TargetGroupConstraint::SharedCreatureType => object.zone == Zone::Graveyard
+                && chosen.iter().filter(|bound| bound.group == group).all(|bound| {
+                    matches!(bound.target, Target::Card(other)
+                        if self.same_target_object(*bound)
+                            && self.share_creature_type(id, other))
+                }),
             TargetGroupConstraint::SharedCardType => object.zone == Zone::Battlefield && chosen.iter().filter(|b| b.group == group).all(|b| {
                 matches!(b.target, Target::Card(other) if self.same_target_object(*b) && self.on_battlefield(other) && self.current_kinds(other) & self.current_kinds(id) != 0)
             }),
@@ -1175,14 +1233,110 @@ impl Game {
         }
     }
 
-    pub(super) fn shared_type_target_completion(&self, a: &Announcement, target: Target) -> bool {
-        if !matches!(
-            a.spec.rule,
-            TargetRule::Grouped {
-                constraint: TargetGroupConstraint::SharedCardType,
-                ..
+    fn creature_type_facts(&self, id: CardId) -> (Card, GrantedSubtypes) {
+        (
+            self.state.objects[id as usize].card,
+            self.granted_subtypes(id),
+        )
+    }
+
+    fn types_intersect(
+        (first, first_types): (Card, GrantedSubtypes),
+        (second, second_types): (Card, GrantedSubtypes),
+    ) -> bool {
+        crate::cards::CREATURE_TYPES
+            .iter()
+            .any(|name| first_types.has(first, name) && second_types.has(second, name))
+    }
+
+    fn share_creature_type(&self, first: CardId, second: CardId) -> bool {
+        Self::types_intersect(
+            self.creature_type_facts(first),
+            self.creature_type_facts(second),
+        )
+    }
+
+    pub(super) fn capture_target_types_departure(&mut self, before: &ObjectView) {
+        let (constraint, facts) = match before.zone {
+            Zone::Battlefield => (
+                TargetGroupConstraint::SharedCardType,
+                TargetTypeLki::CardTypes(before.kinds),
+            ),
+            Zone::Graveyard => (
+                TargetGroupConstraint::SharedCreatureType,
+                TargetTypeLki::CreatureTypes(before.card, before.granted_subtypes),
+            ),
+            _ => return,
+        };
+        fn remember(
+            item: &mut SpellView,
+            reference: ObjectRef,
+            constraint: TargetGroupConstraint,
+            facts: TargetTypeLki,
+        ) {
+            if item
+                .targets
+                .iter()
+                .any(|bound| bound.object == Some(reference))
+                && item.target_type_lki(reference).is_none()
+                && item.needs_target_relation_lki(constraint)
+            {
+                item.target_types_lki
+                    .get_or_insert_with(|| Box::new(Vec::new()))
+                    .push((reference, facts));
             }
-        ) || a.item.targets.iter().any(|b| b.group == a.group)
+            if let Some(event) = &mut item.copy_event {
+                remember(&mut event.spell, reference, constraint, facts);
+            }
+        }
+        let mut remember =
+            |item: &mut SpellView| remember(item, before.reference, constraint, facts);
+        self.state
+            .stack
+            .iter_mut()
+            .chain(&mut self.state.pending_triggers)
+            .chain(&mut self.state.ordering_triggers)
+            .chain(self.state.resolving.iter_mut().map(|r| &mut r.item))
+            .chain(self.state.announcing.iter_mut().map(|a| &mut a.item))
+            .chain(
+                self.state
+                    .activation_payment
+                    .iter_mut()
+                    .map(|p| &mut p.item),
+            )
+            .chain(
+                self.state
+                    .mana_announcement_stack
+                    .iter_mut()
+                    .flat_map(|frames| frames.iter_mut())
+                    .map(|frame| &mut frame.announcement.item),
+            )
+            .for_each(&mut remember);
+        if let Some(data) = &mut self.state.stack_copy_data {
+            data.visit_owned_packets(&mut remember);
+        }
+        if let Some(data) = &mut self.state.replacements {
+            data.visit_owned_packets(&mut remember);
+        }
+        if let Some(data) = self
+            .state
+            .entry_batch
+            .as_mut()
+            .and_then(|batch| batch.replacement_resume.as_deref_mut())
+        {
+            data.visit_owned_packets(&mut remember);
+        }
+    }
+
+    pub(super) fn shared_type_target_completion(&self, a: &Announcement, target: Target) -> bool {
+        let TargetRule::Grouped { constraint, .. } = a.spec.rule else {
+            return true;
+        };
+        if !matches!(
+            constraint,
+            TargetGroupConstraint::SharedCardType | TargetGroupConstraint::SharedCreatureType
+        ) || a.spec.min < 2
+            || a.item.targets.iter().any(|bound| bound.group == a.group)
         {
             return true;
         }
@@ -1190,7 +1344,12 @@ impl Game {
             return false;
         };
         self.visit_item_targets(&a.item, a.spec.rule, |other| {
-            matches!(other, Target::Card(other_id) if other_id != id && self.current_kinds(other_id) & self.current_kinds(id) != 0)
+            matches!(other, Target::Card(other_id) if other_id != id &&
+            if constraint == TargetGroupConstraint::SharedCreatureType {
+                self.share_creature_type(id, other_id)
+            } else {
+                self.current_kinds(other_id) & self.current_kinds(id) != 0
+            })
         })
     }
 
@@ -1248,13 +1407,46 @@ impl Game {
                         if self.same_target_object(*other) && self.on_battlefield(other_id) {
                             Some(self.current_kinds(other_id))
                         } else {
-                            item.target_kinds_lki.as_ref().and_then(|rows| {
-                                rows.iter().find_map(|(reference, kinds)| {
-                                    (Some(*reference) == other.object).then_some(*kinds)
-                                })
-                            })
+                            match other.object.and_then(|object| item.target_type_lki(object)) {
+                                Some(TargetTypeLki::CardTypes(kinds)) => Some(kinds),
+                                _ => None,
+                            }
                         };
                     other_kinds.is_some_and(|other| kinds & other != 0)
+                });
+        }
+        if plan.group(bound.group).is_some_and(|spec| {
+            matches!(
+                spec.rule,
+                TargetRule::Grouped {
+                    constraint: TargetGroupConstraint::SharedCreatureType,
+                    ..
+                }
+            )
+        }) {
+            let Target::Card(id) = bound.target else {
+                return false;
+            };
+            let first = self.creature_type_facts(id);
+            return item
+                .targets
+                .iter()
+                .filter(|other| other.group == bound.group && other.target != bound.target)
+                .all(|other| {
+                    let Target::Card(other_id) = other.target else {
+                        return false;
+                    };
+                    let second = if self.same_target_object(*other)
+                        && self.state.objects[other_id as usize].zone == Zone::Graveyard
+                    {
+                        self.creature_type_facts(other_id)
+                    } else {
+                        match other.object.and_then(|object| item.target_type_lki(object)) {
+                            Some(TargetTypeLki::CreatureTypes(card, subtypes)) => (card, subtypes),
+                            _ => return false,
+                        }
+                    };
+                    Self::types_intersect(first, second)
                 });
         }
         if let Some(TargetSpec {
@@ -1418,7 +1610,9 @@ impl Game {
         let player = a.item.controller;
         // CR601.2b announces the mode before a hybrid equivalent. Both
         // declarations precede targets, mana abilities and payment.
-        if a.needs_behold() {
+        if a.needs_behold_type() {
+            self.state.pending = Pending::BeholdType { player };
+        } else if a.needs_behold() {
             self.state.pending = Pending::CastBehold { player };
         } else if a.needs_blight() {
             self.state.pending = Pending::BlightIntent { player };
@@ -1454,6 +1648,12 @@ impl Game {
         } else if a.additional_cost().is_some_and(forage::is_forage_cost) && a.forage.is_none() {
             self.state.pending = Pending::ForageMethod { player };
         } else if a
+            .conspire
+            .as_ref()
+            .is_some_and(|rows| rows.iter().any(|r| !r.declared))
+        {
+            self.state.pending = Pending::Conspire { player };
+        } else if a
             .casualty
             .as_ref()
             .is_some_and(|rows| rows.iter().any(|row| !row.declared))
@@ -1466,7 +1666,7 @@ impl Game {
             self.state.pending = Pending::Harmonize { player };
         } else {
             self.capture_announcement_division();
-            let improvise = improvise::potential(
+            let improvise = convoke::cost_potential(
                 self,
                 self.state
                     .announcing
@@ -1571,7 +1771,12 @@ impl Game {
                 })
         };
         let monocolored = keywords.contains(Keywords::HEXPROOF_MONOCOLORED);
-        let hexproof_colors = keywords.hexproof_colors();
+        let hexproof_colors = keywords.hexproof_colors()
+            | if keywords.contains(Keywords::HEXPROOF_OWN_COLORS) {
+                world.colors(id)
+            } else {
+                0
+            };
         if filters().next().is_none() && !monocolored && hexproof_colors == 0 {
             return false;
         }
@@ -1754,6 +1959,7 @@ impl Game {
                 }
                 let zone = match constraint {
                     TargetGroupConstraint::SameGraveyard
+                    | TargetGroupConstraint::SharedCreatureType
                     | TargetGroupConstraint::GraveyardOwnerOfPlayerGroup(_)
                     | TargetGroupConstraint::DistinctCardTypeSlots => Some(Zone::Graveyard),
                     TargetGroupConstraint::DifferentControllers
@@ -1802,6 +2008,15 @@ impl Game {
                 // The base rule validates the object index and zone before this lookup.
                 let object = world.object(id);
                 return match *predicate {
+                    TargetPredicate::SourceChosenCreatureType => {
+                        let chosen = qualification
+                            .and_then(|row| row.chosen_creature_type)
+                            .unwrap_or_else(|| match world.entry_value(source) {
+                                Some(EntryChoiceValue::CreatureType(kind)) => Some(kind),
+                                _ => None,
+                            });
+                        chosen.is_some_and(|kind| has_subtype(id, kind.name()))
+                    }
                     TargetPredicate::OwnedByController => object.owner == controller,
                     TargetPredicate::Basic => world.definition(id).is_basic_land(),
                     TargetPredicate::Kinds(kinds) => world.kinds(id) & kinds == kinds,
@@ -1925,6 +2140,8 @@ impl Game {
                     (obj.zone == Zone::Battlefield).then(|| characteristics().keywords(id));
                 if battlefield_keywords.is_some_and(|keywords| {
                     keywords.contains(Keywords::PROTECTION_EVERYTHING)
+                        || (obj.controller != controller
+                            && keywords.contains(Keywords::PROTECTION_OPPONENTS))
                         || (keywords.protection_colors() != 0
                             || keywords.contains(Keywords::PROTECTION_INSTANT_SORCERY))
                             && self
@@ -2196,7 +2413,7 @@ impl Game {
             borrowed_slot: None,
             self_granted_activation: None,
             target_controller_lki: None,
-            target_kinds_lki: None,
+            target_types_lki: None,
             target_type_slots: None,
             reflexive_subject: None,
             crew: None,
@@ -2230,6 +2447,10 @@ impl Game {
                 origin,
                 stash_origin: self.foreign_stash(actor, card),
                 method: CastMethod::Normal,
+                evoked: false,
+                beheld_type: None,
+                behold_type_declared: false,
+                behold_exiled: None,
                 sneak_defender: None,
                 flash_surcharge: false,
                 offspring: None,
@@ -2362,6 +2583,7 @@ impl Game {
             creature_counter_cost: None,
             forage: None,
             casualty: None,
+            conspire: None,
             cast_costs: None,
             evidence: None,
             convoke: None,
@@ -2528,6 +2750,7 @@ impl Game {
         }
         let plan = self.target_spec(&item);
         let casualty = self.casualty_declarations(&item);
+        let conspire = self.conspire_declarations(&item);
         let mana_output = production.and_then(|selected| self.mana_output(&item, selected));
         Announcement {
             behold_required: self.behold_timing_required(&item),
@@ -2567,6 +2790,7 @@ impl Game {
             creature_counter_cost: None,
             forage: None,
             casualty,
+            conspire,
             cast_costs: None,
             evidence: None,
             convoke: None,
@@ -2892,6 +3116,7 @@ impl Game {
                 self.use_free_hand_permission(*permission);
             }
             self.queue_casualty_copies(&announcement);
+            self.queue_conspire_copies(&announcement);
             self.push_stack_item(announcement.item);
         }
         if announcement.trigger {

@@ -3,10 +3,40 @@
   "catalogue_id": 720,
   "oracle_id": "77217a66-4ba8-443f-b915-178cfcc233e1",
   "facts_sha256": "946ea58f9ad5bf0fb4c3d12eb1052846020939bb9512d456b2ddf9bf98de54bc",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5b7b46ba1d3dafbde786d4d048552c14546a49e53432107d179d252a283615ce"
   },
-  "physical_metadata_sha256": "7ce8eefb9d22326777fb061abf9ca14c378a23cc02eae34f0b8fd1c43d060157"
+  "physical_metadata_sha256": "7ce8eefb9d22326777fb061abf9ca14c378a23cc02eae34f0b8fd1c43d060157",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ChaosSpewer.java",
+  "java_sha256": "2dbb60a96fcb4acedc65ec9652b9305e0e024b9c77c5702cd238e8a11aa32e4c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/BlightControllerEffect.java",
+      "sha256": "634de46026db0ce914a12db898368227b3981ee5a18bd380600b40fd04d9b986"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/BlightCost.java",
+      "sha256": "33a0d3714068f004db969c35c375e95470b9eaf389f5b2dd73aae3c67b498cd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    }
+  ]
 }

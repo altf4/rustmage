@@ -8,6 +8,7 @@ impl TriggerCondition {
         matches!(
             self,
             Self::SourceDealtCombatDamage
+                | Self::SourceCombatDamagePlayerOrPlaneswalker
                 | Self::PlayerDamaged {
                     subject: DamageSubject::Source,
                     combat_only: true,

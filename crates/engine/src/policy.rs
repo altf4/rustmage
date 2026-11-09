@@ -211,6 +211,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::PutHandPermanent { .. }
             | Action::PutHandLand { .. }
             | Action::ChooseColorCounter { .. }
+            | Action::ChoosePowerDifferenceCreature { .. }
             | Action::ChooseArmy { .. }
             | Action::ChooseJace { .. }
             | Action::SelectGraveyardReturn { .. }
@@ -223,7 +224,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             Action::DeclineHandEntry | Action::FinishHandSelection => -1,
             Action::BottomHandCard { .. } => 10,
             Action::ChooseBlight { pay } => i128::from(*pay) * 40,
-            Action::PayBlight { .. } => 50,
+            Action::PayBlight { .. } | Action::Blight { .. } => 50,
             Action::ChooseTeamwork { pay } => i128::from(*pay) * 40,
             Action::ChooseTeammate { .. } => 50,
             Action::FinishTeamwork => 100,
@@ -244,6 +245,15 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                     80 + i128::from((*value).min(20))
                 }
             }
+            Action::ChooseBeholdType {
+                creature_type: kind,
+            } => {
+                if kind.is_some() {
+                    100
+                } else {
+                    0
+                }
+            }
             Action::ChooseGift { beneficiary } => {
                 if beneficiary.is_some() {
                     40
@@ -252,6 +262,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                 }
             }
             Action::ChooseCasualty { pay }
+            | Action::ChooseConspire { pay }
             | Action::ChooseOffspring { pay }
             | Action::ChooseLibraryCastPermission { with_counter: pay }
             | Action::ChooseKicker { pay } => {
@@ -282,6 +293,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             }
             Action::ChooseCastCost { .. }
             | Action::PayCasualty { .. }
+            | Action::PayConspire { .. }
             | Action::PaySneakReturn { .. }
             | Action::ChooseAdditionalCost { .. }
             | Action::ChooseAdditionalLife
@@ -358,6 +370,8 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceAirbend { .. }
             | Action::AnnounceExileLife { .. }
             | Action::AnnounceExileFree { .. }
+            | Action::AnnounceLinkedFree { .. }
+            | Action::AnnounceLinkedExileCounterCost { .. }
             | Action::AnnounceFlashback { .. }
             | Action::AnnounceHarmonize { .. }
             | Action::AnnounceMayhem { .. } => 79,
@@ -639,7 +653,10 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             Action::ChooseLibraryDestination { .. }
             | Action::ChooseManaValueParity { .. }
             | Action::ChooseLinkedExile { .. } => 50,
-            Action::SelectLibrary { .. } => 60,
+            Action::SelectLibrary { .. }
+            | Action::ChooseSharedCreature { .. }
+            | Action::ChooseEntryBatchCopy { .. }
+            | Action::ChooseCounterRemoval { .. } => 60,
             Action::FinishLibrarySelection | Action::OrderLibraryBottom { .. } => 50,
             Action::ArrangeLibrary { destination, .. } => {
                 if *destination == crate::LibraryDestination::Top {

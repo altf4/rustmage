@@ -135,7 +135,7 @@ impl Game {
             borrowed_slot: None,
             self_granted_activation: None,
             target_controller_lki: None,
-            target_kinds_lki: None,
+            target_types_lki: None,
             gift: None,
             reflexive_subject: None,
             delayed_warp_exile: None,
@@ -424,6 +424,12 @@ impl Game {
             }
             StepGuard::SourceReceivedCounterThisTurn => {
                 return self.put_counter_on_source_this_turn(source, player);
+            }
+            StepGuard::PutCounterOnCreatureThisTurn => {
+                return counter_placement_history::placed_on_creature(
+                    &self.state.counter_placement_history,
+                    player,
+                );
             }
             StepGuard::YourTurn => return self.state.active == player,
             StepGuard::YourMainPhase => {

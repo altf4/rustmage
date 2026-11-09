@@ -48,6 +48,7 @@ impl Game {
             kind,
             production,
             tap_bonus: [0; 6],
+            recolor: None,
             quality: None,
             spent_lots: Vec::new(),
             counter_costs: Vec::new(),
@@ -182,6 +183,16 @@ impl Game {
             };
         }
     }
+    pub(super) fn record_cast_mana_recolor(&mut self, colors: u8) {
+        if let Some(capture) = self
+            .state
+            .cast_rollback
+            .as_mut()
+            .and_then(|r| r.capture.as_mut())
+        {
+            capture.event.recolor = Some(colors);
+        }
+    }
     pub(super) fn record_cast_mana_bonus(&mut self, actor: Player, mana: Mana) {
         if let Some(capture) = self
             .state
@@ -305,6 +316,7 @@ impl Game {
                 plan.destination,
                 plan.shuffle,
                 plan.prevented,
+                plan.completion,
             ));
             capture.event.irreversible |= plan.shuffle.is_some()
                 || plan.destination == Zone::Library
@@ -322,7 +334,10 @@ impl Game {
         }
     }
     pub(super) fn finish_cast_mana_action(&mut self) {
-        if self.state.entry_batch.is_some() || self.state.replacements.is_some() {
+        if self.state.entry_batch.is_some()
+            || self.state.replacements.is_some()
+            || self.mana_tap_bonus_pending()
+        {
             return;
         }
         let Some(rollback) = self.state.cast_rollback.as_mut() else {

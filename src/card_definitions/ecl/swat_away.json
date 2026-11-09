@@ -3,10 +3,53 @@
   "catalogue_id": 4289,
   "oracle_id": "79090b00-d920-4134-a838-fb434cf3ee4d",
   "facts_sha256": "7602febf7dacbea6a0381f70f6c57411d94d79f2cbd4fbdcc1660057b56a6d3f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e76d23793a17c7f19781516cb9eb3e3440e922ee33646836f92e7eaf5d9c37b3"
   },
-  "physical_metadata_sha256": "34e7246b6dad13b028e2745971e6ca6e498ab655b71fdd86e1014adee6ea70d2"
+  "physical_metadata_sha256": "34e7246b6dad13b028e2745971e6ca6e498ab655b71fdd86e1014adee6ea70d2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SwatAway.java",
+  "java_sha256": "7388e5f4e86868a05e7893a704c495259c3a59c2396fe6ae78f2a3fe8300f2e3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutOnTopOrBottomLibraryTargetEffect.java",
+      "sha256": "95bb260b732c9424cbbd22d60f7904ae468ce3b0277707decdeef4466034be30"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+      "sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionSourceEffect.java",
+      "sha256": "c877e6d5d339d0c8a602f1c16190e62f1dd0a5e1c11ba333a698b6dfee367304"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterCreatureAttackingYou.java",
+      "sha256": "aed703b33b5b88737e4572310c65a36f7014bf381b82b03771d44cd09f0c549b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterSpellOrPermanent.java",
+      "sha256": "ec349b8f848781296552d6e7a254b5b32fb4fdac3ac5f0294c2eb4bf427b09fd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetSpellOrPermanent.java",
+      "sha256": "f4fde3baee915c47ef06d6b71eb32c64243958f8c65497765fe6e0bed068f807"
+    }
+  ],
+  "rules_notes": [
+    "Oracle governs the attack condition: an opposing creature attacking the caster qualifies; attacking their planeswalker does not. The pinned XMage default onlyControlled=true in PermanentsOnTheBattlefieldCondition conflicts with this printed condition."
+  ]
 }

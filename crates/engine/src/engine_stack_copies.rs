@@ -14,6 +14,7 @@ struct Retarget {
     template: SpellView,
     remaining: u64,
     victim: Option<(u64, bool)>,
+    keywords: Keywords,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -31,6 +32,13 @@ pub(super) struct CopyState {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl CopyState {
+    pub(super) fn visit_owned_packets(&mut self, visit: &mut impl FnMut(&mut SpellView)) {
+        self.delayed.iter_mut().for_each(&mut *visit);
+        if let Some(retarget) = &mut self.retarget {
+            visit(&mut retarget.item);
+            visit(&mut retarget.template);
+        }
+    }
     #[cfg(feature = "test-support")]
     pub(super) fn test_retarget(item: SpellView, template: SpellView) -> Self {
         Self {
@@ -40,6 +48,7 @@ impl CopyState {
                 template,
                 remaining: 0,
                 victim: None,
+                keywords: Keywords::NONE,
             }),
         }
     }
@@ -143,6 +152,14 @@ impl Game {
             }
             TargetRule::SingleTargetStackObject => item.targets.len() == 1,
             TargetRule::Ability => item.kind != StackKind::Spell,
+            TargetRule::TriggeredAbility { relation } => {
+                !matches!(
+                    item.kind,
+                    StackKind::Spell
+                        | StackKind::ActivatedAbility { .. }
+                        | StackKind::InherentRule { .. }
+                ) && (relation < 0 || (item.controller == controller) == (relation == 0))
+            }
             TargetRule::Spell => item.kind == StackKind::Spell,
             TargetRule::YourSpell => item.kind == StackKind::Spell && item.controller == controller,
             TargetRule::YourSpellKinds { kinds } => {
@@ -364,7 +381,7 @@ impl Game {
                 trigger.source_quantity_lki = None;
                 trigger.event_object = None;
                 trigger.target_controller_lki = None;
-                trigger.target_kinds_lki = None;
+                trigger.target_types_lki = None;
                 trigger.is_copy = false;
                 trigger.targets.clear();
                 trigger.target_type_slots = None;
@@ -442,6 +459,7 @@ impl Game {
                         Some(u64::from(spell.x.unwrap_or(0)))
                     }
                     Instruction::CopyPreparedCastSpell if instant_or_sorcery || prepared => Some(1),
+                    Instruction::MayCopyCastSpellWithKeywords(_) => Some(1),
                     _ => None,
                 })
             {
@@ -594,6 +612,7 @@ impl Game {
         copy.is_copy = true;
         if let Some(cast) = &mut copy.cast {
             cast.payment = [0; 6];
+            cast.behold_exiled = None;
             // The permission-created replacement is external to copiable values.
             cast.exile_on_graveyard = false;
             cast.spend_any_mana = false;
@@ -683,6 +702,7 @@ impl Game {
             template,
             remaining: 0,
             victim: None,
+            keywords: Keywords::NONE,
         });
         if retarget {
             self.advance_copy_targets()
@@ -714,6 +734,7 @@ impl Game {
             template,
             remaining: 0,
             victim: None,
+            keywords: Keywords::NONE,
         });
         self.advance_copy_targets()
     }
@@ -743,6 +764,7 @@ impl Game {
             template,
             remaining: 0,
             victim: None,
+            keywords: Keywords::NONE,
         });
         self.advance_copy_targets()
     }
@@ -785,6 +807,14 @@ impl Game {
         item: &SpellView,
         retarget: bool,
     ) -> bool {
+        self.copy_captured_spell_with_keywords(item, retarget, Keywords::NONE)
+    }
+    pub(super) fn copy_captured_spell_with_keywords(
+        &mut self,
+        item: &SpellView,
+        retarget: bool,
+        keywords: Keywords,
+    ) -> bool {
         let Some(event) = &item.copy_event else {
             return false;
         };
@@ -807,6 +837,20 @@ impl Game {
             return false;
         }
         let copy = self.allocate_spell_copy(&template, item.controller);
+        // These are ordinary ability grants, not copiable values. The original
+        // receives its grant only while its exact stack incarnation still exists.
+        if keywords != Keywords::NONE {
+            if let Some(original) = self
+                .state
+                .stack
+                .iter()
+                .find(|spell| spell.id == event.spell.id)
+                .and_then(|spell| spell.source)
+            {
+                self.grant_stack_keywords_expiring(original.object, keywords, None);
+            }
+            self.grant_stack_keywords_expiring(copy.source.unwrap().object, keywords, None);
+        }
         self.state
             .stack_copy_data
             .get_or_insert_with(Default::default)
@@ -815,6 +859,7 @@ impl Game {
             template,
             remaining: event.amount - 1,
             victim: None,
+            keywords,
         });
         if retarget {
             self.advance_copy_targets()
@@ -852,6 +897,7 @@ impl Game {
             template: victim,
             remaining: 0,
             victim: Some((id, false)),
+            keywords: Keywords::NONE,
         });
         self.advance_copy_targets()
     }
@@ -891,6 +937,7 @@ impl Game {
             template: victim,
             remaining: 0,
             victim: Some((id, true)),
+            keywords: Keywords::NONE,
         });
         self.advance_copy_targets()
     }
@@ -1140,6 +1187,7 @@ impl Game {
             state.retarget = None;
         } else {
             let copy = self.allocate_spell_copy(&r.template, r.item.controller);
+            self.grant_stack_keywords_expiring(copy.source.unwrap().object, r.keywords, None);
             self.state.stack_copy_data.as_mut().unwrap().retarget = Some(Retarget {
                 item: copy,
                 remaining: r.remaining - 1,
@@ -1169,5 +1217,28 @@ impl Game {
             // A mandatory retarget with no alternatives leaves its target unchanged.
             self.commit_stack_targets();
         }
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    pub(super) fn complete_optional_spell_copy(&mut self, accept: bool) -> bool {
+        let Some(resolution) = self.state.resolving.as_ref() else {
+            return false;
+        };
+        let program = resolution.program;
+        let Some(Instruction::MayCopyCastSpellWithKeywords(keywords)) = resolution
+            .pc
+            .checked_sub(1)
+            .and_then(|pc| program.get(pc))
+            .copied()
+        else {
+            return false;
+        };
+        let item = resolution.item.clone();
+        if !accept || !self.copy_captured_spell_with_keywords(&item, true, keywords) {
+            self.run_program();
+        }
+        true
     }
 }

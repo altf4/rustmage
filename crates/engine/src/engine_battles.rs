@@ -27,7 +27,7 @@ impl Game {
             borrowed_slot: None,
             self_granted_activation: None,
             target_controller_lki: None,
-            target_kinds_lki: None,
+            target_types_lki: None,
             target_type_slots: None,
             gift: None,
             reflexive_subject: None,
@@ -147,6 +147,7 @@ impl Game {
             return false;
         }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            uncast_to_hand: false,
             siege_transformed: true,
             paid: None,
             casts_remaining: Some(1),

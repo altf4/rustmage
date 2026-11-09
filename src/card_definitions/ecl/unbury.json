@@ -3,10 +3,25 @@
   "catalogue_id": 4755,
   "oracle_id": "e2928d3c-b64a-443e-a1c1-fd204bb098ba",
   "facts_sha256": "15e73d69e27e78c16efa4cc2e411bb213fa571ab5bdf8a0eeb528bc82a93b522",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9db353c57849c3caf78149d34af7ae3363eedc97de9a00d652acc91ca371c926"
   },
-  "physical_metadata_sha256": "edadef5b1bb743ddfd4b17f5eb6fcb2852256351f86c6f833411b38e7fb34973"
+  "physical_metadata_sha256": "edadef5b1bb743ddfd4b17f5eb6fcb2852256351f86c6f833411b38e7fb34973",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/Unbury.java",
+  "java_sha256": "5dd70c3581a5a8bab60515dfb16fc814b747123441abe1185629881da975b8bf",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+      "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    }
+  ]
 }

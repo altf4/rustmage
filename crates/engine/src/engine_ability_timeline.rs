@@ -54,10 +54,13 @@ impl Card {
                             | StaticAbilityFragment::RemoveAttachedAbilities
                             | StaticAbilityFragment::ControlAttached
                             | StaticAbilityFragment::AttachedCharacteristics(..)
+                            | StaticAbilityFragment::AttachedChosenColor
+                            | StaticAbilityFragment::AttachmentManaBonus(..)
                             | StaticAbilityFragment::SourceCounterSubtype { .. }
                             | StaticAbilityFragment::SourceCounterCreature { .. }
                             | StaticAbilityFragment::SourceOffTurnCreature
                             | StaticAbilityFragment::ControlledCreatureSubtype { .. }
+                            | StaticAbilityFragment::AttachedAllCreatureTypes
                             | StaticAbilityFragment::SourceGraveyardAllTypes { .. }
                             | StaticAbilityFragment::SourceConditionalKeywords { .. }
                             | StaticAbilityFragment::SourceCounterKeywords { .. }
@@ -70,6 +73,7 @@ impl Card {
                             | StaticAbilityFragment::AttachedLegendary
                             | StaticAbilityFragment::KeywordGrant(..)
                             | StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                            | StaticAbilityFragment::ControlledTappedKeywords { .. }
                             | StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                             | StaticAbilityFragment::SourceMaxSpeedActivation(..)
                             | StaticAbilityFragment::SourceEntryModeActivation { .. }
@@ -81,6 +85,7 @@ impl Card {
                             | StaticAbilityFragment::AttachedTurnKeywords(..)
                             | StaticAbilityFragment::HarnessedTrigger(..)
                             | StaticAbilityFragment::ConditionalWard { .. }
+                            | StaticAbilityFragment::ControlledCreatureTrigger { .. }
                             | StaticAbilityFragment::AttachmentTrigger(..)
                             | StaticAbilityFragment::AttachmentActivation { .. }
                             | StaticAbilityFragment::AttachmentMana(..)
@@ -134,7 +139,11 @@ impl Game {
             .iter()
             .any(|group| {
                 group.fragments.iter().any(|fragment| {
-                    matches!(fragment, StaticAbilityFragment::AttachedCharacteristics(..))
+                    matches!(
+                        fragment,
+                        StaticAbilityFragment::AttachedCharacteristics(..)
+                            | StaticAbilityFragment::AttachedChosenColor
+                    )
                 })
             })
         {
@@ -173,6 +182,14 @@ impl Game {
     }
     /// A cast-spending effect follows only this spell's actual stack-to-battlefield move.
     pub(super) fn grant_stack_keywords(&mut self, spell: ObjectRef, keywords: Keywords) {
+        self.grant_stack_keywords_expiring(spell, keywords, Some(self.state.turn));
+    }
+    pub(super) fn grant_stack_keywords_expiring(
+        &mut self,
+        spell: ObjectRef,
+        keywords: Keywords,
+        expires_turn: Option<u32>,
+    ) {
         assert_eq!(self.object_ref(spell.card), spell);
         assert_eq!(self.state.objects[spell.card as usize].zone, Zone::Stack);
         if keywords == Keywords::NONE {
@@ -190,7 +207,7 @@ impl Game {
                 keywords,
                 rules: Keywords::NONE,
                 timestamp,
-                expires_turn: Some(self.state.turn),
+                expires_turn,
             });
     }
     pub(super) fn continue_stack_keywords(

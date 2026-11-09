@@ -3,10 +3,25 @@
   "catalogue_id": 1950,
   "oracle_id": "b93cd38a-1d0c-40e6-aaf1-621a2c88bf46",
   "facts_sha256": "3ed685d2dc1b5b6d91cd67928b2b452cf367da64580f3c45b3e960572ce021d4",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b750cc26f727f86954395523c50762fe5a045d63529042a0bf17a43eb31463d5"
   },
-  "physical_metadata_sha256": "72c074ec5eda7a27c28529cc0ce1f837f70ce00bbc256fc39588867f0b4458fd"
+  "physical_metadata_sha256": "72c074ec5eda7a27c28529cc0ce1f837f70ce00bbc256fc39588867f0b4458fd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HarmonizedCrescendo.java",
+  "java_sha256": "8de88e1f7252f12ea07300a997f7d9d0b148431f5083dd967179f4136b15a742",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ConvokeAbility.java",
+      "sha256": "207ace9818509f0db681504b423fb592693ab197c0e52decbefac3550c73abdf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/choices/ChoiceCreatureType.java",
+      "sha256": "c940b4b86491e3c45d7d6011a43e340e051fd3fac732b035a068af6b7074b44b"
+    }
+  ]
 }

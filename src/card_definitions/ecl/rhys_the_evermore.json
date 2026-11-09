@@ -3,10 +3,56 @@
   "catalogue_id": 3516,
   "oracle_id": "9f013b5d-fff0-4c50-8621-158b6dc34834",
   "facts_sha256": "266afa901f48d8c3342eb5a32743993245bb7c6a578f6db0f5de9026961ae753",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "aff9844a02a86fab7e54af119c1f87c61853974e5fd59798a22fc5ee3529e325"
   },
-  "physical_metadata_sha256": "5c444c5022192eeb4ad3eaee80fef8f4277205fd4eef677cb3a76a9215884158"
+  "physical_metadata_sha256": "5c444c5022192eeb4ad3eaee80fef8f4277205fd4eef677cb3a76a9215884158",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RhysTheEvermore.java",
+  "java_sha256": "f0516e2893774cb054b410078f5bd22dabcd7a903c135e8472ed182024d05510",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/PersistAbility.java",
+      "sha256": "561bf6e0b101ed89b464d8beab31f06cf2d1c30334d8b306e0a001c060e045ef"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToBattlefieldUnderOwnerControlWithCounterTargetEffect.java",
+      "sha256": "d22c6075d029e898298f71e835d13b4eff3d5253b1f23fe46f49b1314175d766"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToBattlefieldUnderOwnerControlTargetEffect.java",
+      "sha256": "0fc807f72c6feeb241f8a5b7db20fd2ea9fd67206d5a13b91341b400742affeb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/RemoveUpToAmountCountersEffect.java",
+      "sha256": "c88b15e8dcd846171dc11b4df1df6573870a653b5e0fa87cd2b4d2c7f1245e51"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    }
+  ],
+  "rules_notes": "Oracle permits any number of counters. XMage uses Integer.MAX_VALUE as its any-number sentinel; Rust accepts the complete u64 per-kind counter domain, including named counters and totals wider than u64."
 }

@@ -32,6 +32,7 @@ pub(super) struct LibrarySelection {
     pub maximum: usize,
     pub ordering: bool,
     pub random: bool,
+    pub available_colors: Option<u8>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl LibrarySelection {
@@ -53,6 +54,7 @@ pub struct LibrarySelectionView {
     pub ordering: bool,
     #[serde(skip_serializing_if = "is_false")]
     pub random: bool,
+    pub available_colors: Option<u8>,
     pub reveal: bool,
     pub public: bool,
     pub destination: &'static str,
@@ -69,9 +71,17 @@ pub struct EntryTransformChoiceView {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    fn library_selection_matches(&self, filter: LibrarySelectionFilter, id: CardId) -> bool {
+    fn library_selection_matches(
+        &self,
+        filter: LibrarySelectionFilter,
+        id: CardId,
+        chosen_type: Option<crate::cards::CreatureType>,
+    ) -> bool {
         let c = self.state.objects[id as usize].card;
         match filter {
+            LibrarySelectionFilter::SourceChosenCreatureType => {
+                chosen_type.is_some_and(|kind| c.has_subtype(kind.name()))
+            }
             LibrarySelectionFilter::HasX => c.x_symbols() > 0,
             LibrarySelectionFilter::Any => true,
             LibrarySelectionFilter::Kinds(mask) => c.kind_mask() & mask != 0,
@@ -79,10 +89,10 @@ impl Game {
             LibrarySelectionFilter::Subtype(subtype) => c.has_subtype(subtype),
             LibrarySelectionFilter::AnyOf(filters) => filters
                 .iter()
-                .any(|filter| self.library_selection_matches(*filter, id)),
+                .any(|filter| self.library_selection_matches(*filter, id, chosen_type)),
             LibrarySelectionFilter::AllOf(filters) => filters
                 .iter()
-                .all(|filter| self.library_selection_matches(*filter, id)),
+                .all(|filter| self.library_selection_matches(*filter, id, chosen_type)),
             LibrarySelectionFilter::CreaturePowerAtMost(power) => {
                 c.is_creature() && self.stats(id).power <= i128::from(power)
             }
@@ -124,6 +134,7 @@ impl Game {
             maximum: 1,
             ordering: false,
             random: false,
+            available_colors: None,
         }));
         self.state.pending = Pending::EffectLibrarySelection { player: owner };
         true
@@ -170,6 +181,33 @@ impl Game {
                 usize::try_from(self.item_amount(value, item)).unwrap_or(usize::MAX)
             }
             LibraryLook::ChosenX => usize::try_from(item.x.unwrap_or(0)).unwrap_or(usize::MAX),
+            LibraryLook::UntilCount { amount, .. } | LibraryLook::UntilNonlandCount(amount) => {
+                let requested = self.item_amount(amount, item);
+                if requested == 0 {
+                    0
+                } else {
+                    let mut count = 0u128;
+                    self.state.players[owner.index()]
+                        .library
+                        .iter()
+                        .rev()
+                        .filter(|&&id| self.state.objects[id as usize].is_card())
+                        .position(|&id| {
+                            let card = self.state.objects[id as usize].card;
+                            let matches = match effect.look {
+                                LibraryLook::UntilCount { kinds, .. } => {
+                                    card.kind_mask() & kinds != 0
+                                }
+                                _ => !card.is_land(),
+                            };
+                            if matches {
+                                count += 1;
+                            }
+                            count >= requested
+                        })
+                        .map_or(usize::MAX, |at| at + 1)
+                }
+            }
             LibraryLook::UntilKindsCount { kinds, count } => {
                 if count == 0 {
                     0
@@ -217,11 +255,13 @@ impl Game {
             .iter()
             .copied()
             .filter(|r| {
-                self.library_selection_matches(spec.filter, r.card)
-                    && maximum_mana_value.is_none_or(|max| {
-                        u128::from(self.state.objects[r.card as usize].card.fixed_mana_value())
-                            <= max
-                    })
+                self.library_selection_matches(
+                    spec.filter,
+                    r.card,
+                    self.source_chosen_creature_type(item),
+                ) && maximum_mana_value.is_none_or(|max| {
+                    u128::from(self.state.objects[r.card as usize].card.fixed_mana_value()) <= max
+                })
             })
             .collect();
         let destination = match effect.destination {
@@ -246,7 +286,23 @@ impl Game {
                 .iter()
                 .filter(|o| o.owner == owner && o.zone == Zone::Graveyard && o.is_card())
         };
+        let available_colors = (spec.count == LibrarySelectionCount::ControlledColors).then(|| {
+            self.state
+                .objects
+                .iter()
+                .enumerate()
+                .filter(|(_, object)| {
+                    object.zone == Zone::Battlefield && object.controller == owner
+                })
+                .fold(0u8, |colors, (id, _)| {
+                    colors | self.object_view(id as CardId).colors
+                })
+                & 31
+        });
         let requested = match spec.count {
+            LibrarySelectionCount::ControlledColors => {
+                available_colors.unwrap().count_ones() as usize
+            }
             LibrarySelectionCount::Fixed(n) => usize::from(n),
             LibrarySelectionCount::ManaValueBudget { maximum_cards, .. } => {
                 assert!(spec.optional, "budgeted selection requires an up-to count");
@@ -305,13 +361,16 @@ impl Game {
             maximum,
             ordering: false,
             random: spec.count == LibrarySelectionCount::RandomOne,
+            available_colors,
         }));
         // Even a forced random remainder must expose the looked information
         // before it disappears into the library (there may be no eligible pick).
         if maximum == 0
             && !matches!(
                 spec.remainder,
-                LibraryRemainder::BottomRandom | LibraryRemainder::Shuffle
+                LibraryRemainder::BottomRandom
+                    | LibraryRemainder::Shuffle
+                    | LibraryRemainder::OptionalGraveyard
             )
         {
             return self.finish_library_selection_internal(owner);
@@ -338,6 +397,27 @@ impl Game {
     ) -> bool {
         if !frame.eligible.contains(&object) {
             return false;
+        }
+        if let Some(colors) = frame.available_colors {
+            let mut reachable = 1u32;
+            for reference in frame.selected.iter().chain(std::iter::once(&object)) {
+                let colors = self.object_view(reference.card).colors & colors;
+                let mut next = 0u32;
+                for used in 0u8..32 {
+                    if reachable & (1u32 << used) == 0 {
+                        continue;
+                    }
+                    for bit in [1u8, 2, 4, 8, 16] {
+                        if colors & bit != 0 && used & bit == 0 {
+                            next |= 1u32 << (used | bit);
+                        }
+                    }
+                }
+                reachable = next;
+            }
+            if reachable == 0 {
+                return false;
+            }
         }
         match frame.spec.count {
             LibrarySelectionCount::ManaValueBudget { maximum_total, .. } => {
@@ -432,6 +512,14 @@ impl Game {
             self.state.pending = Pending::EffectLibrarySelection { player: owner };
             return true;
         }
+        if f.spec.remainder == LibraryRemainder::OptionalGraveyard
+            && !f.remaining.is_empty()
+            && !f.ordering
+        {
+            f.ordering = true;
+            self.state.pending = Pending::EffectLibrarySelection { player: owner };
+            return true;
+        }
         if f.spec.remainder == LibraryRemainder::BottomAny && !f.remaining.is_empty() {
             f.ordering = true;
             self.state.pending = Pending::EffectLibrarySelection { player: owner };
@@ -490,9 +578,24 @@ impl Game {
         let events = match f.destination {
             LibraryPickDestination::Hand => self.move_objects_raw(&ids, Zone::Hand),
             LibraryPickDestination::Graveyard => self.move_objects_raw(&ids, Zone::Graveyard),
-            LibraryPickDestination::Exile => self.move_objects_raw(&ids, Zone::Exile),
+            LibraryPickDestination::Exile | LibraryPickDestination::ExileCastThisTurn => {
+                self.move_objects_raw(&ids, Zone::Exile)
+            }
             _ => Vec::new(),
         };
+        if f.destination == LibraryPickDestination::ExileCastThisTurn {
+            for event in &events {
+                if event.moved && event.destination == Zone::Exile {
+                    self.grant_exile_play_permission(owner, event.after, false);
+                    self.state
+                        .exile_permissions
+                        .iter_mut()
+                        .find(|p| p.object == event.after && p.player == owner && !p.cast_only)
+                        .unwrap()
+                        .cast_only = true;
+                }
+            }
+        }
         if f.destination == LibraryPickDestination::Hideaway {
             let events = self.move_objects_raw(&ids, Zone::Exile);
             self.remember_linked_exile(&ids);
@@ -597,6 +700,11 @@ impl Game {
             }));
         }
         match f.spec.remainder {
+            LibraryRemainder::OptionalGraveyard => {
+                let ids: Vec<_> = f.bottom.iter().map(|r| r.card).collect();
+                let events = self.move_objects_raw(&ids, Zone::Graveyard);
+                self.finish_zone_events(&events, &[]);
+            }
             LibraryRemainder::Keep => (),
             LibraryRemainder::Shuffle => {
                 if self.state.players[owner.index()].library.len() > 1 {
@@ -751,6 +859,7 @@ impl Game {
             maximum: f.maximum,
             ordering: f.ordering,
             random: f.random,
+            available_colors: f.available_colors,
             reveal: f.spec.reveal,
             public: f.public,
             destination: match f.destination {
@@ -768,9 +877,11 @@ impl Game {
                 LibraryPickDestination::Top => "top",
                 LibraryPickDestination::Hideaway => "hideaway",
                 LibraryPickDestination::Exile => "exile",
+                LibraryPickDestination::ExileCastThisTurn => "exile_cast_this_turn",
             },
             remainder: match f.spec.remainder {
                 LibraryRemainder::Keep => "keep",
+                LibraryRemainder::OptionalGraveyard => "optional_graveyard",
                 LibraryRemainder::Graveyard => "graveyard",
                 LibraryRemainder::Hand => "hand",
                 LibraryRemainder::Shuffle => "shuffle",

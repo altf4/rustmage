@@ -239,6 +239,25 @@ impl Game {
                         Zone::Exile
                     }
                     SearchDestination::Hand => Zone::Hand,
+                    SearchDestination::BeheldCreatureType => {
+                        let kind = self
+                            .state
+                            .resolving
+                            .as_ref()
+                            .unwrap()
+                            .item
+                            .cast
+                            .and_then(|c| c.beheld_type);
+                        if kind.is_some_and(|kind| {
+                            self.state.objects[id as usize]
+                                .card
+                                .has_subtype(kind.name())
+                        }) {
+                            Zone::Battlefield
+                        } else {
+                            Zone::Hand
+                        }
+                    }
                     SearchDestination::Graveyard => Zone::Graveyard,
                     SearchDestination::Battlefield => Zone::Battlefield,
                     SearchDestination::BattlefieldIfManaValueAtMostElseHand(maximum) => {

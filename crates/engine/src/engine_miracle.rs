@@ -229,6 +229,9 @@ impl Game {
             return;
         }
         let player = request.player;
+        if self.draws_prohibited() {
+            return;
+        }
         if !request.replaced && !request.batch_checked && request.amount > 0 {
             let additional = self.quantum_draw_sources(player);
             let doublers = if request.amount == 1 && !additional.is_empty() {
@@ -433,6 +436,7 @@ impl Game {
             return false;
         }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            uncast_to_hand: false,
             siege_transformed: false,
             paid: None,
             casts_remaining: None,

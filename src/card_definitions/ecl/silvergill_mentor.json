@@ -3,10 +3,45 @@
   "catalogue_id": 3872,
   "oracle_id": "dcf07f38-422f-46c3-aee9-50540b9c9115",
   "facts_sha256": "b58729e66b3e8db68ae1a0c3605730b600ae7dd835565de4e42c1c3e5bd69606",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0e2fe978fbfb76ad78a76318c0a1b87af0b02c188febc5e8894c8c286c82b36a"
   },
-  "physical_metadata_sha256": "5151197197f661c051341bee0a18a52f7ea6b7e401b4e2065a81b4de1d6b9769"
+  "physical_metadata_sha256": "5151197197f661c051341bee0a18a52f7ea6b7e401b4e2065a81b4de1d6b9769",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SilvergillMentor.java",
+  "java_sha256": "d9cd6e34f54d91d6227426d5c2e9767c928e59f980ae95ff7bd0f25ef6f993d5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/BeholdCost.java",
+      "sha256": "bc668079587e3c3383c7d071558d165ef37aaadbf5618e3e0d9d3654bf1b34de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/constants/BeholdType.java",
+      "sha256": "b9b6ef548969c8e1bbde48ec05adb6ae62139ab3fbdd72a91f8154817dc17c2c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/OrCost.java",
+      "sha256": "a36fc6c29c41ef6d0673a6e40c9992c8f5b6c9bb64f9559d4011d0b9593fcf10"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/MerfolkWhiteBlueToken.java",
+      "sha256": "3d9c8493e814f9c3f7689bd231978c47133c2bf9edc338c71876b878f90f691c"
+    }
+  ]
 }

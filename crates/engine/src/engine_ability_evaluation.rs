@@ -126,6 +126,21 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 }],
             });
         }
+        StaticAbilityFragment::ControlledCreatureTrigger {
+            ability,
+            other,
+            nontoken,
+        } => {
+            if !world.controlled_creature_trigger_applies(source, id, other, nontoken) {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: vec![key(ability)],
+                mana: Vec::new(),
+            });
+        }
         StaticAbilityFragment::ConditionalWard {
             condition,
             filter,
@@ -231,6 +246,12 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
         }
         StaticAbilityFragment::ControlledPermanentKeywords { kinds, keywords } => {
             if !own || world.kinds(id) & kinds == 0 {
+                return None;
+            }
+            keywords
+        }
+        StaticAbilityFragment::ControlledTappedKeywords { other, keywords } => {
+            if !own || !target.tapped || world.kinds(id) & 1 == 0 || (other && id == source.card) {
                 return None;
             }
             keywords
@@ -400,8 +421,8 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
     (world.has_ability_removal()
         || world.static_sources().iter().any(|&id| {
             let source = world.object(id);
-            source.zone == Zone::Command
-                && source.card.is_emblem()
+            (source.zone == Zone::Battlefield
+                || source.zone == Zone::Command && source.card.is_emblem())
                 && source.card.static_ability_groups().iter().any(|group| {
                     group.fragments.iter().any(|fragment| {
                         matches!(fragment, StaticAbilityFragment::ChosenTypeKeywords(_))
@@ -600,6 +621,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::SourceEntryModeActivation { .. }
                         | StaticAbilityFragment::HarnessedTrigger(..)
                         | StaticAbilityFragment::ConditionalWard { .. }
+                        | StaticAbilityFragment::ControlledCreatureTrigger { .. }
                         | StaticAbilityFragment::AttachmentTrigger(..)
                         | StaticAbilityFragment::AttachmentActivation { .. }
                         | StaticAbilityFragment::AttachmentMana(..)
@@ -612,6 +634,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::KeywordGrant(..)
                         | StaticAbilityFragment::ChosenTypeKeywords(..)
                         | StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                        | StaticAbilityFragment::ControlledTappedKeywords { .. }
                         | StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                         | StaticAbilityFragment::ControlledPlaneswalkerActivation(..)
                         | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit

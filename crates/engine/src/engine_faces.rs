@@ -225,6 +225,7 @@ impl Game {
             .get_or_insert_default()
             .push(FaceChange { object, serial });
         if self.transform_under_temporary_copy(object, other) {
+            self.queue_self_transform_triggers(object);
             return;
         }
         self.forget_hand_size_source(object);
@@ -237,6 +238,18 @@ impl Game {
         self.register_battlefield_providers(object.card);
         self.retimestamp_self_granted_statics(object);
         self.refresh_controllers();
+        self.queue_self_transform_triggers(object);
+    }
+    fn queue_self_transform_triggers(&mut self, object: ObjectRef) {
+        let source = self.object_view(object.card);
+        for (index, ability) in source.card.triggers().iter().enumerate() {
+            if matches!(
+                ability.condition.event(),
+                TriggerCondition::SelfTransforms | TriggerCondition::SelfEntersOrTransforms
+            ) {
+                self.queue_trigger(&source, index);
+            }
+        }
     }
     pub(super) fn remove_face_providers(&mut self, id: CardId) {
         self.forget_trigger_multiplier_source(id);

@@ -70,15 +70,17 @@ python scripts/validate.py --release --python smoke
 
 `██████████░░░░░░░░░░`
 
-**3,576 / 5,164 unique Standard cards implemented across accepted branches · 69%**
+**3,576 / 5,164 unique Standard cards supported in this checkout · 69%**
 
 `██████████████░░░░░░`
 
 Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
 ([inventory](data/standard/xmage-inventory.json)), rather than live format legality.
 
-<!-- Refresh supported counts when new sets are implemented. Deduplicate by physical
-     identity; Reconcile set acceptance with its rules/game evidence and published PR. -->
+<!-- Refresh supported counts from this checkout's generated coverage report
+     and pinned set membership. Deduplicate the overall count by physical
+     identity. Reconcile set completion with its rules and game evidence and
+     published pull request. -->
 
 | Set | Code | Supported cards | Implementation status |
 | --- | --- | ---: | --- |

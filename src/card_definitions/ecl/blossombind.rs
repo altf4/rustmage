@@ -1,6 +1,6 @@
-// Gated full typed draft used to exercise the shared counter prohibition.
+// Direct typed behavior; complete Oracle body, official rulings and pinned XMage reviewed.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Aura(one(object(1))),
+    effect: Effect::Aura(one(TargetRule::Creature)),
     aura: Some(AuraSpec {
         kinds: 1,
         relation: -1,
@@ -14,7 +14,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
     }),
     triggers: &[TriggeredAbility {
         condition: TriggerCondition::SelfEnters,
-        targets: TargetPlan::NONE,
+        targets: TargetPlan::Single(TargetSpec::NONE),
         program: &[Instruction::TapAttached],
     }],
     static_groups: &[StaticAbilityGroup {

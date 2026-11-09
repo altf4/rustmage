@@ -3,7 +3,14 @@
 use super::*;
 use cast_rollback::CastRollback;
 use std::collections::VecDeque;
-use zone_replacements::ZoneShuffle;
+use zone_replacements::{ZoneMoveCompletion, ZoneShuffle};
+type FrozenZoneMove = (
+    ObjectRef,
+    Zone,
+    Option<ZoneShuffle>,
+    bool,
+    Option<ZoneMoveCompletion>,
+);
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -40,13 +47,14 @@ pub(super) struct ManaEvent {
     pub production: Mana,
     /// Unrestricted mana produced by triggered mana abilities after this event.
     pub tap_bonus: Mana,
+    pub recolor: Option<u8>,
     pub quality: Option<mana_lots::Quality>,
     pub spent_lots: Vec<(mana_lots::Quality, Mana)>,
     /// Fully replaced, ordered activation-cost placements from the actual event.
     pub counter_costs: Vec<Vec<replacements::CounterPlacement>>,
     pub entries: Vec<entries::EntryBatch>,
     pub life_payments: Vec<LifePaymentReceipt>,
-    pub moves: Vec<(ObjectRef, Zone, Option<ZoneShuffle>, bool)>,
+    pub moves: Vec<FrozenZoneMove>,
     pub allocations: Vec<(CardId, u64)>,
     pub triggers: Vec<SpellView>,
     pub irreversible: bool,
@@ -75,7 +83,7 @@ impl ManaEvent {
                         + batch.iter().map(|p| p.amount.owned_bytes()).sum::<usize>()
                 })
                 .sum::<usize>()
-            + self.moves.len() * std::mem::size_of::<(ObjectRef, Zone, Option<ZoneShuffle>, bool)>()
+            + self.moves.len() * std::mem::size_of::<FrozenZoneMove>()
             + self
                 .life_payments
                 .iter()
@@ -116,7 +124,7 @@ struct ActiveManaReplay {
     entries: VecDeque<entries::EntryBatch>,
     life_payments: VecDeque<LifePaymentReceipt>,
     entries_seen: usize,
-    moves: VecDeque<(ObjectRef, Zone, Option<ZoneShuffle>, bool)>,
+    moves: VecDeque<FrozenZoneMove>,
     allocations: VecDeque<(CardId, u64)>,
     failed: bool,
 }
@@ -140,8 +148,7 @@ impl ManaReplay {
                         .iter()
                         .map(entries::EntryBatch::bytes)
                         .sum::<usize>()
-                    + active.moves.len()
-                        * std::mem::size_of::<(ObjectRef, Zone, Option<ZoneShuffle>, bool)>()
+                    + active.moves.len() * std::mem::size_of::<FrozenZoneMove>()
                     + active
                         .life_payments
                         .iter()
@@ -438,13 +445,22 @@ impl Game {
                     return false;
                 }
                 if let Some((spec, external)) = additional {
-                    let zone = match spec.kind.payment_kind() {
-                        EffectChoiceKind::Sacrifice => Zone::Battlefield,
+                    let kind = spec.kind.payment_kind();
+                    let zone = match kind {
+                        EffectChoiceKind::Sacrifice | EffectChoiceKind::TapPermanents(1) => {
+                            Zone::Battlefield
+                        }
                         EffectChoiceKind::ExileGraveyard => Zone::Graveyard,
                         _ => return false,
                     };
+                    let Some(object) = self.state.objects.get(external.card as usize) else {
+                        return false;
+                    };
                     if self.object_ref(external.card) != *external
-                        || self.state.objects[external.card as usize].zone != zone
+                        || object.zone != zone
+                        || (kind == EffectChoiceKind::TapPermanents(1)
+                            && cost.tap
+                            && *external == source)
                         || !self.additional_candidate(*spec, event.actor, source, *external)
                     {
                         return false;
@@ -488,14 +504,19 @@ impl Game {
                 additional,
             } => {
                 // Match actual announcement order: source tap/mana/counter
-                // costs precede an external sacrifice; graveyard exile is paid
-                // before those source costs. The replay hooks apply the frozen
-                // replacement/entry/trigger receipts for the real operation.
+                // costs precede an external sacrifice; graveyard exile and a
+                // separate tap cost are paid before those source costs. The
+                // replay hooks apply the frozen replacement/entry/trigger
+                // receipts for the real operation.
                 let sacrifice = additional.is_some_and(|(spec, _)| {
                     spec.kind.payment_kind() == EffectChoiceKind::Sacrifice
                 });
-                if !sacrifice && let Some((_, external)) = additional {
-                    self.move_object(external.card, Zone::Exile);
+                if !sacrifice && let Some((spec, external)) = additional {
+                    if spec.kind.payment_kind() == EffectChoiceKind::TapPermanents(1) {
+                        self.tap_objects(&[external.card]);
+                    } else {
+                        self.move_object(external.card, Zone::Exile);
+                    }
                 }
                 let mut item = (**item).clone();
                 if self
@@ -509,6 +530,16 @@ impl Game {
                 }
                 self.commit_activation_use(&item);
             }
+        }
+        if let Some(colors) = event.recolor
+            && self.object_ref(source.card) == source
+            && self.on_battlefield(source.card)
+        {
+            self.set_color_effects(
+                &[source.card],
+                colors,
+                crate::cards::AnimationDuration::EndOfTurn,
+            );
         }
         self.add_quality_mana(event.actor, event.production, event.quality);
         if event.tap_bonus != [0; 6] {
@@ -688,7 +719,9 @@ impl Game {
             .as_mut()?
             .active
             .as_mut()?;
-        let Some((expected, destination, shuffle, prevented)) = active.moves.pop_front() else {
+        let Some((expected, destination, shuffle, prevented, completion)) =
+            active.moves.pop_front()
+        else {
             active.failed = true;
             return None;
         };
@@ -696,6 +729,7 @@ impl Game {
             active.failed = true;
         }
         Some(zone_replacements::Plan {
+            completion,
             destination,
             prevented,
             shuffle,

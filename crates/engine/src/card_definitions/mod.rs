@@ -336,6 +336,8 @@ pub struct CardExtras {
     /// (trigger slot, named-mode index), checked only at the triggering event.
     pub entry_mode_triggers: &'static [(u16, u16)],
     pub entry_copy: Option<EntryCopySpec>,
+    /// Copiable keyword exceptions added by this as-entry copy replacement.
+    pub entry_copy_keywords: Keywords,
     pub entry_exile_counters: Option<EntryExileCountersSpec>,
     pub chosen_entry_counters: Option<CounterKind>,
     pub static_modifiers: &'static [StaticModifier],
@@ -400,6 +402,8 @@ pub struct CardExtras {
     pub cast_timing_guard: StepGuard,
     pub cost_reductions: &'static [SpellReduction],
     pub cost_alternatives: &'static [ManaCost],
+    /// Printed evoke routes, also present among the ordinary alternative costs.
+    pub evoke_costs: &'static [ManaCost],
     pub cost_alternative_guard: Option<StepGuard>,
     pub mana_alternative_replaces_additional: bool,
     /// Independent additional mana route crossed with every printed hybrid base.
@@ -462,6 +466,7 @@ impl CardExtras {
         entry_choice: None,
         entry_mode_triggers: &[],
         entry_copy: None,
+        entry_copy_keywords: Keywords::NONE,
         entry_exile_counters: None,
         chosen_entry_counters: None,
         static_modifiers: &[],
@@ -524,6 +529,7 @@ impl CardExtras {
         cast_timing_guard: StepGuard::Always,
         cost_reductions: &[],
         cost_alternatives: &[],
+        evoke_costs: &[],
         cost_alternative_guard: None,
         mana_alternative_replaces_additional: false,
         additional_mana_alternative: None,

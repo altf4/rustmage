@@ -3,10 +3,40 @@
   "catalogue_id": 752,
   "oracle_id": "54421e69-d79e-4c2e-8ce6-96994d168835",
   "facts_sha256": "ff46dfc8597b441eb10e3a880cc2da41c8c34c9a03ad69f26537b60400bdf1ce",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ea35f03b7ff41f3b702bd444bab815ae9eee87e81a85c25003767f19961c4994"
   },
-  "physical_metadata_sha256": "d88c0975a4115a7910d1c371cca203f7586ed71cf093642cf7e9d5a6f3d7c6f6"
+  "physical_metadata_sha256": "d88c0975a4115a7910d1c371cca203f7586ed71cf093642cf7e9d5a6f3d7c6f6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CinderStrike.java",
+  "java_sha256": "0ae763943ec539e0f9343730878d4e19f7651121d7e1e2bb01e93e3c9580ebde",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/BlightAbility.java",
+      "sha256": "d56c030631442af00c041543d6fe7f208750754687e138de138d3b7a7ebb43cf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/BlightCost.java",
+      "sha256": "33a0d3714068f004db969c35c375e95470b9eaf389f5b2dd73aae3c67b498cd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/BlightedCondition.java",
+      "sha256": "5bfe16a60690c22b487860af768a52598152836957b9990daa8255692447cd39"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    }
+  ]
 }

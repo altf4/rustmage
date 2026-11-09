@@ -182,7 +182,9 @@ pub(super) fn land_kind_events<W: CharacteristicWorld + ?Sized>(
     let mut events: Vec<_> = aura_effects(world, id)
         .into_iter()
         .filter_map(|(time, spec)| match spec.form {
-            PermanentForm::AddCreature | PermanentForm::Preserve => None,
+            PermanentForm::AddCreature
+            | PermanentForm::Preserve
+            | PermanentForm::PreserveWithColors => None,
             form => Some((time, matches!(form, PermanentForm::Land))),
         })
         .collect();
@@ -266,7 +268,7 @@ fn kind_timeline<W: CharacteristicWorld + ?Sized>(
             let kinds = match spec.form {
                 PermanentForm::Creature | PermanentForm::AddCreature => 1,
                 PermanentForm::Land => 2,
-                PermanentForm::Preserve => return None,
+                PermanentForm::Preserve | PermanentForm::PreserveWithColors => return None,
             };
             Some((time, kinds, matches!(spec.form, PermanentForm::AddCreature)))
         })
@@ -412,6 +414,7 @@ fn changed_colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> u8 
                     .fold(0, |mask, c| mask | (1 << c.index())),
             ))
         })
+        .chain(chosen_aura_colors(world, id))
         .chain(
             animations(world, id)
                 .filter_map(|row| row.colors.map(|colors| (row.timestamp, colors))),
@@ -498,7 +501,9 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
                 match s.form {
                     PermanentForm::Creature => SubtypeChange::Named(s.creature_types, true),
                     PermanentForm::Land => SubtypeChange::LandOnly,
-                    PermanentForm::Preserve => SubtypeChange::Named(s.creature_types, false),
+                    PermanentForm::Preserve | PermanentForm::PreserveWithColors => {
+                        SubtypeChange::Named(s.creature_types, false)
+                    }
                     PermanentForm::AddCreature => SubtypeChange::Add(s.creature_types),
                 },
             )
@@ -917,4 +922,112 @@ pub(super) fn enchantment_noncreature_form(object: ObjectRef, timestamp: u64) ->
         preserve_card_types: false,
         ..food_form(object, timestamp)
     }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl AnimationView {
+    pub(super) fn color(
+        object: ObjectRef,
+        timestamp: u64,
+        colors: u8,
+        expires_turn: Option<u32>,
+    ) -> Self {
+        Self {
+            object,
+            timestamp,
+            artifact: false,
+            land: false,
+            preserve_card_types: true,
+            food_only: false,
+            artifact_noncreature: false,
+            enchantment_noncreature: false,
+            colors: Some(colors & 31),
+            creature_types: None,
+            all_creature_types: false,
+            additional_creature_types: false,
+            base: None,
+            keywords: Keywords::NONE,
+            expires_turn,
+        }
+    }
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    pub(super) fn set_color_effects(
+        &mut self,
+        subjects: &[CardId],
+        colors: u8,
+        duration: AnimationDuration,
+    ) {
+        for &id in subjects {
+            if !self.on_battlefield(id) {
+                continue;
+            }
+            let reference = self.object_ref(id);
+            let timestamp = self.next_role_timestamp();
+            let expires = (duration == AnimationDuration::EndOfTurn).then_some(self.state.turn);
+            self.state
+                .roles
+                .get_or_insert_default()
+                .animations
+                .push(AnimationView::color(reference, timestamp, colors, expires));
+        }
+    }
+    pub(super) fn apply_mana_color_change(
+        &mut self,
+        recipe: ManaProduction,
+        source: ObjectRef,
+        production: Mana,
+    ) {
+        if matches!(recipe.base(), ManaProduction::AnyColorChangingSource(_))
+            && self.object_ref(source.card) == source
+            && self.on_battlefield(source.card)
+        {
+            let colors = production
+                .iter()
+                .enumerate()
+                .take(5)
+                .fold(0, |mask, (i, n)| mask | if *n > 0 { 1 << i } else { 0 });
+            if colors != 0 {
+                self.record_cast_mana_recolor(colors);
+                self.set_color_effects(&[source.card], colors, AnimationDuration::EndOfTurn);
+            }
+        }
+    }
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+fn chosen_aura_colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> Vec<(u64, u8)> {
+    let Some(roles) = world.roles() else {
+        return Vec::new();
+    };
+    if world.object(id).zone != Zone::Battlefield {
+        return Vec::new();
+    }
+    roles
+        .characteristic_sources
+        .iter()
+        .filter_map(|&reference| {
+            let provider = world.object(reference.card);
+            if provider.zone != Zone::Battlefield
+                || world.reference(reference.card) != reference
+                || provider.attached_to != Some(world.reference(id))
+                || !provider.card.static_ability_groups().iter().any(|g| {
+                    g.fragments
+                        .iter()
+                        .any(|f| matches!(f, StaticAbilityFragment::AttachedChosenColor))
+                })
+            {
+                return None;
+            }
+            let EntryChoiceValue::Color(color) = world.entry_value(reference)? else {
+                return None;
+            };
+            let timestamp = roles
+                .ability_timestamps
+                .iter()
+                .find(|r| r.source == reference)?
+                .timestamp;
+            Some((timestamp, 1 << color.index()))
+        })
+        .collect()
 }

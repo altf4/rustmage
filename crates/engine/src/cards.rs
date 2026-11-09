@@ -43,6 +43,9 @@ pub struct RetainedCopyActivation {
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
 pub struct CopyExceptions {
     pub sacrifice_abilities: u16,
+    /// Copiable beginning-of-end-step sacrifices without a haste grant.
+    #[serde(skip_serializing_if = "copy_exception_zero")]
+    pub sacrifice_only_abilities: u16,
     /// Copiable intervening-if sacrifice triggers granted with haste.
     pub conditional_sacrifice_abilities: u16,
     pub nightmare: bool,
@@ -72,6 +75,7 @@ pub struct InPlaceCopySpec {
 impl CopyExceptions {
     pub const NONE: Self = Self {
         sacrifice_abilities: 0,
+        sacrifice_only_abilities: 0,
         conditional_sacrifice_abilities: 0,
         nightmare: false,
         artifact: false,
@@ -83,6 +87,7 @@ impl CopyExceptions {
     };
     pub const HASTE_AND_SACRIFICE: Self = Self {
         sacrifice_abilities: 1,
+        sacrifice_only_abilities: 0,
         conditional_sacrifice_abilities: 0,
         nightmare: false,
         artifact: false,
@@ -92,8 +97,13 @@ impl CopyExceptions {
         retained_activation: None,
         embalm: false,
     };
+    pub const SACRIFICE_ONLY: Self = Self {
+        sacrifice_only_abilities: 1,
+        ..Self::NONE
+    };
     pub const NIGHTMARE: Self = Self {
         sacrifice_abilities: 0,
+        sacrifice_only_abilities: 0,
         conditional_sacrifice_abilities: 0,
         nightmare: true,
         artifact: false,
@@ -124,6 +134,10 @@ impl CopyExceptions {
                 .sacrifice_abilities
                 .checked_add(other.sacrifice_abilities)
                 .capacity("copy sacrifice abilities"),
+            sacrifice_only_abilities: self
+                .sacrifice_only_abilities
+                .checked_add(other.sacrifice_only_abilities)
+                .capacity("copy sacrifice-only abilities"),
             conditional_sacrifice_abilities: self
                 .conditional_sacrifice_abilities
                 .checked_add(other.conditional_sacrifice_abilities)
@@ -137,6 +151,10 @@ impl CopyExceptions {
             embalm: self.embalm || other.embalm,
         }
     }
+}
+
+fn copy_exception_zero(value: &u16) -> bool {
+    *value == 0
 }
 
 /// A temporary permission on one graveyard incarnation, independent of its grantor.
@@ -205,6 +223,8 @@ pub enum TargetGroupConstraint {
     DistinctCardTypeSlots,
     /// Pair shares at least one current card type, not a subtype or supertype.
     SharedCardType,
+    /// Two graveyard cards that share at least one creature subtype.
+    SharedCreatureType,
     /// Controlled by the player chosen in a distinct target group.
     ControllerOfPlayerGroup(u16),
     /// Graveyard card owned by the player selected in another target group.
@@ -272,6 +292,10 @@ pub enum TargetRule {
     SingleTargetStackObject,
     /// Any activated or triggered ability on the stack.
     Ability,
+    /// Only a triggered ability, including a copy of a triggered ability.
+    TriggeredAbility {
+        relation: i8,
+    },
     YourSpellKinds {
         kinds: u8,
     },
@@ -338,6 +362,7 @@ impl TargetRule {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum TargetPredicate {
+    SourceChosenCreatureType,
     OwnedByController,
     EnteredGraveyardThisTurn,
     /// This exact battlefield incarnation entered during the current turn.
@@ -420,6 +445,24 @@ pub enum TargetPlan {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl TargetPlan {
+    pub(crate) fn reads_source_creature_type(self) -> bool {
+        fn reads(rule: TargetRule) -> bool {
+            match rule {
+                TargetRule::Filtered { base, predicate } => {
+                    *predicate == TargetPredicate::SourceChosenCreatureType || reads(*base)
+                }
+                TargetRule::Grouped { base, .. }
+                | TargetRule::ManaValueExactly { base, .. }
+                | TargetRule::ManaValueAtMost { base, .. } => reads(*base),
+                TargetRule::Union(rules) => rules.iter().copied().any(reads),
+                _ => false,
+            }
+        }
+        match self {
+            Self::Single(spec) => reads(spec.rule),
+            Self::Groups(groups) => groups.iter().any(|spec| reads(spec.rule)),
+        }
+    }
     pub const NONE: Self = Self::Single(TargetSpec::NONE);
     pub fn group(self, index: u16) -> Option<TargetSpec> {
         match self {
@@ -570,12 +613,24 @@ pub enum EntryChoiceKind {
     Color,
     BasicLandType,
     CreatureType,
+    CreatureTypes(&'static [&'static str]),
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl EntryChoiceKind {
+    pub(crate) const fn creature_type_names(self) -> Option<&'static [&'static str]> {
+        match self {
+            Self::CreatureType => Some(crate::CREATURE_TYPES),
+            Self::CreatureTypes(names) => Some(names),
+            _ => None,
+        }
+    }
+
     pub(crate) fn matches(self, value: EntryChoiceValue) -> bool {
         if let Self::NamedModes(names) = self {
             return matches!(value, EntryChoiceValue::NamedMode(index) if usize::from(index) < names.len());
+        }
+        if let Self::CreatureTypes(names) = self {
+            return matches!(value, EntryChoiceValue::CreatureType(kind) if names.contains(&kind.name()));
         }
         if self == Self::NonlandCardName {
             return matches!(value, EntryChoiceValue::CardName(name) if !name.is_land());
@@ -609,6 +664,8 @@ pub struct ChosenModifier {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum ManaRestriction {
+    SpellManaValueAtLeast(u64),
+    ChosenSubtypeSpellOrActivation,
     /// Any cost except casting a spell from a hand.
     ExceptCastFromHand,
     /// Only spells cast from exile.
@@ -670,6 +727,12 @@ pub enum ManaProduction {
         quality: &'static ManaQuality,
     },
     ChosenColor,
+    AnyColorChangingSource(u32),
+    ColorsAmongControlledPermanents,
+    ChoiceStat {
+        colors: u8,
+        amount: &'static StatValue,
+    },
     SourcePower {
         color: u8,
     },
@@ -716,7 +779,10 @@ impl ManaProduction {
     pub(crate) fn visit(self, mut emit: impl FnMut(Mana) -> bool) -> bool {
         match self {
             Self::Tagged { production, .. } => production.visit(emit),
+            Self::AnyColorChangingSource(amount) => Self::any_color(amount).visit(emit),
             Self::ChosenColor
+            | Self::ColorsAmongControlledPermanents
+            | Self::ChoiceStat { .. }
             | Self::SourcePower { .. }
             | Self::TapSourcePowerChoice { .. }
             | Self::MonocoloredPermanentColors
@@ -773,6 +839,7 @@ impl ManaProduction {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum LibraryRemainder {
+    OptionalGraveyard,
     /// Leave every unselected looked card in its existing position.
     Keep,
     /// Shuffle the entire library after selected entries finish.
@@ -785,6 +852,7 @@ pub enum LibraryRemainder {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum LibrarySelectionFilter {
+    SourceChosenCreatureType,
     HasX,
     Any,
     Kinds(u16),
@@ -797,6 +865,7 @@ pub enum LibrarySelectionFilter {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum LibrarySelectionCount {
+    ControlledColors,
     /// Choose at most this many cards within their combined mana-value budget.
     ManaValueBudget {
         maximum_cards: u16,
@@ -826,6 +895,7 @@ pub struct LibrarySelectionSpec {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum LibraryPickDestination {
+    ExileCastThisTurn,
     /// A single forced candidate; evaluate the threshold before any entry choices.
     BattlefieldIfManaValueAtMostElseHand(AmountValue),
     BattlefieldTapped,
@@ -841,6 +911,8 @@ pub enum LibraryPickDestination {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum LibraryLook {
+    UntilCount { kinds: u16, amount: AmountValue },
+    UntilNonlandCount(AmountValue),
     Amount(AmountValue),
     Fixed(u16),
     ChosenX,
@@ -932,6 +1004,7 @@ impl SearchFilter {
 pub enum SearchDestination {
     /// Reveal the selected cards, then choose one destination for the selection.
     HandOrGraveyard,
+    BeheldCreatureType,
     /// Face-up exile linked to this exact source incarnation, without an automatic return.
     LinkedExile,
     /// Exile the found cards and allow their controller to cast them free this turn.
@@ -987,6 +1060,9 @@ pub enum DelayedTargetEvent {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EffectChoiceKind {
+    /// Choose two controlled creatures, or as many as possible.
+    PowerDifferenceBoost,
+    KeepSharedCreatureTypes,
     /// One mandatory-if-possible nontarget recipient for the current color.
     ColorCounter {
         color: ChoiceColor,
@@ -997,8 +1073,17 @@ pub enum EffectChoiceKind {
         action: CostAction,
         any: &'static [CostMatch],
     },
+    /// Place minus counters as an effect; a prohibited recipient remains eligible.
+    Blight(u32),
+    /// Place minus counters as a cost; positive amounts require a legal placement.
+    BlightCost(u32),
+    /// Declaration-bound nonmana X, limited by greatest controlled toughness.
+    BlightXCost,
     /// Choose a controlled permanent or reveal a matching card in hand.
     Behold,
+    BeholdMany(u16),
+    OptionalBeholdType(u16),
+    BeholdAndExile,
     /// Non-targeted Army selection during amass.
     AmassGoblins(u64),
     EmpowerJace(u64),
@@ -1063,6 +1148,13 @@ pub enum EffectChoiceKind {
         counter: CounterKind,
     },
     HandCreature,
+    HandCreatureAttacking {
+        maximum: u32,
+    },
+    HandCreatureHasteSacrifice {
+        maximum_total_stats: u64,
+    },
+    ExileFromHand,
     HandCreatureAndLand,
     HandPermanent {
         maximum: u32,
@@ -1131,6 +1223,7 @@ impl EffectChoiceKind {
     }
     pub(crate) fn payment_kind(self) -> Self {
         match self {
+            Self::BlightXCost => Self::BlightCost(0),
             Self::FilteredCost {
                 action: CostAction::Sacrifice,
                 ..
@@ -1397,6 +1490,7 @@ pub enum TurnCallbackEvent {
     Attack,
     NoncreatureCast,
     CreatureEntry,
+    ControlledCreatureCombatDamagePlayerOrPlaneswalker,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -1409,7 +1503,53 @@ pub enum SpellCopyCount {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum ColorValue {
+    Fixed(u8),
+    Chosen,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Instruction {
+    CounterOpponentsCounted,
+    CounterAndDrawForController {
+        amount: u16,
+    },
+    ReturnToHandCounted,
+    DrawChosenCreatureType,
+    GrantChosenCreatureTypeKeywords {
+        other: bool,
+        keywords: Keywords,
+    },
+    ModifyPlayerCreatures {
+        players: PlayerSet,
+        power: i32,
+        toughness: i32,
+        keywords: Keywords,
+    },
+    UntapSubtype {
+        players: PlayerSet,
+        subtype: &'static str,
+        other: bool,
+    },
+    RemoveAbilities {
+        subject: Subject,
+        duration: AnimationDuration,
+    },
+    SetPlayerCreatureCharacteristics {
+        players: PlayerSet,
+        additional_types: &'static [&'static str],
+        power: i32,
+        toughness: i32,
+        remove_abilities: bool,
+    },
+    /// Grow the exact current attack/block event creature by its absolute stat difference.
+    GrowEventPowerToughnessDifference,
+    ChooseColor,
+    SetColors {
+        subject: Subject,
+        colors: ColorValue,
+        duration: AnimationDuration,
+    },
     /// Marks the printed waterbend component of an activation cost.
     WaterbendCost(u16),
     /// Definition-only marker: exert the exact permanent as an activation cost.
@@ -1561,11 +1701,13 @@ pub enum Instruction {
     RandomLinkedExileToBattlefield,
     PartitionLibraryPiles(u16),
     KeepOneOfEachPermanentType,
+    KeepSharedCreatureTypes,
     RememberOwnSacrifice,
     RecoverAnotherPermanent,
     ReturnLinkedExileToHand,
     ReturnOneLinkedExileToHand,
     ExileTargetsLinkedToSource,
+    ExileTargetLibraryLinked(u16),
     ExileControllerLibraryTopLinked(u16),
     GrantLinkedExilePlay,
     ChooseLinkedCreatureReturn,
@@ -1629,6 +1771,8 @@ pub enum Instruction {
     /// then exile the returned incarnation at the next end step.
     ExileSmallReturnUntilEndStep,
     BlinkAttacking,
+    BlinkGroupTappedUntilEndStep,
+    PreventPlayerDamageUntilNextTurn,
     BlinkUntilEndStep {
         under_owner: bool,
     },
@@ -1686,6 +1830,8 @@ pub enum Instruction {
     },
     /// Copy the actual triggering spell its chosen X times.
     CopyCastSpellChosenX,
+    MayCopyCastSpellWithKeywords(Keywords),
+    MayBlightCopyAttacking,
     CopyPreparedCastSpell,
     /// Exile legal graveyard targets together, then copy the exiled cards and offer free casts.
     ExileTargetsCopyFreeWithBudget {
@@ -1776,6 +1922,9 @@ pub enum Instruction {
     BecomeCopy(InPlaceCopySpec),
     /// Freeze one target blueprint and every other currently controlled creature.
     CopyTargetToOtherControlledCreatures,
+    /// One permanent copy effect over the frozen controlled nonland cohort.
+    CopyControlledNonlandsFromTarget,
+    CopyEntryBatchCreature,
     /// Choose a source now; prevent its next damage to this controller this turn,
     /// then queue the indexed reflexive ability with the actual prevented amount.
     PreventNextChosenSourceDamage {
@@ -1922,6 +2071,9 @@ pub enum Instruction {
         filter: SearchFilter,
     },
     PutHandCreature,
+    PutHandCreatureAttacking {
+        maximum: AmountValue,
+    },
     PutHandCreatureAndLand,
     PutHandPermanent {
         maximum: AmountValue,
@@ -1985,6 +2137,8 @@ pub enum Instruction {
     /// Create a source-independent delayed ability for this exact source.
     SacrificeSourceAtEndCombat,
     SacrificeSource,
+    /// Sacrifice the exact source under its current controller (evoke).
+    SacrificeSourceByController,
     SacrificeSourceIfNoPlaneswalker,
     /// Continue in this resolution only if sacrificing the exact source succeeds.
     SacrificeSourceOrSkip {
@@ -2484,6 +2638,7 @@ pub enum Instruction {
     },
     DestroyLoseManaValue,
     SelectMilled(MilledSelectionSpec),
+    SelectTargetPlayerMilled(MilledSelectionSpec),
     AttachSource,
     AttachSourceReflexive {
         ability: u16,
@@ -2640,6 +2795,10 @@ pub enum Instruction {
         counter: CounterKind,
         haste_at: Option<u32>,
     },
+    SearchCreatureManaValue {
+        maximum: AmountValue,
+        destination: SearchDestination,
+    },
     Search(SearchSpec),
     SearchScaled {
         spec: SearchSpec,
@@ -2756,6 +2915,38 @@ pub enum Instruction {
     RevealUntilLandToGraveyard(PlayerSet),
     Damage(i32),
     DamageScaled(AmountValue),
+    DamagePlayerCreatures {
+        players: PlayerSet,
+        amount: u16,
+    },
+    EnteringPowerDamagePlayers(PlayerSet),
+    ChooseCreatureType,
+    ReturnChosenCreatureTypeFromGraveyard,
+    PutHandCreatureHasteSacrifice {
+        maximum_total_stats: u64,
+    },
+    ExileNonlandLifeFreeCast,
+    MarkCastDreamExile,
+    CastOwnedDreamCard,
+    ExileUntilManaValueFreeCast {
+        players: PlayerSet,
+        minimum: u16,
+    },
+    RevealHandForControlledCast(AmountValue),
+    ExileTopChoosePlayScaled {
+        amount: AmountValue,
+        next_turn: bool,
+    },
+    ExileDeathCounterTotalUntilNextEnd,
+    SearchFor {
+        player: PlayerSet,
+        required: bool,
+        spec: SearchSpec,
+    },
+    DamagePlayersAndTheirCreatures {
+        players: PlayerSet,
+        amount: AmountValue,
+    },
     /// Damage legal targets in the selected group using the other legal target's
     /// power captured at resolution start, before any instruction moves it.
     DamageByTargetPower {
@@ -2919,6 +3110,10 @@ pub enum Instruction {
     RegisterEarthbendReturn,
     AnimateEarthbendTargets,
     GrantKeywords {
+        subject: Subject,
+        keywords: Keywords,
+    },
+    GrantKeywordsUntilNextTurn {
         subject: Subject,
         keywords: Keywords,
     },
@@ -3181,6 +3376,7 @@ pub enum Instruction {
     DestroyEntering,
     /// Choose and remove up to this many counters from one targeted permanent.
     RemoveUpToTargetCounters(u16),
+    RemoveAnyTargetCounters,
     /// Optional non-targeted source-counter removal; an actual removal queues the named reflexive trigger.
     MayRemoveAnySourceCounterReflexive(u16),
     CreateTokensWithCounters {
@@ -3394,6 +3590,8 @@ pub enum AmountValue {
     DepartureCounterCount(CounterKind),
     /// Toughness of the creature immediately before the triggering death.
     DeathEventToughness,
+    DeathEventPower,
+    DeathEventCounterTotal,
     /// Damage dealt by the equipped creature in one completed combat batch.
     CreatureCombatDamageAmount,
     #[allow(
@@ -3469,6 +3667,10 @@ pub enum SourceCharacteristicFilter {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum StatValue {
+    CreatureEntriesThisTurn {
+        other: bool,
+    },
+    DeclaredSubtypeAttackersThisTurn(&'static str),
     /// Number of different planeswalker types among planeswalkers controlled by the source controller.
     DistinctControlledPlaneswalkerTypes,
     /// The source has not dealt combat damage in its current incarnation.
@@ -3494,6 +3696,10 @@ pub enum StatValue {
     NonlandEntriesThisTurn,
     MountOrVehicleEntriesThisTurn,
     SourceAttacking,
+    /// Exact battlefield source is untapped in the actual or projected world.
+    SourceUntapped,
+    /// Creatures attacking this player, excluding attacks on their permanents.
+    CreaturesAttackingYou,
     AttackingCreatures,
     AttackingSubtype(&'static str),
     OtherNamedCreatures(&'static str),
@@ -3763,6 +3969,7 @@ pub enum ReplacementSpec {
     /// Add one of each positive kind, only for the provider controller placing
     /// counters on their own permanent. General providers do not apply entering.
     CountersPlacedByController,
+    DoubleControlledChosenTypeDamage,
     DoubleCreatureDamage,
     DoubleEnteredCreatureDamage,
     DoubleOpponentDamage,
@@ -3811,6 +4018,7 @@ pub enum ReplacementSpec {
         factor: u32,
         add: u32,
     },
+    FirstTokensCopyAttached,
     DoubleTokens {
         effects_only: bool,
     },
@@ -4357,6 +4565,8 @@ pub enum CastTarget {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum CastFilter {
+    SourceChosenCreatureType,
+    CreatureToughnessGreaterThanPower,
     /// A spell cast from an actual prepared card copy.
     PreparedSpell,
     NotOwnedByYou,
@@ -4396,6 +4606,10 @@ pub enum CastFilter {
         filter: &'static CastFilter,
         color: ChoiceColor,
     },
+    TargetCount {
+        filter: &'static CastFilter,
+        count: u16,
+    },
     Targeted {
         filter: &'static CastFilter,
         target: CastTarget,
@@ -4429,7 +4643,10 @@ impl CastFilter {
             | Self::NotOwnedByCaster
             | Self::CasterOffTurn { .. }
             | Self::SourceChosenColor
+            | Self::SourceChosenCreatureType
+            | Self::CreatureToughnessGreaterThanPower
             | Self::SourceChosenManaValueParity
+            | Self::TargetCount { .. }
             | Self::Targeted { .. }
             | Self::InstantSorceryOrdinal(_)
             | Self::NonCreatureOrdinal(_) => false,
@@ -4568,6 +4785,7 @@ pub enum StepGuard {
     OpponentHasMoreCardsInHand,
     OpponentControlsMoreCreatures,
     SourceReceivedCounterThisTurn,
+    PutCounterOnCreatureThisTurn,
     YourTurn,
     YourMainPhase,
     SourcePowerAtLeast(u16),
@@ -4641,6 +4859,8 @@ pub enum DamageSubject {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum EntryPredicate {
+    SourceChosenCreatureType,
+    SourceOrSubtypeAny(&'static [&'static str]),
     /// A predicate on each actual entrant, distinct from batch token-entry events.
     Token,
     LegendarySubtype(&'static str),
@@ -4659,18 +4879,22 @@ pub enum EntryPredicate {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum ReturnDeathFilter {
     SourceNonDemon,
+    SourceCounter { kind: CounterKind, minimum: u64 },
     SourceRevival,
+    SourceWithoutCounter(CounterKind),
     ControlledNontokenNonAngel,
     ControlledSubtype(&'static str),
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum ReturnKind {
+    WithoutAbilities,
     FlyingRobot,
     Demon,
     Angel,
     Revival,
     HeroFinality,
+    Persist,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -4693,6 +4917,10 @@ pub struct DepartureFilter {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum TriggerCondition {
+    /// One printed ability observing either entry or an actual untapped-to-tapped change.
+    SelfEntersOrBecomesTapped,
+    /// One packet for each controlled creature declared attacking or blocking.
+    ControlledCreatureAttacksOrBlocks,
     /// The controller completed a positive scry or surveil instruction.
     ScryOrSurveil,
     /// One event for each completed proliferate, even when no object was chosen.
@@ -4769,6 +4997,11 @@ pub enum TriggerCondition {
     /// A paid promise belongs to this actual cast-to-battlefield entry event.
     SelfGiftEnters,
     SelfEntersIfCast,
+    SelfEvokedEnters,
+    SelfEntersManaSpent {
+        color: u8,
+        minimum: u32,
+    },
     Foraged,
     FoodsSacrificed,
     Reflexive,
@@ -4810,6 +5043,7 @@ pub enum TriggerCondition {
         spells_only: bool,
     },
     SourceDealtCombatDamage,
+    SourceCombatDamagePlayerOrPlaneswalker,
     AttachedDealtCombatDamage,
     ControlledCreatureCombatDamageOwnTurn,
     DamagedCreatureDies,
@@ -4932,6 +5166,11 @@ pub enum TriggerCondition {
         ordinal: Option<u64>,
     },
     SelfEnters,
+    SelfEntersOrTransforms,
+    CreaturesFromGraveyardEnterYou {
+        other: bool,
+    },
+    SelfTransforms,
     SelfOffspring,
     SelfKicked,
     CreatureExploresYou,
@@ -5267,6 +5506,8 @@ pub enum ActivationOrigin {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum ActivationGuard {
+    ControlColorsAtLeast(u8),
+    GraveyardSubtype(&'static str),
     ClassLevelExactly(u8),
     SourceSolved,
     CastInstantSorceryThisTurn,
@@ -5297,6 +5538,8 @@ impl ActivationGuard {
     pub(crate) fn subtypes(self) -> &'static [&'static str] {
         match self {
             Self::ClassLevelExactly(_)
+            | Self::ControlColorsAtLeast(_)
+            | Self::GraveyardSubtype(_)
             | Self::Always
             | Self::SourceSolved
             | Self::SourceAttackedThisTurn
@@ -5482,6 +5725,12 @@ impl Keywords {
     pub const HEXPROOF_MONOCOLORED: Self = Self(1u64 << 38);
     /// A granted static ability, removed with the recipient's other abilities.
     pub const CANT_BE_SACRIFICED: Self = Self(1u64 << 39);
+    /// Damage to creatures is dealt in the form of -1/-1 counters.
+    pub const WITHER: Self = Self(1u64 << 45);
+    /// Protection considers the source controller, including captured damage LKI.
+    pub const PROTECTION_OPPONENTS: Self = Self(1u64 << 46);
+    /// Hexproof qualified by any color the protected object currently has.
+    pub const HEXPROOF_OWN_COLORS: Self = Self(1u64 << 47);
     const HEXPROOF_COLOR_SHIFT: u32 = 40;
     pub const fn hexproof_from_color(color: ChoiceColor) -> Self {
         Self(1u64 << (Self::HEXPROOF_COLOR_SHIFT + color.index() as u32))
@@ -5506,6 +5755,9 @@ impl Keywords {
         self.contains(Self::PROTECTION_EVERYTHING)
             || self.protection_colors() & colors != 0
             || (self.contains(Self::PROTECTION_INSTANT_SORCERY) && kinds & (4 | 8) != 0)
+    }
+    pub(crate) fn protects_from_controller(self, colors: u8, kinds: u16, opponent: bool) -> bool {
+        self.protects_from(colors, kinds) || (opponent && self.contains(Self::PROTECTION_OPPONENTS))
     }
     pub fn contains(self, keyword: Self) -> bool {
         self.0 & keyword.0 == keyword.0
@@ -5963,6 +6215,9 @@ impl Card {
     }
     pub(crate) fn entry_exile_counters(self) -> Option<EntryExileCountersSpec> {
         authored::rules(self).and_then(|rules| rules.extras.entry_exile_counters)
+    }
+    pub(crate) fn entry_copy_keywords(self) -> Keywords {
+        authored::rules(self).map_or(Keywords::NONE, |rules| rules.extras.entry_copy_keywords)
     }
     pub(crate) fn entry_copy(self) -> Option<EntryCopySpec> {
         authored::rules(self).and_then(|rules| rules.extras.entry_copy)
@@ -6612,6 +6867,9 @@ impl Card {
     }
     pub(crate) fn has_hybrid_cost(self) -> bool {
         !generated::cost_alternatives(self).is_empty()
+    }
+    pub(crate) fn evoke_costs(self) -> &'static [ManaCost] {
+        authored::rules(self).map_or(&[], |r| r.extras.evoke_costs)
     }
     pub fn collect_evidence_cost(self) -> Option<u16> {
         generated::collect_evidence(self).map(|v| v.0)

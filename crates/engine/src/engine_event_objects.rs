@@ -37,6 +37,7 @@ pub enum EventObjectFacts {
     Controller(Player),
     /// Exact untargeted entrant's current or latest battlefield copiable values.
     Copiable(CopyRecipe),
+    CopiableGroup(Vec<EntryBatchCopyView>),
     CreatureComparison(CreatureComparisonFacts),
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -70,6 +71,9 @@ impl EventObjectView {
             })
             + match &self.facts {
                 EventObjectFacts::DeathCounters(counters) => counters.owned_bytes(),
+                EventObjectFacts::CopiableGroup(rows) => {
+                    rows.len() * std::mem::size_of::<EntryBatchCopyView>()
+                }
                 _ => 0,
             }
     }
@@ -227,12 +231,26 @@ impl Game {
         &mut self,
         before: impl IntoIterator<Item = &'a ObjectView>,
     ) {
-        if !self.event_fact_packets().any(|p| {
+        let ordinary = self.event_fact_packets().any(|p| {
             p.event_object.is_some()
                 || p.source_quantity_lki
                     .as_ref()
                     .is_some_and(|q| q.creature_comparison.is_some())
-        }) {
+        });
+        let cold = self.state.stack_copy_data.is_some()
+            || self.state.replacements.is_some()
+            || self
+                .state
+                .entry_batch
+                .as_ref()
+                .is_some_and(|batch| batch.replacement_resume.is_some())
+            || self.state.delayed_returns.is_some();
+        if !ordinary && !cold {
+            return;
+        }
+        let before = before.into_iter().collect::<Vec<_>>();
+        self.capture_entry_batch_copy_departures(&before);
+        if !ordinary {
             return;
         }
         let facts: Vec<_> = before
@@ -299,7 +317,9 @@ impl Game {
                     e.subtype_lki = Some(damage.facts);
                 }
                 e.facts = match e.facts {
-                    EventObjectFacts::DeathCounters(_) => continue,
+                    EventObjectFacts::DeathCounters(_) | EventObjectFacts::CopiableGroup(_) => {
+                        continue;
+                    }
                     EventObjectFacts::Identity => EventObjectFacts::Identity,
                     EventObjectFacts::DamageActor(_) => EventObjectFacts::DamageActor(*damage),
                     EventObjectFacts::Copiable(_) => EventObjectFacts::Copiable(*recipe),
@@ -321,6 +341,23 @@ impl Game {
         entering: &ObjectView,
         program: &[Instruction],
     ) {
+        if program
+            .iter()
+            .any(|instruction| matches!(instruction, Instruction::EnteringPowerDamagePlayers(_)))
+        {
+            self.state
+                .pending_triggers
+                .last_mut()
+                .unwrap()
+                .set_event_object(EventObjectView {
+                    object: entering.reference,
+                    facts: EventObjectFacts::DamageActor(actor(entering)),
+                    semantic_objects: None,
+                    conniver_creature: None,
+                    subtype_lki: None,
+                });
+            return;
+        }
         if program.iter().any(|instruction| {
             matches!(
                 instruction,
@@ -392,6 +429,7 @@ impl Game {
     pub(super) fn bind_creature_comparison(&mut self, source: &ObjectView, entering: &ObjectView) {
         let p = self.state.pending_triggers.last_mut().unwrap();
         p.source_quantity_lki = Some(Box::new(SourceQuantityView {
+            chosen_creature_type: None,
             toughness: None,
             equipment_count: None,
             creature_comparison: Some(CreatureComparisonFacts::from_view(source)),
@@ -511,6 +549,40 @@ impl Game {
             .map(|b| DamageEvent {
                 source,
                 target: b.target,
+                amount,
+                combat: false,
+                preventable: true,
+            })
+            .collect::<Vec<_>>();
+        self.apply_damage_batch(&events);
+    }
+    pub(super) fn event_object_power_damage_players(
+        &mut self,
+        item: &SpellView,
+        players: PlayerSet,
+    ) {
+        let Some(e) = &item.event_object else {
+            return;
+        };
+        let EventObjectFacts::DamageActor(saved) = e.facts else {
+            return;
+        };
+        let source =
+            if self.on_battlefield(e.object.card) && self.object_ref(e.object.card) == e.object {
+                self.damage_source(e.object.card)
+            } else {
+                saved
+            };
+        let amount = if source.facts.is_creature() {
+            source.facts.power.max(0)
+        } else {
+            0
+        };
+        let events = self
+            .program_players(players, item)
+            .map(|player| DamageEvent {
+                source,
+                target: Target::Player(player),
                 amount,
                 combat: false,
                 preventable: true,

@@ -7,6 +7,8 @@ pub struct SourceQuantityView {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub toughness: Option<i128>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub chosen_creature_type: Option<crate::cards::CreatureType>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub equipment_count: Option<u64>,
     /// Signed source facts for an intervening creature-stat comparison.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -132,12 +134,22 @@ impl Game {
     pub(super) fn source_quantity_facts(
         &self,
         program: &[Instruction],
+        targets: TargetPlan,
         source: &ObjectView,
     ) -> Option<Box<SourceQuantityView>> {
         let (toughness, equipment) = selected(program);
-        (toughness || equipment).then(|| {
+        let chosen_type = targets.reads_source_creature_type() || reads_chosen_type(program);
+        (toughness || equipment || chosen_type).then(|| {
             Box::new(SourceQuantityView {
                 creature_comparison: None,
+                chosen_creature_type: if chosen_type {
+                    match source.entry_choice {
+                        Some(EntryChoiceValue::CreatureType(kind)) => Some(kind),
+                        _ => None,
+                    }
+                } else {
+                    None
+                },
                 toughness: toughness.then_some(if source.is_creature() {
                     source.toughness
                 } else {
@@ -172,10 +184,16 @@ impl Game {
             self.source_counter_quantity_live(source, kind)
                 .expect("exact activated quantity source")
         });
-        let (toughness, equipment) = selected(program);
-        item.source_quantity_lki = (toughness || equipment)
-            .then(|| self.source_quantity_facts(program, &self.object_view(source.card)))
-            .flatten();
+        let targets = item.program().map_or(TargetPlan::NONE, |(plan, _)| plan);
+        if selected(program) != (false, false)
+            || reads_chosen_type(program)
+            || targets.reads_source_creature_type()
+        {
+            item.source_quantity_lki =
+                self.source_quantity_facts(program, targets, &self.object_view(source.card));
+        } else {
+            item.source_quantity_lki = None;
+        }
     }
     /// The local paying packet is outside State during its own source costs.
     /// Refresh after counter payment and before any source-departure cost.
@@ -238,6 +256,7 @@ impl Game {
                         source.reference,
                         SourceQuantityView {
                             creature_comparison: None,
+                            chosen_creature_type: None,
                             toughness: selected.0.then_some(if source.is_creature() {
                                 source.toughness
                             } else {
@@ -334,5 +353,40 @@ impl Game {
             .event()
             != TriggerCondition::SelfAttacksIfEquipped
             || self.source_equipment_quantity(item) > 0
+    }
+}
+
+fn reads_chosen_type(program: &[Instruction]) -> bool {
+    fn filter(value: crate::cards::LibrarySelectionFilter) -> bool {
+        use crate::cards::LibrarySelectionFilter as F;
+        match value {
+            F::SourceChosenCreatureType => true,
+            F::AnyOf(rows) | F::AllOf(rows) => rows.iter().any(|row| filter(*row)),
+            _ => false,
+        }
+    }
+    program.iter().any(|instruction| match instruction {
+        Instruction::SelectLibrary(spec) => filter(spec.filter),
+        Instruction::SelectLibraryTo(effect)
+        | Instruction::SelectLibraryThenMayTransform(effect) => filter(effect.spec.filter),
+        Instruction::Modal(modes)
+        | Instruction::ModalOnce(modes)
+        | Instruction::ModalOncePerTurn(modes)
+        | Instruction::ModalUpToX { modes, .. } => modes.iter().any(|mode| {
+            mode.targets.reads_source_creature_type() || reads_chosen_type(mode.program)
+        }),
+        _ => false,
+    })
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    /// A linked as-entry choice belongs to this ability acquisition, even if a later copy masks it.
+    pub(super) fn source_chosen_creature_type(
+        &self,
+        item: &SpellView,
+    ) -> Option<crate::cards::CreatureType> {
+        item.source_quantity_lki
+            .as_ref()
+            .and_then(|facts| facts.chosen_creature_type)
     }
 }

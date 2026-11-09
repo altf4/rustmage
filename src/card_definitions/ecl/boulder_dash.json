@@ -3,10 +3,25 @@
   "catalogue_id": 514,
   "oracle_id": "30a9ad0e-1b23-41ce-bacc-3b27f78ef628",
   "facts_sha256": "b73cc35270c6a446c50c5dd4cab06ef8c97cae96c1dfe257171a5bbc3bc2d25f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "44378d74319d105b6a6a688a5d8988f6b5ce652c034c7da06bb8b0259d92435b"
   },
-  "physical_metadata_sha256": "aae0bb4e1ca6acdf486e7e10142f4f1226d377c0a8753936bbb83f5b0cc10983"
+  "physical_metadata_sha256": "aae0bb4e1ca6acdf486e7e10142f4f1226d377c0a8753936bbb83f5b0cc10983",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BoulderDash.java",
+  "java_sha256": "2f18a2f0c6024431cb0c750373767d0df0777863d50b2b5251c683665baed43f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetAndTargetEffect.java",
+      "sha256": "23bed77af2f847ef446bbb6c293ae9d3c1f8b38a50fb37eb828b628a34a6f27e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/other/AnotherTargetPredicate.java",
+      "sha256": "0bd31702560d09b13d609b0d6b4ca2a84fe7a880970798a8e1b3fd6b76f3e47c"
+    }
+  ]
 }
