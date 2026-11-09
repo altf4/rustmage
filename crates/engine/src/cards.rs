@@ -1512,6 +1512,10 @@ pub enum MilledDestination {
     /// Record how many cards of this subtype actually entered their owner's hand.
     HandAndCountSubtype(&'static str),
     Battlefield,
+    /// Grant lasting haste to actual entrants and schedule one exact return group.
+    BattlefieldWithHasteAndReturn {
+        ability: u16,
+    },
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -2006,6 +2010,8 @@ pub enum Instruction {
     ReturnDeathCard(ReturnKind),
     ResolveDelayedReturn,
     CaptureDelayedReturnTarget,
+    /// Return the delayed packet's exact, still-present battlefield group.
+    ReturnDelayedBattlefieldObjectsToHand,
     /// Schedule one independent triggered program for the next matching step.
     ScheduleStep {
         step: TriggerStep,
@@ -3602,6 +3608,7 @@ pub enum Instruction {
     ShuffleTargetIntoLibrary,
     /// Shuffle the live source and valid target into their owners' libraries together.
     ShuffleSourceAndTargetIntoLibraries,
+    ShuffleYourLibrary,
     ShuffleGraveyardIntoLibrary,
     /// Shuffle the controller's qualifying graveyard cards and record actual arrivals.
     ShuffleGraveyardIntoLibraryCount {

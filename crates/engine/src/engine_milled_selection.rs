@@ -158,10 +158,15 @@ impl Game {
             .copied()
             .filter(|&object| self.milled_matches(player, spec.filter, object))
             .collect();
-        if eligible.is_empty() {
+        if eligible.is_empty()
+            && !matches!(
+                spec.destination,
+                MilledDestination::BattlefieldWithHasteAndReturn { .. }
+            )
+        {
             return false;
         }
-        if spec.count == MilledCount::All {
+        if spec.count == MilledCount::All || eligible.is_empty() {
             self.move_milled_selection(player, &eligible, spec.destination);
             return self.state.entry_batch.is_some();
         }
@@ -232,12 +237,19 @@ impl Game {
             MilledDestination::HandAndCountSubtype(subtype) => Some(subtype),
             _ => None,
         };
+        let haste_and_return = match destination {
+            MilledDestination::BattlefieldWithHasteAndReturn { ability } => {
+                Some((self.state.resolving.as_ref().unwrap().item.clone(), ability))
+            }
+            _ => None,
+        };
         let destination = match destination {
             MilledDestination::PlayPermission { .. } => {
                 unreachable!("handled permission without movement")
             }
             MilledDestination::Hand | MilledDestination::HandAndCountSubtype(_) => Zone::Hand,
-            MilledDestination::Battlefield => Zone::Battlefield,
+            MilledDestination::Battlefield
+            | MilledDestination::BattlefieldWithHasteAndReturn { .. } => Zone::Battlefield,
             MilledDestination::LibraryTop => Zone::Library,
         };
         let ids: Vec<_> = selected
@@ -251,13 +263,26 @@ impl Game {
                 .map(|id| {
                     let mut incoming = self.entry_move(id, destination, false);
                     incoming.controller = player;
+                    if let Some((item, _)) = &haste_and_return {
+                        let source = item.source.expect("milled return has a source");
+                        incoming.keywords_after = Some((source.object, Keywords::HASTE));
+                        incoming.keywords_after_permanent = true;
+                    }
                     incoming
                 })
                 .collect();
             // Existing entry continuation handles mandatory Aura attachment and
             // retains an impossible Aura in its previous public zone, except
             // an Aura on the stack goes to its owner's graveyard (CR303.4g).
-            self.stage_entries(moves, None);
+            if let Some((item, ability)) = haste_and_return {
+                self.stage_entries_with_cleanup(
+                    moves,
+                    &item,
+                    entries::EntryCleanup::ReturnToHandAtNextEndStep { ability },
+                );
+            } else {
+                self.stage_entries(moves, None);
+            }
         } else {
             let events = self.move_objects_raw(&ids, destination);
             self.finish_zone_events(&events, &[]);

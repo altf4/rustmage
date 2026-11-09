@@ -4319,6 +4319,10 @@ impl Game {
                 Instruction::ShuffleGraveyardIntoLibraryCount { excluded_kinds } => {
                     self.shuffle_graveyard_into_library_count(item.controller, excluded_kinds);
                 }
+                Instruction::ShuffleYourLibrary => {
+                    self.forget_library_top(item.controller);
+                    self.shuffle_library_cards(item.controller);
+                }
                 Instruction::ShuffleGraveyardIntoLibrary => {
                     let ids: Vec<_> = self
                         .state
@@ -4992,6 +4996,9 @@ impl Game {
                     self.resolve_delayed_return(&item)
                 }
                 Instruction::ResolveDelayedReturn => self.resolve_delayed_return(&item),
+                Instruction::ReturnDelayedBattlefieldObjectsToHand => {
+                    self.return_delayed_battlefield_objects_to_hand(&item);
+                }
                 Instruction::CaptureDelayedReturnTarget => {
                     self.capture_delayed_return_target(&item)
                 }

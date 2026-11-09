@@ -473,7 +473,11 @@ impl Game {
         if !moves.is_empty() {
             self.track_nightmare_copy_entries(&moves);
             if let Some(context) = instructions {
-                self.stage_temporary_token_entries(moves, &context.item, context.cleanup);
+                self.stage_entries_with_cleanup(
+                    moves,
+                    &context.item,
+                    entries::EntryCleanup::Token(context.cleanup),
+                );
             } else if let Some(item) = temporary {
                 self.stage_temporary_copy_entries(moves, item);
             } else {
