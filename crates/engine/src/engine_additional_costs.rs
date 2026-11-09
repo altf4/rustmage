@@ -1259,6 +1259,7 @@ impl Game {
             | EffectChoiceKind::SacrificeGreatestManaValue
             | EffectChoiceKind::SacrificeDifferentNames(_)
             | EffectChoiceKind::SacrificePermanents(_)
+            | EffectChoiceKind::SacrificeCreaturesExceptSubtype(_)
             | EffectChoiceKind::SacrificeRange { .. }
             | EffectChoiceKind::RemoveCreatureCounters(_)
             | EffectChoiceKind::RemoveCreatureCounter(_)

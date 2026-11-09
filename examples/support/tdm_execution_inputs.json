@@ -113,7 +113,7 @@
     "crates/engine/src/engine_activation_observers.rs": "bc93bb3427c245af11cffcb17c15618ff9c19e910ec69d30dda8cbc0fdea7f15",
     "crates/engine/src/engine_activation_target_costs.rs": "db9c91a71f1622138399c98cad081f269210ba73ef9436fd312a7dceb8ffe82b",
     "crates/engine/src/engine_activations.rs": "dcc53a26184c8c59a7b1985b9bb5ceae8158f78792e8b3fc2e654fefd1227a16",
-    "crates/engine/src/engine_additional_costs.rs": "4c01ed3aac65d300cef4ad77bc95f93ece0a62baffbeac20f9cc807e96e99dc6",
+    "crates/engine/src/engine_additional_costs.rs": "f27df4dd0a2584e4da23d046eb12f56ae478ae6001ba6e2c2d7066842e2afa94",
     "crates/engine/src/engine_adventure.rs": "9c116fb13b17126f2d3bbcfde64428813be48e10d235e137265260d75869f4c8",
     "crates/engine/src/engine_attachment_death.rs": "ffef60e8f30ce88ad6bc30d5eca24130b42e7398faabbced82cf78d9e1f002a0",
     "crates/engine/src/engine_attacking_exile.rs": "05aaae9f82d910903d1a0080ca38dc3445548ddedcf50bd3102fd4f86dfbbb28",
