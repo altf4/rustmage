@@ -75,6 +75,13 @@ impl Game {
         match subject {
             DamageSubject::AnySources | DamageSubject::AnyNoncombatSources => true,
             DamageSubject::ControlledNoncombatSources => dealer.controller == source.controller,
+            DamageSubject::ControlledSubtypes(subtypes) => {
+                dealer.facts.battlefield
+                    && dealer.controller == source.controller
+                    && subtypes
+                        .iter()
+                        .any(|subtype| dealer.facts.has_subtype(subtype))
+            }
             DamageSubject::Source => dealer.reference == source.reference,
             DamageSubject::Attached => {
                 source.attached_to == Some(dealer.reference)

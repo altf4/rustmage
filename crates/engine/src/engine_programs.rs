@@ -9662,6 +9662,18 @@ impl Game {
                 Instruction::PutPowerExcessCounters { filter } => {
                     self.put_power_excess_counters(&item, filter);
                 }
+                Instruction::PutPermanentGroupCounters {
+                    filters,
+                    kind,
+                    amount,
+                } => {
+                    let changes = self
+                        .battlefield_group(&item, filters)
+                        .into_iter()
+                        .map(|id| (self.object_ref(id), Counters::of(kind, u64::from(amount))))
+                        .collect();
+                    self.effect_counters(changes, replacements::ResumeMode::Program);
+                }
                 Instruction::DoubleCounterKind { subject, kind } => {
                     let changes = self
                         .keyword_subjects(&item, subject)

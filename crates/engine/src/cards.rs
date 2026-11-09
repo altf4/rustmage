@@ -3668,6 +3668,12 @@ pub enum Instruction {
         kind: CounterKind,
         amount: u32,
     },
+    /// Place counters once per permanent in the union of the battlefield filters.
+    PutPermanentGroupCounters {
+        filters: &'static [BattlefieldFilter],
+        kind: CounterKind,
+        amount: u32,
+    },
     DoubleCounters,
     /// Add exactly one of every currently present kind to a permanent or player.
     AddOneOfEachCounterKind,
@@ -5288,6 +5294,8 @@ pub enum DamageSubject {
     AnySources,
     AnyNoncombatSources,
     ControlledNoncombatSources,
+    /// Controlled battlefield sources with any of these effective subtypes at the event.
+    ControlledSubtypes(&'static [&'static str]),
     Source,
     Attached,
     Creatures {
