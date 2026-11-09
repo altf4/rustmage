@@ -61,7 +61,16 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
                     amount(value, kinds);
                 }
             }
+            Instruction::CounterUnlessPayCosts { costs, .. }
+            | Instruction::MayPayCosts { costs, .. } => {
+                for cost in costs {
+                    for value in cost.extra_generic.into_iter().chain(cost.life) {
+                        amount(value, kinds);
+                    }
+                }
+            }
             Instruction::UpToTargets(value)
+            | Instruction::RememberCount(value)
             | Instruction::IfAmountAtLeast { value, .. }
             | Instruction::IfAmountParity { value, .. }
             | Instruction::PutLandCards { maximum: value, .. }

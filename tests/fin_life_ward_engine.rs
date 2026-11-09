@@ -539,3 +539,53 @@ fn cost_object_selection_uses_the_shared_post_life_payment_world() {
     assert_eq!(game.object_view(creature).zone, Zone::Graveyard);
     assert_eq!(game.state.players[payer.index()].life, 22);
 }
+
+#[test]
+fn counter_scaled_resolution_costs_keep_the_sources_last_exact_counters() {
+    const COUNTER_WARD: CardRules = CardRules {
+        triggers: &[TriggeredAbility {
+            condition: TriggerCondition::Ward,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::CounterUnlessPayCosts {
+                subject: CounterSubject::Related,
+                costs: &[ResolutionCost {
+                    extra_generic: Some(AmountValue::SourceCounterQuantity(CounterKind::PlusOne)),
+                    life: Some(AmountValue::SourceTotalCounters),
+                    ..ResolutionCost::FREE
+                }],
+                exile: false,
+            }],
+        }],
+        ..WARD
+    };
+
+    let ward = Card::from_name("Raubahn, Bull of Ala Mhigo").unwrap();
+    let _rules = fixture_rules::activate(&[(ward, &COUNTER_WARD)]);
+    let payer = Player::P0;
+    let mut game = scenario(payer);
+    let (source, shock) = target_source(&mut game, ward, payer);
+    game.add_counter(source, CounterKind::PlusOne, 3);
+    game.add_counter(source, CounterKind::Stun, 1);
+    let exact = game.object_ref(source);
+    game.move_object(source, Zone::Exile);
+    game.move_object(source, Zone::Battlefield);
+    assert_ne!(game.object_ref(source), exact);
+    assert_eq!(game.counter_count(source, CounterKind::PlusOne), 0);
+
+    let payment = [0, 0, 0, 0, 0, 3];
+    game.state.players[payer.index()].mana = payment;
+    resolve_ward(&mut game, payer, 4);
+    assert_eq!(
+        game.observe(payer).resolution_payment.unwrap().cost.generic,
+        3
+    );
+    let mut declined = game.clone();
+    act(&mut declined, Action::DeclineResolutionMana);
+    assert_eq!(declined.object_view(shock).zone, Zone::Graveyard);
+    assert_eq!(declined.state.players[payer.index()].life, 20);
+
+    act(&mut game, Action::PayResolutionMana { payment });
+    assert_eq!(game.object_view(shock).zone, Zone::Stack);
+    assert_eq!(game.state.players[payer.index()].life, 16);
+    assert_eq!(game.state.players[payer.index()].mana, [0; 6]);
+}
