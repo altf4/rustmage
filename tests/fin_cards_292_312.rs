@@ -584,3 +584,79 @@ fn youre_not_alone_checks_own_creature_count_at_resolution_and_can_target_an_opp
     assert_eq!(stats(&smaller, enemy), (4, 4));
     assert_eq!(stats(&game, enemy), (6, 6));
 }
+
+#[test]
+fn venat_draws_for_the_first_legend_and_hydaelyn_protects_its_exact_target() {
+    let p = Player::P1;
+    let mut game = scenario(p);
+    let venat = put(&mut game, p, "Venat, Heart of Hydaelyn", Zone::Battlefield);
+    let front = game.object_view(venat).card;
+    let first = put(&mut game, p, "Hope Estheim", Zone::Hand);
+    cast(&mut game, first, None);
+    settle(&mut game);
+    assert_eq!(game.hand_count(p), 1);
+    let second = put(&mut game, p, "Freya Crescent", Zone::Hand);
+    cast(&mut game, second, None);
+    settle(&mut game);
+    assert_eq!(game.hand_count(p), 1);
+
+    let nonland = put(&mut game, p.other(), "Short Bow", Zone::Battlefield);
+    let land = put(&mut game, p.other(), "Island", Zone::Battlefield);
+    announce_ability(&mut game, venat);
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(land),
+        },
+    );
+    let mut self_exile = game.clone();
+    select_target(&mut self_exile, venat);
+    pay(&mut self_exile);
+    settle(&mut self_exile);
+    assert_eq!(self_exile.object_view(venat).zone, Zone::Exile);
+    assert_eq!(self_exile.object_view(venat).card, front);
+
+    select_target(&mut game, nonland);
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(nonland).zone, Zone::Exile);
+    assert_eq!(game.object_view(venat).card, front.back_face().unwrap());
+    assert!(game.keywords(venat).contains(Keywords::INDESTRUCTIBLE));
+
+    game.begin_step(Step::BeginCombat);
+    game.prepare_triggers();
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(venat),
+        },
+    );
+    select_target(&mut game, first);
+    let mut nonlegendary = game.clone();
+    nonlegendary.apply_temporary_copy(
+        nonlegendary.object_ref(first),
+        CopyRecipe::new(Card::GrizzlyBears),
+        CopyDeadline::EndOfTurn,
+    );
+    settle(&mut nonlegendary);
+    assert_eq!(nonlegendary.hand_count(p), 1);
+    assert!(
+        nonlegendary
+            .keywords(first)
+            .contains(Keywords::INDESTRUCTIBLE)
+    );
+    settle(&mut game);
+    assert_eq!(game.hand_count(p), 2);
+    assert_eq!(game.counter_count(first, CounterKind::PlusOne), 1);
+
+    for (next, protected) in [(p.other(), true), (p, false)] {
+        game.state.step = Step::End;
+        game.give_priority();
+        pass_pair(&mut game);
+        assert_eq!(game.state.active, next);
+        assert_eq!(
+            game.keywords(first).contains(Keywords::INDESTRUCTIBLE),
+            protected
+        );
+    }
+}

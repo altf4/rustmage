@@ -10,7 +10,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             }],
         },
         TriggeredAbility {
-            condition: TriggerCondition::Sacrificed {
+            condition: TriggerCondition::SacrificedByAny {
                 filter: SacrificeFilter {
                     keywords: Keywords::NONE,
                     source_only: false,
@@ -21,7 +21,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     artifact_enchantment_or_token: false,
                     subtype: None,
                 },
-                own_turn: false,
             },
             targets: TargetPlan::NONE,
             program: &[Instruction::PutCounters {
