@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "65fcffafee21a1d56364f0a634a43a4e0274554bbdcdbaa0e0c03cd4a5c276f0",
+  "catalogue_version": "6fb5421820efb015bec9a7d488842776bdc062b2e8fb7cbeadb8e3915d1bca20",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 3744,
-  "implemented_total": 3753,
+  "implemented_standard_cards": 3750,
+  "implemented_total": 3759,
   "token_definitions": 169,
   "emblem_definitions": 12,
   "adventure_definitions": 53,
@@ -64,8 +64,7 @@
     },
     "fin": {
       "total": 304,
-      "complete": 298,
-      "gated": 6
+      "complete": 304
     },
     "fra": {
       "total": 285,
@@ -1942,8 +1941,8 @@
     {
       "name": "Ardyn, the Usurper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/ardyn_the_usurper.rs",
       "set": "fin"
     },
@@ -8862,8 +8861,8 @@
     {
       "name": "Dion, Bahamut's Dominant // Bahamut, Warden of Light",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/dion_bahamut_s_dominant_bahamut_warden_of_light.rs",
       "set": "fin"
     },
@@ -31078,8 +31077,8 @@
     {
       "name": "Sidequest: Catch a Fish // Cooking Campsite",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/sidequest_catch_a_fish_cooking_campsite.rs",
       "set": "fin"
     },
@@ -39078,8 +39077,8 @@
     {
       "name": "Venat, Heart of Hydaelyn // Hydaelyn, the Mothercrystal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/venat_heart_of_hydaelyn_hydaelyn_the_mothercrystal.rs",
       "set": "fin"
     },
@@ -39366,8 +39365,8 @@
     {
       "name": "Vincent Valentine // Galian Beast",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/vincent_valentine_galian_beast.rs",
       "set": "fin"
     },
@@ -41526,8 +41525,8 @@
     {
       "name": "Zodiark, Umbral God",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/zodiark_umbral_god.rs",
       "set": "fin"
     },
