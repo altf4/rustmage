@@ -91,6 +91,7 @@ impl Game {
                         matches!(
                             ability.condition.event(),
                             TriggerCondition::PermanentLeaves(_)
+                                | TriggerCondition::SelfOrControlledPermanentDies(_)
                         )
                     }))
                 .then(|| DepartureObserver {
@@ -127,6 +128,12 @@ impl Game {
                             && (!filter.other || source.reference != before.reference)
                             && (!filter.graveyard_only || event.destination == Zone::Graveyard)
                             && (filter.kinds == 0 || before.kinds & filter.kinds != 0)
+                    }
+                    TriggerCondition::SelfOrControlledPermanentDies(kinds) => {
+                        event.destination == Zone::Graveyard
+                            && (source.reference == before.reference
+                                || (source.controller == before.controller
+                                    && before.kinds & kinds != 0))
                     }
                     TriggerCondition::ChosenCreatureLeaves => {
                         observer.chosen_creature == Some(before.reference)

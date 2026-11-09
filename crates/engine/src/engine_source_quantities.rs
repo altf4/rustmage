@@ -113,6 +113,7 @@ fn selected(program: &[Instruction]) -> SelectedQuantities {
             | Instruction::CastHandFreeUpTo(value)
             | Instruction::PutCountersScaled { amount: value, .. }
             | Instruction::PutPermanentCountersScaled { amount: value, .. }
+            | Instruction::PutLegendaryPermanentCountersScaled { amount: value, .. }
             | Instruction::GrowScaled { amount: value, .. }
             | Instruction::GrowFilteredScaled { amount: value, .. }
             | Instruction::GrowCreaturesScaled { amount: value, .. }

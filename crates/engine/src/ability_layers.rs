@@ -424,6 +424,12 @@ pub enum StaticAbilityFragment {
         filters: &'static [CreatureFilter],
         stats: Stats,
     },
+    /// Scale one live layer-7c effect across the union of its creature groups.
+    CreatureGroupScaling {
+        filters: &'static [CreatureFilter],
+        value: StatValue,
+        stats: Stats,
+    },
     /// A layer-7c bonus to the source controller's current legendary creatures.
     ControlledLegendaryCreatureBonus(Stats),
     /// Live earlier-layer predicate gates an ordinary creature-group bonus.

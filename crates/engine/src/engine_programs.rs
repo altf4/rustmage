@@ -1032,6 +1032,7 @@ impl Game {
                     | TriggerCondition::SelfCreatureDies
                     | TriggerCondition::SelfLeaves
                     | TriggerCondition::PermanentLeaves(_)
+                    | TriggerCondition::SelfOrControlledPermanentDies(_)
                     | TriggerCondition::ChosenCreatureLeaves
                     | TriggerCondition::ChosenPlayerLosesGame
                     | TriggerCondition::ReturnDeath(_)
@@ -6540,8 +6541,17 @@ impl Game {
                     filters,
                     kind,
                     amount,
+                }
+                | Instruction::PutLegendaryPermanentCountersScaled {
+                    filters,
+                    kind,
+                    amount,
                 } => {
-                    self.put_permanent_counters_scaled(&item, filters, kind, amount);
+                    let legendary_only = matches!(
+                        instruction,
+                        Instruction::PutLegendaryPermanentCountersScaled { .. }
+                    );
+                    self.put_permanent_counters_scaled(&item, filters, kind, amount, legendary_only);
                 }
                 Instruction::CreateCopyToken { subject, amount }
                 | Instruction::CreateCopyTokenWithExceptions {

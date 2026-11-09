@@ -93,6 +93,7 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::CounterUnlessPayScaled { amount: value, .. }
             | Instruction::PutCountersScaled { amount: value, .. }
             | Instruction::PutPermanentCountersScaled { amount: value, .. }
+            | Instruction::PutLegendaryPermanentCountersScaled { amount: value, .. }
             | Instruction::GrowScaled { amount: value, .. }
             | Instruction::GrowFilteredScaled { amount: value, .. }
             | Instruction::GrowCreaturesScaled { amount: value, .. }

@@ -1855,6 +1855,12 @@ pub enum Instruction {
         kind: CounterKind,
         amount: AmountValue,
     },
+    /// Restrict a simultaneous scaled counter placement to current legendary recipients.
+    PutLegendaryPermanentCountersScaled {
+        filters: &'static [BattlefieldFilter],
+        kind: CounterKind,
+        amount: AmountValue,
+    },
     Paradigm {
         ability: u16,
     },
@@ -5687,6 +5693,8 @@ pub enum TriggerCondition {
     SelfNontokenEnters,
     SelfLeaves,
     PermanentLeaves(DepartureFilter),
+    /// The source dies, or another controlled permanent of any specified kind dies.
+    SelfOrControlledPermanentDies(u16),
     /// The linked battlefield incarnation leaves, regardless of its current types.
     ChosenCreatureLeaves,
     /// The opponent selected by this face's as-transform ability loses the game.

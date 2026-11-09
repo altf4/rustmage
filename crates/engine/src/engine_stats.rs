@@ -217,6 +217,7 @@ impl Game {
                     | TriggerCondition::SelfCreatureDies
                     | TriggerCondition::SelfLeaves
                     | TriggerCondition::PermanentLeaves(_)
+                    | TriggerCondition::SelfOrControlledPermanentDies(_)
                     | TriggerCondition::ChosenCreatureLeaves
                     | TriggerCondition::ReturnDeath(_)
                     | TriggerCondition::SelfEntersOrDies
@@ -351,6 +352,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ConditionalCreatureModifier { .. }
                             | crate::cards::StaticAbilityFragment::ControlledCreatureCounterRule { .. }
                             | crate::cards::StaticAbilityFragment::CreatureGroupBonus { .. }
+                            | crate::cards::StaticAbilityFragment::CreatureGroupScaling { .. }
                             | crate::cards::StaticAbilityFragment::ControlledLegendaryCreatureBonus(_)
                             | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. }
                             | crate::cards::StaticAbilityFragment::SourceOffTurnCreature

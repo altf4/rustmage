@@ -316,10 +316,18 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                                 .capacity("scaled group toughness exhausted"),
                         };
                     }
-                    if let StaticAbilityFragment::CreatureGroupBonus {
-                        filters,
-                        stats: bonus,
-                    } = *fragment
+                    let group_bonus = match *fragment {
+                        StaticAbilityFragment::CreatureGroupBonus { filters, stats } => {
+                            Some((filters, stats, None))
+                        }
+                        StaticAbilityFragment::CreatureGroupScaling {
+                            filters,
+                            value,
+                            stats,
+                        } => Some((filters, stats, Some(value))),
+                        _ => None,
+                    };
+                    if let Some((filters, bonus, value)) = group_bonus
                         && self.continuous_fragment_available(source, |candidate| {
                             std::ptr::eq(candidate, fragment)
                         })
@@ -332,7 +340,19 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                             )
                         })
                     {
-                        stats += bonus;
+                        let value = value.map_or(1, |value| {
+                            self.stat_value(value, self.object_ref(source), object.controller)
+                        });
+                        stats += Stats {
+                            power: bonus
+                                .power
+                                .checked_mul(value)
+                                .capacity("scaled group power exhausted"),
+                            toughness: bonus
+                                .toughness
+                                .checked_mul(value)
+                                .capacity("scaled group toughness exhausted"),
+                        };
                     }
                     if let StaticAbilityFragment::ControlledLegendaryCreatureBonus(bonus) =
                         *fragment
