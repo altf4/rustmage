@@ -616,12 +616,13 @@ fn rufus_checks_the_exact_controlled_darkstar_name_twice() {
     let mut gained = game.clone();
     gained.record_control(game.object_ref(opposing), player, None);
     settle(&mut gained);
-    assert!(battlefield_tokens(&gained, darkstar).is_empty());
+    assert_eq!(battlefield_tokens(&gained, darkstar), [opposing]);
     settle(&mut game);
     let dogs = battlefield_tokens(&game, darkstar);
-    assert_eq!(dogs.len(), 1);
-    assert_eq!(stats(&game, dogs[0]), (2, 2));
-    assert_eq!(game.object_view(dogs[0]).controller, player);
+    assert_eq!(dogs.len(), 2);
+    let created = dogs.into_iter().find(|&dog| dog != opposing).unwrap();
+    assert_eq!(stats(&game, created), (2, 2));
+    assert_eq!(game.object_view(created).controller, player);
 }
 
 #[test]
