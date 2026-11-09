@@ -377,7 +377,7 @@ fn syncopate_taxes_the_spell_controller_and_exiles_only_an_actual_counter() {
     passes(&mut game);
     assert_eq!(game.actor(), Some(opponent));
     let request = game.observe(opponent).resolution_payment.unwrap();
-    assert_eq!(request.generic, 3);
+    assert_eq!(request.cost.generic, 3);
     let mut decline = game.clone();
     act(&mut decline, Action::DeclineResolutionMana);
     assert_eq!(decline.object_view(spell).zone, Zone::Exile);
