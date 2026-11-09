@@ -136,21 +136,23 @@ pub(super) trait CharacteristicWorld {
     }
     fn activation_generic_discount(&self, source: CardId, definition: Card, ability: u16) -> u32 {
         let controller = self.object(source).controller;
-        let subtype = definition
-            .activation_subtype_discount(ability)
-            .map_or(0, |subtype| {
-                (0..self.game().state.objects.len())
-                    .filter(|&id| {
-                        let id = id as CardId;
-                        let object = self.object(id);
-                        object.zone == Zone::Battlefield
-                            && object.controller == controller
-                            && self.subtypes(id).has(object.card, subtype)
-                    })
-                    .count()
-                    .try_into()
-                    .unwrap_or(u32::MAX)
-            });
+        let subtype =
+            definition
+                .activation_subtype_discount(ability)
+                .map_or(0, |(subtype, other)| {
+                    (0..self.game().state.objects.len())
+                        .filter(|&id| {
+                            let id = id as CardId;
+                            let object = self.object(id);
+                            object.zone == Zone::Battlefield
+                                && (!other || id != source)
+                                && object.controller == controller
+                                && self.subtypes(id).has(object.card, subtype)
+                        })
+                        .count()
+                        .try_into()
+                        .unwrap_or(u32::MAX)
+                });
         let power_up =
             if definition.power_up_abilities().contains(&ability) && self.kinds(source) & 1 != 0 {
                 (0..self.game().state.objects.len())
@@ -1148,26 +1150,42 @@ pub(super) trait CharacteristicWorld {
                 &|id, _| self.kinds(id),
             )
     }
-    fn land_mana_applies(
+    fn static_tap_mana(
         &self,
         source: ObjectRef,
         id: CardId,
-        recipients: crate::cards::LandManaRecipients,
-    ) -> bool {
+        fragment: crate::cards::StaticAbilityFragment,
+    ) -> Option<ManaProduction> {
+        use crate::cards::{LandManaRecipients, StaticAbilityFragment};
+        let (production, lands) = match fragment {
+            StaticAbilityFragment::LandMana {
+                recipients,
+                production,
+            } => (production, Some(recipients)),
+            StaticAbilityFragment::OtherControlledPermanentTapMana(production) => {
+                (production, None)
+            }
+            _ => return None,
+        };
         let provider = self.object(source.card);
         let target = self.object(id);
-        provider.zone == Zone::Battlefield
-            && self.reference(source.card) == source
-            && target.zone == Zone::Battlefield
-            && self.kinds(id) & 2 != 0
-            && match recipients {
-                crate::cards::LandManaRecipients::YouControl => {
-                    provider.controller == target.controller
-                }
-                crate::cards::LandManaRecipients::SourceChosenName => {
-                    matches!(self.entry_value(source), Some(EntryChoiceValue::CardName(name)) if name.matches(self.name(id)))
-                }
+        if provider.zone != Zone::Battlefield
+            || self.reference(source.card) != source
+            || target.zone != Zone::Battlefield
+        {
+            return None;
+        }
+        let qualifies = match lands {
+            None => id != source.card && provider.controller == target.controller,
+            Some(LandManaRecipients::YouControl) => {
+                self.kinds(id) & 2 != 0 && provider.controller == target.controller
             }
+            Some(LandManaRecipients::SourceChosenName) => {
+                self.kinds(id) & 2 != 0
+                    && matches!(self.entry_value(source), Some(EntryChoiceValue::CardName(name)) if name.matches(self.name(id)))
+            }
+        };
+        qualifies.then_some(production)
     }
     /// Availability of an exact immutable activation template granted to its
     /// own source. This is not a printed-ability permission or a flattened tap
@@ -1297,11 +1315,8 @@ pub(super) trait CharacteristicWorld {
         for &source in self.static_sources() {
             for group in self.object(source).card.static_ability_groups() {
                 for fragment in group.fragments {
-                    if let crate::cards::StaticAbilityFragment::LandMana {
-                        recipients,
-                        production,
-                    } = *fragment
-                        && self.land_mana_applies(self.reference(source), id, recipients)
+                    if let Some(production) =
+                        self.static_tap_mana(self.reference(source), id, *fragment)
                     {
                         result.push(ability_order::GrantedManaAbility {
                             source: self.reference(source),

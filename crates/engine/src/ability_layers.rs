@@ -390,6 +390,8 @@ pub enum StaticAbilityFragment {
         recipients: LandManaRecipients,
         production: ManaProduction,
     },
+    /// Grant a tap mana ability to each other permanent its controller controls.
+    OtherControlledPermanentTapMana(ManaProduction),
     KeywordGrant(u16, KeywordGrant),
     StaticRuleGrant(u16, KeywordGrant),
     ControlledCreatureCounterRule {

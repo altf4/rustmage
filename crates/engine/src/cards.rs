@@ -674,6 +674,8 @@ pub enum ManaRestriction {
     ArtifactSpell,
     /// Only artifact spell casts or activated-ability costs; never unrelated payments.
     ArtifactSpellOrActivation,
+    /// Cast an artifact spell or activate an ability whose source is an artifact.
+    ArtifactSpellOrArtifactActivation,
     /// Any cost except casting a spell without the artifact card type.
     ExceptNonArtifactSpells,
     /// Spells or activated abilities of any source with this subtype.
@@ -6910,14 +6912,19 @@ impl Card {
             .find(|(slot, _)| *slot == ability)
             .map_or(0, |(_, amount)| *amount)
     }
-    pub(crate) fn activation_subtype_discount(self, ability: u16) -> Option<&'static str> {
-        authored::rules(self)
-            .unwrap()
-            .extras
+    pub(crate) fn activation_subtype_discount(self, ability: u16) -> Option<(&'static str, bool)> {
+        let extras = authored::rules(self).unwrap().extras;
+        extras
             .activation_subtype_discounts
             .iter()
-            .find(|(index, _)| *index == ability)
-            .map(|(_, subtype)| *subtype)
+            .map(|&(slot, subtype)| (slot, subtype, false))
+            .chain(
+                extras
+                    .activation_other_subtype_discounts
+                    .iter()
+                    .map(|&(slot, subtype)| (slot, subtype, true)),
+            )
+            .find_map(|(slot, subtype, other)| (slot == ability).then_some((subtype, other)))
     }
     pub(crate) fn activation_counter_discount(self, ability: u16) -> Option<CounterKind> {
         authored::rules(self)

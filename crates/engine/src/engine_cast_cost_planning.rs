@@ -417,7 +417,10 @@ impl FundingState<'_> {
                                 ) => false,
                                 AttachmentMana(production)
                                 | AttachmentManaBonus(production)
-                                | LandMana { production, .. } => !read_only_output(production),
+                                | LandMana { production, .. }
+                                | OtherControlledPermanentTapMana(production) => {
+                                    !read_only_output(production)
+                                }
                                 _ => true,
                             }
                         }))
@@ -1340,6 +1343,7 @@ impl FundingState<'_> {
                                 | crate::cards::StaticAbilityFragment::AttachmentTrigger(_)
                                 | crate::cards::StaticAbilityFragment::SpellImprovise(_)
                                 | crate::cards::StaticAbilityFragment::LandMana { .. }
+                        | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                                 | crate::cards::StaticAbilityFragment::NoMaximumHandSize
                                 | crate::cards::StaticAbilityFragment::MaximumHandSize(_)
                                 | crate::cards::StaticAbilityFragment::SpendAnyManaForCreatures

@@ -296,6 +296,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ActivatedPermanentKindsProhibited(_)
                             | crate::cards::StaticAbilityFragment::PlotCostReduction(_)
                             | crate::cards::StaticAbilityFragment::LandMana { .. }
+                        | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                             | crate::cards::StaticAbilityFragment::ChosenBasicLandType
                             | crate::cards::StaticAbilityFragment::SpellImprovise(_)
                             | crate::cards::StaticAbilityFragment::EntryMode(_)

@@ -107,13 +107,9 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 }],
             });
         }
-        StaticAbilityFragment::LandMana {
-            recipients,
-            production,
-        } => {
-            if !world.land_mana_applies(source, id, recipients) {
-                return None;
-            }
+        StaticAbilityFragment::LandMana { .. }
+        | StaticAbilityFragment::OtherControlledPermanentTapMana(_) => {
+            let production = world.static_tap_mana(source, id, fragment)?;
             return Some(LayerSixGrant {
                 recipient: id,
                 keywords: Keywords::NONE,
@@ -627,6 +623,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::AttachmentMana(..)
                         | StaticAbilityFragment::AttachmentSacrificeMana(..)
                         | StaticAbilityFragment::LandMana { .. }
+                        | StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                         | StaticAbilityFragment::CounterKeyword(..)
                         | StaticAbilityFragment::CounterKeywordOther(..)
                         | StaticAbilityFragment::CounterKeywordOwnTurn(..)

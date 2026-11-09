@@ -1003,7 +1003,7 @@ define_actions! {
     TapMana {
         card: CardId,
     },
-    // Mana ability granted to this permanent by an exact attached source.
+    // Mana ability granted to this permanent by an exact source.
     TapGrantedMana { card: CardId, grantor: ObjectRef, production: Mana },
     AnnounceGrantedMana { card: CardId, grantor: ObjectRef, production: Mana },
     AnnounceCast {

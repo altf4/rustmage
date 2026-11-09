@@ -111,6 +111,7 @@ impl Card {
                             | StaticAbilityFragment::AttachmentMana(..)
                             | StaticAbilityFragment::AttachmentSacrificeMana(..)
                             | StaticAbilityFragment::LandMana { .. }
+                            | StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                             | StaticAbilityFragment::CounterKeyword(..)
                             | StaticAbilityFragment::CounterKeywordOther(..)
                             | StaticAbilityFragment::CounterKeywordOwnTurn(..)

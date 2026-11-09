@@ -329,6 +329,7 @@ pub struct CardExtras {
     pub activation_counter_discounts: &'static [(u16, CounterKind)],
     /// Reduce generic activation cost once per controlled permanent of this subtype.
     pub activation_subtype_discounts: &'static [(u16, &'static str)],
+    pub activation_other_subtype_discounts: &'static [(u16, &'static str)],
     pub activation_put_counters: &'static [(u16, CounterKind, u64)],
     pub fixed_entry_counters: &'static [(CounterKind, u64)],
     pub battle_defense: u64,
@@ -457,6 +458,7 @@ impl CardExtras {
         activation_target_color_discounts: &[],
         activation_counter_discounts: &[],
         activation_subtype_discounts: &[],
+        activation_other_subtype_discounts: &[],
         activation_put_counters: &[],
         fixed_entry_counters: &[],
         battle_defense: 0,
