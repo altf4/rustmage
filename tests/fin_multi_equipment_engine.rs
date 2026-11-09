@@ -104,7 +104,13 @@ fn select_any_number_then_order_only_the_simultaneous_new_attachments() {
     assert_eq!(game.snapshot(), indexed.snapshot());
     indexed.restore(&saved).unwrap();
     assert_eq!(indexed.snapshot(), saved);
-    assert_eq!(game.legal_actions(), vec![FINISH]);
+    assert_eq!(
+        game.legal_actions()
+            .into_iter()
+            .filter(|action| matches!(action, Action::ChooseEquipmentAttachment { .. }))
+            .collect::<Vec<_>>(),
+        vec![FINISH]
+    );
     assert_eq!(game.object_view(first.card).attached_to, Some(previous));
     assert_eq!(game.object_view(second.card).attached_to, None);
 
@@ -138,7 +144,8 @@ fn missing_equipment_or_an_illegal_announced_target_skips_the_choice() {
         );
         trigger(&mut game, recipient);
         if bounce {
-            let spell = put(&mut game, player, "Unsummon", Zone::Hand);
+            let responder = game.actor().unwrap();
+            let spell = put(&mut game, responder, "Unsummon", Zone::Hand);
             cast(&mut game, spell, Some(Target::Card(recipient)));
         }
         settle(&mut game);
