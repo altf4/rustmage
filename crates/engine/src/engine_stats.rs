@@ -18,6 +18,15 @@ impl Game {
     pub(super) fn register_graveyard_sources(&mut self, id: CardId) {
         self.register_activation_observer(id);
         let triggers = self.state.objects[id as usize].card.triggers();
+        if triggers.iter().any(|ability| {
+            ability.condition.origin() == Some(TargetZone::Graveyard)
+                && matches!(
+                    ability.condition.event(),
+                    TriggerCondition::SpellCast { .. }
+                )
+        }) {
+            self.state.cast_sources.push(id);
+        }
         if triggers.iter().any(|a| {
             a.condition.origin() == Some(TargetZone::Graveyard)
                 && matches!(a.condition.event(), TriggerCondition::AtStep { .. })
@@ -43,6 +52,9 @@ impl Game {
     /// Ceasing a token/card copy is not a zone change, but must release its
     /// graveyard observer indexes before the reusable object slot is occupied.
     pub(super) fn unregister_graveyard_sources(&mut self, id: CardId) {
+        if self.state.cast_sources.contains(&id) {
+            self.state.cast_sources.retain(|&source| source != id);
+        }
         if self.state.death_sources.contains(&id) {
             self.state.death_sources.retain(|&source| source != id);
         }
@@ -246,10 +258,11 @@ impl Game {
             .triggers()
             .iter()
             .any(|ability| {
-                matches!(
-                    ability.condition.event(),
-                    TriggerCondition::SpellCast { .. }
-                )
+                ability.condition.origin() != Some(TargetZone::Graveyard)
+                    && matches!(
+                        ability.condition.event(),
+                        TriggerCondition::SpellCast { .. }
+                    )
             })
         {
             self.state.cast_sources.push(id);

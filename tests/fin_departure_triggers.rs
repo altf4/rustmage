@@ -262,3 +262,137 @@ fn own_turn_mutant_deaths_use_each_pre_event_power_including_the_observer() {
         assert_eq!(g.hand_count(p), 7);
     }
 }
+
+#[test]
+fn graveyard_cast_observers_pay_for_each_exact_incarnation() {
+    use rustmage_core::cards::authored::CardExtras;
+
+    const OBSERVER: CardRules = CardRules {
+        effect: Effect::Creature(3, 3),
+        entry: EntryTapped::Always,
+        triggers: &[TriggeredAbility {
+            condition: TriggerCondition::InZone {
+                zone: TargetZone::Graveyard,
+                event: &TriggerCondition::SpellCast {
+                    relation: CastRelation::You,
+                    filter: CastFilter::Noncreature,
+                    ordinal: None,
+                },
+            },
+            targets: TargetPlan::NONE,
+            program: &[
+                Instruction::MayPayMana {
+                    cost: ManaCost {
+                        colored: [0, 0, 1, 0, 0, 0],
+                        generic: 0,
+                    },
+                    skip: 1,
+                },
+                Instruction::ReturnSourceToHand(TargetZone::Graveyard),
+            ],
+        }],
+        ..CardRules::EMPTY
+    };
+    const EXILE_AS_COST: CardRules = CardRules {
+        effect: Effect::Spell(TargetPlan::NONE, &[]),
+        extras: &CardExtras {
+            additional_cost: Some(AdditionalCost {
+                kind: EffectChoiceKind::ExileGraveyard,
+                filter: SacrificeFilter {
+                    keywords: Keywords::NONE,
+                    source_only: false,
+                    kinds: 1,
+                    nonland: false,
+                    other: false,
+                    tokens: None,
+                    artifact_enchantment_or_token: false,
+                    subtype: None,
+                },
+            }),
+            ..CardExtras::EMPTY
+        },
+        ..CardRules::EMPTY
+    };
+    let _rules = fixture_rules::activate(&[
+        (Card::GrizzlyBears, &OBSERVER),
+        (Card::from_name("Opt").unwrap(), &EXILE_AS_COST),
+    ]);
+    let p = Player::P1;
+    let mut g = scenario(p);
+    let first = put(&mut g, p, "Grizzly Bears", Zone::Graveyard);
+    let second = put(&mut g, p, "Grizzly Bears", Zone::Graveyard);
+    let battlefield = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+    let enemy = put(&mut g, p.other(), "Grizzly Bears", Zone::Graveyard);
+
+    let mut opposing_cast = g.clone();
+    opposing_cast.state.priority = p.other();
+    let spell = put(&mut opposing_cast, p.other(), "Think Twice", Zone::Hand);
+    cast(&mut opposing_cast, spell, None);
+    assert!(packets(&opposing_cast, first).is_empty());
+    assert!(packets(&opposing_cast, second).is_empty());
+    assert_eq!(packets(&opposing_cast, enemy).len(), 1);
+
+    let mut creature_cast = g.clone();
+    let spell = put(&mut creature_cast, p, "Hill Giant", Zone::Hand);
+    cast(&mut creature_cast, spell, None);
+    assert!(packets(&creature_cast, first).is_empty());
+    assert!(packets(&creature_cast, second).is_empty());
+
+    let mut paid_away = g.clone();
+    let spell = put(&mut paid_away, p, "Opt", Zone::Hand);
+    act(&mut paid_away, Action::AnnounceCast { card: spell });
+    let object = paid_away.object_ref(first);
+    act(&mut paid_away, Action::ChooseAdditionalCost { object });
+    pay(&mut paid_away);
+    assert_eq!(paid_away.object_view(first).zone, Zone::Exile);
+    assert!(packets(&paid_away, first).is_empty());
+    assert_eq!(packets(&paid_away, second).len(), 1);
+
+    let spell = put(&mut g, p, "Think Twice", Zone::Hand);
+    cast(&mut g, spell, None);
+    assert!(packets(&g, battlefield).is_empty());
+    assert!(packets(&g, enemy).is_empty());
+    assert_eq!(packets(&g, first).len(), 1);
+    let second_packet = packets(&g, second)[0].id;
+    act(&mut g, Action::PutTrigger { id: second_packet });
+    act(&mut g, Action::Pass);
+    act(&mut g, Action::Pass);
+    assert_eq!(g.state.pending, Pending::ResolutionMana { player: p });
+
+    let payment = Action::PayResolutionMana {
+        payment: [0, 0, 1, 0, 0, 0],
+    };
+    let checkpoint = g.snapshot();
+    let revision = g.revision();
+    let index = g
+        .legal_actions()
+        .iter()
+        .position(|action| action == &payment)
+        .unwrap();
+    let mut raw = g.clone();
+    let mut indexed = g.clone();
+    act(&mut raw, payment.clone());
+    indexed.apply_index(p, revision, index).unwrap();
+    assert_eq!(raw.snapshot(), indexed.snapshot());
+    assert_eq!(raw.object_view(first).zone, Zone::Hand);
+    assert_eq!(raw.object_view(second).zone, Zone::Graveyard);
+    indexed.restore(&checkpoint).unwrap();
+    assert_eq!(
+        indexed.apply_index(p, revision, index),
+        Err(Error::StaleRevision)
+    );
+
+    g.move_object(first, Zone::Exile);
+    g.move_object(first, Zone::Graveyard);
+    act(&mut g, payment);
+    assert_eq!(g.object_view(first).zone, Zone::Graveyard);
+    act(&mut g, Action::Pass);
+    act(&mut g, Action::Pass);
+    act(&mut g, Action::DeclineResolutionMana);
+    settle(&mut g);
+    assert_eq!(g.object_view(second).zone, Zone::Graveyard);
+    let later = put(&mut g, p, "Think Twice", Zone::Hand);
+    cast(&mut g, later, None);
+    assert_eq!(packets(&g, first).len(), 1);
+    assert_eq!(packets(&g, second).len(), 1);
+}
