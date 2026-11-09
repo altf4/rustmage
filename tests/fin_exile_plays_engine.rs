@@ -172,11 +172,11 @@ fn optional_sacrifice_grants_only_the_actual_damaged_players_top_card() {
     act(&mut declined, Action::DeclineEffectPayment);
     assert_eq!(declined.object_view(payment).zone, Zone::Battlefield);
     assert!(declined.observe(player).exile_permissions.is_empty());
-    let source_payment = Action::ChooseEffectObject {
+    let source_payment = Action::Sacrifice {
         object: game.object_ref(source),
     };
     reject(&mut game, source_payment);
-    let accepted = Action::ChooseEffectObject {
+    let accepted = Action::Sacrifice {
         object: game.object_ref(payment),
     };
     act(&mut game, accepted);
