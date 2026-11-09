@@ -396,3 +396,44 @@ fn graveyard_cast_observers_pay_for_each_exact_incarnation() {
     assert_eq!(packets(&g, first).len(), 1);
     assert_eq!(packets(&g, second).len(), 1);
 }
+
+#[test]
+fn scaled_death_counters_read_each_opposing_creatures_actual_pre_departure_power() {
+    const OBSERVER: CardRules = CardRules {
+        effect: Effect::Creature(2, 2),
+        triggers: &[TriggeredAbility {
+            condition: TriggerCondition::CreatureDies {
+                relation: CastRelation::Opponent,
+                other: false,
+                nontoken: false,
+                subtype: None,
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::PutCountersScaled {
+                subject: Subject::Source,
+                kind: CounterKind::PlusOne,
+                amount: AmountValue::DeathEventPower,
+            }],
+        }],
+        ..CardRules::EMPTY
+    };
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &OBSERVER)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let source = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let positive = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
+    let negative = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+    let friendly = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
+    game.add_counter(positive, CounterKind::PlusOne, 2);
+    game.state.objects[negative as usize].growth.power = -4;
+    game.record_control(game.object_ref(friendly), player, None);
+    game.sacrifice_batch(&[
+        (player.other(), positive),
+        (player.other(), negative),
+        (player, friendly),
+    ]);
+    game.prepare_triggers();
+    assert_eq!(packets(&game, source).len(), 2);
+    drain(&mut game);
+    assert_eq!(game.counter_count(source, CounterKind::PlusOne), 5);
+}

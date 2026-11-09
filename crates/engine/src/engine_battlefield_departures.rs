@@ -171,6 +171,10 @@ impl Game {
                     _,
                     AmountValue::DeathEventToughness | AmountValue::DeathEventPower
                 ) | Instruction::DrawScaled(_, AmountValue::DeathEventPower)
+                    | Instruction::PutCountersScaled {
+                        amount: AmountValue::DeathEventPower,
+                        ..
+                    }
                     | Instruction::ExileTopChoosePlayScaled {
                         amount: AmountValue::DeathEventPower,
                         ..
