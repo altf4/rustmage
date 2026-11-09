@@ -45,10 +45,32 @@ const TEMPORARY_ATTACHMENT: CardRules = CardRules {
     }],
     ..CardRules::EMPTY
 };
+const ENTRY_ATTACHMENT: CardRules = CardRules {
+    effect: Effect::Permanent,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfEnters,
+        targets: TargetPlan::Single(TargetSpec::one(TargetRule::creature_you_control())),
+        program: &[
+            Instruction::MayAttachSource {
+                recipient: 0,
+                skip: 2,
+            },
+            Instruction::GrantKeywords {
+                subject: Subject::Targets,
+                keywords: Keywords::FIRST_STRIKE,
+            },
+            Instruction::RequireTargetsBlocked { group: 0 },
+        ],
+    }],
+    ..CardRules::EMPTY
+};
 
 fn trigger(game: &mut Game, recipient: CardId) {
     game.begin_step(Step::BeginCombat);
     game.give_priority();
+    choose_trigger_target(game, recipient);
+}
+fn choose_trigger_target(game: &mut Game, recipient: CardId) {
     let target = Target::Card(recipient);
     for _ in 0..8 {
         if game.state.stack.last().is_some_and(|item| {
@@ -62,7 +84,7 @@ fn trigger(game: &mut Game, recipient: CardId) {
                 || *action == Action::ChooseTarget { target }
         });
     }
-    panic!("targeted combat trigger did not reach the stack");
+    panic!("targeted trigger did not reach the stack");
 }
 
 fn pick(equipment: ObjectRef) -> Action {
@@ -305,4 +327,117 @@ fn the_same_callback_uses_the_opponents_next_end_step_if_cast_with_flash() {
     assert_eq!(indexed.snapshot(), saved);
     act(&mut game, Action::Pass);
     assert_eq!(game.object_view(selected).attached_to, None);
+}
+
+fn enter_with_attachment_trigger(game: &mut Game, recipient: CardId) -> CardId {
+    let equipment = put(game, Player::P0, "Short Bow", Zone::Hand);
+    cast(game, equipment, None);
+    choose_trigger_target(game, recipient);
+    equipment
+}
+
+fn begin_blocks(game: &mut Game, attacker: CardId) {
+    for _ in 0..8 {
+        if game.state.pending == Pending::Attackers {
+            break;
+        }
+        act(game, Action::Pass);
+    }
+    act(game, Action::Attack { card: attacker });
+    act(game, Action::FinishAttackers);
+    act(game, Action::Pass);
+    act(game, Action::Pass);
+    assert_eq!(game.state.pending, Pending::Blockers);
+}
+
+#[test]
+fn the_successful_optional_attachment_grants_exact_first_strike_and_requires_a_legal_block() {
+    let _rules =
+        fixture_rules::activate(&[(Card::from_name("Short Bow").unwrap(), &ENTRY_ATTACHMENT)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let attacker = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let bystander = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    let blocker = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+    let equipment = enter_with_attachment_trigger(&mut game, attacker);
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    assert!(matches!(game.state.pending, Pending::EffectOptional { .. }));
+    assert!(game.state.stack.is_empty());
+    let mut declined = game.clone();
+    act(&mut declined, Action::ChooseOptional { accept: false });
+    assert_eq!(declined.object_view(equipment).attached_to, None);
+    assert_eq!(declined.block_requirement_weight(attacker), 0);
+    assert!(!declined.keywords(attacker).contains(Keywords::FIRST_STRIKE));
+
+    let accept = Action::ChooseOptional { accept: true };
+    let mut indexed = game.clone();
+    let index = game
+        .legal_actions()
+        .iter()
+        .position(|action| *action == accept)
+        .unwrap();
+    let saved = game.snapshot();
+    indexed.apply_index(player, game.revision(), index).unwrap();
+    act(&mut game, accept);
+    assert_eq!(game.snapshot(), indexed.snapshot());
+    indexed.restore(&saved).unwrap();
+    assert_eq!(indexed.snapshot(), saved);
+    let original = game.object_ref(attacker);
+    assert_eq!(game.object_view(equipment).attached_to, Some(original));
+    assert!(game.state.stack.is_empty());
+    assert!(game.keywords(attacker).contains(Keywords::FIRST_STRIKE));
+    assert_eq!(game.block_requirement_weight(attacker), 1);
+    assert!(!game.keywords(bystander).contains(Keywords::FIRST_STRIKE));
+    assert_eq!(game.block_requirement_weight(bystander), 0);
+
+    game.move_object(equipment, Zone::Graveyard);
+    let mut expired = game.clone();
+    expired.begin_step(Step::End);
+    expired.give_priority();
+    act(&mut expired, Action::Pass);
+    act(&mut expired, Action::Pass);
+    assert!(!expired.keywords(attacker).contains(Keywords::FIRST_STRIKE));
+    assert_eq!(expired.block_requirement_weight(attacker), 0);
+    let mut blinked = game.clone();
+    blinked.move_object(attacker, Zone::Exile);
+    blinked.move_object(attacker, Zone::Battlefield);
+    assert_ne!(blinked.object_ref(attacker), original);
+    assert!(!blinked.keywords(attacker).contains(Keywords::FIRST_STRIKE));
+    assert_eq!(blinked.block_requirement_weight(attacker), 0);
+
+    let mut unavailable = game.clone();
+    unavailable.tap_objects(&[blocker]);
+    begin_blocks(&mut unavailable, attacker);
+    act(&mut unavailable, Action::FinishBlockers);
+
+    begin_blocks(&mut game, attacker);
+    reject(&mut game, Action::FinishBlockers);
+    act(&mut game, Action::Block { blocker, attacker });
+    act(&mut game, Action::FinishBlockers);
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    assert_eq!(game.state.step, Step::FirstStrikeDamage);
+    assert_eq!(game.object_view(blocker).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(attacker).damage, 0);
+}
+
+#[test]
+fn an_already_attached_or_departed_source_cannot_pay_for_the_follow_up() {
+    let _rules =
+        fixture_rules::activate(&[(Card::from_name("Short Bow").unwrap(), &ENTRY_ATTACHMENT)]);
+    let player = Player::P0;
+    for depart in [false, true] {
+        let mut game = scenario(player);
+        let recipient = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+        let equipment = enter_with_attachment_trigger(&mut game, recipient);
+        if depart {
+            game.move_object(equipment, Zone::Graveyard);
+        } else {
+            assert!(game.attach_equipment(game.object_ref(equipment), game.object_ref(recipient)));
+        }
+        settle(&mut game);
+        assert!(!game.keywords(recipient).contains(Keywords::FIRST_STRIKE));
+        assert_eq!(game.block_requirement_weight(recipient), 0);
+    }
 }

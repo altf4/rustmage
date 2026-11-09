@@ -406,6 +406,19 @@ impl Game {
             })
             .map(|(id, _)| self.object_ref(id as CardId))
             .collect();
+        self.add_block_requirements(recipients);
+    }
+    pub(super) fn require_targets_blocked(&mut self, item: &SpellView, group: u16) {
+        let recipients: Vec<_> = item
+            .targets
+            .iter()
+            .filter(|bound| bound.group == group && self.same_target_object(**bound))
+            .filter_map(|bound| bound.object)
+            .filter(|object| self.on_battlefield(object.card))
+            .collect();
+        self.add_block_requirements(recipients);
+    }
+    fn add_block_requirements(&mut self, recipients: Vec<ObjectRef>) {
         let rules = self.state.combat_rules.get_or_insert_with(Default::default);
         // Repeated spells create independent requirements for the same object.
         rules.must_be_blocked.extend(recipients);

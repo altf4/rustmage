@@ -91,6 +91,33 @@ impl Game {
         self.state.objects[source.card as usize].attached_to = Some(target);
         true
     }
+    pub(super) fn new_source_attachment_pair(
+        &self,
+        item: &SpellView,
+        group: u16,
+    ) -> Option<(ObjectRef, ObjectRef)> {
+        let source = item.source?.object;
+        let recipient = item
+            .targets
+            .iter()
+            .find(|bound| bound.group == group)
+            .and_then(|bound| bound.object)?;
+        (self.equipment_can_attach(source, recipient)
+            && self.state.objects[source.card as usize].attached_to != Some(recipient))
+        .then_some((source, recipient))
+    }
+    pub(super) fn complete_optional_source_attachment(&mut self, skip_to: usize) {
+        let resolution = self.state.resolving.as_ref().unwrap();
+        let Some(Instruction::MayAttachSource { recipient, .. }) =
+            resolution.program.get(resolution.pc.saturating_sub(1))
+        else {
+            return;
+        };
+        let pair = self.new_source_attachment_pair(&resolution.item, *recipient);
+        if !pair.is_some_and(|(source, recipient)| self.attach_equipment(source, recipient)) {
+            self.state.resolving.as_mut().unwrap().pc = skip_to;
+        }
+    }
     pub(super) fn attach_reflexive_subjects(&mut self, item: &SpellView) -> bool {
         let Some(recipient) = item
             .targets

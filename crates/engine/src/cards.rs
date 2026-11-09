@@ -2517,6 +2517,10 @@ pub enum Instruction {
     },
     TransformSource,
     RequireBlocks(CreatureFilter),
+    /// Require each exact creature in the announced target group to be blocked this turn.
+    RequireTargetsBlocked {
+        group: u16,
+    },
     /// Definition header: announce X as a generic activation mana cost.
     ActivationX,
     /// Definition header for a variable activation with a minimum X.
@@ -2935,6 +2939,11 @@ pub enum Instruction {
     SelectMilled(MilledSelectionSpec),
     SelectTargetPlayerMilled(MilledSelectionSpec),
     AttachSource,
+    /// Attach the source to the announced creature, or skip the conditional instructions.
+    MayAttachSource {
+        recipient: u16,
+        skip: usize,
+    },
     /// Attach the exact source Equipment to a creature you control without targeting.
     AttachSourceToControlledCreature,
     AttachSourceReflexive {

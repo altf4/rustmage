@@ -8784,6 +8784,7 @@ impl Game {
                 } else {
                     self.complete_optional_source_reflexive();
                     self.complete_optional_discard_exile_play();
+                    self.complete_optional_source_attachment(skip_to);
                 }
                 self.complete_optional_source_counter_cast(accept);
                 self.run_program();

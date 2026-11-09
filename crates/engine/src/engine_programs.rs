@@ -3610,6 +3610,8 @@ impl Game {
                     | Instruction::MayAttachControlledEquipment { .. }
                     | Instruction::MayAttachAnyControlledEquipment { .. }
                     | Instruction::MayAttachControlledEquipmentUntilNextEndStep { .. }
+                    | Instruction::MayAttachSource { .. }
+                    | Instruction::RequireTargetsBlocked { .. }
                     | Instruction::AttachPriorSourceEquipment { .. }
                     | Instruction::AttachEquipmentByGroups { .. }
                     | Instruction::AttachEquipmentGroupsReflexive { .. }
@@ -6157,6 +6159,18 @@ impl Game {
                         );
                     }
                 }
+                Instruction::MayAttachSource { recipient, skip } => {
+                    let skip_to = resolution.pc.checked_add(skip).expect("program offset");
+                    assert!(skip_to <= resolution.program.len());
+                    if self.new_source_attachment_pair(&item, recipient).is_some() {
+                        self.state.pending = Pending::EffectOptional {
+                            player: item.controller,
+                            skip_to,
+                        };
+                        return;
+                    }
+                    self.state.resolving.as_mut().unwrap().pc = skip_to;
+                }
                 Instruction::AttachSourceToControlledCreature => {
                     if self.start_effect_choice(
                         &item,
@@ -6719,6 +6733,9 @@ impl Game {
                 } => self.add_extra_turn(item.controller, power_up_prohibited),
                 Instruction::TransformSource => self.transform_source(&item),
                 Instruction::RequireBlocks(filter) => self.require_blocks(&item, filter),
+                Instruction::RequireTargetsBlocked { group } => {
+                    self.require_targets_blocked(&item, group);
+                }
                 Instruction::ExileDamagedIfDiesThisTurn
                 | Instruction::ActivationX
                 | Instruction::ActivationXWithMinimum { .. }
