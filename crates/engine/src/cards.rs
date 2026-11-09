@@ -1134,6 +1134,7 @@ pub enum CostMatch {
     Kinds(u16),
     Token,
     Subtype(&'static str),
+    Legendary,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -1410,6 +1411,7 @@ impl EffectChoiceKind {
         kinds: u16,
         subtypes: GrantedSubtypes,
         token: bool,
+        legendary: impl Fn() -> bool,
     ) -> bool {
         match self {
             Self::SacrificeCreaturesExceptSubtype(subtype) => {
@@ -1419,6 +1421,7 @@ impl EffectChoiceKind {
                 CostMatch::Kinds(mask) => kinds & mask != 0,
                 CostMatch::Token => token,
                 CostMatch::Subtype(name) => subtypes.has(card, name),
+                CostMatch::Legendary => legendary(),
             }),
             _ => true,
         }

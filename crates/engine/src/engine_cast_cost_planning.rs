@@ -657,6 +657,7 @@ impl FundingState<'_> {
                 self.keywords_for_cost(r.card),
                 self.subtypes(r.card),
                 self.name(r.card),
+                || self.legendary(r.card),
             )
     }
     fn keywords_for_cost(&self, id: CardId) -> Keywords {

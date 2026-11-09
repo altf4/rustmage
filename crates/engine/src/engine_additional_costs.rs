@@ -247,6 +247,7 @@ impl Game {
             characteristic_query::CharacteristicQuery::in_world(world).keywords(object.card),
             world.subtypes(object.card),
             world.name(object.card),
+            || world.legendary(object.card),
         )
     }
     #[allow(
@@ -262,6 +263,7 @@ impl Game {
         keywords: Keywords,
         subtypes: GrantedSubtypes,
         name: &str,
+        legendary: impl Fn() -> bool,
     ) -> bool {
         let spec = spec.in_zone(o.zone);
         if let EffectChoiceKind::SacrificeManaValue { value } = spec.kind
@@ -271,7 +273,7 @@ impl Game {
         }
         if !spec
             .kind
-            .cost_matches_any(o.card, kinds, subtypes, o.is_token())
+            .cost_matches_any(o.card, kinds, subtypes, o.is_token(), legendary)
         {
             return false;
         }

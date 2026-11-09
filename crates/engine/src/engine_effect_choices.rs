@@ -543,6 +543,7 @@ impl Game {
             self.current_kinds(object.card),
             self.granted_subtypes(object.card),
             o.is_token(),
+            || ability_world::CharacteristicWorld::legendary(self, object.card),
         ) {
             return false;
         }

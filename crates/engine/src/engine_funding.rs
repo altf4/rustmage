@@ -585,14 +585,11 @@ fn concrete_payment(payment: [u64; 6]) -> Mana {
     payment.map(|n| u32::try_from(n).capacity("mana payment exhausted"))
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-fn reserve_obligations(
+fn reserve_obligations<W: CharacteristicWorld + ?Sized>(
+    world: &W,
     goal: &FundingGoal,
     object: Option<&Object>,
-    kinds: u16,
-    mana_value: u64,
-    keywords: Keywords,
-    subtypes: GrantedSubtypes,
-    name: &str,
+    keywords: impl FnOnce(CardId) -> Keywords,
 ) -> bool {
     goal.reserve.is_none_or(|(reference, spec)| {
         object.is_some_and(|o| {
@@ -603,7 +600,15 @@ fn reserve_obligations(
                         .as_ref()
                         .is_some_and(|(source, _, _, _, _)| o.attached_to == Some(*source)))
                 && Game::additional_object_matches(
-                    spec, goal.actor, o, kinds, mana_value, keywords, subtypes, name,
+                    spec,
+                    goal.actor,
+                    o,
+                    world.kinds(reference.card),
+                    world.mana_value(reference.card),
+                    keywords(reference.card),
+                    world.subtypes(reference.card),
+                    world.name(reference.card),
+                    || world.legendary(reference.card),
                 )
         })
     })
@@ -1331,6 +1336,7 @@ impl<'g> FundingState<'g> {
                             }),
                             ability_world::CharacteristicWorld::subtypes(self, r.card),
                             ability_world::CharacteristicWorld::name(self, r.card),
+                            || ability_world::CharacteristicWorld::legendary(self, r.card),
                         )
                 })
             }))
@@ -1380,17 +1386,9 @@ impl<'g> FundingState<'g> {
                     && (spec.kind.payment_kind() != EffectChoiceKind::DiscardMatchingLegendary
                         || additional_costs::legendary_name_match(self, goal.actor, r.card))
             })
-            && reserve_obligations(
-                goal,
-                reserve.map(|r| &r.object),
-                reserve.map_or(0, |r| self.kinds(r)),
-                reserve.map_or(0, |r| {
-                    ability_world::CharacteristicWorld::mana_value(self, r.id)
-                }),
-                reserve.map_or(Keywords::NONE, |r| self.keywords(r)),
-                reserve.map_or(GrantedSubtypes::default(), |r| self.granted_subtypes(r.id)),
-                reserve.map_or("", |r| ability_world::CharacteristicWorld::name(self, r.id)),
-            )
+            && reserve_obligations(self, goal, reserve.map(|r| &r.object), |_| {
+                self.keywords(reserve.expect("reserved resource"))
+            })
             && goal
                 .source
                 .as_ref()
@@ -4736,43 +4734,31 @@ impl Game {
         let reserve = goal
             .reserve
             .and_then(|(r, _)| self.state.objects.get(r.card as usize));
-        if !reserve_obligations(
-            &goal,
-            reserve,
-            reserve.map_or(0, |o| self.object_kinds(goal.reserve.unwrap().0.card, o)),
-            reserve.map_or(0, |_| {
-                ability_world::CharacteristicWorld::mana_value(self, goal.reserve.unwrap().0.card)
-            }),
-            reserve.map_or(Keywords::NONE, |_| {
-                self.keywords(goal.reserve.unwrap().0.card)
-            }),
-            reserve.map_or(GrantedSubtypes::default(), |_| {
-                self.granted_subtypes(goal.reserve.unwrap().0.card)
-            }),
-            reserve.map_or("", |_| self.object_name(goal.reserve.unwrap().0.card)),
-        ) || !source_obligations(
-            &goal,
-            object,
-            goal.source
-                .as_ref()
-                .map_or(CounterAmounts::default(), |(r, _, _, _, _)| {
-                    self.counter_amounts(r.card)
+        if !reserve_obligations(self, &goal, reserve, |card| self.keywords(card))
+            || !source_obligations(
+                &goal,
+                object,
+                goal.source
+                    .as_ref()
+                    .map_or(CounterAmounts::default(), |(r, _, _, _, _)| {
+                        self.counter_amounts(r.card)
+                    }),
+                object.map_or(0, |o| {
+                    self.object_kinds(goal.source.as_ref().unwrap().0.card, o)
                 }),
-            object.map_or(0, |o| {
-                self.object_kinds(goal.source.as_ref().unwrap().0.card, o)
-            }),
-            || {
-                object.map_or(Keywords::NONE, |_| {
-                    ability_world::CharacteristicWorld::activation_keywords(
-                        self,
-                        goal.source.as_ref().unwrap().0.card,
-                    )
-                })
-            },
-            self.state.players[goal.actor.index()].life,
-            self.exhaust_reuse_authorized_for_goal(&goal),
-            self.self_granted_goal(&goal),
-        ) {
+                || {
+                    object.map_or(Keywords::NONE, |_| {
+                        ability_world::CharacteristicWorld::activation_keywords(
+                            self,
+                            goal.source.as_ref().unwrap().0.card,
+                        )
+                    })
+                },
+                self.state.players[goal.actor.index()].life,
+                self.exhaust_reuse_authorized_for_goal(&goal),
+                self.self_granted_goal(&goal),
+            )
+        {
             return false;
         }
         let adjusted = cast_origins::payment_goal(self, &goal, purpose);
