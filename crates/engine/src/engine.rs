@@ -1585,11 +1585,13 @@ fn serialize_tap_mana_bonus<S: serde::Serializer>(
         Some(ManaTapBonus {
             fixed: [0, 0, 0, red, 0, 0],
             amount: 0,
+            colorless: 0,
             land_at_tap: None,
         }) => serializer.serialize_u32(*red),
         Some(ManaTapBonus {
             fixed,
             amount: 0,
+            colorless: 0,
             land_at_tap: None,
         }) => fixed.serialize(serializer),
         Some(bonus) => bonus.serialize(serializer),

@@ -285,6 +285,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::OtherControlledExhaustGenericReduction(_)
                             | crate::cards::StaticAbilityFragment::ArtifactTokenActivationReduction(_)
                             | crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(_)
+                            | crate::cards::StaticAbilityFragment::ControlledLandColorlessTapManaBonus
                             | crate::cards::StaticAbilityFragment::AttachmentManaBonus(_)
                             | crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(_)
                             | crate::cards::StaticAbilityFragment::DoubleDrawExceptFirst

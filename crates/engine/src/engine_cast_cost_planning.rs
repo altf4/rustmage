@@ -410,7 +410,8 @@ impl FundingState<'_> {
                                 | AdditionalTriggers { .. }
                                 | AttachedChosenColor
                                 | BasicLandTapManaBonus(_)
-                                | ControlledLandTapManaBonus(_) => false,
+                                | ControlledLandTapManaBonus(_)
+                                | ControlledLandColorlessTapManaBonus => false,
                                 // This replacement changes only damage amounts;
                                 // pure tap/AddMana payments never deal damage.
                                 Replacement(

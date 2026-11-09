@@ -82,6 +82,8 @@ pub enum StaticAbilityFragment {
     OtherControlledExhaustGenericReduction(u32),
     ArtifactTokenActivationReduction(u32),
     ControlledLandTapManaBonus(Mana),
+    /// Add one {C} when a controlled land's tap ability produces {C}.
+    ControlledLandColorlessTapManaBonus,
     AttachedChosenColor,
     AttachmentManaBonus(ManaProduction),
     BasicLandTapManaBonus(u16),
