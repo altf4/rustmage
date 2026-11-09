@@ -87,6 +87,13 @@ fn pay_pair(g: &mut Game, source: CardId, first: CardId, second: CardId) {
     objects.sort_by_key(|object| object.card);
     checked(g, Action::PayConspire { objects });
 }
+fn select_additional(g: &mut Game) {
+    if g.legal_actions().contains(&Action::BeginOrderedCosts) {
+        checked(g, Action::BeginOrderedCosts);
+    }
+    let clause = clause(g, |cost| cost == CastCostClause::Additional);
+    checked(g, Action::ChooseCastCost { clause });
+}
 fn printed(g: &mut Game) {
     for _ in 0..16 {
         if g.state.announcing.is_none() {
@@ -270,16 +277,14 @@ fn ecl_raiding_taps_may_precede_printed_sacrifice_and_cannot_double_spend_a_sacr
         let spell = named(&mut g, p, "Eaten Alive", Zone::Hand);
         g.state.players[p.index()].mana = [30; 6];
         checked(&mut g, Action::AnnounceCast { card: spell });
-        intent(&mut g, source, true);
         checked(&mut g, Action::ChooseSpellCost { cost: 0 });
+        intent(&mut g, source, true);
         checked(
             &mut g,
             Action::ChooseTarget {
                 target: Target::Card(enemy),
             },
         );
-        let object = g.object_ref(a);
-        checked(&mut g, Action::ChooseAdditionalCost { object });
         checked(
             &mut g,
             Action::PayCosts {
@@ -289,6 +294,9 @@ fn ecl_raiding_taps_may_precede_printed_sacrifice_and_cannot_double_spend_a_sacr
         let additional = clause(&g, |c| c == CastCostClause::Additional);
         reject(&mut g, Action::ChooseCastCost { clause: additional });
         pay_pair(&mut g, source, a, b);
+        select_additional(&mut g);
+        let object = g.object_ref(a);
+        checked(&mut g, Action::ChooseAdditionalCost { object });
         printed(&mut g);
         assert_eq!(g.state.objects[a as usize].zone, Zone::Graveyard);
         assert!(g.state.objects[b as usize].tapped);
@@ -315,15 +323,14 @@ fn ecl_raiding_printed_sacrifice_returns_a_fresh_donor_before_the_conspire_cost(
         let spell = named(&mut g, p, "Eaten Alive", Zone::Hand);
         g.state.players[p.index()].mana = [30; 6];
         checked(&mut g, Action::AnnounceCast { card: spell });
-        intent(&mut g, source, true);
         checked(&mut g, Action::ChooseSpellCost { cost: 0 });
+        intent(&mut g, source, true);
         checked(
             &mut g,
             Action::ChooseTarget {
                 target: Target::Card(enemy),
             },
         );
-        checked(&mut g, Action::ChooseAdditionalCost { object: hunter_ref });
         checked(
             &mut g,
             Action::PayCosts {
@@ -335,7 +342,8 @@ fn ecl_raiding_printed_sacrifice_returns_a_fresh_donor_before_the_conspire_cost(
                 .iter()
                 .any(|a| matches!(a, Action::PayConspire { .. }))
         );
-        printed(&mut g);
+        select_additional(&mut g);
+        checked(&mut g, Action::ChooseAdditionalCost { object: hunter_ref });
         for _ in 0..30 {
             if matches!(g.state.pending, Pending::ConspirePayment { .. }) {
                 break;
@@ -777,15 +785,14 @@ fn ecl_raiding_printed_sacrifice_waits_for_omni_entry_before_bounding_fresh_dono
         let spell = named(&mut g, p, "Eaten Alive", Zone::Hand);
         g.state.players[p.index()].mana = [30; 6];
         checked(&mut g, Action::AnnounceCast { card: spell });
-        intent(&mut g, source, true);
         checked(&mut g, Action::ChooseSpellCost { cost: 0 });
+        intent(&mut g, source, true);
         checked(
             &mut g,
             Action::ChooseTarget {
                 target: Target::Card(enemy),
             },
         );
-        checked(&mut g, Action::ChooseAdditionalCost { object: hunter_ref });
         checked(
             &mut g,
             Action::PayCosts {
@@ -797,7 +804,8 @@ fn ecl_raiding_printed_sacrifice_waits_for_omni_entry_before_bounding_fresh_dono
                 .iter()
                 .any(|a| matches!(a, Action::PayConspire { .. }))
         );
-        printed(&mut g);
+        select_additional(&mut g);
+        checked(&mut g, Action::ChooseAdditionalCost { object: hunter_ref });
         assert!(g.state.exile_links.is_empty());
         assert!(matches!(g.state.pending, Pending::EntryCopy { .. }));
         assert_eq!(g.object_view(incoming).zone, Zone::Exile);

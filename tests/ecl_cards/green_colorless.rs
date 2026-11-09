@@ -3047,12 +3047,33 @@ fn ecl_green_lys_mana_route_may_decline_eligible_private_hand_witness() {
     }
 }
 
+fn begin_additional_payment(g: &mut Game) {
+    if g.legal_actions().contains(&Action::BeginOrderedCosts) {
+        checked(g, Action::BeginOrderedCosts);
+    }
+    if matches!(g.state.pending, Pending::CastCosts { .. }) {
+        let clause = g
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .cast_costs
+            .as_ref()
+            .unwrap()
+            .clauses
+            .iter()
+            .position(|row| row.clause == CastCostClause::Additional && !row.paid)
+            .expect("unpaid printed additional cost") as u16;
+        checked(g, Action::ChooseCastCost { clause });
+    }
+}
 fn announce_champions(g: &mut Game, p: Player, witness: CardId) -> CardId {
     let source = named(g, p, "Champions of the Perfect", Zone::Hand);
     checked(g, Action::AnnounceCast { card: source });
+    begin_additional_payment(g);
     let object = g.object_ref(witness);
     checked(g, Action::ChooseAdditionalCost { object });
-    pay(g);
+    finish_cast_costs(g);
     if g.object_view(witness).token.is_some() {
         assert_eq!(g.object_view(witness).zone, Zone::Outside);
     } else {
@@ -3263,15 +3284,18 @@ fn announce_reunion(
         kind.map(|kind| rustmage_core::cards::CreatureType::from_name(kind).unwrap());
     checked(g, Action::ChooseBeholdType { creature_type });
     checked(g, Action::ChooseX { value: x });
+    if !witnesses.is_empty() {
+        begin_additional_payment(g);
+    }
     for &id in witnesses {
         let object = g.object_ref(id);
         checked(g, Action::ChooseAdditionalCost { object });
     }
-    finish_reunion_costs(g);
+    finish_cast_costs(g);
     source
 }
 
-fn finish_reunion_costs(g: &mut Game) {
+fn finish_cast_costs(g: &mut Game) {
     for _ in 0..16 {
         if g.state.announcing.is_none() {
             return;
@@ -3409,6 +3433,7 @@ fn ecl_green_reunion_optional_phase_always_exists_and_requires_two_distinct_crea
         let second = named(&mut g, p, "Changeling Wayfinder", Zone::Hand);
         checked(&mut g, choose_elf);
         checked(&mut g, Action::ChooseX { value: 0 });
+        begin_additional_payment(&mut g);
         for id in [kindred, foreign] {
             let object = g.object_ref(id);
             reject(&mut g, Action::ChooseAdditionalCost { object });
@@ -3429,7 +3454,7 @@ fn ecl_green_reunion_optional_phase_always_exists_and_requires_two_distinct_crea
         );
         let object = g.object_ref(second);
         checked(&mut g, Action::ChooseAdditionalCost { object });
-        finish_reunion_costs(&mut g);
+        finish_cast_costs(&mut g);
         checked(&mut g, Action::Pass);
         checked(&mut g, Action::Pass);
         let rng = g.state.rng;
@@ -3458,14 +3483,18 @@ fn ecl_green_reunion_beheld_creatures_can_fund_same_cast_and_nested_entry_choice
             },
         );
         checked(&mut g, Action::ChooseX { value: 1 });
+        // Mana abilities precede cost payment. The same tapped creatures remain
+        // legal behold witnesses when the additional clause is paid afterward.
+        for id in [first, second] {
+            checked(&mut g, Action::TapMana { card: id });
+        }
+        pay(&mut g);
+        begin_additional_payment(&mut g);
         for id in [first, second] {
             let object = g.object_ref(id);
             checked(&mut g, Action::ChooseAdditionalCost { object });
         }
-        for id in [first, second] {
-            checked(&mut g, Action::TapMana { card: id });
-        }
-        finish_reunion_costs(&mut g);
+        finish_cast_costs(&mut g);
         assert_eq!(g.state.players[p.index()].mana, [0; 6]);
         assert!(g.object_view(first).tapped && g.object_view(second).tapped);
         settle(&mut g);
@@ -3853,11 +3882,14 @@ fn ecl_green_crown_actual_mobilize_copies_enter_attacking_and_delayed_sacrifice_
         checked(&mut g, Action::FinishAttackers);
         crown_pause(&mut g);
         checked(&mut g, Action::ChooseOptional { accept: true });
-        assert!(matches!(g.state.pending, Pending::Mobilize { .. }));
+        assert!(matches!(
+            g.state.pending,
+            Pending::EntryAttackingDefender { .. }
+        ));
         let object = g.object_ref(pw);
         checked(
             &mut g,
-            Action::ChooseMobilizeDefender {
+            Action::ChooseEntryAttackingDefender {
                 defender: CombatDefender::Planeswalker(object),
             },
         );
