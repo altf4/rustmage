@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "669f28f2321db75745ef50b5b99c1f1d1e04e4c04a8d0f76ee891009ae593df3",
+  "catalogue_version": "156bc43f3c81d6d517b866c6da0193164acfeb49d7896c7497db7b4720c2a687",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 3617,
-  "implemented_total": 3624,
+  "implemented_standard_cards": 3641,
+  "implemented_total": 3649,
   "token_definitions": 168,
   "emblem_definitions": 12,
   "adventure_definitions": 53,
@@ -64,8 +64,8 @@
     },
     "fin": {
       "total": 304,
-      "gated": 133,
-      "complete": 171
+      "complete": 195,
+      "gated": 109
     },
     "fra": {
       "total": 285,
@@ -318,8 +318,8 @@
     {
       "name": "A Realm Reborn",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/a_realm_reborn.rs",
       "set": "fin"
     },
@@ -486,8 +486,8 @@
     {
       "name": "Absolute Virtue",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/absolute_virtue.rs",
       "set": "fin"
     },
@@ -766,8 +766,8 @@
     {
       "name": "Aerith Rescue Mission",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/aerith_rescue_mission.rs",
       "set": "fin"
     },
@@ -3798,8 +3798,8 @@
     {
       "name": "Blitzball",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/blitzball.rs",
       "set": "fin"
     },
@@ -5102,8 +5102,8 @@
     {
       "name": "Cactuar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/cactuar.rs",
       "set": "fin"
     },
@@ -5422,8 +5422,8 @@
     {
       "name": "Cargo Ship",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/cargo_ship.rs",
       "set": "fin"
     },
@@ -6422,8 +6422,8 @@
     {
       "name": "Cloud, Planet's Champion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/cloud_planet_s_champion.rs",
       "set": "fin"
     },
@@ -8758,8 +8758,8 @@
     {
       "name": "Diamond Weapon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/diamond_weapon.rs",
       "set": "fin"
     },
@@ -11342,8 +11342,8 @@
     {
       "name": "Excalibur II",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/excalibur_ii.rs",
       "set": "fin"
     },
@@ -13246,8 +13246,8 @@
     {
       "name": "From Father to Son",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/from_father_to_son.rs",
       "set": "fin"
     },
@@ -14214,8 +14214,8 @@
     {
       "name": "Gilgamesh, Master-at-Arms",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/gilgamesh_master_at_arms.rs",
       "set": "fin"
     },
@@ -14742,8 +14742,8 @@
     {
       "name": "Golbez, Crystal Collector",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/golbez_crystal_collector.rs",
       "set": "fin"
     },
@@ -17158,8 +17158,8 @@
     {
       "name": "Ice Flan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/ice_flan.rs",
       "set": "fin"
     },
@@ -17246,8 +17246,8 @@
     {
       "name": "Ignis Scientia",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/ignis_scientia.rs",
       "set": "fin"
     },
@@ -21326,8 +21326,8 @@
     {
       "name": "Malboro",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/malboro.rs",
       "set": "fin"
     },
@@ -21686,8 +21686,8 @@
     {
       "name": "Matoya, Archon Elder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/matoya_archon_elder.rs",
       "set": "fin"
     },
@@ -21910,8 +21910,8 @@
     {
       "name": "Memories Returning",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/memories_returning.rs",
       "set": "fin"
     },
@@ -26590,8 +26590,8 @@
     {
       "name": "Qiqirn Merchant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/qiqirn_merchant.rs",
       "set": "fin"
     },
@@ -26662,8 +26662,8 @@
     {
       "name": "Queen Brahne",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/queen_brahne.rs",
       "set": "fin"
     },
@@ -26774,16 +26774,16 @@
     {
       "name": "Quistis Trepe",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/quistis_trepe.rs",
       "set": "fin"
     },
     {
       "name": "Qutrub Forayer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/qutrub_forayer.rs",
       "set": "fin"
     },
@@ -26950,8 +26950,8 @@
     {
       "name": "Ragnarok, Divine Deliverance",
       "standard_legal": false,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/ragnarok_divine_deliverance.rs",
       "set": "fin"
     },
@@ -27150,8 +27150,8 @@
     {
       "name": "Random Encounter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/random_encounter.rs",
       "set": "fin"
     },
@@ -27310,8 +27310,8 @@
     {
       "name": "Raubahn, Bull of Ala Mhigo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/raubahn_bull_of_ala_mhigo.rs",
       "set": "fin"
     },
@@ -27486,8 +27486,8 @@
     {
       "name": "Reach the Horizon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/reach_the_horizon.rs",
       "set": "fin"
     },
