@@ -3072,15 +3072,31 @@ fn announce_champions(g: &mut Game, p: Player, witness: CardId) -> CardId {
     checked(g, Action::AnnounceCast { card: source });
     begin_additional_payment(g);
     let object = g.object_ref(witness);
+    let token = g.object_view(witness).is_token();
     checked(g, Action::ChooseAdditionalCost { object });
     finish_cast_costs(g);
-    if g.object_view(witness).token.is_some() {
+    let spell = g.object_ref(source);
+    assert!(
+        !g.observe(p)
+            .linked_exile
+            .iter()
+            .any(|link| link.source == spell)
+    );
+    if token {
         assert_eq!(g.object_view(witness).zone, Zone::Outside);
     } else {
         assert_eq!(g.object_view(witness).zone, Zone::Exile);
-        assert!(g.observe(p).linked_exile.iter().any(
-            |link| link.source == g.object_ref(source) && link.exiled == g.object_ref(witness)
-        ));
+        let receipt = g
+            .state
+            .stack
+            .iter()
+            .find(|item| {
+                item.kind == StackKind::Spell
+                    && item.source().is_some_and(|source| source.object == spell)
+            })
+            .and_then(|item| item.cast)
+            .unwrap();
+        assert_eq!(receipt.behold_exiled, Some(g.object_ref(witness)));
     }
     source
 }
@@ -3118,7 +3134,11 @@ fn ecl_green_champions_behold_exile_links_actual_entry_and_all_departures_return
                         library,
                         "no self-cast draw"
                     );
-                    assert!(g.observe(p).linked_exile.iter().any(|link| link.source == g.object_ref(source) && link.source != spell));
+                    assert!(g.observe(p).linked_exile.iter().any(|link| {
+                        link.source == g.object_ref(source)
+                            && link.source != spell
+                            && link.exiled == g.object_ref(witness)
+                    }));
                     if kindred {
                         let offer = named(&mut g, p, "Harmless Offering", Zone::Hand);
                         cast(
