@@ -3,10 +3,22 @@
   "catalogue_id": 36,
   "oracle_id": "d4fddf20-6b3a-42c3-a245-002dacbb4725",
   "facts_sha256": "78f4440bf20d96d65d8f42a9326139190cc885f7675504fa88d381eb8f72905d",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "452c98d392fb13e450f8260c763ece0b776117c772dec40b952144feb1e9d045"
-  },
-  "physical_metadata_sha256": "0a65f3eb2fb58673cef5a9a487e68defac08d1841618ab5584c8724737c813a1"
+  "complete": true,
+  "physical_metadata_sha256": "0a65f3eb2fb58673cef5a9a487e68defac08d1841618ab5584c8724737c813a1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AbsoluteVirtue.java",
+  "java_sha256": "75b1cdbf4d1b77ef5eee0b7ef1c140b841fbaf151d81d6981e7b2a74a9f17a0b",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CantBeCounteredSourceAbility.java",
+      "sha256": "ab592d3d97f245e6b3ca9971e1c559a7063c8717a4a5963b64564a13abd768de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProtectionFromEachOpponentAbility.java",
+      "sha256": "85805258845966857c796fab1cc69d9da23b667957e56b637ebcc6fd3674930a"
+    }
+  ]
 }

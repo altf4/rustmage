@@ -3,10 +3,17 @@
   "catalogue_id": 450,
   "oracle_id": "75719f87-ce1a-40d6-ac5a-5ebf0c936c84",
   "facts_sha256": "f0413f50797598fb6a72a137082bc4a6c178139ba056de24d69e8c9c4e32e981",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "f142aced4c8aeaf1ddfa611e4632800bf3147c79a4074297ed99a4184be18db3"
-  },
-  "physical_metadata_sha256": "71046c8dd5b25f5d611b30ce43577ecf4fdd05c4b9b152c3094b005c43ebf946"
+  "complete": true,
+  "physical_metadata_sha256": "71046c8dd5b25f5d611b30ce43577ecf4fdd05c4b9b152c3094b005c43ebf946",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/Blitzball.java",
+  "java_sha256": "152063027d27fbc70da452b4709421492efe642ac0cfe8d4bdb9cc6b77e3d8af",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+      "sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+    }
+  ]
 }

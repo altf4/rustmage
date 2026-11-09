@@ -3,10 +3,22 @@
   "catalogue_id": 1393,
   "oracle_id": "bfb6651c-e0b3-4dbd-b26a-3eeb690985fc",
   "facts_sha256": "58c46b6c9a4804881851175381f183aeef46cd82612a61382f766b61e1b6308e",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "d3904ca5ce143e8ddd97e7384695db6b051aba34bd0d502ed63f8ba6d77cb638"
-  },
-  "physical_metadata_sha256": "ca797057677f34c1c093fae9ab2ab01bfe71270775ee936b03eb5404205fdb88"
+  "complete": true,
+  "physical_metadata_sha256": "ca797057677f34c1c093fae9ab2ab01bfe71270775ee936b03eb5404205fdb88",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/ExcaliburII.java",
+  "java_sha256": "43a59e58e294a846a3b0c17164762c723ba66c95bdb3efa8dac4ed2e5ca6fa82",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CountersSourceCount.java",
+      "sha256": "00add2937bf1f70a9877114d432b9f87f6e65d18e106d7366319e2fcc80233d4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+      "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
+    }
+  ]
 }

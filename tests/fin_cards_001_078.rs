@@ -273,3 +273,351 @@ fn evil_reawakened_adds_two_counters_to_the_creatures_normal_entry() {
     assert!(!game.object_view(creature).tapped);
     assert_eq!(game.object_view(creature).counters.plus_one, 3);
 }
+
+fn pass_pair(game: &mut Game) {
+    act(game, Action::Pass);
+    act(game, Action::Pass);
+}
+
+fn attack(game: &mut Game, attacker: CardId) {
+    reach(game, |action| *action == Action::Attack { card: attacker });
+    act(game, Action::Attack { card: attacker });
+    act(game, Action::FinishAttackers);
+    settle(game);
+    pass_pair(game);
+    assert_eq!(game.state.pending, Pending::Blockers);
+}
+
+fn equip(game: &mut Game, equipment: CardId, creature: CardId) {
+    act(game, announce_ability(equipment, 0));
+    act(game, target(creature));
+    if matches!(game.state.pending, Pending::PayCosts { .. }) {
+        pay(game);
+    }
+    settle(game);
+}
+
+#[test]
+fn a_realm_reborn_grants_other_permanents_fundable_colored_mana() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let realm = put(&mut game, player, "A Realm Reborn", Zone::Hand);
+    let recipient = put(&mut game, player, "Swiftfoot Boots", Zone::Battlefield);
+    let creature = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    game.state.objects[creature as usize].summoning_sick = true;
+    let opposing = put(
+        &mut game,
+        player.other(),
+        "Swiftfoot Boots",
+        Zone::Battlefield,
+    );
+    let shock = put(&mut game, player, "Shock", Zone::Hand);
+    cast(&mut game, realm, None);
+    settle(&mut game);
+    game.state.players[player.index()].mana = [0; 6];
+
+    let grantor = game.object_ref(realm);
+    let tap = |card| Action::TapGrantedMana {
+        card,
+        grantor,
+        production: [0, 0, 0, 1, 0, 0],
+    };
+    for illegal in [realm, creature, opposing] {
+        reject(&mut game, tap(illegal));
+    }
+    act(&mut game, Action::AnnounceCast { card: shock });
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Player(player.other()),
+        },
+    );
+    act(&mut game, tap(recipient));
+    pay(&mut game);
+    settle(&mut game);
+    assert!(game.object_view(recipient).tapped);
+    assert_eq!(game.state.players[player.other().index()].life, 18);
+}
+
+#[test]
+fn absolute_virtue_resists_a_counter_and_protects_its_controller() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let virtue = put(&mut game, player, "Absolute Virtue", Zone::Hand);
+    let cancel = put(&mut game, opponent, "Cancel", Zone::Hand);
+    let shock = put(&mut game, opponent, "Shock", Zone::Hand);
+    cast(&mut game, virtue, None);
+    act(&mut game, Action::Pass);
+    cast(&mut game, cancel, Some(Target::Spell(virtue)));
+    settle(&mut game);
+    assert_eq!(game.object_view(virtue).zone, Zone::Battlefield);
+    assert!(game.keywords(virtue).contains(Keywords::FLYING));
+
+    if game.actor() != Some(opponent) {
+        act(&mut game, Action::Pass);
+    }
+    act(&mut game, Action::AnnounceCast { card: shock });
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Player(player),
+        },
+    );
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Player(opponent),
+        },
+    );
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].life, 20);
+    assert_eq!(game.state.players[opponent.index()].life, 18);
+}
+
+#[test]
+fn aerith_rescue_mission_creates_heroes_or_stuns_one_surviving_stair_target() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let mission = put(&mut game, player, "Aerith Rescue Mission", Zone::Hand);
+    let first = put(
+        &mut game,
+        player.other(),
+        "Grizzly Bears",
+        Zone::Battlefield,
+    );
+    let removed = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
+
+    act(&mut game, Action::AnnounceCast { card: mission });
+    let mut elevator = game.clone();
+    act(&mut elevator, Action::ChooseMode { mode: 0 });
+    pay(&mut elevator);
+    settle(&mut elevator);
+    let heroes: Vec<_> = elevator
+        .observe(player)
+        .objects
+        .into_iter()
+        .filter(|object| object.zone == Zone::Battlefield && object.card == Card(5328))
+        .collect();
+    assert_eq!(heroes.len(), 3);
+    for hero in heroes {
+        assert_eq!(hero.colors, 0);
+        assert_eq!(stats(&elevator, hero.id), (1, 1));
+    }
+
+    act(&mut game, Action::ChooseMode { mode: 1 });
+    act(&mut game, target(first));
+    act(&mut game, target(removed));
+    act(&mut game, Action::FinishTargets);
+    pay(&mut game);
+    game.move_object(removed, Zone::Exile);
+    let choice = Action::ChooseEffectObject {
+        object: game.object_ref(first),
+    };
+    reach(&mut game, |action| *action == choice);
+    assert!(game.object_view(first).tapped);
+    let invalid = Action::ChooseEffectObject {
+        object: game.object_ref(removed),
+    };
+    reject(&mut game, invalid);
+    act(&mut game, choice);
+    assert_eq!(game.object_view(first).counters.stun, 1);
+}
+
+#[test]
+fn blitzball_draw_activation_requires_an_opponent_hit_by_a_legendary_creature() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let ball = put(&mut game, player, "Blitzball", Zone::Hand);
+    let attacker = put(&mut game, player, "Adelbert Steiner", Zone::Battlefield);
+    cast(&mut game, ball, None);
+    settle(&mut game);
+    reject(&mut game, announce_ability(ball, 1));
+    let mut mana_branch = game.clone();
+    mana_branch.state.players[player.index()].mana = [0; 6];
+    let green = [0, 0, 0, 0, 1, 0];
+    act(&mut mana_branch, mana(ball, green));
+    assert_eq!(mana_branch.state.players[player.index()].mana, green);
+
+    attack(&mut game, attacker);
+    act(&mut game, Action::FinishBlockers);
+    pass_pair(&mut game);
+    assert_eq!(game.state.players[player.other().index()].life, 18);
+    choose(
+        &mut game,
+        |action| matches!(action, Action::Activate { card, ability: 1, .. } if *card == ball),
+    );
+    assert_eq!(game.object_view(ball).zone, Zone::Graveyard);
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 2);
+}
+
+#[test]
+fn cactuar_returns_on_a_later_own_end_step_but_stays_on_its_entry_turn() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let cactuar = put(&mut game, player, "Cactuar", Zone::Hand);
+    cast(&mut game, cactuar, None);
+    settle(&mut game);
+    assert!(game.keywords(cactuar).contains(Keywords::TRAMPLE));
+    for active in [player, player.other(), player] {
+        assert_eq!(game.state.active, active);
+        game.state.step = Step::Main2;
+        pass_pair(&mut game);
+        assert_eq!(game.state.step, Step::End);
+        if active == player && game.state.turn > 3 {
+            assert_eq!(game.state.stack.len(), 1);
+            settle(&mut game);
+            assert_eq!(game.object_view(cactuar).zone, Zone::Hand);
+        } else {
+            assert!(game.state.stack.is_empty());
+            assert_eq!(game.object_view(cactuar).zone, Zone::Battlefield);
+            pass_pair(&mut game);
+        }
+    }
+}
+
+#[test]
+fn cargo_ship_crews_for_one_and_its_colorless_mana_funds_equip() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let ship = put(&mut game, player, "Cargo Ship", Zone::Hand);
+    let pilot = put(&mut game, player, "Llanowar Elves", Zone::Battlefield);
+    let boots = put(&mut game, player, "Swiftfoot Boots", Zone::Battlefield);
+    let giant = put(&mut game, player, "Hill Giant", Zone::Hand);
+    cast(&mut game, ship, None);
+    settle(&mut game);
+
+    let mut crewed = game.clone();
+    act(&mut crewed, announce_ability(ship, 1));
+    if matches!(crewed.state.pending, Pending::PayCosts { .. }) {
+        pay(&mut crewed);
+    }
+    let object = crewed.object_ref(pilot);
+    act(&mut crewed, Action::ChooseCrewer { object });
+    act(&mut crewed, Action::FinishCrew);
+    settle(&mut crewed);
+    assert!(crewed.object_view(pilot).tapped);
+    assert!(crewed.object_view(ship).is_creature());
+    assert_eq!(stats(&crewed, ship), (2, 3));
+    assert!(
+        crewed
+            .keywords(ship)
+            .contains(Keywords::FLYING.union(Keywords::VIGILANCE))
+    );
+
+    let colorless = [0, 0, 0, 0, 0, 1];
+    let mut restricted = game.clone();
+    restricted.state.players[player.index()].mana = [0, 0, 0, 1, 0, 2];
+    act(&mut restricted, mana(ship, colorless));
+    reject(&mut restricted, Action::AnnounceCast { card: giant });
+
+    game.state.players[player.index()].mana = [0; 6];
+    act(&mut game, mana(ship, colorless));
+    equip(&mut game, boots, pilot);
+    assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+    assert_eq!(
+        game.object_view(boots).attached_to,
+        Some(game.object_ref(pilot))
+    );
+}
+
+#[test]
+fn clouds_exact_equip_target_gets_a_discount_and_bonuses_only_on_its_turn() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let cloud = put(&mut game, player, "Cloud, Planet's Champion", Zone::Hand);
+    let boots = put(&mut game, player, "Swiftfoot Boots", Zone::Battlefield);
+    let other = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let bonuses = Keywords::DOUBLE_STRIKE.union(Keywords::INDESTRUCTIBLE);
+    cast(&mut game, cloud, None);
+    settle(&mut game);
+    assert!(!game.keywords(cloud).contains(bonuses));
+    game.state.players[player.index()].mana = [0; 6];
+
+    act(&mut game, announce_ability(boots, 0));
+    reject(&mut game, target(other));
+    act(&mut game, target(cloud));
+    if matches!(game.state.pending, Pending::PayCosts { .. }) {
+        pay(&mut game);
+    }
+    settle(&mut game);
+    assert_eq!(
+        game.object_view(boots).attached_to,
+        Some(game.object_ref(cloud))
+    );
+    assert!(game.keywords(cloud).contains(bonuses));
+    game.state.active = player.other();
+    assert!(!game.keywords(cloud).contains(bonuses));
+}
+
+#[test]
+fn diamond_weapon_discounts_only_permanents_and_prevents_combat_damage() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let weapon = put(&mut game, player, "Diamond Weapon", Zone::Hand);
+    put(&mut game, player, "Forest", Zone::Graveyard);
+    put(&mut game, player, "Swiftfoot Boots", Zone::Graveyard);
+    put(&mut game, player, "Shock", Zone::Graveyard);
+    put(&mut game, player.other(), "Grizzly Bears", Zone::Graveyard);
+
+    game.state.players[player.index()].mana = [0, 0, 0, 0, 2, 4];
+    reject(&mut game, Action::AnnounceCast { card: weapon });
+    game.state.players[player.index()].mana = [0, 0, 0, 1, 2, 5];
+    cast(&mut game, weapon, None);
+    settle(&mut game);
+    assert_eq!(stats(&game, weapon), (8, 8));
+    assert!(game.keywords(weapon).contains(Keywords::REACH));
+    game.state.players[player.index()].mana = [0, 0, 0, 1, 0, 0];
+    let shock = put(&mut game, player, "Shock", Zone::Hand);
+    cast(&mut game, shock, Some(Target::Card(weapon)));
+    settle(&mut game);
+    assert_eq!(game.object_view(weapon).damage, 2);
+
+    game.state.active = player.other();
+    game.state.priority = player.other();
+    let attacker = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
+    attack(&mut game, attacker);
+    act(
+        &mut game,
+        Action::Block {
+            blocker: weapon,
+            attacker,
+        },
+    );
+    act(&mut game, Action::FinishBlockers);
+    pass_pair(&mut game);
+    assert_eq!(game.object_view(weapon).damage, 2);
+    assert_eq!(game.object_view(attacker).zone, Zone::Graveyard);
+}
+
+#[test]
+fn excalibur_tracks_gain_events_and_carries_its_live_bonus_to_new_bearers() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let blade = put(&mut game, player, "Excalibur II", Zone::Hand);
+    let first = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let second = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    cast(&mut game, blade, None);
+    settle(&mut game);
+    equip(&mut game, blade, first);
+    assert_eq!(stats(&game, first), (2, 2));
+
+    let inn = put(&mut game, player, "Adventurer's Inn", Zone::Hand);
+    act(&mut game, Action::PlayLand { card: inn });
+    settle(&mut game);
+    assert_eq!(game.object_view(blade).counters.get(CounterKind::Charge), 1);
+    assert_eq!(stats(&game, first), (3, 3));
+
+    let menu = put(&mut game, player, "Battle Menu", Zone::Hand);
+    act(&mut game, Action::AnnounceCast { card: menu });
+    act(&mut game, Action::ChooseMode { mode: 3 });
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(blade).counters.get(CounterKind::Charge), 2);
+
+    equip(&mut game, blade, second);
+    assert_eq!(stats(&game, first), (2, 2));
+    assert_eq!(stats(&game, second), (5, 5));
+}
