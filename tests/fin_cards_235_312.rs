@@ -1717,10 +1717,10 @@ fn vanille_recovers_an_older_permanent_then_melds_only_when_the_pair_is_owned() 
     pass_pair(&mut game);
     for id in [foreign, instant] {
         let object = game.object_ref(id);
-        reject(&mut game, Action::ChooseEffectObject { object });
+        reject(&mut game, Action::SelectGraveyardReturn { object });
     }
     let object = game.object_ref(old);
-    act(&mut game, Action::ChooseEffectObject { object });
+    act(&mut game, Action::SelectGraveyardReturn { object });
     assert_eq!(game.object_view(old).zone, Zone::Hand);
     assert_eq!(game.object_view(land).zone, Zone::Graveyard);
 
