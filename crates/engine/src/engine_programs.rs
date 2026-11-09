@@ -3603,6 +3603,7 @@ impl Game {
                     | Instruction::RevealTargetHandExileUntilSourceLeaves
                     | Instruction::MayAttachControlledEquipment { .. }
                     | Instruction::MayAttachAnyControlledEquipment { .. }
+                    | Instruction::MayAttachControlledEquipmentUntilNextEndStep { .. }
                     | Instruction::AttachPriorSourceEquipment { .. }
                     | Instruction::AttachEquipmentByGroups { .. }
                     | Instruction::AttachEquipmentGroupsReflexive { .. }
@@ -4973,7 +4974,7 @@ impl Game {
                     relation,
                     ability,
                 } => {
-                    self.schedule_delayed_step(&item, step, relation, ability);
+                    self.schedule_delayed_step(&item, step, relation, ability, None);
                 }
                 Instruction::PreventTargetActivationsWhileTapped => {
                     self.prevent_target_activations_until_untapped(&item);
@@ -5996,14 +5997,29 @@ impl Game {
                     if self.may_attach_controlled_equipment(
                         &item,
                         recipient,
-                        required_subtype,
-                        false,
+                        return_attachment::ControlledEquipmentSelection::One(required_subtype),
                     ) {
                         return;
                     }
                 }
                 Instruction::MayAttachAnyControlledEquipment { recipient } => {
-                    if self.may_attach_controlled_equipment(&item, recipient, None, true) {
+                    if self.may_attach_controlled_equipment(
+                        &item,
+                        recipient,
+                        return_attachment::ControlledEquipmentSelection::Any,
+                    ) {
+                        return;
+                    }
+                }
+                Instruction::MayAttachControlledEquipmentUntilNextEndStep {
+                    recipient,
+                    ability,
+                } => {
+                    if self.may_attach_controlled_equipment(
+                        &item,
+                        recipient,
+                        return_attachment::ControlledEquipmentSelection::UntilNextEndStep(ability),
+                    ) {
                         return;
                     }
                 }

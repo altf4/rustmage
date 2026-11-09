@@ -22,6 +22,29 @@ const RECIPIENT: CardRules = CardRules {
     keywords: Keywords::HEXPROOF.union(Keywords::PROTECTION_RED),
     ..CardRules::EMPTY
 };
+const TEMPORARY_ATTACHMENT: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
+        &[
+            Instruction::GainControlUntilEndTurn,
+            Instruction::Untap,
+            Instruction::GrantKeywords {
+                subject: Subject::Targets,
+                keywords: Keywords::HASTE,
+            },
+            Instruction::MayAttachControlledEquipmentUntilNextEndStep {
+                recipient: 0,
+                ability: 0,
+            },
+        ],
+    ),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::Reflexive,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::UnattachEventObject],
+    }],
+    ..CardRules::EMPTY
+};
 
 fn trigger(game: &mut Game, recipient: CardId) {
     game.begin_step(Step::BeginCombat);
@@ -160,4 +183,126 @@ fn missing_equipment_or_an_illegal_announced_target_skips_the_choice() {
             }
         );
     }
+}
+
+#[test]
+fn the_next_end_step_unattaches_only_the_exact_selected_equipment_after_reassignment() {
+    let _rules = fixture_rules::activate(&[(
+        Card::from_name("Obliterating Bolt").unwrap(),
+        &TEMPORARY_ATTACHMENT,
+    )]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let creature = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
+    let other = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let selected = put(&mut game, player, "Short Bow", Zone::Battlefield);
+    let already = put(&mut game, player, "Gold Pan", Zone::Battlefield);
+    let foreign = put(
+        &mut game,
+        player.other(),
+        "Lavaspur Boots",
+        Zone::Battlefield,
+    );
+    let [
+        creature_ref,
+        other_ref,
+        selected_ref,
+        already_ref,
+        foreign_ref,
+    ] = [creature, other, selected, already, foreign].map(|id| game.object_ref(id));
+    game.tap_objects(&[creature]);
+    assert!(game.attach_equipment(already_ref, creature_ref));
+    let spell = put(&mut game, player, "Obliterating Bolt", Zone::Hand);
+    cast(&mut game, spell, Some(Target::Card(creature)));
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    let view = game.observe(player.other()).equipment_attachment.unwrap();
+    assert_eq!(view.candidates, vec![selected_ref]);
+    assert_eq!(view.recipient.reference, creature_ref);
+    assert_eq!(game.object_view(creature).controller, player);
+    assert!(!game.object_view(creature).tapped);
+    assert!(game.keywords(creature).contains(Keywords::HASTE));
+    reject(&mut game, pick(already_ref));
+    reject(&mut game, pick(foreign_ref));
+    let mut declined = game.clone();
+    act(&mut declined, FINISH);
+    assert!(declined.observe(player).delayed_steps.is_none());
+
+    act(&mut game, pick(selected_ref));
+    assert_eq!(game.object_view(selected).attached_to, Some(creature_ref));
+    assert_eq!(game.object_view(spell).zone, Zone::Graveyard);
+    choose(&mut game, |action| {
+        matches!(action, Action::Activate { card, ability: 0, target: Some(Target::Card(target)), .. }
+            if *card == selected && *target == other)
+    });
+    settle(&mut game);
+    assert_eq!(game.object_view(selected).attached_to, Some(other_ref));
+
+    let mut blinked = game.clone();
+    blinked.move_object(selected, Zone::Exile);
+    blinked.move_object(selected, Zone::Battlefield);
+    let returned = blinked.object_ref(selected);
+    assert_ne!(returned, selected_ref);
+    assert!(blinked.attach_equipment(returned, other_ref));
+    for branch in [&mut game, &mut blinked] {
+        branch.begin_step(Step::End);
+        branch.give_priority();
+        branch.prepare_triggers();
+        assert_eq!(branch.state.stack.len(), 1);
+        assert!(branch.state.stack[0].targets.is_empty());
+        assert_eq!(
+            branch.state.stack[0].event_object.as_ref().unwrap().object,
+            selected_ref
+        );
+        settle(branch);
+        assert_eq!(branch.object_view(already).attached_to, Some(creature_ref));
+        assert!(branch.observe(player).delayed_steps.is_none());
+    }
+    assert_eq!(game.object_view(selected).attached_to, None);
+    assert_eq!(blinked.object_view(selected).attached_to, Some(other_ref));
+}
+
+#[test]
+fn the_same_callback_uses_the_opponents_next_end_step_if_cast_with_flash() {
+    let _rules = fixture_rules::activate(&[(
+        Card::from_name("Obliterating Bolt").unwrap(),
+        &TEMPORARY_ATTACHMENT,
+    )]);
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(opponent);
+    put(&mut game, player, "High Fae Trickster", Zone::Battlefield);
+    let creature = put(&mut game, opponent, "Hill Giant", Zone::Battlefield);
+    let selected = put(&mut game, player, "Short Bow", Zone::Battlefield);
+    let selected_ref = game.object_ref(selected);
+    let spell = put(&mut game, player, "Obliterating Bolt", Zone::Hand);
+    act(&mut game, Action::Pass);
+    cast(&mut game, spell, Some(Target::Card(creature)));
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    act(&mut game, pick(selected_ref));
+    assert_eq!(
+        game.object_view(selected).attached_to,
+        Some(game.object_ref(creature))
+    );
+    game.begin_step(Step::End);
+    game.give_priority();
+    game.prepare_triggers();
+    assert_eq!(game.state.active, opponent);
+    assert_eq!(game.state.stack[0].controller, player);
+    let saved = game.snapshot();
+    let mut indexed = game.clone();
+    let index = game
+        .legal_actions()
+        .iter()
+        .position(|action| *action == Action::Pass)
+        .unwrap();
+    let actor = game.actor().unwrap();
+    indexed.apply_index(actor, game.revision(), index).unwrap();
+    act(&mut game, Action::Pass);
+    assert_eq!(game.snapshot(), indexed.snapshot());
+    indexed.restore(&saved).unwrap();
+    assert_eq!(indexed.snapshot(), saved);
+    act(&mut game, Action::Pass);
+    assert_eq!(game.object_view(selected).attached_to, None);
 }

@@ -2931,6 +2931,11 @@ pub enum Instruction {
     MayAttachAnyControlledEquipment {
         recipient: u16,
     },
+    /// Attach one controlled Equipment and remember that exact object for the next end step.
+    MayAttachControlledEquipmentUntilNextEndStep {
+        recipient: u16,
+        ability: u16,
+    },
     /// Attach one surviving Equipment that was attached to the exact sacrificed source.
     AttachPriorSourceEquipment {
         recipient: u16,

@@ -1,5 +1,20 @@
 //! Exact successful return results and public, nontargeting Equipment choices.
 use super::*;
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy)]
+pub(super) enum ControlledEquipmentSelection {
+    One(Option<&'static str>),
+    Any,
+    UntilNextEndStep(u16),
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum AttachmentCallback {
+    Reflexive(u16),
+    UnattachAtNextEndStep(u16),
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct ReturnAttachment {
@@ -8,7 +23,7 @@ pub(super) struct ReturnAttachment {
     pub recipient: Option<ObjectRef>,
     pub entering: bool,
     order: Option<Box<EquipmentOrder>>,
-    reflexive: Option<u16>,
+    callback: Option<AttachmentCallback>,
     exact_equipment: Option<Box<[ObjectRef]>>,
     required: bool,
     selected: Option<Vec<ObjectRef>>,
@@ -61,8 +76,7 @@ impl Game {
         &mut self,
         item: &SpellView,
         group: u16,
-        subtype: Option<&'static str>,
-        any_number: bool,
+        selection: ControlledEquipmentSelection,
     ) -> bool {
         let Some(source) = item.source else {
             return false;
@@ -75,7 +89,12 @@ impl Game {
             .filter(|r| {
                 self.on_battlefield(r.card)
                     && self.is_creature(r.card)
-                    && subtype.is_none_or(|t| self.has_subtype(r.card, t))
+                    && match selection {
+                        ControlledEquipmentSelection::One(Some(subtype)) => {
+                            self.has_subtype(r.card, subtype)
+                        }
+                        _ => true,
+                    }
             });
         let Some(recipient) = recipient else {
             return false;
@@ -87,10 +106,15 @@ impl Game {
                 recipient: Some(recipient),
                 entering: false,
                 order: None,
-                reflexive: None,
+                callback: match selection {
+                    ControlledEquipmentSelection::UntilNextEndStep(ability) => {
+                        Some(AttachmentCallback::UnattachAtNextEndStep(ability))
+                    }
+                    _ => None,
+                },
                 exact_equipment: None,
                 required: false,
-                selected: any_number.then(Vec::new),
+                selected: matches!(selection, ControlledEquipmentSelection::Any).then(Vec::new),
             }));
         self.advance_return_attachment()
     }
@@ -167,7 +191,7 @@ impl Game {
                 recipient: Some(recipient),
                 entering: false,
                 order: None,
-                reflexive: None,
+                callback: None,
                 exact_equipment: Some(equipment.into_boxed_slice()),
                 required,
                 selected: None,
@@ -219,7 +243,7 @@ impl Game {
                 player: item.controller,
                 recipient: Some(recipient),
                 entering: false,
-                reflexive,
+                callback: reflexive.map(AttachmentCallback::Reflexive),
                 exact_equipment: None,
                 required: false,
                 selected: None,
@@ -246,7 +270,7 @@ impl Game {
                 recipient: None,
                 entering: true,
                 order: None,
-                reflexive: None,
+                callback: None,
                 exact_equipment: None,
                 required: false,
                 selected: None,
@@ -304,6 +328,10 @@ impl Game {
         self.state.objects.iter().enumerate().any(|(id, object)| {
             let equipment = self.object_ref(id as CardId);
             object.controller == frame.player
+                && (!matches!(
+                    frame.callback,
+                    Some(AttachmentCallback::UnattachAtNextEndStep(_))
+                ) || object.attached_to != Some(recipient))
                 && frame
                     .selected
                     .as_ref()
@@ -364,7 +392,7 @@ impl Game {
         let recipient = frame.recipient.unwrap();
         let attached = self.attach_equipment_batch_objects(&frame.order.unwrap().chosen, recipient);
         if !attached.is_empty()
-            && let Some(ability) = frame.reflexive
+            && let Some(AttachmentCallback::Reflexive(ability)) = frame.callback
         {
             let item = self.state.resolving.as_ref().unwrap().item.clone();
             self.queue_reflexive_objects(
@@ -438,8 +466,18 @@ impl Game {
                 if self.order_equipment_attachments(&item, recipient, selected) {
                     return;
                 }
-            } else if let Some(equipment) = equipment {
-                self.attach_equipment(equipment, recipient);
+            } else if let Some(equipment) = equipment
+                && self.attach_equipment(equipment, recipient)
+                && let Some(AttachmentCallback::UnattachAtNextEndStep(ability)) = frame.callback
+            {
+                let item = self.state.resolving.as_ref().unwrap().item.clone();
+                self.schedule_delayed_step(
+                    &item,
+                    TriggerStep::End,
+                    CastRelation::Any,
+                    ability,
+                    Some(equipment),
+                );
             }
         }
         self.run_program();
