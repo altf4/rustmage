@@ -54,10 +54,8 @@ fn created(game: &Game) -> ObjectView {
         .objects
         .iter()
         .enumerate()
-        .filter_map(|(id, object)| {
-            (object.zone == Zone::Battlefield && object.is_token())
-                .then(|| game.object_view(id as CardId))
-        });
+        .filter(|(_, object)| object.zone == Zone::Battlefield && object.is_token())
+        .map(|(id, _)| game.object_view(id as CardId));
     let token = tokens.next().unwrap();
     assert!(tokens.next().is_none());
     token
