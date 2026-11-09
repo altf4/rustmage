@@ -1916,6 +1916,12 @@ impl Game {
                     o.zone==Zone::Exile && o.is_card() && world.kinds(id) & 1 != 0
                     && self.linked_exile_for_origin(source,ability_origin.unwrap_or_else(||self.copy_ability_origin(source))).contains(&self.object_ref(id))));
             }
+            TargetRule::OwnedExileWithFlashback => {
+                return matches!(target, Target::Card(id) if lookup(id).is_some_and(|o|
+                    o.zone == Zone::Exile && o.is_card() && o.owner == controller
+                    && !self.exiled_face_down(world.reference(id))
+                    && o.card.flashback_cost().is_some()));
+            }
             TargetRule::GraveCreatureEnteredThisTurn => {
                 return matches!(target, Target::Card(id) if lookup(id).is_some_and(|o|
                     o.zone == Zone::Graveyard && o.is_card() && o.card.is_creature()

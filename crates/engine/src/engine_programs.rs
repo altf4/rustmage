@@ -5371,6 +5371,9 @@ impl Game {
                 Instruction::GrantExiledResultPlay { next_turn } => {
                     self.grant_exiled_result_play(item.controller, next_turn);
                 }
+                Instruction::GrantExiledResultFlexiblePlay => {
+                    self.grant_exiled_result_flexible_play(item.controller, false);
+                }
                 Instruction::MayExileDiscardedPlay { .. } => {
                     let skip_to = resolution.pc;
                     if self.discarded_play_object(&item).is_some() {
@@ -7343,20 +7346,34 @@ impl Game {
                     let count = self.item_amount(amount, &item);
                     self.exile_top_play(item.controller, count, next_turn);
                 }
-                Instruction::ExileTopLibrary { players, amount } => {
+                Instruction::ExileTopLibrary { players, amount }
+                | Instruction::ExileTopLibraryRemember { players, amount } => {
                     let count = self.item_amount(amount, &item);
                     let ids = self
                         .program_players(players, &item)
                         .flat_map(|player| exile::top_library_cards(self, player, count))
                         .collect::<Vec<_>>();
                     let events = self.move_objects_raw(&ids, Zone::Exile);
+                    if matches!(instruction, Instruction::ExileTopLibraryRemember { .. }) {
+                        self.state.resolving.as_mut().unwrap().milled = events
+                            .iter()
+                            .filter(|event| event.moved && event.destination == Zone::Exile)
+                            .map(|event| event.after)
+                            .collect();
+                    }
                     self.finish_zone_events(&events, &[]);
+                }
+                Instruction::ExileEachTopPlayOwnAndLesserFree => {
+                    self.exile_each_top_play_own_and_lesser_free(item.controller);
                 }
                 Instruction::ExileTopPlayUntilNextEndStep(amount) => {
                     self.exile_top_play_until_next_end_step(item.controller, u128::from(amount));
                 }
                 Instruction::ExileTopPlayOnSourceLoreTurns => {
                     self.exile_top_play_on_source_lore_turns(&item);
+                }
+                Instruction::ExileTopPlayWhileSourceControlled => {
+                    self.exile_top_play_while_source_controlled(&item);
                 }
                 Instruction::ExileTopPlay { amount, next_turn } => {
                     self.exile_top_play(item.controller, u128::from(amount), next_turn);

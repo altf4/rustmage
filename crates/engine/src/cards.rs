@@ -270,6 +270,8 @@ pub enum TargetRule {
     LinkedExileCreature {
         ability_origin: Option<Option<u64>>,
     },
+    /// A face-up exiled card owned by the choosing player with printed flashback.
+    OwnedExileWithFlashback,
     GraveCreatureEnteredThisTurn,
     GraveCreatureSourcePower {
         maximum: Option<i128>,
@@ -1742,6 +1744,8 @@ pub enum Instruction {
     GrantExiledResultPlay {
         next_turn: bool,
     },
+    /// Allow ordinary plays of the preceding exact exile results through cleanup.
+    GrantExiledResultFlexiblePlay,
     ExileTopPlayScaled {
         amount: AmountValue,
         next_turn: bool,
@@ -1751,6 +1755,14 @@ pub enum Instruction {
         players: PlayerSet,
         amount: AmountValue,
     },
+    /// Keep exact successful exiles from these libraries for a later instruction.
+    ExileTopLibraryRemember {
+        players: PlayerSet,
+        amount: AmountValue,
+    },
+    /// Exile each library's top card and offer free plays of the controller's
+    /// own result and the strictly lower mana-value results through cleanup.
+    ExileEachTopPlayOwnAndLesserFree,
     SearchDifferentNames(SearchSpec),
     /// Distinct-name search capped by the triggering entry's chosen X.
     SearchDifferentNamesChosenX(SearchSpec),
@@ -2387,6 +2399,9 @@ pub enum Instruction {
     /// Exile the controller's top card for normal play on turns they put lore
     /// on this exact source.
     ExileTopPlayOnSourceLoreTurns,
+    /// Exile the controller's top card and allow ordinary plays while they
+    /// retain continuous control of this exact source.
+    ExileTopPlayWhileSourceControlled,
     ExileTopPlay {
         amount: u16,
         next_turn: bool,
