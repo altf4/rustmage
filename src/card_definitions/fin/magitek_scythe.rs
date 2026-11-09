@@ -1,16 +1,51 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
-pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+const BONUS: EquipmentSpec = EquipmentSpec {
+    stats: Stats {
+        power: 2,
+        toughness: 1,
     },
-    entry: EntryTapped::Never,
     keywords: Keywords::NONE,
+};
+
+pub(in crate::cards) const RULES: CardRules = CardRules {
+    effect: Effect::Permanent,
+    static_groups: &[StaticAbilityGroup {
+        line: 1,
+        first_layer: AbilityLayer::Modify,
+        fragments: &[StaticAbilityFragment::AttachmentStats(BONUS.stats)],
+    }],
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfEnters,
+        targets: one(TargetRule::creature_you_control()),
+        program: &[
+            Instruction::MayAttachSource {
+                recipient: 0,
+                skip: 2,
+            },
+            Instruction::GrantKeywords {
+                subject: Subject::Targets,
+                keywords: Keywords::FIRST_STRIKE,
+            },
+            Instruction::RequireTargetsBlocked { group: 0 },
+        ],
+    }],
+    activated: &[ActivatedAbility {
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        cycling: false,
+        origin: ActivationOrigin::Battlefield,
+        cost: ActivationCost {
+            generic: 2,
+            mana_component: true,
+            ..ActivationCost::ZERO
+        },
+        targets: one(TargetRule::creature_you_control()),
+        program: &[Instruction::AttachSource],
+        sorcery: true,
+        once_per_turn: false,
+    }],
+    extras: &CardExtras {
+        equipment: Some(BONUS),
+        ..CardExtras::EMPTY
+    },
     ..CardRules::EMPTY
 };

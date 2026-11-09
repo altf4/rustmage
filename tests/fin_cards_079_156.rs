@@ -312,3 +312,295 @@ fn jumbo_cactuar_gains_exactly_9999_power_on_declaration() {
     settle(&mut game);
     assert_eq!(stats(&game, jumbo), (10000, 7));
 }
+
+fn unblocked_damage(game: &mut Game, attackers: &[CardId]) {
+    declare(game, attackers);
+    assert!(game.state.stack.is_empty());
+    pass_pair(game);
+    act(game, Action::FinishBlockers);
+    pass_pair(game);
+}
+
+#[test]
+fn garnet_removes_one_lore_from_each_chosen_controlled_saga() {
+    let p = Player::P0;
+    let mut game = scenario(p);
+    let garnet = put(
+        &mut game,
+        p,
+        "Garnet, Princess of Alexandria",
+        Zone::Battlefield,
+    );
+    let name = "Awaken the Honored Dead";
+    let own = put(&mut game, p, name, Zone::Battlefield);
+    let rival = put(&mut game, p.other(), name, Zone::Battlefield);
+    for id in [own, rival] {
+        game.set_counters(id, Counters::of(CounterKind::Lore, 2));
+    }
+    assert!(game.keywords(garnet).contains(Keywords::LIFELINK));
+    declare(&mut game, &[garnet]);
+    pass_pair(&mut game);
+    let choice = |game: &Game, card| Action::ChooseEffectObject {
+        object: game.object_ref(card),
+    };
+    let invalid = choice(&game, rival);
+    reject(&mut game, invalid);
+    let valid = choice(&game, own);
+    act(&mut game, valid.clone());
+    reject(&mut game, valid);
+    act(&mut game, Action::FinishEffectChoice);
+    assert_eq!(game.counter_count(own, CounterKind::Lore), 1);
+    assert_eq!(game.counter_count(rival, CounterKind::Lore), 2);
+    assert_eq!(game.counter_count(garnet, CounterKind::PlusOne), 1);
+}
+
+#[test]
+fn genji_untaps_its_original_attacker_and_adds_one_combat() {
+    let p = Player::P0;
+    let mut game = scenario(p);
+    let glove = put(&mut game, p, "Genji Glove", Zone::Battlefield);
+    let attacker = put(&mut game, p, "Grizzly Bears", Zone::Battlefield);
+    let alternate = put(&mut game, p, "Bear Cub", Zone::Battlefield);
+    game.state.players[p.index()].mana = [0, 0, 0, 0, 0, 3];
+    announce_ability(&mut game, glove, 0);
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(attacker),
+        },
+    );
+    act(
+        &mut game,
+        Action::PayCosts {
+            payment: [0, 0, 0, 0, 0, 3],
+        },
+    );
+    settle(&mut game);
+    assert!(game.keywords(attacker).contains(Keywords::DOUBLE_STRIKE));
+    declare(&mut game, &[attacker]);
+    assert!(game.object_view(attacker).tapped);
+    assert!(game.attach_equipment(game.object_ref(glove), game.object_ref(alternate)));
+    game.state.objects[alternate as usize].tapped = true;
+    settle(&mut game);
+    assert!(!game.object_view(attacker).tapped);
+    assert!(game.object_view(alternate).tapped);
+    assert!(game.keywords(alternate).contains(Keywords::DOUBLE_STRIKE));
+    assert_eq!(game.observe(p).additional_combats, 1);
+}
+
+#[test]
+fn judgment_bolt_counts_controlled_equipment_at_resolution() {
+    let p = Player::P1;
+    let mut game = scenario(p);
+    let target = put(&mut game, p.other(), "Hill Giant", Zone::Battlefield);
+    game.state.objects[target as usize].growth.toughness = 3;
+    put(&mut game, p, "Short Bow", Zone::Battlefield);
+    put(&mut game, p, "Swiftfoot Boots", Zone::Battlefield);
+    put(&mut game, p.other(), "Short Bow", Zone::Battlefield);
+    let removed = put(&mut game, p, "Gold Pan", Zone::Battlefield);
+    let spell = put(&mut game, p, "Judgment Bolt", Zone::Hand);
+    cast(&mut game, spell, Some(Target::Card(target)));
+    game.move_object(removed, Zone::Graveyard);
+    settle(&mut game);
+    assert_eq!(game.object_view(target).damage, 5);
+    assert_eq!(game.state.players[p.other().index()].life, 18);
+}
+
+#[test]
+fn kain_gives_the_exact_permanent_away_before_the_damage_sized_rewards() {
+    let p = Player::P0;
+    let mut game = scenario(p);
+    let kain = put(&mut game, p, "Kain, Traitorous Dragoon", Zone::Battlefield);
+    assert!(game.keywords(kain).contains(Keywords::FLYING));
+    unblocked_damage(&mut game, &[kain]);
+    let mut gone = game.clone();
+    gone.move_object(kain, Zone::Exile);
+    settle(&mut gone);
+    assert_eq!(gone.state.players[p.index()].life, 20);
+    assert_eq!(gone.hand_count(p), 0);
+
+    settle(&mut game);
+    assert_eq!(game.object_view(kain).controller, p.other());
+    assert!(!game.keywords(kain).contains(Keywords::FLYING));
+    assert_eq!(game.state.players[p.index()].life, 18);
+    assert_eq!(game.hand_count(p), 2);
+    let treasures: Vec<_> = game
+        .observe(p)
+        .objects
+        .into_iter()
+        .filter(|view| {
+            view.controller == p && view.zone == Zone::Battlefield && view.has_subtype("Treasure")
+        })
+        .collect();
+    assert_eq!(treasures.len(), 2);
+    assert!(treasures.iter().all(|view| view.tapped && view.is_token()));
+}
+
+#[test]
+fn light_of_judgment_destroys_one_attached_equipment_before_lethal_sbas() {
+    let p = Player::P1;
+    let mut game = scenario(p);
+    let target = put(&mut game, p.other(), "Grizzly Bears", Zone::Battlefield);
+    let attached = put(&mut game, p.other(), "Short Bow", Zone::Battlefield);
+    let loose = put(&mut game, p, "Gold Pan", Zone::Battlefield);
+    let attached_ref = game.object_ref(attached);
+    assert!(game.attach_equipment(attached_ref, game.object_ref(target)));
+    let spell = put(&mut game, p, "Light of Judgment", Zone::Hand);
+    cast(&mut game, spell, Some(Target::Card(target)));
+    pass_pair(&mut game);
+    assert_eq!(game.object_view(target).damage, 6);
+    assert_eq!(game.object_view(target).zone, Zone::Battlefield);
+    let invalid = Action::ChooseEffectObject {
+        object: game.object_ref(loose),
+    };
+    reject(&mut game, invalid);
+    act(
+        &mut game,
+        Action::ChooseEffectObject {
+            object: attached_ref,
+        },
+    );
+    assert_eq!(game.object_view(target).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(attached).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(loose).zone, Zone::Battlefield);
+}
+
+#[test]
+fn lightning_stagger_doubles_the_following_normal_strike_after_first_strike() {
+    let p = Player::P0;
+    let mut game = scenario(p);
+    let lightning = put(&mut game, p, "Lightning, Army of One", Zone::Battlefield);
+    let follower = put(&mut game, p, "Grizzly Bears", Zone::Battlefield);
+    assert!(
+        game.keywords(lightning).contains(
+            Keywords::FIRST_STRIKE
+                .union(Keywords::TRAMPLE)
+                .union(Keywords::LIFELINK)
+        )
+    );
+    unblocked_damage(&mut game, &[lightning, follower]);
+    assert_eq!(game.state.step, Step::FirstStrikeDamage);
+    assert_eq!(game.state.players[p.index()].life, 23);
+    assert_eq!(game.state.players[p.other().index()].life, 17);
+    game.move_object(lightning, Zone::Graveyard);
+    settle(&mut game);
+    pass_pair(&mut game);
+    assert_eq!(game.state.players[p.other().index()].life, 13);
+}
+
+#[test]
+fn security_sergeant_permission_ends_at_the_first_control_loss() {
+    let p = Player::P1;
+    let mut game = scenario(p);
+    let lightning = put(
+        &mut game,
+        p,
+        "Lightning, Security Sergeant",
+        Zone::Battlefield,
+    );
+    let top = game.top_library_card(p).unwrap();
+    assert!(game.keywords(lightning).contains(Keywords::MENACE));
+    unblocked_damage(&mut game, &[lightning]);
+    settle(&mut game);
+    let exiled = game.object_ref(top);
+    assert_eq!(game.object_view(top).zone, Zone::Exile);
+    assert!(
+        game.observe(p)
+            .exile_permissions
+            .iter()
+            .any(|row| row.object == exiled)
+    );
+    let exact = game.object_ref(lightning);
+    game.record_control(exact, p.other(), None);
+    game.record_control(exact, p, None);
+    assert!(
+        game.observe(p)
+            .exile_permissions
+            .iter()
+            .all(|row| row.object != exiled)
+    );
+}
+
+#[test]
+fn louisoix_counters_with_legendary_sacrifice_or_the_two_mana_fee() {
+    let p = Player::P0;
+    let mut original = scenario(p);
+    let legend = put(
+        &mut original,
+        p,
+        "Giott, King of the Dwarves",
+        Zone::Battlefield,
+    );
+    let plain = put(&mut original, p, "Bear Cub", Zone::Battlefield);
+    let spell = put(&mut original, p, "Louisoix's Sacrifice", Zone::Hand);
+    let victim = put(&mut original, p.other(), "Opt", Zone::Hand);
+    act(&mut original, Action::Pass);
+    cast(&mut original, victim, None);
+    act(&mut original, Action::Pass);
+    for fee in [false, true] {
+        let mut game = original.clone();
+        if fee {
+            game.move_object(legend, Zone::Hand);
+        }
+        let payment = [0, 1, 0, 0, 0, if fee { 2 } else { 0 }];
+        game.state.players[p.index()].mana = payment;
+        act(&mut game, Action::AnnounceCast { card: spell });
+        act(
+            &mut game,
+            Action::ChooseSpellCost {
+                cost: u16::from(fee),
+            },
+        );
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Spell(victim),
+            },
+        );
+        if !fee {
+            let invalid = Action::ChooseAdditionalCost {
+                object: game.object_ref(plain),
+            };
+            reject(&mut game, invalid);
+            let exact = game.object_ref(legend);
+            act(&mut game, Action::ChooseAdditionalCost { object: exact });
+        }
+        act(&mut game, Action::PayCosts { payment });
+        settle(&mut game);
+        assert_eq!(game.object_view(victim).zone, Zone::Graveyard);
+        assert_eq!(
+            game.object_view(legend).zone,
+            if fee { Zone::Hand } else { Zone::Graveyard }
+        );
+        assert_eq!(game.object_view(plain).zone, Zone::Battlefield);
+    }
+}
+
+#[test]
+fn scythe_requires_a_block_and_grants_first_strike_only_after_optional_attachment() {
+    let p = Player::P0;
+    let mut game = scenario(p);
+    let target = put(&mut game, p, "Grizzly Bears", Zone::Battlefield);
+    let scythe = put(&mut game, p, "Magitek Scythe", Zone::Hand);
+    cast(&mut game, scythe, None);
+    pass_pair(&mut game);
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(target),
+        },
+    );
+    pass_pair(&mut game);
+    let mut declined = game.clone();
+    act(&mut declined, Action::ChooseOptional { accept: false });
+    assert_eq!(declined.object_view(scythe).attached_to, None);
+    assert_eq!(declined.block_requirement_weight(target), 0);
+    act(&mut game, Action::ChooseOptional { accept: true });
+    assert_eq!(
+        game.object_view(scythe).attached_to,
+        Some(game.object_ref(target))
+    );
+    assert_eq!(stats(&game, target), (4, 3));
+    assert!(game.keywords(target).contains(Keywords::FIRST_STRIKE));
+    assert_eq!(game.block_requirement_weight(target), 1);
+}

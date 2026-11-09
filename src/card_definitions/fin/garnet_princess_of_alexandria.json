@@ -3,10 +3,35 @@
   "catalogue_id": 1684,
   "oracle_id": "8c709873-84b5-46c2-bb29-85b041a6df88",
   "facts_sha256": "f1201158b4e28d30475d96a35719ef2454c778975e6872a5be32d8ae9b5e195b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2ba8aacebd1566d4e98a6a0c77e049c576bef04d339bb729bd2191d7a27eb588"
   },
-  "physical_metadata_sha256": "f0587e4418202cc5893854d309e8ef6b2d4c2b805e5478ab1e012e19fee890b3"
+  "physical_metadata_sha256": "f0587e4418202cc5893854d309e8ef6b2d4c2b805e5478ab1e012e19fee890b3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GarnetPrincessOfAlexandria.java",
+  "java_sha256": "45bf8e8bc2694a569a3fb055558f7910ace07e6a1ca0c6f8351d273b743368e3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    }
+  ]
 }

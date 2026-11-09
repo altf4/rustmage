@@ -3,10 +3,30 @@
   "catalogue_id": 2499,
   "oracle_id": "e1626880-0fa3-441a-9978-b293fc87c418",
   "facts_sha256": "9b8372092f5e74726189b2e0de79afd074adab906db6a5590acc228f489e679e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "74394c443f0caa3808cdc32bf1b44ebb8ec84f076378359476968127bc99f734"
   },
-  "physical_metadata_sha256": "5db777eb7b525de28c33e0678cdde749ad1b710d4702d666421c5ab6894c5933"
+  "physical_metadata_sha256": "5db777eb7b525de28c33e0678cdde749ad1b710d4702d666421c5ab6894c5933",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LightningSecuritySergeant.java",
+  "java_sha256": "5770de9e76c1f37feffc73f019b17d4eb8d8ca09cbbba6509016751981158239",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+      "sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    }
+  ]
 }
