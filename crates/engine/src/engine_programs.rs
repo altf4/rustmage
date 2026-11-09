@@ -4299,6 +4299,9 @@ impl Game {
                         cards_group,
                     );
                 }
+                Instruction::ShuffleGraveyardIntoLibraryCount { excluded_kinds } => {
+                    self.shuffle_graveyard_into_library_count(item.controller, excluded_kinds);
+                }
                 Instruction::ShuffleGraveyardIntoLibrary => {
                     let ids: Vec<_> = self
                         .state

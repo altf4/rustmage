@@ -177,11 +177,45 @@ impl Game {
                 }
             }
         }
-        let events = self.move_objects_raw(&ids, Zone::Library);
+        self.shuffle_cards_into_library(player, &ids);
+    }
+
+    pub(super) fn shuffle_graveyard_into_library_count(
+        &mut self,
+        player: Player,
+        excluded_kinds: u16,
+    ) {
+        let ids: Vec<_> = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(id, object)| {
+                object.zone == Zone::Graveyard
+                    && object.owner == player
+                    && object.is_card()
+                    && self.current_kinds(*id as CardId) & excluded_kinds == 0
+            })
+            .map(|(id, _)| id as CardId)
+            .collect();
+        let events = self.shuffle_cards_into_library(player, &ids);
+        let count = events
+            .iter()
+            .filter(|event| event.moved && event.destination == Zone::Library)
+            .count();
+        self.state.resolving.as_mut().unwrap().moved_count =
+            Some(u64::try_from(count).capacity("shuffled card count exhausted"));
+    }
+
+    fn shuffle_cards_into_library(&mut self, player: Player, ids: &[CardId]) -> Vec<ZoneChange> {
+        let events = self.move_objects_raw(ids, Zone::Library);
         self.finish_zone_events(&events, &[]);
+        // An instruction to shuffle still randomizes the library with no arrivals.
         self.forget_library_top(player);
         self.shuffle_library_cards(player);
+        events
     }
+
     pub(super) fn shuffle_target_into_library(&mut self, item: &SpellView) {
         let Some(source) = item.source else {
             return;

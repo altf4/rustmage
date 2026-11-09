@@ -3541,6 +3541,10 @@ pub enum Instruction {
     /// Shuffle the live source and valid target into their owners' libraries together.
     ShuffleSourceAndTargetIntoLibraries,
     ShuffleGraveyardIntoLibrary,
+    /// Shuffle the controller's qualifying graveyard cards and record actual arrivals.
+    ShuffleGraveyardIntoLibraryCount {
+        excluded_kinds: u16,
+    },
     /// Shuffle the selected player even when the selected card group is empty.
     ShuffleGraveyardTargetsIntoPlayerLibrary {
         player_group: u16,
