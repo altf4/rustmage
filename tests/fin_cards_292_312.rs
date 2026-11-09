@@ -660,3 +660,52 @@ fn venat_draws_for_the_first_legend_and_hydaelyn_protects_its_exact_target() {
         );
     }
 }
+
+#[test]
+fn vincent_uses_opposing_death_power_and_galian_returns_tapped_for_its_controller() {
+    let p = Player::P0;
+    let mut game = scenario(p);
+    let vincent = put(&mut game, p, "Vincent Valentine", Zone::Battlefield);
+    let front = game.object_view(vincent).card;
+    let giant = put(&mut game, p.other(), "Hill Giant", Zone::Battlefield);
+    let bear = put(&mut game, p.other(), "Grizzly Bears", Zone::Battlefield);
+    let friendly = put(&mut game, p.other(), "Hill Giant", Zone::Battlefield);
+    game.record_control(game.object_ref(friendly), p, None);
+    game.state.objects[bear as usize].growth.power = -4;
+    game.add_counter(giant, CounterKind::PlusOne, 1);
+    game.sacrifice_batch(&[(p.other(), giant), (p.other(), bear), (p, friendly)]);
+    game.prepare_triggers();
+    drain_triggers(&mut game);
+    assert_eq!(game.counter_count(vincent, CounterKind::PlusOne), 4);
+
+    game.begin_step(Step::BeginCombat);
+    pass_pair(&mut game);
+    act(&mut game, Action::Attack { card: vincent });
+    act(&mut game, Action::FinishAttackers);
+    pass_pair(&mut game);
+    let before = game.object_ref(vincent);
+    let mut decline = game.clone();
+    act(&mut decline, Action::ChooseOptional { accept: false });
+    assert_eq!(decline.object_view(vincent).card, front);
+    act(&mut game, Action::ChooseOptional { accept: true });
+    assert_eq!(game.object_ref(vincent), before);
+    assert_eq!(game.object_view(vincent).card, front.back_face().unwrap());
+    assert!(
+        game.keywords(vincent)
+            .contains(Keywords::TRAMPLE.union(Keywords::LIFELINK))
+    );
+    assert_eq!(stats(&game, vincent), (7, 6));
+
+    game.record_control(before, p.other(), None);
+    game.move_object(vincent, Zone::Graveyard);
+    game.prepare_triggers();
+    settle(&mut game);
+    let returned = game.object_view(vincent);
+    assert_eq!(returned.zone, Zone::Battlefield);
+    assert_eq!(returned.card, front);
+    assert_eq!(returned.owner, p);
+    assert_eq!(returned.controller, p.other());
+    assert!(returned.tapped);
+    assert_ne!(returned.reference, before);
+    assert_eq!(stats(&game, vincent), (2, 2));
+}
