@@ -50,5 +50,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             Instruction::TransformSource,
         ],
     }],
+    extras: &CardExtras {
+        transforming_double_face: true,
+        ..CardExtras::EMPTY
+    },
     ..CardRules::EMPTY
 };
