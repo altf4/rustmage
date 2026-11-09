@@ -65,7 +65,6 @@ pub(super) fn matching_partner<W: CharacteristicWorld + ?Sized>(
     name: &str,
 ) -> bool {
     source != partner
-        && owned_permanent(world, source, player)
         && owned_permanent(world, partner, player)
         && world.kinds(partner.card) & 1 != 0
         && world.name(partner.card) == name
@@ -78,8 +77,9 @@ pub(super) fn owns_source_and_named_creature<W: CharacteristicWorld + ?Sized>(
     player: Player,
     name: &str,
 ) -> bool {
-    (0..world.game().state.objects.len())
-        .any(|id| matching_partner(world, source, world.reference(id as CardId), player, name))
+    owned_permanent(world, source, player)
+        && (0..world.game().state.objects.len())
+            .any(|id| matching_partner(world, source, world.reference(id as CardId), player, name))
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -99,14 +99,26 @@ impl Game {
         &mut self,
         player: Player,
         source: ObjectRef,
-        partner: ObjectRef,
+        partner: Option<ObjectRef>,
         pair: MeldPair,
     ) {
-        if !matching_partner(self, source, partner, player, pair.partner.name()) {
+        // The intervening condition was checked before the payment. Exile
+        // each exact permanent still available after the mana abilities.
+        let source_live =
+            self.on_battlefield(source.card) && self.object_ref(source.card) == source;
+        let partner = partner.filter(|&partner| {
+            matching_partner(self, source, partner, player, pair.partner.name())
+        });
+        let ids: Vec<_> = source_live
+            .then_some(source.card)
+            .into_iter()
+            .chain(partner.map(|partner| partner.card))
+            .collect();
+        if ids.is_empty() {
             return;
         }
         let death_sources = self.death_trigger_sources();
-        let events = self.move_objects_raw(&[source.card, partner.card], Zone::Exile);
+        let events = self.move_objects_raw(&ids, Zone::Exile);
         self.finish_zone_events(&events, &death_sources);
         let [first, second] = events.as_slice() else {
             return;

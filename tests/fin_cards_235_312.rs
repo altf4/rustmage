@@ -1758,3 +1758,63 @@ fn vanille_recovers_an_older_permanent_then_melds_only_when_the_pair_is_owned() 
     );
     assert!(!game.on_battlefield(fang));
 }
+
+#[test]
+fn vanille_exiles_the_surviving_half_after_a_mana_ability_sacrifices_the_other() {
+    let player = Player::P0;
+    let base = [0, 0, 1, 0, 1, 0];
+    let production = [3, 0, 0, 0, 0, 0];
+    let payment = [3, 0, 1, 0, 1, 0];
+    for sacrifice_vanille in [false, true] {
+        let mut game = scenario(player);
+        let vanille = put(
+            &mut game,
+            player,
+            "Vanille, Cheerful l'Cie",
+            Zone::Battlefield,
+        );
+        let fang = put(&mut game, player, "Fang, Fearless l'Cie", Zone::Battlefield);
+        let ring = put(&mut game, player, "Lotus Ring", Zone::Battlefield);
+        let (sacrificed, surviving) = if sacrifice_vanille {
+            (vanille, fang)
+        } else {
+            (fang, vanille)
+        };
+        let grantor = game.object_ref(ring);
+        assert!(game.attach_equipment(grantor, game.object_ref(sacrificed)));
+        advance_chapter(&mut game);
+        game.state.players[player.index()].mana = base;
+        pass_pair(&mut game);
+        assert_eq!(
+            game.observe(player)
+                .resolution_payment
+                .unwrap()
+                .cost
+                .generic,
+            3
+        );
+        act(
+            &mut game,
+            Action::TapGrantedMana {
+                card: sacrificed,
+                grantor,
+                production,
+            },
+        );
+        assert_eq!(game.object_view(sacrificed).zone, Zone::Graveyard);
+        assert_eq!(game.object_view(surviving).zone, Zone::Battlefield);
+
+        let mut declined = game.clone();
+        act(&mut declined, Action::DeclineResolutionMana);
+        assert_eq!(declined.object_view(surviving).zone, Zone::Battlefield);
+        act(&mut game, Action::PayResolutionMana { payment });
+        if sacrifice_vanille {
+            let object = game.object_ref(fang);
+            act(&mut game, Action::ChooseEffectObject { object });
+        }
+        settle(&mut game);
+        assert_eq!(game.object_view(surviving).zone, Zone::Exile);
+        assert_eq!(game.object_view(sacrificed).zone, Zone::Graveyard);
+        assert!(game.observe(player).melded_permanents.is_empty());
+    }
+}

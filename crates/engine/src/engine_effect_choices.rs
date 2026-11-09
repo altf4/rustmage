@@ -1778,9 +1778,8 @@ impl Game {
         }
         if let EffectChoiceKind::MeldPartner(pair) = choice.kind {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
-            if let Some(&partner) = choice.selected[player.index()].first() {
-                self.meld_chosen_pair(player, choice.source, partner, pair);
-            }
+            let partner = choice.selected[player.index()].first().copied();
+            self.meld_chosen_pair(player, choice.source, partner, pair);
             return false;
         }
         if let EffectChoiceKind::CountersOnTarget { kind, amount, .. } = choice.kind {
