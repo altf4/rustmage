@@ -3365,6 +3365,11 @@ pub enum Instruction {
     Proliferate(AmountValue),
     RemoveAllCounters,
     RemoveAllCountersFrom(Subject),
+    /// Remove one counter of this kind from each exact subject that has it.
+    RemoveCounter {
+        subject: Subject,
+        kind: CounterKind,
+    },
     SnapshotDoubleCreatures(CreatureFilter),
     PutCounters {
         subject: Subject,
@@ -4840,6 +4845,7 @@ pub enum StepGuard {
     CardExiledThisTurn,
     OpponentHasMoreCardsInHand,
     OpponentControlsMoreCreatures,
+    ControlsGreatestCreaturePower,
     SourceReceivedCounterThisTurn,
     PutCounterOnCreatureThisTurn,
     YourTurn,

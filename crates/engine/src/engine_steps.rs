@@ -404,6 +404,9 @@ impl Game {
                 return attached_controller_turn(world, source, self.state.active);
             }
             StepGuard::CardExiledThisTurn => return self.state.cards_exiled_this_turn,
+            StepGuard::ControlsGreatestCreaturePower => {
+                return world.controls_greatest_creature_power(player);
+            }
             StepGuard::OpponentControlsMoreCreatures => {
                 let count = |controller| {
                     self.state

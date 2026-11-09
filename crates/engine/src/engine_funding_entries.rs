@@ -501,6 +501,9 @@ impl FundingState<'_> {
             StepGuard::OpponentHasMoreCardsInHand => {
                 count(Zone::Hand, player.other()) > count(Zone::Hand, player)
             }
+            StepGuard::ControlsGreatestCreaturePower => {
+                self.controls_greatest_creature_power(player)
+            }
             StepGuard::OpponentControlsMoreCreatures => {
                 let creatures = |p| {
                     self.resources

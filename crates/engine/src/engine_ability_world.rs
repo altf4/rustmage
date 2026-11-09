@@ -42,6 +42,21 @@ pub(super) trait CharacteristicWorld {
             .max()
             .unwrap_or(0)
     }
+    fn controls_greatest_creature_power(&self, player: Player) -> bool {
+        let query = characteristic_query::CharacteristicQuery::in_world(self);
+        let mut greatest: [Option<i128>; 2] = [None; 2];
+        for id in 0..self.game().state.objects.len() {
+            let id = id as CardId;
+            let object = self.object(id);
+            if object.zone == Zone::Battlefield && self.kinds(id) & 1 != 0 {
+                let power = query.stats(id).power;
+                let best = &mut greatest[object.controller.index()];
+                *best = Some(best.map_or(power, |previous| previous.max(power)));
+            }
+        }
+        let own = greatest[player.index()];
+        own.is_some() && own >= greatest[player.other().index()]
+    }
     fn game(&self) -> &Game;
     fn borrowed_slots_state(&self) -> &borrowed_activations::SlotRows {
         &self.game().state.borrowed_slots

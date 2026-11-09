@@ -9548,6 +9548,13 @@ impl Game {
                         .collect();
                     self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
+                Instruction::RemoveCounter { subject, kind } => {
+                    for id in self.keyword_subjects(&item, subject) {
+                        if self.on_battlefield(id) && self.counter_count(id, kind) > 0 {
+                            self.pay_counters(id, &Counters::of(kind, 1));
+                        }
+                    }
+                }
                 Instruction::RemoveAllCountersFrom(subject) => {
                     let ids = if subject == Subject::Attached {
                         self.attached_permanent(&item).into_iter().collect()
