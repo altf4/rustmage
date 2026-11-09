@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "cd2ca838661e4ef8385fbc2bbcb5d694fd8e6cd586441a1c7cd5abf9c323f175",
+  "catalogue_version": "1c09e44e567849ab5c60dba7060fe019e15d0790e8e33c5f5c504543c2e932c0",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 3689,
-  "implemented_total": 3697,
+  "implemented_standard_cards": 3702,
+  "implemented_total": 3711,
   "token_definitions": 169,
   "emblem_definitions": 12,
   "adventure_definitions": 53,
@@ -64,8 +64,8 @@
     },
     "fin": {
       "total": 304,
-      "complete": 243,
-      "gated": 61
+      "complete": 256,
+      "gated": 48
     },
     "fra": {
       "total": 285,
@@ -31070,8 +31070,8 @@
     {
       "name": "Sidequest: Card Collection // Magicked Card",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/sidequest_card_collection_magicked_card.rs",
       "set": "fin"
     },
@@ -31086,24 +31086,24 @@
     {
       "name": "Sidequest: Hunt the Mark // Yiazmat, Ultimate Mark",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/sidequest_hunt_the_mark_yiazmat_ultimate_mark.rs",
       "set": "fin"
     },
     {
       "name": "Sidequest: Play Blitzball // World Champion, Celestial Weapon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/sidequest_play_blitzball_world_champion_celestial_weapon.rs",
       "set": "fin"
     },
     {
       "name": "Sidequest: Raise a Chocobo // Black Chocobo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/sidequest_raise_a_chocobo_black_chocobo.rs",
       "set": "fin"
     },
@@ -31230,8 +31230,8 @@
     {
       "name": "Sin, Spira's Punishment",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/sin_spira_s_punishment.rs",
       "set": "fin"
     },
@@ -31534,8 +31534,8 @@
     {
       "name": "Sleep Magic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/sleep_magic.rs",
       "set": "fin"
     },
@@ -39582,8 +39582,8 @@
     {
       "name": "Vivi Ornitier",
       "standard_legal": false,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/vivi_ornitier.rs",
       "set": "fin"
     },
@@ -40366,8 +40366,8 @@
     {
       "name": "Weapons Vendor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/weapons_vendor.rs",
       "set": "fin"
     },
@@ -41366,8 +41366,8 @@
     {
       "name": "Yuna, Hope of Spira",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/yuna_hope_of_spira.rs",
       "set": "fin"
     },
@@ -41398,8 +41398,8 @@
     {
       "name": "Zack Fair",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/zack_fair.rs",
       "set": "fin"
     },
@@ -41422,8 +41422,8 @@
     {
       "name": "Zanarkand, Ancient Metropolis // Lasting Fayth",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/zanarkand_ancient_metropolis_lasting_fayth.rs",
       "set": "fin"
     },
@@ -41454,8 +41454,8 @@
     {
       "name": "Zenos yae Galvus // Shinryu, Transcendent Rival",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/zenos_yae_galvus_shinryu_transcendent_rival.rs",
       "set": "fin"
     },
@@ -41494,8 +41494,8 @@
     {
       "name": "Zidane, Tantalus Thief",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/zidane_tantalus_thief.rs",
       "set": "fin"
     },
@@ -41526,8 +41526,8 @@
     {
       "name": "Zodiark, Umbral God",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/zodiark_umbral_god.rs",
       "set": "fin"
     },
