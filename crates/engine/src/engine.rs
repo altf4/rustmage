@@ -1739,7 +1739,7 @@ pub struct SpellView {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl SpellView {
-    pub(super) fn tap_mana_bonus<W: ability_world::CharacteristicWorld + ?Sized>(
+    fn tap_mana_bonus<W: ability_world::CharacteristicWorld + ?Sized>(
         &self,
         world: &W,
     ) -> ManaTapBonus {
