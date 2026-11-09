@@ -3,35 +3,21 @@ use crate::ecl_scenarios::{checked, named, setup};
 use rustmage_core::engine::ability_world::CharacteristicWorld;
 use rustmage_core::engine::funding::{FundingGoal, FundingState};
 use rustmage_core::engine::*;
+use std::collections::HashSet;
+
 fn occurrences<W: CharacteristicWorld + ?Sized>(world: &W, source: CardId) -> usize {
     1 + trigger_multiplicity::additional_triggers(
         &characteristic_query::CharacteristicQuery::in_world(world),
         source,
     )
 }
-use std::collections::HashSet;
-fn all_types_boundary(g: &mut Game, source: CardId) {
-    let timestamp = g.next_role_timestamp();
-    let object = g.object_ref(source);
-    g.state
-        .roles
-        .get_or_insert_with(Default::default)
-        .creature_types
-        .push(subtypes::CreatureTypesEffectView {
-            source: object,
-            recipient: object,
-            types: &["Elemental"],
-            additional: true,
-            timestamp,
-        });
-}
+
 #[test]
 fn ecl_twinflame_funding_virtual_provider_departure_removal_and_source_control_agree() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
         let provider = named(&mut g, p, "Twinflame Travelers", Zone::Battlefield);
-        let source = named(&mut g, p, "Morcant's Eyes", Zone::Battlefield);
-        all_types_boundary(&mut g, source);
+        let source = named(&mut g, p, "Lavaleaper", Zone::Battlefield);
         let goal = FundingGoal {
             actor: p,
             required: [0; 6],
@@ -39,7 +25,7 @@ fn ecl_twinflame_funding_virtual_provider_departure_removal_and_source_control_a
             reserve: None,
             source: None,
         };
-        let mut world = FundingState::from_game(&g, &goal);
+        let mut world = FundingState::from_game_with_convoke(&g, &goal, true);
         assert_eq!(occurrences(&world, source), 2);
         world
             .resources
@@ -53,7 +39,7 @@ fn ecl_twinflame_funding_virtual_provider_departure_removal_and_source_control_a
         let mut child = g.clone();
         child.move_object(provider, Zone::Exile);
         assert_eq!(occurrences(&world, source), occurrences(&child, source));
-        let mut world = FundingState::from_game(&g, &goal);
+        let mut world = FundingState::from_game_with_convoke(&g, &goal, true);
         world
             .resources
             .iter_mut()
@@ -71,35 +57,32 @@ fn ecl_twinflame_funding_virtual_provider_departure_removal_and_source_control_a
 fn ecl_twinflame_triggered_mana_bonus_at_production_and_funding_match_actual() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
-        let provider = named(&mut g, p, "Twinflame Travelers", Zone::Battlefield);
         let land = named(&mut g, p, "Forest", Zone::Battlefield);
-        let aura = crate::ecl_scenarios::enter_growth(&mut g, p, land, 3);
-        // Typed boundary fixture for an Elemental mana-trigger source: ordinary
-        // Growth has no creature subtype. This isolates the shared mana hook
-        // which Lavaleaper's printed Elemental ability will also consume.
+        named(&mut g, p, "Lavaleaper", Zone::Battlefield);
         g.state.players[p.index()].mana = [0; 6];
         let ordinary = FundingGoal {
             actor: p,
-            required: [0; 6],
-            generic: 2,
+            required: [0, 0, 0, 0, 2, 0],
+            generic: 0,
             reserve: None,
             source: None,
         };
         assert!(FundingState::from_game(&g, &ordinary).reachable(&ordinary, &mut HashSet::new()));
-        all_types_boundary(&mut g, aura);
         let goal = FundingGoal {
-            actor: p,
-            required: [0; 6],
-            generic: 3,
-            reserve: None,
-            source: None,
+            generic: 1,
+            ..ordinary
         };
-        g.state.players[p.index()].mana = [0; 6];
+        assert!(!FundingState::from_game(&g, &goal).reachable(&goal, &mut HashSet::new()));
+        let provider = named(&mut g, p, "Twinflame Travelers", Zone::Battlefield);
         let world = FundingState::from_game(&g, &goal);
         let tapped_land = g.object_ref(land);
         let tap = g.mana_tap_bonuses(p, land);
+        let production = [0, 0, 0, 0, 1, 0];
         let produced_bonus = tap.with_trigger_bonuses(&g, p, Some(tapped_land));
-        assert_eq!(produced_bonus.fixed, [0, 0, 0, 2, 0, 0]);
+        assert_eq!(
+            produced_bonus.singleton(production),
+            Some([0, 0, 0, 0, 2, 0])
+        );
         let step = world
             .moves(&goal)
             .into_iter()
@@ -110,7 +93,7 @@ fn ecl_twinflame_triggered_mana_bonus_at_production_and_funding_match_actual() {
             projected = Some(next.mana);
             true
         });
-        assert_eq!(projected, Some([0, 0, 0, 2, 1, 0]));
+        assert_eq!(projected, Some([0, 0, 0, 0, 3, 0]));
         assert!(
             world.reachable(&goal, &mut HashSet::new()),
             "upper={} optimistic={} moves={:?}",
@@ -122,39 +105,30 @@ fn ecl_twinflame_triggered_mana_bonus_at_production_and_funding_match_actual() {
                 .map(|m| (world.resources[m.resource].id, m.production))
                 .collect::<Vec<_>>()
         );
-        let victim = named(&mut g, p.other(), "Bear Cub", Zone::Battlefield);
-        let spell = named(&mut g, p, "Goatnap", Zone::Hand);
+        let spell = named(&mut g, p, "Thrashing Brontodon", Zone::Hand);
         let saved = g.snapshot();
         checked(&mut g, Action::AnnounceCast { card: spell });
-        checked(
-            &mut g,
-            Action::ChooseTarget {
-                target: Target::Card(victim),
-            },
-        );
-        if g.legal_actions().contains(&Action::FinishTargets) {
-            checked(&mut g, Action::FinishTargets);
-        }
         checked(&mut g, Action::TapMana { card: land });
-        assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 2, 1, 0]);
+        assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 0, 3, 0]);
         assert!(g.state.stack.is_empty() && g.state.pending_triggers.is_empty());
         checked(
             &mut g,
             Action::PayCosts {
-                payment: [0, 0, 0, 2, 1, 0],
+                payment: [0, 0, 0, 0, 3, 0],
             },
         );
         crate::ecl_scenarios::settle(&mut g);
-        assert_eq!(g.object_view(victim).controller, p);
+        assert_eq!(g.object_view(spell).zone, Zone::Battlefield);
         g.restore(&saved).unwrap();
         g.move_object(provider, Zone::Graveyard);
         assert_eq!(
-            tap.with_trigger_bonuses(&g, p, Some(tapped_land)).fixed,
-            [0, 0, 0, 1, 0, 0]
+            tap.with_trigger_bonuses(&g, p, Some(tapped_land))
+                .singleton(production),
+            Some(production)
         );
         assert!(!FundingState::from_game(&g, &goal).reachable(&goal, &mut HashSet::new()));
         // A new production event sees the provider's departure in both worlds.
         checked(&mut g, Action::TapMana { card: land });
-        assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 1, 1, 0]);
+        assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 0, 2, 0]);
     }
 }

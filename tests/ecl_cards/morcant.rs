@@ -360,7 +360,8 @@ fn ecl_morcant_proliferate_poison_loss_waits_for_counter_replacement_completion(
         checked(&mut g, Action::ProliferatePermanent { object });
         checked(&mut g, Action::ProliferatePlayer { player: p.other() });
         checked(&mut g, Action::FinishProliferate);
-        assert_eq!(g.state.players[p.other().index()].poison_counters, 10);
+        assert_eq!(g.state.players[p.other().index()].poison_counters, 9);
+        assert_eq!(g.counter_count(recipient, CounterKind::Charge), 2);
         assert!(g.state.outcome.is_none());
         assert!(g.observe(p).replacement_choice.is_some());
         let action = g
@@ -369,6 +370,7 @@ fn ecl_morcant_proliferate_poison_loss_waits_for_counter_replacement_completion(
             .find(|a| matches!(a, Action::ChooseReplacement { .. }))
             .unwrap();
         checked(&mut g, action);
+        assert_eq!(g.state.players[p.other().index()].poison_counters, 10);
         assert_eq!(g.counter_count(recipient, CounterKind::Charge), 6);
         assert_eq!(g.state.outcome, Some(Outcome::Winner(p)));
     }
