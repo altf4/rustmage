@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "156bc43f3c81d6d517b866c6da0193164acfeb49d7896c7497db7b4720c2a687",
+  "catalogue_version": "a0b8c4c8701ef758c1ccc8143e58ee1b49167282192f37a37d0ec0ac72bc7acb",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 3641,
-  "implemented_total": 3649,
+  "implemented_standard_cards": 3650,
+  "implemented_total": 3658,
   "token_definitions": 168,
   "emblem_definitions": 12,
   "adventure_definitions": 53,
@@ -64,8 +64,8 @@
     },
     "fin": {
       "total": 304,
-      "complete": 195,
-      "gated": 109
+      "complete": 204,
+      "gated": 100
     },
     "fra": {
       "total": 285,
@@ -24302,8 +24302,8 @@
     {
       "name": "Omega, Heartless Evolution",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/omega_heartless_evolution.rs",
       "set": "fin"
     },
@@ -27798,8 +27798,8 @@
     {
       "name": "Relentless X-ATM092",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/relentless_x_atm092.rs",
       "set": "fin"
     },
@@ -27822,8 +27822,8 @@
     {
       "name": "Relm's Sketching",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/relm_s_sketching.rs",
       "set": "fin"
     },
@@ -27870,8 +27870,8 @@
     {
       "name": "Reno and Rude",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/reno_and_rude.rs",
       "set": "fin"
     },
@@ -28198,8 +28198,8 @@
     {
       "name": "Retrieve the Esper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/retrieve_the_esper.rs",
       "set": "fin"
     },
@@ -28358,8 +28358,8 @@
     {
       "name": "Ride the Shoopuf",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/ride_the_shoopuf.rs",
       "set": "fin"
     },
@@ -28454,8 +28454,8 @@
     {
       "name": "Rinoa Heartilly",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/rinoa_heartilly.rs",
       "set": "fin"
     },
@@ -29078,8 +29078,8 @@
     {
       "name": "Rufus Shinra",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/rufus_shinra.rs",
       "set": "fin"
     },
@@ -29270,8 +29270,8 @@
     {
       "name": "Rydia, Summoner of Mist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/rydia_summoner_of_mist.rs",
       "set": "fin"
     },
