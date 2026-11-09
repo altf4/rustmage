@@ -81,11 +81,7 @@ impl Game {
         self.register_live_static_source(id);
         self.register_ability_source(id);
         self.register_hand_size_source(id);
-        if self.state.objects[id as usize]
-            .card
-            .attachment_bonus()
-            .is_some()
-        {
+        if self.state.objects[id as usize].card.is_attachment_source() {
             self.state.attachment_sources.push(id);
         }
         self.register_ability_target_source(id);
@@ -359,6 +355,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::SourceOffTurnCreature
                             | crate::cards::StaticAbilityFragment::DeathBaronLord
                             | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledEquippedCreatureKeywords(_)
                             | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. }
                             | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. }

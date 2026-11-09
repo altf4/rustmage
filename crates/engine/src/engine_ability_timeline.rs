@@ -93,6 +93,7 @@ impl Card {
                             | StaticAbilityFragment::AttachedLegendary
                             | StaticAbilityFragment::KeywordGrant(..)
                             | StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                            | StaticAbilityFragment::ControlledEquippedCreatureKeywords(_)
                             | StaticAbilityFragment::ControlledTappedKeywords { .. }
                             | StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                             | StaticAbilityFragment::SourceMaxSpeedActivation(..)

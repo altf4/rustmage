@@ -148,18 +148,16 @@ impl Game {
     }
     pub(super) fn equipped_creature_count(&self, player: Player) -> u128 {
         self.state
-            .objects
+            .attachment_sources
             .iter()
-            .enumerate()
-            .filter_map(|(id, equipment)| {
-                let recipient = equipment.attached_to?;
+            .filter_map(|&id| {
+                let recipient = self.state.objects[id as usize].attached_to?;
                 let creature = &self.state.objects[recipient.card as usize];
-                (equipment.zone == Zone::Battlefield
-                    && creature.zone == Zone::Battlefield
-                    && creature.generation == recipient.generation
-                    && creature.controller == player
-                    && self.is_creature(recipient.card)
-                    && ability_world::CharacteristicWorld::is_equipment(self, id as CardId))
+                (creature.controller == player
+                    && ability_world::CharacteristicWorld::equipment_attached_to(
+                        self, id, recipient,
+                    )
+                    && self.is_creature(recipient.card))
                 .then_some(recipient)
             })
             .collect::<std::collections::HashSet<_>>()

@@ -387,6 +387,8 @@ pub enum TargetPredicate {
     Blocking,
     Nontoken,
     Permanent,
+    /// A live Equipment is attached to this exact battlefield object.
+    Equipped,
     Attacking,
     /// This exact permanent was declared as an attacker earlier this turn.
     AttackedThisTurn,
@@ -6659,6 +6661,9 @@ impl Card {
     }
     pub(crate) fn attachment_bonus(self) -> Option<EquipmentSpec> {
         self.equipment().or_else(|| self.aura().map(|a| a.bonus))
+    }
+    pub(crate) fn is_attachment_source(self) -> bool {
+        self.attachment_bonus().is_some() || (self.is_artifact() && self.has_subtype("Equipment"))
     }
     /// Explicit immutable authored fact. Unreviewed/gated cards conservatively have abilities.
     pub fn has_rules_abilities(self) -> bool {

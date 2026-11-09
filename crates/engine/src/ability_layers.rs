@@ -247,6 +247,8 @@ pub enum StaticAbilityFragment {
         kinds: u16,
         keywords: Keywords,
     },
+    /// Live grant to equipped creatures, independent of the Equipment controller.
+    ControlledEquippedCreatureKeywords(Keywords),
     /// Live grant to tapped controlled creatures, including virtual payment taps.
     ControlledTappedKeywords {
         other: bool,

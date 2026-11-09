@@ -1362,6 +1362,16 @@ pub(super) trait CharacteristicWorld {
             && self.reference(recipient.card) == recipient
             && object.attached_to == Some(recipient)
     }
+    fn equipment_attached_to(&self, source: CardId, recipient: ObjectRef) -> bool {
+        self.attachment_link(self.reference(source), recipient) && self.is_equipment(source)
+    }
+    fn equipped(&self, id: CardId) -> bool {
+        self.object(id).zone == Zone::Battlefield
+            && self
+                .attachment_sources()
+                .iter()
+                .any(|&source| self.equipment_attached_to(source, self.reference(id)))
+    }
     fn attached(&self, source: ObjectRef, recipient: CardId) -> bool {
         self.attachment_link(source, self.reference(recipient))
             && self.kinds(source.card) & 1 == 0

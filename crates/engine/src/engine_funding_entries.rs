@@ -225,7 +225,7 @@ impl EntryProjection {
         if !self.static_sources.contains(&source.card) {
             self.static_sources.push(source.card);
         }
-        if card.attachment_bonus().is_some() && !self.attachment_sources.contains(&source.card) {
+        if card.is_attachment_source() && !self.attachment_sources.contains(&source.card) {
             self.attachment_sources.push(source.card);
         }
         if let Some(spec) = card.base_stat_setter() {
@@ -1615,7 +1615,7 @@ impl FundingState<'_> {
                 if !p.static_sources.contains(&row.id) {
                     p.static_sources.push(row.id)
                 }
-                if o.card.attachment_bonus().is_some() && !p.attachment_sources.contains(&row.id) {
+                if o.card.is_attachment_source() && !p.attachment_sources.contains(&row.id) {
                     p.attachment_sources.push(row.id)
                 }
             }

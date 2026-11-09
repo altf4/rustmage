@@ -272,6 +272,12 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             keywords
         }
+        StaticAbilityFragment::ControlledEquippedCreatureKeywords(keywords) => {
+            if !own || world.kinds(id) & 1 == 0 || !world.equipped(id) {
+                return None;
+            }
+            keywords
+        }
         StaticAbilityFragment::ControlledTappedKeywords { other, keywords } => {
             if !own || !target.tapped || world.kinds(id) & 1 == 0 || (other && id == source.card) {
                 return None;
@@ -672,6 +678,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::KeywordGrant(..)
                         | StaticAbilityFragment::ChosenTypeKeywords(..)
                         | StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                        | StaticAbilityFragment::ControlledEquippedCreatureKeywords(_)
                         | StaticAbilityFragment::ControlledTappedKeywords { .. }
                         | StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                         | StaticAbilityFragment::ControlledPlaneswalkerActivation(..)
