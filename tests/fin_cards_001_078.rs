@@ -1288,7 +1288,7 @@ fn dark_confidants_upkeep_reveals_and_moves_the_top_card_without_drawing() {
         let exact = game.object_ref(top);
         game.begin_step(Step::Upkeep);
         game.give_priority();
-        settle(&mut game);
+        settle_triggers(&mut game);
         let observed = game.observe(player.other());
         let reveal = observed.last_library_reveal.unwrap();
         assert_eq!(reveal.revealed.object, exact);
@@ -1491,6 +1491,7 @@ fn clive_wheels_by_red_devotion_and_ifrit_fights_then_returns_after_chapter_thre
     let wheel = Action::ChooseOptional { accept: true };
     reach(&mut game, |a| *a == wheel);
     act(&mut game, wheel);
+    act(&mut game, Action::Discard { card: discard });
     settle(&mut game);
     assert_eq!(game.object_view(discard).zone, Zone::Graveyard);
     assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 3);
@@ -1644,7 +1645,7 @@ fn emet_rechecks_fourteen_cards_and_hades_plays_graveyard_cards_with_exile_repla
     let exact = game.object_ref(emet);
     let mut thirteen = game.clone();
     thirteen.move_object(discard, Zone::Exile);
-    settle(&mut thirteen);
+    settle_triggers(&mut thirteen);
     assert_eq!(stats(&thirteen, emet), (2, 4));
     let accept = Action::ChooseOptional { accept: true };
     reach(&mut game, |a| *a == accept);

@@ -3,10 +3,35 @@
   "catalogue_id": 4821,
   "oracle_id": "24fd1f47-bb15-45c6-a7b1-ba8eb3bb8b1d",
   "facts_sha256": "bb92dc00a72cf72e50915b04b8a791d683db287b55059fda8a1e658f0f351574",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0ecd887fa6a64a0bf93ec65b71f9b367f485e22b381a8df096c7128dcb979de1"
   },
-  "physical_metadata_sha256": "bb31e2bb2acb573d68f498baa52bd56de4c4a559ae5c8b03ef6096cda35f4098"
+  "physical_metadata_sha256": "bb31e2bb2acb573d68f498baa52bd56de4c4a559ae5c8b03ef6096cda35f4098",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VaanStreetThief.java",
+  "java_sha256": "64e287fc7b7bccdd1d081cafb37f0a17557e1a76625bfb7ed53b398ba4752783",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/OneOrMoreCombatDamagePlayerTriggeredAbility.java",
+      "sha256": "bd049af604d636cbafb61dcbb6ef46b80207734f4f606bc6c902f017ada0a2e1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAllEffect.java",
+      "sha256": "064c925d60c97db41aa0444db30fd482c857b12e3bf8c0635f990dfd4a7094d5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/TreasureToken.java",
+      "sha256": "76bcec2847fbc47566c41b561b5bf8890073a94cc1da9cda19b369ff69782d2e"
+    }
+  ]
 }

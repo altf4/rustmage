@@ -3,10 +3,45 @@
   "catalogue_id": 4846,
   "oracle_id": "577725ae-290f-4081-8352-3317521a096f",
   "facts_sha256": "6040b0b4193b112ddc08a11a6b19e76c588d7f8b283cb63d7f30d8cb29536d28",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "98f17d7bce438d24884eea6639db4397691ef25e499efdb23f7ab6c245fa00b6"
   },
-  "physical_metadata_sha256": "fbebcdc8b3d860ff329a16caee44d8d1659d4fdf2fb94465df75eead50d7aff9"
+  "physical_metadata_sha256": "fbebcdc8b3d860ff329a16caee44d8d1659d4fdf2fb94465df75eead50d7aff9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VanilleCheerfulLCie.java",
+  "java_sha256": "3abdf707bf0dcaf58cf945cb9daedbaa45d0d0a47aa1c2a7e8c7451b1af6e33b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsControllerEffect.java",
+      "sha256": "bdd3021a353e7fd6e0f5c2b829c2d9483ee6b2fa684d7e74f5b18d457c9abc9c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnCardChosenFromGraveyardEffect.java",
+      "sha256": "122060d69e08d3e4d36b3e78ed00c765eb1cc2d42ad202b21da7f99a76e5a015"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/MeldCondition.java",
+      "sha256": "7f0c3836b2e231e23e2c8da1e2204615895c70fdb7fbd4506fab8f7a69cdea01"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MeldEffect.java",
+      "sha256": "632688b223bffd7b88344c4ef7627d7ce84cd7d1cb469000c9246a03cbeb6267"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfFirstMainTriggeredAbility.java",
+      "sha256": "8ae6196917d9e2e958cd19a7a009d89c0462a680be928b607658ce76526eb93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    }
+  ]
 }

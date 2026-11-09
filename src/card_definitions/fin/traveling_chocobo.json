@@ -3,10 +3,35 @@
   "catalogue_id": 4666,
   "oracle_id": "2e5675d3-3fb0-43b5-a65c-95aacbe48bf9",
   "facts_sha256": "595b73aa409a5c8f43c7f69687066bbfc407c2d9adbd794eb92beedc984d41d6",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c223d50f1dafc8cd40e43b0feb1b9f7cf661173f31fbda2c8f7d14bea49c602c"
   },
-  "physical_metadata_sha256": "db29f982a6a32b36bfb686c4602701c591f3097466f8b7e375d20414ab295cf1"
+  "physical_metadata_sha256": "db29f982a6a32b36bfb686c4602701c591f3097466f8b7e375d20414ab295cf1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TravelingChocobo.java",
+  "java_sha256": "dde7573ee08ff01202f28de9064611037e6ada8689f91fab07125b9b8f276a6c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LookAtTopCardOfLibraryAnyTimeEffect.java",
+      "sha256": "8f40c1e9eeee58bb7d6fb63ad5d4c76cfb0da76c6b823bb0ffaf0274c1cf0f8f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/PlayFromTopOfLibraryEffect.java",
+      "sha256": "85eb4f9d72b858df624abe15ea3797b67aa3b9dc05bd5e55d9037d3c42f474dd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/events/NumberOfTriggersEvent.java",
+      "sha256": "09c3f80e824860142be1e3869e2e5371d331b8b4db6991f62ab33483e6d8cee6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/events/EntersTheBattlefieldEvent.java",
+      "sha256": "4cc0d9b3979ef54306666a8b28ffcc7fe39e132df0402621ddd382d17c363200"
+    }
+  ]
 }

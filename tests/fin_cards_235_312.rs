@@ -1351,3 +1351,410 @@ fn torgal_counts_each_live_dog_or_wolf_for_only_the_first_human_spell() {
     act(&mut game, tap_production(torgal, [0, 0, 1, 0, 0, 0]));
     assert_eq!(game.state.players[player.index()].mana[2], 1);
 }
+
+fn settle_triggers(game: &mut Game) {
+    for _ in 0..32 {
+        if game.state.pending == Pending::Priority
+            && game.state.stack.is_empty()
+            && game.state.pending_triggers.is_empty()
+            && game.state.resolving.is_none()
+        {
+            return;
+        }
+        choose(game, |action| {
+            matches!(action, Action::Pass | Action::PutTrigger { .. })
+        });
+    }
+    panic!("trigger ordering exceeded the scenario budget");
+}
+
+#[test]
+fn terra_recovers_its_milled_enchantment_and_esper_copies_a_saga_then_returns() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let terra = put(&mut game, player, "Terra, Magical Adept", Zone::Hand);
+    let front = game.object_view(terra).card;
+    let old = put(&mut game, player, "A Realm Reborn", Zone::Graveyard);
+    let milled = put(&mut game, player, "A Realm Reborn", Zone::Library);
+    let instant = put(&mut game, player, "Shock", Zone::Library);
+    let original = put(&mut game, player, "Summon: Fat Chocobo", Zone::Battlefield);
+    cast(&mut game, terra, None);
+    pass_pair(&mut game);
+    pass_pair(&mut game);
+    for card in [old, instant] {
+        let object = game.object_ref(card);
+        reject(&mut game, Action::SelectMilled { object });
+    }
+    let object = game.object_ref(milled);
+    act(&mut game, Action::SelectMilled { object });
+    assert_eq!(game.object_view(milled).zone, Zone::Hand);
+    assert_eq!(game.object_view(instant).zone, Zone::Graveyard);
+
+    game.state.objects[terra as usize].summoning_sick = false;
+    let initial = game.object_ref(terra);
+    activate(&mut game, terra);
+    pay(&mut game);
+    pass_pair(&mut game);
+    assert_ne!(game.object_ref(terra), initial);
+    assert_eq!(game.object_view(terra).card, front.back_face().unwrap());
+    assert!(game.keywords(terra).contains(Keywords::FLYING));
+    assert_eq!(game.counter_count(terra, CounterKind::Lore), 1);
+    trigger_target(&mut game, Target::Card(original));
+    pass_pair(&mut game);
+    let lore = game.observe(player).copied_saga_lore.unwrap();
+    assert_eq!(lore.maximum, 3);
+    let copy = lore.object;
+    assert!(game.object_view(copy.card).is_token());
+    assert_eq!(
+        game.object_view(copy.card).card,
+        game.object_view(original).card
+    );
+    assert!(game.keywords(copy.card).contains(Keywords::HASTE));
+    reject(
+        &mut game,
+        Action::ChooseCopiedSagaLore {
+            object: copy,
+            amount: 4,
+        },
+    );
+    act(
+        &mut game,
+        Action::ChooseCopiedSagaLore {
+            object: copy,
+            amount: 1,
+        },
+    );
+    settle_triggers(&mut game);
+    assert_eq!(game.counter_count(copy.card, CounterKind::Lore), 2);
+    assert_eq!(battlefield_tokens(&game, 5269).len(), 1);
+
+    game.state.step = Step::Main2;
+    pass_pair(&mut game);
+    settle_triggers(&mut game);
+    assert_ne!(game.object_view(copy.card).zone, Zone::Battlefield);
+    assert_eq!(game.object_view(original).zone, Zone::Battlefield);
+    game.move_object(original, Zone::Exile);
+    game.set_counters(terra, Counters::of(CounterKind::Lore, 3));
+    game.state.players[player.index()].mana = [0; 6];
+    advance_chapter(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(terra).card, front);
+    assert_eq!(game.object_view(terra).zone, Zone::Battlefield);
+    assert_eq!(game.state.players[player.index()].mana, [2, 2, 2, 2, 2, 0]);
+}
+
+#[test]
+fn traveling_chocobo_hides_the_top_and_doubles_a_controlled_landfall() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let bird = put(&mut game, player, "Traveling Chocobo", Zone::Battlefield);
+    let tifa = put(&mut game, player, "Tifa Lockhart", Zone::Battlefield);
+    let rival_tifa = put(
+        &mut game,
+        player.other(),
+        "Tifa Lockhart",
+        Zone::Battlefield,
+    );
+    let top_bird = put(&mut game, player, "Most Decrepit Old Bird", Zone::Library);
+    let instant = put(&mut game, player, "Opt", Zone::Library);
+    let land = put(&mut game, player, "Forest", Zone::Library);
+    assert_eq!(stats(&game, bird), (3, 2));
+    assert_eq!(
+        game.observe(player).known_library_top[player.index()]
+            .unwrap()
+            .object,
+        game.object_ref(land)
+    );
+    assert!(game.observe(player.other()).known_library_top[player.index()].is_none());
+    reject(&mut game, Action::AnnounceCast { card: top_bird });
+    act(&mut game, Action::PlayLand { card: land });
+    settle_triggers(&mut game);
+    assert_eq!(stats(&game, tifa), (4, 2));
+    assert_eq!(stats(&game, rival_tifa), (1, 2));
+    reject(&mut game, Action::AnnounceCast { card: instant });
+    game.move_object(instant, Zone::Exile);
+    cast(&mut game, top_bird, None);
+    settle_triggers(&mut game);
+    assert_eq!(game.object_view(top_bird).zone, Zone::Battlefield);
+}
+
+#[test]
+fn triple_triad_allows_only_its_own_card_and_the_strictly_cheaper_other_card() {
+    let player = Player::P0;
+    let opponent = player.other();
+    for (other, allowed) in [("Opt", true), ("Hill Giant", false)] {
+        let mut game = scenario(player);
+        put(&mut game, player, "Triple Triad", Zone::Battlefield);
+        let own = put(&mut game, player, "The Final Days", Zone::Library);
+        let their = put(&mut game, opponent, other, Zone::Library);
+        game.begin_step(Step::Upkeep);
+        game.prepare_triggers();
+        settle(&mut game);
+        for card in [own, their] {
+            assert_eq!(game.object_view(card).zone, Zone::Exile);
+        }
+        let free = |card| Action::AnnounceExileFree {
+            card,
+            face: CastFace::Normal,
+            flash_surcharge: false,
+        };
+        reject(&mut game, free(own));
+        game.state.step = Step::Main1;
+        game.state.players[player.index()].mana = [0; 6];
+        assert!(game.legal_actions().contains(&free(own)));
+        assert_eq!(game.legal_actions().contains(&free(their)), allowed);
+        let mut expired = game.clone();
+        expired.finish_cleanup();
+        assert!(expired.observe(player).exile_permissions.is_empty());
+        act(&mut game, free(own));
+        pay(&mut game);
+        settle(&mut game);
+        assert_eq!(battlefield_tokens(&game, 5536).len(), 2);
+        assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+    }
+}
+
+#[test]
+fn ultimecia_surveys_both_events_and_transforms_only_after_atomic_payment() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let source = put(&mut game, player, "Ultimecia, Time Sorceress", Zone::Hand);
+    let front = game.object_view(source).card;
+    let own = [(); 8].map(|_| put(&mut game, player, "Forest", Zone::Graveyard));
+    let foreign = put(&mut game, player.other(), "Forest", Zone::Graveyard);
+    cast(&mut game, source, None);
+    pass_pair(&mut game);
+    pass_pair(&mut game);
+    for _ in 0..2 {
+        choose(&mut game, |action| {
+            matches!(
+                action,
+                Action::ArrangeLibrary {
+                    destination: LibraryDestination::Top,
+                    ..
+                }
+            )
+        });
+    }
+    game.state.objects[source as usize].summoning_sick = false;
+    attack_with(&mut game, &[source]);
+    pass_pair(&mut game);
+    assert!(game.observe(player).library_choice.is_some());
+    assert!(game.observe(player.other()).library_choice.is_none());
+    for _ in 0..2 {
+        choose(&mut game, |action| {
+            matches!(
+                action,
+                Action::ArrangeLibrary {
+                    destination: LibraryDestination::Top,
+                    ..
+                }
+            )
+        });
+    }
+
+    game.begin_step(Step::End);
+    game.prepare_triggers();
+    let pool = [0, 2, 2, 0, 0, 4];
+    game.state.players[player.index()].mana = pool;
+    pass_pair(&mut game);
+    let object = game.object_ref(foreign);
+    reject(&mut game, Action::ChooseAdditionalCost { object });
+    let payment = Action::PayResolutionMana { payment: pool };
+    reject(&mut game, payment.clone());
+    let object = game.object_ref(own[0]);
+    act(&mut game, Action::ChooseAdditionalCost { object });
+    let mut declined = game.clone();
+    act(&mut declined, Action::DeclineResolutionMana);
+    assert_eq!(declined.object_view(source).card, front);
+    assert_eq!(declined.state.players[player.index()].mana, pool);
+    for card in own {
+        assert_eq!(declined.object_view(card).zone, Zone::Graveyard);
+    }
+    for card in &own[1..] {
+        let object = game.object_ref(*card);
+        act(&mut game, Action::ChooseAdditionalCost { object });
+    }
+    let exact = game.object_ref(source);
+    act(&mut game, payment);
+    settle(&mut game);
+    assert_eq!(game.object_ref(source), exact);
+    assert_eq!(game.object_view(source).card, front.back_face().unwrap());
+    assert_eq!(stats(&game, source), (7, 7));
+    assert!(game.keywords(source).contains(Keywords::MENACE));
+    for card in own {
+        assert_eq!(game.object_view(card).zone, Zone::Exile);
+    }
+    assert_eq!(game.object_view(foreign).zone, Zone::Graveyard);
+    let turn = game.state.turn;
+    game.finish_cleanup();
+    assert_eq!(game.state.turn, turn + 1);
+    assert_eq!(game.state.active, player);
+}
+
+#[test]
+fn unexpected_request_reattaches_one_equipment_then_unattaches_that_exact_one() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let borrowed = put(&mut game, opponent, "Hill Giant", Zone::Battlefield);
+    let second = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let bow = put(&mut game, player, "Short Bow", Zone::Battlefield);
+    let foreign = put(&mut game, opponent, "Swiftfoot Boots", Zone::Battlefield);
+    let spell = put(&mut game, player, "Unexpected Request", Zone::Hand);
+    game.tap_objects(&[borrowed]);
+    cast(&mut game, spell, Some(Target::Card(borrowed)));
+    pass_pair(&mut game);
+    assert_eq!(game.object_view(borrowed).controller, player);
+    assert!(!game.object_view(borrowed).tapped);
+    assert!(game.keywords(borrowed).contains(Keywords::HASTE));
+    let equipment = game.object_ref(foreign);
+    reject(
+        &mut game,
+        Action::ChooseEquipmentAttachment {
+            equipment: Some(equipment),
+        },
+    );
+    let mut declined = game.clone();
+    act(
+        &mut declined,
+        Action::ChooseEquipmentAttachment { equipment: None },
+    );
+    assert!(declined.observe(player).delayed_steps.is_none());
+
+    let equipment = game.object_ref(bow);
+    act(
+        &mut game,
+        Action::ChooseEquipmentAttachment {
+            equipment: Some(equipment),
+        },
+    );
+    assert_eq!(
+        game.object_view(bow).attached_to,
+        Some(game.object_ref(borrowed))
+    );
+    activate(&mut game, bow);
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(second),
+        },
+    );
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(
+        game.object_view(bow).attached_to,
+        Some(game.object_ref(second))
+    );
+    game.state.step = Step::Main2;
+    pass_pair(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(bow).attached_to, None);
+    assert_eq!(game.object_view(borrowed).controller, player);
+    game.finish_cleanup();
+    assert_eq!(game.object_view(borrowed).controller, opponent);
+}
+
+#[test]
+fn vaan_aggregates_the_combat_hit_and_casting_the_foreign_card_grows_the_union() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let vaan = put(&mut game, player, "Vaan, Street Thief", Zone::Battlefield);
+    let both = put(&mut game, player, "Three Tree Mascot", Zone::Battlefield);
+    let plain = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let offered = put(&mut game, opponent, "Hill Giant", Zone::Library);
+    attack_with(&mut game, &[vaan, both, plain]);
+    pass_pair(&mut game);
+    act(&mut game, Action::FinishBlockers);
+    pass_pair(&mut game);
+    assert_eq!(game.state.stack.len(), 1);
+    let hit = game.state.stack[0].damage_event.unwrap();
+    assert_eq!((hit.player, hit.amount), (opponent, 4));
+    game.state.players[player.index()].mana = [0, 0, 0, 1, 0, 3];
+    pass_pair(&mut game);
+    assert_eq!(game.object_view(offered).zone, Zone::Exile);
+    let mut declined = game.clone();
+    act(&mut declined, Action::FinishResolutionCasts);
+    assert_eq!(battlefield_tokens(&declined, 5302).len(), 1);
+    assert_eq!(declined.object_view(offered).zone, Zone::Exile);
+
+    let object = game.object_ref(offered);
+    act(
+        &mut game,
+        Action::CastExiledDuringResolution {
+            object,
+            face: CastFace::Normal,
+        },
+    );
+    pay(&mut game);
+    act(&mut game, Action::FinishResolutionCasts);
+    settle(&mut game);
+    assert!(battlefield_tokens(&game, 5302).is_empty());
+    for card in [vaan, both] {
+        assert_eq!(game.counter_count(card, CounterKind::PlusOne), 1);
+    }
+    assert_eq!(game.counter_count(plain, CounterKind::PlusOne), 0);
+    let giant = game.object_view(offered);
+    assert_eq!(
+        (giant.zone, giant.owner, giant.controller),
+        (Zone::Battlefield, opponent, player)
+    );
+}
+
+#[test]
+fn vanille_recovers_an_older_permanent_then_melds_only_when_the_pair_is_owned() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let vanille = put(&mut game, player, "Vanille, Cheerful l'Cie", Zone::Hand);
+    let old = put(&mut game, player, "Grizzly Bears", Zone::Graveyard);
+    let foreign = put(&mut game, opponent, "Forest", Zone::Graveyard);
+    let instant = put(&mut game, player, "Shock", Zone::Library);
+    let land = put(&mut game, player, "Forest", Zone::Library);
+    cast(&mut game, vanille, None);
+    pass_pair(&mut game);
+    pass_pair(&mut game);
+    for id in [foreign, instant] {
+        let object = game.object_ref(id);
+        reject(&mut game, Action::ChooseEffectObject { object });
+    }
+    let object = game.object_ref(old);
+    act(&mut game, Action::ChooseEffectObject { object });
+    assert_eq!(game.object_view(old).zone, Zone::Hand);
+    assert_eq!(game.object_view(land).zone, Zone::Graveyard);
+
+    let mut stolen = game.clone();
+    let rival_fang = put(
+        &mut stolen,
+        opponent,
+        "Fang, Fearless l'Cie",
+        Zone::Battlefield,
+    );
+    stolen.record_control(stolen.object_ref(rival_fang), player, None);
+    advance_chapter(&mut stolen);
+    assert!(stolen.state.stack.is_empty());
+    let fang = put(&mut game, player, "Fang, Fearless l'Cie", Zone::Battlefield);
+    advance_chapter(&mut game);
+    pass_pair(&mut game);
+    choose(&mut game, |action| {
+        matches!(action, Action::PayResolutionMana { .. })
+    });
+    let object = game.object_ref(fang);
+    act(&mut game, Action::ChooseEffectObject { object });
+    settle(&mut game);
+    let meld = game
+        .observe(player)
+        .objects
+        .into_iter()
+        .find(|view| view.zone == Zone::Battlefield && view.name == "Ragnarok, Divine Deliverance")
+        .unwrap();
+    assert_eq!(stats(&game, meld.id), (7, 6));
+    assert!(
+        game.observe(player)
+            .melded_permanents
+            .iter()
+            .any(|entry| entry.object == meld.reference)
+    );
+    assert!(!game.on_battlefield(fang));
+}

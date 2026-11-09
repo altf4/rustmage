@@ -3,7 +3,7 @@
   "catalogue_id": 5524,
   "oracle_id": null,
   "facts_sha256": null,
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "c06f54f17c48b4e0bbbb95ae26e283b60630c6af0f57a7e0eb19d9eacd1bdc4d",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/u/UltimeciaTimeSorceress.java",
@@ -12,5 +12,22 @@
     "oracle_id": "70773879-b773-4e81-99ca-8f4bba478962",
     "index": 1,
     "sha256": "db9e51e60c28285de2f7898f507c44dd39d561810bd820fc8b0885869cabe519"
-  }
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/TransformIntoSourceTriggeredAbility.java",
+      "sha256": "e73f9679df45502b01140df759bcfb53d6b726818603112f63e7f127b1355277"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/turn/AddExtraTurnControllerEffect.java",
+      "sha256": "aa00be1d559a93aaaf8b77bb7047455c84fc74c603b6c6cbe9916edc29f8c28e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    }
+  ]
 }
