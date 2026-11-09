@@ -3,7 +3,9 @@ mod support;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::cards::*;
+use rustmage_core::engine::funding::FundingState;
 use rustmage_core::engine::*;
+use std::collections::HashSet;
 use support::*;
 const CREATURES: SacrificeFilter = SacrificeFilter {
     keywords: Keywords::NONE,
@@ -219,4 +221,335 @@ fn flashback_beholds_three_distinct_hand_or_battlefield_creatures_without_tappin
     assert_eq!(g.state.objects[a as usize].zone, Zone::Hand);
     assert!(!g.state.objects[b as usize].tapped && !g.state.objects[c as usize].tapped);
     assert_eq!(g.hand_count(Player::P0), 3);
+}
+
+fn behold_funding_probe(
+    g: &Game,
+    p: Player,
+    source: CardId,
+    kind: Option<CreatureType>,
+) -> (bool, bool, usize) {
+    let item = g.cast_preview(
+        p,
+        source,
+        Zone::Hand,
+        g.object_ref(source),
+        g.state.next_stack_id,
+        [0; 6],
+    );
+    let mut a = g.payment_announcement(item, Counters::default(), None, None);
+    a.item.x = Some(0);
+    let cast = a.item.cast.as_mut().unwrap();
+    cast.behold_type_declared = true;
+    cast.beheld_type = kind;
+    a.cost = a.cost_options().next();
+    a.cast_costs = Some(Box::default());
+    a.initialize_cast_costs(false);
+    let goal = g.funding_goal(&a);
+    let mut world = FundingState::from_game(g, &goal);
+    world.set_purpose(g.purpose_for_item(&a.item));
+    world.set_payment_context(&a);
+    let deficit = world.additional_cost_deficit();
+    let mut visited = HashSet::new();
+    let payable = world.reachable(&goal, &mut visited);
+    (deficit, payable, visited.len())
+}
+
+#[test]
+fn fixed_behold_type_domain_rejects_absent_witnesses_before_dense_mana_search() {
+    let _rules = fixture_rules::activate(&[(Card::GiantGrowth, &SEARCH)]);
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let lands: Vec<_> = (0..14)
+            .map(|_| put(&mut g, p, "Forest", Zone::Battlefield))
+            .collect();
+        let hand = put(&mut g, p, "Grizzly Bears", Zone::Hand);
+        put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        put(&mut g, p, "Llanowar Elves", Zone::Hand);
+        put(&mut g, p.other(), "Llanowar Elves", Zone::Battlefield);
+        put(&mut g, p, "Llanowar Elves", Zone::Graveyard);
+        put(&mut g, p, "Llanowar Elves", Zone::Library);
+        let source = put(&mut g, p, "Giant Growth", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        let bear = CreatureType::from_name("Bear").unwrap();
+        for name in CREATURE_TYPES {
+            let kind = CreatureType::from_name(name).unwrap();
+            let (deficit, payable, visited) = behold_funding_probe(&g, p, source, Some(kind));
+            if kind == bear {
+                assert!(!deficit && payable);
+            } else {
+                assert_eq!((deficit, payable, visited), (true, false, 0), "{name}");
+            }
+        }
+        act(&mut g, Action::AnnounceCast { card: source });
+        let chosen = Action::ChooseBeholdType {
+            creature_type: Some(bear),
+        };
+        let actions = g.legal_actions();
+        assert_eq!(
+            actions,
+            vec![
+                Action::ChooseBeholdType {
+                    creature_type: None
+                },
+                chosen.clone()
+            ]
+        );
+        assert!(
+            !g.observe(p.other())
+                .known_hand
+                .contains(&g.object_ref(hand))
+        );
+        let saved = g.snapshot();
+        let mut indexed = g.clone();
+        let index = actions.iter().position(|a| *a == chosen).unwrap();
+        indexed.apply_index(p, indexed.revision(), index).unwrap();
+        act(&mut g, chosen.clone());
+        assert_eq!(g.snapshot(), indexed.snapshot());
+        act(&mut g, Action::ChooseX { value: 0 });
+        act(&mut g, Action::TapMana { card: lands[0] });
+        finish_cast(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Stack);
+        assert!(
+            g.observe(p.other())
+                .known_hand
+                .contains(&g.object_ref(hand))
+        );
+        let paid = g.snapshot();
+        g.restore(&saved).unwrap();
+        act(&mut g, chosen);
+        act(&mut g, Action::ChooseX { value: 0 });
+        act(&mut g, Action::TapMana { card: lands[0] });
+        finish_cast(&mut g);
+        assert_eq!(g.snapshot(), paid);
+    }
+}
+
+#[test]
+fn fixed_single_behold_and_exile_deficits_preserve_live_paid_witnesses() {
+    const SINGLE: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::NONE,
+            &[Instruction::Draw(PlayerSet::Controller, 1)],
+        ),
+        extras: &CardExtras {
+            additional_cost: Some(AdditionalCost {
+                kind: EffectChoiceKind::Behold,
+                filter: SacrificeFilter {
+                    subtype: Some("Elf"),
+                    ..CREATURES
+                },
+            }),
+            ..CardExtras::EMPTY
+        },
+        ..CardRules::EMPTY
+    };
+    let _rules =
+        fixture_rules::activate(&[(Card::GrizzlyBears, &EXILE), (Card::Divination, &SINGLE)]);
+    for p in [Player::P0, Player::P1] {
+        for exile in [false, true] {
+            let mut g = scenario(p);
+            let lands: Vec<_> = (0..12)
+                .map(|i| {
+                    put(
+                        &mut g,
+                        p,
+                        if i % 2 == 0 { "Forest" } else { "Island" },
+                        Zone::Battlefield,
+                    )
+                })
+                .collect();
+            put(&mut g, p, "Bear Cub", Zone::Battlefield);
+            put(&mut g, p.other(), "Llanowar Elves", Zone::Battlefield);
+            let source = put(
+                &mut g,
+                p,
+                if exile { "Grizzly Bears" } else { "Divination" },
+                Zone::Hand,
+            );
+            g.state.players[p.index()].mana = [0; 6];
+            assert_eq!(behold_funding_probe(&g, p, source, None), (true, false, 0));
+            reject(&mut g, Action::AnnounceCast { card: source });
+            let witness = put(&mut g, p, "Llanowar Elves", Zone::Hand);
+            let (deficit, payable, _) = behold_funding_probe(&g, p, source, None);
+            assert!(!deficit && payable);
+            act(&mut g, Action::AnnounceCast { card: source });
+            // Ordinary single behold may request its witness before the mana
+            // window; the exile group may instead order its declared clauses.
+            if matches!(g.state.pending, Pending::AdditionalCost { .. }) {
+                let object = g.object_ref(witness);
+                act(&mut g, Action::ChooseAdditionalCost { object });
+            }
+            for &land in &lands[..if exile { 2 } else { 3 }] {
+                act(&mut g, Action::TapMana { card: land });
+            }
+            finish_cast(&mut g);
+            assert_eq!(g.object_view(source).zone, Zone::Stack);
+            assert_eq!(
+                g.object_view(witness).zone,
+                if exile { Zone::Exile } else { Zone::Hand }
+            );
+            assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        }
+    }
+}
+
+#[test]
+fn behold_bound_allows_mana_tapping_and_current_changeling_type_and_control() {
+    const CHANGELING: CardRules = CardRules {
+        effect: Effect::Creature(2, 2),
+        keywords: Keywords::CHANGELING,
+        ..CardRules::EMPTY
+    };
+    const ARTIFACT: CardRules = CardRules {
+        effect: Effect::Permanent,
+        ..CardRules::EMPTY
+    };
+    let _rules = fixture_rules::activate(&[
+        (Card::GiantGrowth, &SEARCH),
+        (Card::GrizzlyBears, &CHANGELING),
+        (Card::from_name("Short Bow").unwrap(), &ARTIFACT),
+    ]);
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let first = put(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        let second = put(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+        let source = put(&mut g, p, "Giant Growth", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        let elf = CreatureType::from_name("Elf").unwrap();
+        act(&mut g, Action::AnnounceCast { card: source });
+        act(
+            &mut g,
+            Action::ChooseBeholdType {
+                creature_type: Some(elf),
+            },
+        );
+        act(&mut g, Action::ChooseX { value: 1 });
+        for card in [first, second] {
+            act(&mut g, Action::TapMana { card });
+        }
+        finish_cast(&mut g);
+        assert!(g.object_view(first).tapped && g.object_view(second).tapped);
+        assert_eq!(g.object_view(source).zone, Zone::Stack);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+
+        let mut g = scenario(p);
+        let changed = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        put(&mut g, p, "Grizzly Bears", Zone::Hand);
+        let source = put(&mut g, p, "Giant Growth", Zone::Hand);
+        let dragon = CreatureType::from_name("Dragon").unwrap();
+        let (deficit, payable, _) = behold_funding_probe(&g, p, source, Some(dragon));
+        assert!(!deficit && payable);
+        g.change_controller(g.object_ref(changed), p.other());
+        assert!(!behold_funding_probe(&g, p, source, Some(dragon)).1);
+        g.change_controller(g.object_ref(changed), p);
+        assert!(behold_funding_probe(&g, p, source, Some(dragon)).1);
+
+        let mut g = scenario(p);
+        let changed = put(&mut g, p, "Short Bow", Zone::Battlefield);
+        put(&mut g, p, "Llanowar Elves", Zone::Hand);
+        let source = put(&mut g, p, "Giant Growth", Zone::Hand);
+        assert!(behold_funding_probe(&g, p, source, Some(elf)).0);
+        g.change_object_form(
+            g.object_ref(changed),
+            AnimationSpec {
+                artifact: false,
+                creature_types: AnimationCreatureTypes::Named(&["Elf"]),
+                base: Some((1, 1)),
+                keywords: Keywords::NONE,
+                duration: AnimationDuration::Permanent,
+            },
+            characteristic_layers::AnimationTypeMode::AddCreature,
+        );
+        assert!(behold_funding_probe(&g, p, source, Some(elf)).1);
+        act(&mut g, Action::AnnounceCast { card: source });
+        act(
+            &mut g,
+            Action::ChooseBeholdType {
+                creature_type: Some(elf),
+            },
+        );
+        act(&mut g, Action::ChooseX { value: 0 });
+        finish_cast(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Stack);
+    }
+}
+
+#[test]
+fn behold_witness_deficit_falls_back_for_a_mana_source_linked_return() {
+    const MANA: CardRules = CardRules {
+        effect: Effect::Permanent,
+        activated: &[ActivatedAbility {
+            exhaust: false,
+            guard: ActivationGuard::Always,
+            origin: ActivationOrigin::Battlefield,
+            cycling: false,
+            cost: ActivationCost {
+                tap: true,
+                sacrifice: true,
+                ..ActivationCost::ZERO
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::AddMana(ManaProduction::Fixed([
+                0, 0, 0, 0, 1, 0,
+            ]))],
+            sorcery: false,
+            once_per_turn: false,
+        }],
+        ..CardRules::EMPTY
+    };
+    let _rules = fixture_rules::activate(&[
+        (Card::GiantGrowth, &SEARCH),
+        (Card::from_name("Short Bow").unwrap(), &MANA),
+    ]);
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let mana = put(&mut g, p, "Short Bow", Zone::Battlefield);
+        let returning = put(&mut g, p, "Llanowar Elves", Zone::Exile);
+        let original = g.object_ref(returning);
+        let hand = put(&mut g, p, "Llanowar Elves", Zone::Hand);
+        let source = put(&mut g, p, "Giant Growth", Zone::Hand);
+        g.state.exile_links.push(ExileLink {
+            ability_origin: None,
+            source: g.object_ref(mana),
+            exiled: original,
+            return_zone: Zone::Battlefield,
+        });
+        g.state.players[p.index()].mana = [0; 6];
+        let elf = CreatureType::from_name("Elf").unwrap();
+        let (deficit, payable, _) = behold_funding_probe(&g, p, source, Some(elf));
+        assert!(
+            !deficit && payable,
+            "the missing second Elf enters during mana payment"
+        );
+        act(&mut g, Action::AnnounceCast { card: source });
+        act(
+            &mut g,
+            Action::ChooseBeholdType {
+                creature_type: Some(elf),
+            },
+        );
+        act(&mut g, Action::ChooseX { value: 0 });
+        act(
+            &mut g,
+            Action::ActivateMana {
+                card: mana,
+                ability: 0,
+                counter_payment: Counters::default(),
+                payment: [0; 6],
+                production: [0, 0, 0, 0, 1, 0],
+            },
+        );
+        assert_eq!(g.object_view(mana).zone, Zone::Graveyard);
+        assert_eq!(g.object_view(returning).zone, Zone::Battlefield);
+        assert_ne!(g.object_ref(returning), original);
+        finish_cast(&mut g);
+        assert_eq!(g.object_view(source).zone, Zone::Stack);
+        assert_eq!(g.state.players[p.index()].mana, [0; 6]);
+        assert!(
+            g.observe(p.other())
+                .known_hand
+                .contains(&g.object_ref(hand))
+        );
+    }
 }

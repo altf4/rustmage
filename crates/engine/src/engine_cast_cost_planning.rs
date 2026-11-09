@@ -192,6 +192,9 @@ impl FundingState<'_> {
         {
             return false;
         }
+        if self.unchanging_behold_witness_deficit(c, spec) {
+            return true;
+        }
         // These clauses can consume resources, tap, add counters, or move a
         // battlefield object to a graveyard. Without linked returns they cannot
         // increase life or introduce a card to hand or a new battlefield object.
@@ -270,6 +273,153 @@ impl FundingState<'_> {
             _ => true,
         };
         !possible
+    }
+    /// Only a fixed witness set permits rejecting an absent chosen subtype
+    /// before mana search. This also handles mandatory single behold/exile costs.
+    fn unchanging_behold_witness_deficit(&self, c: &CostContext, spec: AdditionalCost) -> bool {
+        let required = match spec.kind.payment_kind() {
+            EffectChoiceKind::BeholdMany(amount) => usize::from(amount),
+            EffectChoiceKind::Behold | EffectChoiceKind::BeholdAndExile => 1,
+            _ => return false,
+        };
+        if required == 0
+            || spec.filter.keywords != Keywords::NONE
+            || c.clauses.iter().filter(|row| !row.paid).any(|row| {
+                !matches!(
+                    row.clause,
+                    CastCostClause::Mana | CastCostClause::Additional | CastCostClause::Behold(_)
+                )
+            })
+        {
+            return false;
+        }
+        let candidates = self.resources.iter().filter(|resource| {
+            let object = &resource.object;
+            (object.zone == Zone::Battlefield && object.controller == c.actor
+                || object.zone == Zone::Hand && object.owner == c.actor)
+                && self.cost_object(spec, self.reference(resource.id), c.source)
+        });
+        if candidates.take(required).count() >= required {
+            return false;
+        }
+        let state = &self.game.state;
+        if self.continuation.is_some()
+            || self.entry_projection.is_some()
+            || self.controls().is_some()
+            || state.temporary_controls.is_some()
+            || self.copy_recipes.is_some()
+            || self.temporary_copy_rows_state().is_some()
+            || self.cost_group.is_some()
+            || !self.sacrifice_group.is_empty()
+            || self.required_face_up.is_some()
+            || self.has_contributions()
+            || !state.exile_links.is_empty()
+            || state.borrowed_links.is_some()
+            || state.borrowed_slots.is_some()
+            || state.graveyard_borrowing.is_some()
+            || state.self_granted_abilities.is_some()
+            || state.temporary_abilities.is_some()
+            || state.activation_observers.is_some()
+            || !state.tap_sources.is_empty()
+            || self.roles().is_some_and(|roles| {
+                !roles.source_linked_effects.is_empty()
+                    || !roles.resolved_ability_modifications.is_empty()
+                    || !roles.ability_removal_sources.is_empty()
+                    || !roles.characteristic_sources.is_empty()
+                    || !roles.creature_types.is_empty()
+                    || !roles.basic_land_types.is_empty()
+                    || !roles.animations.is_empty()
+                    || !roles.live_static.is_empty()
+            })
+        {
+            return false;
+        }
+        // Explicitly recognize read-only production. In particular, source
+        // recoloring and future production families retain exact search.
+        let read_only_output = |production: ManaProduction| {
+            matches!(
+                production.base(),
+                ManaProduction::Fixed(_)
+                    | ManaProduction::Choice { .. }
+                    | ManaProduction::Combination { .. }
+                    | ManaProduction::ColorsAmongControlledPermanents
+                    | ManaProduction::MonocoloredPermanentColors
+                    | ManaProduction::ChosenColor
+            )
+        };
+        for resource in &self.resources {
+            let object = &resource.object;
+            let card = object.card;
+            // Command-zone static effects are outside this narrow battlefield
+            // proof, including emblems with active characteristic providers.
+            if object.zone == Zone::Command {
+                return false;
+            }
+            if object.zone == Zone::Battlefield
+                && (card.borrows_activations()
+                    || card.graveyard_activation_subtype().is_some()
+                    || card
+                        .static_ability_groups()
+                        .iter()
+                        .flat_map(|g| g.fragments)
+                        .any(|fragment| {
+                            use crate::cards::StaticAbilityFragment::*;
+                            match *fragment {
+                                IntrinsicKeywords(_)
+                                | Changeling
+                                | AttachmentStats(_)
+                                | AttachmentKeywords(_)
+                                | AttachmentTrigger(_)
+                                | DynamicStats(..)
+                                | BaseStatSetter(..)
+                                | CostReduction(..)
+                                | TargetCostReduction(..)
+                                | OpponentNoncreatureSpellTax(_)
+                                | AdditionalTriggers { .. }
+                                | AttachedChosenColor
+                                | BasicLandTapManaBonus(_)
+                                | ControlledLandTapManaBonus(_) => false,
+                                AttachmentMana(production)
+                                | AttachmentManaBonus(production)
+                                | LandMana { production, .. } => !read_only_output(production),
+                                _ => true,
+                            }
+                        }))
+            {
+                return false;
+            }
+            let owner = if object.zone == Zone::Battlefield {
+                object.controller
+            } else {
+                object.owner
+            };
+            if owner != c.actor {
+                continue;
+            }
+            // Include temporarily unavailable printed routes. Pure taps cannot
+            // change their zone, restore a removed ability, or acquire a new one.
+            for (index, ability) in card.activations().iter().enumerate() {
+                if let Some(production) = ability.mana_production()
+                    && ability.source_zone() == object.zone
+                    && (!Self::only_tap_mana(ability)
+                        || !read_only_output(production)
+                        || card.activation_put_counter(index as u16).is_some())
+                {
+                    return false;
+                }
+            }
+            if object.zone == Zone::Battlefield
+                && CharacteristicWorld::granted_mana(self, resource.id)
+                    .iter()
+                    .any(|grant| grant.sacrifice || !read_only_output(grant.production))
+            {
+                return false;
+            }
+        }
+        // Behold does not require an untapped witness. Taps and AddMana cannot
+        // introduce another matching hand/battlefield object in this class;
+        // no unknown type, control, entry or departure provider was admitted.
+        true
     }
     pub(super) fn set_cost_context(&mut self, a: Option<&Announcement>) {
         // Alternative spell costs are intentionally unset while choices are
