@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "1c09e44e567849ab5c60dba7060fe019e15d0790e8e33c5f5c504543c2e932c0",
+  "catalogue_version": "5dd69feb8570d60c1761ea39d713f4ce7864ffc0f9f7d19dd584cd83db26c890",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 3702,
-  "implemented_total": 3711,
+  "implemented_standard_cards": 3714,
+  "implemented_total": 3723,
   "token_definitions": 169,
   "emblem_definitions": 12,
   "adventure_definitions": 53,
@@ -64,8 +64,8 @@
     },
     "fin": {
       "total": 304,
-      "complete": 256,
-      "gated": 48
+      "complete": 268,
+      "gated": 36
     },
     "fra": {
       "total": 285,
@@ -31950,8 +31950,8 @@
     {
       "name": "Sorceress's Schemes",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/sorceress_s_schemes.rs",
       "set": "fin"
     },
@@ -32822,8 +32822,8 @@
     {
       "name": "Squall, SeeD Mercenary",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/squall_seed_mercenary.rs",
       "set": "fin"
     },
@@ -33302,8 +33302,8 @@
     {
       "name": "Stiltzkin, Moogle Merchant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/stiltzkin_moogle_merchant.rs",
       "set": "fin"
     },
@@ -33470,8 +33470,8 @@
     {
       "name": "Stolen Uniform",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/stolen_uniform.rs",
       "set": "fin"
     },
@@ -33758,8 +33758,8 @@
     {
       "name": "Stuck in Summoner's Sanctum",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/stuck_in_summoner_s_sanctum.rs",
       "set": "fin"
     },
@@ -33910,16 +33910,16 @@
     {
       "name": "Summon: Bahamut",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/summon_bahamut.rs",
       "set": "fin"
     },
     {
       "name": "Summon: Brynhildr",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/summon_brynhildr.rs",
       "set": "fin"
     },
@@ -35654,8 +35654,8 @@
     {
       "name": "The Darkness Crystal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/the_darkness_crystal.rs",
       "set": "fin"
     },
@@ -35694,8 +35694,8 @@
     {
       "name": "The Earth Crystal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/the_earth_crystal.rs",
       "set": "fin"
     },
@@ -35966,8 +35966,8 @@
     {
       "name": "The Masamune",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/the_masamune.rs",
       "set": "fin"
     },
@@ -36334,16 +36334,16 @@
     {
       "name": "The Water Crystal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/the_water_crystal.rs",
       "set": "fin"
     },
     {
       "name": "The Wind Crystal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/the_wind_crystal.rs",
       "set": "fin"
     },
@@ -38142,8 +38142,8 @@
     {
       "name": "Ultima, Origin of Oblivion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/ultima_origin_of_oblivion.rs",
       "set": "fin"
     },
@@ -41526,8 +41526,8 @@
     {
       "name": "Zodiark, Umbral God",
       "standard_legal": true,
-      "implemented": true,
-      "implementation": "typed_rust",
+      "implemented": false,
+      "implementation": null,
       "definition": "src/card_definitions/fin/zodiark_umbral_god.rs",
       "set": "fin"
     },
