@@ -3,10 +3,32 @@
   "catalogue_id": 70,
   "oracle_id": "dd9a6f6b-f9b7-4292-bc80-b7da326de032",
   "facts_sha256": "53908307c236ea54a8e704de67a819c3e48bdfa1e74c76309152861c127bcdd4",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "006745a9f3ef0ac653d03fe72888de854385a05d92e8fc4d8598ea9947a130ef"
-  },
-  "physical_metadata_sha256": "972db1bacf98ef6077740b9274007485ffecf2a3dd3aae3f0d481aa65fd6d79e"
+  "complete": true,
+  "physical_metadata_sha256": "972db1bacf98ef6077740b9274007485ffecf2a3dd3aae3f0d481aa65fd6d79e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AerithGainsborough.java",
+  "java_sha256": "b86d448700834cb6696747bcdc1db5232c7bda6142b103f2b04b2b1148e55053",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/GainLifeControllerTriggeredAbility.java",
+      "sha256": "368075cdc13fc2b881bea0dfadfa1135166c6c412c0602260aa8f0597a927d58"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CountersSourceCount.java",
+      "sha256": "00add2937bf1f70a9877114d432b9f87f6e65d18e106d7366319e2fcc80233d4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAllEffect.java",
+      "sha256": "064c925d60c97db41aa0444db30fd482c857b12e3bf8c0635f990dfd4a7094d5"
+    }
+  ]
 }

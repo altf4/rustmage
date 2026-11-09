@@ -3,7 +3,7 @@
   "catalogue_id": 5502,
   "oracle_id": null,
   "facts_sha256": null,
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "0da5c47bfb9af60b530aadea58dd1d1181cc61d07c0f585dfa233487d1594777",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/b/BalambGardenSeeDAcademy.java",
@@ -12,5 +12,13 @@
     "oracle_id": "8b84fec5-617c-4088-8250-2ba1f1f9479a",
     "index": 1,
     "sha256": "0a009330603797274e18f104edad33e69be4ecfe067eb564715df1dc07ddb4c9"
-  }
+  },
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    }
+  ]
 }

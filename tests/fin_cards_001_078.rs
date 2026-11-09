@@ -1004,3 +1004,322 @@ fn delivery_moogle_searches_one_qualified_card_and_reveals_the_public_result() {
             .contains(&game.object_ref(boots))
     );
 }
+
+#[test]
+fn aerith_gains_a_counter_per_life_event_and_passes_her_frozen_counters_to_legends() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let aerith = put(&mut game, player, "Aerith Gainsborough", Zone::Hand);
+    let legend = put(&mut game, player, "Adelbert Steiner", Zone::Battlefield);
+    let plain = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let foreign = put(
+        &mut game,
+        player.other(),
+        "Minwu, White Mage",
+        Zone::Battlefield,
+    );
+    cast(&mut game, aerith, None);
+    settle(&mut game);
+    assert!(game.keywords(aerith).contains(Keywords::LIFELINK));
+
+    let inn = put(&mut game, player, "Adventurer's Inn", Zone::Hand);
+    act(&mut game, Action::PlayLand { card: inn });
+    settle(&mut game);
+    assert_eq!(game.object_view(aerith).counters.plus_one, 1);
+    let menu = put(&mut game, player, "Battle Menu", Zone::Hand);
+    act(&mut game, Action::AnnounceCast { card: menu });
+    act(&mut game, Action::ChooseMode { mode: 3 });
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(aerith).counters.plus_one, 2);
+
+    let murder = put(&mut game, player, "Murder", Zone::Hand);
+    cast(&mut game, murder, Some(Target::Card(aerith)));
+    settle(&mut game);
+    assert_eq!(game.object_view(aerith).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(legend).counters.plus_one, 2);
+    assert_eq!(game.object_view(plain).counters.plus_one, 0);
+    assert_eq!(game.object_view(foreign).counters.plus_one, 0);
+}
+
+#[test]
+fn al_bhed_salvagers_targets_the_opponent_once_per_qualifying_death() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let observer = put(&mut game, player, "Al Bhed Salvagers", Zone::Battlefield);
+    let artifact = put(&mut game, player, "Swiftfoot Boots", Zone::Battlefield);
+    let dual = put(&mut game, player, "Magitek Infantry", Zone::Battlefield);
+    put(&mut game, opponent, "Grizzly Bears", Zone::Battlefield);
+    let select = Action::ChooseTarget {
+        target: Target::Player(opponent),
+    };
+    let disenchant = put(&mut game, player, "Disenchant", Zone::Hand);
+    cast(&mut game, disenchant, Some(Target::Card(artifact)));
+    reach(&mut game, |a| *a == select);
+    act(&mut game, select.clone());
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].life, 21);
+    assert_eq!(game.state.players[opponent.index()].life, 19);
+
+    let wrath = put(&mut game, player, "Day of Judgment", Zone::Hand);
+    cast(&mut game, wrath, None);
+    for _ in 0..2 {
+        reach(&mut game, |a| *a == select);
+        act(&mut game, select.clone());
+    }
+    settle_triggers(&mut game);
+    assert_eq!(game.object_view(observer).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(dual).zone, Zone::Graveyard);
+    assert_eq!(game.state.players[player.index()].life, 23);
+    assert_eq!(game.state.players[opponent.index()].life, 17);
+}
+
+#[test]
+fn balamb_garden_discounts_other_towns_and_its_vehicle_draws_when_it_attacks() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let garden = put(
+        &mut game,
+        player,
+        "Balamb Garden, SeeD Academy // Balamb Garden, Airborne",
+        Zone::Hand,
+    );
+    let own_town = put(
+        &mut game,
+        player,
+        "Vector, Imperial Capital",
+        Zone::Battlefield,
+    );
+    let opposing_town = put(
+        &mut game,
+        player.other(),
+        "Vector, Imperial Capital",
+        Zone::Battlefield,
+    );
+    let pilot = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    for town in [own_town, opposing_town] {
+        game.state.objects[town as usize].tapped = true;
+    }
+    act(&mut game, Action::PlayLand { card: garden });
+    assert!(game.object_view(garden).tapped);
+    game.state.objects[garden as usize].tapped = false;
+
+    let mut tap = game.clone();
+    tap.state.players[player.index()].mana = [0; 6];
+    let blue = [0, 1, 0, 0, 0, 0];
+    reject(&mut tap, mana(garden, [0, 0, 1, 0, 0, 0]));
+    act(&mut tap, mana(garden, blue));
+    assert_eq!(tap.state.players[player.index()].mana, blue);
+
+    game.state.players[player.index()].mana = [0, 1, 0, 0, 1, 3];
+    reject(&mut game, announce_ability(garden, 1));
+    game.state.players[player.index()].mana[5] = 4;
+    let front = game.object_ref(garden);
+    act(&mut game, announce_ability(garden, 1));
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_ref(garden), front);
+    assert_eq!(game.object_view(garden).card, Card(5502));
+    assert!(game.object_view(garden).tapped);
+    assert!(game.keywords(garden).contains(Keywords::FLYING));
+
+    game.state.objects[garden as usize].tapped = false;
+    game.state.objects[garden as usize].summoning_sick = false;
+    act(&mut game, announce_ability(garden, 0));
+    if matches!(game.state.pending, Pending::PayCosts { .. }) {
+        pay(&mut game);
+    }
+    let object = game.object_ref(pilot);
+    act(&mut game, Action::ChooseCrewer { object });
+    act(&mut game, Action::FinishCrew);
+    settle(&mut game);
+    assert_eq!(stats(&game, garden), (5, 4));
+    attack(&mut game, garden);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 1);
+}
+
+#[test]
+fn bartz_affinity_and_damage_both_use_other_controlled_birds_as_appropriate() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let spell = put(&mut game, player, "Bartz and Boko", Zone::Hand);
+    let bird = put(&mut game, player, "Ambrosia Whiteheart", Zone::Battlefield);
+    let second = game.state.objects.len() as CardId;
+    game.create_tokens(player, Card(5269), 1, false);
+    game.create_tokens(player.other(), Card(5269), 1, false);
+    game.state.objects[second as usize].growth.power = 1;
+    game.state.objects[bird as usize].gained_keywords = Keywords::LIFELINK;
+    let victim = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
+    game.state.objects[victim as usize].growth.toughness = 7;
+    game.state.players[player.index()].mana = [0, 0, 0, 0, 2, 0];
+    reject(&mut game, Action::AnnounceCast { card: spell });
+    game.state.players[player.index()].mana[5] = 1;
+    cast(&mut game, spell, None);
+    reach(&mut game, |a| *a == target(victim));
+    reject(&mut game, target(bird));
+    act(&mut game, target(victim));
+    settle(&mut game);
+    assert_eq!(game.object_view(victim).damage, 5);
+    assert_eq!(game.state.players[player.index()].life, 22);
+}
+
+#[test]
+fn chocobo_kick_returns_a_stolen_land_to_its_owner_and_doubles_the_creatures_damage() {
+    let player = Player::P0;
+    let opponent = player.other();
+    for kicked in [false, true] {
+        let mut game = scenario(player);
+        let spell = put(&mut game, player, "Chocobo Kick", Zone::Hand);
+        let land = put(&mut game, opponent, "Forest", Zone::Battlefield);
+        game.record_control(game.object_ref(land), player, None);
+        let foreign = put(&mut game, opponent, "Forest", Zone::Battlefield);
+        let source = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+        let victim = put(
+            &mut game,
+            opponent,
+            "Ghalta, Primal Hunger",
+            Zone::Battlefield,
+        );
+        game.state.objects[source as usize].gained_keywords = Keywords::LIFELINK;
+        act(&mut game, Action::AnnounceCast { card: spell });
+        act(&mut game, Action::ChooseKicker { pay: kicked });
+        act(&mut game, target(source));
+        act(&mut game, target(victim));
+        if kicked {
+            let invalid = game.object_ref(foreign);
+            reject(&mut game, Action::ChooseAdditionalCost { object: invalid });
+            let object = game.object_ref(land);
+            act(&mut game, Action::ChooseAdditionalCost { object });
+        }
+        pay(&mut game);
+        settle(&mut game);
+        let damage = if kicked { 4 } else { 2 };
+        assert_eq!(game.object_view(victim).damage, damage);
+        assert_eq!(game.state.players[player.index()].life, 20 + damage);
+        assert_eq!(
+            game.object_view(land).zone,
+            if kicked {
+                Zone::Hand
+            } else {
+                Zone::Battlefield
+            }
+        );
+        assert_eq!(game.object_view(land).owner, opponent);
+    }
+}
+
+#[test]
+fn cid_has_unlimited_deck_copies_and_cycling_increases_his_live_bonus() {
+    let player = Player::P0;
+    let cid = Card::from_name("Cid, Timeless Artificer").unwrap();
+    let mut deck = vec![Card::Plains; 55];
+    deck.extend(std::iter::repeat_n(cid, 5));
+    assert!(
+        Game::new(Config {
+            decks: [deck, vec![Card::Island; 60]],
+            seed: 86,
+            starting_player: player,
+            deck_rules: DeckRules::Standard,
+        })
+        .is_ok()
+    );
+
+    let mut game = scenario(player);
+    let provider = spawn(&mut game, player, cid, Zone::Hand);
+    let to_cycle = spawn(&mut game, player, cid, Zone::Hand);
+    let artifact = put(&mut game, player, "Magitek Infantry", Zone::Battlefield);
+    let plain = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let hero = game.state.objects.len() as CardId;
+    game.create_tokens(player, Card(5328), 1, false);
+    cast(&mut game, provider, None);
+    settle(&mut game);
+    assert_eq!(stats(&game, artifact), (2, 2));
+    assert_eq!(stats(&game, hero), (2, 2));
+    assert_eq!(stats(&game, plain), (2, 2));
+
+    game.state.players[player.index()].mana = [1, 1, 0, 0, 0, 0];
+    act(&mut game, announce_ability(to_cycle, 0));
+    pay(&mut game);
+    assert_eq!(game.object_view(to_cycle).zone, Zone::Graveyard);
+    assert_eq!(stats(&game, hero), (3, 3));
+    assert_eq!(stats(&game, artifact), (3, 3));
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 1);
+}
+
+#[test]
+fn clash_can_fight_then_remove_and_restore_the_same_lore_counter() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let spell = put(&mut game, player, "Clash of the Eikons", Zone::Hand);
+    let saga = put(&mut game, player, "Summon: Fat Chocobo", Zone::Hand);
+    let source = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    let victim = put(
+        &mut game,
+        player.other(),
+        "Grizzly Bears",
+        Zone::Battlefield,
+    );
+    cast(&mut game, saga, None);
+    settle(&mut game);
+    assert_eq!(game.object_view(saga).counters.lore, 1);
+    assert_eq!(tokens(&game, player, Card(5269)).len(), 1);
+    act(&mut game, Action::AnnounceCast { card: spell });
+    act(&mut game, Action::ChooseMode { mode: 6 });
+    for card in [source, victim, saga, saga] {
+        act(&mut game, target(card));
+    }
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(victim).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(source).damage, 2);
+    assert_eq!(game.object_view(saga).counters.lore, 1);
+    assert_eq!(tokens(&game, player, Card(5269)).len(), 2);
+}
+
+#[test]
+fn dark_confidants_upkeep_reveals_and_moves_the_top_card_without_drawing() {
+    let player = Player::P0;
+    for (name, loss) in [("Hill Giant", 4), ("Island", 0)] {
+        let mut game = scenario(player);
+        let source = put(&mut game, player, "Dark Confidant", Zone::Battlefield);
+        let top = put(&mut game, player, name, Zone::Library);
+        let exact = game.object_ref(top);
+        game.begin_step(Step::Upkeep);
+        game.give_priority();
+        settle(&mut game);
+        let observed = game.observe(player.other());
+        let reveal = observed.last_library_reveal.unwrap();
+        assert_eq!(reveal.revealed.object, exact);
+        assert_eq!(reveal.source, game.object_ref(source));
+        assert!(reveal.drawn.is_none());
+        assert!(observed.known_hand.contains(&game.object_ref(top)));
+        assert_eq!(game.object_view(top).zone, Zone::Hand);
+        assert_eq!(game.state.players[player.index()].life, 20 - loss);
+        assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 0);
+    }
+}
+
+#[test]
+fn demon_wall_can_attack_after_its_counter_activation_and_keeps_defender_and_menace() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let wall = put(&mut game, player, "Demon Wall", Zone::Battlefield);
+    let attack_action = Action::Attack { card: wall };
+    let mut empty = game.clone();
+    pass_pair(&mut empty);
+    pass_pair(&mut empty);
+    reject(&mut empty, attack_action.clone());
+
+    act(&mut game, announce_ability(wall, 0));
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(wall).counters.plus_one, 2);
+    assert!(
+        game.keywords(wall)
+            .contains(Keywords::DEFENDER.union(Keywords::MENACE))
+    );
+    attack(&mut game, wall);
+    assert!(game.object_view(wall).tapped);
+}

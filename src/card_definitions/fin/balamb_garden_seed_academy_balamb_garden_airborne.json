@@ -3,10 +3,27 @@
   "catalogue_id": 309,
   "oracle_id": "8b84fec5-617c-4088-8250-2ba1f1f9479a",
   "facts_sha256": "d7ea6b107d97742b9da16b08e3832b970fc3e49364e532fb99e76b1400961e55",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "bff21b42bd52ac01fe7abbe9d63a18467d83988e82c071dfb08211230682f503"
-  },
-  "physical_metadata_sha256": "96502286ded8400f4c0285161735dce72dd258cb307c48544e4f540101f7b363"
+  "complete": true,
+  "physical_metadata_sha256": "96502286ded8400f4c0285161735dce72dd258cb307c48544e4f540101f7b363",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BalambGardenSeeDAcademy.java",
+  "java_sha256": "982b4e3036046a8fc036dfc8ec5df657cb8419e4736fc215bbdf5f37a4f921aa",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedAbility.java",
+      "sha256": "147582b81a6ea9f26c8835600282fe7311c08dcb1ff983b26587e455c2c4514a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+      "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TransformSourceEffect.java",
+      "sha256": "cb657dfa68c243833de4af4fd66287c1e8491c1d8846ca1897f3146799dd482e"
+    }
+  ]
 }

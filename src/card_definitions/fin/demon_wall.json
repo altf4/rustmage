@@ -3,10 +3,17 @@
   "catalogue_id": 1038,
   "oracle_id": "077b5ed2-05c2-4a16-b5eb-794884ee1c21",
   "facts_sha256": "a4d0dff102fb4f2692779c5072b60526b0f74c00efb8d60a45350d8e95516b6e",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "fc44ccc1749a4dafedd7bc690b74370b0700143d77cd560bef1d32f2a4324ff9"
-  },
-  "physical_metadata_sha256": "594efb9700d3fdfb8fce72325c4f37b3381aabf42331cd042d2ce5b032328c80"
+  "complete": true,
+  "physical_metadata_sha256": "594efb9700d3fdfb8fce72325c4f37b3381aabf42331cd042d2ce5b032328c80",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DemonWall.java",
+  "java_sha256": "9372c1047ce33ff592177b158999b6f349ffeb3a9f132b14083fef43df1a485d",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SourceHasCountersCondition.java",
+      "sha256": "c2431bed8f5cd7ac02e0b29eb1c6489fcf048cb82e90b0693c6e42e68bd7db6f"
+    }
+  ]
 }

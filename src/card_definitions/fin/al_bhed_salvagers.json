@@ -3,10 +3,17 @@
   "catalogue_id": 121,
   "oracle_id": "43f81514-e812-4e17-9b1a-704c136d8ffd",
   "facts_sha256": "fc8845f65b8692a8236d032340713410d72e9c20d36c3e4fc81bdc7c2809f364",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "2777699fa448530a5cb24ec7960b325471cea36e6813b60694661b696e8fb815"
-  },
-  "physical_metadata_sha256": "92806e4764af6cea25be533eb5d26ad0eabd31a0b4d76695a328536bc2683860"
+  "complete": true,
+  "physical_metadata_sha256": "92806e4764af6cea25be533eb5d26ad0eabd31a0b4d76695a328536bc2683860",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AlBhedSalvagers.java",
+  "java_sha256": "edfa50c6fc79231d0b98c8dcf642578696dcdeb98b5785e735584949cb3de180",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesThisOrAnotherTriggeredAbility.java",
+      "sha256": "4511f11fe0c29d6984fc30bc40f6c270865b68a607f740f7247998c33b80fe01"
+    }
+  ]
 }
