@@ -190,11 +190,11 @@ fn devotion_and_nonbasic_lands_sample_current_copiable_values_and_control() {
     let opt = card("Opt");
     let titan = card("Abomination, Terrifying Titan");
     let bifur = card("Bifur, Melodic Rider");
-    let body = CardRules {
+    const BODY: CardRules = CardRules {
         effect: Effect::Creature(2, 2),
         ..CardRules::EMPTY
     };
-    let _rules = fixture_rules::activate(&[(opt, &LIVE_COUNTS), (titan, &body), (bifur, &body)]);
+    let _rules = fixture_rules::activate(&[(opt, &LIVE_COUNTS), (titan, &BODY), (bifur, &BODY)]);
     let player = Player::P0;
     let mut game = scenario(player);
     let spell = spawn(&mut game, player, opt, Zone::Hand);
