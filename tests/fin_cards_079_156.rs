@@ -1266,3 +1266,248 @@ fn kefka_draws_distinct_discard_types_then_ruler_counts_opponent_life_loss() {
     settle(&mut game);
     assert_eq!(game.hand_count(p), 5);
 }
+
+#[test]
+fn fang_triggers_once_for_a_graveyard_departure_batch_and_resets_next_turn() {
+    let p = Player::P1;
+    let opponent = p.other();
+    let mut game = scenario(p);
+    put(&mut game, p, "Fang, Fearless l'Cie", Zone::Battlefield);
+    let own = ["Forest", "Opt"].map(|name| put(&mut game, p, name, Zone::Graveyard));
+    let their = put(&mut game, opponent, "Forest", Zone::Graveyard);
+    let lantern = put(&mut game, opponent, "Soul-Guide Lantern", Zone::Battlefield);
+    game.move_object(their, Zone::Exile);
+    game.prepare_triggers();
+    assert!(game.state.stack.is_empty());
+    act(&mut game, Action::Pass);
+    choose(
+        &mut game,
+        |action| matches!(action, Action::Activate { card, ability: 0, .. } if *card == lantern),
+    );
+    settle(&mut game);
+    assert_eq!(game.hand_count(p), 1);
+    assert_eq!(game.state.players[p.index()].life, 19);
+    for card in own {
+        assert_eq!(game.object_view(card).zone, Zone::Exile);
+    }
+    let later = put(&mut game, p, "Island", Zone::Graveyard);
+    game.move_object(later, Zone::Exile);
+    game.prepare_triggers();
+    assert!(game.state.stack.is_empty());
+    game.state.step = Step::End;
+    pass_pair(&mut game);
+    assert_eq!(game.state.active, opponent);
+    game.move_object(later, Zone::Graveyard);
+    game.move_object(later, Zone::Exile);
+    game.prepare_triggers();
+    settle(&mut game);
+    assert_eq!(game.hand_count(p), 2);
+    assert_eq!(game.state.players[p.index()].life, 18);
+}
+
+#[test]
+fn gogo_pays_two_per_x_and_copies_a_frozen_trigger_twice_with_independent_targets() {
+    let p = Player::P0;
+    let mut game = scenario(p);
+    let gogo = put(&mut game, p, "Gogo, Master of Mimicry", Zone::Battlefield);
+    let bear = put(&mut game, p.other(), "Grizzly Bears", Zone::Battlefield);
+    let lion_heart = put(&mut game, p, "Lion Heart", Zone::Hand);
+    cast(&mut game, lion_heart, None);
+    pass_pair(&mut game);
+    let original = Target::Player(p.other());
+    act(&mut game, Action::ChooseTarget { target: original });
+    let ability = game.state.stack.last().unwrap().id;
+    game.state.players[p.index()].mana = [0, 0, 0, 0, 0, 4];
+    announce_ability(&mut game, gogo, 0);
+    reject(&mut game, Action::ChooseX { value: 0 });
+    reject(&mut game, Action::ChooseX { value: 3 });
+    act(&mut game, Action::ChooseX { value: 2 });
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Stack(ability),
+        },
+    );
+    pay(&mut game);
+    assert_eq!(game.state.players[p.index()].mana, [0; 6]);
+    assert!(game.object_view(gogo).tapped);
+    pass_pair(&mut game);
+    act(
+        &mut game,
+        Action::SetStackTarget {
+            index: 0,
+            target: Target::Card(bear),
+        },
+    );
+    act(&mut game, Action::FinishStackTargets);
+    assert_eq!(
+        game.observe(p).retarget.unwrap().item.targets[0].target,
+        original
+    );
+    act(&mut game, Action::FinishStackTargets);
+    settle(&mut game);
+    assert_eq!(game.object_view(bear).zone, Zone::Graveyard);
+    assert_eq!(game.state.players[p.other().index()].life, 16);
+}
+
+#[test]
+fn jenova_places_live_or_lki_power_counters_and_draws_for_a_real_mutant_death() {
+    let p = Player::P1;
+    let mut game = scenario(p);
+    let jenova = put(&mut game, p, "Jenova, Ancient Calamity", Zone::Battlefield);
+    let bear = put(&mut game, p, "Grizzly Bears", Zone::Battlefield);
+    game.state.objects[jenova as usize].growth.power = 2;
+    game.begin_step(Step::BeginCombat);
+    game.prepare_triggers();
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(jenova),
+        },
+    );
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(bear),
+        },
+    );
+    let mut without_source = game.clone();
+    without_source.move_object(jenova, Zone::Exile);
+    settle(&mut without_source);
+    assert_eq!(without_source.object_view(bear).counters.plus_one, 3);
+    assert!(without_source.object_view(bear).has_subtype("Mutant"));
+
+    settle(&mut game);
+    assert_eq!(stats(&game, bear), (5, 5));
+    assert!(game.object_view(bear).has_subtype("Bear"));
+    assert!(game.object_view(bear).has_subtype("Mutant"));
+    let mut opponent_turn = game.clone();
+    opponent_turn.state.active = p.other();
+    opponent_turn.move_object(bear, Zone::Graveyard);
+    opponent_turn.prepare_triggers();
+    assert!(opponent_turn.state.stack.is_empty());
+    game.move_object(bear, Zone::Graveyard);
+    game.prepare_triggers();
+    settle(&mut game);
+    assert_eq!(game.hand_count(p), 5);
+}
+
+#[test]
+fn judge_counts_each_other_controlled_creature_or_artifact_death_once() {
+    let p = Player::P0;
+    let mut game = scenario(p);
+    let judge = put(&mut game, p, "Judge Magister Gabranth", Zone::Battlefield);
+    let artifact = put(&mut game, p, "Short Bow", Zone::Battlefield);
+    let artifact_creature = put(&mut game, p, "Clockwork Percussionist", Zone::Battlefield);
+    let creature = put(&mut game, p, "Grizzly Bears", Zone::Battlefield);
+    let enemy = put(&mut game, p.other(), "Grizzly Bears", Zone::Battlefield);
+    let exiled = put(&mut game, p, "Bear Cub", Zone::Battlefield);
+    assert!(game.keywords(judge).contains(Keywords::MENACE));
+    game.move_object(exiled, Zone::Exile);
+    game.prepare_triggers();
+    assert!(game.state.stack.is_empty());
+    game.sacrifice_batch(&[
+        (p, artifact),
+        (p, artifact_creature),
+        (p, creature),
+        (p.other(), enemy),
+    ]);
+    game.prepare_triggers();
+    resolve_entries(&mut game);
+    assert_eq!(game.object_view(judge).counters.plus_one, 3);
+    assert_eq!(stats(&game, judge), (5, 5));
+}
+
+fn black_wizard(game: &Game, player: Player) -> ObjectView {
+    let token = Card::from_catalogue_id(5531);
+    let mut found = game.state.objects.iter().enumerate().filter(|(_, object)| {
+        object.zone == Zone::Battlefield && object.controller == player && object.card == token
+    });
+    let (index, _) = found.next().expect("one Black Wizard token");
+    assert!(found.next().is_none());
+    let wizard = game.object_view(index as CardId);
+    assert!(wizard.is_token() && wizard.has_subtype("Wizard"));
+    assert_eq!(wizard.colors, 4);
+    assert_eq!(stats(game, wizard.id), (0, 1));
+    wizard
+}
+
+#[test]
+fn kuja_counts_the_new_tapped_wizard_before_transforming_and_doubles_its_damage() {
+    let p = Player::P0;
+    let mut game = scenario(p);
+    let kuja = put(&mut game, p, "Kuja, Genome Sorcerer", Zone::Battlefield);
+    let first = put(&mut game, p, "Ghitu Lavarunner", Zone::Battlefield);
+    put(&mut game, p, "Mysidian Elder", Zone::Battlefield);
+    put(&mut game, p.other(), "Ghitu Lavarunner", Zone::Battlefield);
+    let front = game.object_view(kuja).card;
+    game.begin_step(Step::End);
+    game.prepare_triggers();
+    let mut short = game.clone();
+    short.move_object(first, Zone::Exile);
+    settle(&mut short);
+    assert_eq!(short.object_view(kuja).card, front);
+    settle(&mut game);
+    assert_eq!(game.object_view(kuja).card, front.back_face().unwrap());
+    for (branch, expected_life) in [(&mut short, 19), (&mut game, 18)] {
+        assert!(black_wizard(branch, p).tapped);
+        let opt = put(branch, p, "Opt", Zone::Hand);
+        cast(branch, opt, None);
+        pass_pair(branch);
+        assert_eq!(branch.state.players[p.other().index()].life, expected_life);
+        pass_pair(branch);
+        arrange_top(branch, LibraryDestination::Top);
+    }
+}
+
+#[test]
+fn mage_siege_is_an_off_turn_adventure_and_the_town_can_later_enter_tapped() {
+    let active = Player::P0;
+    let caster = active.other();
+    let mut game = scenario(active);
+    let land = put(
+        &mut game,
+        caster,
+        "Lindblum, Industrial Regency",
+        Zone::Hand,
+    );
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::AnnounceAdventure { card: land });
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(land).zone, Zone::Exile);
+    assert!(!black_wizard(&game, caster).tapped);
+    assert_eq!(game.state.players[active.index()].life, 20);
+    reject(&mut game, Action::PlayLand { card: land });
+    game.state.active = caster;
+    game.state.priority = caster;
+    act(&mut game, Action::PlayLand { card: land });
+    assert!(game.object_view(land).tapped);
+    assert!(game.object_view(land).has_subtype("Town"));
+    game.state.objects[land as usize].tapped = false;
+    game.state.players[caster.index()].mana = [0; 6];
+    act(&mut game, Action::TapMana { card: land });
+    assert_eq!(game.state.players[caster.index()].mana, [0, 0, 0, 1, 0, 0]);
+}
+
+#[test]
+fn mysidian_elders_wizard_triggers_before_a_spell_that_is_countered() {
+    let p = Player::P1;
+    let mut game = scenario(p);
+    let elder = put(&mut game, p, "Mysidian Elder", Zone::Hand);
+    cast(&mut game, elder, None);
+    settle(&mut game);
+    let token = black_wizard(&game, p);
+    assert!(!token.tapped);
+    let spell = put(&mut game, p, "Opt", Zone::Hand);
+    cast(&mut game, spell, None);
+    let trigger = game.state.stack.last().unwrap();
+    assert_eq!(trigger.source().unwrap().object, token.reference);
+    act(&mut game, Action::Pass);
+    let negate = put(&mut game, p.other(), "Negate", Zone::Hand);
+    cast(&mut game, negate, Some(Target::Spell(spell)));
+    settle(&mut game);
+    assert_eq!(game.object_view(spell).zone, Zone::Graveyard);
+    assert_eq!(game.state.players[p.other().index()].life, 19);
+    assert_eq!(game.hand_count(p), 0);
+}

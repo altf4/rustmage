@@ -3,10 +3,30 @@
   "catalogue_id": 2895,
   "oracle_id": "10039992-d51a-47e7-9a70-02fe2227c163",
   "facts_sha256": "8ea634d40e5bb5daf365dfa887a41f005460fe7850001297ffe5570b946759d4",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "292bfbd4cb8d3a5630cea444520999ddfe74e82944e363b3ec82a29a482c2d9d"
   },
-  "physical_metadata_sha256": "50f11260e0982b660e60919bc80f38c36d3cd8267a3589ce2fef26452396b7db"
+  "physical_metadata_sha256": "50f11260e0982b660e60919bc80f38c36d3cd8267a3589ce2fef26452396b7db",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MysidianElder.java",
+  "java_sha256": "20b70e4469e9f9131578448a2b428ca4633dd6c30cf3eba0da86bdf290bab467",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/BlackWizardToken.java",
+      "sha256": "75c0e40a947cf016e0ce69ec61c8609d399ff76a2d7210b7303dc162b82e8735"
+    }
+  ]
 }

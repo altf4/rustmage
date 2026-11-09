@@ -3,10 +3,30 @@
   "catalogue_id": 2292,
   "oracle_id": "1a846ad6-15c9-4bf9-9127-612018a557b9",
   "facts_sha256": "7d814473cfe83d337ffeffe6fd0efed851387807617884ec6e09649683552a86",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "158a1322c7cda956627e86bc4ee639394efed11418afa3e9263957e557b06130"
   },
-  "physical_metadata_sha256": "60e444b6bd7be3ddf125c5a94273090448eb7a44bc9528e159454fb9838e042c"
+  "physical_metadata_sha256": "60e444b6bd7be3ddf125c5a94273090448eb7a44bc9528e159454fb9838e042c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/j/JudgeMagisterGabranth.java",
+  "java_sha256": "d3fb47e0393bc146d1ecca728e9f761191c9987eff0ec6f05dce1f03e795dbc8",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesCreatureTriggeredAbility.java",
+      "sha256": "62d53cb6be7c685032f9bf3a509c9217177b4ee44ccd9a294be1d8dca7d77b81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    }
+  ]
 }
