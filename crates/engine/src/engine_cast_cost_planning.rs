@@ -7,6 +7,7 @@ use ability_world::CharacteristicWorld;
 pub(super) struct CostContext {
     actor: Player,
     source: ObjectRef,
+    source_tap_reserved: bool,
     source_counter_reservation: Counters,
     clauses: Vec<CastCostRow>,
     active: Option<u16>,
@@ -42,21 +43,23 @@ impl CostContext {
             selected = e.selected.clone();
             exact = e.complete;
         }
+        let mut source_tap_reserved = false;
         let mut source_counter_reservation = Counters::default();
         if let StackKind::ActivatedAbility { ability } = a.item.kind
             && a.activation_cost_route != ActivationCostRoute::FirstEquipZero
         {
-            source_counter_reservation = a.counter_payment.clone();
-            if let Some(change) = a
+            let cost = a
                 .item
                 .source
                 .expect("activated ability has a source")
                 .card
                 .activation(ability)
-                .cost
-                .loyalty
-                .filter(|change| *change < 0)
-            {
+                .cost;
+            // Retain the frozen definition and selected route, including a
+            // borrowed or granted ability whose source has different rules.
+            source_tap_reserved = cost.tap;
+            source_counter_reservation = a.counter_payment.clone();
+            if let Some(change) = cost.loyalty.filter(|change| *change < 0) {
                 source_counter_reservation
                     .add(CounterKind::Loyalty, u64::from(change.unsigned_abs()));
             }
@@ -64,6 +67,7 @@ impl CostContext {
         Some(Box::new(Self {
             delve_selected: a.convoke.as_ref().is_some_and(|f| !f.delved.is_empty()),
             mana_closed: c.mana_closed,
+            source_tap_reserved,
             source_counter_reservation,
             teammates: c.teammates.clone(),
             teamwork_exact: false,
@@ -1457,7 +1461,11 @@ impl FundingState<'_> {
             .iter()
             .filter_map(|v| {
                 let r = self.reference(v.id);
-                self.cost_object(spec, r, c.source).then_some(r)
+                (self.cost_object(spec, r, c.source)
+                    && !(c.source_tap_reserved
+                        && r == c.source
+                        && matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))))
+                .then_some(r)
             })
             .collect::<Vec<_>>();
         if evidence_min.is_some_and(|(n, color)| {
@@ -1690,6 +1698,7 @@ impl Game {
             mana_closed,
             actor: goal.actor,
             source: *source,
+            source_tap_reserved: goal.reserves_source_tap(*source),
             source_counter_reservation: Counters::default(),
             clauses: [
                 CastCostClause::Mana,
@@ -2045,6 +2054,7 @@ impl Game {
                 teamwork_exact: false,
                 actor: goal.actor,
                 mana: None,
+                source_tap_reserved: false,
                 source_counter_reservation: Counters::default(),
                 source: ObjectRef {
                     card: 0,
@@ -2276,6 +2286,7 @@ impl Game {
                         generic: attempt.generic,
                     }),
                     source,
+                    source_tap_reserved: false,
                     source_counter_reservation: Counters::default(),
                     clauses,
                     active: None,
@@ -2330,6 +2341,7 @@ impl Game {
             mana_closed,
             actor: goal.actor,
             source,
+            source_tap_reserved: goal.reserves_source_tap(source),
             source_counter_reservation: Counters::default(),
             clauses: vec![
                 CastCostRow {

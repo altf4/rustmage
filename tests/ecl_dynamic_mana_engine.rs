@@ -1355,3 +1355,114 @@ fn acquired_separate_tap_mana_is_unique_and_preserves_parent_tap_reservations() 
         }
     }
 }
+
+#[test]
+fn acquired_priority_tap_cost_reserves_the_animated_sources_tap_symbol() {
+    const DONOR: CardRules = CardRules {
+        effect: Effect::Permanent,
+        activated: &[
+            EXTERNAL_TAP_MANA.activated[0],
+            ActivatedAbility {
+                cost: ActivationCost {
+                    tap: false,
+                    ..EXTERNAL_TAP_MANA.activated[0].cost
+                },
+                ..EXTERNAL_TAP_MANA.activated[0]
+            },
+        ],
+        ..CardRules::EMPTY
+    };
+    let _rules = fixture_rules::activate(&[(Card::from_name("Gilded Lotus").unwrap(), &DONOR)]);
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let donor = put(&mut g, p, "Gilded Lotus", Zone::Battlefield);
+        let source = put(&mut g, p, "Territory Forge", Zone::Hand);
+        cast(&mut g, source, None);
+        for _ in 0..48 {
+            if g.state.pending == Pending::Priority
+                && g.state.stack.is_empty()
+                && g.state.pending_triggers.is_empty()
+                && g.state.resolving.is_none()
+            {
+                break;
+            }
+            let target = Action::ChooseTarget {
+                target: Target::Card(donor),
+            };
+            if g.legal_actions().contains(&target) {
+                act(&mut g, target);
+            } else if g.legal_actions().contains(&Action::FinishTargets) {
+                act(&mut g, Action::FinishTargets);
+            } else {
+                choose(&mut g, |action| {
+                    matches!(action, Action::Pass | Action::PutTrigger { .. })
+                });
+            }
+        }
+        assert_eq!(g.object_view(donor).zone, Zone::Exile);
+        let source_ref = g.object_ref(source);
+        g.change_object_form(
+            source_ref,
+            AnimationSpec {
+                artifact: false,
+                creature_types: AnimationCreatureTypes::Named(&["Construct"]),
+                base: Some((2, 2)),
+                keywords: Keywords::HASTE,
+                duration: AnimationDuration::Permanent,
+            },
+            characteristic_layers::AnimationTypeMode::AddCreature,
+        );
+        assert!(g.current_kinds(source) & 1 != 0);
+        assert!(g.keywords(source).contains(Keywords::HASTE));
+        g.state.players[p.index()].mana = [0; 6];
+        let exiled = g.object_ref(donor);
+        let action = |ability| Action::AnnounceBorrowedMana {
+            card: source,
+            exiled,
+            ability,
+            counter_payment: Counters::default(),
+            production: [0, 0, 0, 1, 0, 0],
+        };
+        // The only creature qualifies for the worded tap cost (other:false),
+        // but the first ability must also pay its separate printed tap symbol.
+        assert!(!g.legal_actions().contains(&action(0)));
+        reject(&mut g, action(0));
+        // Removing only the tap symbol makes using that same creature legal.
+        let mut no_symbol = g.clone();
+        act(&mut no_symbol, action(1));
+        act(
+            &mut no_symbol,
+            Action::ChooseAdditionalCost { object: source_ref },
+        );
+        pay(&mut no_symbol);
+        assert!(no_symbol.object_view(source).tapped);
+        assert_eq!(no_symbol.state.players[p.index()].mana, [0, 0, 0, 1, 0, 0]);
+        assert!(!g.object_view(source).tapped);
+        let witness = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        g.state.objects[witness as usize].summoning_sick = true;
+        let selected = g.object_ref(witness);
+        let saved = g.snapshot();
+        let actions = g.legal_actions();
+        assert_eq!(actions.iter().filter(|a| **a == action(0)).count(), 1);
+        let index = actions.iter().position(|a| *a == action(0)).unwrap();
+        let mut indexed = g.clone();
+        indexed.apply_index(p, indexed.revision(), index).unwrap();
+        act(&mut g, action(0));
+        assert_eq!(g.snapshot(), indexed.snapshot());
+        reject(&mut g, Action::ChooseAdditionalCost { object: source_ref });
+        act(&mut g, Action::ChooseAdditionalCost { object: selected });
+        pay(&mut g);
+        assert!(g.object_view(source).tapped);
+        assert!(g.object_view(witness).tapped);
+        assert!(g.state.objects[witness as usize].summoning_sick);
+        assert_eq!(g.state.players[p.index()].mana, [0, 0, 0, 1, 0, 0]);
+        let paid = g.snapshot();
+        g.restore(&saved).unwrap();
+        assert!(!g.object_view(source).tapped);
+        assert!(!g.object_view(witness).tapped);
+        act(&mut g, action(0));
+        act(&mut g, Action::ChooseAdditionalCost { object: selected });
+        pay(&mut g);
+        assert_eq!(g.snapshot(), paid);
+    }
+}
