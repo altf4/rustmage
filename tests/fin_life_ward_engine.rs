@@ -198,6 +198,7 @@ fn the_same_ward_offers_atomic_private_payments_to_a_targeting_ability_controlle
     let first = put(&mut game, payer, "Forest", Zone::Battlefield);
     let second = put(&mut game, payer, "Forest", Zone::Battlefield);
     let own_hand = put(&mut game, payer, "Mountain", Zone::Hand);
+    let liege = put(&mut game, payer, "Wilt-Leaf Liege", Zone::Hand);
     let other_hand = put(&mut game, opponent, "Mountain", Zone::Hand);
     game.state.players[payer.index()].mana = [0; 6];
     act(
@@ -288,6 +289,14 @@ fn the_same_ward_offers_atomic_private_payments_to_a_targeting_ability_controlle
     assert_eq!(game.object_view(own_hand).zone, Zone::Graveyard);
     assert_eq!(game.object_view(other_hand).zone, Zone::Hand);
     assert_eq!(game.state.stack.last().unwrap().id, victim);
+
+    game.restore(&choose_route).unwrap();
+    act(&mut game, Action::ChooseResolutionCost { index: 1 });
+    let selected = cost_object(&game, liege);
+    act(&mut game, selected);
+    act(&mut game, Action::PayResolutionMana { payment: [0; 6] });
+    assert_eq!(game.object_view(liege).zone, Zone::Battlefield);
+    assert_eq!(game.state.stack.last().unwrap().id, victim);
 }
 
 const OPTIONAL_SPELL: CardRules = CardRules {
@@ -350,4 +359,110 @@ fn an_ordinary_resolving_spell_can_use_the_same_mana_and_sacrifice_payment() {
     assert_eq!(game.state.players[payer.index()].life, 24);
     assert_eq!(game.object_view(creature).zone, Zone::Graveyard);
     assert_eq!(game.object_view(spell).zone, Zone::Graveyard);
+}
+
+const GRAVEYARD_PAYMENT: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::NONE,
+        &[
+            Instruction::MayPayCosts {
+                costs: &[ResolutionCost {
+                    mana: ManaCost {
+                        generic: 1,
+                        ..ManaCost::ZERO
+                    },
+                    objects: Some(ResolutionObjectCost {
+                        cost: AdditionalCost {
+                            kind: EffectChoiceKind::ExileGraveyardCards(8),
+                            filter: ANY_OBJECT,
+                        },
+                        count: 8,
+                    }),
+                    ..ResolutionCost::FREE
+                }],
+                skip: 1,
+            },
+            Instruction::GainLife(PlayerSet::Controller, 3),
+        ],
+    ),
+    ..CardRules::EMPTY
+};
+
+const GRAVEYARD_PROHIBITION: CardRules = CardRules {
+    effect: Effect::Creature(3, 3),
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::GraveyardCardsCannotBeExiled],
+    }],
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn exact_graveyard_cards_and_mana_are_committed_as_one_optional_cost() {
+    let spell_card = Card::from_name("Opt").unwrap();
+    let _rules = fixture_rules::activate(&[
+        (spell_card, &GRAVEYARD_PAYMENT),
+        (Card::HillGiant, &GRAVEYARD_PROHIBITION),
+    ]);
+    let payer = Player::P0;
+    let mut game = scenario(payer);
+    let spell = spawn(&mut game, payer, spell_card, Zone::Hand);
+    let own: Vec<_> = (0..8)
+        .map(|_| put(&mut game, payer, "Forest", Zone::Graveyard))
+        .collect();
+    let other = put(&mut game, payer.other(), "Forest", Zone::Graveyard);
+    cast(&mut game, spell, None);
+    game.state.players[payer.index()].mana = [0, 0, 0, 0, 1, 0];
+
+    let mut prohibited = game.clone();
+    spawn(
+        &mut prohibited,
+        payer.other(),
+        Card::HillGiant,
+        Zone::Battlefield,
+    );
+    act(&mut prohibited, Action::Pass);
+    act(&mut prohibited, Action::Pass);
+    assert!(!prohibited.legal_actions().iter().any(|action| {
+        matches!(
+            action,
+            Action::ChooseAdditionalCost { .. } | Action::PayResolutionMana { .. }
+        )
+    }));
+    act(&mut prohibited, Action::DeclineResolutionMana);
+    assert_eq!(prohibited.state.players[payer.index()].life, 20);
+    assert_eq!(prohibited.state.players[payer.index()].mana[4], 1);
+
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    let select = cost_object(&game, other);
+    reject(&mut game, select);
+    let payment = Action::PayResolutionMana {
+        payment: [0, 0, 0, 0, 1, 0],
+    };
+    for &card in &own {
+        reject(&mut game, payment.clone());
+        let select = cost_object(&game, card);
+        act(&mut game, select);
+    }
+    assert!(
+        own.iter()
+            .all(|&card| game.object_view(card).zone == Zone::Graveyard)
+    );
+    let mut decline = game.clone();
+    act(&mut decline, Action::DeclineResolutionMana);
+    assert!(
+        own.iter()
+            .all(|&card| decline.object_view(card).zone == Zone::Graveyard)
+    );
+    assert_eq!(decline.state.players[payer.index()].mana[4], 1);
+    act(&mut game, payment);
+    assert!(
+        own.iter()
+            .all(|&card| game.object_view(card).zone == Zone::Exile)
+    );
+    assert_eq!(game.object_view(other).zone, Zone::Graveyard);
+    assert_eq!(game.state.players[payer.index()].mana[4], 0);
+    assert_eq!(game.state.players[payer.index()].life, 23);
 }

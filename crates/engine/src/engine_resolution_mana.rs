@@ -377,11 +377,7 @@ impl Game {
         let request = resolution.mana_payment.take().unwrap();
         assert!(request.discard);
         resolution.choice = None;
-        let cause = if request.discard_only {
-            request.payer
-        } else {
-            resolution.item.controller
-        };
+        let cause = resolution.item.controller;
         self.discard_batch_caused(&[card], None, Some(cause));
         self.run_program();
     }
@@ -681,7 +677,8 @@ impl Game {
             | EffectChoiceKind::DiscardNamed(_)
             | EffectChoiceKind::DiscardMatchingLegendary
             | EffectChoiceKind::DiscardLegendary => {
-                self.discard_batch_caused(&cards, None, Some(payer))
+                let cause = self.state.resolving.as_ref().unwrap().item.controller;
+                self.discard_batch_caused(&cards, None, Some(cause));
             }
             EffectChoiceKind::ExileGraveyard
             | EffectChoiceKind::ExileGraveyardCards(_)
