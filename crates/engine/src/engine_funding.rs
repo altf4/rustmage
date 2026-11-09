@@ -2973,7 +2973,14 @@ impl<'g> FundingState<'g> {
             },
         }
     }
-    fn land_tap_bonus_upper(&self) -> [u128; 6] {
+    fn attached_to_opposing_permanent(&self, id: CardId) -> bool {
+        self.object(id).attached_to.is_some_and(|recipient| {
+            self.reference(recipient.card) == recipient
+                && self.object(recipient.card).zone == Zone::Battlefield
+                && self.object(recipient.card).controller != self.actor
+        })
+    }
+    fn land_tap_bonus_upper(&self, fixed_control: bool) -> [u128; 6] {
         let mut bonus = [0u128; 6];
         let mut multiplicity = 1u128;
         for &id in self.static_sources() {
@@ -2993,6 +3000,11 @@ impl<'g> FundingState<'g> {
                         }
                     }
                     crate::cards::StaticAbilityFragment::AttachmentManaBonus(production) => {
+                        // A fixed-control proof cannot tap an opposing land,
+                        // even if the Aura itself belongs to the actor.
+                        if fixed_control && self.attached_to_opposing_permanent(id) {
+                            continue;
+                        }
                         self.production_upper(production).visit(|mana| {
                             for (total, amount) in bonus.iter_mut().zip(mana) {
                                 *total = total.saturating_add(u128::from(amount));
@@ -3027,7 +3039,7 @@ impl<'g> FundingState<'g> {
     fn total_mana_upper(&self) -> u128 {
         let mut total = self.mana.into_iter().fold(0u128, u128::saturating_add);
         let tap_bonus = self
-            .land_tap_bonus_upper()
+            .land_tap_bonus_upper(false)
             .into_iter()
             .fold(0u128, u128::saturating_add);
         for resource in &self.resources {
@@ -3170,7 +3182,7 @@ impl<'g> FundingState<'g> {
     // untaps a source, creates a permanent, restores counters or gains life.
     fn possible_color_upper(&self) -> [u128; 6] {
         let mut upper = self.mana;
-        let tap_bonus = self.land_tap_bonus_upper();
+        let tap_bonus = self.land_tap_bonus_upper(false);
         for resource in &self.resources {
             let object = &resource.object;
             if object.zone != Zone::Battlefield || object.controller != self.actor {
@@ -3317,6 +3329,29 @@ impl<'g> FundingState<'g> {
         }
         upper
     }
+    /// Plain materialized copies may remain fixed during a tap-only search.
+    /// Any temporary layer must be bound to its own exact live incarnation.
+    fn fixed_copy_recipes(&self) -> bool {
+        let plain_live_copy = |reference: ObjectRef, recipe: CopyRecipe| {
+            self.reference(reference.card) == reference
+                && self.object(reference.card).zone == Zone::Battlefield
+                && recipe == CopyRecipe::new(self.object(reference.card).card)
+        };
+        self.copy_recipes.as_ref().is_none_or(|rows| {
+            rows.iter()
+                .all(|row| plain_live_copy(row.object, row.recipe))
+        }) && self
+            .temporary_copy_rows_state()
+            .as_ref()
+            .is_none_or(|rows| {
+                rows.iter().all(|row| {
+                    row.layers.iter().all(|layer| {
+                        layer.value.deadline.source() == Some(row.object)
+                            && plain_live_copy(row.object, layer.value.recipe)
+                    })
+                })
+            })
+    }
     /// In a fixed world without a mana converter, only final-purpose-eligible
     /// production can fund this payment. Bound each source's alternative tap
     /// outputs once for quantity, and independently for each required color.
@@ -3330,7 +3365,7 @@ impl<'g> FundingState<'g> {
             mana_lots::Purpose::Activation(_) | mana_lots::Purpose::Spell(_)
         ) || goal.reserve.is_some()
             || self.continuation.is_some()
-            || self.cast_costs.is_some()
+            || !self.only_mana_and_reveals(goal)
             || self.entry_projection.is_some()
             || self.cost_group.is_some()
             || !self.sacrifice_group.is_empty()
@@ -3345,8 +3380,7 @@ impl<'g> FundingState<'g> {
             || self.game.state.self_granted_abilities.is_some()
             || self.game.state.temporary_controls.is_some()
             || self.game.state.controls.is_some()
-            || self.game.state.temporary_copies.is_some()
-            || self.copy_recipes.is_some()
+            || !self.fixed_copy_recipes()
             || self.game.state.crew.is_some()
             || self.resources.iter().any(|resource| {
                 resource
@@ -3356,7 +3390,7 @@ impl<'g> FundingState<'g> {
                     .is_some()
             })
             || !self.game.state.tap_sources.is_empty()
-            || self.land_tap_bonus_upper() != [0; 6]
+            || self.land_tap_bonus_upper(true) != [0; 6]
             || matches!(purpose, mana_lots::Purpose::Spell(spell)
                 if spell.spend_any_mana || spell.linked_mana_source.is_some())
             // Resolved ability removal follows a fixed incarnation. The
@@ -3364,7 +3398,6 @@ impl<'g> FundingState<'g> {
             || self.roles().is_some_and(|r| {
                 !r.source_linked_effects.is_empty()
                     || !r.ability_removal_sources.is_empty()
-                    || !r.characteristic_sources.is_empty()
                     || !r.basic_land_types.is_empty()
                     || !r.creature_types.is_empty()
                     || !r.animations.is_empty()
@@ -3396,11 +3429,15 @@ impl<'g> FundingState<'g> {
                             StaticAbilityFragment::IntrinsicKeywords(_)
                             | StaticAbilityFragment::Changeling
                             | StaticAbilityFragment::AttachmentStats(_)
+                            | StaticAbilityFragment::AttachedChosenColor
                             | StaticAbilityFragment::AttachedAllCreatureTypes
                             | StaticAbilityFragment::AdditionalLandPlays(_)
                             | StaticAbilityFragment::StaticModifier(..)
                             | StaticAbilityFragment::ScalingModifier(..)
                             | StaticAbilityFragment::ControlledCreatureScaling { .. } => false,
+                            StaticAbilityFragment::AttachmentManaBonus(_) => {
+                                !self.attached_to_opposing_permanent(id)
+                            }
                             StaticAbilityFragment::LandMana {
                                 production: ManaProduction::Tagged { quality, .. },
                                 ..
@@ -3464,9 +3501,17 @@ impl<'g> FundingState<'g> {
                 {
                     return false;
                 }
+                // Neither a tap nor a reveal changes the colors or
+                // membership of controlled permanents in this fixed world.
+                let recipe = production.base();
+                let fixed = if recipe == ManaProduction::ColorsAmongControlledPermanents {
+                    recipe.in_world(self, id)
+                } else {
+                    recipe
+                };
                 // Compute maxima directly; do not enumerate a combinatorial
                 // production domain just to obtain a conservative upper bound.
-                let (colors, amount) = match production.base() {
+                let (colors, amount) = match fixed {
                     ManaProduction::Fixed(mana) => (
                         mana.map(u128::from),
                         mana.into_iter().map(u128::from).sum::<u128>(),
@@ -3572,7 +3617,7 @@ impl<'g> FundingState<'g> {
             || state.graveyard_borrowing.is_some()
             || state.self_granted_abilities.is_some()
             || !state.tap_sources.is_empty()
-            || self.land_tap_bonus_upper() != [0; 6]
+            || self.land_tap_bonus_upper(false) != [0; 6]
             || matches!(self.purpose, mana_lots::Purpose::Spell(spell) if spell.spend_any_mana || spell.linked_mana_source.is_some())
             || self.roles().is_some_and(|roles| {
                 !roles.source_linked_effects.is_empty() || !roles.basic_land_types.is_empty()
@@ -3793,7 +3838,7 @@ impl<'g> FundingState<'g> {
                 .all(|(available, required)| available >= u128::from(required));
         }
         let mut upper = self.mana;
-        let tap_bonus = self.land_tap_bonus_upper();
+        let tap_bonus = self.land_tap_bonus_upper(false);
         for resource in &self.resources {
             let object = &resource.object;
             if object.zone != Zone::Battlefield || object.controller != goal.actor {

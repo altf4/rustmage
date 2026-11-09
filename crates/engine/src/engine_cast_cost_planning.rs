@@ -115,6 +115,33 @@ impl FundingState<'_> {
     pub(super) fn mana_window_open(&self, goal: &FundingGoal) -> bool {
         goal.requires_mana() && self.cast_costs.as_ref().is_none_or(|c| !c.mana_closed)
     }
+    /// An ordered mana row has the same fixed requirement as the funding
+    /// goal when the only other unpaid costs reveal existing witnesses.
+    pub(super) fn only_mana_and_reveals(&self, goal: &FundingGoal) -> bool {
+        self.cast_costs.as_ref().is_none_or(|c| {
+            c.mana
+                == Some(ManaCost {
+                    colored: goal.required,
+                    generic: goal.generic,
+                })
+                && c.clauses
+                    .iter()
+                    .any(|row| !row.paid && row.clause == CastCostClause::Mana)
+                && c.clauses
+                    .iter()
+                    .filter(|row| !row.paid)
+                    .all(|row| match row.clause {
+                        CastCostClause::Mana | CastCostClause::Behold(_) => true,
+                        CastCostClause::Additional => c.additional.is_some_and(|spec| {
+                            matches!(
+                                spec.kind.payment_kind(),
+                                EffectChoiceKind::Behold | EffectChoiceKind::BeholdMany(_)
+                            )
+                        }),
+                        _ => false,
+                    })
+        })
+    }
     /// Intrinsic land mana cannot repair a counter shortfall. Avoid enumerating
     /// equivalent land subsets while retaining the complete search for costs or
     /// mana abilities that can introduce counters, objects, or new abilities.

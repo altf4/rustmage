@@ -296,6 +296,88 @@ fn restricted_white_converter_fallback_keeps_actual_double_white_payment() {
 }
 
 #[test]
+fn self_bound_mirrorform_copies_preserve_the_restricted_white_bound() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p.other());
+        for _ in 0..4 {
+            named(&mut g, p, "Forest", Zone::Battlefield);
+            named(&mut g, p, "Swamp", Zone::Battlefield);
+        }
+        named(&mut g, p, "Great Forest Druid", Zone::Battlefield);
+        let flame = named(&mut g, p, "Flamebraider", Zone::Battlefield);
+        for _ in 0..2 {
+            named(&mut g, p, "Flamebraider", Zone::Battlefield);
+        }
+        let copied = named(&mut g, p.other(), "Springleaf Drum", Zone::Battlefield);
+        let mirrorform = named(&mut g, p.other(), "Mirrorform", Zone::Hand);
+        cast(&mut g, mirrorform, None, &[Target::Card(flame)]);
+        settle(&mut g);
+        assert_eq!(g.object_view(copied).card, g.object_view(flame).card);
+
+        g.state.active = p;
+        g.state.priority = p;
+        g.state.players[p.index()].mana = [0; 6];
+        let kinbinding = named(&mut g, p, "Kinbinding", Zone::Hand);
+        let (world, goal) = world_for(&g, p, kinbinding);
+        let mut visited = HashSet::new();
+        assert!(!world.reachable(&goal, &mut visited));
+        assert!(visited.is_empty());
+        assert!(
+            !g.legal_actions()
+                .contains(&Action::AnnounceCast { card: kinbinding })
+        );
+        named(&mut g, p, "Plains", Zone::Battlefield);
+        assert!(
+            g.legal_actions()
+                .contains(&Action::AnnounceCast { card: kinbinding })
+        );
+    }
+}
+
+#[test]
+fn celestial_reunion_x_counts_fixed_bloom_colors_and_ignores_an_opposing_land_bonus() {
+    for p in [Player::P0, Player::P1] {
+        let mut g = setup(p);
+        for _ in 0..4 {
+            named(&mut g, p, "Forest", Zone::Battlefield);
+            named(&mut g, p, "Swamp", Zone::Battlefield);
+        }
+        named(&mut g, p, "Shadow Urchin", Zone::Battlefield);
+        for _ in 0..2 {
+            named(&mut g, p, "Bloom Tender", Zone::Battlefield);
+        }
+        let land = named(&mut g, p.other(), "Forest", Zone::Battlefield);
+        let aura = named(&mut g, p.other(), "Shimmerwilds Growth", Zone::Battlefield);
+        g.state.objects[aura as usize].attached_to = Some(g.object_ref(land));
+        g.set_entry_value(
+            g.object_ref(aura),
+            EntryChoiceValue::Color(ChoiceColor::Blue),
+        );
+        assert_eq!(g.object_view(land).colors, 2);
+        g.state.players[p.index()].mana = [0; 6];
+        let spell = named(&mut g, p, "Celestial Reunion", Zone::Hand);
+        checked(&mut g, Action::AnnounceCast { card: spell });
+        checked(
+            &mut g,
+            Action::ChooseBeholdType {
+                creature_type: Some(CreatureType::from_name("Druid").unwrap()),
+            },
+        );
+        // Eight lands plus black, red and green from each Tender, with one
+        // mana for the printed green symbol. Tapped Druids still count.
+        let before = g.snapshot();
+        let revision = g.revision();
+        assert_eq!(
+            g.apply(p, Action::ChooseX { value: 14 }),
+            Err(Error::IllegalAction)
+        );
+        assert_eq!(g.snapshot(), before);
+        assert_eq!(g.revision(), revision);
+        checked(&mut g, Action::ChooseX { value: 13 });
+    }
+}
+
+#[test]
 fn scaling_creatures_and_fixed_ability_removal_preserve_white_mana_bound() {
     for p in [Player::P0, Player::P1] {
         let mut g = setup(p);
