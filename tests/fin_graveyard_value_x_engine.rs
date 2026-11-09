@@ -92,10 +92,10 @@ fn legal_x_is_the_intersection_of_exact_own_saga_values_and_projected_mana() {
     );
     let enemy_five = put(&mut game, opponent, "Summon: Shiva", Zone::Graveyard);
     let other_four = put(&mut game, player, "Hill Giant", Zone::Graveyard);
-    let artifact_front = spawn(
+    let non_saga_front = put(
         &mut game,
         player,
-        Card::from_name("Crystal Fragments // Summon: Alexander").unwrap(),
+        "Esper Origins // Summon: Esper Maduin",
         Zone::Graveyard,
     );
     let available = [0, 0, 0, 0, 0, 2];
@@ -152,7 +152,7 @@ fn legal_x_is_the_intersection_of_exact_own_saga_values_and_projected_mana() {
     game.apply_index(player, revision, index).unwrap();
     for branch in [&mut raw, &mut game] {
         assert_eq!(branch.state.pending, Pending::Targets { player });
-        for illegal in [three, enemy_four, enemy_five, other_four, artifact_front] {
+        for illegal in [three, enemy_four, enemy_five, other_four, non_saga_front] {
             reject(branch, target(illegal));
         }
         select(branch, five);
