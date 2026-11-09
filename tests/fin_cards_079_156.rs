@@ -1486,8 +1486,18 @@ fn mage_siege_is_an_off_turn_adventure_and_the_town_can_later_enter_tapped() {
     assert!(game.object_view(land).has_subtype("Town"));
     game.state.objects[land as usize].tapped = false;
     game.state.players[caster.index()].mana = [0; 6];
-    act(&mut game, Action::TapMana { card: land });
-    assert_eq!(game.state.players[caster.index()].mana, [0, 0, 0, 1, 0, 0]);
+    let red = [0, 0, 0, 1, 0, 0];
+    act(
+        &mut game,
+        Action::ActivateMana {
+            card: land,
+            ability: 0,
+            payment: [0; 6],
+            counter_payment: Counters::default(),
+            production: red,
+        },
+    );
+    assert_eq!(game.state.players[caster.index()].mana, red);
 }
 
 #[test]
