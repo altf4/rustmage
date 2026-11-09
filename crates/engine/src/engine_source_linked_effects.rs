@@ -24,6 +24,14 @@ pub enum SourceLinkedEffectKind {
     ControlAndCombatLockWhileControlled,
 }
 impl SourceLinkedEffectKind {
+    pub(super) fn removes_abilities(self) -> bool {
+        matches!(
+            self,
+            Self::RemoveAbilities
+                | Self::RemoveAbilitiesUntilEndOfTurn
+                | Self::BlankLandWhileBlighted
+        )
+    }
     fn survives_source_departure(self) -> bool {
         matches!(
             self,

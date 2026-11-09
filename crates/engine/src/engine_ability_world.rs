@@ -1004,12 +1004,7 @@ pub(super) trait CharacteristicWorld {
                 .iter()
                 .any(|row| return_ability_modification::active(self, row))
                 || state.source_linked_effects.iter().any(|row| {
-                    matches!(
-                        row.kind,
-                        SourceLinkedEffectKind::RemoveAbilities
-                            | SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn
-                            | SourceLinkedEffectKind::BlankLandWhileBlighted
-                    ) && source_linked_effects::active(self, row)
+                    row.kind.removes_abilities() && source_linked_effects::active(self, row)
                 })
                 || state.ability_removal_sources.iter().any(|&source| {
                     self.object(source.card).zone == Zone::Battlefield
@@ -1076,11 +1071,7 @@ pub(super) trait CharacteristicWorld {
                     && return_ability_modification::active(self, row)
             }) || state.source_linked_effects.iter().any(|row| {
                 row.recipient == self.reference(id)
-                    && matches!(
-                        row.kind,
-                        SourceLinkedEffectKind::RemoveAbilities
-                            | SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn
-                    )
+                    && row.kind.removes_abilities()
                     && source_linked_effects::active(self, row)
             })
         }) {
