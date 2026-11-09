@@ -121,6 +121,9 @@ fn selected(program: &[Instruction]) -> SelectedQuantities {
             | Instruction::CreateSizedToken { size: value, .. }
             | Instruction::CreateTokensWithCounters {
                 counters: value, ..
+            }
+            | Instruction::CreateTokensThenCounters {
+                counters: value, ..
             } => amount(value, &mut result),
             _ => (),
         }

@@ -271,6 +271,10 @@ pub(super) enum TokenCompletion {
         kind: CounterKind,
         amount: u64,
     },
+    PostEntryCounters {
+        kind: CounterKind,
+        amount: AmountValue,
+    },
     CounterSet(Box<Counters>),
     /// Evaluate the controller's graveyard after this creation event completes.
     GraveyardGroups(std::num::NonZeroU16),
@@ -3426,6 +3430,7 @@ impl Game {
                                         | TokenCompletion::OptionalAttachSource(_)
                                         | TokenCompletion::AttachCreatedTo(_)
                                         | TokenCompletion::Counters { .. }
+                                        | TokenCompletion::PostEntryCounters { .. }
                                         | TokenCompletion::CounterSet(_)
                                         | TokenCompletion::GraveyardGroups(_)
                                         | TokenCompletion::Keywords { .. }
@@ -3575,6 +3580,12 @@ impl Game {
         }
         let counters = match &completion {
             TokenCompletion::Counters { kind, amount } => Some(Counters::of(*kind, *amount)),
+            TokenCompletion::PostEntryCounters { kind, amount } if !created.is_empty() => {
+                let item = &self.state.resolving.as_ref().unwrap().item;
+                let count = u64::try_from(self.item_amount(*amount, item))
+                    .capacity("created token counter quantity exhausted");
+                Some(Counters::of(*kind, count))
+            }
             TokenCompletion::CounterSet(counters) => Some(counters.as_ref().clone()),
             _ => None,
         };

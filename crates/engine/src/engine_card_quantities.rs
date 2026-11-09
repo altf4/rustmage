@@ -102,6 +102,9 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::CreateSizedToken { size: value, .. }
             | Instruction::CreateTokensWithCounters {
                 counters: value, ..
+            }
+            | Instruction::CreateTokensThenCounters {
+                counters: value, ..
             } => amount(value, kinds),
             _ => (),
         }

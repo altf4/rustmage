@@ -6895,6 +6895,23 @@ impl Game {
                 } => {
                     self.create_tokens_with_counters(&item, token, amount, kind, counters);
                 }
+                Instruction::CreateTokensThenCounters {
+                    token,
+                    amount,
+                    kind,
+                    counters,
+                } => {
+                    self.stage_token_creation(
+                        item.controller,
+                        token,
+                        u128::from(amount),
+                        false,
+                        replacements::TokenCompletion::PostEntryCounters {
+                            kind,
+                            amount: counters,
+                        },
+                    );
+                }
                 Instruction::CreateTokensWithGraveyardGroups {
                     token,
                     amount,

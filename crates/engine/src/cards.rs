@@ -3784,6 +3784,13 @@ pub enum Instruction {
         kind: CounterKind,
         counters: AmountValue,
     },
+    /// Evaluate the counter amount only after the actual tokens have entered.
+    CreateTokensThenCounters {
+        token: Card,
+        amount: u16,
+        kind: CounterKind,
+        counters: AmountValue,
+    },
     /// If cast from a graveyard, count its controller's graveyard after creation.
     CreateTokensWithGraveyardGroups {
         token: Card,

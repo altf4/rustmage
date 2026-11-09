@@ -64,6 +64,9 @@ pub(super) fn selected(program: &[Instruction]) -> bool {
         | Instruction::CreateSizedToken { size: value, .. }
         | Instruction::CreateTokensWithCounters {
             counters: value, ..
+        }
+        | Instruction::CreateTokensThenCounters {
+            counters: value, ..
         } => amount(value),
         _ => false,
     })
