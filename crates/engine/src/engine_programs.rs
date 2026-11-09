@@ -9421,7 +9421,8 @@ impl Game {
                         .object;
                     self.grant_keyword_effects(&affected, source, keywords);
                 }
-                Instruction::GrantRememberedCreaturesUntilNextTurn(keywords) => {
+                Instruction::GrantRememberedCreatures(keywords)
+                | Instruction::GrantRememberedCreaturesUntilNextTurn(keywords) => {
                     let objects = self
                         .state
                         .resolving
@@ -9442,12 +9443,16 @@ impl Game {
                         .source
                         .expect("instruction requires an object source")
                         .object;
-                    self.grant_keywords_until_next_turn(
-                        &affected,
-                        source,
-                        item.controller,
-                        keywords,
-                    );
+                    if matches!(instruction, Instruction::GrantRememberedCreatures(_)) {
+                        self.grant_keyword_effects(&affected, source, keywords);
+                    } else {
+                        self.grant_keywords_until_next_turn(
+                            &affected,
+                            source,
+                            item.controller,
+                            keywords,
+                        );
+                    }
                 }
                 Instruction::SnapshotDoubleCreatures(filter) => {
                     // Snapshot every operand before changing any derived characteristic.

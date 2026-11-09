@@ -3518,6 +3518,8 @@ pub enum Instruction {
         filter: CreatureFilter,
         keywords: Keywords,
     },
+    /// Grant keywords to the remembered exact creature recipients until cleanup.
+    GrantRememberedCreatures(Keywords),
     GrantRememberedCreaturesUntilNextTurn(Keywords),
     /// Freeze current creatures controlled by the selected players until cleanup.
     GrowPlayerCreatures {
