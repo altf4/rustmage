@@ -224,10 +224,16 @@ impl Game {
             StatValue::SourceCounters(kind) => objects()
                 .find(|(id, object)| *id == source.card && object.generation == source.generation)
                 .map_or(0, |_| i128::from(counter_count(source.card, kind))),
-            StatValue::LegendaryCreaturesYouControl => objects()
+            StatValue::LegendaryCreaturesYouControl
+            | StatValue::OtherLegendaryCreaturesYouControl => objects()
                 .filter(|(id, object)| {
                     object.zone == Zone::Battlefield
                         && object.controller == owner
+                        && (value == StatValue::LegendaryCreaturesYouControl
+                            || ObjectRef {
+                                card: *id,
+                                generation: object.generation,
+                            } != source)
                         && kinds(*id, object) & 1 != 0
                         && legendary(*id)
                 })

@@ -2,6 +2,7 @@
 mod support;
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
+use rustmage_core::engine::funding::{FundingGoal, FundingState};
 use rustmage_core::{cards::*, engine::*};
 use support::*;
 
@@ -291,4 +292,173 @@ fn a_prior_countered_legend_consumes_the_discount_for_that_player_and_turn() {
     assert_eq!(game.state.stack.last().unwrap().mana_value(), 3);
     settle(&mut game);
     assert_eq!(game.object_view(flash_legend).zone, Zone::Battlefield);
+}
+
+const TRANSFORM_FRONT: &str = "Brigid, Clachan's Heart";
+const TRANSFORM_BACK: &str = "Brigid, Doun's Mind";
+const LEGENDARY_COMBAT: CardRules = CardRules {
+    effect: Effect::Creature(3, 2),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::InterveningIf {
+            guard: StepGuard::Expression {
+                value: StatValue::OtherLegendaryCreaturesYouControl,
+                minimum: Some(2),
+                maximum: None,
+            },
+            event: &TriggerCondition::AtStep {
+                step: TriggerStep::BeginCombat,
+                relation: CastRelation::You,
+                guard: StepGuard::Always,
+            },
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::May { skip: 1 }, Instruction::TransformSource],
+    }],
+    extras: &CardExtras {
+        transforming_double_face: true,
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+const ANTHEM_GROUP: &[StaticAbilityGroup] = &[StaticAbilityGroup {
+    line: 0,
+    first_layer: AbilityLayer::Modify,
+    fragments: &[StaticAbilityFragment::ControlledLegendaryCreatureBonus(
+        Stats {
+            power: 2,
+            toughness: 2,
+        },
+    )],
+}];
+const LEGENDARY_ANTHEM: CardRules = CardRules {
+    effect: Effect::Creature(3, 3),
+    static_groups: ANTHEM_GROUP,
+    extras: &CardExtras {
+        static_ability_groups: ANTHEM_GROUP,
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn combat_transform_and_anthem_use_current_legendary_creatures() {
+    let front = Card::from_name(TRANSFORM_FRONT).unwrap();
+    let back = Card::from_name(TRANSFORM_BACK).unwrap();
+    let _rules = fixture_rules::activate(&[(front, &LEGENDARY_COMBAT), (back, &LEGENDARY_ANTHEM)]);
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut parent = scenario(player);
+    let source = put(&mut parent, player, TRANSFORM_FRONT, Zone::Battlefield);
+    let reference = parent.object_ref(source);
+    let legend = put(
+        &mut parent,
+        player,
+        "Yargle, Glutton of Urborg",
+        Zone::Battlefield,
+    );
+    let opposing_legend = put(
+        &mut parent,
+        opponent,
+        "Yargle, Goliath of Otaria",
+        Zone::Battlefield,
+    );
+    let bear = put(&mut parent, player, "Grizzly Bears", Zone::Battlefield);
+    let artifact = put(
+        &mut parent,
+        player,
+        "Captain America's Shield",
+        Zone::Battlefield,
+    );
+
+    let mut short = parent.clone();
+    pass_pair(&mut short);
+    assert_eq!(short.state.step, Step::BeginCombat);
+    assert!(short.state.stack.is_empty());
+
+    let serum = put(&mut parent, player, "Super-Soldier Serum", Zone::Hand);
+    cast(&mut parent, serum, Some(Target::Card(bear)));
+    settle(&mut parent);
+    assert_eq!(stats(&parent, bear), (4, 4));
+    pass_pair(&mut parent);
+    assert_eq!(parent.state.step, Step::BeginCombat);
+    assert_eq!(parent.state.stack.len(), 1);
+
+    let mut lost_legendary = parent.clone();
+    lost_legendary.state.players[opponent.index()].mana = [1, 0, 0, 0, 0, 1];
+    act(&mut lost_legendary, Action::Pass);
+    let disenchant = put(&mut lost_legendary, opponent, "Disenchant", Zone::Hand);
+    cast(&mut lost_legendary, disenchant, Some(Target::Card(serum)));
+    settle(&mut lost_legendary);
+    assert_eq!(lost_legendary.object_view(source).card, front);
+    assert_eq!(stats(&lost_legendary, bear), (2, 2));
+
+    let mut blinked = parent.clone();
+    blinked.move_object(serum, Zone::Graveyard);
+    blinked.move_object(source, Zone::Exile);
+    blinked.move_object(source, Zone::Battlefield);
+    assert_ne!(blinked.object_ref(source), reference);
+    pass_pair(&mut blinked);
+    act(&mut blinked, Action::ChooseOptional { accept: true });
+    assert_eq!(blinked.object_view(source).card, front);
+
+    pass_pair(&mut parent);
+    let accept = Action::ChooseOptional { accept: true };
+    let revision = parent.revision();
+    let index = parent
+        .legal_actions()
+        .iter()
+        .position(|action| *action == accept)
+        .unwrap();
+    let mut decline = parent.clone();
+    let mut raw = parent.clone();
+    let mut indexed = parent.clone();
+    drop(parent);
+
+    act(&mut decline, Action::ChooseOptional { accept: false });
+    assert_eq!(decline.object_view(source).card, front);
+    act(&mut raw, accept);
+    indexed.apply_index(player, revision, index).unwrap();
+    assert_eq!(raw.snapshot(), indexed.snapshot());
+    assert_eq!(raw.object_ref(source), reference);
+    assert_eq!(raw.object_view(source).card, back);
+    assert_eq!(stats(&raw, source), (5, 5));
+    assert_eq!(stats(&raw, legend), (11, 5));
+    assert_eq!(stats(&raw, bear), (6, 6));
+    assert_eq!(stats(&raw, artifact), (0, 0));
+    assert_eq!(stats(&raw, opposing_legend), (3, 9));
+
+    let goal = FundingGoal {
+        actor: player,
+        required: [0; 6],
+        generic: 0,
+        reserve: None,
+        source: None,
+    };
+    let mut projected = FundingState::from_game(&indexed, &goal);
+    assert_eq!(
+        characteristic_query::CharacteristicQuery::in_world(&projected)
+            .stats(bear)
+            .power,
+        6
+    );
+    projected
+        .resources
+        .iter_mut()
+        .find(|row| row.id == source)
+        .unwrap()
+        .object
+        .zone = Zone::Graveyard;
+    assert_eq!(
+        characteristic_query::CharacteristicQuery::in_world(&projected)
+            .stats(bear)
+            .power,
+        4
+    );
+
+    raw.move_object(serum, Zone::Graveyard);
+    assert_eq!(stats(&raw, bear), (2, 2));
+    raw.change_controller(reference, opponent);
+    assert_eq!(stats(&raw, legend), (9, 3));
+    assert_eq!(stats(&raw, opposing_legend), (5, 11));
+    assert_eq!(stats(&indexed, legend), (11, 5));
 }

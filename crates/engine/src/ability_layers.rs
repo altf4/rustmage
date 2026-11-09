@@ -404,6 +404,8 @@ pub enum StaticAbilityFragment {
         filters: &'static [CreatureFilter],
         stats: Stats,
     },
+    /// A layer-7c bonus to the source controller's current legendary creatures.
+    ControlledLegendaryCreatureBonus(Stats),
     /// Live earlier-layer predicate gates an ordinary creature-group bonus.
     ConditionalCreatureModifier {
         condition: StatValue,

@@ -3838,6 +3838,8 @@ pub enum StatValue {
     SourceModified,
     SourceEquipmentCount,
     LegendaryCreaturesYouControl,
+    /// Exclude the exact source incarnation from the current controlled creatures.
+    OtherLegendaryCreaturesYouControl,
     HasEnduringStory,
     SourceCounters(CounterKind),
     /// Total across hot and named counter kinds on the exact source.
