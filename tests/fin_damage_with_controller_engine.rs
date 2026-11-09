@@ -4,20 +4,34 @@ use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
 use support::*;
 
+const CONTROLLED_EQUIPMENT: CountFilter = CountFilter {
+    zone: CountZone::Battlefield,
+    relation: 0,
+    kind: 0,
+    exclude: 0,
+    subtype: Some("Equipment"),
+    basic: false,
+    other: false,
+    cards_only: false,
+};
 const BOLT: CardRules = CardRules {
     effect: Effect::Spell(
         TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
         &[Instruction::DamageWithControllerScaled {
             damage: 5,
+            controller_damage: AmountValue::Stat(StatValue::Count(CONTROLLED_EQUIPMENT)),
+        }],
+    ),
+    ..CardRules::EMPTY
+};
+const KNIGHT_BOLT: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
+        &[Instruction::DamageWithControllerScaled {
+            damage: 5,
             controller_damage: AmountValue::Stat(StatValue::Count(CountFilter {
-                zone: CountZone::Battlefield,
-                relation: 0,
-                kind: 0,
-                exclude: 0,
-                subtype: Some("Equipment"),
-                basic: false,
-                other: false,
-                cards_only: false,
+                subtype: Some("Knight"),
+                ..CONTROLLED_EQUIPMENT
             })),
         }],
     ),
@@ -30,7 +44,7 @@ const BORROW: CardRules = CardRules {
     ),
     ..CardRules::EMPTY
 };
-const SHIELD_EQUIPMENT: CardRules = CardRules {
+const SHIELDED_KNIGHT: CardRules = CardRules {
     effect: Effect::Creature(2, 2),
     static_groups: &[
         StaticAbilityGroup {
@@ -39,7 +53,7 @@ const SHIELD_EQUIPMENT: CardRules = CardRules {
             fragments: &[StaticAbilityFragment::SourceCounterSubtype {
                 kind: CounterKind::Shield,
                 minimum: 1,
-                subtype: "Equipment",
+                subtype: "Knight",
                 keywords: Keywords::NONE,
             }],
         },
@@ -111,10 +125,10 @@ fn controller_damage_counts_equipment_and_uses_target_control_at_resolution() {
 #[test]
 fn amount_and_attribution_are_frozen_before_damage_prevention() {
     let _rules = fixture_rules::activate(&[
-        (Card::Shock, &BOLT),
+        (Card::Shock, &KNIGHT_BOLT),
         (
             Card::from_name("Scorpion Sentinel").unwrap(),
-            &SHIELD_EQUIPMENT,
+            &SHIELDED_KNIGHT,
         ),
     ]);
     let player = Player::P0;
@@ -122,7 +136,7 @@ fn amount_and_attribution_are_frozen_before_damage_prevention() {
     let target = put(&mut game, player, "Scorpion Sentinel", Zone::Battlefield);
     let target_ref = game.object_ref(target);
     game.add_counter(target, CounterKind::Shield, 1);
-    assert!(game.has_subtype(target, "Equipment"));
+    assert!(game.has_subtype(target, "Knight"));
     let bolt = put(&mut game, player, "Shock", Zone::Hand);
     cast(&mut game, bolt, Some(Target::Card(target)));
     let source = game.object_ref(bolt);
@@ -143,7 +157,7 @@ fn amount_and_attribution_are_frozen_before_damage_prevention() {
         },
     );
     settle(&mut game);
-    assert!(!game.has_subtype(target, "Equipment"));
+    assert!(!game.has_subtype(target, "Knight"));
     assert_eq!(game.counter_count(target, CounterKind::Shield), 0);
     assert_eq!(game.object_view(target).damage, 0);
     assert_eq!(game.state.players[player.index()].life, 19);
