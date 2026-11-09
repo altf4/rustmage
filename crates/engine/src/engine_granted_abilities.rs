@@ -45,6 +45,7 @@ impl Game {
                             | TriggerCondition::PlayerDamaged { .. }
                             | TriggerCondition::CreatureDamaged { .. }
                             | TriggerCondition::SelfDamaged
+                            | TriggerCondition::AttachedCreatureDamaged
                             | TriggerCondition::AtStep { .. }
                             | TriggerCondition::SelfTurnedFaceUp
                             | TriggerCondition::PermanentYouControlTurnedFaceUp

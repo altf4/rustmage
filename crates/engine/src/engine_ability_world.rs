@@ -789,36 +789,38 @@ pub(super) trait CharacteristicWorld {
     }
     fn activation_prohibited(&self, actor: Player, id: CardId) -> bool {
         let target = self.object(id);
-        (target.zone == Zone::Battlefield
-            && self.static_sources().iter().any(|&source| {
-                let provider = self.object(source);
-                if provider.zone != Zone::Battlefield {
-                    return false;
-                }
-                provider.card.static_ability_groups().iter().any(|group| {
-                    group.fragments.iter().any(|fragment| {
-                        let crate::cards::StaticAbilityFragment::ActivatedPermanentKindsProhibited(
+        (target.zone == Zone::Battlefield && self.static_sources().iter().any(|&source| {
+            let provider = self.object(source);
+            if provider.zone != Zone::Battlefield {
+                return false;
+            }
+            provider.card.static_ability_groups().iter().any(|group| {
+                group.fragments.iter().any(|fragment| {
+                    let prohibited = match *fragment {
+                        crate::cards::StaticAbilityFragment::ActivatedPermanentKindsProhibited(
                             kinds,
-                        ) = *fragment
-                        else {
-                            return false;
-                        };
-                        self.kinds(id) & kinds != 0
-                            && characteristic_query::CharacteristicQuery::in_world(self)
-                                .continuous_fragment_available(source, |found| {
-                                    std::ptr::eq(found, fragment)
-                                })
-                    })
+                        ) => self.kinds(id) & kinds != 0,
+                        crate::cards::StaticAbilityFragment::AttachedActivationsProhibited => {
+                            provider.attached_to == Some(self.reference(id))
+                                && self.attached(self.reference(source), id)
+                        }
+                        _ => false,
+                    };
+                    prohibited
+                        && characteristic_query::CharacteristicQuery::in_world(self)
+                            .continuous_fragment_available(source, |found| {
+                                std::ptr::eq(found, fragment)
+                            })
+                })
+            })
+        })) || (target.zone == Zone::Battlefield
+            && self.roles().is_some_and(|roles| {
+                roles.source_linked_effects.iter().any(|row| {
+                    row.kind == SourceLinkedEffectKind::PreventActivationsUntilUntapped
+                        && row.recipient == self.reference(id)
+                        && source_linked_effects::active(self, row)
                 })
             }))
-            || (target.zone == Zone::Battlefield
-                && self.roles().is_some_and(|roles| {
-                    roles.source_linked_effects.iter().any(|row| {
-                        row.kind == SourceLinkedEffectKind::PreventActivationsUntilUntapped
-                            && row.recipient == self.reference(id)
-                            && source_linked_effects::active(self, row)
-                    })
-                }))
             || target.zone == Zone::Battlefield
                 && self.kinds(id) & (1 | 16 | 32) != 0
                 && self.static_sources().iter().any(|&source| {

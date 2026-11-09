@@ -99,6 +99,8 @@ pub enum StaticAbilityFragment {
     ControlledPermanentsCannotBeSacrificed,
     /// No player may activate abilities of matching battlefield permanent kinds.
     ActivatedPermanentKindsProhibited(u16),
+    /// The exact attached permanent's activated abilities cannot be activated.
+    AttachedActivationsProhibited,
     /// Cards in graveyards cannot be exiled by any player.
     GraveyardCardsCannotBeExiled,
     /// Replace a controlled permanent's move to a graveyard with no move.

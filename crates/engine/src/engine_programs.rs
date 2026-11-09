@@ -1026,6 +1026,7 @@ impl Game {
                     | TriggerCondition::PlayerDamaged { .. }
                     | TriggerCondition::CreatureDamaged { .. }
                     | TriggerCondition::SelfDamaged
+                    | TriggerCondition::AttachedCreatureDamaged
                     | TriggerCondition::SelfDies
                     | TriggerCondition::SelfNontokenDies
                     | TriggerCondition::SelfCreatureDies

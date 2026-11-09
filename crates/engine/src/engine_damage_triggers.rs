@@ -271,7 +271,9 @@ impl Game {
                 .any(|ability| {
                     matches!(
                         ability.condition.event(),
-                        TriggerCondition::CreatureDamaged { .. } | TriggerCondition::SelfDamaged
+                        TriggerCondition::CreatureDamaged { .. }
+                            | TriggerCondition::SelfDamaged
+                            | TriggerCondition::AttachedCreatureDamaged
                     )
                 })
         }) {
@@ -297,22 +299,33 @@ impl Game {
         for (source, grant) in sources {
             let definition = grant.as_ref().map_or(source.card, |g| g.granting_card);
             for (index, ability) in definition.triggers().iter().enumerate() {
-                let relation = match ability.condition.event() {
-                    TriggerCondition::CreatureDamaged { relation } => Some(relation),
-                    TriggerCondition::SelfDamaged => None,
-                    _ => continue,
-                };
+                let condition = ability.condition.event();
+                if !matches!(
+                    condition,
+                    TriggerCondition::CreatureDamaged { .. }
+                        | TriggerCondition::SelfDamaged
+                        | TriggerCondition::AttachedCreatureDamaged
+                ) {
+                    continue;
+                }
                 for (&recipient, &amount) in &hits {
                     let controller = self.state.objects[recipient.card as usize].controller;
-                    if !match relation {
-                        None => recipient == source.reference,
-                        Some(CastRelation::You) => {
-                            self.is_creature(recipient.card) && controller == source.controller
+                    if !match condition {
+                        TriggerCondition::SelfDamaged => recipient == source.reference,
+                        TriggerCondition::AttachedCreatureDamaged => {
+                            source.attached_to == Some(recipient)
+                                && self.is_creature(recipient.card)
+                                && self.attachment_recipient(source.id) == Some(recipient)
                         }
-                        Some(CastRelation::Opponent) => {
-                            self.is_creature(recipient.card) && controller != source.controller
+                        TriggerCondition::CreatureDamaged { relation } => {
+                            self.is_creature(recipient.card)
+                                && match relation {
+                                    CastRelation::You => controller == source.controller,
+                                    CastRelation::Opponent => controller != source.controller,
+                                    CastRelation::Any => true,
+                                }
                         }
-                        Some(CastRelation::Any) => self.is_creature(recipient.card),
+                        _ => unreachable!("damage recipient condition"),
                     } {
                         continue;
                     }

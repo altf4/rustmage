@@ -189,6 +189,7 @@ impl Game {
                 TriggerCondition::PlayerDamaged { .. }
                     | TriggerCondition::CreatureDamaged { .. }
                     | TriggerCondition::SelfDamaged
+                    | TriggerCondition::AttachedCreatureDamaged
                     | TriggerCondition::SourceDealtDamage
                     | TriggerCondition::SourceDealtCombatDamage
                     | TriggerCondition::AttachedDealtCombatDamage
@@ -298,6 +299,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::OpponentNoncreatureSpellTax(_)
                             | crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(_)
                             | crate::cards::StaticAbilityFragment::ActivatedPermanentKindsProhibited(_)
+                            | crate::cards::StaticAbilityFragment::AttachedActivationsProhibited
                             | crate::cards::StaticAbilityFragment::PlotCostReduction(_)
                             | crate::cards::StaticAbilityFragment::LandMana { .. }
                         | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_)

@@ -5353,6 +5353,8 @@ pub enum TriggerCondition {
     /// One occurrence per damaged creature in a simultaneous actual damage batch.
     /// Once for actual positive damage to this exact source in a completed batch.
     SelfDamaged,
+    /// The creature this source is attached to was actually dealt damage.
+    AttachedCreatureDamaged,
     CreatureDamaged {
         relation: CastRelation,
     },
