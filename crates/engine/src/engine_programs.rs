@@ -722,6 +722,7 @@ impl Game {
                             ability.condition.event(),
                             TriggerCondition::Sacrificed { .. }
                                 | TriggerCondition::SacrificedByOpponent { .. }
+                                | TriggerCondition::SacrificedByAny { .. }
                         )
                     {
                         continue;
@@ -800,17 +801,19 @@ impl Game {
                                 && event.before.has_subtype(subtype)
                         }
                         TriggerCondition::Sacrificed { filter: f, .. }
-                        | TriggerCondition::SacrificedByOpponent { filter: f } => {
+                        | TriggerCondition::SacrificedByOpponent { filter: f }
+                        | TriggerCondition::SacrificedByAny { filter: f } => {
                             let (player, own_turn) = match ability.condition.event() {
                                 TriggerCondition::Sacrificed { own_turn, .. } => {
-                                    (source.controller, own_turn)
+                                    (Some(source.controller), own_turn)
                                 }
                                 TriggerCondition::SacrificedByOpponent { .. } => {
-                                    (source.controller.other(), false)
+                                    (Some(source.controller.other()), false)
                                 }
+                                TriggerCondition::SacrificedByAny { .. } => (None, false),
                                 _ => unreachable!(),
                             };
-                            event.sacrificed_by == Some(player)
+                            event.sacrificed_by.is_some_and(|actor| player.is_none_or(|p| p == actor))
                                 && (!own_turn || self.state.active == source.controller)
                                 && (!f.source_only || source.reference == event.before.reference)
                                 && (!f.other || source.reference != event.before.reference)
@@ -1052,6 +1055,7 @@ impl Game {
                     | TriggerCondition::CreatureDiesAttackState { .. }
                     | TriggerCondition::Sacrificed { .. }
                     | TriggerCondition::SacrificedByOpponent { .. }
+                    | TriggerCondition::SacrificedByAny { .. }
                     | TriggerCondition::LifeGained { .. }
                     | TriggerCondition::LifeLost { .. }
                     | TriggerCondition::SelfCountersAdded { .. }
@@ -1299,7 +1303,9 @@ impl Game {
                 .event();
             if !matches!(
                 cause,
-                TriggerCondition::Sacrificed { .. } | TriggerCondition::SacrificedByOpponent { .. }
+                TriggerCondition::Sacrificed { .. }
+                    | TriggerCondition::SacrificedByOpponent { .. }
+                    | TriggerCondition::SacrificedByAny { .. }
             ) {
                 self.add_event_trigger_multiplicity(source.additional_creature_death_triggers);
             }

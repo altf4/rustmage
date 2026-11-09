@@ -5633,6 +5633,10 @@ pub enum TriggerCondition {
     SacrificedByOpponent {
         filter: SacrificeFilter,
     },
+    /// Either player sacrifices a permanent matching its pre-departure characteristics.
+    SacrificedByAny {
+        filter: SacrificeFilter,
+    },
     CreatureDiesWithMaximumStat {
         relation: CastRelation,
         maximum: i32,

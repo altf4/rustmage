@@ -90,3 +90,69 @@ fn filtered_half_sacrifice_finishes_when_legal_choices_are_below_the_quota() {
     settle(&mut game);
     assert_eq!(game.object_view(available).zone, Zone::Graveyard);
 }
+
+#[test]
+fn either_players_actual_sacrifice_qualifies_even_when_the_cards_are_exiled() {
+    const OBSERVER: CardRules = CardRules {
+        effect: Effect::Creature(2, 2),
+        triggers: &[TriggeredAbility {
+            condition: TriggerCondition::SacrificedByAny {
+                filter: SacrificeFilter {
+                    keywords: Keywords::NONE,
+                    source_only: false,
+                    kinds: 1,
+                    nonland: false,
+                    other: true,
+                    tokens: None,
+                    artifact_enchantment_or_token: false,
+                    subtype: None,
+                },
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::PutCounters {
+                subject: Subject::Source,
+                kind: CounterKind::PlusOne,
+                amount: 1,
+            }],
+        }],
+        ..CardRules::EMPTY
+    };
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &OBSERVER)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let observer = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    put(&mut game, player, "Rest in Peace", Zone::Battlefield);
+    let own = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let other = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
+    let unrelated = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
+    game.move_object(unrelated, Zone::Graveyard);
+    game.prepare_triggers();
+    assert_eq!(game.object_view(unrelated).zone, Zone::Exile);
+    assert!(game.state.stack.is_empty());
+
+    game.sacrifice_batch(&[(player, own), (player.other(), other)]);
+    game.prepare_triggers();
+    assert_eq!(game.object_view(own).zone, Zone::Exile);
+    assert_eq!(game.object_view(other).zone, Zone::Exile);
+    assert_eq!(game.state.pending, Pending::OrderTriggers { player });
+    assert_eq!(game.state.ordering_triggers.len(), 2);
+    let action = Action::PutTrigger {
+        id: game.state.ordering_triggers[0].id,
+    };
+    let index = game
+        .legal_actions()
+        .iter()
+        .position(|a| *a == action)
+        .unwrap();
+    let mut indexed = game.clone();
+    indexed.apply_index(player, game.revision(), index).unwrap();
+    act(&mut game, action);
+    assert_eq!(game.snapshot(), indexed.snapshot());
+    settle(&mut game);
+    assert_eq!(game.counter_count(observer, CounterKind::PlusOne), 2);
+
+    game.sacrifice_batch(&[(player, observer)]);
+    game.prepare_triggers();
+    assert!(game.state.stack.is_empty());
+    assert!(game.state.pending_triggers.is_empty());
+}

@@ -235,6 +235,7 @@ impl Game {
                     | TriggerCondition::FoodsSacrificed
                     | TriggerCondition::Sacrificed { .. }
                     | TriggerCondition::SacrificedByOpponent { .. }
+                    | TriggerCondition::SacrificedByAny { .. }
             )
         }) {
             self.state.death_sources.push(id);
