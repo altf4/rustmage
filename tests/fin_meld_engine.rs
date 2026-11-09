@@ -77,8 +77,14 @@ fn begin_first_main(game: &mut Game) {
 }
 
 fn pay_meld(game: &mut Game) {
+    let player = game.state.active;
+    let lands = ["Swamp", "Forest", "Forest", "Forest", "Forest"]
+        .map(|name| put(game, player, name, Zone::Battlefield));
     act(game, Action::Pass);
     act(game, Action::Pass);
+    for card in lands {
+        act(game, Action::TapMana { card });
+    }
     choose(game, |action| {
         matches!(action, Action::PayResolutionMana { .. })
     });
@@ -102,6 +108,7 @@ fn choose_partner(game: &mut Game, partner: CardId) {
 }
 
 fn resolve_targeting_spell(game: &mut Game, player: Player, name: &str, target: CardId) {
+    game.state.players[player.index()].mana = [8; 6];
     let spell = put(game, player, name, Zone::Hand);
     cast(game, spell, Some(Target::Card(target)));
     act(game, Action::Pass);
