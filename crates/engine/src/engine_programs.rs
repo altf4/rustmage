@@ -3535,6 +3535,7 @@ impl Game {
                     | Instruction::LoyaltyDamage { .. }
                     | Instruction::PowerDamage { .. }
                     | Instruction::CreaturePowerDamageAny { .. }
+                    | Instruction::CreaturePowerDamageBatch { .. }
                     | Instruction::SacrificeTarget { .. }
                     | Instruction::ScaledPowerDamage { .. }
                     | Instruction::CreateCopyTokenForPlayer { .. }
@@ -6643,6 +6644,13 @@ impl Game {
                         self.apply_damage_batch(&[damage]);
                     }
                 }
+                Instruction::CreaturePowerDamageBatch { source, recipients } => {
+                    self.creature_power_damage_batch(&item, source, recipients);
+                }
+                Instruction::PermanentsDealPowerDamage {
+                    filters,
+                    exclude_source,
+                } => self.permanents_deal_power_damage(&item, filters, exclude_source),
                 Instruction::SacrificeTarget { group } => {
                     let id = item.targets.iter().find_map(|bound| {
                         (bound.group == group && self.same_target_object(*bound))

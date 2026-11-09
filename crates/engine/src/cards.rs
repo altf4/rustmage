@@ -1455,6 +1455,14 @@ pub enum CounterSubject {
     Related,
 }
 
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum CreaturePowerDamageRecipients {
+    OtherCreatures,
+    /// The source creature is hit even if every target in this group is illegal.
+    TargetGroupAndSelf(u16),
+}
+
 /// Immutable rule bytecode. Only the program counter and choices live in state.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -2715,6 +2723,16 @@ pub enum Instruction {
     CreaturePowerDamageAny {
         source: u16,
         recipient: u16,
+    },
+    /// A legal creature target deals simultaneous damage using its own power and characteristics.
+    CreaturePowerDamageBatch {
+        source: u16,
+        recipients: CreaturePowerDamageRecipients,
+    },
+    /// Each matching permanent deals damage using its own power to the selected target group.
+    PermanentsDealPowerDamage {
+        filters: &'static [BattlefieldFilter],
+        exclude_source: bool,
     },
     SacrificeTarget {
         group: u16,
