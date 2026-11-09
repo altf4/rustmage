@@ -341,6 +341,312 @@ fn settle_ordered(game: &mut Game) {
 }
 
 #[test]
+fn admitted_job_select_equipment_uses_its_printed_bonus_equip_cost_and_ability() {
+    let player = Player::P0;
+    let opponent = player.other();
+    for (name, cost, bonus, subtype) in [
+        ("Paladin's Arms", 4, (2, 1), "Knight"),
+        ("Ninja's Blades", 2, (1, 1), "Ninja"),
+        ("Sage's Nouliths", 3, (1, 0), "Cleric"),
+        ("Samurai's Katana", 5, (2, 2), "Samurai"),
+    ] {
+        let mut game = scenario(player);
+        let recipient = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let equipment = put(&mut game, player, name, Zone::Hand);
+        cast(&mut game, equipment, None);
+        settle(&mut game);
+        let hero = battlefield_tokens(&game, Card(5328))[0];
+        assert_eq!(
+            game.object_view(equipment).attached_to,
+            Some(game.object_ref(hero)),
+            "{name}"
+        );
+        assert!(game.has_subtype(hero, subtype), "{name}");
+        assert_eq!(stats(&game, hero), (1 + bonus.0, 1 + bonus.1), "{name}");
+        if name == "Samurai's Katana" {
+            assert!(
+                game.keywords(hero)
+                    .contains(Keywords::HASTE.union(Keywords::TRAMPLE))
+            );
+            let mut attacking = game.clone();
+            attack(&mut attacking, &[hero]);
+        }
+
+        game.state.players[player.index()].mana = [0, 0, 0, 0, 0, cost];
+        act(
+            &mut game,
+            Action::AnnounceActivate {
+                card: equipment,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        choose_targets(&mut game, &[Target::Card(recipient)]);
+        pay(&mut game);
+        assert_eq!(game.state.players[player.index()].mana, [0; 6], "{name}");
+        settle(&mut game);
+        assert_eq!(
+            game.object_view(equipment).attached_to,
+            Some(game.object_ref(recipient)),
+            "{name}"
+        );
+        assert_eq!(
+            stats(&game, recipient),
+            (2 + bonus.0, 2 + bonus.1),
+            "{name}"
+        );
+        assert!(!game.has_subtype(hero, subtype), "{name}");
+        assert!(game.has_subtype(recipient, subtype), "{name}");
+        assert_eq!(stats(&game, hero), (1, 1), "{name}");
+
+        match name {
+            "Paladin's Arms" => {
+                let shock = put(&mut game, opponent, "Shock", Zone::Hand);
+                act(&mut game, Action::Pass);
+                cast(&mut game, shock, Some(Target::Card(recipient)));
+                let decline = Action::DeclineResolutionMana;
+                reach_action(&mut game, &decline);
+                act(&mut game, decline);
+                assert_eq!(game.object_view(shock).zone, Zone::Graveyard);
+                assert_eq!(game.object_view(recipient).damage, 0);
+            }
+            "Ninja's Blades" => {
+                let discard = put(&mut game, player, "Ring of the Lucii", Zone::Hand);
+                attack(&mut game, &[recipient]);
+                passes(&mut game);
+                act(&mut game, Action::FinishBlockers);
+                let discard_action = Action::Discard { card: discard };
+                reach_action(&mut game, &discard_action);
+                assert_eq!(game.hand_count(player), 2);
+                act(&mut game, discard_action);
+                assert_eq!(game.object_view(discard).zone, Zone::Graveyard);
+                assert_eq!(game.state.players[opponent.index()].life, 13);
+            }
+            "Sage's Nouliths" => {
+                attack(&mut game, &[recipient]);
+                assert!(game.object_view(recipient).tapped);
+                reject(
+                    &mut game,
+                    Action::ChooseTarget {
+                        target: Target::Card(hero),
+                    },
+                );
+                target_trigger(&mut game, Target::Card(recipient));
+                settle(&mut game);
+                assert!(!game.object_view(recipient).tapped);
+                assert!(
+                    game.state
+                        .attackers
+                        .iter()
+                        .any(|attacker| attacker.card == recipient)
+                );
+            }
+            _ => assert!(
+                game.keywords(recipient)
+                    .contains(Keywords::HASTE.union(Keywords::TRAMPLE))
+            ),
+        }
+    }
+}
+
+#[test]
+fn admitted_rydia_modes_and_landfall_update_live_counts_and_slash_damage() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    for _ in 0..6 {
+        put(&mut game, player, "Forest", Zone::Battlefield);
+    }
+    let chocobo = put(&mut game, player, "Sazh's Chocobo", Zone::Battlefield);
+    let tender = put(&mut game, player, "Sabotender", Zone::Battlefield);
+    let sentinel = put(&mut game, player, "Scorpion Sentinel", Zone::Battlefield);
+    let snow = put(&mut game, player, "Snow Villiers", Zone::Graveyard);
+    let land = put(&mut game, player, "Island", Zone::Graveyard);
+    let instant = put(&mut game, player, "Shock", Zone::Graveyard);
+    let spell = put(&mut game, player, "Rydia's Return", Zone::Hand);
+    assert_eq!(stats(&game, snow), (3, 3));
+    assert_eq!(stats(&game, sentinel), (1, 4));
+    assert!(game.keywords(tender).contains(Keywords::REACH));
+
+    act(&mut game, Action::AnnounceCast { card: spell });
+    act(&mut game, Action::ChooseMode { mode: 1 });
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(instant),
+        },
+    );
+    choose_targets(&mut game, &[Target::Card(snow), Target::Card(land)]);
+    pay(&mut game);
+    let mut partial = game.clone();
+    partial.move_object(land, Zone::Exile);
+    settle(&mut partial);
+    assert_eq!(partial.object_view(snow).zone, Zone::Hand);
+    assert_eq!(partial.object_view(land).zone, Zone::Exile);
+    settle(&mut game);
+    cast(&mut game, snow, None);
+    settle(&mut game);
+    assert!(game.keywords(snow).contains(Keywords::VIGILANCE));
+    assert_eq!(stats(&game, snow), (4, 3));
+    act(&mut game, Action::PlayLand { card: land });
+    settle_ordered(&mut game);
+    assert_eq!(game.counter_count(chocobo, CounterKind::PlusOne), 1);
+    assert_eq!(game.state.players[opponent.index()].life, 19);
+    assert_eq!(stats(&game, sentinel), (4, 4));
+    game.move_object(land, Zone::Graveyard);
+    assert_eq!(stats(&game, sentinel), (1, 4));
+    let big = put(&mut game, opponent, "Gigantosaurus", Zone::Battlefield);
+    put(&mut game, opponent, "Swiftfoot Boots", Zone::Battlefield);
+    put(&mut game, player, "Swiftfoot Boots", Zone::Battlefield);
+    let slash = put(&mut game, player, "Slash of Light", Zone::Hand);
+    cast(&mut game, slash, Some(Target::Card(big)));
+    settle(&mut game);
+    assert_eq!(game.object_view(big).damage, 5);
+
+    let second = put(&mut game, player, "Rydia's Return", Zone::Hand);
+    cast_mode(&mut game, second, 0, &[]);
+    settle(&mut game);
+    assert_eq!(stats(&game, snow), (7, 6));
+    assert_eq!(stats(&game, big), (10, 10));
+    let late = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    assert_eq!(stats(&game, late), (2, 2));
+}
+
+#[test]
+fn admitted_ring_pays_life_to_tap_a_nonland_and_rosa_gives_persistent_growth() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let ring = put(&mut game, player, "Ring of the Lucii", Zone::Battlefield);
+    let rosa = put(
+        &mut game,
+        player,
+        "Rosa, Resolute White Mage",
+        Zone::Battlefield,
+    );
+    let blocker = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let land = put(&mut game, opponent, "Island", Zone::Battlefield);
+    let mut mana = game.clone();
+    act(
+        &mut mana,
+        Action::ActivateMana {
+            card: ring,
+            ability: 0,
+            payment: [0; 6],
+            counter_payment: Counters::default(),
+            production: [0, 0, 0, 0, 0, 2],
+        },
+    );
+    assert_eq!(mana.state.players[player.index()].mana[5], 10);
+    assert!(mana.object_view(ring).tapped);
+    act(
+        &mut game,
+        Action::AnnounceActivate {
+            card: ring,
+            ability: 1,
+            counter_payment: Counters::default(),
+        },
+    );
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(land),
+        },
+    );
+    choose_targets(&mut game, &[Target::Card(blocker)]);
+    pay(&mut game);
+    settle(&mut game);
+    assert!(game.object_view(blocker).tapped);
+    assert_eq!(game.state.players[player.index()].life, 19);
+    assert!(game.keywords(rosa).contains(Keywords::REACH));
+    passes(&mut game);
+    target_trigger(&mut game, Target::Card(rosa));
+    settle(&mut game);
+    assert_eq!(game.counter_count(rosa, CounterKind::PlusOne), 1);
+    assert!(game.keywords(rosa).contains(Keywords::LIFELINK));
+    attack(&mut game, &[rosa]);
+    passes(&mut game);
+    act(&mut game, Action::FinishBlockers);
+    passes(&mut game);
+    assert_eq!(game.state.players[player.index()].life, 22);
+    game.finish_cleanup();
+    assert_eq!(game.counter_count(rosa, CounterKind::PlusOne), 1);
+    assert!(!game.keywords(rosa).contains(Keywords::LIFELINK));
+}
+
+#[test]
+fn admitted_planets_heir_counts_actual_opponent_controlled_deaths_from_its_entry() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let own = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let borrowed = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    game.record_control(game.object_ref(borrowed), opponent, None);
+    let enemy = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    game.grant_keyword_effects(&[enemy], game.object_ref(enemy), Keywords::INDESTRUCTIBLE);
+    let heir = put(&mut game, player, "Sephiroth, Planet's Heir", Zone::Hand);
+    cast(&mut game, heir, None);
+    passes(&mut game);
+    passes(&mut game);
+    settle_ordered(&mut game);
+    assert_eq!(game.counter_count(heir, CounterKind::PlusOne), 2);
+    assert!(game.keywords(heir).contains(Keywords::VIGILANCE));
+    for id in [borrowed, enemy] {
+        assert_eq!(game.object_view(id).zone, Zone::Graveyard);
+    }
+    assert_eq!(stats(&game, own), (2, 2));
+}
+
+#[test]
+fn admitted_sagas_resolve_all_four_chapters_and_are_sacrificed_after_the_last() {
+    let player = Player::P0;
+    let opponent = player.other();
+    for name in ["Summon: Anima", "Summon: Choco/Mog"] {
+        let mut game = scenario(player);
+        let own = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let rival = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+        let saga = put(&mut game, player, name, Zone::Hand);
+        cast(&mut game, saga, None);
+        for chapter in 1..=4 {
+            if chapter > 1 {
+                place_next_lore(&mut game);
+            }
+            if chapter == 4 && name == "Summon: Anima" {
+                let pay = Action::Sacrifice {
+                    object: game.object_ref(rival),
+                };
+                reach_action(&mut game, &pay);
+                assert_eq!(game.object_view(saga).zone, Zone::Battlefield);
+                act(&mut game, pay);
+            }
+            settle(&mut game);
+            if name == "Summon: Anima" {
+                let draws = chapter.min(3);
+                assert_eq!(game.hand_count(player), draws);
+                assert_eq!(game.state.players[player.index()].life, 20 - draws as i128);
+                assert_eq!(
+                    game.state.players[opponent.index()].life,
+                    if chapter == 4 { 17 } else { 20 }
+                );
+                if chapter < 4 {
+                    assert!(game.keywords(saga).contains(Keywords::MENACE));
+                }
+            } else {
+                assert_eq!(stats(&game, own), (2 + chapter as i128, 2));
+                assert_eq!(stats(&game, rival), (2, 2));
+                if chapter < 4 {
+                    assert_eq!(stats(&game, saga), (3, 3));
+                }
+            }
+        }
+        assert_eq!(game.object_view(saga).zone, Zone::Graveyard);
+        if name == "Summon: Anima" {
+            assert_eq!(game.object_view(rival).zone, Zone::Graveyard);
+        }
+    }
+}
+
+#[test]
 fn admitted_cast_watchers_use_actual_mana_and_the_rapier_buffs_its_wizard() {
     let player = Player::P0;
     let mut game = scenario(player);
