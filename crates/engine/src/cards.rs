@@ -1944,6 +1944,8 @@ pub enum Instruction {
     ExileEachLibraryTopCastFree,
     /// Uniformly exile an own graveyard card; grant normal play through cleanup.
     ExileRandomGraveyardPlayThisTurn,
+    /// Exile a random own permanent card and make a tapped copy. Repeat for lands.
+    CopyRandomGraveyardPermanentUntilNonland,
     /// Until cleanup, each tap of a Mountain for mana triggers an extra red mana.
     AddMountainManaTrigger,
     AllowJaceLoyaltyAnytime,

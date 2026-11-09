@@ -5454,6 +5454,9 @@ impl Game {
                 Instruction::ExileRandomGraveyardPlayThisTurn => {
                     self.exile_random_graveyard_play(item.controller)
                 }
+                Instruction::CopyRandomGraveyardPermanentUntilNonland => {
+                    self.stage_random_graveyard_copy(item.controller);
+                }
                 Instruction::CounterRelatedUnlessPayLife(amount) => {
                     if self.start_resolution_life(&item, amount) {
                         return;

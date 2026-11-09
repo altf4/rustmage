@@ -354,6 +354,29 @@ struct TokenBatch {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl TokenBatch {
+    fn copy(
+        player: Player,
+        recipe: CopyRecipe,
+        amount: u128,
+        tapped: bool,
+        completion: TokenCompletion,
+    ) -> Self {
+        Self {
+            first_this_turn: None,
+            optional: None,
+            recipes: vec![Some(recipe)],
+            player,
+            groups: vec![TokenGroupView {
+                token: recipe.definition,
+                amount,
+                tapped,
+            }],
+            effect: true,
+            used: Vec::new(),
+            completion,
+        }
+    }
+
     fn artifact_at(&self, index: usize) -> bool {
         self.recipes
             .get(index)
@@ -451,6 +474,9 @@ enum Work {
     },
     Counters(CounterBatch),
     Tokens(TokenBatch),
+    RandomGraveyardCopy {
+        player: Player,
+    },
     Proliferate(ProliferateBatch),
     DestroyAndCreate {
         targets: Vec<BoundTarget>,
@@ -2560,21 +2586,20 @@ impl Game {
         if amount == 0 {
             return;
         }
-        let batch = TokenBatch {
-            first_this_turn: None,
-            optional: None,
-            recipes: vec![Some(recipe)],
-            player,
-            groups: vec![TokenGroupView {
-                token: recipe.definition,
-                amount,
-                tapped: false,
-            }],
-            effect: true,
-            used: Vec::new(),
-            completion,
-        };
-        self.stage_copy_token_batch(batch);
+        self.stage_copy_token_batch(TokenBatch::copy(player, recipe, amount, false, completion));
+    }
+
+    pub(super) fn stage_random_graveyard_copy(&mut self, player: Player) {
+        let state = self.state.replacements.get_or_insert_with(|| {
+            Box::new(ReplacementState {
+                work: VecDeque::new(),
+                active: None,
+                attachment: None,
+                resume: None,
+                mode: ResumeMode::Program,
+            })
+        });
+        state.work.push_back(Work::RandomGraveyardCopy { player });
     }
     /// A single creation event may contain many unrelated frozen copy recipes.
     pub(super) fn stage_linked_attacking_recipes(
@@ -2954,6 +2979,25 @@ impl Game {
                     }
                     Some(Work::Counters(batch)) => state.active = Some(Event::Counters(batch)),
                     Some(Work::Tokens(batch)) => state.active = Some(Event::Tokens(batch)),
+                    Some(Work::RandomGraveyardCopy { player }) => {
+                        let Some(card) = self.exile_random_graveyard_permanent(player) else {
+                            continue;
+                        };
+                        if card.is_land() {
+                            state.work.push_front(Work::RandomGraveyardCopy { player });
+                        }
+                        let recipe = CopyRecipe::new(card);
+                        if !recipe.can_create_token() {
+                            continue;
+                        }
+                        state.active = Some(Event::Tokens(TokenBatch::copy(
+                            player,
+                            recipe,
+                            1,
+                            true,
+                            TokenCompletion::None,
+                        )));
+                    }
                     Some(Work::EmptyExplore {
                         explorer,
                         counter_added,
@@ -3333,6 +3377,10 @@ impl Game {
                             if !batch.recipes.is_empty() {
                                 let created = self.create_replacement_copy_groups(&batch);
                                 if let Some(entry) = self.state.entry_batch.as_mut() {
+                                    let repeats = matches!(
+                                        state.work.front(),
+                                        Some(Work::RandomGraveyardCopy { .. })
+                                    );
                                     state.work.push_front(Work::CreatedTokens {
                                         player: batch.player,
                                         created,
@@ -3340,7 +3388,9 @@ impl Game {
                                     });
                                     assert!(entry.replacement_resume.is_none());
                                     entry.replacement_resume = Some(state);
-                                    return self.advance_entries();
+                                    // Let the existing entry driver iterate the next
+                                    // land copy without recursing through this call.
+                                    return !repeats && self.advance_entries();
                                 }
                                 self.complete_created_tokens(
                                     &mut state,

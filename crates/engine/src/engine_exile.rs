@@ -241,32 +241,59 @@ impl Game {
     pub(super) fn exile_top_play(&mut self, player: Player, amount: u128, next_turn: bool) {
         self.exile_top_play_from(player, player, amount, next_turn);
     }
-    pub(super) fn exile_random_graveyard_play(&mut self, player: Player) {
+    fn random_graveyard_card(
+        &mut self,
+        player: Player,
+        eligible: impl Fn(Card) -> bool,
+    ) -> Option<CardId> {
         let candidates: Vec<_> = self
             .state
             .objects
             .iter()
             .enumerate()
             .filter_map(|(id, object)| {
-                (object.zone == Zone::Graveyard && object.owner == player && object.is_card())
-                    .then_some(id as CardId)
+                (object.zone == Zone::Graveyard
+                    && object.owner == player
+                    && object.is_card()
+                    && eligible(object.card))
+                .then_some(id as CardId)
             })
             .collect();
-        if candidates.is_empty() {
-            return;
-        }
-        let index = if candidates.len() == 1 {
-            0
-        } else {
-            self.state.rng.below(candidates.len() as u64) as usize
+        let index = match candidates.len() {
+            0 => return None,
+            1 => 0,
+            len => self.state.rng.below(len as u64) as usize,
         };
-        let events = self.move_objects_raw(&[candidates[index]], Zone::Exile);
+        Some(candidates[index])
+    }
+
+    pub(super) fn exile_random_graveyard_play(&mut self, player: Player) {
+        let Some(card) = self.random_graveyard_card(player, |_| true) else {
+            return;
+        };
+        let events = self.move_objects_raw(&[card], Zone::Exile);
         for event in &events {
             if event.moved && event.destination == Zone::Exile {
                 self.grant_exile_play_permission(player, event.after, false);
             }
         }
         self.finish_zone_events(&events, &[]);
+    }
+
+    pub(super) fn exile_random_graveyard_permanent(&mut self, player: Player) -> Option<Card> {
+        let card = self.random_graveyard_card(player, |card| {
+            card.kind_mask() & (1 | 2 | 16 | 32 | 64 | crate::cards::BATTLE_KIND) != 0
+        })?;
+        let events = self.move_objects_raw(&[card], Zone::Exile);
+        self.finish_zone_events(&events, &[]);
+        let event = &events[0];
+        let exiled = &self.state.objects[event.after.card as usize];
+        (event.moved
+            && event.was_card
+            && event.destination == Zone::Exile
+            && exiled.zone == Zone::Exile
+            && self.object_ref(event.after.card) == event.after)
+            .then(|| exiled.card.front_face())
     }
 
     pub(super) fn exile_top_play_from(
