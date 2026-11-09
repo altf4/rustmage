@@ -202,7 +202,7 @@ impl Evidence {
         }
         // Announcement moves the card out of exile before the later cast commit.
         // Bind the exact exiled witness now, then credit only its committed stack ID.
-        if let Action::AnnounceFree { card, .. } = action
+        if let Action::AnnounceExileFree { card, .. } = action
             && before.objects.iter().any(|object| {
                 object.id == *card
                     && object.zone == Zone::Exile
@@ -452,6 +452,7 @@ fn private_effect(kind: EffectChoiceKind) -> bool {
             | EffectChoiceKind::HandPlot { .. }
             | EffectChoiceKind::HandCreature
             | EffectChoiceKind::HandCreatureAttacking { .. }
+            | EffectChoiceKind::HandCreatureHasteSacrifice { .. }
             | EffectChoiceKind::HandCreatureAndLand
             | EffectChoiceKind::HandPermanent { .. }
             | EffectChoiceKind::HandLand { .. }
