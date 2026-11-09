@@ -566,31 +566,66 @@ impl Game {
             .as_mut()
             .unwrap();
         let choices = request.choices.as_mut().unwrap();
-        assert!(choices.selected.is_none());
+        assert_ne!(choices.selected, Some(index));
         let choice = choices.options[usize::from(index)];
         choices.selected = Some(index);
+        choices.objects.clear();
         request.cost = choice.mana;
         request.life = choice.life;
-        if choice.mana == ManaCost::ZERO && choice.life.is_some() && choice.objects.is_none() {
+        if choices.options.len() == 1
+            && choice.mana == ManaCost::ZERO
+            && choice.life.is_some()
+            && choice.objects.is_none()
+        {
             self.state.pending = Pending::ResolutionLife {
                 player: request.payer,
             };
         }
     }
 
-    fn resolution_cost_candidate(
+    fn resolution_cost_objects_in_world<W: ability_world::CharacteristicWorld + ?Sized>(
+        &self,
+        world: &W,
+        payer: Player,
+        source: ObjectRef,
+        required: AdditionalCost,
+    ) -> Vec<ObjectRef> {
+        self.state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, _)| {
+                let object = world.reference(id as CardId);
+                self.additional_candidate_in_world(world, required, payer, source, object, false)
+                    .then_some(object)
+            })
+            .collect()
+    }
+
+    fn resolution_cost_objects(
         &self,
         payer: Player,
-        cost: AdditionalCost,
-        object: ObjectRef,
-    ) -> bool {
-        self.state
-            .resolving
-            .as_ref()
-            .unwrap()
-            .item
-            .source
-            .is_some_and(|source| self.additional_candidate(cost, payer, source.object, object))
+        life: Option<i128>,
+        required: ResolutionObjectCost,
+    ) -> Vec<ObjectRef> {
+        let Some(source) = self.state.resolving.as_ref().unwrap().item.source else {
+            return Vec::new();
+        };
+        if required.count == 0 || !self.resolution_life_available(payer, life) {
+            return Vec::new();
+        }
+        if let Some(life) = life.filter(|&life| life > 0) {
+            // As in the shared payment projection, life paid before another
+            // component can change which objects satisfy its live filter.
+            let world = self.project_resolution_life(payer, life);
+            self.resolution_cost_objects_in_world(&world, payer, source.object, required.cost)
+        } else {
+            self.resolution_cost_objects_in_world(self, payer, source.object, required.cost)
+        }
+    }
+
+    pub(super) fn resolution_life_available(&self, payer: Player, life: Option<i128>) -> bool {
+        life.is_none_or(|amount| amount == 0 || self.state.players[payer.index()].life >= amount)
     }
 
     pub(super) fn visit_resolution_cost_selections(
@@ -601,28 +636,32 @@ impl Game {
         let Some(choices) = &request.choices else {
             return false;
         };
-        if choices.selected.is_none() {
-            return (0..choices.options.len()).any(|index| {
-                emit(Action::ChooseResolutionCost {
-                    index: index as u16,
-                })
-            });
+        if choices.options.len() > 1
+            && choices.options.iter().enumerate().any(|(index, option)| {
+                let index = index as u16;
+                choices.selected != Some(index)
+                    && self.resolution_life_available(request.payer, option.life)
+                    && option.objects.is_none_or(|required| {
+                        self.resolution_cost_objects(request.payer, option.life, required)
+                            .len()
+                            >= usize::from(required.count)
+                    })
+                    && emit(Action::ChooseResolutionCost { index })
+            })
+        {
+            return true;
         }
         let Some(required) = request.object_cost() else {
             return false;
         };
-        if self.resolution_objects_ready(request) {
-            return false;
-        }
-        let candidates: Vec<_> = self
-            .state
+        let candidates = self.resolution_cost_objects(request.payer, request.life, required);
+        let selected = choices
             .objects
             .iter()
-            .enumerate()
-            .map(|(id, _)| self.object_ref(id as CardId))
-            .filter(|&object| self.resolution_cost_candidate(request.payer, required.cost, object))
-            .collect();
+            .filter(|object| candidates.contains(object))
+            .count();
         candidates.len() >= usize::from(required.count)
+            && selected < usize::from(required.count)
             && candidates.into_iter().any(|object| {
                 !choices.objects.contains(&object) && emit(Action::ChooseAdditionalCost { object })
             })
@@ -632,8 +671,10 @@ impl Game {
         request.object_cost().is_none_or(|required| {
             let objects = &request.choices.as_ref().unwrap().objects;
             objects.len() == usize::from(required.count)
-                && objects.iter().all(|&object| {
-                    self.resolution_cost_candidate(request.payer, required.cost, object)
+                && (objects.is_empty() || {
+                    let candidates =
+                        self.resolution_cost_objects(request.payer, request.life, required);
+                    objects.iter().all(|object| candidates.contains(object))
                 })
         })
     }
@@ -642,20 +683,25 @@ impl Game {
         let request = self
             .state
             .resolving
+            .as_ref()
+            .unwrap()
+            .mana_payment
+            .as_ref()
+            .unwrap();
+        let required = request.object_cost().unwrap();
+        let candidates = self.resolution_cost_objects(request.payer, request.life, required);
+        let request = self
+            .state
+            .resolving
             .as_mut()
             .unwrap()
             .mana_payment
-            .take()
+            .as_mut()
             .unwrap();
-        let required = request.object_cost().unwrap();
-        let mut request = request;
         let objects = &mut request.choices.as_mut().unwrap().objects;
-        objects.retain(|&selected| {
-            self.resolution_cost_candidate(request.payer, required.cost, selected)
-        });
+        objects.retain(|selected| candidates.contains(selected));
         assert!(objects.len() < usize::from(required.count) && !objects.contains(&object));
         objects.push(object);
-        self.state.resolving.as_mut().unwrap().mana_payment = Some(request);
     }
 
     fn pay_resolution_objects(
@@ -704,8 +750,7 @@ impl Game {
             .mana_payment
             .as_ref()
             .unwrap();
-        let life = request.life.unwrap();
-        life == 0 || self.state.players[request.payer.index()].life >= life
+        self.resolution_life_available(request.payer, request.life)
     }
     pub(super) fn finish_resolution_life(&mut self, pay: bool) {
         let request = self

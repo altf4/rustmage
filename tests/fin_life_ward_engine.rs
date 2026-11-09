@@ -232,6 +232,13 @@ fn the_same_ward_offers_atomic_private_payments_to_a_targeting_ability_controlle
     assert_eq!(request.costs.len(), 2);
     let choose_route = game.snapshot();
 
+    let mut no_discard = game.clone();
+    no_discard.move_object(own_hand, Zone::Exile);
+    no_discard.move_object(liege, Zone::Exile);
+    reject(&mut no_discard, Action::ChooseResolutionCost { index: 1 });
+
+    act(&mut game, Action::ChooseResolutionCost { index: 0 });
+    act(&mut game, Action::ChooseResolutionCost { index: 1 });
     act(&mut game, Action::ChooseResolutionCost { index: 0 });
     let select = cost_object(&game, first);
     act(&mut game, select);
@@ -465,4 +472,70 @@ fn exact_graveyard_cards_and_mana_are_committed_as_one_optional_cost() {
     assert_eq!(game.object_view(other).zone, Zone::Graveyard);
     assert_eq!(game.state.players[payer.index()].mana[4], 0);
     assert_eq!(game.state.players[payer.index()].life, 23);
+}
+
+const LIFE_THEN_CREATURE: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::NONE,
+        &[
+            Instruction::MayPayCosts {
+                costs: &[ResolutionCost {
+                    life: Some(AmountValue::Fixed(1)),
+                    objects: Some(ResolutionObjectCost {
+                        cost: AdditionalCost {
+                            kind: EffectChoiceKind::Sacrifice,
+                            filter: SacrificeFilter {
+                                kinds: 1,
+                                keywords: Keywords::FLYING,
+                                ..ANY_OBJECT
+                            },
+                        },
+                        count: 1,
+                    }),
+                    ..ResolutionCost::FREE
+                }],
+                skip: 1,
+            },
+            Instruction::GainLife(PlayerSet::Controller, 3),
+        ],
+    ),
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn cost_object_selection_uses_the_shared_post_life_payment_world() {
+    let spell_card = Card::from_name("Opt").unwrap();
+    let _rules = fixture_rules::activate(&[(spell_card, &LIFE_THEN_CREATURE)]);
+    let payer = Player::P0;
+    let mut game = scenario(payer);
+    let spell = spawn(&mut game, payer, spell_card, Zone::Hand);
+    let creature = put(&mut game, payer, "Essence Channeler", Zone::Battlefield);
+    assert!(!game.keywords(creature).contains(Keywords::FLYING));
+    cast(&mut game, spell, None);
+
+    let mut replaced = game.clone();
+    let ashiok = put(
+        &mut replaced,
+        payer,
+        "Ashiok, Wicked Manipulator",
+        Zone::Battlefield,
+    );
+    replaced.state.objects[ashiok as usize].counters.loyalty = 5;
+    act(&mut replaced, Action::Pass);
+    act(&mut replaced, Action::Pass);
+    let select = cost_object(&replaced, creature);
+    reject(&mut replaced, select);
+    act(&mut replaced, Action::DeclineResolutionMana);
+    assert_eq!(replaced.state.players[payer.index()].life, 20);
+    assert_eq!(replaced.object_view(creature).zone, Zone::Battlefield);
+
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    let select = cost_object(&game, creature);
+    act(&mut game, select);
+    assert!(!game.keywords(creature).contains(Keywords::FLYING));
+    assert_eq!(game.state.players[payer.index()].life, 20);
+    act(&mut game, Action::PayResolutionMana { payment: [0; 6] });
+    assert_eq!(game.object_view(creature).zone, Zone::Graveyard);
+    assert_eq!(game.state.players[payer.index()].life, 22);
 }

@@ -6193,6 +6193,19 @@ impl Game {
             emit,
         )
     }
+    pub(super) fn project_resolution_life(&self, payer: Player, amount: i128) -> FundingState<'_> {
+        let goal = FundingGoal {
+            actor: payer,
+            required: [0; 6],
+            generic: 0,
+            reserve: None,
+            source: None,
+        };
+        let mut world = FundingState::from_game(self, &goal);
+        world.pay_projected_life(payer, amount, &[]);
+        world
+    }
+
     pub(super) fn visit_resolution_payment(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
         let request = self
             .state
@@ -6239,9 +6252,7 @@ impl Game {
             source: None,
         };
         let costs = || std::iter::once(request.cost).chain(request.alternatives.iter().copied());
-        let can_pay_life = request.life.is_none_or(|life| {
-            life == 0 || self.state.players[request.payer.index()].life >= life
-        });
+        let can_pay_life = self.resolution_life_available(request.payer, request.life);
         if !can_pay_life && request.choices.is_none() {
             return false;
         }
@@ -6264,17 +6275,11 @@ impl Game {
         }
         // An offered mana cost opens the same window before the final payment,
         // including while its nonmana selections are still incomplete.
-        let goal = if request.route_selected() {
-            costs().map(goal_for).find(FundingGoal::requires_mana)
-        } else {
-            request
-                .choices
-                .as_ref()
-                .unwrap()
-                .options
-                .iter()
-                .map(|choice| goal_for(choice.mana))
+        let goal = if let Some(choices) = &request.choices {
+            choices.options.iter().map(|choice| goal_for(choice.mana))
                 .find(FundingGoal::requires_mana)
+        } else {
+            costs().map(goal_for).find(FundingGoal::requires_mana)
         };
         let Some(goal) = goal else {
             return false;

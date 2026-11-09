@@ -112,7 +112,7 @@ impl Game {
         source: ObjectRef,
         object: ObjectRef,
     ) -> bool {
-        self.additional_candidate_inner(spec, actor, source, object, false)
+        self.additional_candidate_in_world(self, spec, actor, source, object, false)
     }
     /// A mana ability may remove a current graveyard-exile prohibition before
     /// this nonmana cost is actually paid. Funding proves that continuation.
@@ -123,19 +123,21 @@ impl Game {
         source: ObjectRef,
         object: ObjectRef,
     ) -> bool {
-        self.additional_candidate_inner(spec, actor, source, object, true)
+        self.additional_candidate_in_world(self, spec, actor, source, object, true)
     }
-    fn additional_candidate_inner(
+    pub(super) fn additional_candidate_in_world<W: ability_world::CharacteristicWorld + ?Sized>(
         &self,
+        world: &W,
         spec: AdditionalCost,
         actor: Player,
         source: ObjectRef,
         object: ObjectRef,
         projected: bool,
     ) -> bool {
-        let Some(o) = self.state.objects.get(object.card as usize) else {
+        if object.card as usize >= self.state.objects.len() {
             return false;
-        };
+        }
+        let o = world.object(object.card);
         if spec.kind.payment_kind() == EffectChoiceKind::SacrificeAttachedEquipment
             && o.attached_to != Some(source)
         {
@@ -151,20 +153,20 @@ impl Game {
                     | EffectChoiceKind::ExileGraveyardRange { .. }
                     | EffectChoiceKind::ExileGraveyardSymbols { .. }
             )
-            && ability_world::CharacteristicWorld::graveyard_exile_prohibited(self, object.card)
+            && world.graveyard_exile_prohibited(object.card)
         {
             return false;
         }
         if matches!(
             spec.kind.payment_kind(),
             EffectChoiceKind::ExileCraftNonlands(_)
-        ) && !has_craft_activated_ability(self, object.card)
+        ) && !has_craft_activated_ability(world, object.card)
         {
             return false;
         }
         if !projected
             && matches!(spec.kind.payment_kind(), EffectChoiceKind::BlightCost(n) if n > 0)
-            && replacements::counters_prohibited(self, object)
+            && replacements::counters_prohibited(world, object)
         {
             return false;
         }
@@ -176,7 +178,7 @@ impl Game {
                 | EffectChoiceKind::SacrificeDifferentNames(_)
                 | EffectChoiceKind::SacrificePermanents(_)
                 | EffectChoiceKind::SacrificeAttachedEquipment
-        ) && ability_world::CharacteristicWorld::sacrifice_prohibited(self, object.card)
+        ) && world.sacrifice_prohibited(object.card)
         {
             return false;
         }
@@ -208,7 +210,7 @@ impl Game {
             _ => false,
         };
         if !controls_cost_object
-            || self.object_ref(object.card) != object
+            || world.reference(object.card) != object
             || object == source
                 && (matches!(
                     spec.kind.payment_kind(),
@@ -222,12 +224,12 @@ impl Game {
             return false;
         }
         if spec.kind.payment_kind() == EffectChoiceKind::DiscardLegendary
-            && !ability_world::CharacteristicWorld::legendary(self, object.card)
+            && !world.legendary(object.card)
         {
             return false;
         }
         if spec.kind.payment_kind() == EffectChoiceKind::DiscardMatchingLegendary
-            && !legendary_name_match(self, actor, object.card)
+            && !legendary_name_match(world, actor, object.card)
         {
             return false;
         }
@@ -240,11 +242,11 @@ impl Game {
             spec,
             actor,
             o,
-            self.current_kinds(object.card),
-            ability_world::CharacteristicWorld::mana_value(self, object.card),
-            self.keywords(object.card),
-            self.granted_subtypes(object.card),
-            self.object_name(object.card),
+            world.kinds(object.card),
+            world.mana_value(object.card),
+            characteristic_query::CharacteristicQuery::in_world(world).keywords(object.card),
+            world.subtypes(object.card),
+            world.name(object.card),
         )
     }
     #[allow(

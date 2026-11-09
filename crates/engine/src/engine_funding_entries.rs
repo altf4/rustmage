@@ -1023,10 +1023,11 @@ impl FundingState<'_> {
     pub(super) fn pay_projected_life(
         &mut self,
         player: Player,
-        n: u32,
+        amount: impl Into<i128>,
         entering: &[entries::EntryMove],
     ) {
-        if n == 0 {
+        let amount = amount.into();
+        if amount == 0 {
             return;
         }
         let applies = self.life_replacement_possible
@@ -1056,7 +1057,7 @@ impl FundingState<'_> {
                 })
                 .map(|id| self.reference(id));
             if let Some(cards) =
-                entries::life_replacement_exile_cards(library, n as usize, entering)
+                entries::life_replacement_exile_cards(library, usize::try_from(amount).unwrap_or(usize::MAX), entering)
             {
                 if !cards.is_empty() {
                     let mut result = None;
@@ -1071,11 +1072,11 @@ impl FundingState<'_> {
                 return;
             }
         }
-        self.life_lost[player.index()] |= n > 0;
+        self.life_lost[player.index()] |= amount > 0;
         if player == self.actor {
-            self.life -= i128::from(n)
+            self.life -= amount
         } else {
-            self.other_life -= i128::from(n)
+            self.other_life -= amount
         }
     }
     fn aura_candidate(&self, m: &entries::EntryMove, target: ObjectRef) -> bool {
