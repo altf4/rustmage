@@ -1,4 +1,4 @@
-//! Private look-top selection; cards stay in place until the complete transaction commits.
+//! Owned library selections, including public sequential picks.
 use super::*;
 use crate::cards::{
     LibraryLook, LibraryPickDestination, LibraryRemainder, LibrarySelectionCount,
@@ -12,8 +12,16 @@ pub(super) enum TopLandStage {
     HandThenLands,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum AlternatingLibraryPick {
+    Hand,
+    Bottom,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct LibrarySelection {
+    alternating: Option<AlternatingLibraryPick>,
     pub top_land: Option<TopLandStage>,
     pub spec: LibrarySelectionSpec,
     pub owner: Player,
@@ -110,6 +118,7 @@ impl Game {
         self.state.resolving.as_mut().unwrap().selection = Some(Box::new(LibrarySelection {
             // Ineligible hidden cards still take the same first decision. The
             // opponent must not infer landness from public resolution pacing.
+            alternating: None,
             top_land: Some(TopLandStage::Hand),
             spec: LibrarySelectionSpec {
                 look: 1,
@@ -372,6 +381,7 @@ impl Game {
         let maximum = requested.min(eligible.len());
         let minimum = if spec.optional { 0 } else { maximum };
         self.state.resolving.as_mut().unwrap().selection = Some(Box::new(LibrarySelection {
+            alternating: None,
             top_land: None,
             spec,
             owner,
@@ -425,12 +435,126 @@ impl Game {
         self.state.pending = Pending::EffectLibrarySelection { player: owner };
         true
     }
+    pub(super) fn start_alternating_library_picks(&mut self, item: &SpellView, look: u16) -> bool {
+        if !self.start_library_selection_to(
+            item,
+            LibrarySelectionEffect {
+                spec: LibrarySelectionSpec {
+                    look,
+                    count: LibrarySelectionCount::Fixed(1),
+                    filter: LibrarySelectionFilter::Any,
+                    optional: false,
+                    reveal: true,
+                    remainder: LibraryRemainder::Keep,
+                },
+                look: LibraryLook::Fixed(look),
+                destination: LibraryPickDestination::Hand,
+                public: true,
+                maximum_mana_value: None,
+            },
+        ) {
+            return false;
+        }
+        let resolution = self.state.resolving.as_mut().unwrap();
+        resolution.selection.as_mut().unwrap().alternating = Some(AlternatingLibraryPick::Hand);
+        self.advance_alternating_library_picks()
+    }
+
+    fn advance_alternating_library_picks(&mut self) -> bool {
+        loop {
+            let (owner, pick, remaining, known_top) = {
+                let objects = &self.state.objects;
+                let resolution = self.state.resolving.as_mut().unwrap();
+                let frame = resolution.selection.as_mut().unwrap();
+                let owner = frame.owner;
+                frame
+                    .remaining
+                    .retain(|&object| exact_library_card(objects, owner, object));
+                frame
+                    .bottom
+                    .retain(|&object| exact_library_card(objects, owner, object));
+                (
+                    owner,
+                    frame.alternating.unwrap(),
+                    frame.remaining.len(),
+                    frame
+                        .remaining
+                        .first()
+                        .or_else(|| frame.bottom.first())
+                        .copied(),
+                )
+            };
+            if let Some(top) = known_top
+                && self.top_library_card(owner) == Some(top.card)
+            {
+                self.remember_library_top(owner, top);
+            }
+            match remaining {
+                0 => {
+                    self.state.resolving.as_mut().unwrap().selection = None;
+                    return false;
+                }
+                1 => self.commit_alternating_library_pick(known_top.unwrap().card),
+                _ => {
+                    self.state.pending = Pending::EffectLibrarySelection {
+                        player: match pick {
+                            AlternatingLibraryPick::Hand => owner,
+                            AlternatingLibraryPick::Bottom => owner.other(),
+                        },
+                    };
+                    return true;
+                }
+            }
+        }
+    }
+
+    fn commit_alternating_library_pick(&mut self, card: CardId) {
+        let (owner, object, pick) = {
+            let resolution = self.state.resolving.as_mut().unwrap();
+            let frame = resolution.selection.as_mut().unwrap();
+            let index = frame.remaining.iter().position(|r| r.card == card).unwrap();
+            let object = frame.remaining.remove(index);
+            let pick = frame.alternating.unwrap();
+            frame.alternating = Some(match pick {
+                AlternatingLibraryPick::Hand => AlternatingLibraryPick::Bottom,
+                AlternatingLibraryPick::Bottom => {
+                    frame.bottom.push(object);
+                    AlternatingLibraryPick::Hand
+                }
+            });
+            (frame.owner, object, pick)
+        };
+        assert!(exact_library_card(&self.state.objects, owner, object));
+        match pick {
+            AlternatingLibraryPick::Hand => {
+                let event = self.move_object(card, Zone::Hand);
+                if event.moved
+                    && event.destination == Zone::Hand
+                    && self.object_ref(card) == event.after
+                    && !self.state.known_hand.contains(&event.after)
+                {
+                    self.state.known_hand.push(event.after);
+                }
+            }
+            AlternatingLibraryPick::Bottom => {
+                let previous_top = self.top_library_card(owner);
+                self.place_library_bottom(owner, &[object]);
+                if previous_top != self.top_library_card(owner) {
+                    self.forget_library_top(owner);
+                }
+            }
+        }
+    }
+
     pub(super) fn library_selection_candidate(
         &self,
         frame: &LibrarySelection,
         object: ObjectRef,
     ) -> bool {
-        if !frame.eligible.contains(&object) {
+        if !frame.eligible.contains(&object)
+            || frame.alternating.is_some()
+                && !exact_library_card(&self.state.objects, frame.owner, object)
+        {
             return false;
         }
         if let Some(colors) = frame.available_colors {
@@ -479,6 +603,13 @@ impl Game {
             .selection
             .as_mut()
             .unwrap();
+        if f.alternating.is_some() {
+            self.commit_alternating_library_pick(card);
+            if !self.advance_alternating_library_picks() {
+                self.run_program();
+            }
+            return;
+        }
         let index = f.remaining.iter().position(|r| r.card == card).unwrap();
         f.selected.push(f.remaining.remove(index));
     }
@@ -798,11 +929,14 @@ impl Game {
                     f.bottom = std::mem::take(&mut f.remaining);
                     self.state.rng.shuffle(&mut f.bottom);
                 }
-                let library = &mut self.state.players[owner.index()].library;
-                library.retain(|id| !f.bottom.iter().any(|r| r.card == *id));
-                library.splice(0..0, f.bottom.iter().rev().map(|r| r.card));
+                self.place_library_bottom(owner, &f.bottom);
             }
         }
+    }
+    fn place_library_bottom(&mut self, owner: Player, order: &[ObjectRef]) {
+        let library = &mut self.state.players[owner.index()].library;
+        library.retain(|id| !order.iter().any(|r| r.card == *id));
+        library.splice(0..0, order.iter().rev().map(|r| r.card));
     }
     pub(super) fn capture_selected_library_entry(&mut self, events: &[ZoneChange]) {
         let Some(frame) = self
@@ -908,10 +1042,14 @@ impl Game {
         if !self.shares_information(viewer, f.owner) && !f.public {
             return None;
         }
+        let visible = |object: &&ObjectRef| {
+            f.alternating.is_none() || exact_library_card(&self.state.objects, f.owner, **object)
+        };
         Some(LibrarySelectionView {
             remaining: f
                 .remaining
                 .iter()
+                .filter(visible)
                 .map(|r| self.object_view(r.card))
                 .collect(),
             candidates: f
@@ -925,7 +1063,12 @@ impl Game {
                 .iter()
                 .map(|r| self.object_view(r.card))
                 .collect(),
-            bottom: f.bottom.iter().map(|r| self.object_view(r.card)).collect(),
+            bottom: f
+                .bottom
+                .iter()
+                .filter(visible)
+                .map(|r| self.object_view(r.card))
+                .collect(),
             minimum: f.minimum,
             maximum: f.maximum,
             ordering: f.ordering,
@@ -934,6 +1077,7 @@ impl Game {
             reveal: f.spec.reveal,
             public: f.public,
             destination: match f.destination {
+                _ if f.alternating == Some(AlternatingLibraryPick::Bottom) => "bottom",
                 LibraryPickDestination::BattlefieldIfManaValueAtMostElseHand(_) => {
                     unreachable!("normalized before frame creation")
                 }
@@ -961,4 +1105,14 @@ impl Game {
             },
         })
     }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+fn exact_library_card(objects: &[Object], owner: Player, object: ObjectRef) -> bool {
+    objects.get(object.card as usize).is_some_and(|card| {
+        card.generation == object.generation
+            && card.zone == Zone::Library
+            && card.owner == owner
+            && card.is_card()
+    })
 }

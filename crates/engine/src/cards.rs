@@ -3192,6 +3192,9 @@ pub enum Instruction {
     SearchRequired(SearchSpec),
     SelectLibrary(LibrarySelectionSpec),
     SelectLibraryTo(LibrarySelectionEffect),
+    /// Reveal the top cards, alternating the owner's hand and the opponent's
+    /// choices for the bottom of that library, starting with the hand.
+    AlternateRevealedLibraryPicks(u16),
     /// Enter first; optionally transform the exact actual entrant before the remainder.
     SelectLibraryThenMayTransform(LibrarySelectionEffect),
     NoMaximumHandSize,

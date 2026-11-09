@@ -7626,6 +7626,11 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::AlternateRevealedLibraryPicks(look) => {
+                    if self.start_alternating_library_picks(&item, look) {
+                        return;
+                    }
+                }
                 Instruction::SelectLibraryTo(effect) => {
                     if self.start_library_selection_to(&item, effect) {
                         return;
