@@ -622,3 +622,382 @@ fn excalibur_tracks_gain_events_and_carries_its_live_bonus_to_new_bearers() {
     assert_eq!(stats(&game, first), (2, 2));
     assert_eq!(stats(&game, second), (5, 5));
 }
+
+#[test]
+fn adamantoise_redirects_damage_retains_it_and_creates_tapped_treasures_on_death() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let turtle = put(&mut game, player, "Ancient Adamantoise", Zone::Hand);
+    cast(&mut game, turtle, None);
+    settle(&mut game);
+    assert!(game.keywords(turtle).contains(Keywords::VIGILANCE));
+
+    let redirected = put(&mut game, opponent, "Shock", Zone::Hand);
+    act(&mut game, Action::Pass);
+    cast(&mut game, redirected, Some(Target::Player(player)));
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].life, 20);
+    assert_eq!(game.object_view(turtle).damage, 2);
+    game.state.step = Step::End;
+    game.state.priority = player;
+    pass_pair(&mut game);
+    assert_eq!(game.object_view(turtle).damage, 2);
+
+    let direct = put(&mut game, opponent, "Shock", Zone::Hand);
+    game.state.players[opponent.index()].mana = [8; 6];
+    assert_eq!(game.actor(), Some(opponent));
+    cast(&mut game, direct, Some(Target::Card(turtle)));
+    reach(&mut game, |action| *action == Action::DeclineEffectPayment);
+    act(&mut game, Action::DeclineEffectPayment);
+    settle(&mut game);
+    assert_eq!(game.object_view(turtle).damage, 2);
+
+    if game.actor() != Some(player) {
+        act(&mut game, Action::Pass);
+    }
+    game.state.players[player.index()].mana = [8; 6];
+    let murder = put(&mut game, player, "Murder", Zone::Hand);
+    cast(&mut game, murder, Some(Target::Card(turtle)));
+    settle(&mut game);
+    assert_eq!(game.object_view(turtle).zone, Zone::Exile);
+    let treasures: Vec<_> = game
+        .observe(player)
+        .objects
+        .into_iter()
+        .filter(|object| object.zone == Zone::Battlefield && object.card == Card(5302))
+        .collect();
+    assert_eq!(treasures.len(), 10);
+    assert!(treasures.iter().all(|treasure| treasure.tapped));
+}
+
+#[test]
+fn barret_counts_each_equipped_creature_once_at_resolution() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let barret = put(&mut game, player, "Barret Wallace", Zone::Battlefield);
+    let first = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let second = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    let boots = put(&mut game, player, "Swiftfoot Boots", Zone::Battlefield);
+    let bow = put(&mut game, player, "Short Bow", Zone::Battlefield);
+    equip(&mut game, boots, first);
+    equip(&mut game, bow, first);
+    assert!(game.keywords(barret).contains(Keywords::REACH));
+    reach(&mut game, |a| *a == Action::Attack { card: barret });
+    act(&mut game, Action::Attack { card: barret });
+    act(&mut game, Action::FinishAttackers);
+    let mut moved = game.clone();
+    assert!(moved.attach_equipment(moved.object_ref(bow), moved.object_ref(second)));
+    settle(&mut game);
+    settle(&mut moved);
+    assert_eq!(game.state.players[opponent.index()].life, 19);
+    assert_eq!(moved.state.players[opponent.index()].life, 18);
+}
+
+#[test]
+fn beatrix_can_attach_any_number_of_controlled_equipment_without_targeting_them() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let beatrix = put(
+        &mut game,
+        player,
+        "Beatrix, Loyal General",
+        Zone::Battlefield,
+    );
+    let recipient = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let first = put(&mut game, player, "Short Bow", Zone::Battlefield);
+    let second = put(&mut game, player, "Gold Pan", Zone::Battlefield);
+    let foreign = put(&mut game, player.other(), "Short Bow", Zone::Battlefield);
+    game.state.objects[first as usize].gained_keywords = Keywords::PROTECTION_EVERYTHING;
+    assert!(game.keywords(beatrix).contains(Keywords::VIGILANCE));
+
+    reach(&mut game, |a| *a == target(recipient));
+    act(&mut game, target(recipient));
+    let pick = |equipment| Action::ChooseEquipmentAttachment {
+        equipment: Some(equipment),
+    };
+    let [first, second, foreign] = [first, second, foreign].map(|id| game.object_ref(id));
+    let finish = Action::ChooseEquipmentAttachment { equipment: None };
+    reach(&mut game, |a| *a == pick(first));
+    reject(&mut game, pick(foreign));
+    let mut declined = game.clone();
+    act(&mut declined, finish);
+    assert_eq!(declined.object_view(first.card).attached_to, None);
+    act(&mut game, pick(first));
+    act(&mut game, pick(second));
+    act(&mut game, finish);
+    if game.observe(player).equipment_attachment.is_some() {
+        act(&mut game, pick(first));
+    }
+    for equipment in [first, second] {
+        assert_eq!(
+            game.object_view(equipment.card).attached_to,
+            Some(game.object_ref(recipient))
+        );
+    }
+}
+
+#[test]
+fn buster_sword_uses_combat_damage_and_can_cast_the_card_just_drawn() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let sword = put(&mut game, player, "Buster Sword", Zone::Hand);
+    let bearer = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let expensive = put(&mut game, player, "Meteor Golem", Zone::Hand);
+    let drawn = put(&mut game, player, "Hill Giant", Zone::Library);
+    cast(&mut game, sword, None);
+    settle(&mut game);
+    equip(&mut game, sword, bearer);
+    assert_eq!(stats(&game, bearer), (5, 4));
+    attack(&mut game, bearer);
+    act(&mut game, Action::FinishBlockers);
+    pass_pair(&mut game);
+    assert_eq!(game.state.players[opponent.index()].life, 15);
+
+    let free = |object| Action::CastFreeDuringResolution {
+        object,
+        face: CastFace::Normal,
+    };
+    let drawn_action = free(game.object_ref(drawn));
+    reach(&mut game, |a| *a == drawn_action);
+    assert_eq!(game.object_view(drawn).zone, Zone::Hand);
+    assert!(game.observe(opponent).resolution_free_casts.is_none());
+    let expensive_action = free(game.object_ref(expensive));
+    reject(&mut game, expensive_action);
+    act(&mut game, drawn_action);
+    pay(&mut game);
+    if game
+        .legal_actions()
+        .contains(&Action::FinishResolutionCasts)
+    {
+        act(&mut game, Action::FinishResolutionCasts);
+    }
+    settle(&mut game);
+    assert_eq!(game.object_view(drawn).zone, Zone::Battlefield);
+}
+
+fn tokens(game: &Game, player: Player, definition: Card) -> Vec<CardId> {
+    game.observe(player)
+        .objects
+        .into_iter()
+        .filter(|object| {
+            object.controller == player
+                && object.zone == Zone::Battlefield
+                && object.card == definition
+        })
+        .map(|object| object.id)
+        .collect()
+}
+
+#[test]
+fn circle_of_power_boosts_existing_and_new_wizards_with_lifelink() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    game.create_tokens(player, Card(5531), 1, false);
+    game.create_tokens(opponent, Card(5531), 1, false);
+    let spell = put(&mut game, player, "Circle of Power", Zone::Hand);
+    cast(&mut game, spell, None);
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 2);
+    assert_eq!(game.state.players[player.index()].life, 18);
+    assert_eq!(game.state.players[opponent.index()].life, 19);
+    let wizards = tokens(&game, player, Card(5531));
+    assert_eq!(wizards.len(), 2);
+    for wizard in wizards {
+        assert_eq!(stats(&game, wizard), (1, 1));
+        assert!(game.keywords(wizard).contains(Keywords::LIFELINK));
+    }
+    let opposing_wizard = tokens(&game, opponent, Card(5531))[0];
+    assert_eq!(stats(&game, opposing_wizard), (0, 1));
+    let shock = put(&mut game, player, "Shock", Zone::Hand);
+    cast(&mut game, shock, Some(Target::Player(opponent)));
+    settle_triggers(&mut game);
+    assert_eq!(game.state.players[player.index()].life, 20);
+    assert_eq!(game.state.players[opponent.index()].life, 15);
+}
+
+fn settle_triggers(game: &mut Game) {
+    for _ in 0..48 {
+        if game.state.pending == Pending::Priority
+            && game.state.pending_triggers.is_empty()
+            && game.state.ordering_triggers.is_empty()
+            && game.state.stack.is_empty()
+            && game.state.resolving.is_none()
+        {
+            return;
+        }
+        choose(game, |a| {
+            matches!(a, Action::Pass | Action::PutTrigger { .. })
+        });
+    }
+    panic!("triggers did not resolve");
+}
+
+#[test]
+fn clives_hideaway_checks_legendary_count_when_the_activation_resolves() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let hideaway = put(&mut game, player, "Clive's Hideaway", Zone::Hand);
+    let hidden = put(&mut game, player, "Hill Giant", Zone::Library);
+    for legend in [
+        "Yargle, Glutton of Urborg",
+        "Kellan, Planar Trailblazer",
+        "Alesha, Who Laughs at Fate",
+    ] {
+        put(&mut game, player, legend, Zone::Battlefield);
+    }
+    act(&mut game, Action::PlayLand { card: hideaway });
+    assert!(!game.object_view(hideaway).tapped);
+    let select = Action::SelectLibrary { card: hidden };
+    reach(&mut game, |a| *a == select);
+    act(&mut game, select);
+    if game
+        .legal_actions()
+        .contains(&Action::FinishLibrarySelection)
+    {
+        act(&mut game, Action::FinishLibrarySelection);
+    }
+    settle(&mut game);
+    assert_eq!(game.object_view(hidden).zone, Zone::Exile);
+    assert!(!game.can_view_hideaway(player.other(), game.object_ref(hidden)));
+    let mut tap = game.clone();
+    tap.state.players[player.index()].mana = [0; 6];
+    act(&mut tap, mana(hideaway, [0, 0, 0, 0, 0, 1]));
+    assert_eq!(tap.state.players[player.index()].mana[5], 1);
+
+    act(&mut game, announce_ability(hideaway, 1));
+    pay(&mut game);
+    let mut three = game.clone();
+    settle(&mut three);
+    assert_eq!(three.object_view(hidden).zone, Zone::Exile);
+    put(
+        &mut game,
+        player,
+        "Tatyova, Benthic Druid",
+        Zone::Battlefield,
+    );
+    let free = Action::CastFreeDuringResolution {
+        object: game.object_ref(hidden),
+        face: CastFace::Normal,
+    };
+    reach(&mut game, |a| *a == free);
+    act(&mut game, free);
+    pay(&mut game);
+    if game
+        .legal_actions()
+        .contains(&Action::FinishResolutionCasts)
+    {
+        act(&mut game, Action::FinishResolutionCasts);
+    }
+    settle(&mut game);
+    assert_eq!(game.object_view(hidden).zone, Zone::Battlefield);
+}
+
+#[test]
+fn midgar_cloud_tutors_equipment_and_doubles_the_attached_swords_trigger() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let cloud = put(&mut game, player, "Cloud, Midgar Mercenary", Zone::Hand);
+    let sword = put(
+        &mut game,
+        player,
+        "Sword of Wealth and Power",
+        Zone::Library,
+    );
+    cast(&mut game, cloud, None);
+    let find = Action::ChooseSearch { card: sword };
+    reach(&mut game, |a| *a == find);
+    act(&mut game, find);
+    act(&mut game, Action::FinishSearch);
+    settle(&mut game);
+    assert_eq!(game.object_view(sword).zone, Zone::Hand);
+    assert!(
+        game.observe(player.other())
+            .known_hand
+            .contains(&game.object_ref(sword))
+    );
+    cast(&mut game, sword, None);
+    settle(&mut game);
+    equip(&mut game, sword, cloud);
+
+    game.state.objects[cloud as usize].summoning_sick = false;
+    attack(&mut game, cloud);
+    act(&mut game, Action::FinishBlockers);
+    pass_pair(&mut game);
+    settle_triggers(&mut game);
+    assert_eq!(tokens(&game, player, Card(5302)).len(), 2);
+}
+
+#[test]
+fn cornered_by_black_mages_requires_the_opponents_sacrifice_and_still_creates_a_wizard() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let spell = put(&mut game, player, "Cornered by Black Mages", Zone::Hand);
+    let victim = put(&mut game, opponent, "Grizzly Bears", Zone::Battlefield);
+    game.state.objects[victim as usize].gained_keywords = Keywords::PROTECTION_EVERYTHING;
+    let owned = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    cast(&mut game, spell, Some(Target::Player(opponent)));
+    let mut empty = game.clone();
+    empty.move_object(victim, Zone::Exile);
+    settle(&mut empty);
+    assert_eq!(tokens(&empty, player, Card(5531)).len(), 1);
+    let sacrifice = Action::ChooseEffectObject {
+        object: game.object_ref(victim),
+    };
+    reach(&mut game, |a| *a == sacrifice);
+    assert_eq!(game.actor(), Some(opponent));
+    let illegal = Action::ChooseEffectObject {
+        object: game.object_ref(owned),
+    };
+    reject(&mut game, illegal);
+    act(&mut game, sacrifice);
+    settle(&mut game);
+    assert_eq!(game.object_view(victim).zone, Zone::Graveyard);
+    assert_eq!(tokens(&game, player, Card(5531)).len(), 1);
+}
+
+#[test]
+fn delivery_moogle_searches_one_qualified_card_and_reveals_the_public_result() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let source = put(&mut game, player, "Delivery Moogle", Zone::Hand);
+    let boots = put(&mut game, player, "Swiftfoot Boots", Zone::Graveyard);
+    let too_expensive = put(&mut game, player, "Meteor Golem", Zone::Graveyard);
+    let before = game.state.players[player.index()].library.clone();
+    cast(&mut game, source, None);
+    let graveyard = Action::ChooseSearchZones {
+        library: false,
+        graveyard: true,
+    };
+    reach(&mut game, |a| *a == graveyard);
+    reject(
+        &mut game,
+        Action::ChooseSearchZones {
+            library: false,
+            graveyard: false,
+        },
+    );
+    act(&mut game, graveyard);
+    reject(&mut game, Action::FinishSearch);
+    reject(
+        &mut game,
+        Action::ChooseSearch {
+            card: too_expensive,
+        },
+    );
+    act(&mut game, Action::ChooseSearch { card: boots });
+    act(&mut game, Action::FinishSearch);
+    settle(&mut game);
+    assert!(game.keywords(source).contains(Keywords::FLYING));
+    assert_eq!(game.state.players[player.index()].library, before);
+    assert_eq!(game.object_view(boots).zone, Zone::Hand);
+    assert!(
+        game.observe(player.other())
+            .known_hand
+            .contains(&game.object_ref(boots))
+    );
+}

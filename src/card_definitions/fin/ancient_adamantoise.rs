@@ -1,16 +1,47 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+const REDIRECT: ReplacementSpec = ReplacementSpec::RedirectControlledDamageToSource;
+
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(8, 20),
     keywords: Keywords::VIGILANCE,
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::Ward,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::CounterUnlessPay {
+                cost: generic(3),
+                subject: CounterSubject::Related,
+                exile: false,
+                unpaid_skip: 0,
+            }],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::SelfDies,
+            targets: TargetPlan::NONE,
+            program: &[
+                Instruction::ExileDepartedSource,
+                Instruction::CreateTokens {
+                    token: Card(5302),
+                    amount: 10,
+                    tapped: true,
+                },
+            ],
+        },
+    ],
+    static_groups: &[
+        StaticAbilityGroup {
+            line: 1,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::RetainDamageDuringCleanup],
+        },
+        StaticAbilityGroup {
+            line: 2,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::Replacement(0, REDIRECT)],
+        },
+    ],
+    extras: &CardExtras {
+        replacement_effects: &[REDIRECT],
+        ..CardExtras::EMPTY
+    },
     ..CardRules::EMPTY
 };
