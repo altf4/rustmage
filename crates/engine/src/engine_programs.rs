@@ -4520,9 +4520,16 @@ impl Game {
                         return;
                     }
                 }
-                Instruction::MayTapSourceReflexive { .. } => {
+                Instruction::MayTapSourceReflexive { .. }
+                | Instruction::MaySacrificeSourceReflexive { .. } => {
                     let skip_to = resolution.pc;
-                    if self.exact_source_can_tap(&item) {
+                    let can_pay =
+                        if matches!(instruction, Instruction::MayTapSourceReflexive { .. }) {
+                            self.exact_source_can_tap(&item)
+                        } else {
+                            self.exact_source_can_sacrifice(&item)
+                        };
+                    if can_pay {
                         self.state.pending = Pending::EffectOptional {
                             player: item.controller,
                             skip_to,
@@ -6546,16 +6553,7 @@ impl Game {
                     }
                 }
                 Instruction::SacrificeSourceReflexive { ability } => {
-                    if self.try_sacrifice_exact_source(&item) {
-                        // Departure refreshes the saved packet's LKI, including
-                        // keywords gained after the historical threshold event.
-                        let sacrificed = self.state.resolving.as_ref().unwrap().item.clone();
-                        self.queue_reflexive_objects(
-                            &sacrificed,
-                            ability,
-                            sacrificed.reflexive_action_objects(),
-                        );
-                    }
+                    self.sacrifice_source_reflexive(&item, ability);
                 }
                 Instruction::ExileAndCopyNightmare => self.exile_and_copy_nightmare(&item),
                 Instruction::ExileOtherNightmares => self.exile_other_nightmares(item.controller),

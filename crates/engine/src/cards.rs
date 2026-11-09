@@ -396,6 +396,8 @@ pub enum TargetPredicate {
     CrewedSourceThisTurn,
     ManaValueAtMostLifeGained,
     OtherThanSource,
+    /// Exclude the source's physical card even after it changes zones.
+    OtherThanPhysicalSource,
     OtherThanSourceAttachment,
     Blocking,
     Nontoken,
@@ -2396,6 +2398,10 @@ pub enum Instruction {
     },
     /// Queue a separate trigger only after successfully sacrificing this exact source.
     SacrificeSourceReflexive {
+        ability: u16,
+    },
+    /// Offer an exact source sacrifice and queue its separate trigger on success.
+    MaySacrificeSourceReflexive {
         ability: u16,
     },
     /// Offer a tap of the exact untapped source; queue only after the actual tap.

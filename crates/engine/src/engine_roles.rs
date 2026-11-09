@@ -168,9 +168,13 @@ impl Game {
             )
         });
         let matches_action = match (action, instruction) {
-            (ReflexiveAction::Sacrifice, Some(Instruction::SacrificeSourceReflexive { .. })) => {
-                true
-            }
+            (
+                ReflexiveAction::Sacrifice,
+                Some(
+                    Instruction::SacrificeSourceReflexive { .. }
+                    | Instruction::MaySacrificeSourceReflexive { .. },
+                ),
+            ) => true,
             (ReflexiveAction::Mill, Some(Instruction::MillThenReflexive { .. })) => true,
             (ReflexiveAction::Sacrifice, Some(Instruction::ChooseObjects { kind, .. })) => {
                 follows
@@ -318,23 +322,43 @@ impl Game {
                 && !self.state.objects[source.id as usize].tapped
         })
     }
-    pub(super) fn complete_optional_tap_reflexive(&mut self) {
+    pub(super) fn sacrifice_source_reflexive(&mut self, item: &SpellView, ability: u16) {
+        if self.try_sacrifice_exact_source(item) {
+            // Departure refreshes the saved packet's last-known source facts.
+            let sacrificed = self.state.resolving.as_ref().unwrap().item.clone();
+            self.queue_reflexive_objects(
+                &sacrificed,
+                ability,
+                sacrificed.reflexive_action_objects(),
+            );
+        }
+    }
+
+    pub(super) fn complete_optional_source_reflexive(&mut self) {
         let resolution = self.state.resolving.as_ref().unwrap();
-        let Some(Instruction::MayTapSourceReflexive { ability }) =
-            resolution.program.get(resolution.pc.saturating_sub(1))
-        else {
-            return;
-        };
-        let (item, ability) = (resolution.item.clone(), *ability);
-        if self.exact_source_can_tap(&item) {
-            let source = item.source.expect("tap source was checked");
-            self.tap_objects(&[source.id]);
-            if self.on_battlefield(source.id)
-                && self.object_ref(source.id) == source.object
-                && self.state.objects[source.id as usize].tapped
+        match resolution
+            .program
+            .get(resolution.pc.saturating_sub(1))
+            .copied()
+        {
+            Some(Instruction::MayTapSourceReflexive { ability })
+                if self.exact_source_can_tap(&resolution.item) =>
             {
-                self.queue_reflexive(&item, ability, None);
+                let item = resolution.item.clone();
+                let source = item.source.expect("tap source was checked");
+                self.tap_objects(&[source.id]);
+                if self.on_battlefield(source.id)
+                    && self.object_ref(source.id) == source.object
+                    && self.state.objects[source.id as usize].tapped
+                {
+                    self.queue_reflexive(&item, ability, None);
+                }
             }
+            Some(Instruction::MaySacrificeSourceReflexive { ability }) => {
+                let item = resolution.item.clone();
+                self.sacrifice_source_reflexive(&item, ability);
+            }
+            _ => {}
         }
     }
     pub(super) fn resolve_role_reflexive(&mut self, item: &SpellView, token: Card, ability: u16) {

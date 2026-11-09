@@ -8782,7 +8782,7 @@ impl Game {
                 if !accept {
                     self.state.resolving.as_mut().unwrap().pc = skip_to;
                 } else {
-                    self.complete_optional_tap_reflexive();
+                    self.complete_optional_source_reflexive();
                     self.complete_optional_discard_exile_play();
                 }
                 self.complete_optional_source_counter_cast(accept);

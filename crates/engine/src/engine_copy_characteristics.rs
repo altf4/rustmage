@@ -109,16 +109,23 @@ impl Game {
     pub(super) fn sacrifice_exact_source(&mut self, item: &SpellView) {
         self.try_sacrifice_exact_source(item);
     }
+    fn exact_controlled_sacrifice_source(&self, item: &SpellView) -> Option<StackSourceView> {
+        item.source.filter(|source| {
+            self.on_battlefield(source.id)
+                && self.object_ref(source.id) == source.object
+                && self.state.objects[source.id as usize].controller == item.controller
+        })
+    }
+    pub(super) fn exact_source_can_sacrifice(&self, item: &SpellView) -> bool {
+        self.exact_controlled_sacrifice_source(item)
+            .is_some_and(|source| {
+                !ability_world::CharacteristicWorld::sacrifice_prohibited(self, source.id)
+            })
+    }
     pub(super) fn try_sacrifice_exact_source(&mut self, item: &SpellView) -> bool {
-        let Some(source) = item.source else {
+        let Some(source) = self.exact_controlled_sacrifice_source(item) else {
             return false;
         };
-        if !self.on_battlefield(source.id)
-            || self.object_ref(source.id) != source.object
-            || self.state.objects[source.id as usize].controller != item.controller
-        {
-            return false;
-        }
         self.sacrifice_batch(&[(item.controller, source.id)]);
         // A replacement destination (for example exile) still completes the
         // sacrifice. A prevented movement must not create its reflexive payoff.

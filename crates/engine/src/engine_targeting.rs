@@ -2048,6 +2048,7 @@ impl Game {
                         })
                     }
                     TargetPredicate::OtherThanSource => self.object_ref(id) != source,
+                    TargetPredicate::OtherThanPhysicalSource => id != source.card,
                     TargetPredicate::OtherThanSourceAttachment => {
                         let attached = if self.on_battlefield(source.card)
                             && self.object_ref(source.card) == source
