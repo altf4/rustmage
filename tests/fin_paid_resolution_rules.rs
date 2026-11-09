@@ -187,7 +187,10 @@ fn targeted_permission_rejects_unfundable_cast_and_old_incarnation() {
 
     paid_offer(&mut g);
     reject(&mut g, action);
-    assert_eq!(g.legal_actions(), [Action::FinishResolutionCasts]);
+    assert_eq!(
+        g.legal_actions(),
+        [Action::Concede, Action::FinishResolutionCasts]
+    );
     act(&mut g, Action::FinishResolutionCasts);
     assert_eq!(g.object_view(child).zone, Zone::Graveyard);
     assert_eq!(g.state.players[p.index()].life, 21);
