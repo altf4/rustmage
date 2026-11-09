@@ -4778,6 +4778,19 @@ impl Game {
         world.set_cost_context(Some(&proposal));
         world.reachable(&goal, &mut HashSet::new())
     }
+    pub(super) fn blight_x_cost_fundable(&self, a: &Announcement, cost: ManaCost, x: u32) -> bool {
+        let mut proposal = a.clone();
+        proposal.item.x = Some(x);
+        proposal.cost = Some(cost);
+        proposal.total_cost = None;
+        let definition = proposal.item.source.unwrap().card;
+        proposal.initialize_cast_costs(improvise::potential(self, definition));
+        let goal = self.funding_goal(&proposal);
+        let mut world = FundingState::from_game_with_convoke(self, &goal, definition.has_convoke());
+        world.set_purpose(self.purpose_for_item(&proposal.item));
+        world.set_cost_context(Some(&proposal));
+        world.reachable(&goal, &mut HashSet::new())
+    }
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
         if a.item.kind == StackKind::Spell
             && a.additional_cost().is_some_and(|s| {

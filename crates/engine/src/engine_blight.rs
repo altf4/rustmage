@@ -1,5 +1,4 @@
 //! Optional blight declaration and ordered, replacement-aware payment.
-use super::funding::FundingState;
 use super::*;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -161,25 +160,6 @@ impl Game {
         });
         proposal.total_cost = proposal.cost;
         self.activation_packet_fundable(&proposal)
-    }
-    pub(super) fn blight_x_cost_fundable(&self, a: &Announcement, cost: ManaCost, x: u32) -> bool {
-        let mut proposal = a.clone();
-        proposal.item.x = Some(x);
-        proposal.cost = Some(cost);
-        proposal.total_cost = None;
-        proposal.initialize_cast_costs(improvise::potential(
-            self,
-            proposal.item.source.unwrap().card,
-        ));
-        let goal = self.funding_goal(&proposal);
-        let mut world = FundingState::from_game_with_convoke(
-            self,
-            &goal,
-            proposal.item.source.unwrap().card.has_convoke(),
-        );
-        world.set_purpose(self.purpose_for_item(&proposal.item));
-        world.set_cost_context(Some(&proposal));
-        world.reachable(&goal, &mut std::collections::HashSet::new())
     }
     pub(super) fn blight_x_intervals(&self, a: &Announcement) -> Vec<XInterval> {
         // Declaration takes place before mana abilities and payments. Paying

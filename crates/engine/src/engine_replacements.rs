@@ -1104,7 +1104,7 @@ impl Game {
                 let applies = match spec {
                     ReplacementSpec::DoubleControlledChosenTypeDamage => {
                         event.source.controller == object.controller
-                            && matches!(self.entry_value(source), Some(EntryChoiceValue::CreatureType(kind)) if event.source.facts.has_subtype(kind.name()))
+                            && matches!(ability_world::CharacteristicWorld::entry_value(self, source), Some(EntryChoiceValue::CreatureType(kind)) if event.source.facts.has_subtype(kind.name()))
                     }
                     ReplacementSpec::DoubleCreatureDamage => {
                         event.source.facts.battlefield
