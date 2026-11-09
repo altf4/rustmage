@@ -512,9 +512,10 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                     }
                     continue;
                 }
-                let spec = object.card.attachment_bonus().unwrap();
-                stats += spec.stats;
-                keywords = keywords.union(spec.keywords);
+                if let Some(spec) = object.card.attachment_bonus() {
+                    stats += spec.stats;
+                    keywords = keywords.union(spec.keywords);
+                }
                 if object.controller == self.state.active {
                     keywords = keywords.union(object.card.attached_turn_keywords());
                     for group in object.card.static_ability_groups() {
