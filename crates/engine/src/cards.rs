@@ -1068,6 +1068,12 @@ pub enum EffectChoiceKind {
         color: ChoiceColor,
         subtype: &'static str,
     },
+    /// Put counters on chosen surviving permanents from an announced target group.
+    CountersOnTarget {
+        group: u16,
+        kind: CounterKind,
+        amount: u32,
+    },
     /// Apply one ordinary payment operation with an additional typed OR filter.
     FilteredCost {
         action: CostAction,

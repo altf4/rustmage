@@ -1,4 +1,4 @@
-//! Non-targeted exact object choices that return cards to their owners' hands.
+//! Exact non-targeted resolution choices for zone moves and counters.
 mod support;
 use rustmage as _;
 use rustmage_core::cards::authored::CardRules;
@@ -78,21 +78,12 @@ fn await_choice(game: &mut Game, player: Player) {
     for _ in 0..12 {
         if matches!(game.state.pending, Pending::EffectChoice { .. }) {
             assert_eq!(game.actor(), Some(player));
-            assert!(
-                game.state
-                    .resolving
-                    .as_ref()
-                    .unwrap()
-                    .item
-                    .targets
-                    .is_empty()
-            );
             return;
         }
         assert_eq!(game.state.pending, Pending::Priority);
         act(game, Action::Pass);
     }
-    panic!("no return choice");
+    panic!("no effect choice");
 }
 
 #[test]
@@ -115,6 +106,16 @@ fn optional_bounce_chooses_another_controlled_incarnation_and_returns_to_owner()
     assert_ne!(stale, parent.object_ref(land));
     cast(&mut parent, source, None);
     await_choice(&mut parent, player);
+    assert!(
+        parent
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .item
+            .targets
+            .is_empty()
+    );
 
     let selected = parent.object_ref(stolen);
     let bounce = Action::ChooseEffectObject { object: selected };
@@ -232,6 +233,15 @@ fn mill_then_recover_chooses_any_owned_permanent_card_in_graveyard() {
     let from_library = game.object_ref(land);
     cast(&mut game, source, None);
     await_choice(&mut game, player);
+    assert!(
+        game.state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .item
+            .targets
+            .is_empty()
+    );
     assert_eq!(game.object_view(land).zone, Zone::Graveyard);
     assert_eq!(game.object_view(instant).zone, Zone::Graveyard);
 
@@ -276,5 +286,201 @@ fn mill_then_recover_chooses_any_owned_permanent_card_in_graveyard() {
                 assert_eq!(game.object_view(other).zone, Zone::Graveyard);
             }
         }
+    }
+}
+
+const STUN_CHOICE: EffectChoiceKind = EffectChoiceKind::CountersOnTarget {
+    group: 0,
+    kind: CounterKind::Stun,
+    amount: 1,
+};
+
+const TAP_AND_CHOOSE: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::Single(TargetSpec {
+            rule: TargetRule::Creature,
+            min: 0,
+            max: 3,
+        }),
+        &[
+            Instruction::Tap,
+            Instruction::ChooseObjects {
+                kind: STUN_CHOICE,
+                players: PlayerSet::Controller,
+                filter: ANY,
+                amount: 1,
+                optional_skip: None,
+            },
+            Instruction::GainLife(PlayerSet::Controller, 1),
+        ],
+    ),
+    ..CardRules::EMPTY
+};
+
+const TAPPED_HEXPROOF: CardRules = CardRules {
+    effect: Effect::Creature(3, 4),
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Ability,
+        fragments: &[StaticAbilityFragment::ControlledTappedKeywords {
+            other: true,
+            keywords: Keywords::HEXPROOF,
+        }],
+    }],
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn choose_a_surviving_target_after_tapping_even_if_now_hexproof() {
+    let _rules = fixture_rules::activate(&[
+        (Card::from_name("Opt").unwrap(), &TAP_AND_CHOOSE),
+        (Card::HillGiant, &TAPPED_HEXPROOF),
+    ]);
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut parent = scenario(player);
+    let spell = put(&mut parent, player, "Opt", Zone::Hand);
+    let already_tapped = put(&mut parent, player, "Grizzly Bears", Zone::Battlefield);
+    parent.state.objects[already_tapped as usize].tapped = true;
+    let newly_tapped = put(&mut parent, opponent, "Llanowar Elves", Zone::Battlefield);
+    let departing = put(&mut parent, opponent, "Bear Cub", Zone::Battlefield);
+    let provider = put(&mut parent, opponent, "Hill Giant", Zone::Battlefield);
+    assert!(!parent.keywords(newly_tapped).contains(Keywords::HEXPROOF));
+    announce(
+        &mut parent,
+        spell,
+        &[already_tapped, newly_tapped, departing].map(Target::Card),
+    );
+    let stale = parent.object_ref(departing);
+    parent.move_object(departing, Zone::Exile);
+    parent.move_object(departing, Zone::Battlefield);
+    await_choice(&mut parent, player);
+
+    let first = parent.object_ref(already_tapped);
+    let second = parent.object_ref(newly_tapped);
+    let action = Action::ChooseEffectObject { object: second };
+    for viewer in [player, opponent] {
+        let view = parent.observe(viewer).effect_choice.unwrap();
+        assert_eq!(view.kind, STUN_CHOICE);
+        assert_eq!(view.candidates, [first, second]);
+        assert!(!view.optional);
+    }
+    assert!(parent.object_view(newly_tapped).tapped);
+    assert!(parent.keywords(newly_tapped).contains(Keywords::HEXPROOF));
+    assert!(!parent.object_view(departing).tapped);
+    assert!(!parent.object_view(provider).tapped);
+    assert_eq!(parent.counter_count(newly_tapped, CounterKind::Stun), 0);
+    let invalid = [
+        parent.object_ref(departing),
+        parent.object_ref(provider),
+        stale,
+    ];
+    for object in invalid {
+        reject(&mut parent, Action::ChooseEffectObject { object });
+    }
+    reject(&mut parent, Action::ChooseOptional { accept: false });
+    reject(
+        &mut parent,
+        Action::ChooseTarget {
+            target: Target::Card(newly_tapped),
+        },
+    );
+
+    let saved = parent.snapshot();
+    let revision = parent.revision();
+    let index = parent
+        .legal_actions()
+        .iter()
+        .position(|legal| *legal == action)
+        .unwrap();
+    let mut raw = parent.clone();
+    let mut indexed = parent.clone();
+    drop(parent);
+    act(&mut raw, action);
+    indexed.apply_index(player, revision, index).unwrap();
+    settle(&mut raw);
+    settle(&mut indexed);
+    assert_eq!(raw.snapshot(), indexed.snapshot());
+    assert_eq!(raw.state.players[player.index()].life, 21);
+    assert_eq!(raw.counter_count(already_tapped, CounterKind::Stun), 0);
+    assert_eq!(raw.counter_count(newly_tapped, CounterKind::Stun), 1);
+    assert_eq!(raw.counter_count(departing, CounterKind::Stun), 0);
+
+    raw.restore(&saved).unwrap();
+    act(&mut raw, Action::ChooseEffectObject { object: first });
+    settle(&mut raw);
+    assert_eq!(raw.counter_count(already_tapped, CounterKind::Stun), 1);
+    assert_eq!(raw.counter_count(newly_tapped, CounterKind::Stun), 0);
+    assert_eq!(indexed.counter_count(newly_tapped, CounterKind::Stun), 1);
+
+    raw.untap_objects(&[already_tapped], untap_rules::UntapCause::Effect);
+    assert_eq!(raw.counter_count(already_tapped, CounterKind::Stun), 0);
+    assert!(raw.object_view(already_tapped).tapped);
+    raw.untap_objects(&[already_tapped], untap_rules::UntapCause::Effect);
+    assert!(!raw.object_view(already_tapped).tapped);
+}
+
+#[test]
+fn no_announced_targets_resolves_but_all_invalid_targets_stop_the_program() {
+    let _rules = fixture_rules::activate(&[(Card::from_name("Opt").unwrap(), &TAP_AND_CHOOSE)]);
+    let player = Player::P1;
+    for announce_target in [false, true] {
+        let mut game = scenario(player);
+        let spell = put(&mut game, player, "Opt", Zone::Hand);
+        let creature = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+        if announce_target {
+            announce(&mut game, spell, &[Target::Card(creature)]);
+            game.move_object(creature, Zone::Exile);
+            game.move_object(creature, Zone::Battlefield);
+        } else {
+            announce(&mut game, spell, &[]);
+        }
+        settle(&mut game);
+        assert!(!game.object_view(creature).tapped);
+        assert_eq!(game.counter_count(creature, CounterKind::Stun), 0);
+        assert_eq!(
+            game.state.players[player.index()].life,
+            if announce_target { 20 } else { 21 }
+        );
+    }
+}
+
+#[test]
+fn chosen_target_uses_counter_prohibition_and_resumable_replacements() {
+    let _rules = fixture_rules::activate(&[(Card::from_name("Opt").unwrap(), &TAP_AND_CHOOSE)]);
+    let player = Player::P1;
+    for prohibited in [false, true] {
+        let mut game = scenario(player);
+        let creature = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let replacement = if prohibited {
+            let aura = put(&mut game, player, "Blossombind", Zone::Hand);
+            cast(&mut game, aura, Some(Target::Card(creature)));
+            settle(&mut game);
+            None
+        } else {
+            let first = put(&mut game, player, "Doubling Season", Zone::Battlefield);
+            put(&mut game, player, "Doubling Season", Zone::Battlefield);
+            Some(game.object_ref(first))
+        };
+        let spell = put(&mut game, player, "Opt", Zone::Hand);
+        announce(&mut game, spell, &[Target::Card(creature)]);
+        await_choice(&mut game, player);
+        let object = game.object_ref(creature);
+        let action = Action::ChooseEffectObject { object };
+        assert_eq!(game.legal_actions(), vec![Action::Concede, action.clone()]);
+        act(&mut game, action);
+        if let Some(source) = replacement {
+            assert_eq!(game.state.pending, Pending::Replacement { player });
+            assert_eq!(game.state.players[player.index()].life, 20);
+            assert_eq!(game.counter_count(creature, CounterKind::Stun), 0);
+            act(&mut game, Action::ChooseReplacement { source, ability: 0 });
+        }
+        settle(&mut game);
+        assert!(game.object_view(creature).tapped);
+        assert_eq!(
+            game.counter_count(creature, CounterKind::Stun),
+            if prohibited { 0 } else { 4 }
+        );
+        assert_eq!(game.state.players[player.index()].life, 21);
     }
 }

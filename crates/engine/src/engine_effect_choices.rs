@@ -215,6 +215,26 @@ impl Game {
         if let EffectChoiceKind::ColorCounter { color, subtype } = choice.kind {
             return self.color_counter_candidate(player, color, subtype, object);
         }
+        if let EffectChoiceKind::CountersOnTarget { group, .. } = choice.kind {
+            // Resolution has already discarded illegal targets. This choice
+            // follows those exact permanents through any earlier instructions.
+            return o.zone == Zone::Battlefield
+                && self.object_ref(object.card) == object
+                && !choice.selected[player.index()].contains(&object)
+                && self
+                    .state
+                    .resolving
+                    .as_ref()
+                    .unwrap()
+                    .item
+                    .targets
+                    .iter()
+                    .any(|bound| {
+                        bound.group == group
+                            && bound.target == Target::Card(object.card)
+                            && bound.object == Some(object)
+                    });
+        }
         if choice.kind.payment_kind() == EffectChoiceKind::CopyExiledTriggerCreature {
             return o.zone == Zone::Exile
                 && o.is_card()
@@ -1649,6 +1669,16 @@ impl Game {
             EffectChoiceKind::ReturnToHand | EffectChoiceKind::ReturnGraveyardToHand { .. }
         ) {
             self.return_effect_choice_to_hand(*choice);
+            return false;
+        }
+        if let EffectChoiceKind::CountersOnTarget { kind, amount, .. } = choice.kind {
+            let changes = choice
+                .selected
+                .iter()
+                .flatten()
+                .map(|&object| (object, Counters::of(kind, u64::from(amount))))
+                .collect();
+            self.effect_counters(changes, replacements::ResumeMode::Program);
             return false;
         }
         if choice.kind.payment_kind() == EffectChoiceKind::PowerDifferenceBoost {

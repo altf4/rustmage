@@ -5212,6 +5212,7 @@ impl Game {
                         choice.kind,
                         EffectChoiceKind::ReturnToHand
                             | EffectChoiceKind::ReturnGraveyardToHand { .. }
+                            | EffectChoiceKind::CountersOnTarget { .. }
                     ) {
                         Action::ChooseOptional { accept: false }
                     } else {
@@ -5231,7 +5232,10 @@ impl Game {
                             | EffectChoiceKind::ReturnGraveyardToHand { .. } => {
                                 Action::SelectGraveyardReturn { object }
                             }
-                            EffectChoiceKind::ReturnToHand => Action::ChooseEffectObject { object },
+                            EffectChoiceKind::ReturnToHand
+                            | EffectChoiceKind::CountersOnTarget { .. } => {
+                                Action::ChooseEffectObject { object }
+                            }
                             EffectChoiceKind::ColorCounter { .. } => {
                                 Action::ChooseColorCounter { object }
                             }
