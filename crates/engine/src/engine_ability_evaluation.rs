@@ -421,8 +421,8 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
     (world.has_ability_removal()
         || world.static_sources().iter().any(|&id| {
             let source = world.object(id);
-            source.zone == Zone::Command
-                && source.card.is_emblem()
+            (source.zone == Zone::Battlefield
+                || source.zone == Zone::Command && source.card.is_emblem())
                 && source.card.static_ability_groups().iter().any(|group| {
                     group.fragments.iter().any(|fragment| {
                         matches!(fragment, StaticAbilityFragment::ChosenTypeKeywords(_))
