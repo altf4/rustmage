@@ -378,6 +378,35 @@ impl Game {
             }
         }
     }
+    pub(super) fn damage_with_target_controller(
+        &mut self,
+        item: &SpellView,
+        damage: i128,
+        controller_damage: i128,
+    ) {
+        let source = self.program_damage_source(item);
+        let hit = |target, amount| DamageEvent {
+            preventable: true,
+            source,
+            target,
+            amount,
+            combat: false,
+        };
+        let mut events = Vec::new();
+        for &bound in &item.targets {
+            if self.same_target_object(bound)
+                && let Target::Card(id) = bound.target
+                && self.on_battlefield(id)
+            {
+                let controller = self.state.objects[id as usize].controller;
+                events.extend([
+                    hit(bound.target, damage),
+                    hit(Target::Player(controller), controller_damage),
+                ]);
+            }
+        }
+        self.apply_damage_batch(&events);
+    }
     pub(super) fn damage_battlefield_group(
         &mut self,
         item: &SpellView,

@@ -3992,32 +3992,18 @@ impl Game {
                 Instruction::DamageWithController {
                     damage,
                     controller_damage,
+                } => self.damage_with_target_controller(
+                    &item,
+                    i128::from(damage),
+                    i128::from(controller_damage),
+                ),
+                Instruction::DamageWithControllerScaled {
+                    damage,
+                    controller_damage,
                 } => {
-                    let source = self.program_damage_source(&item);
-                    let mut events = Vec::new();
-                    for bound in &item.targets {
-                        if self.same_target_object(*bound)
-                            && let Target::Card(id) = bound.target
-                            && self.on_battlefield(id)
-                        {
-                            let controller = self.state.objects[id as usize].controller;
-                            events.push(DamageEvent {
-                                preventable: true,
-                                source,
-                                target: bound.target,
-                                amount: i128::from(damage),
-                                combat: false,
-                            });
-                            events.push(DamageEvent {
-                                preventable: true,
-                                source,
-                                target: Target::Player(controller),
-                                amount: i128::from(controller_damage),
-                                combat: false,
-                            });
-                        }
-                    }
-                    self.apply_damage_batch(&events);
+                    let amount = i128::try_from(self.item_amount(controller_damage, &item))
+                        .capacity("damage amount exhausted");
+                    self.damage_with_target_controller(&item, i128::from(damage), amount);
                 }
                 Instruction::IfGift { promised, skip } => {
                     if item.gift_context().is_some() != promised {

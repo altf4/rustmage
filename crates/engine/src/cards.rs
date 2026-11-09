@@ -2009,6 +2009,11 @@ pub enum Instruction {
         damage: i32,
         controller_damage: i32,
     },
+    /// Sample the amount once, then damage each target and its controller simultaneously.
+    DamageWithControllerScaled {
+        damage: i32,
+        controller_damage: AmountValue,
+    },
     IfGift {
         promised: bool,
         skip: usize,

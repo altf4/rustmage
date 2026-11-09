@@ -73,6 +73,10 @@ fn selected(program: &[Instruction]) -> (bool, bool) {
             | Instruction::DrainLifeScaled(value)
             | Instruction::LoseOpponentGainSame(value)
             | Instruction::DamageScaled(value)
+            | Instruction::DamageWithControllerScaled {
+                controller_damage: value,
+                ..
+            }
             | Instruction::AddColorlessScaled(value)
             | Instruction::AddManaScaled { amount: value, .. }
             | Instruction::AddManaChosenScaled { amount: value, .. }
