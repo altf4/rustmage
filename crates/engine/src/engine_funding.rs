@@ -435,7 +435,7 @@ struct FundingKey {
     source_linked_effects: Vec<SourceLinkedEffectView>,
     resolved_ability_modifications: Vec<ResolvedAbilityModificationView>,
     entries: Option<EntryFundingKey>,
-    histories: Option<(u64, [bool; 2], i128)>,
+    histories: Option<(u64, [bool; 2], i128, [bool; 2])>,
     controlled_creature_deaths: [u64; 2],
     borrowed_uses: Vec<(ObjectRef, u64)>,
     self_grant_uses: Vec<(ObjectRef, u64)>,
@@ -2902,6 +2902,7 @@ impl<'g> FundingState<'g> {
                 self.creatures_died,
                 self.graveyard_left,
                 self.other_life,
+                self.life_gained,
             )),
             controlled_creature_deaths: self.controlled_creatures_died,
             entries: self.entry_projection.as_ref().map(|p| EntryFundingKey {

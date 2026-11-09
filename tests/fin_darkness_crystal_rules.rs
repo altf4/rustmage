@@ -224,3 +224,69 @@ fn simultaneous_death_choices_freeze_source_and_replay_each_actual_gain() {
         1
     );
 }
+
+#[test]
+fn projected_costs_distinguish_identical_destinations_with_different_life_results() {
+    use rustmage_core::engine::ability_world::CharacteristicWorld;
+    use rustmage_core::engine::funding::{FundingGoal, FundingState};
+
+    const ADD_LIFE: &[StaticAbilityGroup] = &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::LifeGainAdditional(1)],
+    }];
+    const EXTRA_GAIN: CardRules = CardRules {
+        effect: Effect::Creature(2, 2),
+        static_groups: ADD_LIFE,
+        extras: &CardExtras {
+            static_ability_groups: ADD_LIFE,
+            ..CardExtras::EMPTY
+        },
+        ..CardRules::EMPTY
+    };
+    let _rules =
+        fixture_rules::activate(&[(crystal(), &REPLACEMENT), (Card::GrizzlyBears, &EXTRA_GAIN)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let source = put(&mut g, p.other(), "Soul-Guide Lantern", Zone::Battlefield);
+    let victim = put(&mut g, p, "Forest", Zone::Battlefield);
+    animate(&mut g, victim);
+    put(&mut g, p.other(), "Rest in Peace", Zone::Battlefield);
+    put(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
+    let source = g.object_ref(source);
+    let victim = g.object_ref(victim);
+    let before = g.snapshot();
+    let goal = FundingGoal {
+        actor: p,
+        required: [0; 6],
+        generic: 0,
+        // Retain the source even though it has no mana ability of its own.
+        reserve: Some((
+            source,
+            AdditionalCost {
+                kind: EffectChoiceKind::Sacrifice,
+                filter: SacrificeFilter {
+                    keywords: Keywords::NONE,
+                    source_only: false,
+                    kinds: 16,
+                    nonland: false,
+                    other: false,
+                    tokens: None,
+                    artifact_enchantment_or_token: false,
+                    subtype: None,
+                },
+            },
+        )),
+        source: None,
+    };
+    let world = FundingState::from_game(&g, &goal);
+    let mut outcomes = Vec::new();
+    world.cost_departures(&[source, victim], Zone::Graveyard, &mut |next| {
+        assert_eq!(next.object(source.card).zone, Zone::Exile);
+        assert_eq!(next.object(victim.card).zone, Zone::Exile);
+        outcomes.push((next.life(p.other()), next.gained_life(p.other())));
+        false
+    });
+    assert_eq!(outcomes, [(20, false), (23, true)]);
+    assert_eq!(g.snapshot(), before);
+}

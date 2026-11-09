@@ -1,5 +1,6 @@
 //! Completion search for declared nonmana clauses in the borrowed funding world.
 use super::*;
+use crate::cards::ZoneReplacementRule;
 use ability_world::CharacteristicWorld;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -680,39 +681,39 @@ impl FundingState<'_> {
             .collect();
         let destinations = objects
             .iter()
-            .map(|r| {
+            .zip(&before_facts)
+            .map(|(r, &(_, _, _, kinds))| {
                 let o = self.object(r.card);
                 let prevented = self.zone_move_prevented(*r, requested);
                 if requested != Zone::Graveyard {
-                    return if prevented || (requested == Zone::Exile && self.graveyard_exile_prohibited(r.card)) {
-                        vec![None]
-                    } else { vec![Some(requested)] };
+                    let cannot_exile =
+                        requested == Zone::Exile && self.graveyard_exile_prohibited(r.card);
+                    return vec![((!prevented && !cannot_exile).then_some(requested), None)];
                 }
                 let own = o.card.zone_replacement();
-                let shuffle = own == Some(crate::cards::ZoneReplacementRule::RevealShuffleSelf)
+                let shuffle = own == Some(ZoneReplacementRule::RevealShuffleSelf)
                     && (o.zone != Zone::Battlefield || self.printed_abilities_available(r.card));
                 let exile = self.static_sources().iter().any(|&id| {
                     let p = self.object(id);
                     p.zone == Zone::Battlefield
                         && self.printed_abilities_available(id)
                         && match p.card.zone_replacement() {
-                            Some(crate::cards::ZoneReplacementRule::ExileAllCardsAndTokens) => {
+                            Some(ZoneReplacementRule::ExileAllCardsAndTokens) => {
                                 o.is_card() || o.is_token()
-                            },
-                            Some(crate::cards::ZoneReplacementRule::ExileControllerGraveyard) => {
+                            }
+                            Some(ZoneReplacementRule::ExileControllerGraveyard) => {
                                 (o.is_card() || o.is_token()) && p.controller == o.owner
                             }
                             Some(
-                                crate::cards::ZoneReplacementRule::ExileOpposingCreatureDeath {
-                                    ..
-                                } | crate::cards::ZoneReplacementRule::ExileOpposingCreatureDeathPlain,
+                                ZoneReplacementRule::ExileOpposingCreatureDeath { .. }
+                                | ZoneReplacementRule::ExileOpposingCreatureDeathPlain,
                             ) => {
                                 o.zone == Zone::Battlefield
-                                    && CharacteristicWorld::kinds(self, r.card) & 1 != 0
+                                    && kinds & 1 != 0
                                     && p.controller != o.controller
                             }
-                            Some(crate::cards::ZoneReplacementRule::ExileInstantSorceryCards) => {
-                                CharacteristicWorld::kinds(self, r.card) & 12 != 0 && o.is_card()
+                            Some(ZoneReplacementRule::ExileInstantSorceryCards) => {
+                                kinds & 12 != 0 && o.is_card()
                             }
                             _ => false,
                         }
@@ -728,14 +729,39 @@ impl FundingState<'_> {
                                     rule.object == *r && rule.expires_turn == self.game.state.turn
                                 })
                             })));
-                let mut choices = match (shuffle, exile) {
-                    (true, true) => vec![Some(Zone::Library), Some(Zone::Exile)],
-                    (true, false) => vec![Some(Zone::Library)],
-                    (false, true) => vec![Some(Zone::Exile)],
-                    _ if prevented => Vec::new(),
-                    _ => vec![Some(Zone::Graveyard)],
-                };
-                if prevented { choices.push(None); }
+                let mut choices = Vec::new();
+                if shuffle {
+                    choices.push((Some(Zone::Library), None));
+                }
+                if exile {
+                    choices.push((Some(Zone::Exile), None));
+                }
+                if o.zone == Zone::Battlefield && kinds & 1 != 0 && !o.is_token() {
+                    for &id in self.static_sources() {
+                        let provider = self.object(id);
+                        let Some(ZoneReplacementRule::ExileOpposingNontokenCreatureDeathLinked {
+                            life,
+                        }) = provider.card.zone_replacement()
+                        else {
+                            continue;
+                        };
+                        if provider.zone == Zone::Battlefield
+                            && provider.controller != o.controller
+                            && self.printed_abilities_available(id)
+                        {
+                            let choice = (Some(Zone::Exile), Some((provider.controller, life)));
+                            if !choices.contains(&choice) {
+                                choices.push(choice);
+                            }
+                        }
+                    }
+                }
+                if prevented {
+                    choices.push((None, None));
+                }
+                if choices.is_empty() {
+                    choices.push((Some(Zone::Graveyard), None));
+                }
                 choices
             })
             .collect::<Vec<_>>();
@@ -745,13 +771,13 @@ impl FundingState<'_> {
         for object in objects {
             initial.remember_payment_departure(object.card);
         }
-        let mut worlds = vec![initial];
+        let mut worlds = vec![(initial, Vec::new())];
         for ((r, choices), &(before_zone, controller, owner, kinds)) in
             objects.iter().zip(destinations).zip(&before_facts)
         {
             let mut next = Vec::new();
-            for w in worlds {
-                for &zone in &choices {
+            for (w, gains) in worlds {
+                for &(zone, gain) in &choices {
                     let mut n = w.clone();
                     let Some(zone) = zone else {
                         // No departure happened; do not retain a newly captured
@@ -764,7 +790,7 @@ impl FundingState<'_> {
                             n.payment_departures
                                 .retain(|(reference, _, _)| reference != r);
                         }
-                        next.push(n);
+                        next.push((n, gains.clone()));
                         continue;
                     };
                     let i = n
@@ -840,20 +866,47 @@ impl FundingState<'_> {
                     n.resources[i].object.cast_for_warp = false;
                     n.resources[i].object.class_level = 1;
                     n.resources[i].attacking = false;
-                    next.push(n);
+                    let mut gains = gains.clone();
+                    gains.extend(gain);
+                    next.push((n, gains));
                 }
             }
             worlds = next;
         }
-        worlds.iter_mut().any(|world| {
-            // All departures in the cost happen simultaneously. Recompute layer
-            // two once afterward, before linked returns or the next cost can use
-            // a creature whose former control effect has just left.
+        worlds.iter_mut().any(|(world, gains)| {
+            // Gains use the post-departure world but retain the frozen recipients.
             world.refresh_control_projection();
             world.prune_source_linked_projection();
             world.refresh_enduring_projection();
-            world.visit_linked_returns(emit)
+            world.visit_death_exile_gains(gains, &mut |next| next.visit_linked_returns(emit))
         })
+    }
+    fn visit_death_exile_gains(
+        &self,
+        gains: &[(Player, u8)],
+        emit: &mut dyn FnMut(&Self) -> bool,
+    ) -> bool {
+        let Some((&(player, base), later)) = gains.split_first() else {
+            return emit(self);
+        };
+        life_gain::replacement_amounts(self, player, i128::from(base))
+            .into_iter()
+            .any(|amount| {
+                let mut next = self.clone();
+                if amount > 0 {
+                    let life = if player == next.actor {
+                        &mut next.life
+                    } else {
+                        &mut next.other_life
+                    };
+                    *life = life
+                        .checked_add(amount)
+                        .capacity("projected life total exhausted");
+                    next.life_gained[player.index()] = true;
+                    next.power_sensitive = true;
+                }
+                next.visit_death_exile_gains(later, emit)
+            })
     }
     pub(super) fn set_cost_counter_prefix(&mut self, selected: &[(ObjectRef, CounterKind)]) {
         if let Some(c) = &mut self.cast_costs {
