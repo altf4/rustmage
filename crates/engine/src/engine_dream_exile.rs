@@ -118,7 +118,7 @@ impl Game {
             }
             zone_replacements::ZoneMoveCompletion::LinkedDeathExile(replacement) => {
                 if was_card {
-                    self.remember_linked_exile(
+                    self.link_exile_to_ability(
                         replacement.source,
                         replacement.ability_origin,
                         object,

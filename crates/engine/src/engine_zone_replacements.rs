@@ -67,7 +67,7 @@ pub(super) struct ZoneRequest {
     view: ZoneReplacementChoiceView,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 struct ZonePick {
     object: ObjectRef,
     requested: Zone,

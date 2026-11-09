@@ -606,17 +606,7 @@ impl Game {
         };
         for &id in selected {
             if self.state.objects[id as usize].zone == Zone::Exile {
-                let exiled = self.object_ref(id);
-                self.state
-                    .linked_choices
-                    .get_or_insert_default()
-                    .links
-                    .push(LinkedExileView {
-                        exiled_turn: self.state.turn,
-                        source,
-                        exiled,
-                        ability_origin: None,
-                    });
+                self.link_exile_to_ability(source, None, self.object_ref(id));
             }
         }
     }
