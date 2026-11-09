@@ -504,8 +504,9 @@ impl Game {
     }
 
     pub(super) fn start_half_choice(&mut self, item: &SpellView, kind: EffectChoiceKind) -> bool {
+        let payment = kind.payment_kind();
         assert!(matches!(
-            kind,
+            payment,
             EffectChoiceKind::Discard | EffectChoiceKind::Sacrifice
         ));
         let mut choice = EffectChoice {
@@ -532,20 +533,31 @@ impl Game {
         // Freeze both quotas before either player chooses. The following printed
         // instruction computes new quotas after this entire event and its replacements.
         for player in [self.state.active, self.state.active.other()] {
-            let available = self
-                .state
-                .objects
-                .iter()
-                .filter(|o| {
-                    if kind == EffectChoiceKind::Discard {
-                        o.zone == Zone::Hand && o.owner == player && o.is_card()
-                    } else {
-                        o.zone == Zone::Battlefield && o.controller == player
+            let mut matching = 0usize;
+            let mut available = 0usize;
+            let zone = if payment == EffectChoiceKind::Discard {
+                Zone::Hand
+            } else {
+                Zone::Battlefield
+            };
+            for (id, candidate) in self.state.objects.iter().enumerate() {
+                if candidate.zone != zone {
+                    continue;
+                }
+                let object = self.object_ref(id as CardId);
+                if self.effect_choice_candidate_inner(&choice, player, object, false) {
+                    matching += 1;
+                    if payment != EffectChoiceKind::Sacrifice
+                        || !self.sacrifice_prohibited(object.card)
+                    {
+                        available += 1;
                     }
-                })
-                .count();
-            choice.required[player.index()] =
-                u32::try_from(available / 2).capacity("half choice count exhausted");
+                }
+            }
+            // Prohibited permanents count toward the amount to sacrifice.
+            // If there are too few legal selections, do as much as possible.
+            choice.required[player.index()] = u32::try_from((matching / 2).min(available))
+                .capacity("half choice count exhausted");
         }
         self.state.resolving.as_mut().unwrap().choice = Some(Box::new(choice));
         self.advance_effect_choice()

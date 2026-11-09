@@ -1185,6 +1185,8 @@ pub enum EffectChoiceKind {
     Forage,
     ForageOrBlack,
     Sacrifice,
+    /// A creature sacrifice selection that excludes one effective creature subtype.
+    SacrificeCreaturesExceptSubtype(&'static str),
     /// A declaration-bound sacrifice cost. None is the immutable X placeholder.
     SacrificeManaValue {
         value: Option<u64>,
@@ -1228,7 +1230,9 @@ impl EffectChoiceKind {
                 action: CostAction::Sacrifice,
                 ..
             } => Self::Sacrifice,
-            Self::SacrificeManaValue { .. } => Self::Sacrifice,
+            Self::SacrificeManaValue { .. } | Self::SacrificeCreaturesExceptSubtype(_) => {
+                Self::Sacrifice
+            }
             Self::FilteredCost {
                 action: CostAction::TapPermanents(n),
                 ..
@@ -1260,6 +1264,9 @@ impl EffectChoiceKind {
         token: bool,
     ) -> bool {
         match self {
+            Self::SacrificeCreaturesExceptSubtype(subtype) => {
+                kinds & 1 != 0 && !subtypes.has(card, subtype)
+            }
             Self::FilteredCost { any, .. } => any.iter().any(|predicate| match predicate {
                 CostMatch::Kinds(mask) => kinds & mask != 0,
                 CostMatch::Token => token,
