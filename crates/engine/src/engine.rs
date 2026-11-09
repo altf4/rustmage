@@ -5339,6 +5339,7 @@ impl Game {
                             | EffectChoiceKind::ReturnGraveyardToHand { .. }
                             | EffectChoiceKind::CountersOnTarget { .. }
                             | EffectChoiceKind::ReflexiveEquipmentRecipient { .. }
+                            | EffectChoiceKind::AttachedEquipmentToDestroy { .. }
                     ) {
                         Action::ChooseOptional { accept: false }
                     } else {
@@ -5360,6 +5361,7 @@ impl Game {
                             }
                             EffectChoiceKind::ReturnToHand
                             | EffectChoiceKind::CountersOnTarget { .. }
+                            | EffectChoiceKind::AttachedEquipmentToDestroy { .. }
                             | EffectChoiceKind::RemoveLoreForSourceCounters(_)
                             | EffectChoiceKind::MeldPartner(_) => {
                                 Action::ChooseEffectObject { object }

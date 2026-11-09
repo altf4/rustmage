@@ -1241,6 +1241,7 @@ impl Game {
             | EffectChoiceKind::RemoveLoreForSourceCounters(_)
             | EffectChoiceKind::EquipmentRecipient
             | EffectChoiceKind::ReflexiveEquipmentRecipient { .. }
+            | EffectChoiceKind::AttachedEquipmentToDestroy { .. }
             | EffectChoiceKind::LinkedCreature { .. }
             | EffectChoiceKind::SacrificeSelection
             | EffectChoiceKind::MeldPartner(_)

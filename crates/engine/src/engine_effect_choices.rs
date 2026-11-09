@@ -213,6 +213,12 @@ impl Game {
                     .next()
                     .is_some();
         }
+        if let EffectChoiceKind::AttachedEquipmentToDestroy { recipient } = choice.kind {
+            return choice.selected[player.index()].is_empty()
+                && self.state.resolving.as_ref().is_some_and(|resolution| {
+                    self.equipment_attached_to_target(&resolution.item, recipient, object)
+                });
+        }
         if matches!(choice.kind, EffectChoiceKind::LinkedCreature { .. }) {
             return o.controller != player
                 && self.on_battlefield(object.card)
@@ -1703,6 +1709,16 @@ impl Game {
             let item = self.state.resolving.as_ref().unwrap().item.clone();
             if let Some(&recipient) = choice.selected[item.controller.index()].first() {
                 return self.choose_reflexive_equipment(&item, recipient);
+            }
+            return false;
+        }
+        if matches!(
+            choice.kind,
+            EffectChoiceKind::AttachedEquipmentToDestroy { .. }
+        ) {
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            if let Some(&equipment) = choice.selected[player.index()].first() {
+                self.destroy_objects_outcome([equipment]);
             }
             return false;
         }

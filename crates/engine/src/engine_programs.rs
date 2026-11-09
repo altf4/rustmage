@@ -3610,6 +3610,7 @@ impl Game {
                     | Instruction::MayAttachControlledEquipment { .. }
                     | Instruction::MayAttachAnyControlledEquipment { .. }
                     | Instruction::MayAttachControlledEquipmentUntilNextEndStep { .. }
+                    | Instruction::MayDestroyAttachedEquipment { .. }
                     | Instruction::MayAttachSource { .. }
                     | Instruction::RequireTargetsBlocked { .. }
                     | Instruction::AttachPriorSourceEquipment { .. }
@@ -6070,6 +6071,18 @@ impl Game {
                     ability,
                 } => {
                     if self.attach_groups_reflexive(&item, equipment, recipient, ability) {
+                        return;
+                    }
+                }
+                Instruction::MayDestroyAttachedEquipment { recipient } => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::AttachedEquipmentToDestroy { recipient },
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        1,
+                        Some(0),
+                    ) {
                         return;
                     }
                 }

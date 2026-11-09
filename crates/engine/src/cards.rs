@@ -1177,6 +1177,10 @@ pub enum EffectChoiceKind {
     ReflexiveEquipmentRecipient {
         subtype: &'static str,
     },
+    /// Choose up to one Equipment currently attached to the announced recipient.
+    AttachedEquipmentToDestroy {
+        recipient: u16,
+    },
     /// Choose a creature an opponent controls, linked to a departure trigger.
     LinkedCreature {
         other_power: i32,
@@ -2965,6 +2969,10 @@ pub enum Instruction {
     MayAttachControlledEquipmentUntilNextEndStep {
         recipient: u16,
         ability: u16,
+    },
+    /// Destroy up to one Equipment attached to the announced recipient without targeting it.
+    MayDestroyAttachedEquipment {
+        recipient: u16,
     },
     /// Attach one surviving Equipment that was attached to the exact sacrificed source.
     AttachPriorSourceEquipment {

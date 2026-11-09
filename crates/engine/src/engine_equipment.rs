@@ -56,6 +56,28 @@ impl Game {
                         && self.is_creature(recipient.card)
                 })
     }
+    pub(super) fn equipment_attached_to_target(
+        &self,
+        item: &SpellView,
+        group: u16,
+        equipment: ObjectRef,
+    ) -> bool {
+        if !self.on_battlefield(equipment.card)
+            || self.object_ref(equipment.card) != equipment
+            || !ability_world::CharacteristicWorld::is_equipment(self, equipment.card)
+        {
+            return false;
+        }
+        let Some(recipient) = self.state.objects[equipment.card as usize].attached_to else {
+            return false;
+        };
+        self.on_battlefield(recipient.card)
+            && item.targets.iter().any(|bound| {
+                bound.group == group
+                    && bound.object == Some(recipient)
+                    && self.same_target_object(*bound)
+            })
+    }
     pub(super) fn unattach_event_object(&mut self, item: &SpellView) {
         if let Some(event) = &item.event_object {
             if self.unattach(event.object) {
