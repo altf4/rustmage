@@ -87,31 +87,29 @@ Card provenance that cites a path under `docs/` refers to evidence retained in
 
 ## Standard set tracker
 
-**10 / 20 sets complete · 50%**
+**8 / 20 sets complete · 40%**
 
-`██████████░░░░░░░░░░`
+`████████░░░░░░░░░░░░`
 
-**3,576 / 5,164 unique Standard cards implemented across accepted branches · 69%**
+**3,296 / 5,164 unique Standard cards implemented · 64%**
 
-`██████████████░░░░░░`
+`█████████████░░░░░░░`
 
 Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
 ([inventory](data/standard/xmage-inventory.json)), rather than live format legality.
-“Complete” means an accepted whole-set implementation, with validation scope
+“Complete” means a whole-set implementation, with validation scope
 recorded in its published evidence; partial admission or catalogue entries do not
-establish set completion. Set completion is separate from integration into `main`.
+establish set completion.
 
-<!-- Refresh supported counts from the union of accepted implementation branches,
-     using their pinned set membership and coverage reports. Deduplicate by physical
-     identity; never demote an accepted set using a checkout that lacks its merged
-     integration branch. Keep current-main admission separate from accepted coverage.
+<!-- Refresh supported counts from data/standard/coverage.json and pinned set
+     membership. Deduplicate by physical identity.
      Reconcile set acceptance with its rules/game evidence and published PR. -->
 
 | Set | Code | Supported cards | Implementation status |
 | --- | --- | ---: | --- |
 | Foundations | FDN | 517/517 (100%) | ✅ Complete |
-| Lorwyn Eclipsed | ECL | 273/273 (100%) | ✅ Complete |
-| Teenage Mutant Ninja Turtles | TMT | 195/195 (100%) | ✅ Complete |
+| Lorwyn Eclipsed | ECL | 114/273 (42%) | ⏳ Partial |
+| Teenage Mutant Ninja Turtles | TMT | 74/195 (38%) | ⏳ Partial |
 | Aetherdrift | DFT | 276/276 (100%) | ✅ Complete |
 | Avatar: The Last Airbender | TLA | 108/286 (38%) | ⏳ Partial |
 | Bloomburrow | BLB | 135/279 (48%) | ⏳ Partial |
@@ -130,7 +128,7 @@ establish set completion. Set completion is separate from integration into `main
 | The Lost Caverns of Ixalan | LCI | 117/291 (40%) | ⏳ Partial |
 | Wilds of Eldraine | WOE | 156/281 (56%) | ⏳ Partial |
 
-Supported counts use the union of the accepted branches’ coverage reports
+Supported counts use the [coverage report](data/standard/coverage.json)
 and full physical set membership from pinned XMage tables and Oracle facts,
 including reprints and starter products. Banned members remain in the totals and
 count as unsupported when gated; cosmetic printings count once. Partial-set
