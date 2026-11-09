@@ -78,18 +78,6 @@ fn cast_for(game: &mut Game, player: Player, name: &str, target: CardId) -> Card
     spell
 }
 
-fn has_cast(game: &Game, object: CardId) -> bool {
-    game.legal_actions().iter().any(|action| {
-        matches!(
-            action,
-            Action::AnnounceCast { card }
-                | Action::BeginCast { card, .. }
-                | Action::Cast { card, .. }
-                if *card == object
-        )
-    })
-}
-
 #[test]
 fn entry_lore_grants_normal_land_play_and_survives_lore_removal() {
     let _rules = fixture_rules::activate(&[(Card::from_name(SAGA_NAME).unwrap(), &SAGA)]);
@@ -206,11 +194,17 @@ fn only_this_players_positive_lore_on_this_exact_saga_unlocks_paid_casting() {
     act(&mut game, Action::Pass);
     assert_eq!(game.actor(), Some(player));
     game.state.players[player.index()].mana[3] = 0;
-    assert!(!has_cast(&game, exiled));
-    reject(&mut game, Action::AnnounceCast { card: exiled });
+    let announce = Action::AnnounceExile { card: exiled };
+    reject(&mut game, announce.clone());
     game.state.players[player.index()].mana[3] = 1;
-    assert!(has_cast(&game, exiled));
-    cast(&mut game, exiled, Some(Target::Player(opponent)));
+    act(&mut game, announce);
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Player(opponent),
+        },
+    );
+    pay(&mut game);
     settle(&mut game);
     assert_eq!(game.state.players[player.index()].mana[3], 0);
     assert_eq!(game.state.players[opponent.index()].life, 18);
