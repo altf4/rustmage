@@ -1,4 +1,5 @@
-//! Attacking entry batches and source-independent, owned next-end-step abilities.
+//! Attacking entry batches and source-independent delayed token cleanup.
+use super::temporary_tokens::TokenCleanup;
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -11,6 +12,8 @@ pub struct DelayedSacrificeView {
     /// Ordinary mobilize batches retain their existing next-end-step wire shape.
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub end_combat: bool,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub next_upkeep: bool,
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub own_end_step: bool,
     #[serde(skip_serializing_if = "std::ops::Not::not")]
@@ -217,6 +220,7 @@ impl Game {
                 controller: item.controller,
                 tokens,
                 end_combat: false,
+                next_upkeep: false,
                 own_end_step: false,
                 destroy: false,
             },
@@ -249,32 +253,13 @@ impl Game {
         self.register_delayed_sacrifice(item, tokens);
     }
     pub(super) fn register_delayed_sacrifice(&mut self, item: &SpellView, tokens: Vec<ObjectRef>) {
-        self.register_delayed_sacrifice_at(item, tokens, false);
-    }
-    pub(super) fn register_delayed_sacrifice_at(
-        &mut self,
-        item: &SpellView,
-        tokens: Vec<ObjectRef>,
-        end_combat: bool,
-    ) {
-        self.register_delayed_sacrifice_when(item, tokens, end_combat, false);
-    }
-    pub(super) fn register_delayed_sacrifice_when(
-        &mut self,
-        item: &SpellView,
-        tokens: Vec<ObjectRef>,
-        end_combat: bool,
-        own_end_step: bool,
-    ) {
-        self.register_delayed_token_cleanup(item, tokens, end_combat, own_end_step, false);
+        self.register_delayed_token_cleanup(item, tokens, TokenCleanup::NextEndStepSacrifice);
     }
     pub(super) fn register_delayed_token_cleanup(
         &mut self,
         item: &SpellView,
         tokens: Vec<ObjectRef>,
-        end_combat: bool,
-        own_end_step: bool,
-        destroy: bool,
+        cleanup: TokenCleanup,
     ) {
         if tokens.is_empty() {
             return;
@@ -290,9 +275,10 @@ impl Game {
                 source_card: source.card,
                 controller: item.controller,
                 tokens,
-                end_combat,
-                own_end_step,
-                destroy,
+                end_combat: cleanup == TokenCleanup::EndCombatSacrifice,
+                next_upkeep: cleanup == TokenCleanup::NextUpkeepSacrifice,
+                own_end_step: cleanup == TokenCleanup::OwnEndStepSacrifice,
+                destroy: cleanup == TokenCleanup::NextEndStepDestroy,
             },
             keywords: item.source_keywords,
             tapped: item.source_tapped,
@@ -305,12 +291,25 @@ impl Game {
             .push(batch);
     }
     pub(super) fn queue_delayed_sacrifices(&mut self, end_combat: bool) {
+        self.queue_delayed_token_cleanup(if end_combat {
+            Step::EndCombat
+        } else {
+            Step::End
+        });
+    }
+    pub(super) fn queue_delayed_token_cleanup(&mut self, step: Step) {
         let Some(batches) = self.state.delayed_sacrifices.take() else {
             return;
         };
-        let (ready, later): (Vec<_>, Vec<_>) = batches.into_iter().partition(|batch| {
-            batch.view.end_combat == end_combat
-                && (!batch.view.own_end_step || batch.view.controller == self.state.active)
+        let (ready, later): (Vec<_>, Vec<_>) = batches.into_iter().partition(|batch| match step {
+            Step::Upkeep => batch.view.next_upkeep,
+            Step::EndCombat => batch.view.end_combat,
+            Step::End => {
+                !batch.view.end_combat
+                    && !batch.view.next_upkeep
+                    && (!batch.view.own_end_step || batch.view.controller == self.state.active)
+            }
+            _ => false,
         });
         if !later.is_empty() {
             self.state.delayed_sacrifices = Some(Box::new(later));

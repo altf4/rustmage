@@ -3183,9 +3183,10 @@ impl Game {
         let object = &self.state.objects[id as usize];
         if object.card.has_rules_abilities()
             || !embalm::abilities(self, id).is_empty()
-            || self
-                .copy_recipe(self.object_ref(id))
-                .is_some_and(|recipe| recipe.exceptions.retained_activation.is_some())
+            || self.copy_recipe(self.object_ref(id)).is_some_and(|recipe| {
+                recipe.exceptions.retained_activation.is_some()
+                    || recipe.exceptions.equip_generic_reduction != 0
+            })
         {
             return true;
         }

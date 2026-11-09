@@ -191,7 +191,21 @@ pub(super) trait CharacteristicWorld {
         } else {
             0
         };
+        let equip = self.stored_recipe(source).map_or(0, |recipe| {
+            let reduction = recipe.exceptions.equip_generic_reduction;
+            if reduction != 0
+                && self.object(source).zone == Zone::Battlefield
+                && definition.activation(ability).is_equip()
+                && !self.face_down(source)
+                && self.printed_abilities_available(source)
+            {
+                reduction
+            } else {
+                0
+            }
+        });
         exhaust::generic_discount(self, source, definition, ability)
+            .saturating_add(equip)
             .saturating_add(power_up)
             .saturating_add(artifact_token)
             .saturating_add(subtype)

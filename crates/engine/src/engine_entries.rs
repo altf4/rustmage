@@ -1422,13 +1422,7 @@ impl Game {
                 .filter(|event| event.moved && event.destination == Zone::Battlefield)
                 .map(|event| event.after)
                 .collect();
-            self.register_delayed_token_cleanup(
-                item,
-                recipients,
-                false,
-                batch.delayed_token_cleanup == temporary_tokens::TokenCleanup::OwnEndStepSacrifice,
-                batch.delayed_token_cleanup == temporary_tokens::TokenCleanup::NextEndStepDestroy,
-            );
+            self.register_delayed_token_cleanup(item, recipients, batch.delayed_token_cleanup);
         }
         if let Some(context) = batch.discard_context {
             self.finish_discard_events(&events, context);

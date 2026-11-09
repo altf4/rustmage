@@ -27,6 +27,7 @@ impl Game {
         self.queue_delayed_steps(step);
         if step == Step::Upkeep {
             self.queue_suspend_upkeep();
+            self.queue_delayed_token_cleanup(Step::Upkeep);
         }
         if step == Step::BeginCombat {
             let phases = &mut self.state.players[self.state.active.index()]

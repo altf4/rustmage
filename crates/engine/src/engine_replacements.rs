@@ -2913,7 +2913,11 @@ impl Game {
                             return true;
                         }
                         let item = self.state.resolving.as_ref().unwrap().item.clone();
-                        self.register_delayed_sacrifice_when(&item, created, false, true);
+                        self.register_delayed_token_cleanup(
+                            &item,
+                            created,
+                            temporary_tokens::TokenCleanup::OwnEndStepSacrifice,
+                        );
                         continue;
                     }
                     Some(Work::CreatedGraveyardCounters {

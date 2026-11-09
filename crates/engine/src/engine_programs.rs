@@ -1129,6 +1129,11 @@ impl Game {
                                     same || subtypes.iter().any(|typ| entered.has_subtype(typ))
                                 }
                                 EntryPredicate::Token => entered.is_token(),
+                                EntryPredicate::NontokenEquipment => {
+                                    !entered.is_token()
+                                        && entered.kinds & 16 != 0
+                                        && entered.has_subtype("Equipment")
+                                }
                                 EntryPredicate::LegendarySubtype(subtype) => {
                                     entered.is_legendary() && entered.has_subtype(subtype)
                                 }
@@ -3897,6 +3902,9 @@ impl Game {
                 Instruction::CopyEnteringPermanentThenAnimate(spec) => {
                     self.copy_entering_then_animate(&item, spec);
                 }
+                Instruction::CopyEnteringWithEquipDiscount(generic) => {
+                    self.copy_entering_with_equip_discount(&item, generic);
+                }
                 Instruction::CreateCapturedArtifactCopy | Instruction::CreateCapturedCopy => {
                     if let Some(recipe) = item.captured_artifact_copy.as_deref() {
                         self.stage_copy_creation(item.controller, *recipe, 1);
@@ -4232,7 +4240,11 @@ impl Game {
                 Instruction::SacrificeDelayedTokens => self.sacrifice_delayed_tokens(&item),
                 Instruction::SacrificeSourceAtEndCombat => {
                     if let Some(source) = item.source {
-                        self.register_delayed_sacrifice_at(&item, vec![source.object], true);
+                        self.register_delayed_token_cleanup(
+                            &item,
+                            vec![source.object],
+                            temporary_tokens::TokenCleanup::EndCombatSacrifice,
+                        );
                     }
                 }
                 Instruction::ExileWarpedPermanent => self.exile_warped_permanent(&item),

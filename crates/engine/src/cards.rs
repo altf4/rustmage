@@ -48,6 +48,9 @@ pub struct CopyExceptions {
     pub sacrifice_only_abilities: u16,
     /// Copiable intervening-if sacrifice triggers granted with haste.
     pub conditional_sacrifice_abilities: u16,
+    /// Copiable static ability reducing only this object's equip costs.
+    #[serde(skip_serializing_if = "copy_equip_reduction_zero")]
+    pub equip_generic_reduction: u32,
     pub nightmare: bool,
     pub artifact: bool,
     pub golem: bool,
@@ -77,6 +80,7 @@ impl CopyExceptions {
         sacrifice_abilities: 0,
         sacrifice_only_abilities: 0,
         conditional_sacrifice_abilities: 0,
+        equip_generic_reduction: 0,
         nightmare: false,
         artifact: false,
         golem: false,
@@ -89,6 +93,7 @@ impl CopyExceptions {
         sacrifice_abilities: 1,
         sacrifice_only_abilities: 0,
         conditional_sacrifice_abilities: 0,
+        equip_generic_reduction: 0,
         nightmare: false,
         artifact: false,
         golem: false,
@@ -105,6 +110,7 @@ impl CopyExceptions {
         sacrifice_abilities: 0,
         sacrifice_only_abilities: 0,
         conditional_sacrifice_abilities: 0,
+        equip_generic_reduction: 0,
         nightmare: true,
         artifact: false,
         golem: false,
@@ -142,6 +148,9 @@ impl CopyExceptions {
                 .conditional_sacrifice_abilities
                 .checked_add(other.conditional_sacrifice_abilities)
                 .capacity("copy conditional sacrifice abilities"),
+            equip_generic_reduction: self
+                .equip_generic_reduction
+                .saturating_add(other.equip_generic_reduction),
             nightmare: self.nightmare || other.nightmare,
             artifact: self.artifact || other.artifact,
             golem: self.golem || other.golem,
@@ -154,6 +163,10 @@ impl CopyExceptions {
 }
 
 fn copy_exception_zero(value: &u16) -> bool {
+    *value == 0
+}
+
+fn copy_equip_reduction_zero(value: &u32) -> bool {
     *value == 0
 }
 
@@ -2018,6 +2031,8 @@ pub enum Instruction {
     CreateCapturedArtifactCopy,
     /// Copy one current/latest-departure entrant, then animate its actual results after entry.
     CopyEnteringPermanentThenAnimate(AnimationSpec),
+    /// Copy the exact entrant with a copiable equip discount and a one-shot upkeep sacrifice.
+    CopyEnteringWithEquipDiscount(u32),
     /// Grant a distinct, expiring graveyard activation to each exact targeted creature card.
     GrantEmbalmTargets,
     /// Create the immutable printed source copy with copiable white/Zombie/no-cost exceptions.
@@ -5262,6 +5277,7 @@ pub enum EntryPredicate {
     SourceOrSubtypeAny(&'static [&'static str]),
     /// A predicate on each actual entrant, distinct from batch token-entry events.
     Token,
+    NontokenEquipment,
     LegendarySubtype(&'static str),
     CreatureWithoutSubtype(&'static str),
     ArtifactManaValueAtLeast(u32),
