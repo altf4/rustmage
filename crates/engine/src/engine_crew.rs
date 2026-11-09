@@ -518,6 +518,64 @@ impl Game {
         self.state.pending = Pending::Priority;
         self.state.passes = 0;
     }
+    pub(super) fn crewed_vehicle_attack_triggers(&mut self, declared: &[AttackDeclaration]) {
+        if self
+            .state
+            .crew
+            .as_ref()
+            .is_none_or(|state| state.history.is_empty())
+        {
+            return;
+        }
+        for attack in declared {
+            let vehicle = self.object_ref(attack.card);
+            let Some(history) = self
+                .state
+                .crew
+                .as_ref()
+                .unwrap()
+                .history
+                .iter()
+                .find(|row| row.vehicle == vehicle)
+            else {
+                continue;
+            };
+            if !self.has_subtype(attack.card, "Vehicle") {
+                continue;
+            }
+            // The paid cost relates two incarnations, regardless of who
+            // controls either one now or whether the activation resolved.
+            let observers: Vec<_> = history
+                .contributors
+                .iter()
+                .filter(|crewer| {
+                    self.on_battlefield(crewer.card)
+                        && self.object_ref(crewer.card) == **crewer
+                        && self.state.objects[crewer.card as usize]
+                            .card
+                            .triggers()
+                            .iter()
+                            .any(|ability| {
+                                ability.condition.event() == TriggerCondition::CrewedVehicleAttacks
+                            })
+                })
+                .map(|crewer| self.object_view(crewer.card))
+                .collect();
+            for source in observers {
+                for (index, ability) in source.card.triggers().iter().enumerate() {
+                    if ability.condition.event() == TriggerCondition::CrewedVehicleAttacks
+                        && self.queue_attack_trigger_from(&source, index, None)
+                    {
+                        self.state
+                            .pending_triggers
+                            .last_mut()
+                            .unwrap()
+                            .refer_objects([vehicle]);
+                    }
+                }
+            }
+        }
+    }
     pub(super) fn forget_vehicle_animation(&mut self, object: ObjectRef) {
         if let Some(state) = &mut self.state.crew
             && let Ok(at) = state.animated.binary_search(&object)

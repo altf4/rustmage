@@ -1074,6 +1074,7 @@ impl Game {
                     | TriggerCondition::DelayedCreatureAttacksSubtypeAny(_)
                     | TriggerCondition::SelfAttacksOrBlocks
                     | TriggerCondition::ControlledCreatureAttacks
+                    | TriggerCondition::CrewedVehicleAttacks
                     | TriggerCondition::ControlledCreatureAttacksPlayerAlone
                     | TriggerCondition::OpponentCreatureBlocksSmall
                     | TriggerCondition::ControlledEquippedCreatureAttacks
@@ -2240,6 +2241,7 @@ impl Game {
         self.attachment_attack_triggers(actor, alone);
         self.temporary_attack_triggers(actor);
         self.defender_attack_group_triggers(declared);
+        self.crewed_vehicle_attack_triggers(declared);
         let delayed = self
             .state
             .delayed_opponent_attack_until_next_turn

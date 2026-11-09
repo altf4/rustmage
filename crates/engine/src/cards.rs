@@ -5525,6 +5525,8 @@ pub enum TriggerCondition {
     DelayedCreatureAttacksSubtypeAny(&'static [&'static str]),
     /// One event for each creature declared attacking by the source controller.
     ControlledCreatureAttacks,
+    /// One attack by a Vehicle whose Crew cost this exact source paid this turn.
+    CrewedVehicleAttacks,
     ControlledCreatureAttacksPlayerAlone,
     /// Once per opponent-controlled blocker meeting either stat ceiling.
     OpponentCreatureBlocksSmall,
