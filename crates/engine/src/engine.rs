@@ -5291,11 +5291,7 @@ impl Game {
                 {
                     return true;
                 }
-                if matches!(
-                    choice.kind,
-                    EffectChoiceKind::RemoveLoreForSourceCounters(_)
-                ) && emit(Action::FinishEffectChoice)
-                {
+                if choice.kind.any_number_selection() && emit(Action::FinishEffectChoice) {
                     return true;
                 }
                 if matches!(choice.kind, EffectChoiceKind::GraveyardCreatures { .. })
@@ -8567,7 +8563,21 @@ impl Game {
             | Action::SelectResolutionExile { object }
             | Action::BottomHandCard { object } => self.choose_effect_object(actor, object),
             Action::FinishEffectChoice => {
-                self.finish_lore_counter_selection();
+                let choice = self
+                    .state
+                    .resolving
+                    .as_ref()
+                    .unwrap()
+                    .choice
+                    .as_ref()
+                    .unwrap();
+                match choice.kind {
+                    EffectChoiceKind::RemoveLoreForSourceCounters(_) => {
+                        self.finish_lore_counter_selection();
+                    }
+                    EffectChoiceKind::SacrificeSelection => self.finish_sacrifice_selection(),
+                    _ => unreachable!("explicitly finished resolution selection"),
+                }
                 self.run_program();
             }
             Action::FinishGraveyardReturn => {

@@ -1190,17 +1190,17 @@ impl Game {
             assert_eq!(amount, 1, "one alternative resolution cost");
             assert_eq!(players, PlayerSet::Controller, "captured resolution payer");
         }
-        let any_number = matches!(kind, EffectChoiceKind::RemoveLoreForSourceCounters(_));
+        let any_number = kind.any_number_selection();
         if any_number {
             assert_eq!(
                 players,
                 PlayerSet::Controller,
-                "lore choice belongs to the controller"
+                "any-number resolution choice belongs to the controller"
             );
-            assert_eq!(amount, 0, "lore choice has no minimum");
+            assert_eq!(amount, 0, "any-number resolution choice has no minimum");
             assert!(
                 optional_skip.is_none(),
-                "lore choice finishes with any subset"
+                "any-number resolution choice finishes with any subset"
             );
         }
         let pc = self.state.resolving.as_ref().unwrap().pc;
@@ -1417,11 +1417,12 @@ impl Game {
             self.state.pending = Pending::EffectChoice { player };
             return true;
         }
-        if matches!(
-            choice.kind.payment_kind(),
-            EffectChoiceKind::CoverUpSearch { .. }
-                | EffectChoiceKind::RemoveLoreForSourceCounters(_)
-        ) {
+        if choice.kind.any_number_selection()
+            || matches!(
+                choice.kind.payment_kind(),
+                EffectChoiceKind::CoverUpSearch { .. }
+            )
+        {
             self.state.pending = Pending::EffectChoice {
                 player: self.state.resolving.as_ref().unwrap().item.controller,
             };
@@ -2130,6 +2131,28 @@ impl Game {
         }
     }
 
+    pub(super) fn finish_sacrifice_selection(&mut self) {
+        let resolution = self.state.resolving.as_mut().unwrap();
+        let player = resolution.item.controller;
+        let choice = resolution.choice.take().unwrap();
+        let spec = AdditionalCost {
+            kind: EffectChoiceKind::Sacrifice,
+            filter: choice.filter,
+        };
+        let sacrifices: Vec<_> = choice.selected[player.index()]
+            .iter()
+            .copied()
+            .filter(|&object| self.additional_candidate(spec, player, choice.source, object))
+            .map(|object| (player, object.card))
+            .collect();
+        if !sacrifices.is_empty() {
+            let paid = self
+                .sacrifice_cost_batch_outcome(&sacrifices)
+                .expect("validated sacrifice selections");
+            self.state.resolving.as_mut().unwrap().moved_count = Some(paid.count);
+        }
+    }
+
     pub(super) fn finish_lore_counter_selection(&mut self) {
         let resolution = self.state.resolving.as_mut().unwrap();
         let player = resolution.item.controller;
@@ -2374,11 +2397,7 @@ impl Game {
         Some(EffectChoiceView {
             kind: choice.kind,
             amount: choice.amount,
-            optional: choice.skip_to.is_some()
-                || matches!(
-                    choice.kind,
-                    EffectChoiceKind::RemoveLoreForSourceCounters(_)
-                ),
+            optional: choice.skip_to.is_some() || choice.kind.any_number_selection(),
             required: choice.required,
             selected: std::array::from_fn(|index| {
                 choice.selected[index]

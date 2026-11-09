@@ -6204,6 +6204,19 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::MaySacrificeAnyNumber(filter) => {
+                    self.state.resolving.as_mut().unwrap().moved_count = Some(0);
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::SacrificeSelection,
+                        PlayerSet::Controller,
+                        filter,
+                        0,
+                        None,
+                    ) {
+                        return;
+                    }
+                }
                 Instruction::ChooseOpposingCreatureForDeparture {
                     other_power,
                     other_toughness,

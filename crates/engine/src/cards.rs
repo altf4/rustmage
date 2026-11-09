@@ -1292,6 +1292,8 @@ pub enum EffectChoiceKind {
     Forage,
     ForageOrBlack,
     Sacrifice,
+    /// An unbounded resolution selection followed by one sacrifice batch.
+    SacrificeSelection,
     /// A creature sacrifice selection that excludes one effective creature subtype.
     SacrificeCreaturesExceptSubtype(&'static str),
     /// A declaration-bound sacrifice cost. None is the immutable X placeholder.
@@ -1328,6 +1330,12 @@ pub enum EffectChoiceKind {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl EffectChoiceKind {
+    pub(crate) fn any_number_selection(self) -> bool {
+        matches!(
+            self,
+            Self::RemoveLoreForSourceCounters(_) | Self::SacrificeSelection
+        )
+    }
     pub(crate) fn creature_counter_requirement(self) -> Option<(u16, Option<CounterKind>)> {
         match self {
             Self::RemoveCreatureCounters(amount) => Some((amount, None)),
@@ -1338,6 +1346,7 @@ impl EffectChoiceKind {
     pub(crate) fn payment_kind(self) -> Self {
         match self {
             Self::BlightXCost => Self::BlightCost(0),
+            Self::SacrificeSelection => Self::Sacrifice,
             Self::FilteredCost {
                 action: CostAction::Sacrifice,
                 ..
@@ -2906,6 +2915,8 @@ pub enum Instruction {
         amount: u16,
         optional_skip: Option<usize>,
     },
+    /// Sacrifice any number of matching permanents together and remember the actual count.
+    MaySacrificeAnyNumber(SacrificeFilter),
     /// Choose and link an opposing creature, then change other creatures' stats this turn.
     ChooseOpposingCreatureForDeparture {
         other_power: i32,
