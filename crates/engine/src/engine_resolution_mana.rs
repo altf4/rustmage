@@ -6,7 +6,7 @@ pub(super) struct ResolutionPayment {
     pub payer: Player,
     pub cost: ManaCost,
     pub alternatives: &'static [ManaCost],
-    pub life: Option<u32>,
+    pub life: Option<i128>,
     pub discard: bool,
     pub discard_only: bool,
     pub victim: Option<u64>,
@@ -19,7 +19,7 @@ pub struct ResolutionPaymentView {
     pub payer: Player,
     pub cost: ManaCost,
     pub alternatives: Vec<ManaCost>,
-    pub life: Option<u32>,
+    pub life: Option<i128>,
     #[serde(skip_serializing_if = "is_false")]
     pub discard_only: bool,
     pub victim: Option<u64>,
@@ -383,7 +383,7 @@ impl Game {
             player: item.controller,
         };
     }
-    pub(super) fn start_resolution_life(&mut self, item: &SpellView, amount: u32) -> bool {
+    pub(super) fn start_resolution_life(&mut self, item: &SpellView, amount: i128) -> bool {
         // Ward's "that player" is fixed by the triggering event. The optional
         // payment remains available even if another ward already countered the
         // spell, or control of that spell subsequently changed (CR118.12a).
@@ -417,7 +417,7 @@ impl Game {
             .mana_payment
             .as_ref()
             .unwrap();
-        self.state.players[request.payer.index()].life >= i128::from(request.life.unwrap())
+        self.state.players[request.payer.index()].life >= request.life.unwrap()
     }
     pub(super) fn finish_resolution_life(&mut self, pay: bool) {
         let request = self
@@ -429,7 +429,7 @@ impl Game {
             .take()
             .unwrap();
         if pay {
-            self.pay_life(request.payer, i128::from(request.life.unwrap()));
+            self.pay_life(request.payer, request.life.unwrap());
         } else if let Some(victim) = request.victim {
             self.counter_stack_item(victim, false);
         }
@@ -450,7 +450,7 @@ impl Game {
         if let Some(payment) = payment {
             self.spend_mana(request.payer, payment);
             if let Some(life) = request.life {
-                self.pay_life(request.payer, i128::from(life));
+                self.pay_life(request.payer, life);
             }
             let r = self.state.resolving.as_ref().unwrap();
             if let Some(

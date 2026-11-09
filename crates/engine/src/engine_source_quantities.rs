@@ -5,6 +5,8 @@ use super::*;
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SourceQuantityView {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub power: Option<i128>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub toughness: Option<i128>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chosen_creature_type: Option<crate::cards::CreatureType>,
@@ -15,12 +17,20 @@ pub struct SourceQuantityView {
     pub creature_comparison: Option<CreatureComparisonFacts>,
 }
 
+#[derive(Clone, Copy, Default, PartialEq, Eq)]
+struct SelectedQuantities {
+    power: bool,
+    toughness: bool,
+    equipment: bool,
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-fn selected(program: &[Instruction]) -> (bool, bool) {
-    fn amount(value: AmountValue, result: &mut (bool, bool)) {
+fn selected(program: &[Instruction]) -> SelectedQuantities {
+    fn amount(value: AmountValue, result: &mut SelectedQuantities) {
         match value {
-            AmountValue::SourceToughness => result.0 = true,
-            AmountValue::SourceEquipmentCount => result.1 = true,
+            AmountValue::SourcePower => result.power = true,
+            AmountValue::SourceToughness => result.toughness = true,
+            AmountValue::SourceEquipmentCount => result.equipment = true,
             AmountValue::Multiple { value, .. } | AmountValue::Divided { value, .. } => {
                 amount(*value, result)
             }
@@ -32,7 +42,7 @@ fn selected(program: &[Instruction]) -> (bool, bool) {
             _ => (),
         }
     }
-    let mut result = (false, false);
+    let mut result = SelectedQuantities::default();
     for instruction in program {
         match *instruction {
             Instruction::Modal(modes)
@@ -41,11 +51,12 @@ fn selected(program: &[Instruction]) -> (bool, bool) {
             | Instruction::ModalUpToX { modes, .. } => {
                 for mode in modes {
                     let nested = selected(mode.program);
-                    result.0 |= nested.0;
-                    result.1 |= nested.1;
+                    result.power |= nested.power;
+                    result.toughness |= nested.toughness;
+                    result.equipment |= nested.equipment;
                 }
             }
-            Instruction::SetBaseStatsFromSource { .. } => result.0 = true,
+            Instruction::SetBaseStatsFromSource { .. } => result.toughness = true,
             Instruction::SelectLibraryTo(effect)
             | Instruction::SelectLibraryThenMayTransform(effect) => {
                 if let Some(value) = effect.maximum_mana_value {
@@ -83,6 +94,8 @@ fn selected(program: &[Instruction]) -> (bool, bool) {
             | Instruction::AddCombatRedScaled(value)
             | Instruction::Mobilize { amount: value, .. }
             | Instruction::CounterUnlessPayScaled { amount: value, .. }
+            | Instruction::CounterRelatedUnlessPayLifeScaled(value)
+            | Instruction::CastHandFreeUpTo(value)
             | Instruction::PutCountersScaled { amount: value, .. }
             | Instruction::PutPermanentCountersScaled { amount: value, .. }
             | Instruction::GrowScaled { amount: value, .. }
@@ -141,10 +154,11 @@ impl Game {
         targets: TargetPlan,
         source: &ObjectView,
     ) -> Option<Box<SourceQuantityView>> {
-        let (toughness, equipment) = selected(program);
+        let quantities = selected(program);
         let chosen_type = targets.reads_source_creature_type() || reads_chosen_type(program);
-        (toughness || equipment || chosen_type).then(|| {
+        (quantities != SelectedQuantities::default() || chosen_type).then(|| {
             Box::new(SourceQuantityView {
+                power: quantities.power.then_some(source.power),
                 creature_comparison: None,
                 chosen_creature_type: if chosen_type {
                     match source.entry_choice {
@@ -154,12 +168,13 @@ impl Game {
                 } else {
                     None
                 },
-                toughness: toughness.then_some(if source.is_creature() {
+                toughness: quantities.toughness.then_some(if source.is_creature() {
                     source.toughness
                 } else {
                     0
                 }),
-                equipment_count: equipment
+                equipment_count: quantities
+                    .equipment
                     .then(|| self.source_equipment_count(source.reference).unwrap_or(0)),
             })
         })
@@ -189,7 +204,7 @@ impl Game {
                 .expect("exact activated quantity source")
         });
         let targets = item.program().map_or(TargetPlan::NONE, |(plan, _)| plan);
-        if selected(program) != (false, false)
+        if selected(program) != SelectedQuantities::default()
             || reads_chosen_type(program)
             || targets.reads_source_creature_type()
         {
@@ -216,6 +231,9 @@ impl Game {
         }
         let view = self.object_view(source.card);
         let saved = item.source_quantity_lki.as_mut().unwrap();
+        if saved.power.is_some() {
+            saved.power = Some(view.power);
+        }
         if saved.toughness.is_some() {
             saved.toughness = Some(if view.is_creature() {
                 view.toughness
@@ -245,28 +263,30 @@ impl Game {
                 if source.zone != Zone::Battlefield {
                     return None;
                 }
-                let mut selected = (false, false);
+                let mut selected = SelectedQuantities::default();
                 for item in self.source_quantity_packets().filter(|item| {
                     item.source
                         .is_some_and(|identity| identity.object == source.reference)
                 }) {
                     if let Some(facts) = &item.source_quantity_lki {
-                        selected.0 |= facts.toughness.is_some();
-                        selected.1 |= facts.equipment_count.is_some();
+                        selected.power |= facts.power.is_some();
+                        selected.toughness |= facts.toughness.is_some();
+                        selected.equipment |= facts.equipment_count.is_some();
                     }
                 }
-                (selected.0 || selected.1).then(|| {
+                (selected != SelectedQuantities::default()).then(|| {
                     (
                         source.reference,
                         SourceQuantityView {
+                            power: selected.power.then_some(source.power),
                             creature_comparison: None,
                             chosen_creature_type: None,
-                            toughness: selected.0.then_some(if source.is_creature() {
+                            toughness: selected.toughness.then_some(if source.is_creature() {
                                 source.toughness
                             } else {
                                 0
                             }),
-                            equipment_count: selected.1.then(|| {
+                            equipment_count: selected.equipment.then(|| {
                                 self.source_equipment_count(source.reference).unwrap_or(0)
                             }),
                         },
@@ -304,6 +324,9 @@ impl Game {
                     .iter()
                     .find(|(object, _)| item.source.is_some_and(|source| *object == source.object))
             {
+                if saved.power.is_some() {
+                    saved.power = frozen.power;
+                }
                 if saved.toughness.is_some() {
                     saved.toughness = frozen.toughness;
                 }

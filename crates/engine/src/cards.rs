@@ -1978,6 +1978,8 @@ pub enum Instruction {
         exile_instants_sorceries: bool,
     },
     CounterRelatedUnlessPayLife(u32),
+    /// Pay the amount sampled as this ability resolves, using exact source LKI.
+    CounterRelatedUnlessPayLifeScaled(AmountValue),
     /// Ask the triggering opponent to pay by getting poison counters.
     MayPayWardPoison {
         amount: u16,

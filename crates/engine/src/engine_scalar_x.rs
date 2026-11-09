@@ -609,7 +609,11 @@ impl Game {
                 if self.on_battlefield(source.id) && self.object_ref(source.id) == source.object {
                     self.stats(source.id).power.max(0) as u128
                 } else {
-                    source.facts.power.max(0) as u128
+                    item.source_quantity_lki
+                        .as_ref()
+                        .and_then(|facts| facts.power)
+                        .unwrap_or(source.facts.power)
+                        .max(0) as u128
                 }
             }),
             AmountValue::LifeEventAmount => {

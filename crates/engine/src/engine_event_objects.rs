@@ -436,6 +436,7 @@ impl Game {
         let p = self.state.pending_triggers.last_mut().unwrap();
         p.source_quantity_lki = Some(Box::new(SourceQuantityView {
             chosen_creature_type: None,
+            power: None,
             toughness: None,
             equipment_count: None,
             creature_comparison: Some(CreatureComparisonFacts::from_view(source)),

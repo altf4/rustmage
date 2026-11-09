@@ -5459,7 +5459,14 @@ impl Game {
                     self.stage_random_graveyard_copy(item.controller);
                 }
                 Instruction::CounterRelatedUnlessPayLife(amount) => {
-                    if self.start_resolution_life(&item, amount) {
+                    if self.start_resolution_life(&item, i128::from(amount)) {
+                        return;
+                    }
+                }
+                Instruction::CounterRelatedUnlessPayLifeScaled(amount) => {
+                    let life = i128::try_from(self.item_amount(amount, &item))
+                        .capacity("life payment exhausted");
+                    if self.start_resolution_life(&item, life) {
                         return;
                     }
                 }
@@ -7624,7 +7631,7 @@ impl Game {
                             .mana_payment
                             .as_mut()
                             .unwrap()
-                            .life = Some(life);
+                            .life = Some(i128::from(life));
                         return;
                     }
                 }
