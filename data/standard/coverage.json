@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "6bb8f0992d51477c4ba593036b4d1b0209cbbe23fe84845ba2f0bf2ae2b08273",
+  "catalogue_version": "cd2ca838661e4ef8385fbc2bbcb5d694fd8e6cd586441a1c7cd5abf9c323f175",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 3657,
-  "implemented_total": 3665,
-  "token_definitions": 168,
+  "implemented_standard_cards": 3689,
+  "implemented_total": 3697,
+  "token_definitions": 169,
   "emblem_definitions": 12,
   "adventure_definitions": 53,
   "omen_definitions": 13,
@@ -64,8 +64,8 @@
     },
     "fin": {
       "total": 304,
-      "complete": 211,
-      "gated": 93
+      "complete": 243,
+      "gated": 61
     },
     "fra": {
       "total": 285,
@@ -1470,8 +1470,8 @@
     {
       "name": "Ancient Adamantoise",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/ancient_adamantoise.rs",
       "set": "fin"
     },
@@ -2902,8 +2902,8 @@
     {
       "name": "Barret Wallace",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/barret_wallace.rs",
       "set": "fin"
     },
@@ -3118,8 +3118,8 @@
     {
       "name": "Beatrix, Loyal General",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/beatrix_loyal_general.rs",
       "set": "fin"
     },
@@ -5022,8 +5022,8 @@
     {
       "name": "Buster Sword",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/buster_sword.rs",
       "set": "fin"
     },
@@ -6230,8 +6230,8 @@
     {
       "name": "Circle of Power",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/circle_of_power.rs",
       "set": "fin"
     },
@@ -6366,8 +6366,8 @@
     {
       "name": "Clive's Hideaway",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/clive_s_hideaway.rs",
       "set": "fin"
     },
@@ -6414,8 +6414,8 @@
     {
       "name": "Cloud, Midgar Mercenary",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/cloud_midgar_mercenary.rs",
       "set": "fin"
     },
@@ -7006,8 +7006,8 @@
     {
       "name": "Cornered by Black Mages",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/cornered_by_black_mages.rs",
       "set": "fin"
     },
@@ -8454,8 +8454,8 @@
     {
       "name": "Delivery Moogle",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/delivery_moogle.rs",
       "set": "fin"
     },
@@ -11742,8 +11742,8 @@
     {
       "name": "Fang, Fearless l'Cie",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/fang_fearless_l_cie.rs",
       "set": "fin"
     },
@@ -14726,8 +14726,8 @@
     {
       "name": "Gogo, Master of Mimicry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/gogo_master_of_mimicry.rs",
       "set": "fin"
     },
@@ -18326,8 +18326,8 @@
     {
       "name": "Jenova, Ancient Calamity",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/jenova_ancient_calamity.rs",
       "set": "fin"
     },
@@ -18534,8 +18534,8 @@
     {
       "name": "Judge Magister Gabranth",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/judge_magister_gabranth.rs",
       "set": "fin"
     },
@@ -19558,8 +19558,8 @@
     {
       "name": "Kuja, Genome Sorcerer // Trance Kuja, Fate Defied",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/kuja_genome_sorcerer_trance_kuja_fate_defied.rs",
       "set": "fin"
     },
@@ -20294,8 +20294,8 @@
     {
       "name": "Lindblum, Industrial Regency // Mage Siege",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/lindblum_industrial_regency_mage_siege.rs",
       "set": "fin"
     },
@@ -23358,8 +23358,8 @@
     {
       "name": "Mysidian Elder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/mysidian_elder.rs",
       "set": "fin"
     },
@@ -29654,8 +29654,8 @@
     {
       "name": "Sandworm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/sandworm.rs",
       "set": "fin"
     },
@@ -29838,8 +29838,8 @@
     {
       "name": "Sazh Katzroy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/sazh_katzroy.rs",
       "set": "fin"
     },
@@ -30358,8 +30358,8 @@
     {
       "name": "Seifer Almasy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/seifer_almasy.rs",
       "set": "fin"
     },
@@ -30430,8 +30430,8 @@
     {
       "name": "Self-Destruct",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/self_destruct.rs",
       "set": "fin"
     },
@@ -30518,8 +30518,8 @@
     {
       "name": "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/sephiroth_fabled_soldier_sephiroth_one_winged_angel.rs",
       "set": "fin"
     },
@@ -30534,8 +30534,8 @@
     {
       "name": "Serah Farron // Crystallized Serah",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/serah_farron_crystallized_serah.rs",
       "set": "fin"
     },
@@ -30622,8 +30622,8 @@
     {
       "name": "Seymour Flux",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/seymour_flux.rs",
       "set": "fin"
     },
@@ -30670,8 +30670,8 @@
     {
       "name": "Shambling Cie'th",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/shambling_cie_th.rs",
       "set": "fin"
     },
@@ -33950,16 +33950,16 @@
     {
       "name": "Summon: Fenrir",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/summon_fenrir.rs",
       "set": "fin"
     },
     {
       "name": "Summon: G.F. Cerberus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/summon_g_f_cerberus.rs",
       "set": "fin"
     },
@@ -33974,16 +33974,16 @@
     {
       "name": "Summon: Knights of Round",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/summon_knights_of_round.rs",
       "set": "fin"
     },
     {
       "name": "Summon: Leviathan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/summon_leviathan.rs",
       "set": "fin"
     },
@@ -33998,8 +33998,8 @@
     {
       "name": "Summon: Primal Odin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/summon_primal_odin.rs",
       "set": "fin"
     },
@@ -34014,8 +34014,8 @@
     {
       "name": "Summon: Titan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/summon_titan.rs",
       "set": "fin"
     },
@@ -35766,8 +35766,8 @@
     {
       "name": "The Final Days",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/the_final_days.rs",
       "set": "fin"
     },
@@ -38126,8 +38126,8 @@
     {
       "name": "Ultima",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/ultima.rs",
       "set": "fin"
     },
