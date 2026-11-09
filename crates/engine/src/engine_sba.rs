@@ -548,10 +548,7 @@ impl Game {
         }
         self.food_sacrifice_triggers(&events, &sources);
         for source in batch.detached {
-            if self.object_ref(source.card) == source {
-                self.state.objects[source.card as usize].attached_to = None;
-                self.renew_copy_grant_origin(source, false);
-            }
+            self.unattach(source);
         }
         // Cancellation belongs to the frozen event, never a newly returned object.
         for (object, pairs) in batch.pairs {

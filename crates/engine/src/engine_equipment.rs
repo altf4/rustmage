@@ -40,6 +40,42 @@ impl Game {
         self.characteristic_query().keywords(id)
     }
 
+    pub(super) fn attached_to_controlled_creature(
+        &self,
+        object: ObjectRef,
+        player: Player,
+    ) -> bool {
+        self.on_battlefield(object.card)
+            && self.object_ref(object.card) == object
+            && self.state.objects[object.card as usize]
+                .attached_to
+                .is_some_and(|recipient| {
+                    self.on_battlefield(recipient.card)
+                        && self.object_ref(recipient.card) == recipient
+                        && self.state.objects[recipient.card as usize].controller == player
+                        && self.is_creature(recipient.card)
+                })
+    }
+    pub(super) fn unattach_event_object(&mut self, item: &SpellView) {
+        if let Some(event) = &item.event_object {
+            if self.unattach(event.object) {
+                self.refresh_controllers();
+            }
+        }
+    }
+    pub(super) fn unattach(&mut self, object: ObjectRef) -> bool {
+        if !self.on_battlefield(object.card)
+            || self.object_ref(object.card) != object
+            || self.state.objects[object.card as usize]
+                .attached_to
+                .take()
+                .is_none()
+        {
+            return false;
+        }
+        self.renew_copy_grant_origin(object, false);
+        true
+    }
     pub(super) fn equipment_can_attach(&self, source: ObjectRef, target: ObjectRef) -> bool {
         can_attach(self, source, target)
     }

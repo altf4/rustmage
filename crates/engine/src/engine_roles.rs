@@ -69,6 +69,7 @@ pub(super) struct RoleState {
     pub resolved_ability_modifications: Vec<ResolvedAbilityModificationView>,
     pub ability_removal_sources: Vec<ObjectRef>,
     pub characteristic_sources: Vec<ObjectRef>,
+    pub control_change_sources: Option<SharedVec<CardId>>,
     pub harnessed: Vec<ObjectRef>,
     pub source_prevention: Option<Box<source_prevention::SourcePreventionState>>,
     pub player_damage_shields: Vec<return_links::PlayerDamageShieldView>,
@@ -114,6 +115,9 @@ impl RoleState {
                 * std::mem::size_of::<ResolvedAbilityModificationView>()
             + self.ability_removal_sources.len() * std::mem::size_of::<ObjectRef>()
             + self.characteristic_sources.len() * std::mem::size_of::<ObjectRef>()
+            + self.control_change_sources.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<CardId>>() + rows.len() * std::mem::size_of::<CardId>()
+            })
             + self.harnessed.len() * std::mem::size_of::<ObjectRef>()
             + self
                 .source_prevention

@@ -280,6 +280,7 @@ impl Game {
             self.queue_self_transform_triggers(object);
             return;
         }
+        let control_watch = self.freeze_control_watch();
         self.forget_hand_size_source(object);
         self.remove_face_providers(object.card);
         self.state.objects[object.card as usize].card = other;
@@ -289,7 +290,7 @@ impl Game {
         }
         self.register_battlefield_providers(object.card);
         self.retimestamp_self_granted_statics(object);
-        self.refresh_controllers();
+        self.refresh_controllers_after(Some(control_watch));
         self.queue_self_transform_triggers(object);
     }
     fn queue_self_transform_triggers(&mut self, object: ObjectRef) {
@@ -307,6 +308,7 @@ impl Game {
         self.forget_trigger_multiplier_source(id);
         self.forget_activation_observer(id);
         self.forget_ability_target_source(id);
+        self.forget_control_change_source(id);
         let reference = self.object_ref(id);
         // Keep recipient effects and counters: only the old face's intrinsic providers change.
         if let Some(roles) = &mut self.state.roles {

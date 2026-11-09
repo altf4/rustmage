@@ -991,6 +991,8 @@ impl Game {
                     | TriggerCondition::ExhaustAbilityActivated
                     | TriggerCondition::DelayedExhaustAbilityActivated
                     | TriggerCondition::DelayedTargetEvent
+                    | TriggerCondition::DelayedTargetControlLostWhileAttached
+                    | TriggerCondition::OpponentTakesPermanent
                     | TriggerCondition::LoyaltyAbilityActivated
                     | TriggerCondition::LoyaltyAbilityActivatedRemoving(_)
                     | TriggerCondition::OpponentLoyaltyAbilityActivated
@@ -5231,6 +5233,23 @@ impl Game {
                 } => {
                     self.gain_control(&item, subject, controller);
                 }
+                Instruction::IfSubjectControlledBy {
+                    subject,
+                    controller,
+                    skip,
+                } => {
+                    let subjects = self.keyword_subjects(&item, subject);
+                    let matches = self.program_players(controller, &item).any(|player| {
+                        subjects.iter().any(|&id| {
+                            self.on_battlefield(id)
+                                && self.state.objects[id as usize].controller == player
+                        })
+                    });
+                    if !matches {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
+                Instruction::UnattachEventObject => self.unattach_event_object(&item),
                 Instruction::ChooseGraveyardReturn {
                     maximum,
                     total_mana_value,

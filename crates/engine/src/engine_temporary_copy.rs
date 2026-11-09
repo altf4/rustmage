@@ -288,6 +288,7 @@ impl Game {
         if recipients.is_empty() {
             return;
         }
+        let control_watch = self.freeze_control_watch();
         let provider_time = self.next_role_timestamp();
         let hand_time = self.new_copy_hand_timestamp(recipe.definition);
         for &recipient in &recipients {
@@ -306,7 +307,7 @@ impl Game {
         // No intermediate recipient prefix is a game world. In particular,
         // control changes, enduring designations and ability acquisitions can
         // have irreversible consequences, so project only the complete cohort.
-        self.refresh_controllers();
+        self.refresh_controllers_after(Some(control_watch));
         for recipient in recipients {
             if !self.is_face_down(recipient) {
                 self.renew_copy_grant_origin(recipient, true);
@@ -517,6 +518,7 @@ impl Game {
         {
             return;
         }
+        let control_watch = project_world.then(|| self.freeze_control_watch());
         let origin = self.next_role_timestamp();
         let old_used = self.state.objects[object.card as usize].used_abilities;
         let initial = if self.temporary_copy_row(object).is_none() {
@@ -576,7 +578,7 @@ impl Game {
             if !self.is_face_down(object) {
                 self.renew_copy_grant_origin(object, true);
             }
-            self.refresh_controllers();
+            self.refresh_controllers_after(control_watch);
             self.refresh_combat_battle_types();
         }
     }
@@ -736,7 +738,7 @@ impl Game {
                 self.state.temporary_copies = None;
             }
         }
-        if !changes.is_empty() {
+        if !cleanup && !changes.is_empty() {
             self.refresh_controllers();
         }
         !changes.is_empty()

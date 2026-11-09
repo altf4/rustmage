@@ -993,6 +993,7 @@ impl Game {
                 .as_deref()
                 .unwrap_or(&movement.before)
         }));
+        let control_watch = self.freeze_control_watch();
         let mut events = Vec::new();
         let mut post_counter_results = Vec::new();
         let mut attachments = Vec::new();
@@ -1377,7 +1378,7 @@ impl Game {
                 characteristic_layers::enchantment_noncreature_form(recipient, timestamp),
             );
         }
-        self.refresh_controllers();
+        self.refresh_controllers_after(Some(control_watch));
         if let Some(item) = &batch.temporary_copy {
             let tokens = events
                 .iter()

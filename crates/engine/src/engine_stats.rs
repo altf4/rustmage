@@ -140,6 +140,17 @@ impl Game {
         }
         if triggers
             .iter()
+            .any(|ability| ability.condition.event() == TriggerCondition::OpponentTakesPermanent)
+        {
+            self.state
+                .roles
+                .get_or_insert_default()
+                .control_change_sources
+                .get_or_insert_default()
+                .push(id);
+        }
+        if triggers
+            .iter()
             .any(|ability| ability.condition.event() == TriggerCondition::ScryOrSurveil)
         {
             self.state.scry_sources.push(id);

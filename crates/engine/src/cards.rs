@@ -1054,6 +1054,8 @@ pub enum DelayedTargetEvent {
     /// Exact watched permanent enters a graveyard under this packet's controller.
     GraveyardUnderControllerOnce,
     CombatDamageToPlayer,
+    /// Each loss this turn, if the subject is attached to a creature you control.
+    ControlLostWhileAttached,
 }
 
 /// A resolution choice; discard here is a cost, not a forced discard effect.
@@ -2457,6 +2459,12 @@ pub enum Instruction {
         subject: Subject,
         controller: PlayerSet,
     },
+    /// Skip unless the named player controls an exact live permanent in this subject.
+    IfSubjectControlledBy {
+        subject: Subject,
+        controller: PlayerSet,
+        skip: usize,
+    },
     /// Choose up to this many creature cards with a combined mana-value limit.
     ChooseGraveyardReturn {
         maximum: u16,
@@ -2694,6 +2702,7 @@ pub enum Instruction {
         ability: u16,
     },
     AttachSourceToEntering,
+    UnattachEventObject,
     ExileAttached,
     /// One optional nontargeting Equipment attachment to the selected target group.
     MayAttachControlledEquipment {
@@ -5018,6 +5027,10 @@ pub enum TriggerCondition {
     DelayedExhaustAbilityActivated,
     /// Template dispatched only by an owned delayed target-event registration.
     DelayedTargetEvent,
+    /// Recheck attachment and the recipient's controller on resolution.
+    DelayedTargetControlLostWhileAttached,
+    /// The source's pre-event controller lost control of a permanent.
+    OpponentTakesPermanent,
     /// The controller committed an activation of a loyalty ability.
     LoyaltyAbilityActivated,
     /// Committed loyalty activation paid at least this many loyalty counters.

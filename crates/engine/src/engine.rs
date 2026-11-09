@@ -8894,6 +8894,7 @@ impl Game {
             .any(|(view, _)| view.zone == Zone::Battlefield)
             .then(|| self.freeze_battlefield_departure_observers())
             .flatten();
+        let control_watch = self.freeze_control_watch();
         let events = plans
             .into_iter()
             .map(|(view, plan)| {
@@ -8911,7 +8912,7 @@ impl Game {
                 )
             })
             .collect();
-        self.refresh_controllers();
+        self.refresh_controllers_after(Some(control_watch));
         Some(events)
     }
 
@@ -9006,6 +9007,7 @@ impl Game {
         self.capture_source_quantities(plans.iter().map(|(view, _)| view));
         let graveyard_observers = self.freeze_exile_batch_observers();
         let battlefield_departure = self.freeze_battlefield_departure_observers();
+        let control_watch = self.freeze_control_watch();
         let mut events: Vec<_> = plans
             .into_iter()
             .map(|(before, plan)| {
@@ -9030,7 +9032,7 @@ impl Game {
         }
         self.capture_reflexive_zone_action(&events, roles::ReflexiveAction::Sacrifice);
         self.food_sacrifice_triggers(&events, &sources);
-        self.refresh_controllers();
+        self.refresh_controllers_after(Some(control_watch));
         self.record_own_sacrifices(&events);
         let paid = PaidAdditionalCostView {
             selected: sacrifices.len() as u64,
@@ -9144,6 +9146,7 @@ impl Game {
             .any(|&id| self.on_battlefield(id))
             .then(|| self.freeze_battlefield_departure_observers())
             .flatten();
+        let control_watch = self.freeze_control_watch();
         let events = planned
             .into_iter()
             .map(|(before, plan, (tapped, counters))| {
@@ -9163,7 +9166,7 @@ impl Game {
             .collect();
         // A surveil caller must first restore reserved library positions.
         if positions.is_none() {
-            self.refresh_controllers();
+            self.refresh_controllers_after(Some(control_watch));
         }
         events
     }
@@ -9295,8 +9298,9 @@ impl Game {
             "choice-bearing entry must be staged"
         );
         let before = self.object_view(id);
+        let control_watch = self.freeze_control_watch();
         let event = self.transition_object(before, destination, tapped);
-        self.refresh_controllers();
+        self.refresh_controllers_after(Some(control_watch));
         event
     }
 
@@ -9807,6 +9811,7 @@ impl Game {
             self.state.cast_sources.retain(|&source| source != id);
             self.forget_activation_observer(id);
             self.state.attack_sources.retain(|&source| source != id);
+            self.forget_control_change_source(id);
             self.state.tap_sources.retain(|&source| source != id);
             self.state.damage_sources.retain(|&source| source != id);
             self.state.discard_sources.retain(|&source| source != id);
@@ -10372,6 +10377,7 @@ impl Game {
     }
 
     fn finish_cleanup(&mut self) {
+        let control_watch = self.freeze_control_watch();
         if let Some(rules) = &mut self.state.combat_rules {
             rules.must_be_blocked.clear();
             rules.must_attack_this_combat.clear();
@@ -10437,6 +10443,8 @@ impl Game {
             expired_legend_rule |= std::mem::take(&mut player.legend_rule_ignored_this_turn);
         }
         let expired_copies = self.expire_temporary_copies(true);
+        // All cleanup expirations and damage removal happen simultaneously.
+        self.refresh_controllers_after(Some(control_watch));
         // Losing temporary growth can expose lethal negative counters. Apply
         // SBAs before advancing the turn; CR514.3 gives an extra priority cycle.
         if !self.state.pending_triggers.is_empty()

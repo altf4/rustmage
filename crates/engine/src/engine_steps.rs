@@ -282,6 +282,11 @@ impl Game {
         let Some(source) = item.source else {
             return false;
         };
+        if condition.event() == TriggerCondition::DelayedTargetControlLostWhileAttached {
+            return item.event_object.as_ref().is_some_and(|event| {
+                self.attached_to_controlled_creature(event.object, item.controller)
+            });
+        }
         if let TriggerCondition::SubtypeEntersYouWithOthers { subtype, minimum } = condition.event()
         {
             let Some(entering) = item.entering_object else {

@@ -233,7 +233,6 @@ impl Game {
                 .retain(|row| !expired(row.expires_turn, row.expires_after_next_turn));
             state.effects.len() != count
         });
-        self.refresh_controllers();
         expired_controls
     }
     pub(super) fn temporary_control_bytes(&self) -> usize {
