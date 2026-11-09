@@ -148,6 +148,9 @@ impl Game {
         player: Player,
         spec: MilledSelectionSpec,
     ) -> bool {
+        if matches!(spec.destination, MilledDestination::HandAndCountSubtype(_)) {
+            self.state.resolving.as_mut().unwrap().moved_count = Some(0);
+        }
         let resolution = self.state.resolving.as_ref().unwrap();
         let eligible: Vec<_> = resolution
             .milled
@@ -225,11 +228,15 @@ impl Game {
             item.source
                 .is_none_or(|source| !selected.contains(&source.object))
         });
+        let hand_subtype = match destination {
+            MilledDestination::HandAndCountSubtype(subtype) => Some(subtype),
+            _ => None,
+        };
         let destination = match destination {
             MilledDestination::PlayPermission { .. } => {
                 unreachable!("handled permission without movement")
             }
-            MilledDestination::Hand => Zone::Hand,
+            MilledDestination::Hand | MilledDestination::HandAndCountSubtype(_) => Zone::Hand,
             MilledDestination::Battlefield => Zone::Battlefield,
             MilledDestination::LibraryTop => Zone::Library,
         };
@@ -280,15 +287,25 @@ impl Game {
                     }
                 }
             }
+            let mut moved_with_subtype = 0;
             for event in events {
                 if event.moved
                     && event.destination == Zone::Hand
                     && self.state.objects[event.after.card as usize].zone == Zone::Hand
                     && self.object_ref(event.after.card) == event.after
-                    && !self.state.known_hand.contains(&event.after)
                 {
-                    self.state.known_hand.push(event.after);
+                    if hand_subtype
+                        .is_some_and(|subtype| self.has_subtype(event.after.card, subtype))
+                    {
+                        moved_with_subtype += 1;
+                    }
+                    if !self.state.known_hand.contains(&event.after) {
+                        self.state.known_hand.push(event.after);
+                    }
                 }
+            }
+            if hand_subtype.is_some() {
+                self.state.resolving.as_mut().unwrap().moved_count = Some(moved_with_subtype);
             }
         }
     }

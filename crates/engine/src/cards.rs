@@ -1484,6 +1484,8 @@ pub enum MilledDestination {
         next_turn: bool,
     },
     Hand,
+    /// Record how many cards of this subtype actually entered their owner's hand.
+    HandAndCountSubtype(&'static str),
     Battlefield,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
