@@ -473,7 +473,7 @@ fn chosen_target_uses_counter_prohibition_and_resumable_replacements() {
             assert_eq!(game.state.pending, Pending::Replacement { player });
             assert_eq!(game.state.players[player.index()].life, 20);
             assert_eq!(game.counter_count(creature, CounterKind::Stun), 0);
-            act(&mut game, Action::ChooseReplacement { source, ability: 0 });
+            act(&mut game, Action::ChooseReplacement { source, ability: 1 });
         }
         settle(&mut game);
         assert!(game.object_view(creature).tapped);

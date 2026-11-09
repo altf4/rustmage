@@ -92,7 +92,7 @@ fn paid_origin_checks_timing_ownership_and_joint_life_and_mana_funding() {
     put(&mut g, p, "Mountain", Zone::Battlefield);
     act(&mut g, action);
     for _ in 0..4 {
-        choose(&mut g, |a| matches!(a, Action::ActivateMana { .. }));
+        choose(&mut g, |a| matches!(a, Action::TapMana { .. }));
     }
     act(&mut g, Action::BeginOrderedCosts);
     choose_cost(&mut g, CastCostClause::Life(3));
