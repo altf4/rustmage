@@ -2716,6 +2716,8 @@ pub enum Instruction {
     },
     /// Simultaneously return the controller's nonland permanent cards.
     ReturnOwnedGraveyardNonlandPermanents,
+    /// Simultaneously return every land card in the controller's graveyard tapped.
+    ReturnOwnedGraveyardLandsTapped,
     ReturnGraveyardCreatures {
         players: PlayerSet,
         maximum_mana_value: u64,

@@ -5379,7 +5379,10 @@ impl Game {
                     );
                 }
                 Instruction::ReturnOwnedGraveyardNonlandPermanents => {
-                    self.return_owned_graveyard_nonland_permanents(&item);
+                    self.return_owned_graveyard_permanents(&item, 1 | 16 | 32 | 64 | 256, 2, false);
+                }
+                Instruction::ReturnOwnedGraveyardLandsTapped => {
+                    self.return_owned_graveyard_permanents(&item, 2, 0, true);
                 }
                 Instruction::ReturnGraveyardCreatures {
                     players,

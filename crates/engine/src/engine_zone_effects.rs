@@ -264,7 +264,13 @@ impl Game {
             .collect();
         self.stage_entries(moves, None);
     }
-    pub(super) fn return_owned_graveyard_nonland_permanents(&mut self, item: &SpellView) {
+    pub(super) fn return_owned_graveyard_permanents(
+        &mut self,
+        item: &SpellView,
+        required_kinds: u16,
+        excluded_kinds: u16,
+        tapped: bool,
+    ) {
         let moves = self
             .state
             .objects
@@ -275,10 +281,10 @@ impl Game {
                 (object.zone == Zone::Graveyard
                     && object.owner == item.controller
                     && object.is_card()
-                    && kinds & (1 | 16 | 32 | 64 | 256) != 0
-                    && kinds & 2 == 0)
+                    && kinds & required_kinds != 0
+                    && kinds & excluded_kinds == 0)
                     .then(|| {
-                        let mut movement = self.entry_move(id as CardId, Zone::Battlefield, false);
+                        let mut movement = self.entry_move(id as CardId, Zone::Battlefield, tapped);
                         movement.controller = item.controller;
                         movement
                     })
