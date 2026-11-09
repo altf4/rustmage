@@ -151,7 +151,7 @@
     "crates/engine/src/engine_characteristic_query.rs": "1e21cc59a94d385637634f314d3ec355b3ab43d045f7a70c62deaa71bcb7941b",
     "crates/engine/src/engine_color_sequences.rs": "e18128aa6fb4d81aac85c87251a037f809fc61db6e1b0cab61fa42132f25e81b",
     "crates/engine/src/engine_combat_allocations.rs": "ae5ef01822d127db81f30c749f058bb0a6b44ce1f7229926141b9e6082128c7a",
-    "crates/engine/src/engine_combat_restrictions.rs": "6cdef824819c7b0b0a14720cd85bbb0f8196009be49c8c9c4b0b246e358e9e9a",
+    "crates/engine/src/engine_combat_restrictions.rs": "0bd8acd3866c2a8025a8b18f5b52f124213216000914e42aabf4c43a8c17abd4",
     "crates/engine/src/engine_combat_schedule.rs": "d7dbf158023620460537bd010b8ef45abc6589852d4313fc4550c88d9988cbb8",
     "crates/engine/src/engine_connive.rs": "597604ea44765a80aba57c0e71da5d46ac6d9fc11550dac8c950efd6ed87d79f",
     "crates/engine/src/engine_conspire.rs": "b37275598e13a2f730d9da53dc42ed98ecdecbff1f36b0daf522c3fa46a63e18",

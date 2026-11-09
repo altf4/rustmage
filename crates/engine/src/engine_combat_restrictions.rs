@@ -176,7 +176,9 @@ impl Game {
                     }
                     _ => false,
                 };
-                applies && self.continuous_fragment_available(id, |active| active == fragment)
+                applies
+                    && self
+                        .continuous_fragment_available(id, |active| std::ptr::eq(active, fragment))
             })
         })
     }
