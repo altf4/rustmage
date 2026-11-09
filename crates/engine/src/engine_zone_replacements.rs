@@ -301,6 +301,7 @@ thread_local! {
     pub(super) static TEST_INVALIDATE_STAGED_COST: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
     pub(super) static TEST_FAKE_ENTRY_LIFE: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
     pub(super) static TEST_REDIRECT_EXILE_TO_BATTLEFIELD: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
+    pub(super) static TEST_EXILE_INSTEAD_OF_HAND: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
     pub(super) static TEST_PREVENT_ZONE_MOVE: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
     pub(super) static TEST_PREVENT_PROVIDER: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
 }
@@ -724,14 +725,30 @@ impl Game {
             };
         }
         #[cfg(feature = "test-support")]
-        let test_redirect = requested == Zone::Exile
-            && TEST_REDIRECT_EXILE_TO_BATTLEFIELD
-                .with(|target| target.get() == Some(before.reference));
+        let test_replacement = match requested {
+            Zone::Exile
+                if TEST_REDIRECT_EXILE_TO_BATTLEFIELD
+                    .with(|target| target.get() == Some(before.reference)) =>
+            {
+                Some(ZoneReplacementKind::Battlefield)
+            }
+            Zone::Hand
+                if before.zone == Zone::Library
+                    && TEST_EXILE_INSTEAD_OF_HAND
+                        .with(|target| target.get() == Some(before.reference)) =>
+            {
+                Some(ZoneReplacementKind::Exile)
+            }
+            _ => None,
+        };
         #[cfg(not(feature = "test-support"))]
-        let test_redirect = false;
+        let test_replacement = None;
         let exile_on_stack_exit =
             before.zone == Zone::Stack && self.state.objects[before.id as usize].flashback;
-        if !rules.prevent && !test_redirect && requested != Zone::Graveyard && !exile_on_stack_exit
+        if !rules.prevent
+            && test_replacement.is_none()
+            && requested != Zone::Graveyard
+            && !exile_on_stack_exit
         {
             return Plan {
                 completion: None,
@@ -754,8 +771,8 @@ impl Game {
         if rules.prevent {
             choices.push(ZoneReplacementKind::Prevent);
         }
-        if test_redirect {
-            choices.push(ZoneReplacementKind::Battlefield);
+        if let Some(effect) = test_replacement {
+            choices.push(effect);
         }
         if exile_on_stack_exit
             || rules.exile_spell

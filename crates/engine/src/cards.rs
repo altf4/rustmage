@@ -3276,6 +3276,8 @@ pub enum Instruction {
     SearchRequired(SearchSpec),
     SelectLibrary(LibrarySelectionSpec),
     SelectLibraryTo(LibrarySelectionEffect),
+    /// Select cards for the hand and remember the actual number that moved there.
+    SelectLibraryToHandRememberCount(LibrarySelectionEffect),
     /// Reveal the top cards, alternating the owner's hand and the opponent's
     /// choices for the bottom of that library, starting with the hand.
     AlternateRevealedLibraryPicks(u16),

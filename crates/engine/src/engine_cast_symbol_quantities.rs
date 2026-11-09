@@ -17,6 +17,7 @@ pub(super) fn selected(program: &[Instruction]) -> bool {
         | Instruction::ModalOncePerTurn(modes)
         | Instruction::ModalUpToX { modes, .. } => modes.iter().any(|m| selected(m.program)),
         Instruction::SelectLibraryTo(effect)
+        | Instruction::SelectLibraryToHandRememberCount(effect)
         | Instruction::SelectLibraryThenMayTransform(effect)
         | Instruction::SelectLibraryThenReflexiveEquipment { effect, .. } => {
             effect.maximum_mana_value.is_some_and(amount)

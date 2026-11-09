@@ -27,8 +27,9 @@ struct AlternatingLibraryPicks {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub(super) enum LibraryEntryCompletion {
+pub(super) enum LibrarySelectionCompletion {
     None,
+    RememberHandCount,
     MayTransform,
     ReflexiveEquipment(u16),
 }
@@ -39,7 +40,7 @@ pub(super) struct LibrarySelection {
     pub top_land: Option<TopLandStage>,
     pub spec: LibrarySelectionSpec,
     pub owner: Player,
-    completion: LibraryEntryCompletion,
+    completion: LibrarySelectionCompletion,
     entered: Vec<ObjectRef>,
     pub transform_pending: bool,
     pub destination: LibraryPickDestination,
@@ -147,7 +148,7 @@ impl Game {
                 remainder: LibraryRemainder::Keep,
             },
             owner,
-            completion: LibraryEntryCompletion::None,
+            completion: LibrarySelectionCompletion::None,
             entered: Vec::new(),
             transform_pending: false,
             destination: LibraryPickDestination::Hand,
@@ -222,20 +223,27 @@ impl Game {
         item: &SpellView,
         effect: LibrarySelectionEffect,
     ) -> bool {
-        self.start_library_selection_completion(item, effect, LibraryEntryCompletion::None)
+        self.start_library_selection_completion(item, effect, LibrarySelectionCompletion::None)
     }
     pub(super) fn start_library_selection_completion(
         &mut self,
         item: &SpellView,
         effect: LibrarySelectionEffect,
-        completion: LibraryEntryCompletion,
+        completion: LibrarySelectionCompletion,
     ) -> bool {
+        let remembers_hand = completion == LibrarySelectionCompletion::RememberHandCount;
+        match completion {
+            LibrarySelectionCompletion::None => {}
+            LibrarySelectionCompletion::RememberHandCount => {
+                assert_eq!(effect.destination, LibraryPickDestination::Hand);
+            }
+            LibrarySelectionCompletion::MayTransform
+            | LibrarySelectionCompletion::ReflexiveEquipment(_) => {
+                assert_eq!(effect.destination, LibraryPickDestination::Battlefield);
+            }
+        }
         assert!(
-            completion == LibraryEntryCompletion::None
-                || effect.destination == LibraryPickDestination::Battlefield
-        );
-        assert!(
-            completion != LibraryEntryCompletion::MayTransform
+            completion != LibrarySelectionCompletion::MayTransform
                 || effect.spec.count == LibrarySelectionCount::Fixed(1)
         );
         let spec = effect.spec;
@@ -299,6 +307,9 @@ impl Game {
                 .map_or(usize::MAX, |at| at + 1),
         };
         let maximum_mana_value = effect.maximum_mana_value.map(|v| self.item_amount(v, item));
+        if remembers_hand {
+            self.state.resolving.as_mut().unwrap().moved_count = Some(0);
+        }
         let remaining: Vec<_> = self.state.players[owner.index()]
             .library
             .iter()
@@ -315,6 +326,10 @@ impl Game {
                 self.shuffle_library_cards(owner);
             }
             return false;
+        }
+        let private_look = remembers_hand && !effect.public;
+        if private_look {
+            self.remember_private_library_top(owner, owner, remaining[0]);
         }
         let eligible: Vec<_> = remaining
             .iter()
@@ -432,6 +447,8 @@ impl Game {
         // Even a forced random remainder must expose the looked information
         // before it disappears into the library (there may be no eligible pick).
         if maximum == 0
+            // A private up-to choice must also show a looked card that cannot be selected.
+            && !(private_look && spec.optional)
             && !matches!(
                 spec.remainder,
                 LibraryRemainder::BottomRandom
@@ -779,7 +796,10 @@ impl Game {
             .selection
             .take()
             .unwrap();
-        if f.top_land.is_none() || !f.selected.is_empty() {
+        let remembers_hand = f.completion == LibrarySelectionCompletion::RememberHandCount;
+        let keep_private_look =
+            remembers_hand && f.selected.is_empty() && f.spec.remainder == LibraryRemainder::Keep;
+        if !keep_private_look && (f.top_land.is_none() || !f.selected.is_empty()) {
             self.forget_library_top(owner);
         }
         for reference in f.selected.iter().chain(&f.remaining).chain(&f.bottom) {
@@ -816,6 +836,15 @@ impl Game {
             return;
         }
         let ids: Vec<_> = f.selected.iter().map(|r| r.card).collect();
+        if remembers_hand && f.spec.reveal {
+            for &reference in &f.selected {
+                let card = self.state.objects[reference.card as usize].card;
+                self.record_zone_reveal(card, owner, Zone::Library);
+                if self.top_library_card(owner) == Some(reference.card) {
+                    self.remember_library_top(owner, reference);
+                }
+            }
+        }
         let events = match f.destination {
             LibraryPickDestination::Hand => self.move_objects_raw(&ids, Zone::Hand),
             LibraryPickDestination::Graveyard => self.move_objects_raw(&ids, Zone::Graveyard),
@@ -824,6 +853,14 @@ impl Game {
             }
             _ => Vec::new(),
         };
+        if remembers_hand {
+            let count = events
+                .iter()
+                .filter(|event| event.moved && event.destination == Zone::Hand)
+                .count();
+            self.state.resolving.as_mut().unwrap().moved_count =
+                Some(u64::try_from(count).capacity("selected hand count exhausted"));
+        }
         if f.destination == LibraryPickDestination::ExileCastThisTurn {
             for event in &events {
                 if event.moved && event.destination == Zone::Exile {
@@ -977,7 +1014,14 @@ impl Game {
             .resolving
             .as_ref()
             .and_then(|r| r.selection.as_ref())
-            .filter(|frame| frame.entering && frame.completion != LibraryEntryCompletion::None)
+            .filter(|frame| {
+                frame.entering
+                    && matches!(
+                        frame.completion,
+                        LibrarySelectionCompletion::MayTransform
+                            | LibrarySelectionCompletion::ReflexiveEquipment(_)
+                    )
+            })
         else {
             return;
         };
@@ -990,7 +1034,7 @@ impl Game {
             })
             .map(|event| event.after)
             .filter(|object| {
-                frame.completion == LibraryEntryCompletion::MayTransform
+                frame.completion == LibrarySelectionCompletion::MayTransform
                     || (self.current_kinds(object.card) & 16 != 0
                         && self.has_subtype(object.card, "Equipment"))
             })
@@ -1046,7 +1090,7 @@ impl Game {
         let Some(frame) = resolution.selection.as_ref().filter(|frame| frame.entering) else {
             return false;
         };
-        if frame.completion == LibraryEntryCompletion::MayTransform
+        if frame.completion == LibrarySelectionCompletion::MayTransform
             && frame
                 .entered
                 .first()
@@ -1070,7 +1114,7 @@ impl Game {
             let completion = frame.completion;
             let entered = std::mem::take(&mut frame.entered);
             self.commit_library_remainder(frame.owner, *frame);
-            if let LibraryEntryCompletion::ReflexiveEquipment(ability) = completion
+            if let LibrarySelectionCompletion::ReflexiveEquipment(ability) = completion
                 && !entered.is_empty()
             {
                 let item = self.state.resolving.as_ref().unwrap().item.clone();

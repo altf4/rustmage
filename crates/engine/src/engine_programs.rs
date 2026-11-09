@@ -7765,7 +7765,7 @@ impl Game {
                     if self.start_library_selection_completion(
                         &item,
                         effect,
-                        library_selection::LibraryEntryCompletion::MayTransform,
+                        library_selection::LibrarySelectionCompletion::MayTransform,
                     ) {
                         return;
                     }
@@ -7774,7 +7774,7 @@ impl Game {
                     if self.start_library_selection_completion(
                         &item,
                         effect,
-                        library_selection::LibraryEntryCompletion::ReflexiveEquipment(ability),
+                        library_selection::LibrarySelectionCompletion::ReflexiveEquipment(ability),
                     ) {
                         return;
                     }
@@ -7786,6 +7786,15 @@ impl Game {
                 }
                 Instruction::SelectLibraryTo(effect) => {
                     if self.start_library_selection_to(&item, effect) {
+                        return;
+                    }
+                }
+                Instruction::SelectLibraryToHandRememberCount(effect) => {
+                    if self.start_library_selection_completion(
+                        &item,
+                        effect,
+                        library_selection::LibrarySelectionCompletion::RememberHandCount,
+                    ) {
                         return;
                     }
                 }

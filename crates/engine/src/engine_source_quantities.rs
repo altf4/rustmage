@@ -72,6 +72,7 @@ fn selected(program: &[Instruction]) -> SelectedQuantities {
             Instruction::SetBaseStatsFromSource { .. } => result.toughness = true,
             Instruction::AttachPriorSourceEquipment { .. } => result.attached_equipment = true,
             Instruction::SelectLibraryTo(effect)
+            | Instruction::SelectLibraryToHandRememberCount(effect)
             | Instruction::SelectLibraryThenMayTransform(effect)
             | Instruction::SelectLibraryThenReflexiveEquipment { effect, .. } => {
                 if let Some(value) = effect.maximum_mana_value {
@@ -452,6 +453,7 @@ fn reads_chosen_type(program: &[Instruction]) -> bool {
     program.iter().any(|instruction| match instruction {
         Instruction::SelectLibrary(spec) => filter(spec.filter),
         Instruction::SelectLibraryTo(effect)
+        | Instruction::SelectLibraryToHandRememberCount(effect)
         | Instruction::SelectLibraryThenMayTransform(effect)
         | Instruction::SelectLibraryThenReflexiveEquipment { effect, .. } => {
             filter(effect.spec.filter)
