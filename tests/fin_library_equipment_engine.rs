@@ -316,7 +316,7 @@ fn job_select_and_the_reflexive_attachment_resolve_in_either_stack_order() {
         if reflexive_first {
             passes(&mut game);
             let hero = game.object_view(katana).attached_to.unwrap();
-            assert_eq!(game.object_view(hero.card).name, "Hero");
+            assert_eq!(game.object_view(hero.card).name, "Hero Token");
         }
     }
 }
