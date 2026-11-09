@@ -154,6 +154,9 @@ impl Game {
             }
             TargetRule::SingleTargetStackObject => item.targets.len() == 1,
             TargetRule::Ability => item.kind != StackKind::Spell,
+            TargetRule::YourAbility => {
+                item.kind != StackKind::Spell && item.controller == controller
+            }
             TargetRule::TriggeredAbility { relation } => {
                 !matches!(
                     item.kind,
@@ -743,32 +746,24 @@ impl Game {
             false
         }
     }
-    /// Copy an ability packet, never its physical source. All declared choices,
-    /// paid-cost facts and immutable program/origin contexts remain owned.
-    pub(super) fn copy_target_ability(&mut self, item: &SpellView, group: u16) -> bool {
+    pub(super) fn copy_target_ability(
+        &mut self,
+        item: &SpellView,
+        group: u16,
+        amount: u64,
+    ) -> bool {
         let Some(template) = item
             .targets
             .iter()
             .find(|bound| bound.group == group)
             .and_then(|bound| self.bound_stack_item(bound))
-            .filter(|candidate| candidate.kind != StackKind::Spell)
             .cloned()
         else {
             return false;
         };
-        let mut copy = template.clone();
-        copy.id = self.next_stack_id();
-        copy.controller = item.controller;
-        copy.is_copy = true;
-        self.state.stack_copy_data.get_or_insert_default().retarget = Some(Retarget {
-            item: copy,
-            template,
-            remaining: 0,
-            victim: None,
-            keywords: Keywords::NONE,
-        });
-        self.advance_copy_targets()
+        self.begin_ability_copies(template, item.controller, amount)
     }
+
     pub(super) fn copy_captured_activated_ability(&mut self, item: &SpellView) -> bool {
         let Some(event) = item.copy_event.as_ref() else {
             return false;
@@ -786,19 +781,49 @@ impl Game {
         if !matches!(template.kind, StackKind::ActivatedAbility { .. }) {
             return false;
         }
-        let mut copy = template.clone();
-        copy.id = self.next_stack_id();
-        copy.controller = item.controller;
-        copy.is_copy = true;
+        self.begin_ability_copies(template, item.controller, 1)
+    }
+
+    fn begin_ability_copies(
+        &mut self,
+        template: SpellView,
+        controller: Player,
+        amount: u64,
+    ) -> bool {
+        if amount == 0 || template.kind == StackKind::Spell {
+            return false;
+        }
+        if let StackKind::ActivatedAbility { ability } = template.kind
+            && template.source.is_some_and(|source| {
+                source
+                    .card
+                    .activation(ability)
+                    .program
+                    .contains(&Instruction::ActivationCannotBeCopied)
+            })
+        {
+            return false;
+        }
+        let copy = self.allocate_ability_copy(&template, controller);
         self.state.stack_copy_data.get_or_insert_default().retarget = Some(Retarget {
             item: copy,
             template,
-            remaining: 0,
+            remaining: amount - 1,
             victim: None,
             keywords: Keywords::NONE,
         });
         self.advance_copy_targets()
     }
+
+    /// Copies retain the physical source, paid-cost facts and declared choices.
+    fn allocate_ability_copy(&mut self, template: &SpellView, controller: Player) -> SpellView {
+        let mut copy = template.clone();
+        copy.id = self.next_stack_id();
+        copy.controller = controller;
+        copy.is_copy = true;
+        copy
+    }
+
     fn ability_source_kinds(&self, item: &SpellView) -> u16 {
         let Some(source) = item.source() else {
             return 0;
@@ -1217,8 +1242,13 @@ impl Game {
         if r.remaining == 0 {
             state.retarget = None;
         } else {
-            let copy = self.allocate_spell_copy(&r.template, r.item.controller);
-            self.grant_stack_keywords_expiring(copy.source.unwrap().object, r.keywords, None);
+            let copy = if r.template.kind == StackKind::Spell {
+                let copy = self.allocate_spell_copy(&r.template, r.item.controller);
+                self.grant_stack_keywords_expiring(copy.source.unwrap().object, r.keywords, None);
+                copy
+            } else {
+                self.allocate_ability_copy(&r.template, r.item.controller)
+            };
             self.state.stack_copy_data.as_mut().unwrap().retarget = Some(Retarget {
                 item: copy,
                 remaining: r.remaining - 1,

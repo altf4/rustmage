@@ -218,7 +218,8 @@ impl Game {
             generic_increase: ability_world::CharacteristicWorld::named_activation_generic_increase(
                 self, source,
             ),
-            x: u64::from(x) * u64::from(definition.activation_x_symbols(ability)),
+            x: u64::from(x.max(definition.activation(ability).minimum_x()))
+                * u64::from(definition.activation_x_symbols(ability)),
         }
     }
     pub(super) fn record_power_up_use(&mut self, item: &SpellView, ability: u16) {

@@ -302,6 +302,8 @@ pub enum TargetRule {
     SingleTargetStackObject,
     /// Any activated or triggered ability on the stack.
     Ability,
+    /// Any stack ability controlled by the choosing player.
+    YourAbility,
     /// Only a triggered ability, including a copy of a triggered ability.
     TriggeredAbility {
         relation: i8,
@@ -2393,6 +2395,10 @@ pub enum Instruction {
     CopyTargetAbility {
         group: u16,
     },
+    /// Copy the targeted ability once for each unit of the announced X.
+    CopyTargetAbilityX {
+        group: u16,
+    },
     /// Copy the nonmana activated ability captured by this trigger, if it
     /// remains on the stack, with optional new targets.
     CopyCapturedActivatedAbility,
@@ -2446,6 +2452,13 @@ pub enum Instruction {
     RequireBlocks(CreatureFilter),
     /// Definition header: announce X as a generic activation mana cost.
     ActivationX,
+    /// Definition header for a variable activation with a minimum X.
+    ActivationXWithMinimum {
+        symbols: u16,
+        minimum: u32,
+    },
+    /// An activated instance of this template cannot be copied.
+    ActivationCannotBeCopied,
     /// Definition header: declare X for a nonmana cost and its target quantity.
     ActivationNonmanaX,
     /// Definition header: pay the announced X as an additional life cost.

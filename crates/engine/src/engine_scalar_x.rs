@@ -268,6 +268,11 @@ impl Game {
         intervals
     }
     fn activation_x_intervals(&self, a: &Announcement) -> Vec<XInterval> {
+        let StackKind::ActivatedAbility { ability } = a.item.kind else {
+            unreachable!("activation X announcement")
+        };
+        let source = a.item.source.expect("activation source");
+        let minimum = source.card.activation(ability).minimum_x();
         let fundable = |value: u32| {
             let mut probe = a.clone();
             probe.item.x = Some(value);
@@ -275,10 +280,10 @@ impl Game {
                 .cost_options()
                 .any(|cost| self.announcement_cost_fundable(&probe, cost))
         };
-        if !fundable(0) {
+        if !fundable(minimum) {
             return Vec::new();
         }
-        let (mut low, mut high) = (0u32, u32::MAX);
+        let (mut low, mut high) = (minimum, u32::MAX);
         while low < high {
             let mid = low + (high - low).div_ceil(2);
             if fundable(mid) {
@@ -288,7 +293,7 @@ impl Game {
             }
         }
         vec![XInterval {
-            minimum: 0,
+            minimum,
             maximum: low,
         }]
     }

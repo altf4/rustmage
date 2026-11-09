@@ -503,6 +503,9 @@ impl Game {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ActivatedAbility {
     pub(crate) fn x_symbols(&self) -> u32 {
+        if let Some(Instruction::ActivationXWithMinimum { symbols, .. }) = self.program.first() {
+            return u32::from(*symbols);
+        }
         u32::try_from(
             self.program
                 .iter()
@@ -510,6 +513,12 @@ impl ActivatedAbility {
                 .count(),
         )
         .expect("activation X header count")
+    }
+    pub(super) fn minimum_x(&self) -> u32 {
+        match self.program.first() {
+            Some(Instruction::ActivationXWithMinimum { minimum, .. }) => *minimum,
+            _ => 0,
+        }
     }
     pub(super) fn has_x_cost(&self) -> bool {
         self.x_symbols() != 0 || self.life_x_cost() || self.nonmana_x()

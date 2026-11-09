@@ -276,6 +276,10 @@ impl Game {
             packet.borrowed_slot = goal.source.as_ref().unwrap().4;
             let mut proposal = self.payment_announcement(packet, counters.clone(), None, None);
             proposal.plan = plan;
+            let minimum = ability.minimum_x();
+            if minimum != 0 {
+                proposal.item.x = Some(minimum);
+            }
             return self.activation_color_target_fundable(&proposal, None, false);
         }
         if *counters == Counters::default() && self.first_equip_zero_available(goal.actor, ability)

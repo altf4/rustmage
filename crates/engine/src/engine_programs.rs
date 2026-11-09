@@ -3571,6 +3571,7 @@ impl Game {
                     | Instruction::DestroyTargetsThenSourceCountersIfOwnCreature { .. }
                     | Instruction::CopyTargetSpell { .. }
                     | Instruction::CopyTargetAbility { .. }
+                    | Instruction::CopyTargetAbilityX { .. }
                     | Instruction::DamageByGroup { .. }
                     | Instruction::LoyaltyDamage { .. }
                     | Instruction::PowerDamage { .. }
@@ -6498,7 +6499,12 @@ impl Game {
                     }
                 }
                 Instruction::CopyTargetAbility { group } => {
-                    if self.copy_target_ability(&item, group) {
+                    if self.copy_target_ability(&item, group, 1) {
+                        return;
+                    }
+                }
+                Instruction::CopyTargetAbilityX { group } => {
+                    if self.copy_target_ability(&item, group, u64::from(item.x.unwrap_or(0))) {
                         return;
                     }
                 }
@@ -6610,6 +6616,8 @@ impl Game {
                 Instruction::RequireBlocks(filter) => self.require_blocks(&item, filter),
                 Instruction::ExileDamagedIfDiesThisTurn
                 | Instruction::ActivationX
+                | Instruction::ActivationXWithMinimum { .. }
+                | Instruction::ActivationCannotBeCopied
                 | Instruction::ActivationNonmanaX
                 | Instruction::ActivationLifeX
                 | Instruction::TargetsExactlyX
