@@ -2394,6 +2394,15 @@ impl<'g> FundingState<'g> {
         step: &FundingMove,
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
+        self.visit_applied_for(step, None, emit)
+    }
+
+    pub(super) fn visit_applied_for(
+        &self,
+        step: &FundingMove,
+        goal: Option<&FundingGoal>,
+        emit: &mut dyn FnMut(&Self) -> bool,
+    ) -> bool {
         if step.output.as_ref().and_then(|o| o.deferred_cost).is_some() {
             return self.visit_deferred(step, emit);
         }
@@ -2441,7 +2450,7 @@ impl<'g> FundingState<'g> {
                 next.add_funding_output(step, bonus, production);
                 return emit(&next);
             }
-            return next.visit_output(step, bonus, emit);
+            return next.visit_output(step, bonus, goal, emit);
         }
         let external = if let Some(external) = step.external {
             let source = &self.resources[step.resource];
@@ -2510,7 +2519,7 @@ impl<'g> FundingState<'g> {
                 external,
                 &mut |world| {
                     let bonus = bonus.with_trigger_bonuses(world, self.actor, tap_source);
-                    world.visit_output(step, bonus, emit)
+                    world.visit_output(step, bonus, goal, emit)
                 },
             )
         })

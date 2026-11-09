@@ -78,6 +78,7 @@ mod mana_tap_bonus;
 pub use mana_tap_bonus::ManaTapBonus;
 #[path = "engine_mana_output.rs"]
 pub mod mana_output;
+pub use mana_output::ManaSplitChoiceView;
 #[doc(hidden)]
 #[path = "engine_turn_facts.rs"]
 pub mod turn_facts;
@@ -3609,6 +3610,8 @@ pub struct LegalActionSpace {
     pub source_counter_choice: Option<SourceCounterChoiceView>,
     pub mana_lot_spend: Option<ManaLotSpendRange>,
     pub mana_payment: Option<ManaPaymentDomain>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mana_split: Option<ManaSplitChoiceView>,
     pub choices: Vec<Action>,
     pub x_choice: Option<XChoiceView>,
     pub damage_assignment: Option<DamageAssignmentRange>,
@@ -3893,6 +3896,8 @@ pub struct Observation {
     pub used_free_hand_permissions: Vec<ObjectRef>,
     pub suspended_mana_announcements: Vec<ManaAnnouncementView>,
     pub announcing_payment: Option<PendingPaymentView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mana_split: Option<ManaSplitChoiceView>,
     pub mana_choices: Vec<Mana>,
     pub mode_choices: Vec<ModeChoiceView>,
     pub cost_choices: Vec<SpellCostChoiceView>,
@@ -4504,6 +4509,7 @@ impl Game {
             source_counter_choice: self.source_counter_choice(),
             mana_lot_spend: self.mana_lot_spend_range(),
             mana_payment: self.mana_payment_domain(),
+            mana_split: self.mana_split_choice(),
             choices: self.legal_actions(),
             x_choice: self.x_choice(),
             damage_assignment: self.damage_assignment_range(),
@@ -4533,7 +4539,7 @@ impl Game {
         })
     }
     /// Reuse a caller-owned buffer of concrete indexed choices. Numeric ranges
-    /// up to 64 wide are exhaustive; larger damage/X domains provide bounded
+    /// up to 64 wide are exhaustive; larger numeric domains provide bounded
     /// representatives. Use legal_action_space for the complete parametric space.
     pub fn legal_actions_into(&self, out: &mut Vec<Action>) {
         out.clear();
@@ -4713,6 +4719,16 @@ impl Game {
             } else if let Action::ChooseX { value } = &action {
                 self.x_choice()
                     .is_some_and(|domain| domain.contains(*value))
+            } else if let Action::ChooseMana { production } = &action
+                && matches!(
+                    self.state.pending,
+                    Pending::EffectMana {
+                        production: ManaProduction::Split(_),
+                        ..
+                    }
+                )
+            {
+                self.mana_split_production_legal(*production)
             } else if let Action::AssignDamage { target, amount } = &action {
                 self.damage_assignment_range().is_some_and(|range| {
                     *target == range.target && *amount >= range.minimum && *amount <= range.maximum
@@ -12057,6 +12073,7 @@ impl Game {
             } else {
                 Vec::new()
             },
+            mana_split: owns_choice.then(|| self.mana_split_choice()).flatten(),
             mana_choices: {
                 let mut options = Vec::new();
                 if owns_choice {

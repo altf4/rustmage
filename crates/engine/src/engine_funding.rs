@@ -775,6 +775,19 @@ impl<'g> FundingState<'g> {
                 mask,
                 amount: u32::MAX,
             },
+            ManaProduction::SourcePowerSplit { first, second } => {
+                let mut mana = [0; 6];
+                mana[first.index()] = u32::MAX;
+                mana[second.index()] = u32::MAX;
+                ManaProduction::Fixed(mana)
+            }
+            ManaProduction::Split(split) => {
+                let mut mana = [0; 6];
+                let upper = split.total.min(u64::from(u32::MAX)) as u32;
+                mana[split.first.index()] = upper;
+                mana[split.second.index()] = upper;
+                ManaProduction::Fixed(mana)
+            }
             ManaProduction::DistinctCreaturePowers => ManaProduction::any_color(u32::MAX),
             ManaProduction::ChoiceStat { colors, .. } => ManaProduction::Choice {
                 mask: colors,
@@ -992,6 +1005,7 @@ impl<'g> FundingState<'g> {
                         power_sensitive |= matches!(
                             production.base(),
                             ManaProduction::SourcePower { .. }
+                                | ManaProduction::SourcePowerSplit { .. }
                                 | ManaProduction::TapSourcePowerChoice { .. }
                                 | ManaProduction::DistinctCreaturePowers
                         );
@@ -2636,6 +2650,10 @@ impl<'g> FundingState<'g> {
         let Some(output) = &step.output else {
             return Some(step.production);
         };
+        if let Some(split) = output.unselected_split(self, output.source_power) {
+            let (min, max) = split.bounds(self.projected_mana_split_capacity())?;
+            return (min == max).then(|| split.production(min));
+        }
         let mut first = None;
         let mut multiple = false;
         output.visit(self, output.source_power, |production| {
@@ -2652,6 +2670,7 @@ impl<'g> FundingState<'g> {
         &self,
         step: &FundingMove,
         tap_bonus: ManaTapBonus,
+        goal: Option<&FundingGoal>,
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
         let mut finish = |production| {
@@ -2662,10 +2681,64 @@ impl<'g> FundingState<'g> {
             })
         };
         if let Some(output) = &step.output {
+            if let Some(split) = output.unselected_split(self, output.source_power) {
+                return self.visit_projected_mana_split(
+                    split,
+                    goal,
+                    output.quality,
+                    tap_bonus,
+                    finish,
+                );
+            }
             output.visit(self, output.source_power, finish)
         } else {
             finish(step.production)
         }
+    }
+    fn projected_mana_split_capacity(&self) -> Mana {
+        self.mana
+            .map(|pool| u32::MAX - pool.min(u128::from(u32::MAX)) as u32)
+    }
+
+    fn visit_projected_mana_split(
+        &self,
+        split: crate::cards::ManaSplit,
+        goal: Option<&FundingGoal>,
+        quality: Option<mana_lots::Quality>,
+        tap_bonus: ManaTapBonus,
+        mut finish: impl FnMut(Mana) -> bool,
+    ) -> bool {
+        let Some((min, max)) = split.bounds(self.projected_mana_split_capacity()) else {
+            return false;
+        };
+        if max - min < 64 {
+            return (min..=max).any(|amount| finish(split.production(amount)));
+        }
+        let preferred = goal.map_or(min, |goal| {
+            let first = split.first.index();
+            let available = mana_lots::available(self.mana, &self.lots, self.purpose);
+            u128::from(goal.required[first])
+                .saturating_sub(available[first])
+                .clamp(u128::from(min), u128::from(max)) as u32
+        });
+        if finish(split.production(preferred)) {
+            return true;
+        }
+        // The interval upper bound can add both component maxima for pruning.
+        // Only exact allocations reach the actual feasibility continuation.
+        let mut possible = |upper| {
+            goal.is_none_or(|goal| {
+                if tap_bonus.has_any() {
+                    return true;
+                }
+                let mut optimistic = self.clone();
+                optimistic.add_completed_mana(upper, quality, [0; 6]);
+                optimistic.optimistic(goal)
+            })
+        };
+        mana_output::visit_split_range(split, min, max, &mut possible, &mut |production| {
+            production[split.first.index()] != preferred && finish(production)
+        })
     }
     fn key(&self, goal: &FundingGoal) -> FundingKey {
         // Attachment edges distinguish otherwise interchangeable mana sources.
@@ -4218,7 +4291,7 @@ impl<'g> FundingState<'g> {
                 )
             });
             for step in moves {
-                if self.visit_applied(&step, &mut |next| {
+                if self.visit_applied_for(&step, Some(goal), &mut |next| {
                     next.reachable_with_completion(goal, evidence, visited, completion)
                 }) {
                     return true;
@@ -5999,7 +6072,7 @@ impl Game {
         if state.visit_distinct_actions(
             &goal,
             |step| {
-                state.visit_applied(step, &mut |next| {
+                state.visit_applied_for(step, Some(&goal), &mut |next| {
                     next.reachable_with_evidence(
                         &goal,
                         announcement.evidence.as_ref().map(|e| e.threshold),
@@ -6050,7 +6123,9 @@ impl Game {
         state.visit_distinct_actions(
             &goal,
             |step| {
-                state.visit_applied(step, &mut |next| next.reachable(&goal, &mut HashSet::new()))
+                state.visit_applied_for(step, Some(&goal), &mut |next| {
+                    next.reachable(&goal, &mut HashSet::new())
+                })
             },
             emit,
         )
@@ -6086,7 +6161,7 @@ impl Game {
         state.visit_distinct_actions(
             &goal,
             |step| {
-                state.visit_applied(step, &mut |next| {
+                state.visit_applied_for(step, Some(&goal), &mut |next| {
                     next.guided_mana_resume_fundable(&Pending::PlotPayment {
                         player: request.controller,
                     })
@@ -6328,7 +6403,7 @@ impl Game {
             if world.action(&step) != *action {
                 continue;
             }
-            if world.visit_applied(&step, &mut |next| {
+            if world.visit_applied_for(&step, Some(&goal), &mut |next| {
                 next.reachable_with_evidence(&goal, evidence, &mut HashSet::new())
             }) {
                 let allocation = step
@@ -6496,7 +6571,7 @@ impl FundingState<'_> {
                 self.moves(goal)
             };
             for step in moves {
-                if self.visit_applied(&step, &mut |next| {
+                if self.visit_applied_for(&step, Some(goal), &mut |next| {
                     next.fund_creature_counter_cost(goal, requirement, selected, visited)
                 }) {
                     return true;
@@ -6630,7 +6705,9 @@ impl Game {
         state.visit_distinct_actions(
             &goal,
             |step| {
-                state.visit_applied(step, &mut |next| next.reachable(&goal, &mut HashSet::new()))
+                state.visit_applied_for(step, Some(&goal), &mut |next| {
+                    next.reachable(&goal, &mut HashSet::new())
+                })
             },
             emit,
         )
@@ -6749,11 +6826,20 @@ impl FundingState<'_> {
             })
         };
         if let Some(output) = &a.mana_output {
-            output.visit(
-                self,
-                a.item.source.expect("mana source").facts.power,
-                finish,
-            )
+            let power = a.item.source.expect("mana source").facts.power;
+            if let Some(split) = output.unselected_split(self, power) {
+                if let Some(production) = selected {
+                    return split.contains(production) && finish(production);
+                }
+                return self.visit_projected_mana_split(
+                    split,
+                    self.game.mana_output_parent_goal().as_ref(),
+                    quality,
+                    bonus,
+                    finish,
+                );
+            }
+            output.visit(self, power, finish)
         } else if let Some(production) = a.production {
             finish(production)
         } else {
@@ -6890,6 +6976,37 @@ impl Game {
             world
         }
     }
+    pub(super) fn mana_output_parent_goal(&self) -> Option<FundingGoal> {
+        let a = self.state.announcing.as_ref()?;
+        let output = a.mana_output.as_ref()?;
+        self.state
+            .mana_announcement_stack
+            .as_deref()
+            .and_then(|frames| frames.last())
+            .map(|frame| self.funding_goal(&frame.announcement))
+            .or_else(|| {
+                output
+                    .resume
+                    .as_deref()
+                    .and_then(|pending| self.guided_mana_goal(pending))
+            })
+    }
+
+    pub(super) fn mana_split_output_may_fund(&self, upper: Mana) -> bool {
+        let Some(goal) = self.mana_output_parent_goal() else {
+            return true;
+        };
+        let a = self.state.announcing.as_ref().expect("paid split mana");
+        let output = a.mana_output.as_ref().expect("paid split output");
+        let mut world = self.paid_mana_parent_world(a);
+        if a.item.tap_mana_bonus(&world).has_any() {
+            return true;
+        }
+        world.add_completed_mana(upper, output.quality, [0; 6]);
+        world.project_paid_mana_use(&a.item);
+        world.optimistic(&goal)
+    }
+
     pub(super) fn mana_output_choice_fundable(&self, production: Mana) -> bool {
         let a = self
             .state

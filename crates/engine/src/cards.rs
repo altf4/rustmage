@@ -748,6 +748,13 @@ pub enum ManaProduction {
     SourcePower {
         color: u8,
     },
+    /// Divide the source's nonnegative power between two mana colors.
+    SourcePowerSplit {
+        first: ChoiceColor,
+        second: ChoiceColor,
+    },
+    /// A resolved two-color split can exceed one mana pool component.
+    Split(ManaSplit),
     /// All source-power mana has one selected color, never a split.
     TapSourcePowerChoice {
         mask: u8,
@@ -771,6 +778,44 @@ pub enum ManaProduction {
     },
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct ManaSplit {
+    pub(crate) first: ChoiceColor,
+    pub(crate) second: ChoiceColor,
+    pub(crate) total: u64,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl ManaSplit {
+    pub(crate) fn bounds(self, available: Mana) -> Option<(u32, u32)> {
+        let maximum = self.total.min(u64::from(available[self.first.index()])) as u32;
+        let minimum = self
+            .total
+            .saturating_sub(u64::from(available[self.second.index()]));
+        (minimum <= u64::from(maximum)).then_some((minimum as u32, maximum))
+    }
+
+    pub(crate) fn contains(self, production: Mana) -> bool {
+        let first = self.first.index();
+        let second = self.second.index();
+        first != second
+            && u64::from(production[first]) + u64::from(production[second]) == self.total
+            && production
+                .into_iter()
+                .enumerate()
+                .all(|(index, amount)| index == first || index == second || amount == 0)
+    }
+
+    pub(crate) fn production(self, first_amount: u32) -> Mana {
+        let mut production = [0; 6];
+        production[self.first.index()] = first_amount;
+        production[self.second.index()] = u32::try_from(self.total - u64::from(first_amount))
+            .capacity("mana representation exhausted");
+        production
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ManaProduction {
     pub const fn any_color(amount: u32) -> Self {
         Self::Choice {
@@ -788,6 +833,23 @@ impl ManaProduction {
             value => value,
         }
     }
+    pub(crate) fn split_for_power(first: ChoiceColor, second: ChoiceColor, power: i128) -> Self {
+        let total = u64::try_from(power.max(0)).unwrap_or(u64::MAX);
+        if total == 0 {
+            return Self::Fixed([0; 6]);
+        }
+        if first == second {
+            let mut mana = [0; 6];
+            mana[first.index()] = u32::try_from(total).capacity("mana representation exhausted");
+            return Self::Fixed(mana);
+        }
+        Self::Split(ManaSplit {
+            first,
+            second,
+            total,
+        })
+    }
+
     pub(crate) fn visit(self, mut emit: impl FnMut(Mana) -> bool) -> bool {
         match self {
             Self::Tagged { production, .. } => production.visit(emit),
@@ -796,6 +858,7 @@ impl ManaProduction {
             | Self::ColorsAmongControlledPermanents
             | Self::ChoiceStat { .. }
             | Self::SourcePower { .. }
+            | Self::SourcePowerSplit { .. }
             | Self::TapSourcePowerChoice { .. }
             | Self::MonocoloredPermanentColors
             | Self::DistinctCreaturePowers
@@ -803,6 +866,9 @@ impl ManaProduction {
                 panic!("dynamic mana requires a characteristic world")
             }
             Self::Fixed(mana) => emit(mana),
+            Self::Split(split) => split
+                .bounds([u32::MAX; 6])
+                .is_some_and(|(min, max)| (min..=max).any(|amount| emit(split.production(amount)))),
             Self::Combination { mask, amount } => {
                 fn combinations(
                     mask: u8,

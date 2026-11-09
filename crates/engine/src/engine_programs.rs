@@ -6878,13 +6878,16 @@ impl Game {
                         | ManaProduction::DistinctCreaturePowers
                         | ManaProduction::CountSubtype { .. }
                         | ManaProduction::SourcePower { .. }
+                        | ManaProduction::SourcePowerSplit { .. }
                         | ManaProduction::TapSourcePowerChoice { .. }
                         | ManaProduction::Tagged { .. } => unreachable!("resolved production"),
                         ManaProduction::Fixed(mana) => {
                             self.add_quality_mana(item.controller, mana, quality)
                         }
                         production @ (ManaProduction::Choice { .. }
-                        | ManaProduction::Combination { .. }) => {
+                        | ManaProduction::Combination { .. }
+                        | ManaProduction::Split(_)) => {
+                            self.require_mana_split_capacity(item.controller, production);
                             self.state.pending = Pending::EffectMana {
                                 player: item.controller,
                                 production,

@@ -1605,6 +1605,14 @@ impl ManaProduction {
                     .capacity("mana representation exhausted");
                 Self::Fixed(mana)
             }
+            Self::SourcePowerSplit { first, second } => {
+                let power = if world.kinds(source) & 1 == 0 {
+                    0
+                } else {
+                    world.power(source)
+                };
+                Self::split_for_power(first, second, power)
+            }
             Self::AnyColorChangingSource(amount) => Self::any_color(amount),
             Self::ColorsAmongControlledPermanents => {
                 let mask = self::controlled_colors(world, controller);
