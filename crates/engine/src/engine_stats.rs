@@ -346,6 +346,7 @@ impl Game {
                 Some(
                     crate::cards::ZoneReplacementRule::ExileInstantSorceryCards
                         | crate::cards::ZoneReplacementRule::ExileAllCardsAndTokens
+                        | crate::cards::ZoneReplacementRule::ExileControllerGraveyard
                         | crate::cards::ZoneReplacementRule::ExileOpposingCreatureDeath { .. }
                         | crate::cards::ZoneReplacementRule::ExileOpposingCreatureDeathPlain
                 )

@@ -699,6 +699,9 @@ impl FundingState<'_> {
                             Some(crate::cards::ZoneReplacementRule::ExileAllCardsAndTokens) => {
                                 o.is_card() || o.is_token()
                             },
+                            Some(crate::cards::ZoneReplacementRule::ExileControllerGraveyard) => {
+                                (o.is_card() || o.is_token()) && p.controller == o.owner
+                            }
                             Some(
                                 crate::cards::ZoneReplacementRule::ExileOpposingCreatureDeath {
                                     ..

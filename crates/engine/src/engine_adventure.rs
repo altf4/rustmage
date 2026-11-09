@@ -182,8 +182,13 @@ impl Game {
         let Some(definition) = definition else {
             return false;
         };
-        if object.zone == Zone::Library {
-            return self.can_cast_library_face(actor, id, definition)
+        let rule_origin = match object.zone {
+            Zone::Library => Some(self.can_cast_library_face(actor, id, definition)),
+            Zone::Graveyard => Some(self.has_graveyard_cast(actor, id, GraveyardCastKind::Cast)),
+            _ => None,
+        };
+        if let Some(allowed) = rule_origin {
+            return allowed
                 && self.permitted_cast_available(
                     actor,
                     id,
@@ -196,8 +201,7 @@ impl Game {
         // Adventure's own permission is normal-only. Another generic permission
         // remains independently usable; never deny by an "on adventure" flag.
         let generic_exile = object.zone == Zone::Exile && self.can_cast_exiled_card(actor, id);
-        let generic_graveyard = self.has_graveyard_cast(actor, id, GraveyardCastKind::Cast);
-        if object.zone != Zone::Hand && !generic_exile && !generic_graveyard {
+        if object.zone != Zone::Hand && !generic_exile {
             return false;
         }
         if !sorcery

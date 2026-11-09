@@ -1016,6 +1016,7 @@ define_actions! {
     AnnounceExileLife { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceAirbend { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceFlashSurcharge { card: CardId },
+    AnnounceGraveyardFlashSurcharge { card: CardId },
     AnnounceWarp { card: CardId },
     AnnounceDisguise { card: CardId },
     AnnounceDisguiseGraveyard { card: CardId, permission: ObjectRef, permanent_type: PermanentType },
@@ -5882,17 +5883,23 @@ impl Game {
                         }
                         if !obj.card.is_land()
                             && self.has_graveyard_cast(actor, card, GraveyardCastKind::Cast)
-                            && self.permitted_cast_available(
-                                actor,
-                                card,
-                                CastMethod::Normal,
-                                CastFace::Normal,
-                                sorcery,
-                                false,
-                            )
-                            && emit(Action::AnnounceCast { card })
                         {
-                            return true;
+                            for flash_surcharge in [false, true] {
+                                if self.permitted_cast_available(
+                                    actor,
+                                    card,
+                                    CastMethod::Normal,
+                                    CastFace::Normal,
+                                    sorcery,
+                                    flash_surcharge,
+                                ) && emit(if flash_surcharge {
+                                    Action::AnnounceGraveyardFlashSurcharge { card }
+                                } else {
+                                    Action::AnnounceCast { card }
+                                }) {
+                                    return true;
+                                }
+                            }
                         }
                         if self.has_graveyard_cast(actor, card, GraveyardCastKind::Flashback) {
                             for flash_surcharge in [false, true] {
@@ -7491,8 +7498,10 @@ impl Game {
                 let item = self.cast_item(actor, card, [0; 6]);
                 self.open_payment_announcement(item, Counters::default(), None);
             }
-            Action::AnnounceFlashSurcharge { card } => {
-                let flashback = self.state.objects[card as usize].zone == Zone::Graveyard;
+            Action::AnnounceFlashSurcharge { card }
+            | Action::AnnounceGraveyardFlashSurcharge { card } => {
+                let flashback = matches!(action, Action::AnnounceFlashSurcharge { .. })
+                    && self.state.objects[card as usize].zone == Zone::Graveyard;
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 let cast = item.cast.as_mut().unwrap();
                 cast.flash_surcharge = true;

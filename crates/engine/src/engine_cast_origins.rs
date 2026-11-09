@@ -21,6 +21,7 @@ impl Card {
                         | StaticAbilityFragment::CastSubtypesFromLibraryTopWithCounter(_)
                         | StaticAbilityFragment::PlayLandFromLibraryTop
                         | StaticAbilityFragment::PlayLandFromGraveyard
+                        | StaticAbilityFragment::PlayFromGraveyardDuringOwnTurn
                         | StaticAbilityFragment::CastFromGraveyardWithLife { .. }
                         | StaticAbilityFragment::SpendAnyManaForCreatures
                         | StaticAbilityFragment::GraveyardPermanentTypes

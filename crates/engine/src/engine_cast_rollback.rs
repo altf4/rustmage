@@ -253,6 +253,7 @@ impl Game {
             | Action::AnnounceLinkedFree { card, .. }
             | Action::AnnounceLinkedExileCounterCost { card, .. }
             | Action::AnnounceFlashSurcharge { card }
+            | Action::AnnounceGraveyardFlashSurcharge { card }
             | Action::AnnounceWarp { card }
             | Action::AnnounceDisguise { card }
             | Action::AnnounceDisguiseGraveyard { card, .. }

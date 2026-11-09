@@ -406,6 +406,11 @@ impl Game {
                         && self.printed_abilities_available(id)
                         && match self.state.objects[id as usize].card.zone_replacement() {
                             Some(ZoneReplacementRule::ExileAllCardsAndTokens) => card_or_token,
+                            Some(ZoneReplacementRule::ExileControllerGraveyard) => {
+                                card_or_token
+                                    && !before.card.is_emblem()
+                                    && self.state.objects[id as usize].controller == before.owner
+                            }
                             Some(ZoneReplacementRule::ExileInstantSorceryCards) => spell,
                             Some(ZoneReplacementRule::ExileOpposingCreatureDeathPlain) => {
                                 before.zone == Zone::Battlefield

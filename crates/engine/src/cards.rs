@@ -5757,7 +5757,11 @@ pub enum ZoneReplacementRule {
     RevealShuffleSelf,
     ExileInstantSorceryCards,
     ExileAllCardsAndTokens,
-    ExileOpposingCreatureDeath { ability: u16 },
+    /// Replace cards and tokens entering the replacement source's controller's graveyard.
+    ExileControllerGraveyard,
+    ExileOpposingCreatureDeath {
+        ability: u16,
+    },
     ExileOpposingCreatureDeathPlain,
     OpponentDiscardToBattlefield,
 }

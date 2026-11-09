@@ -174,6 +174,14 @@ impl Game {
                             if self.stat_value(condition, self.object_ref(card), player) != 0)
                     })
                 }))
+                || (matches!(kind, GraveyardCastKind::Cast | GraveyardCastKind::Play)
+                    && self.state.active == player
+                    && cast_origins::has_fragment(self, player, |fragment| {
+                        matches!(
+                            fragment,
+                            StaticAbilityFragment::PlayFromGraveyardDuringOwnTurn
+                        )
+                    }))
                 || self
                     .state
                     .graveyard_cast_permissions

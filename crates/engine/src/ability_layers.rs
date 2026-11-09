@@ -169,6 +169,7 @@ pub enum StaticAbilityFragment {
     CastSubtypesFromLibraryTopWithCounter(&'static [&'static str]),
     PlayLandFromLibraryTop,
     PlayLandFromGraveyard,
+    PlayFromGraveyardDuringOwnTurn,
     /// Cast a matching spell from your graveyard with an additional life cost.
     /// The permanent enters with the specified counter if cast this way.
     CastFromGraveyardWithLife {
