@@ -1,6 +1,7 @@
 //! Paid ECL rules scenarios, with raw/indexed branches and restore on every action.
 use crate::ecl_scenarios::{cast, checked, named, settle, setup};
 use rustmage_core::cards::*;
+use rustmage_core::engine::ability_world::CharacteristicWorld;
 use rustmage_core::engine::*;
 
 fn reject(g: &mut Game, a: Action) {
@@ -3982,7 +3983,7 @@ fn ecl_green_crown_copies_transformed_back_face_with_front_retained() {
         let copies = crown_copies(&g, p, Card::from_name("Brigid, Doun's Mind").unwrap());
         assert_eq!(copies.len(), 1);
         let copy = copies[0];
-        assert_eq!(g.object_view(copy).card.fixed_mana_value(), 3);
+        assert_eq!(g.mana_value(copy), 3);
         g.transform_permanent(g.object_ref(copy));
         assert_eq!(g.object_view(copy).card.name(), "Brigid, Clachan's Heart");
         assert_eq!(
