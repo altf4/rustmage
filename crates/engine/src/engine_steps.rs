@@ -436,6 +436,9 @@ impl Game {
             StepGuard::OpponentHasMoreCardsInHand => {
                 return hand_count(player.other()) > hand_count(player);
             }
+            StepGuard::SourceEnteredThisTurn(entered) => {
+                return world.entered_this_turn(source) == entered;
+            }
             StepGuard::SourceReceivedCounterThisTurn => {
                 return self.put_counter_on_source_this_turn(source, player);
             }
@@ -496,6 +499,9 @@ impl Game {
             }
             StepGuard::Attacked => return p.attacked_this_turn,
             StepGuard::CreatureDied => return self.state.creatures_died_this_turn > 0,
+            StepGuard::OpponentControlledCreatureDied => {
+                return self.state.players[player.other().index()].controlled_creature_died_this_turn;
+            }
             StepGuard::OpponentLostLife => {
                 return self.state.players[player.other().index()].life_lost_this_turn > 0;
             }

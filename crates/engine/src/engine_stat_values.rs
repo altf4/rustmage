@@ -624,6 +624,20 @@ impl Game {
                 .capacity("stat sum exhausted"),
         }
     }
+    pub(super) fn nonbasic_land_count(&self, controller: Player) -> usize {
+        self.state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(id, object)| {
+                object.zone == Zone::Battlefield
+                    && object.controller == controller
+                    && self.current_kinds(*id as CardId) & 2 != 0
+                    && !object.card.is_basic_land()
+            })
+            .count()
+    }
+
     pub(super) fn amount_value(
         &self,
         value: AmountValue,
@@ -638,6 +652,23 @@ impl Game {
             }),
             AmountValue::Fixed(n) => u128::from(n),
             AmountValue::EquippedCreaturesYouControl => self.equipped_creature_count(owner),
+            AmountValue::NonbasicLandsYouControl => self.nonbasic_land_count(owner) as u128,
+            AmountValue::Devotion(color) => self
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .filter(|(id, object)| {
+                    let reference = self.object_ref(*id as CardId);
+                    object.zone == Zone::Battlefield
+                        && object.controller == owner
+                        && !self.is_face_down(reference)
+                        && !self
+                            .copy_recipe(reference)
+                            .is_some_and(|recipe| recipe.exceptions.embalm)
+                })
+                .map(|(_, object)| u128::from(object.card.mana_symbols_of_color(color)))
+                .sum(),
             AmountValue::GreatestCreaturePower(filter) => {
                 let query = self.characteristic_query();
                 (0..self.state.objects.len())

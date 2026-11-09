@@ -3175,6 +3175,7 @@ impl Game {
                     amount: AmountValue::TargetCreaturePower,
                     ..
                 } | Instruction::DamageByTargetPower { .. }
+                    | Instruction::LoseLifeScaled(_, AmountValue::TargetCreaturePower)
             )
         });
         let reads_target_attacking = program.iter().any(|instruction| {
@@ -3183,7 +3184,7 @@ impl Game {
         let reads_target_legendary_kind = program
             .iter()
             .any(|instruction| matches!(instruction, Instruction::DrawIfTargetLegendaryKind(_)));
-        let target_card_facts = program
+        let reads_target_card = program
             .iter()
             .any(|instruction| {
                 matches!(
@@ -3206,13 +3207,13 @@ impl Game {
                         | Instruction::SearchTargetControllerWithEntryCounters { .. }
                         | Instruction::LoseLifeTargetController(_)
                         | Instruction::DamageTargetController(_)
-                        | Instruction::DamageByTargetPower { .. }
                         | Instruction::DecreaseLeadingSpeed {
                             players: PlayerSet::TargetController,
                             ..
                         }
                 )
-            })
+            });
+        let target_card_facts = (reads_target_power || reads_target_card)
             .then(|| {
                 Box::new(
                     item.targets
@@ -8169,9 +8170,13 @@ impl Game {
                         return;
                     }
                 }
-                Instruction::May { skip } => {
+                Instruction::May { skip } | Instruction::MayDraw { skip } => {
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");
                     assert!(skip_to <= resolution.program.len());
+                    if matches!(instruction, Instruction::MayDraw { .. }) && self.draws_prohibited() {
+                        self.state.resolving.as_mut().unwrap().pc = skip_to;
+                        continue;
+                    }
                     self.state.pending = Pending::EffectOptional {
                         player: item.controller,
                         skip_to,
@@ -8423,6 +8428,14 @@ impl Game {
                             item.controller,
                         ),
                     );
+                }
+                Instruction::DiscardThenDrawForTypes { players, amount } => {
+                    for player in self.program_players(players, &item) {
+                        self.state.resolving.as_mut().unwrap().discards[player.index()] =
+                            usize::from(amount);
+                    }
+                    self.state.resolving.as_mut().unwrap().discard_after =
+                        Some(discard_events::DiscardAfter::DrawCardTypes(item.controller));
                 }
                 Instruction::Discard(set, _) | Instruction::DiscardScaled(set, _) => {
                     let amount = match instruction {
@@ -8828,18 +8841,7 @@ impl Game {
                     let events: Vec<_> = [Player::P0, Player::P1]
                         .into_iter()
                         .map(|player| {
-                            let amount = self
-                                .state
-                                .objects
-                                .iter()
-                                .enumerate()
-                                .filter(|(id, object)| {
-                                    object.zone == Zone::Battlefield
-                                        && object.controller == player
-                                        && self.current_kinds(*id as CardId) & 2 != 0
-                                        && !object.card.is_basic_land()
-                                })
-                                .count();
+                            let amount = self.nonbasic_land_count(player);
                             DamageEvent {
                                 preventable: true,
                                 source,

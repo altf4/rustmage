@@ -3789,6 +3789,10 @@ pub enum Instruction {
         discard: u16,
     },
     Discard(PlayerSet, u16),
+    DiscardThenDrawForTypes {
+        players: PlayerSet,
+        amount: u16,
+    },
     /// Choose uniformly without replacement, then discard the batch.
     DiscardRandom(PlayerSet, u16),
     /// Optional resolution choice; its accepted branch records an exact ability use.
@@ -3811,6 +3815,10 @@ pub enum Instruction {
     LoseOpponentGainSame(AmountValue),
     /// Optional block containing the following `skip` instructions.
     May {
+        skip: usize,
+    },
+    /// Ask whether to draw, unless a current rule prohibits drawing.
+    MayDraw {
         skip: usize,
     },
 }
@@ -3928,6 +3936,8 @@ pub enum AmountValue {
     GreatestCreaturePower(CreatureFilter),
     /// Count each current equipped creature controlled by this player once.
     EquippedCreaturesYouControl,
+    NonbasicLandsYouControl,
+    Devotion(ChoiceColor),
     /// Frozen qualifying subjects of one attack declaration.
     DeclaredAttackerCount,
     SourceEquipmentCount,
@@ -5172,6 +5182,7 @@ pub enum StepGuard {
     ControlsGreatestCreaturePower,
     OwnSourceAndNamedCreature(Card),
     SourceReceivedCounterThisTurn,
+    SourceEnteredThisTurn(bool),
     PutCounterOnCreatureThisTurn,
     YourTurn,
     YourMainPhase,
@@ -5184,6 +5195,7 @@ pub enum StepGuard {
     /// Historical declaration facts; one attacker may satisfy several subtypes.
     DeclaredAttackSubtypesAll(&'static [&'static str]),
     CreatureDied,
+    OpponentControlledCreatureDied,
     OpponentLostLife,
     CommittedCrimeThisTurn,
     GainedLife,
