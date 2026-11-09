@@ -3346,6 +3346,8 @@ pub enum Instruction {
     ReturnToBattlefieldWithCounter(CounterKind),
     /// One mixed pre-entry counter event, visible to entry observers.
     ReturnToBattlefieldWithCounters(&'static [(CounterKind, u64)]),
+    /// Return exact exile targets tapped under the ability controller.
+    ReturnExiledTargetTappedWithCounters(&'static [(CounterKind, u64)]),
     /// Return first, freeze entry observers, then counter only successful exact results.
     ReturnToBattlefieldThenCounters(&'static [(CounterKind, u64)]),
     ReturnToBattlefieldTapped,
@@ -5783,6 +5785,10 @@ pub enum ZoneReplacementRule {
         ability: u16,
     },
     ExileOpposingCreatureDeathPlain,
+    /// Exile opposing nontoken creatures that would die, with a linked life gain.
+    ExileOpposingNontokenCreatureDeathLinked {
+        life: u8,
+    },
     OpponentDiscardToBattlefield,
 }
 

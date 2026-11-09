@@ -474,6 +474,11 @@ impl Game {
         {
             self.prune_source_bound_copies();
         }
+        // Every member has moved before a gain consults live replacement providers.
+        // Keep one gain event per actual linked exile, even for the same controller.
+        for (player, amount) in events.iter().filter_map(|event| event.linked_exile_life) {
+            self.gain_life(player, i128::from(amount));
+        }
         self.queue_earthbend_returns(events);
         self.record_entry_turn_facts(events);
         self.record_creature_entry_history(events);

@@ -9873,10 +9873,31 @@ impl Game {
                     self.stage_entries(moves, None);
                 }
                 Instruction::ReturnToBattlefieldWithCounters(amounts) => {
-                    self.return_targets_with_counter_events(&item, amounts, false);
+                    self.return_targets_with_counter_events(
+                        &item,
+                        amounts,
+                        Zone::Graveyard,
+                        false,
+                        false,
+                    );
+                }
+                Instruction::ReturnExiledTargetTappedWithCounters(amounts) => {
+                    self.return_targets_with_counter_events(
+                        &item,
+                        amounts,
+                        Zone::Exile,
+                        true,
+                        false,
+                    );
                 }
                 Instruction::ReturnToBattlefieldThenCounters(amounts) => {
-                    self.return_targets_with_counter_events(&item, amounts, true);
+                    self.return_targets_with_counter_events(
+                        &item,
+                        amounts,
+                        Zone::Graveyard,
+                        false,
+                        true,
+                    );
                 }
                 Instruction::ReturnToBattlefieldWithCounter(counter) => {
                     let moves = item

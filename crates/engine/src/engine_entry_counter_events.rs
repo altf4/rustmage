@@ -7,6 +7,8 @@ impl Game {
         &mut self,
         item: &SpellView,
         amounts: &'static [(CounterKind, u64)],
+        origin: Zone,
+        tapped: bool,
         after_entry: bool,
     ) {
         let mut moves = Vec::new();
@@ -17,14 +19,14 @@ impl Game {
             let Target::Card(id) = bound.target else {
                 continue;
             };
-            if self.state.objects[id as usize].zone != Zone::Graveyard
+            if self.state.objects[id as usize].zone != origin
                 || moves
                     .iter()
                     .any(|m: &entries::EntryMove| m.before.reference == bound.object.unwrap())
             {
                 continue;
             }
-            let mut movement = self.entry_move(id, Zone::Battlefield, false);
+            let mut movement = self.entry_move(id, Zone::Battlefield, tapped);
             movement.controller = item.controller;
             if after_entry {
                 movement.post_entry_counters = Some((item.controller, amounts));

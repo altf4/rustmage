@@ -98,7 +98,8 @@ impl Game {
         &mut self,
         object: ObjectRef,
         completion: zone_replacements::ZoneMoveCompletion,
-    ) {
+        was_card: bool,
+    ) -> Option<(Player, u8)> {
         match completion {
             zone_replacements::ZoneMoveCompletion::Dream => {
                 self.add_counter(object.card, CounterKind::Dream, 1)
@@ -115,6 +116,17 @@ impl Game {
                         player,
                     });
             }
+            zone_replacements::ZoneMoveCompletion::LinkedDeathExile(replacement) => {
+                if was_card {
+                    self.remember_linked_exile(
+                        replacement.source,
+                        replacement.ability_origin,
+                        object,
+                    );
+                }
+                return Some((replacement.controller, replacement.life));
+            }
         }
+        None
     }
 }

@@ -351,6 +351,7 @@ impl Game {
                         | crate::cards::ZoneReplacementRule::ExileControllerGraveyard
                         | crate::cards::ZoneReplacementRule::ExileOpposingCreatureDeath { .. }
                         | crate::cards::ZoneReplacementRule::ExileOpposingCreatureDeathPlain
+                        | crate::cards::ZoneReplacementRule::ExileOpposingNontokenCreatureDeathLinked { .. }
                 )
             )
             || !self.state.objects[id as usize]

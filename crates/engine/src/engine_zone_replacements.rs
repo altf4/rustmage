@@ -26,6 +26,10 @@ pub enum ZoneReplacementKind {
         source: ObjectRef,
         ability: u16,
     },
+    /// Distinct from other exile replacements: this source receives the link and life gain.
+    ExileLinked {
+        source: ObjectRef,
+    },
     Battlefield,
     Shuffle,
 }
@@ -164,6 +168,15 @@ pub(super) struct FrozenRules {
     pub exile_spell: bool,
     pub discard_to_battlefield: bool,
     pub reflexive_exiles: Vec<(u16, ObjectView)>,
+    pub linked_death_exiles: Vec<LinkedDeathExile>,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) struct LinkedDeathExile {
+    pub source: ObjectRef,
+    pub ability_origin: Option<u64>,
+    pub controller: Player,
+    pub life: u8,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -176,6 +189,7 @@ pub(super) enum ZoneShuffle {
 pub(super) enum ZoneMoveCompletion {
     Dream,
     Adventure(Player),
+    LinkedDeathExile(LinkedDeathExile),
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -470,30 +484,42 @@ impl Game {
         let card_or_token =
             !self.state.objects[before.id as usize].is_spell_copy() || before.is_token();
         let spell = before.kinds & 12 != 0 && !before.is_token() && card_or_token;
-        let reflexive_exiles = if before.zone == Zone::Battlefield && before.is_creature() {
-            self.state
-                .static_sources
-                .iter()
-                .filter_map(|&id| {
-                    let source = &self.state.objects[id as usize];
-                    let Some(ZoneReplacementRule::ExileOpposingCreatureDeath { ability }) =
-                        source.card.zone_replacement()
-                    else {
-                        return None;
-                    };
-                    (self.on_battlefield(id)
+        let mut reflexive_exiles = Vec::new();
+        let mut linked_death_exiles = Vec::new();
+        if before.zone == Zone::Battlefield && before.is_creature() {
+            for &id in &self.state.static_sources {
+                let source = &self.state.objects[id as usize];
+                let available = || {
+                    source.zone == Zone::Battlefield
                         && source.controller != before.controller
-                        && self.printed_abilities_available(id))
-                    .then(|| (ability, self.object_view(id)))
-                })
-                .collect()
-        } else {
-            Vec::new()
-        };
+                        && self.printed_abilities_available(id)
+                };
+                match source.card.zone_replacement() {
+                    Some(ZoneReplacementRule::ExileOpposingCreatureDeath { ability })
+                        if available() =>
+                    {
+                        reflexive_exiles.push((ability, self.object_view(id)));
+                    }
+                    Some(ZoneReplacementRule::ExileOpposingNontokenCreatureDeathLinked {
+                        life,
+                    }) if !before.is_token() && available() => {
+                        let reference = self.object_ref(id);
+                        linked_death_exiles.push(LinkedDeathExile {
+                            source: reference,
+                            ability_origin: self.copy_ability_origin(reference),
+                            controller: source.controller,
+                            life,
+                        });
+                    }
+                    _ => {}
+                }
+            }
+        }
         FrozenRules {
             dream: self.dream_resolution_mark(before.reference),
             prevent,
             reflexive_exiles,
+            linked_death_exiles,
             shuffle_spell: false,
             shuffle_self: own_available && own == Some(ZoneReplacementRule::RevealShuffleSelf),
             exile_spell: (before.zone == Zone::Stack
@@ -539,6 +565,7 @@ impl Game {
                     || rules.shuffle_spell
                     || rules.discard_to_battlefield
                     || !rules.reflexive_exiles.is_empty()
+                    || !rules.linked_death_exiles.is_empty()
             })
             && {
                 let mut order = frozen
@@ -652,6 +679,11 @@ impl Game {
                 ability: *ability,
             });
         }
+        for replacement in &rules.linked_death_exiles {
+            choices.push(ZoneReplacementKind::ExileLinked {
+                source: replacement.source,
+            });
+        }
         if requested == Zone::Graveyard && rules.shuffle_self {
             choices.push(ZoneReplacementKind::RevealShuffle);
         }
@@ -729,6 +761,15 @@ impl Game {
                 ZoneReplacementKind::AdventureExile => Some(ZoneMoveCompletion::Adventure(
                     rules.dream.expect("marked adventure").player,
                 )),
+                ZoneReplacementKind::ExileLinked { source } => {
+                    Some(ZoneMoveCompletion::LinkedDeathExile(
+                        *rules
+                            .linked_death_exiles
+                            .iter()
+                            .find(|replacement| replacement.source == source)
+                            .expect("frozen linked replacement source"),
+                    ))
+                }
                 _ => None,
             },
             destination: match effect {
@@ -747,7 +788,8 @@ impl Game {
                 ZoneReplacementKind::DreamExile
                 | ZoneReplacementKind::AdventureExile
                 | ZoneReplacementKind::Exile
-                | ZoneReplacementKind::ExileReflexive { .. } => Zone::Exile,
+                | ZoneReplacementKind::ExileReflexive { .. }
+                | ZoneReplacementKind::ExileLinked { .. } => Zone::Exile,
                 ZoneReplacementKind::Battlefield => Zone::Battlefield,
             },
             prevented: effect == ZoneReplacementKind::Prevent,

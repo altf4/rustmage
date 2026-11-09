@@ -3232,6 +3232,8 @@ struct ZoneObservers {
 pub struct ZoneChange {
     /// Whether the departing object was represented by a physical card.
     pub(super) was_card: bool,
+    /// Additional life gain from the exact chosen death replacement.
+    pub(super) linked_exile_life: Option<(Player, u8)>,
     /// An attempted library departure was replaced by revealing and shuffling
     /// the same card into that library; no zone change occurred.
     pub(super) shuffled_in_place: bool,
@@ -9528,6 +9530,7 @@ impl Game {
         if plan.prevented {
             return ZoneChange {
                 was_card,
+                linked_exile_life: None,
                 shuffled_in_place: false,
                 cast_event: None,
                 entry_counter_player: None,
@@ -9577,6 +9580,7 @@ impl Game {
         {
             return ZoneChange {
                 was_card,
+                linked_exile_life: None,
                 shuffled_in_place: false,
                 cast_event: None,
                 entry_counter_player: None,
@@ -9606,6 +9610,7 @@ impl Game {
             self.shuffle_zone_card(&before, shuffle);
             return ZoneChange {
                 was_card,
+                linked_exile_life: None,
                 shuffled_in_place: true,
                 cast_event: None,
                 entry_counter_player: None,
@@ -10074,9 +10079,9 @@ impl Game {
         if let Some(shuffle) = plan.shuffle {
             self.shuffle_zone_card(&before, shuffle);
         }
-        if let Some(completion) = plan.completion {
-            self.complete_special_zone_move(self.object_ref(id), completion);
-        }
+        let linked_exile_life = plan.completion.and_then(|completion| {
+            self.complete_special_zone_move(self.object_ref(id), completion, was_card)
+        });
         self.copy_characteristic_zone_commit(&before, self.object_ref(id), destination);
         // A Siege's protector must be an opponent; this library is two-player.
         if destination == Zone::Battlefield
@@ -10100,6 +10105,7 @@ impl Game {
         }
         ZoneChange {
             was_card,
+            linked_exile_life,
             shuffled_in_place: false,
             cast_event: None,
             entry_counter_player: (destination == Zone::Battlefield).then_some(entry_identity.0),
