@@ -519,7 +519,12 @@ impl Game {
         {
             return;
         }
-        self.record_counter_placement(object, placed_by, kind == CounterKind::PlusOne);
+        self.record_counter_placement(
+            object,
+            placed_by,
+            kind == CounterKind::PlusOne,
+            kind == CounterKind::Lore,
+        );
         if self.state.objects[object.card as usize].card.triggers().iter().any(|a| {
             matches!(a.condition.event(), TriggerCondition::CounterThresholdCrossed { kind: expected, .. } if expected == kind)
         }) {
@@ -7305,6 +7310,9 @@ impl Game {
                 }
                 Instruction::ExileTopPlayUntilNextEndStep(amount) => {
                     self.exile_top_play_until_next_end_step(item.controller, u128::from(amount));
+                }
+                Instruction::ExileTopPlayOnSourceLoreTurns => {
+                    self.exile_top_play_on_source_lore_turns(&item);
                 }
                 Instruction::ExileTopPlay { amount, next_turn } => {
                     self.exile_top_play(item.controller, u128::from(amount), next_turn);

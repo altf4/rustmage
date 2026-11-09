@@ -1868,14 +1868,13 @@ impl Game {
                         }
                     }
                     for placement in &placements {
-                        for kind in CounterKind::ALL {
-                            if placement.amount.get(kind) > 0 {
-                                self.record_counter_placement(
-                                    object,
-                                    player,
-                                    kind == CounterKind::PlusOne,
-                                );
-                            }
+                        if placement.amount.has_any() {
+                            self.record_counter_placement(
+                                object,
+                                player,
+                                placement.amount.plus_one > 0,
+                                placement.amount.lore > 0,
+                            );
                         }
                     }
                 }

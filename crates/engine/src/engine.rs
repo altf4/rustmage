@@ -10092,6 +10092,7 @@ impl Game {
         }
         let entered_with_counters = counters.has_any();
         let entered_with_plus_one = counters.plus_one > 0;
+        let entered_with_lore = counters.lore > 0;
         self.set_counters(id, counters);
         if destination == Zone::Battlefield {
             let (owner, _) = entry_identity;
@@ -10106,6 +10107,7 @@ impl Game {
                     reference,
                     placed_by,
                     entered_with_plus_one,
+                    entered_with_lore,
                     false,
                 );
             }
@@ -10324,9 +10326,19 @@ impl Game {
         self.prune_modal_history();
         self.state.entered_this_turn = None;
         self.state.creature_entry_history = None;
+        let objects = &self.state.objects;
+        let active_player = self.state.active;
         self.state
             .exile_permissions
-            .retain(|p| p.expiry != ExilePlayExpiry::StartOfNextTurn(self.state.active));
+            .retain(|permission| match permission.expiry {
+                ExilePlayExpiry::StartOfNextTurn(player) => player != active_player,
+                ExilePlayExpiry::SourceLoreTurns => permission.source.is_some_and(|source| {
+                    objects.get(source.card as usize).is_some_and(|object| {
+                        object.zone == Zone::Battlefield && object.generation == source.generation
+                    })
+                }),
+                _ => true,
+            });
         for permission in &mut self.state.exile_permissions {
             if permission.expiry == ExilePlayExpiry::EndOfNextTurn
                 && permission.player == self.state.active

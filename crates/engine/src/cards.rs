@@ -2369,6 +2369,9 @@ pub enum Instruction {
     },
     /// Exile cards with paid play permission until the controller next begins an end step.
     ExileTopPlayUntilNextEndStep(u16),
+    /// Exile the controller's top card for normal play on turns they put lore
+    /// on this exact source.
+    ExileTopPlayOnSourceLoreTurns,
     ExileTopPlay {
         amount: u16,
         next_turn: bool,

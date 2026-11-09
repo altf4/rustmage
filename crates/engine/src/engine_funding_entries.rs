@@ -1927,6 +1927,7 @@ impl FundingState<'_> {
                 source,
                 m.controller,
                 m.counters.plus_one > 0,
+                m.counters.lore > 0,
                 on_creature,
             );
         }
@@ -1979,6 +1980,7 @@ impl FundingState<'_> {
                         *object,
                         *player,
                         amount.plus_one > 0,
+                        amount.lore > 0,
                         on_creature,
                     );
                 }
@@ -2359,6 +2361,7 @@ impl<'g> FundingState<'g> {
                         object,
                         self.actor,
                         placed.plus_one > 0,
+                        placed.lore > 0,
                         placement.kind & 1 != 0,
                     );
                 }

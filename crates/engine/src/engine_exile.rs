@@ -8,6 +8,7 @@ use super::*;
 pub struct ExilePlayPermission {
     pub object: ObjectRef,
     pub player: Player,
+    /// Exact permanent that supplies a source-dependent permission or lore history.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<ObjectRef>,
     pub expiry: ExilePlayExpiry,
@@ -37,6 +38,8 @@ pub enum ExilePlayExpiry {
     EndOfNextTurn,
     StartOfNextTurn(Player),
     StartOfNextEndStep(Player),
+    /// Active in turns with a positive lore placement by the granted player on the source.
+    SourceLoreTurns,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ExilePlayExpiry {
@@ -152,9 +155,9 @@ impl Game {
             })
     }
     pub(super) fn end_source_bound_exile_permissions(&mut self, source: ObjectRef) {
-        self.state
-            .exile_permissions
-            .retain(|row| row.source != Some(source));
+        self.state.exile_permissions.retain(|row| {
+            row.source != Some(source) || row.expiry == ExilePlayExpiry::SourceLoreTurns
+        });
     }
     pub(super) fn grant_source_bound_exile_cast(
         &mut self,
@@ -303,22 +306,57 @@ impl Game {
         self.finish_zone_events(&events, &[]);
     }
 
+    pub(super) fn exile_top_play_on_source_lore_turns(&mut self, item: &SpellView) {
+        let player = item.controller;
+        let Some(id) = self.top_library_card(player) else {
+            return;
+        };
+        let event = self.move_object(id, Zone::Exile);
+        if event.moved && event.destination == Zone::Exile {
+            let source = item.source.expect("lore permission has a source").object;
+            if (self.on_battlefield(source.card) && self.object_ref(source.card) == source)
+                || counter_placement_history::lore_placed(
+                    &self.state.counter_placement_history,
+                    source,
+                    player,
+                )
+            {
+                self.grant_exile_play_permission_with_expiry(
+                    player,
+                    event.after,
+                    Some(source),
+                    ExilePlayExpiry::SourceLoreTurns,
+                );
+            }
+        }
+    }
+
     pub(super) fn grant_exile_play_permission(
         &mut self,
         player: Player,
         object: ObjectRef,
         next_turn: bool,
     ) {
-        if self.object_ref(object.card) != object
-            || self.state.objects[object.card as usize].zone != Zone::Exile
-        {
-            return;
-        }
         let expiry = if next_turn {
             ExilePlayExpiry::EndOfNextTurn
         } else {
             ExilePlayExpiry::Turn(self.state.turn)
         };
+        self.grant_exile_play_permission_with_expiry(player, object, None, expiry);
+    }
+
+    fn grant_exile_play_permission_with_expiry(
+        &mut self,
+        player: Player,
+        object: ObjectRef,
+        source: Option<ObjectRef>,
+        expiry: ExilePlayExpiry,
+    ) {
+        if self.object_ref(object.card) != object
+            || self.state.objects[object.card as usize].zone != Zone::Exile
+        {
+            return;
+        }
         let at = self
             .state
             .exile_permissions
@@ -326,7 +364,7 @@ impl Game {
         self.state.exile_permissions.insert(
             at,
             ExilePlayPermission {
-                source: None,
+                source,
                 object,
                 player,
                 expiry,
@@ -808,6 +846,15 @@ impl Game {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn exile_permission_guard(&self, permission: &ExilePlayPermission) -> bool {
+        if permission.expiry == ExilePlayExpiry::SourceLoreTurns {
+            return permission.source.is_some_and(|source| {
+                counter_placement_history::lore_placed(
+                    &self.state.counter_placement_history,
+                    source,
+                    permission.player,
+                )
+            });
+        }
         if permission.source.is_some_and(|source| {
             self.object_ref(source.card) != source
                 || !self.on_battlefield(source.card)

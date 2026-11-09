@@ -81,7 +81,12 @@ impl Game {
                 && self.on_battlefield(object.card)
                 && self.object_ref(object.card) == object
             {
-                self.record_counter_placement(object, player, amounts.plus_one > 0);
+                self.record_counter_placement(
+                    object,
+                    player,
+                    amounts.plus_one > 0,
+                    amounts.lore > 0,
+                );
             }
         }
         let sources: Vec<_> = self
