@@ -1048,3 +1048,40 @@ fn separate_tap_mana_cost_cannot_consume_the_enclosing_activation_tap() {
         assert_eq!(g.hand_count(p), 1);
     }
 }
+
+#[test]
+fn separate_tap_mana_witnesses_share_one_announcement_and_distinct_owned_choices() {
+    let _rules = fixture_rules::activate(&[
+        (Card::GrizzlyBears, &EXTERNAL_TAP_MANA),
+        (Card::from_name("Shock").unwrap(), &DRAW),
+    ]);
+    for p in [Player::P0, Player::P1] {
+        let mut g = scenario(p);
+        let source = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
+        let first = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let second = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+        let spell = put(&mut g, p, "Shock", Zone::Hand);
+        g.state.players[p.index()].mana = [0; 6];
+        act(&mut g, Action::AnnounceCast { card: spell });
+        let announcement = announce_external_tap_mana(source);
+        let actions = g.legal_actions();
+        assert_eq!(actions.iter().filter(|a| **a == announcement).count(), 1);
+        let index = actions.iter().position(|a| *a == announcement).unwrap();
+        let mut indexed = g.clone();
+        indexed.apply_index(p, indexed.revision(), index).unwrap();
+        act(&mut g, announcement);
+        assert_eq!(g.snapshot(), indexed.snapshot());
+        for (chosen, other) in [(first, second), (second, first)] {
+            let mut branch = g.clone();
+            let object = branch.object_ref(chosen);
+            act(&mut branch, Action::ChooseAdditionalCost { object });
+            pay(&mut branch);
+            pay(&mut branch);
+            assert!(branch.object_view(source).tapped);
+            assert!(branch.object_view(chosen).tapped);
+            assert!(!branch.object_view(other).tapped);
+            assert_eq!(branch.object_view(spell).zone, Zone::Stack);
+            assert_eq!(branch.state.players[p.index()].mana, [0; 6]);
+        }
+    }
+}

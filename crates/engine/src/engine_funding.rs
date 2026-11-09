@@ -1738,6 +1738,37 @@ impl<'g> FundingState<'g> {
     fn action_moves(&self, goal: &FundingGoal) -> Vec<FundingMove> {
         self.mana_moves(goal, true, None)
     }
+    /// External witnesses belong to the later additional-cost choice. Search
+    /// every exact projection until one succeeds, then expose its public mana
+    /// announcement once. Ordinary moves retain their allocation-free visitor.
+    fn visit_distinct_actions(
+        &self,
+        goal: &FundingGoal,
+        mut viable: impl FnMut(&FundingMove) -> bool,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        let mut announced = Vec::new();
+        for step in self.action_moves(goal) {
+            let external_action = step.external.map(|_| self.action(&step));
+            if external_action
+                .as_ref()
+                .is_some_and(|action| announced.contains(action))
+                || !viable(&step)
+            {
+                continue;
+            }
+            let action = if let Some(action) = external_action {
+                announced.push(action.clone());
+                action
+            } else {
+                self.action(&step)
+            };
+            if emit(action) {
+                return true;
+            }
+        }
+        false
+    }
     fn mana_moves(
         &self,
         goal: &FundingGoal,
@@ -5815,17 +5846,20 @@ impl Game {
         if !state.mana_window_open(&goal) {
             return false;
         }
-        for step in state.action_moves(&goal) {
-            if state.visit_applied(&step, &mut |next| {
-                next.reachable_with_evidence(
-                    &goal,
-                    announcement.evidence.as_ref().map(|e| e.threshold),
-                    &mut HashSet::new(),
-                )
-            }) && emit(state.action(&step))
-            {
-                return true;
-            }
+        if state.visit_distinct_actions(
+            &goal,
+            |step| {
+                state.visit_applied(step, &mut |next| {
+                    next.reachable_with_evidence(
+                        &goal,
+                        announcement.evidence.as_ref().map(|e| e.threshold),
+                        &mut HashSet::new(),
+                    )
+                })
+            },
+            emit,
+        ) {
+            return true;
         }
         self.visit_deferred_indexed_mana(emit)
     }
@@ -5863,15 +5897,13 @@ impl Game {
         ) {
             return true;
         }
-        for step in state.action_moves(&goal) {
-            if state.visit_applied(&step, &mut |next| {
-                next.reachable(&goal, &mut HashSet::new())
-            }) && emit(state.action(&step))
-            {
-                return true;
-            }
-        }
-        false
+        state.visit_distinct_actions(
+            &goal,
+            |step| {
+                state.visit_applied(step, &mut |next| next.reachable(&goal, &mut HashSet::new()))
+            },
+            emit,
+        )
     }
     pub(super) fn visit_plot_payment(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
         let request = self.plot_payment().unwrap();
@@ -5901,17 +5933,17 @@ impl Game {
         ) {
             return true;
         }
-        for step in state.action_moves(&goal) {
-            if state.visit_applied(&step, &mut |next| {
-                next.guided_mana_resume_fundable(&Pending::PlotPayment {
-                    player: request.controller,
+        state.visit_distinct_actions(
+            &goal,
+            |step| {
+                state.visit_applied(step, &mut |next| {
+                    next.guided_mana_resume_fundable(&Pending::PlotPayment {
+                        player: request.controller,
+                    })
                 })
-            }) && emit(state.action(&step))
-            {
-                return true;
-            }
-        }
-        false
+            },
+            emit,
+        )
     }
     pub(super) fn visit_resolution_payment(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
         let request = self
@@ -5995,12 +6027,7 @@ impl Game {
         // An explicit resolution request opens its own window independently of
         // any suspended announcement's cost-payment phase.
         state.set_cost_context(None);
-        for step in state.action_moves(&goal) {
-            if emit(state.action(&step)) {
-                return true;
-            }
-        }
-        false
+        state.visit_distinct_actions(&goal, |_| true, emit)
     }
 }
 
@@ -6450,15 +6477,13 @@ impl Game {
         ) {
             return true;
         }
-        for step in state.action_moves(&goal) {
-            if state.visit_applied(&step, &mut |next| {
-                next.reachable(&goal, &mut HashSet::new())
-            }) && emit(state.action(&step))
-            {
-                return true;
-            }
-        }
-        false
+        state.visit_distinct_actions(
+            &goal,
+            |step| {
+                state.visit_applied(step, &mut |next| next.reachable(&goal, &mut HashSet::new()))
+            },
+            emit,
+        )
     }
 }
 
