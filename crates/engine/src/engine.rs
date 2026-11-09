@@ -10294,11 +10294,12 @@ impl Game {
                 self.begin_step(next);
                 self.give_priority();
             }
-            Step::End if self.take_additional_end_step() => {
-                self.begin_step(Step::End);
-                self.give_priority();
-            }
             Step::End | Step::Cleanup => {
+                if self.state.step == Step::End && self.take_additional_end_step() {
+                    self.begin_step(Step::End);
+                    self.give_priority();
+                    return;
+                }
                 self.state.step = Step::Cleanup;
                 if self.above_hand_limit(self.state.active, 0) {
                     self.state.pending = Pending::Discard;
