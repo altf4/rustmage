@@ -10,6 +10,7 @@ pub(super) struct ReturnAttachment {
     order: Option<Box<EquipmentOrder>>,
     reflexive: Option<u16>,
     prior_equipment: Option<Box<[ObjectRef]>>,
+    selected: Option<Vec<ObjectRef>>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -22,6 +23,9 @@ impl ReturnAttachment {
     pub(super) fn owned_bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + self.prior_equipment.as_ref().map_or(0, |equipment| {
+                equipment.len() * std::mem::size_of::<ObjectRef>()
+            })
+            + self.selected.as_ref().map_or(0, |equipment| {
                 equipment.len() * std::mem::size_of::<ObjectRef>()
             })
             + self.order.as_ref().map_or(0, |order| {
@@ -40,6 +44,9 @@ pub struct EquipmentAttachmentView {
     /// Whether the effect requires selecting one legal Equipment.
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub required: bool,
+    /// The current public selection when the effect allows any number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub selected: Option<Vec<ObjectRef>>,
     /// Mandatory relative timestamp choice for an already selected batch.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ordering: Option<bool>,
@@ -54,6 +61,7 @@ impl Game {
         item: &SpellView,
         group: u16,
         subtype: Option<&'static str>,
+        any_number: bool,
     ) -> bool {
         let Some(source) = item.source else {
             return false;
@@ -80,6 +88,7 @@ impl Game {
                 order: None,
                 reflexive: None,
                 prior_equipment: None,
+                selected: any_number.then(Vec::new),
             }));
         self.advance_return_attachment()
     }
@@ -126,6 +135,7 @@ impl Game {
                 order: None,
                 reflexive: None,
                 prior_equipment: Some(equipment.into_boxed_slice()),
+                selected: None,
             }));
         self.advance_return_attachment()
     }
@@ -176,6 +186,7 @@ impl Game {
                 entering: false,
                 reflexive,
                 prior_equipment: None,
+                selected: None,
                 order: Some(Box::new(EquipmentOrder {
                     remaining,
                     chosen: Vec::new(),
@@ -201,6 +212,7 @@ impl Game {
                 order: None,
                 reflexive: None,
                 prior_equipment: None,
+                selected: None,
             }));
         let mut movement = self.entry_move(source.id, Zone::Battlefield, false);
         movement.controller = item.controller;
@@ -255,6 +267,10 @@ impl Game {
         self.state.objects.iter().enumerate().any(|(id, object)| {
             let equipment = self.object_ref(id as CardId);
             object.controller == frame.player
+                && frame
+                    .selected
+                    .as_ref()
+                    .is_none_or(|selected| !selected.contains(&equipment))
                 && self.equipment_can_attach(equipment, recipient)
                 && emit(equipment)
         })
@@ -275,7 +291,12 @@ impl Game {
         if frame.order.is_some() {
             return self.advance_equipment_order();
         }
-        if self.visit_attachment_candidates(frame, |_| true) {
+        if frame
+            .selected
+            .as_ref()
+            .is_some_and(|selected| !selected.is_empty())
+            || self.visit_attachment_candidates(frame, |_| true)
+        {
             self.state.pending = Pending::EquipmentAttachment {
                 player: frame.player,
             };
@@ -365,9 +386,26 @@ impl Game {
             }
             return;
         }
+        if let (Some(selected), Some(equipment)) = (&mut frame.selected, equipment) {
+            selected.push(equipment);
+            return;
+        }
         let frame = resolution.return_attachment.take().unwrap();
-        if let (Some(equipment), Some(recipient)) = (equipment, frame.recipient) {
-            self.attach_equipment(equipment, recipient);
+        if let Some(recipient) = frame.recipient {
+            if let Some(mut selected) = frame.selected {
+                // Reattaching to the same creature changes neither attachment nor timestamp.
+                selected.retain(|&equipment| {
+                    self.equipment_can_attach(equipment, recipient)
+                        && self.state.objects[equipment.card as usize].attached_to
+                            != Some(recipient)
+                });
+                let item = self.state.resolving.as_ref().unwrap().item.clone();
+                if self.order_equipment_attachments(&item, recipient, selected) {
+                    return;
+                }
+            } else if let Some(equipment) = equipment {
+                self.attach_equipment(equipment, recipient);
+            }
         }
         self.run_program();
     }
@@ -396,6 +434,7 @@ impl Game {
             ordering: frame.order.as_ref().map(|_| true),
             candidates,
             required: frame.prior_equipment.is_some(),
+            selected: frame.selected.clone(),
             prior_public_order,
         })
     }

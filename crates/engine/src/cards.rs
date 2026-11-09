@@ -2876,6 +2876,10 @@ pub enum Instruction {
         recipient: u16,
         required_subtype: Option<&'static str>,
     },
+    /// Attach any number of controlled Equipment to the announced recipient simultaneously.
+    MayAttachAnyControlledEquipment {
+        recipient: u16,
+    },
     /// Attach one surviving Equipment that was attached to the exact sacrificed source.
     AttachPriorSourceEquipment {
         recipient: u16,
