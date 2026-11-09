@@ -156,6 +156,7 @@ impl Game {
                     .collect();
                 if !rows.is_empty() && self.queue_trigger(source, index) {
                     let objects: Vec<_> = rows.iter().map(|row| row.object).collect();
+                    self.add_entry_trigger_multiplicity(source, &objects);
                     let packet = self.state.pending_triggers.last_mut().unwrap();
                     packet.set_event_object(EventObjectView {
                         object: objects[0],

@@ -42,6 +42,10 @@ pub enum AdditionalTriggerScope {
     ControlledCreatureSubtype(&'static str),
     OtherControlledSubtype(&'static str),
     EquippedCreature,
+    /// Abilities of this equipped source or of any Equipment attached to it.
+    SourceAndAttachedEquipment,
+    /// A land or this subtype entering caused a controlled permanent's trigger.
+    ControlledLandOrSubtypeEntry(&'static str),
     /// Only abilities triggered by a creature attacking, never other events.
     ControlledPermanentAttack,
 }

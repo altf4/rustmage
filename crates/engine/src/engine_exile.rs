@@ -697,11 +697,13 @@ impl Game {
                 if ability.condition.event() == TriggerCondition::TokensEnterYou
                     && self.queue_trigger(source, index)
                 {
+                    let entrants = &token_entered[source.controller.index()];
+                    self.add_entry_trigger_multiplicity(source, entrants);
                     self.state
                         .pending_triggers
                         .last_mut()
                         .unwrap()
-                        .refer_objects(token_entered[source.controller.index()].iter().copied());
+                        .refer_objects(entrants.iter().copied());
                 }
             }
         }

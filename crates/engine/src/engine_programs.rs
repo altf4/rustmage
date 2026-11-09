@@ -1201,6 +1201,10 @@ impl Game {
                     }
                 };
                 if matched && self.queue_zone_trigger(source, index, event) {
+                    self.add_entry_trigger_multiplicity(
+                        source,
+                        std::slice::from_ref(&entered.reference),
+                    );
                     if ability.program.iter().any(|instruction| {
                         matches!(
                             instruction,

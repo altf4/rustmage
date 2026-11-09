@@ -247,7 +247,7 @@ impl Game {
             ) {
                 continue;
             }
-            self.queue_zone_trigger_from(
+            if self.queue_zone_trigger_from(
                 &source,
                 usize::from(grant.ability),
                 event,
@@ -259,7 +259,12 @@ impl Game {
                     granted: true,
                     origin: grant.origin,
                 })),
-            );
+            ) {
+                self.add_entry_trigger_multiplicity(
+                    &source,
+                    std::slice::from_ref(&entered.reference),
+                );
+            }
         }
     }
     pub(super) fn temporary_attack_triggers(&mut self, actor: Player) {
