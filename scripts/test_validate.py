@@ -198,20 +198,19 @@ class ValidatorTests(unittest.TestCase):
                             for _, env in commands))
         self.assertEqual(receipt.read_text(), 'previous evidence')
 
-    def test_native_platform_budgets_fit_inside_parent_deadline(self):
-        for platform, suite_budget in [('linux', 240), ('darwin', 240), ('win32', 480)]:
-            with self.subTest(platform=platform), patch.object(validate.sys, 'platform', platform):
-                first_command = len(self.command_timeouts)
-                status, _, report, commands = self.invoke()
-                self.assertEqual(status, 0)
-                index = next(i for i, (command, _) in enumerate(commands)
-                             if 'scripts/run_native_tests.py' in command)
-                command = commands[index][0]
-                self.assertEqual(command[command.index('--compile-timeout') + 1], '1800')
-                self.assertEqual(command[command.index('--test-timeout') + 1], '45')
-                self.assertEqual(command[command.index('--suite-timeout') + 1], str(suite_budget))
-                self.assertEqual(self.command_timeouts[first_command + index], 1800 + suite_budget + 20)
-                self.assertTrue(report['success'])
+    def test_native_suite_budget_fits_inside_parent_deadline(self):
+        status, _, report, commands = self.invoke()
+        self.assertEqual(status, 0)
+        index = next(i for i, (command, _) in enumerate(commands)
+                     if 'scripts/run_native_tests.py' in command)
+        command = commands[index][0]
+        compile_budget = int(command[command.index('--compile-timeout') + 1])
+        suite_budget = int(command[command.index('--suite-timeout') + 1])
+        self.assertEqual(compile_budget, 1800)
+        self.assertEqual(suite_budget, 480)
+        self.assertEqual(command[command.index('--test-timeout') + 1], '90')
+        self.assertEqual(self.command_timeouts[index], compile_budget + suite_budget + 20)
+        self.assertTrue(report['success'])
 
     def test_environment_target_is_reused_and_explicit_target_takes_precedence(self):
         environment_target = self.directory/'environment-target'

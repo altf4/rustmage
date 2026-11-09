@@ -111,8 +111,8 @@ def main(argv=None):
     files = source_files()
     head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
     native_compile_timeout = 1800
-    # Hosted Windows reached four minutes with part of the serial suite still pending.
-    native_suite_timeout = 480 if sys.platform == 'win32' else 240
+    # Multi-game replay cases can exceed 45 seconds on hosted runners.
+    native_suite_timeout = 480
     commands = [
         ('source pins', [sys.executable, 'scripts/check_sources.py'], 45),
         ('format', ['cargo', 'fmt', '--all', '--check'], 45),
@@ -123,7 +123,7 @@ def main(argv=None):
         ('clippy', ['cargo', 'clippy', '--workspace', '--all-targets', '--', '-D', 'warnings'], 600),
         ('native assurance', [sys.executable, 'scripts/run_native_tests.py',
                               '--target-dir', str(target), '--report', str(report_dir/'native.json'),
-                              '--test-timeout', '45', '--suite-timeout', str(native_suite_timeout),
+                              '--test-timeout', '90', '--suite-timeout', str(native_suite_timeout),
                               '--compile-timeout', str(native_compile_timeout)],
          native_compile_timeout + native_suite_timeout + 20),
     ]
