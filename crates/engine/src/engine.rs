@@ -11781,8 +11781,18 @@ impl Game {
             resolution_free_casts: s
                 .resolution_free_casts
                 .as_deref()
-                .filter(|f| f.origin != Zone::Library || self.shares_information(viewer, f.player))
-                .cloned(),
+                .filter(|f| {
+                    !matches!(f.origin, Zone::Hand | Zone::Library)
+                        || self.shares_information(viewer, f.player)
+                })
+                .map(|offer| {
+                    let mut view = offer.clone();
+                    if view.origin == Zone::Exile {
+                        view.remaining
+                            .retain(|&object| self.can_view_hideaway(viewer, object));
+                    }
+                    view
+                }),
             suspend_cards: self.suspend_views(),
             graveyard_type_uses: s
                 .graveyard_type_uses

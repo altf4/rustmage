@@ -598,18 +598,12 @@ impl Game {
         }
         if f.destination == LibraryPickDestination::Hideaway {
             let events = self.move_objects_raw(&ids, Zone::Exile);
-            self.remember_linked_exile(&ids);
-            let source = self
-                .state
-                .resolving
-                .as_ref()
-                .unwrap()
-                .item
-                .source
-                .expect("hideaway has source")
-                .object;
+            let item = &self.state.resolving.as_ref().unwrap().item;
+            let source = item.source.expect("hideaway has source").object;
+            let origin = item.source_ability_origin;
             for event in &events {
                 if event.moved && event.destination == Zone::Exile {
+                    self.link_exile_to_ability(source, origin, event.after);
                     self.remember_face_down_exile(event.after, 1 << owner.index(), Some(source));
                 }
             }

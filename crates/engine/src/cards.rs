@@ -1726,6 +1726,8 @@ pub enum Instruction {
     /// Set the source's color and grant it hexproof from the chosen color this turn.
     ChooseSourceColorAndHexproof,
     PlayHideawayIfCoven,
+    /// Play an exact linked Hideaway card while this instruction is resolving.
+    PlayHideaway,
     ExileHandCardCopy,
     /// Exile the current hand and draw its frozen size, retaining exact exile results.
     ExileHandDraw,
@@ -2685,6 +2687,8 @@ pub enum Instruction {
     /// optionally put that same exact card into the graveyard.
     LookTopLandThenMayGraveyard,
     CastLibraryTopUpToAttackingPower(u16),
+    /// Privately offer one immediate free spell from hand with at most this mana value.
+    CastHandFreeUpTo(AmountValue),
     BottomLookedLibraryRandom,
     ControlTargetPlayerNextTurn,
     ExileAllCreaturesRemember,

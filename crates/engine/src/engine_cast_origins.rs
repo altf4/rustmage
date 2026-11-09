@@ -603,6 +603,35 @@ impl Game {
         self.state.pending = Pending::ResolutionCasts { player };
         true
     }
+    pub(super) fn offer_hand_free_cast(&mut self, player: Player, maximum: u128) {
+        let remaining = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(_, object)| {
+                object.zone == Zone::Hand && object.owner == player && object.is_card()
+            })
+            .map(|(id, _)| self.object_ref(id as CardId))
+            .collect();
+        // An empty choice still uses the same public resolution step.
+        self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            uncast_to_hand: false,
+            siege_transformed: false,
+            paid: None,
+            casts_remaining: Some(1),
+            pending_cast: None,
+            remaining_mana_value: u64::try_from(maximum).ok(),
+            alternative_cost: None,
+            maximum_mana_value: None,
+            origin: Zone::Hand,
+            exile_on_graveyard: false,
+            allow_lands: false,
+            player,
+            remaining,
+        }));
+        self.state.pending = Pending::ResolutionCasts { player };
+    }
     pub(super) fn offer_paid_graveyard_cast(
         &mut self,
         item: &SpellView,
@@ -832,7 +861,11 @@ impl Game {
                         true,
                         false,
                     )
-                    && emit(Action::CastExiledDuringResolution { object, face })
+                    && emit(if free.origin == Zone::Hand {
+                        Action::CastFreeDuringResolution { object, face }
+                    } else {
+                        Action::CastExiledDuringResolution { object, face }
+                    })
                 {
                     return true;
                 }

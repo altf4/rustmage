@@ -5731,6 +5731,10 @@ impl Game {
                     self.cast_library_by_attacking_power(&item, amount);
                     return;
                 }
+                Instruction::CastHandFreeUpTo(amount) => {
+                    self.offer_hand_free_cast(item.controller, self.item_amount(amount, &item));
+                    return;
+                }
                 Instruction::BottomLookedLibraryRandom => self.finish_library_cast_look(),
                 Instruction::ControlTargetPlayerNextTurn => {
                     for player in self
@@ -7459,9 +7463,10 @@ impl Game {
                         );
                     }
                 }
-                Instruction::PlayHideawayIfCoven => {
-                    self.play_hideaway_if_coven(&item);
-                    if self.state.resolution_free_casts.is_some() {
+                Instruction::PlayHideawayIfCoven | Instruction::PlayHideaway => {
+                    let allowed =
+                        instruction == Instruction::PlayHideaway || self.has_coven(item.controller);
+                    if allowed && self.play_hideaway(&item) {
                         return;
                     }
                 }
