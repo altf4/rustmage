@@ -242,6 +242,269 @@ fn graveyard_order_and_library_privacy_follow_the_actual_two_fronts() {
 }
 
 #[test]
+fn projected_meld_departure_restores_two_exact_fronts_after_one_zone_plan() {
+    use rustmage_core::engine::ability_world::CharacteristicWorld;
+    use rustmage_core::engine::funding::{FundingGoal, FundingState};
+
+    const DARKNESS: CardRules = CardRules {
+        effect: Effect::Permanent,
+        extras: &CardExtras {
+            zone_replacement: Some(
+                ZoneReplacementRule::ExileOpposingNontokenCreatureDeathLinked { life: 2 },
+            ),
+            ..CardExtras::EMPTY
+        },
+        ..CardRules::EMPTY
+    };
+    let darkness = Card::from_name("Soul-Guide Lantern").unwrap();
+    let _rules = fixture_rules::activate(&[
+        (PAIR.source, &SOURCE),
+        (PAIR.partner, &PARTNER),
+        (PAIR.combined, &COMBINED),
+        (darkness, &DARKNESS),
+    ]);
+    let owner = Player::P0;
+    let (mut game, source, partner) = setup_pair(owner);
+    choose_partner(&mut game, partner);
+    let permanent = game.object_ref(source);
+    let component = game.object_ref(partner);
+    let goal = FundingGoal {
+        actor: owner,
+        required: [0; 6],
+        generic: 0,
+        reserve: Some((
+            permanent,
+            AdditionalCost {
+                kind: EffectChoiceKind::Sacrifice,
+                filter: SacrificeFilter {
+                    keywords: Keywords::NONE,
+                    source_only: false,
+                    kinds: 1,
+                    nonland: false,
+                    other: false,
+                    tokens: None,
+                    artifact_enchantment_or_token: false,
+                    subtype: None,
+                },
+            },
+        )),
+        source: None,
+    };
+
+    let before = game.snapshot();
+    let world = FundingState::from_game(&game, &goal);
+    assert_eq!(world.object(partner).zone, Zone::Outside);
+    assert!(!world.cost_departures(&[component], Zone::Hand, &mut |_| {
+        panic!("a parked meld component cannot be selected for a cost")
+    }));
+    for zone in [Zone::Hand, Zone::Library, Zone::Exile, Zone::Graveyard] {
+        assert!(world.cost_departures(&[permanent], zone, &mut |next| {
+            let key = next.key(&goal);
+            for (old, front) in [(permanent, PAIR.source), (component, PAIR.partner)] {
+                let object = next.object(old.card);
+                assert_eq!(
+                    (object.zone, object.card, object.controller),
+                    (zone, front, owner)
+                );
+                assert_eq!(next.reference(old.card).generation, old.generation + 1);
+                assert!(key.resources.iter().any(|resource| {
+                    resource.identity == Some((old.card, old.generation + 1))
+                        && resource.definition == front.index()
+                }));
+            }
+            let died = u64::from(zone == Zone::Graveyard);
+            assert_eq!(next.creatures_died(), world.creatures_died() + died);
+            assert_eq!(next.controlled_creatures_died[owner.index()], died);
+            true
+        }));
+    }
+    assert_eq!(game.snapshot(), before);
+
+    // The source sees the opponent's controller even though both cards
+    // belong to the same player as the replacement source.
+    game.record_control(permanent, owner.other(), None);
+    spawn(&mut game, owner, darkness, Zone::Battlefield);
+    put(&mut game, owner, "Rest in Peace", Zone::Battlefield);
+    let before = game.snapshot();
+    let goal = FundingGoal {
+        actor: owner.other(),
+        ..goal
+    };
+    let world = FundingState::from_game(&game, &goal);
+    let mut gains = Vec::new();
+    world.cost_departures(&[permanent], Zone::Graveyard, &mut |next| {
+        for (id, front) in [(source, PAIR.source), (partner, PAIR.partner)] {
+            let object = next.object(id);
+            assert_eq!(
+                (object.zone, object.card, object.controller),
+                (Zone::Exile, front, owner)
+            );
+        }
+        assert_eq!(next.creatures_died(), world.creatures_died());
+        gains.push(next.life(owner) - world.life(owner));
+        false
+    });
+    assert_eq!(gains, [0, 2]);
+    assert_eq!(game.snapshot(), before);
+}
+
+#[test]
+fn casting_can_be_funded_by_both_fronts_after_meld_sacrifice() {
+    const BLUE: Mana = [0, 1, 0, 0, 0, 0];
+    const COLORLESS: Mana = [0, 0, 0, 0, 0, 1];
+    const GRAVE_MANA: ActivatedAbility = ActivatedAbility {
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        cycling: false,
+        origin: ActivationOrigin::Graveyard,
+        cost: ActivationCost {
+            exile_self: true,
+            ..ActivationCost::ZERO
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::AddMana(ManaProduction::Fixed(BLUE))],
+        sorcery: false,
+        once_per_turn: false,
+    };
+    const VANILLE: CardRules = CardRules {
+        activated: &[GRAVE_MANA],
+        ..SOURCE
+    };
+    const FANG: CardRules = CardRules {
+        activated: &[GRAVE_MANA],
+        ..PARTNER
+    };
+    const RAGNAROK: CardRules = CardRules {
+        activated: &[ActivatedAbility {
+            origin: ActivationOrigin::Battlefield,
+            cost: ActivationCost {
+                sacrifice: true,
+                ..ActivationCost::ZERO
+            },
+            program: &[Instruction::AddMana(ManaProduction::Fixed(COLORLESS))],
+            ..GRAVE_MANA
+        }],
+        triggers: &[],
+        ..COMBINED
+    };
+    let _rules = fixture_rules::activate(&[
+        (PAIR.source, &VANILLE),
+        (PAIR.partner, &FANG),
+        (PAIR.combined, &RAGNAROK),
+    ]);
+    let player = Player::P1;
+    let (mut game, source, partner) = setup_pair(player);
+    choose_partner(&mut game, partner);
+    game.state.players[player.index()].mana = [0; 6];
+    let spell = put(&mut game, player, "Divination", Zone::Hand);
+    let cast = Action::AnnounceCast { card: spell };
+    let before = game.snapshot();
+    assert!(game.legal_actions().contains(&cast));
+    let mut replaced = game.clone();
+    put(
+        &mut replaced,
+        player.other(),
+        "Rest in Peace",
+        Zone::Battlefield,
+    );
+    reject(&mut replaced, cast.clone());
+    assert_eq!(game.snapshot(), before);
+
+    act(&mut game, cast);
+    let activate = |card, production| Action::ActivateMana {
+        card,
+        ability: 0,
+        payment: [0; 6],
+        counter_payment: Counters::default(),
+        production,
+    };
+    act(&mut game, activate(source, COLORLESS));
+    assert_eq!(game.state.pending, Pending::MeldOrdering { player });
+    let choice = game.observe(player).meld_ordering_choice.unwrap();
+    assert_eq!(choice.destination, Zone::Graveyard);
+    let order = Action::ChooseMeldOrder {
+        first: choice.components[1],
+    };
+    let saved = game.snapshot();
+    let revision = game.revision();
+    let index = game
+        .legal_actions()
+        .iter()
+        .position(|a| *a == order)
+        .unwrap();
+    let mut indexed = game.clone();
+    indexed.apply_index(player, revision, index).unwrap();
+    act(&mut game, order);
+    assert_eq!(game.snapshot(), indexed.snapshot());
+
+    act(&mut game, activate(source, BLUE));
+    act(&mut game, activate(partner, BLUE));
+    pay(&mut game);
+    assert_eq!(game.object_view(spell).zone, Zone::Stack);
+    assert_eq!(game.object_view(source).zone, Zone::Exile);
+    assert_eq!(game.object_view(partner).zone, Zone::Exile);
+    indexed.restore(&saved).unwrap();
+    assert_eq!(
+        indexed.apply_index(player, revision, index),
+        Err(Error::StaleRevision)
+    );
+    assert_eq!(indexed.object_view(source).card, PAIR.combined);
+    assert_eq!(indexed.object_view(partner).zone, Zone::Outside);
+}
+
+#[test]
+fn projected_meld_entry_parks_the_exact_exiled_companion() {
+    use rustmage_core::engine::ability_world::CharacteristicWorld;
+    use rustmage_core::engine::funding::{FundingGoal, FundingState};
+    use rustmage_core::engine::meld::MeldEntry;
+
+    let _rules = fixture_rules::activate(&[
+        (PAIR.source, &SOURCE),
+        (PAIR.partner, &PARTNER),
+        (PAIR.combined, &COMBINED),
+    ]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let source = spawn(&mut game, player, PAIR.source, Zone::Exile);
+    let partner = spawn(&mut game, player, PAIR.partner, Zone::Exile);
+    let component = game.object_ref(partner);
+    let mut movement = game.entry_move(source, Zone::Battlefield, false);
+    movement.project_printed_face(PAIR.combined);
+    movement.meld = Some(Box::new(MeldEntry {
+        companion: component,
+        front_cards: [PAIR.source, PAIR.partner],
+        combined: PAIR.combined,
+    }));
+    let goal = FundingGoal {
+        actor: player,
+        required: [0; 6],
+        generic: 0,
+        reserve: None,
+        source: None,
+    };
+    let before = game.snapshot();
+    let world = FundingState::from_game(&game, &goal);
+    assert!(
+        world.commit_projected_entries(vec![movement], &[], &mut |melded| {
+            assert_eq!(melded.object(source).card, PAIR.combined);
+            assert_eq!(melded.mana_value(source), 7);
+            assert_eq!(melded.object(partner).zone, Zone::Outside);
+            assert_eq!(
+                melded.reference(partner).generation,
+                component.generation + 1
+            );
+            melded.cost_departures(&[melded.reference(source)], Zone::Graveyard, &mut |next| {
+                assert_eq!(next.object(partner).zone, Zone::Graveyard);
+                assert_eq!(next.object(partner).card, PAIR.partner);
+                assert_eq!(next.reference(partner).generation, component.generation + 2);
+                true
+            })
+        })
+    );
+    assert_eq!(game.snapshot(), before);
+}
+
+#[test]
 fn stolen_partners_fail_the_intervening_condition_and_a_named_copy_cannot_meld() {
     let _rules = fixture_rules::activate(&[
         (PAIR.source, &SOURCE),

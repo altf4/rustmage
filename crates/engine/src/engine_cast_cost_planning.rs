@@ -260,7 +260,9 @@ impl FundingState<'_> {
         // Mana payments may sacrifice battlefield objects into graveyards. We
         // count every object there even if it is an opponent's, a token, or not
         // actually sacrificable, and ignore all card-characteristic filters.
-        let potential_graveyard = graveyard.saturating_add(battlefield);
+        let potential_graveyard = graveyard
+            .saturating_add(battlefield)
+            .saturating_add(self.active_melds().count());
         let possible = match spec.kind.payment_kind() {
             EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_)
@@ -668,6 +670,11 @@ impl FundingState<'_> {
         requested: Zone,
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
+        if objects.iter().any(|&object| {
+            self.reference(object.card) != object || self.object(object.card).zone == Zone::Outside
+        }) {
+            return false;
+        }
         // Simultaneous departures all use characteristics from the same
         // pre-event world, even when one leaving object is a type provider.
         let before_facts: Vec<_> = objects
@@ -679,13 +686,16 @@ impl FundingState<'_> {
                     object.controller,
                     object.owner,
                     CharacteristicWorld::kinds(self, r.card),
+                    self.active_melds()
+                        .find(|row| row.object == *r)
+                        .map(|row| row.entry),
                 )
             })
             .collect();
         let destinations = objects
             .iter()
             .zip(&before_facts)
-            .map(|(r, &(_, _, _, kinds))| {
+            .map(|(r, &(_, _, _, kinds, _))| {
                 let o = self.object(r.card);
                 let prevented = self.zone_move_prevented(*r, requested);
                 if requested != Zone::Graveyard {
@@ -775,7 +785,7 @@ impl FundingState<'_> {
             initial.remember_payment_departure(object.card);
         }
         let mut worlds = vec![(initial, Vec::new())];
-        for ((r, choices), &(before_zone, controller, owner, kinds)) in
+        for ((r, choices), &(before_zone, controller, owner, kinds, meld)) in
             objects.iter().zip(destinations).zip(&before_facts)
         {
             let mut next = Vec::new();
@@ -796,11 +806,6 @@ impl FundingState<'_> {
                         next.push((n, gains.clone()));
                         continue;
                     };
-                    let i = n
-                        .resources
-                        .iter()
-                        .position(|v| v.id == r.card)
-                        .expect("cost resource retained");
                     if before_zone == Zone::Battlefield && zone != Zone::Battlefield {
                         n.permanent_left_battlefield[controller.index()] = true;
                     }
@@ -818,57 +823,17 @@ impl FundingState<'_> {
                     if before_zone == Zone::Graveyard {
                         n.graveyard_left[owner.index()] = true;
                     }
-                    let face_down_physical = n.projected_face_down_physical(*r);
-                    let physical_copy = n
-                        .temporary_copy_rows_state()
-                        .as_ref()
-                        .and_then(|rows| rows.iter().find(|row| row.object == *r))
-                        .map(|row| (row.physical_card, row.physical_kind));
-                    n.resources[i].object.zone = zone;
-                    n.resources[i].object.generation = n.resources[i]
-                        .object
-                        .generation
-                        .checked_add(1)
-                        .capacity("virtual generation exhausted");
-                    // Departure facts above retain the old face; the new object
-                    // outside stack/battlefield has only its physical front.
-                    let object = &mut n.resources[i].object;
-                    if let Some((card, kind)) = physical_copy {
-                        object.card = card;
-                        object.copy_kind = kind;
-                    } else {
-                        n.game.restore_projected_copy_identity(*r, object);
+                    n.project_nonbattlefield_move(*r, zone, meld.map(|entry| entry.front_cards[0]));
+                    if let Some(entry) = meld {
+                        // The companion follows the chosen event. It does not
+                        // receive another replacement, death, or life gain.
+                        debug_assert_eq!(n.object(entry.companion.card).zone, Zone::Outside);
+                        n.project_nonbattlefield_move(
+                            entry.companion,
+                            zone,
+                            Some(entry.front_cards[1]),
+                        );
                     }
-                    if let Some(physical) = face_down_physical {
-                        object.card = physical.front_face();
-                    } else if !object.is_token() && !object.is_spell_copy() {
-                        object.card = object.card.front_face();
-                    }
-                    if let Some(projection) = &mut n.entry_projection {
-                        projection.manifested.retain(|(source, _)| *source != *r);
-                    }
-                    live_counters::set(&mut n.named_counters, *r, None);
-                    n.resources[i].object.counters = InitialCounters::default();
-                    n.resources[i].object.growth = Stats::default();
-                    n.resources[i].object.attached_to = None;
-                    n.resources[i].object.controller = n.resources[i].object.owner;
-                    n.resources[i].object.summoning_sick = false;
-                    n.resources[i].object.tapped = false;
-                    n.resources[i].object.damage = 0;
-                    n.resources[i].object.damaged_this_turn = false;
-                    n.resources[i].object.dealt_damage_this_turn = false;
-                    n.resources[i].object.dealt_damage_this_incarnation = false;
-                    n.resources[i].object.dealt_combat_damage_this_incarnation = false;
-                    n.resources[i].object.deathtouch_since_sba = false;
-                    n.resources[i].object.gained_keywords = Keywords::NONE;
-                    n.resources[i].object.used_abilities = 0;
-                    n.resources[i].object.loyalty_activated_this_turn = false;
-                    let after = n.reference(r.card);
-                    n.project_copy_departure(*r, after);
-                    n.resources[i].object.flashback = false;
-                    n.resources[i].object.cast_for_warp = false;
-                    n.resources[i].object.class_level = 1;
-                    n.resources[i].attacking = false;
                     let mut gains = gains.clone();
                     gains.extend(gain);
                     next.push((n, gains));
@@ -883,6 +848,87 @@ impl FundingState<'_> {
             world.refresh_enduring_projection();
             world.visit_death_exile_gains(gains, &mut |next| next.visit_linked_returns(emit))
         })
+    }
+    pub(super) fn project_nonbattlefield_move(
+        &mut self,
+        before: ObjectRef,
+        zone: Zone,
+        meld_front: Option<Card>,
+    ) -> ObjectRef {
+        debug_assert_eq!(self.reference(before.card), before);
+        let face_down_physical = self.projected_face_down_physical(before);
+        let physical_copy = self
+            .temporary_copy_rows_state()
+            .as_ref()
+            .and_then(|rows| rows.iter().find(|row| row.object == before))
+            .map(|row| (row.physical_card, row.physical_kind));
+        let index = self
+            .resources
+            .iter()
+            .position(|row| row.id == before.card)
+            .unwrap_or_else(|| {
+                // An Outside meld component normally has no funding resource.
+                let index = self.resources.len();
+                self.resources.push(Resource {
+                    id: before.card,
+                    object: self.game.state.objects[before.card as usize].clone(),
+                    attacking: false,
+                });
+                index
+            });
+        let resource = &mut self.resources[index];
+        let object = &mut resource.object;
+        object.zone = zone;
+        object.generation = object
+            .generation
+            .checked_add(1)
+            .capacity("virtual generation exhausted");
+        // Departure facts retain the old face. The new object has its
+        // physical identity even when the melded permanent was a copy.
+        if let Some((card, kind)) = physical_copy {
+            object.card = card;
+            object.copy_kind = kind;
+        } else {
+            self.game.restore_projected_copy_identity(before, object);
+        }
+        if let Some(front) = meld_front {
+            object.card = front;
+        } else if let Some(physical) = face_down_physical {
+            object.card = physical.front_face();
+        } else if !object.is_token() && !object.is_spell_copy() {
+            object.card = object.card.front_face();
+        }
+        object.counters = InitialCounters::default();
+        object.growth = Stats::default();
+        object.attached_to = None;
+        object.controller = object.owner;
+        object.summoning_sick = false;
+        object.tapped = false;
+        object.damage = 0;
+        object.damaged_this_turn = false;
+        object.dealt_damage_this_turn = false;
+        object.dealt_damage_this_incarnation = false;
+        object.dealt_combat_damage_this_incarnation = false;
+        object.deathtouch_since_sba = false;
+        object.gained_keywords = Keywords::NONE;
+        object.used_abilities = 0;
+        object.loyalty_activated_this_turn = false;
+        object.flashback = false;
+        object.cast_for_warp = false;
+        object.class_level = 1;
+        resource.attacking = false;
+        let after = ObjectRef {
+            card: before.card,
+            generation: object.generation,
+        };
+        if let Some(projection) = &mut self.entry_projection {
+            projection
+                .manifested
+                .retain(|(source, _)| *source != before);
+        }
+        live_counters::set(&mut self.named_counters, before, None);
+        self.project_copy_departure(before, after);
+        after
     }
     fn visit_death_exile_gains(
         &self,

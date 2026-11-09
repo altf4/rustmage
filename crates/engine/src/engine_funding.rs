@@ -853,6 +853,15 @@ impl<'g> FundingState<'g> {
     fn from_game(game: &'g Game, goal: &FundingGoal) -> Self {
         Self::from_game_with_convoke(game, goal, false)
     }
+    fn active_melds(&self) -> impl Iterator<Item = &meld::MeldedPermanent> {
+        self.roles()
+            .into_iter()
+            .flat_map(|roles| &roles.melded_permanents)
+            .filter(move |row| {
+                self.object(row.object.card).zone == Zone::Battlefield
+                    && self.reference(row.object.card) == row.object
+            })
+    }
     fn projected_face_down_physical(&self, object: ObjectRef) -> Option<Card> {
         self.entry_projection.as_ref().map_or_else(
             || self.game.face_down_physical(object),
@@ -2763,6 +2772,12 @@ impl<'g> FundingState<'g> {
                                 .basic_land_types
                                 .iter()
                                 .any(|row| row.recipient.card == r.id)
+                            // The row remains a funding identity witness after
+                            // both cards take on their new incarnations.
+                            || roles
+                                .melded_permanents
+                                .iter()
+                                .any(|row| row.object.card == r.id || row.entry.companion.card == r.id)
                     })
                     || self.continuation.as_ref().is_some_and(|c| c.selects(r.id))
                     || self
@@ -3763,6 +3778,11 @@ impl<'g> FundingState<'g> {
         if self.fixed_mana_cannot_pay(goal) {
             return false;
         }
+        // A departure may reveal off-battlefield abilities on either front or
+        // meet a zone-count guard. The current inventory cannot bound them.
+        if self.active_melds().next().is_some() {
+            return true;
+        }
         // A virtual sacrifice can supply a previously absent graveyard mana
         // ability. The ordinary current-inventory upper bound is not conservative
         // for this opt-in rule; exact owned reachability still decides legality.
@@ -4140,6 +4160,11 @@ impl<'g> FundingState<'g> {
                             })
                     })
                     .map(|r| u128::from(r.object.card.fixed_mana_value()))
+                    .sum::<u128>()
+                + self
+                    .active_melds()
+                    .flat_map(|row| row.entry.front_cards)
+                    .map(|card| u128::from(card.fixed_mana_value()))
                     .sum::<u128>();
             upper < u128::from(n)
         }) || !self.optimistic(goal)

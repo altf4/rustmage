@@ -1491,6 +1491,21 @@ impl FundingState<'_> {
             if m.before.zone == Zone::Battlefield && m.destination != Zone::Battlefield {
                 next.permanent_left_battlefield[m.before.controller.index()] = true;
             }
+            let mut entering_meld = m.meld.as_deref().copied();
+            if m.destination == Zone::Battlefield
+                && let Some(entry) = &mut entering_meld
+            {
+                if next.reference(entry.companion.card) != entry.companion
+                    || next.object(entry.companion.card).zone != Zone::Exile
+                {
+                    return false;
+                }
+                entry.companion = next.project_nonbattlefield_move(
+                    entry.companion,
+                    Zone::Outside,
+                    Some(entry.front_cards[1]),
+                );
+            }
             let face_down_physical = next.projected_face_down_physical(m.before.reference);
             let physical_copy = next
                 .temporary_copy_rows_state()
@@ -1564,7 +1579,7 @@ impl FundingState<'_> {
             };
             let projection = next.entry_projection.as_mut().unwrap();
             if m.destination == Zone::Battlefield
-                && let Some(&entry) = m.meld.as_deref()
+                && let Some(entry) = entering_meld
             {
                 projection
                     .roles
