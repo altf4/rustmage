@@ -279,7 +279,7 @@ impl Game {
             };
             true
         } else {
-            self.grant_exiled_result_cast_any_type(item.controller);
+            self.grant_exiled_result_flexible_play(item.controller, true);
             false
         }
     }

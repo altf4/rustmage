@@ -1237,6 +1237,7 @@ impl Game {
             | EffectChoiceKind::CountersOnTarget { .. }
             | EffectChoiceKind::RemoveLoreForSourceCounters(_)
             | EffectChoiceKind::EquipmentRecipient
+            | EffectChoiceKind::LinkedCreature { .. }
             | EffectChoiceKind::MeldPartner(_)
             | EffectChoiceKind::PowerDifferenceBoost
             | EffectChoiceKind::OptionalBeholdType(_)
