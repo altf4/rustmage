@@ -722,7 +722,7 @@ fn beatrix_can_attach_any_number_of_controlled_equipment_without_targeting_them(
     reach(&mut game, |a| *a == pick(first));
     reject(&mut game, pick(foreign));
     let mut declined = game.clone();
-    act(&mut declined, finish);
+    act(&mut declined, finish.clone());
     assert_eq!(declined.object_view(first.card).attached_to, None);
     act(&mut game, pick(first));
     act(&mut game, pick(second));
