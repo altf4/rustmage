@@ -1138,6 +1138,24 @@ pub(super) trait CharacteristicWorld {
                 && self.kinds(id as CardId) & 2 != 0
         })
     }
+    fn own_turn_source_or_controlled_creature_kind(
+        &self,
+        source: ObjectRef,
+        id: CardId,
+        kinds: u16,
+    ) -> bool {
+        let provider = self.object(source.card);
+        let target = self.object(id);
+        provider.zone == Zone::Battlefield
+            && self.reference(source.card) == source
+            && provider.controller == self.game().state.active
+            && target.zone == Zone::Battlefield
+            && (id == source.card
+                || (target.controller == provider.controller && {
+                    let current = self.kinds(id);
+                    current & 1 != 0 && current & kinds != 0
+                }))
+    }
     fn conditional_ward_applies(
         &self,
         source: ObjectRef,

@@ -259,6 +259,7 @@ impl Game {
                                 matches!(
                                     fragment,
                                     crate::cards::StaticAbilityFragment::ConditionalWard { .. }
+                                        | crate::cards::StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                                         | crate::cards::StaticAbilityFragment::ControlledCreatureTrigger { .. }
                                 )
                             })

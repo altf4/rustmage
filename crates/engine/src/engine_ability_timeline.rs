@@ -111,6 +111,7 @@ impl Card {
                             | StaticAbilityFragment::AttachedTurnKeywords(..)
                             | StaticAbilityFragment::HarnessedTrigger(..)
                             | StaticAbilityFragment::ConditionalWard { .. }
+                            | StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                             | StaticAbilityFragment::ControlledCreatureTrigger { .. }
                             | StaticAbilityFragment::AttachmentTrigger(..)
                             | StaticAbilityFragment::AttachmentActivation { .. }

@@ -609,6 +609,18 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             for group in object.card.static_ability_groups() {
                 for fragment in group.fragments {
                     match *fragment {
+                        StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard {
+                            kinds,
+                            keywords: grant,
+                            ..
+                        } if self.world.own_turn_source_or_controlled_creature_kind(
+                            self.object_ref(source),
+                            id,
+                            kinds,
+                        ) =>
+                        {
+                            keywords = keywords.union(grant);
+                        }
                         StaticAbilityFragment::ControlledPermanentKeywords {
                             kinds,
                             keywords: grant,
@@ -1006,6 +1018,16 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                 }
                 for fragment in group.fragments {
                     let ability = match *fragment {
+                        StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard {
+                            kinds,
+                            ward,
+                            ..
+                        } if self.world.own_turn_source_or_controlled_creature_kind(
+                            source, recipient, kinds,
+                        ) =>
+                        {
+                            Some(ward)
+                        }
                         StaticAbilityFragment::ConditionalWard {
                             condition,
                             filter,

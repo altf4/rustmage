@@ -158,6 +158,21 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 mana: Vec::new(),
             });
         }
+        StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard {
+            kinds,
+            keywords,
+            ward,
+        } => {
+            if !world.own_turn_source_or_controlled_creature_kind(source, id, kinds) {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords,
+                abilities: vec![key(ward)],
+                mana: Vec::new(),
+            });
+        }
         StaticAbilityFragment::SourceEntryModeActivation { mode, ability } => {
             if id != source.card
                 || provider.zone != Zone::Battlefield
@@ -664,6 +679,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::SourceEntryModeActivation { .. }
                         | StaticAbilityFragment::HarnessedTrigger(..)
                         | StaticAbilityFragment::ConditionalWard { .. }
+                        | StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                         | StaticAbilityFragment::ControlledCreatureTrigger { .. }
                         | StaticAbilityFragment::AttachmentTrigger(..)
                         | StaticAbilityFragment::AttachmentActivation { .. }

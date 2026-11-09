@@ -315,6 +315,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedByCreaturesWithLessPower
                             | crate::cards::StaticAbilityFragment::ControlledCreaturesCannotBeBlockedIfPowerOrToughnessAtMost(_)
                             | crate::cards::StaticAbilityFragment::ConditionalWard { .. }
+                            | crate::cards::StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                             | crate::cards::StaticAbilityFragment::ControlledCreatureTrigger { .. }
                             | crate::cards::StaticAbilityFragment::HarnessedTrigger(..)
                             | crate::cards::StaticAbilityFragment::PlayerHexproofIfSourceCounter { .. }

@@ -103,6 +103,7 @@ pub(super) fn program_grant_active<W: ability_world::CharacteristicWorld + ?Size
                         fragment,
                         F::AttachmentTrigger(_)
                             | F::ConditionalWard { .. }
+                            | F::OwnTurnSourceAndKindCreatureWard { .. }
                             | F::ControlledCreatureTrigger { .. }
                             | F::SourceMaxSpeedActivation(_)
                             | F::AttachmentActivation { .. }

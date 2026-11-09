@@ -391,6 +391,12 @@ pub enum StaticAbilityFragment {
         filter: CountFilter,
         ability: u16,
     },
+    /// During the provider's turn, grant both abilities to it and controlled creatures of these kinds.
+    OwnTurnSourceAndKindCreatureWard {
+        kinds: u16,
+        keywords: Keywords,
+        ward: u16,
+    },
     /// Grant a creature the indexed ordinary activation template. Tapping the
     /// distinct attachment is an additional cost only when printed explicitly.
     AttachmentActivation {
