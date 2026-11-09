@@ -3,10 +3,30 @@
   "catalogue_id": 4518,
   "oracle_id": "240f0835-36af-4ad8-9336-d6d3d816d293",
   "facts_sha256": "2fdd0e3e2e01fe04923f3c8035d001cdfe242b984caebb82b0fcc6b3d16f9c75",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "db00f7331ac37b683bafdf7f2247c8b9e7d6f337a63111aec2a40a0c8060be22"
   },
-  "physical_metadata_sha256": "e5533e59ee9bcc5f86301f1f1188b0188f6404d50f16e3715fcd270f5c17c9e0"
+  "physical_metadata_sha256": "e5533e59ee9bcc5f86301f1f1188b0188f6404d50f16e3715fcd270f5c17c9e0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheWindCrystal.java",
+  "java_sha256": "f193dbaccf133677a03c2df4d7f4c81e016b80fdbcdf31b2836f53817949bdfe",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellsCostReductionControllerEffect.java",
+      "sha256": "47783fefecfbb22810317538f30e9e92302add21ebff508bc21f43683a85ad06"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/replacement/GainDoubleLifeReplacementEffect.java",
+      "sha256": "e6c67472d01091fbaabe0a39ed992560934cd27598574c6d298509acb6ce5f5c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    }
+  ]
 }

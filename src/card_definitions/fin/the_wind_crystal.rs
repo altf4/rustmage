@@ -1,16 +1,62 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
-pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+// Direct typed behavior from the paired Oracle and pinned XMage sources.
+const REDUCTION: SpellReduction = SpellReduction {
+    source_only: false,
+    filter: CastFilter::Colors {
+        filter: &CastFilter::Any,
+        mask: 1,
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    amount: SpellReductionAmount::Fixed(1),
+    turn: CostTurn::Any,
+    guard: StepGuard::Always,
+};
+const STATIC: &[StaticAbilityGroup] = &[
+    StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::CostReduction(0, REDUCTION)],
+    },
+    StaticAbilityGroup {
+        line: 1,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::LifeGainDouble],
+    },
+];
+
+pub(in crate::cards) const RULES: CardRules = CardRules {
+    effect: Effect::Permanent,
+    static_groups: STATIC,
+    extras: &CardExtras {
+        static_ability_groups: STATIC,
+        cost_reductions: &[REDUCTION],
+        ..CardExtras::EMPTY
+    },
+    activated: &[ActivatedAbility {
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        origin: ActivationOrigin::Battlefield,
+        cycling: false,
+        cost: ActivationCost {
+            colored: [2, 0, 0, 0, 0, 0],
+            generic: 4,
+            mana_component: true,
+            tap: true,
+            ..ActivationCost::ZERO
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::GrantCreatures {
+            filter: CreatureFilter {
+                relation: 0,
+                other: false,
+                subtype: None,
+                keyword: Keywords::NONE,
+                attacking: false,
+                tokens: None,
+                artifact: false,
+            },
+            keywords: Keywords::FLYING.union(Keywords::LIFELINK),
+        }],
+        sorcery: false,
+        once_per_turn: false,
+    }],
     ..CardRules::EMPTY
 };

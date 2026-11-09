@@ -648,8 +648,8 @@ fn adamantoise_redirects_damage_retains_it_and_creates_tapped_treasures_on_death
     game.state.players[opponent.index()].mana = [8; 6];
     assert_eq!(game.actor(), Some(opponent));
     cast(&mut game, direct, Some(Target::Card(turtle)));
-    reach(&mut game, |action| *action == Action::DeclineEffectPayment);
-    act(&mut game, Action::DeclineEffectPayment);
+    reach(&mut game, |action| *action == Action::DeclineResolutionMana);
+    act(&mut game, Action::DeclineResolutionMana);
     settle(&mut game);
     assert_eq!(game.object_view(turtle).damage, 2);
 
@@ -760,8 +760,11 @@ fn buster_sword_uses_combat_damage_and_can_cast_the_card_just_drawn() {
         object,
         face: CastFace::Normal,
     };
+    reach(
+        &mut game,
+        |a| matches!(a, Action::CastFreeDuringResolution { object, face: CastFace::Normal } if object.card == drawn),
+    );
     let drawn_action = free(game.object_ref(drawn));
-    reach(&mut game, |a| *a == drawn_action);
     assert_eq!(game.object_view(drawn).zone, Zone::Hand);
     assert!(game.observe(opponent).resolution_free_casts.is_none());
     let expensive_action = free(game.object_ref(expensive));
@@ -879,7 +882,7 @@ fn clives_hideaway_checks_legendary_count_when_the_activation_resolves() {
         "Tatyova, Benthic Druid",
         Zone::Battlefield,
     );
-    let free = Action::CastFreeDuringResolution {
+    let free = Action::CastExiledDuringResolution {
         object: game.object_ref(hidden),
         face: CastFace::Normal,
     };
@@ -945,12 +948,12 @@ fn cornered_by_black_mages_requires_the_opponents_sacrifice_and_still_creates_a_
     empty.move_object(victim, Zone::Exile);
     settle(&mut empty);
     assert_eq!(tokens(&empty, player, Card(5531)).len(), 1);
-    let sacrifice = Action::ChooseEffectObject {
+    let sacrifice = Action::Sacrifice {
         object: game.object_ref(victim),
     };
     reach(&mut game, |a| *a == sacrifice);
     assert_eq!(game.actor(), Some(opponent));
-    let illegal = Action::ChooseEffectObject {
+    let illegal = Action::Sacrifice {
         object: game.object_ref(owned),
     };
     reject(&mut game, illegal);

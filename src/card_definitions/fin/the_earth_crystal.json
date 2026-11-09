@@ -3,10 +3,30 @@
   "catalogue_id": 4437,
   "oracle_id": "5e7ef7fe-968b-4ada-9fe4-6fda0541aafc",
   "facts_sha256": "b9dd9aabe2b078fe058b5352434369866cffd6dbeb8c0e75f0b232f6a98f0004",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "33de0d8318cd2a611d515c0a466baa6ace929dbc235d0cb64a767863bacc0399"
   },
-  "physical_metadata_sha256": "56b12e3615f6a9a0048aa9377adbc755ee58725de09083e29564dc29011680ca"
+  "physical_metadata_sha256": "56b12e3615f6a9a0048aa9377adbc755ee58725de09083e29564dc29011680ca",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheEarthCrystal.java",
+  "java_sha256": "cf1f77fb17313c6b614e96a6a5e363f33d9fff448f6d378e9c09cb4e5371a226",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellsCostReductionControllerEffect.java",
+      "sha256": "47783fefecfbb22810317538f30e9e92302add21ebff508bc21f43683a85ad06"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/DistributeCountersEffect.java",
+      "sha256": "745e7d5d527b57c5dd4a8b5e477a62c2d856ae9731d1d575ec29891351978e62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanentAmount.java",
+      "sha256": "39059e7727fb6a2d73dd37bf6e148419181fa315f60da40642d94c49adff7fb0"
+    }
+  ]
 }

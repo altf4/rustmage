@@ -3,10 +3,30 @@
   "catalogue_id": 4432,
   "oracle_id": "660f370a-b25b-4ea5-b765-7abf96899c1c",
   "facts_sha256": "76606c9541758a224da343c8bc58e526b9c96706ec0e3426d66795667548e50a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "17a6cc8907db1c84c5b01cc45b5acfafcba077db523b5c2cfe7f830acdf4dc26"
   },
-  "physical_metadata_sha256": "c51df106f650f9120496ddf391a0b43945bb661878840e5bc44c6a92a17ad95a"
+  "physical_metadata_sha256": "c51df106f650f9120496ddf391a0b43945bb661878840e5bc44c6a92a17ad95a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheDarknessCrystal.java",
+  "java_sha256": "8f970f3e07a4586f57b4c14c27c661cce2504bb516499d3ff0fdaf1b7c7424de",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellsCostReductionControllerEffect.java",
+      "sha256": "47783fefecfbb22810317538f30e9e92302add21ebff508bc21f43683a85ad06"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInExile.java",
+      "sha256": "6f780da5ddeae8d933e0ae6900c6b38ff1e466089310d72c487ac3b6159f9b0c"
+    }
+  ]
 }

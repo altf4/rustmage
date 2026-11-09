@@ -378,9 +378,9 @@ fn fenrir_searches_a_basic_then_rewards_the_next_creature_and_a_power_tie() {
     pass_pair(&mut game);
     pass_pair(&mut game);
     assert!(game.observe(player.other()).library_selection.is_none());
-    reject(&mut game, Action::SelectLibrary { card: town });
-    act(&mut game, Action::SelectLibrary { card: forest });
-    act(&mut game, Action::FinishLibrarySelection);
+    reject(&mut game, Action::ChooseSearch { card: town });
+    act(&mut game, Action::ChooseSearch { card: forest });
+    act(&mut game, Action::FinishSearch);
     assert_eq!(game.object_view(forest).zone, Zone::Battlefield);
     assert!(game.object_view(forest).tapped);
 
@@ -734,7 +734,7 @@ fn ultima_destroys_both_types_and_ends_the_turn_before_a_death_trigger_stacks() 
         Zone::Battlefield,
     );
     let land = put(&mut game, opponent, "Forest", Zone::Battlefield);
-    let enchantment = put(&mut game, player, "Nowhere to Run", Zone::Battlefield);
+    let enchantment = put(&mut game, player, "A Realm Reborn", Zone::Battlefield);
     let spell = put(&mut game, player, "Ultima", Zone::Hand);
     let turn = game.state.turn;
     cast(&mut game, spell, None);
@@ -749,4 +749,282 @@ fn ultima_destroys_both_types_and_ends_the_turn_before_a_death_trigger_stacks() 
     assert!(battlefield_tokens(&game, 5302).is_empty());
     assert_eq!(game.state.turn, turn + 1);
     assert_eq!(game.state.active, opponent);
+}
+
+fn activate(game: &mut Game, source: CardId) {
+    act(
+        game,
+        Action::AnnounceActivate {
+            card: source,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+}
+
+fn assert_crystal_discount(game: &Game, crystal: CardId, spell: &str, pool: Mana) {
+    let player = game.actor().unwrap();
+    let mut discounted = game.clone();
+    let spell = put(&mut discounted, player, spell, Zone::Hand);
+    discounted.state.players[player.index()].mana = pool;
+    let announce = Action::AnnounceCast { card: spell };
+    let mut without = discounted.clone();
+    without.move_object(crystal, Zone::Exile);
+    reject(&mut without, announce.clone());
+    act(&mut discounted, announce);
+    pay(&mut discounted);
+    assert_eq!(discounted.object_view(spell).zone, Zone::Stack);
+    assert_eq!(discounted.state.players[player.index()].mana, [0; 6]);
+}
+
+#[test]
+fn darkness_crystal_links_only_actual_opposing_creature_exiles() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let crystal = put(&mut game, player, "The Darkness Crystal", Zone::Hand);
+    cast(&mut game, crystal, None);
+    settle(&mut game);
+    assert_crystal_discount(&game, crystal, "Undercity Dire Rat", [0, 0, 1, 0, 0, 0]);
+
+    let victim = put(&mut game, opponent, "Grizzly Bears", Zone::Battlefield);
+    let friendly = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let unlinked = put(&mut game, opponent, "Hill Giant", Zone::Exile);
+    game.move_object(victim, Zone::Graveyard);
+    game.move_object(friendly, Zone::Graveyard);
+    assert_eq!(game.object_view(victim).zone, Zone::Exile);
+    assert_eq!(game.object_view(friendly).zone, Zone::Graveyard);
+    assert_eq!(game.state.players[player.index()].life, 22);
+
+    activate(&mut game, crystal);
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(unlinked),
+        },
+    );
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(victim),
+        },
+    );
+    pay(&mut game);
+    settle(&mut game);
+    let returned = game.object_view(victim);
+    assert_eq!(
+        (returned.zone, returned.owner, returned.controller),
+        (Zone::Battlefield, opponent, player)
+    );
+    assert!(returned.tapped);
+    assert_eq!(game.counter_count(victim, CounterKind::PlusOne), 2);
+}
+
+#[test]
+fn earth_crystal_doubles_the_announced_shares_for_surviving_creatures() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let crystal = put(&mut game, player, "The Earth Crystal", Zone::Hand);
+    let first = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let second = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let opponent = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
+    cast(&mut game, crystal, None);
+    settle(&mut game);
+    assert_crystal_discount(&game, crystal, "Grizzly Bears", [0, 0, 0, 0, 1, 0]);
+
+    activate(&mut game, crystal);
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(opponent),
+        },
+    );
+    for card in [first, second] {
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(card),
+            },
+        );
+    }
+    if game.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut game, Action::FinishTargets);
+    }
+    for _ in 0..2 {
+        act(&mut game, Action::AllocateTargetAmount { amount: 1 });
+    }
+    pay(&mut game);
+    let mut responded = game.clone();
+    responded.move_object(second, Zone::Hand);
+    settle(&mut responded);
+    assert_eq!(responded.counter_count(first, CounterKind::PlusOne), 2);
+    assert_eq!(responded.counter_count(second, CounterKind::PlusOne), 0);
+    settle(&mut game);
+    for card in [first, second] {
+        assert_eq!(game.counter_count(card, CounterKind::PlusOne), 2);
+    }
+    assert_eq!(game.counter_count(opponent, CounterKind::PlusOne), 0);
+}
+
+#[test]
+fn water_crystal_adds_four_only_to_a_positive_opponent_mill() {
+    let player = Player::P1;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let crystal = put(&mut game, player, "The Water Crystal", Zone::Hand);
+    cast(&mut game, crystal, None);
+    settle(&mut game);
+    assert_crystal_discount(&game, crystal, "Ice Flan", [0, 2, 0, 0, 0, 3]);
+    activate(&mut game, crystal);
+    pay(&mut game);
+    let mut empty = game.clone();
+    settle(&mut empty);
+    assert_eq!(empty.state.players[opponent.index()].library.len(), 8);
+
+    for name in ["Island", "Opt"] {
+        put(&mut game, player, name, Zone::Hand);
+    }
+    settle(&mut game);
+    assert_eq!(game.state.players[opponent.index()].library.len(), 2);
+    assert_eq!(game.state.players[player.index()].library.len(), 8);
+    assert!(game.object_view(crystal).tapped);
+}
+
+#[test]
+fn wind_crystal_gives_only_current_controlled_creatures_flying_and_doubles_lifelink() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let crystal = put(&mut game, player, "The Wind Crystal", Zone::Hand);
+    let bear = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let enemy = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    cast(&mut game, crystal, None);
+    settle(&mut game);
+    assert_crystal_discount(&game, crystal, "Cloudbound Moogle", [2, 0, 0, 0, 0, 2]);
+    activate(&mut game, crystal);
+    pay(&mut game);
+    settle(&mut game);
+    let late = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let keywords = Keywords::FLYING.union(Keywords::LIFELINK);
+    assert!(game.keywords(bear).contains(keywords));
+    for id in [late, enemy] {
+        assert!(!game.keywords(id).contains(Keywords::FLYING));
+        assert!(!game.keywords(id).contains(Keywords::LIFELINK));
+    }
+    attack_with(&mut game, &[bear]);
+    pass_pair(&mut game);
+    reject(
+        &mut game,
+        Action::Block {
+            blocker: enemy,
+            attacker: bear,
+        },
+    );
+    act(&mut game, Action::FinishBlockers);
+    pass_pair(&mut game);
+    assert_eq!(game.state.players[opponent.index()].life, 18);
+    assert_eq!(game.state.players[player.index()].life, 24);
+    game.finish_cleanup();
+    assert!(!game.keywords(bear).contains(Keywords::FLYING));
+    assert!(!game.keywords(bear).contains(Keywords::LIFELINK));
+}
+
+#[test]
+fn masamune_requires_an_available_block_and_doubles_its_bearers_death_trigger() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let rat = put(&mut game, player, "Undercity Dire Rat", Zone::Battlefield);
+    let blocker = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let sword = put(&mut game, player, "The Masamune", Zone::Hand);
+    cast(&mut game, sword, None);
+    settle(&mut game);
+    activate(&mut game, sword);
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(rat),
+        },
+    );
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(
+        game.object_view(sword).attached_to,
+        Some(game.object_ref(rat))
+    );
+    assert!(!game.keywords(rat).contains(Keywords::FIRST_STRIKE));
+
+    attack_with(&mut game, &[rat]);
+    assert!(game.keywords(rat).contains(Keywords::FIRST_STRIKE));
+    pass_pair(&mut game);
+    reject(&mut game, Action::FinishBlockers);
+    act(
+        &mut game,
+        Action::Block {
+            blocker,
+            attacker: rat,
+        },
+    );
+    act(&mut game, Action::FinishBlockers);
+    pass_pair(&mut game);
+    assert_eq!(game.state.step, Step::FirstStrikeDamage);
+    assert_eq!(game.object_view(blocker).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(rat).damage, 0);
+
+    let shock = put(&mut game, player, "Shock", Zone::Hand);
+    cast(&mut game, shock, Some(Target::Card(rat)));
+    for _ in 0..16 {
+        if game.state.pending == Pending::Priority
+            && game.state.stack.is_empty()
+            && game.state.pending_triggers.is_empty()
+        {
+            break;
+        }
+        choose(&mut game, |action| {
+            matches!(action, Action::Pass | Action::PutTrigger { .. })
+        });
+    }
+    assert_eq!(game.object_view(rat).zone, Zone::Graveyard);
+    assert_eq!(battlefield_tokens(&game, 5302).len(), 2);
+}
+
+#[test]
+fn ultima_origin_replaces_the_attacked_lands_abilities_and_doubles_its_colorless_mana() {
+    let player = Player::P0;
+    let colorless = [0, 0, 0, 0, 0, 1];
+    let mut game = scenario(player);
+    let ultima = put(
+        &mut game,
+        player,
+        "Ultima, Origin of Oblivion",
+        Zone::Battlefield,
+    );
+    let town = put(
+        &mut game,
+        player,
+        "Vector, Imperial Capital",
+        Zone::Battlefield,
+    );
+    assert!(game.keywords(ultima).contains(Keywords::FLYING));
+    assert!(game.object_view(town).has_subtype("Town"));
+    attack_with(&mut game, &[ultima]);
+    trigger_target(&mut game, Target::Card(town));
+    settle(&mut game);
+    assert_eq!(game.counter_count(town, CounterKind::Blight), 1);
+    assert!(!game.object_view(town).has_subtype("Town"));
+
+    let tap = Action::TapGrantedMana {
+        card: town,
+        grantor: game.object_ref(town),
+        production: colorless,
+    };
+    game.state.players[player.index()].mana = [0; 6];
+    act(&mut game, tap.clone());
+    assert_eq!(game.state.players[player.index()].mana[5], 2);
+    game.move_object(ultima, Zone::Graveyard);
+    game.untap_objects(&[town], untap_rules::UntapCause::Effect);
+    act(&mut game, tap);
+    assert_eq!(game.state.players[player.index()].mana[5], 3);
+    game.pay_counters(town, &Counters::of(CounterKind::Blight, 1));
+    assert!(game.object_view(town).has_subtype("Town"));
 }

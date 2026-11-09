@@ -3,10 +3,40 @@
   "catalogue_id": 4743,
   "oracle_id": "baa337ce-edc6-4ee5-a898-68e9dbb4ab93",
   "facts_sha256": "f903361b2e0fd25fd26a27bdd6d5a7a12bba4bc0028fb497eb51a73abee224a2",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6794e0116705b0aaaccc1303272d60856c1f9ca7e92b57e94188d6319f22378b"
   },
-  "physical_metadata_sha256": "cb2afa70a2b77815444d92aac59216631244e9a102a3e47ff7b98aaa5bcec2a2"
+  "physical_metadata_sha256": "cb2afa70a2b77815444d92aac59216631244e9a102a3e47ff7b98aaa5bcec2a2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UltimaOriginOfOblivion.java",
+  "java_sha256": "76d5eac59ac410ef6db530ff3ea3b82c2d776e8203a50f9d9edf77444ae20469",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/ColorlessManaAbility.java",
+      "sha256": "4987cb71ee89f496075de0f3a30824281e53300d701d9c7442230e7a7ec2e03a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/TriggeredManaAbility.java",
+      "sha256": "f5924161ca1498f35a1e1ecf8d98980d4c81774238758d62b5e68370ab64f543"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/events/TappedForManaEvent.java",
+      "sha256": "4b4be2f2786b4d15c16ad29fc1051c0ef7739468ef11ff926b73c9e7daac0014"
+    }
+  ]
 }
