@@ -5062,6 +5062,7 @@ pub enum CastFilter {
     Colorless,
     Creature,
     Noncreature,
+    Legendary,
     /// Historical qualifying cast ordinal, evaluated only with the actual caster.
     InstantSorceryOrdinal(u64),
     /// Actual per-caster ordinal, including casts before the observer entered.
@@ -5143,6 +5144,7 @@ impl CastFilter {
             }
             Self::Creature => card.is_creature(),
             Self::Noncreature => !card.is_creature(),
+            Self::Legendary => card.is_legendary(),
             Self::InstantSorcery => card.kind_mask() & (4 | 8) != 0,
             Self::Sorcery => card.kind_mask() & 4 != 0,
             Self::Artifact => card.is_artifact(),
