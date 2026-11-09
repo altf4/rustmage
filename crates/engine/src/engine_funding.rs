@@ -3415,6 +3415,9 @@ impl<'g> FundingState<'g> {
         for (id, _) in self.game.state.objects.iter().enumerate() {
             let id = id as CardId;
             let object = self.object(id);
+            if object.zone == Zone::Command {
+                return false;
+            }
             if object.zone != Zone::Battlefield {
                 continue;
             }
@@ -3482,16 +3485,20 @@ impl<'g> FundingState<'g> {
                     }
                 }
             }
-            for ability in object.card.activations() {
+            for (index, ability) in object.card.activations().iter().enumerate() {
                 let Some(production) = ability.mana_production() else {
                     continue;
                 };
                 let cost = ability.cost;
-                if ability.source_zone() != Zone::Battlefield
+                if !matches!(ability.program, [Instruction::AddMana(_)])
+                    || object.card.activation_put_counter(index as u16).is_some()
+                    || ability.source_zone() != Zone::Battlefield
                     || !cost.tap
                     || cost.sacrifice
                     || cost.exile_self
                     || cost.discard
+                    || cost.life != 0
+                    || cost.remove.is_some()
                     || cost.additional.is_some_and(|spec| {
                         !matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
                     })
