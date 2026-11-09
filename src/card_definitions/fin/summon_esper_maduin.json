@@ -8,7 +8,7 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/e/EsperOrigins.java",
   "java_sha256": "43c003249d73e9d6655f90d099accc0a88318038159d43a26ccd5d462301a192",
-  "rules_tests": "src/assurance/requested_esper.rs",
+  "rules_tests": "tests/fin_cards_001_078_inherited.rs",
   "oracle_face": {
     "oracle_id": "947b40a2-e272-4ef6-85fb-3d767a21bc7a",
     "index": 1,
