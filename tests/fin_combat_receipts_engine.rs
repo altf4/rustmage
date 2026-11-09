@@ -238,14 +238,9 @@ const DEFENDING_DAMAGE: CardRules = CardRules {
 };
 
 fn own_battle(game: &mut Game, player: Player) -> CardId {
-    let id = put(game, player, "Goblin Piker", Zone::Battlefield);
-    let mut recipe = CopyRecipe::new(Card::GoblinPiker);
-    recipe.overrides = Some(CopyOverrides {
-        kinds: Some(BATTLE_KIND),
-        ..CopyOverrides::NONE
-    });
+    let siege = Card::from_name("@fixture/siege-front").unwrap();
+    let id = spawn(game, player, siege, Zone::Battlefield);
     let object = game.object_ref(id);
-    game.apply_temporary_copy(object, recipe, CopyDeadline::EndOfTurn);
     game.add_counter(id, CounterKind::Defense, 9);
     game.set_battle_protector(object, player.other());
     id
