@@ -109,7 +109,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
         }
         StaticAbilityFragment::LandMana { .. }
         | StaticAbilityFragment::OtherControlledPermanentTapMana(_) => {
-            let production = world.static_tap_mana(source, id, fragment)?;
+            let production = world.static_tap_mana(source, id, *fragment)?;
             return Some(LayerSixGrant {
                 recipient: id,
                 keywords: Keywords::NONE,
