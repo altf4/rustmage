@@ -1,4 +1,4 @@
-//! Resolved entry-counter replacements belong to one exact creature spell.
+//! Resolved entry-counter replacements belong to one exact permanent spell.
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]

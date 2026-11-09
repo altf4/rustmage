@@ -112,7 +112,7 @@ fn paid_origin_receipt_survives_provider_departure_and_owned_branch_restore() {
     let p = Player::P0;
     let mut g = scenario(p);
     let provider = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
-    let artifact = put(&mut g, p, "Gingerbrute", Zone::Graveyard);
+    let artifact = put(&mut g, p, "Interface Ace", Zone::Graveyard);
     let normal = Action::AnnounceCast { card: artifact };
     g.grant_graveyard_permission(p, g.object_ref(artifact), GraveyardCastKind::Cast);
 

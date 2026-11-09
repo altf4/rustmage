@@ -135,7 +135,7 @@
     "crates/engine/src/engine_case.rs": "ddb4b18e9411e72b8436ac95a5e94a15ade7a92eff39de8d5691f210eaf1ba63",
     "crates/engine/src/engine_cast_cost_planning.rs": "3ac5b98af14132b2afc42d0d4f3893ecce88cf222e41acd30c8b15ecd5f30af9",
     "crates/engine/src/engine_cast_costs.rs": "0d4af67b9f1be8b34ed9da46f1f8f1abd730a514f2eb2535fd85d63a1bdfa4b7",
-    "crates/engine/src/engine_cast_entry_counters.rs": "7801359425686c4b6615cfae2be5e50596af00eeaed1992ba45595993e32fbfe",
+    "crates/engine/src/engine_cast_entry_counters.rs": "41caf83f7a0e863830a672931881637216969f7d26ba391164978ae445190c92",
     "crates/engine/src/engine_cast_mana_recording.rs": "0b6f1042cf2064476527ceda3a1ff70a53ac05593ab00ff91afff68ecd2a6b25",
     "crates/engine/src/engine_cast_origins.rs": "33a40a054e6eb6fb1651b6a59a7d609b636471a9bd1a8f69cb8fd94d65561cf6",
     "crates/engine/src/engine_cast_payments.rs": "1e3a04056d4763e2b18ecc3210e1a58b2570a827b5ca69df83a0eecc4278cce7",
