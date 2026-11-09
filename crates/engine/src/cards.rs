@@ -1196,6 +1196,11 @@ pub enum EffectChoiceKind {
     /// Non-targeted return payment for Sneak, after blockers are declared.
     ReturnUnblockedAttacker,
     ReturnToHand,
+    /// Non-targeted return of a physical card from the choosing player's graveyard.
+    /// A zero kind mask allows any card.
+    ReturnGraveyardToHand {
+        kinds: u16,
+    },
     Discard,
     /// Discard the payer's entire current hand as one ordinary activation cost.
     /// Empty hands are payable; no object selection is made.

@@ -1274,6 +1274,7 @@ impl Game {
             | EffectChoiceKind::HandPermanent { .. }
             | EffectChoiceKind::HandLand { .. }
             | EffectChoiceKind::GraveyardCreatures { .. }
+            | EffectChoiceKind::ReturnGraveyardToHand { .. }
             | EffectChoiceKind::LandCards { .. }
             | EffectChoiceKind::DiscardedLand { .. }
             | EffectChoiceKind::CollectEvidence(_)

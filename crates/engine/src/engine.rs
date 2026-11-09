@@ -847,6 +847,7 @@ define_actions! {
     SelectLand { object: ObjectRef },
     SelectGraveyardReturn { object: ObjectRef },
     FinishGraveyardReturn,
+    ChooseEffectObject { object: ObjectRef },
     AnnounceSourceGrant { source: ObjectRef, ability: u16 },
     SelectResolutionExile { object: ObjectRef },
     ProliferatePermanent { object: ObjectRef },
@@ -3421,7 +3422,7 @@ pub struct RecoveryChoiceView {
     pub candidates: Vec<ObjectRef>,
 }
 
-/// Private discard costs and public sacrifice choices suspended during resolution.
+/// Owned object choices suspended during resolution.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Serialize)]
 pub struct EffectChoiceView {
@@ -5199,6 +5200,12 @@ impl Game {
                             | EffectChoiceKind::HandLand { .. }
                     ) {
                         Action::DeclineHandEntry
+                    } else if matches!(
+                        choice.kind,
+                        EffectChoiceKind::ReturnToHand
+                            | EffectChoiceKind::ReturnGraveyardToHand { .. }
+                    ) {
+                        Action::ChooseOptional { accept: false }
                     } else {
                         Action::DeclineEffectPayment
                     })
@@ -5212,9 +5219,11 @@ impl Game {
                             EffectChoiceKind::KeepSharedCreatureTypes => {
                                 Action::ChooseSharedCreature { object }
                             }
-                            EffectChoiceKind::GraveyardCreatures { .. } => {
+                            EffectChoiceKind::GraveyardCreatures { .. }
+                            | EffectChoiceKind::ReturnGraveyardToHand { .. } => {
                                 Action::SelectGraveyardReturn { object }
                             }
+                            EffectChoiceKind::ReturnToHand => Action::ChooseEffectObject { object },
                             EffectChoiceKind::ColorCounter { .. } => {
                                 Action::ChooseColorCounter { object }
                             }
@@ -8345,6 +8354,7 @@ impl Game {
             | Action::ChooseJace { object }
             | Action::ChoosePowerDifferenceCreature { object }
             | Action::SelectGraveyardReturn { object }
+            | Action::ChooseEffectObject { object }
             | Action::SelectLand { object }
             | Action::SelectResolutionExile { object }
             | Action::BottomHandCard { object } => self.choose_effect_object(actor, object),
@@ -8512,6 +8522,11 @@ impl Game {
                 if matches!(self.state.pending, Pending::Replacement { .. }) =>
             {
                 self.choose_optional_token_replacement(accept);
+            }
+            Action::ChooseOptional { accept: false }
+                if matches!(self.state.pending, Pending::EffectChoice { .. }) =>
+            {
+                self.decline_effect_payment();
             }
             Action::ChooseOptional { accept }
                 if matches!(self.state.pending, Pending::OptionalSearch(_)) =>

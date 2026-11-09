@@ -215,6 +215,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::ChooseArmy { .. }
             | Action::ChooseJace { .. }
             | Action::SelectGraveyardReturn { .. }
+            | Action::ChooseEffectObject { .. }
             | Action::AnnounceSourceGrant { .. }
             | Action::SelectLand { .. }
             | Action::SelectResolutionExile { .. } => 50,

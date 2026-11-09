@@ -1,4 +1,4 @@
-//! Simultaneous public sacrifices and private exact resolution-cost payments.
+//! Owned non-targeted effect choices and private resolution-cost payments.
 use super::*;
 use ability_world::CharacteristicWorld;
 /// The chosen quantity and exact recipients survive interruptible draws.
@@ -258,6 +258,14 @@ impl Game {
                 && matches!(o.zone, Zone::Graveyard | Zone::Hand | Zone::Library)
                 && self.object_ref(object.card) == object
                 && crate::card_names::same_name(o.card.name(), name)
+                && !choice.selected[player.index()].contains(&object);
+        }
+        if let EffectChoiceKind::ReturnGraveyardToHand { kinds } = choice.kind {
+            return o.zone == Zone::Graveyard
+                && o.owner == player
+                && o.is_card()
+                && self.object_ref(object.card) == object
+                && (kinds == 0 || self.current_kinds(object.card) & kinds != 0)
                 && !choice.selected[player.index()].contains(&object);
         }
         if choice.kind.payment_kind() == EffectChoiceKind::ExileCardFromAnyGraveyard {
@@ -1636,6 +1644,13 @@ impl Game {
             }
             return false;
         }
+        if matches!(
+            choice.kind.payment_kind(),
+            EffectChoiceKind::ReturnToHand | EffectChoiceKind::ReturnGraveyardToHand { .. }
+        ) {
+            self.return_effect_choice_to_hand(*choice);
+            return false;
+        }
         if choice.kind.payment_kind() == EffectChoiceKind::PowerDifferenceBoost {
             let controller = self.state.resolving.as_ref().unwrap().item.controller;
             let selected = &choice.selected[controller.index()];
@@ -1988,6 +2003,27 @@ impl Game {
             }
         }
         false
+    }
+
+    fn return_effect_choice_to_hand(&mut self, mut choice: EffectChoice) {
+        let selected = std::mem::take(&mut choice.selected);
+        let ids: Vec<_> = [self.state.active, self.state.active.other()]
+            .into_iter()
+            .flat_map(|player| {
+                selected[player.index()]
+                    .iter()
+                    .copied()
+                    .map(move |object| (player, object))
+            })
+            .filter_map(|(player, object)| {
+                self.effect_choice_candidate(&choice, player, object)
+                    .then_some(object.card)
+            })
+            .collect();
+        if !ids.is_empty() {
+            let events = self.move_objects_raw(&ids, Zone::Hand);
+            self.finish_zone_events(&events, &[]);
+        }
     }
 
     pub(super) fn choose_effect_object(&mut self, player: Player, object: ObjectRef) {
