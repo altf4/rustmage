@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "020dd0758e75606b0fcb2f373c810220890e28696edf649960208b34151e5f05",
+  "catalogue_version": "669f28f2321db75745ef50b5b99c1f1d1e04e4c04a8d0f76ee891009ae593df3",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 3576,
-  "implemented_total": 3583,
+  "implemented_standard_cards": 3617,
+  "implemented_total": 3624,
   "token_definitions": 168,
   "emblem_definitions": 12,
   "adventure_definitions": 53,
@@ -64,8 +64,8 @@
     },
     "fin": {
       "total": 304,
-      "gated": 174,
-      "complete": 130
+      "gated": 133,
+      "complete": 171
     },
     "fra": {
       "total": 285,
@@ -1366,8 +1366,8 @@
     {
       "name": "Ambrosia Whiteheart",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/ambrosia_whiteheart.rs",
       "set": "fin"
     },
@@ -6406,8 +6406,8 @@
     {
       "name": "Cloud of Darkness",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/cloud_of_darkness.rs",
       "set": "fin"
     },
@@ -7342,8 +7342,8 @@
     {
       "name": "Crossroads Village",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/crossroads_village.rs",
       "set": "fin"
     },
@@ -8174,8 +8174,8 @@
     {
       "name": "Deadly Embrace",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/deadly_embrace.rs",
       "set": "fin"
     },
@@ -10286,8 +10286,8 @@
     {
       "name": "Eden, Seat of the Sanctum",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/eden_seat_of_the_sanctum.rs",
       "set": "fin"
     },
@@ -10510,8 +10510,8 @@
     {
       "name": "Elixir",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/elixir.rs",
       "set": "fin"
     },
@@ -11238,8 +11238,8 @@
     {
       "name": "Ether",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/ether.rs",
       "set": "fin"
     },
@@ -11310,8 +11310,8 @@
     {
       "name": "Evil Reawakened",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/evil_reawakened.rs",
       "set": "fin"
     },
@@ -12478,8 +12478,8 @@
     {
       "name": "Firion, Wild Rose Warrior",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/firion_wild_rose_warrior.rs",
       "set": "fin"
     },
@@ -13182,8 +13182,8 @@
     {
       "name": "Freya Crescent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/freya_crescent.rs",
       "set": "fin"
     },
@@ -13462,8 +13462,8 @@
     {
       "name": "G'raha Tia",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/g_raha_tia.rs",
       "set": "fin"
     },
@@ -13670,8 +13670,8 @@
     {
       "name": "Garnet, Princess of Alexandria",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/garnet_princess_of_alexandria.rs",
       "set": "fin"
     },
@@ -13886,8 +13886,8 @@
     {
       "name": "Genji Glove",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/genji_glove.rs",
       "set": "fin"
     },
@@ -14246,8 +14246,8 @@
     {
       "name": "Giott, King of the Dwarves",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/giott_king_of_the_dwarves.rs",
       "set": "fin"
     },
@@ -14926,8 +14926,8 @@
     {
       "name": "Gran Pulse Ochu",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/gran_pulse_ochu.rs",
       "set": "fin"
     },
@@ -15878,8 +15878,8 @@
     {
       "name": "Haste Magic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/haste_magic.rs",
       "set": "fin"
     },
@@ -16758,8 +16758,8 @@
     {
       "name": "Hope Estheim",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/hope_estheim.rs",
       "set": "fin"
     },
@@ -18126,8 +18126,8 @@
     {
       "name": "Item Shopkeep",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/item_shopkeep.rs",
       "set": "fin"
     },
@@ -18542,8 +18542,8 @@
     {
       "name": "Judgment Bolt",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/judgment_bolt.rs",
       "set": "fin"
     },
@@ -18566,8 +18566,8 @@
     {
       "name": "Jumbo Cactuar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/jumbo_cactuar.rs",
       "set": "fin"
     },
@@ -18638,8 +18638,8 @@
     {
       "name": "Kain, Traitorous Dragoon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/kain_traitorous_dragoon.rs",
       "set": "fin"
     },
@@ -20142,8 +20142,8 @@
     {
       "name": "Light of Judgment",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/light_of_judgment.rs",
       "set": "fin"
     },
@@ -20182,16 +20182,16 @@
     {
       "name": "Lightning, Army of One",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/lightning_army_of_one.rs",
       "set": "fin"
     },
     {
       "name": "Lightning, Security Sergeant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/lightning_security_sergeant.rs",
       "set": "fin"
     },
@@ -20750,8 +20750,8 @@
     {
       "name": "Louisoix's Sacrifice",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/louisoix_s_sacrifice.rs",
       "set": "fin"
     },
@@ -21158,8 +21158,8 @@
     {
       "name": "Magitek Scythe",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/magitek_scythe.rs",
       "set": "fin"
     },
@@ -23638,8 +23638,8 @@
     {
       "name": "Nibelheim Aflame",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/nibelheim_aflame.rs",
       "set": "fin"
     },
@@ -23838,8 +23838,8 @@
     {
       "name": "Noctis, Prince of Lucis",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/noctis_prince_of_lucis.rs",
       "set": "fin"
     },
@@ -24406,8 +24406,8 @@
     {
       "name": "Opera Love Song",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/opera_love_song.rs",
       "set": "fin"
     },
@@ -25374,16 +25374,16 @@
     {
       "name": "Phantom Train",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/phantom_train.rs",
       "set": "fin"
     },
     {
       "name": "Phoenix Down",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/phoenix_down.rs",
       "set": "fin"
     },
@@ -25758,8 +25758,8 @@
     {
       "name": "Poison the Waters",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/poison_the_waters.rs",
       "set": "fin"
     },
@@ -26102,8 +26102,8 @@
     {
       "name": "Prishe's Wanderings",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/prishe_s_wanderings.rs",
       "set": "fin"
     },
@@ -34470,8 +34470,8 @@
     {
       "name": "Swallowed by Leviathan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/swallowed_by_leviathan.rs",
       "set": "fin"
     },
@@ -36966,8 +36966,8 @@
     {
       "name": "Tifa Lockhart",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/tifa_lockhart.rs",
       "set": "fin"
     },
@@ -37238,8 +37238,8 @@
     {
       "name": "Tonberry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/tonberry.rs",
       "set": "fin"
     },
@@ -37350,8 +37350,8 @@
     {
       "name": "Town Greeter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/town_greeter.rs",
       "set": "fin"
     },
@@ -38294,8 +38294,8 @@
     {
       "name": "Undercity Dire Rat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/undercity_dire_rat.rs",
       "set": "fin"
     },
@@ -39038,8 +39038,8 @@
     {
       "name": "Vayne's Treachery",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/vayne_s_treachery.rs",
       "set": "fin"
     },
@@ -41238,8 +41238,8 @@
     {
       "name": "Y'shtola Rhul",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/y_shtola_rhul.rs",
       "set": "fin"
     },
@@ -41446,8 +41446,8 @@
     {
       "name": "Zell Dincht",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/zell_dincht.rs",
       "set": "fin"
     },
