@@ -265,14 +265,19 @@ impl Game {
                     })
                     .map(|event| event.after.card)
                     .collect();
-                self.forget_library_top(player);
-                let library = &mut self.state.players[player.index()].library;
-                library.retain(|id| !ordered.contains(id));
-                library.extend(ordered.into_iter().rev());
-                // The order was a private choice, not a public top reveal.
-                if let Some(&id) = library.last() {
-                    let object = self.object_ref(id);
-                    self.remember_private_library_top(player, player, object);
+                if let Some(&id) = ordered.first() {
+                    self.forget_library_top(player);
+                    let library = &mut self.state.players[player.index()].library;
+                    library.retain(|id| !ordered.contains(id));
+                    library.extend(ordered.into_iter().rev());
+                    let top = self.object_ref(id);
+                    if selected.len() == 1 {
+                        // One public object moved to a known position.
+                        self.remember_library_top(player, top);
+                    } else {
+                        // The order among multiple cards is private.
+                        self.remember_private_library_top(player, player, top);
+                    }
                 }
             }
             for event in events {

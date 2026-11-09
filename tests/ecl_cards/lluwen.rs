@@ -185,6 +185,9 @@ fn ecl_lluwen_optional_mill_recovery_is_one_exact_public_creature_or_land() {
                 checked(&mut g, Action::FinishMilledSelection);
                 settle(&mut g);
                 assert_eq!(g.state.players[p.index()].library.as_slice(), &[bottom]);
+                for viewer in [p, p.other()] {
+                    assert!(g.observe(viewer).known_library_top[p.index()].is_none());
+                }
             }
         }
     }
