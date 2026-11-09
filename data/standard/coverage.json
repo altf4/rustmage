@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "a0b8c4c8701ef758c1ccc8143e58ee1b49167282192f37a37d0ec0ac72bc7acb",
+  "catalogue_version": "6bb8f0992d51477c4ba593036b4d1b0209cbbe23fe84845ba2f0bf2ae2b08273",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 3650,
-  "implemented_total": 3658,
+  "implemented_standard_cards": 3657,
+  "implemented_total": 3665,
   "token_definitions": 168,
   "emblem_definitions": 12,
   "adventure_definitions": 53,
@@ -64,8 +64,8 @@
     },
     "fin": {
       "total": 304,
-      "complete": 204,
-      "gated": 100
+      "complete": 211,
+      "gated": 93
     },
     "fra": {
       "total": 285,
@@ -11358,8 +11358,8 @@
     {
       "name": "Exdeath, Void Warlock // Neo Exdeath, Dimension's End",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/exdeath_void_warlock_neo_exdeath_dimension_s_end.rs",
       "set": "fin"
     },
@@ -13654,8 +13654,8 @@
     {
       "name": "Garland, Knight of Cornelia // Chaos, the Endless",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/garland_knight_of_cornelia_chaos_the_endless.rs",
       "set": "fin"
     },
@@ -18286,8 +18286,8 @@
     {
       "name": "Jecht, Reluctant Guardian // Braska's Final Aeon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/jecht_reluctant_guardian_braska_s_final_aeon.rs",
       "set": "fin"
     },
@@ -18438,16 +18438,16 @@
     {
       "name": "Jidoor, Aristocratic Capital // Overture",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/jidoor_aristocratic_capital_overture.rs",
       "set": "fin"
     },
     {
       "name": "Jill, Shiva's Dominant // Shiva, Warden of Ice",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/jill_shiva_s_dominant_shiva_warden_of_ice.rs",
       "set": "fin"
     },
@@ -18518,8 +18518,8 @@
     {
       "name": "Joshua, Phoenix's Dominant // Phoenix, Warden of Fire",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/joshua_phoenix_s_dominant_phoenix_warden_of_fire.rs",
       "set": "fin"
     },
@@ -18886,8 +18886,8 @@
     {
       "name": "Kefka, Court Mage // Kefka, Ruler of Ruin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/fin/kefka_court_mage_kefka_ruler_of_ruin.rs",
       "set": "fin"
     },
