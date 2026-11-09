@@ -411,6 +411,24 @@ pub(super) trait CharacteristicWorld {
         {
             return 0;
         }
+        if object.zone == Zone::Battlefield
+            && self.temporary_copy_view(self.reference(id)).is_none()
+            && let Some(entry) = self.roles().and_then(|roles| {
+                roles
+                    .melded_permanents
+                    .iter()
+                    .find(|row| {
+                        row.object == self.reference(id) && row.entry.combined == object.card
+                    })
+                    .map(|row| row.entry)
+            })
+        {
+            return entry
+                .front_cards
+                .iter()
+                .map(|card| card.fixed_mana_value())
+                .sum();
+        }
         let Some(front) = object.card.face_parent() else {
             return object.card.fixed_mana_value();
         };

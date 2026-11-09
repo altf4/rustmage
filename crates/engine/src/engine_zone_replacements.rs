@@ -80,11 +80,17 @@ struct ZonePick {
 pub(super) enum Request {
     Zone(ZoneRequest),
     LifeGain(LifeGainReplacementChoice),
+    MeldOrder(MeldOrderingChoice),
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Pick {
     Zone(ZonePick),
+    MeldOrder {
+        permanent: ObjectRef,
+        destination: Zone,
+        first: ObjectRef,
+    },
     LifeGain {
         player: Player,
         amount: i128,
@@ -97,6 +103,7 @@ enum Pick {
 enum Selection {
     Zone(ZoneReplacementKind),
     LifeGain { source: ObjectRef, ability: u16 },
+    MeldOrder { first: ObjectRef },
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -199,6 +206,20 @@ pub(super) struct Plan {
     pub prevented: bool,
     pub shuffle: Option<ZoneShuffle>,
     pub reflexive: Option<(u16, Box<ObjectView>)>,
+    pub meld_companion_first: bool,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Plan {
+    pub(super) fn unreplaced(destination: Zone) -> Self {
+        Self {
+            completion: None,
+            destination,
+            prevented: false,
+            shuffle: None,
+            reflexive: None,
+            meld_companion_first: false,
+        }
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ZoneState {
@@ -265,6 +286,7 @@ impl ZoneState {
                         Request::LifeGain(request) => {
                             request.effects.len() * std::mem::size_of::<LifeGainReplacementEffect>()
                         }
+                        Request::MeldOrder(_) => 0,
                     }
             })
             + self
@@ -401,6 +423,17 @@ impl Game {
         self.shares_information(viewer, request.player)
             .then(|| request.clone())
     }
+    pub(super) fn meld_ordering_view(&self, viewer: Player) -> Option<MeldOrderingChoice> {
+        if !matches!(self.state.pending, Pending::MeldOrdering { .. }) {
+            return None;
+        }
+        let choice = self.state.zone_rules.as_ref()?.choice.as_ref()?;
+        let Request::MeldOrder(request) = &choice.request else {
+            return None;
+        };
+        self.shares_information(viewer, request.player)
+            .then_some(*request)
+    }
     pub(super) fn ordered_event_choice_actions(
         &self,
         mut emit: impl FnMut(Action) -> bool,
@@ -419,6 +452,10 @@ impl Game {
                 .choices
                 .iter()
                 .any(|&effect| emit(Action::ChooseZoneReplacement { effect })),
+            Request::MeldOrder(request) => request
+                .components
+                .into_iter()
+                .any(|first| emit(Action::ChooseMeldOrder { first })),
             Request::LifeGain(request) => request.effects.iter().any(|effect| {
                 emit(Action::ChooseReplacement {
                     source: effect.source,
@@ -613,9 +650,55 @@ impl Game {
         if let Some(plan) = self.replay_frozen_mana_zone_plan(before.reference, requested) {
             return plan;
         }
-        let plan = self.plan_zone_move_unrecorded(before, requested, rules);
+        let mut plan = self.plan_zone_move_unrecorded(before, requested, rules);
+        if !plan.prevented
+            && plan.shuffle.is_none()
+            && matches!(
+                plan.destination,
+                Zone::Library | Zone::Graveyard | Zone::Exile
+            )
+            && let Some(meld) = self.melded_permanent(before.reference)
+        {
+            plan.meld_companion_first = self.order_meld_departure(before, meld, plan.destination);
+        }
         self.record_cast_mana_zone_plan(before, &plan);
         plan
+    }
+    fn order_meld_departure(
+        &mut self,
+        before: &ObjectView,
+        meld: meld::MeldEntry,
+        destination: Zone,
+    ) -> bool {
+        let components = [before.reference, meld.companion];
+        if let Some(pick) = self.next_ordered_pick() {
+            let Pick::MeldOrder {
+                permanent,
+                destination: replayed,
+                first,
+            } = pick
+            else {
+                unreachable!("exact meld ordering replay prefix");
+            };
+            assert_eq!((permanent, replayed), (before.reference, destination));
+            assert!(components.contains(&first));
+            return first == meld.companion;
+        }
+        let player = if destination == Zone::Exile {
+            self.state
+                .resolving
+                .as_ref()
+                .map_or(self.state.active, |resolution| resolution.item.controller)
+        } else {
+            before.owner
+        };
+        std::panic::resume_unwind(Box::new(Request::MeldOrder(MeldOrderingChoice {
+            permanent: before.reference,
+            destination,
+            player,
+            components,
+            front_cards: meld.front_cards,
+        })));
     }
     fn plan_zone_move_unrecorded(
         &mut self,
@@ -632,6 +715,7 @@ impl Game {
                 prevented: true,
                 shuffle: None,
                 reflexive: None,
+                meld_companion_first: false,
             };
         }
         #[cfg(feature = "test-support")]
@@ -650,6 +734,7 @@ impl Game {
                 prevented: false,
                 shuffle: None,
                 reflexive: None,
+                meld_companion_first: false,
             };
         }
         let mut choices = Vec::new();
@@ -701,6 +786,7 @@ impl Game {
                     prevented: false,
                     shuffle: None,
                     reflexive: None,
+                    meld_companion_first: false,
                 };
             }
             [effect] => *effect,
@@ -794,6 +880,7 @@ impl Game {
             },
             prevented: effect == ZoneReplacementKind::Prevent,
             shuffle,
+            meld_companion_first: false,
             reflexive: if let ZoneReplacementKind::ExileReflexive { source, ability } = effect {
                 Some((
                     ability,
@@ -863,6 +950,9 @@ impl Game {
             Request::LifeGain(life) => Pending::LifeGainReplacement {
                 player: life.player,
             },
+            Request::MeldOrder(order) => Pending::MeldOrdering {
+                player: order.player,
+            },
         };
         self.state.zone_rules.get_or_insert_default().choice =
             Some(Box::new(Choice { base, request }));
@@ -874,6 +964,9 @@ impl Game {
     }
     pub(super) fn choose_life_gain_replacement(&mut self, source: ObjectRef, ability: u16) {
         self.choose_ordered_event(Selection::LifeGain { source, ability });
+    }
+    pub(super) fn choose_meld_order(&mut self, first: ObjectRef) {
+        self.choose_ordered_event(Selection::MeldOrder { first });
     }
     fn choose_ordered_event(&mut self, selection: Selection) {
         let foreign_cast_choice = self.foreign_cast_choice_pending();
@@ -902,6 +995,11 @@ impl Game {
                     ability,
                 }
             }
+            (Request::MeldOrder(request), Selection::MeldOrder { first }) => Pick::MeldOrder {
+                permanent: request.permanent,
+                destination: request.destination,
+                first,
+            },
             _ => unreachable!("choice for the active event"),
         });
         let actor = base.actor;

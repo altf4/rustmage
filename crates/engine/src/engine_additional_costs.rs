@@ -1236,6 +1236,7 @@ impl Game {
             | EffectChoiceKind::ColorCounter { .. }
             | EffectChoiceKind::CountersOnTarget { .. }
             | EffectChoiceKind::RemoveLoreForSourceCounters(_)
+            | EffectChoiceKind::MeldPartner(_)
             | EffectChoiceKind::PowerDifferenceBoost
             | EffectChoiceKind::OptionalBeholdType(_)
             | EffectChoiceKind::FilteredCost { .. }

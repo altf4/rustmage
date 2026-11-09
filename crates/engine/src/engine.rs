@@ -112,6 +112,10 @@ pub mod endgame;
 #[path = "engine_library_entry_counter.rs"]
 pub mod library_entry_counter;
 #[doc(hidden)]
+#[path = "engine_meld.rs"]
+pub mod meld;
+pub use meld::{MeldDepartureOrder, MeldOrderingChoice, MeldedPermanentView};
+#[doc(hidden)]
 #[path = "engine_life_gain.rs"]
 pub mod life_gain;
 #[doc(hidden)]
@@ -726,7 +730,7 @@ pub enum Zone {
     Graveyard,
     Exile,
     Command,
-    /// Vacant slot after a token ceases to exist; never a game zone.
+    /// Internal token or meld-component slot; never a game zone.
     Outside,
 }
 
@@ -811,6 +815,7 @@ define_actions! {
     ChooseLibraryPile { pile: LibraryPile },
     KeepPermanentType { object: ObjectRef },
     ChooseZoneReplacement { effect: ZoneReplacementKind },
+    ChooseMeldOrder { first: ObjectRef },
     FinishStackTargets,
     FinishCraftMaterials,
     FinishAdditionalCostGroup,
@@ -2552,6 +2557,9 @@ enum Pending {
     LifeGainReplacement {
         player: Player,
     },
+    MeldOrdering {
+        player: Player,
+    },
     Retarget {
         player: Player,
     },
@@ -3215,6 +3223,7 @@ struct EntryIdentity {
     face: Option<Card>,
     copy: Option<CopyRecipe>,
     choice: Option<EntryChoiceValue>,
+    meld: Option<meld::MeldEntry>,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -3234,6 +3243,8 @@ pub struct ZoneChange {
     pub(super) was_card: bool,
     /// Additional life gain from the exact chosen death replacement.
     pub(super) linked_exile_life: Option<(Player, u8)>,
+    /// Physical result cards of one battlefield object, in chosen zone order.
+    pub(super) melded_after: Option<[ObjectRef; 2]>,
     /// An attempted library departure was replaced by revealing and shuffling
     /// the same card into that library; no zone change occurred.
     pub(super) shuffled_in_place: bool,
@@ -3260,6 +3271,16 @@ pub struct ZoneChange {
     pub bargained: bool,
     pub x: u32,
     pub evidence_collected: bool,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl ZoneChange {
+    pub(super) fn objects_after(&self) -> impl Iterator<Item = ObjectRef> {
+        self.melded_after
+            .map_or([Some(self.after), None], |cards| cards.map(Some))
+            .into_iter()
+            .flatten()
+    }
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -3686,6 +3707,12 @@ pub struct Observation {
     pub zone_replacement_choice: Option<ZoneReplacementChoiceView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub life_gain_replacement_choice: Option<LifeGainReplacementChoice>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub meld_ordering_choice: Option<MeldOrderingChoice>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub melded_permanents: Vec<MeldedPermanentView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub meld_departure_orders: Vec<MeldDepartureOrder>,
     pub zone_reveals: Vec<ZoneRevealView>,
     pub created_token_choice: Option<CreatedTokenChoiceView>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3925,6 +3952,7 @@ impl Game {
                     || card.is_emblem()
                     || card.inset_parent().is_some()
                     || card.face_parent().is_some()
+                    || card.is_meld_face()
                     || !card.is_supported()
                     || outside_names::names(card).is_none()
                 {
@@ -4002,9 +4030,10 @@ impl Game {
                     || card.is_emblem()
                     || card.inset_parent().is_some()
                     || card.face_parent().is_some()
+                    || card.is_meld_face()
                 {
                     return Err(Error::InvalidDeck(
-                        if card.face_parent().is_some() {
+                        if card.face_parent().is_some() || card.is_meld_face() {
                             "back face definitions cannot be submitted in decks"
                         } else if card.inset_parent().is_some() {
                             "inset spell definitions cannot be submitted in decks"
@@ -4320,6 +4349,7 @@ impl Game {
             | Pending::ResolutionCasts { player }
             | Pending::ZoneReplacement { player }
             | Pending::LifeGainReplacement { player }
+            | Pending::MeldOrdering { player }
             | Pending::ManaLotSpend { player }
             | Pending::Replacement { player }
             | Pending::CreatedToken { player }
@@ -4843,7 +4873,9 @@ impl Game {
             }
             Pending::HandLibrarySearch { .. } => return self.visit_hand_library_search(&mut emit),
             Pending::LibraryGraveyardSearch { .. } => return self.visit_zone_search(&mut emit),
-            Pending::ZoneReplacement { .. } | Pending::LifeGainReplacement { .. } => {
+            Pending::ZoneReplacement { .. }
+            | Pending::LifeGainReplacement { .. }
+            | Pending::MeldOrdering { .. } => {
                 if self.ordered_event_choice_actions(&mut emit) {
                     return true;
                 }
@@ -5271,7 +5303,8 @@ impl Game {
                             }
                             EffectChoiceKind::ReturnToHand
                             | EffectChoiceKind::CountersOnTarget { .. }
-                            | EffectChoiceKind::RemoveLoreForSourceCounters(_) => {
+                            | EffectChoiceKind::RemoveLoreForSourceCounters(_)
+                            | EffectChoiceKind::MeldPartner(_) => {
                                 Action::ChooseEffectObject { object }
                             }
                             EffectChoiceKind::ColorCounter { .. } => {
@@ -7068,6 +7101,7 @@ impl Game {
             }
             Action::ChooseOutsideSelfReplacement { effect } => self.choose_outside_self(effect),
             Action::ChooseZoneReplacement { effect } => self.choose_zone_replacement(effect),
+            Action::ChooseMeldOrder { first } => self.choose_meld_order(first),
             Action::ChooseDrawReplacement { source } => self.choose_draw_replacement(source),
             Action::ChooseReplacement { source, ability } => {
                 if matches!(self.state.pending, Pending::LifeGainReplacement { .. }) {
@@ -9496,6 +9530,7 @@ impl Game {
                 face: None,
                 copy: None,
                 choice: None,
+                meld: None,
             },
             ZoneObservers {
                 graveyard: graveyard_observers,
@@ -9519,6 +9554,7 @@ impl Game {
             face: entering_face,
             copy: entering_copy,
             choice: entering_choice,
+            meld: entering_meld,
         } = entry;
         let ZoneObservers {
             graveyard: graveyard_observers,
@@ -9531,6 +9567,7 @@ impl Game {
             return ZoneChange {
                 was_card,
                 linked_exile_life: None,
+                melded_after: None,
                 shuffled_in_place: false,
                 cast_event: None,
                 entry_counter_player: None,
@@ -9563,6 +9600,7 @@ impl Game {
             self.capture_stack_copy_departure(id);
         }
         let destination = plan.destination;
+        let departing_meld = self.melded_permanent(before.reference);
         if before.zone == Zone::Graveyard
             && destination != Zone::Graveyard
             && !before.is_token()
@@ -9581,6 +9619,7 @@ impl Game {
             return ZoneChange {
                 was_card,
                 linked_exile_life: None,
+                melded_after: None,
                 shuffled_in_place: false,
                 cast_event: None,
                 entry_counter_player: None,
@@ -9611,6 +9650,7 @@ impl Game {
             return ZoneChange {
                 was_card,
                 linked_exile_life: None,
+                melded_after: None,
                 shuffled_in_place: true,
                 cast_event: None,
                 entry_counter_player: None,
@@ -9697,6 +9737,8 @@ impl Game {
                 .retain(|reference| *reference != before.reference);
         }
         self.forget_face_change(before.reference);
+        self.forget_meld_departure_order(before.reference);
+        self.forget_melded_permanent(before.reference);
         if let Some(state) = &mut self.state.roles {
             state.keyword_effects.retain(|row| {
                 row.recipient != before.reference
@@ -9947,14 +9989,17 @@ impl Game {
         self.forget_granted_exhaust_uses(before.reference);
         self.forget_temporary_copy(before.reference);
         self.forget_copy_grant_origin(before.reference);
-        let copy_physical_card = self.state.objects[id as usize].card;
+        let copy_physical_card =
+            entering_meld.map_or(self.state.objects[id as usize].card, |meld| meld.combined);
         let obj = &mut self.state.objects[id as usize];
         // CR608.3f/707.10f: a resolving permanent-spell copy becomes a token.
         // This is an entry, not token creation, so creation replacements do not apply.
         if before.zone == Zone::Stack && destination == Zone::Battlefield && obj.is_spell_copy() {
             obj.copy_kind = CopyKind::Token;
         }
-        obj.card = if let Some(physical) = manifested_physical {
+        obj.card = if let Some(meld) = departing_meld {
+            meld.front_cards[0]
+        } else if let Some(physical) = manifested_physical {
             physical.front_face()
         } else if let Some(row) = disguised_spell
             && destination != Zone::Battlefield
@@ -10040,6 +10085,11 @@ impl Game {
         if before.zone == Zone::Stack {
             self.continue_stack_keywords(before.reference, self.object_ref(id), destination);
         }
+        if destination == Zone::Battlefield
+            && let Some(meld) = entering_meld
+        {
+            self.finish_meld_entry(self.object_ref(id), meld);
+        }
         let entered_with_counters = counters.has_any();
         let entered_with_plus_one = counters.plus_one > 0;
         self.set_counters(id, counters);
@@ -10076,11 +10126,25 @@ impl Game {
                 self.state.known_hand.push(reference);
             }
         }
+        let after = self.object_ref(id);
+        let melded_after = departing_meld.map(|meld| {
+            self.split_melded_permanent(after, meld, destination, plan.meld_companion_first)
+        });
         if let Some(shuffle) = plan.shuffle {
             self.shuffle_zone_card(&before, shuffle);
         }
         let linked_exile_life = plan.completion.and_then(|completion| {
-            self.complete_special_zone_move(self.object_ref(id), completion, was_card)
+            let mut life = self.complete_special_zone_move(after, completion, was_card);
+            if let Some(companion) =
+                melded_after.and_then(|cards| cards.into_iter().find(|&card| card != after))
+            {
+                // The linked replacement affects both physical results, but the
+                // life gain belongs to the single permanent departure.
+                life = self
+                    .complete_special_zone_move(companion, completion, was_card)
+                    .or(life);
+            }
+            life
         });
         self.copy_characteristic_zone_commit(&before, self.object_ref(id), destination);
         // A Siege's protector must be an opponent; this library is two-player.
@@ -10106,6 +10170,7 @@ impl Game {
         ZoneChange {
             was_card,
             linked_exile_life,
+            melded_after,
             shuffled_in_place: false,
             cast_event: None,
             entry_counter_player: (destination == Zone::Battlefield).then_some(entry_identity.0),
@@ -11138,6 +11203,12 @@ impl Game {
             replacement_choice: self.replacement_choice(viewer),
             zone_replacement_choice: self.zone_choice_view(viewer),
             life_gain_replacement_choice: self.life_gain_choice_view(viewer),
+            meld_ordering_choice: self.meld_ordering_view(viewer),
+            melded_permanents: self.melded_views(),
+            meld_departure_orders: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |roles| roles.meld_departure_orders.clone()),
             zone_reveals: self.zone_reveals(),
             created_token_choice: self.created_token_choice(),
             copied_saga_lore: self.copied_saga_lore_choice(),
@@ -11384,6 +11455,7 @@ impl Game {
                 Pending::ManaLotSpend { .. } => "mana_lot_spend",
                 Pending::ZoneReplacement { .. } => "zone_replacement",
                 Pending::LifeGainReplacement { .. } => "life_gain_replacement",
+                Pending::MeldOrdering { .. } => "meld_ordering",
                 Pending::Replacement { .. } => "replacement",
                 Pending::CreatedToken { .. } => "created_token",
                 Pending::CopiedSagaLore { .. } => "copied_saga_lore",

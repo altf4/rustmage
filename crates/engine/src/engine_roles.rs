@@ -70,6 +70,8 @@ pub(super) struct RoleState {
     pub ability_removal_sources: Vec<ObjectRef>,
     pub characteristic_sources: Vec<ObjectRef>,
     pub control_change_sources: Option<SharedVec<CardId>>,
+    pub melded_permanents: Vec<meld::MeldedPermanent>,
+    pub meld_departure_orders: Vec<MeldDepartureOrder>,
     pub harnessed: Vec<ObjectRef>,
     pub source_prevention: Option<Box<source_prevention::SourcePreventionState>>,
     pub player_damage_shields: Vec<return_links::PlayerDamageShieldView>,
@@ -120,6 +122,8 @@ impl RoleState {
             + self.control_change_sources.as_ref().map_or(0, |rows| {
                 std::mem::size_of::<Vec<CardId>>() + rows.len() * std::mem::size_of::<CardId>()
             })
+            + self.melded_permanents.len() * std::mem::size_of::<meld::MeldedPermanent>()
+            + self.meld_departure_orders.len() * std::mem::size_of::<MeldDepartureOrder>()
             + self.harnessed.len() * std::mem::size_of::<ObjectRef>()
             + self
                 .source_prevention

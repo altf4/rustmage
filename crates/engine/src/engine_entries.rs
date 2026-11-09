@@ -15,6 +15,7 @@ pub(super) struct EntryMove {
     pub zone_plan: Option<zone_replacements::Plan>,
     /// Original source-zone view when this entry is projected using another face.
     pub source_before: Option<Box<ObjectView>>,
+    pub meld: Option<Box<meld::MeldEntry>>,
     /// Exact material exile incarnations attached to this craft return.
     #[allow(
         clippy::box_collection,
@@ -167,6 +168,19 @@ impl EntryMove {
                 .iter()
                 .any(|group| group.first_layer == crate::cards::AbilityLayer::Type)
     }
+    pub(super) fn project_printed_face(&mut self, face: Card) {
+        self.source_before = Some(Box::new(self.before.clone()));
+        self.before.card = face;
+        self.before.kinds = face.kind_mask();
+        self.before.colors = face.colors();
+        self.before.name = face.name();
+        self.before.keywords = face.keywords();
+        (self.before.power, self.before.toughness) = match face.effect() {
+            Effect::Creature(power, toughness) => (i128::from(power), i128::from(toughness)),
+            _ => (0, 0),
+        };
+    }
+
     pub(super) fn replacement_preview(&self) -> Self {
         let mut movement = self.clone();
         movement.return_modification = None;
@@ -213,6 +227,7 @@ impl EntryMove {
             battle_protector: None,
             before,
             source_before: None,
+            meld: None,
             craft_materials: None,
             zone_plan: None,
             destination,
@@ -285,9 +300,13 @@ impl EntryBatch {
                 .moves
                 .iter()
                 .map(|m| {
-                    m.delayed_return_exile.as_ref().map_or(0, |item| {
-                        std::mem::size_of::<SpellView>() + item.owned_bytes()
-                    }) + m.exile_preparation.as_ref().map_or(0, |p| p.bytes())
+                    m.meld
+                        .as_ref()
+                        .map_or(0, |_| std::mem::size_of::<meld::MeldEntry>())
+                        + m.delayed_return_exile.as_ref().map_or(0, |item| {
+                            std::mem::size_of::<SpellView>() + item.owned_bytes()
+                        })
+                        + m.exile_preparation.as_ref().map_or(0, |p| p.bytes())
                         + m.copy_preparation
                             .as_ref()
                             .map_or(0, |_| std::mem::size_of::<entry_copies::Preparation>())
@@ -1046,6 +1065,7 @@ impl Game {
                         .as_ref()
                         .and_then(|copy| copy.recipe),
                     choice: movement.choice,
+                    meld: movement.meld.as_deref().copied(),
                 },
                 ZoneObservers {
                     graveyard: graveyard_observers.clone(),

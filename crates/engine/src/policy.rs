@@ -330,7 +330,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             }
             Action::ChooseSearchZones { .. } | Action::ChooseHandLibrarySearchZones { .. } => 50,
             Action::Concede => -1000,
-            Action::ChooseZoneReplacement { .. } => 50,
+            Action::ChooseZoneReplacement { .. } | Action::ChooseMeldOrder { .. } => 50,
             Action::Sacrifice { .. } => 50,
             Action::DeclineEffectPayment => -1,
             Action::AnnounceFreeCounterGraveyard {

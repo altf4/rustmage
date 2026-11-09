@@ -110,10 +110,10 @@ impl Game {
                         | LibraryDestination::NthFromTop(_)
                 )
             {
-                assert_eq!(library.pop(), Some(object.card));
+                let count = event.objects_after().count();
                 let index = if let LibraryDestination::NthFromTop(n) = destination {
                     if n == 1 {
-                        library.len()
+                        library.len() - count
                     } else {
                         nth_position.unwrap_or(0)
                     }
@@ -122,14 +122,18 @@ impl Game {
                 } else {
                     0
                 };
-                library.insert(index, object.card);
+                library[index..].rotate_right(count);
             }
             if event.was_card
                 && (destination == LibraryDestination::Top
                     || matches!(destination, LibraryDestination::NthFromTop(1))
                     || old_top_position.is_none())
             {
-                self.remember_library_top(owner, event.after);
+                if let Some([first, _]) = event.melded_after {
+                    self.remember_private_library_top(owner, owner, first);
+                } else {
+                    self.remember_library_top(owner, event.after);
+                }
             } else if let Some(prior) = prior_top
                 && self.top_library_card(owner) == Some(prior.card)
                 && self.object_ref(prior.card) == prior

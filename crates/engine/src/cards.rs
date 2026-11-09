@@ -1058,6 +1058,15 @@ pub enum DelayedTargetEvent {
     ControlLostWhileAttached,
 }
 
+/// Physical fronts and the single combined face for a meld instruction.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct MeldPair {
+    pub source: Card,
+    pub partner: Card,
+    pub combined: Card,
+}
+
 /// A resolution choice; discard here is a cost, not a forced discard effect.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -1079,6 +1088,8 @@ pub enum EffectChoiceKind {
     /// Choose any number of controlled Sagas and remove one lore counter from each.
     /// Use a controller choice with amount zero and no skip. Each removal earns a source counter.
     RemoveLoreForSourceCounters(CounterKind),
+    /// Choose one owned and controlled creature by name for this meld effect.
+    MeldPartner(MeldPair),
     /// Apply one ordinary payment operation with an additional typed OR filter.
     FilteredCost {
         action: CostAction,
@@ -1776,6 +1787,7 @@ pub enum Instruction {
         event: DelayedTargetEvent,
         ability: u16,
     },
+    Meld(MeldPair),
     ScheduleTurnTrigger {
         event: TurnCallbackEvent,
         ability: u16,
@@ -4889,6 +4901,7 @@ pub enum StepGuard {
     OpponentHasMoreCardsInHand,
     OpponentControlsMoreCreatures,
     ControlsGreatestCreaturePower,
+    OwnSourceAndNamedCreature(Card),
     SourceReceivedCounterThisTurn,
     PutCounterOnCreatureThisTurn,
     YourTurn,
@@ -6163,6 +6176,9 @@ impl Card {
     }
     pub fn front_face(self) -> Card {
         self.face_parent().unwrap_or(self)
+    }
+    pub fn is_meld_face(self) -> bool {
+        authored::rules(self).is_some_and(|rules| rules.extras.meld_face)
     }
     pub(crate) fn other_face(self) -> Option<Card> {
         self.back_face().or_else(|| self.face_parent())

@@ -10,6 +10,7 @@ type FrozenZoneMove = (
     Option<ZoneShuffle>,
     bool,
     Option<ZoneMoveCompletion>,
+    bool,
 );
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -719,7 +720,7 @@ impl Game {
             .as_mut()?
             .active
             .as_mut()?;
-        let Some((expected, destination, shuffle, prevented, completion)) =
+        let Some((expected, destination, shuffle, prevented, completion, meld_companion_first)) =
             active.moves.pop_front()
         else {
             active.failed = true;
@@ -736,6 +737,7 @@ impl Game {
             // Exact actual reflexive packets are restored from ManaEvent.triggers;
             // replay must not recompute their old replacement-source witnesses.
             reflexive: None,
+            meld_companion_first,
         })
     }
     pub(super) fn replay_frozen_mana_copy_slot(&mut self) -> Option<(CardId, u64)> {

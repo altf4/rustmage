@@ -233,6 +233,7 @@ impl Game {
                         | Action::ChooseDrawReplacement { .. }
                         | Action::ChooseSelfCounterReplacement { .. }
                         | Action::ChooseZoneReplacement { .. }
+                        | Action::ChooseMeldOrder { .. }
                 )
             {
                 rollback.foreign_choice = true;
@@ -445,13 +446,7 @@ impl Game {
             if before.zone != Zone::Library {
                 self.commit_planned_zone_move(
                     before,
-                    zone_replacements::Plan {
-                        completion: None,
-                        destination: Zone::Library,
-                        prevented: false,
-                        shuffle: None,
-                        reflexive: None,
-                    },
+                    zone_replacements::Plan::unreplaced(Zone::Library),
                     false,
                     Counters::default(),
                     EntryIdentity::default(),

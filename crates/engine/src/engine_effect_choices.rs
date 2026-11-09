@@ -280,6 +280,15 @@ impl Game {
                 && crate::card_names::same_name(o.card.name(), name)
                 && !choice.selected[player.index()].contains(&object);
         }
+        if let EffectChoiceKind::MeldPartner(pair) = choice.kind {
+            return meld::matching_partner(
+                self,
+                choice.source,
+                object,
+                player,
+                pair.partner.name(),
+            ) && !choice.selected[player.index()].contains(&object);
+        }
         if let EffectChoiceKind::ReturnGraveyardToHand { kinds } = choice.kind {
             return o.zone == Zone::Graveyard
                 && o.owner == player
@@ -1692,6 +1701,13 @@ impl Game {
             EffectChoiceKind::ReturnToHand | EffectChoiceKind::ReturnGraveyardToHand { .. }
         ) {
             self.return_effect_choice_to_hand(*choice);
+            return false;
+        }
+        if let EffectChoiceKind::MeldPartner(pair) = choice.kind {
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            if let Some(&partner) = choice.selected[player.index()].first() {
+                self.meld_chosen_pair(player, choice.source, partner, pair);
+            }
             return false;
         }
         if let EffectChoiceKind::CountersOnTarget { kind, amount, .. } = choice.kind {

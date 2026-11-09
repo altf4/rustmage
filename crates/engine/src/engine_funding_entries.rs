@@ -504,6 +504,9 @@ impl FundingState<'_> {
             StepGuard::ControlsGreatestCreaturePower => {
                 self.controls_greatest_creature_power(player)
             }
+            StepGuard::OwnSourceAndNamedCreature(partner) => {
+                meld::owns_source_and_named_creature(self, source, player, partner.name())
+            }
             StepGuard::OpponentControlsMoreCreatures => {
                 let creatures = |p| {
                     self.resources
@@ -1557,6 +1560,17 @@ impl FundingState<'_> {
                 generation: o.generation,
             };
             let projection = next.entry_projection.as_mut().unwrap();
+            if m.destination == Zone::Battlefield
+                && let Some(&entry) = m.meld.as_deref()
+            {
+                projection
+                    .roles
+                    .melded_permanents
+                    .push(meld::MeldedPermanent {
+                        object: source,
+                        entry,
+                    });
+            }
             if m.before.zone == Zone::Stack {
                 projection
                     .roles

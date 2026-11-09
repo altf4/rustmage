@@ -155,7 +155,7 @@ impl SpellView {
             event.destination,
             Zone::Battlefield | Zone::Stack | Zone::Graveyard | Zone::Exile | Zone::Command
         ) {
-            self.refer_objects([event.after]);
+            self.refer_objects(event.objects_after());
         }
     }
     pub(super) fn refer_objects(&mut self, objects: impl IntoIterator<Item = ObjectRef>) {

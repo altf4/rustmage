@@ -3747,6 +3747,11 @@ impl Game {
                 Instruction::DelayTargetEvent { event, ability } => {
                     self.delay_target_event(&item, event, ability);
                 }
+                Instruction::Meld(pair) => {
+                    if self.begin_meld(&item, pair) {
+                        return;
+                    }
+                }
                 Instruction::ScheduleTurnTrigger {
                     event,
                     ability,

@@ -296,6 +296,7 @@ pub struct CardExtras {
     /// Explicit source-audited absence/presence of rules abilities, including outside the battlefield.
     pub has_rules_abilities: Option<bool>,
     pub transforming_double_face: bool,
+    pub meld_face: bool,
     pub targets_up_to_x: bool,
     pub life_x_cost: bool,
     pub spell_cannot_be_copied: bool,
@@ -434,6 +435,7 @@ impl CardExtras {
     pub const EMPTY: Self = Self {
         has_rules_abilities: None,
         transforming_double_face: false,
+        meld_face: false,
         targets_up_to_x: false,
         life_x_cost: false,
         spell_cannot_be_copied: false,

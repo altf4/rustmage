@@ -412,6 +412,9 @@ impl Game {
             StepGuard::ControlsGreatestCreaturePower => {
                 return world.controls_greatest_creature_power(player);
             }
+            StepGuard::OwnSourceAndNamedCreature(partner) => {
+                return meld::owns_source_and_named_creature(world, source, player, partner.name());
+            }
             StepGuard::OpponentControlsMoreCreatures => {
                 let count = |controller| {
                     self.state

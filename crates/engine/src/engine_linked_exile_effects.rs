@@ -54,7 +54,9 @@ impl Game {
         };
         for event in events {
             if event.was_card && event.moved && event.destination == Zone::Exile {
-                self.link_exile_to_ability(source.object, item.source_ability_origin, event.after);
+                for exiled in event.objects_after() {
+                    self.link_exile_to_ability(source.object, item.source_ability_origin, exiled);
+                }
             }
         }
     }

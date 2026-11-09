@@ -223,16 +223,7 @@ impl Game {
         let mut entry = self.entry_move(object.card, Zone::Battlefield, false);
         entry.controller = controller.unwrap_or(card.owner);
         if transformed {
-            entry.source_before = Some(Box::new(entry.before.clone()));
-            entry.before.card = face;
-            entry.before.kinds = face.kind_mask();
-            entry.before.colors = face.colors();
-            entry.before.name = face.name();
-            entry.before.keywords = face.keywords();
-            (entry.before.power, entry.before.toughness) = match face.effect() {
-                Effect::Creature(power, toughness) => (i128::from(power), i128::from(toughness)),
-                _ => (0, 0),
-            };
+            entry.project_printed_face(face);
         }
         Some(entry)
     }
