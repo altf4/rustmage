@@ -1393,6 +1393,7 @@ impl RecoveryFilter {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum MillAmount {
     HalfLibraryRoundedUp,
+    HalfLibraryRoundedDown,
     RecipientGraveyard,
     LifeEvent,
     ChosenX,
@@ -2238,6 +2239,8 @@ pub enum Instruction {
     },
 
     AdditionalCombat,
+    /// If this is the turn's first end step, insert one more before cleanup.
+    AdditionalEndStepIfFirst,
     /// Insert this many combats after the current main, then resume its frozen successor.
     AdditionalCombatsAfterCurrentMain(u16),
     /// Source-independent repeated delayed trigger, expiring at cleanup.

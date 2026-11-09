@@ -85,7 +85,7 @@ pub use turn_facts::TurnFactsView;
 #[doc(hidden)]
 #[path = "engine_turn_schedule.rs"]
 pub mod turn_schedule;
-pub use turn_schedule::{ExtraTurnView, TurnScheduleView};
+pub use turn_schedule::{AdditionalEndStepsView, ExtraTurnView, TurnScheduleView};
 #[doc(hidden)]
 #[path = "engine_turn_skips.rs"]
 pub mod turn_skips;
@@ -3632,6 +3632,8 @@ pub struct Observation {
     pub after_main_combats: Option<MainPhaseCombatView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inserted_phases: Option<Vec<Step>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_end_steps: Option<AdditionalEndStepsView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub turn_callbacks: Option<Vec<TurnCallbackView>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10295,6 +10297,10 @@ impl Game {
                 self.begin_step(next);
                 self.give_priority();
             }
+            Step::End if self.take_additional_end_step() => {
+                self.begin_step(Step::End);
+                self.give_priority();
+            }
             Step::End | Step::Cleanup => {
                 self.state.step = Step::Cleanup;
                 if self.above_hand_limit(self.state.active, 0) {
@@ -10314,6 +10320,7 @@ impl Game {
             rules.additional_combats = 0;
             rules.after_main = None;
             rules.inserted_phases.clear();
+            rules.end_steps = AdditionalEndStepsView::default();
             rules.attack_without_defender.clear();
         }
         self.state.casting_prohibited = false;
@@ -11161,6 +11168,10 @@ impl Game {
             inserted_phases: s.combat_rules.as_ref().and_then(|r| {
                 (!r.inserted_phases.is_empty())
                     .then(|| r.inserted_phases.iter().rev().copied().collect())
+            }),
+            additional_end_steps: s.combat_rules.as_ref().and_then(|rules| {
+                (s.step == Step::End && rules.end_steps != AdditionalEndStepsView::default())
+                    .then_some(rules.end_steps)
             }),
             turn_callbacks: s
                 .combat_rules

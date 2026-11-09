@@ -13,6 +13,7 @@ pub(super) struct CombatRulesState {
     pub additional_combats: u64,
     pub after_main: Option<MainPhaseCombatView>,
     pub inserted_phases: Vec<Step>,
+    pub end_steps: AdditionalEndStepsView,
     pub turn_callbacks: Vec<TurnCallbackView>,
     pub attack_without_defender: Vec<ObjectRef>,
     #[allow(

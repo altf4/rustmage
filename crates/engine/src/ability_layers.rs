@@ -264,6 +264,8 @@ pub enum StaticAbilityFragment {
         minimum: u16,
     },
     LifeGainAdditional(u16),
+    /// Add to an opponent's positive mill event.
+    OpponentMillAdditional(u16),
     CantGainLife,
     DamageCantBePrevented,
     NoMaximumHandSize,

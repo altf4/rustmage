@@ -5609,7 +5609,7 @@ impl Game {
                         MillAmount::Fixed(amount),
                         item.controller,
                     );
-                    if milled == usize::from(amount) {
+                    if milled >= usize::from(amount) {
                         let item = self.state.resolving.as_ref().unwrap().item.clone();
                         self.queue_reflexive_objects(
                             &item,
@@ -6446,6 +6446,7 @@ impl Game {
                     self.state.damage_prevention_prohibited = true;
                 }
                 Instruction::AdditionalCombat => self.add_combat(),
+                Instruction::AdditionalEndStepIfFirst => self.add_end_step_if_first(),
                 Instruction::AdditionalCombatsAfterCurrentMain(count) => {
                     self.add_combats_after_current_main(count)
                 }

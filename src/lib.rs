@@ -18,12 +18,12 @@ pub use rustmage_core::engine::return_links::PlayerDamageShieldView;
 pub use rustmage_core::engine::temporary_copy::RetainedActivationOrigin;
 pub use rustmage_core::engine::{
     AbilityAvailabilityView, AbilityResolutionView, AbilitySourceTimestampView, Action,
-    ActivationCostRoute, AdditionalCostView, AdventurePermission, AnimationView,
-    AttachmentTriggerView, AttackDeclaration, AttackPaymentView, AuraAttachmentView, AuraEntryView,
-    BaseStatsEffectView, BorrowedAbilityView, BoundTarget, CardId, CascadeView, CastCostClause,
-    CastCostRow, CastCostTransaction, CastCreatureSubjectsView, CastEntryCounterView, CastFace,
-    CastInfo, CastMethod, CastPaymentEvent, CasualtyDeclaration, CasualtyGrant,
-    CombatDamagePlayerView, CombatDefender, Config, ConniveChoiceView, ConniverView,
+    ActivationCostRoute, AdditionalCostView, AdditionalEndStepsView, AdventurePermission,
+    AnimationView, AttachmentTriggerView, AttackDeclaration, AttackPaymentView, AuraAttachmentView,
+    AuraEntryView, BaseStatsEffectView, BorrowedAbilityView, BoundTarget, CardId, CascadeView,
+    CastCostClause, CastCostRow, CastCostTransaction, CastCreatureSubjectsView,
+    CastEntryCounterView, CastFace, CastInfo, CastMethod, CastPaymentEvent, CasualtyDeclaration,
+    CasualtyGrant, CombatDamagePlayerView, CombatDefender, Config, ConniveChoiceView, ConniverView,
     ConspireDeclaration, ConspireGrant, ControlledPlayer, ConvokeChoiceView, ConvokeContribution,
     ConvokePaymentView, CopyDeadline, CopyEvent, CopyExceptions, CopyLayerView, CopyOverrides,
     CopyRecipe, CopyTypes, CounterPlacementHistoryView, CounterRemovalDomain,

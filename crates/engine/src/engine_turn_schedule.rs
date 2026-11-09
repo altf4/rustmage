@@ -1,4 +1,4 @@
-//! Source-independent extra turns inserted after the current turn (CR500.7).
+//! Source-independent extra turns and inserted end steps (CR500.7–9).
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -21,8 +21,45 @@ pub(super) fn owned_bytes(s: &Option<Box<TurnScheduleView>>) -> usize {
             + s.pending.len() * std::mem::size_of::<ExtraTurnView>()
     })
 }
+/// Additional end steps have the same priority and triggers as the first.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
+pub struct AdditionalEndStepsView {
+    pub pending: u64,
+    pub current_is_additional: bool,
+}
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn add_end_step_if_first(&mut self) {
+        if self.state.step != Step::End {
+            return;
+        }
+        let schedule = &mut self
+            .state
+            .combat_rules
+            .get_or_insert_with(Default::default)
+            .end_steps;
+        if !schedule.current_is_additional {
+            schedule.pending = schedule
+                .pending
+                .checked_add(1)
+                .capacity("additional end step count exhausted");
+        }
+    }
+
+    pub(super) fn take_additional_end_step(&mut self) -> bool {
+        let Some(rules) = &mut self.state.combat_rules else {
+            return false;
+        };
+        let schedule = &mut rules.end_steps;
+        if schedule.pending == 0 {
+            return false;
+        }
+        schedule.pending -= 1;
+        schedule.current_is_additional = true;
+        true
+    }
+
     pub(super) fn add_extra_turn(&mut self, player: Player, power_up_prohibited: bool) {
         self.state
             .turn_schedule
