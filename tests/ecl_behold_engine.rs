@@ -273,13 +273,35 @@ fn fixed_behold_type_domain_rejects_absent_witnesses_before_dense_mana_search() 
         let source = put(&mut g, p, "Giant Growth", Zone::Hand);
         g.state.players[p.index()].mana = [0; 6];
         let bear = CreatureType::from_name("Bear").unwrap();
-        for name in CREATURE_TYPES {
-            let kind = CreatureType::from_name(name).unwrap();
-            let (deficit, payable, visited) = behold_funding_probe(&g, p, source, Some(kind));
-            if kind == bear {
-                assert!(!deficit && payable);
-            } else {
-                assert_eq!((deficit, payable, visited), (true, false, 0), "{name}");
+        for with_color_aura in [false, true] {
+            if with_color_aura {
+                let enchanted = put(&mut g, p.other(), "Forest", Zone::Battlefield);
+                let aura = put(&mut g, p.other(), "Shimmerwilds Growth", Zone::Battlefield);
+                g.state.objects[aura as usize].attached_to = Some(g.object_ref(enchanted));
+                let aura = g.object_ref(aura);
+                g.set_entry_value(aura, EntryChoiceValue::Color(ChoiceColor::Blue));
+                assert!(
+                    g.state
+                        .roles
+                        .as_ref()
+                        .unwrap()
+                        .characteristic_sources
+                        .contains(&aura)
+                );
+                assert_eq!(g.object_view(enchanted).colors, 2);
+            }
+            for name in CREATURE_TYPES {
+                let kind = CreatureType::from_name(name).unwrap();
+                let (deficit, payable, visited) = behold_funding_probe(&g, p, source, Some(kind));
+                if kind == bear {
+                    assert!(!deficit && payable);
+                } else {
+                    assert_eq!(
+                        (deficit, payable, visited),
+                        (true, false, 0),
+                        "{name}; color Aura {with_color_aura}"
+                    );
+                }
             }
         }
         act(&mut g, Action::AnnounceCast { card: source });

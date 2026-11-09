@@ -325,7 +325,6 @@ impl FundingState<'_> {
                 !roles.source_linked_effects.is_empty()
                     || !roles.resolved_ability_modifications.is_empty()
                     || !roles.ability_removal_sources.is_empty()
-                    || !roles.characteristic_sources.is_empty()
                     || !roles.creature_types.is_empty()
                     || !roles.basic_land_types.is_empty()
                     || !roles.animations.is_empty()
@@ -355,6 +354,9 @@ impl FundingState<'_> {
             if object.zone == Zone::Command {
                 return false;
             }
+            // The characteristic-source index also contains color-only Auras.
+            // Inspect their immutable fragments: AttachedChosenColor is stable
+            // here, while AttachedCharacteristics still takes the fallback.
             if object.zone == Zone::Battlefield
                 && (card.borrows_activations()
                     || card.graveyard_activation_subtype().is_some()
