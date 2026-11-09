@@ -145,14 +145,21 @@ impl Game {
         self.commit_life_gain(player, amount);
     }
 
-    pub(super) fn plan_life_gain(&mut self, player: Player, mut amount: i128) -> i128 {
-        if amount <= 0 {
+    pub(super) fn plan_life_gain(&mut self, player: Player, base: i128) -> i128 {
+        if base <= 0 {
             return 0;
+        }
+        // A retained mana event must use its settled amount without reopening
+        // an ordered decision or querying providers from a different history.
+        if let Some(amount) = self.take_frozen_mana_life_gain(player, base) {
+            return amount;
         }
         // A prohibition takes precedence and produces no life-gain event.
         let Some(mut effects) = replacements(self, player) else {
+            self.record_cast_mana_life_gain(player, base, 0);
             return 0;
         };
+        let mut amount = base;
         let mut doubles = effects
             .iter()
             .filter(|effect| effect.replacement == LifeGainReplacement::Double)
@@ -167,6 +174,7 @@ impl Game {
         for effect in effects {
             amount = effect.replacement.apply(amount);
         }
+        self.record_cast_mana_life_gain(player, base, amount);
         amount
     }
 }

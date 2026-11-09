@@ -40,6 +40,13 @@ pub(super) struct LifePaymentReceipt {
     pub exiled: Option<Vec<ObjectRef>>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) struct LifeGainReceipt {
+    pub player: Player,
+    pub base: i128,
+    pub amount: i128,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct ManaEvent {
     pub id: u32,
@@ -55,6 +62,7 @@ pub(super) struct ManaEvent {
     pub counter_costs: Vec<Vec<replacements::CounterPlacement>>,
     pub entries: Vec<entries::EntryBatch>,
     pub life_payments: Vec<LifePaymentReceipt>,
+    pub life_gains: Vec<LifeGainReceipt>,
     pub moves: Vec<FrozenZoneMove>,
     pub allocations: Vec<(CardId, u64)>,
     pub triggers: Vec<SpellView>,
@@ -85,6 +93,7 @@ impl ManaEvent {
                 })
                 .sum::<usize>()
             + self.moves.len() * std::mem::size_of::<FrozenZoneMove>()
+            + self.life_gains.len() * std::mem::size_of::<LifeGainReceipt>()
             + self
                 .life_payments
                 .iter()
@@ -124,6 +133,7 @@ struct ActiveManaReplay {
     counter_costs: VecDeque<Vec<replacements::CounterPlacement>>,
     entries: VecDeque<entries::EntryBatch>,
     life_payments: VecDeque<LifePaymentReceipt>,
+    life_gains: VecDeque<LifeGainReceipt>,
     entries_seen: usize,
     moves: VecDeque<FrozenZoneMove>,
     allocations: VecDeque<(CardId, u64)>,
@@ -150,6 +160,7 @@ impl ManaReplay {
                         .map(entries::EntryBatch::bytes)
                         .sum::<usize>()
                     + active.moves.len() * std::mem::size_of::<FrozenZoneMove>()
+                    + active.life_gains.len() * std::mem::size_of::<LifeGainReceipt>()
                     + active
                         .life_payments
                         .iter()
@@ -485,6 +496,7 @@ impl Game {
             counter_costs: event.counter_costs.clone().into(),
             entries: event.entries.clone().into(),
             life_payments: event.life_payments.clone().into(),
+            life_gains: event.life_gains.clone().into(),
             entries_seen: 0,
             moves: event.moves.clone().into(),
             allocations: event.allocations.clone().into(),
@@ -561,6 +573,7 @@ impl Game {
             || !active.counter_costs.is_empty()
             || !active.entries.is_empty()
             || !active.life_payments.is_empty()
+            || !active.life_gains.is_empty()
             || !active.moves.is_empty()
             || !active.allocations.is_empty()
             || self.state.entry_batch.is_some()
@@ -707,6 +720,30 @@ impl Game {
         }
         Some(payment)
     }
+    pub(super) fn take_frozen_mana_life_gain(
+        &mut self,
+        player: Player,
+        base: i128,
+    ) -> Option<i128> {
+        let active = self
+            .state
+            .cast_rollback
+            .as_mut()?
+            .replay
+            .as_mut()?
+            .active
+            .as_mut()?;
+        match active.life_gains.pop_front() {
+            Some(receipt) if receipt.player == player && receipt.base == base => {
+                Some(receipt.amount)
+            }
+            _ => {
+                active.failed = true;
+                Some(0)
+            }
+        }
+    }
+
     pub(super) fn replay_frozen_mana_zone_plan(
         &mut self,
         source: ObjectRef,

@@ -290,3 +290,153 @@ fn projected_costs_distinguish_identical_destinations_with_different_life_result
     assert_eq!(outcomes, [(20, false), (23, true)]);
     assert_eq!(g.snapshot(), before);
 }
+
+#[test]
+fn retained_mana_replays_the_selected_link_and_life_amount() {
+    const WIND_TAX: CardRules = CardRules {
+        effect: Effect::Permanent,
+        static_groups: &[StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[
+                StaticAbilityFragment::LifeGainDouble,
+                StaticAbilityFragment::AttackControllerTax {
+                    amount: 1,
+                    condition: StatValue::Fixed(1),
+                },
+            ],
+        }],
+        ..CardRules::EMPTY
+    };
+    const MANA: CardRules = CardRules {
+        effect: Effect::Creature(1, 1),
+        activated: &[ActivatedAbility {
+            exhaust: false,
+            guard: ActivationGuard::Always,
+            cycling: false,
+            origin: ActivationOrigin::Battlefield,
+            cost: ActivationCost {
+                sacrifice: true,
+                ..ActivationCost::ZERO
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::AddMana(ManaProduction::Fixed([
+                0, 0, 0, 0, 1, 0,
+            ]))],
+            sorcery: false,
+            once_per_turn: false,
+        }],
+        ..CardRules::EMPTY
+    };
+    let _rules = fixture_rules::activate(&[
+        (crystal(), &REPLACEMENT),
+        (Card::from_name("Swiftfoot Boots").unwrap(), &WIND_TAX),
+        (Card::LlanowarElves, &MANA),
+    ]);
+    let p = Player::P0;
+    let defender = p.other();
+    let mut g = scenario(p);
+    g.state.players[p.index()].mana = [0; 6];
+    let attacker = put(&mut g, p, "Bear Cub", Zone::Battlefield);
+    let fuel = put(&mut g, p, "Llanowar Elves", Zone::Battlefield);
+    let darkness = put(&mut g, defender, "Soul-Guide Lantern", Zone::Battlefield);
+    let wind = put(&mut g, defender, "Swiftfoot Boots", Zone::Battlefield);
+    let angel = put(&mut g, defender, "Angel of Vitality", Zone::Battlefield);
+    put(&mut g, defender, "Rest in Peace", Zone::Battlefield);
+    g.state.step = Step::Attackers;
+    g.state.pending = Pending::Attackers;
+    act(&mut g, Action::Attack { card: attacker });
+    act(&mut g, Action::FinishAttackers);
+    choose(&mut g, |action| {
+        matches!(
+            action,
+            Action::ActivateMana { card, .. } | Action::AnnounceMana { card, .. } if *card == fuel
+        )
+    });
+    if matches!(g.state.pending, Pending::PayCosts { .. }) {
+        pay(&mut g);
+    }
+
+    assert_eq!(g.actor(), Some(p));
+    assert!(g.observe(defender).zone_replacement_choice.is_none());
+    let provider = g.object_ref(darkness);
+    let mut plain = g.clone();
+    act(
+        &mut plain,
+        Action::ChooseZoneReplacement {
+            effect: ZoneReplacementKind::Exile,
+        },
+    );
+    assert_eq!(plain.object_view(fuel).zone, Zone::Exile);
+    assert_eq!(plain.state.players[defender.index()].life, 20);
+    assert!(!linked(&plain, provider, fuel));
+
+    act(
+        &mut g,
+        Action::ChooseZoneReplacement {
+            effect: ZoneReplacementKind::ExileLinked { source: provider },
+        },
+    );
+    assert_eq!(g.actor(), Some(defender));
+    assert!(g.observe(p).life_gain_replacement_choice.is_none());
+    assert_eq!(
+        g.observe(defender)
+            .life_gain_replacement_choice
+            .unwrap()
+            .amount,
+        2
+    );
+
+    let original = g.snapshot();
+    for (first, expected_gain) in [(angel, 6), (wind, 5)] {
+        let source = g.object_ref(first);
+        let mut branch = g.clone();
+        choose(
+            &mut branch,
+            |action| matches!(action, Action::ChooseReplacement { source: effect, .. } if *effect == source),
+        );
+        assert_eq!(branch.state.pending, Pending::AttackPayment { player: p });
+        assert!(linked(&branch, provider, fuel));
+        assert_eq!(
+            branch.state.players[defender.index()].life,
+            20 + expected_gain
+        );
+        act(&mut branch, Action::AbortAttackPayment);
+
+        // Reading either offered choice simulates keeping the already-paid
+        // mana action. Its settled gain must never suspend the observation.
+        let view = branch.observe(p).mana_rollback.unwrap();
+        assert!(view.can_keep && view.can_reverse);
+        for keep in [true, false] {
+            let action = Action::ChooseManaRollback { keep };
+            let revision = branch.revision();
+            let index = branch
+                .legal_actions()
+                .iter()
+                .position(|a| a == &action)
+                .unwrap();
+            let mut raw = branch.clone();
+            let mut indexed = branch.clone();
+            act(&mut raw, action);
+            indexed.apply_index(p, revision, index).unwrap();
+            assert_eq!(raw.snapshot(), indexed.snapshot());
+            assert_eq!(raw.state.pending, Pending::Attackers);
+            assert!(!raw.object_view(attacker).tapped);
+            assert_eq!(
+                raw.object_view(fuel).zone,
+                if keep { Zone::Exile } else { Zone::Battlefield }
+            );
+            assert_eq!(linked(&raw, provider, fuel), keep);
+            assert_eq!(raw.state.players[p.index()].mana[4], u32::from(keep));
+            assert_eq!(
+                raw.state.players[defender.index()].life,
+                20 + if keep { expected_gain } else { 0 }
+            );
+            assert_eq!(
+                raw.state.players[defender.index()].life_gain_events_this_turn,
+                u64::from(keep)
+            );
+        }
+    }
+    assert_eq!(g.snapshot(), original);
+}
