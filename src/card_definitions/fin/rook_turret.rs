@@ -1,24 +1,15 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Directly authored from the paired Oracle and pinned XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(3, 3),
     triggers: &[TriggeredAbility {
         condition: TriggerCondition::OtherArtifactEntersYou,
-        targets: TargetPlan::Single(TargetSpec::NONE),
+        targets: TargetPlan::NONE,
         program: &[
-            Instruction::May { skip: 2 },
+            Instruction::MayDraw { skip: 2 },
             Instruction::Draw(PlayerSet::Controller, 1),
             Instruction::Discard(PlayerSet::Controller, 1),
         ],
     }],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
     keywords: Keywords::FLYING,
     static_groups: &[StaticAbilityGroup {
         line: 0,

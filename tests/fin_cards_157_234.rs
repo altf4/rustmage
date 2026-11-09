@@ -316,6 +316,364 @@ fn attack(game: &mut Game, attackers: &[CardId]) {
     act(game, Action::FinishAttackers);
 }
 
+fn battlefield_tokens(game: &Game, card: Card) -> Vec<CardId> {
+    game.state
+        .objects
+        .iter()
+        .enumerate()
+        .filter_map(|(id, object)| {
+            (object.zone == Zone::Battlefield && object.is_token() && object.card == card)
+                .then_some(id as CardId)
+        })
+        .collect()
+}
+
+#[test]
+fn omega_counts_its_nonbasic_lands_even_when_no_permanent_is_targeted() {
+    let player = Player::P0;
+    let opponent = player.other();
+    for target in [false, true] {
+        let mut game = scenario(player);
+        let enemy = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+        let land = put(
+            &mut game,
+            opponent,
+            "Rabanastre, Royal City",
+            Zone::Battlefield,
+        );
+        for name in ["Rabanastre, Royal City", "Rabanastre, Royal City", "Forest"] {
+            put(&mut game, player, name, Zone::Battlefield);
+        }
+        let omega = put(&mut game, player, "Omega, Heartless Evolution", Zone::Hand);
+        cast(&mut game, omega, None);
+        let finish = Action::FinishTargets;
+        reach_action(&mut game, &finish);
+        reject(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(land),
+            },
+        );
+        if target {
+            choose_targets(&mut game, &[Target::Card(enemy)]);
+        } else {
+            act(&mut game, finish);
+        }
+        settle(&mut game);
+        assert_eq!(game.state.players[player.index()].life, 22);
+        assert_eq!(game.object_view(enemy).tapped, target);
+        assert_eq!(
+            game.counter_count(enemy, CounterKind::Stun),
+            if target { 2 } else { 0 }
+        );
+    }
+}
+
+#[test]
+fn relentless_needs_three_blockers_and_returns_tapped_with_finality() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let spider = put(&mut game, player, "Relentless X-ATM092", Zone::Graveyard);
+    choose(
+        &mut game,
+        |action| matches!(action, Action::Activate { card, ability: 0, .. } if *card == spider),
+    );
+    settle(&mut game);
+    assert_eq!(game.object_view(spider).zone, Zone::Battlefield);
+    assert!(game.object_view(spider).tapped);
+    assert_eq!(game.counter_count(spider, CounterKind::Finality), 1);
+    let mut dies = game.clone();
+    dies.move_object(spider, Zone::Graveyard);
+    assert_eq!(dies.object_view(spider).zone, Zone::Exile);
+
+    game.state.objects[spider as usize].tapped = false;
+    game.state.objects[spider as usize].summoning_sick = false;
+    let blockers = [
+        put(&mut game, player.other(), "Bear Cub", Zone::Battlefield),
+        put(&mut game, player.other(), "Bear Cub", Zone::Battlefield),
+        put(&mut game, player.other(), "Bear Cub", Zone::Battlefield),
+    ];
+    let mut two = game.clone();
+    two.move_object(blockers[2], Zone::Graveyard);
+    for branch in [&mut two, &mut game] {
+        attack(branch, &[spider]);
+        passes(branch);
+        assert_eq!(branch.state.pending, Pending::Blockers);
+    }
+    reject(
+        &mut two,
+        Action::Block {
+            blocker: blockers[0],
+            attacker: spider,
+        },
+    );
+    for (index, blocker) in blockers.into_iter().enumerate() {
+        act(
+            &mut game,
+            Action::Block {
+                blocker,
+                attacker: spider,
+            },
+        );
+        assert_eq!(
+            game.legal_actions().contains(&Action::FinishBlockers),
+            index == 2
+        );
+    }
+}
+
+#[test]
+fn relm_copies_copiable_values_beneath_animation_and_counters() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let ride = put(&mut game, player, "Ride the Shoopuf", Zone::Battlefield);
+    choose(
+        &mut game,
+        |action| matches!(action, Action::Activate { card, ability: 0, .. } if *card == ride),
+    );
+    settle(&mut game);
+    let land = put(&mut game, player, "Forest", Zone::Hand);
+    act(&mut game, Action::PlayLand { card: land });
+    let target = Action::ChooseTarget {
+        target: Target::Card(ride),
+    };
+    reach_action(&mut game, &target);
+    choose_targets(&mut game, &[Target::Card(ride)]);
+    settle(&mut game);
+    assert_eq!(stats(&game, ride), (8, 8));
+    let relm = put(&mut game, player, "Relm's Sketching", Zone::Hand);
+    cast(&mut game, relm, Some(Target::Card(ride)));
+    settle(&mut game);
+    let copies = battlefield_tokens(&game, Card::from_name("Ride the Shoopuf").unwrap());
+    assert_eq!(copies.len(), 1);
+    assert!(!game.is_creature(copies[0]));
+    assert_eq!(game.counter_count(copies[0], CounterKind::PlusOne), 0);
+    assert!(game.has_subtype(ride, "Beast"));
+    game.finish_cleanup();
+    assert_eq!(stats(&game, ride), (8, 8));
+    game.move_object(ride, Zone::Exile);
+    game.move_object(ride, Zone::Battlefield);
+    assert!(!game.is_creature(ride));
+}
+
+#[test]
+fn reno_exiles_before_payment_and_uses_any_mana_for_the_paid_card() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let reno = put(&mut game, player, "Reno and Rude", Zone::Battlefield);
+    let artifact = put(&mut game, player, "Swiftfoot Boots", Zone::Battlefield);
+    let spell = put(&mut game, opponent, "Shock", Zone::Library);
+    assert!(game.keywords(reno).contains(Keywords::MENACE));
+    attack(&mut game, &[reno]);
+    passes(&mut game);
+    act(&mut game, Action::FinishBlockers);
+    let pay_artifact = Action::Sacrifice {
+        object: game.object_ref(artifact),
+    };
+    reach_action(&mut game, &pay_artifact);
+    assert_eq!(game.object_view(spell).zone, Zone::Exile);
+    let mut declined = game.clone();
+    act(&mut declined, Action::DeclineEffectPayment);
+    assert_eq!(declined.object_view(artifact).zone, Zone::Battlefield);
+    reject(&mut declined, Action::AnnounceExile { card: spell });
+    let source = game.object_ref(reno);
+    reject(&mut game, Action::Sacrifice { object: source });
+    act(&mut game, pay_artifact);
+    assert_eq!(game.object_view(artifact).zone, Zone::Graveyard);
+    game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 1];
+    act(&mut game, Action::AnnounceExile { card: spell });
+    choose_targets(&mut game, &[Target::Player(opponent)]);
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.state.players[opponent.index()].life, 16);
+    assert_eq!(game.object_view(spell).zone, Zone::Graveyard);
+}
+
+#[test]
+fn retrieve_the_esper_only_puts_counters_on_tokens_when_cast_from_a_graveyard() {
+    let player = Player::P0;
+    for flashback in [false, true] {
+        let mut game = scenario(player);
+        let spell = put(
+            &mut game,
+            player,
+            "Retrieve the Esper",
+            if flashback {
+                Zone::Graveyard
+            } else {
+                Zone::Hand
+            },
+        );
+        if flashback {
+            act(&mut game, Action::AnnounceFlashback { card: spell });
+            pay(&mut game);
+        } else {
+            cast(&mut game, spell, None);
+        }
+        settle(&mut game);
+        let robots = battlefield_tokens(&game, Card(5532));
+        assert_eq!(robots.len(), 1);
+        let robot = robots[0];
+        assert!(game.has_subtype(robot, "Robot"));
+        assert!(game.has_subtype(robot, "Warrior"));
+        assert_eq!(game.object_view(robot).kinds & 17, 17);
+        assert_eq!(
+            game.counter_count(robot, CounterKind::PlusOne),
+            if flashback { 2 } else { 0 }
+        );
+        assert_eq!(stats(&game, robot), if flashback { (5, 5) } else { (3, 3) });
+        assert_eq!(
+            game.object_view(spell).zone,
+            if flashback {
+                Zone::Exile
+            } else {
+                Zone::Graveyard
+            }
+        );
+    }
+}
+
+#[test]
+fn rinoa_creates_angelo_and_counts_the_creatures_left_when_her_trigger_resolves() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let rinoa = put(&mut game, player, "Rinoa Heartilly", Zone::Hand);
+    cast(&mut game, rinoa, None);
+    settle(&mut game);
+    let dogs = battlefield_tokens(&game, Card(5533));
+    assert_eq!(dogs.len(), 1);
+    let angelo = dogs[0];
+    assert!(game.has_subtype(angelo, "Dog"));
+    assert_eq!(stats(&game, angelo), (1, 1));
+    game.state.objects[rinoa as usize].summoning_sick = false;
+    let other = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    attack(&mut game, &[rinoa]);
+    let target = Action::ChooseTarget {
+        target: Target::Card(angelo),
+    };
+    reach_action(&mut game, &target);
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(rinoa),
+        },
+    );
+    choose_targets(&mut game, &[Target::Card(angelo)]);
+    let mut intact = game.clone();
+    game.move_object(other, Zone::Graveyard);
+    settle(&mut game);
+    settle(&mut intact);
+    assert_eq!(stats(&game, angelo), (3, 3));
+    assert_eq!(stats(&intact, angelo), (4, 4));
+    game.finish_cleanup();
+    assert_eq!(stats(&game, angelo), (1, 1));
+}
+
+#[test]
+fn rook_turret_only_offers_draw_then_discard_when_drawing_is_legal() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let turret = put(&mut game, player, "Rook Turret", Zone::Battlefield);
+    assert!(game.keywords(turret).contains(Keywords::FLYING));
+    let artifact = put(&mut game, player, "Swiftfoot Boots", Zone::Hand);
+    let original = put(&mut game, player, "Island", Zone::Hand);
+    cast(&mut game, artifact, None);
+    let mut prohibited = game.clone();
+    put(
+        &mut prohibited,
+        player.other(),
+        "Mornsong Aria",
+        Zone::Battlefield,
+    );
+    settle(&mut prohibited);
+    assert_eq!(prohibited.hand_count(player), 1);
+    assert_eq!(prohibited.object_view(original).zone, Zone::Hand);
+    let accept = Action::ChooseOptional { accept: true };
+    reach_action(&mut game, &accept);
+    let mut declined = game.clone();
+    act(&mut declined, Action::ChooseOptional { accept: false });
+    assert_eq!(declined.hand_count(player), 1);
+    act(&mut game, accept);
+    assert_eq!(game.hand_count(player), 2);
+    act(&mut game, Action::Discard { card: original });
+    assert_eq!(game.object_view(original).zone, Zone::Graveyard);
+    assert_eq!(game.hand_count(player), 1);
+}
+
+#[test]
+fn rufus_checks_the_exact_controlled_darkstar_name_twice() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let rufus = put(&mut game, player, "Rufus Shinra", Zone::Battlefield);
+    let darkstar = Card(5534);
+    let opposing = spawn(&mut game, player.other(), darkstar, Zone::Battlefield);
+    let mut already_controlled = game.clone();
+    already_controlled.record_control(game.object_ref(opposing), player, None);
+    attack(&mut already_controlled, &[rufus]);
+    assert!(already_controlled.state.stack.is_empty());
+    attack(&mut game, &[rufus]);
+    let mut gained = game.clone();
+    gained.record_control(game.object_ref(opposing), player, None);
+    settle(&mut gained);
+    assert!(battlefield_tokens(&gained, darkstar).is_empty());
+    settle(&mut game);
+    let dogs = battlefield_tokens(&game, darkstar);
+    assert_eq!(dogs.len(), 1);
+    assert_eq!(stats(&game, dogs[0]), (2, 2));
+    assert_eq!(game.object_view(dogs[0]).controller, player);
+}
+
+#[test]
+fn rydia_discards_to_draw_and_returns_only_a_saga_matching_her_paid_x() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let rydia = put(
+        &mut game,
+        player,
+        "Rydia, Summoner of Mist",
+        Zone::Battlefield,
+    );
+    let choco = put(&mut game, player, "Summon: Choco/Mog", Zone::Graveyard);
+    let fat_choco = put(&mut game, player, "Summon: Fat Chocobo", Zone::Graveyard);
+    let land = put(&mut game, player, "Forest", Zone::Hand);
+    let spare = put(&mut game, player, "Island", Zone::Hand);
+    act(&mut game, Action::PlayLand { card: land });
+    let decline = Action::DeclineEffectPayment;
+    reach_action(&mut game, &decline);
+    let mut unchanged = game.clone();
+    act(&mut unchanged, decline);
+    assert_eq!(unchanged.object_view(spare).zone, Zone::Hand);
+    act(&mut game, Action::Discard { card: spare });
+    assert_eq!(game.object_view(spare).zone, Zone::Graveyard);
+    assert_eq!(game.hand_count(player), 1);
+    act(
+        &mut game,
+        Action::AnnounceActivate {
+            card: rydia,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    reject(&mut game, Action::ChooseX { value: 4 });
+    act(&mut game, Action::ChooseX { value: 5 });
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(choco),
+        },
+    );
+    choose_targets(&mut game, &[Target::Card(fat_choco)]);
+    pay(&mut game);
+    assert!(game.object_view(rydia).tapped);
+    settle(&mut game);
+    assert_eq!(game.object_view(fat_choco).zone, Zone::Battlefield);
+    assert_eq!(game.counter_count(fat_choco, CounterKind::Finality), 1);
+    assert!(game.keywords(fat_choco).contains(Keywords::HASTE));
+    game.finish_cleanup();
+    assert!(!game.keywords(fat_choco).contains(Keywords::HASTE));
+}
+
 #[test]
 fn qiqirn_pays_only_for_its_own_towns_on_the_sacrifice_activation() {
     let player = Player::P0;
