@@ -4063,6 +4063,8 @@ pub enum ReplacementSpec {
     /// counters on their own permanent. General providers do not apply entering.
     CountersPlacedByController,
     DoubleControlledChosenTypeDamage,
+    /// Double damage dealt by a source of this subtype controlled by the provider's controller.
+    DoubleControlledSubtypeDamage(&'static str),
     DoubleCreatureDamage,
     DoubleEnteredCreatureDamage,
     DoubleOpponentDamage,

@@ -1106,6 +1106,10 @@ impl Game {
                         event.source.controller == object.controller
                             && matches!(ability_world::CharacteristicWorld::entry_value(self, source), Some(EntryChoiceValue::CreatureType(kind)) if event.source.facts.has_subtype(kind.name()))
                     }
+                    ReplacementSpec::DoubleControlledSubtypeDamage(subtype) => {
+                        event.source.controller == object.controller
+                            && event.source.facts.has_subtype(subtype)
+                    }
                     ReplacementSpec::DoubleCreatureDamage => {
                         event.source.facts.battlefield
                             && event.source.facts.is_creature()
@@ -1275,6 +1279,7 @@ impl Game {
     ) {
         match choice.source_card.replacement_effects()[usize::from(choice.ability)] {
             ReplacementSpec::DoubleControlledChosenTypeDamage
+            | ReplacementSpec::DoubleControlledSubtypeDamage(_)
             | ReplacementSpec::DoubleCreatureDamage
             | ReplacementSpec::DoubleEnteredCreatureDamage
             | ReplacementSpec::DoubleOpponentDamage
