@@ -3277,6 +3277,8 @@ pub enum Instruction {
         odd: bool,
         skip: usize,
     },
+    /// Sample a nonnegative count once for later instructions in this program.
+    RememberCount(AmountValue),
     IfAmountAtLeast {
         value: AmountValue,
         minimum: u128,
@@ -4054,6 +4056,8 @@ pub enum AmountValue {
     DiscardEventAmount,
     /// Actual result of the preceding remembered zone-move instruction.
     MovedCount,
+    /// The value saved by RememberCount. Other count-producing instructions replace it.
+    RememberedCount,
     /// Actual completed departure events of this packet's additional cost.
     PaidAdditionalCostCount,
     /// Chosen cardinality for an X nonmana cost, retained even if replaced.

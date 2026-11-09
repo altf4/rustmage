@@ -79,6 +79,7 @@ fn selected(program: &[Instruction]) -> SelectedQuantities {
                 }
             }
             Instruction::UpToTargets(value)
+            | Instruction::RememberCount(value)
             | Instruction::IfAmountAtLeast { value, .. }
             | Instruction::IfAmountParity { value, .. }
             | Instruction::PutLandCards { maximum: value, .. }

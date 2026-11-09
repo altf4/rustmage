@@ -336,3 +336,70 @@ fn prohibited_optional_draw_skips_its_discard_followup() {
     assert_eq!(game.hand_count(player), 1);
     assert_eq!(game.object_view(hand).zone, Zone::Graveyard);
 }
+
+const REMEMBER_LANDS: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::NONE,
+        &[
+            Instruction::RememberCount(AmountValue::NonbasicLandsYouControl),
+            Instruction::MayPayCosts {
+                costs: &[ResolutionCost {
+                    objects: Some(ResolutionObjectCost {
+                        cost: AdditionalCost {
+                            kind: EffectChoiceKind::Sacrifice,
+                            filter: SacrificeFilter {
+                                keywords: Keywords::NONE,
+                                source_only: false,
+                                kinds: 2,
+                                nonland: false,
+                                other: false,
+                                tokens: None,
+                                artifact_enchantment_or_token: false,
+                                subtype: None,
+                            },
+                        },
+                        count: 1,
+                    }),
+                    ..ResolutionCost::FREE
+                }],
+                skip: 0,
+            },
+            Instruction::GainLifeScaled(PlayerSet::Controller, AmountValue::RememberedCount),
+        ],
+    ),
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn a_saved_count_survives_a_payment_that_changes_the_live_quantity() {
+    let opt = card("Opt");
+    let _rules = fixture_rules::activate(&[(opt, &REMEMBER_LANDS)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let spell = spawn(&mut game, player, opt, Zone::Hand);
+    let ground = card("Stomping Ground");
+    let first = spawn(&mut game, player, ground, Zone::Battlefield);
+    let second = spawn(&mut game, player, ground, Zone::Battlefield);
+    cast(&mut game, spell, None);
+    pass_pair(&mut game);
+    let object = game.object_ref(second);
+    act(&mut game, Action::ChooseAdditionalCost { object });
+    let saved = game.snapshot();
+    let action = Action::PayResolutionMana { payment: [0; 6] };
+    let index = game
+        .legal_actions()
+        .iter()
+        .position(|candidate| *candidate == action)
+        .unwrap();
+    let mut indexed = game.clone();
+    indexed.apply_index(player, game.revision(), index).unwrap();
+    act(&mut game, action);
+    assert_eq!(game.snapshot(), indexed.snapshot());
+    assert_eq!(game.object_view(first).zone, Zone::Battlefield);
+    assert_eq!(game.object_view(second).zone, Zone::Graveyard);
+    assert_eq!(game.state.players[player.index()].life, 22);
+    game.restore(&saved).unwrap();
+    act(&mut game, Action::DeclineResolutionMana);
+    assert_eq!(game.object_view(second).zone, Zone::Battlefield);
+    assert_eq!(game.state.players[player.index()].life, 22);
+}

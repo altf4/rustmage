@@ -7642,6 +7642,11 @@ impl Game {
                         resolution.pc = skip_to;
                     }
                 }
+                Instruction::RememberCount(value) => {
+                    let count = u64::try_from(self.item_amount(value, &item))
+                        .capacity("saved resolution count exhausted");
+                    self.state.resolving.as_mut().unwrap().moved_count = Some(count);
+                }
                 Instruction::IfAmountAtLeast {
                     value,
                     minimum,

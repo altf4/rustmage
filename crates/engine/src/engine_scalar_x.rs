@@ -408,13 +408,13 @@ impl Game {
             AmountValue::DiscardEventAmount => item
                 .discard_event
                 .map_or(0, |event| u128::from(event.amount)),
-            AmountValue::MovedCount => u128::from(
+            AmountValue::MovedCount | AmountValue::RememberedCount => u128::from(
                 self.state
                     .resolving
                     .as_ref()
                     .unwrap()
                     .moved_count
-                    .expect("quantity requires remembered move result"),
+                    .expect("quantity requires a saved resolution count"),
             ),
             AmountValue::TargetPlayerLibraryToGraveyardThisTurn => item
                 .targets

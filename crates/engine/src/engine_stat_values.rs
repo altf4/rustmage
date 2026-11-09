@@ -701,6 +701,7 @@ impl Game {
             | AmountValue::TargetPlayerCreatureCount
             | AmountValue::MilledCreatures
             | AmountValue::MovedCount
+            | AmountValue::RememberedCount
             | AmountValue::PaidAdditionalCostCount
             | AmountValue::PaidAdditionalCostSelectionCount
             | AmountValue::ChosenX
