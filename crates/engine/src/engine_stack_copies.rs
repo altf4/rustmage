@@ -559,20 +559,23 @@ impl Game {
                     trigger.refer_objects([event.object]);
                     trigger.cast_event = Some(Box::new(event));
                     trigger.x = spell.x;
-                } else {
-                    let amount = ability
+                }
+                let copy_amount =
+                    ability
                         .program
                         .iter()
                         .find_map(|instruction| match instruction {
                             Instruction::CopyCapturedSpell { count, .. } => {
                                 Some(copy_count(*count))
                             }
+                            Instruction::CopyCapturedSpellModified { .. } => Some(1),
                             _ => None,
-                        })
-                        .unwrap_or(1);
+                        });
+                if condition != TriggerCondition::DelayedSpellCastCreature || copy_amount.is_some()
+                {
                     trigger.copy_event = Some(Box::new(CopyEvent {
                         spell: spell.clone(),
-                        amount,
+                        amount: copy_amount.unwrap_or(1),
                     }));
                 }
                 self.state.pending_triggers.push(trigger);
