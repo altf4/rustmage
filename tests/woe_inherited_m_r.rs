@@ -510,3 +510,289 @@ fn plunge_into_winter_and_quick_study_distinguish_optional_targets_and_private_d
     }
     assert_eq!(game.top_library_card(player), Some(still_hidden));
 }
+
+#[test]
+fn moment_of_valor_pays_both_modes_and_rechecks_the_destroy_targets_power() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let source = put(&mut game, player, "Moment of Valor", Zone::Hand);
+    let giant = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    let dragon = put(&mut game, opponent, "Shivan Dragon", Zone::Battlefield);
+    let shrink = put(&mut game, opponent, "Candy Grapple", Zone::Hand);
+    let destroy = put(&mut game, opponent, "Murder", Zone::Hand);
+    game.state.objects[giant as usize].tapped = true;
+    act(&mut game, Action::AnnounceCast { card: source });
+
+    let mut protect = game.clone();
+    act(&mut protect, Action::ChooseMode { mode: 0 });
+    act(&mut protect, target(giant));
+    pay(&mut protect);
+    settle(&mut protect);
+    assert!(!protect.object_view(giant).tapped);
+    assert_eq!(stats(&protect, giant), (4, 3));
+    assert!(
+        protect
+            .object_view(giant)
+            .keywords
+            .contains(Keywords::INDESTRUCTIBLE)
+    );
+    act(&mut protect, Action::Pass);
+    cast(&mut protect, destroy, Some(Target::Card(giant)));
+    settle(&mut protect);
+    assert_eq!(protect.object_view(giant).zone, Zone::Battlefield);
+    finish_turn(&mut protect);
+    assert_eq!(stats(&protect, giant), (3, 3));
+    assert!(
+        !protect
+            .object_view(giant)
+            .keywords
+            .contains(Keywords::INDESTRUCTIBLE)
+    );
+
+    act(&mut game, Action::ChooseMode { mode: 1 });
+    reject(&mut game, target(giant));
+    act(&mut game, target(dragon));
+    pay(&mut game);
+    let mut reduced = game.clone();
+    act(&mut reduced, Action::Pass);
+    act(&mut reduced, Action::AnnounceCast { card: shrink });
+    act(&mut reduced, Action::ChooseBargain { sacrifice: None });
+    act(&mut reduced, target(dragon));
+    pay(&mut reduced);
+    settle(&mut reduced);
+    assert_eq!(stats(&reduced, dragon), (2, 2));
+    assert_eq!(reduced.object_view(dragon).zone, Zone::Battlefield);
+    settle(&mut game);
+    assert_eq!(game.object_view(dragon).zone, Zone::Graveyard);
+}
+
+#[test]
+fn not_dead_after_all_returns_under_the_owner_and_wicked_drains_its_controllers_opponent() {
+    let player = Player::P1;
+    let owner = player.other();
+    let mut game = scenario(player);
+    let victim = put(&mut game, owner, "Bear Cub", Zone::Battlefield);
+    let steal = put(&mut game, player, "Goatnap", Zone::Hand);
+    let protection = put(&mut game, player, "Not Dead After All", Zone::Hand);
+    let destroy = put(&mut game, player, "Murder", Zone::Hand);
+    let after_cleanup = put(&mut game, owner, "Murder", Zone::Hand);
+    let disenchant = put(&mut game, player, "Disenchant", Zone::Hand);
+    cast(&mut game, steal, Some(Target::Card(victim)));
+    settle(&mut game);
+    assert_eq!(game.object_view(victim).controller, player);
+    let stolen = game.object_ref(victim);
+    cast(&mut game, protection, Some(Target::Card(victim)));
+    settle(&mut game);
+
+    let mut expired = game.clone();
+    finish_turn(&mut expired);
+    expired.state.players[owner.index()].mana = [8; 6];
+    cast(&mut expired, after_cleanup, Some(Target::Card(victim)));
+    settle(&mut expired);
+    assert_eq!(expired.object_view(victim).zone, Zone::Graveyard);
+
+    cast(&mut game, destroy, Some(Target::Card(victim)));
+    settle(&mut game);
+    let returned = game.object_view(victim);
+    assert_eq!(returned.zone, Zone::Battlefield);
+    assert_eq!(returned.controller, owner);
+    assert!(returned.tapped);
+    assert_ne!(returned.reference, stolen);
+    assert_eq!((returned.power, returned.toughness), (3, 3));
+    let wicked = role(&game, player, victim, RoleKind::Wicked);
+    cast(&mut game, disenchant, Some(Target::Card(wicked)));
+    settle(&mut game);
+    assert_eq!(game.state.players[owner.index()].life, 19);
+    assert_eq!(game.state.players[player.index()].life, 20);
+    assert_eq!(stats(&game, victim), (2, 2));
+}
+
+#[test]
+fn obyra_flashes_in_and_drains_once_for_each_other_own_faerie() {
+    let player = Player::P1;
+    let opponent = player.other();
+    let mut game = scenario(opponent);
+    let obyra = put(&mut game, player, "Obyra, Dreaming Duelist", Zone::Hand);
+    let foe = put(&mut game, opponent, "Barrow Naughty", Zone::Hand);
+    let nonfaerie = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let trick = put(&mut game, player, "Faebloom Trick", Zone::Hand);
+    act(&mut game, Action::Pass);
+    announce(&mut game, obyra, &[]);
+    settle(&mut game);
+    assert!(game.object_view(obyra).keywords.contains(Keywords::FLYING));
+    assert_eq!(game.state.players[opponent.index()].life, 20);
+    cast(&mut game, foe, None);
+    settle(&mut game);
+    assert_eq!(game.state.players[opponent.index()].life, 20);
+
+    act(&mut game, Action::Pass);
+    cast(&mut game, trick, None);
+    for _ in 0..24 {
+        if game.state.stack.is_empty() && game.state.pending == Pending::Priority {
+            break;
+        }
+        let wanted = if matches!(game.state.pending, Pending::OrderTriggers { .. }) {
+            choose(&mut game, |action| {
+                matches!(action, Action::PutTrigger { .. })
+            });
+            continue;
+        } else if game.legal_actions().contains(&target(nonfaerie)) {
+            target(nonfaerie)
+        } else {
+            assert_eq!(game.state.pending, Pending::Priority);
+            Action::Pass
+        };
+        act(&mut game, wanted);
+    }
+    assert!(game.state.stack.is_empty());
+    assert_eq!(game.state.pending, Pending::Priority);
+    assert_eq!(game.state.players[opponent.index()].life, 18);
+    assert_eq!(game.state.players[player.index()].life, 20);
+    assert_eq!(
+        game.observe(player)
+            .objects
+            .iter()
+            .filter(|object| {
+                object.controller == player
+                    && object.zone == Zone::Battlefield
+                    && object.is_token()
+                    && object.has_subtype("Faerie")
+            })
+            .count(),
+        2
+    );
+}
+
+#[test]
+fn pests_and_battle_mouse_check_two_own_entries_and_discount_only_the_second_spell() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let mouse = put(&mut game, player, "Raging Battle Mouse", Zone::Hand);
+        let pests = put(&mut game, player, "Pests of Honor", Zone::Hand);
+        let bear = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let foe = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+        let land = put(&mut game, player, "Plains", Zone::Hand);
+        let study = put(&mut game, player, "Quick Study", Zone::Hand);
+
+        act(&mut game, Action::AnnounceCast { card: mouse });
+        assert_eq!(game.mana_payment_domain().unwrap().generic, 1);
+        pay(&mut game);
+        settle(&mut game);
+        act(&mut game, Action::PlayLand { card: land });
+
+        let mut short = game.clone();
+        let isolated = put(&mut short, player, "Pests of Honor", Zone::Battlefield);
+        reach_attackers(&mut short);
+        assert_eq!(stats(&short, mouse), (2, 1));
+        assert_eq!(short.counter_count(isolated, CounterKind::PlusOne), 0);
+
+        act(&mut game, Action::AnnounceCast { card: pests });
+        let cost = game.mana_payment_domain().unwrap();
+        assert_eq!(cost.required, [1, 0, 0, 0, 0, 0]);
+        assert_eq!(cost.generic, 1);
+        pay(&mut game);
+        settle(&mut game);
+        act(&mut game, Action::AnnounceCast { card: study });
+        assert_eq!(game.mana_payment_domain().unwrap().generic, 2);
+        pay(&mut game);
+        settle(&mut game);
+
+        pass_pair(&mut game);
+        while matches!(game.state.pending, Pending::OrderTriggers { .. }) {
+            choose(&mut game, |action| {
+                matches!(action, Action::PutTrigger { .. })
+            });
+        }
+        reject(&mut game, target(foe));
+        act(&mut game, target(bear));
+        settle(&mut game);
+        assert_eq!(game.counter_count(pests, CounterKind::PlusOne), 1);
+        assert_eq!(stats(&game, bear), (3, 3));
+        assert_eq!(stats(&game, mouse), (2, 1));
+        finish_turn(&mut game);
+        assert_eq!(stats(&game, bear), (2, 2));
+        assert_eq!(game.counter_count(pests, CounterKind::PlusOne), 1);
+    }
+}
+
+#[test]
+fn rowdy_research_uses_distinct_declared_attackers_after_a_creature_leaves_and_draws_three() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(opponent);
+    let first = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let second = put(&mut game, opponent, "Hill Giant", Zone::Battlefield);
+    let bounce = put(&mut game, player, "Unsummon", Zone::Hand);
+    let research = put(&mut game, player, "Rowdy Research", Zone::Hand);
+    let cards = [0; 3].map(|_| put(&mut game, player, "Plains", Zone::Library));
+    reach_attackers(&mut game);
+    act(&mut game, Action::Attack { card: first });
+    act(&mut game, Action::Attack { card: second });
+    act(&mut game, Action::FinishAttackers);
+    act(&mut game, Action::Pass);
+    cast(&mut game, bounce, Some(Target::Card(second)));
+    settle(&mut game);
+    assert_eq!(game.object_view(second).zone, Zone::Hand);
+    if game.actor() != Some(player) {
+        act(&mut game, Action::Pass);
+    }
+    game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 5];
+    reject(&mut game, Action::AnnounceCast { card: research });
+    game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 4];
+    act(&mut game, Action::AnnounceCast { card: research });
+    let cost = game.mana_payment_domain().unwrap();
+    assert_eq!(cost.generic, 4);
+    assert_eq!(cost.required, [0, 1, 0, 0, 0, 0]);
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+    for card in cards {
+        assert_eq!(game.object_view(card).zone, Zone::Hand);
+    }
+}
+
+#[test]
+fn ruby_haste_supports_two_mana_choices_or_an_attack_with_trigger_time_power() {
+    let player = Player::P1;
+    let mut game = scenario(player);
+    let ruby = put(&mut game, player, "Ruby, Daring Tracker", Zone::Hand);
+    let strong = put(&mut game, player, "Shivan Dragon", Zone::Battlefield);
+    let bounce = put(&mut game, player, "Unsummon", Zone::Hand);
+    cast(&mut game, ruby, None);
+    settle(&mut game);
+    assert!(game.object_view(ruby).keywords.contains(Keywords::HASTE));
+    for (ability, color) in [(0, 3), (1, 4)] {
+        let mut mana_branch = game.clone();
+        let mut production = [0; 6];
+        production[color] = 1;
+        mana_branch.state.players[player.index()].mana = [0; 6];
+        act(
+            &mut mana_branch,
+            Action::ActivateMana {
+                card: ruby,
+                ability,
+                payment: [0; 6],
+                counter_payment: Counters::default(),
+                production,
+            },
+        );
+        assert_eq!(mana_branch.state.players[player.index()].mana, production);
+        assert!(mana_branch.object_view(ruby).tapped);
+    }
+    let mut short = game.clone();
+    cast(&mut short, bounce, Some(Target::Card(strong)));
+    settle(&mut short);
+    reach_attackers(&mut short);
+    attack(&mut short, ruby);
+    assert!(short.state.stack.is_empty());
+    assert_eq!(stats(&short, ruby), (1, 2));
+
+    reach_attackers(&mut game);
+    attack(&mut game, ruby);
+    cast(&mut game, bounce, Some(Target::Card(strong)));
+    settle(&mut game);
+    assert_eq!(stats(&game, ruby), (3, 4));
+    finish_turn(&mut game);
+    assert_eq!(stats(&game, ruby), (1, 2));
+}
