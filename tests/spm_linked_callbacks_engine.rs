@@ -92,7 +92,7 @@ const SPOT: CardRules = CardRules {
                     max_mana: u32::MAX,
                 }),
             ]),
-            program: &[Instruction::ExileTargetsLinkedToSource],
+            program: &[Instruction::ExileAllTargetsLinkedToSource],
         },
         TriggeredAbility {
             condition: TriggerCondition::SelfDies,
@@ -171,20 +171,19 @@ fn only_actual_exiled_incarnations_return_under_their_owners_control() {
     let mut game = scenario(player);
     let stolen = put(&mut game, opponent, "Hill Giant", Zone::Battlefield);
     let stale = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
-    let redirected = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let prevented = put(&mut game, player, "Bear Cub", Zone::Battlefield);
     game.record_control(game.object_ref(stolen), player, None);
     let spell = put(&mut game, player, "Opt", Zone::Hand);
-    zone_replacements::TEST_REDIRECT_EXILE_TO_BATTLEFIELD
-        .with(|row| row.set(Some(game.object_ref(redirected))));
+    zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|row| row.set(Some(game.object_ref(prevented))));
     announce(
         &mut game,
         spell,
-        &[stolen, stale, redirected].map(Target::Card),
+        &[stolen, stale, prevented].map(Target::Card),
     );
     settle(&mut game);
-    zone_replacements::TEST_REDIRECT_EXILE_TO_BATTLEFIELD.with(|row| row.set(None));
-    assert_eq!(game.object_view(redirected).zone, Zone::Battlefield);
-    let redirect_reference = game.object_ref(redirected);
+    zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|row| row.set(None));
+    assert_eq!(game.object_view(prevented).zone, Zone::Battlefield);
+    let prevented_reference = game.object_ref(prevented);
     assert_eq!(game.object_view(stolen).zone, Zone::Exile);
     assert_eq!(game.object_view(stale).zone, Zone::Exile);
 
@@ -193,7 +192,7 @@ fn only_actual_exiled_incarnations_return_under_their_owners_control() {
     game.begin_step(Step::End);
     game.prepare_triggers();
     settle(&mut game);
-    assert_eq!(game.object_ref(redirected), redirect_reference);
+    assert_eq!(game.object_ref(prevented), prevented_reference);
     assert_eq!(game.object_view(stale).zone, Zone::Exile);
     assert_eq!(game.object_view(stolen).zone, Zone::Battlefield);
     assert_eq!(game.object_view(stolen).controller, opponent);

@@ -3788,6 +3788,7 @@ impl Game {
                     | Instruction::AttachEquipmentByGroups { .. }
                     | Instruction::AttachEquipmentGroupsReflexive { .. }
                     | Instruction::ReturnAllTargetsToHand
+                    | Instruction::ExileAllTargetsLinkedToSource
                     // These aggregate operations consume every independently
                     // revalidated target role, regardless of SelectGroup.
                     | Instruction::ExchangeControlTargets
@@ -3911,7 +3912,10 @@ impl Game {
                 Instruction::ExileTargetLibraryLinked(amount) => {
                     self.exile_target_library_linked(&item, amount)
                 }
-                Instruction::ExileTargetsLinkedToSource => self.exile_targets_linked(&item, false),
+                Instruction::ExileTargetsLinkedToSource
+                | Instruction::ExileAllTargetsLinkedToSource => {
+                    self.exile_targets_linked(&item, false);
+                }
                 Instruction::ExileControllerLibraryTopLinked(amount) => {
                     self.exile_controller_library_top_linked(&item, amount)
                 }

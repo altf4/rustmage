@@ -2188,6 +2188,7 @@ pub enum Instruction {
     ReturnLinkedExileToHand,
     ReturnOneLinkedExileToHand,
     ExileTargetsLinkedToSource,
+    ExileAllTargetsLinkedToSource,
     ExileTargetLibraryLinked(u16),
     ExileControllerLibraryTopLinked(u16),
     GrantLinkedExilePlay,
