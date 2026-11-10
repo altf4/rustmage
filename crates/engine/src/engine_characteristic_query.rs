@@ -598,35 +598,39 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         (stats, keywords)
     }
     pub(super) fn keywords(&self, id: CardId) -> Keywords {
-        let base = self.base_keywords(id);
+        let mut keywords = self.base_keywords(id);
         let target = self.object(id);
         if target.zone != Zone::Stack || self.kinds(id) & (4 | 8) == 0 {
-            return base;
+            return keywords;
         }
-        let grant = self.static_sources().iter().copied().any(|source| {
+        for &source in self.static_sources() {
             let object = self.object(source);
-            object.zone == Zone::Battlefield
-                && object.controller == target.controller
-                && object.card.static_ability_groups().iter().any(|g| {
-                    g.fragments.iter().any(|f| {
-                        matches!(
-                            f,
-                            StaticAbilityFragment::ControlledInstantSorcerySplitSecond
-                        )
+            if object.zone != Zone::Battlefield || object.controller != target.controller {
+                continue;
+            }
+            for fragment in object
+                .card
+                .static_ability_groups()
+                .iter()
+                .flat_map(|group| group.fragments)
+            {
+                let grant = match *fragment {
+                    StaticAbilityFragment::ControlledInstantSorcerySplitSecond => {
+                        Keywords::SPLIT_SECOND
+                    }
+                    StaticAbilityFragment::ControlledInstantSorceryKeywords(grant) => grant,
+                    _ => continue,
+                };
+                if !keywords.contains(grant)
+                    && self.continuous_fragment_available(source, |candidate| {
+                        std::ptr::eq(candidate, fragment)
                     })
-                })
-                && self.continuous_fragment_available(source, |f| {
-                    matches!(
-                        f,
-                        StaticAbilityFragment::ControlledInstantSorcerySplitSecond
-                    )
-                })
-        });
-        if grant {
-            base.union(Keywords::SPLIT_SECOND)
-        } else {
-            base
+                {
+                    keywords = keywords.union(grant);
+                }
+            }
         }
+        keywords
     }
     fn base_keywords(&self, id: CardId) -> Keywords {
         if (matches!(self.object(id).zone, Zone::Battlefield | Zone::Stack)

@@ -113,6 +113,8 @@ pub enum StaticAbilityFragment {
     ControlledBasicLandManaMultiplier(u16),
     /// Controlled instant and sorcery spells have split second.
     ControlledInstantSorcerySplitSecond,
+    /// Grant keywords to controlled instant and sorcery spells on the stack.
+    ControlledInstantSorceryKeywords(Keywords),
     /// Permanents controlled by this source's controller cannot be sacrificed.
     ControlledPermanentsCannotBeSacrificed,
     /// No player may activate abilities of matching battlefield permanent kinds.
