@@ -323,6 +323,8 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat
                             | crate::cards::StaticAbilityFragment::FlyingCombatRestriction
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedBySubtype(_)
+                            | crate::cards::StaticAbilityFragment::ControlledSubtypeCannotBeBlockedByKeyword { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledSubtypeIgnoresLegendRule(_)
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedIfSourcePowerAtMost(_)
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedByCreaturesWithLessPower
                             | crate::cards::StaticAbilityFragment::ControlledCreaturesCannotBeBlockedIfPowerOrToughnessAtMost(_)

@@ -519,6 +519,11 @@ pub enum StaticAbilityFragment {
     FlyingCombatRestriction,
     /// The source's evasion ability excludes blockers with an effective subtype.
     CannotBeBlockedBySubtype(&'static str),
+    ControlledSubtypeCannotBeBlockedByKeyword {
+        subtype: &'static str,
+        blocker_keyword: Keywords,
+    },
+    ControlledSubtypeIgnoresLegendRule(&'static str),
     /// Rules restriction evaluated after all derived power modifications.
     CannotBeBlockedIfSourcePowerAtMost(i128),
     CannotBeBlockedByCreaturesWithLessPower,

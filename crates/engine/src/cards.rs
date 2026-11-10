@@ -1886,6 +1886,14 @@ pub enum SpellCopyCount {
     Fixed(u16),
     EarlierSpellsThisTurn,
 }
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum CapturedSpellModification {
+    None,
+    OriginalAndCopies(Keywords),
+    Nonlegendary,
+    PermanentHaste,
+}
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -2260,6 +2268,11 @@ pub enum Instruction {
     CopyCapturedSpell {
         count: SpellCopyCount,
         retarget: bool,
+    },
+    /// A single captured copy with an explicitly different characteristic or ability.
+    CopyCapturedSpellModified {
+        retarget: bool,
+        modification: CapturedSpellModification,
     },
     /// Exile only the unchanged captured stack spell, then grant suspend and time counters.
     SuspendCapturedSpell {
@@ -5372,6 +5385,7 @@ impl CreatureCastQualifier {
 pub enum CastFilter {
     SourceChosenCreatureType,
     CreatureToughnessGreaterThanPower,
+    CreatureManaValueEqualsSourcePower,
     /// A spell cast from an actual prepared card copy.
     PreparedSpell,
     NotOwnedByYou,
@@ -5453,6 +5467,7 @@ impl CastFilter {
             | Self::SourceChosenColor
             | Self::SourceChosenCreatureType
             | Self::CreatureToughnessGreaterThanPower
+            | Self::CreatureManaValueEqualsSourcePower
             | Self::SourceChosenManaValueParity
             | Self::TargetCount { .. }
             | Self::Targeted { .. }

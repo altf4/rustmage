@@ -1,6 +1,6 @@
 //! Owned spell-copy packets, delayed cast triggers, and changes to existing targets.
 use super::*;
-use crate::cards::{CastFilter, SpellCopyCount};
+use crate::cards::{CapturedSpellModification, CastFilter, SpellCopyCount};
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -483,7 +483,8 @@ impl Game {
                         Some(u64::from(spell.x.unwrap_or(0)))
                     }
                     Instruction::CopyPreparedCastSpell if instant_or_sorcery || prepared => Some(1),
-                    Instruction::MayCopyCastSpellWithKeywords(_) => Some(1),
+                    Instruction::CopyCapturedSpellModified { .. }
+                    | Instruction::MayCopyCastSpellWithKeywords(_) => Some(1),
                     _ => None,
                 })
             {
@@ -874,13 +875,13 @@ impl Game {
         item: &SpellView,
         retarget: bool,
     ) -> bool {
-        self.copy_captured_spell_with_keywords(item, retarget, Keywords::NONE)
+        self.copy_captured_spell_modified(item, retarget, CapturedSpellModification::None)
     }
-    pub(super) fn copy_captured_spell_with_keywords(
+    pub(super) fn copy_captured_spell_modified(
         &mut self,
         item: &SpellView,
         retarget: bool,
-        keywords: Keywords,
+        modification: CapturedSpellModification,
     ) -> bool {
         let Some(event) = &item.copy_event else {
             return false;
@@ -903,7 +904,36 @@ impl Game {
         {
             return false;
         }
-        let copy = self.allocate_spell_copy(&template, item.controller);
+        let mut copy = self.allocate_spell_copy(&template, item.controller);
+        let copy_source = copy.source.expect("allocated spell copy has a source");
+        let keywords = match modification {
+            CapturedSpellModification::Nonlegendary => {
+                debug_assert_eq!(event.amount, 1);
+                let mut recipe = copy
+                    .source_copy_recipe
+                    .as_deref()
+                    .copied()
+                    .unwrap_or_else(|| CopyRecipe::new(copy_source.card));
+                let mut overrides = recipe.overrides.unwrap_or(CopyOverrides::NONE);
+                overrides.legendary = Some(false);
+                recipe.overrides = Some(overrides);
+                self.set_copy_recipe(copy_source.object, recipe);
+                copy.source_copy_recipe = Some(Box::new(recipe));
+                Keywords::NONE
+            }
+            CapturedSpellModification::PermanentHaste => {
+                debug_assert_eq!(event.amount, 1);
+                if PermanentType::ALL
+                    .into_iter()
+                    .any(|kind| copy_source.card.kind_mask() & kind.mask() != 0)
+                {
+                    self.grant_stack_keywords_expiring(copy_source.object, Keywords::HASTE, None);
+                }
+                Keywords::NONE
+            }
+            CapturedSpellModification::OriginalAndCopies(keywords) => keywords,
+            CapturedSpellModification::None => Keywords::NONE,
+        };
         // These are ordinary ability grants, not copiable values. The original
         // receives its grant only while its exact stack incarnation still exists.
         if keywords != Keywords::NONE {
@@ -1308,7 +1338,13 @@ impl Game {
             return false;
         };
         let item = resolution.item.clone();
-        if !accept || !self.copy_captured_spell_with_keywords(&item, true, keywords) {
+        if !accept
+            || !self.copy_captured_spell_modified(
+                &item,
+                true,
+                CapturedSpellModification::OriginalAndCopies(keywords),
+            )
+        {
             self.run_program();
         }
         true

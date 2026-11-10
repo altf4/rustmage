@@ -1744,6 +1744,9 @@ impl Game {
             CastFilter::SourceChosenCreatureType => {
                 matches!(source.entry_choice, Some(EntryChoiceValue::CreatureType(typ)) if card.has_subtype(typ.name()))
             }
+            CastFilter::CreatureManaValueEqualsSourcePower => {
+                card.is_creature() && i128::from(mana_value) == source.power
+            }
             CastFilter::NotOwnedByCaster => spell_owner.is_some_and(|owner| owner != caster),
             CastFilter::CasterOffTurn { filter } => {
                 self.state.active != caster
@@ -4098,6 +4101,14 @@ impl Game {
                 }
                 Instruction::CopyCapturedSpell { retarget, .. } => {
                     if self.copy_captured_spell_with_targets(&item, retarget) {
+                        return;
+                    }
+                }
+                Instruction::CopyCapturedSpellModified {
+                    retarget,
+                    modification,
+                } => {
+                    if self.copy_captured_spell_modified(&item, retarget, modification) {
                         return;
                     }
                 }
