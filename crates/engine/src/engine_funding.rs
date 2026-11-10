@@ -542,20 +542,23 @@ fn funding_cost_payments(
     let mut seen = std::collections::HashSet::new();
     for base in cost.mana_options() {
         for &reduction in power_up::ActivationCostReductions::options(reductions) {
-            let Some(equivalent) =
-                power_up::reduce(base, reduction, discounts, u64::from(increase))
-            else {
-                continue;
-            };
-            if !payable(pool, equivalent.colored, equivalent.generic) {
-                emit([0; 6], Some(equivalent));
-                continue;
-            }
-            funding_payments(pool, equivalent.colored, equivalent.generic, |payment| {
-                if (cost.alternatives.is_empty() && reductions.is_none()) || seen.insert(payment) {
-                    emit(payment, None);
+            for equivalent in
+                power_up::reduced_totals(base, reduction, discounts, u64::from(increase))
+                    .into_iter()
+                    .flatten()
+            {
+                if !payable(pool, equivalent.colored, equivalent.generic) {
+                    emit([0; 6], Some(equivalent));
+                    continue;
                 }
-            });
+                funding_payments(pool, equivalent.colored, equivalent.generic, |payment| {
+                    if (cost.alternatives.is_empty() && reductions.is_none())
+                        || seen.insert(payment)
+                    {
+                        emit(payment, None);
+                    }
+                });
+            }
         }
     }
 }
@@ -5164,6 +5167,7 @@ impl Game {
             || a.needs_evidence()
             || a.additional_cost().is_some_and(forage::is_forage_cost) && a.forage.is_none()
             || a.needs_mana_cost()
+            || a.activation_order_costs().is_some()
             || (a
                 .item
                 .source
@@ -6026,44 +6030,52 @@ impl Game {
         external: Option<ObjectRef>,
         payment: Option<Mana>,
     ) -> bool {
+        let Some(announcement) = self.state.announcing.as_ref() else {
+            return true;
+        };
+        if !self.has_mana_parent(announcement) {
+            return true;
+        }
+        let Some(object) = external.filter(|_| payment.is_none()) else {
+            return self.mana_total_parent_fundable(announcement, payment);
+        };
+        let mut child = announcement.clone();
+        if let Some(spec) = child.additional_cost()
+            && let EffectChoiceKind::TapPermanents(amount) = spec.kind.payment_kind()
+        {
+            let group = child.additional_group.get_or_insert_default();
+            if group.len() >= amount as usize || group.contains(&object) {
+                return false;
+            }
+            group.push(object);
+            child.additional = (group.len() == amount as usize).then_some(object);
+        } else {
+            child.additional = Some(object);
+        }
+        self.mana_total_parent_fundable(&child, payment)
+    }
+    pub(super) fn activation_total_fundable(&self, candidate: &Announcement) -> bool {
+        self.activation_packet_fundable(candidate)
+            && (candidate.production.is_none() || self.mana_total_parent_fundable(candidate, None))
+    }
+    fn has_mana_parent(&self, child: &Announcement) -> bool {
+        self.state.mana_announcement_stack.is_some()
+            || child
+                .mana_output
+                .as_ref()
+                .and_then(|o| o.resume.as_deref())
+                .is_some_and(|pending| self.guided_mana_goal(pending).is_some())
+    }
+    fn mana_total_parent_fundable(&self, child: &Announcement, payment: Option<Mana>) -> bool {
+        if !self.has_mana_parent(child) {
+            return true;
+        }
         let frames = self
             .state
             .mana_announcement_stack
             .as_deref()
             .map_or(&[][..], |frames| frames.as_slice());
-        if frames.is_empty()
-            && !self.state.announcing.as_ref().is_some_and(|a| {
-                a.mana_output
-                    .as_ref()
-                    .and_then(|o| o.resume.as_deref())
-                    .is_some_and(|pending| self.guided_mana_goal(pending).is_some())
-            })
-        {
-            return true;
-        }
-        let mut child = self
-            .state
-            .announcing
-            .as_ref()
-            .expect("child mana announcement")
-            .clone();
-        if let Some(object) = external
-            && payment.is_none()
-        {
-            if let Some(spec) = child.additional_cost()
-                && let EffectChoiceKind::TapPermanents(amount) = spec.kind.payment_kind()
-            {
-                let group = child.additional_group.get_or_insert_default();
-                if group.len() >= amount as usize || group.contains(&object) {
-                    return false;
-                }
-                group.push(object);
-                child.additional = (group.len() == amount as usize).then_some(object);
-            } else {
-                child.additional = Some(object);
-            }
-        }
-        let goal = self.funding_goal(&child);
+        let goal = self.funding_goal(child);
         let quality = self
             .state
             .mana_lots
@@ -6072,8 +6084,8 @@ impl Game {
             .map(|(_, q)| q);
         let mut state = FundingState::from_game(self, &goal);
         state.set_purpose(self.purpose_for_item(&child.item));
-        state.set_payment_context(&child);
-        state.set_funding_continuation(&child, frames, quality);
+        state.set_payment_context(child);
+        state.set_funding_continuation(child, frames, quality);
         if let Some(payment) = payment {
             // This is completion of an existing CR602 announcement. It must not
             // pass through moves(), which enumerates only new legal activations
@@ -6125,8 +6137,7 @@ impl Game {
         production: Mana,
     ) -> bool {
         let quality = self.announced_mana_quality(packet, Some(production));
-        let mut candidate =
-            self.payment_announcement(packet.clone(), counters, Some(production), None);
+        let candidate = self.payment_announcement(packet.clone(), counters, Some(production), None);
         let parents = self.deferred_mana_parents();
         if !parents.is_empty()
             && candidate.additional_cost().is_some_and(|spec| {
@@ -6139,13 +6150,27 @@ impl Game {
             // it must not invent output or spend an ancestor's reserved tap.
             return false;
         }
-        let options = candidate.cost_options().count();
-        (0..options).any(|slot| {
+        self.mana_cost_routes_fundable(candidate, &parents, quality.as_ref().map(|(_, q)| q))
+    }
+    fn mana_cost_routes_fundable(
+        &self,
+        mut candidate: Announcement,
+        parents: &[mana_announcements::ManaAnnouncement],
+        quality: Option<&mana_lots::Quality>,
+    ) -> bool {
+        (0..candidate.cost_options().count()).any(|slot| {
             candidate.select_cost(slot);
-            self.deferred_mana_fundable(&candidate, &parents, quality.as_ref().map(|(_, q)| q))
+            candidate
+                .untargeted_activation_totals()
+                .into_iter()
+                .flatten()
+                .any(|total| {
+                    candidate.total_cost = Some(total);
+                    self.deferred_mana_fundable(&candidate, parents, quality)
+                })
         })
     }
-    pub(super) fn deferred_mana_fundable(
+    fn deferred_mana_fundable(
         &self,
         candidate: &Announcement,
         parents: &[mana_announcements::ManaAnnouncement],
@@ -6234,29 +6259,22 @@ impl Game {
                             object.card,
                             index as u16,
                             |produced| {
-                                let mut candidate = self.payment_announcement(
+                                let candidate = self.payment_announcement(
                                     packet.clone(),
                                     counters.clone(),
                                     Some(produced),
                                     None,
                                 );
-                                let options = candidate.cost_options().count();
-                                for slot in 0..options {
-                                    candidate.select_cost(slot);
-                                    if self.deferred_mana_fundable(
-                                        &candidate,
-                                        &parents,
-                                        quality.as_ref().map(|(_, q)| q),
-                                    ) && emit(Action::AnnounceMana {
-                                        card: id,
-                                        ability: index as u16,
-                                        counter_payment: counters.clone(),
-                                        production: produced,
-                                    }) {
-                                        return true;
-                                    }
-                                }
-                                false
+                                self.mana_cost_routes_fundable(
+                                    candidate,
+                                    &parents,
+                                    quality.as_ref().map(|(_, q)| q),
+                                ) && emit(Action::AnnounceMana {
+                                    card: id,
+                                    ability: index as u16,
+                                    counter_payment: counters.clone(),
+                                    production: produced,
+                                })
                             },
                         )
                     },

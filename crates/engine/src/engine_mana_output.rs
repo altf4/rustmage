@@ -465,17 +465,21 @@ impl Game {
         }
         self.suspend_mana_announcement();
         let mut a = self.payment_announcement(item, counters, Some(production), None);
-        let slot = a
-            .cost_options()
-            .position(|cost| {
-                payment.iter().zip(cost.colored).all(|(p, c)| *p >= c)
-                    && payment.into_iter().map(u64::from).sum::<u64>()
-                        == cost.colored.into_iter().map(u64::from).sum::<u64>()
-                            + u64::from(cost.generic)
+        let total = (0..a.cost_options().count())
+            .find_map(|slot| {
+                a.select_cost(slot);
+                a.untargeted_activation_totals()
+                    .into_iter()
+                    .flatten()
+                    .find(|cost| {
+                        payment.iter().zip(cost.colored).all(|(p, c)| *p >= c)
+                            && payment.into_iter().map(u64::from).sum::<u64>()
+                                == cost.colored.into_iter().map(u64::from).sum::<u64>()
+                                    + u64::from(cost.generic)
+                    })
             })
             .expect("legal direct mana payment has a cost option");
-        a.select_cost(slot);
-        a.total_cost = a.cost;
+        a.total_cost = Some(total);
         a.payment = Some(payment);
         a.mana_output = Some(output);
         self.state.pending = Pending::PayCosts {

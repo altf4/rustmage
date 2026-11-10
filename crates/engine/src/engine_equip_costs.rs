@@ -128,6 +128,9 @@ impl Game {
             .fold(0u32, u32::saturating_add)
     }
     pub(super) fn announcement_cost_choice_fundable(&self, a: &Announcement, index: usize) -> bool {
+        if let Some(totals) = a.activation_order_costs() {
+            return index < totals.len();
+        }
         let Some(cost) = a.cost_options().nth(index) else {
             return false;
         };
@@ -167,6 +170,8 @@ impl Game {
                 return false;
             }
             self.announcement_cost_fundable(&proposal, cost)
+                || proposal.untargeted_activation_totals()[1]
+                    .is_some_and(|alternate| self.announcement_cost_fundable(&proposal, alternate))
         } else {
             self.announcement_cost_fundable(a, cost)
         }

@@ -28,6 +28,8 @@ pub(super) struct ActivationCostReductions {
     pub leave_one: u64,
     /// Amount that exceeds the ordinary inline discount field.
     pub extra_ordinary: u64,
+    /// Exact payable totals awaiting the player's reduction-order choice.
+    pub order_costs: Option<[ManaCost; 2]>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ActivationCostReductions {
@@ -65,29 +67,40 @@ impl ActivationDiscounts {
 /// Apply generic and typed reductions after X and increases (CR118.7, 601.2f).
 /// Excess typed reduction pays generic, but never another mana type.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-pub(super) fn reduce(
+pub(super) fn reduced_totals(
     base: ManaCost,
     reduction: ManaCost,
     discounts: ActivationDiscounts,
     x_and_increases: u64,
-) -> Option<ManaCost> {
+) -> [Option<ManaCost>; 2] {
     let colored = std::array::from_fn(|i| base.colored[i].saturating_sub(reduction.colored[i]));
     let excess = (0..6)
         .map(|i| u64::from(reduction.colored[i].saturating_sub(base.colored[i])))
         .sum::<u64>();
-    let raw = u64::from(base.generic).checked_add(x_and_increases)?;
-    // Apply the capped effects first. The remaining mana can be removed by
-    // independent reductions. An unchanged colored symbol already meets the floor.
-    let minimum_generic = u64::from(base.colored == [0; 6]);
-    let capped = discounts.leave_one.min(raw.saturating_sub(minimum_generic));
-    let reduction = capped
-        .saturating_add(excess)
+    let Some(raw) = u64::from(base.generic).checked_add(x_and_increases) else {
+        return [None; 2];
+    };
+    let ordinary = discounts
+        .ordinary
         .saturating_add(u64::from(reduction.generic))
-        .saturating_add(discounts.ordinary);
-    Some(ManaCost {
-        colored,
-        generic: u32::try_from(raw.saturating_sub(reduction)).ok()?,
-    })
+        .saturating_add(excess);
+    // Applying capped reductions first gives the minimum. Applying ordinary
+    // reductions first can leave exactly one mana if a capped effect still
+    // has to reduce the remaining generic mana and all colored mana is gone.
+    let capped = discounts
+        .leave_one
+        .min(raw.saturating_sub(u64::from(base.colored == [0; 6])));
+    let uncapped = raw.saturating_sub(ordinary);
+    let Ok(generic) = u32::try_from(uncapped.saturating_sub(capped)) else {
+        return [None; 2];
+    };
+    [
+        Some(ManaCost { colored, generic }),
+        (generic == 0 && colored == [0; 6] && uncapped != 0).then_some(ManaCost {
+            colored,
+            generic: 1,
+        }),
+    ]
 }
 /// Ordinary activations retain their allocation-free mana-options traversal.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -96,6 +109,7 @@ pub(super) struct ActivationManaCosts {
     power_up: Option<Box<ActivationCostReductions>>,
     base: Option<ManaCost>,
     reduction_index: usize,
+    next_total: Option<ManaCost>,
     discounts: ActivationDiscounts,
     generic_increase: u32,
     x: u64,
@@ -104,6 +118,9 @@ pub(super) struct ActivationManaCosts {
 impl Iterator for ActivationManaCosts {
     type Item = ManaCost;
     fn next(&mut self) -> Option<ManaCost> {
+        if let Some(total) = self.next_total.take() {
+            return Some(total);
+        }
         loop {
             if self.base.is_none() {
                 self.base = Some(self.bases.next()?);
@@ -115,13 +132,15 @@ impl Iterator for ActivationManaCosts {
                 continue;
             };
             self.reduction_index += 1;
-            if let Some(cost) = reduce(
+            let [minimum, alternate] = reduced_totals(
                 self.base.unwrap(),
                 reduction,
                 self.discounts,
                 self.x + u64::from(self.generic_increase),
-            ) {
-                return Some(cost);
+            );
+            if minimum.is_some() {
+                self.next_total = alternate;
+                return minimum;
             }
         }
     }
@@ -235,6 +254,7 @@ impl Game {
             power_up: self.power_up_costs(self.object_ref(source), definition, ability),
             base: None,
             reduction_index: 0,
+            next_total: None,
             // A target is still to be chosen. Keep every raw choice that might
             // fit after its color reduction; target-aware funding recomputes
             // the exact total from the raw choice before accepting any target.

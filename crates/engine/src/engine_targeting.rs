@@ -623,56 +623,36 @@ impl Announcement {
                 )
             })
             .flat_map(move |(cost, route, evoked)| {
-                let reductions = self.activation_reductions.as_deref();
-                let discounts = power_up::ActivationDiscounts {
-                    ordinary: u64::from(self.activation_discount)
-                        + reductions.map_or(0, |costs| costs.extra_ordinary),
-                    leave_one: reductions.map_or(0, |costs| costs.leave_one),
-                };
-                power_up::ActivationCostReductions::options(reductions)
+                let discounts = self
+                    .activation_discounts()
+                    .with_ordinary(match self.item.kind {
+                        StackKind::ActivatedAbility { ability } => {
+                            5 * u64::from(
+                                self.item
+                                    .source
+                                    .expect("activation source")
+                                    .card
+                                    .activation_target_color_discount(ability),
+                            )
+                        }
+                        _ => 0,
+                    });
+                power_up::ActivationCostReductions::options(self.activation_reductions.as_deref())
                     .iter()
                     .filter_map(move |&reduction| {
-                        power_up::reduce(
-                            cost,
+                        let choice = ActivationCostChoice {
+                            base: cost,
                             reduction,
-                            discounts.with_ordinary(match self.item.kind {
-                                StackKind::ActivatedAbility { ability } => {
-                                    5 * u64::from(
-                                        self.item
-                                            .source
-                                            .expect("activation source")
-                                            .card
-                                            .activation_target_color_discount(ability),
-                                    )
-                                }
-                                _ => 0,
-                            }),
-                            u64::from(self.activation_generic_increase)
-                                + if route == ActivationCostRoute::Printed {
-                                    u64::from(self.item.x.unwrap_or(0))
-                                        * u64::from(match self.item.kind {
-                                            StackKind::ActivatedAbility { ability } => self
-                                                .item
-                                                .source
-                                                .expect("announcement has object source")
-                                                .card
-                                                .activation_x_symbols(ability),
-                                            _ => 0,
-                                        })
-                                } else {
-                                    0
-                                },
-                        )
+                            route,
+                        };
+                        self.activation_totals(choice, discounts, self.activation_generic_increase)
+                            [0]
                         .map(|reduced| {
                             (
                                 reduced,
                                 route,
                                 matches!(self.item.kind, StackKind::ActivatedAbility { .. })
-                                    .then_some(ActivationCostChoice {
-                                        base: cost,
-                                        reduction,
-                                        route,
-                                    }),
+                                    .then_some(choice),
                                 evoked,
                             )
                         })
@@ -728,6 +708,64 @@ impl Announcement {
                     .map(|cost| (cost, route, choice, evoked))
             })
     }
+    pub(super) fn activation_discounts(&self) -> power_up::ActivationDiscounts {
+        let reductions = self.activation_reductions.as_deref();
+        power_up::ActivationDiscounts {
+            ordinary: u64::from(self.activation_discount)
+                + reductions.map_or(0, |costs| costs.extra_ordinary),
+            leave_one: reductions.map_or(0, |costs| costs.leave_one),
+        }
+    }
+    pub(super) fn activation_totals(
+        &self,
+        choice: ActivationCostChoice,
+        discounts: power_up::ActivationDiscounts,
+        increase: u32,
+    ) -> [Option<ManaCost>; 2] {
+        let x = match self.item.kind {
+            StackKind::ActivatedAbility { ability }
+                if choice.route == ActivationCostRoute::Printed =>
+            {
+                u64::from(self.item.x.unwrap_or(0))
+                    * u64::from(
+                        self.item
+                            .source
+                            .expect("activation source")
+                            .card
+                            .activation_x_symbols(ability),
+                    )
+            }
+            _ => 0,
+        };
+        power_up::reduced_totals(
+            choice.base,
+            choice.reduction,
+            discounts,
+            x + u64::from(increase),
+        )
+    }
+    pub(super) fn untargeted_activation_totals(&self) -> [Option<ManaCost>; 2] {
+        self.activation_totals(
+            self.raw_activation_choice(),
+            self.activation_discounts(),
+            self.activation_generic_increase,
+        )
+    }
+    pub(super) fn activation_order_costs(&self) -> Option<[ManaCost; 2]> {
+        self.activation_reductions
+            .as_ref()
+            .and_then(|r| r.order_costs)
+    }
+    pub(super) fn cost_choices(&self) -> impl Iterator<Item = ManaCost> + '_ {
+        let order_costs = self.activation_order_costs();
+        order_costs.into_iter().flatten().chain(
+            order_costs
+                .is_none()
+                .then(|| self.cost_options())
+                .into_iter()
+                .flatten(),
+        )
+    }
     pub(super) fn cost_options(&self) -> impl Iterator<Item = ManaCost> + '_ {
         self.cost_route_options().map(|(cost, _, _, _)| cost)
     }
@@ -742,7 +780,11 @@ impl Announcement {
         self.activation_choice = choice.map(Box::new);
     }
     pub(super) fn activation_route_for_index(&self, index: usize) -> ActivationCostRoute {
-        self.cost_route_options().nth(index).expect("cost option").1
+        if self.activation_order_costs().is_some() {
+            self.activation_cost_route
+        } else {
+            self.cost_route_options().nth(index).expect("cost option").1
+        }
     }
     pub(super) fn raw_activation_choice(&self) -> ActivationCostChoice {
         self.activation_choice
@@ -1666,8 +1708,20 @@ impl Game {
     }
     pub(super) fn choose_mana_cost(&mut self, index: u16) {
         let a = self.state.announcing.as_mut().unwrap();
-        a.select_cost(index as usize);
-        self.continue_announcement_choices(false);
+        if let Some(totals) = a
+            .activation_reductions
+            .as_mut()
+            .and_then(|r| r.order_costs.take())
+        {
+            a.total_cost = Some(totals[usize::from(index)]);
+            self.state.pending = Pending::Targets {
+                player: a.item.controller,
+            };
+            self.finish_announcement();
+        } else {
+            a.select_cost(index as usize);
+            self.continue_announcement_choices(false);
+        }
     }
 
     pub(super) fn choose_mode(&mut self, mode: u16) {
@@ -3017,7 +3071,9 @@ impl Game {
         if self.start_target_amounts() {
             return;
         }
-        self.freeze_activation_total();
+        if self.freeze_activation_total() {
+            return;
+        }
         if let Some(a) = &mut self.state.announcing
             && a.additional_cost()
                 .is_some_and(|cost| cost.kind == EffectChoiceKind::DiscardHand)

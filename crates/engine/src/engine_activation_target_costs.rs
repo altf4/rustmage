@@ -4,66 +4,80 @@ use super::*;
 impl Game {
     /// CR602.2b/601.2f: determine increases before reductions after the last
     /// target/X choice. Nothing in the subsequent payment window resamples it.
-    pub(super) fn freeze_activation_total(&mut self) {
+    pub(super) fn freeze_activation_total(&mut self) -> bool {
         let Some(a) = self.state.announcing.as_ref() else {
-            return;
+            return false;
         };
         let StackKind::ActivatedAbility { ability } = a.item.kind else {
-            return;
+            return false;
         };
         if !a.pay_window || a.total_cost.is_some() {
-            return;
+            return false;
         }
         let source = a.item.source.expect("activation source");
-        if source.card.activation_target_color_discount(ability) != 0 {
+        let increase =
+            ability_world::CharacteristicWorld::named_activation_generic_increase(self, source.id);
+        let discount = self.item_activation_discount(&a.item);
+        let target_discount = if source.card.activation_target_color_discount(ability) != 0 {
             let target = a
                 .item
                 .targets
                 .first()
                 .expect("one mandatory color target")
                 .target;
-            let total = self
-                .activation_color_target_total(a, target)
-                .expect("validated activation total");
-            let increase = ability_world::CharacteristicWorld::named_activation_generic_increase(
-                self, source.id,
-            );
-            let discount = self.item_activation_discount(&a.item);
-            let a = self.state.announcing.as_mut().unwrap();
-            a.activation_generic_increase = increase;
-            a.activation_discount = u32::try_from(discount.ordinary).unwrap_or(u32::MAX);
-            a.total_cost = Some(total);
-            return;
-        }
-        let choice = a.raw_activation_choice();
-        let increase =
-            ability_world::CharacteristicWorld::named_activation_generic_increase(self, source.id);
-        let discount = self.item_activation_discount(&a.item);
-        let x = if choice.route == ActivationCostRoute::Printed {
-            u64::from(a.item.x.unwrap_or(0)) * u64::from(source.card.activation_x_symbols(ability))
+            self.activation_target_discount(
+                a.item.controller,
+                source.object,
+                source.card,
+                ability,
+                target,
+            )
         } else {
-            0
+            self.selected_activation_target_discount(&a.item)
         };
-        let base = power_up::reduce(
-            choice.base,
-            choice.reduction,
-            discount,
-            x + u64::from(increase),
-        )
-        .expect("validated activation total");
-        let total = self.selected_activation_target_cost(&a.item, base);
+        let [minimum, alternate] = a.activation_totals(
+            a.raw_activation_choice(),
+            discount.with_ordinary(target_discount),
+            increase,
+        );
+        let mut total = minimum.expect("validated activation total");
+        let order_costs = alternate.and_then(|alternate| {
+            let mut candidate = a.clone();
+            candidate.activation_generic_increase = increase;
+            candidate.total_cost = Some(alternate);
+            if !self.activation_total_fundable(&candidate) {
+                return None;
+            }
+            candidate.total_cost = Some(total);
+            if self.activation_total_fundable(&candidate) {
+                Some([total, alternate])
+            } else {
+                total = alternate;
+                None
+            }
+        });
         let a = self.state.announcing.as_mut().unwrap();
         a.activation_generic_increase = increase;
         a.activation_discount = u32::try_from(discount.ordinary).unwrap_or(u32::MAX);
-        a.total_cost = Some(total);
+        if let Some(totals) = order_costs {
+            a.activation_reductions
+                .get_or_insert_with(Box::default)
+                .order_costs = Some(totals);
+            self.state.pending = Pending::ActivationCost {
+                player: a.item.controller,
+            };
+            true
+        } else {
+            a.total_cost = Some(total);
+            false
+        }
     }
 
-    fn activation_color_target_total(&self, a: &Announcement, target: Target) -> Option<ManaCost> {
+    fn activation_target_totals(&self, a: &Announcement, target: Target) -> [Option<ManaCost>; 2] {
         let StackKind::ActivatedAbility { ability } = a.item.kind else {
             unreachable!()
         };
         let source = a.item.source.expect("activation source");
-        let choice = a.raw_activation_choice();
         let discount =
             self.item_activation_discount(&a.item)
                 .with_ordinary(self.activation_target_discount(
@@ -73,20 +87,10 @@ impl Game {
                     ability,
                     target,
                 ));
-        let x = if choice.route == ActivationCostRoute::Printed {
-            u64::from(a.item.x.unwrap_or(0)) * u64::from(source.card.activation_x_symbols(ability))
-        } else {
-            0
-        };
-        power_up::reduce(
-            choice.base,
-            choice.reduction,
+        a.activation_totals(
+            a.raw_activation_choice(),
             discount,
-            x + u64::from(
-                ability_world::CharacteristicWorld::named_activation_generic_increase(
-                    self, source.id,
-                ),
-            ),
+            ability_world::CharacteristicWorld::named_activation_generic_increase(self, source.id),
         )
     }
 
@@ -133,82 +137,43 @@ impl Game {
         target: Target,
         mut base: ManaCost,
     ) -> ManaCost {
-        if let Some(rule) = definition.activation_target_reduction(ability)
-            && self.activation_target_matches(rule.rule, actor, source, target)
-        {
-            base.generic = base.generic.saturating_sub(rule.generic);
-        }
-        if let (Some(kind), Target::Card(id)) = (
-            definition.activation_target_counter_discount(ability),
-            target,
-        ) && self.on_battlefield(id)
-        {
-            base.generic = base
-                .generic
-                .saturating_sub(u32::try_from(self.counter_count(id, kind)).unwrap_or(u32::MAX));
-        }
-        if definition.activation_target_color_discount(ability) != 0
-            && let Target::Card(id) = target
-            && self.on_battlefield(id)
-        {
-            let colors = (ability_world::CharacteristicWorld::colors(self, id) & 31).count_ones();
-            let reduction =
-                u64::from(definition.activation_target_color_discount(ability)) * u64::from(colors);
-            base.generic = u32::try_from(u64::from(base.generic).saturating_sub(reduction))
-                .expect("a target discount cannot increase the cost");
-        }
-        base.generic = base
-            .generic
-            .saturating_sub(self.equip_target_reduction(actor, definition, ability, target));
+        let discount = self.activation_target_discount(actor, source, definition, ability, target);
+        base.generic = u32::try_from(u64::from(base.generic).saturating_sub(discount))
+            .expect("a target discount cannot increase the cost");
         base
     }
-    pub(super) fn selected_activation_target_cost(
-        &self,
-        item: &SpellView,
-        mut base: ManaCost,
-    ) -> ManaCost {
+
+    fn selected_activation_target_discount(&self, item: &SpellView) -> u64 {
         let StackKind::ActivatedAbility { ability } = item.kind else {
-            return base;
+            unreachable!("activation target discount");
         };
-        let Some(source) = item.source else {
-            return base;
-        };
-        if let Some(rule) = source.card.activation_target_reduction(ability)
-            && item.targets.iter().any(|b| {
-                self.same_target_object(*b) && self.item_target_matches(item, rule.rule, b.target)
-            })
-        {
-            base.generic = base.generic.saturating_sub(rule.generic);
-        }
+        let source = item.source.expect("activation source");
+        let matching_target = source
+            .card
+            .activation_target_reduction(ability)
+            .filter(|rule| {
+                item.targets.iter().any(|b| {
+                    self.same_target_object(*b)
+                        && self.item_target_matches(item, rule.rule, b.target)
+                })
+            });
+        let mut discount = matching_target.map_or(0, |rule| u64::from(rule.generic));
         for target in item.targets.iter().filter(|b| self.same_target_object(**b)) {
-            if source.card.activation_target_color_discount(ability) != 0
-                && let Target::Card(id) = target.target
-                && self.on_battlefield(id)
-            {
-                let colors =
-                    (ability_world::CharacteristicWorld::colors(self, id) & 31).count_ones();
-                let reduction = u64::from(source.card.activation_target_color_discount(ability))
-                    * u64::from(colors);
-                base.generic = u32::try_from(u64::from(base.generic).saturating_sub(reduction))
-                    .expect("a target discount cannot increase the cost");
-            }
             if let (Some(kind), Target::Card(id)) = (
                 source.card.activation_target_counter_discount(ability),
                 target.target,
             ) && self.on_battlefield(id)
             {
-                base.generic = base.generic.saturating_sub(
-                    u32::try_from(self.counter_count(id, kind)).unwrap_or(u32::MAX),
-                );
+                discount = discount.saturating_add(self.counter_count(id, kind));
             }
-            base.generic = base.generic.saturating_sub(self.equip_target_reduction(
+            discount = discount.saturating_add(u64::from(self.equip_target_reduction(
                 item.controller,
                 source.card,
                 ability,
                 target.target,
-            ));
+            )));
         }
-        base
+        discount
     }
     /// Keep acquired activation identity in the same payment context used by
     /// announcement. A printed slot at the same index has independent history.
@@ -226,14 +191,25 @@ impl Game {
         if proposal.declares_target_value_x() {
             return !self.target_value_x_intervals(&proposal).is_empty();
         }
-        if source.card.activation_target_color_discount(ability) != 0 {
-            return self.activation_color_target_fundable(&proposal, None, false);
+        if source.card.activation_target_color_discount(ability) != 0
+            || proposal.activation_discounts().leave_one != 0
+                && Self::activation_target_sensitive(source.card, ability)
+        {
+            return self.activation_exact_target_fundable(&proposal, None, false);
         }
         let options = proposal.cost_options().count();
         (0..options).any(|slot| {
             proposal.select_cost(slot);
             if !Self::activation_target_sensitive(source.card, ability) {
-                return self.activation_packet_fundable(&proposal);
+                return proposal
+                    .untargeted_activation_totals()
+                    .into_iter()
+                    .flatten()
+                    .any(|total| {
+                        let mut candidate = proposal.clone();
+                        candidate.total_cost = Some(total);
+                        self.activation_packet_fundable(&candidate)
+                    });
             }
             let spec = proposal
                 .plan
@@ -270,7 +246,13 @@ impl Game {
             let proposal = self.payment_announcement(packet, counters.clone(), None, None);
             return !self.target_value_x_intervals(&proposal).is_empty();
         }
-        if definition.activation_target_color_discount(*index) != 0 {
+        if definition.activation_target_color_discount(*index) != 0
+            || Self::activation_target_sensitive(*definition, *index)
+                && self
+                    .activation_generic_discount(source.card, *definition, *index)
+                    .leave_one
+                    != 0
+        {
             let mut packet = self.activation_packet(goal.actor, source.card, *index);
             packet.set_source_definition(*definition);
             packet.borrowed_slot = goal.source.as_ref().unwrap().4;
@@ -280,7 +262,7 @@ impl Game {
             if minimum != 0 {
                 proposal.item.x = Some(minimum);
             }
-            return self.activation_color_target_fundable(&proposal, None, false);
+            return self.activation_exact_target_fundable(&proposal, None, false);
         }
         if *counters == Counters::default() && self.first_equip_zero_available(goal.actor, ability)
         {
@@ -364,8 +346,9 @@ impl Game {
             .card
             .activation_target_color_discount(ability)
             != 0
+            || a.activation_discounts().leave_one != 0
         {
-            return self.activation_color_target_fundable(a, extra, finished);
+            return self.activation_exact_target_fundable(a, extra, finished);
         }
         let test = |base: ManaCost| {
             let free = a.activation_cost_route == ActivationCostRoute::FirstEquipZero;
@@ -442,15 +425,17 @@ impl Game {
         }
     }
 
-    fn activation_color_choice_fundable(&self, a: &Announcement, target: Target) -> bool {
-        self.activation_color_target_total(a, target)
-            .is_some_and(|total| {
+    fn activation_target_choice_fundable(&self, a: &Announcement, target: Target) -> bool {
+        self.activation_target_totals(a, target)
+            .into_iter()
+            .flatten()
+            .any(|total| {
                 let mut selected = a.clone();
                 selected.total_cost = Some(total);
                 self.activation_packet_fundable(&selected)
             })
     }
-    fn activation_color_target_fundable(
+    fn activation_exact_target_fundable(
         &self,
         a: &Announcement,
         extra: Option<Target>,
@@ -471,12 +456,15 @@ impl Game {
         }
         let fund_choice = |proposal: &Announcement| {
             if let Some(target) = chosen {
-                self.activation_color_choice_fundable(proposal, target)
+                self.activation_target_choice_fundable(proposal, target)
             } else {
                 self.visit_item_targets(
                     &a.item,
-                    a.plan.single().expect("one color target").rule,
-                    |target| self.activation_color_choice_fundable(proposal, target),
+                    a.plan
+                        .single()
+                        .expect("one-target activation cost modifier")
+                        .rule,
+                    |target| self.activation_target_choice_fundable(proposal, target),
                 )
             }
         };
@@ -508,41 +496,50 @@ impl Game {
             .targets
             .single()
             .expect("one-target activation cost modifier");
-        if definition.activation_target_color_discount(ability) != 0 {
+        if definition.activation_target_color_discount(ability) != 0
+            || self
+                .activation_generic_discount(card, definition, ability)
+                .leave_one
+                != 0
+        {
             let packet = self.activation_packet(actor, card, ability);
             let mut proposal =
                 self.payment_announcement(packet, counter_payment.clone(), None, None);
             let options = proposal.cost_options().count();
             return self.visit_targets(spec.rule, actor, source, |target| {
+                let mut seen = std::collections::HashSet::new();
                 for slot in 0..options {
                     proposal.select_cost(slot);
-                    let Some(total) = self.activation_color_target_total(&proposal, target) else {
-                        continue;
-                    };
-                    let mut selected = proposal.clone();
-                    selected.total_cost = Some(total);
-                    if !self.activation_packet_fundable(&selected) {
-                        continue;
-                    }
-                    let mut done = false;
-                    payments(
-                        self.state.players[actor.index()].mana,
-                        total.colored,
-                        total.generic,
-                        |payment| {
-                            if !done {
-                                done = emit(Action::Activate {
-                                    card,
-                                    ability,
-                                    target: Some(target),
-                                    payment,
-                                    counter_payment: counter_payment.clone(),
-                                });
-                            }
-                        },
-                    );
-                    if done {
-                        return true;
+                    for total in self
+                        .activation_target_totals(&proposal, target)
+                        .into_iter()
+                        .flatten()
+                    {
+                        let mut selected = proposal.clone();
+                        selected.total_cost = Some(total);
+                        if !self.activation_packet_fundable(&selected) {
+                            continue;
+                        }
+                        let mut done = false;
+                        payments(
+                            self.state.players[actor.index()].mana,
+                            total.colored,
+                            total.generic,
+                            |payment| {
+                                if !done && seen.insert(payment) {
+                                    done = emit(Action::Activate {
+                                        card,
+                                        ability,
+                                        target: Some(target),
+                                        payment,
+                                        counter_payment: counter_payment.clone(),
+                                    });
+                                }
+                            },
+                        );
+                        if done {
+                            return true;
+                        }
                     }
                 }
                 false

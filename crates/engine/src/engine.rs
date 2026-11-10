@@ -3508,7 +3508,7 @@ pub enum ActivationCostRoute {
     FirstEquipZero,
 }
 
-/// Legal nonhybrid equivalents of a currently announced hybrid spell cost.
+/// Legal mana-cost choices for the current spell or activation announcement.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellCostChoiceView {
@@ -6935,7 +6935,7 @@ impl Game {
             }
             Pending::SpellCost { player: _ } | Pending::ActivationCost { player: _ } => {
                 let a = s.announcing.as_ref().unwrap();
-                for (index, _) in a.cost_options().enumerate() {
+                for (index, _) in a.cost_choices().enumerate() {
                     if self.announcement_cost_choice_fundable(a, index)
                         && emit(if a.item.kind == StackKind::Spell {
                             Action::ChooseSpellCost { cost: index as u16 }
@@ -12319,7 +12319,7 @@ impl Game {
                     Pending::SpellCost { .. } | Pending::ActivationCost { .. }
                 ) {
                 let a = s.announcing.as_ref().unwrap();
-                a.cost_options()
+                a.cost_choices()
                     .enumerate()
                     .filter(|(index, _)| self.announcement_cost_choice_fundable(a, *index))
                     .map(|(index, cost)| SpellCostChoiceView {
