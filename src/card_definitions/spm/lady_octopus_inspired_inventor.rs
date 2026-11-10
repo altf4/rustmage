@@ -32,7 +32,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         targets: TargetPlan::NONE,
         program: &[Instruction::CastHandFreeUpToOfType {
             maximum: AmountValue::SourceCounterQuantity(CounterKind::Ingenuity),
-            permanent_type: PermanentType::Artifact,
+            permanent_type: rustmage_core::PermanentType::Artifact,
         }],
     }],
     ..CardRules::EMPTY

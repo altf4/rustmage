@@ -21,7 +21,12 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 min_mana: 0,
                 max_mana: u32::MAX,
             }),
-            program: &[Instruction::Grow(2, 2)],
+            program: &[Instruction::Grow {
+                subject: Subject::Targets,
+                power: 2,
+                toughness: 2,
+                keywords: Keywords::NONE,
+            }],
         },
         TriggeredAbility {
             condition: TriggerCondition::Chapter { number: 3 },
