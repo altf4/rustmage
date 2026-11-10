@@ -266,6 +266,11 @@ impl GrantedSubtypes {
             if types.mutant {
                 self.insert("Mutant");
             }
+            if recipe.exceptions.spider_human_hero {
+                self.insert("Spider");
+                self.insert("Human");
+                self.insert("Hero");
+            }
             if let Some(subtype) = recipe.replacement_subtype {
                 self.insert(subtype.name());
             }

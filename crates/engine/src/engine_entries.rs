@@ -1067,6 +1067,7 @@ impl Game {
         let mut enchantment_results = Vec::new();
         let mut ghost_results = Vec::new();
         let mut copy_results = Vec::new();
+        let mut copy_exile_results = Vec::new();
         let mut played_lands = Vec::new();
         for (movement, counters) in moves {
             let entering_face = movement
@@ -1119,6 +1120,13 @@ impl Game {
                     .is_some_and(|copy| copy.recipe.is_some())
                 {
                     copy_results.push(event.after);
+                    if let Some(exile) = movement
+                        .copy_preparation
+                        .as_ref()
+                        .and_then(|copy| copy.exile)
+                    {
+                        copy_exile_results.push((event.after, movement.controller, exile));
+                    }
                 }
                 if let Some(preparation) = &movement.exile_preparation {
                     let ability_origin = self.copy_ability_origin(event.after);
@@ -1457,6 +1465,9 @@ impl Game {
             );
         }
         self.refresh_controllers_after(Some(control_watch));
+        for (entrant, controller, exile) in copy_exile_results {
+            self.queue_entry_copy_exile(entrant, controller, exile);
+        }
         if let Some(item) = &batch.temporary_copy {
             let tokens = events
                 .iter()

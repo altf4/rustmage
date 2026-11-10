@@ -38,7 +38,7 @@ pub struct RetainedCopyActivation {
     pub ability: u16,
 }
 
-/// Immutable additions made as part of a token-copy effect (CR707.9).
+/// Immutable additions made as part of a copy effect (CR707.9).
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
 pub struct CopyExceptions {
@@ -60,6 +60,8 @@ pub struct CopyExceptions {
     pub retained_activation: Option<RetainedCopyActivation>,
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub embalm: bool,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub spider_human_hero: bool,
 }
 /// A layer-one copy between independently selected exact objects. Group absence
 /// at resolution is intentional: losing either required group prevents the copy.
@@ -88,6 +90,7 @@ impl CopyExceptions {
         base: None,
         retained_activation: None,
         embalm: false,
+        spider_human_hero: false,
     };
     pub const HASTE_AND_SACRIFICE: Self = Self {
         sacrifice_abilities: 1,
@@ -101,6 +104,7 @@ impl CopyExceptions {
         base: None,
         retained_activation: None,
         embalm: false,
+        spider_human_hero: false,
     };
     pub const SACRIFICE_ONLY: Self = Self {
         sacrifice_only_abilities: 1,
@@ -118,6 +122,7 @@ impl CopyExceptions {
         base: None,
         retained_activation: None,
         embalm: false,
+        spider_human_hero: false,
     };
     pub const ARTIFACT: Self = Self {
         artifact: true,
@@ -158,6 +163,7 @@ impl CopyExceptions {
             base: other.base.or(self.base),
             retained_activation: other.retained_activation.or(self.retained_activation),
             embalm: self.embalm || other.embalm,
+            spider_human_hero: self.spider_human_hero || other.spider_human_hero,
         }
     }
 }
@@ -1829,8 +1835,36 @@ pub struct DevourSpec {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct EntryCopySpec {
+    /// Used only when selecting a battlefield blueprint.
     pub filters: &'static [BattlefieldFilter],
     pub optional: bool,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum EntryCopySource {
+    Battlefield,
+    /// Select a creature card in any graveyard, then use the linked trigger template.
+    GraveyardCreature {
+        exile_trigger: u16,
+    },
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct EntryCopyOptions {
+    pub source: EntryCopySource,
+    pub name: Option<&'static str>,
+    pub exceptions: CopyExceptions,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl EntryCopyOptions {
+    pub const DEFAULT: Self = Self {
+        source: EntryCopySource::Battlefield,
+        name: None,
+        exceptions: CopyExceptions::NONE,
+    };
 }
 
 /// Source-independent callbacks whose stated duration is the current turn.
@@ -2996,6 +3030,8 @@ pub enum Instruction {
     PreventTargetActivationsWhileTapped,
     /// Return the exact resulting graveyard card captured from this death event.
     ReturnEventCardToHand,
+    /// Exile the exact graveyard card referred to by this ability's event.
+    ExileEventGraveyardCard,
     /// Put the physical cards from this source's actual death on their owner's library bottom.
     PutDepartedSourceOnLibraryBottom,
     /// Return the exact death-event card tapped under its owner’s control.
@@ -7118,6 +7154,12 @@ impl Card {
     }
     pub(crate) fn entry_copy(self) -> Option<EntryCopySpec> {
         authored::rules(self).and_then(|rules| rules.extras.entry_copy)
+    }
+    pub(crate) fn entry_copy_options(self) -> EntryCopyOptions {
+        authored::rules(self)
+            .and_then(|rules| rules.extras.entry_copy_options)
+            .copied()
+            .unwrap_or(EntryCopyOptions::DEFAULT)
     }
     pub(crate) fn enchant_basic(self) -> bool {
         authored::rules(self).is_some_and(|rules| rules.extras.enchant_basic)

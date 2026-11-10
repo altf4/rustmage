@@ -5169,6 +5169,15 @@ impl Game {
                 }
                 Instruction::ReturnDeathCard(kind) => self.return_death_card(&item, kind),
                 Instruction::ReturnEventCardToHand => self.return_event_card_to_hand(&item),
+                Instruction::ExileEventGraveyardCard => {
+                    if let Some(subject) = item.event_object.as_ref().map(|event| event.object)
+                        && self.object_ref(subject.card) == subject
+                        && self.state.objects[subject.card as usize].zone == Zone::Graveyard
+                        && self.state.objects[subject.card as usize].is_card()
+                    {
+                        self.move_object(subject.card, Zone::Exile);
+                    }
+                }
                 Instruction::PutDepartedSourceOnLibraryBottom => {
                     self.put_departed_source_on_library_bottom(&item)
                 }

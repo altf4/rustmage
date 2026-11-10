@@ -211,6 +211,7 @@ impl Game {
         let incoming = spec.overrides;
         if incoming.types.is_some_and(|types| types.replace) {
             recipe.replacement_subtype = None;
+            recipe.exceptions.spider_human_hero = false;
         }
         let types = incoming
             .types

@@ -2330,8 +2330,14 @@ impl Game {
                     .map(|(i, _)| i)
                     .expect("pending entry-copy choice");
                 if let Some(object) = object {
-                    let recipe = entry_copies::blueprint_in_world(&world, object.card);
-                    entry_copies::apply_blueprint(&mut batch.moves[index], recipe);
+                    let movement = &mut batch.moves[index];
+                    let choice = entry_copies::chosen_blueprint(
+                        &world,
+                        movement.before.card,
+                        *object,
+                        || entry_copies::blueprint_in_world(&world, object.card),
+                    );
+                    entry_copies::apply_choice(movement, choice);
                 } else {
                     batch.moves[index]
                         .copy_preparation
@@ -3109,20 +3115,15 @@ impl FundingState<'_> {
         ids.dedup();
         let candidates = ids
             .into_iter()
-            .filter(|&id| {
-                !moves
-                    .iter()
-                    .any(|m| m.before.id == id && m.before.zone != Zone::Battlefield)
-                    && spec.filters.iter().any(|&filter| {
-                        battlefield_groups::filter_matches_in_world(
-                            self,
-                            filter,
-                            movement.controller,
-                            id,
-                        )
-                    })
+            .filter(|&id| entry_copies::candidate(self, movement, &moves, id))
+            .map(|id| {
+                entry_copies::chosen_blueprint(
+                    self,
+                    movement.before.card,
+                    self.reference(id),
+                    || entry_copies::blueprint_in_world(self, id),
+                )
             })
-            .map(|id| entry_copies::blueprint_in_world(self, id))
             .collect::<Vec<_>>();
         if spec.optional || candidates.is_empty() {
             let mut declined = moves.clone();
@@ -3134,15 +3135,16 @@ impl FundingState<'_> {
                 return true;
             }
         }
-        for recipe in candidates {
-            // Repeated copy choices with an identical flat blueprint have the
-            // same eventual entry; avoid cycling only inside existential funding search.
-            if seen.contains(&(index, recipe)) {
+        for choice in candidates {
+            // The deferred exile does not resolve inside funding. Repeated choices
+            // with an identical blueprint can share this existential search branch.
+            let key = (index, choice.0);
+            if seen.contains(&key) {
                 continue;
             }
             let mut branch = moves.clone();
-            entry_copies::apply_blueprint(&mut branch[index], recipe);
-            seen.push((index, recipe));
+            entry_copies::apply_choice(&mut branch[index], choice);
+            seen.push(key);
             if self.visit_entry_copy_choices(branch, seen, emit) {
                 return true;
             }
