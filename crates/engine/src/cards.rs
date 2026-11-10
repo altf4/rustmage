@@ -8042,6 +8042,9 @@ impl Card {
     pub(crate) fn bargain_reduction(self) -> u32 {
         generated::bargain_reduction(self).unwrap_or(0)
     }
+    pub(crate) fn bargain_targets(self) -> Option<TargetPlan> {
+        authored::rules(self).and_then(|rules| rules.extras.bargain_targets)
+    }
     /// Fixed optional kicker surcharge for this immutable whole-card definition.
     pub(crate) fn blight(self) -> Option<BlightSpec> {
         authored::rules(self).and_then(|r| r.extras.blight)

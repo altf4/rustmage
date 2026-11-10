@@ -583,7 +583,8 @@ impl Game {
         };
         let teamwork = definition.teamwork().is_some();
         let kicker_changes_targets = definition.kicked_targets().is_some();
-        if !teamwork && !kicker_changes_targets {
+        let bargain_changes_targets = definition.bargain_targets().is_some();
+        if !teamwork && !kicker_changes_targets && !bargain_changes_targets {
             let targets_available = match definition.effect() {
                 Effect::Modal(modes) => modes.iter().any(|mode| available(mode.targets)),
                 _ => available(self.target_spec(&item)),
@@ -704,6 +705,9 @@ impl Game {
                 || self.teamwork_intent_fundable(&a, true);
         }
         let fundable = |choice: &Announcement| {
+            if bargain_changes_targets {
+                return self.visit_bargain_choices(choice, |_| true);
+            }
             if kicker_changes_targets {
                 return self.kicker_choice_fundable(choice, false)
                     || self.kicker_choice_fundable(choice, true);
@@ -714,7 +718,7 @@ impl Game {
         };
         if let Some(modes) = a.item.modes() {
             return modes.iter().enumerate().any(|(index, mode)| {
-                if !kicker_changes_targets && !available(mode.targets) {
+                if !kicker_changes_targets && !bargain_changes_targets && !available(mode.targets) {
                     return false;
                 }
                 let mut choice = a.clone();

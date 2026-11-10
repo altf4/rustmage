@@ -2861,7 +2861,11 @@ impl Game {
                 || source
                     .card
                     .kicked_targets()
-                    .is_some_and(|plan| { self.item_targets_available(&item, plan) })
+                    .is_some_and(|plan| self.item_targets_available(&item, plan))
+                || source
+                    .card
+                    .bargain_targets()
+                    .is_some_and(|plan| self.item_targets_available(&item, plan))
         );
         let needs_mode = item.modes().is_some() && item.mode.is_none();
         let mut announcement =

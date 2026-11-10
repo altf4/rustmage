@@ -2372,6 +2372,15 @@ impl SpellView {
                     } else {
                         plan
                     };
+                    let plan = if self.cast.is_some_and(|c| c.bargain == Some(true)) {
+                        self.source
+                            .expect("spell has a source")
+                            .card
+                            .bargain_targets()
+                            .unwrap_or(plan)
+                    } else {
+                        plan
+                    };
                     (plan, program)
                 }),
             StackKind::CasualtyCopy | StackKind::ConspireCopy => Some((
@@ -6299,6 +6308,7 @@ impl Game {
                     }
                     if obj.card.behold_cast().is_some()
                         || obj.card.kicked_targets().is_some()
+                        || obj.card.bargain_targets().is_some()
                         || self.library_counter_choice_available(actor, card)
                     {
                         let method = if flashback {
@@ -6822,20 +6832,9 @@ impl Game {
                 return self.visit_casualty_payments(&mut emit);
             }
             Pending::Bargain { .. } => {
-                let a = s.announcing.as_ref().unwrap();
-                if self.bargain_choice_fundable(a, None)
-                    && emit(Action::ChooseBargain { sacrifice: None })
-                {
-                    return true;
-                }
-                for id in 0..s.objects.len() {
-                    let sacrifice = Some(self.object_ref(id as CardId));
-                    if self.bargain_choice_fundable(a, sacrifice)
-                        && emit(Action::ChooseBargain { sacrifice })
-                    {
-                        return true;
-                    }
-                }
+                return self.visit_bargain_choices(s.announcing.as_ref().unwrap(), |sacrifice| {
+                    emit(Action::ChooseBargain { sacrifice })
+                });
             }
             Pending::CastBehold { .. } => {
                 let a = s.announcing.as_ref().unwrap();
@@ -8402,12 +8401,7 @@ impl Game {
             Action::PayConspire { objects } => self.pay_conspire_clause(objects),
             Action::ChooseCastCost { clause } => self.choose_cast_cost(clause),
             Action::PayCasualty { object } => self.pay_casualty_clause(object),
-            Action::ChooseBargain { sacrifice } => {
-                let a = self.state.announcing.as_mut().unwrap();
-                a.item.cast.as_mut().unwrap().bargain = Some(sacrifice.is_some());
-                a.additional = sacrifice;
-                self.continue_announcement_choices(false);
-            }
+            Action::ChooseBargain { sacrifice } => self.choose_bargain(sacrifice),
             Action::ChooseMobilizeDefender { defender } => self.choose_mobilize_defender(defender),
             Action::ChooseBlight { pay } => self.choose_blight(pay),
             Action::PayBlight { object } => self.pay_blight(object),

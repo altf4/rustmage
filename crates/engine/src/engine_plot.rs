@@ -145,7 +145,10 @@ impl Game {
     }
 
     fn plotted_front_cast_fundable(&self, actor: Player, card: CardId, definition: Card) -> bool {
-        if definition.teamwork().is_some() || definition.kicked_targets().is_some() {
+        if definition.teamwork().is_some()
+            || definition.kicked_targets().is_some()
+            || definition.bargain_targets().is_some()
+        {
             return self.permitted_cast_available(
                 actor,
                 card,

@@ -454,6 +454,8 @@ pub struct CardExtras {
     /// Legacy reminder-text activation replaced by rules-derived basic-land mana.
     pub legacy_subtype_mana_activation: Option<u16>,
     pub kicked_targets: Option<TargetPlan>,
+    /// The spell's complete target plan when its optional Bargain cost was paid.
+    pub bargain_targets: Option<TargetPlan>,
     pub cast_entry_counters: &'static [(CounterKind, u64)],
     pub graveyard_cast_entry_counters: &'static [(CounterKind, u64)],
     pub hand_cast_entry_counters: &'static [(CounterKind, u64)],
@@ -589,6 +591,7 @@ impl CardExtras {
         additional_mana_alternative: None,
         legacy_subtype_mana_activation: None,
         kicked_targets: None,
+        bargain_targets: None,
         entry_counter_rules: &[],
         starting_loyalty: 0,
         exhaust_mask: 0,
