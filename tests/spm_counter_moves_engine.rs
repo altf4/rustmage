@@ -274,7 +274,9 @@ fn the_active_player_owns_the_optional_cost_and_gets_mana_for_every_counter() {
     for active in [Player::P0, Player::P1] {
         let (mut game, source) = crowd_scenario(active);
         put(&mut game, Player::P0, "Doubling Season", Zone::Battlefield);
-        put(&mut game, Player::P0, "Phyrexian Arena", Zone::Battlefield);
+        if active == Player::P1 {
+            put(&mut game, Player::P0, "Phyrexian Arena", Zone::Battlefield);
+        }
         pass_pair(&mut game);
         assert_eq!(game.state.step, Step::Main1);
         assert_eq!(game.state.stack.last().unwrap().controller, Player::P0);
@@ -296,8 +298,14 @@ fn the_active_player_owns_the_optional_cost_and_gets_mana_for_every_counter() {
         game.restore(&saved).unwrap();
         act(&mut game, accept);
         settle(&mut game);
-        assert_eq!(counter_count(&game, source), 3);
-        assert_eq!(game.state.players[active.index()].mana, [0, 0, 0, 0, 0, 8]);
+        // Doubling Season cannot affect the original cost. If another effect
+        // changes it first, that replacement enables Doubling Season (CR 614.16).
+        let expected_plus_one = if active == Player::P0 { 2 } else { 5 };
+        assert_eq!(counter_count(&game, source), expected_plus_one);
+        assert_eq!(
+            game.state.players[active.index()].mana,
+            [0, 0, 0, 0, 0, (expected_plus_one + 5).try_into().unwrap()]
+        );
         assert_eq!(game.state.players[active.other().index()].mana, [0; 6]);
         assert!(
             game.observe(active)

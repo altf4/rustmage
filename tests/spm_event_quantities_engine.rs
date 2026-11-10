@@ -147,20 +147,14 @@ fn solo_attacker_uses_all_live_counters_or_its_exact_departure_total() {
     act(&mut game, Action::Attack { card: attacker });
     act(&mut game, Action::FinishAttackers);
 
-    choose(
-        &mut game,
-        |action| matches!(action, Action::ActivateMana { card, .. } if *card == forest),
-    );
+    act(&mut game, Action::TapMana { card: forest });
     let counter = put(&mut game, player, "Snakeskin Veil", Zone::Hand);
     cast(&mut game, counter, Some(Target::Card(attacker)));
     pass_pair(&mut game);
     assert_eq!(game.counter_count(attacker, CounterKind::PlusOne), 1);
 
     let mut departed = game.clone();
-    choose(
-        &mut departed,
-        |action| matches!(action, Action::ActivateMana { card, .. } if *card == island),
-    );
+    act(&mut departed, Action::TapMana { card: island });
     let bounce = put(&mut departed, player, "Unsummon", Zone::Hand);
     cast(&mut departed, bounce, Some(Target::Card(attacker)));
     pass_pair(&mut departed);
