@@ -114,6 +114,9 @@ fn decks(workload: &Workload) -> BTreeMap<&str, (&str, Vec<Card>)> {
                 card.is_standard_legal() && card.is_supported(),
                 "gated {name}"
             );
+            if let Some(back) = card.back_face() {
+                assert!(back.is_supported(), "gated back face of {name}");
+            }
             card
         })
         .collect();
@@ -176,7 +179,21 @@ fn spm_complete_games_exercise_actual_rules_and_replay() {
             while game.outcome().is_none() && trace.len() < 4096 {
                 let actor = game.actor().unwrap();
                 let observation = game.observe(actor);
+                for object in &observation.objects {
+                    if object.zone != Zone::Battlefield {
+                        continue;
+                    }
+                    if object.modified {
+                        mechanics.insert("modified creature");
+                    }
+                    if object.face.as_ref().is_some_and(|face| face.transforms > 0) {
+                        mechanics.insert("transform");
+                    }
+                }
                 for item in &observation.stack {
+                    if item.kind == StackKind::Spell && item.is_copy {
+                        mechanics.insert("spell copy");
+                    }
                     let Some(cast) = item.cast.filter(|_| !item.is_copy) else {
                         continue;
                     };
@@ -237,6 +254,9 @@ fn spm_complete_games_exercise_actual_rules_and_replay() {
                     }
                     Action::ChooseConvoker { .. } => {
                         mechanics.insert("convoke contribution");
+                    }
+                    Action::FinishCrew => {
+                        mechanics.insert("crew");
                     }
                     _ => {}
                 }
@@ -299,8 +319,19 @@ fn spm_complete_games_exercise_actual_rules_and_replay() {
         }
     }
     assert_eq!(colors & 31, 31, "all five colors must be cast");
-    println!(
-        "{completed} natural Standard games and {decisions} decisions verified in {:.3}s with {all_mechanics:?}",
-        started.elapsed().as_secs_f64(),
-    );
+    let seconds = started.elapsed().as_secs_f64();
+    let summary = serde_json::json!({
+        "catalogue": CATALOGUE_VERSION,
+        "completed_games": completed,
+        "decisions": decisions,
+        "spell_colors": colors,
+        "observed_mechanics": all_mechanics,
+        "verification_seconds": seconds,
+        "scope": "Natural set-only Standard games with deterministic replay, owned branches, and evidence writes",
+    });
+    std::fs::write(
+        evidence.join("summary.json"),
+        serde_json::to_vec_pretty(&summary).unwrap(),
+    )
+    .unwrap();
 }
