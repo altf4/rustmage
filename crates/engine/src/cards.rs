@@ -3867,6 +3867,8 @@ pub enum Instruction {
     GrantPermanentSelfAbility(crate::engine::SelfGrantedAbilityKind),
     /// Grant the exact source a triggered template until it changes zones.
     GrantSourcePermanentTrigger(u16),
+    /// Give the exact legal targets a triggered template until they change zones.
+    GrantTargetPermanentTrigger(u16),
     /// Grant a triggered ability to this exact source until cleanup.
     GrantSourceTriggerUntilEndOfTurn(u16),
     /// Grant keywords only to targets cast for their warp cost.

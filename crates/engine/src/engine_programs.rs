@@ -9933,6 +9933,16 @@ impl Game {
                         self.grant_source_permanent_trigger(&item, ability, timestamp);
                     }
                 }
+                Instruction::GrantTargetPermanentTrigger(ability) => {
+                    let recipients = self.keyword_subjects(&item, Subject::Targets);
+                    if !recipients.is_empty() {
+                        let timestamp = self.next_role_timestamp();
+                        for recipient in recipients {
+                            let object = self.object_ref(recipient);
+                            self.grant_permanent_triggers(&item, object, &[ability], timestamp);
+                        }
+                    }
+                }
                 Instruction::GrantPermanentSelfAbility(kind) => {
                     self.grant_permanent_self_ability(&item, kind)
                 }
