@@ -724,6 +724,7 @@ fn rowdy_research_uses_distinct_declared_attackers_after_a_creature_leaves_and_d
     let first = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
     let second = put(&mut game, opponent, "Hill Giant", Zone::Battlefield);
     let bounce = put(&mut game, player, "Unsummon", Zone::Hand);
+    let island = put(&mut game, player, "Island", Zone::Battlefield);
     let research = put(&mut game, player, "Rowdy Research", Zone::Hand);
     let cards = [0; 3].map(|_| put(&mut game, player, "Plains", Zone::Library));
     reach_attackers(&mut game);
@@ -731,6 +732,7 @@ fn rowdy_research_uses_distinct_declared_attackers_after_a_creature_leaves_and_d
     act(&mut game, Action::Attack { card: second });
     act(&mut game, Action::FinishAttackers);
     act(&mut game, Action::Pass);
+    act(&mut game, Action::TapMana { card: island });
     cast(&mut game, bounce, Some(Target::Card(second)));
     settle(&mut game);
     assert_eq!(game.object_view(second).zone, Zone::Hand);
@@ -759,6 +761,7 @@ fn ruby_haste_supports_two_mana_choices_or_an_attack_with_trigger_time_power() {
     let ruby = put(&mut game, player, "Ruby, Daring Tracker", Zone::Hand);
     let strong = put(&mut game, player, "Shivan Dragon", Zone::Battlefield);
     let bounce = put(&mut game, player, "Unsummon", Zone::Hand);
+    let island = put(&mut game, player, "Island", Zone::Battlefield);
     cast(&mut game, ruby, None);
     settle(&mut game);
     assert!(game.object_view(ruby).keywords.contains(Keywords::HASTE));
@@ -790,6 +793,7 @@ fn ruby_haste_supports_two_mana_choices_or_an_attack_with_trigger_time_power() {
 
     reach_attackers(&mut game);
     attack(&mut game, ruby);
+    act(&mut game, Action::TapMana { card: island });
     cast(&mut game, bounce, Some(Target::Card(strong)));
     settle(&mut game);
     assert_eq!(stats(&game, ruby), (3, 4));
