@@ -18,7 +18,8 @@ crate; integration tests link those libraries. Users still depend only on
 Cache reuse across these packages requires the workspace split. Keep card
 behavior and catalogue/name tables in their own packages.
 
-Inspect main, active branches, issues and open PRs before starting a set. Read the
+Before starting a set, pull the latest `main` from the remote and base the set
+branch on that revision. Inspect active branches, issues and open PRs. Read the
 whole selected set's Oracle/XMage evidence before beginning card implementation.
 Map every printed obligation to existing engine support or a concrete engine
 change: typed instructions, costs, targets, modes, keywords, triggers, replacements,
@@ -117,13 +118,15 @@ that its own definition wires the printed behavior correctly. Exercise legality,
 privacy, transactional failure and owned raw/index branching/restore where affected;
 do not repeat every shared contract at every action of every card.
 
-Reuse compiler outputs through full acceptance. The validator uses
-`CARGO_TARGET_DIR` or a stable worktree cache by default; pass `--target-dir` to
-share the focused authoring target. Every run still gets separate reports and
-immutable library copies. On older checkouts, inspect target/cleanup behavior
-and fix forced fresh targets before routine set work. Do not run `cargo clean`
-between card batches. `--fresh` requires a concrete investigation or explicit
-clean-build requirement, not a progress checkpoint.
+Run Rust builds only when needed for a focused investigation, rules validation
+or a required acceptance check. Reuse warm compiler outputs through full
+acceptance. The validator uses `CARGO_TARGET_DIR` or a stable worktree cache by
+default. Pass `--target-dir` to share the focused authoring target. Every run
+still gets separate reports and immutable library copies. On older checkouts,
+inspect target and cleanup behavior and fix forced fresh targets before routine
+set work. Do not run `cargo clean` between card batches. Build cold only when the
+required work cannot reuse a compatible cache. Reserve `--fresh` for checks
+that require a clean target.
 
 Choose validation by changed behavior and integration state, not card count:
 
