@@ -5401,7 +5401,7 @@ impl Game {
                 }
                 Instruction::BottomDepartedSourceAndReturnLinkedExile => {
                     if self.put_departed_source_on_library_bottom(&item) {
-                        self.return_linked_exile(&item);
+                        self.return_linked_exile(&item, Zone::Hand);
                     }
                 }
                 Instruction::ReturnEventCardToBattlefieldTapped
