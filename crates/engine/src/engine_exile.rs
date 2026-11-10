@@ -1015,6 +1015,8 @@ impl Game {
                     event.before.zone,
                     Zone::Battlefield | Zone::Graveyard | Zone::Stack | Zone::Exile
                 )
+                && (event.before.zone != Zone::Exile
+                    || !self.exiled_face_down(event.before.reference))
                 && event.was_card
                 && self.object_ref(event.after.card) == event.after
                 && self.state.objects[event.after.card as usize].zone == Zone::Hand

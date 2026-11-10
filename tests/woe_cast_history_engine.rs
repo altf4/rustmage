@@ -15,14 +15,14 @@ const SHRINK: CardRules = CardRules {
         TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
         &[
             Instruction::GrowScaled {
-                subject: Subject::Target,
+                subject: Subject::Targets,
                 amount: AmountValue::ChosenX,
                 power: -1,
                 toughness: -1,
             },
             Instruction::IfCastWithControlledSubtype { skip: 1 },
             Instruction::Grow {
-                subject: Subject::Target,
+                subject: Subject::Targets,
                 power: -3,
                 toughness: -3,
             },
