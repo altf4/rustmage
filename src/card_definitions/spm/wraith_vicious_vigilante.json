@@ -3,10 +3,25 @@
   "catalogue_id": 5118,
   "oracle_id": "38684c31-e8c6-4825-8740-1a3d34b58b39",
   "facts_sha256": "6b47b5a83c537f0e0578466ed03f772d572109082169c3c53f6d558def4815a1",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "464c2750561df1d1cd12ac2b66d4d3581884239f2f3f816f9024ec86a9caa716"
   },
-  "physical_metadata_sha256": "5310b674dc66359e5abbf9d7d9dc83d1fee08e7a0dca1d0e918b34ef9bdd7666"
+  "physical_metadata_sha256": "5310b674dc66359e5abbf9d7d9dc83d1fee08e7a0dca1d0e918b34ef9bdd7666",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WraithViciousVigilante.java",
+  "java_sha256": "6fc44bcfc214b54d21201c3ddff0db39b49ac58c7d0b802c6723734ec5f65c2f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CantBeBlockedSourceAbility.java",
+      "sha256": "db5a7fc24b93fadd2bb8e9fd2e03c5ac39dc413d3e35d1a532fcc53aa08fadcb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DoubleStrikeAbility.java",
+      "sha256": "dabf9a6900a6fb32bb83f222d00b3dfb0b11705fe9029838c50f8500a23afd27"
+    }
+  ]
 }

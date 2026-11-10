@@ -3,10 +3,30 @@
   "catalogue_id": 5025,
   "oracle_id": "33d556c5-1bb4-49bb-88c2-627311eb8c9b",
   "facts_sha256": "51853d258240f800b477dc00127f7169f14e07eb6af3986e0fb3d04c424365d3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fa538560d6f4a2e99fb91015bb131e9c2c6ebcc5e1dba511761e0eca943ff3ca"
   },
-  "physical_metadata_sha256": "abe1c376a847dee7d905c783c869c64ff72f1d4a590b356e7202f8be9ebc132e"
+  "physical_metadata_sha256": "abe1c376a847dee7d905c783c869c64ff72f1d4a590b356e7202f8be9ebc132e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WebOfLifeAndDestiny.java",
+  "java_sha256": "111efd31872e69f8d370c11d80fe8c6985731715f8dbe565e31a287f7423f68a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ConvokeAbility.java",
+      "sha256": "207ace9818509f0db681504b423fb592693ab197c0e52decbefac3550c73abdf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfCombatTriggeredAbility.java",
+      "sha256": "c8f16a3b46db04f428d1bebc9c1ee8171d14dc9879ff0f6f825a2b49909f2f41"
+    }
+  ]
 }
