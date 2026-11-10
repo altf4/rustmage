@@ -1471,19 +1471,10 @@ fn gwenom_grants_private_live_library_plays_and_the_spell_uses_life() {
     game.state.objects[source as usize].summoning_sick = false;
     start_attack(&mut game, &[source]);
     pass_pair(&mut game);
-    assert!(
-        game.observe(P)
-            .objects
-            .iter()
-            .any(|object| object.id == shock)
-    );
-    assert!(
-        !game
-            .observe(O)
-            .objects
-            .iter()
-            .any(|object| object.id == shock)
-    );
+    let visible_top =
+        |viewer| game.observe(viewer).known_library_top[P.index()].map(|top| top.object);
+    assert_eq!(visible_top(P), Some(game.object_ref(shock)));
+    assert_eq!(visible_top(O), None);
     game.move_object(source, Zone::Exile);
     game.state.players[P.index()].mana = [0; 6];
     act(&mut game, announce);
