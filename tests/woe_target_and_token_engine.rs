@@ -63,8 +63,28 @@ const NEED_AURA: CardRules = CardRules {
     ..CardRules::EMPTY
 };
 
+const DESTROY_AND_DRAW: &[Instruction] = &[
+    Instruction::DestroyThenRememberControlledOrToken,
+    Instruction::DrawScaled(PlayerSet::Controller, AmountValue::MovedCount),
+];
 const DESTROY: CardRules = CardRules {
-    effect: Effect::Spell(CREATURE, &[Instruction::DestroyThenDrawIfControlledOrToken]),
+    effect: Effect::Spell(CREATURE, DESTROY_AND_DRAW),
+    ..CardRules::EMPTY
+};
+const DESTROY_ENCHANTMENT: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::Single(TargetSpec::one(TargetRule::Object {
+            zone: TargetZone::Battlefield,
+            kinds: 32,
+            relation: -1,
+            other: false,
+            nonland: false,
+            tapped: false,
+            min_mana: 0,
+            max_mana: u32::MAX,
+        })),
+        DESTROY_AND_DRAW,
+    ),
     ..CardRules::EMPTY
 };
 
@@ -192,4 +212,87 @@ fn heterogeneous_tokens_share_one_replacement_event() {
         .collect();
     assert_eq!(tokens.len(), 3, "one Human, one Food, and one Frog");
     assert!(tokens.contains(&HUMAN) && tokens.contains(&FOOD));
+}
+
+#[test]
+fn a_linked_return_finishes_before_the_qualifying_destruction_draw() {
+    let break_the_spell = Card::from_name("Break the Spell").unwrap();
+    let _rules = fixture_rules::activate(&[(break_the_spell, &DESTROY_ENCHANTMENT)]);
+    for player in [Player::P0, Player::P1] {
+        for light_controller in [player, player.other()] {
+            let return_controller = light_controller.other();
+            let mut game = scenario(light_controller);
+            let light = put(&mut game, light_controller, "Banishing Light", Zone::Hand);
+            let automaton = put(
+                &mut game,
+                return_controller,
+                "Adaptive Automaton",
+                Zone::Battlefield,
+            );
+            let spell = spawn(&mut game, player, break_the_spell, Zone::Hand);
+            announce(&mut game, light, &[]);
+            act(&mut game, Action::Pass);
+            act(&mut game, Action::Pass);
+            act(
+                &mut game,
+                Action::ChooseTarget {
+                    target: Target::Card(automaton),
+                },
+            );
+            settle(&mut game);
+            assert_eq!(game.object_view(automaton).zone, Zone::Exile);
+            let exiled = game.object_ref(automaton);
+            let library_size = game.state.players[player.index()].library.len();
+
+            if light_controller != player {
+                act(&mut game, Action::Pass);
+            }
+            announce(&mut game, spell, &[Target::Card(light)]);
+            act(&mut game, Action::Pass);
+            act(&mut game, Action::Pass);
+            assert_eq!(game.actor(), Some(return_controller));
+            assert_eq!(game.object_view(light).zone, Zone::Graveyard);
+            assert_eq!(game.object_view(spell).zone, Zone::Stack);
+            assert_eq!(game.object_view(automaton).zone, Zone::Exile);
+            assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 0);
+            assert_eq!(
+                game.state.players[player.index()].library.len(),
+                library_size
+            );
+
+            let entry = Action::ChooseEntryValue {
+                value: EntryChoiceValue::CreatureType(CreatureType::from_name("Human").unwrap()),
+            };
+            let revision = game.revision();
+            let index = game
+                .legal_actions()
+                .iter()
+                .position(|a| *a == entry)
+                .unwrap();
+            let checkpoint = game.snapshot();
+            let mut indexed = game.clone();
+            act(&mut game, entry.clone());
+            indexed
+                .apply_index(return_controller, revision, index)
+                .unwrap();
+            assert_eq!(game.snapshot(), indexed.snapshot());
+            indexed.restore(&checkpoint).unwrap();
+            act(&mut indexed, entry);
+            assert_eq!(game.snapshot(), indexed.snapshot());
+
+            let draws = u64::from(light_controller == player);
+            assert_eq!(game.object_view(automaton).zone, Zone::Battlefield);
+            assert_eq!(game.object_view(automaton).controller, return_controller);
+            assert_ne!(game.object_ref(automaton), exiled);
+            assert_eq!(game.object_view(spell).zone, Zone::Graveyard);
+            assert_eq!(
+                game.state.players[player.index()].cards_drawn_this_turn,
+                draws
+            );
+            assert_eq!(
+                game.state.players[player.index()].library.len(),
+                library_size - draws as usize
+            );
+        }
+    }
 }

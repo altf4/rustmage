@@ -2901,8 +2901,8 @@ pub enum Instruction {
     },
     /// Compare current target mana values at this instruction, after prior effects.
     DestroyTargetsAtMostManaValue(AmountValue),
-    /// Draw once if any actual destruction was a token or a permanent you controlled.
-    DestroyThenDrawIfControlledOrToken,
+    /// Record 1 if this destroys a token or a permanent you controlled, otherwise 0.
+    DestroyThenRememberControlledOrToken,
     /// Reward once if an actual destruction included a creature controlled by this packet.
     DestroyTargetsThenSourceCountersIfOwnCreature {
         kind: CounterKind,

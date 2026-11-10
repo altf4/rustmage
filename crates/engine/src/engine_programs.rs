@@ -11515,15 +11515,14 @@ impl Game {
                     self.state.resolving.as_mut().unwrap().moved_count = Some(count as u64);
                     self.finish_zone_events(&events, &[]);
                 }
-                Instruction::DestroyThenDrawIfControlledOrToken => {
+                Instruction::DestroyThenRememberControlledOrToken => {
                     let events = self.destroy_targets_outcome(&item.targets);
-                    if events.iter().any(|event| {
+                    let qualifies = events.iter().any(|event| {
                         event.moved
                             && (event.before.controller == item.controller
                                 || event.before.is_token())
-                    }) {
-                        self.draw_many(item.controller, 1);
-                    }
+                    });
+                    self.state.resolving.as_mut().unwrap().moved_count = Some(u64::from(qualifies));
                 }
                 Instruction::Exile
                 | Instruction::Destroy
