@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "881ec71b9571d7dd6ce1f821120aaa890918f8d8bffaccb3b6e7b8a2159791a8",
+  "catalogue_version": "b816150a571a7953f02549184f547fbe659a48c62c573d93a92a078953310197",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4105,
-  "implemented_total": 4117,
+  "implemented_standard_cards": 4106,
+  "implemented_total": 4118,
   "token_definitions": 175,
   "emblem_definitions": 12,
   "adventure_definitions": 73,
@@ -182,8 +182,8 @@
     },
     "woe": {
       "total": 258,
-      "complete": 238,
-      "gated": 20
+      "complete": 239,
+      "gated": 19
     },
     "znr": {
       "total": 1,
@@ -28986,8 +28986,8 @@
     {
       "name": "Rowan's Grim Search",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/rowan_s_grim_search.rs",
       "set": "woe"
     },
