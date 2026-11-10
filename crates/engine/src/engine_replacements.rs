@@ -3049,7 +3049,7 @@ impl Game {
                                 if let Some(entry) = self.state.entry_batch.as_mut() {
                                     assert!(entry.replacement_resume.is_none());
                                     entry.replacement_resume = Some(state);
-                                    return self.advance_entries();
+                                    return self.advance_entries_with_resume(resume_program);
                                 }
                                 // A choice-free batch can commit synchronously;
                                 // the local replacement queue still owns resume.
@@ -3253,7 +3253,7 @@ impl Game {
                                 if let Some(batch) = self.state.entry_batch.as_mut() {
                                     assert!(batch.replacement_resume.is_none());
                                     batch.replacement_resume = Some(state);
-                                    return self.advance_entries();
+                                    return self.advance_entries_with_resume(resume_program);
                                 }
                             }
                         }
@@ -3583,7 +3583,7 @@ impl Game {
                                 if let Some(entry) = self.state.entry_batch.as_mut() {
                                     assert!(entry.replacement_resume.is_none());
                                     entry.replacement_resume = Some(state);
-                                    return self.advance_entries();
+                                    return self.advance_entries_with_resume(resume_program);
                                 }
 
                                 continue;
@@ -3604,7 +3604,8 @@ impl Game {
                                     entry.replacement_resume = Some(state);
                                     // Let the existing entry driver iterate the next
                                     // land copy without recursing through this call.
-                                    return !repeats && self.advance_entries();
+                                    return !repeats
+                                        && self.advance_entries_with_resume(resume_program);
                                 }
                                 self.complete_created_tokens(
                                     &mut state,
@@ -3624,7 +3625,7 @@ impl Game {
                                 if let Some(entry) = self.state.entry_batch.as_mut() {
                                     assert!(entry.replacement_resume.is_none());
                                     entry.replacement_resume = Some(state);
-                                    return self.advance_entries();
+                                    return self.advance_entries_with_resume(resume_program);
                                 }
                             } else {
                                 let capture = matches!(
@@ -3680,7 +3681,7 @@ impl Game {
                                     });
                                     assert!(entry.replacement_resume.is_none());
                                     entry.replacement_resume = Some(state);
-                                    return self.advance_entries();
+                                    return self.advance_entries_with_resume(resume_program);
                                 }
                                 self.complete_created_tokens(
                                     &mut state,

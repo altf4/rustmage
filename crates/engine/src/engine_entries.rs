@@ -1643,9 +1643,13 @@ impl Game {
             self.stage_counter_placements(placements, replacements::ResumeMode::Program);
         }
     }
-    /// Settle transactions until an actual player choice blocks. Call at the outer
-    /// action boundary, after the initiating cost/announcement has finished its bookkeeping.
+    /// Settle transactions at the action boundary until a player choice blocks.
     pub(super) fn advance_entries(&mut self) -> bool {
+        self.advance_entries_with_resume(true)
+    }
+
+    /// A synchronous handoff retains its caller's ownership of the program.
+    pub(super) fn advance_entries_with_resume(&mut self, resume_program: bool) -> bool {
         loop {
             if self.state.outcome.is_some() {
                 self.state.entry_batch = None;
@@ -1829,7 +1833,7 @@ impl Game {
                             .expect("atomic cost failure continuation")
                             .pc = pc;
                     }
-                    if self.state.resolving.is_some() {
+                    if resume_program && self.state.resolving.is_some() {
                         self.run_program();
                     }
                     return false;
@@ -1857,10 +1861,10 @@ impl Game {
             }
             if let Some(outer) = replacement_resume {
                 self.state.replacements = Some(outer);
-                if self.advance_replacements(true) {
+                if self.advance_replacements(resume_program) {
                     return true;
                 }
-            } else if self.state.resolving.is_some() {
+            } else if resume_program && self.state.resolving.is_some() {
                 self.run_program();
             }
             if self.state.announcing.as_ref().is_some_and(|a| {
