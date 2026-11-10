@@ -3,10 +3,39 @@
   "catalogue_id": 4602,
   "oracle_id": "3c307122-bc18-41f1-87d5-ae6b3ca9b8b9",
   "facts_sha256": "5e07ed3014d62be798712a28e924323dfa27c0ffa584296ceaa7d1e6ed91b82a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9da94fd1c69ec774c6776d7b367b6e584c99e44e620a762da878568245ad4e74"
   },
-  "physical_metadata_sha256": "fe7c846dc400675746b180af7c2ef35ed6504c14565290935e8757653361d832"
+  "physical_metadata_sha256": "fe7c846dc400675746b180af7c2ef35ed6504c14565290935e8757653361d832",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/PayLifeCost.java",
+      "sha256": "c8f22864cdcf8fec2928294b6d19e9cc92ca303cdeee82d00f422c9ebe8350c4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/AsThoughEffectImpl.java",
+      "sha256": "10ed5ff691248a18e61974fc1bd00c74d18518e42aa4fcdf767e3fb4990e0997"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WarpAbility.java",
+      "sha256": "9ac044ebe7da1f678c965e9a3f5fd329efaf50d946e8c2b9cf622f750d9d4499"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TimelineCuller.java",
+  "java_sha256": "dfc726bbd1d817357696b2a814396010242a4ce721af55e9a0a892b95e0e9fc1",
+  "rules_tests": "tests/eoe_cards_067_132_death.rs",
+  "rules_notes": [
+    "CR 702.185 and 601.2h. The alternate cost pays both black mana and two life from hand or graveyard. The later exact exile permission casts normally."
+  ]
 }

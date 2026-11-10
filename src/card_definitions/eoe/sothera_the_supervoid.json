@@ -3,10 +3,54 @@
   "catalogue_id": 3971,
   "oracle_id": "760ede92-a826-4144-9de8-84ba9b8743d1",
   "facts_sha256": "7771962fa7e33f2c50e4d0451737bfe3368dfd53cde755518f00fe7e067c550d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "bf458e74f3c4a785d3bacbfb830c8e3fa0d6268d08d251893d6143cb430b7f57"
   },
-  "physical_metadata_sha256": "2ab6bd8e6208dff12013b781a09e3f502e93cf8c6503ea80c9edea3da98d2fb3"
+  "physical_metadata_sha256": "2ab6bd8e6208dff12013b781a09e3f502e93cf8c6503ea80c9edea3da98d2fb3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesCreatureTriggeredAbility.java",
+      "sha256": "62d53cb6be7c685032f9bf3a509c9217177b4ee44ccd9a294be1d8dca7d77b81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeSourceEffect.java",
+      "sha256": "67db08baf9a6cc6c7fad953388bdd2adb74e4c9af4c5e2f5483c8cc546bbb098"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/counters/Counters.java",
+      "sha256": "b9e042f9af94a36bcfa431de6c94188a5854266a919f5d2ea26d805cecd0e42b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInExile.java",
+      "sha256": "6f780da5ddeae8d933e0ae6900c6b38ff1e466089310d72c487ac3b6159f9b0c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SotheraTheSupervoid.java",
+  "java_sha256": "b91d715433eba75e2396cdc56a442257f3c94654983ec6b146e08cd41b7b55ea",
+  "rules_tests": "tests/eoe_cards_067_132_death.rs",
+  "rules_notes": [
+    "CR 603.4 and 607.2a. The end step checks whether either player has zero creatures at triggering and resolution. The return uses creature cards exiled by this exact source incarnation."
+  ]
 }

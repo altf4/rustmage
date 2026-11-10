@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cd4735b7ccd88d465c61d20ee2afb6068b73675f7e163a16421b99f6f3b590e3"
   },
-  "physical_metadata_sha256": "a807712fa77e9727d13c3100812b2b210f1450c79f48f51bea3fe67bec596bb1"
+  "physical_metadata_sha256": "a807712fa77e9727d13c3100812b2b210f1450c79f48f51bea3fe67bec596bb1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SeedshipAgrarian.java",
+  "java_sha256": "97371d2216015181dcd5b924a42662c67b691213ac4d5c6ca85a846b5e0418b4"
 }

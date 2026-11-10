@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d909f402702b4150b626aae4f07ab66668cf1b31defa47a3563e5b6ccc5e3f51"
   },
-  "physical_metadata_sha256": "073cf5b25abc0e82bf0559ee9c0c38294a76b3a2ed277b91b457d243fee92d02"
+  "physical_metadata_sha256": "073cf5b25abc0e82bf0559ee9c0c38294a76b3a2ed277b91b457d243fee92d02",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/IllvoiOperative.java",
+  "java_sha256": "28e9c1c0f1065bb7dd58a229e4d16b9579fbd1e1acc8e3a89aceaa6ffa0bdddd",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CastSecondSpellTriggeredAbility.java",
+      "sha256": "a4e91db65304a2f0a017d34eb680d683186071207b0002b036e94fcdc773ddce"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    }
+  ]
 }

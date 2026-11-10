@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "e13dac390fdc6f12fbde75d0cfca3ab3fc86aa23402d30387645a18b978f761a",
+  "catalogue_version": "4ab9fde5c018d1ab503af1ad5bf98090d2e2444a7149ce0c144d1bdab59a992d",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 3876,
-  "implemented_total": 3885,
+  "implemented_standard_cards": 3894,
+  "implemented_total": 3903,
   "token_definitions": 171,
   "emblem_definitions": 12,
   "adventure_definitions": 53,
@@ -55,8 +55,7 @@
     },
     "eoe": {
       "total": 259,
-      "complete": 241,
-      "gated": 18
+      "complete": 259
     },
     "fdn": {
       "total": 427,
@@ -7725,8 +7724,8 @@
     {
       "name": "Cut Propulsion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/cut_propulsion.rs",
       "set": "eoe"
     },
@@ -8277,8 +8276,8 @@
     {
       "name": "Debris Field Crusher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/debris_field_crusher.rs",
       "set": "eoe"
     },
@@ -8701,8 +8700,8 @@
     {
       "name": "Devastating Onslaught",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/devastating_onslaught.rs",
       "set": "eoe"
     },
@@ -10765,8 +10764,8 @@
     {
       "name": "Emissary Escort",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/emissary_escort.rs",
       "set": "eoe"
     },
@@ -17309,8 +17308,8 @@
     {
       "name": "Illvoi Infiltrator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/illvoi_infiltrator.rs",
       "set": "eoe"
     },
@@ -21781,8 +21780,8 @@
     {
       "name": "Mechan Shieldmate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/mechan_shieldmate.rs",
       "set": "eoe"
     },
@@ -22869,8 +22868,8 @@
     {
       "name": "Monoist Circuit-Feeder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/monoist_circuit_feeder.rs",
       "set": "eoe"
     },
@@ -27957,8 +27956,8 @@
     {
       "name": "Requiem Monolith",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/requiem_monolith.rs",
       "set": "eoe"
     },
@@ -30133,8 +30132,8 @@
     {
       "name": "Scrounge for Eternity",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/scrounge_for_eternity.rs",
       "set": "eoe"
     },
@@ -31965,8 +31964,8 @@
     {
       "name": "Sothera, the Supervoid",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/sothera_the_supervoid.rs",
       "set": "eoe"
     },
@@ -34445,16 +34444,16 @@
     {
       "name": "Susurian Dirgecraft",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/susurian_dirgecraft.rs",
       "set": "eoe"
     },
     {
       "name": "Susurian Voidborn",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/susurian_voidborn.rs",
       "set": "eoe"
     },
@@ -35181,8 +35180,8 @@
     {
       "name": "Temporal Intervention",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/temporal_intervention.rs",
       "set": "eoe"
     },
@@ -37013,8 +37012,8 @@
     {
       "name": "Timeline Culler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/timeline_culler.rs",
       "set": "eoe"
     },
@@ -37405,8 +37404,8 @@
     {
       "name": "Tragic Trajectory",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/tragic_trajectory.rs",
       "set": "eoe"
     },
@@ -39629,8 +39628,8 @@
     {
       "name": "Voidforged Titan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/voidforged_titan.rs",
       "set": "eoe"
     },
@@ -41229,8 +41228,8 @@
     {
       "name": "Xu-Ifit, Osteoharmonist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/xu_ifit_osteoharmonist.rs",
       "set": "eoe"
     },
@@ -41461,8 +41460,8 @@
     {
       "name": "Zero Point Ballad",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/zero_point_ballad.rs",
       "set": "eoe"
     },

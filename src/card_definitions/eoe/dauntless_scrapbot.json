@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d9d2a81e1f60fff942b5c1b848adf5bc0e3c5cd5a5ac78775987122e8662826d"
   },
-  "physical_metadata_sha256": "a4a8ba80eabdebd852e15f6b3d61ccda49262fe275954c6faf839d44f1742004"
+  "physical_metadata_sha256": "a4a8ba80eabdebd852e15f6b3d61ccda49262fe275954c6faf839d44f1742004",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DauntlessScrapbot.java",
+  "java_sha256": "47b2cb919d3d01b7dfa880ec9ffd0480ac07e8841b5cfbd3d0c61f91cfdfe306",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileGraveyardAllPlayersEffect.java",
+      "sha256": "1cb76306c21bfd1517a5ca5e612eb3455d2d26e339e25484470cb9c3d8c4ad8c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/LanderToken.java",
+      "sha256": "5d15f49c7eab3d0b31a7d46668bcea3a14faa50b2688996344c35a5243ba53d3"
+    }
+  ]
 }

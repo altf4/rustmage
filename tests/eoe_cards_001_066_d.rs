@@ -210,10 +210,11 @@ fn cloudsculpt_technician_gains_only_one_power_while_its_controller_has_an_artif
     let bow = put(&mut game, player, "Short Bow", Zone::Hand);
     let foreign = put(&mut game, player.other(), "Short Bow", Zone::Battlefield);
     assert_eq!(stats(&game, technician), (1, 4));
-    assert!(game
-        .object_view(technician)
-        .keywords
-        .contains(Keywords::FLYING));
+    assert!(
+        game.object_view(technician)
+            .keywords
+            .contains(Keywords::FLYING)
+    );
     cast(&mut game, bow, None);
     settle(&mut game);
     assert_eq!(stats(&game, technician), (2, 4));

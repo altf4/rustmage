@@ -3,10 +3,41 @@
   "catalogue_id": 4929,
   "oracle_id": "f7afe534-fbb0-4f8b-9e98-aa49d4005465",
   "facts_sha256": "ffc1c6ff2d8c84fcdb02c11049d98890c11b89224d8d2530af826702c9db297d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "79fc35c85efb4f909468b5bce5746962b2d0d24fc7f818fb367911b5994a9a85"
   },
-  "physical_metadata_sha256": "bb81c4a440c526d11ebdd726b44c5eda7c7684f453984dbf05a51a7bebf62ab6"
+  "physical_metadata_sha256": "bb81c4a440c526d11ebdd726b44c5eda7c7684f453984dbf05a51a7bebf62ab6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/VoidCondition.java",
+      "sha256": "d8121e9849e10e0ae98f15e879bf5dd82c452ae632b34a224eae623184bb680f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/VoidWatcher.java",
+      "sha256": "2499e3b479a40908c1d646715ed63a3e24c1a3204867d5628502e4a31af42702"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+      "sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VoidforgedTitan.java",
+  "java_sha256": "2d4326c765a65a32885e6b9fb64df84920bed0b1dff6412abc425c821d23f857",
+  "rules_tests": "tests/eoe_cards_067_132_final.rs"
 }

@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ccdcd4031ec454a986afbdbdeb3e0ce31335f2a7459dbfbaed0a4ffa01fd8487"
   },
-  "physical_metadata_sha256": "f71905178b507c184e4c184c0a0dced989f9602fce41c0b89d71b0871c7f8e7d"
+  "physical_metadata_sha256": "f71905178b507c184e4c184c0a0dced989f9602fce41c0b89d71b0871c7f8e7d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DefenderAbility.java",
+      "sha256": "ad5269c8613d7ef2e18e64fb3ea53099a4649870fae2cc0a54ad80a50ca0755e"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MonoistSentry.java",
+  "java_sha256": "8f82c4bac641acf0c7c9cd74902635fcbee9c7dda5a17e3dd50e4102aad1e1aa",
+  "rules_tests": "tests/eoe_cards_067_132_death.rs"
 }

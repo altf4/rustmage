@@ -258,10 +258,11 @@ fn astelli_reclaimer_targets_using_the_exact_normal_or_warp_payment() {
         trigger_target(&mut game, eligible);
         settle(&mut game);
         assert_eq!(game.object_view(eligible).zone, Zone::Battlefield);
-        assert!(game
-            .object_view(reclaimer)
-            .keywords
-            .contains(Keywords::FLYING));
+        assert!(
+            game.object_view(reclaimer)
+                .keywords
+                .contains(Keywords::FLYING)
+        );
     }
 }
 
@@ -285,10 +286,11 @@ fn auxiliary_boosters_attaches_to_one_created_robot_and_can_reequip() {
     assert_eq!(game.object_view(equipment).attached_to, Some(robots[0]));
     assert_eq!(stats(&game, robots[0].card), (3, 4));
     assert_eq!(stats(&game, robots[1].card), (2, 2));
-    assert!(game
-        .object_view(robots[0].card)
-        .keywords
-        .contains(Keywords::FLYING));
+    assert!(
+        game.object_view(robots[0].card)
+            .keywords
+            .contains(Keywords::FLYING)
+    );
 
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 3];
     activate(&mut game, equipment, 0, Some(bear));
@@ -301,10 +303,12 @@ fn auxiliary_boosters_attaches_to_one_created_robot_and_can_reequip() {
     assert_eq!(stats(&game, bear), (3, 4));
     assert!(game.object_view(bear).keywords.contains(Keywords::FLYING));
     assert_eq!(stats(&game, robots[0].card), (2, 2));
-    assert!(!game
-        .object_view(robots[0].card)
-        .keywords
-        .contains(Keywords::FLYING));
+    assert!(
+        !game
+            .object_view(robots[0].card)
+            .keywords
+            .contains(Keywords::FLYING)
+    );
 }
 
 #[test]
@@ -468,10 +472,11 @@ fn dawnstrike_vanguard_rechecks_two_tapped_allies_and_only_counters_other_creatu
     assert_eq!(game.object_view(opponent).counters.plus_one, 0);
     assert_eq!(game.object_view(ally).counters.plus_one, 1);
     assert_eq!(game.object_view(second).counters.plus_one, 1);
-    assert!(game
-        .object_view(vanguard)
-        .keywords
-        .contains(Keywords::LIFELINK));
+    assert!(
+        game.object_view(vanguard)
+            .keywords
+            .contains(Keywords::LIFELINK)
+    );
 }
 
 #[test]
@@ -561,18 +566,21 @@ fn dual_sun_technique_checks_its_legal_target_for_a_plus_one_counter_at_resoluti
     let mut no_counter = game.clone();
     settle(&mut no_counter);
     assert_eq!(no_counter.object_view(drawn).zone, Zone::Library);
-    assert!(no_counter
-        .object_view(ally)
-        .keywords
-        .contains(Keywords::DOUBLE_STRIKE));
+    assert!(
+        no_counter
+            .object_view(ally)
+            .keywords
+            .contains(Keywords::DOUBLE_STRIKE)
+    );
 
     game.activation_cost_counters(exact, CounterKind::PlusOne, 1, player);
     settle(&mut game);
     assert_eq!(game.object_view(drawn).zone, Zone::Hand);
-    assert!(game
-        .object_view(ally)
-        .keywords
-        .contains(Keywords::DOUBLE_STRIKE));
+    assert!(
+        game.object_view(ally)
+            .keywords
+            .contains(Keywords::DOUBLE_STRIKE)
+    );
 }
 
 #[test]

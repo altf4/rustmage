@@ -3,10 +3,41 @@
   "catalogue_id": 4373,
   "oracle_id": "5e8a2416-e311-41ac-a3cd-be1c2441d542",
   "facts_sha256": "027158f53c9d780e02d56bb5ff2de7f5f878edb0e4a596881a5bcb562e5053eb",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e50b4828fcd94e410bfa6a464592138746741130c3d2d3d2307be2ff4f832190"
   },
-  "physical_metadata_sha256": "4d59fe2e513e7f9f428891059f4fce793840c640d99d3d3ec99df9e097fd578e"
+  "physical_metadata_sha256": "4d59fe2e513e7f9f428891059f4fce793840c640d99d3d3ec99df9e097fd578e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/VoidCondition.java",
+      "sha256": "d8121e9849e10e0ae98f15e879bf5dd82c452ae632b34a224eae623184bb680f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionSourceEffect.java",
+      "sha256": "c877e6d5d339d0c8a602f1c16190e62f1dd0a5e1c11ba333a698b6dfee367304"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardCardYouChooseTargetEffect.java",
+      "sha256": "ee3872ce6e44f3605b5b71fa77669461c11e8312bd1fbb0a486c5730c463de3d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/VoidWatcher.java",
+      "sha256": "2499e3b479a40908c1d646715ed63a3e24c1a3204867d5628502e4a31af42702"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TemporalIntervention.java",
+  "java_sha256": "59a6d1122cab2096b75a7d2978f61d7dbc2d6dd23e2b56873d41c715659f3a62",
+  "rules_tests": "tests/eoe_cards_067_132_death.rs"
 }

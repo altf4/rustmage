@@ -315,10 +315,11 @@ fn lightstall_inquisitor_privately_exiles_an_opponents_choice_with_exact_play_te
     assert!(game.observe(player).effect_choice.is_none());
     let options = game.observe(opponent).effect_choice.unwrap().candidates;
     assert_eq!(options, [game.object_ref(land), game.object_ref(creature)]);
-    assert!(game
-        .object_view(inquisitor)
-        .keywords
-        .contains(Keywords::VIGILANCE));
+    assert!(
+        game.object_view(inquisitor)
+            .keywords
+            .contains(Keywords::VIGILANCE)
+    );
     assert!(!game.legal_actions().contains(&Action::DeclineEffectPayment));
 
     for chosen in [land, creature] {
@@ -353,11 +354,13 @@ fn lightstall_inquisitor_privately_exiles_an_opponents_choice_with_exact_play_te
         assert_eq!(branch.object_view(chosen).zone, Zone::Battlefield);
         let hidden = if chosen == land { creature } else { land };
         assert_eq!(branch.object_view(hidden).zone, Zone::Hand);
-        assert!(branch
-            .observe(player)
-            .objects
-            .iter()
-            .all(|object| object.id != hidden));
+        assert!(
+            branch
+                .observe(player)
+                .objects
+                .iter()
+                .all(|object| object.id != hidden)
+        );
     }
 }
 

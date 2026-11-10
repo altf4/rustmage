@@ -3,10 +3,34 @@
   "catalogue_id": 941,
   "oracle_id": "cf3234f2-09d7-4d8b-b871-3bf0fcb75b6d",
   "facts_sha256": "60940cac952a95f326f9ca86368aa6c5e02f4a4d7a861ef31ba4f5ed797c9f28",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ac3c39fd0230774a4ccc307b077c3c5fa5c7cb49c32ef0d0771e063d9b0c0d9c"
   },
-  "physical_metadata_sha256": "8c307fdbc7a7e060c8bc6fb086027005b04c36abfc23f505f139f3bd0aeae692"
+  "physical_metadata_sha256": "8c307fdbc7a7e060c8bc6fb086027005b04c36abfc23f505f139f3bd0aeae692",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CutPropulsion.java",
+  "java_sha256": "777b59971a7df97ce47c4f454fb6b6708f4f3e954e422d1320101f8f712b94e7",
+  "rules_tests": "tests/eoe_cards_067_132_final.rs",
+  "rules_notes": [
+    "CR 120.2. The target creature is the damage source, with its live power and flying status determining the amount."
+  ]
 }

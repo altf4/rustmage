@@ -370,7 +370,12 @@ fn selfcraft_mechan_can_sacrifice_itself_before_its_reflexive_target_is_chosen()
     let object = g.object_ref(source);
     let sacrifice = Action::Sacrifice { object };
     let nonartifact = g.object_ref(bear);
-    reject(&mut g, Action::Sacrifice { object: nonartifact });
+    reject(
+        &mut g,
+        Action::Sacrifice {
+            object: nonartifact,
+        },
+    );
     let mut declined = g.clone();
     act(&mut declined, Action::DeclineEffectPayment);
     quiet(&mut declined);

@@ -3,10 +3,44 @@
   "catalogue_id": 5129,
   "oracle_id": "39e32fdf-93bf-4390-8275-0d7d10ad7360",
   "facts_sha256": "b83f0f8c7c19f6fb271385203e5ff71138a3aa709c65186e89c5bd2239c9eeb4",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "63510aa0b01af8e64d1e10606b021ce621561904e02826bd080aa372e5175904"
   },
-  "physical_metadata_sha256": "87e86c991e35b057e0accc19f6afa9ed84653415e7f19523dce382af27ca2205"
+  "physical_metadata_sha256": "87e86c991e35b057e0accc19f6afa9ed84653415e7f19523dce382af27ca2205",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+      "sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/x/XuIfitOsteoharmonist.java",
+  "java_sha256": "2a0883d2486bae776d70b1334d716f38723473aa2a4cb1b9bd3eb7765082cf06",
+  "rules_tests": "tests/eoe_cards_067_132_final.rs",
+  "rules_notes": [
+    "CR 611.2e and 613.7n. The additive Skeleton subtype and ability removal apply as the exact permanent enters, including to its own entry replacements and triggers."
+  ]
 }
