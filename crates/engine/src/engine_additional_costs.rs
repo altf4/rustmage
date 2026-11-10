@@ -101,6 +101,29 @@ pub(super) fn legendary_name_match<W: ability_world::CharacteristicWorld + ?Size
         })
 }
 
+/// Exact nonmana witnesses for one completed or projected mana activation.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) enum ManaCostObjects {
+    One(ObjectRef),
+    Group(std::sync::Arc<[ObjectRef]>),
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl ManaCostObjects {
+    pub(super) fn from_slice(objects: &[ObjectRef]) -> Self {
+        match objects {
+            [object] => Self::One(*object),
+            group => Self::Group(group.into()),
+        }
+    }
+    pub(super) fn objects(&self) -> &[ObjectRef] {
+        match self {
+            Self::One(object) => std::slice::from_ref(object),
+            Self::Group(group) => group,
+        }
+    }
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Serialize)]
 pub struct AdditionalCostView {

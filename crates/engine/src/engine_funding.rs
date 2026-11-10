@@ -356,23 +356,12 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
     }
 }
 
-/// An exact, still-live permanent/card selected for a mana activation cost.
+/// Exact permanent/card selections for a projected mana activation cost.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 struct ExternalManaCost {
-    resource: usize,
-    object: ObjectRef,
+    selection: additional_costs::ManaCostObjects,
     kind: EffectChoiceKind,
-}
-#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-impl ExternalManaCost {
-    fn destination(self) -> Zone {
-        match self.kind.payment_kind() {
-            EffectChoiceKind::Sacrifice => Zone::Graveyard,
-            EffectChoiceKind::ExileGraveyard => Zone::Exile,
-            _ => unreachable!("unsupported selected mana cost"),
-        }
-    }
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -1852,7 +1841,7 @@ impl<'g> FundingState<'g> {
     ) -> bool {
         let mut announced = Vec::new();
         for step in self.action_moves(goal) {
-            let external_action = step.external.map(|_| self.action(&step));
+            let external_action = step.external.as_ref().map(|_| self.action(&step));
             if external_action
                 .as_ref()
                 .is_some_and(|action| announced.contains(action))
@@ -1871,6 +1860,66 @@ impl<'g> FundingState<'g> {
             }
         }
         false
+    }
+    fn visit_tap_mana_cost_groups(
+        &self,
+        spec: AdditionalCost,
+        source: ObjectRef,
+        prefix: &[ObjectRef],
+        excluded: impl Fn(ObjectRef) -> bool,
+        emit: &mut dyn FnMut(&[ObjectRef]) -> bool,
+    ) -> bool {
+        let EffectChoiceKind::TapPermanents(amount) = spec.kind.payment_kind() else {
+            unreachable!("mana tap group requires a tap cost")
+        };
+        let amount = amount as usize;
+        let eligible = |object| !excluded(object) && self.cost_object(spec, object, source);
+        if amount == 0
+            || prefix.len() > amount
+            || prefix
+                .iter()
+                .enumerate()
+                .any(|(index, &object)| prefix[..index].contains(&object) || !eligible(object))
+        {
+            return false;
+        }
+        if prefix.len() == amount {
+            return emit(prefix);
+        }
+        let candidates = self
+            .resources
+            .iter()
+            .map(|resource| self.reference(resource.id))
+            .filter(|object| !prefix.contains(object) && eligible(*object))
+            .collect::<Vec<_>>();
+        fn visit_groups(
+            group: &mut Vec<ObjectRef>,
+            candidates: &[ObjectRef],
+            left: usize,
+            emit: &mut dyn FnMut(&[ObjectRef]) -> bool,
+        ) -> bool {
+            if left == 0 {
+                return emit(group);
+            }
+            let Some(last) = candidates.len().checked_sub(left) else {
+                return false;
+            };
+            for (index, &object) in candidates.iter().enumerate().take(last + 1) {
+                group.push(object);
+                let done = visit_groups(group, &candidates[index + 1..], left - 1, emit);
+                group.pop();
+                if done {
+                    return true;
+                }
+            }
+            false
+        }
+        visit_groups(
+            &mut prefix.to_vec(),
+            &candidates,
+            amount - prefix.len(),
+            emit,
+        )
     }
     fn mana_moves(
         &self,
@@ -2186,31 +2235,47 @@ impl<'g> FundingState<'g> {
                     continue;
                 }
                 let external = if let Some(spec) = ability.cost.additional {
-                    if !matches!(
-                        spec.kind.payment_kind(),
-                        EffectChoiceKind::ExileGraveyard
-                            | EffectChoiceKind::Sacrifice
-                            | EffectChoiceKind::TapPermanents(1)
-                    ) {
-                        continue;
-                    }
-                    let eligible: Vec<_> = self.resources.iter().enumerate()
-                        .filter(|(_, r)| {
-                            let object = self.reference(r.id);
-                            self.cost_object(spec, object, self.reference(entry.id))
-                                // A permanent cannot pay two distinct departure costs.
-                                && (!(ability.cost.sacrifice || ability.cost.exile_self) || r.id != entry.id)
-                                // Separate tap costs require distinct untapped
-                                // objects, including the enclosing ability's source.
-                                && (!matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
-                                    || (!goal.reserves_source_tap(object)
-                                        && (!ability.cost.tap || r.id != entry.id)))
-                        })
-                        .map(|(resource, r)| ExternalManaCost {
-                            resource,
-                            object: self.reference(r.id),
-                            kind: spec.kind,
-                        }).collect();
+                    use additional_costs::ManaCostObjects;
+                    let source = self.reference(entry.id);
+                    let departs = ability.cost.sacrifice || ability.cost.exile_self;
+                    let eligible = match spec.kind.payment_kind() {
+                        EffectChoiceKind::TapPermanents(_) => {
+                            let mut eligible = Vec::new();
+                            self.visit_tap_mana_cost_groups(
+                                spec,
+                                source,
+                                &[],
+                                |object| {
+                                    goal.reserves_source_tap(object)
+                                        || (ability.cost.tap || departs) && source == object
+                                },
+                                &mut |objects| {
+                                    eligible.push(ExternalManaCost {
+                                        selection: ManaCostObjects::from_slice(objects),
+                                        kind: spec.kind,
+                                    });
+                                    false
+                                },
+                            );
+                            eligible
+                        }
+                        EffectChoiceKind::ExileGraveyard | EffectChoiceKind::Sacrifice => {
+                            self.resources
+                                .iter()
+                                .filter_map(|resource| {
+                                    let object = self.reference(resource.id);
+                                    // A permanent cannot pay two separate departure costs.
+                                    ((!departs || object != source)
+                                        && self.cost_object(spec, object, source))
+                                    .then_some(ExternalManaCost {
+                                        selection: ManaCostObjects::One(object),
+                                        kind: spec.kind,
+                                    })
+                                })
+                                .collect()
+                        }
+                        _ => continue,
+                    };
                     if eligible.is_empty() {
                         continue;
                     }
@@ -2309,9 +2374,9 @@ impl<'g> FundingState<'g> {
                                                     },
                                                 };
                                                 if let Some(eligible) = &external {
-                                                    for &external in eligible {
+                                                    for external in eligible {
                                                         moves.push(FundingMove {
-                                                            external: Some(external),
+                                                            external: Some(external.clone()),
                                                             ..step.clone()
                                                         });
                                                     }
@@ -4441,13 +4506,20 @@ impl<'g> FundingState<'g> {
         let cost = output.deferred_cost.expect("deferred cost");
         let key = output.instance;
         let rules = key.definition.activation(key.ability);
+        let external = step.external.as_ref().map(|cost| {
+            (
+                rules.cost.additional.expect("external cost"),
+                cost.selection.objects(),
+            )
+        });
         let goal = FundingGoal {
             actor: output.controller,
             required: cost.colored,
             generic: cost.generic,
-            reserve: step
-                .external
-                .map(|e| (e.object, rules.cost.additional.expect("external cost"))),
+            reserve: external.and_then(|(spec, objects)| match objects {
+                [object] => Some((*object, spec)),
+                _ => None,
+            }),
             source: Some((
                 key.source,
                 key.ability,
@@ -4477,7 +4549,8 @@ impl<'g> FundingState<'g> {
         child.contributors = None;
         child.convoke = false;
         child.waterbend = 0;
-        child.cost_group = None;
+        child.cost_group = external
+            .and_then(|(spec, objects)| (objects.len() > 1).then(|| (spec, objects.to_vec())));
         child.cast_costs = None;
         child.continuation = None;
         child.continuation_memo = None;
@@ -5887,7 +5960,22 @@ impl Game {
             .as_ref()
             .expect("child mana announcement")
             .clone();
-        child.additional = external.or(child.additional);
+        if let Some(object) = external
+            && payment.is_none()
+        {
+            if let Some(spec) = child.additional_cost()
+                && let EffectChoiceKind::TapPermanents(amount) = spec.kind.payment_kind()
+            {
+                let group = child.additional_group.get_or_insert_default();
+                if group.len() >= amount as usize || group.contains(&object) {
+                    return false;
+                }
+                group.push(object);
+                child.additional = (group.len() == amount as usize).then_some(object);
+            } else {
+                child.additional = Some(object);
+            }
+        }
         let goal = self.funding_goal(&child);
         let quality = self
             .state
@@ -5954,9 +6042,9 @@ impl Game {
             self.payment_announcement(packet.clone(), counters, Some(production), None);
         let parents = self.deferred_mana_parents();
         if !parents.is_empty()
-            && candidate
-                .additional_cost()
-                .is_some_and(|spec| spec.kind.payment_kind() == EffectChoiceKind::TapPermanents(1))
+            && candidate.additional_cost().is_some_and(|spec| {
+                matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
+            })
         {
             // During a parent payment, this family is enumerated by exact
             // FundingMoves, including deferred mana components. An unselected

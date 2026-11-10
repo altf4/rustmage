@@ -149,7 +149,16 @@ impl Game {
         let Some(production) = a.production else {
             return;
         };
-        let additional = a.additional_cost().zip(a.additional);
+        let additional = a.additional_cost().and_then(|spec| {
+            use additional_costs::ManaCostObjects;
+            let selection =
+                if matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_)) {
+                    ManaCostObjects::from_slice(a.additional_group.as_deref()?)
+                } else {
+                    ManaCostObjects::One(a.additional?)
+                };
+            Some((spec, selection))
+        });
         self.start_cast_mana_capture(
             a.item.controller,
             ManaEventKind::Activated {

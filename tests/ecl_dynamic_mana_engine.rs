@@ -1122,7 +1122,7 @@ fn selective_rollback_retains_exact_separate_tap_cost_and_owned_mana() {
             *additional,
             Some((
                 EXTERNAL_TAP_MANA.activated[0].cost.additional.unwrap(),
-                object
+                additional_costs::ManaCostObjects::One(object)
             ))
         );
         g.finish_cast_rollback(false);
@@ -1161,7 +1161,7 @@ fn selective_rollback_retains_exact_separate_tap_cost_and_owned_mana() {
                     else {
                         unreachable!();
                     };
-                    additional.as_mut().unwrap().1 = source;
+                    additional.as_mut().unwrap().1 = additional_costs::ManaCostObjects::One(source);
                 }
             }
             assert!(
