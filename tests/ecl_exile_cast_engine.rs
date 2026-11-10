@@ -347,7 +347,7 @@ fn linked_counter_permission_keeps_mana_and_printed_sacrifice_cost_in_either_pay
                         .announcing
                         .as_ref()
                         .unwrap()
-                        .creature_counter_cost_requirement()
+                        .counter_cost_spec()
                         .is_some()
                     {
                         choose(

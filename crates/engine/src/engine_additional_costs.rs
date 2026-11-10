@@ -22,6 +22,20 @@ pub(super) fn chosen_cost_creature_matches<W: ability_world::CharacteristicWorld
         }
 }
 
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn counter_cost_bearer<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    actor: Player,
+    reference: ObjectRef,
+    kinds: u16,
+) -> bool {
+    let object = world.object(reference.card);
+    object.zone == Zone::Battlefield
+        && world.reference(reference.card) == reference
+        && object.controller == actor
+        && (kinds == 0 || world.kinds(reference.card) & kinds != 0)
+}
+
 /// A craft material is tested in its current zone, including abilities gained
 /// or removed on the battlefield. Activation permission is not relevant.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -195,8 +209,11 @@ impl Game {
             return false;
         }
         let spec = spec.in_zone(o.zone);
-        if let EffectChoiceKind::RemoveCreatureCounter(kind) = spec.kind.payment_kind()
-            && (world.kinds(object.card) & 1 == 0 || world.counter_count(object.card, kind) == 0)
+        if let Some(requirement) = spec.kind.counter_requirement()
+            && (!counter_cost_bearer(world, actor, object, requirement.bearer_kinds)
+                || requirement
+                    .kind
+                    .is_some_and(|kind| world.counter_count(object.card, kind) == 0))
         {
             return false;
         }
@@ -235,7 +252,9 @@ impl Game {
             | EffectChoiceKind::SacrificePermanents(_)
             | EffectChoiceKind::ReturnUnblockedAttacker
             | EffectChoiceKind::ReturnToHand
+            | EffectChoiceKind::RemoveCreatureCounters(_)
             | EffectChoiceKind::RemoveCreatureCounter(_)
+            | EffectChoiceKind::RemovePermanentCounters { .. }
             | EffectChoiceKind::TapPermanents(_) => o.controller == actor,
             _ => false,
         };
@@ -334,7 +353,9 @@ impl Game {
             | EffectChoiceKind::SacrificePermanents(_)
             | EffectChoiceKind::ReturnUnblockedAttacker
             | EffectChoiceKind::ReturnToHand
+            | EffectChoiceKind::RemoveCreatureCounters(_)
             | EffectChoiceKind::RemoveCreatureCounter(_)
+            | EffectChoiceKind::RemovePermanentCounters { .. }
             | EffectChoiceKind::TapPermanents(_) => Zone::Battlefield,
             _ => return false,
         };
@@ -685,7 +706,7 @@ impl Game {
             return self.preview_ordered_activation_cost(goal, spec, true);
         }
         let source = goal.source.as_ref().expect("activation source").0;
-        if let Some(requirement) = spec.kind.creature_counter_requirement() {
+        if spec.kind.counter_requirement().is_some() {
             let purpose = self.funding_purpose(&goal);
             let selected = self
                 .state
@@ -699,7 +720,7 @@ impl Game {
                 })
                 .and_then(|a| a.creature_counter_cost.as_deref())
                 .map_or(&[][..], Vec::as_slice);
-            return self.creature_counter_fundable(goal, purpose, requirement, selected);
+            return self.counter_cost_fundable(goal, purpose, spec, selected);
         }
         if matches!(
             spec.kind.payment_kind(),
@@ -1094,14 +1115,18 @@ impl Game {
             a.additional_paid = true;
             return;
         }
-        if let Some(requirement) = spec.kind.creature_counter_requirement() {
+        if let Some(requirement) = spec.kind.counter_requirement() {
             let selected = a.creature_counter_cost.as_ref().unwrap();
-            assert_eq!(selected.len(), usize::from(requirement.0));
-            assert!(
-                selected
-                    .iter()
-                    .all(|&(_, kind)| requirement.1.is_none_or(|expected| expected == kind))
-            );
+            assert_eq!(selected.len(), usize::from(requirement.amount));
+            assert!(selected.iter().all(|&(object, kind)| {
+                requirement.kind.is_none_or(|expected| expected == kind)
+                    && counter_cost_bearer(
+                        self,
+                        a.item.controller,
+                        object,
+                        requirement.bearer_kinds,
+                    )
+            }));
             self.pay_selected_creature_counters(&mut a.item, selected);
             a.additional_paid = true;
             return;

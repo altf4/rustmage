@@ -1378,6 +1378,13 @@ pub enum EffectChoiceKind {
     BottomHand,
     RemoveCreatureCounters(u16),
     RemoveCreatureCounter(CounterKind),
+    /// Remove exactly this many counters of one kind from controlled permanents
+    /// matching any bit in the live bearer-kind mask (zero means any kind).
+    RemovePermanentCounters {
+        amount: std::num::NonZeroU16,
+        kind: CounterKind,
+        bearer_kinds: u16,
+    },
     UntapLands {
         maximum: u16,
     },
@@ -1471,6 +1478,14 @@ pub enum EffectChoiceKind {
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct CounterCostRequirement {
+    pub amount: u16,
+    pub kind: Option<CounterKind>,
+    pub bearer_kinds: u16,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl EffectChoiceKind {
     pub(crate) fn any_number_selection(self) -> bool {
         matches!(
@@ -1478,12 +1493,22 @@ impl EffectChoiceKind {
             Self::RemoveLoreForSourceCounters(_) | Self::SacrificeSelection
         )
     }
-    pub(crate) fn creature_counter_requirement(self) -> Option<(u16, Option<CounterKind>)> {
-        match self {
-            Self::RemoveCreatureCounters(amount) => Some((amount, None)),
-            Self::RemoveCreatureCounter(kind) => Some((1, Some(kind))),
-            _ => None,
-        }
+    pub(crate) fn counter_requirement(self) -> Option<CounterCostRequirement> {
+        let (amount, kind, bearer_kinds) = match self {
+            Self::RemoveCreatureCounters(amount) => (amount, None, 1),
+            Self::RemoveCreatureCounter(kind) => (1, Some(kind), 1),
+            Self::RemovePermanentCounters {
+                amount,
+                kind,
+                bearer_kinds,
+            } => (amount.get(), Some(kind), bearer_kinds),
+            _ => return None,
+        };
+        Some(CounterCostRequirement {
+            amount,
+            kind,
+            bearer_kinds,
+        })
     }
     pub(crate) fn payment_kind(self) -> Self {
         match self {

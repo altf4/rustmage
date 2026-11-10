@@ -141,9 +141,9 @@ impl Announcement {
             _ => None,
         })
     }
-    pub(super) fn creature_counter_cost_requirement(&self) -> Option<(u16, Option<CounterKind>)> {
+    pub(super) fn counter_cost_spec(&self) -> Option<AdditionalCost> {
         self.additional_cost()
-            .and_then(|cost| cost.kind.creature_counter_requirement())
+            .filter(|cost| cost.kind.counter_requirement().is_some())
     }
     pub(super) fn has_compound_sneak_cost(&self) -> bool {
         self.item

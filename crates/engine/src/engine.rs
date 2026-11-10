@@ -204,14 +204,14 @@ use crate::capacity::{CapacityExt, CapacitySignal};
 use crate::cards::{
     ActivatedAbility, ActivationCost, ActivationGuard, ActivationOrigin, AdditionalCost,
     AmountValue, BattlefieldFilter, CastRelation, CostTurn, CountFilter, CountZone, CounterAmounts,
-    CounterKind, CounterSubject, Counters, CreatureFilter, DamageQualification, DamageSubject,
-    Effect, EffectChoiceKind, EmblemInfo, EntryChoiceKind, EntryChoiceValue, EntryCounterAmount,
-    EntryPredicate, EntryTapped, InitialCounters, Instruction, ManaCost, ManaProduction,
-    MillAmount, MilledCount, MilledDestination, MilledFilter, MilledSelectionSpec, NamedCounters,
-    PlayerSet, RecoveryFilter, ResolvedStatValue, ReturnKind, SacrificeFilter, SearchSpec,
-    SpellMode, StatExpr, StatValue, Stats, StepGuard, StepValue, Subject, TargetGroupConstraint,
-    TargetPlan, TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep,
-    payments,
+    CounterCostRequirement, CounterKind, CounterSubject, Counters, CreatureFilter,
+    DamageQualification, DamageSubject, Effect, EffectChoiceKind, EmblemInfo, EntryChoiceKind,
+    EntryChoiceValue, EntryCounterAmount, EntryPredicate, EntryTapped, InitialCounters,
+    Instruction, ManaCost, ManaProduction, MillAmount, MilledCount, MilledDestination,
+    MilledFilter, MilledSelectionSpec, NamedCounters, PlayerSet, RecoveryFilter, ResolvedStatValue,
+    ReturnKind, SacrificeFilter, SearchSpec, SpellMode, StatExpr, StatValue, Stats, StepGuard,
+    StepValue, Subject, TargetGroupConstraint, TargetPlan, TargetPredicate, TargetRule, TargetSpec,
+    TargetZone, TriggerCondition, TriggerStep, payments,
 };
 #[doc(hidden)]
 #[path = "engine_milled_selection.rs"]
@@ -917,6 +917,7 @@ define_actions! {
         life: u32,
         entry_counter: CounterKind,
     },
+    // One counter for a distributed payment. Keep the existing wire tag.
     ChooseCreatureCounterCost { object: ObjectRef, counter: CounterKind },
     AnnounceAttachedAbility { grantor: ObjectRef, ability: u16 },
     AnnouncePlaneswalkerGrant { source: ObjectRef, grantor: ObjectRef, ability: u16 },
@@ -5589,10 +5590,10 @@ impl Game {
                     .announcing
                     .as_ref()
                     .unwrap()
-                    .creature_counter_cost_requirement()
+                    .counter_cost_spec()
                     .is_some()
                 {
-                    return self.visit_creature_counter_cost(&mut emit)
+                    return self.visit_distributed_counter_cost(&mut emit)
                         || self.optional_counter_cost_mana(s.announcing.as_ref().unwrap())
                             && emit(Action::BeginOrderedCosts);
                 }
@@ -7343,7 +7344,7 @@ impl Game {
                 if matches!(self.state.pending, Pending::EffectChoice { .. }) {
                     self.pay_resolution_creature_counter(object, kind);
                 } else {
-                    self.choose_creature_counter_cost(object, kind);
+                    self.choose_distributed_counter_cost(object, kind);
                 }
             }
             Action::AnnounceGraveyardAdditionalCosts { card } => {

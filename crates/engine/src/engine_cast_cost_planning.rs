@@ -300,6 +300,7 @@ impl FundingState<'_> {
                 n == 0 || potential_graveyard > 0
             }
             EffectChoiceKind::RemoveCreatureCounters(n) => n == 0 || battlefield > 0,
+            EffectChoiceKind::RemovePermanentCounters { .. } => battlefield > 0,
             EffectChoiceKind::RemoveCreatureCounter(_) => battlefield > 0,
             EffectChoiceKind::Forage | EffectChoiceKind::ForageOrBlack => match c.forage {
                 Some(ForageRoute::Food) => battlefield > 0,
@@ -1091,7 +1092,10 @@ impl FundingState<'_> {
             }
             match c.clauses[index].clause {
                 CastCostClause::OriginCounters(amount) => {
-                    if self.complete_counter_cost(c, &later, &rest, (amount, None)) {
+                    let requirement = EffectChoiceKind::RemoveCreatureCounters(amount)
+                        .counter_requirement()
+                        .unwrap();
+                    if self.complete_counter_cost(c, &later, &rest, requirement) {
                         return true;
                     }
                 }
@@ -1727,8 +1731,9 @@ impl FundingState<'_> {
                 destination = Zone::Exile;
             }
             EffectChoiceKind::RemoveCreatureCounters(_)
-            | EffectChoiceKind::RemoveCreatureCounter(_) => {
-                counters = spec.kind.creature_counter_requirement();
+            | EffectChoiceKind::RemoveCreatureCounter(_)
+            | EffectChoiceKind::RemovePermanentCounters { .. } => {
+                counters = spec.kind.counter_requirement();
             }
             EffectChoiceKind::BeholdMany(n)
             | EffectChoiceKind::SacrificeDifferentNames(n)
@@ -1927,13 +1932,17 @@ impl FundingState<'_> {
         c: &CostContext,
         later: &CostContext,
         remaining: &[usize],
-        requirement: (u16, Option<CounterKind>),
+        requirement: CounterCostRequirement,
     ) -> bool {
-        let (amount, required_kind) = requirement;
+        let CounterCostRequirement {
+            amount,
+            kind: required_kind,
+            bearer_kinds,
+        } = requirement;
         let mut next = self.clone();
         for &(r, kind) in &c.counters {
             if required_kind.is_some_and(|expected| expected != kind)
-                || !next.remove_creature_counter(r, kind)
+                || !next.remove_cost_counter(r, kind, bearer_kinds)
             {
                 return false;
             }
@@ -1952,25 +1961,28 @@ impl FundingState<'_> {
             remaining: &[usize],
             first: usize,
             source_reservation: (ObjectRef, &Counters),
-            required_kind: Option<CounterKind>,
+            requirement: CounterCostRequirement,
         ) -> bool {
             let (source, reservation) = source_reservation;
             if left == 0 {
                 return w.complete_cost_rows(later, remaining);
             }
             for (index, resource) in w.resources.iter().enumerate().skip(first) {
-                if resource.object.zone != Zone::Battlefield
-                    || resource.object.controller != w.actor
-                    || CharacteristicWorld::kinds(w, resource.id) & 1 == 0
-                {
+                let object = w.reference(resource.id);
+                if !additional_costs::counter_cost_bearer(
+                    w,
+                    w.actor,
+                    object,
+                    requirement.bearer_kinds,
+                ) {
                     continue;
                 }
                 for kind in CounterKind::ALL {
-                    if required_kind.is_some_and(|expected| expected != kind) {
+                    if requirement.kind.is_some_and(|expected| expected != kind) {
                         continue;
                     }
                     let mut next = w.clone();
-                    if !next.remove_creature_counter(w.reference(resource.id), kind) {
+                    if !next.remove_cost_counter(object, kind, requirement.bearer_kinds) {
                         continue;
                     }
                     if !reservation.is_empty()
@@ -1986,7 +1998,7 @@ impl FundingState<'_> {
                         remaining,
                         index,
                         source_reservation,
-                        required_kind,
+                        requirement,
                     ) {
                         return true;
                     }
@@ -2001,7 +2013,7 @@ impl FundingState<'_> {
             remaining,
             0,
             (c.source, &c.source_counter_reservation),
-            required_kind,
+            requirement,
         )
     }
 }
