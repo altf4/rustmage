@@ -1093,6 +1093,7 @@ impl Game {
         let mut copy_exile_results = Vec::new();
         let mut played_lands = Vec::new();
         for (movement, counters) in moves {
+            let chosen_riot_haste = movement.has_riot_haste();
             let entering_face = movement
                 .source_before
                 .as_ref()
@@ -1255,7 +1256,6 @@ impl Game {
             {
                 ghost_results.push((event.after, source));
             }
-            let chosen_riot_haste = movement.has_riot_haste();
             event.cast_event = movement.cast_event;
             if event.moved && event.destination == Zone::Battlefield && movement.sneak_paid {
                 self.record_sneak_entry(event.after);
