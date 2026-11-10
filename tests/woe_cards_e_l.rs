@@ -323,3 +323,207 @@ fn faerie_slumber_party_counts_opposing_controllers_and_makes_restricted_fliers(
         act(&mut game, Action::FinishBlockers);
     }
 }
+
+#[test]
+fn extraordinary_journey_uses_paid_x_owner_permissions_and_one_exile_entry_draw() {
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let journey = candidate(&mut game, player, "Extraordinary Journey");
+        let first = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let second = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+        let third = put(&mut game, opponent, "Hill Giant", Zone::Battlefield);
+        let remove = put(&mut game, player, "Disenchant", Zone::Hand);
+        let borrowed = game.object_ref(second);
+        game.change_controller(borrowed, opponent);
+
+        let mut zero = game.clone();
+        act(&mut zero, Action::AnnounceCast { card: journey });
+        act(&mut zero, Action::ChooseX { value: 0 });
+        act(
+            &mut zero,
+            Action::PayCosts {
+                payment: [0, 2, 0, 0, 0, 0],
+            },
+        );
+        settle(&mut zero);
+        assert!(zero.observe(player).exile_permissions.is_empty());
+        assert_eq!(zero.object_view(first).zone, Zone::Battlefield);
+
+        act(&mut game, Action::AnnounceCast { card: journey });
+        act(&mut game, Action::ChooseX { value: 2 });
+        reject(
+            &mut game,
+            Action::PayCosts {
+                payment: [0, 2, 0, 0, 0, 2],
+            },
+        );
+        act(
+            &mut game,
+            Action::PayCosts {
+                payment: [0, 2, 0, 0, 0, 4],
+            },
+        );
+        pass_twice(&mut game);
+        assert!(game.legal_actions().contains(&Action::FinishTargets));
+        for card in [first, second] {
+            act(
+                &mut game,
+                Action::ChooseTarget {
+                    target: Target::Card(card),
+                },
+            );
+        }
+        reject(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(third),
+            },
+        );
+        if game.legal_actions().contains(&Action::FinishTargets) {
+            act(&mut game, Action::FinishTargets);
+        }
+        settle(&mut game);
+        assert_eq!(game.object_view(third).zone, Zone::Battlefield);
+        for card in [first, second] {
+            assert_eq!(game.object_view(card).zone, Zone::Exile);
+            let exact = game.object_ref(card);
+            assert!(game.observe(opponent).exile_permissions.iter().any(|row| {
+                row.object == exact
+                    && row.player == player
+                    && row.expiry == ExilePlayExpiry::WhileExiled
+            }));
+        }
+
+        let mut departed = game.clone();
+        cast(&mut departed, remove, Some(Target::Card(journey)));
+        settle(&mut departed);
+        assert_eq!(departed.object_view(journey).zone, Zone::Graveyard);
+        act(&mut departed, Action::AnnounceExile { card: first });
+        pay(&mut departed);
+        settle(&mut departed);
+        assert_eq!(departed.object_view(first).zone, Zone::Battlefield);
+        assert_eq!(
+            departed.state.players[player.index()].cards_drawn_this_turn,
+            0
+        );
+
+        for card in [first, second] {
+            act(&mut game, Action::AnnounceExile { card });
+            pay(&mut game);
+            settle(&mut game);
+            assert_eq!(game.object_view(card).zone, Zone::Battlefield);
+            assert_eq!(game.object_view(card).controller, player);
+            assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 1);
+        }
+    }
+}
+
+#[test]
+fn faerie_fencing_remembers_its_cast_faerie_and_a_copy_only_uses_x() {
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let target = put(&mut game, opponent, "Gigantosaurus", Zone::Battlefield);
+        let spell = candidate(&mut game, player, "Faerie Fencing");
+        let faerie = put(&mut game, player, "Barrow Naughty", Zone::Battlefield);
+        let bounce = put(&mut game, opponent, "Unsummon", Zone::Hand);
+        let teach = put(&mut game, player, "Teach by Example", Zone::Hand);
+        cast(&mut game, teach, None);
+        settle(&mut game);
+
+        act(&mut game, Action::AnnounceCast { card: spell });
+        act(&mut game, Action::ChooseX { value: 1 });
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        act(
+            &mut game,
+            Action::PayCosts {
+                payment: [0, 0, 1, 0, 0, 1],
+            },
+        );
+        act(&mut game, Action::Pass);
+        cast(&mut game, bounce, Some(Target::Card(faerie)));
+
+        for _ in 0..32 {
+            if game.object_view(target).power != 10 {
+                break;
+            }
+            choose(&mut game, |action| {
+                matches!(
+                    action,
+                    Action::Pass | Action::FinishStackTargets | Action::PutTrigger { .. }
+                )
+            });
+        }
+        assert_eq!(game.object_view(faerie).zone, Zone::Hand);
+        assert_eq!(game.object_view(target).power, 9, "copy uses only X");
+        settle(&mut game);
+        let target = game.object_view(target);
+        assert_eq!((target.power, target.toughness), (5, 5));
+    }
+}
+
+#[test]
+fn ingenious_prodigy_enters_with_x_and_its_upkeep_checks_a_live_counter() {
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let prodigy = candidate(&mut game, player, "Ingenious Prodigy");
+        let large = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+        let small = put(&mut game, opponent, "Healer's Hawk", Zone::Battlefield);
+        let mut zero = game.clone();
+        for (branch, x) in [(&mut zero, 0), (&mut game, 1)] {
+            act(branch, Action::AnnounceCast { card: prodigy });
+            act(branch, Action::ChooseX { value: x });
+            act(
+                branch,
+                Action::PayCosts {
+                    payment: [0, 1, 0, 0, 0, x],
+                },
+            );
+            settle(branch);
+            assert_eq!(branch.object_view(prodigy).zone, Zone::Battlefield);
+            assert_eq!(
+                branch.counter_count(prodigy, CounterKind::PlusOne),
+                u64::from(x)
+            );
+            for _ in 0..2 {
+                branch.state.step = Step::End;
+                pass_twice(branch);
+            }
+            assert_eq!(branch.state.active, player);
+            assert_eq!(branch.state.step, Step::Upkeep);
+        }
+        assert!(zero.state.stack.is_empty());
+        assert!(!game.state.stack.is_empty());
+        assert!(game.object_view(prodigy).keywords.contains(Keywords::SKULK));
+        assert!(game.can_block_pair(small, prodigy));
+        assert!(!game.can_block_pair(large, prodigy));
+
+        let mut removed = game.clone();
+        removed.pay_counters(prodigy, &Counters::of(CounterKind::PlusOne, 1));
+        settle(&mut removed);
+        assert_eq!(
+            removed.state.players[player.index()].cards_drawn_this_turn,
+            0
+        );
+
+        pass_twice(&mut game);
+        let mut declined = game.clone();
+        act(&mut declined, Action::ChooseOptional { accept: false });
+        assert_eq!(declined.counter_count(prodigy, CounterKind::PlusOne), 1);
+        assert_eq!(
+            declined.state.players[player.index()].cards_drawn_this_turn,
+            0
+        );
+        act(&mut game, Action::ChooseOptional { accept: true });
+        assert_eq!(game.counter_count(prodigy, CounterKind::PlusOne), 0);
+        assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 1);
+        assert!(!game.can_block_pair(small, prodigy));
+    }
+}
