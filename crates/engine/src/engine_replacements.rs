@@ -97,6 +97,9 @@ pub struct ReplacementChoiceView {
     /// Exact pending heals applied before the simultaneous final damage batch.
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub heals_before_damage: Vec<ObjectRef>,
+    /// Exact additional effects of applied prevention, performed after damage.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub damage_counters: Vec<(ObjectRef, Player, u64)>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub damage_event_order: Vec<DamageEventOrderView>,
 }
@@ -420,6 +423,7 @@ struct DamageBatch {
     /// Exact resolving instruction which owns the player-damage result.
     remembering: Option<u64>,
     heals: Vec<ObjectRef>,
+    damage_counters: Vec<(ObjectRef, Player, u64)>,
     used_preventions: Vec<(ObjectRef, DamagePreventionKind)>,
     ordered_event: bool,
     next: usize,
@@ -471,6 +475,7 @@ enum Work {
         group: std::num::NonZeroU16,
     },
     Damage(DamageBatch),
+    DamageCounters(Vec<(ObjectRef, Player, u64)>),
     /// The rest of a simultaneous damage event waits for wither replacements.
     DamageResults {
         events: Vec<DamageEvent>,
@@ -581,9 +586,14 @@ impl ReplacementState {
                     Work::Damage(b) => {
                         b.events.len() * std::mem::size_of::<DamageEvent>()
                             + b.heals.len() * std::mem::size_of::<ObjectRef>()
+                            + b.damage_counters.len()
+                                * std::mem::size_of::<(ObjectRef, Player, u64)>()
                             + b.used_preventions.len()
                                 * std::mem::size_of::<(ObjectRef, DamagePreventionKind)>()
                             + b.used.len() * std::mem::size_of::<DamageReplacementId>()
+                    }
+                    Work::DamageCounters(rows) => {
+                        rows.len() * std::mem::size_of::<(ObjectRef, Player, u64)>()
                     }
                     Work::DamageResults { events, gains, .. } => {
                         events.len() * std::mem::size_of::<DamageEvent>()
@@ -617,6 +627,8 @@ impl ReplacementState {
                     Event::Damage(b) => {
                         b.events.len() * std::mem::size_of::<DamageEvent>()
                             + b.heals.len() * std::mem::size_of::<ObjectRef>()
+                            + b.damage_counters.len()
+                                * std::mem::size_of::<(ObjectRef, Player, u64)>()
                             + b.used_preventions.len()
                                 * std::mem::size_of::<(ObjectRef, DamagePreventionKind)>()
                             + b.used.len() * std::mem::size_of::<DamageReplacementId>()
@@ -1290,7 +1302,12 @@ impl Game {
                                 _ => false,
                             }
                     }
-                    ReplacementSpec::HealPreviousDamageToSelf => {
+                    ReplacementSpec::RedirectControllerDamageToEnchantedCreature => {
+                        matches!(event.target, Target::Player(player) if player == object.controller)
+                            && self.enchanted_creature(id).is_some()
+                    }
+                    ReplacementSpec::PreventSelfDamageWithCounters
+                    | ReplacementSpec::HealPreviousDamageToSelf => {
                         matches!(event.target, Target::Card(target) if self.on_battlefield(target) && self.object_ref(target) == source)
                     }
                     ReplacementSpec::PreventAllDamageToSelf => {
@@ -1453,11 +1470,20 @@ impl Game {
         }
         out
     }
+    fn enchanted_creature(&self, aura: CardId) -> Option<CardId> {
+        let recipient = self.state.objects[aura as usize].attached_to?;
+        (self.on_battlefield(recipient.card)
+            && self.object_ref(recipient.card) == recipient
+            && self.is_creature(recipient.card))
+        .then_some(recipient.card)
+    }
+
     fn modify_damage(
         &self,
         choice: ReplacementEffectView,
         event: &mut DamageEvent,
         heals: &mut Vec<ObjectRef>,
+        damage_counters: &mut Vec<(ObjectRef, Player, u64)>,
     ) {
         match choice.source_card.replacement_effects()[usize::from(choice.ability)] {
             ReplacementSpec::DoubleControlledChosenTypeDamage
@@ -1489,6 +1515,22 @@ impl Game {
             ReplacementSpec::RedirectControlledDamageToSource => {
                 event.target = Target::Card(choice.source.card);
             }
+            ReplacementSpec::RedirectControllerDamageToEnchantedCreature => {
+                event.target = Target::Card(
+                    self.enchanted_creature(choice.source.card)
+                        .expect("applicable damage redirection has an enchanted creature"),
+                );
+            }
+            ReplacementSpec::PreventSelfDamageWithCounters => {
+                let amount = u64::try_from(event.amount)
+                    .capacity("prevented damage counter quantity exhausted");
+                let player = self.state.objects[choice.source.card as usize].controller;
+                damage_counters.push((choice.source, player, amount));
+                // CR 615.12: unpreventable damage still performs the additional effect.
+                if self.damage_prevention_allowed(event) {
+                    event.amount = 0;
+                }
+            }
             ReplacementSpec::PreventOtherCreatureNoncombatDamage
             | ReplacementSpec::PreventAllDamageToSelf => event.amount = 0,
             _ => unreachable!(),
@@ -1505,7 +1547,7 @@ impl Game {
         let original_target = event.target;
         match choice {
             DamageReplacement::Printed(effect) => {
-                self.modify_damage(effect, event, &mut batch.heals)
+                self.modify_damage(effect, event, &mut batch.heals, &mut batch.damage_counters)
             }
             DamageReplacement::Resolved(_) => Self::double_damage(event),
         }
@@ -1580,6 +1622,7 @@ impl Game {
             events,
             remembering,
             heals: Vec::new(),
+            damage_counters: Vec::new(),
             used_preventions: Vec::new(),
             ordered_event: false,
             next: 0,
@@ -3026,6 +3069,35 @@ impl Game {
                         state.active = Some(Event::Proliferate(batch))
                     }
                     Some(Work::Damage(batch)) => state.active = Some(Event::Damage(batch)),
+                    Some(Work::DamageCounters(rows)) => {
+                        let mut placements: Vec<_> = rows
+                            .into_iter()
+                            .flat_map(|(object, player, amount)| {
+                                self.create_counter_placements(
+                                    vec![(object, Counters::of(CounterKind::PlusOne, amount))],
+                                    Some(player),
+                                )
+                            })
+                            .filter(|placement| !placement_prohibited(self, placement))
+                            .collect();
+                        if placements.is_empty() {
+                            continue;
+                        }
+                        placements
+                            .sort_by_key(|p| (p.controller != self.state.active, p.object.card));
+                        state.active = Some(Event::Counters(CounterBatch {
+                            player_events: Default::default(),
+                            self_effects: Vec::new(),
+                            player_placed_by: None,
+                            player_effect: [false; 2],
+                            next_player: 0,
+                            proliferated: None,
+                            completion: None,
+                            placements,
+                            next: 0,
+                            used: Vec::new(),
+                        }));
+                    }
                     Some(Work::DamageResults {
                         events,
                         remembering,
@@ -3192,6 +3264,11 @@ impl Game {
                             .into_iter()
                             .filter(|event| !self.damage_event_prevented(event))
                             .collect();
+                        if !batch.damage_counters.is_empty() {
+                            state
+                                .work
+                                .push_front(Work::DamageCounters(batch.damage_counters));
+                        }
                         let gains = self.prepare_damage_results(&events);
                         let placements = self.wither_damage_counters(&events);
                         if placements.is_empty() {
@@ -4173,6 +4250,7 @@ impl Game {
                 damage: None,
                 damage_preventions: Vec::new(),
                 heals_before_damage: Vec::new(),
+                damage_counters: Vec::new(),
                 damage_event_order: Vec::new(),
             }),
             Event::Damage(batch) => {
@@ -4213,6 +4291,7 @@ impl Game {
                         Vec::new()
                     },
                     heals_before_damage: batch.heals.clone(),
+                    damage_counters: batch.damage_counters.clone(),
                     damage_event_order,
                 })
             }
@@ -4277,6 +4356,7 @@ impl Game {
                     damage: None,
                     damage_preventions: Vec::new(),
                     heals_before_damage: Vec::new(),
+                    damage_counters: Vec::new(),
                     damage_event_order: Vec::new(),
                 })
             }
@@ -4291,6 +4371,7 @@ impl Game {
                     damage: None,
                     damage_preventions: Vec::new(),
                     heals_before_damage: Vec::new(),
+                    damage_counters: Vec::new(),
                     damage_event_order: Vec::new(),
                     kind: "Counters",
                     object: Some(p.object),
@@ -4309,6 +4390,7 @@ impl Game {
                 damage: None,
                 damage_preventions: Vec::new(),
                 heals_before_damage: Vec::new(),
+                damage_counters: Vec::new(),
                 damage_event_order: Vec::new(),
                 kind: if batch.optional.is_some() {
                     "TokensOptional"

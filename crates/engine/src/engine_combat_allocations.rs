@@ -131,24 +131,9 @@ impl Game {
         else {
             return;
         };
-        if let Some(state) = self.state.combat_rules.as_mut() {
-            state.excess = None;
-        }
+        self.clear_tracked_excess_damage();
         if let Some(target) = bound.object {
-            // Excess is the greatest result for every applicable permanent type
-            // (CR 120.10), equivalently the least applicable threshold.
-            let lethal = self.excess_damage_threshold(source, target.card);
-            self.state
-                .combat_rules
-                .get_or_insert_with(Default::default)
-                .excess = Some(ExcessDamage {
-                source: source.reference,
-                target,
-                lethal,
-                dealt: 0,
-                destroy_subtype,
-                qualified_for_destruction: false,
-            });
+            self.track_excess_damage(source, target, destroy_subtype);
         }
         let amount =
             i128::try_from(self.item_amount(amount, item)).capacity("damage amount exhausted");
@@ -159,6 +144,27 @@ impl Game {
             combat: false,
             preventable: true,
         }]);
+    }
+    pub(super) fn track_excess_damage(
+        &mut self,
+        source: DamageSource,
+        target: ObjectRef,
+        destroy_subtype: Option<&'static str>,
+    ) {
+        // Excess is the greatest result for every applicable permanent type
+        // (CR 120.10), equivalently the least applicable threshold.
+        let lethal = self.excess_damage_threshold(source, target.card);
+        self.state
+            .combat_rules
+            .get_or_insert_with(Default::default)
+            .excess = Some(ExcessDamage {
+            source: source.reference,
+            target,
+            lethal,
+            dealt: 0,
+            destroy_subtype,
+            qualified_for_destruction: false,
+        });
     }
     fn excess_damage_threshold(&self, source: DamageSource, target: CardId) -> i128 {
         let kinds = self.current_kinds(target);

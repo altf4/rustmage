@@ -111,28 +111,63 @@ impl Game {
         if self.state.damage_sources.is_empty() {
             return;
         }
-        let mut hits = std::collections::BTreeMap::<ObjectRef, u128>::new();
+        let mut hits = std::collections::BTreeMap::<
+            ObjectRef,
+            (u128, std::collections::BTreeSet<ObjectRef>),
+        >::new();
         for event in events {
             let reference = event.source.reference;
             if event.amount <= 0
                 || !self.on_battlefield(reference.card)
                 || self.object_ref(reference.card) != reference
-                || !self.state.objects[reference.card as usize]
-                    .card
-                    .triggers()
-                    .iter()
-                    .any(|ability| ability.condition.minimum_dealt_damage().is_some())
             {
                 continue;
             }
-            let total = hits.entry(reference).or_default();
-            *total = total
-                .checked_add(event.amount as u128)
-                .capacity("damage dealt amount exhausted");
+            let abilities = self.state.objects[reference.card as usize].card.triggers();
+            let wants_total = abilities
+                .iter()
+                .any(|ability| ability.condition.minimum_dealt_damage().is_some());
+            let wants_recipients = abilities.iter().any(|ability| {
+                matches!(
+                    ability.condition.event(),
+                    TriggerCondition::SourceDealtDamageToCreatureSubtype(_)
+                )
+            });
+            if !wants_total && !wants_recipients {
+                continue;
+            }
+            let (total, recipients) = hits.entry(reference).or_default();
+            if wants_total {
+                *total = total
+                    .checked_add(event.amount as u128)
+                    .capacity("damage dealt amount exhausted");
+            }
+            if wants_recipients
+                && let Target::Card(id) = event.target
+                && self.on_battlefield(id)
+                && self.is_creature(id)
+            {
+                recipients.insert(self.object_ref(id));
+            }
         }
-        for (reference, amount) in hits {
+        for (reference, (amount, recipients)) in hits {
             let source = self.object_view(reference.card);
             for (index, ability) in source.card.triggers().iter().enumerate() {
+                if let TriggerCondition::SourceDealtDamageToCreatureSubtype(subtype) =
+                    ability.condition.event()
+                {
+                    for &recipient in &recipients {
+                        if self.has_subtype(recipient.card, subtype)
+                            && self.queue_trigger(&source, index)
+                        {
+                            self.state
+                                .pending_triggers
+                                .last_mut()
+                                .unwrap()
+                                .refer_objects([recipient]);
+                        }
+                    }
+                }
                 if ability
                     .condition
                     .minimum_dealt_damage()

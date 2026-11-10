@@ -1049,6 +1049,7 @@ impl Game {
                     | TriggerCondition::ControlledCreatureCombatDamageOwnTurn
                     | TriggerCondition::SourceDealtDamage
                     | TriggerCondition::SourceDealtDamageAtLeast(_)
+                    | TriggerCondition::SourceDealtDamageToCreatureSubtype(_)
                     | TriggerCondition::SourceDealtCombatDamage
                     | TriggerCondition::SourceCombatDamagePlayerOrPlaneswalker
                     | TriggerCondition::AttachedDealtCombatDamage
@@ -3747,6 +3748,8 @@ impl Game {
             if !matches!(
                 instruction,
                 Instruction::Fight { .. }
+                    | Instruction::FightForExcess { .. }
+                    | Instruction::GroupPowerDamage { .. }
                     | Instruction::RevealTargetHandExileUntilSourceLeaves
                     | Instruction::MayAttachControlledEquipment { .. }
                     | Instruction::MayAttachAnyControlledEquipment { .. }
@@ -4696,6 +4699,11 @@ impl Game {
                 }
                 Instruction::Reflexive { ability } => {
                     self.queue_reflexive_objects(&item, ability, item.reflexive_action_objects());
+                }
+                Instruction::ReflexiveForExcessDamage { ability } => {
+                    if self.take_tracked_excess_damage() != 0 {
+                        self.queue_reflexive(&item, ability, None);
+                    }
                 }
                 Instruction::ReflexiveSacrificedPower { ability } => {
                     if item.sacrificed_power.is_some() {
@@ -7312,6 +7320,12 @@ impl Game {
                         matches!(instruction, Instruction::Fight { .. }),
                         1,
                     );
+                }
+                Instruction::FightForExcess { source, recipient } => {
+                    self.fight_for_excess(&item, source, recipient);
+                }
+                Instruction::GroupPowerDamage { source, recipient } => {
+                    self.group_power_damage(&item, source, recipient);
                 }
                 Instruction::LoyaltyDamage { source, recipient } => {
                     self.planeswalker_loyalty_damage(&item, source, recipient);

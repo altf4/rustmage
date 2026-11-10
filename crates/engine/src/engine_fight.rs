@@ -48,6 +48,42 @@ impl Game {
         };
         self.creatures_deal_power_damage(source, recipient, fight, factor);
     }
+    pub(super) fn fight_for_excess(&mut self, item: &SpellView, source: u16, recipient: u16) {
+        self.clear_tracked_excess_damage();
+        let (Some(source), Some(recipient)) = (
+            self.damage_permanent_target(item, source, 1),
+            self.damage_permanent_target(item, recipient, 1),
+        ) else {
+            return;
+        };
+        self.track_excess_damage(self.damage_source(source), self.object_ref(recipient), None);
+        self.creatures_deal_power_damage(source, recipient, true, 1);
+    }
+    pub(super) fn group_power_damage(&mut self, item: &SpellView, source: u16, recipient: u16) {
+        let Some(recipient) = self.damage_permanent_target(item, recipient, 1) else {
+            return;
+        };
+        let events: Vec<_> = item
+            .targets
+            .iter()
+            .filter_map(|bound| {
+                if bound.group == source
+                    && self.same_target_object(*bound)
+                    && let Target::Card(id) = bound.target
+                    && self.on_battlefield(id)
+                    && self.is_creature(id)
+                {
+                    Some(power_damage_event(
+                        self.damage_source(id),
+                        Target::Card(recipient),
+                    ))
+                } else {
+                    None
+                }
+            })
+            .collect();
+        self.apply_damage_batch(&events);
+    }
     fn damage_permanent_target(&self, item: &SpellView, group: u16, kinds: u16) -> Option<CardId> {
         item.targets.iter().find_map(|bound| {
             if bound.group == group

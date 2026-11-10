@@ -491,6 +491,28 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             return (stats, keywords);
         }
         let evaluation = self.evaluation.as_ref();
+        let scale_by_attachments = |value: Stats| {
+            let recipient = self.reference(id);
+            let count = self
+                .attachment_sources()
+                .iter()
+                .copied()
+                .filter(|&attachment| {
+                    self.attachment_link(self.reference(attachment), recipient)
+                        && (self.is_aura(attachment) || self.is_equipment(attachment))
+                })
+                .count() as i128;
+            Stats {
+                power: value
+                    .power
+                    .checked_mul(count)
+                    .capacity("attachment power bonus exhausted"),
+                toughness: value
+                    .toughness
+                    .checked_mul(count)
+                    .capacity("attachment toughness bonus exhausted"),
+            }
+        };
         for &source in self.attachment_sources() {
             let object = self.object(source);
             if object.zone != Zone::Battlefield {
@@ -505,6 +527,9 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         for fragment in group.fragments {
                             match *fragment {
                                 StaticAbilityFragment::AttachmentStats(value) => stats += value,
+                                StaticAbilityFragment::AttachmentStatsPerAttachment(value) => {
+                                    stats += scale_by_attachments(value);
+                                }
                                 StaticAbilityFragment::AttachmentTurnStats(value)
                                     if object.controller == self.state.active =>
                                 {
@@ -530,11 +555,19 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                 }
                 if object.controller == self.state.active {
                     keywords = keywords.union(object.card.attached_turn_keywords());
-                    for group in object.card.static_ability_groups() {
-                        for fragment in group.fragments {
-                            if let StaticAbilityFragment::AttachmentTurnStats(value) = *fragment {
-                                stats += value;
+                }
+                for group in object.card.static_ability_groups() {
+                    for fragment in group.fragments {
+                        match *fragment {
+                            StaticAbilityFragment::AttachmentTurnStats(value)
+                                if object.controller == self.state.active =>
+                            {
+                                stats += value
                             }
+                            StaticAbilityFragment::AttachmentStatsPerAttachment(value) => {
+                                stats += scale_by_attachments(value);
+                            }
+                            _ => (),
                         }
                     }
                 }

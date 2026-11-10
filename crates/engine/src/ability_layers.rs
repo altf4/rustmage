@@ -400,6 +400,8 @@ pub enum StaticAbilityFragment {
     AttachedSubtype(&'static str),
     AttachedLegendary,
     AttachmentStats(Stats),
+    /// For each Aura or Equipment attached to the same recipient.
+    AttachmentStatsPerAttachment(Stats),
     AttachmentTurnStats(Stats),
     AttachmentKeywords(Keywords),
     AttachmentAttackingKeywords(Keywords),

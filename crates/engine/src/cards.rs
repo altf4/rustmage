@@ -2833,6 +2833,10 @@ pub enum Instruction {
     Reflexive {
         ability: u16,
     },
+    /// Consume the preceding exact damage receipt and queue on positive excess.
+    ReflexiveForExcessDamage {
+        ability: u16,
+    },
     /// Queue only after a successful sacrifice, carrying its frozen power.
     ReflexiveSacrificedPower {
         ability: u16,
@@ -3305,6 +3309,16 @@ pub enum Instruction {
     },
     SelectGroup(u16),
     Fight {
+        source: u16,
+        recipient: u16,
+    },
+    /// Track excess dealt by the first creature during this fight.
+    FightForExcess {
+        source: u16,
+        recipient: u16,
+    },
+    /// Each legal creature in the source target group deals power damage simultaneously.
+    GroupPowerDamage {
         source: u16,
         recipient: u16,
     },
@@ -4737,9 +4751,13 @@ pub enum ReplacementSpec {
     DoubleEquippedDamage,
     /// Redirect damage to the provider's controller or their other permanents to the provider.
     RedirectControlledDamageToSource,
+    /// Redirect damage to this Aura's controller to its exact enchanted creature.
+    RedirectControllerDamageToEnchantedCreature,
     HealPreviousDamageToSelf,
     PreventOtherCreatureNoncombatDamage,
     PreventAllDamageToSelf,
+    /// Prevent incoming damage and put that many +1/+1 counters on the recipient.
+    PreventSelfDamageWithCounters,
     Counters {
         filter: ReplacementFilter,
         kind: Option<CounterKind>,
@@ -5891,6 +5909,8 @@ pub enum TriggerCondition {
     /// One occurrence per simultaneous positive damage event by this exact source.
     SourceDealtDamage,
     SourceDealtDamageAtLeast(u128),
+    /// One occurrence per matching creature recipient in this source's damage batch.
+    SourceDealtDamageToCreatureSubtype(&'static str),
     SourceDealtCombatDamage,
     SourceCombatDamagePlayerOrPlaneswalker,
     AttachedDealtCombatDamage,
