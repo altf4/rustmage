@@ -252,7 +252,7 @@ fn mana_activation_taps_stolen_return_and_exact_lki_survives_branch_restore() {
 
 #[test]
 fn granted_web_slinging_uses_the_modal_face_and_keeps_printed_additional_costs() {
-    let front = card("Peter Parker");
+    let front = card("Bruce Banner // The Incredible Hulk");
     let back = front.back_face().expect("modal back");
     let _rules = fixture_rules::activate(&[
         (front, &SACRIFICE),
@@ -265,12 +265,7 @@ fn granted_web_slinging_uses_the_modal_face_and_keeps_printed_additional_costs()
     let spell = spawn(&mut game, player, front, Zone::Hand);
     let creature = put(&mut game, player, "Bear Cub", Zone::Battlefield);
     game.state.objects[creature as usize].tapped = true;
-    let colorless = spawn(
-        &mut game,
-        player,
-        card("Traxos, Academy Guardian"),
-        Zone::Hand,
-    );
+    let colorless = spawn(&mut game, player, card("The Endstone"), Zone::Hand);
     reject(&mut game, web(colorless, CastFace::Normal));
     assert!(game.legal_actions().contains(&web(spell, CastFace::Normal)));
     let back_action = web(spell, CastFace::Back);

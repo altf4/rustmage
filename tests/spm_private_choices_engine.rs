@@ -86,7 +86,10 @@ fn private_hand_peek_branches_into_public_exact_source_choices_and_taxes_both_se
                 .is_none()
         );
         assert_eq!(
-            game.legal_actions(),
+            game.legal_actions()
+                .into_iter()
+                .filter(|action| !matches!(action, Action::Concede))
+                .collect::<Vec<_>>(),
             NoncreatureCardType::ALL
                 .into_iter()
                 .map(type_choice)
