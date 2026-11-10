@@ -1,5 +1,24 @@
 //! Private CR401.5 operation boundaries and public, historical one-card reveals.
 use super::*;
+use crate::cards::{CastFilter, StaticAbilityFragment};
+
+/// One exact static ability supplying a once-per-turn library-top cast.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct LibraryTopCastPermission {
+    pub source: ObjectRef,
+    pub definition: Card,
+    pub ability: u16,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub copy_origin: Option<u64>,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct LibraryTopCastUse {
+    pub player: Player,
+    pub permission: LibraryTopCastPermission,
+}
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -28,9 +47,142 @@ pub(super) struct LibraryTopState {
     pub reveal: Option<LibraryRevealEvent>,
     /// Private exact current-top knowledge, indexed by library owner.
     pub private_known_top: Option<Box<PrivateKnownTop>>,
+    pub cast_uses: Vec<LibraryTopCastUse>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn visit_limited_library_top_casts(
+        &self,
+        actor: Player,
+        sorcery: bool,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        if self.state.static_sources.is_empty() {
+            return false;
+        }
+        let Some(card) = self.top_library_card(actor) else {
+            return false;
+        };
+        let top = &self.state.objects[card as usize];
+        let physical = top.card;
+        let faces = [
+            (CastFace::Normal, Some(physical)),
+            (CastFace::Adventure, physical.adventure_spell()),
+            (CastFace::Omen, physical.omen_spell()),
+            (CastFace::Back, physical.back_face()),
+        ]
+        .map(|(face, definition)| {
+            (
+                face,
+                definition.filter(|definition| {
+                    CastFilter::InstantSorcery.matches(*definition)
+                        && !matches!(definition.effect(), Effect::Unsupported)
+                }),
+            )
+        });
+        if top.zone != Zone::Library
+            || top.owner != actor
+            || faces.iter().all(|(_, definition)| definition.is_none())
+        {
+            return false;
+        }
+        let mut evaluation = None;
+        for &id in &self.state.static_sources {
+            let provider = &self.state.objects[id as usize];
+            if provider.zone != Zone::Battlefield || provider.controller != actor {
+                continue;
+            }
+            let source = self.object_ref(id);
+            for (ability, group) in provider.card.static_ability_groups().iter().enumerate() {
+                if !group.fragments.iter().any(|fragment| {
+                    matches!(
+                        fragment,
+                        StaticAbilityFragment::CastInstantSorceryFromLibraryTopOnceEachTurn
+                    )
+                }) || !entry_modes::group_enabled(self, source, group)
+                {
+                    continue;
+                }
+                let permission = LibraryTopCastPermission {
+                    source,
+                    definition: provider.card,
+                    ability: u16::try_from(ability).expect("static ability index"),
+                    copy_origin: self.copy_ability_origin(source),
+                };
+                if self.state.library_top.as_ref().is_some_and(|top| {
+                    top.cast_uses.contains(&LibraryTopCastUse {
+                        player: actor,
+                        permission,
+                    })
+                }) || evaluation
+                    .get_or_insert_with(|| self.evaluated_abilities())
+                    .as_ref()
+                    .is_some_and(|evaluation| !evaluation.group_available(source, ability))
+                {
+                    continue;
+                }
+                for (face, definition) in faces {
+                    let Some(definition) = definition else {
+                        continue;
+                    };
+                    for method in [CastMethod::Normal, CastMethod::Free] {
+                        let method_available = match method {
+                            CastMethod::Normal => !definition.info().mana_cost.is_empty(),
+                            CastMethod::Free => {
+                                self.filtered_free_cast_available(actor, definition)
+                            }
+                            _ => unreachable!("library-top casting method"),
+                        };
+                        if !method_available {
+                            continue;
+                        }
+                        for flash_surcharge in [false, true] {
+                            if self.permitted_cast_available(
+                                actor,
+                                card,
+                                method,
+                                face,
+                                sorcery,
+                                flash_surcharge,
+                            ) && emit(Action::AnnounceLibraryTop {
+                                object: self.object_ref(card),
+                                face,
+                                method,
+                                flash_surcharge,
+                                permission,
+                            }) {
+                                return true;
+                            }
+                        }
+                    }
+                    if self.visit_web_slinging_face(
+                        actor,
+                        card,
+                        face,
+                        sorcery,
+                        WebSlingingOrigin::LibraryTop { permission },
+                        emit,
+                    ) {
+                        return true;
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    pub(super) fn use_library_top_cast_permission(
+        &mut self,
+        player: Player,
+        permission: LibraryTopCastPermission,
+    ) {
+        self.state
+            .library_top
+            .get_or_insert_default()
+            .cast_uses
+            .push(LibraryTopCastUse { player, permission });
+    }
+
     pub(super) fn prepare_library_visibility(&mut self, action: &Action) {
         if self
             .state
@@ -84,7 +236,7 @@ impl Game {
                     .is_some_and(|o| o.land));
         if !ongoing && let Some(s) = &mut self.state.library_top {
             s.operation = None;
-            if s.reveal.is_none() && s.private_known_top.is_none() {
+            if s.reveal.is_none() && s.private_known_top.is_none() && s.cast_uses.is_empty() {
                 self.state.library_top = None;
             }
         }

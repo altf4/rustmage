@@ -118,8 +118,8 @@ impl Announcement {
         if let Some(object) = self.harmonizer.flatten() {
             add(object);
         }
-        if let Some(object) = &self.free_hand_permission {
-            add(**object);
+        if let Some(permission) = &self.limited_cast_permission {
+            add(permission.source());
         }
         if let Some(grant) = &self.item.attachment_trigger {
             add(grant.grantor);

@@ -291,6 +291,7 @@ impl Game {
             Action::CastExiledDuringResolution { object, .. }
             | Action::CastFreeDuringResolution { object, .. }
             | Action::AnnounceTaxedExile { object, .. }
+            | Action::AnnounceLibraryTop { object, .. }
             | Action::AnnounceGraveyardWithLife { object, .. } => object.card,
             Action::PlayGraveyardPermanent { card, .. }
                 if !self.state.objects[card as usize].card.is_land() =>

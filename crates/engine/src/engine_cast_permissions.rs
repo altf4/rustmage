@@ -705,7 +705,7 @@ impl Game {
             activation_choice: None,
             mana_output: None,
             activation_reductions: None,
-            free_hand_permission: None,
+            limited_cast_permission: None,
             origin_counter_cost,
             origin_additional_cost,
             origin_alternative_cost: granted_warp

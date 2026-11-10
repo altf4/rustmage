@@ -728,7 +728,7 @@ use programs::Resolution;
 #[doc(hidden)]
 #[path = "engine_targeting.rs"]
 pub mod targeting;
-use targeting::Announcement;
+use targeting::{Announcement, LimitedCastPermission};
 #[path = "engine_mandatory_loops.rs"]
 mod mandatory_loops;
 
@@ -1054,6 +1054,13 @@ define_actions! {
     PlayTaxedExileLand { object: ObjectRef },
     AnnounceExileLife { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceLibraryLife { card: CardId, face: CastFace, flash_surcharge: bool },
+    AnnounceLibraryTop {
+        object: ObjectRef,
+        face: CastFace,
+        method: CastMethod,
+        flash_surcharge: bool,
+        permission: LibraryTopCastPermission,
+    },
     AnnounceAirbend { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceFlashSurcharge { card: CardId },
     AnnounceGraveyardFlashSurcharge { card: CardId },
@@ -3989,6 +3996,10 @@ pub struct Observation {
     pub announcing: Option<SpellView>,
     pub announcing_free_hand_permission: Option<ObjectRef>,
     pub used_free_hand_permissions: Vec<ObjectRef>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub announcing_library_top_cast_permission: Option<LibraryTopCastPermission>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub used_library_top_cast_permissions: Vec<LibraryTopCastUse>,
     pub suspended_mana_announcements: Vec<ManaAnnouncementView>,
     pub announcing_payment: Option<PendingPaymentView>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5759,6 +5770,12 @@ impl Game {
                     casting_prohibited || self.nonhand_cast_prohibited(actor),
                     &mut emit,
                 ) {
+                    return true;
+                }
+                if !casting_prohibited
+                    && !self.nonhand_cast_prohibited(actor)
+                    && self.visit_limited_library_top_casts(actor, sorcery, &mut emit)
+                {
                     return true;
                 }
                 if s.players[actor.index()].library_top_life_play
@@ -7760,7 +7777,8 @@ impl Game {
                     .announcing
                     .as_mut()
                     .expect("payment window")
-                    .free_hand_permission = Some(Box::new(permission));
+                    .limited_cast_permission =
+                    Some(Box::new(LimitedCastPermission::FreeHand(permission)));
             }
             Action::AnnounceGrantedFlashback {
                 card,
@@ -7800,6 +7818,32 @@ impl Game {
                 };
                 Self::configure_mana_value_life_cast(&mut item, method, flash_surcharge);
                 self.open_payment_announcement(item, Counters::default(), None);
+            }
+            Action::AnnounceLibraryTop {
+                object,
+                face,
+                method,
+                flash_surcharge,
+                permission,
+            } => {
+                let mut item = self.cast_item(actor, object.card, [0; 6]);
+                self.set_cast_face(&mut item, face);
+                let cast = item.cast.as_mut().unwrap();
+                cast.method = method;
+                cast.flash_surcharge = flash_surcharge;
+                if method == CastMethod::Free && item.source.unwrap().card.x_symbols() > 0 {
+                    item.x = Some(0);
+                }
+                self.open_payment_announcement_configured(
+                    item,
+                    Counters::default(),
+                    None,
+                    None,
+                    |announcement| {
+                        announcement.limited_cast_permission =
+                            Some(Box::new(LimitedCastPermission::LibraryTop(permission)));
+                    },
+                );
             }
             Action::AnnounceCast { card }
             | Action::AnnounceExile { card }
@@ -10683,6 +10727,9 @@ impl Game {
         self.state.triggered_this_turn.clear();
         self.state.ability_resolutions = None;
         self.state.used_free_hand_permissions = None;
+        if let Some(top) = &mut self.state.library_top {
+            top.cast_uses.clear();
+        }
         self.state.permanent_damage_history = None;
         self.state.tap_history = None;
         self.state.counter_placement_history = None;
@@ -12275,10 +12322,20 @@ impl Game {
                 .as_ref()
                 .and_then(|resolution| resolution.moved_count),
             suspended_mana_announcements: self.mana_announcement_views(viewer),
-            announcing_free_hand_permission: s
+            announcing_free_hand_permission: s.announcing.as_ref().and_then(|a| {
+                match a.limited_cast_permission.as_deref() {
+                    Some(LimitedCastPermission::FreeHand(source)) => Some(*source),
+                    _ => None,
+                }
+            }),
+            announcing_library_top_cast_permission: s
                 .announcing
                 .as_ref()
-                .and_then(|a| a.free_hand_permission.as_deref().copied()),
+                .and_then(Announcement::library_top_cast_permission),
+            used_library_top_cast_permissions: s
+                .library_top
+                .as_ref()
+                .map_or_else(Vec::new, |top| top.cast_uses.clone()),
             used_free_hand_permissions: s
                 .used_free_hand_permissions
                 .as_deref()
@@ -12597,6 +12654,7 @@ impl Game {
             })
             + s.library_top.as_ref().map_or(0, |top| {
                 std::mem::size_of::<library_top::LibraryTopState>()
+                    + top.cast_uses.len() * std::mem::size_of::<LibraryTopCastUse>()
                     + top
                         .private_known_top
                         .as_ref()
@@ -12747,9 +12805,9 @@ impl Game {
                     + a.activation_choice.as_ref().map_or(0, |_| {
                         std::mem::size_of::<targeting::ActivationCostChoice>()
                     })
-                    + a.free_hand_permission
+                    + a.limited_cast_permission
                         .as_ref()
-                        .map_or(0, |_| std::mem::size_of::<ObjectRef>())
+                        .map_or(0, |_| std::mem::size_of::<LimitedCastPermission>())
             })
             + s.attack_payment.as_ref().map_or(0, |p| p.bytes())
             + s.exile_links.len() * std::mem::size_of::<ExileLink>()
@@ -13159,7 +13217,7 @@ pub mod cast_symbol_quantities;
 #[doc(hidden)]
 #[path = "engine_library_top.rs"]
 pub mod library_top;
-pub use library_top::LibraryRevealEvent;
+pub use library_top::{LibraryRevealEvent, LibraryTopCastPermission, LibraryTopCastUse};
 
 #[doc(hidden)]
 #[path = "engine_graveyard_symbol_cost.rs"]

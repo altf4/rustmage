@@ -17,6 +17,7 @@ impl Card {
                         | StaticAbilityFragment::LookAtLibraryTop
                         | StaticAbilityFragment::CastCreatureFromLibraryTop
                         | StaticAbilityFragment::CastFromLibraryTop(_)
+                        | StaticAbilityFragment::CastInstantSorceryFromLibraryTopOnceEachTurn
                         | StaticAbilityFragment::PlayFromLibraryTopAfterAttacking
                         | StaticAbilityFragment::CastSubtypesFromLibraryTopWithCounter(_)
                         | StaticAbilityFragment::PlayLandFromLibraryTop

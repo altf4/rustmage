@@ -22,6 +22,9 @@ pub(super) const RETURN_COST: AdditionalCost = AdditionalCost {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum WebSlingingOrigin {
     Ordinary,
+    LibraryTop {
+        permission: LibraryTopCastPermission,
+    },
     GraveyardType {
         permission: ObjectRef,
         permanent_type: PermanentType,
@@ -227,7 +230,7 @@ impl Game {
         let mut origin_life_cost = None;
         let mut exile_play_surcharge = None;
         match origin {
-            WebSlingingOrigin::Ordinary => {}
+            WebSlingingOrigin::Ordinary | WebSlingingOrigin::LibraryTop { .. } => {}
             WebSlingingOrigin::GraveyardType {
                 permission,
                 permanent_type,
@@ -285,6 +288,10 @@ impl Game {
             origin_counter_cost,
             |announcement| {
                 announcement.origin_alternative_cost = Some(cost);
+                if let WebSlingingOrigin::LibraryTop { permission } = origin {
+                    announcement.limited_cast_permission =
+                        Some(Box::new(LimitedCastPermission::LibraryTop(permission)));
+                }
                 announcement.origin_additional_cost = origin_additional_cost;
                 if let Some(life) = origin_life_cost {
                     announcement.add_origin_life_cost(life);

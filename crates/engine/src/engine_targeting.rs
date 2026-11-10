@@ -10,6 +10,23 @@ pub(super) struct ActivationCostChoice {
     pub route: ActivationCostRoute,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum LimitedCastPermission {
+    FreeHand(ObjectRef),
+    LibraryTop(LibraryTopCastPermission),
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl LimitedCastPermission {
+    pub(super) fn source(self) -> ObjectRef {
+        match self {
+            Self::FreeHand(source) => source,
+            Self::LibraryTop(permission) => permission.source,
+        }
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Announcement {
     pub behold_required: bool,
@@ -34,7 +51,8 @@ pub(super) struct Announcement {
     /// Only explicit alternative choices allocate this cold pre-reduction receipt.
     pub activation_choice: Option<Box<ActivationCostChoice>>,
     pub activation_reductions: Option<Box<power_up::ActivationCostReductions>>,
-    pub free_hand_permission: Option<Box<ObjectRef>>,
+    /// The selected independent use becomes spent only when this cast commits.
+    pub limited_cast_permission: Option<Box<LimitedCastPermission>>,
     /// Mandatory nonmana cost belonging to the selected origin permission.
     pub origin_counter_cost: Option<u16>,
     /// Immutable definition supplying mandatory costs for the chosen origin route.
@@ -76,6 +94,13 @@ pub(super) struct Announcement {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Announcement {
+    pub(super) fn library_top_cast_permission(&self) -> Option<LibraryTopCastPermission> {
+        match self.limited_cast_permission.as_deref().copied() {
+            Some(LimitedCastPermission::LibraryTop(permission)) => Some(permission),
+            _ => None,
+        }
+    }
+
     pub(super) fn linked_origin_counter_cost(&self) -> Option<u16> {
         self.item
             .cast
@@ -2802,7 +2827,7 @@ impl Game {
             activation_choice: None,
             mana_output: None,
             activation_reductions,
-            free_hand_permission: None,
+            limited_cast_permission: None,
             origin_counter_cost: None,
             origin_additional_cost: None,
             origin_alternative_cost: self.origin_alternative_cost_for(&item),
@@ -3038,7 +3063,7 @@ impl Game {
             activation_choice: None,
             mana_output,
             activation_reductions,
-            free_hand_permission: None,
+            limited_cast_permission: None,
             origin_counter_cost,
             origin_additional_cost: None,
             origin_alternative_cost: self.origin_alternative_cost_for(&item),
@@ -3383,8 +3408,14 @@ impl Game {
                 return;
             }
         } else {
-            if let Some(permission) = announcement.free_hand_permission.take() {
-                self.use_free_hand_permission(*permission);
+            if let Some(permission) = announcement.limited_cast_permission.take() {
+                match *permission {
+                    LimitedCastPermission::FreeHand(source) => {
+                        self.use_free_hand_permission(source)
+                    }
+                    LimitedCastPermission::LibraryTop(permission) => self
+                        .use_library_top_cast_permission(announcement.item.controller, permission),
+                }
             }
             self.queue_casualty_copies(&announcement);
             self.queue_conspire_copies(&announcement);

@@ -202,6 +202,8 @@ pub enum StaticAbilityFragment {
     CastCreatureFromLibraryTop,
     /// An ordinary cast from the current top, using the chosen spell face.
     CastFromLibraryTop(CastFilter),
+    /// Each controller may use this exact ability for one library-top spell per turn.
+    CastInstantSorceryFromLibraryTopOnceEachTurn,
     /// Ordinary land plays and spell casts after this exact source attacked.
     PlayFromLibraryTopAfterAttacking,
     CastSubtypesFromLibraryTopWithCounter(&'static [&'static str]),
