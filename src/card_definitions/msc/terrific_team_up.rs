@@ -43,7 +43,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 subject: Subject::Targets,
                 power: 1,
                 toughness: 0,
-                keywords: Keywords::NONE,
             },
             Instruction::GroupPowerDamage {
                 source: 0,

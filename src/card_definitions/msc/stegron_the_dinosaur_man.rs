@@ -20,7 +20,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 subject: Subject::Targets,
                 power: 3,
                 toughness: 1,
-                keywords: Keywords::NONE,
             },
             Instruction::ChangeTargetCreatureForm(AnimationSpec {
                 artifact: false,

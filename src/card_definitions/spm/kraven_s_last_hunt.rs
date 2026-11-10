@@ -25,7 +25,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 subject: Subject::Targets,
                 power: 2,
                 toughness: 2,
-                keywords: Keywords::NONE,
             }],
         },
         TriggeredAbility {
