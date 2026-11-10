@@ -29,6 +29,12 @@ pub(super) struct CostContext {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl CostContext {
+    pub(super) fn needs_web_return(&self) -> bool {
+        self.clauses
+            .iter()
+            .any(|row| !row.paid && matches!(row.clause, CastCostClause::WebSlingingReturn(_)))
+    }
+
     fn from_announcement(a: &Announcement) -> Option<Box<Self>> {
         let c = a.cast_costs.as_ref()?;
         let mut selected = a.additional_group.as_deref().cloned().unwrap_or_default();

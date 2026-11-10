@@ -3636,12 +3636,10 @@ impl<'g> FundingState<'g> {
         use crate::cards::{ManaRestriction, StaticAbilityFragment};
         let purpose = self.payment_purpose(goal);
         let convoke = self.convoke_available();
-        let needs_web_return = self.cast_costs.as_ref().is_some_and(|costs| {
-            costs
-                .clauses
-                .iter()
-                .any(|row| !row.paid && matches!(row.clause, CastCostClause::WebSlingingReturn(_)))
-        });
+        let needs_web_return = self
+            .cast_costs
+            .as_deref()
+            .is_some_and(CostContext::needs_web_return);
         if !matches!(
             purpose,
             mana_lots::Purpose::Activation(_) | mana_lots::Purpose::Spell(_)
