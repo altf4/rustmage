@@ -7025,16 +7025,11 @@ impl Game {
                     .iter()
                     .filter(|bound| bound.group == announcement.group)
                     .count();
+                // The target plan supplies the minimum even for a positive division.
                 if count >= usize::from(announcement.spec.min)
                     && self
                         .exact_x_targets(&announcement.item)
                         .is_none_or(|required| count == required)
-                    && (count > 0
-                        || announcement.item.has_scaled_division()
-                        || announcement
-                            .item
-                            .division_total()
-                            .is_none_or(|total| total == 0))
                     && self.announcement_target_fundable(announcement, None, None, None, None, true)
                     && emit(Action::FinishTargets)
                 {

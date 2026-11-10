@@ -1013,9 +1013,6 @@ impl Game {
             };
             assert_eq!(spec.min, 0);
             spec.max = usize::try_from(item.x.unwrap_or(0)).unwrap_or(usize::MAX);
-            if item.division_total().is_some_and(|total| total > 0) {
-                spec.min = 1;
-            }
             return TargetPlan::Single(spec);
         }
         if let TargetPlan::Single(mut spec) = plan
