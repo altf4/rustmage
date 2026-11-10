@@ -1870,7 +1870,7 @@ fn rowan_freezes_gross_life_loss_for_black_and_red_spell_faces_until_cleanup() {
         }];
         assert_eq!(discounts(&game), frozen);
         shock_player(&mut game);
-        game.state.players[player.index()].mana = [0, 0, 1, 0, 0, 0];
+        act(&mut game, Action::TapMana { card: crypt });
         cast(&mut game, drain, Some(Target::Card(victim)));
         settle(&mut game);
         assert_eq!(game.state.players[player.index()].life, 18);
