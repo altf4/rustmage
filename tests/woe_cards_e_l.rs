@@ -643,10 +643,11 @@ fn howling_galefang_gains_haste_from_a_live_owned_exiled_adventure() {
         assert!(!view.keywords.contains(Keywords::HASTE));
 
         game.move_object(adventure, Zone::Exile);
-        assert!(game
-            .object_view(galefang)
-            .keywords
-            .contains(Keywords::HASTE));
+        assert!(
+            game.object_view(galefang)
+                .keywords
+                .contains(Keywords::HASTE)
+        );
         let mut removed = game.clone();
         removed.move_object(adventure, Zone::Hand);
         for branch in [&mut game, &mut removed] {
@@ -672,10 +673,11 @@ fn gingerbrute_has_paid_food_and_a_temporary_haste_only_blocking_rule() {
         announce(&mut game, gingerbrute, &[]);
         settle(&mut game);
         assert!(game.has_subtype(gingerbrute, "Food"));
-        assert!(game
-            .object_view(gingerbrute)
-            .keywords
-            .contains(Keywords::HASTE));
+        assert!(
+            game.object_view(gingerbrute)
+                .keywords
+                .contains(Keywords::HASTE)
+        );
 
         let activate = |ability| Action::AnnounceActivate {
             card: gingerbrute,
@@ -705,10 +707,12 @@ fn gingerbrute_has_paid_food_and_a_temporary_haste_only_blocking_rule() {
         let mut expired = game.clone();
         expired.state.step = Step::End;
         pass_twice(&mut expired);
-        assert!(!expired
-            .object_view(gingerbrute)
-            .keywords
-            .contains(Keywords::ONLY_HASTE_BLOCKERS));
+        assert!(
+            !expired
+                .object_view(gingerbrute)
+                .keywords
+                .contains(Keywords::ONLY_HASTE_BLOCKERS)
+        );
 
         pass_twice(&mut game);
         pass_twice(&mut game);
@@ -746,10 +750,11 @@ fn into_the_fae_court_draws_three_and_creates_one_restricted_faerie() {
         );
         let faeries = tokens(&game, player, FAERIE);
         assert_eq!(faeries.len(), 1);
-        assert!(game
-            .object_view(faeries[0])
-            .keywords
-            .contains(Keywords::FLYING));
+        assert!(
+            game.object_view(faeries[0])
+                .keywords
+                .contains(Keywords::FLYING)
+        );
         assert!(tokens(&game, player.other(), FAERIE).is_empty());
     }
 }
@@ -853,10 +858,11 @@ fn gumdrop_poisoner_creates_food_and_uses_life_gained_not_net_life_change() {
 
         cast_adventurer(&mut game, poisoner);
         pass_twice(&mut game);
-        assert!(game
-            .object_view(poisoner)
-            .keywords
-            .contains(Keywords::LIFELINK));
+        assert!(
+            game.object_view(poisoner)
+                .keywords
+                .contains(Keywords::LIFELINK)
+        );
         let mut no_target = game.clone();
         act(&mut no_target, Action::FinishTargets);
         settle(&mut no_target);
@@ -880,10 +886,11 @@ fn heartflame_duelist_grants_lifelink_to_a_paid_adventure_while_it_is_present() 
         announce(&mut game, duelist, &[]);
         settle(&mut game);
         cast_adventure(&mut game, slash, Some(Target::Player(opponent)));
-        assert!(game
-            .object_view(slash)
-            .keywords
-            .contains(Keywords::LIFELINK));
+        assert!(
+            game.object_view(slash)
+                .keywords
+                .contains(Keywords::LIFELINK)
+        );
         let mut removed = game.clone();
         act(&mut removed, Action::Pass);
         cast(&mut removed, bounce, Some(Target::Card(duelist)));
@@ -1033,18 +1040,21 @@ fn birthright_boon_searches_both_types_and_kellan_counts_current_attachments() {
             act(branch, Action::FinishSearch);
             assert_eq!(branch.object_view(selection).zone, Zone::Hand);
             assert_eq!(branch.object_view(kellan).zone, Zone::Exile);
-            assert!(branch
-                .observe(opponent)
-                .known_hand
-                .contains(&branch.object_ref(selection)));
+            assert!(
+                branch
+                    .observe(opponent)
+                    .known_hand
+                    .contains(&branch.object_ref(selection))
+            );
         }
 
         cast_adventurer(&mut game, kellan);
         settle(&mut game);
-        assert!(game
-            .object_view(kellan)
-            .keywords
-            .contains(Keywords::DOUBLE_STRIKE));
+        assert!(
+            game.object_view(kellan)
+                .keywords
+                .contains(Keywords::DOUBLE_STRIKE)
+        );
         announce(&mut game, equipment, &[]);
         settle(&mut game);
         let equip = Action::AnnounceActivate {
@@ -1098,10 +1108,12 @@ fn ego_drain_reveals_the_opposing_hand_and_privately_exiles_without_a_faerie() {
         only_land.move_object(nonland, Zone::Graveyard);
         cast(&mut only_land, spell, Some(Target::Player(opponent)));
         pass_twice(&mut only_land);
-        assert!(only_land
-            .observe(player)
-            .known_hand
-            .contains(&only_land.object_ref(land)));
+        assert!(
+            only_land
+                .observe(player)
+                .known_hand
+                .contains(&only_land.object_ref(land))
+        );
         assert!(only_land.observe(player).effect_choice.is_some());
         assert!(only_land.observe(opponent).effect_choice.is_none());
         let exile = Action::SelectResolutionExile {
@@ -1543,9 +1555,10 @@ fn goddric_celebrates_two_nonland_entries_and_pays_to_boost_current_dragons() {
         assert_eq!((form.power, form.toughness), (4, 4));
         assert!(form.is_legendary() && form.has_subtype("Dragon"));
         assert!(!form.has_subtype("Human") && !form.has_subtype("Noble"));
-        assert!(form
-            .keywords
-            .contains(Keywords::HASTE.union(Keywords::FLYING)));
+        assert!(
+            form.keywords
+                .contains(Keywords::HASTE.union(Keywords::FLYING))
+        );
         act(&mut game, fire.clone());
         act(
             &mut game,
@@ -1651,10 +1664,11 @@ fn johann_privately_casts_a_paid_adventure_and_the_route_resets_on_the_opposing_
         });
         choose_target(&mut game, Target::Player(opponent));
         reject(&mut game, Action::PayCosts { payment: [0; 6] });
-        assert!(game
-            .observe(player)
-            .used_library_top_cast_permissions
-            .is_empty());
+        assert!(
+            game.observe(player)
+                .used_library_top_cast_permissions
+                .is_empty()
+        );
         pay(&mut game);
         settle(&mut game);
         assert_eq!(game.object_view(top).zone, Zone::Exile);
@@ -2146,9 +2160,10 @@ fn eriette_restricts_attacks_and_counts_live_controlled_auras_at_the_end_step() 
                 defender,
             },
         );
-        assert!(game
-            .legal_actions()
-            .contains(&Action::Attack { card: free }));
+        assert!(
+            game.legal_actions()
+                .contains(&Action::Attack { card: free })
+        );
         act(
             &mut game,
             Action::AttackPlaneswalker {
@@ -2317,11 +2332,12 @@ fn feral_encounter_privately_exiles_a_paid_creature_then_targets_at_combat() {
         assert_eq!(skip.object_view(giant).zone, Zone::Library);
         assert_eq!(skip.top_library_card(player), Some(original_top));
         end_scenario_turn(&mut skip);
-        assert!(skip
-            .observe(player)
-            .delayed_steps
-            .as_ref()
-            .is_none_or(Vec::is_empty));
+        assert!(
+            skip.observe(player)
+                .delayed_steps
+                .as_ref()
+                .is_none_or(Vec::is_empty)
+        );
 
         act(&mut game, Action::SelectLibrary { card: giant });
         act(&mut game, Action::FinishLibrarySelection);
@@ -2362,11 +2378,12 @@ fn feral_encounter_privately_exiles_a_paid_creature_then_targets_at_combat() {
         settle(&mut game);
         assert_eq!(game.object_view(victim).zone, Zone::Graveyard);
         assert_eq!(game.object_view(giant).damage, 0);
-        assert!(game
-            .observe(player)
-            .delayed_steps
-            .as_ref()
-            .is_none_or(Vec::is_empty));
+        assert!(
+            game.observe(player)
+                .delayed_steps
+                .as_ref()
+                .is_none_or(Vec::is_empty)
+        );
     }
 }
 

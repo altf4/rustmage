@@ -2,11 +2,11 @@
 //! Individual printed rules, including the three bans' Freeform effects, are
 //! exercised by the WOE card scenarios in the native suite.
 use rustmage::{
-    policy, Action, Card, CastFace, CastMethod, Config, DeckRules, Error, Game, Keywords,
-    Observation, Outcome, Player, StackKind, Step, Zone, CATALOGUE_VERSION,
+    Action, CATALOGUE_VERSION, Card, CastFace, CastMethod, Config, DeckRules, Error, Game,
+    Keywords, Observation, Outcome, Player, StackKind, Step, Zone, policy,
 };
 use serde::Deserialize;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
 use std::time::{Duration, Instant};
@@ -355,10 +355,12 @@ fn private_decision(game: &Game, view: &Observation, actor: Player) -> bool {
             let redacted = other.resolution_free_casts.as_ref().unwrap();
             assert!(redacted.remaining.is_empty() && redacted.paid.is_none());
             for exact in &view.resolution_free_casts.as_ref().unwrap().remaining {
-                assert!(!other
-                    .objects
-                    .iter()
-                    .any(|object| object.reference == *exact));
+                assert!(
+                    !other
+                        .objects
+                        .iter()
+                        .any(|object| object.reference == *exact)
+                );
             }
         }
     }
