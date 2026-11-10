@@ -78,7 +78,7 @@ fn granted(game: &Game, artifact: CardId, provider: CardId) -> Action {
     }
 }
 
-fn choose_damage_target(game: &mut Game, target: Target) {
+fn choose_target(game: &mut Game, target: Target) {
     act(game, Action::ChooseTarget { target });
     if game.legal_actions().contains(&Action::FinishTargets) {
         act(game, Action::FinishTargets);
@@ -95,17 +95,35 @@ fn paid_sacrifice_uses_the_artifact_lki_and_counts_live_named_permanents() {
         let second = spawn(&mut game, player, PROVIDER, Zone::Battlefield);
         let theirs = spawn(&mut game, opponent, PROVIDER, Zone::Battlefield);
         let removal = put(&mut game, opponent, "Disenchant", Zone::Hand);
-        let artifact = put(&mut game, player, "Swiftfoot Boots", Zone::Battlefield);
+        let artifact = put(&mut game, player, "Kavaron Turbodrone", Zone::Battlefield);
+        let collar = put(&mut game, player, "Basilisk Collar", Zone::Battlefield);
         let land = put(&mut game, player, "Forest", Zone::Battlefield);
-        game.state.objects[artifact as usize].tapped = true;
-        game.state.objects[artifact as usize].gained_keywords = Keywords::LIFELINK;
+        for source in [artifact, collar] {
+            act(
+                &mut game,
+                Action::AnnounceActivate {
+                    card: source,
+                    ability: 0,
+                    counter_payment: Counters::default(),
+                },
+            );
+            choose_target(&mut game, Target::Card(artifact));
+            pay(&mut game);
+            settle(&mut game);
+        }
+        assert!(game.object_view(artifact).tapped);
+        assert!(
+            game.object_view(artifact)
+                .keywords
+                .contains(Keywords::LIFELINK)
+        );
         game.state.players[player.index()].mana = [0; 6];
 
         let from_first = granted(&game, artifact, first);
         let from_second = granted(&game, artifact, second);
         let from_theirs = granted(&game, artifact, theirs);
         let artifact_lki = game.object_ref(artifact);
-        assert!(game.has_subtype(artifact, "Equipment"));
+        assert!(game.has_subtype(artifact, "Robot"));
         assert!(!game.has_subtype(artifact, "Food"));
         let mut unfunded = game.clone();
         reject(&mut unfunded, from_first.clone());
@@ -122,7 +140,7 @@ fn paid_sacrifice_uses_the_artifact_lki_and_counts_live_named_permanents() {
         assert_eq!(indexed.snapshot(), game.snapshot());
 
         let target = Target::Player(opponent);
-        choose_damage_target(&mut game, target);
+        choose_target(&mut game, target);
         let payment = game.snapshot();
         let tap = Action::TapMana { card: land };
         assert!(game.apply(opponent, tap.clone()).is_err());
@@ -131,7 +149,10 @@ fn paid_sacrifice_uses_the_artifact_lki_and_counts_live_named_permanents() {
         act(&mut game, tap.clone());
         act(&mut game, Action::TapMana { card: second_land });
         pay(&mut game);
-        assert_eq!(game.object_view(artifact).zone, Zone::Graveyard);
+        let departed = game.object_view(artifact);
+        assert_eq!(departed.zone, Zone::Graveyard);
+        assert_ne!(departed.reference, artifact_lki);
+        assert!(!departed.keywords.contains(Keywords::LIFELINK));
         assert_eq!(game.state.players[player.index()].mana, [0; 6]);
         let ability = game.state.stack.last().unwrap();
         let source = ability.source.unwrap();
@@ -214,7 +235,7 @@ fn suppression_and_controller_changes_are_checked_at_the_grants_own_timestamp() 
     );
     let activation = granted(&game, borrowed, first);
     act(&mut game, activation);
-    choose_damage_target(&mut game, Target::Player(opponent));
+    choose_target(&mut game, Target::Player(opponent));
     pay(&mut game);
     let life = game.state.players[opponent.index()].life;
     settle(&mut game);
