@@ -3726,6 +3726,8 @@ pub enum Instruction {
     EventObjectDamageReceivedPlayers(PlayerSet),
     /// The resolving ability’s source damages the current or last-known controller of its event object.
     DamageEventObjectController(i32),
+    /// Deal damage to the exact battlefield object referenced by the event, without targeting.
+    DamageToEventObject(i32),
     DamagePlayersScaled(PlayerSet, AmountValue),
     CreateTokensFor {
         players: PlayerSet,
@@ -6270,6 +6272,10 @@ pub enum TriggerCondition {
     SelfAttacksOrBlocks,
     /// One trigger for each attacker with this effective ability that the source blocks.
     SelfBlocksCreatureWithKeyword(Keywords),
+    /// One event for each opposing creature paired with this source by a block.
+    SelfBlocksOrBecomesBlockedByCreature,
+    /// One event for each controlled attacker of this subtype newly blocked.
+    ControlledSubtypeBecomesBlocked(&'static str),
     SelfFirstAttack,
     CreatureAttacksYou {
         colors: u8,

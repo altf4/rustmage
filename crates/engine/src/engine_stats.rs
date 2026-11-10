@@ -145,6 +145,7 @@ impl Game {
                     | TriggerCondition::ControlledCreatureAttacksWithKeyword(_)
                     | TriggerCondition::ControlledCreatureAttacksPlayerAlone
                     | TriggerCondition::OpponentCreatureBlocksSmall
+                    | TriggerCondition::ControlledSubtypeBecomesBlocked(_)
                     | TriggerCondition::ControlledEquippedCreatureAttacks
             )
         }) {

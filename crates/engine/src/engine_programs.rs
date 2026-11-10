@@ -1125,6 +1125,8 @@ impl Game {
                     | TriggerCondition::DelayedCreatureAttacksSubtypeAny(_)
                     | TriggerCondition::SelfAttacksOrBlocks
                     | TriggerCondition::SelfBlocksCreatureWithKeyword(_)
+                    | TriggerCondition::SelfBlocksOrBecomesBlockedByCreature
+                    | TriggerCondition::ControlledSubtypeBecomesBlocked(_)
                     | TriggerCondition::ControlledCreatureAttacks
                     | TriggerCondition::CrewedVehicleAttacks
                     | TriggerCondition::ControlledSubtypeAttackDeclaration(_)
@@ -2887,6 +2889,77 @@ impl Game {
                     _ => (),
                 }
             }
+        }
+    }
+
+    /// A creature becoming blocked and a pair of creatures meeting in combat
+    /// are different events. Multiple blockers share only the former.
+    pub(super) fn block_relationship_triggers(
+        &mut self,
+        first_new_block: usize,
+        newly_blocked: &[CardId],
+    ) {
+        for pair in first_new_block..self.state.blocks.len() {
+            let (blocker, attacker) = self.state.blocks[pair];
+            for (id, other) in [(blocker, attacker), (attacker, blocker)] {
+                let card = self.state.objects[id as usize].card;
+                for (index, ability) in card.triggers().iter().enumerate() {
+                    if ability.condition.event()
+                        == TriggerCondition::SelfBlocksOrBecomesBlockedByCreature
+                    {
+                        let source = self.object_view(id);
+                        self.queue_block_subject(&source, index, other);
+                    }
+                }
+            }
+        }
+        if newly_blocked.is_empty() {
+            return;
+        }
+        let sources: Vec<_> = self
+            .state
+            .attack_sources
+            .iter()
+            .copied()
+            .filter(|&id| {
+                self.on_battlefield(id)
+                    && self.state.objects[id as usize]
+                        .card
+                        .triggers()
+                        .iter()
+                        .any(|ability| {
+                            matches!(
+                                ability.condition.event(),
+                                TriggerCondition::ControlledSubtypeBecomesBlocked(_)
+                            )
+                        })
+            })
+            .map(|id| self.object_view(id))
+            .collect();
+        for source in sources {
+            for (index, ability) in source.card.triggers().iter().enumerate() {
+                let TriggerCondition::ControlledSubtypeBecomesBlocked(subtype) =
+                    ability.condition.event()
+                else {
+                    continue;
+                };
+                for &id in newly_blocked {
+                    if self.state.objects[id as usize].controller == source.controller
+                        && self.has_subtype(id, subtype)
+                    {
+                        self.queue_block_subject(&source, index, id);
+                    }
+                }
+            }
+        }
+    }
+
+    fn queue_block_subject(&mut self, source: &ObjectView, index: usize, id: CardId) {
+        if self.queue_trigger(source, index) {
+            let object = self.object_ref(id);
+            let packet = self.state.pending_triggers.last_mut().unwrap();
+            packet.entering_object = Some(object);
+            packet.refer_objects([object]);
         }
     }
 
@@ -7589,6 +7662,9 @@ impl Game {
                 }
                 Instruction::DamageEventObjectController(amount) => {
                     self.damage_event_object_controller(&item, amount);
+                }
+                Instruction::DamageToEventObject(amount) => {
+                    self.damage_to_event_object(&item, amount);
                 }
                 Instruction::SetColors {
                     subject,

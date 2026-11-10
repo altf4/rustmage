@@ -8655,9 +8655,15 @@ impl Game {
                 self.attachment_block_triggers(actor);
                 self.self_block_triggers(&declared, first_new_block);
                 self.opponent_blocker_triggers(actor, &declared);
+                let mut newly_blocked = Vec::new();
                 for attacker in &mut self.state.attackers {
-                    attacker.blocked = self.state.blocks.iter().any(|&(_, a)| a == attacker.card);
+                    let blocked = self.state.blocks.iter().any(|&(_, a)| a == attacker.card);
+                    if blocked && !attacker.blocked {
+                        newly_blocked.push(attacker.card);
+                    }
+                    attacker.blocked |= blocked;
                 }
+                self.block_relationship_triggers(first_new_block, &newly_blocked);
                 self.give_priority();
             }
             Action::AssignDamage { target, amount } => {

@@ -781,6 +781,22 @@ impl Game {
             });
         Some(current.map_or(saved, |object| object.controller))
     }
+    pub(super) fn damage_to_event_object(&mut self, item: &SpellView, amount: i32) {
+        let Some(event) = item.event_object.as_ref() else {
+            return;
+        };
+        let object = event.object;
+        if self.on_battlefield(object.card) && self.object_ref(object.card) == object {
+            self.apply_damage_batch(&[DamageEvent {
+                source: self.program_damage_source(item),
+                target: Target::Card(object.card),
+                amount: i128::from(amount),
+                combat: false,
+                preventable: true,
+            }]);
+        }
+    }
+
     pub(super) fn damage_event_object_controller(&mut self, item: &SpellView, amount: i32) {
         let controller = self
             .event_object_controller(item)
