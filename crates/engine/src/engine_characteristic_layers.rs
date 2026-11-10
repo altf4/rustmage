@@ -529,6 +529,7 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
         let final_kinds = history.last().map_or(*initial, |&(_, kinds, _)| kinds);
         at_form & (1 | 128) != 0 && final_kinds & (1 | 128) != 0
     };
+    let mut dependent_attachments = Vec::new();
     let mut changes: Vec<_> = aura_effects(world, id)
         .into_iter()
         .filter_map(|(time, s)| {
@@ -543,8 +544,10 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
                     // A live attachment grant depends on the effect making its
                     // recipient a creature, even when that effect is newer.
                     let time = time.max(creature_addition_timestamp(world, id).unwrap_or(0));
-                    return can_have_creature_subtypes(time)
-                        .then_some((time, SubtypeChange::Add(s.creature_types)));
+                    if can_have_creature_subtypes(time) {
+                        dependent_attachments.push((time, SubtypeChange::Add(s.creature_types)));
+                    }
+                    return None;
                 }
             };
             Some((time, change))
@@ -583,6 +586,9 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
         }
         Some((row.timestamp, change))
     }));
+    // The timestamp sort is stable, so a dependent grant follows the
+    // subtype change on the same enabling animation.
+    changes.extend(dependent_attachments);
     changes
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
