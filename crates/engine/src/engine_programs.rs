@@ -7057,6 +7057,12 @@ impl Game {
                 } => self.add_extra_turn(item.controller, power_up_prohibited),
                 Instruction::TransformSource => self.transform_source(&item),
                 Instruction::RequireBlocks(filter) => self.require_blocks(&item, filter),
+                Instruction::RequireAllAttacksUntilNextTurn => {
+                    self.require_all_attacks_until_next_turn(item.controller);
+                }
+                Instruction::PreventTargetsBlockingThisTurn => {
+                    self.prevent_targets_blocking_this_turn(&item);
+                }
                 Instruction::RequireTargetsBlocked { group } => {
                     self.require_targets_blocked(&item, group);
                 }

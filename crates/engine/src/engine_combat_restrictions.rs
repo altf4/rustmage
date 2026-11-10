@@ -192,12 +192,14 @@ impl Game {
             return 0;
         }
         let recipient = self.object_ref(id);
-        let this_combat = usize::from(
-            self.state
-                .combat_rules
-                .as_ref()
-                .is_some_and(|rules| rules.must_attack_this_combat.contains(&recipient)),
-        );
+        let this_combat = self.state.combat_rules.as_ref().map_or(0, |rules| {
+            let [p0, p1] = rules.require_all_attack_until_next_turn;
+            p0.saturating_add(p1)
+                .saturating_add(usize::from(
+                    rules.must_attack_this_combat.contains(&recipient),
+                ))
+                .min(LIMIT)
+        });
         if this_combat == LIMIT {
             return this_combat;
         }
@@ -333,8 +335,19 @@ impl Game {
     /// Maximum number of simultaneously satisfiable attack requirements. Unlimited
     /// defenders need no matching; limited planeswalkers are capacity-one slots.
     fn maximum_attack_requirements(&self, actor: Player) -> usize {
-        let mut eligible = self
-            .attack_requirement_sources()
+        let global = self.global_attack_requirements();
+        let require_all = global != [0; 2];
+        let all_controlled = require_all
+            .then_some(&self.state.objects)
+            .into_iter()
+            .flat_map(|objects| objects.iter().enumerate())
+            .filter(|(_, object)| object.zone == Zone::Battlefield && object.controller == actor)
+            .map(|(id, _)| id as CardId);
+        let mut eligible = (!require_all)
+            .then(|| self.attack_requirement_sources())
+            .into_iter()
+            .flatten()
+            .chain(all_controlled)
             .filter_map(|id| {
                 let count = self.attack_requirement_count::<{ usize::MAX }>(id);
                 (count > 0 && self.can_declare_attacker(actor, id)).then_some((id, count))
@@ -372,6 +385,12 @@ impl Game {
                 });
             let player_free = selected_paid
                 || !taxed && self.can_attack_defender(id, CombatDefender::Player(actor.other()));
+            if player_free {
+                // In a two-player game, only creatures of the effect's
+                // controller can attack another player besides that controller.
+                free += requirements + global[actor.index()];
+                continue;
+            }
             let battle_free = self.state.objects.iter().enumerate().any(|(n, _)| {
                 let r = self.object_ref(n as CardId);
                 self.battle_can_be_attacked_by(r, actor)
@@ -380,7 +399,7 @@ impl Game {
             let walker_free = walkers.iter().any(|&(r, limited)| {
                 !limited && self.can_attack_defender(id, CombatDefender::Planeswalker(r))
             });
-            if player_free || battle_free || walker_free {
+            if battle_free || walker_free {
                 free += requirements;
                 continue;
             }
@@ -399,8 +418,7 @@ impl Game {
         free + maximum_attack_matching(&mut edges, walkers.len())
     }
 
-    /// Every mandatory attacker must attack if at least one legal defender exists.
-    /// Defender-specific restrictions do not create a requirement to attack a player.
+    /// Satisfy as many attack requirements as possible under defender and tax rules.
     pub(super) fn attack_declaration_complete(&self, actor: Player) -> bool {
         let chosen = &self.state.selected_attackers;
         for (index, attacker) in chosen.iter().enumerate() {
@@ -433,7 +451,8 @@ impl Game {
                 return false;
             }
         }
-        if !self.has_planeswalker_attack_limit_provider() {
+        let global = self.global_attack_requirements();
+        if global == [0; 2] && !self.has_planeswalker_attack_limit_provider() {
             return self.attack_requirement_sources().all(|id| {
                 !self.attacks_each_combat(id)
                     || !self.can_declare_attacker(actor, id)
@@ -459,7 +478,14 @@ impl Game {
         }
         let fulfilled = chosen
             .iter()
-            .map(|attack| self.attack_requirement_count::<{ usize::MAX }>(attack.card))
+            .map(|attack| {
+                let preference = if attack.defender == Some(CombatDefender::Player(actor.other())) {
+                    global[actor.index()]
+                } else {
+                    0
+                };
+                self.attack_requirement_count::<{ usize::MAX }>(attack.card) + preference
+            })
             .sum::<usize>();
         fulfilled >= self.maximum_attack_requirements(actor)
     }
@@ -492,13 +518,20 @@ impl Game {
             })
     }
     pub(super) fn combat_restricted(&self, id: CardId, attack: bool) -> bool {
-        self.state.roles.as_ref().is_some_and(|roles| {
-            roles.source_linked_effects.iter().any(|row| {
-                row.kind == SourceLinkedEffectKind::ControlAndCombatLockWhileControlled
-                    && row.recipient == self.object_ref(id)
-                    && source_linked_effects::active(self, row)
+        (!attack
+            && self
+                .state
+                .combat_rules
+                .as_ref()
+                .is_some_and(|rules| rules.cannot_block_this_turn.contains(&self.object_ref(id))))
+            || self.state.roles.as_ref().is_some_and(|roles| {
+                roles.source_linked_effects.iter().any(|row| {
+                    row.kind == SourceLinkedEffectKind::ControlAndCombatLockWhileControlled
+                        && row.recipient == self.object_ref(id)
+                        && source_linked_effects::active(self, row)
+                })
             })
-        }) || self.combat_restriction_from(id, id, attack)
+            || self.combat_restriction_from(id, id, attack)
             || self
                 .state
                 .attachment_sources

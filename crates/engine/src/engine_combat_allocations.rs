@@ -31,6 +31,8 @@ pub(super) struct CombatRulesState {
     pub must_be_blocked: Vec<ObjectRef>,
     pub sneak_entries: Option<SharedVec<ObjectRef>>,
     pub must_attack_this_combat: Vec<ObjectRef>,
+    pub require_all_attack_until_next_turn: [usize; 2],
+    pub cannot_block_this_turn: Vec<ObjectRef>,
     pub damaged_players: Vec<CombatDamagePlayerView>,
     pub player_damage_this_turn: PlayerCombatDamageView,
     excess: Option<ExcessDamage>,
@@ -63,7 +65,9 @@ impl CombatRulesState {
                         .map(|row| std::mem::size_of::<SpellView>() + row.owned_bytes())
                         .sum::<usize>()
             })
-            + (self.must_be_blocked.len() + self.must_attack_this_combat.len())
+            + (self.must_be_blocked.len()
+                + self.must_attack_this_combat.len()
+                + self.cannot_block_this_turn.len())
                 * std::mem::size_of::<ObjectRef>()
             + self.damaged_players.len() * std::mem::size_of::<CombatDamagePlayerView>()
             + self.sneak_entries.as_ref().map_or(0, |rows| {

@@ -3787,6 +3787,11 @@ pub struct Observation {
     pub sneak_entries: Vec<ObjectRef>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub must_attack_this_combat: Vec<ObjectRef>,
+    /// Resolving-controller counts, expiring at each controller's next turn.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_all_attack_until_next_turn: Option<[usize; 2]>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub cannot_block_this_turn: Vec<ObjectRef>,
     pub combat_damaged_players: Vec<combat_allocations::CombatDamagePlayerView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub player_combat_damage_this_turn: Option<PlayerCombatDamageView>,
@@ -6588,7 +6593,8 @@ impl Game {
                     return true;
                 }
                 if !s.selected_attackers.is_empty()
-                    && (self.has_attack_tax_provider()
+                    && (self.global_attack_requirements() != [0; 2]
+                        || self.has_attack_tax_provider()
                         || self.has_planeswalker_attack_limit_provider())
                     && emit(Action::CancelAttackDeclaration)
                 {
@@ -10528,7 +10534,7 @@ impl Game {
         // priority cycles those actions create (CR 514.3a).
         self.state.delayed_target_events = None;
         self.state.delayed_attack_this_turn = None;
-        self.state.combat_rules = None;
+        self.begin_combat_rules_turn();
         self.expire_manifest_deaths();
         self.expire_spell_copies();
         if let Some(roles) = &mut self.state.roles {
@@ -10793,6 +10799,7 @@ impl Game {
         if let Some(rules) = &mut self.state.combat_rules {
             rules.must_be_blocked.clear();
             rules.must_attack_this_combat.clear();
+            rules.cannot_block_this_turn.clear();
             rules.additional_combats = 0;
             rules.after_main = None;
             rules.inserted_phases.clear();
@@ -11692,6 +11699,14 @@ impl Game {
                     .filter(|r| self.on_battlefield(r.card) && self.object_ref(r.card) == *r)
                     .collect()
             }),
+            require_all_attack_until_next_turn: s.combat_rules.as_ref().and_then(|rules| {
+                (rules.require_all_attack_until_next_turn != [0; 2])
+                    .then_some(rules.require_all_attack_until_next_turn)
+            }),
+            cannot_block_this_turn: s
+                .combat_rules
+                .as_ref()
+                .map_or_else(Vec::new, |rules| rules.cannot_block_this_turn.clone()),
             must_be_blocked: s
                 .combat_rules
                 .as_ref()
