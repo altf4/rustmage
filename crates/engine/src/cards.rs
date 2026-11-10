@@ -26,6 +26,7 @@ pub mod mana_symbols;
 #[path = "card_activation_slots.rs"]
 pub mod activation_slots;
 
+use crate::PermanentType;
 use crate::capacity::CapacityExt;
 use crate::engine::{GrantedSubtypes, Player, Zone};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
@@ -1397,7 +1398,7 @@ pub enum EffectChoiceKind {
     ExileFromHandWithPlaySurcharge(std::num::NonZeroU32),
     HandCreatureAndLand,
     HandPermanent {
-        maximum: u32,
+        maximum: u64,
         tapped: bool,
     },
     HandExileCopy,
@@ -3195,6 +3196,11 @@ pub enum Instruction {
     CastLibraryTopUpToAttackingPower(u16),
     /// Privately offer one immediate free spell from hand with at most this mana value.
     CastHandFreeUpTo(AmountValue),
+    /// The cast face must have this permanent type.
+    CastHandFreeUpToOfType {
+        maximum: AmountValue,
+        permanent_type: PermanentType,
+    },
     BottomLookedLibraryRandom,
     ControlTargetPlayerNextTurn,
     ExileAllCreaturesRemember,
@@ -3346,6 +3352,12 @@ pub enum Instruction {
     },
     /// Sacrifice any number of matching permanents together and remember the actual count.
     MaySacrificeAnyNumber(SacrificeFilter),
+    /// Optional non-targeted sacrifice of one controlled permanent.
+    /// A completed sacrifice saves its prior battlefield mana value.
+    MaySacrificeForManaValue {
+        filter: SacrificeFilter,
+        skip: usize,
+    },
     /// Choose and link an opposing creature, then change other creatures' stats this turn.
     ChooseOpposingCreatureForDeparture {
         other_power: i32,
@@ -4415,6 +4427,8 @@ pub enum AmountValue {
     SacrificeCostManaValueWithBonus(u16),
     /// Frozen at the beginning of resolution, before target destruction.
     TargetCreaturePower,
+    /// Battlefield mana value recorded by a successful sacrifice during this resolution.
+    ResolutionSacrificedManaValue,
     /// Exact pre-event source facts for a death trigger, never a new incarnation.
     SourceLastKnownPower,
     SacrificedToughness,

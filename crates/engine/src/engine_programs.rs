@@ -55,6 +55,7 @@ pub(super) struct Resolution {
     pub remembered_damage_players: Option<u8>,
     pub remembered_creatures: Option<SharedVec<ObjectRef>>,
     pub sacrificed_power: Option<Box<i128>>,
+    pub sacrificed_mana_value: Option<u64>,
     pub discard_after: Option<discard_events::DiscardAfter>,
     pub optional_wheel: Option<OptionalWheel>,
     pub color_sequence: Option<Box<super::color_sequences::ColorCounterSequence>>,
@@ -3425,6 +3426,7 @@ impl Game {
             cascade: None,
             target_card_facts,
             sacrificed_power: None,
+            sacrificed_mana_value: None,
             immediate_blink_return: None,
             explore: None,
             evidence: None,
@@ -6115,8 +6117,23 @@ impl Game {
                     self.cast_library_by_attacking_power(&item, amount);
                     return;
                 }
-                Instruction::CastHandFreeUpTo(amount) => {
-                    self.offer_hand_free_cast(item.controller, self.item_amount(amount, &item));
+                Instruction::CastHandFreeUpTo(maximum) => {
+                    self.offer_hand_free_cast(
+                        item.controller,
+                        self.item_amount(maximum, &item),
+                        None,
+                    );
+                    return;
+                }
+                Instruction::CastHandFreeUpToOfType {
+                    maximum,
+                    permanent_type,
+                } => {
+                    self.offer_hand_free_cast(
+                        item.controller,
+                        self.item_amount(maximum, &item),
+                        Some(permanent_type),
+                    );
                     return;
                 }
                 Instruction::BottomLookedLibraryRandom => self.finish_library_cast_look(),
@@ -6653,6 +6670,19 @@ impl Game {
                 } => {
                     if self.start_effect_choice(&item, kind, players, filter, amount, optional_skip)
                     {
+                        return;
+                    }
+                }
+                Instruction::MaySacrificeForManaValue { filter, skip } => {
+                    self.state.resolving.as_mut().unwrap().sacrificed_mana_value = None;
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::Sacrifice,
+                        PlayerSet::Controller,
+                        filter,
+                        1,
+                        Some(skip),
+                    ) {
                         return;
                     }
                 }

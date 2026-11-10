@@ -773,6 +773,7 @@ impl Game {
             | AmountValue::ReflexiveSacrificedPower
             | AmountValue::SacrificeCostPower
             | AmountValue::SacrificeCostManaValueWithBonus(_)
+            | AmountValue::ResolutionSacrificedManaValue
             | AmountValue::TappedCostCreaturePower
             | AmountValue::ChosenCostCreaturePower
             | AmountValue::TargetCreaturePower

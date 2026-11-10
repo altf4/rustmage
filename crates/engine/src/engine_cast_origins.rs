@@ -554,6 +554,9 @@ pub struct ResolutionFreeCasts {
     pub remaining_mana_value: Option<u64>,
     pub alternative_cost: Option<ManaCost>,
     pub maximum_mana_value: Option<u64>,
+    /// The offered spell face must have this permanent type.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub permanent_type: Option<PermanentType>,
     pub origin: Zone,
     pub exile_on_graveyard: bool,
     pub allow_lands: bool,
@@ -591,6 +594,7 @@ impl Game {
             let event = self.move_object(id, Zone::Exile);
             if event.moved && event.destination == Zone::Exile && event.before.kinds & 2 == 0 {
                 self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+                    permanent_type: None,
                     uncast_to_hand: true,
                     siege_transformed: false,
                     paid: None,
@@ -624,6 +628,7 @@ impl Game {
             return false;
         }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            permanent_type: None,
             uncast_to_hand: false,
             siege_transformed: false,
             paid: Some(ResolutionPaidCast {
@@ -645,7 +650,12 @@ impl Game {
         self.state.pending = Pending::ResolutionCasts { player };
         true
     }
-    pub(super) fn offer_hand_free_cast(&mut self, player: Player, maximum: u128) {
+    pub(super) fn offer_hand_free_cast(
+        &mut self,
+        player: Player,
+        maximum: u128,
+        permanent_type: Option<PermanentType>,
+    ) {
         let remaining = self
             .state
             .objects
@@ -658,6 +668,7 @@ impl Game {
             .collect();
         // An empty choice still uses the same public resolution step.
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            permanent_type,
             uncast_to_hand: false,
             siege_transformed: false,
             paid: None,
@@ -691,6 +702,7 @@ impl Game {
             .map(|(id, _)| self.object_ref(id as CardId))
             .collect();
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            permanent_type: None,
             uncast_to_hand: false,
             siege_transformed: false,
             paid: Some(ResolutionPaidCast {
@@ -734,6 +746,7 @@ impl Game {
             return false;
         }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            permanent_type: None,
             uncast_to_hand: false,
             siege_transformed: false,
             paid,
@@ -766,6 +779,7 @@ impl Game {
             .collect();
         self.finish_zone_events(&events, &[]);
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            permanent_type: None,
             uncast_to_hand: false,
             siege_transformed: false,
             paid: None,
@@ -874,6 +888,9 @@ impl Game {
                 };
                 let eligible = definition.is_some_and(|card| {
                     !card.is_land()
+                        && free
+                            .permanent_type
+                            .is_none_or(|kind| card.kind_mask() & kind.mask() != 0)
                         && free.paid.is_none_or(|paid| {
                             paid.kinds == u8::MAX || card.kind_mask() & u16::from(paid.kinds) != 0
                         })
@@ -1148,6 +1165,7 @@ impl Game {
             .ok()
             .and_then(|value| value.checked_add(1));
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            permanent_type: None,
             uncast_to_hand: false,
             siege_transformed: false,
             paid: None,
@@ -1200,6 +1218,7 @@ impl Game {
             .collect();
         self.finish_zone_events(&events, &[]);
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            permanent_type: None,
             uncast_to_hand: false,
             siege_transformed: false,
             paid: None,

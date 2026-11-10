@@ -519,6 +519,14 @@ impl Game {
                     .unwrap_or(0)
                     .max(0) as u128
             }
+            AmountValue::ResolutionSacrificedManaValue => u128::from(
+                self.state
+                    .resolving
+                    .as_ref()
+                    .unwrap()
+                    .sacrificed_mana_value
+                    .expect("successful sacrifice during this resolution"),
+            ),
             AmountValue::SacrificeCostManaValueWithBonus(bonus) => item
                 .sacrificed_mana_value
                 .as_deref()

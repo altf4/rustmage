@@ -101,6 +101,8 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::AddCombatRedScaled(value)
             | Instruction::Mobilize { amount: value, .. }
             | Instruction::CounterUnlessPayScaled { amount: value, .. }
+            | Instruction::CastHandFreeUpTo(value)
+            | Instruction::CastHandFreeUpToOfType { maximum: value, .. }
             | Instruction::PutCountersScaled { amount: value, .. }
             | Instruction::PutPermanentCountersScaled { amount: value, .. }
             | Instruction::PutLegendaryPermanentCountersScaled { amount: value, .. }

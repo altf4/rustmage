@@ -119,6 +119,7 @@ fn selected(program: &[Instruction]) -> SelectedQuantities {
             | Instruction::Mobilize { amount: value, .. }
             | Instruction::CounterUnlessPayScaled { amount: value, .. }
             | Instruction::CastHandFreeUpTo(value)
+            | Instruction::CastHandFreeUpToOfType { maximum: value, .. }
             | Instruction::PutCountersScaled { amount: value, .. }
             | Instruction::PutPermanentCountersScaled { amount: value, .. }
             | Instruction::PutLegendaryPermanentCountersScaled { amount: value, .. }
