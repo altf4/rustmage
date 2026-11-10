@@ -30,6 +30,7 @@ const SHRINK: CardRules = CardRules {
     ),
     extras: &CardExtras {
         cast_controlled_subtype: Some("Faerie"),
+        x_symbols: 1,
         bargain_reduction: Some(1),
         ..CardExtras::EMPTY
     },
@@ -83,6 +84,7 @@ fn prepare_shrink(
 ) -> CardId {
     let spell = put(game, player, SHRINK_SPELL, Zone::Hand);
     act(game, Action::AnnounceCast { card: spell });
+    act(game, Action::ChooseX { value });
     act(game, Action::ChooseBargain { sacrifice });
     act(
         game,
@@ -90,7 +92,6 @@ fn prepare_shrink(
             target: Target::Card(target),
         },
     );
-    act(game, Action::ChooseX { value });
     assert_eq!(game.state.pending, Pending::PayCosts { player });
     spell
 }
