@@ -79,10 +79,12 @@ fn each_blocking_pair_deals_damage_only_to_its_original_incarnation() {
         let blink = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
         let old_blink = game.object_ref(blink);
         let spell = put(&mut game, player, "Giant Growth", Zone::Hand);
+        let forest = put(&mut game, player, "Forest", Zone::Battlefield);
 
         declare_blocks(&mut game, slinger, &[stay, blink]);
         announce_triggers(&mut game);
         assert_eq!(game.state.stack.len(), 2);
+        act(&mut game, Action::TapMana { card: forest });
         cast(&mut game, spell, Some(Target::Card(blink)));
         settle(&mut game);
         assert_ne!(game.object_ref(blink), old_blink);

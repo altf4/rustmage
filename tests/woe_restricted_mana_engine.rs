@@ -53,6 +53,7 @@ fn produce(game: &mut Game, card: CardId) {
             card,
             ability: 0,
             payment: [0; 6],
+            counter_payment: Counters::default(),
             production: RESTRICTED_MANA,
         },
     );
