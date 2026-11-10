@@ -249,7 +249,7 @@ fn angry_rabble_checks_cast_mana_value_and_pays_for_two_counters() {
             .keywords
             .contains(Keywords::TRAMPLE)
     );
-    for (name, life) in [("Opt", 20), ("Hedron Archive", 19)] {
+    for (name, life) in [("Opt", 20), ("Hill Giant", 19)] {
         let spell = put(&mut game, P, name, Zone::Hand);
         cast(&mut game, spell, None);
         if name == "Opt" {

@@ -10,5 +10,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             Instruction::BlinkExiledTargetsUntilEndStep,
         ],
     ),
+    extras: &CardExtras {
+        x_symbols: 1,
+        ..CardExtras::EMPTY
+    },
     ..CardRules::EMPTY
 };
