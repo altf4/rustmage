@@ -79,6 +79,7 @@ impl Card {
                             | StaticAbilityFragment::AttachmentManaBonus(..)
                             | StaticAbilityFragment::SourceCounterSubtype { .. }
                             | StaticAbilityFragment::SourceCounterCreature { .. }
+                            | StaticAbilityFragment::SourceCelebrationCreatureForm { .. }
                             | StaticAbilityFragment::SourceOffTurnCreature
                             | StaticAbilityFragment::ControlledCreatureSubtype { .. }
                             | StaticAbilityFragment::AttachedAllCreatureTypes

@@ -175,6 +175,21 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 mana: Vec::new(),
             });
         }
+        StaticAbilityFragment::SourceCelebrationCreatureForm {
+            keywords,
+            activation,
+            ..
+        } => {
+            if id != source.card || !world.celebrating(provider.controller) {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords,
+                abilities: vec![key(activation)],
+                mana: Vec::new(),
+            });
+        }
         StaticAbilityFragment::SourceEntryModeActivation { mode, ability } => {
             if id != source.card
                 || provider.zone != Zone::Battlefield
@@ -514,7 +529,9 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
                 && source.card.static_ability_groups().iter().any(|group| {
                     group.fragments.iter().any(|fragment| matches!(
                         fragment, StaticAbilityFragment::SourceEntryModeActivation { .. } | StaticAbilityFragment::SourceMaxSpeedActivation(_) | StaticAbilityFragment::ControlledPlaneswalkerActivation(_) | StaticAbilityFragment::ControlledArtifactFood(_) | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit | StaticAbilityFragment::OpponentPlayerAttackerKeywords(_)
-                    ) || (matches!(fragment, StaticAbilityFragment::EntryMode(_)) && source.card.has_layer6_provider()))
+                    ) || (matches!(fragment, StaticAbilityFragment::EntryMode(_)) && source.card.has_layer6_provider())
+                        || (matches!(fragment, StaticAbilityFragment::SourceCelebrationCreatureForm { .. })
+                            && world.celebrating(source.controller)))
                 })
         })
         || world.static_sources().iter().any(|&id| {
@@ -707,6 +724,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::SourceCounterKeywords { .. }
                         | StaticAbilityFragment::SourceCounterSubtype { .. }
                         | StaticAbilityFragment::SourceCounterCreature { .. }
+                        | StaticAbilityFragment::SourceCelebrationCreatureForm { .. }
                         | StaticAbilityFragment::AttachmentKeywords(..)
                         | StaticAbilityFragment::AttachmentAttackingKeywords(..)
                         | StaticAbilityFragment::AdditionalTriggers {

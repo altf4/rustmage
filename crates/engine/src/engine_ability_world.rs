@@ -1225,6 +1225,9 @@ pub(super) trait CharacteristicWorld {
     fn subtypes(&self, id: CardId) -> GrantedSubtypes {
         subtypes::in_world(self, id)
     }
+    fn celebrating(&self, player: Player) -> bool {
+        self.game().state.players[player.index()].nonland_permanents_entered_this_turn >= 2
+    }
     fn value(&self, value: StatValue, source: CardId) -> i128 {
         self.game().stat_value_in_world(
             self,
@@ -1340,7 +1343,7 @@ pub(super) trait CharacteristicWorld {
         if object.zone != ability.source_zone()
             || !object.card.static_ability_groups().iter().any(|group| {
                 group.fragments.iter().any(|fragment| matches!(fragment,
-                    crate::cards::StaticAbilityFragment::SourceMaxSpeedActivation(slot) | crate::cards::StaticAbilityFragment::SourceEntryModeActivation { ability: slot, .. } if *slot == index))
+                    crate::cards::StaticAbilityFragment::SourceMaxSpeedActivation(slot) | crate::cards::StaticAbilityFragment::SourceEntryModeActivation { ability: slot, .. } | crate::cards::StaticAbilityFragment::SourceCelebrationCreatureForm { activation: slot, .. } if *slot == index))
             })
         {
             return false;
@@ -1353,6 +1356,10 @@ pub(super) trait CharacteristicWorld {
         let eligible = object.card.static_ability_groups().iter().any(|group| {
             entry_modes::group_enabled(self, self.reference(id), group)
                 && group.fragments.iter().any(|fragment| match *fragment {
+                    crate::cards::StaticAbilityFragment::SourceCelebrationCreatureForm {
+                        activation,
+                        ..
+                    } => activation == index && self.celebrating(controller),
                     crate::cards::StaticAbilityFragment::SourceMaxSpeedActivation(slot) => {
                         slot == index && self.game().state.players[controller.index()].speed >= 4
                     }

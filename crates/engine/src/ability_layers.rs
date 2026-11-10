@@ -407,6 +407,13 @@ pub enum StaticAbilityFragment {
         subtypes: &'static [&'static str],
         keywords: Keywords,
     },
+    /// On celebration, replace creature subtypes and grant a battlefield activation
+    /// and keywords to this source. Pair its base setter in the same type-layer group.
+    SourceCelebrationCreatureForm {
+        subtypes: &'static [&'static str],
+        keywords: Keywords,
+        activation: u16,
+    },
     /// One source-local conditional effect may span type and stat layers.
     SourceGraveyardAllTypes {
         kind: u16,

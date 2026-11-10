@@ -143,6 +143,20 @@ impl CardRules {
                             "mode activation needs battlefield source"
                         );
                     }
+                    StaticAbilityFragment::SourceCelebrationCreatureForm { activation, .. } => {
+                        assert!(
+                            matches!(self.static_groups[group].first_layer, AbilityLayer::Type),
+                            "Celebration subtype replacement begins in the type layer"
+                        );
+                        assert!(
+                            (activation as usize) < self.activated.len()
+                                && matches!(
+                                    self.activated[activation as usize].origin,
+                                    ActivationOrigin::Battlefield
+                                ),
+                            "Celebration grant needs a battlefield activation slot"
+                        );
+                    }
                     StaticAbilityFragment::ControlledArtifactFood(ability) => {
                         assert!(
                             matches!(self.static_groups[group].first_layer, AbilityLayer::Type),

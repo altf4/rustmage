@@ -40,6 +40,7 @@ impl Game {
                         fragment,
                         StaticAbilityFragment::SourceMaxSpeedActivation(_)
                             | StaticAbilityFragment::SourceEntryModeActivation { .. }
+                            | StaticAbilityFragment::SourceCelebrationCreatureForm { .. }
                     )
                 })
             })

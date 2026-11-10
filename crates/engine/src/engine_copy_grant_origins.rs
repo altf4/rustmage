@@ -87,32 +87,38 @@ pub(super) fn program_grant_active<W: ability_world::CharacteristicWorld + ?Size
     source: ObjectRef,
 ) -> bool {
     use crate::cards::StaticAbilityFragment as F;
-    world.object(source.card).zone == Zone::Battlefield
-        && world.reference(source.card) == source
-        && world.printed_abilities_available(source.card)
-        && world
-            .definition(source.card)
-            .static_ability_groups()
-            .iter()
-            .filter(|group| entry_modes::group_enabled(world, source, group))
-            .flat_map(|group| group.fragments)
-            .any(|fragment| {
-                matches!(fragment, F::SourceEntryModeActivation { mode, .. }
-                    if entry_modes::active_mode(world, source) == Some(*mode))
-                    || matches!(
-                        fragment,
-                        F::AttachmentTrigger(_)
-                            | F::ConditionalWard { .. }
-                            | F::OwnTurnSourceAndKindCreatureWard { .. }
-                            | F::ControlledCreatureTrigger { .. }
-                            | F::SourceMaxSpeedActivation(_)
-                            | F::AttachmentActivation { .. }
-                            | F::ControlledPlaneswalkerActivation(_)
-                            | F::ControlledArtifactFood(_)
-                            | F::ControlledPlaneswalkerAttackLimit
-                            | F::GrantInstantSorceryStorm { .. }
-                            | F::CascadeFromHand { .. }
-                            | F::HandMiracle { .. }
-                    )
-            })
+    if world.object(source.card).zone != Zone::Battlefield || world.reference(source.card) != source
+    {
+        return false;
+    }
+    let mut printed = None;
+    world
+        .definition(source.card)
+        .static_ability_groups()
+        .iter()
+        .filter(|group| entry_modes::group_enabled(world, source, group))
+        .flat_map(|group| group.fragments)
+        .any(|fragment| {
+            if let F::SourceCelebrationCreatureForm { activation, .. } = *fragment {
+                return world.source_activation_template_available(source.card, activation);
+            }
+            (matches!(fragment, F::SourceEntryModeActivation { mode, .. }
+                if entry_modes::active_mode(world, source) == Some(*mode))
+                || matches!(
+                    fragment,
+                    F::AttachmentTrigger(_)
+                        | F::ConditionalWard { .. }
+                        | F::OwnTurnSourceAndKindCreatureWard { .. }
+                        | F::ControlledCreatureTrigger { .. }
+                        | F::SourceMaxSpeedActivation(_)
+                        | F::AttachmentActivation { .. }
+                        | F::ControlledPlaneswalkerActivation(_)
+                        | F::ControlledArtifactFood(_)
+                        | F::ControlledPlaneswalkerAttackLimit
+                        | F::GrantInstantSorceryStorm { .. }
+                        | F::CascadeFromHand { .. }
+                        | F::HandMiracle { .. }
+                ))
+                && *printed.get_or_insert_with(|| world.printed_abilities_available(source.card))
+        })
 }

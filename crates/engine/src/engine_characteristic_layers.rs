@@ -143,7 +143,7 @@ fn source_conditional_creature<W: CharacteristicWorld + ?Sized>(
         return None;
     }
     let roles = world.roles()?;
-    let (form, subtypes) = object
+    let (kinds, additive, subtypes) = object
         .card
         .static_ability_groups()
         .iter()
@@ -159,12 +159,22 @@ fn source_conditional_creature<W: CharacteristicWorld + ?Sized>(
             } if (!own_turn || object.controller == world.game().state.active)
                 && world.counter_count(id, kind) >= minimum =>
             {
-                Some((form, subtypes))
+                let (kinds, additive) = match form {
+                    SourceCreatureForm::Creature => (1, false),
+                    SourceCreatureForm::ArtifactCreature => (17, true),
+                    SourceCreatureForm::AddCreature => (1, true),
+                };
+                Some((kinds, additive, subtypes))
+            }
+            StaticAbilityFragment::SourceCelebrationCreatureForm { subtypes, .. }
+                if world.celebrating(object.controller) =>
+            {
+                Some((0, true, subtypes))
             }
             StaticAbilityFragment::SourceOffTurnCreature
                 if object.controller != world.game().state.active =>
             {
-                Some((SourceCreatureForm::ArtifactCreature, &[]))
+                Some((17, true, &[]))
             }
             _ => None,
         })?;
@@ -173,11 +183,6 @@ fn source_conditional_creature<W: CharacteristicWorld + ?Sized>(
         .iter()
         .find(|row| row.source == world.reference(id))?
         .timestamp;
-    let (kinds, additive) = match form {
-        SourceCreatureForm::Creature => (1, false),
-        SourceCreatureForm::ArtifactCreature => (17, true),
-        SourceCreatureForm::AddCreature => (1, true),
-    };
     Some(SourceCreatureChange {
         timestamp,
         kinds,
@@ -240,7 +245,7 @@ pub(super) fn kinds<W: CharacteristicWorld + ?Sized>(
         .roles()
         .is_none_or(|r| r.characteristic_sources.is_empty())
         && world.roles().is_none_or(|r| r.animations.is_empty())
-        && source_conditional_creature(world, id).is_none()
+        && source_conditional_creature(world, id).is_none_or(|change| change.kinds == 0)
         && land_forms(world, id).next().is_none()
     {
         if world
@@ -293,7 +298,9 @@ fn kind_timeline<W: CharacteristicWorld + ?Sized>(
             Some((time, kinds, matches!(spec.form, PermanentForm::AddCreature)))
         })
         .collect();
-    if let Some(change) = source_conditional_creature(world, id) {
+    if let Some(change) = source_conditional_creature(world, id)
+        && change.kinds != 0
+    {
         let kinds = if change.additive {
             change.kinds
         } else {
@@ -555,6 +562,7 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
         .collect();
     if let Some(change) = source_conditional_creature(world, id)
         && (!change.additive || !change.subtypes.is_empty())
+        && (change.kinds != 0 || can_have_creature_subtypes(change.timestamp))
     {
         changes.push((
             change.timestamp,

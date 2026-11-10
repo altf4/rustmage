@@ -321,6 +321,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::SpellImprovise(_)
                             | crate::cards::StaticAbilityFragment::EntryMode(_)
                             | crate::cards::StaticAbilityFragment::SourceEntryModeActivation { .. }
+                            | crate::cards::StaticAbilityFragment::SourceCelebrationCreatureForm { .. }
                             | crate::cards::StaticAbilityFragment::SpellDelve(_)
                             | crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(_)
                                     | crate::cards::StaticAbilityFragment::ControlledSubtypeEntryCounters { .. }
