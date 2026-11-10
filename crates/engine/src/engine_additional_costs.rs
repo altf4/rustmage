@@ -1354,6 +1354,7 @@ impl Game {
             | EffectChoiceKind::SacrificeRange { .. }
             | EffectChoiceKind::RemoveCreatureCounters(_)
             | EffectChoiceKind::RemoveCreatureCounter(_)
+            | EffectChoiceKind::RemovePermanentCounters { .. }
             | EffectChoiceKind::BeholdMany(_)
             | EffectChoiceKind::TapPermanents(_)
             | EffectChoiceKind::TapXPermanents

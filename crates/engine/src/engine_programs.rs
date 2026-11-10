@@ -1068,6 +1068,7 @@ impl Game {
                     | TriggerCondition::PermanentLeaves(_)
                     | TriggerCondition::BattlefieldDeparture(_)
                     | TriggerCondition::SelfOrControlledPermanentDies(_)
+                    | TriggerCondition::OpponentHighestPowerCreatureDies
                     | TriggerCondition::ChosenCreatureLeaves
                     | TriggerCondition::ChosenPlayerLosesGame
                     | TriggerCondition::ReturnDeath(_)
