@@ -559,3 +559,180 @@ fn spider_food_creates_food_with_zero_or_one_legal_target() {
         assert_eq!(food, usize::from(!stale));
     }
 }
+
+#[test]
+fn spell_stutter_charges_the_spells_controller_for_live_faeries() {
+    let player = Player::P1;
+    let payer = player.other();
+    let mut game = scenario(payer);
+    let first = put(&mut game, player, "Barrow Naughty", Zone::Battlefield);
+    put(&mut game, player, "Sleep-Cursed Faerie", Zone::Battlefield);
+    put(&mut game, payer, "Barrow Naughty", Zone::Battlefield);
+    let shock = put(&mut game, payer, "Shock", Zone::Hand);
+    let spell = candidate(&mut game, player, "Spell Stutter", Zone::Hand);
+    cast(&mut game, shock, Some(Target::Player(player)));
+    act(&mut game, Action::Pass);
+    cast(&mut game, spell, Some(Target::Spell(shock)));
+
+    let mut reduced = game.clone();
+    act(&mut reduced, Action::Pass);
+    let bounce = put(&mut reduced, payer, "Unsummon", Zone::Hand);
+    cast(&mut reduced, bounce, Some(Target::Card(first)));
+    pass_pair(&mut reduced);
+    assert_eq!(reduced.object_view(first).zone, Zone::Hand);
+    pass_pair(&mut reduced);
+    assert_eq!(reduced.actor(), Some(payer));
+    act(
+        &mut reduced,
+        Action::PayResolutionMana {
+            payment: [0, 0, 0, 0, 0, 3],
+        },
+    );
+    settle(&mut reduced);
+    assert_eq!(reduced.state.players[player.index()].life, 18);
+
+    pass_pair(&mut game);
+    assert_eq!(game.actor(), Some(payer));
+    reject(
+        &mut game,
+        Action::PayResolutionMana {
+            payment: [0, 0, 0, 0, 0, 3],
+        },
+    );
+    let mut declined = game.clone();
+    act(&mut declined, Action::DeclineResolutionMana);
+    settle(&mut declined);
+    assert_eq!(declined.object_view(shock).zone, Zone::Graveyard);
+    assert_eq!(declined.state.players[player.index()].life, 20);
+    act(
+        &mut game,
+        Action::PayResolutionMana {
+            payment: [0, 0, 0, 0, 0, 4],
+        },
+    );
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].life, 18);
+}
+
+#[test]
+fn tangled_colony_cannot_block_and_creates_rats_equal_to_actual_damage() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut defense = scenario(opponent);
+    let attacker = put(&mut defense, opponent, "Bear Cub", Zone::Battlefield);
+    let colony = candidate(&mut defense, player, "Tangled Colony", Zone::Battlefield);
+    let blocker = put(&mut defense, player, "Bear Cub", Zone::Battlefield);
+    begin_attackers(&mut defense);
+    act(&mut defense, Action::Attack { card: attacker });
+    act(&mut defense, Action::FinishAttackers);
+    pass_pair(&mut defense);
+    reject(
+        &mut defense,
+        Action::Block {
+            blocker: colony,
+            attacker,
+        },
+    );
+    act(&mut defense, Action::Block { blocker, attacker });
+
+    let mut game = scenario(player);
+    let colony = candidate(&mut game, player, "Tangled Colony", Zone::Hand);
+    cast(&mut game, colony, None);
+    settle(&mut game);
+    assert_eq!(stats(&game, colony), (3, 2));
+    let rats = |game: &Game| {
+        game.observe(player)
+            .objects
+            .into_iter()
+            .filter(|object| {
+                object.zone == Zone::Battlefield
+                    && object.controller == player
+                    && object.is_token()
+                    && object.has_subtype("Rat")
+            })
+            .collect::<Vec<_>>()
+    };
+    let mut no_damage = game.clone();
+    let murder = put(&mut no_damage, player, "Murder", Zone::Hand);
+    cast(&mut no_damage, murder, Some(Target::Card(colony)));
+    settle(&mut no_damage);
+    assert_eq!(no_damage.object_view(colony).zone, Zone::Graveyard);
+    assert!(rats(&no_damage).is_empty());
+    let strike = put(&mut game, player, "Lightning Strike", Zone::Hand);
+    cast(&mut game, strike, Some(Target::Card(colony)));
+    settle(&mut game);
+    assert_eq!(game.object_view(colony).zone, Zone::Graveyard);
+    let tokens = rats(&game);
+    assert_eq!(tokens.len(), 3);
+    for token in tokens {
+        assert_eq!((token.power, token.toughness, token.colors), (1, 1, 4));
+        assert!(token.keywords.contains(Keywords::CANT_BLOCK));
+    }
+}
+
+#[test]
+fn the_end_reduces_at_five_and_searches_the_exiled_permanents_controller() {
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let spell = candidate(&mut game, player, "The End", Zone::Hand);
+        let creature = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        game.state.objects[creature as usize].controller = opponent;
+        let hand = put(&mut game, opponent, "Bear Cub", Zone::Hand);
+        let grave = put(&mut game, opponent, "Bear Cub", Zone::Graveyard);
+        let library = put(&mut game, opponent, "Bear Cub", Zone::Library);
+        let caster_card = put(&mut game, player, "Bear Cub", Zone::Hand);
+        game.state.players[player.index()].mana = [0, 0, 2, 0, 0, 0];
+        game.state.players[player.index()].life = 6;
+        reject(&mut game, Action::AnnounceCast { card: spell });
+
+        let mut full = game.clone();
+        full.state.players[player.index()].mana[5] = 2;
+        let walker = put(
+            &mut full,
+            opponent,
+            "Elspeth, Storm Slayer",
+            Zone::Battlefield,
+        );
+        full.add_counter(walker, CounterKind::Loyalty, 4);
+        let same_walker = put(&mut full, opponent, "Elspeth, Storm Slayer", Zone::Hand);
+        cast(&mut full, spell, Some(Target::Card(walker)));
+        let item = full.state.stack.last().unwrap();
+        assert_eq!(item.mana_value(), 4);
+        assert_eq!(item.cast.unwrap().mana_spent(), 4);
+        pass_pair(&mut full);
+        assert_eq!(full.object_view(walker).zone, Zone::Exile);
+        act(&mut full, Action::FinishSearch);
+        assert_eq!(full.object_view(same_walker).zone, Zone::Hand);
+        assert_eq!(
+            full.state.players[opponent.index()].cards_drawn_this_turn,
+            0
+        );
+
+        game.state.players[player.index()].life = 5;
+        cast(&mut game, spell, Some(Target::Card(creature)));
+        let item = game.state.stack.last().unwrap();
+        assert_eq!(item.mana_value(), 4);
+        assert_eq!(item.cast.unwrap().mana_spent(), 2);
+        pass_pair(&mut game);
+        assert_eq!(game.object_view(creature).zone, Zone::Exile);
+        assert!(game.observe(player).effect_choice.is_some());
+        assert!(game.observe(opponent).effect_choice.is_none());
+        let object = game.object_ref(caster_card);
+        reject(&mut game, Action::SelectResolutionExile { object });
+        for card in [hand, grave, library] {
+            let object = game.object_ref(card);
+            act(&mut game, Action::SelectResolutionExile { object });
+        }
+        act(&mut game, Action::FinishSearch);
+        for card in [hand, grave, library] {
+            assert_eq!(game.object_view(card).zone, Zone::Exile);
+        }
+        assert_eq!(game.object_view(caster_card).zone, Zone::Hand);
+        assert_eq!(
+            game.state.players[opponent.index()].cards_drawn_this_turn,
+            1
+        );
+        assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 0);
+    }
+}

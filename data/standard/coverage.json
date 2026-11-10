@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "64cf676914b644f954ddba8acee70f4427504c6f757aef4e584045374d2f2c64",
+  "catalogue_version": "3a46685540b1b7a56a8fdccff46eb445149ce1e90945c87daf3db95fa2f943b7",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4031,
-  "implemented_total": 4041,
+  "implemented_standard_cards": 4042,
+  "implemented_total": 4052,
   "token_definitions": 175,
   "emblem_definitions": 12,
   "adventure_definitions": 73,
@@ -140,8 +140,8 @@
     },
     "soc": {
       "total": 24,
-      "complete": 15,
-      "gated": 9
+      "complete": 16,
+      "gated": 8
     },
     "sos": {
       "total": 264,
@@ -183,8 +183,8 @@
     },
     "woe": {
       "total": 258,
-      "complete": 168,
-      "gated": 90
+      "complete": 178,
+      "gated": 80
     },
     "znr": {
       "total": 1,
@@ -10323,8 +10323,8 @@
     {
       "name": "Edgewall Inn",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/edgewall_inn.rs",
       "set": "woe"
     },
@@ -11515,8 +11515,8 @@
     {
       "name": "Extraordinary Journey",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/extraordinary_journey.rs",
       "set": "woe"
     },
@@ -11611,8 +11611,8 @@
     {
       "name": "Faerie Fencing",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/faerie_fencing.rs",
       "set": "woe"
     },
@@ -13107,8 +13107,8 @@
     {
       "name": "Frantic Firebolt",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/frantic_firebolt.rs",
       "set": "woe"
     },
@@ -14235,8 +14235,8 @@
     {
       "name": "Gingerbrute",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/gingerbrute.rs",
       "set": "woe"
     },
@@ -16891,8 +16891,8 @@
     {
       "name": "Howling Galefang",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/howling_galefang.rs",
       "set": "woe"
     },
@@ -17531,8 +17531,8 @@
     {
       "name": "Ingenious Prodigy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/soc/ingenious_prodigy.rs",
       "set": "soc"
     },
@@ -17795,8 +17795,8 @@
     {
       "name": "Into the Fae Court",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/into_the_fae_court.rs",
       "set": "woe"
     },
@@ -32251,8 +32251,8 @@
     {
       "name": "Spell Stutter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/spell_stutter.rs",
       "set": "woe"
     },
@@ -34851,8 +34851,8 @@
     {
       "name": "Tangled Colony",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/tangled_colony.rs",
       "set": "woe"
     },
@@ -35723,8 +35723,8 @@
     {
       "name": "The End",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/the_end.rs",
       "set": "woe"
     },

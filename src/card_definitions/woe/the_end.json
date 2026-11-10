@@ -3,10 +3,46 @@
   "catalogue_id": 4441,
   "oracle_id": "835c195a-8c35-4076-896d-8d2972cac270",
   "facts_sha256": "4bba74b130bcbe48ba249e59f082369bac9bcca9da4bedd04b53ff96a251c575",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "48efc2617c8338114dbefb1d924eef705501d02e418733f23aa41ea032f4b51e"
   },
-  "physical_metadata_sha256": "6d98aee8762cfce99d3501164a1ce2719244d7d92085f2901f4b4de1fc22503d"
+  "physical_metadata_sha256": "6d98aee8762cfce99d3501164a1ce2719244d7d92085f2901f4b4de1fc22503d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheEnd.java",
+  "java_sha256": "e488f2e7c03a5de56a026a330dc190dcbbfe951ac830ce7d75af738965860bf3",
+  "rules_tests": "tests/woe_cards_s_z.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/FatefulHourCondition.java",
+      "sha256": "aa3e49d66c0e9c1d4d32d010f6a470de835cee9e9bd0a47e66294983a482c443"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetAndSearchGraveyardHandLibraryEffect.java",
+      "sha256": "ee23dd9338652ccad64acd48e58f3ddba2e5897c8d5949d87e2f9367889aac2d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionSourceEffect.java",
+      "sha256": "c877e6d5d339d0c8a602f1c16190e62f1dd0a5e1c11ba333a698b6dfee367304"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchTargetGraveyardHandLibraryForCardNameAndExileEffect.java",
+      "sha256": "016001641a5c77bb2787f141b904ad653803e5b9311f49324edbaba71defc90b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreatureOrPlaneswalker.java",
+      "sha256": "74a515df49ac9de9bab546fb06aa877375286ce8bb4ea19113e77d811177d85f"
+    }
+  ]
 }
