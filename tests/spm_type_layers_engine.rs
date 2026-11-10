@@ -215,6 +215,8 @@ fn setting_creature_form_removes_other_card_types_but_preserves_the_permanents_i
     assert!(result.is_legendary());
     assert!(result.has_subtype("Lizard"));
     assert!(!result.has_subtype("Food"));
+    assert!(!game.has_subtype(target, "Food"));
+    assert!(result.card.has_subtype("Food"));
     assert!(!result.has_subtype("Golem"));
     assert!(!result.has_subtype("Spider"));
     assert!(!result.keywords.contains(Keywords::HASTE));
@@ -225,11 +227,38 @@ fn setting_creature_form_removes_other_card_types_but_preserves_the_permanents_i
     assert_eq!(game.object_view(target).kinds, 1);
     assert_eq!(stats(&game, target), (5, 5));
 
+    let lizard_state = game.snapshot();
+    game.change_object_form(
+        result.reference,
+        AnimationSpec {
+            artifact: true,
+            creature_types: AnimationCreatureTypes::Unchanged,
+            base: None,
+            keywords: Keywords::NONE,
+            duration: AnimationDuration::EndOfTurn,
+        },
+        characteristic_layers::AnimationTypeMode::PreserveCardTypes,
+    );
+    let artifact = game.object_view(target);
+    assert_eq!(artifact.reference, result.reference);
+    assert_eq!(artifact.kinds, 17);
+    assert!(artifact.has_subtype("Food"));
+    assert!(game.has_subtype(target, "Food"));
+    assert!(artifact.has_subtype("Lizard"));
+    assert!(!artifact.has_subtype("Golem"));
+    assert!(!result.has_subtype("Food"));
+
+    assert!(game.expire_animations());
+    assert!(!game.object_view(target).has_subtype("Food"));
+    game.restore(&lizard_state).unwrap();
+    assert_eq!(game.object_view(target), result);
+
     game.move_object(target, Zone::Exile);
     game.move_object(target, Zone::Battlefield);
     let original = game.object_view(target);
     assert_eq!(original.kinds, 17);
     assert!(original.keywords.contains(Keywords::HASTE));
+    assert!(original.has_subtype("Food"));
     assert!(original.has_subtype("Golem"));
     assert!(!original.is_legendary());
 }
