@@ -372,3 +372,261 @@ fn squeak_by_uses_current_blocker_power_and_exiles_the_adventurer() {
             .any(|row| row.card == attacker && row.blocked)
     );
 }
+
+fn bargain(game: &mut Game, offering: Option<CardId>) {
+    let sacrifice = offering.map(|card| game.object_ref(card));
+    act(game, Action::ChooseBargain { sacrifice });
+}
+
+#[test]
+fn agathas_champion_fights_only_when_bargained_and_with_both_creatures_present() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let champion = candidate(&mut game, player, "Agatha's Champion");
+    let bow = put(&mut game, player, "Short Bow", Zone::Battlefield);
+    let bear = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let giant = put(&mut game, opponent, "Hill Giant", Zone::Battlefield);
+    let bounce = put(&mut game, opponent, "Unsummon", Zone::Hand);
+    act(&mut game, Action::AnnounceCast { card: champion });
+
+    let mut unpaid = game.clone();
+    bargain(&mut unpaid, None);
+    pay(&mut unpaid);
+    settle(&mut unpaid);
+    assert_eq!(stats(&unpaid, champion), (4, 4));
+    assert!(
+        unpaid
+            .object_view(champion)
+            .keywords
+            .contains(Keywords::TRAMPLE)
+    );
+    assert_eq!(unpaid.object_view(bow).zone, Zone::Battlefield);
+    assert_eq!(unpaid.object_view(giant).damage, 0);
+
+    bargain(&mut game, Some(bow));
+    let cost = game.mana_payment_domain().unwrap();
+    assert_eq!(cost.required, [0, 0, 0, 0, 1, 0]);
+    assert_eq!(cost.generic, 4);
+    assert_eq!(game.object_view(bow).zone, Zone::Battlefield);
+    pay(&mut game);
+    assert_eq!(game.object_view(bow).zone, Zone::Graveyard);
+    pass_twice(&mut game);
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(bear),
+        },
+    );
+    let mut no_target = game.clone();
+    act(&mut no_target, Action::FinishTargets);
+    settle(&mut no_target);
+    assert_eq!(no_target.object_view(champion).damage, 0);
+    assert_eq!(no_target.object_view(giant).damage, 0);
+
+    target(&mut game, giant);
+    for (bounced, survivor) in [(champion, giant), (giant, champion)] {
+        let mut stale = game.clone();
+        act(&mut stale, Action::Pass);
+        cast(&mut stale, bounce, Some(Target::Card(bounced)));
+        settle(&mut stale);
+        assert_eq!(stale.object_view(bounced).zone, Zone::Hand);
+        assert_eq!(stale.object_view(survivor).zone, Zone::Battlefield);
+        assert_eq!(stale.object_view(survivor).damage, 0);
+    }
+
+    settle(&mut game);
+    assert_eq!(game.object_view(giant).zone, Zone::Graveyard);
+    let champ = game.object_view(champion);
+    assert_eq!(champ.zone, Zone::Battlefield);
+    assert_eq!(champ.damage, 3);
+    assert!(champ.keywords.contains(Keywords::TRAMPLE));
+}
+
+#[test]
+fn back_for_seconds_routes_surviving_targets_with_optional_bargained_entry() {
+    let player = Player::P1;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let spell = candidate(&mut game, player, "Back for Seconds");
+    let offering = put(&mut game, player, "A Tale for the Ages", Zone::Battlefield);
+    let four = put(&mut game, player, "Hill Giant", Zone::Graveyard);
+    let five = put(&mut game, player, "Beanstalk Wurm", Zone::Graveyard);
+    let foreign = put(&mut game, opponent, "Bear Cub", Zone::Graveyard);
+    let land = put(&mut game, player, "Forest", Zone::Graveyard);
+    let ooze = put(&mut game, opponent, "Scavenging Ooze", Zone::Battlefield);
+    act(&mut game, Action::AnnounceCast { card: spell });
+
+    let mut unpaid = game.clone();
+    bargain(&mut unpaid, None);
+    act(
+        &mut unpaid,
+        Action::ChooseTarget {
+            target: Target::Card(four),
+        },
+    );
+    target(&mut unpaid, five);
+    pay(&mut unpaid);
+    settle(&mut unpaid);
+    assert_eq!(unpaid.object_view(four).zone, Zone::Hand);
+    assert_eq!(unpaid.object_view(five).zone, Zone::Hand);
+    assert_eq!(unpaid.object_view(offering).zone, Zone::Battlefield);
+
+    bargain(&mut game, Some(offering));
+    for invalid in [land, foreign] {
+        reject(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(invalid),
+            },
+        );
+    }
+    let mut no_targets = game.clone();
+    act(&mut no_targets, Action::FinishTargets);
+    pay(&mut no_targets);
+    settle(&mut no_targets);
+    assert_eq!(no_targets.object_view(four).zone, Zone::Graveyard);
+    assert_eq!(no_targets.object_view(five).zone, Zone::Graveyard);
+    assert_eq!(no_targets.object_view(offering).zone, Zone::Graveyard);
+
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(four),
+        },
+    );
+    target(&mut game, five);
+    pay(&mut game);
+    assert_eq!(game.object_view(offering).zone, Zone::Graveyard);
+
+    let mut stale = game.clone();
+    act(&mut stale, Action::Pass);
+    act(&mut stale, activate(ooze));
+    target(&mut stale, four);
+    pay(&mut stale);
+    settle(&mut stale);
+    assert_eq!(stale.object_view(four).zone, Zone::Exile);
+    assert_eq!(stale.object_view(five).zone, Zone::Hand);
+
+    pass_twice(&mut game);
+    let four = game.object_ref(four);
+    let five = game.object_ref(five);
+    let choice = game.observe(player).effect_choice.unwrap();
+    assert!(choice.optional);
+    assert_eq!(choice.candidates, [four]);
+    reject(&mut game, Action::SelectGraveyardReturn { object: five });
+
+    let mut declined = game.clone();
+    act(&mut declined, Action::FinishGraveyardReturn);
+    assert_eq!(declined.object_view(four.card).zone, Zone::Hand);
+    assert_eq!(declined.object_view(five.card).zone, Zone::Hand);
+
+    act(&mut game, Action::SelectGraveyardReturn { object: four });
+    settle(&mut game);
+    let revived = game.object_view(four.card);
+    assert_eq!(revived.zone, Zone::Battlefield);
+    assert_eq!(revived.controller, player);
+    assert!(!revived.tapped);
+    assert_ne!(revived.reference, four);
+    assert_eq!(game.object_view(five.card).zone, Zone::Hand);
+}
+
+#[test]
+fn brave_the_wilds_searches_on_either_route_and_animates_its_paid_target() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let spell = candidate(&mut game, player, "Brave the Wilds");
+    let offering = put(&mut game, player, "Short Bow", Zone::Battlefield);
+    let foreign = put(&mut game, opponent, "Island", Zone::Battlefield);
+    let nonland = put(&mut game, player, "Bear Cub", Zone::Library);
+    let found = put(&mut game, player, "Mountain", Zone::Library);
+
+    let mut unpaid = game.clone();
+    act(&mut unpaid, Action::AnnounceCast { card: spell });
+    let sacrifice = Some(unpaid.object_ref(offering));
+    reject(&mut unpaid, Action::ChooseBargain { sacrifice });
+    bargain(&mut unpaid, None);
+    pay(&mut unpaid);
+    assert!(unpaid.state.stack.last().unwrap().targets.is_empty());
+    pass_twice(&mut unpaid);
+    let choice = unpaid.observe(player).search_choice.unwrap();
+    assert_eq!(choice.filter, SearchFilter::BasicLand);
+    assert!(choice.reveal);
+    assert!(unpaid.observe(opponent).search_choice.is_none());
+    reject(&mut unpaid, Action::ChooseSearch { card: nonland });
+
+    let mut fail_to_find = unpaid.clone();
+    let rng = fail_to_find.state.rng;
+    act(&mut fail_to_find, Action::FinishSearch);
+    assert_ne!(fail_to_find.state.rng, rng);
+    assert_eq!(fail_to_find.object_view(found).zone, Zone::Library);
+
+    act(&mut unpaid, Action::ChooseSearch { card: found });
+    act(&mut unpaid, Action::FinishSearch);
+    assert_eq!(unpaid.object_view(found).zone, Zone::Hand);
+    assert!(
+        unpaid
+            .observe(opponent)
+            .known_hand
+            .contains(&unpaid.object_ref(found))
+    );
+    assert_eq!(unpaid.object_view(offering).zone, Zone::Battlefield);
+
+    let forest = put(&mut game, player, "Forest", Zone::Hand);
+    let fetch = put(&mut game, player, "Evolving Wilds", Zone::Battlefield);
+    act(&mut game, Action::PlayLand { card: forest });
+    act(&mut game, Action::AnnounceCast { card: spell });
+    bargain(&mut game, Some(offering));
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(foreign),
+        },
+    );
+    reject(&mut game, Action::FinishTargets);
+
+    let mut stale = game.clone();
+    target(&mut stale, fetch);
+    pay(&mut stale);
+    act(&mut stale, activate(fetch));
+    pay(&mut stale);
+    pass_twice(&mut stale);
+    act(&mut stale, Action::FinishSearch);
+    let rng = stale.state.rng;
+    settle(&mut stale);
+    assert_eq!(stale.object_view(fetch).zone, Zone::Graveyard);
+    assert_eq!(stale.object_view(spell).zone, Zone::Graveyard);
+    assert_eq!(stale.state.rng, rng);
+    assert_eq!(stale.object_view(found).zone, Zone::Library);
+
+    target(&mut game, forest);
+    pay(&mut game);
+    assert_eq!(game.object_view(offering).zone, Zone::Graveyard);
+    pass_twice(&mut game);
+    let land = game.object_view(forest);
+    assert_eq!(land.kinds & 3, 3);
+    assert!(land.has_subtype("Forest"));
+    assert!(land.has_subtype("Elemental"));
+    assert!(land.keywords.contains(Keywords::HASTE));
+    assert_eq!(stats(&game, forest), (3, 3));
+    act(&mut game, Action::ChooseSearch { card: found });
+    act(&mut game, Action::FinishSearch);
+    assert_eq!(game.object_view(found).zone, Zone::Hand);
+    assert!(
+        game.observe(opponent)
+            .known_hand
+            .contains(&game.object_ref(found))
+    );
+
+    let mut mana = game.clone();
+    let green = mana.state.players[player.index()].mana[4];
+    act(&mut mana, Action::TapMana { card: forest });
+    assert_eq!(mana.state.players[player.index()].mana[4], green + 1);
+
+    reach_attackers(&mut game);
+    act(&mut game, Action::Attack { card: forest });
+    finish_turn(&mut game);
+    assert_eq!(stats(&game, forest), (3, 3));
+    assert!(game.object_view(forest).keywords.contains(Keywords::HASTE));
+}
