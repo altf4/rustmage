@@ -3,10 +3,30 @@
   "catalogue_id": 5031,
   "oracle_id": "926d52a5-4db1-46ce-9567-17c28bf56ae7",
   "facts_sha256": "006acc570c02cd90cd4d72f50565a36907196846fa96994da1e4cab37cb15e18",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "baba7585b43693c10466bf589ff7aac88922fc63c2ba8080e5562aceaae9bf64"
   },
-  "physical_metadata_sha256": "dd5eefba22019d4c80826071136f83a02ba56daf077e9803633b076d0a93ad60"
+  "physical_metadata_sha256": "dd5eefba22019d4c80826071136f83a02ba56daf077e9803633b076d0a93ad60",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WeftstalkerArdent.java",
+  "java_sha256": "d0cd89e77b261db2f05072b3a89dcc50d9df6a3cb1d75e00b7a4c8076010b5d9",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+      "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+      "sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WarpAbility.java",
+      "sha256": "9ac044ebe7da1f678c965e9a3f5fd329efaf50d946e8c2b9cf622f750d9d4499"
+    }
+  ]
 }

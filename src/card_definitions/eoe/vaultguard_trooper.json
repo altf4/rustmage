@@ -3,10 +3,40 @@
   "catalogue_id": 4854,
   "oracle_id": "e15c78d4-6fb1-4bd3-8219-c66b83fcaba1",
   "facts_sha256": "8056c94ac5b6589c857f981c90acf76fd5292c748d1b94302aaebeeb2f30dbff",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "662db58316e42dfeaa01862bfe7e23fdbe7123a18719010e95134ce3a86a5b41"
   },
-  "physical_metadata_sha256": "f5079a5251be61ace94eb8c64b99ceea770ef4884e4ecbef00df05b61cca0d47"
+  "physical_metadata_sha256": "f5079a5251be61ace94eb8c64b99ceea770ef4884e4ecbef00df05b61cca0d47",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VaultguardTrooper.java",
+  "java_sha256": "9497e14e4306030ded153cba26c0063681fa22489236015fcf18bc68dded31e9",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/TwoTappedCreaturesCondition.java",
+      "sha256": "01c33c1fe6523f9218b6ee24709cf76b97d313a7424be79ffc59e5fb1ab61ff5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardHandCost.java",
+      "sha256": "070e69a35af785aced9d186215f0cd304b9265775000b413252e0a635ad4d2b4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    }
+  ]
 }

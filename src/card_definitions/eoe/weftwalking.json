@@ -3,10 +3,39 @@
   "catalogue_id": 5032,
   "oracle_id": "08af6751-5848-47fb-95f5-57215e899460",
   "facts_sha256": "35286bdde335c8abe9c7fbf3a0e46873c1113f35ac030dcebed2edd3084daf74",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "12816753da0bd93356a4073351203cfad0fc781623dad2f8db84af48d7307241"
   },
-  "physical_metadata_sha256": "d82739c9995ae4d1dcf2dcce3cee1fb81dfa0c19dbb652d948f47dc3458b9217"
+  "physical_metadata_sha256": "d82739c9995ae4d1dcf2dcce3cee1fb81dfa0c19dbb652d948f47dc3458b9217",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CastFromEverywhereSourceCondition.java",
+      "sha256": "2d091ae95c227de0b227151a9b315cf5370e50f5e0f5177f5e50d8ab3825c4ba"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/AlternativeCostSourceAbility.java",
+      "sha256": "b0a55dc753a0b65f6075dd417a1cf6237599541a1e79d99c85aff3ccc0e73f98"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ShuffleHandGraveyardIntoLibraryEffect.java",
+      "sha256": "990605b764420d765015b1a04190c2d27acb6f7be1453d3ff4b931a1cef7c83f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/SpellsCastWatcher.java",
+      "sha256": "cd80bcc11ba9cb5774cf81148c1ab251c8a3b6b529a67af9ed084c64f88600a8"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/Weftwalking.java",
+  "java_sha256": "416593707a66b29b7efde7a02adeeb64a446c2e43895570dd75d917dbe17e545",
+  "rules_tests": "tests/eoe_cards_067_132_void.rs",
+  "rules_notes": [
+    "CR 118.9 and 601.2. The first-spell alternative needs an independently authorized origin and retains normal timing and mandatory additional costs."
+  ]
 }

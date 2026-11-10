@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5d99b336ceb44dcad33840d23c40d86343a447b44a199eab992627781745cfef"
   },
-  "physical_metadata_sha256": "388eb4cdb2714bfc6f50c294f9223af45ca3ec5e563f159357fc31a8c698af4d"
+  "physical_metadata_sha256": "388eb4cdb2714bfc6f50c294f9223af45ca3ec5e563f159357fc31a8c698af4d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/YouCastExactOneSpellThisTurnCondition.java",
+      "sha256": "89e87c6cc1cfceb0ea987fc2a3cf3af22e062785d56ee95d6ce96c1bdb4d7e02"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalCostModificationEffect.java",
+      "sha256": "cdd08c2aebe148f281ec42f2d1a5fc92035dbc9e7b4bf144db74fc9670732196"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellsCostReductionControllerEffect.java",
+      "sha256": "47783fefecfbb22810317538f30e9e92302add21ebff508bc21f43683a85ad06"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UthrosPsionicist.java",
+  "java_sha256": "bbdcbde862f8e4ff372ebe1d5bc04c32ff60a6bf25f1eb500e4d930923745438",
+  "rules_tests": "tests/eoe_cards_067_132_void.rs"
 }

@@ -3,10 +3,40 @@
   "catalogue_id": 4312,
   "oracle_id": "4c9d9d47-1eb6-4981-ba83-d5ec04906e71",
   "facts_sha256": "d48a3426603c6e9fa4d8c9b7b3292f59bdd4617e8313069564a6d37e05386533",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fd9a7df105e04a5cbaef9c5a7ef35ce3d68ec92949ca68b3e7ea52a62731693f"
   },
-  "physical_metadata_sha256": "f72120efcf5dd17627271efd8fd92a118d9b5fd92c66774c4a1a47039b75c0c0"
+  "physical_metadata_sha256": "f72120efcf5dd17627271efd8fd92a118d9b5fd92c66774c4a1a47039b75c0c0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SystemsOverride.java",
+  "java_sha256": "76154d8278f1c6c341fe007e9ffb85697e98858890bbce7f415dc613163e93f4",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/AtTheBeginOfNextEndStepDelayedTriggeredAbility.java",
+      "sha256": "9f3272690e0ade9a48526bd13165b3015a71d8bbed9d86a997af960d5f3214a5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapTargetEffect.java",
+      "sha256": "69bec57593db2620ef750768e381badf6843aefaf7584c796037dcdf87f1b973"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainControlTargetEffect.java",
+      "sha256": "93e055d129c924686ebca800aee72c6797220dfc56b829c70b715dd06a8c09ed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/RemoveCounterTargetEffect.java",
+      "sha256": "ad2fa2b58a94ecd977b7146823e018a9d25dfe0e865e596baccb7f587c9b70f8"
+    }
+  ]
 }

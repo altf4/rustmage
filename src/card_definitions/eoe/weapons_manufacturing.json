@@ -3,10 +3,40 @@
   "catalogue_id": 5020,
   "oracle_id": "e48a8160-cffe-4e00-a3e9-a59d7fc7b3a2",
   "facts_sha256": "fcee3464c98b88bff6f84152b7bcaed6c2219e325c0802a6579f1b5d42de7cce",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a2ec9a8e85647042bc4bfa6dccd18fe50bf2b163f28efeb4a9bb7e313852d7f2"
   },
-  "physical_metadata_sha256": "74ff9822c4966909633209923f9fed2ac462f875238a1909340fafb784b8140e"
+  "physical_metadata_sha256": "74ff9822c4966909633209923f9fed2ac462f875238a1909340fafb784b8140e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WeaponsManufacturing.java",
+  "java_sha256": "bdd361fc78c9131f11545f51fb86bde17c39a68427407c7053f9687b2d6664e3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+      "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledArtifactPermanent.java",
+      "sha256": "8de63b3da4500602a6f7dd4ec49817ff2bd727d6cd915dbdc94dbb09f9390d47"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/TokenPredicate.java",
+      "sha256": "3213600d28e7e1f76d66cee4f781fb3eb01627759fa9306e22c42a6f6fb880da"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/MunitionsToken.java",
+      "sha256": "968c739875b8f75c59c51dfeaa5a2a3fed53c61ead4ca16c4a9d6e16ff5a886c"
+    }
+  ]
 }

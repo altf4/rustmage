@@ -3,10 +3,13 @@
   "catalogue_id": 4334,
   "oracle_id": "76cb1912-3791-44b8-b594-b92dab21bafc",
   "facts_sha256": "772d92ac68ae9939e856782cfb54ca2a1ee8d6ed3f89bceb0b88f2e9e211bcf9",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4060e2023c91c2db9b89030061b23d12f95a86db26dcdb89b0ae6b3617be26c0"
   },
-  "physical_metadata_sha256": "82b8f6cb68a5a92805b6d4b63ce6fe296f415e21106ea47517481ae8f692de07"
+  "physical_metadata_sha256": "82b8f6cb68a5a92805b6d4b63ce6fe296f415e21106ea47517481ae8f692de07",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TannukMemorialEnsign.java",
+  "java_sha256": "aa76250cfce2d0fb4b4592a7a7a69e8b402b8950a41f7e067052ed0247c9c92f"
 }

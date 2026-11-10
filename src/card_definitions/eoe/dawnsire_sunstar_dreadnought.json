@@ -3,10 +3,13 @@
   "catalogue_id": 983,
   "oracle_id": "afc9436b-8cad-4916-929d-ff33a37b42d5",
   "facts_sha256": "5087806ff0e97493e0204875dea7de939b9b7a9b1fd4275b095c9fe18b6f3fe5",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fd2c152d71149660201ebbb82efbdf20befa32a88501763dc3984a382f92d2ae"
   },
-  "physical_metadata_sha256": "7c0b0f609b839ecec8a6b6f3b4b6c605abad65e884721973eb21c318ea4ff91e"
+  "physical_metadata_sha256": "7c0b0f609b839ecec8a6b6f3b4b6c605abad65e884721973eb21c318ea4ff91e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DawnsireSunstarDreadnought.java",
+  "java_sha256": "39dd840415dc45156e8b0df28fd7319b98e492bda81aed8574bdbe77763cf705"
 }

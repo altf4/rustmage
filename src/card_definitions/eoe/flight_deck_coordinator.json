@@ -8,5 +8,25 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f835042bf03184ce072b0e91ecedaa0a18b3d144d67f56f810f457361818346f"
   },
-  "physical_metadata_sha256": "11212605c442ee102f1100acc79357d0644af98e4efb702a9c24ef861c4947e7"
+  "physical_metadata_sha256": "11212605c442ee102f1100acc79357d0644af98e4efb702a9c24ef861c4947e7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FlightDeckCoordinator.java",
+  "java_sha256": "34f21ee40ed28b106682dfe35ad0772e85a50e1cfac84208ddfad9e14876badc",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/TwoTappedCreaturesCondition.java",
+      "sha256": "01c33c1fe6523f9218b6ee24709cf76b97d313a7424be79ffc59e5fb1ab61ff5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    }
+  ]
 }

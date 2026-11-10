@@ -3,10 +3,44 @@
   "catalogue_id": 745,
   "oracle_id": "cd50bff0-c461-4023-b62a-6746eaaeab0e",
   "facts_sha256": "690c4175f9a37cb6f636f41d73e258afec77bce70e0d924f5b24bd3d93dbca3d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d9cf5eeec4668519f512bd8eebcb9ea5bd7cb7abb34fb018e483cf4046eab6d3"
   },
-  "physical_metadata_sha256": "d6054ebdf03d8e5fb9aedbe95e529cb569fa2b262811b202cdb190dd208ca9a3"
+  "physical_metadata_sha256": "d6054ebdf03d8e5fb9aedbe95e529cb569fa2b262811b202cdb190dd208ca9a3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksAttachedTriggeredAbility.java",
+      "sha256": "227a8e960c16f1e0930b065ad97af82479a4dd1f9b192254c1c785806c897c1b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeSourceUnlessConditionEffect.java",
+      "sha256": "d9a0e61057d7e0614542f85295b19b754d6bfa776497491556c4e1845a6d250e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/VoidCondition.java",
+      "sha256": "d8121e9849e10e0ae98f15e879bf5dd82c452ae632b34a224eae623184bb680f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/VoidWatcher.java",
+      "sha256": "2499e3b479a40908c1d646715ed63a3e24c1a3204867d5628502e4a31af42702"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ChoraleOfTheVoid.java",
+  "java_sha256": "a56f472cfc0ccd96eaf1d92c51d3a2b04ce2b8aec8ba898da9ebc7c7f4bdd210",
+  "rules_tests": "tests/eoe_cards_067_132_void.rs",
+  "rules_notes": [
+    "CR 508.4. The creature enters tapped under the Aura ability’s controller and chooses its own defender. The end-step Void condition is checked on resolution."
+  ]
 }

@@ -3,10 +3,35 @@
   "catalogue_id": 1084,
   "oracle_id": "57b75be4-9229-4a48-a59e-a0f812f38637",
   "facts_sha256": "3246878a51834cd9edcf96e3166a88082c06852b8339c22b3a28d96fc9d32a67",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b636a6934831061a0484f6633cafad2f7ee1a7fac878e78522055ffd1e003070"
   },
-  "physical_metadata_sha256": "b32548f4efa897fe0a8cc63102bf121571f6249faab1e4231055febb9f308284"
+  "physical_metadata_sha256": "b32548f4efa897fe0a8cc63102bf121571f6249faab1e4231055febb9f308284",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DiplomaticRelations.java",
+  "java_sha256": "fe65a1ba95bf1fcb7abeab7d277e8b83628f615dccfb33029862852e4624bb00",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageWithPowerFromOneToAnotherTargetEffect.java",
+      "sha256": "cbe6b025fef2b13a46fcdddb02a0342eecd99af9db39d292c22b1f942d2729a3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    }
+  ]
 }

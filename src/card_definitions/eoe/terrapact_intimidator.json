@@ -3,10 +3,30 @@
   "catalogue_id": 4391,
   "oracle_id": "c08e0958-8fa2-49c7-ab17-a70dfc1ef33a",
   "facts_sha256": "57e5a443928e84acf1f90777d43b46b57e7da622b8047c48151bb302a303fe4d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "67e68c8674aa0c986dd26e41b5e90c030e0fb9b8e2f28b42fc602c1f8ef48798"
   },
-  "physical_metadata_sha256": "c9aff858676c516c177f11dc784030f907ad553a41435217cf880cffc3353fc8"
+  "physical_metadata_sha256": "c9aff858676c516c177f11dc784030f907ad553a41435217cf880cffc3353fc8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TerrapactIntimidator.java",
+  "java_sha256": "6343db84aeba86d2043ce1674c0336a27cf4712cbcda7a70c44f4d5b005f85e8",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/LanderToken.java",
+      "sha256": "5d15f49c7eab3d0b31a7d46668bcea3a14faa50b2688996344c35a5243ba53d3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    }
+  ]
 }
