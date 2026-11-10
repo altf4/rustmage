@@ -3,10 +3,40 @@
   "catalogue_id": 4038,
   "oracle_id": "ba08b4cf-9a13-40fd-8522-9504d2ff1a19",
   "facts_sha256": "14caf2dea035130cd05d031025013c09bafae5cd97d3f2ec374b912fdef14e72",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0f8c82c4887f809840ba1ae52512ee3aa9ca5c0877aa962d5385ccaf23793b74"
   },
-  "physical_metadata_sha256": "435a95e0915c672bcfad40ae7bd00d103331f002eccb07670bf03088ffe9a4e1"
+  "physical_metadata_sha256": "435a95e0915c672bcfad40ae7bd00d103331f002eccb07670bf03088ffe9a4e1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SpiderSuit.java",
+  "java_sha256": "84a8b102cd0f2fa6d06bf9d5959ae8865309af2d74026fd4f77003858b3a87e0",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardSubtypeAttachedEffect.java",
+      "sha256": "dbe2d3ace133714b13fce577d8fee1c52736d5cc7d20f1c18ffdd49c82ce781f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+      "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    }
+  ]
 }

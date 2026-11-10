@@ -14,7 +14,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         fragments: &[
             StaticAbilityFragment::AttachedCharacteristics(&AttachedCharacteristics {
                 name: None,
-                form: PermanentForm::AddCreature,
+                form: PermanentForm::AddCreatureSubtypes,
                 creature_types: &["Spider", "Hero"],
                 colors: &[],
                 base: None,
