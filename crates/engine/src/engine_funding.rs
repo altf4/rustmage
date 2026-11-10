@@ -3635,6 +3635,7 @@ impl<'g> FundingState<'g> {
     fn fixed_mana_cannot_pay(&self, goal: &FundingGoal) -> bool {
         use crate::cards::{ManaRestriction, StaticAbilityFragment};
         let purpose = self.payment_purpose(goal);
+        let convoke = self.convoke_available();
         if !matches!(
             purpose,
             mana_lots::Purpose::Activation(_) | mana_lots::Purpose::Spell(_)
@@ -3645,7 +3646,10 @@ impl<'g> FundingState<'g> {
             || self.cost_group.is_some()
             || !self.sacrifice_group.is_empty()
             || self.required_face_up.is_some()
-            || self.has_contributions()
+            || self.improvise_available()
+            || self.delve_available()
+            || self.waterbend != 0
+            || (convoke && self.cast_costs.is_some())
             || !self.game.state.exile_links.is_empty()
             || self.game.state.borrowed_links.is_some()
             || self.game.state.graveyard_borrowing.is_some()
@@ -3686,7 +3690,26 @@ impl<'g> FundingState<'g> {
         // Plain creatures need not be mana resources. Count every exact owned
         // untapped body, including sick creatures and the source itself: other
         // filters and reservations can only shrink this generous witness pool.
+        let count_untapped_creatures = || {
+            self.game
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .filter(|(id, _)| {
+                    let id = *id as CardId;
+                    let object = self.object(id);
+                    object.zone == Zone::Battlefield
+                        && object.controller == goal.actor
+                        && !object.tapped
+                        && ability_world::CharacteristicWorld::kinds(self, id) & 1 != 0
+                })
+                .count()
+        };
         let mut creature_tap_upper = None;
+        let mut group_minimum = usize::MAX;
+        let mut group_colors = [0u128; 6];
+        let mut group_quantity = 0u128;
         for (id, _) in self.game.state.objects.iter().enumerate() {
             let id = id as CardId;
             let object = self.object(id);
@@ -3712,7 +3735,11 @@ impl<'g> FundingState<'g> {
                             | StaticAbilityFragment::AdditionalLandPlays(_)
                             | StaticAbilityFragment::StaticModifier(..)
                             | StaticAbilityFragment::ScalingModifier(..)
-                            | StaticAbilityFragment::ControlledCreatureScaling { .. } => false,
+                            | StaticAbilityFragment::ControlledCreatureScaling { .. }
+                            | StaticAbilityFragment::ControlledSubtypeCannotBeBlockedByKeyword {
+                                ..
+                            }
+                            | StaticAbilityFragment::ChosenBasicLandType => false,
                             StaticAbilityFragment::AttachmentManaBonus(_) => {
                                 !self.attached_to_opposing_permanent(id)
                             }
@@ -3773,15 +3800,22 @@ impl<'g> FundingState<'g> {
                     continue;
                 };
                 let cost = ability.cost;
+                let group_taps = cost.additional.and_then(|spec| {
+                    let EffectChoiceKind::TapPermanents(amount) = spec.kind.payment_kind() else {
+                        return None;
+                    };
+                    (amount != 0 && spec.filter.kinds == 1).then_some(amount as usize)
+                });
                 if !matches!(ability.program, [Instruction::AddMana(_)])
                     || object.card.activation_put_counter(index as u16).is_some()
                     || ability.source_zone() != Zone::Battlefield
-                    || !cost.tap
+                    || (!cost.tap && group_taps.is_none())
                     || cost.sacrifice
                     || cost.exile_self
                     || cost.discard
                     || cost.life != 0
                     || cost.remove.is_some()
+                    || cost.loyalty.is_some()
                     || cost.additional.is_some_and(|spec| {
                         !matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
                     })
@@ -3826,7 +3860,7 @@ impl<'g> FundingState<'g> {
                 // The route audit above uses all printed templates. In
                 // this fixed world a removed printed ability cannot return.
                 if object.controller != goal.actor
-                    || object.tapped
+                    || (cost.tap && object.tapped)
                     || !ability_world::CharacteristicWorld::printed_abilities_available(self, id)
                 {
                     continue;
@@ -3836,30 +3870,20 @@ impl<'g> FundingState<'g> {
                 {
                     continue;
                 }
-                if let Some(spec) = cost.additional
-                    && let EffectChoiceKind::TapPermanents(amount) = spec.kind
-                    && spec.filter.kinds == 1
-                    && *creature_tap_upper.get_or_insert_with(|| {
-                        self.game
-                            .state
-                            .objects
-                            .iter()
-                            .enumerate()
-                            .filter(|(id, _)| {
-                                let object = self.object(*id as CardId);
-                                object.zone == Zone::Battlefield
-                                    && object.controller == goal.actor
-                                    && !object.tapped
-                                    && ability_world::CharacteristicWorld::kinds(
-                                        self,
-                                        *id as CardId,
-                                    ) & 1
-                                        != 0
-                            })
-                            .count()
-                    }) < amount as usize
-                {
-                    continue;
+                if let Some(group_taps) = group_taps {
+                    if *creature_tap_upper.get_or_insert_with(count_untapped_creatures) < group_taps
+                    {
+                        continue;
+                    }
+                    if !cost.tap {
+                        // Copies and different abilities draw from one tap pool.
+                        group_minimum = group_minimum.min(group_taps);
+                        group_quantity = group_quantity.max(amount);
+                        for (bound, amount) in group_colors.iter_mut().zip(colors) {
+                            *bound = (*bound).max(amount);
+                        }
+                        continue;
+                    }
                 }
                 // Every admitted mana cost taps without a departure or
                 // conversion. It can neither re-enter nor untap a source.
@@ -3872,6 +3896,29 @@ impl<'g> FundingState<'g> {
                 *bound = bound.saturating_add(amount);
             }
             quantity = quantity.saturating_add(tap_quantity);
+        }
+        let mut group_gain = group_quantity;
+        let creatures = if convoke || group_minimum != usize::MAX {
+            *creature_tap_upper.get_or_insert_with(count_untapped_creatures)
+        } else {
+            0
+        };
+        let group_uses = (creatures / group_minimum) as u128;
+        let convoke_quantity = if convoke {
+            // Each grouped activation consumes creatures that could otherwise
+            // contribute one each. Only a gain above that can increase quantity.
+            group_gain = group_gain.saturating_sub(group_minimum as u128);
+            creatures as u128
+        } else {
+            0
+        };
+        quantity = quantity
+            .saturating_add(convoke_quantity)
+            .saturating_add(group_uses.saturating_mul(group_gain));
+        for (bound, amount) in upper.iter_mut().zip(group_colors) {
+            *bound = bound
+                .saturating_add(convoke_quantity)
+                .saturating_add(group_uses.saturating_mul(amount));
         }
         let adjusted = cast_origins::payment_goal(self, goal, purpose);
         let required = u128::from(adjusted.generic)

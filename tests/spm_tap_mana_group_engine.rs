@@ -196,3 +196,28 @@ fn nested_tap_payment_preserves_the_enclosing_activations_source_tap() {
     settle(&mut game);
     assert_eq!(game.hand_count(player), 1);
 }
+
+#[test]
+fn tap_group_sources_and_convoke_share_the_untapped_creature_pool() {
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &TAP_TWO)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    game.state.players[player.index()].mana = EMPTY;
+    for _ in 0..2 {
+        put(&mut game, player, "Forest", Zone::Battlefield);
+        new_source(&mut game, player);
+    }
+    for _ in 0..3 {
+        put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    }
+    put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
+    let gwenom = put(&mut game, player, "Gwenom, Remorseless", Zone::Hand);
+    let web = put(&mut game, player, "Web of Life and Destiny", Zone::Hand);
+    reject(&mut game, Action::AnnounceCast { card: gwenom });
+    reject(&mut game, Action::AnnounceCast { card: web });
+
+    put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    let legal = game.legal_actions();
+    assert!(legal.contains(&Action::AnnounceCast { card: gwenom }));
+    assert!(legal.contains(&Action::AnnounceCast { card: web }));
+}
