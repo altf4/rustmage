@@ -313,6 +313,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::PlotCostReduction(_)
                             | crate::cards::StaticAbilityFragment::LandMana { .. }
                             | crate::cards::StaticAbilityFragment::ControlledPermanentTapMana { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledSubtypeTapMana { .. }
                             | crate::cards::StaticAbilityFragment::ControlledArtifactFood(_)
                         | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                             | crate::cards::StaticAbilityFragment::ChosenBasicLandType

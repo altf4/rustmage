@@ -1294,7 +1294,8 @@ pub(super) trait CharacteristicWorld {
         let production = match fragment {
             StaticAbilityFragment::LandMana { production, .. }
             | StaticAbilityFragment::OtherControlledPermanentTapMana(production)
-            | StaticAbilityFragment::ControlledPermanentTapMana { production, .. } => production,
+            | StaticAbilityFragment::ControlledPermanentTapMana { production, .. }
+            | StaticAbilityFragment::ControlledSubtypeTapMana { production, .. } => production,
             _ => return None,
         };
         let provider = self.object(source.card);
@@ -1319,6 +1320,9 @@ pub(super) trait CharacteristicWorld {
             StaticAbilityFragment::OtherControlledPermanentTapMana(_) => own && id != source.card,
             StaticAbilityFragment::ControlledPermanentTapMana { kinds, .. } => {
                 own && self.kinds(id) & kinds != 0
+            }
+            StaticAbilityFragment::ControlledSubtypeTapMana { subtype, .. } => {
+                own && self.subtypes(id).has(target.card, subtype)
             }
             _ => unreachable!("static mana grant"),
         };

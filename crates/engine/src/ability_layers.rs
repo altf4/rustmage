@@ -467,6 +467,11 @@ pub enum StaticAbilityFragment {
         kinds: u16,
         production: ManaProduction,
     },
+    /// Grant a tap mana ability to controlled permanents with this effective subtype.
+    ControlledSubtypeTapMana {
+        subtype: &'static str,
+        production: ManaProduction,
+    },
     /// In layer four add Food to controlled artifacts. In layer six grant them
     /// this indexed activation template as part of the same continuous effect.
     ControlledArtifactFood(u16),

@@ -773,6 +773,10 @@ impl<'g> FundingState<'g> {
                     production,
                     ..
                 }
+                | crate::cards::StaticAbilityFragment::ControlledSubtypeTapMana {
+                    production,
+                    ..
+                }
                 | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(
                     production,
                 ) => Some(production),
@@ -1071,6 +1075,7 @@ impl<'g> FundingState<'g> {
                         matches!(
                             fragment,
                             StaticAbilityFragment::ControlledPermanentTapMana { .. }
+                                | StaticAbilityFragment::ControlledSubtypeTapMana { .. }
                                 | StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                         )
                     })
@@ -1112,7 +1117,7 @@ impl<'g> FundingState<'g> {
                                         | StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)
                                 ))
                             })
-                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(_) | crate::cards::StaticAbilityFragment::ActivatedPermanentKindsProhibited(_) | crate::cards::StaticAbilityFragment::AttachedActivationsProhibited | crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste | crate::cards::StaticAbilityFragment::ReuseExhaustBeforeFirstActivationOwnTurn | crate::cards::StaticAbilityFragment::OtherControlledExhaustGenericReduction(_) | crate::cards::StaticAbilityFragment::ArtifactTokenActivationReduction(_) | crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(_) | crate::cards::StaticAbilityFragment::ControlledLandColorlessTapManaBonus | crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(_) | crate::cards::StaticAbilityFragment::AttachmentManaBonus(_) | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. } | crate::cards::StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. } | crate::cards::StaticAbilityFragment::ControlledEquippedCreatureKeywords(_) | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledCreatureScaling { .. } | crate::cards::StaticAbilityFragment::AttachedAllCreatureTypes | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..) | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_) | crate::cards::StaticAbilityFragment::ControlledPermanentTapMana { .. } | crate::cards::StaticAbilityFragment::ControlledArtifactFood(_) | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. } | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. } | crate::cards::StaticAbilityFragment::ControlledCreatureEntryCountersForLandsEntered | crate::cards::StaticAbilityFragment::SourceOffTurnCreature | crate::cards::StaticAbilityFragment::CreatureGroupBonus { .. } | crate::cards::StaticAbilityFragment::CreatureGroupScaling { .. } | crate::cards::StaticAbilityFragment::ControlledLegendaryCreatureBonus(_) | crate::cards::StaticAbilityFragment::ChosenBasicLandType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterCreature { .. } | crate::cards::StaticAbilityFragment::SourceGraveyardAllTypes { .. } | crate::cards::StaticAbilityFragment::SourceConditionalKeywords { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..) | crate::cards::StaticAbilityFragment::CounterKeywordOther(..))))
+                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(_) | crate::cards::StaticAbilityFragment::ActivatedPermanentKindsProhibited(_) | crate::cards::StaticAbilityFragment::AttachedActivationsProhibited | crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste | crate::cards::StaticAbilityFragment::ReuseExhaustBeforeFirstActivationOwnTurn | crate::cards::StaticAbilityFragment::OtherControlledExhaustGenericReduction(_) | crate::cards::StaticAbilityFragment::ArtifactTokenActivationReduction(_) | crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(_) | crate::cards::StaticAbilityFragment::ControlledLandColorlessTapManaBonus | crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(_) | crate::cards::StaticAbilityFragment::AttachmentManaBonus(_) | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. } | crate::cards::StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. } | crate::cards::StaticAbilityFragment::ControlledEquippedCreatureKeywords(_) | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledCreatureScaling { .. } | crate::cards::StaticAbilityFragment::AttachedAllCreatureTypes | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..) | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_) | crate::cards::StaticAbilityFragment::ControlledPermanentTapMana { .. } | crate::cards::StaticAbilityFragment::ControlledSubtypeTapMana { .. } | crate::cards::StaticAbilityFragment::ControlledArtifactFood(_) | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. } | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. } | crate::cards::StaticAbilityFragment::ControlledCreatureEntryCountersForLandsEntered | crate::cards::StaticAbilityFragment::SourceOffTurnCreature | crate::cards::StaticAbilityFragment::CreatureGroupBonus { .. } | crate::cards::StaticAbilityFragment::CreatureGroupScaling { .. } | crate::cards::StaticAbilityFragment::ControlledLegendaryCreatureBonus(_) | crate::cards::StaticAbilityFragment::ChosenBasicLandType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterCreature { .. } | crate::cards::StaticAbilityFragment::SourceGraveyardAllTypes { .. } | crate::cards::StaticAbilityFragment::SourceConditionalKeywords { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..) | crate::cards::StaticAbilityFragment::CounterKeywordOther(..))))
                             || object.controller == goal.actor
                                 && subtypes
                                     .iter()
@@ -3767,6 +3772,10 @@ impl<'g> FundingState<'g> {
                                 production: ManaProduction::Tagged { quality, .. },
                                 ..
                             }
+                            | StaticAbilityFragment::ControlledSubtypeTapMana {
+                                production: ManaProduction::Tagged { quality, .. },
+                                ..
+                            }
                             | StaticAbilityFragment::OtherControlledPermanentTapMana(
                                 ManaProduction::Tagged { quality, .. },
                             ) => {
@@ -4009,6 +4018,7 @@ impl<'g> FundingState<'g> {
                                         | StaticAbilityFragment::AttachmentSacrificeMana(_)
                                         | StaticAbilityFragment::LandMana { .. }
                                         | StaticAbilityFragment::ControlledPermanentTapMana { .. }
+                                        | StaticAbilityFragment::ControlledSubtypeTapMana { .. }
                                         | StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                                 )
                             })
