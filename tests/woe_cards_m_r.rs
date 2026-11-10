@@ -1171,6 +1171,18 @@ fn return_from_the_wilds_resolves_each_pair_and_shuffles_even_without_a_land() {
 fn rowans_grim_search_privately_keeps_zero_one_or_two_and_draws_in_the_selected_order() {
     for player in [Player::P0, Player::P1] {
         let other = player.other();
+        let decline_miracle = |game: &mut Game, card, can_reveal| {
+            let view = game.observe(player).miracle.unwrap();
+            assert_eq!(view.object, game.object_ref(card));
+            assert_eq!(view.can_reveal, can_reveal);
+            assert!(game.observe(other).miracle.is_none());
+            assert_eq!(
+                game.legal_actions().contains(&Action::RevealMiracle),
+                can_reveal
+            );
+            act(game, Action::DeclineMiracle);
+            settle(game);
+        };
         let mut game = scenario(player);
         let spell = spawn(&mut game, player, named("Rowan's Grim Search"), Zone::Hand);
         let offering = spawn(&mut game, player, FOOD, Zone::Battlefield);
@@ -1188,7 +1200,8 @@ fn rowans_grim_search_privately_keeps_zero_one_or_two_and_draws_in_the_selected_
         let mut unpaid = game.clone();
         act(&mut unpaid, Action::ChooseBargain { sacrifice: None });
         pay(&mut unpaid);
-        settle(&mut unpaid);
+        pass_pair(&mut unpaid);
+        decline_miracle(&mut unpaid, top, false);
         assert_eq!(unpaid.object_view(offering).zone, Zone::Battlefield);
         assert_eq!(unpaid.object_view(top).zone, Zone::Hand);
         assert_eq!(unpaid.object_view(shock).zone, Zone::Hand);
@@ -1219,6 +1232,7 @@ fn rowans_grim_search_privately_keeps_zero_one_or_two_and_draws_in_the_selected_
 
         let mut zero = game.clone();
         act(&mut zero, Action::FinishLibrarySelection);
+        decline_miracle(&mut zero, fifth, false);
         for card in [top, shock, island, fourth] {
             assert_eq!(zero.object_view(card).zone, Zone::Graveyard);
         }
@@ -1229,6 +1243,7 @@ fn rowans_grim_search_privately_keeps_zero_one_or_two_and_draws_in_the_selected_
         let mut one = game.clone();
         act(&mut one, Action::SelectLibrary { card: island });
         act(&mut one, Action::FinishLibrarySelection);
+        decline_miracle(&mut one, island, false);
         for card in [top, shock, fourth] {
             assert_eq!(one.object_view(card).zone, Zone::Graveyard);
         }
@@ -1240,6 +1255,7 @@ fn rowans_grim_search_privately_keeps_zero_one_or_two_and_draws_in_the_selected_
         act(&mut reverse, Action::SelectLibrary { card: island });
         act(&mut reverse, Action::SelectLibrary { card: shock });
         act(&mut reverse, Action::FinishLibrarySelection);
+        decline_miracle(&mut reverse, island, false);
         assert!(reverse.observe(player).miracle.is_none());
         assert_eq!(reverse.object_view(shock).zone, Zone::Hand);
 
@@ -1262,14 +1278,8 @@ fn rowans_grim_search_privately_keeps_zero_one_or_two_and_draws_in_the_selected_
         act(&mut game, Action::SelectLibrary { card: island });
         reject(&mut game, Action::SelectLibrary { card: top });
         act(&mut game, Action::FinishLibrarySelection);
-        assert_eq!(
-            game.observe(player).miracle.unwrap().object,
-            game.object_ref(shock)
-        );
         assert_eq!(game.object_view(island).zone, Zone::Library);
-        assert!(game.observe(other).miracle.is_none());
-        act(&mut game, Action::DeclineMiracle);
-        settle(&mut game);
+        decline_miracle(&mut game, shock, true);
         assert_eq!(game.object_view(shock).zone, Zone::Hand);
         assert_eq!(game.object_view(island).zone, Zone::Hand);
         assert_eq!(game.object_view(top).zone, Zone::Graveyard);
