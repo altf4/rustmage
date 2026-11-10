@@ -5894,7 +5894,10 @@ impl Game {
                     filters,
                     attacking,
                     players,
-                } => self.return_battlefield_group(&item, filters, attacking, players),
+                } => self.return_battlefield_group(&item, filters, attacking, players, false),
+                Instruction::ReturnBattlefieldCountOpposingControllers(filters) => {
+                    self.return_battlefield_group(&item, filters, false, None, true);
+                }
                 Instruction::DamageBattlefield {
                     filters,
                     players,

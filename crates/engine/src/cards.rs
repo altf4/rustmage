@@ -3133,6 +3133,9 @@ pub enum Instruction {
         attacking: bool,
         players: Option<PlayerSet>,
     },
+    /// Return the group simultaneously, saving the number of opposing controllers
+    /// whose permanents actually moved to hand as MovedCount.
+    ReturnBattlefieldCountOpposingControllers(&'static [BattlefieldFilter]),
     DamageBattlefield {
         filters: &'static [BattlefieldFilter],
         players: Option<PlayerSet>,

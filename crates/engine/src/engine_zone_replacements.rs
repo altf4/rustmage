@@ -733,9 +733,8 @@ impl Game {
                 Some(ZoneReplacementKind::Battlefield)
             }
             Zone::Hand
-                if before.zone == Zone::Library
-                    && TEST_EXILE_INSTEAD_OF_HAND
-                        .with(|target| target.get() == Some(before.reference)) =>
+                if TEST_EXILE_INSTEAD_OF_HAND
+                    .with(|target| target.get() == Some(before.reference)) =>
             {
                 Some(ZoneReplacementKind::Exile)
             }
