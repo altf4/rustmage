@@ -5,6 +5,8 @@ use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
 use support::*;
 
+#[path = "spm_cards_b/faces_and_combat.rs"]
+mod faces_and_combat;
 #[path = "spm_cards_b/mana_and_permanents.rs"]
 mod mana_and_permanents;
 
