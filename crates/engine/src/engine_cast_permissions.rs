@@ -174,13 +174,17 @@ impl Game {
         object.zone == Zone::Graveyard
             && object.owner == player
             && object.is_card()
-            && ((kind == GraveyardCastKind::Cast
-                && object.card.static_ability_groups().iter().any(|group| {
-                    group.fragments.iter().any(|fragment| {
+            && ((kind == GraveyardCastKind::Play
+                && object.card.is_land()
+                && object.card.has_mayhem_land()
+                && self.discarded_to_graveyard_this_turn(card))
+                || (kind == GraveyardCastKind::Cast
+                    && object.card.static_ability_groups().iter().any(|group| {
+                        group.fragments.iter().any(|fragment| {
                         matches!(*fragment, StaticAbilityFragment::SelfGraveyardCastIf(condition)
                             if self.stat_value(condition, self.object_ref(card), player) != 0)
                     })
-                }))
+                    }))
                 || (matches!(kind, GraveyardCastKind::Cast | GraveyardCastKind::Play)
                     && self.state.active == player
                     && cast_origins::has_fragment(self, player, |fragment| {
@@ -495,6 +499,21 @@ impl Game {
         if method == CastMethod::Plot && definition.is_land() {
             return false;
         }
+        if method.is_mayhem()
+            && (definition.is_land()
+                || object.owner != actor
+                || !self.discarded_to_graveyard_this_turn(card)
+                || match method {
+                    CastMethod::Mayhem => definition.mayhem_cost_options().is_none(),
+                    CastMethod::GrantedMayhem => {
+                        crate::cards::mana_symbols::printed_cost(definition.info().mana_cost)
+                            .is_none()
+                    }
+                    _ => unreachable!("Mayhem method"),
+                })
+        {
+            return false;
+        }
         if method == CastMethod::GrantedHarmonize
             && (definition.is_land()
                 || !self.has_graveyard_cast(actor, card, GraveyardCastKind::Harmonize)
@@ -588,6 +607,7 @@ impl Game {
                             | CastMethod::Flashback
                             | CastMethod::Harmonize
                             | CastMethod::GrantedHarmonize
+                            | CastMethod::GrantedMayhem
                             | CastMethod::Mayhem
                             | CastMethod::Miracle
                             | CastMethod::Sneak
@@ -661,7 +681,12 @@ impl Game {
         {
             a.initialize_cast_costs(convoke::cost_potential(self, definition));
         }
-        if scalar_x || (definition.x_symbols() > 0 && method == CastMethod::LinkedExileCounterCost)
+        if scalar_x
+            || (definition.x_symbols() > 0
+                && matches!(
+                    method,
+                    CastMethod::LinkedExileCounterCost | CastMethod::GrantedMayhem
+                ))
         {
             return !self
                 .scalar_x_intervals_with_announcement(actor, card, definition, Some(&a))

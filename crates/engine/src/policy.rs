@@ -385,7 +385,8 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceLinkedExileCounterCost { .. }
             | Action::AnnounceFlashback { .. }
             | Action::AnnounceHarmonize { .. }
-            | Action::AnnounceMayhem { .. } => 79,
+            | Action::AnnounceMayhem { .. }
+            | Action::AnnounceGrantedMayhem { .. } => 79,
             Action::AnnouncePlot { .. } | Action::BeginFaceUp { .. } => 40,
             Action::AnnounceActivate { .. }
             | Action::AnnounceAttachedAbility { .. }

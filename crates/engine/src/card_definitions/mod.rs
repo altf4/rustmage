@@ -386,6 +386,8 @@ pub struct CardExtras {
     /// Variable symbols in the printed harmonize alternative (independent of the mana cost).
     pub harmonize_x_symbols: u8,
     pub mayhem_cost: Option<ManaCost>,
+    pub mayhem_cost_alternatives: &'static [ManaCost],
+    pub mayhem_land: bool,
     pub vehicle_stats: Option<Stats>,
     pub replacement_effects: &'static [ReplacementSpec],
     pub attached_subtype: Option<&'static str>,
@@ -520,6 +522,8 @@ impl CardExtras {
         harmonize_cost: None,
         harmonize_x_symbols: 0,
         mayhem_cost: None,
+        mayhem_cost_alternatives: &[],
+        mayhem_land: false,
         vehicle_stats: None,
         replacement_effects: &[],
         attached_subtype: None,

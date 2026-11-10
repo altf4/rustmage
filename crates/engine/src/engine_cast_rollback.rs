@@ -272,6 +272,7 @@ impl Game {
             | Action::AnnounceHarmonize { card }
             | Action::AnnounceGrantedHarmonize { card, .. }
             | Action::AnnounceMayhem { card }
+            | Action::AnnounceGrantedMayhem { card, .. }
             | Action::AnnounceFlashback { card }
             | Action::AnnounceGrantedFlashback { card, .. }
             | Action::AnnounceFree { card, .. }

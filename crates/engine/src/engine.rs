@@ -1075,6 +1075,7 @@ define_actions! {
     // Use an exact temporary grant, independently of the card's own harmonize cost.
     AnnounceGrantedHarmonize { card: CardId, face: CastFace },
     AnnounceMayhem { card: CardId },
+    AnnounceGrantedMayhem { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceGraveyardBorrowedAbility { card: CardId, graveyard: ObjectRef, ability: u16, counter_payment: Counters },
     AnnounceGraveyardBorrowedMana { card: CardId, graveyard: ObjectRef, ability: u16, counter_payment: Counters, production: Mana },
     ActivateGraveyardBorrowedMana { card: CardId, graveyard: ObjectRef, ability: u16, counter_payment: Counters, payment: Mana, production: Mana },
@@ -1485,6 +1486,7 @@ pub enum CastMethod {
     Warp,
     Disguise,
     Sneak,
+    GrantedMayhem,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -5891,6 +5893,13 @@ impl Game {
                     ) {
                         return true;
                     }
+                    if !casting_prohibited
+                        && !self.nonhand_cast_prohibited(actor)
+                        && obj.zone == Zone::Graveyard
+                        && self.visit_mayhem_casts(actor, card, sorcery, &mut emit)
+                    {
+                        return true;
+                    }
                     // This check follows face-down disguise: the face-down spell
                     // has no printed restriction from its underlying card.
                     let front_allowed =
@@ -6110,20 +6119,6 @@ impl Game {
                                 }
                             }
                         }
-                    }
-                    if !casting_prohibited
-                        && self.can_cast_mayhem(actor, card)
-                        && self.permitted_cast_available(
-                            actor,
-                            card,
-                            CastMethod::Mayhem,
-                            CastFace::Normal,
-                            sorcery,
-                            false,
-                        )
-                        && emit(Action::AnnounceMayhem { card })
-                    {
-                        return true;
                     }
                     if !casting_prohibited
                         && !self.nonhand_cast_prohibited(actor)
@@ -7874,13 +7869,35 @@ impl Game {
                 }
                 self.open_payment_announcement(item, Counters::default(), None);
             }
-            Action::AnnounceMayhem { card } => {
-                let mut item = self.cast_item(actor, card, [0; 6]);
-                item.cast.as_mut().unwrap().method = CastMethod::Mayhem;
-                if item.source.expect("mayhem source").card.x_symbols() > 0 {
-                    item.x = Some(0);
+            Action::AnnounceMayhem { card } | Action::AnnounceGrantedMayhem { card, .. } => {
+                let (method, face, flash_surcharge) = match action {
+                    Action::AnnounceGrantedMayhem {
+                        face,
+                        flash_surcharge,
+                        ..
+                    } => (CastMethod::GrantedMayhem, face, flash_surcharge),
+                    _ => (CastMethod::Mayhem, CastFace::Normal, false),
+                };
+                if matches!(self.state.pending, Pending::ResolutionCasts { .. }) {
+                    self.cast_during_resolution_with_cost(
+                        actor,
+                        self.object_ref(card),
+                        face,
+                        Some(method),
+                    );
+                } else {
+                    let mut item = self.cast_item(actor, card, [0; 6]);
+                    self.set_cast_face(&mut item, face);
+                    let cast = item.cast.as_mut().unwrap();
+                    cast.method = method;
+                    cast.flash_surcharge = flash_surcharge;
+                    if method == CastMethod::Mayhem
+                        && item.source.expect("Mayhem source").card.x_symbols() > 0
+                    {
+                        item.x = Some(0);
+                    }
+                    self.open_payment_announcement(item, Counters::default(), None);
                 }
-                self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnounceHarmonize { card } | Action::AnnounceGrantedHarmonize { card, .. } => {
                 let (method, face) = match action {

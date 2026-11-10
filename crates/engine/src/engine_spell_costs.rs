@@ -163,14 +163,8 @@ impl Game {
                     .fixed_alternative_cost()
                     .expect("printed harmonize mana cost");
             }
-            if a.item.cast.is_some_and(|c| c.method == CastMethod::Mayhem) {
-                return a
-                    .item
-                    .source
-                    .expect("mayhem source")
-                    .card
-                    .mayhem_cost()
-                    .expect("mayhem cost");
+            if a.item.cast.is_some_and(|cast| cast.method.is_mayhem()) {
+                return a.mayhem_cost_options().next().expect("Mayhem cost");
             }
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Miracle) {
                 return a.origin_alternative_cost.expect("miracle cost");
@@ -520,6 +514,9 @@ impl Game {
                 _ => rule.filter.matches_mana_value(definition, mana_value),
             }) && match rule.turn {
                 CostTurn::Any => true,
+                CostTurn::Graveyard => {
+                    self.spell_origin(id) == Zone::Graveyard && recipient.owner == actor
+                }
                 CostTurn::GraveyardOrExile => match self.spell_origin(id) {
                     Zone::Graveyard => recipient.owner == actor,
                     Zone::Exile => true,

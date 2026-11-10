@@ -2142,6 +2142,11 @@ pub enum Instruction {
     IfCastFromGraveyard {
         skip: usize,
     },
+    /// Compare the selected alternative cost, including for a copied spell.
+    IfMayhemPaid {
+        paid: bool,
+        skip: usize,
+    },
     /// Copies and spells not cast from a hand take the non-hand branch.
     IfNotCastFromHand {
         skip: usize,
@@ -5408,6 +5413,8 @@ impl CastFilter {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum CostTurn {
     Any,
+    /// The spell was proposed from the caster's own graveyard.
+    Graveyard,
     /// Cast from the caster's graveyard or from exile.
     GraveyardOrExile,
     /// Historical origin is not this caster’s hand (independent of payment).
@@ -5777,6 +5784,10 @@ pub enum TriggerCondition {
     /// A paid promise belongs to this actual cast-to-battlefield entry event.
     SelfGiftEnters,
     SelfEntersIfCast,
+    /// The incoming object itself moved from a graveyard.
+    SelfEntersFromGraveyard,
+    /// The permanent spell was cast from the ability controller's graveyard.
+    SelfEntersIfCastFromYourGraveyard,
     SelfEvokedEnters,
     SelfEntersManaSpent {
         color: u8,
@@ -6921,8 +6932,15 @@ impl Card {
     pub fn inset_parent(self) -> Option<Card> {
         self.adventure_parent().or_else(|| self.omen_parent())
     }
-    pub(crate) fn mayhem_cost(self) -> Option<ManaCost> {
-        authored::rules(self).and_then(|r| r.extras.mayhem_cost)
+    pub(crate) fn mayhem_cost_options(self) -> Option<ManaCostOptions> {
+        let extras = authored::rules(self)?.extras;
+        Some(
+            std::iter::once(extras.mayhem_cost?)
+                .chain(extras.mayhem_cost_alternatives.iter().copied()),
+        )
+    }
+    pub(crate) fn has_mayhem_land(self) -> bool {
+        authored::rules(self).is_some_and(|rules| rules.extras.mayhem_land)
     }
     pub(crate) fn harmonize_cost(self) -> Option<ManaCost> {
         authored::rules(self).and_then(|r| r.extras.harmonize_cost)

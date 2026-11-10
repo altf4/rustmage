@@ -5162,7 +5162,9 @@ impl Game {
             }
             return self.behold_announcement_fundable(&proposal, cost);
         }
-        if a.has_ordered_life_cost() {
+        if a.has_ordered_life_cost() || a.item.cast.is_some_and(|cast| cast.method.is_mayhem()) {
+            // These routes must preflight the actual alternative and its
+            // additional costs instead of inferring them from the printed cost.
             return self.behold_announcement_fundable(a, cost);
         }
         if a.item.cast.is_some_and(|c| c.method.is_harmonize()) {

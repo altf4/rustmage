@@ -963,6 +963,14 @@ impl Game {
                         unreachable!("unwrapped event")
                     }
                     TriggerCondition::SelfEntersIfCast => same && event.was_cast,
+                    TriggerCondition::SelfEntersFromGraveyard => {
+                        same && event.before.zone == Zone::Graveyard
+                    }
+                    TriggerCondition::SelfEntersIfCastFromYourGraveyard => {
+                        same && event.was_cast
+                            && event.cast_origin == Some(Zone::Graveyard)
+                            && event.before.owner == entered.controller
+                    }
                     TriggerCondition::SelfEvokedEnters => same && event.evoked,
                     TriggerCondition::SelfEntersManaSpent { color, minimum } => {
                         same && event.cast_event.as_ref().is_some_and(|e| {
@@ -5081,6 +5089,11 @@ impl Game {
                 }
                 Instruction::BlinkImmediately { counter, tapped } => {
                     self.blink_immediately(&item, counter, tapped)
+                }
+                Instruction::IfMayhemPaid { paid, skip } => {
+                    if item.cast.is_some_and(|cast| cast.method.is_mayhem()) != paid {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
                 }
                 Instruction::IfCastFromGraveyard { skip } => {
                     if item.is_copy || !item.cast.is_some_and(|cast| cast.origin == Zone::Graveyard)

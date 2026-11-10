@@ -194,6 +194,8 @@ pub enum StaticAbilityFragment {
     PlayLandFromLibraryTop,
     PlayLandFromGraveyard,
     PlayFromGraveyardDuringOwnTurn,
+    /// Eligible nonland faces in your graveyard have Mayhem for their mana cost.
+    GrantManaCostMayhem,
     /// Cast a matching spell from your graveyard with an additional life cost.
     /// The permanent enters with the specified counter if cast this way.
     CastFromGraveyardWithLife {

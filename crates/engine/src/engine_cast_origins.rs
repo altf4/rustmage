@@ -22,6 +22,7 @@ impl Card {
                         | StaticAbilityFragment::PlayLandFromLibraryTop
                         | StaticAbilityFragment::PlayLandFromGraveyard
                         | StaticAbilityFragment::PlayFromGraveyardDuringOwnTurn
+                        | StaticAbilityFragment::GrantManaCostMayhem
                         | StaticAbilityFragment::CastFromGraveyardWithLife { .. }
                         | StaticAbilityFragment::SpendAnyManaForCreatures
                         | StaticAbilityFragment::GraveyardPermanentTypes
@@ -881,6 +882,11 @@ impl Game {
                     return true;
                 }
                 if paid_graveyard
+                    && self.visit_resolution_mayhem_face(player, object.card, face, &mut emit)
+                {
+                    return true;
+                }
+                if paid_graveyard
                     && face == CastFace::Normal
                     && physical.flashback_cost().is_some()
                     && self.state.objects[object.card as usize].owner == player
@@ -1005,7 +1011,7 @@ impl Game {
             });
         if matches!(
             method,
-            CastMethod::Free | CastMethod::Miracle | CastMethod::Flashback
+            CastMethod::Free | CastMethod::Miracle | CastMethod::Flashback | CastMethod::Mayhem
         ) && item.source.expect("cast spell has source").card.x_symbols() > 0
         {
             item.x = Some(0);

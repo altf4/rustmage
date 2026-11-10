@@ -117,10 +117,6 @@ impl Announcement {
             }
             CastMethod::Miracle => self.origin_alternative_cost,
             CastMethod::Warp => Some(self.warp_spec().mana),
-            CastMethod::Mayhem => self
-                .item
-                .source
-                .and_then(|source| source.card.mayhem_cost()),
             CastMethod::Airbend => Some(ManaCost {
                 colored: [0; 6],
                 generic: 2,
@@ -221,8 +217,7 @@ impl Announcement {
                     | CastMethod::Airbend
                     | CastMethod::Free
                     | CastMethod::Plot
-                    | CastMethod::Miracle
-                    | CastMethod::Mayhem => {
+                    | CastMethod::Miracle => {
                         self.fixed_alternative_cost().is_some_and(|base| {
                             self.cost.is_some_and(|cost| {
                                 self.cost_before_exile_play_surcharge(cost) != base
@@ -238,6 +233,9 @@ impl Announcement {
                     CastMethod::Warp => self
                         .cost
                         .is_some_and(|cost| self.warp_additional_mana_chosen(cost)),
+                    CastMethod::Mayhem | CastMethod::GrantedMayhem => self
+                        .cost
+                        .is_some_and(|cost| self.mayhem_additional_mana_chosen(cost)),
                     _ => false,
                 }) =>
             {
@@ -344,6 +342,37 @@ impl Announcement {
             })
     }
 
+    pub(super) fn mayhem_cost_options(&self) -> crate::cards::mana_symbols::ManaOptions {
+        use crate::cards::mana_symbols::{ManaOptions, printed_cost};
+
+        let card = self.item.source.expect("Mayhem source").card;
+        if self
+            .item
+            .cast
+            .is_some_and(|cast| cast.method == CastMethod::GrantedMayhem)
+        {
+            ManaOptions::Printed(
+                printed_cost(card.info().mana_cost)
+                    .expect("granted Mayhem printed cost")
+                    .options
+                    .into_iter(),
+            )
+        } else {
+            ManaOptions::Static(card.mayhem_cost_options().expect("printed Mayhem cost"))
+        }
+    }
+
+    fn mayhem_additional_mana_chosen(&self, cost: ManaCost) -> bool {
+        self.item
+            .source
+            .and_then(|source| source.card.mana_additional_alternative())
+            .is_some_and(|fee| {
+                self.mayhem_cost_options().any(|base| {
+                    self.apply_cost_declarations(Card::add_mana_cost(base, fee)) == Some(cost)
+                })
+            })
+    }
+
     fn cost_route_options(
         &self,
     ) -> impl Iterator<
@@ -387,15 +416,6 @@ impl Announcement {
             }
             StackKind::Spell if self.item.cast.is_some_and(|c| c.method == CastMethod::Warp) => {
                 self.warp_cost_options()
-            }
-            StackKind::Spell
-                if self
-                    .item
-                    .cast
-                    .is_some_and(|cast| cast.method == CastMethod::Mayhem) =>
-            {
-                std::iter::once(self.fixed_alternative_cost().expect("mayhem cost"))
-                    .chain([].iter().copied())
             }
             StackKind::Spell
                 if self
@@ -483,7 +503,10 @@ impl Announcement {
                 unreachable!("triggered ability has no activation cost")
             }
         };
-        let options = if let StackKind::ActivatedAbility { ability } = self.item.kind {
+        let mayhem = self.item.cast.is_some_and(|cast| cast.method.is_mayhem());
+        let options = if mayhem {
+            self.mayhem_cost_options()
+        } else if let StackKind::ActivatedAbility { ability } = self.item.kind {
             self.item
                 .source
                 .expect("activated source")
@@ -561,11 +584,16 @@ impl Announcement {
                 std::iter::once((cost, route, evoked)).chain(
                     (self.item.kind == StackKind::Spell && self.fixed_alternative_cost().is_none())
                         .then(|| {
-                            self.item
+                            let card = self
+                                .item
                                 .source
                                 .expect("announcement has object source")
-                                .card
-                                .explicit_additional_mana()
+                                .card;
+                            if mayhem {
+                                card.mana_additional_alternative()
+                            } else {
+                                card.explicit_additional_mana()
+                            }
                         })
                         .flatten()
                         .map(move |extra| (Card::add_mana_cost(cost, extra), route, evoked)),
