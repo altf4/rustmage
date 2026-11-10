@@ -1,4 +1,6 @@
 //! Paid rules scenarios for Marvel's Spider-Man members 097–144.
+#[path = "spm_cards_c/admitted.rs"]
+mod admitted;
 #[path = "spm_cards_c/cast_costs.rs"]
 mod cast_costs;
 #[path = "spm_cards_c/events.rs"]

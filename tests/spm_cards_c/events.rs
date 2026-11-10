@@ -420,6 +420,7 @@ fn noir_counts_all_live_or_last_known_counters_on_the_lone_attacker() {
     let mut game = scenario(player);
     let noir = put(&mut game, player, "Spider-Man Noir", Zone::Hand);
     let attacker = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let island = put(&mut game, player, "Island", Zone::Battlefield);
     game.add_counter(attacker, CounterKind::Stun, 2);
     cast(&mut game, noir, None);
     settle(&mut game);
@@ -428,6 +429,7 @@ fn noir_counts_all_live_or_last_known_counters_on_the_lone_attacker() {
     for left in [false, true] {
         let mut branch = game.clone();
         if left {
+            act(&mut branch, Action::TapMana { card: island });
             let bounce = put(&mut branch, player, "Unsummon", Zone::Hand);
             cast(&mut branch, bounce, Some(Target::Card(attacker)));
             pass_pair(&mut branch);
