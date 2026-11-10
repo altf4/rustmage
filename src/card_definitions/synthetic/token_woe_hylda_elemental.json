@@ -1,0 +1,11 @@
+{
+  "name": "@token/woe-hylda-elemental",
+  "catalogue_id": 5547,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "fd48f86900bedb58a084ef366650731bb15d5e93b1c0d1fa9de2777e738432be",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/Elemental44WUToken.java",
+  "java_sha256": "53d3d787b13e3d130df6c788edf1a6fb3315664b56bfa55312b3c73a10ffdcaf"
+}

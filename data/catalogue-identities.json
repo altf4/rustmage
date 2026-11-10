@@ -2078,7 +2078,7 @@
     1,
     3,
     1,
-    0,
+    4,
     2,
     16,
     20,
@@ -2843,7 +2843,7 @@
     4,
     4,
     16,
-    0,
+    8,
     0,
     1,
     18,
@@ -4818,7 +4818,7 @@
     2,
     2,
     1,
-    0,
+    16,
     0,
     2,
     26,
@@ -5551,7 +5551,9 @@
     14,
     19,
     16,
-    2
+    2,
+    2,
+    3
   ],
   "aliases": [
     [
@@ -6713,6 +6715,14 @@
     [
       "@token/woe-ashiok-nightmare",
       5478
+    ],
+    [
+      "@token/woe-faerie-block-fliers",
+      5546
+    ],
+    [
+      "@token/woe-hylda-elemental",
+      5547
     ],
     [
       "A Killer Among Us",
@@ -29725,6 +29735,18 @@
       "name": "Illusion Villain Token",
       "subtypes": "Illusion Villain",
       "colors": 2
+    },
+    {
+      "factory_identity": "@token/woe-faerie-block-fliers",
+      "name": "Faerie Token",
+      "subtypes": "Faerie",
+      "colors": 2
+    },
+    {
+      "factory_identity": "@token/woe-hylda-elemental",
+      "name": "Elemental Token",
+      "subtypes": "Elemental",
+      "colors": 3
     }
   ],
   "emblems": [
@@ -89706,24 +89728,26 @@
     {
       "index": 2072,
       "module": "card_2072",
-      "path": "legacy/hopeless_nightmare.rs",
-      "set": "legacy",
+      "path": "woe/hopeless_nightmare.rs",
+      "set": "woe",
       "category": "physical",
       "name": "Hopeless Nightmare",
-      "oracle_id": null,
-      "facts_sha256": null,
-      "mana_cost": "",
-      "type_line": "",
-      "oracle_keywords": [],
+      "oracle_id": "5e63b69c-d901-4a01-8dfa-88e044856239",
+      "facts_sha256": "57cd34e5f2244f4b24b932ad9621da221101ba010e61656b4ec5619ed7a37427",
+      "mana_cost": "{B}",
+      "type_line": "Enchantment",
+      "oracle_keywords": [
+        "Scry"
+      ],
       "standard_legal": false,
       "legendary": false,
-      "kind": 0,
+      "kind": 32,
       "basic": false,
       "mana_color": null,
       "colored": [
         0,
         0,
-        0,
+        1,
         0,
         0,
         0
@@ -111754,25 +111778,27 @@
     {
       "index": 2837,
       "module": "card_2837",
-      "path": "legacy/monstrous_rage.rs",
-      "set": "legacy",
+      "path": "woe/monstrous_rage.rs",
+      "set": "woe",
       "category": "physical",
       "name": "Monstrous Rage",
-      "oracle_id": null,
-      "facts_sha256": null,
-      "mana_cost": "",
-      "type_line": "",
-      "oracle_keywords": [],
+      "oracle_id": "646a2371-54c0-4492-ac2f-20f109d6108c",
+      "facts_sha256": "c13ba6dcd22e01ffc6f36388d753f917da96558ef2d0d1bbf40d162268dc4d78",
+      "mana_cost": "{R}",
+      "type_line": "Instant",
+      "oracle_keywords": [
+        "Role token"
+      ],
       "standard_legal": false,
       "legendary": false,
-      "kind": 0,
+      "kind": 8,
       "basic": false,
       "mana_color": null,
       "colored": [
         0,
         0,
         0,
-        0,
+        1,
         0,
         0
       ],
@@ -168468,18 +168494,18 @@
     {
       "index": 4812,
       "module": "card_4812",
-      "path": "legacy/up_the_beanstalk.rs",
-      "set": "legacy",
+      "path": "woe/up_the_beanstalk.rs",
+      "set": "woe",
       "category": "physical",
       "name": "Up the Beanstalk",
-      "oracle_id": null,
-      "facts_sha256": null,
-      "mana_cost": "",
-      "type_line": "",
+      "oracle_id": "050f5733-7c0b-4991-9a6c-7ea12ccf0ca9",
+      "facts_sha256": "59175b40caf27adb76a05a0e9b83b5e62f34d72acd05dbab4c782de1b004357b",
+      "mana_cost": "{1}{G}",
+      "type_line": "Enchantment",
       "oracle_keywords": [],
       "standard_legal": false,
       "legendary": false,
-      "kind": 0,
+      "kind": 32,
       "basic": false,
       "mana_color": null,
       "colored": [
@@ -168487,10 +168513,10 @@
         0,
         0,
         0,
-        0,
+        1,
         0
       ],
-      "generic": 0
+      "generic": 1
     },
     {
       "index": 4813,
@@ -189217,6 +189243,62 @@
       "name": "@token/spm-illusion-villain",
       "mana_cost": "",
       "type_line": "Creature — Illusion Villain",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": []
+    },
+    {
+      "index": 5546,
+      "module": "card_5546",
+      "path": "synthetic/token_woe_faerie_block_fliers.rs",
+      "set": "synthetic",
+      "category": "token",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "name": "@token/woe-faerie-block-fliers",
+      "mana_cost": "",
+      "type_line": "Creature — Faerie",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Flying"
+      ]
+    },
+    {
+      "index": 5547,
+      "module": "card_5547",
+      "path": "synthetic/token_woe_hylda_elemental.rs",
+      "set": "synthetic",
+      "category": "token",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "name": "@token/woe-hylda-elemental",
+      "mana_cost": "",
+      "type_line": "Creature — Elemental",
       "colored": [
         0,
         0,

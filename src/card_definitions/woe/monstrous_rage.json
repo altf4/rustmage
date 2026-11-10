@@ -1,0 +1,15 @@
+{
+  "name": "Monstrous Rage",
+  "catalogue_id": 2837,
+  "oracle_id": "646a2371-54c0-4492-ac2f-20f109d6108c",
+  "facts_sha256": "c13ba6dcd22e01ffc6f36388d753f917da96558ef2d0d1bbf40d162268dc4d78",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "8a49c32efdb773194829cf526fc3597afe16ed81de0c663c9ae664d1a3f90b8f"
+  },
+  "physical_metadata_sha256": "138257c0ae8ad8ea968b7017447c5a39ceb41ab807258dbb3ea490e6d191a9ef",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MonstrousRage.java",
+  "java_sha256": "64ccd756de5f0343261e3f22cab29dc5e7506bd2a7a157315f928f6f5ecede51"
+}

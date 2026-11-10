@@ -1,0 +1,15 @@
+{
+  "name": "Hopeless Nightmare",
+  "catalogue_id": 2072,
+  "oracle_id": "5e63b69c-d901-4a01-8dfa-88e044856239",
+  "facts_sha256": "57cd34e5f2244f4b24b932ad9621da221101ba010e61656b4ec5619ed7a37427",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3dddfe63ef09bd04209a514f8dfcdec2df61daaf355904212a1af04bd142c451"
+  },
+  "physical_metadata_sha256": "3148c5c160e346b89b92c1e96316e502154560a29b6e71651d8669b097c5e2dc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HopelessNightmare.java",
+  "java_sha256": "cadf4d4d319a08b2804de8a0129bb45c1e44cda1c674f2b75889799139f5f4db"
+}

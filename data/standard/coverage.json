@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "8a7e15b6cbede4646c90073f75fef7db48d0c1f0eeb3d4f32e58d4a85c7e895b",
+  "catalogue_version": "059724c38de22d052b14b6ee01050f035361b73a19360d98fb024f5644f96896",
   "standard_legal_cards": 5163,
   "implemented_standard_cards": 4005,
   "implemented_total": 4014,
-  "token_definitions": 173,
+  "token_definitions": 175,
   "emblem_definitions": 12,
   "adventure_definitions": 53,
   "omen_definitions": 13,
@@ -16773,8 +16773,8 @@
       "standard_legal": false,
       "implemented": false,
       "implementation": null,
-      "definition": "src/card_definitions/legacy/hopeless_nightmare.rs",
-      "set": "legacy"
+      "definition": "src/card_definitions/woe/hopeless_nightmare.rs",
+      "set": "woe"
     },
     {
       "name": "Horned Loch-Whale // Lagoon Breach",
@@ -22893,8 +22893,8 @@
       "standard_legal": false,
       "implemented": false,
       "implementation": null,
-      "definition": "src/card_definitions/legacy/monstrous_rage.rs",
-      "set": "legacy"
+      "definition": "src/card_definitions/woe/monstrous_rage.rs",
+      "set": "woe"
     },
     {
       "name": "Monument to Endurance",
@@ -38693,8 +38693,8 @@
       "standard_legal": false,
       "implemented": false,
       "implementation": null,
-      "definition": "src/card_definitions/legacy/up_the_beanstalk.rs",
-      "set": "legacy"
+      "definition": "src/card_definitions/woe/up_the_beanstalk.rs",
+      "set": "woe"
     },
     {
       "name": "Urban Retreat",

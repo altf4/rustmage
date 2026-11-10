@@ -1,0 +1,18 @@
+{
+  "name": "@token/woe-faerie-block-fliers",
+  "catalogue_id": 5546,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "ab4ff99707881c95ee170de108285dc5c29932b4f0e81f8ecac3bb2ec87ffdc6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/FaerieBlockFliersToken.java",
+  "java_sha256": "0c3bf4fbbeb5b0dc3dff06f9deaeae6931e28c6a32974ae62d2ebdffab54fc25",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CanBlockOnlyFlyingEffect.java",
+      "sha256": "df8b59e15c230a3a577d3b090f72ca9e433283c0bd07e5dce7654dca30153945"
+    }
+  ]
+}
