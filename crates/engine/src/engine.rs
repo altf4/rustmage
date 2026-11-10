@@ -8817,6 +8817,14 @@ impl Game {
                     let resolution = self.state.resolving.as_mut().unwrap();
                     resolution.discards[actor.index()] -= 1;
                     resolution.selected_discards[actor.index()].push(card);
+                    if let Some(discard_events::DiscardAfter::LoseLifeForDeclinedDiscard {
+                        paid, ..
+                    }) = &mut resolution.discard_after
+                    {
+                        // CR 118.11–12: a legal payment remains paid when its
+                        // discard event is modified by a replacement effect.
+                        paid[actor.index()] = true;
+                    }
                     self.run_program();
                 } else {
                     self.state.cleanup_discards.push(card);

@@ -14,8 +14,9 @@ pub struct DiscardTriggerView {
 pub(super) enum DiscardAfter {
     Recruit(Player, Card),
     LoseLife(Player, i128),
-    LoseLifeUnlessDiscarded {
+    LoseLifeForDeclinedDiscard {
         players: [bool; 2],
+        paid: [bool; 2],
         amount: u16,
     },
     DrawActual {
@@ -488,9 +489,9 @@ impl Game {
                 self.draw_many(player, u128::from(amount))
             }
             Some(DiscardAfter::LoseLife(player, amount)) => self.lose_life(player, amount),
-            Some(DiscardAfter::LoseLifeUnlessDiscarded { players, amount }) => {
+            Some(DiscardAfter::LoseLifeForDeclinedDiscard { players, paid, amount }) => {
                 self.lose_life_simultaneously(std::array::from_fn(|i| {
-                    if players[i] && counts[i] == 0 {
+                    if players[i] && !paid[i] {
                         i128::from(amount)
                     } else {
                         0
@@ -516,11 +517,13 @@ impl Game {
             return None;
         }
         let r = self.state.resolving.as_ref()?;
-        let Some(DiscardAfter::LoseLifeUnlessDiscarded { players, .. }) = &r.discard_after else {
+        let Some(DiscardAfter::LoseLifeForDeclinedDiscard { players, paid, .. }) =
+            &r.discard_after
+        else {
             return None;
         };
         Some(std::array::from_fn(|i| {
-            (players[i] && r.discards[i] == 0).then(|| !r.selected_discards[i].is_empty())
+            (players[i] && r.discards[i] == 0).then_some(paid[i])
         }))
     }
 

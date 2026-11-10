@@ -149,7 +149,7 @@ impl Drop for ClearPrevention {
 }
 
 #[test]
-fn discard_fallback_uses_actual_events_and_commits_both_life_losses_before_observers() {
+fn discard_fallback_uses_legal_payments_and_commits_both_life_losses_before_observers() {
     let _rules = fixture_rules::activate(&[
         (Card::Divination, &OPTIONAL_DISCARDS),
         (card("Bear Cub"), &SIMULTANEOUS_LOSS_OBSERVER),
@@ -179,7 +179,8 @@ fn discard_fallback_uses_actual_events_and_commits_both_life_losses_before_obser
         game.state.players[opponent.index()].cards_discarded_this_turn,
         1
     );
-    assert_eq!(game.state.players[player.index()].life, 17);
+    // The legal optional cost was paid even though its move was prevented.
+    assert_eq!(game.state.players[player.index()].life, 20);
     assert_eq!(game.state.players[opponent.index()].life, 20);
 
     let mut both = scenario(player);

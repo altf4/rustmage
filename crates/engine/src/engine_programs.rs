@@ -9021,8 +9021,9 @@ impl Game {
                     let resolution = self.state.resolving.as_mut().unwrap();
                     resolution.discards = affected.map(usize::from);
                     resolution.discard_after =
-                        Some(discard_events::DiscardAfter::LoseLifeUnlessDiscarded {
+                        Some(discard_events::DiscardAfter::LoseLifeForDeclinedDiscard {
                             players: affected,
+                            paid: [false; 2],
                             amount,
                         });
                 }
