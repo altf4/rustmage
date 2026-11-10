@@ -164,6 +164,103 @@ fn redirection_uses_exact_aura_recipients_and_dynamic_stats_count_attachments_on
     assert_eq!(indexed.object_view(second).damage, 2);
 }
 
+const ANIMATABLE: u8 = 2 | 64;
+const ANIMATING_AURA: CardRules = CardRules {
+    effect: Effect::Aura(TargetPlan::Single(TargetSpec::one(TargetRule::Object {
+        zone: TargetZone::Battlefield,
+        kinds: ANIMATABLE,
+        relation: -1,
+        other: false,
+        nonland: false,
+        tapped: false,
+        min_mana: 0,
+        max_mana: u32::MAX,
+    }))),
+    aura: Some(AuraSpec {
+        kinds: ANIMATABLE,
+        relation: -1,
+        ..AURA
+    }),
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Type,
+        fragments: &[StaticAbilityFragment::AttachedCharacteristics(
+            &AttachedCharacteristics {
+                name: None,
+                form: PermanentForm::AddCreature,
+                creature_types: &["Construct"],
+                colors: &[],
+                base: Some((3, 3)),
+            },
+        )],
+    }],
+    ..CardRules::EMPTY
+};
+
+const DESTROY_THEN_DAMAGE: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::Single(TargetSpec::one(TargetRule::Object {
+            zone: TargetZone::Battlefield,
+            kinds: 32,
+            relation: -1,
+            other: false,
+            nonland: false,
+            tapped: false,
+            min_mana: 0,
+            max_mana: u32::MAX,
+        })),
+        &[
+            Instruction::Destroy,
+            Instruction::DamagePlayers(PlayerSet::Opponent, 2),
+        ],
+    ),
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn redirection_uses_the_attached_planeswalker_until_attachment_state_based_actions() {
+    let _rules = fixture_rules::activate(&[
+        (Card::from_name("Pacifism").unwrap(), &REDIRECTING_AURA),
+        (
+            Card::from_name("Ringing Strike Mastery").unwrap(),
+            &ANIMATING_AURA,
+        ),
+        (Card::from_name("Opt").unwrap(), &DESTROY_THEN_DAMAGE),
+    ]);
+    let attacker = Player::P0;
+    let defender = attacker.other();
+    for (recipient_name, underlying_kind, life, loyalty) in
+        [("Jace Reawakened", 64, 20, 1), ("Forest", 2, 18, 0)]
+    {
+        let mut game = scenario(attacker);
+        let recipient = put(&mut game, defender, recipient_name, Zone::Battlefield);
+        if underlying_kind == 64 {
+            game.add_counter(recipient, CounterKind::Loyalty, 3);
+        }
+        let animator = put(
+            &mut game,
+            defender,
+            "Ringing Strike Mastery",
+            Zone::Battlefield,
+        );
+        let redirector = put(&mut game, defender, "Pacifism", Zone::Battlefield);
+        let attached = Some(game.object_ref(recipient));
+        game.state.objects[animator as usize].attached_to = attached;
+        game.state.objects[redirector as usize].attached_to = attached;
+        assert_eq!(game.object_view(recipient).kinds, underlying_kind | 1);
+
+        let spell = put(&mut game, attacker, "Opt", Zone::Hand);
+        cast(&mut game, spell, Some(Target::Card(animator)));
+        settle(&mut game);
+
+        assert_eq!(game.object_view(animator).zone, Zone::Graveyard);
+        assert_eq!(game.object_view(redirector).zone, Zone::Graveyard);
+        assert_eq!(game.object_view(recipient).kinds, underlying_kind);
+        assert_eq!(game.state.players[defender.index()].life, life);
+        assert_eq!(game.counter_count(recipient, CounterKind::Loyalty), loyalty);
+    }
+}
+
 const ENEMY: TargetRule = TargetRule::Object {
     zone: TargetZone::Battlefield,
     kinds: 1,

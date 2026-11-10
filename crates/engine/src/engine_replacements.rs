@@ -1298,18 +1298,12 @@ impl Game {
                         })
                     }
                     ReplacementSpec::RedirectControlledDamageToSource => {
-                        // CR 614.9: both permanent endpoints must be able to take damage.
-                        let can_receive_damage = |id| {
-                            self.on_battlefield(id)
-                                && self.current_kinds(id) & (1 | 64 | crate::cards::BATTLE_KIND)
-                                    != 0
-                        };
-                        can_receive_damage(id)
+                        self.can_receive_redirected_damage(id)
                             && match event.target {
                                 Target::Player(player) => player == object.controller,
                                 Target::Card(target) => {
                                     target != id
-                                        && can_receive_damage(target)
+                                        && self.can_receive_redirected_damage(target)
                                         && self.state.objects[target as usize].controller
                                             == object.controller
                                 }
@@ -1318,7 +1312,7 @@ impl Game {
                     }
                     ReplacementSpec::RedirectControllerDamageToEnchantedCreature => {
                         matches!(event.target, Target::Player(player) if player == object.controller)
-                            && self.enchanted_creature(id).is_some()
+                            && self.enchanted_damage_recipient(id).is_some()
                     }
                     ReplacementSpec::PreventSelfDamageWithCounters
                     | ReplacementSpec::HealPreviousDamageToSelf => {
@@ -1484,12 +1478,18 @@ impl Game {
         }
         out
     }
-    fn enchanted_creature(&self, aura: CardId) -> Option<CardId> {
+    fn can_receive_redirected_damage(&self, id: CardId) -> bool {
+        // CR 614.9: a permanent endpoint must be able to take damage.
+        self.on_battlefield(id)
+            && self.current_kinds(id) & (1 | 64 | crate::cards::BATTLE_KIND) != 0
+    }
+
+    fn enchanted_damage_recipient(&self, aura: CardId) -> Option<CardId> {
         let recipient = self.state.objects[aura as usize].attached_to?;
-        (self.on_battlefield(recipient.card)
-            && self.object_ref(recipient.card) == recipient
-            && self.is_creature(recipient.card))
-        .then_some(recipient.card)
+        // CR 303.4m still identifies the exact attachment before the next SBA.
+        (self.can_receive_redirected_damage(recipient.card)
+            && self.object_ref(recipient.card) == recipient)
+            .then_some(recipient.card)
     }
 
     fn modify_damage(
@@ -1531,8 +1531,8 @@ impl Game {
             }
             ReplacementSpec::RedirectControllerDamageToEnchantedCreature => {
                 event.target = Target::Card(
-                    self.enchanted_creature(choice.source.card)
-                        .expect("applicable damage redirection has an enchanted creature"),
+                    self.enchanted_damage_recipient(choice.source.card)
+                        .expect("applicable damage redirection has an enchanted recipient"),
                 );
             }
             ReplacementSpec::PreventSelfDamageWithCounters => {
