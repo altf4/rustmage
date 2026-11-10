@@ -1,0 +1,1652 @@
+{
+  "schema": 1,
+  "set": "SPM",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "table": {
+    "source": "Mage.Sets/src/mage/sets/MarvelsSpiderMan.java",
+    "sha256": "616850bddf097446504d16d4a79867aa4967f222af3781511b0544beae6ccd85",
+    "printing_count": 286
+  },
+  "scope": "All physical set card identities, including reprints and starter products; cosmetic printings counted once",
+  "card_count": 193,
+  "cards": [
+    {
+      "name": "Agent Venom",
+      "oracle_id": "14c356aa-178d-4c14-a88e-fbe92ee6d89f",
+      "facts_sha256": "8c935ee291ce8c960c2d100ff3008b1301e5eb005e4c83059b29e3f67cd71a98",
+      "printings": [
+        "255",
+        "49"
+      ]
+    },
+    {
+      "name": "Alien Symbiosis",
+      "oracle_id": "19504e19-2886-4d28-a813-b798a9a446a2",
+      "facts_sha256": "b6b5e3a385fe2dae19ae8e362c7602480914a8784ae2325815ba5064e9390543",
+      "printings": [
+        "50"
+      ]
+    },
+    {
+      "name": "Amazing Acrobatics",
+      "oracle_id": "0466f23c-d07c-4015-82d5-eab4b226f1ff",
+      "facts_sha256": "0c297d5a069dba2432500e53c1b4c7687b7c993aa8cce00a646040bba1d8260d",
+      "printings": [
+        "25"
+      ]
+    },
+    {
+      "name": "Angry Rabble",
+      "oracle_id": "cf6dc79e-840c-4d47-8f94-c8623528acd2",
+      "facts_sha256": "c40e99407162272ce87875ea6e60a48e263ae06d30efdcd7aaa23b6e6f45275b",
+      "printings": [
+        "75"
+      ]
+    },
+    {
+      "name": "Anti-Venom, Horrifying Healer",
+      "oracle_id": "3c7bafe9-80cd-48d0-bcae-e7910c9fb83b",
+      "facts_sha256": "1d5e9faa37db5e0f392c31821eadb3004353a953d46429b292b5a0ba5963c8ba",
+      "printings": [
+        "1",
+        "244"
+      ]
+    },
+    {
+      "name": "Arachne, Psionic Weaver",
+      "oracle_id": "28d500ea-720f-4332-891e-404fb03acb5c",
+      "facts_sha256": "2c94591f3667e582a3eb88a6d905acb8923bde1e4484f562db80036d49857bcb",
+      "printings": [
+        "2",
+        "245"
+      ]
+    },
+    {
+      "name": "Araña, Heart of the Spider",
+      "oracle_id": "a16037f2-a0f6-465d-8d6e-cec34b4a6320",
+      "facts_sha256": "98aab8a760216467d86c27b76e45b8d024d9c88c008efceaf6d05774cc4a14f9",
+      "printings": [
+        "123",
+        "213"
+      ]
+    },
+    {
+      "name": "Aunt May",
+      "oracle_id": "bdb769b5-c861-4ec1-ad6b-e2a56ca05fd1",
+      "facts_sha256": "f279413376850320e2bd87c2c1d8c9b0b5123bf4f23d0f9d0d2c5bc083bebb1b",
+      "printings": [
+        "3"
+      ]
+    },
+    {
+      "name": "Bagel and Schmear",
+      "oracle_id": "1389c9fa-fec2-4212-a7aa-6dfb318dc202",
+      "facts_sha256": "b156fa8203924d0c88f0900cfd7f2bdfb0c580d6e9baea903244d71bf28b422a",
+      "printings": [
+        "161"
+      ]
+    },
+    {
+      "name": "Beetle, Legacy Criminal",
+      "oracle_id": "87972de1-c1d7-408e-8d56-995590f639b8",
+      "facts_sha256": "f86f41c0750e936dba73f5b4a0e6486eb8a74f1c90a458391e3587ac87f43ccb",
+      "printings": [
+        "26"
+      ]
+    },
+    {
+      "name": "Behold the Sinister Six!",
+      "oracle_id": "6fa27f8a-bade-460f-853a-abc1c05c946a",
+      "facts_sha256": "76f99b4fc6c1f05234893afba1d6239eef212d03279faf0994b1e5ae94cf517f",
+      "printings": [
+        "221",
+        "51"
+      ]
+    },
+    {
+      "name": "Biorganic Carapace",
+      "oracle_id": "7d27c583-469c-42d7-a547-8c65654e9d95",
+      "facts_sha256": "152ff5732dbe5f78c61add755836515ae64673b43e9673df89cc54ee2bfd948b",
+      "printings": [
+        "124",
+        "269"
+      ]
+    },
+    {
+      "name": "Black Cat, Cunning Thief",
+      "oracle_id": "f5cdb413-2b72-4dc6-b93d-2532ac2ae568",
+      "facts_sha256": "1e79ff924ddc1f73e916aa0407257e41aed04c86a5e5d10e8074ebdecb625b35",
+      "printings": [
+        "222",
+        "52"
+      ]
+    },
+    {
+      "name": "Carnage, Crimson Chaos",
+      "oracle_id": "c0efafc6-8ffb-4908-ae64-3f391722370a",
+      "facts_sha256": "e1f4be691cf0e264eb125bcb97b69956b75d353212493a3489b47a8c70034b91",
+      "printings": [
+        "125",
+        "227"
+      ]
+    },
+    {
+      "name": "Chameleon, Master of Disguise",
+      "oracle_id": "1ce239f2-79ad-4a30-8e8f-f985045f78dc",
+      "facts_sha256": "525751d978e5c251950aa2d42d05685abd46d88d66cc92084982a739b23502b2",
+      "printings": [
+        "27"
+      ]
+    },
+    {
+      "name": "Cheering Crowd",
+      "oracle_id": "e11839d5-99fe-4cc8-802e-be669ad274ee",
+      "facts_sha256": "6746a6f695af2cae379c2dcc22637e8a5e377e8e7fc64b28d09411ff3c180c7b",
+      "printings": [
+        "126",
+        "270"
+      ]
+    },
+    {
+      "name": "City Pigeon",
+      "oracle_id": "ac8cae63-270c-4f73-b29b-50f8f2395fd9",
+      "facts_sha256": "7fffc7d7ca52f931e2e8c9fdcae16fbdf0f6aed2d2575a772143b98faf8b87c0",
+      "printings": [
+        "4"
+      ]
+    },
+    {
+      "name": "Common Crook",
+      "oracle_id": "ebcbfdba-34c7-40eb-91a9-d306ff5ae8b9",
+      "facts_sha256": "c6b3f57fadf2a541e8b25848c999f26224c446bdc909073b672075fc1343bcc9",
+      "printings": [
+        "53"
+      ]
+    },
+    {
+      "name": "Cosmic Spider-Man",
+      "oracle_id": "0334a2f8-a74a-44c9-ba64-d9b7fabe160c",
+      "facts_sha256": "159a2e2a1de16167b043b5b45d67bfa09a15e76806304258771257923a256f72",
+      "printings": [
+        "127",
+        "271"
+      ]
+    },
+    {
+      "name": "Costume Closet",
+      "oracle_id": "072d05c4-e0d7-47af-b2a9-16b90810fd30",
+      "facts_sha256": "2c8945a95e2c385b4000fe545125e24a03e1f69882de9798ba6975aa23334315",
+      "printings": [
+        "5"
+      ]
+    },
+    {
+      "name": "Daily Bugle Building",
+      "oracle_id": "483e0c6c-8131-486c-b482-cc3396c9786b",
+      "facts_sha256": "1383490e55d83a643527ca517d4e4f27148dc923a3ab29f3d16ff21ec1e2707e",
+      "printings": [
+        "179"
+      ]
+    },
+    {
+      "name": "Daily Bugle Reporters",
+      "oracle_id": "2e677ded-7af3-4af0-81df-b70d6ee616ec",
+      "facts_sha256": "988010895e67f5d42dfc36de821f676d4eaa3af65ad0bff5de05ce291533b5c6",
+      "printings": [
+        "6"
+      ]
+    },
+    {
+      "name": "Damage Control Crew",
+      "oracle_id": "c0f9e604-a8bf-4c7d-8480-487e8076e1d8",
+      "facts_sha256": "6117e398a11ba1e23886250b4777509214cc78e1428e1ebd4410751e7134e77e",
+      "printings": [
+        "99"
+      ]
+    },
+    {
+      "name": "Doc Ock's Henchmen",
+      "oracle_id": "ae91c16c-5267-4957-b36c-5aa787fa6b5e",
+      "facts_sha256": "5821c40d02185a6b3b89635d64b9a8ebbb45384177fae83f76e1c2035c589beb",
+      "printings": [
+        "30"
+      ]
+    },
+    {
+      "name": "Doc Ock's Tentacles",
+      "oracle_id": "a5a18764-eb29-4bd8-a2e9-0ce55f4f6c88",
+      "facts_sha256": "feb052953331eaa1b61211b76980e2f59f7d96cb2892467e68d38b035c33dc19",
+      "printings": [
+        "162",
+        "277"
+      ]
+    },
+    {
+      "name": "Doc Ock, Sinister Scientist",
+      "oracle_id": "dbaa70e6-26de-4ce9-9543-e652cbe387c1",
+      "facts_sha256": "4d60e7a465172df03dea67b48e61c5cccd704e4e9e0712fc44919d4e2d6c630b",
+      "printings": [
+        "29"
+      ]
+    },
+    {
+      "name": "Doctor Octopus, Master Planner",
+      "oracle_id": "2fecfbef-e521-4025-94ea-451c9abde3de",
+      "facts_sha256": "8b998c205169f39e078283dc0873fefe3749f3a57895c3a914ac56e162685f8e",
+      "printings": [
+        "128",
+        "228"
+      ]
+    },
+    {
+      "name": "Eddie Brock // Venom, Lethal Protector",
+      "oracle_id": "fe01c96b-eb78-4477-bec2-944b2a28c778",
+      "facts_sha256": "6a20073581174c2ade5c851c30ad51b54e63c4913ff1b448d2bfde8c0c98f231",
+      "printings": [
+        "224",
+        "233",
+        "55"
+      ]
+    },
+    {
+      "name": "Eerie Gravestone",
+      "oracle_id": "cbf5bd0a-20ef-4dce-9f70-13339d438ff7",
+      "facts_sha256": "168a6cdae14c4893b651752d69992ba81741883be31039fdce455983a58e2d2d",
+      "printings": [
+        "163"
+      ]
+    },
+    {
+      "name": "Electro's Bolt",
+      "oracle_id": "e9222f89-e495-4502-bb0c-f5e802686b01",
+      "facts_sha256": "92a0d9a6c11bf15798ed83c2208fc7cb5041bccbebbe351e78d96eaa8b19d4f2",
+      "printings": [
+        "77"
+      ]
+    },
+    {
+      "name": "Electro, Assaulting Battery",
+      "oracle_id": "3db16fb8-5650-4568-b975-42ad3d44ebcd",
+      "facts_sha256": "f5a827891eeac1699b2ed2f9b3d55ac333919ac9d865398e5dc51694d8db597b",
+      "printings": [
+        "260",
+        "76"
+      ]
+    },
+    {
+      "name": "Ezekiel Sims, Spider-Totem",
+      "oracle_id": "4074e897-82a4-4f57-86c2-4aab3f29ef9b",
+      "facts_sha256": "6d72b88a4cabaab5a8262f1b78ce8c5d37dbfdf3078965a3d9a6c93d805908c8",
+      "printings": [
+        "100"
+      ]
+    },
+    {
+      "name": "Flash Thompson, Spider-Fan",
+      "oracle_id": "f536a518-160e-4267-89da-3d34accc6d2c",
+      "facts_sha256": "52669e58c3b6f04fcde9079823ef8f42fd495d742eb67bcee715ed696e5a4847",
+      "printings": [
+        "7"
+      ]
+    },
+    {
+      "name": "Flying Octobot",
+      "oracle_id": "5ef8925c-5f43-49ca-83f0-e2ca8e655600",
+      "facts_sha256": "dcbf0644f3d8f6d9c620cee70d74d9d7c4152888b6c26914cb7a96d45865e966",
+      "printings": [
+        "31"
+      ]
+    },
+    {
+      "name": "Forest",
+      "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+      "facts_sha256": "191d17171bc11d7b26d625ceb8f828799439304fc668127c733de3e0f65bdbd6",
+      "printings": [
+        "193",
+        "198"
+      ]
+    },
+    {
+      "name": "Friendly Neighborhood",
+      "oracle_id": "10fe402e-8d6f-4058-9f42-86f229055359",
+      "facts_sha256": "19d808b6ad5389b2f78fbd67daaca6c563bbe5e01b6c6ae40d3f0dbdaa9fd4bb",
+      "printings": [
+        "246",
+        "8"
+      ]
+    },
+    {
+      "name": "Gallant Citizen",
+      "oracle_id": "2fcb1c1c-6157-4955-b899-e8a8b337d188",
+      "facts_sha256": "db33361cbf072e5c21b47512a5750b1b1d0e8f062bf8db48a508bf3fe40542c8",
+      "printings": [
+        "129"
+      ]
+    },
+    {
+      "name": "Green Goblin, Revenant",
+      "oracle_id": "67175889-02f9-4ad8-a9ab-11db44328b67",
+      "facts_sha256": "9b6bffd5d986b486440cbf3c866dafa9e0c3d9bb8ac16c20d1f545ed517b1484",
+      "printings": [
+        "130"
+      ]
+    },
+    {
+      "name": "Grow Extra Arms",
+      "oracle_id": "52f03e73-3dba-44c2-b256-10e7e208b961",
+      "facts_sha256": "a860cb35a72bd2b27837965b41ac3a972810cfba68275bed1b1b625594b53613",
+      "printings": [
+        "101"
+      ]
+    },
+    {
+      "name": "Guy in the Chair",
+      "oracle_id": "83eb74df-1c77-48b0-83be-55d7aa4d3618",
+      "facts_sha256": "2c9e17056fb1ed147a66fe82408247af15f27798ab066270362a737809b10a40",
+      "printings": [
+        "102"
+      ]
+    },
+    {
+      "name": "Gwen Stacy // Ghost-Spider",
+      "oracle_id": "5f143d87-35fb-40e3-94ae-f85cfff9adb5",
+      "facts_sha256": "0104afdce4d342e45061b68a1991dfe24a986176309e233d9bb520137b6a3d48",
+      "printings": [
+        "202",
+        "209",
+        "78"
+      ]
+    },
+    {
+      "name": "Gwenom, Remorseless",
+      "oracle_id": "c48cf135-b280-4e9f-a9d9-225104870741",
+      "facts_sha256": "7088cf9d28a9d5193f73b24183e20b3d09d013e7dc203ef96e84573185abff41",
+      "printings": [
+        "256",
+        "286",
+        "56"
+      ]
+    },
+    {
+      "name": "Heroes' Hangout",
+      "oracle_id": "43306a78-85b5-4df4-a018-75dd75aa8997",
+      "facts_sha256": "a383c513a4f628520f6ef2a5a4bee057cc07c9b09c3466a27db7021833896cf1",
+      "printings": [
+        "79"
+      ]
+    },
+    {
+      "name": "Hide on the Ceiling",
+      "oracle_id": "376fa374-ead1-4728-ab8b-aca230b72031",
+      "facts_sha256": "132e5b0f3572770bc646c228bdba85c7ccd04e43a1415b4291d18c3ebac1236f",
+      "printings": [
+        "249",
+        "32"
+      ]
+    },
+    {
+      "name": "Hobgoblin, Mantled Marauder",
+      "oracle_id": "1d453331-6b8e-4d3d-b658-683eab2760da",
+      "facts_sha256": "bc8e7cca361f9a2c39da47f46b483cff6f7e76b5eaf50b4b43633bbc8dc2b8a3",
+      "printings": [
+        "80"
+      ]
+    },
+    {
+      "name": "Hot Dog Cart",
+      "oracle_id": "cf27f1f8-2d95-4a00-97f8-72a244837f08",
+      "facts_sha256": "69bdacfb6ecdfb2259d8c6290f3f268d714f824d97542d38977f5f7aef98453e",
+      "printings": [
+        "164"
+      ]
+    },
+    {
+      "name": "Hydro-Man, Fluid Felon",
+      "oracle_id": "a93a8edf-2879-4cae-b3b9-b46298270823",
+      "facts_sha256": "289bf17a505967da65d3f293d831911363eaad18ddd4513aeeda2872446d4f4e",
+      "printings": [
+        "250",
+        "33"
+      ]
+    },
+    {
+      "name": "Impostor Syndrome",
+      "oracle_id": "7be47440-b627-411e-a28f-d5a92e5e2fb7",
+      "facts_sha256": "d9916e5615a0986889c2265614e9c1fc128801f495140244f0cc31d935d49ada",
+      "printings": [
+        "251",
+        "34"
+      ]
+    },
+    {
+      "name": "Inner Demons Gangsters",
+      "oracle_id": "40b43763-3fbf-4ecd-8187-5d2c2c9cda82",
+      "facts_sha256": "9e7e83abca2bfd79269dda9b2fa8014172309188f7949bc6ce70f59df6a5710f",
+      "printings": [
+        "57"
+      ]
+    },
+    {
+      "name": "Interdimensional Web Watch",
+      "oracle_id": "456dbec4-1b0e-48c4-abae-5c8205651872",
+      "facts_sha256": "d905dc068976610f2fd835a3eaf122f445d2ac65faf90f8df86b1b518a8e28a7",
+      "printings": [
+        "165",
+        "278"
+      ]
+    },
+    {
+      "name": "Iron Spider, Stark Upgrade",
+      "oracle_id": "e123fd7d-ace9-48a4-9510-eedcc837d8e8",
+      "facts_sha256": "daab2102c607168222e11d17c2f52671b87504372bcd5a2c3f996c27dd103383",
+      "printings": [
+        "166",
+        "279"
+      ]
+    },
+    {
+      "name": "Island",
+      "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
+      "facts_sha256": "9663433a19f0b70520d2598600be1ddac39dd97fd02f80811dcce06dd0cbaf26",
+      "printings": [
+        "190",
+        "195"
+      ]
+    },
+    {
+      "name": "J. Jonah Jameson",
+      "oracle_id": "de861715-fd0b-493e-9a7c-c470a23044c0",
+      "facts_sha256": "a51f67092841f3e2e310682201f1bb8050e653c382eeeb72101b8638fd2eb77e",
+      "printings": [
+        "261",
+        "81"
+      ]
+    },
+    {
+      "name": "Jackal, Genius Geneticist",
+      "oracle_id": "5998f07e-01f9-4d02-94dd-867c7166463f",
+      "facts_sha256": "88e8fbc3d2cb1d5bb99676eff124ac1289dca3032214eaab94e118002feb1f77",
+      "printings": [
+        "131",
+        "272"
+      ]
+    },
+    {
+      "name": "Kapow!",
+      "oracle_id": "d6eabbff-cc0c-4000-8feb-4826e1b6bc66",
+      "facts_sha256": "69d1fc46a793b3993470f2f9f67f856cff336422659477a44519ea7232448fde",
+      "printings": [
+        "103"
+      ]
+    },
+    {
+      "name": "Kraven the Hunter",
+      "oracle_id": "3e2bfa3a-ae83-453a-8e3f-ca6205a9af12",
+      "facts_sha256": "71d7fec4d6c0927b2aee73d2c297bdce6db1285f4eaa8867a847b8594ad3f80e",
+      "printings": [
+        "133",
+        "273"
+      ]
+    },
+    {
+      "name": "Kraven's Cats",
+      "oracle_id": "976db753-9887-448a-8e67-ec7937b6505c",
+      "facts_sha256": "d8b2ece82d22611257ea10cc4dc29500da13cca8557d816b3d9ab798c59a3cc6",
+      "printings": [
+        "104"
+      ]
+    },
+    {
+      "name": "Kraven's Last Hunt",
+      "oracle_id": "e74efcf2-d77f-4fb5-9027-77e462ec829e",
+      "facts_sha256": "9ffbe7b9266c04ca68ed0e00071b289482f8e1cf6c007cc001b46c61f3ef89f8",
+      "printings": [
+        "105",
+        "226"
+      ]
+    },
+    {
+      "name": "Kraven, Proud Predator",
+      "oracle_id": "12b8b4bf-ba85-419c-8005-1ec34b2b1deb",
+      "facts_sha256": "245dd49379aea003b9d341bd8e61f0b64fe803c1cc2990388fa0c26ac77b4070",
+      "printings": [
+        "132"
+      ]
+    },
+    {
+      "name": "Lady Octopus, Inspired Inventor",
+      "oracle_id": "8e51fdb8-4f83-4e94-b36c-40a501075ecb",
+      "facts_sha256": "36fdd6a25af6a6a1b11d53d4f303f6861908fce946a58eb3cb6587f857fb5298",
+      "printings": [
+        "252",
+        "35"
+      ]
+    },
+    {
+      "name": "Living Brain, Mechanical Marvel",
+      "oracle_id": "b255e13d-01b2-4348-80bd-8d9a8f29be91",
+      "facts_sha256": "3e8ed9863d25ebe1e9570e96db667aa368f73227779ff1cbddef3b3f156ff0e6",
+      "printings": [
+        "167"
+      ]
+    },
+    {
+      "name": "Lizard, Connors's Curse",
+      "oracle_id": "48d1b217-b068-468c-bc6c-4bef9e44cc6e",
+      "facts_sha256": "1bab8010f089bc39dd5a15d65c26dd49202788e91fd8ba9bc5f8a68aebd56a83",
+      "printings": [
+        "106",
+        "265"
+      ]
+    },
+    {
+      "name": "Lurking Lizards",
+      "oracle_id": "616312a9-83c8-4fb7-87ce-079ccd3231fa",
+      "facts_sha256": "031f2092e590c932030bdb32bd4b4cd29e7385a21c623ecd6bd65aa8d0a74261",
+      "printings": [
+        "107"
+      ]
+    },
+    {
+      "name": "Madame Web, Clairvoyant",
+      "oracle_id": "b1e0841d-b004-40f9-a644-aecb422f6ad5",
+      "facts_sha256": "157273900f063d0e4e1a7343ea61d34b76162a1d6d8cf46771d4f041f4e315ff",
+      "printings": [
+        "36"
+      ]
+    },
+    {
+      "name": "Mary Jane Watson",
+      "oracle_id": "6d44c87b-8945-4c39-b034-7690cf483992",
+      "facts_sha256": "2f44e2348b1a711bc971c1b453d0c062d0de938b21dcdb1a035fd588ec9d6b62",
+      "printings": [
+        "134",
+        "229"
+      ]
+    },
+    {
+      "name": "Masked Meower",
+      "oracle_id": "a0037ff8-64db-45dd-bba1-db5c49095083",
+      "facts_sha256": "220e9ea337095caf6ff1c314964b8a6ca854c04bd67ff4ea77ecfc9873f6d15d",
+      "printings": [
+        "82"
+      ]
+    },
+    {
+      "name": "Maximum Carnage",
+      "oracle_id": "7351fca5-8672-4ba3-a015-bd4b6b289efc",
+      "facts_sha256": "cbc1c7dc569ba0ee02137df0078474883a6f570659f289ae969cca50a6d8f696",
+      "printings": [
+        "225",
+        "83"
+      ]
+    },
+    {
+      "name": "Mechanical Mobster",
+      "oracle_id": "b0672aa3-3207-4ff8-af8f-bdabacbb4d04",
+      "facts_sha256": "469917f750430ee54bbefcc507820d5cada553d516ee3666ebf3eb0a598e8494",
+      "printings": [
+        "168"
+      ]
+    },
+    {
+      "name": "Merciless Enforcers",
+      "oracle_id": "b32a7b97-0883-4c9f-a23d-ad269efd8cc3",
+      "facts_sha256": "5e1dc7e03e2b89d41bbf090729ee94fba0b281d8b0b66fe0a7cf905f4ca9bd73",
+      "printings": [
+        "58"
+      ]
+    },
+    {
+      "name": "Miles Morales // Ultimate Spider-Man",
+      "oracle_id": "be48c721-bdc6-4f2c-96d6-82d934b31615",
+      "facts_sha256": "f1f7061de6e34f340725ed8ac84d587440932d244cfeacb94dd4dd588cc861dc",
+      "printings": [
+        "108",
+        "200",
+        "211",
+        "234"
+      ]
+    },
+    {
+      "name": "Mister Negative",
+      "oracle_id": "c8da3262-826d-4ea8-bb22-06374bebefe5",
+      "facts_sha256": "6bc887aa46bf43b33cf2158312c7fb9546c5e365dcbf247c61699f059e619f37",
+      "printings": [
+        "135",
+        "274"
+      ]
+    },
+    {
+      "name": "Mob Lookout",
+      "oracle_id": "47654b36-b215-4333-aa70-d88d627447e3",
+      "facts_sha256": "f564ac31268db3f46e0eaef0837e19ef260b3d6c0c90c6cb0bae077f6847aff4",
+      "printings": [
+        "136"
+      ]
+    },
+    {
+      "name": "Molten Man, Inferno Incarnate",
+      "oracle_id": "c6fcf3c1-0626-4d53-92c0-caa22fa61e9a",
+      "facts_sha256": "d2a39ae763c03bde5da9cac15b4a82789c013f7e0cd62c47b28b3f27727aed5f",
+      "printings": [
+        "84"
+      ]
+    },
+    {
+      "name": "Morbius the Living Vampire",
+      "oracle_id": "1a947e4d-8a14-45f1-bb80-760a317b1ed0",
+      "facts_sha256": "34fdf3b9bffdb143fdf0bfac4af2e9a6c9fcc3eabc154467ab533b6d0c5e3043",
+      "printings": [
+        "137"
+      ]
+    },
+    {
+      "name": "Morlun, Devourer of Spiders",
+      "oracle_id": "273ad15c-366a-4691-978b-d6028b57005a",
+      "facts_sha256": "127577965aab988a163a0b1edc2c06da635bc5c541cdf4cb110d54a8ffbbae91",
+      "printings": [
+        "257",
+        "59"
+      ]
+    },
+    {
+      "name": "Mountain",
+      "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+      "facts_sha256": "dc8fd7c2b9340114200a1478f7e78bc91e28a0949ef1353a3bb0b2e39e65f366",
+      "printings": [
+        "192",
+        "197"
+      ]
+    },
+    {
+      "name": "Multiversal Passage",
+      "oracle_id": "17770eeb-ecbf-4510-af2d-acececfbe146",
+      "facts_sha256": "d0dda4f3aa4a8e9f366146aa6c4bbadcecf2739f84c115122d5da6a36e904be0",
+      "printings": [
+        "180",
+        "206"
+      ]
+    },
+    {
+      "name": "Mysterio's Phantasm",
+      "oracle_id": "99419378-8a23-44f3-aebe-e62d6e20e877",
+      "facts_sha256": "40143fb1d89510e39dbf83f6cdcfd229cf026ad2009744ac633df475164675fe",
+      "printings": [
+        "38"
+      ]
+    },
+    {
+      "name": "Mysterio, Master of Illusion",
+      "oracle_id": "40f664d8-4c73-44aa-8fb1-d38771a42520",
+      "facts_sha256": "b035cd9f7c90439de263ff9ca2d69e1e83d35af6fbfb2f12fe9bbb80d201252d",
+      "printings": [
+        "253",
+        "37"
+      ]
+    },
+    {
+      "name": "News Helicopter",
+      "oracle_id": "192dd1e2-b6c2-432a-a1b4-e52ff39b3db2",
+      "facts_sha256": "f34d2b531dd0637cb4ce89746ede413db10131746d1c82f336abcd747a223d08",
+      "printings": [
+        "169"
+      ]
+    },
+    {
+      "name": "Norman Osborn // Green Goblin",
+      "oracle_id": "aa5b06a4-90c3-45e7-ab83-cb5c96ded21d",
+      "facts_sha256": "bbe068cdfefa3d23035b976cf312be97e493938f52dbe747ecd697e2b5e1972d",
+      "printings": [
+        "220",
+        "39"
+      ]
+    },
+    {
+      "name": "Ominous Asylum",
+      "oracle_id": "676141c3-a433-4aba-86fb-729628f96dfa",
+      "facts_sha256": "2d7f29b8d9c9a3224c7d23f26e9516d9a88f07d6e7bc1ca7e2975c675029344d",
+      "printings": [
+        "181"
+      ]
+    },
+    {
+      "name": "Origin of Spider-Man",
+      "oracle_id": "7fbe9056-190f-40a1-bee9-59ebd6f981f5",
+      "facts_sha256": "72e44742308c78eb5a77170c1d7e8f1c05e86639ce786f12b3feeb889f01844d",
+      "printings": [
+        "218",
+        "9"
+      ]
+    },
+    {
+      "name": "Oscorp Industries",
+      "oracle_id": "f432eb6a-f1bf-4ce7-b915-1488dccb4bb9",
+      "facts_sha256": "8581aa1e77cd93aa72b921306485b00a82f8598275af71461508cb4996784d77",
+      "printings": [
+        "182",
+        "282"
+      ]
+    },
+    {
+      "name": "Oscorp Research Team",
+      "oracle_id": "4d2e233c-0173-417f-82a0-1e692a400ae1",
+      "facts_sha256": "81f2a933e976ec21d0fcb21018907b8ab4755fb216967889971080d81acac664",
+      "printings": [
+        "40"
+      ]
+    },
+    {
+      "name": "Parker Luck",
+      "oracle_id": "03d1a4e9-3ebc-491f-8741-5d933b500abf",
+      "facts_sha256": "220555ca0cb1a342d17c34bcc362cc9e13a80d5325bccfc858ff70393974415c",
+      "printings": [
+        "258",
+        "60"
+      ]
+    },
+    {
+      "name": "Passenger Ferry",
+      "oracle_id": "e9832d58-0ee6-4641-a9fd-d34d54b3b11c",
+      "facts_sha256": "c711f3ee05aba6a9a8584584b973b7fdf7e899594ea268a820eacf521fb3a2e7",
+      "printings": [
+        "170"
+      ]
+    },
+    {
+      "name": "Peter Parker // Amazing Spider-Man",
+      "oracle_id": "f1b7488c-c675-42e9-818a-24a50347ec2c",
+      "facts_sha256": "b063b900fe5473bcc6fa193e5a58df41b87f798a88b5c2aec1aa3d57b53ea9d6",
+      "printings": [
+        "10",
+        "208",
+        "232"
+      ]
+    },
+    {
+      "name": "Peter Parker's Camera",
+      "oracle_id": "10777360-c046-43e3-ab44-9d0b926fbbf8",
+      "facts_sha256": "2bf74e9f4d4e540305481e220183615e6d99e7d455f2b546c1fcb3fb0dc49107",
+      "printings": [
+        "171",
+        "280"
+      ]
+    },
+    {
+      "name": "Pictures of Spider-Man",
+      "oracle_id": "4fd74a8c-a4e7-4988-ae02-9a73ab6ec89e",
+      "facts_sha256": "1e92799b7b20feb84a93d3f0b0c3c904672e4a0e378910c653db4ddaa505331f",
+      "printings": [
+        "109"
+      ]
+    },
+    {
+      "name": "Plains",
+      "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
+      "facts_sha256": "a46fdb7aed01739b4f3c48497e4bf8b5ded78b5a5cf67d3fe57a045f47ee35c1",
+      "printings": [
+        "189",
+        "194"
+      ]
+    },
+    {
+      "name": "Prison Break",
+      "oracle_id": "9c6a6332-37f0-4d7d-a86f-478cf0eeec91",
+      "facts_sha256": "c5e4a7d45321dd7d43be43c5b4eca023b017c652d19830c164638f9e8b397b74",
+      "printings": [
+        "61"
+      ]
+    },
+    {
+      "name": "Professional Wrestler",
+      "oracle_id": "3dd92eea-02ca-4e55-8f69-8c8059dd7ee6",
+      "facts_sha256": "26f99c2dadb2e7f6e65ce9c2f3aaac35913dfef6f051a9f3d942bd501266cc9b",
+      "printings": [
+        "110"
+      ]
+    },
+    {
+      "name": "Prowler, Clawed Thief",
+      "oracle_id": "76742bfc-ae99-4b06-b29d-e0e41d92ae14",
+      "facts_sha256": "edb6d2e0d8b213b4acdce24caf63b292f97701a30445691c75c29fb075bfa8e2",
+      "printings": [
+        "138"
+      ]
+    },
+    {
+      "name": "Pumpkin Bombardment",
+      "oracle_id": "37827e84-9f5f-49ed-b939-0cf80dac82e7",
+      "facts_sha256": "1362b16a3d501882dfd14f40f9cc76418585d6f156ebb404b590e62eadcabe5f",
+      "printings": [
+        "139"
+      ]
+    },
+    {
+      "name": "Radioactive Spider",
+      "oracle_id": "f15bd5c0-99ff-42c6-8eed-48de6df81b61",
+      "facts_sha256": "ff54a18c8414e136aed6486ee447925d4782e4ed4f9ef50d1bfdba7d2f5be75a",
+      "printings": [
+        "111",
+        "212",
+        "285"
+      ]
+    },
+    {
+      "name": "Raging Goblinoids",
+      "oracle_id": "c807b53f-2917-41a0-812c-57240b623365",
+      "facts_sha256": "266a6b902b5b7924827e0bbfa8ebd74127e18b7376bd3c721dfe5a2786c49b7e",
+      "printings": [
+        "85"
+      ]
+    },
+    {
+      "name": "Rent Is Due",
+      "oracle_id": "3fe1530d-bcf2-440b-a905-5a2216daa7eb",
+      "facts_sha256": "f1b68e5ee09695715e6918335d7cad933318f6c88ad51b3d05e02da917c5d36f",
+      "printings": [
+        "11",
+        "247"
+      ]
+    },
+    {
+      "name": "Rhino's Rampage",
+      "oracle_id": "0a744206-04c4-46cb-b64d-cf192c9324df",
+      "facts_sha256": "f8ee935512320a4dbf6f64bc1f4d94a8eceeee3fbbc5e74c4dfb9197c330f474",
+      "printings": [
+        "141"
+      ]
+    },
+    {
+      "name": "Rhino, Barreling Brute",
+      "oracle_id": "9a6bf8a3-7640-4890-ac62-d5028f41978b",
+      "facts_sha256": "e5a1354742887824ef663334027e3061f601868a9ccccc627465a8754485b085",
+      "printings": [
+        "140"
+      ]
+    },
+    {
+      "name": "Risky Research",
+      "oracle_id": "47d52cd7-d72f-455f-aad3-70f08d54691f",
+      "facts_sha256": "2e6cef92830308b06f1fb27f65cab879301ca87543454b7b75ba9f5a3fadc7e1",
+      "printings": [
+        "62"
+      ]
+    },
+    {
+      "name": "Robotics Mastery",
+      "oracle_id": "855318cb-9382-4183-87c7-93bdfac86431",
+      "facts_sha256": "89e214104ad8c368d0fa5a92113a1b215bdb832183c6c74b732567be0273154d",
+      "printings": [
+        "41"
+      ]
+    },
+    {
+      "name": "Rocket-Powered Goblin Glider",
+      "oracle_id": "5db9121d-934a-44f1-b178-b389c6595af7",
+      "facts_sha256": "f5f3b93b34350961e845aff9ff93bfd268080876fd7cb2cb069f11151405a12a",
+      "printings": [
+        "172",
+        "281"
+      ]
+    },
+    {
+      "name": "Romantic Rendezvous",
+      "oracle_id": "8ca585b5-25c4-41cc-a0b9-dc66ae803d04",
+      "facts_sha256": "6bdf8c4f6a53528d264587f721d6a1e9ba9fdc29567db851271d1907f369837f",
+      "printings": [
+        "86"
+      ]
+    },
+    {
+      "name": "SP//dr, Piloted by Peni",
+      "oracle_id": "722ab6e4-a2e0-4aaa-a050-7b6436e22b40",
+      "facts_sha256": "c021abaa0b85c2a38774166e9bf27c8a1ca690b7fed97267545807e21c71f2ed",
+      "printings": [
+        "147",
+        "199"
+      ]
+    },
+    {
+      "name": "Sandman's Quicksand",
+      "oracle_id": "f2b376d2-a2f4-4d23-a1fb-eb7b6ebd0b7a",
+      "facts_sha256": "ac4fc899b08cdf37aac2783b454b2a5dc231638b49b44370daedff47d605b546",
+      "printings": [
+        "63"
+      ]
+    },
+    {
+      "name": "Sandman, Shifting Scoundrel",
+      "oracle_id": "8b205480-b1fb-490c-b1c9-cf5cc3c5acdb",
+      "facts_sha256": "15fd3bccaab78d3faf06ad2596ba4468eba046d70eb8c6c68d4cdee53a80da2b",
+      "printings": [
+        "112",
+        "266"
+      ]
+    },
+    {
+      "name": "Savage Mansion",
+      "oracle_id": "1af15c1d-a41c-44cc-9614-d72694dd26e8",
+      "facts_sha256": "fb962494ac4856e065906930bd7fc04b85815ae82d41aae0b8d38d8d3d23b9aa",
+      "printings": [
+        "183"
+      ]
+    },
+    {
+      "name": "Scarlet Spider, Ben Reilly",
+      "oracle_id": "13ab2f3f-f65e-42b5-b743-39b30a4c4751",
+      "facts_sha256": "0ec831d7a59fc7caf2a909744044a5f71b11b6d33e7c81995d763b4c80d8bdb6",
+      "printings": [
+        "142",
+        "214"
+      ]
+    },
+    {
+      "name": "Scarlet Spider, Kaine",
+      "oracle_id": "4ec8a5ea-b750-4711-8843-2bc98f4ce060",
+      "facts_sha256": "6cc558adaf6d94eaefef3b0de4aeebd8cd6a249fd660fdba9e52e9edc59af21c",
+      "printings": [
+        "143"
+      ]
+    },
+    {
+      "name": "School Daze",
+      "oracle_id": "af2275ea-1085-4145-aa6b-36924d53d88a",
+      "facts_sha256": "9c688f2108b8a5051f6e4f258398a72aaa2a9afd382ce7a87b2db7f4d2a57924",
+      "printings": [
+        "42"
+      ]
+    },
+    {
+      "name": "Scorpion's Sting",
+      "oracle_id": "7f5e5aa8-3f15-45c9-bfc8-1f4b98d2be38",
+      "facts_sha256": "959bfeabd4707be179b528a63ade6cafc539122f86a0acea303e587e2b0f03d0",
+      "printings": [
+        "65"
+      ]
+    },
+    {
+      "name": "Scorpion, Seething Striker",
+      "oracle_id": "c357230a-afde-4c2a-b390-9f6928599236",
+      "facts_sha256": "58b8950785deb2200282ba367879f4f079d372530ff0295ef84af0271fd66109",
+      "printings": [
+        "64"
+      ]
+    },
+    {
+      "name": "Scout the City",
+      "oracle_id": "ecb8e283-5cdb-4e6a-bdff-546c1617363c",
+      "facts_sha256": "f37c984b35489c157d0046b0ffaecaa22aea3b2cfca1a0aeaf4c52ee1ce6ed83",
+      "printings": [
+        "113"
+      ]
+    },
+    {
+      "name": "Secret Identity",
+      "oracle_id": "e6637f9f-8293-43a5-a134-93799a016ecb",
+      "facts_sha256": "7c46b5ec3e5fd3d467286c015667a41a4257958d40e4721b17ce0ae99f711969",
+      "printings": [
+        "43"
+      ]
+    },
+    {
+      "name": "Selfless Police Captain",
+      "oracle_id": "ece77a64-8d99-430e-8407-bdb321828d63",
+      "facts_sha256": "dd67238e7473c16fa3a7c87f15643c89f27dd9b0e4630ae8f783f0f92a0fdc5a",
+      "printings": [
+        "12"
+      ]
+    },
+    {
+      "name": "Shadow of the Goblin",
+      "oracle_id": "f343b6f9-41c3-419b-a57c-a7b08603ef5c",
+      "facts_sha256": "6b5d53e532953653f17599b357255f1df616b0e2ef8168fb0c9ea0a9e5c65871",
+      "printings": [
+        "262",
+        "87"
+      ]
+    },
+    {
+      "name": "Shock",
+      "oracle_id": "a9d288b8-cdc1-4e55-a0c9-d6edfc95e65d",
+      "facts_sha256": "e5ad462b17210befb185c4dfed6b4d8ce37d097822f37d782b021f5a6d35df5f",
+      "printings": [
+        "88"
+      ]
+    },
+    {
+      "name": "Shocker, Unshakable",
+      "oracle_id": "564dac59-97f7-4988-9f30-d82a891e29ef",
+      "facts_sha256": "456ff63bba825dcda950bb185d51b40ad309117e42f49a32d02bba093724587a",
+      "printings": [
+        "89"
+      ]
+    },
+    {
+      "name": "Shriek, Treblemaker",
+      "oracle_id": "5773ae05-44bc-423c-846c-f323dd8a5079",
+      "facts_sha256": "f14d3fa09eac5084946b073161e7c12b257088dcb7e347e6480d87e212e5b57a",
+      "printings": [
+        "144"
+      ]
+    },
+    {
+      "name": "Silk, Web Weaver",
+      "oracle_id": "50477dc8-9a2a-41eb-984d-c9e1e78e08a2",
+      "facts_sha256": "e3f8d42b16030d7d2f1fdbcec17ed4f0089a596fa4be9cce4ebcdf1664dbe51d",
+      "printings": [
+        "145",
+        "215"
+      ]
+    },
+    {
+      "name": "Silver Sable, Mercenary Leader",
+      "oracle_id": "40b82dee-98c7-4b86-88b8-28388cd0331f",
+      "facts_sha256": "0dd9c5f4dc0829530a9712417020fced94206c451b3b47c3e403309b4659c9cc",
+      "printings": [
+        "13"
+      ]
+    },
+    {
+      "name": "Sinister Hideout",
+      "oracle_id": "80f08b47-a237-4efd-8d86-dfe35a816b0e",
+      "facts_sha256": "fc66afc8728471052864da31e066c0cdb4549e1e51393f58e521414f022914c2",
+      "printings": [
+        "184"
+      ]
+    },
+    {
+      "name": "Skyward Spider",
+      "oracle_id": "d6ba76fa-441c-4a74-bfea-8ae2a2c9e391",
+      "facts_sha256": "3eaca69d73209d3dc90e0625b30d2c2ce1cc9c1cb1f16dc338725d0e797f84a3",
+      "printings": [
+        "146"
+      ]
+    },
+    {
+      "name": "Spectacular Spider-Man",
+      "oracle_id": "eed5e0cc-8f88-4779-bf10-6a823c72df7f",
+      "facts_sha256": "df154587016ae0d5ceda015ee968b608f23e2fe5b05bb9208657810e124e6ea2",
+      "printings": [
+        "14",
+        "235",
+        "236",
+        "237",
+        "238",
+        "239",
+        "240",
+        "241"
+      ]
+    },
+    {
+      "name": "Spectacular Tactics",
+      "oracle_id": "15948fdf-3f9e-4eed-b85b-c5a554ff0571",
+      "facts_sha256": "5a43cb59ac2aa318af7445a38482c93582a34149eb71df0b4d204ef4154d00da",
+      "printings": [
+        "15"
+      ]
+    },
+    {
+      "name": "Spider Manifestation",
+      "oracle_id": "8281f2b9-e81b-48da-812a-8713b2adf8ab",
+      "facts_sha256": "5bad7985194603a9bd3f0525d671761733e81f392f28662767ceeb8fd90b0529",
+      "printings": [
+        "148"
+      ]
+    },
+    {
+      "name": "Spider-Bot",
+      "oracle_id": "e4bb33b2-adde-4176-9274-7598b559aa6a",
+      "facts_sha256": "43ae0e2fcbcec2e13ace5fecccbf3265e571b4873f62fba81a95a6292e1c7bf9",
+      "printings": [
+        "173"
+      ]
+    },
+    {
+      "name": "Spider-Byte, Web Warden",
+      "oracle_id": "845472ca-3fcb-4bcd-953c-96eb8d914af9",
+      "facts_sha256": "e85dd67c919b6a02f81bfe9320369b98415606a73feda6b7b2d5f166a0d7990e",
+      "printings": [
+        "44"
+      ]
+    },
+    {
+      "name": "Spider-Girl, Legacy Hero",
+      "oracle_id": "d459b3f5-a18c-4c17-a855-dc147f7c2161",
+      "facts_sha256": "80b1e28d5c230b2e34c6de9848a69bd44cc185f4d0b2f9acec2a0894bbcc8e45",
+      "printings": [
+        "149"
+      ]
+    },
+    {
+      "name": "Spider-Gwen, Free Spirit",
+      "oracle_id": "2648559d-1d96-47d2-a769-cfa2cbca2be5",
+      "facts_sha256": "415e5b5dc8a445f1efc1fff0c489ac7e4798457450806491711a6ebd0d7387fb",
+      "printings": [
+        "90"
+      ]
+    },
+    {
+      "name": "Spider-Ham, Peter Porker",
+      "oracle_id": "00b50215-e832-417f-9c80-2bc3050b6ebb",
+      "facts_sha256": "a70ec62ece91e647aeb89ea919605e6b0991dd46bbb861cfd7621d9eb75210b1",
+      "printings": [
+        "114",
+        "201"
+      ]
+    },
+    {
+      "name": "Spider-Islanders",
+      "oracle_id": "2d1a15dc-3123-4425-b036-a3b5a83fcdf8",
+      "facts_sha256": "85aff4e217a83afbe1390a1738a4ba9a421cff2d3b4d467c8dca193f7abc8284",
+      "printings": [
+        "91"
+      ]
+    },
+    {
+      "name": "Spider-Man 2099",
+      "oracle_id": "19845456-3d96-48a4-89fa-9b8e583774c9",
+      "facts_sha256": "4e3f6b5fb8be139e50af056ab0ea9cd9ec5aded57d9e1f4710edead33c182185",
+      "printings": [
+        "150",
+        "205",
+        "216"
+      ]
+    },
+    {
+      "name": "Spider-Man India",
+      "oracle_id": "8933297c-62f1-4df9-91b8-2d3481db77e5",
+      "facts_sha256": "af8b1adf1a4f0d5a9b1fcc4394cf19882d63074846f77a6927d00eeec99504bb",
+      "printings": [
+        "151"
+      ]
+    },
+    {
+      "name": "Spider-Man No More",
+      "oracle_id": "163f1fce-70c8-44e3-a679-f97d52cd1e9a",
+      "facts_sha256": "0a670c8caee1e88c67ff0ba5f61967bb93dd582ffc79cdb51d3ddfe14c6b7f06",
+      "printings": [
+        "45"
+      ]
+    },
+    {
+      "name": "Spider-Man Noir",
+      "oracle_id": "2efd6494-c5e1-41de-bc6e-8490ff046cd1",
+      "facts_sha256": "19c9108ec120f9c42558665c8c67d19f8fea227bc562b66833a66bb656d168d6",
+      "printings": [
+        "204",
+        "67"
+      ]
+    },
+    {
+      "name": "Spider-Man, Brooklyn Visionary",
+      "oracle_id": "2ca85872-9436-4515-af50-c13e59605627",
+      "facts_sha256": "a5f8425da5d6285fca3c65f2a01e9e7fea0fe1833fc66110b74a09d0e1293334",
+      "printings": [
+        "115"
+      ]
+    },
+    {
+      "name": "Spider-Man, Web-Slinger",
+      "oracle_id": "505231d8-714f-4c5b-a635-d1662bd18a78",
+      "facts_sha256": "0d0859afc15d4f42acfe49aea395c34afd7f3ae502771840037ac96ba2b617e9",
+      "printings": [
+        "16"
+      ]
+    },
+    {
+      "name": "Spider-Mobile",
+      "oracle_id": "3c322d99-2bc4-4618-aeb3-5583fce54f1b",
+      "facts_sha256": "26cbe9c8d6be66fb0a883113523768e1c1494eea1fe27e24ad57f736d2373b64",
+      "printings": [
+        "174"
+      ]
+    },
+    {
+      "name": "Spider-Punk",
+      "oracle_id": "03bf7a90-78c1-4e83-8553-e22d85e49876",
+      "facts_sha256": "3bac2c0f5ffc975083d12bd8f7958c899a943ddab3cb1854d389dc2cb3e40a63",
+      "printings": [
+        "207",
+        "210",
+        "92"
+      ]
+    },
+    {
+      "name": "Spider-Rex, Daring Dino",
+      "oracle_id": "58b771d4-dfaf-4189-a5f6-4bc0fb4c0fa3",
+      "facts_sha256": "a6a13b56f5d0e39c8877454641161d88f39c157c00095af13d22b44a7e97980b",
+      "printings": [
+        "116"
+      ]
+    },
+    {
+      "name": "Spider-Sense",
+      "oracle_id": "c4485bf9-e7ff-48b5-a983-02900939ee9d",
+      "facts_sha256": "86faf36f5df7cd4577466bea46612130cc49722f1a5d3dcfe82487e01978a5f9",
+      "printings": [
+        "254",
+        "284",
+        "46"
+      ]
+    },
+    {
+      "name": "Spider-Slayer, Hatred Honed",
+      "oracle_id": "ca68f436-2522-4007-87bf-2669c7743db0",
+      "facts_sha256": "5923cd0fec041d0e9551b7f7fc5c233c68de88d97c7efaeaf78240f25eff9918",
+      "printings": [
+        "175"
+      ]
+    },
+    {
+      "name": "Spider-Suit",
+      "oracle_id": "ba08b4cf-9a13-40fd-8522-9504d2ff1a19",
+      "facts_sha256": "14caf2dea035130cd05d031025013c09bafae5cd97d3f2ec374b912fdef14e72",
+      "printings": [
+        "176"
+      ]
+    },
+    {
+      "name": "Spider-UK",
+      "oracle_id": "ebf8d006-2997-431b-b4cb-9692741b45ca",
+      "facts_sha256": "79ac7089b5f819bcb92cc56ff5127e5e1ad672c6c8d04dd7120a8225af1347b1",
+      "printings": [
+        "17"
+      ]
+    },
+    {
+      "name": "Spider-Verse",
+      "oracle_id": "7ef7d902-1f05-40b3-8997-dec197b0b678",
+      "facts_sha256": "79569ff459e7cdffe6b381b6ae35cef5469c72a0e862920382887c7e86567231",
+      "printings": [
+        "263",
+        "93"
+      ]
+    },
+    {
+      "name": "Spider-Woman, Stunning Savior",
+      "oracle_id": "be2b9c6d-4ecb-49ec-b276-4aa93c5dfc00",
+      "facts_sha256": "66d0515529819d441fedaf61810fab525756234538a1aeb50251594cb6c3aec9",
+      "printings": [
+        "152",
+        "230"
+      ]
+    },
+    {
+      "name": "Spiders-Man, Heroic Horde",
+      "oracle_id": "d21d7557-9702-46c1-8277-42a3442084c2",
+      "facts_sha256": "1bcb1cb45f6218fb09cf68a6517a676b02dec083f09445c9556f02a42caa1335",
+      "printings": [
+        "117"
+      ]
+    },
+    {
+      "name": "Spinneret and Spiderling",
+      "oracle_id": "daca1d5e-349d-4e8a-abc7-427dab43fb0c",
+      "facts_sha256": "f57ba57c852c46160711e1f8c2aa64846ba9c19bb3d6d4383ca5c8ba39dfd51b",
+      "printings": [
+        "264",
+        "94"
+      ]
+    },
+    {
+      "name": "Starling, Aerial Ally",
+      "oracle_id": "13fd7ca6-c278-409f-a9c4-57f16051ffce",
+      "facts_sha256": "ee19215269fa6e80c8c36c56500cc7bc8acd5556d60e52d18b3f621619d3b910",
+      "printings": [
+        "18"
+      ]
+    },
+    {
+      "name": "Steel Wrecking Ball",
+      "oracle_id": "3a07e22c-71cd-4723-b07e-0ff02009a878",
+      "facts_sha256": "71fc593f511dc72aa6a1402d336d7190283f6d27e39d57cc83cceb4760f65c0a",
+      "printings": [
+        "177"
+      ]
+    },
+    {
+      "name": "Stegron the Dinosaur Man",
+      "oracle_id": "5c94b616-8edf-465c-b316-4599df95c52a",
+      "facts_sha256": "e54ab21d27b1efbc155f78501be05ead86d22d08f4ce7e02213f51023b928f16",
+      "printings": [
+        "95"
+      ]
+    },
+    {
+      "name": "Strength of Will",
+      "oracle_id": "0389b48a-e64c-44fb-8a41-fd571cba237c",
+      "facts_sha256": "9c6883ca950c1affa75824e405813b14bb3d2e0096d71f997c73226f4e23535e",
+      "printings": [
+        "118",
+        "267"
+      ]
+    },
+    {
+      "name": "Suburban Sanctuary",
+      "oracle_id": "6ef30340-a26d-49aa-bc86-0b8aa5252f87",
+      "facts_sha256": "d1e42e393008dd3cbccfb29577cc048e06b350879f092f99e5bda1450777184f",
+      "printings": [
+        "185"
+      ]
+    },
+    {
+      "name": "Subway Train",
+      "oracle_id": "6d4472ad-3fbf-4a5d-94de-dfee04fda9c3",
+      "facts_sha256": "9955ec48301e8304d2ea226696f6761832b94ec128431240cc07311350c495cb",
+      "printings": [
+        "178"
+      ]
+    },
+    {
+      "name": "Sudden Strike",
+      "oracle_id": "8147a759-e387-48f6-9c1e-bb39622ed553",
+      "facts_sha256": "a16b48e3b5ed7d91663370bc5896ea8a4192655b0c314ce535c41734f83e6996",
+      "printings": [
+        "19"
+      ]
+    },
+    {
+      "name": "Sun-Spider, Nimble Webber",
+      "oracle_id": "2d961997-4f5f-4ce2-b062-11411147e2f7",
+      "facts_sha256": "ec211d07dcfa2c4b176ad837d765674dc0698fc0f4acd07a437394d37b3187de",
+      "printings": [
+        "154"
+      ]
+    },
+    {
+      "name": "Superior Foes of Spider-Man",
+      "oracle_id": "a6a7af21-e52c-4f7f-a57f-bd365d075966",
+      "facts_sha256": "d27a13a6c3bd9f1694fdba84f7b38f4d701b6f7bb15a612a85bf586db3abc6c6",
+      "printings": [
+        "96"
+      ]
+    },
+    {
+      "name": "Superior Spider-Man",
+      "oracle_id": "636cc915-9d1b-4ffe-9e74-795b78663911",
+      "facts_sha256": "8cce80be7ee7a4a6a113e9537f1a9c30f480d406b0e174ea82fb5c03edb0e7ce",
+      "printings": [
+        "155",
+        "275"
+      ]
+    },
+    {
+      "name": "Supportive Parents",
+      "oracle_id": "b1266feb-516e-4b44-b750-7988ca6e6e55",
+      "facts_sha256": "acdf335ec1cde2ade840d31c2eb8f5be0c2a7f58d0e132d0c32ca0a3321ab9c5",
+      "printings": [
+        "119"
+      ]
+    },
+    {
+      "name": "Swamp",
+      "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+      "facts_sha256": "0ddffcfeb10574ceab2d19fcaad90b912eb08a51601bfa0d51ceb993dcfc04e5",
+      "printings": [
+        "191",
+        "196"
+      ]
+    },
+    {
+      "name": "Swarm, Being of Bees",
+      "oracle_id": "10c8cf3b-2530-49e7-b38e-95cdaae8a6e7",
+      "facts_sha256": "708112bd04f53b8a4369307ce6a5f986dcb162d50b8c1f4aa340d84931e9a6ff",
+      "printings": [
+        "69"
+      ]
+    },
+    {
+      "name": "Symbiote Spider-Man",
+      "oracle_id": "bc681ecf-2a52-4782-9a47-90f5a9f435d8",
+      "facts_sha256": "b938622a83d5413976644a9c3e0f33aa77966cb8b3d7a5e6f20b52bdf149bbf7",
+      "printings": [
+        "156",
+        "217"
+      ]
+    },
+    {
+      "name": "Taxi Driver",
+      "oracle_id": "a17a92f7-e95c-4d0e-a43e-7e6b41a59139",
+      "facts_sha256": "95caa6169aa047f518ccc5564476ce7bb89e2f12eb6d1ca969c4fd9ecf23c4cb",
+      "printings": [
+        "97"
+      ]
+    },
+    {
+      "name": "Terrific Team-Up",
+      "oracle_id": "431c5b04-7387-4724-adfa-d1eb7874e79e",
+      "facts_sha256": "1b90f3ff96543feae8b4eb555a90253de5659d17fa2ac98894517caa24b362f3",
+      "printings": [
+        "120"
+      ]
+    },
+    {
+      "name": "The Clone Saga",
+      "oracle_id": "0f0282c6-aceb-4879-8ec8-482d0501204a",
+      "facts_sha256": "5c3504cbb482066181e76ed854439be2741ca0dc5de7bfb327456c721c6caa51",
+      "printings": [
+        "219",
+        "28"
+      ]
+    },
+    {
+      "name": "The Death of Gwen Stacy",
+      "oracle_id": "2624b5c5-ba59-4e20-8e66-e463268366e4",
+      "facts_sha256": "696f497e8aec6d353c91b3434a98ccc29bf0cf216a0f3cda6c76cdc822fbbc6a",
+      "printings": [
+        "223",
+        "54"
+      ]
+    },
+    {
+      "name": "The Soul Stone",
+      "oracle_id": "92cfba68-12f6-4f97-9187-0f6a39656a0f",
+      "facts_sha256": "5d0e2eb907fa1e52ef2bfa371fd204f3e263b8b679f2235da9cb302d20662928",
+      "printings": [
+        "242",
+        "243",
+        "66"
+      ]
+    },
+    {
+      "name": "The Spot's Portal",
+      "oracle_id": "3ceac6ce-acde-42ab-b79d-ff153074d2d8",
+      "facts_sha256": "fe8aa099d2b534bf46cefd24f4279e6143a318b372a4a56219b328cf71747269",
+      "printings": [
+        "68"
+      ]
+    },
+    {
+      "name": "The Spot, Living Portal",
+      "oracle_id": "a5dfa7ad-9637-4da8-9ed2-0ac863617d9a",
+      "facts_sha256": "7d9bb662dd470e207c446bc216200c065bd8fa6e11f369beda5889f6868477e1",
+      "printings": [
+        "153",
+        "231"
+      ]
+    },
+    {
+      "name": "Thwip!",
+      "oracle_id": "f7d11254-b48a-4016-a035-c0d6642fdfae",
+      "facts_sha256": "78ad9ca913b1f7e16cf13954b15e825da7050d1f1a442a1e79bde15ef55ce810",
+      "printings": [
+        "20"
+      ]
+    },
+    {
+      "name": "Tombstone, Career Criminal",
+      "oracle_id": "6ad2cbb6-2291-420c-bfc8-ed3f079b59bf",
+      "facts_sha256": "f852a0277bac9a443d572a5c84dcdeeecf7d990877d2353e3906f71898e12ffa",
+      "printings": [
+        "70"
+      ]
+    },
+    {
+      "name": "Ultimate Green Goblin",
+      "oracle_id": "b5b43d01-fce6-4a00-9c19-7a7e2a09d833",
+      "facts_sha256": "fd804025437554e62865982858bfe4d8fe27028b7b6fc72516e9d94d06c8a8d2",
+      "printings": [
+        "157",
+        "276"
+      ]
+    },
+    {
+      "name": "University Campus",
+      "oracle_id": "98e547de-b963-4ee4-9a08-67bae010734b",
+      "facts_sha256": "2cfe879a3dc179b64984bdc02583acb48bdd0522f0225ccea73cd5f0501ff974",
+      "printings": [
+        "186"
+      ]
+    },
+    {
+      "name": "Unstable Experiment",
+      "oracle_id": "5b7bbc76-22cc-482e-8d65-34cff34c93c8",
+      "facts_sha256": "9efb6a7eba60475bb30c6d61cf1c2723c5402f7f06934d18520eb17056089855",
+      "printings": [
+        "47"
+      ]
+    },
+    {
+      "name": "Urban Retreat",
+      "oracle_id": "18290c4b-cff6-4ee5-a487-fe0d5706d3de",
+      "facts_sha256": "3ce0a3bda36ce0a93135254eff54a15773d64a582a997d96254492bd42d50445",
+      "printings": [
+        "187",
+        "283"
+      ]
+    },
+    {
+      "name": "Venom's Hunger",
+      "oracle_id": "8388faa0-f64e-4b01-836e-617f99b808a4",
+      "facts_sha256": "5acebe4f9ffa2467d449a3b35a77437af898df59fe609942e76949cf22d2ef0d",
+      "printings": [
+        "73"
+      ]
+    },
+    {
+      "name": "Venom, Evil Unleashed",
+      "oracle_id": "6731d861-cc52-4a2e-8c33-154681fd50e4",
+      "facts_sha256": "8f39b0c71d8d14d6f97f9df2d41c6dc7e0e0ee00dd97a04a544068c57272aae5",
+      "printings": [
+        "71"
+      ]
+    },
+    {
+      "name": "Venomized Cat",
+      "oracle_id": "eb54d807-624b-471e-8c44-07322003903e",
+      "facts_sha256": "fb63f58ce527cd4c0c207ce3e59c2d760faa155b6d009061a6f231bfb53d5a01",
+      "printings": [
+        "72"
+      ]
+    },
+    {
+      "name": "Vibrant Cityscape",
+      "oracle_id": "6a7f3e1f-6798-4644-b64c-7765f81f0938",
+      "facts_sha256": "394f5493f9287ec1a13b5f53663f85e65612b18144d27944408ef5ea15ffb5ee",
+      "printings": [
+        "188"
+      ]
+    },
+    {
+      "name": "Villainous Wrath",
+      "oracle_id": "1c7c1867-20cb-4035-bb2a-42760edf0a55",
+      "facts_sha256": "2d92229a196a75ae58ccdc2051cb0477ad12b510ab867e11e4c0ea97d116f50f",
+      "printings": [
+        "259",
+        "74"
+      ]
+    },
+    {
+      "name": "Vulture, Scheming Scavenger",
+      "oracle_id": "0409765a-bbb4-465e-99b3-3687bffc3cf9",
+      "facts_sha256": "87b3cc675f640881d423849ea592700c556992d6ba4a9e9be2c8a42c02c75803",
+      "printings": [
+        "158"
+      ]
+    },
+    {
+      "name": "Wall Crawl",
+      "oracle_id": "4a09536e-dfc1-4b15-adc1-07ef866ebda0",
+      "facts_sha256": "bc852303573b0870fb53b4df3d341e8d531b541f83e49ae2a80c02c7eb421690",
+      "printings": [
+        "121"
+      ]
+    },
+    {
+      "name": "Web Up",
+      "oracle_id": "9b9b086c-d201-4574-a1e9-0d6f8de53d7d",
+      "facts_sha256": "fad996bbf471964a8b7bb0ad69ebce94e19455de329ba2b70cb24cbac5e54557",
+      "printings": [
+        "21"
+      ]
+    },
+    {
+      "name": "Web of Life and Destiny",
+      "oracle_id": "33d556c5-1bb4-49bb-88c2-627311eb8c9b",
+      "facts_sha256": "51853d258240f800b477dc00127f7169f14e07eb6af3986e0fb3d04c424365d3",
+      "printings": [
+        "122",
+        "268"
+      ]
+    },
+    {
+      "name": "Web-Shooters",
+      "oracle_id": "ec528198-a38a-4ef7-9804-78a25c94ecc1",
+      "facts_sha256": "edd3bb20bf172f63fbc170576018c19739db1efc2fa7f1286841b9fbb67e2159",
+      "printings": [
+        "22"
+      ]
+    },
+    {
+      "name": "Web-Warriors",
+      "oracle_id": "3b23e4f8-882d-4cce-9b61-171ae2cc3a18",
+      "facts_sha256": "0b2a28347f5d22896a473b371f06bdc89ff4176ab4afebbe605f01057ef9570d",
+      "printings": [
+        "159",
+        "203"
+      ]
+    },
+    {
+      "name": "Whoosh!",
+      "oracle_id": "855353e2-b686-482a-b987-c6ae456f088c",
+      "facts_sha256": "918081c95e5ff98a5182d21ab7d993301cc7a5fa8366d87970689bc257fdb358",
+      "printings": [
+        "48"
+      ]
+    },
+    {
+      "name": "Wild Pack Squad",
+      "oracle_id": "294b2aa7-cb46-46bd-8241-69b26d73aa2d",
+      "facts_sha256": "d0a0bb8cb6ae16fb7f6300ed6e1b0da658b919b0abebde7d8de4edf6cca8586b",
+      "printings": [
+        "23"
+      ]
+    },
+    {
+      "name": "Wisecrack",
+      "oracle_id": "e9c9a445-4386-4616-ad00-f08064d73dcd",
+      "facts_sha256": "fa903f8b00aae4f6859bc0468fd1eb017ec6bab348e19de69523a397be5f0c20",
+      "printings": [
+        "98"
+      ]
+    },
+    {
+      "name": "With Great Power . . .",
+      "oracle_id": "dfedb968-f27c-4117-aff6-da707dd43e82",
+      "facts_sha256": "7e379a45fdc5e72607d75eb88db58322da30397aa8e754bc3568c68a7f0f4e04",
+      "printings": [
+        "24",
+        "248"
+      ]
+    },
+    {
+      "name": "Wraith, Vicious Vigilante",
+      "oracle_id": "38684c31-e8c6-4825-8740-1a3d34b58b39",
+      "facts_sha256": "6b47b5a83c537f0e0578466ed03f772d572109082169c3c53f6d558def4815a1",
+      "printings": [
+        "160"
+      ]
+    }
+  ],
+  "unresolved": []
+}
