@@ -326,3 +326,99 @@ fn an_enchanted_land_grants_its_controller_a_sorcery_speed_activation() {
     game.move_object(aura, Zone::Graveyard);
     reject(&mut game, action);
 }
+
+const SUBTYPE_EQUIPMENT: CardRules = CardRules {
+    effect: Effect::Permanent,
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Type,
+        fragments: &[StaticAbilityFragment::AttachedCharacteristics(
+            &AttachedCharacteristics {
+                name: None,
+                form: PermanentForm::AddCreatureSubtypes,
+                creature_types: &["Spider", "Hero"],
+                colors: &[],
+                base: None,
+            },
+        )],
+    }],
+    activated: &[ActivatedAbility {
+        cost: ActivationCost {
+            generic: 1,
+            mana_component: true,
+            ..ActivationCost::ZERO
+        },
+        targets: TargetPlan::Single(TargetSpec::one(TargetRule::creature_you_control())),
+        program: &[Instruction::AttachSource],
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        cycling: false,
+        origin: ActivationOrigin::Battlefield,
+        sorcery: true,
+        once_per_turn: false,
+    }],
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn subtype_only_equipment_keeps_vehicle_type_and_detaches_when_crew_expires() {
+    let equipment = definition("Short Bow");
+    let _rules = fixture_rules::activate(&[(equipment, &SUBTYPE_EQUIPMENT)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let vehicle = put(&mut game, player, "Voyager Glidecar", Zone::Battlefield);
+    let crew = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let equipment = spawn(&mut game, player, equipment, Zone::Battlefield);
+
+    act(
+        &mut game,
+        Action::AnnounceActivate {
+            card: vehicle,
+            ability: 1,
+            counter_payment: Counters::default(),
+        },
+    );
+    if matches!(game.state.pending, Pending::PayCosts { .. }) {
+        pay(&mut game);
+    }
+    let object = game.object_ref(crew);
+    act(&mut game, Action::ChooseCrewer { object });
+    act(&mut game, Action::FinishCrew);
+    settle(&mut game);
+
+    act(
+        &mut game,
+        Action::AnnounceActivate {
+            card: equipment,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(vehicle),
+        },
+    );
+    pay(&mut game);
+    settle(&mut game);
+    let equipped = game.object_view(vehicle);
+    assert_eq!(equipped.kinds, 17);
+    for subtype in ["Vehicle", "Spider", "Hero"] {
+        assert!(equipped.has_subtype(subtype));
+    }
+    assert_eq!(
+        game.object_view(equipment).attached_to,
+        Some(equipped.reference)
+    );
+
+    game.begin_step(Step::End);
+    game.give_priority();
+    pass_pair(&mut game);
+    let after = game.object_view(vehicle);
+    assert_eq!(after.reference, equipped.reference);
+    assert_eq!(after.kinds, 16);
+    assert!(after.has_subtype("Vehicle"));
+    assert!(!after.has_subtype("Spider"));
+    assert_eq!(game.object_view(equipment).attached_to, None);
+}

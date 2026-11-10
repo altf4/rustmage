@@ -568,6 +568,8 @@ pub enum PermanentForm {
     Land,
     /// Add creature type without removing other card or creature types.
     AddCreature,
+    /// Add creature subtypes without changing card types or colors.
+    AddCreatureSubtypes,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug)]

@@ -196,6 +196,7 @@ pub(super) fn land_kind_events<W: CharacteristicWorld + ?Sized>(
         .into_iter()
         .filter_map(|(time, spec)| match spec.form {
             PermanentForm::AddCreature
+            | PermanentForm::AddCreatureSubtypes
             | PermanentForm::Preserve
             | PermanentForm::PreserveWithColors => None,
             form => Some((time, matches!(form, PermanentForm::Land))),
@@ -285,7 +286,9 @@ fn kind_timeline<W: CharacteristicWorld + ?Sized>(
             let kinds = match spec.form {
                 PermanentForm::Creature | PermanentForm::AddCreature => 1,
                 PermanentForm::Land => 2,
-                PermanentForm::Preserve | PermanentForm::PreserveWithColors => return None,
+                PermanentForm::Preserve
+                | PermanentForm::PreserveWithColors
+                | PermanentForm::AddCreatureSubtypes => return None,
             };
             Some((time, kinds, matches!(spec.form, PermanentForm::AddCreature)))
         })
@@ -421,8 +424,10 @@ fn changed_colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> u8 
     aura_effects(world, id)
         .into_iter()
         .filter_map(|(timestamp, spec)| {
-            if matches!(spec.form, PermanentForm::AddCreature)
-                || (matches!(spec.form, PermanentForm::Preserve) && spec.colors.is_empty())
+            if matches!(
+                spec.form,
+                PermanentForm::AddCreature | PermanentForm::AddCreatureSubtypes
+            ) || (matches!(spec.form, PermanentForm::Preserve) && spec.colors.is_empty())
             {
                 return None;
             }
@@ -503,20 +508,43 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
     world: &W,
     id: CardId,
 ) -> Vec<(u64, SubtypeChange)> {
+    let mut card_type_history = None;
+    let mut can_have_creature_subtypes = |timestamp| {
+        // Check the card types at the subtype effect's timestamp and after
+        // all card-type changes (CR 205.3d, 613.7).
+        let (initial, history) = card_type_history.get_or_insert_with(|| {
+            let (initial, mut history) =
+                kind_timeline(world, id, original_kinds(world, id, world.object(id)));
+            let mut kinds = initial;
+            for (_, mask, additive) in &mut history {
+                kinds = if *additive { kinds | *mask } else { *mask };
+                *mask = kinds;
+            }
+            (initial, history)
+        });
+        let at = history.partition_point(|&(time, _, _)| time <= timestamp);
+        let at_form = history[..at]
+            .last()
+            .map_or(*initial, |&(_, kinds, _)| kinds);
+        let final_kinds = history.last().map_or(*initial, |&(_, kinds, _)| kinds);
+        at_form & (1 | 128) != 0 && final_kinds & (1 | 128) != 0
+    };
     let mut changes: Vec<_> = aura_effects(world, id)
         .into_iter()
-        .map(|(time, s)| {
-            (
-                time,
-                match s.form {
-                    PermanentForm::Creature => SubtypeChange::Named(s.creature_types, true),
-                    PermanentForm::Land => SubtypeChange::LandOnly,
-                    PermanentForm::Preserve | PermanentForm::PreserveWithColors => {
-                        SubtypeChange::Named(s.creature_types, false)
-                    }
-                    PermanentForm::AddCreature => SubtypeChange::Add(s.creature_types),
-                },
-            )
+        .filter_map(|(time, s)| {
+            let change = match s.form {
+                PermanentForm::Creature => SubtypeChange::Named(s.creature_types, true),
+                PermanentForm::Land => SubtypeChange::LandOnly,
+                PermanentForm::Preserve | PermanentForm::PreserveWithColors => {
+                    SubtypeChange::Named(s.creature_types, false)
+                }
+                PermanentForm::AddCreature => SubtypeChange::Add(s.creature_types),
+                PermanentForm::AddCreatureSubtypes if can_have_creature_subtypes(time) => {
+                    SubtypeChange::Add(s.creature_types)
+                }
+                PermanentForm::AddCreatureSubtypes => return None,
+            };
+            Some((time, change))
         })
         .collect();
     if let Some(change) = source_conditional_creature(world, id)
@@ -528,7 +556,6 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
         ));
     }
     changes.extend(land_forms(world, id).map(|row| (row.timestamp, SubtypeChange::LandOnly)));
-    let mut card_type_history = None;
     changes.extend(animations(world, id).filter_map(|row| {
         if row.food_only {
             return Some((row.timestamp, SubtypeChange::FoodOnly));
@@ -548,27 +575,8 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
                 SubtypeChange::Named(types, false)
             }
         };
-        if row.preserve_card_types {
-            // A fixed object's subtype effect needs a compatible card type at
-            // its own layer-four timestamp (CR 205.3d, 613.7).
-            let (initial, history) = card_type_history.get_or_insert_with(|| {
-                let (initial, mut history) =
-                    kind_timeline(world, id, original_kinds(world, id, world.object(id)));
-                let mut kinds = initial;
-                for (_, mask, additive) in &mut history {
-                    kinds = if *additive { kinds | *mask } else { *mask };
-                    *mask = kinds;
-                }
-                (initial, history)
-            });
-            let at = history.partition_point(|&(time, _, _)| time <= row.timestamp);
-            let at_form = history[..at]
-                .last()
-                .map_or(*initial, |&(_, kinds, _)| kinds);
-            let final_kinds = history.last().map_or(*initial, |&(_, kinds, _)| kinds);
-            if at_form & (1 | 128) == 0 || final_kinds & (1 | 128) == 0 {
-                return None;
-            }
+        if row.preserve_card_types && !can_have_creature_subtypes(row.timestamp) {
+            return None;
         }
         Some((row.timestamp, change))
     }));
