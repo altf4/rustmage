@@ -1,16 +1,27 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed rules from the pinned Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Creature(1, 2),
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::ControlledSubtypeAttackAtLeast {
+                subtype: "Spider",
+                minimum: 2,
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::PutCounters {
+                subject: Subject::Source,
+                kind: CounterKind::PlusOne,
+                amount: 1,
+            }],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::SourceDealtDamageAtLeast(4),
+            targets: TargetPlan::NONE,
+            program: &[Instruction::ExileTopPlayScaled {
+                amount: AmountValue::Fixed(1),
+                next_turn: true,
+            }],
+        },
+    ],
     ..CardRules::EMPTY
 };
