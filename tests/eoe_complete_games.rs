@@ -203,10 +203,7 @@ impl Evidence {
                 *self.events.entry("Warp exile recast").or_default() += 1;
             }
             if before.void_active_this_turn
-                && matches!(
-                    definition.name(),
-                    "Tragic Trajectory" | "Timeline Culler" | "Roving Actuator"
-                )
+                && matches!(definition.name(), "Tragic Trajectory" | "Roving Actuator")
             {
                 *self.events.entry("Void eligible cast").or_default() += 1;
             }
