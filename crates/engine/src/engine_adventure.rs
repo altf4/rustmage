@@ -1,6 +1,21 @@
 //! One physical card, immutable chosen spell traits and exact Adventure exile rights.
 use super::*;
 
+pub(super) fn graveyard_instant_sorcery_adventure_count<'a>(
+    owner: Player,
+    objects: impl Iterator<Item = &'a Object>,
+) -> usize {
+    objects
+        .filter(|object| {
+            object.zone == Zone::Graveyard
+                && object.owner == owner
+                && object.is_card()
+                && (object.card.kind_mask() & (4 | 8) != 0
+                    || object.card.adventure_spell().is_some())
+        })
+        .count()
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct AdventurePermission {
@@ -36,6 +51,17 @@ impl AdventureState {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn is_adventurer_card(&self, id: CardId, object: &Object) -> bool {
+        object.is_card()
+            // CR 406.3a: permission to look does not confer characteristics.
+            && (object.zone != Zone::Exile
+                || !self.exiled_face_down(ObjectRef {
+                    card: id,
+                    generation: object.generation,
+                }))
+            && object.card.adventure_spell().is_some()
+    }
+
     pub fn spell_characteristics(&self) -> Vec<SpellCharacteristicsView> {
         self.state
             .stack

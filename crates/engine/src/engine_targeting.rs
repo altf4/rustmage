@@ -2021,6 +2021,18 @@ impl Game {
                     o.zone==Zone::Exile && o.is_card() && world.kinds(id) & 1 != 0
                     && self.linked_exile_for_origin(source,ability_origin.unwrap_or_else(||self.copy_ability_origin(source))).contains(&self.object_ref(id))));
             }
+            TargetRule::FaceUpExiledCard { owner } => {
+                return matches!(target, Target::Card(id) if lookup(id).is_some_and(|object|
+                    object.zone == Zone::Exile
+                        && object.is_card()
+                        && !self.exiled_face_down(world.reference(id))
+                        && match owner {
+                            CastRelation::Any => true,
+                            CastRelation::You => object.owner == controller,
+                            CastRelation::Opponent => object.owner != controller,
+                        }
+                ));
+            }
             TargetRule::OwnedExileWithFlashback => {
                 return matches!(target, Target::Card(id) if lookup(id).is_some_and(|o|
                     o.zone == Zone::Exile && o.is_card() && o.owner == controller
@@ -2138,6 +2150,7 @@ impl Game {
                 // The base rule validates the object index and zone before this lookup.
                 let object = world.object(id);
                 return match *predicate {
+                    TargetPredicate::HasAdventure => self.is_adventurer_card(id, object),
                     TargetPredicate::SourceChosenCreatureType => {
                         let chosen = qualification
                             .and_then(|row| row.chosen_creature_type)

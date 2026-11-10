@@ -295,6 +295,10 @@ pub enum TargetRule {
     LinkedExileCreature {
         ability_origin: Option<Option<u64>>,
     },
+    /// A physical face-up card in exile with the specified ownership relation.
+    FaceUpExiledCard {
+        owner: CastRelation,
+    },
     /// A face-up exiled card owned by the choosing player with printed flashback.
     OwnedExileWithFlashback,
     /// A public exiled card with the printed warp ability.
@@ -400,6 +404,8 @@ impl TargetRule {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum TargetPredicate {
+    /// A physical card with available Adventure characteristics (CR 715.2a).
+    HasAdventure,
     SourceChosenCreatureType,
     OwnedByController,
     EnteredGraveyardThisTurn,
@@ -4595,6 +4601,10 @@ pub enum StatValue {
     DistinctCreatureCounterKinds,
     ControlledCreatureDiedThisTurn,
     CardLeftGraveyardThisTurn,
+    /// Whether the controller owns a face-up adventurer card in exile.
+    OwnExiledAdventurerCard,
+    /// Physical cards in your graveyard that are instants, sorceries, or adventurers.
+    GraveyardInstantSorceryAdventure,
     /// Live condition for a provider's own end step, including projected control.
     ControllerEndStep,
     Fixed(u16),

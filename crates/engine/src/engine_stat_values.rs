@@ -331,6 +331,17 @@ impl Game {
                 i128::from(self.state.players[owner.index()].controlled_creature_died_this_turn)
             }
             StatValue::CardLeftGraveyardThisTurn => i128::from(graveyard_left),
+            StatValue::OwnExiledAdventurerCard => i128::from(objects().any(|(id, object)| {
+                object.zone == Zone::Exile
+                    && object.owner == owner
+                    && self.is_adventurer_card(id, object)
+            })),
+            StatValue::GraveyardInstantSorceryAdventure => {
+                adventure::graveyard_instant_sorcery_adventure_count(
+                    owner,
+                    objects().map(|(_, object)| object),
+                ) as i128
+            }
             StatValue::ControllerEndStep => {
                 i128::from(self.state.step == Step::End && self.state.active == owner)
             }

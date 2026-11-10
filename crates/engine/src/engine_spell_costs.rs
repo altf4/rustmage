@@ -543,19 +543,10 @@ impl Game {
         };
         let amount = |rule: &crate::cards::SpellReduction, source: CardId| match rule.amount {
             crate::cards::SpellReductionAmount::GraveyardInstantSorceryAdventure => {
-                self.state
-                    .objects
-                    .iter()
-                    .enumerate()
-                    .map(|(candidate, _)| world.object(candidate as CardId))
-                    .filter(|object| {
-                        object.zone == Zone::Graveyard
-                            && object.owner == actor
-                            && object.is_card()
-                            && (object.card.kind_mask() & (4 | 8) != 0
-                                || object.card.adventure_spell().is_some())
-                    })
-                    .count() as u64
+                adventure::graveyard_instant_sorcery_adventure_count(
+                    actor,
+                    (0..self.state.objects.len()).map(|id| world.object(id as CardId)),
+                ) as u64
             }
             crate::cards::SpellReductionAmount::CreaturePowerCount { minimum } => {
                 self.state
