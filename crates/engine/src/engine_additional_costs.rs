@@ -1247,7 +1247,10 @@ impl Game {
                     subtype_lki: None,
                 });
             }
-            self.tap_objects(&group.iter().map(|r| r.card).collect::<Vec<_>>());
+            self.tap_objects(
+                a.item.controller,
+                &group.iter().map(|r| r.card).collect::<Vec<_>>(),
+            );
             a.additional_paid = true;
             return;
         }

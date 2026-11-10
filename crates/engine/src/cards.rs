@@ -6297,6 +6297,10 @@ pub enum TriggerCondition {
     ControlledCreaturesBecomeTapped,
     /// Per-creature own-turn tap, with a first-tap intervening condition.
     ControlledCreatureFirstTapOwnTurn,
+    /// The observer's controller caused an untapped opposing creature to tap.
+    OpponentCreatureTappedByYou {
+        one_or_more: bool,
+    },
     AttachedBecomesUntapped,
     AttachedCreatureBecomesTapped,
     /// Player event: the literal "Whenever you attack" clause.

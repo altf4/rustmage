@@ -107,6 +107,7 @@ impl Game {
                 TriggerCondition::AttachedCreatureBecomesTapped
                     | TriggerCondition::ControlledCreaturesBecomeTapped
                     | TriggerCondition::ControlledCreatureFirstTapOwnTurn
+                    | TriggerCondition::OpponentCreatureTappedByYou { .. }
             )
         }) {
             self.state.tap_sources.push(id);

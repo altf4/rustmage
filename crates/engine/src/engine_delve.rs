@@ -134,7 +134,7 @@ impl Game {
             .iter()
             .map(|object| object.card)
             .collect::<Vec<_>>();
-        self.tap_objects(&taps);
+        self.tap_objects(a.item.controller, &taps);
         let delved = std::mem::take(&mut frame.delved);
         if !delved.is_empty() {
             assert!(

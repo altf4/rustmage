@@ -2051,11 +2051,6 @@ impl Game {
             choice.kind.payment_kind(),
             EffectChoiceKind::TapPermanents(_)
         ) {
-            let ids: Vec<_> = choice
-                .selected
-                .iter()
-                .flat_map(|rows| rows.iter().map(|r| r.card))
-                .collect();
             if matches!(
                 choice.kind.payment_kind(),
                 EffectChoiceKind::ExileGraveyard
@@ -2063,6 +2058,11 @@ impl Game {
                     | EffectChoiceKind::ExileCardFromAnyGraveyard
                     | EffectChoiceKind::ExileGreatestManaValue
             ) {
+                let ids: Vec<_> = choice
+                    .selected
+                    .iter()
+                    .flat_map(|rows| rows.iter().map(|r| r.card))
+                    .collect();
                 let events = self.move_objects_raw(&ids, Zone::Exile);
                 if let EffectChoiceKind::ExileFromHandWithPlaySurcharge(surcharge) = choice.kind {
                     for event in &events {
@@ -2073,7 +2073,12 @@ impl Game {
                 }
                 self.finish_zone_events(&events, &[]);
             } else {
-                self.tap_objects(&ids);
+                let taps = [Player::P0, Player::P1].into_iter().flat_map(|player| {
+                    choice.selected[player.index()]
+                        .iter()
+                        .map(move |object| (player, object.card))
+                });
+                self.tap_objects_by(taps);
             }
         } else if matches!(
             choice.kind.payment_kind(),

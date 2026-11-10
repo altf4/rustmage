@@ -234,7 +234,10 @@ impl Game {
         self.state.pending = Pending::PayCosts { player: actor };
     }
     pub(super) fn finish_paid_saddle(&mut self, item: SpellView, selected: Vec<ObjectRef>) {
-        self.tap_objects(&selected.iter().map(|r| r.card).collect::<Vec<_>>());
+        self.tap_objects(
+            item.controller,
+            &selected.iter().map(|r| r.card).collect::<Vec<_>>(),
+        );
         let participants = self.capture_crew_saddle_participants(&selected);
         self.queue_crew_saddle_participant_triggers(
             participants,

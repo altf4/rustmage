@@ -1146,6 +1146,7 @@ impl Game {
                     | TriggerCondition::SelfBecomesTapped
                     | TriggerCondition::ControlledCreaturesBecomeTapped
                     | TriggerCondition::ControlledCreatureFirstTapOwnTurn
+                    | TriggerCondition::OpponentCreatureTappedByYou { .. }
                     | TriggerCondition::SelfCast
                     | TriggerCondition::SpellCast { .. }
                     | TriggerCondition::SpellCastOrLandPlayed
@@ -2239,43 +2240,55 @@ impl Game {
 
     /// Apply one simultaneous tap event, then collect source-owned triggers.
     /// Entry status and virtual mana funding never use this transition.
-    pub(super) fn tap_objects(&mut self, ids: &[CardId]) {
-        // Mana taps and single-target effects are the common path. Record exact
-        // turn history without evaluating views when no observer needs them.
+    pub(super) fn tap_objects(&mut self, actor: Player, ids: &[CardId]) {
+        // Keep the ordinary single-source mana tap allocation-free.
         if let &[id] = ids {
-            let object = &mut self.state.objects[id as usize];
-            if object.zone == Zone::Battlefield && !object.tapped {
-                object.tapped = true;
-                self.record_tap(self.object_ref(id));
-                self.tapped_triggers(id);
-                self.tapped_batch_triggers(&[id]);
+            if self.tap_permanent(id) {
+                self.finish_tap_event(&[(actor, id)]);
             }
-            return;
+        } else {
+            self.tap_objects_by(ids.iter().map(|&id| (actor, id)));
         }
-        let mut changed = Vec::new();
-        for &id in ids {
-            let object = &mut self.state.objects[id as usize];
-            if object.zone == Zone::Battlefield && !object.tapped {
-                object.tapped = true;
-                changed.push(id);
-            }
-        }
-        // Every observer sees the complete simultaneous tapped result. No queued
-        // effect resolves until the surrounding action or instruction completes.
-        for &id in &changed {
-            self.record_tap(self.object_ref(id));
-        }
-        for &id in &changed {
-            self.tapped_triggers(id);
-        }
-        self.tapped_batch_triggers(&changed);
     }
 
-    fn tapped_batch_triggers(&mut self, changed: &[CardId]) {
-        self.attached_tap_triggers(changed);
+    /// Each player can be instructed to tap their own chosen part of the event.
+    pub(super) fn tap_objects_by(
+        &mut self,
+        assignments: impl IntoIterator<Item = (Player, CardId)>,
+    ) {
+        let changed: Vec<_> = assignments
+            .into_iter()
+            .filter(|&(_, id)| self.tap_permanent(id))
+            .collect();
+        self.finish_tap_event(&changed);
+    }
+
+    fn tap_permanent(&mut self, id: CardId) -> bool {
+        let object = &mut self.state.objects[id as usize];
+        if object.zone != Zone::Battlefield || object.tapped {
+            return false;
+        }
+        object.tapped = true;
+        true
+    }
+
+    fn finish_tap_event(&mut self, changed: &[(Player, CardId)]) {
+        // Every observer sees the complete simultaneous tapped result. No queued
+        // effect resolves until the surrounding action or instruction completes.
+        for &(_, id) in changed {
+            self.record_tap(self.object_ref(id));
+        }
+        for &(_, id) in changed {
+            self.tapped_triggers(id);
+        }
+        self.tapped_batch_triggers(changed);
+    }
+
+    fn tapped_batch_triggers(&mut self, changed: &[(Player, CardId)]) {
         if changed.is_empty() || self.state.tap_sources.is_empty() {
             return;
         }
+        self.attached_tap_triggers(changed);
         let sources: Vec<_> = self
             .state
             .tap_sources
@@ -2285,41 +2298,27 @@ impl Game {
             .map(|id| self.object_view(id))
             .collect();
         for source in sources {
-            if !changed.iter().any(|&id| {
-                let object = &self.state.objects[id as usize];
-                object.controller == source.controller && self.object_kinds(id, object) & 1 != 0
-            }) {
-                continue;
-            }
             for (index, ability) in source.card.triggers().iter().enumerate() {
                 match ability.condition.event() {
                     TriggerCondition::ControlledCreaturesBecomeTapped => {
                         let matching: Vec<_> = changed
                             .iter()
-                            .copied()
-                            .filter(|&id| {
-                                let object = &self.state.objects[id as usize];
-                                object.controller == source.controller
-                                    && self.object_kinds(id, object) & 1 != 0
+                            .filter_map(|&(_, id)| {
+                                (self.state.objects[id as usize].controller == source.controller
+                                    && self.is_creature(id))
+                                .then(|| self.object_ref(id))
                             })
-                            .map(|id| self.object_ref(id))
                             .collect();
-                        if self.queue_trigger(&source, index) {
-                            self.state
-                                .pending_triggers
-                                .last_mut()
-                                .unwrap()
-                                .refer_objects(matching);
-                        }
+                        self.queue_tapped_objects(&source, index, matching);
                     }
                     TriggerCondition::ControlledCreatureFirstTapOwnTurn
                         if self.state.active == source.controller =>
                     {
-                        for &id in changed {
+                        for &(_, id) in changed {
                             let object = &self.state.objects[id as usize];
                             let reference = self.object_ref(id);
                             if object.controller == source.controller
-                                && self.object_kinds(id, object) & 1 != 0
+                                && self.is_creature(id)
                                 && self.first_tap(reference)
                                 && self.queue_trigger(&source, index)
                             {
@@ -2331,9 +2330,48 @@ impl Game {
                             }
                         }
                     }
+                    TriggerCondition::OpponentCreatureTappedByYou { one_or_more } => {
+                        let matching: Vec<_> = changed
+                            .iter()
+                            .filter_map(|&(actor, id)| {
+                                (actor == source.controller
+                                    && self.state.objects[id as usize].controller != actor
+                                    && self.is_creature(id))
+                                .then(|| self.object_ref(id))
+                            })
+                            .collect();
+                        if one_or_more {
+                            self.queue_tapped_objects(&source, index, matching);
+                        } else {
+                            for reference in matching {
+                                if self.queue_trigger(&source, index) {
+                                    self.state
+                                        .pending_triggers
+                                        .last_mut()
+                                        .unwrap()
+                                        .refer_objects([reference]);
+                                }
+                            }
+                        }
+                    }
                     _ => {}
                 }
             }
+        }
+    }
+
+    fn queue_tapped_objects(
+        &mut self,
+        source: &ObjectView,
+        index: usize,
+        matching: Vec<ObjectRef>,
+    ) {
+        if !matching.is_empty() && self.queue_trigger(source, index) {
+            self.state
+                .pending_triggers
+                .last_mut()
+                .unwrap()
+                .refer_objects(matching);
         }
     }
 
@@ -6330,7 +6368,7 @@ impl Game {
                         if instruction == Instruction::UntapAttached {
                             self.untap_objects(&[id], untap_rules::UntapCause::Effect);
                         } else {
-                            self.tap_objects(&[id]);
+                            self.tap_objects(item.controller, &[id]);
                         }
                     }
                 }
@@ -9358,7 +9396,7 @@ impl Game {
                 }
                 Instruction::TapPermanentGroup(filters) => {
                     let recipients = self.battlefield_group(&item, filters);
-                    self.tap_objects(&recipients);
+                    self.tap_objects(item.controller, &recipients);
                 }
                 Instruction::UntapPermanentGroup(filters) => {
                     let recipients = self.battlefield_group(&item, filters);
@@ -9459,7 +9497,7 @@ impl Game {
                         .map(|(id, _)| id as CardId)
                         .collect();
                     if matches!(instruction, Instruction::TapCreatures(_)) {
-                        self.tap_objects(&ids);
+                        self.tap_objects(item.controller, &ids);
                     } else {
                         self.untap_objects(&ids, untap_rules::UntapCause::Effect);
                     }
@@ -9497,10 +9535,13 @@ impl Game {
                         .object
                     {
                         if instruction == Instruction::TapSource {
-                            self.tap_objects(&[item
-                                .source
-                                .expect("instruction requires an object source")
-                                .id]);
+                            self.tap_objects(
+                                item.controller,
+                                &[item
+                                    .source
+                                    .expect("instruction requires an object source")
+                                    .id],
+                            );
                         } else {
                             self.untap_objects(
                                 &[item
@@ -10797,7 +10838,7 @@ impl Game {
                         if self.state.objects[id as usize].tapped {
                             self.untap_objects(&[id], untap_rules::UntapCause::Effect);
                         } else {
-                            self.tap_objects(&[id]);
+                            self.tap_objects(item.controller, &[id]);
                         }
                     }
                 }
@@ -10817,7 +10858,7 @@ impl Game {
                         if self.same_target_object(*bound)
                             && let Target::Card(id) = bound.target
                         {
-                            self.tap_objects(&[id]);
+                            self.tap_objects(item.controller, &[id]);
                         }
                     } else {
                         let ids: Vec<_> = item
@@ -10833,7 +10874,7 @@ impl Game {
                                 }
                             })
                             .collect();
-                        self.tap_objects(&ids);
+                        self.tap_objects(item.controller, &ids);
                     }
                 }
                 Instruction::CounterPermanentExileCast => self.counter_permanent_exile_cast(&item),

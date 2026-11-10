@@ -501,6 +501,7 @@ impl Game {
             }
         }
         self.tap_objects(
+            item.controller,
             &context
                 .contributors
                 .iter()

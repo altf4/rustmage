@@ -518,9 +518,9 @@ impl Game {
             failed: false,
         }));
         match &event.kind {
-            ManaEventKind::Basic { .. } => self.tap_objects(&[source.card]),
+            ManaEventKind::Basic { .. } => self.tap_objects(event.actor, &[source.card]),
             ManaEventKind::Granted { sacrifice, .. } => {
-                self.tap_objects(&[source.card]);
+                self.tap_objects(event.actor, &[source.card]);
                 if *sacrifice {
                     self.sacrifice_batch(&[(event.actor, source.card)]);
                 }
@@ -546,7 +546,7 @@ impl Game {
                             .iter()
                             .map(|object| object.card)
                             .collect::<Vec<_>>();
-                        self.tap_objects(&cards);
+                        self.tap_objects(event.actor, &cards);
                     } else {
                         self.move_object(selection.objects()[0].card, Zone::Exile);
                     }

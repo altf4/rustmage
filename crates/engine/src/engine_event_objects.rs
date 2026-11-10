@@ -580,7 +580,7 @@ impl Game {
         self.comparison_facts(e.object, entrant)
             .greater_than(self.comparison_facts(identity.object, source))
     }
-    pub(super) fn attached_tap_triggers(&mut self, changed: &[CardId]) {
+    pub(super) fn attached_tap_triggers(&mut self, changed: &[(Player, CardId)]) {
         if changed.is_empty() || self.state.tap_sources.is_empty() {
             return;
         }
@@ -597,7 +597,9 @@ impl Game {
             let Some(recipient) = self.attachment_recipient(id) else {
                 continue;
             };
-            if !changed.contains(&recipient.card) || !self.is_creature(recipient.card) {
+            if !changed.iter().any(|&(_, id)| id == recipient.card)
+                || !self.is_creature(recipient.card)
+            {
                 continue;
             }
             let source = self.object_view(id);

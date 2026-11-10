@@ -1233,10 +1233,10 @@ impl Game {
                 let bonus = self.mana_tap_bonuses(item.controller, source.id);
                 item.mana_tap_bonus = bonus.has_any().then(|| Box::new(bonus));
             }
-            self.tap_objects(&[source.id]);
+            self.tap_objects(item.controller, &[source.id]);
         }
         if let Some(grantor) = item.attached_activation_tap_cost() {
-            self.tap_objects(&[grantor.card]);
+            self.tap_objects(item.controller, &[grantor.card]);
         }
         if definition.exerts() {
             self.exert_source(source.object, item.controller);
