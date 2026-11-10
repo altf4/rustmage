@@ -2386,6 +2386,12 @@ pub enum Instruction {
     CopySourceFromLinkedExile {
         base: (i16, i16),
     },
+    /// Copy an exact targeted creature card from your graveyard indefinitely,
+    /// retaining the resolving activated template and these copiable keywords.
+    CopySourceFromGraveyardRetainingActivation {
+        blueprint_group: u16,
+        keywords: Keywords,
+    },
     /// Copy the captured actual spell, optionally permitting new legal targets.
     CopyCapturedSpell {
         count: SpellCopyCount,

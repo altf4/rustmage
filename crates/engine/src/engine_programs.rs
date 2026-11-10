@@ -4283,6 +4283,14 @@ impl Game {
                 Instruction::CopySourceFromLinkedExile { base } => {
                     self.copy_source_from_linked_exile(&item, base)
                 }
+                Instruction::CopySourceFromGraveyardRetainingActivation {
+                    blueprint_group,
+                    keywords,
+                } => self.copy_source_from_graveyard_retaining_activation(
+                    &item,
+                    blueprint_group,
+                    keywords,
+                ),
                 Instruction::CopyEnteringPermanentThenAnimate(spec) => {
                     self.copy_entering_then_animate(&item, spec);
                 }
