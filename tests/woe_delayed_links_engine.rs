@@ -82,10 +82,35 @@ fn delayed_combat_fires_once_and_expires_if_the_step_is_missed() {
             .is_none_or(|rows| rows.is_empty())
     );
 
-    game.begin_step(Step::BeginCombat);
+    game.add_combats_after_current_main(1);
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    assert_eq!(game.state.step, Step::BeginCombat);
     settle(&mut game);
     assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 1);
-    game.begin_step(Step::BeginCombat);
+
+    for _ in 0..12 {
+        if game.state.players[player.index()]
+            .turn_facts
+            .combat_phases_started
+            == 2
+        {
+            break;
+        }
+        let action = match game.state.pending {
+            Pending::Priority => Action::Pass,
+            Pending::Attackers => Action::FinishAttackers,
+            Pending::Blockers => Action::FinishBlockers,
+            ref pending => panic!("unexpected combat choice {pending:?}"),
+        };
+        act(&mut game, action);
+    }
+    assert_eq!(
+        game.state.players[player.index()]
+            .turn_facts
+            .combat_phases_started,
+        2
+    );
     settle(&mut game);
     assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 1);
 }
