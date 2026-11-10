@@ -123,31 +123,40 @@ fn fixed_optional_division_keeps_empty_and_invalid_target_packets_distinct() {
 #[test]
 fn groves_bounty_accepts_zero_targets_with_paid_positive_x() {
     let player = Player::P0;
-    let mut game = scenario(player);
-    let recipient = put(&mut game, player, "Bear Cub", Zone::Battlefield);
-    let otter = put(
-        &mut game,
-        player,
-        "Elusive Otter // Grove's Bounty",
-        Zone::Hand,
-    );
-    act(&mut game, Action::AnnounceAdventure { card: otter });
-    act(&mut game, Action::ChooseX { value: 2 });
-    assert_eq!(game.state.pending, Pending::Targets { player });
-    assert!(game.legal_actions().contains(&target(recipient)));
-    act(&mut game, Action::FinishTargets);
-    act(
-        &mut game,
-        Action::PayCosts {
-            payment: [0, 0, 0, 0, 1, 2],
-        },
-    );
-    let spell = game.state.stack.last().unwrap();
-    assert_eq!(spell.x, Some(2));
-    assert!(spell.targets.is_empty());
-    settle(&mut game);
-    assert_eq!(game.object_view(otter).zone, Zone::Exile);
-    assert_eq!(game.counter_count(recipient, CounterKind::PlusOne), 0);
+    for has_recipient in [false, true] {
+        let mut game = scenario(player);
+        let recipient =
+            has_recipient.then(|| put(&mut game, player, "Bear Cub", Zone::Battlefield));
+        let otter = put(
+            &mut game,
+            player,
+            "Elusive Otter // Grove's Bounty",
+            Zone::Hand,
+        );
+        act(&mut game, Action::AnnounceAdventure { card: otter });
+        act(&mut game, Action::ChooseX { value: 2 });
+        if let Some(recipient) = recipient {
+            assert_eq!(game.state.pending, Pending::Targets { player });
+            assert!(game.legal_actions().contains(&target(recipient)));
+            act(&mut game, Action::FinishTargets);
+        } else {
+            assert_eq!(game.state.pending, Pending::PayCosts { player });
+        }
+        act(
+            &mut game,
+            Action::PayCosts {
+                payment: [0, 0, 0, 0, 1, 2],
+            },
+        );
+        let spell = game.state.stack.last().unwrap();
+        assert_eq!(spell.x, Some(2));
+        assert!(spell.targets.is_empty());
+        settle(&mut game);
+        assert_eq!(game.object_view(otter).zone, Zone::Exile);
+        if let Some(recipient) = recipient {
+            assert_eq!(game.counter_count(recipient, CounterKind::PlusOne), 0);
+        }
+    }
 }
 
 #[test]
