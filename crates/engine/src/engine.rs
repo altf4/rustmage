@@ -2201,19 +2201,12 @@ impl SpellView {
                 ) => Some(modes),
                 _ => None,
             },
-            StackKind::ActivatedAbility { ability } => {
-                match self
-                    .source
-                    .expect("object-backed stack kind")
-                    .card
-                    .activation(ability)
-                    .program
-                    .first()
-                {
-                    Some(Instruction::Modal(modes)) => Some(modes),
-                    _ => None,
-                }
-            }
+            StackKind::ActivatedAbility { ability } => self
+                .source
+                .expect("object-backed stack kind")
+                .card
+                .activation(ability)
+                .modes(),
             StackKind::DelayedSacrifice
             | StackKind::DelayedWarpExile
             | StackKind::SiegeDefeat

@@ -6749,6 +6749,16 @@ pub struct ActivatedAbility {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ActivatedAbility {
+    pub(crate) fn modes(&self) -> Option<&'static [SpellMode]> {
+        match self.program.first() {
+            Some(
+                Instruction::Modal(modes)
+                | Instruction::ModalOnce(modes)
+                | Instruction::ModalOncePerTurn(modes),
+            ) => Some(modes),
+            _ => None,
+        }
+    }
     pub(crate) fn life_x_cost(&self) -> bool {
         self.program.contains(&Instruction::ActivationLifeX)
     }

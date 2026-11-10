@@ -7,8 +7,12 @@ pub struct ModalHistoryView {
     pub object: ObjectRef,
     pub definition: Card,
     pub ability: u16,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub activated: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub origin: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub borrowed_slot: Option<u64>,
     pub modes: Vec<u16>,
     /// Absent for lifetime histories; otherwise the exact actual turn of selection.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -20,21 +24,38 @@ pub(super) struct Key {
     object: ObjectRef,
     definition: Card,
     ability: u16,
+    activated: bool,
     origin: Option<u64>,
+    borrowed_slot: Option<u64>,
     per_turn: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) type Rows = Option<SharedVec<ModalHistoryView>>;
 
-// Only triggered headers are admitted: an activated ability needs history-aware
-// activation admission as well as the shared modal announcement path.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn key(item: &SpellView) -> Option<Key> {
-    let StackKind::TriggeredAbility { ability } = item.kind else {
-        return None;
+    let (definition, ability, activated, program) = match item.kind {
+        StackKind::TriggeredAbility { ability } => {
+            let definition = item.trigger_definition();
+            (
+                definition,
+                ability,
+                false,
+                definition.triggers()[usize::from(ability)].program,
+            )
+        }
+        StackKind::ActivatedAbility { ability } => {
+            let definition = item.source?.card;
+            (
+                definition,
+                ability,
+                true,
+                definition.activation(ability).program,
+            )
+        }
+        _ => return None,
     };
-    let definition = item.trigger_definition();
-    let per_turn = match definition.triggers()[usize::from(ability)].program.first() {
+    let per_turn = match program.first() {
         Some(Instruction::ModalOnce(_)) => false,
         Some(Instruction::ModalOncePerTurn(_)) => true,
         _ => return None,
@@ -43,7 +64,9 @@ pub(super) fn key(item: &SpellView) -> Option<Key> {
         object: item.source?.object,
         definition,
         ability,
+        activated,
         origin: item.source_ability_origin,
+        borrowed_slot: item.borrowed_slot,
         per_turn,
     })
 }
@@ -54,7 +77,9 @@ impl ModalHistoryView {
             object: self.object,
             definition: self.definition,
             ability: self.ability,
+            activated: self.activated,
             origin: self.origin,
+            borrowed_slot: self.borrowed_slot,
             per_turn: self.turn.is_some(),
         }
     }
@@ -109,7 +134,9 @@ impl Game {
                 object: key.object,
                 definition: key.definition,
                 ability: key.ability,
+                activated: key.activated,
                 origin: key.origin,
+                borrowed_slot: key.borrowed_slot,
                 modes: vec![mode],
                 turn,
             });
@@ -124,7 +151,12 @@ impl Game {
                 return false;
             }
             let object = &self.state.objects[row.object.card as usize];
-            (object.zone == Zone::Battlefield
+            let origin_zone = if row.activated {
+                row.definition.activation(row.ability).source_zone()
+            } else {
+                Zone::Battlefield
+            };
+            (object.zone == origin_zone
                 && self.object_ref(row.object.card) == row.object
                 && row
                     .origin

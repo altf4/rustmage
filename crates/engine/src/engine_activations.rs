@@ -709,10 +709,7 @@ impl Game {
                                 )
                             })
                     };
-                    let modes = match ability.program.first() {
-                        Some(Instruction::Modal(modes)) => Some(*modes),
-                        _ => None,
-                    };
+                    let modes = ability.modes();
                     let targets_available = ability.declares_target_value_x()
                         || modes.map_or_else(
                             || {
@@ -723,12 +720,14 @@ impl Game {
                                 )
                             },
                             |modes| {
-                                modes.iter().any(|mode| {
-                                    self.targets_available(
-                                        mode.targets,
-                                        actor,
-                                        self.object_ref(card),
-                                    )
+                                let packet = self.activation_packet(actor, card, index as u16);
+                                modes.iter().enumerate().any(|(mode_index, mode)| {
+                                    self.modal_choice_unused(&packet, mode_index)
+                                        && self.targets_available(
+                                            mode.targets,
+                                            actor,
+                                            self.object_ref(card),
+                                        )
                                 })
                             },
                         );
@@ -1168,6 +1167,11 @@ impl Game {
             return;
         };
         let definition = source.card.activation(ability);
+        if let Some(mode) = item.mode
+            && let Some(key) = modal_history::key(item)
+        {
+            self.record_modal_choice(key, mode);
+        }
         if self.record_external_exhaust_use(item, ability) {
             return;
         }

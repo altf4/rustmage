@@ -574,16 +574,19 @@ impl Game {
                                 ability.targets,
                             )
                         });
-                    let modes = match ability.program.first() {
-                        Some(Instruction::Modal(modes)) => Some(*modes),
-                        _ => None,
-                    };
+                    let modes = ability.modes();
                     let targets_available = ability.declares_target_value_x()
                         || modes.map_or_else(
                             || self.targets_available(ability.targets, actor, descriptor.source),
                             |modes| {
-                                modes.iter().any(|mode| {
-                                    self.targets_available(mode.targets, actor, descriptor.source)
+                                let packet = self.borrowed_activation_packet(actor, *descriptor);
+                                modes.iter().enumerate().any(|(mode_index, mode)| {
+                                    self.modal_choice_unused(&packet, mode_index)
+                                        && self.targets_available(
+                                            mode.targets,
+                                            actor,
+                                            descriptor.source,
+                                        )
                                 })
                             },
                         );

@@ -1753,7 +1753,9 @@ impl Game {
 
     pub(super) fn declare_mode(&mut self, mode: u16, plan: TargetPlan) {
         let item = &self.state.announcing.as_ref().unwrap().item;
-        if let Some(key) = modal_history::key(item) {
+        if matches!(item.kind, StackKind::TriggeredAbility { .. })
+            && let Some(key) = modal_history::key(item)
+        {
             self.record_modal_choice(key, mode);
         }
         let announcement = self.state.announcing.as_mut().unwrap();
