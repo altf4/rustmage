@@ -54,6 +54,9 @@ fn web_cast(game: &mut Game, card: CardId, returned: CardId) {
         game,
         |action| matches!(action, Action::AnnounceWebSlinging { card: id, .. } if *id == card),
     );
+    if game.legal_actions().contains(&Action::BeginOrderedCosts) {
+        act(game, Action::BeginOrderedCosts);
+    }
     choose_cast_clause(game, CastCostClause::Mana);
     pay(game);
     choose_cast_clause(game, CastCostClause::Additional);
@@ -143,7 +146,7 @@ fn spider_uk_counts_its_own_entry_and_a_prior_creature_that_has_left() {
         );
         assert_eq!(
             game.state.players[player.index()].cards_drawn_this_turn,
-            u32::from(prior).into()
+            u64::from(prior)
         );
     }
 }
@@ -387,4 +390,525 @@ fn superior_foes_requires_four_mana_value_and_a_new_exile_supersedes_the_old_gra
     let permissions = game.observe(player).exile_permissions;
     assert_eq!(permissions.len(), 1);
     assert_eq!(permissions[0].object, game.object_ref(exiled[1]));
+}
+
+fn pick_library(game: &mut Game, card: CardId) {
+    act(game, Action::SelectLibrary { card });
+    if game
+        .legal_actions()
+        .contains(&Action::FinishLibrarySelection)
+    {
+        act(game, Action::FinishLibrarySelection);
+    }
+    settle(game);
+}
+
+#[test]
+fn superior_spider_man_copies_an_opposing_graveyard_creature_with_exact_exceptions() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let original = put(&mut game, player.other(), "Llanowar Elves", Zone::Graveyard);
+    let card = put(&mut game, player, "Superior Spider-Man", Zone::Hand);
+    cast(&mut game, card, None);
+    pass_pair(&mut game);
+    let object = Some(game.object_ref(original));
+    act(&mut game, Action::ChooseEntryCopy { object });
+    settle(&mut game);
+    let view = game.object_view(card);
+    assert_eq!(view.name, "Superior Spider-Man");
+    assert_eq!(stats(&game, card), (4, 4));
+    assert!(!view.is_legendary());
+    for subtype in ["Elf", "Spider", "Human", "Hero"] {
+        assert!(view.has_subtype(subtype), "{subtype}");
+    }
+    assert_eq!(game.object_view(original).zone, Zone::Exile);
+}
+
+#[test]
+fn symbiote_spider_mans_paid_graveyard_ability_grants_its_private_combat_payoff() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let grave = put(&mut game, player, "Symbiote Spider-Man", Zone::Graveyard);
+    let host = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let discarded = put(&mut game, player, "Mountain", Zone::Library);
+    let selected = put(&mut game, player, "Island", Zone::Library);
+    activate(&mut game, grave, 0, Some(Target::Card(host)));
+    settle(&mut game);
+    assert_eq!(game.object_view(grave).zone, Zone::Exile);
+    assert_eq!(game.counter_count(host, CounterKind::PlusOne), 1);
+    hit_player(&mut game, host, player.other(), 2, true);
+    pass_pair(&mut game);
+    assert!(game.observe(player.other()).library_selection.is_none());
+    pick_library(&mut game, selected);
+    assert_eq!(game.object_view(selected).zone, Zone::Hand);
+    assert_eq!(game.object_view(discarded).zone, Zone::Graveyard);
+}
+
+#[test]
+fn terrific_team_up_costs_two_less_with_a_four_mana_permanent_and_grows_both_sources() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let spell = put(&mut game, player, "Terrific Team-Up", Zone::Hand);
+    let allies = [
+        put(&mut game, player, "Grizzly Bears", Zone::Battlefield),
+        put(&mut game, player, "Bear Cub", Zone::Battlefield),
+    ];
+    let enemy = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
+    game.state.players[player.index()].mana = [0, 0, 0, 0, 1, 1];
+    reject(&mut game, Action::AnnounceCast { card: spell });
+    put(&mut game, player, "Hedron Archive", Zone::Battlefield);
+    announce(
+        &mut game,
+        spell,
+        &[allies[0], allies[1], enemy].map(Target::Card),
+    );
+    assert_eq!(
+        game.state
+            .stack
+            .last()
+            .unwrap()
+            .cast
+            .unwrap()
+            .payment
+            .iter()
+            .sum::<u32>(),
+        2
+    );
+    settle(&mut game);
+    for ally in allies {
+        assert_eq!(stats(&game, ally), (3, 2));
+    }
+    assert_eq!(game.object_view(enemy).zone, Zone::Graveyard);
+}
+
+fn next_chapter(game: &mut Game) {
+    game.state.turn += 1;
+    game.begin_step(Step::Main1);
+    game.prepare_triggers();
+}
+
+#[test]
+fn the_clone_saga_surveils_copies_the_next_creature_and_remembers_a_name_after_sacrifice() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let saga = put(&mut game, player, "The Clone Saga", Zone::Hand);
+    cast(&mut game, saga, None);
+    pass_pair(&mut game);
+    pass_pair(&mut game);
+    for _ in 0..3 {
+        choose(&mut game, |action| {
+            matches!(action, Action::ArrangeLibrary { .. })
+        });
+    }
+    settle(&mut game);
+    assert_eq!(game.counter_count(saga, CounterKind::Lore), 1);
+
+    next_chapter(&mut game);
+    settle(&mut game);
+    let legend = put(&mut game, player, "Spider-Byte, Web Warden", Zone::Hand);
+    cast(&mut game, legend, None);
+    settle(&mut game);
+    let copy = game
+        .observe(player)
+        .objects
+        .into_iter()
+        .find(|row| {
+            row.is_token() && row.zone == Zone::Battlefield && row.name == "Spider-Byte, Web Warden"
+        })
+        .unwrap();
+    assert!(!copy.is_legendary());
+    assert!(game.object_view(legend).is_legendary());
+
+    next_chapter(&mut game);
+    pass_pair(&mut game);
+    act(
+        &mut game,
+        Action::ChooseEntryValue {
+            value: EntryChoiceValue::CardName(
+                rustmage_core::CardName::from_name("Grizzly Bears").unwrap(),
+            ),
+        },
+    );
+    assert_eq!(game.object_view(saga).zone, Zone::Graveyard);
+    let attacker = put(
+        &mut game,
+        player.other(),
+        "Grizzly Bears",
+        Zone::Battlefield,
+    );
+    let before = game.hand_count(player);
+    hit_player(&mut game, attacker, player, 2, true);
+    settle(&mut game);
+    assert_eq!(game.hand_count(player), before + 1);
+}
+
+#[test]
+fn the_death_of_gwen_stacy_destroys_then_resolves_each_players_discard_and_exiles_both_graveyards()
+{
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let target = put(&mut game, opponent, "Grizzly Bears", Zone::Battlefield);
+    let card = put(&mut game, player, "Mountain", Zone::Hand);
+    let held = put(&mut game, opponent, "Island", Zone::Hand);
+    let saga = put(&mut game, player, "The Death of Gwen Stacy", Zone::Hand);
+    cast(&mut game, saga, None);
+    pass_pair(&mut game);
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(target),
+        },
+    );
+    settle(&mut game);
+    assert_eq!(game.object_view(target).zone, Zone::Graveyard);
+
+    next_chapter(&mut game);
+    pass_pair(&mut game);
+    act(&mut game, Action::Discard { card });
+    assert_eq!(game.object_view(card).zone, Zone::Hand);
+    act(&mut game, Action::ChooseOptional { accept: false });
+    assert_eq!(game.object_view(card).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(held).zone, Zone::Hand);
+    assert_eq!(game.state.players[opponent.index()].life, 17);
+
+    next_chapter(&mut game);
+    for target in [player, opponent] {
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Player(target),
+            },
+        );
+    }
+    if game.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut game, Action::FinishTargets);
+    }
+    settle(&mut game);
+    assert_eq!(game.object_view(target).zone, Zone::Exile);
+    assert_eq!(game.object_view(card).zone, Zone::Exile);
+    assert_eq!(game.object_view(saga).zone, Zone::Graveyard);
+}
+
+#[test]
+fn the_soul_stone_exiles_a_creature_to_harness_and_reanimates_at_its_controllers_upkeep() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let stone = put(&mut game, player, "The Soul Stone", Zone::Battlefield);
+    let grave = put(&mut game, player, "Hill Giant", Zone::Graveyard);
+    let offering = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    assert!(game.keywords(stone).contains(Keywords::INDESTRUCTIBLE));
+    game.begin_step(Step::Upkeep);
+    game.prepare_triggers();
+    assert!(game.state.stack.is_empty());
+    game.state.step = Step::Main1;
+    let object = game.object_ref(offering);
+    act(
+        &mut game,
+        Action::AnnounceActivate {
+            card: stone,
+            ability: 1,
+            counter_payment: Counters::default(),
+        },
+    );
+    act(&mut game, Action::ChooseAdditionalCost { object });
+    pay(&mut game);
+    assert_eq!(game.object_view(offering).zone, Zone::Exile);
+    settle(&mut game);
+    assert_eq!(game.object_view(stone).harnessed, Some(true));
+
+    game.begin_step(Step::Upkeep);
+    game.prepare_triggers();
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(grave),
+        },
+    );
+    settle(&mut game);
+    assert_eq!(game.object_view(grave).zone, Zone::Battlefield);
+}
+
+#[test]
+fn the_spot_exiles_an_artifact_and_a_graveyard_creature_then_returns_both_on_death() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let spot = put(&mut game, player, "The Spot, Living Portal", Zone::Hand);
+    let artifact = put(
+        &mut game,
+        player.other(),
+        "Swiftfoot Boots",
+        Zone::Battlefield,
+    );
+    let grave = put(&mut game, player, "Grizzly Bears", Zone::Graveyard);
+    cast(&mut game, spot, None);
+    pass_pair(&mut game);
+    for card in [artifact, grave] {
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(card),
+            },
+        );
+    }
+    if game.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut game, Action::FinishTargets);
+    }
+    settle(&mut game);
+    for card in [artifact, grave] {
+        assert_eq!(game.object_view(card).zone, Zone::Exile);
+    }
+    let wrath = put(&mut game, player, "Day of Judgment", Zone::Hand);
+    cast(&mut game, wrath, None);
+    settle(&mut game);
+    assert_eq!(game.object_view(spot).zone, Zone::Library);
+    assert_eq!(game.state.players[player.index()].library[0], spot);
+    for card in [artifact, grave] {
+        assert_eq!(game.object_view(card).zone, Zone::Hand);
+    }
+}
+
+#[test]
+fn urban_retreat_enters_tapped_through_its_hand_activation_without_using_a_land_play() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let land = put(&mut game, player, "Urban Retreat", Zone::Hand);
+    let donor = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    game.state.objects[donor as usize].tapped = true;
+    act(
+        &mut game,
+        Action::AnnounceActivate {
+            card: land,
+            ability: 1,
+            counter_payment: Counters::default(),
+        },
+    );
+    if game.legal_actions().contains(&Action::BeginOrderedCosts) {
+        act(&mut game, Action::BeginOrderedCosts);
+        choose_cast_clause(&mut game, CastCostClause::Mana);
+        pay(&mut game);
+        choose_cast_clause(&mut game, CastCostClause::Additional);
+    }
+    let object = game.object_ref(donor);
+    act(&mut game, Action::ChooseAdditionalCost { object });
+    if matches!(game.state.pending, Pending::PayCosts { .. }) {
+        pay(&mut game);
+    }
+    assert_eq!(game.object_view(donor).zone, Zone::Hand);
+    settle(&mut game);
+    assert!(game.object_view(land).tapped);
+    assert_eq!(game.object_view(land).zone, Zone::Battlefield);
+    assert!(!game.state.land_played);
+    game.state.objects[land as usize].tapped = false;
+    let colors: std::collections::BTreeSet<_> = game
+        .legal_actions()
+        .into_iter()
+        .filter_map(|a| match a {
+            Action::ActivateMana {
+                card, production, ..
+            } if card == land => Some(production),
+            _ => None,
+        })
+        .collect();
+    assert_eq!(
+        colors,
+        [[1, 0, 0, 0, 0, 0], [0, 1, 0, 0, 0, 0], [0, 0, 0, 0, 1, 0]]
+            .into_iter()
+            .collect()
+    );
+}
+
+#[test]
+fn villainous_wrath_counts_the_opponents_creatures_before_destroying_both_sides() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let targets = [
+        put(&mut game, opponent, "Grizzly Bears", Zone::Battlefield),
+        put(&mut game, opponent, "Bear Cub", Zone::Battlefield),
+        put(&mut game, player, "Hill Giant", Zone::Battlefield),
+    ];
+    let wrath = put(&mut game, player, "Villainous Wrath", Zone::Hand);
+    cast(&mut game, wrath, Some(Target::Player(opponent)));
+    settle(&mut game);
+    assert_eq!(game.state.players[opponent.index()].life, 18);
+    for id in targets {
+        assert_eq!(game.object_view(id).zone, Zone::Graveyard);
+    }
+}
+
+#[test]
+fn wall_crawl_counts_its_new_spider_and_only_defenders_are_barred_from_blocking_spiders() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let wall = put(&mut game, player, "Wall Crawl", Zone::Hand);
+    let spider = put(&mut game, player, "Treetop Snarespinner", Zone::Battlefield);
+    let defender = put(
+        &mut game,
+        player.other(),
+        "Wall of Blossoms",
+        Zone::Battlefield,
+    );
+    let ordinary = put(
+        &mut game,
+        player.other(),
+        "Grizzly Bears",
+        Zone::Battlefield,
+    );
+    let before = stats(&game, spider);
+    cast(&mut game, wall, None);
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].life, 22);
+    assert_eq!(stats(&game, spider), (before.0 + 1, before.1 + 1));
+    attack_with(&mut game, &[spider]);
+    pass_pair(&mut game);
+    reject(
+        &mut game,
+        Action::Block {
+            blocker: defender,
+            attacker: spider,
+        },
+    );
+    act(
+        &mut game,
+        Action::Block {
+            blocker: ordinary,
+            attacker: spider,
+        },
+    );
+}
+
+#[test]
+fn web_of_life_and_destiny_accepts_colored_convoke_and_privately_deploys_a_top_five_creature() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let creatures = [
+        put(&mut game, player, "Bear Cub", Zone::Battlefield),
+        put(&mut game, player, "Grizzly Bears", Zone::Battlefield),
+    ];
+    let enchantment = put(&mut game, player, "Web of Life and Destiny", Zone::Hand);
+    let candidate = put(&mut game, player, "Hill Giant", Zone::Library);
+    game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 6];
+    act(&mut game, Action::AnnounceCast { card: enchantment });
+    act(&mut game, Action::BeginConvoke);
+    for card in creatures {
+        let object = game.object_ref(card);
+        act(
+            &mut game,
+            Action::ChooseConvoker {
+                object,
+                contribution: ConvokeContribution::Green,
+            },
+        );
+    }
+    pay(&mut game);
+    settle(&mut game);
+    for card in creatures {
+        assert!(game.object_view(card).tapped);
+    }
+    game.begin_step(Step::BeginCombat);
+    game.prepare_triggers();
+    pass_pair(&mut game);
+    assert!(game.observe(player.other()).library_selection.is_none());
+    pick_library(&mut game, candidate);
+    assert_eq!(game.object_view(candidate).zone, Zone::Battlefield);
+}
+
+#[test]
+fn wild_pack_squad_targets_either_seats_creature_and_both_grants_expire() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    put(&mut game, player, "Wild Pack Squad", Zone::Battlefield);
+    let chosen = put(
+        &mut game,
+        player.other(),
+        "Grizzly Bears",
+        Zone::Battlefield,
+    );
+    game.begin_step(Step::BeginCombat);
+    game.prepare_triggers();
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(chosen),
+        },
+    );
+    if game.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut game, Action::FinishTargets);
+    }
+    settle(&mut game);
+    let keywords = Keywords::FIRST_STRIKE.union(Keywords::VIGILANCE);
+    assert!(game.keywords(chosen).contains(keywords));
+    end_step(&mut game);
+    game.give_priority();
+    pass_pair(&mut game);
+    assert!(!game.keywords(chosen).intersects(keywords));
+}
+
+#[test]
+fn wisecrack_adds_two_player_damage_only_for_an_attacking_creature() {
+    for attacking in [false, true] {
+        let player = Player::P0;
+        let mut game = scenario(player);
+        let creature = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+        let spell = put(&mut game, player, "Wisecrack", Zone::Hand);
+        if attacking {
+            attack_with(&mut game, &[creature]);
+            game.state.players[player.index()].mana = [0, 0, 0, 3, 0, 0];
+        }
+        cast(&mut game, spell, Some(Target::Card(creature)));
+        settle(&mut game);
+        assert_eq!(game.object_view(creature).zone, Zone::Graveyard);
+        assert_eq!(
+            game.state.players[player.index()].life,
+            if attacking { 18 } else { 20 }
+        );
+    }
+}
+
+#[test]
+fn with_great_power_counts_its_own_aura_and_equipment_and_redirects_player_damage() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let bearer = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let aura = put(&mut game, player, "With Great Power . . .", Zone::Hand);
+    let equipment = put(&mut game, player, "Web-Shooters", Zone::Battlefield);
+    let foe = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
+    cast(&mut game, aura, Some(Target::Card(bearer)));
+    settle(&mut game);
+    assert_eq!(stats(&game, bearer), (4, 4));
+    activate(&mut game, equipment, 0, Some(Target::Card(bearer)));
+    settle(&mut game);
+    assert_eq!(stats(&game, bearer), (7, 7));
+    hit_player(&mut game, foe, player, 3, false);
+    assert_eq!(game.state.players[player.index()].life, 20);
+    assert_eq!(game.object_view(bearer).damage, 3);
+}
+
+#[test]
+fn wraith_cannot_be_blocked_and_deals_damage_in_both_steps() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let wraith = put(
+        &mut game,
+        player,
+        "Wraith, Vicious Vigilante",
+        Zone::Battlefield,
+    );
+    let blocker = put(&mut game, opponent, "Grizzly Bears", Zone::Battlefield);
+    attack_with(&mut game, &[wraith]);
+    pass_pair(&mut game);
+    reject(
+        &mut game,
+        Action::Block {
+            blocker,
+            attacker: wraith,
+        },
+    );
+    act(&mut game, Action::FinishBlockers);
+    while game.state.step != Step::EndCombat {
+        pass_pair(&mut game);
+    }
+    assert_eq!(game.state.players[opponent.index()].life, 18);
 }
