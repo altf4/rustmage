@@ -20,6 +20,11 @@ fn activate(game: &mut Game, card: CardId, ability: u16, target: Option<Target>)
             counter_payment: Counters::default(),
         },
     );
+    if matches!(game.state.pending, Pending::ActivationCost { .. }) {
+        choose(game, |action| {
+            matches!(action, Action::ChooseActivationCost { .. })
+        });
+    }
     if let Some(target) = target {
         act(game, Action::ChooseTarget { target });
     }
@@ -28,7 +33,7 @@ fn activate(game: &mut Game, card: CardId, ability: u16, target: Option<Target>)
     }
 }
 
-fn choose_cast_clause(game: &mut Game, wanted: CastCostClause) {
+fn choose_cast_clause(game: &mut Game, wanted: impl Fn(CastCostClause) -> bool) {
     let clause = game
         .state
         .announcing
@@ -39,7 +44,7 @@ fn choose_cast_clause(game: &mut Game, wanted: CastCostClause) {
         .unwrap()
         .clauses
         .iter()
-        .position(|row| !row.paid && row.clause == wanted)
+        .position(|row| !row.paid && wanted(row.clause))
         .unwrap();
     act(
         game,
@@ -57,9 +62,11 @@ fn web_cast(game: &mut Game, card: CardId, returned: CardId) {
     if game.legal_actions().contains(&Action::BeginOrderedCosts) {
         act(game, Action::BeginOrderedCosts);
     }
-    choose_cast_clause(game, CastCostClause::Mana);
+    choose_cast_clause(game, |clause| clause == CastCostClause::Mana);
     pay(game);
-    choose_cast_clause(game, CastCostClause::Additional);
+    choose_cast_clause(game, |clause| {
+        matches!(clause, CastCostClause::WebSlingingReturn(_))
+    });
     let object = game.object_ref(returned);
     act(game, Action::PayWebSlingingReturn { object });
     assert_eq!(
@@ -160,7 +167,7 @@ fn spider_verse_exempts_spider_legends_and_only_copies_one_paid_nonhand_spell() 
     settle(&mut game);
 
     for _ in 0..2 {
-        let hero = put(&mut game, player, "Spider-Byte, Web Warden", Zone::Hand);
+        let hero = put(&mut game, player, "Spinneret and Spiderling", Zone::Hand);
         cast(&mut game, hero, None);
         settle(&mut game);
         assert_eq!(game.object_view(hero).zone, Zone::Battlefield);
@@ -308,7 +315,7 @@ fn subway_train_accepts_green_to_find_a_basic_and_crews_with_two_power() {
     pass_pair(&mut game);
     pass_pair(&mut game);
     let mut declined = game.clone();
-    act(&mut declined, Action::DeclineEffectPayment);
+    act(&mut declined, Action::DeclineResolutionMana);
     assert_eq!(declined.object_view(forest).zone, Zone::Library);
     act(
         &mut game,
@@ -505,7 +512,7 @@ fn the_clone_saga_surveils_copies_the_next_creature_and_remembers_a_name_after_s
 
     next_chapter(&mut game);
     settle(&mut game);
-    let legend = put(&mut game, player, "Spider-Byte, Web Warden", Zone::Hand);
+    let legend = put(&mut game, player, "Spinneret and Spiderling", Zone::Hand);
     cast(&mut game, legend, None);
     settle(&mut game);
     let copy = game
@@ -513,7 +520,9 @@ fn the_clone_saga_surveils_copies_the_next_creature_and_remembers_a_name_after_s
         .objects
         .into_iter()
         .find(|row| {
-            row.is_token() && row.zone == Zone::Battlefield && row.name == "Spider-Byte, Web Warden"
+            row.is_token()
+                && row.zone == Zone::Battlefield
+                && row.name == "Spinneret and Spiderling"
         })
         .unwrap();
     assert!(!copy.is_legendary());
@@ -685,9 +694,9 @@ fn urban_retreat_enters_tapped_through_its_hand_activation_without_using_a_land_
     );
     if game.legal_actions().contains(&Action::BeginOrderedCosts) {
         act(&mut game, Action::BeginOrderedCosts);
-        choose_cast_clause(&mut game, CastCostClause::Mana);
+        choose_cast_clause(&mut game, |clause| clause == CastCostClause::Mana);
         pay(&mut game);
-        choose_cast_clause(&mut game, CastCostClause::Additional);
+        choose_cast_clause(&mut game, |clause| clause == CastCostClause::Additional);
     }
     let object = game.object_ref(donor);
     act(&mut game, Action::ChooseAdditionalCost { object });
@@ -743,12 +752,7 @@ fn wall_crawl_counts_its_new_spider_and_only_defenders_are_barred_from_blocking_
     let mut game = scenario(player);
     let wall = put(&mut game, player, "Wall Crawl", Zone::Hand);
     let spider = put(&mut game, player, "Treetop Snarespinner", Zone::Battlefield);
-    let defender = put(
-        &mut game,
-        player.other(),
-        "Sanctuary Wall",
-        Zone::Battlefield,
-    );
+    let defender = put(&mut game, player.other(), "Demon Wall", Zone::Battlefield);
     let ordinary = put(
         &mut game,
         player.other(),
@@ -907,8 +911,12 @@ fn wraith_cannot_be_blocked_and_deals_damage_in_both_steps() {
         },
     );
     act(&mut game, Action::FinishBlockers);
-    while game.state.step != Step::EndCombat {
+    for _ in 0..12 {
+        if game.state.step == Step::EndCombat {
+            break;
+        }
         pass_pair(&mut game);
     }
+    assert_eq!(game.state.step, Step::EndCombat);
     assert_eq!(game.state.players[opponent.index()].life, 18);
 }
