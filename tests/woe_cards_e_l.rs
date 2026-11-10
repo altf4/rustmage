@@ -1295,8 +1295,14 @@ fn lord_skitter_counts_each_other_rat_and_creates_a_nonblocking_rat_at_combat() 
                     target: Target::Card(own),
                 },
             );
-            choose_target(&mut game, Target::Card(victim));
+            act(
+                &mut game,
+                Action::ChooseTarget {
+                    target: Target::Card(victim),
+                },
+            );
         }
+        assert_eq!(game.state.stack.len(), 2);
         settle(&mut game);
         assert_eq!(game.object_view(first).zone, Zone::Exile);
         assert_eq!(game.object_view(second).zone, Zone::Exile);
@@ -1350,6 +1356,8 @@ fn hopeless_nightmare_discards_and_loses_life_then_scries_after_paid_sacrifice()
         assert_eq!(empty.state.players[opponent.index()].life, 18);
 
         announce(&mut game, nightmare, &[]);
+        pass_twice(&mut game);
+        assert_eq!(game.state.stack.len(), 1);
         pass_twice(&mut game);
         assert_eq!(game.actor(), Some(opponent));
         act(&mut game, Action::Discard { card: discard });
