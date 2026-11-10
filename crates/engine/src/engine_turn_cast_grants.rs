@@ -11,20 +11,61 @@ pub struct PlayerCastGrantsView {
     #[serde(skip_serializing_if = "is_zero_u64")]
     pub next_noncreature_artifact_affinity: u64,
 }
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct ColoredSpellReductionView {
+    /// A spell qualifies if any of its colors match this mask.
+    pub colors: u8,
+    pub generic: u64,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub(super) struct PlayerTurnCastGrants {
+    ordinary: PlayerCastGrantsView,
+    colored: Vec<ColoredSpellReductionView>,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn owned_bytes(rows: &Option<Box<[PlayerTurnCastGrants; 2]>>) -> usize {
+    rows.as_ref().map_or(0, |rows| {
+        std::mem::size_of::<[PlayerTurnCastGrants; 2]>()
+            + rows
+                .iter()
+                .map(|row| row.colored.len() * std::mem::size_of::<ColoredSpellReductionView>())
+                .sum::<usize>()
+    })
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    fn player_turn_cast_grants_mut(&mut self, player: Player) -> &mut PlayerTurnCastGrants {
+        &mut self
+            .state
+            .turn_cast_grants
+            .get_or_insert_with(Default::default)[player.index()]
+    }
     pub(super) fn player_cast_grants_view(&self, index: usize) -> Option<PlayerCastGrantsView> {
         self.state
             .turn_cast_grants
             .as_ref()
-            .map(|rows| rows[index])
+            .map(|rows| rows[index].ordinary)
             .filter(|row| *row != PlayerCastGrantsView::default())
     }
-    pub(super) fn grant_next_spell_uncounterable(&mut self, player: Player) {
+    pub(super) fn colored_spell_reductions_view(
+        &self,
+        index: usize,
+    ) -> Vec<ColoredSpellReductionView> {
         self.state
             .turn_cast_grants
-            .get_or_insert_with(Default::default)[player.index()]
-        .next_spell_uncounterable = true;
+            .as_ref()
+            .map_or_else(Vec::new, |rows| rows[index].colored.clone())
+    }
+    pub(super) fn grant_next_spell_uncounterable(&mut self, player: Player) {
+        self.player_turn_cast_grants_mut(player)
+            .ordinary
+            .next_spell_uncounterable = true;
     }
     pub(super) fn consume_next_spell_uncounterable(
         &mut self,
@@ -37,10 +78,11 @@ impl Game {
         let Some(rows) = self.state.turn_cast_grants.as_mut() else {
             return;
         };
-        if !rows[player.index()].next_spell_uncounterable {
+        let row = &mut rows[player.index()].ordinary;
+        if !row.next_spell_uncounterable {
             return;
         }
-        rows[player.index()].next_spell_uncounterable = false;
+        row.next_spell_uncounterable = false;
         let id = self.state.stack[index].id;
         self.prune_uncounterable_spell_ids();
         self.mark_spell_uncounterable(id);
@@ -73,41 +115,60 @@ impl Game {
         if amount == 0 {
             return;
         }
-        let rows = self
-            .state
-            .turn_cast_grants
-            .get_or_insert_with(Default::default);
-        rows[player.index()].artifact_generic_reduction = rows[player.index()]
+        let row = &mut self.player_turn_cast_grants_mut(player).ordinary;
+        row.artifact_generic_reduction = row
             .artifact_generic_reduction
             .checked_add(u64::from(amount))
             .capacity("turn spell reduction exhausted");
     }
+    pub(super) fn grant_colored_spell_reduction(
+        &mut self,
+        player: Player,
+        colors: u8,
+        amount: u128,
+    ) {
+        if amount == 0 {
+            return;
+        }
+        assert!(colors != 0 && colors & !0b1_1111 == 0, "invalid color mask");
+        let generic = u64::try_from(amount).unwrap_or(u64::MAX);
+        let discounts = &mut self.player_turn_cast_grants_mut(player).colored;
+        match discounts.binary_search_by_key(&colors, |row| row.colors) {
+            Ok(index) => {
+                discounts[index].generic = discounts[index].generic.saturating_add(generic);
+            }
+            Err(index) => discounts.insert(index, ColoredSpellReductionView { colors, generic }),
+        }
+    }
     pub(super) fn grant_next_noncreature_artifact_affinity(&mut self, player: Player) {
-        let row = &mut self
-            .state
-            .turn_cast_grants
-            .get_or_insert_with(Default::default)[player.index()];
+        let row = &mut self.player_turn_cast_grants_mut(player).ordinary;
         row.next_noncreature_artifact_affinity = row
             .next_noncreature_artifact_affinity
             .checked_add(1)
             .capacity("turn affinity grants exhausted");
     }
     pub(super) fn grant_next_creature_free(&mut self, player: Player) {
-        let rows = self
-            .state
-            .turn_cast_grants
-            .get_or_insert_with(Default::default);
-        rows[player.index()].next_red_or_green_creature_free = rows[player.index()]
+        let row = &mut self.player_turn_cast_grants_mut(player).ordinary;
+        row.next_red_or_green_creature_free = row
             .next_red_or_green_creature_free
             .checked_add(1)
             .capacity("turn free-cast grants exhausted");
     }
-    pub(super) fn turn_artifact_spell_reduction(&self, player: Player, card: Card) -> u64 {
-        if card.kind_mask() & 16 == 0 {
+    pub(super) fn turn_spell_reduction(&self, player: Player, card: Card) -> u64 {
+        let Some(rows) = self.state.turn_cast_grants.as_ref() else {
             return 0;
-        }
-        self.player_cast_grants_view(player.index())
-            .map_or(0, |row| row.artifact_generic_reduction)
+        };
+        let row = &rows[player.index()];
+        let artifact = if card.kind_mask() & 16 != 0 {
+            row.ordinary.artifact_generic_reduction
+        } else {
+            0
+        };
+        let colors = card.colors();
+        row.colored
+            .iter()
+            .filter(|grant| colors & grant.colors != 0)
+            .fold(artifact, |total, grant| total.saturating_add(grant.generic))
     }
     fn turn_free_creature_matches(card: Card) -> bool {
         card.is_creature() && card.colors() & ((1 << 3) | (1 << 4)) != 0
@@ -120,17 +181,16 @@ impl Game {
     }
     pub(super) fn consume_turn_cast_grants(&mut self, player: Player, card: Card) {
         if let Some(rows) = self.state.turn_cast_grants.as_mut() {
-            let row = &mut rows[player.index()];
+            let row = &mut rows[player.index()].ordinary;
             if Self::turn_free_creature_matches(card) {
                 row.next_red_or_green_creature_free = 0;
             }
             if !card.is_creature() {
                 row.next_noncreature_artifact_affinity = 0;
             }
-            if rows
-                .iter()
-                .all(|row| *row == PlayerCastGrantsView::default())
-            {
+            if rows.iter().all(|row| {
+                row.ordinary == PlayerCastGrantsView::default() && row.colored.is_empty()
+            }) {
                 self.state.turn_cast_grants = None;
             }
         }

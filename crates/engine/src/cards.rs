@@ -2366,6 +2366,11 @@ pub enum Instruction {
     GrantCreatureGraveyardCast,
     SolveSource,
     ReduceArtifactSpellCostsThisTurn(u32),
+    /// Sample a generic discount for this controller's matching spell colors until cleanup.
+    ReduceColoredSpellCostsThisTurn {
+        colors: u8,
+        amount: AmountValue,
+    },
     NextRedOrGreenCreatureFreeThisTurn,
     /// Permission for the exact public card(s) just milled by this resolution.
     GrantMilledPlay,

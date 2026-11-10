@@ -242,7 +242,7 @@ pub mod cast_route_costs;
 #[doc(hidden)]
 #[path = "engine_turn_cast_grants.rs"]
 pub mod turn_cast_grants;
-pub use turn_cast_grants::PlayerCastGrantsView;
+pub use turn_cast_grants::{ColoredSpellReductionView, PlayerCastGrantsView};
 #[doc(hidden)]
 #[path = "engine_cast_timing.rs"]
 pub mod cast_timing;
@@ -3130,7 +3130,7 @@ struct State {
     used_free_hand_permissions: Option<SharedVec<ObjectRef>>,
     graveyard_cast_permissions: cast_permissions::Rows,
     embalm_abilities: embalm::Rows,
-    turn_cast_grants: Option<Box<[PlayerCastGrantsView; 2]>>,
+    turn_cast_grants: Option<Box<[turn_cast_grants::PlayerTurnCastGrants; 2]>>,
     /// Exact stack item IDs protected by resolved next-spell effects.
     #[allow(clippy::box_collection)]
     uncounterable_spell_ids: Option<Box<Vec<u64>>>,
@@ -3429,6 +3429,8 @@ pub struct PlayerView {
     pub speed_triggered_this_turn: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub turn_cast_grants: Option<PlayerCastGrantsView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub colored_spell_reductions: Vec<ColoredSpellReductionView>,
     pub hexproof_until_end_turn: bool,
     pub token_creation_attempted_this_turn: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11949,6 +11951,7 @@ impl Game {
                 speed: s.players[i].speed,
                 speed_triggered_this_turn: s.players[i].speed_triggered_this_turn,
                 turn_cast_grants: self.player_cast_grants_view(i),
+                colored_spell_reductions: self.colored_spell_reductions_view(i),
                 turns_to_skip: s.turn_skips.as_ref().map_or(0, |v| v[i]),
                 turns_started: s.players[i].turns_started,
                 hexproof_until_end_turn: s.players[i].hexproof_until_end_turn,
@@ -12700,9 +12703,7 @@ impl Game {
             + paradigm::owned_bytes(&s.paradigm)
             + faces::owned_bytes(&s.face_changes)
             + modal_history::owned_bytes(&s.modal_history)
-            + s.turn_cast_grants
-                .as_ref()
-                .map_or(0, |_| std::mem::size_of::<[PlayerCastGrantsView; 2]>())
+            + turn_cast_grants::owned_bytes(&s.turn_cast_grants)
             + s.uncounterable_spell_ids.as_ref().map_or(0, |ids| {
                 std::mem::size_of::<Vec<u64>>() + ids.len() * std::mem::size_of::<u64>()
             })

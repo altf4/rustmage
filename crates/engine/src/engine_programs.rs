@@ -5799,6 +5799,10 @@ impl Game {
                 Instruction::ReduceArtifactSpellCostsThisTurn(amount) => {
                     self.grant_artifact_spell_reduction(item.controller, amount)
                 }
+                Instruction::ReduceColoredSpellCostsThisTurn { colors, amount } => {
+                    let amount = self.item_amount(amount, &item);
+                    self.grant_colored_spell_reduction(item.controller, colors, amount);
+                }
                 Instruction::NextRedOrGreenCreatureFreeThisTurn => {
                     self.grant_next_creature_free(item.controller)
                 }

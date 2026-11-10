@@ -19,6 +19,7 @@ pub use rustmage_core::engine::exhaust::GrantedExhaustUseView;
 pub use rustmage_core::engine::replacements::CreatureDamageShieldView;
 pub use rustmage_core::engine::return_links::PlayerDamageShieldView;
 pub use rustmage_core::engine::temporary_copy::RetainedActivationOrigin;
+pub use rustmage_core::engine::turn_cast_grants::ColoredSpellReductionView;
 pub use rustmage_core::engine::{
     AbilityAvailabilityView, AbilityResolutionView, AbilitySourceTimestampView, Action,
     ActivationCostRoute, AdditionalCostView, AdditionalEndStepsView, AdventurePermission,
