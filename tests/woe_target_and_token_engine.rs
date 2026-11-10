@@ -32,7 +32,13 @@ const UNIQUE: CardRules = CardRules {
 
 const NO_TOKEN_NAMESAKE: CardRules = CardRules {
     effect: Effect::Spell(
-        filtered(&TargetPredicate::NoOtherControlledSameName { tokens_only: true }),
+        TargetPlan::Single(TargetSpec::one(TargetRule::Filtered {
+            base: &TargetRule::Filtered {
+                base: &CONTROLLED_CREATURE,
+                predicate: &TargetPredicate::Nontoken,
+            },
+            predicate: &TargetPredicate::NoOtherControlledSameName { tokens_only: true },
+        })),
         &[Instruction::Draw(PlayerSet::Controller, 1)],
     ),
     ..CardRules::EMPTY

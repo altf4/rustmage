@@ -2918,16 +2918,17 @@ impl Game {
     }
 
     pub(super) fn stage_fixed_token_batch(&mut self, player: Player, groups: &[TokenGroupView]) {
+        let groups: Vec<_> = groups
+            .iter()
+            .copied()
+            .filter(|group| group.amount > 0)
+            .collect();
         self.stage_copy_token_batch(TokenBatch {
             first_this_turn: None,
             optional: None,
-            recipes: Vec::new(),
+            recipes: vec![None; groups.len()],
             player,
-            groups: groups
-                .iter()
-                .copied()
-                .filter(|group| group.amount > 0)
-                .collect(),
+            groups,
             effect: true,
             used: Vec::new(),
             completion: TokenCompletion::None,
