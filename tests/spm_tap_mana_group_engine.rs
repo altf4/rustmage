@@ -205,9 +205,10 @@ fn tap_group_sources_and_convoke_share_the_untapped_creature_pool() {
     game.state.players[player.index()].mana = EMPTY;
     for _ in 0..2 {
         put(&mut game, player, "Forest", Zone::Battlefield);
-        new_source(&mut game, player);
+        let source = new_source(&mut game, player);
+        game.state.objects[source as usize].tapped = true;
     }
-    for _ in 0..3 {
+    for _ in 0..5 {
         put(&mut game, player, "Hill Giant", Zone::Battlefield);
     }
     put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);

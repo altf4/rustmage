@@ -2,6 +2,7 @@
 use rustmage::*;
 use serde::Deserialize;
 use std::collections::{BTreeMap, BTreeSet};
+use std::ops::Range;
 use std::path::PathBuf;
 use std::time::Instant;
 
@@ -30,6 +31,8 @@ struct Pairing {
 struct Run {
     seed: u64,
     starting_player: usize,
+    #[serde(default)]
+    prefer_back_face: bool,
 }
 
 #[derive(Deserialize)]
@@ -142,8 +145,12 @@ fn decks(workload: &Workload) -> BTreeMap<&str, (&str, Vec<Card>)> {
         .collect()
 }
 
-#[test]
-fn spm_complete_games_exercise_actual_rules_and_replay() {
+fn verify_pairings(
+    batch: &str,
+    pairings: Range<usize>,
+    required_colors: u8,
+    required_mechanics: &[&str],
+) {
     let workload: Workload =
         serde_json::from_str(include_str!("../data/decks/spm-set-only.json")).unwrap();
     let decks = decks(&workload);
@@ -155,7 +162,9 @@ fn spm_complete_games_exercise_actual_rules_and_replay() {
     let mut decisions = 0usize;
     let mut colors = 0u8;
     let mut all_mechanics = BTreeSet::new();
-    for (pair_index, pair) in workload.pairings.iter().enumerate() {
+    assert!(pairings.end <= workload.pairings.len());
+    for pair_index in pairings {
+        let pair = &workload.pairings[pair_index];
         let (left_name, left) = &decks[pair.p0.as_str()];
         let (right_name, right) = &decks[pair.p1.as_str()];
         for run in &pair.runs {
@@ -176,6 +185,7 @@ fn spm_complete_games_exercise_actual_rules_and_replay() {
             let mut pending_attack = None;
             let mut proved = false;
             let mut casts = 0usize;
+            let mut seek_back_face = run.prefer_back_face;
             while game.outcome().is_none() && trace.len() < 4096 {
                 let actor = game.actor().unwrap();
                 let observation = game.observe(actor);
@@ -214,6 +224,7 @@ fn spm_complete_games_exercise_actual_rules_and_replay() {
                     };
                     if cast.face == CastFace::Back {
                         mechanics.insert("back-face cast");
+                        seek_back_face = false;
                     }
                     if cast.origin == Zone::Exile {
                         mechanics.insert("cast from exile");
@@ -227,12 +238,28 @@ fn spm_complete_games_exercise_actual_rules_and_replay() {
                         Action::Attack { card } | Action::AttackPlaneswalker { card, .. } => {
                             !rejected.contains(card)
                         }
+                        // In the designated modal-face replay, hold the front
+                        // until its alternative can be announced with normal mana.
+                        Action::AnnounceCast { card } | Action::Cast { card, .. }
+                            if seek_back_face =>
+                        {
+                            !observation.objects.iter().any(|object| {
+                                object.id == *card && object.card.back_face().is_some()
+                            })
+                        }
                         _ => true,
                     })
                     .map(|(index, action)| (index, action.clone()))
                     .collect();
                 let offered: Vec<_> = eligible.iter().map(|(_, action)| action.clone()).collect();
-                let selected = policy::smoke_index_from_observation(&observation, &offered);
+                let selected = offered
+                    .iter()
+                    .position(|action| {
+                        seek_back_face && matches!(action, Action::AnnounceBack { .. })
+                    })
+                    .unwrap_or_else(|| {
+                        policy::smoke_index_from_observation(&observation, &offered)
+                    });
                 let (index, action) = &eligible[selected];
                 assert!(
                     !matches!(action, Action::Concede),
@@ -298,6 +325,7 @@ fn spm_complete_games_exercise_actual_rules_and_replay() {
                     "actual_casts": casts,
                     "mechanics": mechanics,
                     "owned_branch": proved,
+                    "prefer_back_face": run.prefer_back_face,
                 }))
                 .unwrap(),
             )
@@ -318,7 +346,13 @@ fn spm_complete_games_exercise_actual_rules_and_replay() {
             decisions += trace.len();
         }
     }
-    assert_eq!(colors & 31, 31, "all five colors must be cast");
+    assert_eq!(colors & required_colors, required_colors, "{batch} colors");
+    for mechanic in required_mechanics {
+        assert!(
+            all_mechanics.contains(mechanic),
+            "{batch} missed {mechanic}"
+        );
+    }
     let seconds = started.elapsed().as_secs_f64();
     let summary = serde_json::json!({
         "catalogue": CATALOGUE_VERSION,
@@ -330,8 +364,47 @@ fn spm_complete_games_exercise_actual_rules_and_replay() {
         "scope": "Natural set-only Standard games with deterministic replay, owned branches, and evidence writes",
     });
     std::fs::write(
-        evidence.join("summary.json"),
+        evidence.join(format!("summary-{batch}.json")),
         serde_json::to_vec_pretty(&summary).unwrap(),
     )
     .unwrap();
+}
+
+#[test]
+fn spm_core_matchups_cover_all_colors_and_replay() {
+    verify_pairings(
+        "core",
+        0..4,
+        31,
+        &[
+            "web-slinging",
+            "mayhem",
+            "modified creature",
+            "riot entry choice",
+            "transform",
+            "cast from exile",
+            "spell copy",
+            "crew",
+        ],
+    );
+}
+
+#[test]
+fn spm_library_and_convoke_matchups_replay() {
+    verify_pairings(
+        "library-convoke",
+        4..5,
+        0,
+        &["convoke contribution", "library life casting"],
+    );
+}
+
+#[test]
+fn spm_library_and_web_slinging_matchups_replay() {
+    verify_pairings("library-web", 5..6, 0, &[]);
+}
+
+#[test]
+fn spm_modal_back_face_cast_replays() {
+    verify_pairings("modal-back", 6..7, 0, &["back-face cast"]);
 }

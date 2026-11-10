@@ -684,6 +684,17 @@
           "starting_player": 1
         }
       ]
+    },
+    {
+      "p0": "boros_modified",
+      "p1": "dimir_illusions",
+      "runs": [
+        {
+          "seed": 7,
+          "starting_player": 1,
+          "prefer_back_face": true
+        }
+      ]
     }
   ]
 }
