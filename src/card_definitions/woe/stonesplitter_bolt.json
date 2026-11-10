@@ -3,10 +3,51 @@
   "catalogue_id": 4165,
   "oracle_id": "1322734c-3c3e-4885-a6d2-d6460a16fca2",
   "facts_sha256": "e3eb85c2c6c70fbbc313f007f15a5341904d261d3cfc7e1c6e409a1bf1bfc0a4",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e14124cb167ddb6806e8e6753b7c76161cee3091362fb9175a7330d073887290"
   },
-  "physical_metadata_sha256": "ce81c66f029bf03b5456052a93d31d797914aca5b1c10c78e9e2a7ab57dd3b14"
+  "physical_metadata_sha256": "6bd39379641f5fac70cc088feb59bc1fce6e09ae9a76ed0951f1a4491bd86721",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StonesplitterBolt.java",
+  "java_sha256": "05e772c96a65fa7349b919f21a12b416116e64ebab52fb70fc9938e1152d8637",
+  "rules_tests": "tests/woe_cards_s_z.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/BargainedCondition.java",
+      "sha256": "b6403f9b4c3929fb0d5180aa27ec0b5a4301353143fb16cbc360cfee1a026bc5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/MultipliedValue.java",
+      "sha256": "d8e70d3468d5bfaf3ab1f030aebb4a66738648af642ab39502a5cffffd38c314"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+      "sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/BargainAbility.java",
+      "sha256": "e889139d24bea8b8d7a5eff4212bb7935c8d5133b9b88e70c21386dabf09413f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreatureOrPlaneswalker.java",
+      "sha256": "74a515df49ac9de9bab546fb06aa877375286ce8bb4ea19113e77d811177d85f"
+    }
+  ]
 }

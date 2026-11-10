@@ -3,10 +3,31 @@
   "catalogue_id": 3891,
   "oracle_id": "2e8433a2-ad71-4d30-84fe-12b709197824",
   "facts_sha256": "f6a4c200c5c50fe786a29de469037536d80afbb6fe069bc2a304d289c5cc26e3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6d6a3b6f91b5253beb0a727d8ccdf73353b402ee9e967d363197e6c3da044759"
   },
-  "physical_metadata_sha256": "d2483775729065bf640f95e20c1b2f45d11f4fde25f0582b5151852843e57897"
+  "physical_metadata_sha256": "d2483775729065bf640f95e20c1b2f45d11f4fde25f0582b5151852843e57897",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SkewerSlinger.java",
+  "java_sha256": "d7fbd724efccc2e5378eb076f2ae697bd56e404ceaf1d56a982c193e63152a98",
+  "rules_tests": "tests/woe_cards_s_z.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/BlocksOrBlockedByCreatureSourceTriggeredAbility.java",
+      "sha256": "9164334a682f1c4db627c8aed8a861fbb0c5d48fdc2ef698cff3584982f78414"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    }
+  ]
 }

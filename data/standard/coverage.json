@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "893959fc8047fafacce14fa14673d1f230ca782e003ad40207d3143c733001d0",
+  "catalogue_version": "7782facfac347fcf448b7e334f2234893c25c58becc673372c6bbb91dab746ca",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4005,
-  "implemented_total": 4014,
+  "implemented_standard_cards": 4011,
+  "implemented_total": 4020,
   "token_definitions": 175,
   "emblem_definitions": 12,
   "adventure_definitions": 73,
@@ -183,8 +183,8 @@
     },
     "woe": {
       "total": 258,
-      "complete": 143,
-      "gated": 115
+      "complete": 149,
+      "gated": 109
     },
     "znr": {
       "total": 1,
@@ -31323,8 +31323,8 @@
     {
       "name": "Skewer Slinger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/skewer_slinger.rs",
       "set": "woe"
     },
@@ -33515,8 +33515,8 @@
     {
       "name": "Stonesplitter Bolt",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/stonesplitter_bolt.rs",
       "set": "woe"
     },
@@ -33635,8 +33635,8 @@
     {
       "name": "Storyteller Pixie",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/storyteller_pixie.rs",
       "set": "woe"
     },
@@ -33803,8 +33803,8 @@
     {
       "name": "Succumb to the Cold",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/succumb_to_the_cold.rs",
       "set": "woe"
     },
@@ -34947,8 +34947,8 @@
     {
       "name": "Tattered Ratter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/tattered_ratter.rs",
       "set": "woe"
     },
@@ -35363,8 +35363,8 @@
     {
       "name": "Territorial Witchstalker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/territorial_witchstalker.rs",
       "set": "woe"
     },

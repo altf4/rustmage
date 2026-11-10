@@ -3,10 +3,31 @@
   "catalogue_id": 4201,
   "oracle_id": "73992788-8084-459c-8375-9ccc8579c5d7",
   "facts_sha256": "8581cc4820eb42b051fedd815125a484662da5ab6a0d413875946d9f73b84a1b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fc4e6e907ab9557beec26948f5581838cc79adca311612ea4608566cd5f02afd"
   },
-  "physical_metadata_sha256": "025cfe446670620ed4a4406de265efd068cb211c6765b709de1ce166a4187c79"
+  "physical_metadata_sha256": "025cfe446670620ed4a4406de265efd068cb211c6765b709de1ce166a4187c79",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SuccumbToTheCold.java",
+  "java_sha256": "16e897866199e2840d0f3019f1884732eaa7cfe3b51dd832e30ba71487bdeb6c",
+  "rules_tests": "tests/woe_cards_s_z.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+      "sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+      "sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a"
+    }
+  ]
 }
