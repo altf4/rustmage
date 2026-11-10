@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "bef23888fc7a8816bafb51a0975e533c8342ab729d7826f0c9a2725dab8d94d2",
+  "catalogue_version": "b5f0dadeff2e613c5860d91c40509ec95b2d90118265d5d9d912e237df314ccd",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4075,
-  "implemented_total": 4086,
+  "implemented_standard_cards": 4077,
+  "implemented_total": 4088,
   "token_definitions": 175,
   "emblem_definitions": 12,
   "adventure_definitions": 73,
@@ -183,8 +183,8 @@
     },
     "woe": {
       "total": 258,
-      "complete": 210,
-      "gated": 48
+      "complete": 212,
+      "gated": 46
     },
     "znr": {
       "total": 1,
@@ -3323,8 +3323,8 @@
     {
       "name": "Beseech the Mirror",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/beseech_the_mirror.rs",
       "set": "woe"
     },
@@ -21355,8 +21355,8 @@
     {
       "name": "Malevolent Witchkite",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/malevolent_witchkite.rs",
       "set": "woe"
     },
