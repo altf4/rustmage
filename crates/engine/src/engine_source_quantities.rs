@@ -113,6 +113,7 @@ fn selected(program: &[Instruction]) -> SelectedQuantities {
                 ..
             }
             | Instruction::AddColorlessScaled(value)
+            | Instruction::AddColorlessScaledFor(_, value)
             | Instruction::AddManaScaled { amount: value, .. }
             | Instruction::AddManaChosenScaled { amount: value, .. }
             | Instruction::AddCombatRedScaled(value)

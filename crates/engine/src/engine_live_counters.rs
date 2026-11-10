@@ -171,10 +171,12 @@ impl Game {
         if amount == 0 {
             return;
         }
-        self.pay_counters(source.id, &Counters::of(kind, amount));
-        self.effect_counters(
-            vec![(self.object_ref(target), Counters::of(kind, amount))],
-            replacements::ResumeMode::Program,
+        self.move_permanent_counters(
+            source.object,
+            self.object_ref(target),
+            item.controller,
+            kind,
+            amount,
         );
     }
     pub(super) fn pay_counters(&mut self, id: CardId, payment: &Counters) {

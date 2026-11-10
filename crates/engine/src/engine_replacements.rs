@@ -238,7 +238,14 @@ fn current_player_counter(
 enum CounterCompletion {
     Reflexive(CounterTriggerCompletion),
     NextEndStep(CounterTriggerCompletion),
-    ColorRecipients { packet: u64 },
+    ColorRecipients {
+        packet: u64,
+    },
+    MoveFromSource {
+        source: ObjectRef,
+        kind: CounterKind,
+        amount: u64,
+    },
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -564,7 +571,8 @@ impl ReplacementState {
                             CounterCompletion::Reflexive(r) | CounterCompletion::NextEndStep(r) => {
                                 r.item.owned_bytes()
                             }
-                            CounterCompletion::ColorRecipients { .. } => 0,
+                            CounterCompletion::ColorRecipients { .. }
+                            | CounterCompletion::MoveFromSource { .. } => 0,
                         }
                 })
         };
@@ -1687,6 +1695,30 @@ impl Game {
                     && self.object_ref(p.object.card) == p.object
             })
         });
+        let move_from = if let Some(CounterCompletion::MoveFromSource {
+            source,
+            kind,
+            amount,
+        }) = completion.as_deref()
+            && let Some(placement) = placements.first_mut()
+        {
+            // CR122.5: both sides of the move must be possible. The proposed
+            // source amount is independent of how replacements alter placement.
+            if placement.amount.get(*kind) > 0
+                && self.on_battlefield(source.card)
+                && self.object_ref(source.card) == *source
+                && self.counter_count(source.card, *kind) >= *amount
+                && self.on_battlefield(placement.object.card)
+                && self.object_ref(placement.object.card) == placement.object
+            {
+                Some((source.card, *kind, *amount))
+            } else {
+                placement.amount = Counters::default();
+                None
+            }
+        } else {
+            None
+        };
         let mut lore = Vec::new();
         // As-turned-face-up counters and the status change are one event.
         // Keep the object face down throughout replacement choices, then expose
@@ -1731,6 +1763,9 @@ impl Game {
                     lore.push((p.object, before));
                 }
             }
+        }
+        if let Some((source, kind, amount)) = move_from {
+            self.pay_counters(source, &Counters::of(kind, amount));
         }
         if let Some(CounterCompletion::ColorRecipients { packet }) = completion.as_deref() {
             let recipients = placements
@@ -2171,6 +2206,45 @@ impl Game {
         if self.state.replacements.is_none() {
             self.finish_announcement();
         }
+    }
+    pub(super) fn move_permanent_counters(
+        &mut self,
+        source: ObjectRef,
+        recipient: ObjectRef,
+        player: Player,
+        kind: CounterKind,
+        amount: u64,
+    ) {
+        let placements = self
+            .create_counter_placements(vec![(recipient, Counters::of(kind, amount))], Some(player));
+        self.stage_counter_placements_inner(
+            placements,
+            [[0; 5]; 2],
+            None,
+            true,
+            None,
+            ResumeMode::Program,
+            Some(Box::new(CounterCompletion::MoveFromSource {
+                source,
+                kind,
+                amount,
+            })),
+            Vec::new(),
+        );
+    }
+    pub(super) fn pay_resolution_counter_placement(
+        &mut self,
+        object: ObjectRef,
+        player: Player,
+        kind: CounterKind,
+        amount: u64,
+    ) {
+        let mut placements = self
+            .create_counter_placements(vec![(object, Counters::of(kind, amount))], Some(player));
+        for placement in &mut placements {
+            placement.effect = false;
+        }
+        self.stage_counter_placements(placements, ResumeMode::Program);
     }
     pub(super) fn effect_counters(
         &mut self,

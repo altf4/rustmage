@@ -3436,6 +3436,7 @@ pub enum Instruction {
     },
     AddMana(ManaProduction),
     AddColorlessScaled(AmountValue),
+    AddColorlessScaledFor(PlayerSet, AmountValue),
     /// The resolving controller chooses one color; indicated recipients receive the same production.
     AddManaChosenScaled {
         players: PlayerSet,
@@ -3490,6 +3491,16 @@ pub enum Instruction {
     MoveCountersFromSource {
         kind: CounterKind,
         amount: AmountValue,
+    },
+    /// Skip the following instructions if the exact source cannot receive counters.
+    IfSourceCanReceiveCounters {
+        skip: usize,
+    },
+    /// Put counters on the exact source as a cost during resolution (CR118.12).
+    PaySourceCounterPlacement {
+        player: PlayerSet,
+        kind: CounterKind,
+        amount: u16,
     },
     AnimateSourceIfNoncreature {
         spec: AnimationSpec,

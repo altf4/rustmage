@@ -7400,15 +7400,22 @@ impl Game {
                 } => {
                     self.creature_power_damage(&item, source, recipient, false, factor);
                 }
-                Instruction::AddColorlessScaled(amount) => {
+                Instruction::AddColorlessScaled(amount)
+                | Instruction::AddColorlessScaledFor(_, amount) => {
+                    let players = match instruction {
+                        Instruction::AddColorlessScaledFor(players, _) => players,
+                        _ => PlayerSet::Controller,
+                    };
                     let amount = u32::try_from(self.item_amount(amount, &item))
                         .capacity("mana representation exhausted");
                     let mana = [0, 0, 0, 0, 0, amount];
                     let quality = self.item_mana_quality(&item, ManaProduction::Fixed(mana));
-                    if quality.is_some() {
-                        self.add_quality_mana(item.controller, mana, quality);
-                    } else {
-                        self.add_mana(item.controller, mana);
+                    for player in self.program_players(players, &item) {
+                        if quality.is_some() {
+                            self.add_quality_mana(player, mana, quality);
+                        } else {
+                            self.add_mana(player, mana);
+                        }
                     }
                 }
                 Instruction::AddManaScaled { color, amount } => {
@@ -7558,6 +7565,32 @@ impl Game {
                 } => self.set_creature_form(&item, types, colors, base),
                 Instruction::MoveCountersFromSource { kind, amount } => {
                     self.move_counters_from_source(&item, kind, amount)
+                }
+                Instruction::IfSourceCanReceiveCounters { skip } => {
+                    let payable = item.source.is_some_and(|source| {
+                        self.on_battlefield(source.id)
+                            && self.object_ref(source.id) == source.object
+                            && !replacements::counters_prohibited(self, source.object)
+                    });
+                    if !payable {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
+                Instruction::PaySourceCounterPlacement {
+                    player,
+                    kind,
+                    amount,
+                } => {
+                    if let Some(source) = item.source
+                        && let Some(payer) = self.program_players(player, &item).next()
+                    {
+                        self.pay_resolution_counter_placement(
+                            source.object,
+                            payer,
+                            kind,
+                            u64::from(amount),
+                        );
+                    }
                 }
                 Instruction::AnimateSourceIfNoncreature { spec, ability } => {
                     self.animate_source_if_noncreature(&item, spec, ability)

@@ -96,6 +96,7 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
                 ..
             }
             | Instruction::AddColorlessScaled(value)
+            | Instruction::AddColorlessScaledFor(_, value)
             | Instruction::AddManaScaled { amount: value, .. }
             | Instruction::AddManaChosenScaled { amount: value, .. }
             | Instruction::AddCombatRedScaled(value)
