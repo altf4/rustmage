@@ -114,6 +114,7 @@ fn exact_recipient_retains_the_grant_after_cleanup_and_its_controller_gets_the_p
             .contains(&Action::SelectLibrary { card: milled })
     );
     act(&mut game, Action::SelectLibrary { card: kept });
+    act(&mut game, Action::FinishLibrarySelection);
     settle(&mut game);
     assert_eq!(game.object_view(kept).zone, Zone::Hand);
     assert_eq!(game.object_view(milled).zone, Zone::Graveyard);
