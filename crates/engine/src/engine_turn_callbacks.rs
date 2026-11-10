@@ -18,6 +18,28 @@ impl Game {
             _ => false,
         }
     }
+    pub(super) fn creature_death_turn_callbacks(&mut self, events: &[ZoneChange]) {
+        let event_kind = TurnCallbackEvent::ControlledNontokenCreatureDeath;
+        if !self.state.combat_rules.as_ref().is_some_and(|rules| {
+            rules
+                .turn_callbacks
+                .iter()
+                .any(|row| row.event == event_kind)
+        }) {
+            return;
+        }
+        for event in events {
+            if event.moved
+                && event.before.zone == Zone::Battlefield
+                && event.destination == Zone::Graveyard
+                && event.before.kinds & 1 != 0
+                && !event.before.is_token()
+            {
+                self.queue_turn_callbacks(event_kind, event.before.controller, None);
+            }
+        }
+    }
+
     pub(super) fn combat_turn_callback_events(&mut self, events: &[DamageEvent]) {
         let Some(rules) = &self.state.combat_rules else {
             return;

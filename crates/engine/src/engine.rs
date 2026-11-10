@@ -415,7 +415,9 @@ pub use target_library::{TargetLibraryMovement, TargetLibraryView};
 #[doc(hidden)]
 #[path = "engine_combat_allocations.rs"]
 pub mod combat_allocations;
-pub use combat_allocations::{CombatDamagePlayerView, PlayerCombatDamageView};
+pub use combat_allocations::{
+    BlockerPowerLimitView, CombatDamagePlayerView, PlayerCombatDamageView,
+};
 #[doc(hidden)]
 #[path = "engine_combat_schedule.rs"]
 pub mod combat_schedule;
@@ -3824,6 +3826,8 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub turn_schedule: Option<TurnScheduleView>,
     pub must_be_blocked: Vec<ObjectRef>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub blocker_power_limits: Vec<BlockerPowerLimitView>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub sneak_entries: Vec<ObjectRef>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -10939,6 +10943,7 @@ impl Game {
             .collect();
         if let Some(rules) = &mut self.state.combat_rules {
             rules.must_be_blocked.clear();
+            rules.blocker_power_limits.clear();
             rules.must_attack_this_combat.clear();
             rules.additional_combats = 0;
             rules.after_main = None;
@@ -11861,6 +11866,17 @@ impl Game {
                 .combat_rules
                 .as_ref()
                 .map_or_else(Vec::new, |r| r.must_be_blocked.clone()),
+            blocker_power_limits: s.combat_rules.as_ref().map_or_else(Vec::new, |rules| {
+                rules
+                    .blocker_power_limits
+                    .iter()
+                    .copied()
+                    .filter(|limit| {
+                        self.on_battlefield(limit.attacker.card)
+                            && self.object_ref(limit.attacker.card) == limit.attacker
+                    })
+                    .collect()
+            }),
             sneak_entries: s
                 .combat_rules
                 .as_ref()

@@ -332,6 +332,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ControlledCreatureEntryCountersForLandsEntered
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat
                             | crate::cards::StaticAbilityFragment::FlyingCombatRestriction
+                            | crate::cards::StaticAbilityFragment::AuraEnchantedCantAttackController
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedBySubtype(_)
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeCannotBeBlockedByKeyword { .. }
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeIgnoresLegendRule(_)

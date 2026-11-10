@@ -558,6 +558,8 @@ pub enum StaticAbilityFragment {
     AttacksEachCombat,
     /// Flying creatures cannot attack this controller or block their creatures.
     FlyingCombatRestriction,
+    /// Creatures enchanted by an Aura you control cannot attack you or your planeswalkers.
+    AuraEnchantedCantAttackController,
     /// The source's evasion ability excludes blockers with an effective subtype.
     CannotBeBlockedBySubtype(&'static str),
     ControlledSubtypeCannotBeBlockedByKeyword {

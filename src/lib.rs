@@ -13,7 +13,9 @@ pub use catalogue::CATALOGUE_VERSION;
 use rustmage_core::cards;
 pub use rustmage_core::cards::RetainedCopyActivation;
 pub use rustmage_core::engine::ChosenCreatureLinkView;
-pub use rustmage_core::engine::combat_allocations::PlayerCombatDamageView;
+pub use rustmage_core::engine::combat_allocations::{
+    BlockerPowerLimitView, PlayerCombatDamageView,
+};
 pub use rustmage_core::engine::effect_choices::PowerDifferenceView;
 pub use rustmage_core::engine::exhaust::GrantedExhaustUseView;
 pub use rustmage_core::engine::replacements::CreatureDamageShieldView;
@@ -52,16 +54,15 @@ pub use rustmage_core::engine::{
     KeywordChoiceView, KeywordEffectOrigin, KeywordEffectView, LegalActionSpace, LegendGroupView,
     LibraryCastLookView, LibraryChoiceView, LibraryDestination, LibraryPile, LibraryPilesView,
     LibraryRevealEvent, LibrarySelectionView, LibraryTopCastPermission, LibraryTopCastUse,
-    LifeTriggerView, LinkedExileView,
-    LinkedFreeCastApprovalView, LinkedFreeCastUseView, LiveStaticSourceView, MainPhaseCombatView,
-    ManaAnnouncementView, ManaCopySource, ManaLotSpendRange, ManaLotView, ManaPaymentDomain,
-    ManaRestrictionView, ManaRollbackView, ManaSpellBonusView, ManaTapBonus, ManaValueParity,
-    ManifestChoiceView, ManifestDreadEvent, MilledSelectionView, MiracleChoiceView,
-    MobilizeChoiceView, ModalHistoryView, ModeChoiceView, NextTurnControlExpiry,
-    OBSERVATION_SCHEMA, ObjectRef, ObjectView, Observation, OptionalSearchSequence, Outcome,
-    OutsideEntryDestination, OutsideEntryProviderView, OutsideEntryReplacementView,
-    OutsideEntrySelfEffectView, OutsideGameConfig, OutsideGameMode, OwnTurnDeadline,
-    PaidAdditionalCostView, ParadigmView, PaymentRequestView, PendingPaymentView,
+    LifeTriggerView, LinkedExileView, LinkedFreeCastApprovalView, LinkedFreeCastUseView,
+    LiveStaticSourceView, MainPhaseCombatView, ManaAnnouncementView, ManaCopySource,
+    ManaLotSpendRange, ManaLotView, ManaPaymentDomain, ManaRestrictionView, ManaRollbackView,
+    ManaSpellBonusView, ManaTapBonus, ManaValueParity, ManifestChoiceView, ManifestDreadEvent,
+    MilledSelectionView, MiracleChoiceView, MobilizeChoiceView, ModalHistoryView, ModeChoiceView,
+    NextTurnControlExpiry, OBSERVATION_SCHEMA, ObjectRef, ObjectView, Observation,
+    OptionalSearchSequence, Outcome, OutsideEntryDestination, OutsideEntryProviderView,
+    OutsideEntryReplacementView, OutsideEntrySelfEffectView, OutsideGameConfig, OutsideGameMode,
+    OwnTurnDeadline, PaidAdditionalCostView, ParadigmView, PaymentRequestView, PendingPaymentView,
     PermanentDamageHistoryView, Player, PlayerCastGrantsView, PlayerControlView,
     PlayerCounterAmountView, PlayerCounterPlacementView, PlayerView, PlotPaymentView, PlottedCard,
     PowerUpUseView, PreparationView, ProliferateReplacementView, RecoveryChoiceView,

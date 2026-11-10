@@ -3962,6 +3962,7 @@ impl Game {
                     | Instruction::MayDestroyAttachedEquipment { .. }
                     | Instruction::MayAttachSource { .. }
                     | Instruction::RequireTargetsBlocked { .. }
+                    | Instruction::RestrictBlockerPower { .. }
                     | Instruction::AttachPriorSourceEquipment { .. }
                     | Instruction::AttachEquipmentByGroups { .. }
                     | Instruction::AttachEquipmentGroupsReflexive { .. }
@@ -7383,6 +7384,9 @@ impl Game {
                 Instruction::RequireBlocks(filter) => self.require_blocks(&item, filter),
                 Instruction::RequireAllAttacksUntilNextTurn => {
                     self.require_all_attacks_until_next_turn(item.controller);
+                }
+                Instruction::RestrictBlockerPower { group, minimum } => {
+                    self.restrict_blocker_power(&item, group, minimum);
                 }
                 Instruction::RequireTargetsBlocked { group } => {
                     self.require_targets_blocked(&item, group);

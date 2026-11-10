@@ -1955,6 +1955,7 @@ pub enum TurnCallbackEvent {
     Attack,
     NoncreatureCast,
     CreatureEntry,
+    ControlledNontokenCreatureDeath,
     ControlledCreatureCombatDamagePlayerOrPlaneswalker,
     NamedCreatureCombatDamagePlayer(crate::CardName),
 }
@@ -2884,6 +2885,11 @@ pub enum Instruction {
     },
     TransformSource,
     RequireBlocks(CreatureFilter),
+    /// The exact targets cannot be blocked by creatures with this power or greater this turn.
+    RestrictBlockerPower {
+        group: u16,
+        minimum: i32,
+    },
     /// Require each exact creature in the announced target group to be blocked this turn.
     RequireTargetsBlocked {
         group: u16,
