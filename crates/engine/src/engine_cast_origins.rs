@@ -33,6 +33,7 @@ impl Card {
                         | StaticAbilityFragment::FreeSpellCast(_)
                         | StaticAbilityFragment::FreeFirstSpellOnOwnTurn
                         | StaticAbilityFragment::GrantHandWarp { .. }
+                        | StaticAbilityFragment::ColoredLegendaryWebSlinging(_)
                 )
             })
         })
@@ -387,6 +388,22 @@ impl Game {
                     {
                         return true;
                     }
+                    if permanent_type != PermanentType::Land
+                        && !casting_prohibited
+                        && self.visit_web_slinging_face(
+                            actor,
+                            card,
+                            CastFace::Normal,
+                            sorcery,
+                            WebSlingingOrigin::GraveyardType {
+                                permission,
+                                permanent_type,
+                            },
+                            emit,
+                        )
+                    {
+                        return true;
+                    }
                     if available
                         && emit(Action::PlayGraveyardPermanent {
                             card,
@@ -401,11 +418,7 @@ impl Game {
                     && let Some(back) = object.card.back_face().filter(|back| !back.is_land())
                 {
                     let back_types = back.kind_mask() & !spent_types;
-                    let mut types = PermanentType::ALL
-                        .into_iter()
-                        .filter(|ty| back_types & ty.mask() != 0)
-                        .peekable();
-                    if types.peek().is_some()
+                    let normal = back_types != 0
                         && self.permitted_cast_available(
                             actor,
                             card,
@@ -413,16 +426,29 @@ impl Game {
                             CastFace::Back,
                             sorcery,
                             false,
-                        )
+                        );
+                    for permanent_type in PermanentType::ALL
+                        .into_iter()
+                        .filter(|ty| back_types & ty.mask() != 0)
                     {
-                        for permanent_type in types {
-                            if emit(Action::AnnounceGraveyardBack {
+                        if self.visit_web_slinging_face(
+                            actor,
+                            card,
+                            CastFace::Back,
+                            sorcery,
+                            WebSlingingOrigin::GraveyardType {
+                                permission,
+                                permanent_type,
+                            },
+                            emit,
+                        ) || (normal
+                            && emit(Action::AnnounceGraveyardBack {
                                 card,
                                 permission,
                                 permanent_type,
-                            }) {
-                                return true;
-                            }
+                            }))
+                        {
+                            return true;
                         }
                     }
                 }
@@ -881,6 +907,18 @@ impl Game {
                 {
                     return true;
                 }
+                if free.paid.is_some()
+                    && self.visit_web_slinging_face(
+                        player,
+                        object.card,
+                        face,
+                        true,
+                        WebSlingingOrigin::PaidResolution,
+                        emit,
+                    )
+                {
+                    return true;
+                }
                 if paid_graveyard
                     && self.visit_resolution_mayhem_face(player, object.card, face, &mut *emit)
                 {
@@ -962,6 +1000,17 @@ impl Game {
         face: CastFace,
         method_override: Option<CastMethod>,
     ) {
+        self.cast_during_resolution_configured(player, object, face, method_override, None);
+    }
+
+    pub(super) fn cast_during_resolution_configured(
+        &mut self,
+        player: Player,
+        object: ObjectRef,
+        face: CastFace,
+        method_override: Option<CastMethod>,
+        web_slinging_cost: Option<ManaCost>,
+    ) {
         let paid = self.state.resolution_free_casts.as_ref().unwrap().paid;
         let alternative_cost = self
             .state
@@ -1020,7 +1069,18 @@ impl Game {
             self.state.objects[object.card as usize].flashback = true;
         }
         self.remember_suspend_cast(object, item.id);
-        self.open_payment_announcement(item, Counters::default(), None);
+        if let Some(cost) = web_slinging_cost {
+            Self::configure_web_slinging(&mut item);
+            self.open_payment_announcement_configured(
+                item,
+                Counters::default(),
+                None,
+                None,
+                |announcement| announcement.origin_alternative_cost = Some(cost),
+            );
+        } else {
+            self.open_payment_announcement(item, Counters::default(), None);
+        }
     }
 }
 

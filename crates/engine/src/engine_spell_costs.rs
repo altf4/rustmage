@@ -166,8 +166,13 @@ impl Game {
             if a.item.cast.is_some_and(|cast| cast.method.is_mayhem()) {
                 return a.mayhem_cost_options().next().expect("Mayhem cost");
             }
-            if a.item.cast.is_some_and(|c| c.method == CastMethod::Miracle) {
-                return a.origin_alternative_cost.expect("miracle cost");
+            if a.item
+                .cast
+                .is_some_and(|c| matches!(c.method, CastMethod::Miracle | CastMethod::WebSlinging))
+            {
+                return a
+                    .origin_alternative_cost
+                    .expect("selected alternative cost");
             }
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Sneak) {
                 return a.sneak_cost_options().next().expect("Sneak cost");

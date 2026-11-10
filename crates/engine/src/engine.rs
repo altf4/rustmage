@@ -596,7 +596,10 @@ pub use return_ability_modification::ResolvedAbilityModificationView;
 #[doc(hidden)]
 #[path = "engine_sneak.rs"]
 pub mod sneak;
+#[path = "engine_web_slinging.rs"]
+pub mod web_slinging;
 pub use source_linked_effects::{SourceLinkedEffectKind, SourceLinkedEffectView};
+pub use web_slinging::WebSlingingOrigin;
 #[doc(hidden)]
 #[path = "engine_source_prevention.rs"]
 pub mod source_prevention;
@@ -883,6 +886,7 @@ define_actions! {
     PayBlight { object: ObjectRef },
     Blight { object: ObjectRef },
     PaySneakReturn { object: ObjectRef },
+    PayWebSlingingReturn { object: ObjectRef },
     ChooseTeamwork { pay: bool },
     ChooseTeammate { object: ObjectRef },
     FinishTeamwork,
@@ -1059,6 +1063,13 @@ define_actions! {
         #[serde(skip_serializing_if = "Option::is_none")]
         permission: Option<(ObjectRef, PermanentType)> },
     AnnounceAdventure { card: CardId },
+    AnnounceWebSlinging {
+        card: CardId,
+        face: CastFace,
+        cost: ManaCost,
+        flash_surcharge: bool,
+        origin: WebSlingingOrigin,
+    },
     AnnounceOmen { card: CardId },
     AnnounceBack { card: CardId },
     AnnouncePlot { card: CardId },
@@ -1487,6 +1498,7 @@ pub enum CastMethod {
     Disguise,
     Sneak,
     GrantedMayhem,
+    WebSlinging,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -1538,6 +1550,9 @@ pub struct CastInfo {
     /// Defender captured before the non-targeted Sneak return is paid.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sneak_defender: Option<CombatDefender>,
+    /// Mana value of the exact creature returned as the Web-slinging cost, including zero.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub web_slinging_return_mana_value: Option<u64>,
     /// Optional additional mana paid to obtain this spell's flash timing.
     pub flash_surcharge: bool,
     /// Explicit optional additional cost, declared before targets; None until chosen.
@@ -2678,6 +2693,9 @@ enum Pending {
         player: Player,
     },
     SneakReturnCost {
+        player: Player,
+    },
+    WebSlingingReturnCost {
         player: Player,
     },
     TeamworkIntent {
@@ -4462,6 +4480,7 @@ impl Game {
             | Pending::BlightIntent { player }
             | Pending::BlightPayment { player }
             | Pending::SneakReturnCost { player }
+            | Pending::WebSlingingReturnCost { player }
             | Pending::TeamworkIntent { player }
             | Pending::TeamworkPayment { player }
             | Pending::Saddle { player }
@@ -5077,6 +5096,9 @@ impl Game {
             }
             Pending::BlightPayment { .. } => return self.visit_blight_payments(&mut emit),
             Pending::SneakReturnCost { .. } => return self.visit_sneak_return_cost(&mut emit),
+            Pending::WebSlingingReturnCost { .. } => {
+                return self.visit_web_slinging_return_cost(&mut emit);
+            }
             Pending::TeamworkIntent { .. } => {
                 let a = s.announcing.as_ref().unwrap();
                 for pay in [false, true] {
@@ -5898,6 +5920,9 @@ impl Game {
                         && obj.zone == Zone::Graveyard
                         && self.visit_mayhem_casts(actor, card, sorcery, &mut emit)
                     {
+                        return true;
+                    }
+                    if self.visit_web_slinging(actor, card, sorcery, &mut emit) {
                         return true;
                     }
                     // This check follows face-down disguise: the face-down spell
@@ -7805,6 +7830,13 @@ impl Game {
                 );
                 self.open_payment_announcement(item, Counters::default(), None);
             }
+            Action::AnnounceWebSlinging {
+                card,
+                face,
+                cost,
+                flash_surcharge,
+                origin,
+            } => self.start_web_slinging(actor, card, face, cost, flash_surcharge, origin),
             Action::AnnounceSneak { card, permission } => {
                 if let Some((source, kind)) = permission {
                     self.consume_graveyard_type(source, kind);
@@ -8315,6 +8347,7 @@ impl Game {
             Action::PayBlight { object } => self.pay_blight(object),
             Action::Blight { object } => self.choose_effect_object(actor, object),
             Action::PaySneakReturn { object } => self.pay_sneak_return(object),
+            Action::PayWebSlingingReturn { object } => self.pay_web_slinging_return(object),
             Action::ChooseTeamwork { pay } => self.choose_teamwork(pay),
             Action::ChooseTeammate { object } => self.choose_teammate(object),
             Action::FinishTeamwork => self.finish_teamwork(),
@@ -11745,6 +11778,7 @@ impl Game {
                 Pending::BlightIntent { .. } => "blight_intent",
                 Pending::BlightPayment { .. } => "blight_payment",
                 Pending::SneakReturnCost { .. } => "sneak_return_cost",
+                Pending::WebSlingingReturnCost { .. } => "web_slinging_return_cost",
                 Pending::TeamworkIntent { .. } => "teamwork_intent",
                 Pending::TeamworkPayment { .. } => "teamwork_payment",
                 Pending::Saddle { .. } => "saddle",

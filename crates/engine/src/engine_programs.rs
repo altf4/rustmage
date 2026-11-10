@@ -973,6 +973,12 @@ impl Game {
                             && event.cast_origin == Some(Zone::Graveyard)
                             && event.before.owner == entered.controller
                     }
+                    TriggerCondition::SelfEntersWithWebSlinging => {
+                        same && event
+                            .cast_event
+                            .as_ref()
+                            .is_some_and(|cast| cast.web_slinging_return_mana_value.is_some())
+                    }
                     TriggerCondition::SelfEvokedEnters => same && event.evoked,
                     TriggerCondition::SelfEntersManaSpent { color, minimum } => {
                         same && event.cast_event.as_ref().is_some_and(|e| {
@@ -2058,6 +2064,7 @@ impl Game {
                     controller: item.controller,
                     payment: cast.payment,
                     treasure_mana_spent: cast.treasure_mana_spent,
+                    web_slinging_return_mana_value: cast.web_slinging_return_mana_value,
                 })
         });
         let sources = self.indexed_trigger_sources(&self.state.cast_sources);
@@ -3235,6 +3242,7 @@ impl Game {
                                         EntryCounterAmount::ColorsSpent
                                             | EntryCounterAmount::ManaSpent
                                             | EntryCounterAmount::IfNotCastOrZero(_)
+                                            | EntryCounterAmount::WebSlingingReturnedManaValue
                                     )
                                 })
                         }) || item.x.is_some()
@@ -5398,6 +5406,17 @@ impl Game {
                         let mut movement = self.entry_move(source.id, Zone::Battlefield, true);
                         movement.controller = item.controller;
                         movement.attacking = item.ninjutsu_defender;
+                        self.stage_entries(vec![movement], None);
+                    }
+                }
+                Instruction::PutHandSourceOntoBattlefield => {
+                    if let Some(source) = item.source
+                        && self.object_ref(source.id) == source.object
+                        && self.state.objects[source.id as usize].zone == Zone::Hand
+                        && self.state.objects[source.id as usize].owner == item.controller
+                    {
+                        let mut movement = self.entry_move(source.id, Zone::Battlefield, false);
+                        movement.controller = item.controller;
                         self.stage_entries(vec![movement], None);
                     }
                 }

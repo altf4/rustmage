@@ -797,6 +797,10 @@ impl Game {
             movement.cast_payment,
             movement.controller,
             movement.x,
+            movement
+                .cast_event
+                .as_ref()
+                .and_then(|cast| cast.web_slinging_return_mana_value),
         );
         if movement.destination == Zone::Battlefield && movement.battle_protector.is_none() {
             movement
@@ -885,7 +889,7 @@ impl Game {
                     }))
     }
     pub(super) fn pre_entry_counters(&self, before: &ObjectView, destination: Zone) -> Counters {
-        self.pre_entry_counters_with_payment(before, destination, None, before.controller, 0)
+        self.pre_entry_counters_with_payment(before, destination, None, before.controller, 0, None)
     }
     fn pre_entry_counters_with_payment(
         &self,
@@ -894,6 +898,7 @@ impl Game {
         payment: Option<Mana>,
         controller: Player,
         x: u32,
+        returned_mana_value: Option<u64>,
     ) -> Counters {
         if destination != Zone::Battlefield {
             return Counters::default();
@@ -939,6 +944,9 @@ impl Game {
                         }
                     }
                     EntryCounterAmount::Fixed(n) => u64::from(n),
+                    EntryCounterAmount::WebSlingingReturnedManaValue => {
+                        returned_mana_value.unwrap_or(0)
+                    }
                     EntryCounterAmount::Stat(value) => {
                         u64::try_from(self.stat_value(value, before.reference, controller).max(0))
                             .capacity("entry counter amount exhausted")

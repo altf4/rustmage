@@ -1429,6 +1429,8 @@ pub enum EffectChoiceKind {
     SacrificeAttachedEquipment,
     /// Non-targeted return payment for Sneak, after blockers are declared.
     ReturnUnblockedAttacker,
+    /// Return a tapped creature you control to its owner's hand.
+    ReturnTappedCreature,
     ReturnToHand,
     /// Non-targeted return of a physical card from the choosing player's graveyard.
     /// A zero kind mask allows any card.
@@ -1477,6 +1479,7 @@ impl EffectChoiceKind {
             Self::BlightXCost => Self::BlightCost(0),
             Self::ExileFromHandWithPlaySurcharge(_) => Self::ExileFromHand,
             Self::SacrificeSelection => Self::Sacrifice,
+            Self::ReturnTappedCreature => Self::ReturnToHand,
             Self::ReturnGraveyardToHandOrSubtype { kinds, .. } => {
                 Self::ReturnGraveyardToHand { kinds }
             }
@@ -3020,6 +3023,8 @@ pub enum Instruction {
     /// Resolve a hand activation by putting its exact source in tapped and
     /// attacking the defender captured when its unblocked attacker was returned.
     PutHandSourceAttacking,
+    /// Put the exact, still-in-hand source of an activation onto the battlefield.
+    PutHandSourceOntoBattlefield,
     /// Return the exact graveyard source with an entry counter.
     ReturnSourceToBattlefieldWithCounter {
         tapped: bool,
@@ -4633,6 +4638,8 @@ pub enum Subject {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum EntryCounterAmount {
+    /// Last battlefield mana value of the creature returned to Web-sling this entrant.
+    WebSlingingReturnedManaValue,
     ControlledCreatureDeaths,
     GreatestOtherCreaturePower,
     ColorsSpent,
@@ -5790,6 +5797,7 @@ pub enum TriggerCondition {
     SelfEntersFromGraveyard,
     /// The permanent spell was cast from the ability controller's graveyard.
     SelfEntersIfCastFromYourGraveyard,
+    SelfEntersWithWebSlinging,
     SelfEvokedEnters,
     SelfEntersManaSpent {
         color: u8,
@@ -6979,6 +6987,9 @@ impl Card {
                     .into_iter()
                     .flat_map(|extras| extras.sneak_costs.iter().copied()),
             )
+    }
+    pub(crate) fn web_slinging_cost(self) -> Option<ManaCost> {
+        authored::rules(self).and_then(|rules| rules.extras.web_slinging_cost)
     }
     pub(crate) fn disguise_cost(self) -> Option<ManaCost> {
         authored::rules(self).and_then(|r| r.extras.disguise_cost)

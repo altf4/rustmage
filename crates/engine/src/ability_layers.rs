@@ -307,6 +307,8 @@ pub enum StaticAbilityFragment {
     ControlledSpellsUncounterable(u16),
     /// A rule restriction on explicit counters, independent of stack target legality.
     StackItemsCannotBeCountered,
+    /// Colored legendary spells you cast have this Web-slinging alternative.
+    ColoredLegendaryWebSlinging(ManaCost),
     /// Each instance grants a distinct optional paired-tap copy cost.
     NoncreatureConspire,
     ConvokeCreatureSpells,

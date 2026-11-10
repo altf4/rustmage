@@ -157,7 +157,14 @@ impl Game {
         if stats.power > 1 && stats.toughness > 1 {
             return false;
         }
-        (self.permitted_cast_available(
+        self.visit_web_slinging_face(
+            actor,
+            card,
+            CastFace::Normal,
+            sorcery,
+            WebSlingingOrigin::GraveyardFinality,
+            emit,
+        ) || (self.permitted_cast_available(
             actor,
             card,
             CastMethod::Normal,

@@ -368,6 +368,9 @@ impl Game {
         {
             return false;
         }
+        if spec.kind == EffectChoiceKind::ReturnTappedCreature && (!o.tapped || kinds & 1 == 0) {
+            return false;
+        }
         if matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_)) && o.tapped {
             return false;
         }
@@ -641,6 +644,9 @@ impl Game {
         if matches!(spec.kind.payment_kind(), EffectChoiceKind::BlightCost(_)) {
             return self.preview_blight_activation(goal, spec);
         }
+        if spec.kind == EffectChoiceKind::ReturnTappedCreature {
+            return self.preview_ordered_activation_cost(goal, spec, false);
+        }
         if spec.kind == EffectChoiceKind::DiscardHand {
             // Mana abilities run before the whole-hand payment, so no current
             // card is reserved: even an empty resulting hand is payable.
@@ -676,7 +682,7 @@ impl Game {
             spec.kind.payment_kind(),
             EffectChoiceKind::ExileControlledOrGraveyard | EffectChoiceKind::ExileCraftNonlands(_)
         ) {
-            return self.preview_ordered_craft(goal, spec);
+            return self.preview_ordered_activation_cost(goal, spec, true);
         }
         let source = goal.source.as_ref().expect("activation source").0;
         if let Some(requirement) = spec.kind.creature_counter_requirement() {
@@ -1349,7 +1355,8 @@ impl Game {
             | EffectChoiceKind::ExileControlledOrGraveyard
             | EffectChoiceKind::ExileCraftNonlands(_)
             | EffectChoiceKind::DiscardOrLife(_)
-            | EffectChoiceKind::SacrificeAttachedEquipment => unreachable!(),
+            | EffectChoiceKind::SacrificeAttachedEquipment
+            | EffectChoiceKind::ReturnTappedCreature => unreachable!(),
             EffectChoiceKind::ExileGraveyard | EffectChoiceKind::ExileControlled => {
                 let event = self.move_object(object.card, Zone::Exile);
                 if a.ordered_craft() {

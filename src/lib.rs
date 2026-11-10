@@ -77,7 +77,7 @@ pub use rustmage_core::engine::{
     TriggerSourceMoveView, TriggerUse, TurnCallbackView, TurnFactsView, TurnScheduleView,
     UntilNextTurnStatsView, WarpedCard, WaterbendChoiceView, XChoiceView, XInterval, Zone,
     ZoneChange, ZoneReplacementChoiceView, ZoneReplacementKind, ZoneReplacementPickView,
-    ZoneRevealView, ZoneSearchView,
+    WebSlingingOrigin, ZoneRevealView, ZoneSearchView,
 };
 pub use rustmage_core::engine::{
     CopiedSagaLoreView, DamageDoublerView, LifeGainReplacement, LifeGainReplacementChoice,

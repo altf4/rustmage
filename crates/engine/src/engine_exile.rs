@@ -627,6 +627,16 @@ impl Game {
                 && self.state.active == actor
                 && self.state.step == Step::Blockers
                 && self.has_sneak_cost(actor, object.card);
+            if self.visit_web_slinging_face(
+                actor,
+                object.card,
+                face,
+                sorcery,
+                WebSlingingOrigin::TaxedExile { surcharge },
+                emit,
+            ) {
+                return true;
+            }
             let methods = [
                 Some(CastMethod::Normal),
                 free.then_some(CastMethod::Free),

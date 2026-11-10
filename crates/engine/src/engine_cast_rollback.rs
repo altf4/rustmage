@@ -263,6 +263,7 @@ impl Game {
             | Action::AnnounceDisguise { card }
             | Action::AnnounceDisguiseGraveyard { card, .. }
             | Action::AnnounceSneak { card, .. }
+            | Action::AnnounceWebSlinging { card, .. }
             | Action::AnnounceAdventure { card }
             | Action::AnnounceOmen { card }
             | Action::AnnounceBack { card }

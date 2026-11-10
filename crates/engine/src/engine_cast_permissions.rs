@@ -7,6 +7,7 @@ use crate::cards::StaticAbilityFragment;
 pub(super) struct OriginAlternative {
     pub granted_warp: Option<ManaCost>,
     pub exile_play_surcharge: u32,
+    pub web_slinging: Option<ManaCost>,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -461,6 +462,7 @@ impl Game {
         let OriginAlternative {
             granted_warp,
             exile_play_surcharge,
+            web_slinging,
         } = alternative;
         let object = &self.state.objects[card as usize];
         if method == CastMethod::GraveyardAdditionalCosts
@@ -570,6 +572,7 @@ impl Game {
                 | CastMethod::Flashback
                 | CastMethod::Harmonize
                 | CastMethod::Mayhem
+                | CastMethod::WebSlinging
                 | CastMethod::Miracle
         ) && definition.x_symbols() > 0
             && (method != CastMethod::Harmonize || definition.harmonize_x_symbols() == 0)
@@ -611,6 +614,7 @@ impl Game {
                             | CastMethod::Mayhem
                             | CastMethod::Miracle
                             | CastMethod::Sneak
+                            | CastMethod::WebSlinging
                     )
             },
             |spec| spec.x_symbols > 0,
@@ -639,6 +643,7 @@ impl Game {
             origin_counter_cost,
             origin_additional_cost,
             origin_alternative_cost: granted_warp
+                .or(web_slinging)
                 .or_else(|| self.origin_alternative_cost_for(&item)),
             item,
             spec: TargetSpec::NONE,
@@ -675,7 +680,9 @@ impl Game {
         }
         if matches!(
             method,
-            CastMethod::GraveyardAdditionalCosts | CastMethod::LinkedExileCounterCost
+            CastMethod::GraveyardAdditionalCosts
+                | CastMethod::LinkedExileCounterCost
+                | CastMethod::WebSlinging
         ) || origin_additional_cost.is_some()
             || life.is_some() && warp.is_none()
         {

@@ -79,7 +79,12 @@ impl Announcement {
     pub(super) fn linked_origin_counter_cost(&self) -> Option<u16> {
         self.item
             .cast
-            .filter(|c| c.method == CastMethod::LinkedExileCounterCost)
+            .filter(|c| {
+                matches!(
+                    c.method,
+                    CastMethod::LinkedExileCounterCost | CastMethod::WebSlinging
+                )
+            })
             .and(self.origin_counter_cost)
     }
     pub(super) fn graveyard_origin_counter_cost(&self) -> Option<u16> {
@@ -116,6 +121,7 @@ impl Announcement {
                     .copied()
             }
             CastMethod::Miracle => self.origin_alternative_cost,
+            CastMethod::WebSlinging => self.origin_alternative_cost,
             CastMethod::Warp => Some(self.warp_spec().mana),
             CastMethod::Airbend => Some(ManaCost {
                 colored: [0; 6],
@@ -217,7 +223,8 @@ impl Announcement {
                     | CastMethod::Airbend
                     | CastMethod::Free
                     | CastMethod::Plot
-                    | CastMethod::Miracle => {
+                    | CastMethod::Miracle
+                    | CastMethod::WebSlinging => {
                         self.fixed_alternative_cost().is_some_and(|base| {
                             self.cost.is_some_and(|cost| {
                                 self.cost_before_exile_play_surcharge(cost) != base
@@ -416,6 +423,15 @@ impl Announcement {
             }
             StackKind::Spell if self.item.cast.is_some_and(|c| c.method == CastMethod::Warp) => {
                 self.warp_cost_options()
+            }
+            StackKind::Spell
+                if self
+                    .item
+                    .cast
+                    .is_some_and(|cast| cast.method == CastMethod::WebSlinging) =>
+            {
+                std::iter::once(self.fixed_alternative_cost().expect("Web-slinging cost"))
+                    .chain([].iter().copied())
             }
             StackKind::Spell
                 if self
@@ -2530,6 +2546,7 @@ impl Game {
                 behold_type_declared: false,
                 behold_exiled: None,
                 sneak_defender: None,
+                web_slinging_return_mana_value: None,
                 flash_surcharge: false,
                 offspring: None,
                 kicker: None,

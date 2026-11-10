@@ -102,6 +102,7 @@ impl Game {
                     controller: item.controller,
                     payment: cast.payment,
                     treasure_mana_spent: cast.treasure_mana_spent,
+                    web_slinging_return_mana_value: cast.web_slinging_return_mana_value,
                 })
         });
         let owner = event

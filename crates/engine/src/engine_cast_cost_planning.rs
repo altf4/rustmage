@@ -240,8 +240,14 @@ impl FundingState<'_> {
                 | CastCostClause::Casualty(_)
                 | CastCostClause::Conspire(_)
                 | CastCostClause::Harmonize(_) => {}
-                CastCostClause::SneakReturn(_) if !row.paid => return false,
-                CastCostClause::Behold(_) | CastCostClause::SneakReturn(_) => {}
+                CastCostClause::SneakReturn(_) | CastCostClause::WebSlingingReturn(_)
+                    if !row.paid =>
+                {
+                    return false;
+                }
+                CastCostClause::Behold(_)
+                | CastCostClause::SneakReturn(_)
+                | CastCostClause::WebSlingingReturn(_) => {}
             }
         }
         let mut hand = 0usize;
@@ -1191,6 +1197,20 @@ impl FundingState<'_> {
                         }
                     }
                 }
+                CastCostClause::WebSlingingReturn(selected) => {
+                    for resource in &self.resources {
+                        let object = self.reference(resource.id);
+                        if selected.is_none_or(|wanted| wanted == object)
+                            && self.cost_object(web_slinging::RETURN_COST, object, c.source)
+                            && (rest.is_empty()
+                                || self.cost_departures(&[object], Zone::Hand, &mut |world| {
+                                    world.complete_cost_rows(&later, &rest)
+                                }))
+                        {
+                            return true;
+                        }
+                    }
+                }
                 CastCostClause::Additional => {
                     if self.complete_additional(c, &later, &rest) {
                         return true;
@@ -1988,12 +2008,12 @@ impl FundingState<'_> {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    /// Before an announcement exists, explore every legal order of the craft
-    /// source, material and mana costs after completing mana abilities.
-    pub(in crate::engine) fn preview_ordered_craft(
+    /// Complete mana abilities before testing the orders of the remaining costs.
+    pub(in crate::engine) fn preview_ordered_activation_cost(
         &self,
         goal: FundingGoal,
         spec: AdditionalCost,
+        craft: bool,
     ) -> bool {
         let Some((source, _, _, _, _)) = goal.source.as_ref() else {
             return false;
@@ -2009,17 +2029,14 @@ impl Game {
             source: *source,
             source_tap_reserved: goal.reserves_source_tap(*source),
             source_counter_reservation: Counters::default(),
-            clauses: [
-                CastCostClause::Mana,
-                CastCostClause::CraftSource,
-                CastCostClause::Additional,
-            ]
-            .into_iter()
-            .map(|clause| CastCostRow {
-                clause,
-                paid: false,
-            })
-            .collect(),
+            clauses: std::iter::once(CastCostClause::Mana)
+                .chain(craft.then_some(CastCostClause::CraftSource))
+                .chain(std::iter::once(CastCostClause::Additional))
+                .map(|clause| CastCostRow {
+                    clause,
+                    paid: false,
+                })
+                .collect(),
             active: None,
             casualty: Vec::new(),
             conspire: Vec::new(),
@@ -2143,6 +2160,27 @@ impl Game {
             let active = usize::from(costs.active.unwrap());
             costs.clauses[active].clause = CastCostClause::SneakReturn(Some(object));
             if choice.cost_completion() && emit(Action::PaySneakReturn { object }) {
+                return true;
+            }
+        }
+        false
+    }
+    pub(in crate::engine) fn visit_web_slinging_return_cost(
+        &self,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        let announcement = self.state.announcing.as_ref().unwrap();
+        let world = self.cast_cost_world(announcement);
+        for (id, permanent) in self.state.objects.iter().enumerate() {
+            if permanent.zone != Zone::Battlefield || !permanent.tapped {
+                continue;
+            }
+            let object = self.object_ref(id as CardId);
+            let mut choice = world.clone();
+            let costs = choice.cast_costs.as_mut().unwrap();
+            let active = usize::from(costs.active.unwrap());
+            costs.clauses[active].clause = CastCostClause::WebSlingingReturn(Some(object));
+            if choice.cost_completion() && emit(Action::PayWebSlingingReturn { object }) {
                 return true;
             }
         }

@@ -109,7 +109,8 @@ impl Announcement {
                         ..
                     }
                     | CastCostClause::Harmonize(object) => add(object),
-                    CastCostClause::SneakReturn(Some(object)) => add(object),
+                    CastCostClause::SneakReturn(Some(object))
+                    | CastCostClause::WebSlingingReturn(Some(object)) => add(object),
                     _ => (),
                 }
             }
@@ -732,6 +733,11 @@ impl FundingState<'_> {
                     }
                 }
                 EntryCounterAmount::Fixed(n) => u64::from(n),
+                EntryCounterAmount::WebSlingingReturnedManaValue => m
+                    .cast_event
+                    .as_ref()
+                    .and_then(|cast| cast.web_slinging_return_mana_value)
+                    .unwrap_or(0),
                 EntryCounterAmount::Stat(v) => u64::try_from(self.value(v, m.before.id).max(0))
                     .capacity("entry counter amount exhausted"),
             };

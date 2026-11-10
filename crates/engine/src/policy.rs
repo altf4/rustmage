@@ -302,6 +302,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::PayCasualty { .. }
             | Action::PayConspire { .. }
             | Action::PaySneakReturn { .. }
+            | Action::PayWebSlingingReturn { .. }
             | Action::ChooseAdditionalCost { .. }
             | Action::ChooseAdditionalLife
             | Action::ChooseCreatureCounterCost { .. } => 60,
@@ -374,6 +375,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceDisguise { .. }
             | Action::AnnounceDisguiseGraveyard { .. }
             | Action::AnnounceSneak { .. }
+            | Action::AnnounceWebSlinging { .. }
             | Action::AnnouncePlotted { .. }
             | Action::AnnouncePlottedFace { .. }
             | Action::AnnounceExile { .. }

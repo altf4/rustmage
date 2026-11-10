@@ -5422,10 +5422,12 @@ impl Game {
                 definition,
             );
         }
-        if a.item
-            .cast
-            .is_some_and(|c| matches!(c.method, CastMethod::Sneak | CastMethod::ExileLife))
-        {
+        if a.item.cast.is_some_and(|c| {
+            matches!(
+                c.method,
+                CastMethod::Sneak | CastMethod::ExileLife | CastMethod::WebSlinging
+            )
+        }) {
             let mut proposal = a.clone();
             proposal.cost = Some(cost);
             proposal.cast_costs = Some(Box::default());
@@ -6124,6 +6126,13 @@ impl Game {
                 .additional_cost()
                 .is_some_and(|s| matches!(s.kind.payment_kind(), EffectChoiceKind::BlightCost(_)))
             || announcement.has_compound_sneak_cost()
+            || announcement
+                .item
+                .cast
+                .is_some_and(|cast| cast.method == CastMethod::WebSlinging)
+            || announcement
+                .additional_cost()
+                .is_some_and(|cost| cost.kind == EffectChoiceKind::ReturnTappedCreature)
             || announcement.self_graveyard_cast_cost().is_some()
             || announcement.has_ordered_life_cost()
             || announcement.linked_origin_counter_cost().is_some()

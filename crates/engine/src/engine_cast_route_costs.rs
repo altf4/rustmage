@@ -124,6 +124,19 @@ impl Game {
                     continue;
                 }
                 offered.push((life, entry_counter));
+                if self.visit_web_slinging_face(
+                    actor,
+                    card,
+                    face,
+                    sorcery,
+                    WebSlingingOrigin::GraveyardLife {
+                        life,
+                        entry_counter,
+                    },
+                    emit,
+                ) {
+                    return true;
+                }
                 let free = self.filtered_free_cast_available(actor, definition)
                     || self.turn_free_creature_available(actor, definition);
                 let sneak = face == CastFace::Normal
