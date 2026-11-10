@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "e23f92d567c85c37aaa64ebdca5d4dfd2a2e25fc07bfb390fc05e8cdd43db543",
+  "catalogue_version": "64cf676914b644f954ddba8acee70f4427504c6f757aef4e584045374d2f2c64",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4028,
-  "implemented_total": 4038,
+  "implemented_standard_cards": 4031,
+  "implemented_total": 4041,
   "token_definitions": 175,
   "emblem_definitions": 12,
   "adventure_definitions": 73,
@@ -183,8 +183,8 @@
     },
     "woe": {
       "total": 258,
-      "complete": 165,
-      "gated": 93
+      "complete": 168,
+      "gated": 90
     },
     "znr": {
       "total": 1,
@@ -859,8 +859,8 @@
     {
       "name": "Agatha's Champion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/agatha_s_champion.rs",
       "set": "woe"
     },
@@ -2603,8 +2603,8 @@
     {
       "name": "Back for Seconds",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/back_for_seconds.rs",
       "set": "woe"
     },
@@ -4435,8 +4435,8 @@
     {
       "name": "Brave the Wilds",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/brave_the_wilds.rs",
       "set": "woe"
     },
