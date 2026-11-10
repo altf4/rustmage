@@ -22,9 +22,13 @@ fn target(game: &mut Game, card: CardId) {
 }
 
 fn activate(card: CardId) -> Action {
+    activate_slot(card, 0)
+}
+
+fn activate_slot(card: CardId, ability: u16) -> Action {
     Action::AnnounceActivate {
         card,
-        ability: 0,
+        ability,
         counter_payment: Counters::default(),
     }
 }
@@ -629,4 +633,314 @@ fn brave_the_wilds_searches_on_either_route_and_animates_its_paid_target() {
     finish_turn(&mut game);
     assert_eq!(stats(&game, forest), (3, 3));
     assert!(game.object_view(forest).keywords.contains(Keywords::HASTE));
+}
+
+#[test]
+fn agatha_uses_live_power_and_boosts_only_other_creatures() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let agatha = candidate(&mut game, player, "Agatha of the Vile Cauldron");
+    let keykeeper = put(&mut game, player, "Sterling Keykeeper", Zone::Battlefield);
+    let giant = put(&mut game, opponent, "Hill Giant", Zone::Battlefield);
+    let growth = put(&mut game, player, "Giant Growth", Zone::Hand);
+    let late = put(&mut game, player, "Bear Cub", Zone::Hand);
+    cast(&mut game, agatha, None);
+    settle(&mut game);
+    assert_eq!(stats(&game, agatha), (1, 1));
+
+    let mut original_power = game.clone();
+    act(&mut original_power, activate(agatha));
+    assert_eq!(original_power.mana_payment_domain().unwrap().generic, 3);
+
+    cast(&mut game, growth, Some(Target::Card(agatha)));
+    settle(&mut game);
+    assert_eq!(stats(&game, agatha), (4, 4));
+    let mut without_mana = game.clone();
+    without_mana.state.players[player.index()].mana = [0; 6];
+    reject(&mut without_mana, activate(keykeeper));
+    act(&mut game, activate(keykeeper));
+    target(&mut game, giant);
+    let cost = game.mana_payment_domain().unwrap();
+    assert_eq!(cost.generic, 1);
+    assert_eq!(cost.required, [0; 6]);
+    pay(&mut game);
+    settle(&mut game);
+    assert!(game.object_view(giant).tapped);
+
+    act(&mut game, activate(agatha));
+    let cost = game.mana_payment_domain().unwrap();
+    assert_eq!(cost.generic, 0);
+    assert_eq!(cost.required, [0, 0, 0, 1, 1, 0]);
+    pay(&mut game);
+    settle(&mut game);
+    let granted = Keywords::TRAMPLE.union(Keywords::HASTE);
+    assert_eq!(stats(&game, agatha), (4, 4));
+    assert_eq!(game.object_view(agatha).keywords, Keywords::NONE);
+    assert_eq!(stats(&game, giant), (3, 3));
+    assert_eq!(game.object_view(giant).keywords, Keywords::NONE);
+    assert_eq!(stats(&game, keykeeper), (3, 3));
+    assert!(game.object_view(keykeeper).keywords.contains(granted));
+
+    cast(&mut game, late, None);
+    settle(&mut game);
+    assert_eq!(stats(&game, late), (2, 2));
+    assert_eq!(game.object_view(late).keywords, Keywords::NONE);
+    finish_turn(&mut game);
+    assert_eq!(stats(&game, agatha), (1, 1));
+    assert_eq!(stats(&game, keykeeper), (2, 2));
+    assert_eq!(game.object_view(keykeeper).keywords, Keywords::NONE);
+}
+
+fn select_land(game: &Game, card: CardId) -> Action {
+    Action::SelectLand {
+        object: game.object_ref(card),
+    }
+}
+
+#[test]
+fn blossoming_tortoise_recovers_lands_and_modifies_live_land_activations_and_stats() {
+    let player = Player::P1;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let tortoise = candidate(&mut game, player, "Blossoming Tortoise");
+    let agatha = candidate(&mut game, player, "Agatha of the Vile Cauldron");
+    let boots = put(&mut game, player, "Swiftfoot Boots", Zone::Battlefield);
+    let land = put(&mut game, player, "Soulstone Sanctuary", Zone::Battlefield);
+    let opposing_land = put(
+        &mut game,
+        opponent,
+        "Soulstone Sanctuary",
+        Zone::Battlefield,
+    );
+    let old = put(&mut game, player, "Plains", Zone::Graveyard);
+    let foreign = put(&mut game, opponent, "Island", Zone::Graveyard);
+    let attack_land = put(&mut game, player, "Mountain", Zone::Library);
+    let attack_spells = ["Shock", "Opt"].map(|name| put(&mut game, player, name, Zone::Library));
+    let entry_land = put(&mut game, player, "Island", Zone::Library);
+    let entry_spells = ["Opt", "Shock"].map(|name| put(&mut game, player, name, Zone::Library));
+    let growth = put(&mut game, player, "Giant Growth", Zone::Hand);
+    let bounce = put(&mut game, opponent, "Unsummon", Zone::Hand);
+
+    cast(&mut game, tortoise, None);
+    pass_twice(&mut game);
+    assert_eq!(stats(&game, tortoise), (3, 3));
+    pass_twice(&mut game);
+    let choice = game.observe(player).effect_choice.unwrap();
+    assert!(!choice.optional);
+    assert_eq!(
+        choice.candidates,
+        [game.object_ref(old), game.object_ref(entry_land)]
+    );
+    for card in entry_spells {
+        assert_eq!(game.object_view(card).zone, Zone::Graveyard);
+    }
+    assert_eq!(game.object_view(attack_land).zone, Zone::Library);
+    reject(&mut game, Action::FinishLandSelection);
+    let foreign = select_land(&game, foreign);
+    reject(&mut game, foreign);
+    let choose = select_land(&game, entry_land);
+    act(&mut game, choose);
+    assert_eq!(game.object_view(entry_land).zone, Zone::Battlefield);
+    assert!(game.object_view(entry_land).tapped);
+    assert_eq!(game.object_view(old).zone, Zone::Graveyard);
+
+    act(&mut game, activate_slot(land, 1));
+    assert_eq!(game.mana_payment_domain().unwrap().generic, 3);
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(stats(&game, land), (4, 4));
+    assert_eq!(game.object_view(land).kinds & 3, 3);
+    assert!(
+        game.object_view(land)
+            .keywords
+            .contains(Keywords::VIGILANCE)
+    );
+
+    let mut removed = game.clone();
+    act(&mut removed, Action::Pass);
+    cast(&mut removed, bounce, Some(Target::Card(tortoise)));
+    settle(&mut removed);
+    assert_eq!(stats(&removed, land), (3, 3));
+    act(&mut removed, activate_slot(land, 1));
+    assert_eq!(removed.mana_payment_domain().unwrap().generic, 4);
+
+    let mut opposing = game.clone();
+    act(&mut opposing, Action::Pass);
+    act(&mut opposing, activate_slot(opposing_land, 1));
+    assert_eq!(opposing.mana_payment_domain().unwrap().generic, 4);
+    pay(&mut opposing);
+    settle(&mut opposing);
+    assert_eq!(stats(&opposing, opposing_land), (3, 3));
+
+    let mut combined = game.clone();
+    cast(&mut combined, agatha, None);
+    settle(&mut combined);
+    cast(&mut combined, growth, Some(Target::Card(agatha)));
+    settle(&mut combined);
+    let one = [0, 0, 0, 0, 0, 1];
+    combined.state.players[player.index()].mana = one;
+    act(&mut combined, activate_slot(land, 1));
+    assert_eq!(
+        combined
+            .observe(player)
+            .cost_choices
+            .iter()
+            .map(|row| row.cost.generic)
+            .collect::<Vec<_>>(),
+        [0, 1],
+    );
+    for (cost, payment) in [(0, [0; 6]), (1, one)] {
+        let mut route = combined.clone();
+        act(&mut route, Action::ChooseActivationCost { cost });
+        assert_eq!(
+            route.mana_payment_domain().unwrap().generic,
+            u32::from(cost)
+        );
+        act(&mut route, Action::PayCosts { payment });
+        settle(&mut route);
+        assert_eq!(stats(&route, land), (4, 4));
+        assert_eq!(
+            route.state.players[player.index()].mana,
+            if cost == 0 { one } else { [0; 6] }
+        );
+    }
+
+    act(&mut game, activate(boots));
+    target(&mut game, tortoise);
+    pay(&mut game);
+    settle(&mut game);
+    reach_attackers(&mut game);
+    act(&mut game, Action::Attack { card: tortoise });
+    act(&mut game, Action::FinishAttackers);
+    pass_twice(&mut game);
+    assert_eq!(game.object_view(attack_land).zone, Zone::Graveyard);
+    for card in attack_spells {
+        assert_eq!(game.object_view(card).zone, Zone::Graveyard);
+    }
+    let choose = select_land(&game, old);
+    act(&mut game, choose);
+    assert_eq!(game.object_view(old).zone, Zone::Battlefield);
+    assert!(game.object_view(old).tapped);
+    assert_eq!(game.object_view(attack_land).zone, Zone::Graveyard);
+}
+
+fn pay_cauldron_exile(game: &mut Game, cauldron: CardId, donor: CardId) {
+    act(game, activate(cauldron));
+    target(game, donor);
+    pay(game);
+    assert!(game.object_view(cauldron).tapped);
+}
+
+#[test]
+fn agathas_soul_cauldron_grants_linked_abilities_and_funds_the_exact_recipient() {
+    let player = Player::P1;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let cauldron = candidate(&mut game, player, "Agatha's Soul Cauldron");
+    let recipient = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let ineligible = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let foreign = put(&mut game, opponent, "Hill Giant", Zone::Battlefield);
+    let ooze = put(&mut game, opponent, "Scavenging Ooze", Zone::Graveyard);
+    let elf = put(&mut game, player, "Llanowar Elves", Zone::Graveyard);
+    let noncreature = put(&mut game, player, "Opt", Zone::Graveyard);
+    let exile_target = put(&mut game, player, "Hill Giant", Zone::Graveyard);
+    let mountain = put(&mut game, player, "Mountain", Zone::Battlefield);
+    let removal = put(&mut game, opponent, "Disenchant", Zone::Hand);
+    game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 2];
+    cast(&mut game, cauldron, None);
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+
+    let mut no_reflexive = game.clone();
+    pay_cauldron_exile(&mut no_reflexive, cauldron, noncreature);
+    settle(&mut no_reflexive);
+    assert_eq!(no_reflexive.object_view(noncreature).zone, Zone::Exile);
+    assert_eq!(
+        no_reflexive.counter_count(recipient, CounterKind::PlusOne),
+        0
+    );
+    assert!(no_reflexive.observe(player).borrowed_abilities.is_empty());
+
+    let mut mana_ability = game.clone();
+    pay_cauldron_exile(&mut mana_ability, cauldron, elf);
+    pass_twice(&mut mana_ability);
+    assert_eq!(mana_ability.object_view(elf).zone, Zone::Exile);
+    target(&mut mana_ability, recipient);
+    settle(&mut mana_ability);
+    let exact_elf = mana_ability.object_ref(elf);
+    let rows = mana_ability.observe(player).borrowed_abilities;
+    assert_eq!(rows.len(), 1);
+    let row = rows[0];
+    assert_eq!(row.source, mana_ability.object_ref(recipient));
+    assert_eq!(row.grantor, Some(mana_ability.object_ref(cauldron)));
+    assert_eq!(row.exiled, exact_elf);
+    let green = [0, 0, 0, 0, 1, 0];
+    act(
+        &mut mana_ability,
+        Action::AnnounceBorrowedMana {
+            card: recipient,
+            exiled: exact_elf,
+            ability: row.ability,
+            counter_payment: Counters::default(),
+            production: green,
+        },
+    );
+    pay(&mut mana_ability);
+    assert!(mana_ability.object_view(recipient).tapped);
+    assert_eq!(mana_ability.state.players[player.index()].mana, green);
+    assert!(mana_ability.state.stack.is_empty());
+
+    pay_cauldron_exile(&mut game, cauldron, ooze);
+    pass_twice(&mut game);
+    assert_eq!(game.object_view(ooze).zone, Zone::Exile);
+    assert_eq!(game.counter_count(recipient, CounterKind::PlusOne), 0);
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(foreign),
+        },
+    );
+    target(&mut game, recipient);
+    settle(&mut game);
+    assert_eq!(game.counter_count(recipient, CounterKind::PlusOne), 1);
+    let exact_ooze = game.object_ref(ooze);
+    let borrow = |card| Action::AnnounceBorrowedAbility {
+        card,
+        exiled: exact_ooze,
+        ability: 0,
+        counter_payment: Counters::default(),
+    };
+    reject(&mut game, borrow(ineligible));
+    act(&mut game, borrow(recipient));
+    target(&mut game, exile_target);
+    let cost = game.mana_payment_domain().unwrap();
+    assert_eq!(cost.generic, 1);
+    assert_eq!(cost.required, [0; 6]);
+    act(&mut game, Action::TapMana { card: mountain });
+    act(
+        &mut game,
+        Action::PayCosts {
+            payment: [0, 0, 0, 1, 0, 0],
+        },
+    );
+    let packet = game.state.stack.last().unwrap();
+    assert_eq!(
+        packet.source_identity(),
+        Some((
+            game.object_ref(recipient),
+            Card::from_name("Scavenging Ooze").unwrap()
+        ))
+    );
+
+    act(&mut game, Action::Pass);
+    cast(&mut game, removal, Some(Target::Card(cauldron)));
+    settle(&mut game);
+    assert_eq!(game.object_view(cauldron).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(exile_target).zone, Zone::Exile);
+    assert_eq!(game.counter_count(recipient, CounterKind::PlusOne), 2);
+    assert_eq!(game.counter_count(ooze, CounterKind::PlusOne), 0);
+    assert_eq!(game.state.players[player.index()].life, 21);
+    assert!(game.observe(player).borrowed_abilities.is_empty());
+    reject(&mut game, borrow(recipient));
 }

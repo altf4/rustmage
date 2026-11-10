@@ -8,5 +8,46 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4c0d1c9ab0c32afd505f4691806cc7400c13fe98570abb2ec41ddac6ee0dc189"
   },
-  "physical_metadata_sha256": "fb3a122af2085c6bd9e58445042d0a04614ce4726b02db919bbcc5258909ee55"
+  "physical_metadata_sha256": "fb3a122af2085c6bd9e58445042d0a04614ce4726b02db919bbcc5258909ee55",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BlossomingTortoise.java",
+  "java_sha256": "8551716d6e19ae2f14ecf37908f2d2f05a558f0b50b419e1e85c173742a2d9b6",
+  "rules_tests": "tests/woe_cards_a_d.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldOrAttacksSourceTriggeredAbility.java",
+      "sha256": "b5c87d096aa0a689c9915ee2c8c8f8b6eb0fcd2acd4ad8c0c8696c6204f27224"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsControllerEffect.java",
+      "sha256": "bdd3021a353e7fd6e0f5c2b829c2d9483ee6b2fa684d7e74f5b18d457c9abc9c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnCardChosenFromGraveyardEffect.java",
+      "sha256": "122060d69e08d3e4d36b3e78ed00c765eb1cc2d42ad202b21da7f99a76e5a015"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/CostModificationEffectImpl.java",
+      "sha256": "3f852024b0b2dc3df8a95e8b8ff78dbe5a84efa4b3349b4b2609f9e6c7eae6a4"
+    }
+  ]
 }
