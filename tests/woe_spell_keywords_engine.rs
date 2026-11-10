@@ -41,7 +41,6 @@ fn a_live_provider_grants_actual_spell_and_copy_damage_lifelink() {
         let copy = put(&mut g, player, "Quick Study", Zone::Hand);
         cast(&mut g, shock, Some(Target::Player(other)));
         assert!(g.object_view(shock).keywords.contains(Keywords::LIFELINK));
-        let spell = g.state.stack.last().unwrap().id;
 
         let mut removed = g.clone();
         act(&mut removed, Action::Pass);
@@ -51,7 +50,7 @@ fn a_live_provider_grants_actual_spell_and_copy_damage_lifelink() {
         assert_eq!(removed.state.players[player.index()].life, 20);
         assert_eq!(removed.state.players[other.index()].life, 18);
 
-        cast(&mut g, copy, Some(Target::Stack(spell)));
+        cast(&mut g, copy, Some(Target::Card(shock)));
         settle(&mut g);
         assert_eq!(g.state.players[player.index()].life, 24);
         assert_eq!(g.state.players[other.index()].life, 16);
