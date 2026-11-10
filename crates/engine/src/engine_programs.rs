@@ -959,7 +959,9 @@ impl Game {
                     | TriggerCondition::InterveningIf { .. } => {
                         unreachable!("unwrapped event")
                     }
-                    TriggerCondition::CastFromHand(_) | TriggerCondition::CastFromExile(_) => {
+                    TriggerCondition::CastFromHand(_)
+                    | TriggerCondition::CastFromExile(_)
+                    | TriggerCondition::PlayFromOutsideOwnHand(_) => {
                         unreachable!("unwrapped event")
                     }
                     TriggerCondition::SelfEntersIfCast => same && event.was_cast,
@@ -1040,6 +1042,7 @@ impl Game {
                     | TriggerCondition::Discarded { .. }
                     | TriggerCondition::ControlledCreatureCombatDamageOwnTurn
                     | TriggerCondition::SourceDealtDamage
+                    | TriggerCondition::SourceDealtDamageAtLeast(_)
                     | TriggerCondition::SourceDealtCombatDamage
                     | TriggerCondition::SourceCombatDamagePlayerOrPlaneswalker
                     | TriggerCondition::AttachedDealtCombatDamage
@@ -1105,6 +1108,8 @@ impl Game {
                     | TriggerCondition::ControlledCreatureAttacks
                     | TriggerCondition::CrewedVehicleAttacks
                     | TriggerCondition::ControlledSubtypeAttackDeclaration(_)
+                    | TriggerCondition::ControlledSubtypeAttackAtLeast { .. }
+                    | TriggerCondition::ControlledCreatureAttacksWithKeyword(_)
                     | TriggerCondition::ControlledCreatureAttacksPlayerAlone
                     | TriggerCondition::OpponentCreatureBlocksSmall
                     | TriggerCondition::ControlledEquippedCreatureAttacks
@@ -1955,7 +1960,17 @@ impl Game {
         objects
     }
 
-    pub(super) fn land_play_triggers(&mut self, player: Player, land: ObjectRef) {
+    pub(super) fn land_play_triggers(
+        &mut self,
+        player: Player,
+        land: ObjectRef,
+        zone: Zone,
+        owner: Player,
+    ) {
+        let origin = (zone, owner == player);
+        self.state.players[player.index()]
+            .turn_facts
+            .played_from_outside_own_hand |= origin != (Zone::Hand, true);
         for (source, grant) in self.indexed_trigger_sources(&self.state.cast_sources) {
             if source.controller != player {
                 continue;
@@ -1963,6 +1978,7 @@ impl Game {
             let definition = grant.as_ref().map_or(source.card, |g| g.granting_card);
             for (index, ability) in definition.triggers().iter().enumerate() {
                 if ability.condition.event() == TriggerCondition::SpellCastOrLandPlayed
+                    && ability.condition.matches_play_origin(Some(origin))
                     && self.queue_trigger_from(&source, index, grant.map(Box::new))
                 {
                     self.state
@@ -2002,8 +2018,18 @@ impl Game {
                 .and_then(|source| self.state.objects.get(source.id as usize))
                 .map(|object| object.owner)
         });
+        let origin = stack
+            .and_then(|i| self.state.stack[i].cast)
+            .map(|cast| (cast.origin, spell_owner == Some(caster)));
+        let mana_value = stack.map_or_else(
+            || card.fixed_mana_value(),
+            |i| self.state.stack[i].mana_value(),
+        );
         let player = &mut self.state.players[caster.index()];
         player.turn_facts.cast_card_kinds |= card.kind_mask();
+        player.turn_facts.played_from_outside_own_hand |=
+            origin.is_some_and(|origin| origin != (Zone::Hand, true));
+        player.turn_facts.cast_mana_value_at_least_four |= mana_value >= 4;
         let count = &mut player.spells_cast_this_turn;
         *count = count.checked_add(1).capacity("spell count exhausted");
         let ordinal = *count;
@@ -2058,18 +2084,7 @@ impl Game {
                         CastRelation::Any => true,
                     };
                     if related
-                        && (!ability.condition.requires_exile_cast()
-                            || stack.is_some_and(|i| {
-                                self.state.stack[i]
-                                    .cast
-                                    .is_some_and(|c| c.origin == Zone::Exile)
-                            }))
-                        && (!ability.condition.requires_hand_cast()
-                            || stack.is_some_and(|i| {
-                                self.state.stack[i]
-                                    .cast
-                                    .is_some_and(|c| c.origin == Zone::Hand)
-                            }))
+                        && ability.condition.matches_play_origin(origin)
                         && self.cast_payment_condition(
                             ability.condition,
                             source.reference,
@@ -2096,9 +2111,7 @@ impl Game {
                                 spell_owner,
                                 filter,
                                 card,
-                                stack
-                                    .map(|i| self.state.stack[i].mana_value())
-                                    .unwrap_or_else(|| card.fixed_mana_value()),
+                                mana_value,
                                 caster,
                                 &source,
                                 stack
@@ -2479,12 +2492,21 @@ impl Game {
                         .unwrap()
                         .entering_object = Some(attacker);
                 }
-                if matches!(
-                    ability.condition.event(),
+                let attack_keyword = match ability.condition.event() {
                     TriggerCondition::ControlledCreatureAttacks
-                        | TriggerCondition::ControlledCreatureAttacksOrBlocks
-                ) {
+                    | TriggerCondition::ControlledCreatureAttacksOrBlocks => Some(Keywords::NONE),
+                    TriggerCondition::ControlledCreatureAttacksWithKeyword(keyword) => {
+                        Some(keyword)
+                    }
+                    _ => None,
+                };
+                if let Some(keyword) = attack_keyword {
                     for attacker in declared {
+                        if keyword != Keywords::NONE
+                            && !self.keywords(attacker.card).contains(keyword)
+                        {
+                            continue;
+                        }
                         let object = self.object_ref(attacker.card);
                         let facts =
                             EventObjectFacts::DamageActor(self.damage_source(attacker.card));
@@ -2574,15 +2596,23 @@ impl Game {
                         }
                     }
                 }
-                if let TriggerCondition::ControlledSubtypeAttackDeclaration(subtype) =
-                    ability.condition.event()
-                {
+                let subtype_attack = match ability.condition.event() {
+                    TriggerCondition::ControlledSubtypeAttackDeclaration(subtype) => {
+                        Some((subtype, 1))
+                    }
+                    TriggerCondition::ControlledSubtypeAttackAtLeast { subtype, minimum } => {
+                        Some((subtype, usize::from(minimum)))
+                    }
+                    _ => None,
+                };
+                if let Some((subtype, minimum)) = subtype_attack {
                     let matching: Vec<_> = declared
                         .iter()
                         .filter(|attack| self.has_subtype(attack.card, subtype))
                         .map(|attack| self.object_ref(attack.card))
                         .collect();
-                    if let Some((&object, rest)) = matching.split_first()
+                    if matching.len() >= minimum
+                        && let Some((&object, rest)) = matching.split_first()
                         && self.queue_attack_trigger(&source, index)
                     {
                         self.state

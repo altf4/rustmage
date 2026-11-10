@@ -484,6 +484,12 @@ impl FundingState<'_> {
             StepGuard::HeroEnteredOrAttackedThisTurn => {
                 state.turn_facts.hero_entered || state.turn_facts.hero_attacked
             }
+            StepGuard::PlayedFromOutsideOwnHandThisTurn => {
+                state.turn_facts.played_from_outside_own_hand
+            }
+            StepGuard::CastManaValueAtLeastFourThisTurn => {
+                state.turn_facts.cast_mana_value_at_least_four
+            }
             StepGuard::AttachedControllerTurn => {
                 steps::attached_controller_turn(self, source, self.active)
             }

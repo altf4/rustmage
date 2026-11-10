@@ -5518,6 +5518,8 @@ pub enum StepGuard {
     VoidActive,
     ArtifactEnteredThisTurn,
     HeroEnteredOrAttackedThisTurn,
+    PlayedFromOutsideOwnHandThisTurn,
+    CastManaValueAtLeastFourThisTurn,
     CardExiledThisTurn,
     OpponentHasMoreCardsInHand,
     OpponentControlsMoreCreatures,
@@ -5802,6 +5804,8 @@ pub enum TriggerCondition {
     CastFromHand(&'static TriggerCondition),
     /// This cast originated in exile, as recorded at announcement.
     CastFromExile(&'static TriggerCondition),
+    /// A spell cast or land played from a zone other than the actor's own hand.
+    PlayFromOutsideOwnHand(&'static TriggerCondition),
     OncePerTurn(&'static TriggerCondition),
     /// Qualification checked only when the event occurs.
     When {
@@ -5835,6 +5839,7 @@ pub enum TriggerCondition {
     },
     /// One occurrence per simultaneous positive damage event by this exact source.
     SourceDealtDamage,
+    SourceDealtDamageAtLeast(u128),
     SourceDealtCombatDamage,
     SourceCombatDamagePlayerOrPlaneswalker,
     AttachedDealtCombatDamage,
@@ -6039,10 +6044,16 @@ pub enum TriggerCondition {
     DelayedCreatureAttacksSubtypeAny(&'static [&'static str]),
     /// One event for each creature declared attacking by the source controller.
     ControlledCreatureAttacks,
+    /// One event for each declared attacker with the live keyword.
+    ControlledCreatureAttacksWithKeyword(Keywords),
     /// One attack by a Vehicle whose Crew cost this exact source paid this turn.
     CrewedVehicleAttacks,
     /// Once per declaration, retaining the exact declared attackers of this subtype.
     ControlledSubtypeAttackDeclaration(&'static str),
+    ControlledSubtypeAttackAtLeast {
+        subtype: &'static str,
+        minimum: u16,
+    },
     ControlledCreatureAttacksPlayerAlone,
     /// Once per opponent-controlled blocker meeting either stat ceiling.
     OpponentCreatureBlocksSmall,
@@ -6119,6 +6130,7 @@ impl TriggerCondition {
             | Self::DuringOpponentsTurn(event)
             | Self::CastFromHand(event)
             | Self::CastFromExile(event)
+            | Self::PlayFromOutsideOwnHand(event)
             | Self::TreasureManaSpent(event)
             | Self::ManaSpent { event, .. }
             | Self::When { event, .. }
@@ -6135,6 +6147,7 @@ impl TriggerCondition {
             | Self::DuringOpponentsTurn(event)
             | Self::CastFromHand(event)
             | Self::CastFromExile(event)
+            | Self::PlayFromOutsideOwnHand(event)
             | Self::ManaSpentBelowValue(event)
             | Self::ManaSpent { event, .. }
             | Self::When { event, .. }
@@ -6142,36 +6155,38 @@ impl TriggerCondition {
             _ => false,
         }
     }
-    pub(crate) fn requires_hand_cast(self) -> bool {
+    /// The ownership bit distinguishes the actor's own hand from another hand.
+    pub(crate) fn matches_play_origin(self, origin: Option<(Zone, bool)>) -> bool {
         match self {
-            Self::CastFromHand(_) => true,
+            Self::CastFromHand(event) => {
+                origin.is_some_and(|(zone, _)| zone == Zone::Hand)
+                    && event.matches_play_origin(origin)
+            }
+            Self::CastFromExile(event) => {
+                origin.is_some_and(|(zone, _)| zone == Zone::Exile)
+                    && event.matches_play_origin(origin)
+            }
+            Self::PlayFromOutsideOwnHand(event) => {
+                origin.is_some_and(|origin| origin != (Zone::Hand, true))
+                    && event.matches_play_origin(origin)
+            }
             Self::InZone { event, .. }
             | Self::Granted(event)
             | Self::OncePerTurn(event)
             | Self::DuringOpponentsTurn(event)
-            | Self::CastFromExile(event)
             | Self::TreasureManaSpent(event)
             | Self::ManaSpentBelowValue(event)
             | Self::ManaSpent { event, .. }
             | Self::When { event, .. }
-            | Self::InterveningIf { event, .. } => event.requires_hand_cast(),
-            _ => false,
+            | Self::InterveningIf { event, .. } => event.matches_play_origin(origin),
+            _ => true,
         }
     }
-    pub(crate) fn requires_exile_cast(self) -> bool {
-        match self {
-            Self::CastFromExile(_) => true,
-            Self::InZone { event, .. }
-            | Self::Granted(event)
-            | Self::OncePerTurn(event)
-            | Self::DuringOpponentsTurn(event)
-            | Self::CastFromHand(event)
-            | Self::TreasureManaSpent(event)
-            | Self::ManaSpentBelowValue(event)
-            | Self::ManaSpent { event, .. }
-            | Self::When { event, .. }
-            | Self::InterveningIf { event, .. } => event.requires_exile_cast(),
-            _ => false,
+    pub(crate) fn minimum_dealt_damage(self) -> Option<u128> {
+        match self.event() {
+            Self::SourceDealtDamage => Some(1),
+            Self::SourceDealtDamageAtLeast(minimum) => Some(minimum),
+            _ => None,
         }
     }
     pub(crate) fn origin(self) -> Option<TargetZone> {
@@ -6182,6 +6197,7 @@ impl TriggerCondition {
             | Self::DuringOpponentsTurn(event)
             | Self::CastFromHand(event)
             | Self::CastFromExile(event)
+            | Self::PlayFromOutsideOwnHand(event)
             | Self::TreasureManaSpent(event)
             | Self::ManaSpentBelowValue(event)
             | Self::ManaSpent { event, .. }
@@ -6201,6 +6217,7 @@ impl TriggerCondition {
             | Self::DuringOpponentsTurn(e)
             | Self::CastFromHand(e)
             | Self::CastFromExile(e)
+            | Self::PlayFromOutsideOwnHand(e)
             | Self::TreasureManaSpent(e)
             | Self::ManaSpentBelowValue(e)
             | Self::When { event: e, .. }
@@ -6217,6 +6234,7 @@ impl TriggerCondition {
             | Self::DuringOpponentsTurn(e)
             | Self::CastFromHand(e)
             | Self::CastFromExile(e)
+            | Self::PlayFromOutsideOwnHand(e)
             | Self::When { event: e, .. }
             | Self::InterveningIf { event: e, .. }
             | Self::TreasureManaSpent(e)
@@ -6231,6 +6249,7 @@ impl TriggerCondition {
             Self::InZone { event, .. }
             | Self::CastFromHand(event)
             | Self::CastFromExile(event)
+            | Self::PlayFromOutsideOwnHand(event)
             | Self::Granted(event)
             | Self::OncePerTurn(event)
             | Self::TreasureManaSpent(event)
@@ -6250,6 +6269,7 @@ impl TriggerCondition {
             | Self::DuringOpponentsTurn(event)
             | Self::CastFromHand(event)
             | Self::CastFromExile(event)
+            | Self::PlayFromOutsideOwnHand(event)
             | Self::When { event, .. }
             | Self::InterveningIf { event, .. }
             | Self::TreasureManaSpent(event)
@@ -6270,7 +6290,8 @@ impl TriggerCondition {
             | Self::ManaSpent { event, .. }
             | Self::DuringOpponentsTurn(event)
             | Self::CastFromHand(event)
-            | Self::CastFromExile(event) => event.once_per_turn(),
+            | Self::CastFromExile(event)
+            | Self::PlayFromOutsideOwnHand(event) => event.once_per_turn(),
             _ => false,
         }
     }

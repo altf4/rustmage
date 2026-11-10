@@ -121,7 +121,7 @@ impl Game {
                     .card
                     .triggers()
                     .iter()
-                    .any(|ability| ability.condition.event() == TriggerCondition::SourceDealtDamage)
+                    .any(|ability| ability.condition.minimum_dealt_damage().is_some())
             {
                 continue;
             }
@@ -133,7 +133,10 @@ impl Game {
         for (reference, amount) in hits {
             let source = self.object_view(reference.card);
             for (index, ability) in source.card.triggers().iter().enumerate() {
-                if ability.condition.event() == TriggerCondition::SourceDealtDamage
+                if ability
+                    .condition
+                    .minimum_dealt_damage()
+                    .is_some_and(|minimum| amount >= minimum)
                     && self.queue_trigger(&source, index)
                 {
                     self.state

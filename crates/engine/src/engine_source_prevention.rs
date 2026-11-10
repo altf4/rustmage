@@ -74,6 +74,7 @@ pub(super) fn condition_refers_to_attachment(condition: TriggerCondition) -> boo
         | TriggerCondition::DuringOpponentsTurn(event)
         | TriggerCondition::CastFromHand(event)
         | TriggerCondition::CastFromExile(event)
+        | TriggerCondition::PlayFromOutsideOwnHand(event)
         | TriggerCondition::TreasureManaSpent(event)
         | TriggerCondition::ManaSpent { event, .. } => condition_refers_to_attachment(*event),
         _ => false,

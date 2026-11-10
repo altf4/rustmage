@@ -60,6 +60,7 @@ fn collect(condition: TriggerCondition, result: &mut Vec<&'static str>) {
         | TriggerCondition::DuringOpponentsTurn(event)
         | TriggerCondition::CastFromHand(event)
         | TriggerCondition::CastFromExile(event)
+        | TriggerCondition::PlayFromOutsideOwnHand(event)
         | TriggerCondition::TreasureManaSpent(event)
         | TriggerCondition::ManaSpent { event, .. } => collect(*event, result),
         _ => (),

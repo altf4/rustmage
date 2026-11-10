@@ -104,6 +104,12 @@ impl Game {
                     treasure_mana_spent: cast.treasure_mana_spent,
                 })
         });
+        let owner = event
+            .as_ref()
+            .map(|e| self.state.objects[e.object.card as usize].owner);
+        let origin = stack
+            .and_then(|index| self.state.stack[index].cast)
+            .map(|cast| (cast.origin, owner == Some(caster)));
         for grant in rows {
             if !(grant.permanent || grant.expires_turn == self.state.turn)
                 || !self.on_battlefield(grant.recipient.card)
@@ -127,12 +133,7 @@ impl Game {
                 CastRelation::Any => true,
             };
             if !related
-                || (ability.condition.requires_exile_cast()
-                    && !stack.is_some_and(|i| {
-                        self.state.stack[i]
-                            .cast
-                            .is_some_and(|c| c.origin == Zone::Exile)
-                    }))
+                || !ability.condition.matches_play_origin(origin)
                 || !source.grant_available(
                     grant.grantor,
                     grant.granting_card,
@@ -145,12 +146,7 @@ impl Game {
                 || (ability.condition.requires_opponents_turn()
                     && self.state.active == source.controller)
                 || !self.cast_filter_matches_value(
-                    stack.and_then(|i| {
-                        self.state.stack[i]
-                            .source
-                            .and_then(|source| self.state.objects.get(source.id as usize))
-                            .map(|object| object.owner)
-                    }),
+                    owner,
                     filter,
                     card,
                     event.map_or_else(|| card.fixed_mana_value(), |e| e.mana_value),

@@ -421,6 +421,12 @@ impl Game {
             StepGuard::HeroEnteredOrAttackedThisTurn => {
                 return p.turn_facts.hero_entered || p.turn_facts.hero_attacked;
             }
+            StepGuard::PlayedFromOutsideOwnHandThisTurn => {
+                return p.turn_facts.played_from_outside_own_hand;
+            }
+            StepGuard::CastManaValueAtLeastFourThisTurn => {
+                return p.turn_facts.cast_mana_value_at_least_four;
+            }
             StepGuard::AttachedControllerTurn => {
                 return attached_controller_turn(world, source, self.state.active);
             }

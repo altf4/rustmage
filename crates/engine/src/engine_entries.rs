@@ -1334,7 +1334,12 @@ impl Game {
                 self.grant_exile_free_permission_until_end(player, event.after);
             }
             if movement.played_land && event.moved {
-                played_lands.push((movement.controller, event.after));
+                played_lands.push((
+                    movement.controller,
+                    event.after,
+                    event.before.zone,
+                    event.before.owner,
+                ));
             }
             events.push(event);
         }
@@ -1488,8 +1493,8 @@ impl Game {
         } else {
             self.finish_zone_events(&events, &[]);
         }
-        for (player, land) in played_lands {
-            self.land_play_triggers(player, land);
+        for (player, land, zone, owner) in played_lands {
+            self.land_play_triggers(player, land, zone, owner);
         }
         // "Loses all abilities" follows the return event; it does not describe
         // the entrant as having no abilities (CR 611.2e). Its entry abilities
