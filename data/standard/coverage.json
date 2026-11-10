@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "af098f881ad2146ad333e880ac62bd4a43d0327ca61a88e28248202ef0ff9276",
+  "catalogue_version": "ae1ec594cf12eaded115357eb49616e16d32d6c9458d81c0b4d3f4cb376107fb",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 3894,
-  "implemented_total": 3903,
+  "implemented_standard_cards": 4005,
+  "implemented_total": 4014,
   "token_definitions": 173,
   "emblem_definitions": 12,
   "adventure_definitions": 53,
@@ -114,8 +114,8 @@
     },
     "msc": {
       "total": 68,
-      "complete": 45,
-      "gated": 23
+      "complete": 67,
+      "gated": 1
     },
     "msh": {
       "total": 273,
@@ -132,7 +132,7 @@
     },
     "pspl": {
       "total": 1,
-      "gated": 1
+      "complete": 1
     },
     "rix": {
       "total": 2,
@@ -149,8 +149,7 @@
     },
     "spm": {
       "total": 134,
-      "complete": 46,
-      "gated": 88
+      "complete": 134
     },
     "tdc": {
       "total": 15,
@@ -1236,8 +1235,8 @@
     {
       "name": "Alien Symbiosis",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msc/alien_symbiosis.rs",
       "set": "msc"
     },
@@ -1620,8 +1619,8 @@
     {
       "name": "Anti-Venom, Horrifying Healer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/anti_venom_horrifying_healer.rs",
       "set": "spm"
     },
@@ -1772,8 +1771,8 @@
     {
       "name": "Arachne, Psionic Weaver",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/arachne_psionic_weaver.rs",
       "set": "spm"
     },
@@ -1796,8 +1795,8 @@
     {
       "name": "Araña, Heart of the Spider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/arana_heart_of_the_spider.rs",
       "set": "spm"
     },
@@ -2644,8 +2643,8 @@
     {
       "name": "Bagel and Schmear",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/bagel_and_schmear.rs",
       "set": "spm"
     },
@@ -3188,8 +3187,8 @@
     {
       "name": "Behold the Sinister Six!",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/behold_the_sinister_six.rs",
       "set": "spm"
     },
@@ -3540,8 +3539,8 @@
     {
       "name": "Biorganic Carapace",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/biorganic_carapace.rs",
       "set": "spm"
     },
@@ -3628,8 +3627,8 @@
     {
       "name": "Black Cat, Cunning Thief",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/black_cat_cunning_thief.rs",
       "set": "spm"
     },
@@ -5836,8 +5835,8 @@
     {
       "name": "Chameleon, Master of Disguise",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msc/chameleon_master_of_disguise.rs",
       "set": "msc"
     },
@@ -6060,8 +6059,8 @@
     {
       "name": "Cheering Crowd",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/cheering_crowd.rs",
       "set": "spm"
     },
@@ -6244,8 +6243,8 @@
     {
       "name": "City Pigeon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msc/city_pigeon.rs",
       "set": "msc"
     },
@@ -7124,8 +7123,8 @@
     {
       "name": "Costume Closet",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msc/costume_closet.rs",
       "set": "msc"
     },
@@ -7780,16 +7779,16 @@
     {
       "name": "Daily Bugle Building",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/daily_bugle_building.rs",
       "set": "spm"
     },
     {
       "name": "Daily Bugle Reporters",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msc/daily_bugle_reporters.rs",
       "set": "msc"
     },
@@ -7812,8 +7811,8 @@
     {
       "name": "Damage Control Crew",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/damage_control_crew.rs",
       "set": "spm"
     },
@@ -9116,8 +9115,8 @@
     {
       "name": "Doc Ock's Tentacles",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/doc_ock_s_tentacles.rs",
       "set": "spm"
     },
@@ -9156,8 +9155,8 @@
     {
       "name": "Doctor Octopus, Master Planner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/doctor_octopus_master_planner.rs",
       "set": "spm"
     },
@@ -10268,8 +10267,8 @@
     {
       "name": "Eddie Brock // Venom, Lethal Protector",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/eddie_brock_venom_lethal_protector.rs",
       "set": "spm"
     },
@@ -10340,8 +10339,8 @@
     {
       "name": "Eerie Gravestone",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msc/eerie_gravestone.rs",
       "set": "msc"
     },
@@ -10404,16 +10403,16 @@
     {
       "name": "Electro's Bolt",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/electro_s_bolt.rs",
       "set": "spm"
     },
     {
       "name": "Electro, Assaulting Battery",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/electro_assaulting_battery.rs",
       "set": "spm"
     },
@@ -11548,8 +11547,8 @@
     {
       "name": "Ezekiel Sims, Spider-Totem",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/ezekiel_sims_spider_totem.rs",
       "set": "spm"
     },
@@ -12580,8 +12579,8 @@
     {
       "name": "Flash Thompson, Spider-Fan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msc/flash_thompson_spider_fan.rs",
       "set": "msc"
     },
@@ -13196,8 +13195,8 @@
     {
       "name": "Friendly Neighborhood",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/friendly_neighborhood.rs",
       "set": "spm"
     },
@@ -15524,24 +15523,24 @@
     {
       "name": "Guy in the Chair",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/guy_in_the_chair.rs",
       "set": "spm"
     },
     {
       "name": "Gwen Stacy // Ghost-Spider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/gwen_stacy_ghost_spider.rs",
       "set": "spm"
     },
     {
       "name": "Gwenom, Remorseless",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/gwenom_remorseless.rs",
       "set": "spm"
     },
@@ -16332,8 +16331,8 @@
     {
       "name": "Heroes' Hangout",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msc/heroes_hangout.rs",
       "set": "msc"
     },
@@ -16460,8 +16459,8 @@
     {
       "name": "Hide on the Ceiling",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/hide_on_the_ceiling.rs",
       "set": "spm"
     },
@@ -17396,8 +17395,8 @@
     {
       "name": "Impostor Syndrome",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/impostor_syndrome.rs",
       "set": "spm"
     },
@@ -18052,8 +18051,8 @@
     {
       "name": "Iron Spider, Stark Upgrade",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/iron_spider_stark_upgrade.rs",
       "set": "spm"
     },
@@ -18164,8 +18163,8 @@
     {
       "name": "J. Jonah Jameson",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/j_jonah_jameson.rs",
       "set": "spm"
     },
@@ -18196,8 +18195,8 @@
     {
       "name": "Jackal, Genius Geneticist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/jackal_genius_geneticist.rs",
       "set": "spm"
     },
@@ -19460,8 +19459,8 @@
     {
       "name": "Kraven the Hunter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/kraven_the_hunter.rs",
       "set": "spm"
     },
@@ -19476,8 +19475,8 @@
     {
       "name": "Kraven's Last Hunt",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/kraven_s_last_hunt.rs",
       "set": "spm"
     },
@@ -19668,8 +19667,8 @@
     {
       "name": "Lady Octopus, Inspired Inventor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/lady_octopus_inspired_inventor.rs",
       "set": "spm"
     },
@@ -20364,8 +20363,8 @@
     {
       "name": "Living Brain, Mechanical Marvel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/living_brain_mechanical_marvel.rs",
       "set": "spm"
     },
@@ -20412,8 +20411,8 @@
     {
       "name": "Lizard, Connors's Curse",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/lizard_connors_s_curse.rs",
       "set": "spm"
     },
@@ -21068,8 +21067,8 @@
     {
       "name": "Madame Web, Clairvoyant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/madame_web_clairvoyant.rs",
       "set": "spm"
     },
@@ -21708,8 +21707,8 @@
     {
       "name": "Maximum Carnage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/maximum_carnage.rs",
       "set": "spm"
     },
@@ -22260,8 +22259,8 @@
     {
       "name": "Miles Morales // Ultimate Spider-Man",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/miles_morales_ultimate_spider_man.rs",
       "set": "spm"
     },
@@ -22548,8 +22547,8 @@
     {
       "name": "Mister Negative",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/mister_negative.rs",
       "set": "spm"
     },
@@ -22732,8 +22731,8 @@
     {
       "name": "Molten Man, Inferno Incarnate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/molten_man_inferno_incarnate.rs",
       "set": "spm"
     },
@@ -23372,8 +23371,8 @@
     {
       "name": "Mysterio, Master of Illusion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/mysterio_master_of_illusion.rs",
       "set": "spm"
     },
@@ -23892,8 +23891,8 @@
     {
       "name": "Norman Osborn // Green Goblin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/norman_osborn_green_goblin.rs",
       "set": "spm"
     },
@@ -24508,8 +24507,8 @@
     {
       "name": "Origin of Spider-Man",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/origin_of_spider_man.rs",
       "set": "spm"
     },
@@ -24564,8 +24563,8 @@
     {
       "name": "Oscorp Industries",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/oscorp_industries.rs",
       "set": "spm"
     },
@@ -25012,8 +25011,8 @@
     {
       "name": "Parker Luck",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/parker_luck.rs",
       "set": "spm"
     },
@@ -25044,8 +25043,8 @@
     {
       "name": "Passenger Ferry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/passenger_ferry.rs",
       "set": "spm"
     },
@@ -25332,16 +25331,16 @@
     {
       "name": "Peter Parker // Amazing Spider-Man",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/peter_parker_amazing_spider_man.rs",
       "set": "spm"
     },
     {
       "name": "Peter Parker's Camera",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/peter_parker_s_camera.rs",
       "set": "spm"
     },
@@ -25452,8 +25451,8 @@
     {
       "name": "Pictures of Spider-Man",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/pictures_of_spider_man.rs",
       "set": "spm"
     },
@@ -26140,8 +26139,8 @@
     {
       "name": "Prison Break",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/prison_break.rs",
       "set": "spm"
     },
@@ -26436,8 +26435,8 @@
     {
       "name": "Pumpkin Bombardment",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msc/pumpkin_bombardment.rs",
       "set": "msc"
     },
@@ -26932,8 +26931,8 @@
     {
       "name": "Raging Goblinoids",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/raging_goblinoids.rs",
       "set": "spm"
     },
@@ -27876,8 +27875,8 @@
     {
       "name": "Rent Is Due",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/rent_is_due.rs",
       "set": "spm"
     },
@@ -28300,16 +28299,16 @@
     {
       "name": "Rhino's Rampage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msc/rhino_s_rampage.rs",
       "set": "msc"
     },
     {
       "name": "Rhino, Barreling Brute",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/rhino_barreling_brute.rs",
       "set": "spm"
     },
@@ -28740,8 +28739,8 @@
     {
       "name": "Rocket-Powered Goblin Glider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msc/rocket_powered_goblin_glider.rs",
       "set": "msc"
     },
@@ -29604,8 +29603,8 @@
     {
       "name": "Sandman's Quicksand",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/sandman_s_quicksand.rs",
       "set": "spm"
     },
@@ -29908,16 +29907,16 @@
     {
       "name": "Scarlet Spider, Ben Reilly",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/scarlet_spider_ben_reilly.rs",
       "set": "spm"
     },
     {
       "name": "Scarlet Spider, Kaine",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/scarlet_spider_kaine.rs",
       "set": "spm"
     },
@@ -30452,8 +30451,8 @@
     {
       "name": "Selfless Police Captain",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msc/selfless_police_captain.rs",
       "set": "msc"
     },
@@ -30644,8 +30643,8 @@
     {
       "name": "Shadow of the Goblin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/shadow_of_the_goblin.rs",
       "set": "spm"
     },
@@ -30916,8 +30915,8 @@
     {
       "name": "Shocker, Unshakable",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/shocker_unshakable.rs",
       "set": "spm"
     },
@@ -31020,8 +31019,8 @@
     {
       "name": "Shriek, Treblemaker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/shriek_treblemaker.rs",
       "set": "spm"
     },
@@ -31132,8 +31131,8 @@
     {
       "name": "Silk, Web Weaver",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/silk_web_weaver.rs",
       "set": "spm"
     },
@@ -31164,8 +31163,8 @@
     {
       "name": "Silver Sable, Mercenary Leader",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/silver_sable_mercenary_leader.rs",
       "set": "spm"
     },
@@ -32164,8 +32163,8 @@
     {
       "name": "Spectacular Spider-Man",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/pspl/spectacular_spider_man.rs",
       "set": "pspl"
     },
@@ -32356,8 +32355,8 @@
     {
       "name": "Spider-Bot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/spider_bot.rs",
       "set": "spm"
     },
@@ -32372,8 +32371,8 @@
     {
       "name": "Spider-Girl, Legacy Hero",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/spider_girl_legacy_hero.rs",
       "set": "spm"
     },
@@ -32388,56 +32387,56 @@
     {
       "name": "Spider-Ham, Peter Porker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/spider_ham_peter_porker.rs",
       "set": "spm"
     },
     {
       "name": "Spider-Islanders",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/spider_islanders.rs",
       "set": "spm"
     },
     {
       "name": "Spider-Man 2099",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/spider_man_2099.rs",
       "set": "spm"
     },
     {
       "name": "Spider-Man India",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/spider_man_india.rs",
       "set": "spm"
     },
     {
       "name": "Spider-Man No More",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/spider_man_no_more.rs",
       "set": "spm"
     },
     {
       "name": "Spider-Man Noir",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/spider_man_noir.rs",
       "set": "spm"
     },
     {
       "name": "Spider-Man, Brooklyn Visionary",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/spider_man_brooklyn_visionary.rs",
       "set": "spm"
     },
@@ -32452,24 +32451,24 @@
     {
       "name": "Spider-Man, Web-Slinger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msc/spider_man_web_slinger.rs",
       "set": "msc"
     },
     {
       "name": "Spider-Mobile",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msc/spider_mobile.rs",
       "set": "msc"
     },
     {
       "name": "Spider-Punk",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/spider_punk.rs",
       "set": "spm"
     },
@@ -32484,40 +32483,40 @@
     {
       "name": "Spider-Sense",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/spider_sense.rs",
       "set": "spm"
     },
     {
       "name": "Spider-Slayer, Hatred Honed",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/spider_slayer_hatred_honed.rs",
       "set": "spm"
     },
     {
       "name": "Spider-Suit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/spider_suit.rs",
       "set": "spm"
     },
     {
       "name": "Spider-UK",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msc/spider_uk.rs",
       "set": "msc"
     },
     {
       "name": "Spider-Verse",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/spider_verse.rs",
       "set": "spm"
     },
@@ -32540,8 +32539,8 @@
     {
       "name": "Spiders-Man, Heroic Horde",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/spiders_man_heroic_horde.rs",
       "set": "spm"
     },
@@ -32604,8 +32603,8 @@
     {
       "name": "Spinneret and Spiderling",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/spinneret_and_spiderling.rs",
       "set": "spm"
     },
@@ -33244,8 +33243,8 @@
     {
       "name": "Stegron the Dinosaur Man",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msc/stegron_the_dinosaur_man.rs",
       "set": "msc"
     },
@@ -33676,8 +33675,8 @@
     {
       "name": "Strength of Will",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/strength_of_will.rs",
       "set": "spm"
     },
@@ -33796,8 +33795,8 @@
     {
       "name": "Subway Train",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/subway_train.rs",
       "set": "spm"
     },
@@ -34068,8 +34067,8 @@
     {
       "name": "Sun-Spider, Nimble Webber",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/sun_spider_nimble_webber.rs",
       "set": "spm"
     },
@@ -34284,16 +34283,16 @@
     {
       "name": "Superior Foes of Spider-Man",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msc/superior_foes_of_spider_man.rs",
       "set": "msc"
     },
     {
       "name": "Superior Spider-Man",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/superior_spider_man.rs",
       "set": "spm"
     },
@@ -34316,8 +34315,8 @@
     {
       "name": "Supportive Parents",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/supportive_parents.rs",
       "set": "spm"
     },
@@ -34492,8 +34491,8 @@
     {
       "name": "Swarm, Being of Bees",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msc/swarm_being_of_bees.rs",
       "set": "msc"
     },
@@ -34604,8 +34603,8 @@
     {
       "name": "Symbiote Spider-Man",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/symbiote_spider_man.rs",
       "set": "spm"
     },
@@ -35348,8 +35347,8 @@
     {
       "name": "Terrific Team-Up",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msc/terrific_team_up.rs",
       "set": "msc"
     },
@@ -35620,8 +35619,8 @@
     {
       "name": "The Clone Saga",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msc/the_clone_saga.rs",
       "set": "msc"
     },
@@ -35668,8 +35667,8 @@
     {
       "name": "The Death of Gwen Stacy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/the_death_of_gwen_stacy.rs",
       "set": "spm"
     },
@@ -36196,8 +36195,8 @@
     {
       "name": "The Soul Stone",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/the_soul_stone.rs",
       "set": "spm"
     },
@@ -36228,8 +36227,8 @@
     {
       "name": "The Spot, Living Portal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/the_spot_living_portal.rs",
       "set": "spm"
     },
@@ -38148,8 +38147,8 @@
     {
       "name": "Ultimate Green Goblin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/ultimate_green_goblin.rs",
       "set": "spm"
     },
@@ -38700,8 +38699,8 @@
     {
       "name": "Urban Retreat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/urban_retreat.rs",
       "set": "spm"
     },
@@ -39356,8 +39355,8 @@
     {
       "name": "Villainous Wrath",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/villainous_wrath.rs",
       "set": "spm"
     },
@@ -39860,8 +39859,8 @@
     {
       "name": "Wall Crawl",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/wall_crawl.rs",
       "set": "spm"
     },
@@ -40396,8 +40395,8 @@
     {
       "name": "Web of Life and Destiny",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/web_of_life_and_destiny.rs",
       "set": "spm"
     },
@@ -40660,8 +40659,8 @@
     {
       "name": "Wild Pack Squad",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msc/wild_pack_squad.rs",
       "set": "msc"
     },
@@ -40916,8 +40915,8 @@
     {
       "name": "Wisecrack",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msc/wisecrack.rs",
       "set": "msc"
     },
@@ -40972,8 +40971,8 @@
     {
       "name": "With Great Power . . .",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/with_great_power.rs",
       "set": "spm"
     },
@@ -41140,8 +41139,8 @@
     {
       "name": "Wraith, Vicious Vigilante",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/spm/wraith_vicious_vigilante.rs",
       "set": "spm"
     },

@@ -8,7 +8,7 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "82a88875c6d15c7b81461ed910cd84b04841fb3f98e0a41bd55f693462e2dd39"
   },
-  "physical_metadata_sha256": "f7c3a26108fe84915789321e2804436aa0f72284057853ef0ac5c7c3de08ff66",
+  "physical_metadata_sha256": "0da8e113f4cc95c70b9a48e048697566942947ff746e3d2454710a24531f99f9",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/h/HideOnTheCeiling.java",
   "java_sha256": "695dbddd31c2cf7f6f8d50019c4dbeb2e99096f5af5ecfe403329b5e258a33cf",
