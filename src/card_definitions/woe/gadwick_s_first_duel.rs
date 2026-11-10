@@ -1,16 +1,37 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from the pinned Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Permanent,
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::Chapter { number: 1 },
+            targets: TargetPlan::Single(TargetSpec {
+                rule: TargetRule::Creature,
+                min: 0,
+                max: 1,
+            }),
+            program: &[Instruction::CreateRole {
+                token: Card(5263),
+                subject: Subject::Targets,
+            }],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::Chapter { number: 2 },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::Scry(2)],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::Chapter { number: 3 },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::CopyNextInstantSorcery { ability: 3 }],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::DelayedInstantSorceryCastManaValueAtMost { maximum: 3 },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::CopyCapturedSpell {
+                count: SpellCopyCount::One,
+                retarget: true,
+            }],
+        },
+    ],
     ..CardRules::EMPTY
 };

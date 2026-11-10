@@ -1406,3 +1406,342 @@ fn hopeless_nightmare_discards_and_loses_life_then_scries_after_paid_sacrifice()
         );
     }
 }
+
+fn end_scenario_turn(game: &mut Game) {
+    game.state.step = Step::End;
+    game.give_priority();
+    pass_twice(game);
+}
+
+fn next_own_main(game: &mut Game, player: Player) {
+    end_scenario_turn(game);
+    end_scenario_turn(game);
+    assert_eq!(game.state.active, player);
+    assert_eq!(game.state.step, Step::Upkeep);
+    pass_twice(game);
+    pass_twice(game);
+    assert_eq!(game.state.step, Step::Main1);
+}
+
+#[test]
+fn gadwicks_first_duel_plays_all_chapters_and_copies_only_the_qualifying_cast() {
+    const CURSED_ROLE: Card = Card::from_catalogue_id(5263);
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let duel = candidate(&mut game, player, "Gadwick's First Duel");
+        let cursed = put(&mut game, opponent, "Hill Giant", Zone::Battlefield);
+        let giant = put(&mut game, opponent, "Gigantosaurus", Zone::Battlefield);
+        let large = put(&mut game, player, "Faerie Fencing", Zone::Hand);
+        let small = put(&mut game, player, "Faerie Fencing", Zone::Hand);
+        let swamps = [0; 7].map(|_| put(&mut game, player, "Swamp", Zone::Battlefield));
+
+        announce(&mut game, duel, &[]);
+        pass_twice(&mut game);
+        let mut decline = game.clone();
+        act(&mut decline, Action::FinishTargets);
+        settle(&mut decline);
+        assert!(tokens(&decline, player, CURSED_ROLE).is_empty());
+        choose_target(&mut game, Target::Card(cursed));
+        settle(&mut game);
+        assert_eq!(game.counter_count(duel, CounterKind::Lore), 1);
+        assert_eq!(stats(&game, cursed), (1, 1));
+        assert_eq!(tokens(&game, player, CURSED_ROLE).len(), 1);
+
+        next_own_main(&mut game, player);
+        assert_eq!(game.counter_count(duel, CounterKind::Lore), 2);
+        pass_twice(&mut game);
+        let scry = game.observe(player).library_choice.unwrap();
+        assert_eq!(scry.remaining.len(), 2);
+        assert!(game.observe(opponent).library_choice.is_none());
+        for (card, destination) in scry
+            .remaining
+            .into_iter()
+            .zip([LibraryDestination::Bottom, LibraryDestination::Top])
+        {
+            act(
+                &mut game,
+                Action::ArrangeLibrary {
+                    card: card.id,
+                    destination,
+                },
+            );
+        }
+        settle(&mut game);
+
+        next_own_main(&mut game, player);
+        assert_eq!(game.counter_count(duel, CounterKind::Lore), 3);
+        assert_eq!(game.object_view(duel).zone, Zone::Battlefield);
+        pass_twice(&mut game);
+        assert_eq!(game.object_view(duel).zone, Zone::Graveyard);
+        assert_eq!(game.observe(player).delayed_spell_copies.len(), 1);
+        for card in swamps {
+            act(&mut game, Action::TapMana { card });
+        }
+
+        for (card, value) in [(large, 3), (small, 2)] {
+            act(&mut game, Action::AnnounceCast { card });
+            act(&mut game, Action::ChooseX { value });
+            choose_target(&mut game, Target::Card(giant));
+            pay(&mut game);
+            if card == large {
+                settle(&mut game);
+                assert_eq!(stats(&game, giant), (7, 7));
+                assert_eq!(game.observe(player).delayed_spell_copies.len(), 1);
+            }
+        }
+        assert!(game.observe(player).delayed_spell_copies.is_empty());
+        pass_twice(&mut game);
+        let copy = game.observe(player).retarget.unwrap().item;
+        assert!(copy.is_copy);
+        assert_eq!(copy.mana_value(), 3);
+        act(
+            &mut game,
+            Action::SetStackTarget {
+                index: 0,
+                target: Target::Card(cursed),
+            },
+        );
+        act(&mut game, Action::FinishStackTargets);
+        settle(&mut game);
+        assert_eq!(game.object_view(cursed).zone, Zone::Graveyard);
+        assert_eq!(stats(&game, giant), (5, 5));
+    }
+}
+
+#[test]
+fn goddric_celebrates_two_nonland_entries_and_pays_to_boost_current_dragons() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let goddric = candidate(&mut game, player, "Goddric, Cloaked Reveler");
+        let other_dragon = put(&mut game, player, "Shivan Dragon", Zone::Battlefield);
+        let foreign_dragon = put(
+            &mut game,
+            player.other(),
+            "Shivan Dragon",
+            Zone::Battlefield,
+        );
+        let bear = put(&mut game, player, "Bear Cub", Zone::Hand);
+        let land = put(&mut game, player, "Mountain", Zone::Hand);
+        announce(&mut game, goddric, &[]);
+        settle(&mut game);
+        let before = game.object_view(goddric);
+        assert_eq!((before.power, before.toughness), (3, 3));
+        assert!(before.has_subtype("Human") && before.has_subtype("Noble"));
+        assert!(before.keywords.contains(Keywords::HASTE));
+        let fire = Action::AnnounceSourceGrant {
+            source: game.object_ref(goddric),
+            ability: 0,
+        };
+        reject(&mut game, fire.clone());
+        act(&mut game, Action::PlayLand { card: land });
+        reject(&mut game, fire.clone());
+
+        announce(&mut game, bear, &[]);
+        settle(&mut game);
+        let form = game.object_view(goddric);
+        assert_eq!((form.power, form.toughness), (4, 4));
+        assert!(form.is_legendary() && form.has_subtype("Dragon"));
+        assert!(!form.has_subtype("Human") && !form.has_subtype("Noble"));
+        assert!(form
+            .keywords
+            .contains(Keywords::HASTE.union(Keywords::FLYING)));
+        act(&mut game, fire.clone());
+        act(
+            &mut game,
+            Action::PayCosts {
+                payment: [0, 0, 0, 1, 0, 0],
+            },
+        );
+        settle(&mut game);
+        assert_eq!(stats(&game, goddric), (5, 4));
+        assert_eq!(stats(&game, other_dragon), (6, 5));
+        assert_eq!(stats(&game, foreign_dragon), (5, 5));
+        assert_eq!(stats(&game, bear), (2, 2));
+
+        end_scenario_turn(&mut game);
+        assert_eq!(stats(&game, goddric), (3, 3));
+        assert_eq!(stats(&game, other_dragon), (5, 5));
+        assert!(game.has_subtype(goddric, "Human"));
+        act(&mut game, Action::Pass);
+        reject(&mut game, fire);
+    }
+}
+
+#[test]
+fn imodane_uses_actual_adventure_spell_damage_to_its_only_target() {
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let imodane = candidate(&mut game, player, "Imodane, the Pyrohammer");
+        let slash = put(
+            &mut game,
+            player,
+            "Heartflame Duelist // Heartflame Slash",
+            Zone::Hand,
+        );
+        let multi = put(&mut game, player, "Cut In", Zone::Hand);
+        let creature_damage = put(&mut game, player, "Bite Down", Zone::Hand);
+        let own = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let target = put(&mut game, opponent, "Gigantosaurus", Zone::Battlefield);
+        let bounce = put(&mut game, opponent, "Unsummon", Zone::Hand);
+        announce(&mut game, imodane, &[]);
+        settle(&mut game);
+        announce(&mut game, multi, &[Target::Card(target), Target::Card(own)]);
+        act(&mut game, Action::Pass);
+        cast(&mut game, bounce, Some(Target::Card(own)));
+        settle(&mut game);
+        assert_eq!(game.object_view(own).zone, Zone::Hand);
+        assert_eq!(game.object_view(target).damage, 4);
+        assert_eq!(game.state.players[opponent.index()].life, 20);
+
+        cast_adventure(&mut game, slash, Some(Target::Card(target)));
+        pass_twice(&mut game);
+        assert_eq!(game.object_view(target).damage, 7);
+        assert_eq!(game.state.players[opponent.index()].life, 20);
+        assert_eq!(game.state.stack.last().unwrap().source.unwrap().id, imodane);
+        settle(&mut game);
+        assert_eq!(game.state.players[opponent.index()].life, 17);
+        assert_eq!(game.object_view(slash).zone, Zone::Exile);
+
+        announce(
+            &mut game,
+            creature_damage,
+            &[Target::Card(imodane), Target::Card(target)],
+        );
+        settle(&mut game);
+        assert_eq!(game.object_view(target).zone, Zone::Graveyard);
+        assert_eq!(game.state.players[opponent.index()].life, 17);
+    }
+}
+
+#[test]
+fn johann_privately_casts_a_paid_adventure_and_the_route_resets_on_the_opposing_turn() {
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let johann = candidate(&mut game, player, "Johann, Apprentice Sorcerer");
+        let mountain = put(&mut game, player, "Mountain", Zone::Battlefield);
+        let next = put(&mut game, player, "Shock", Zone::Library);
+        let top = put(
+            &mut game,
+            player,
+            "Heartflame Duelist // Heartflame Slash",
+            Zone::Library,
+        );
+        announce(&mut game, johann, &[]);
+        settle(&mut game);
+        let source = game.object_ref(johann);
+        let top_ref = game.object_ref(top);
+        assert_eq!(
+            game.observe(player).known_library_top[player.index()]
+                .unwrap()
+                .object,
+            top_ref
+        );
+        assert!(game.observe(opponent).known_library_top[player.index()].is_none());
+        assert!(!game.legal_actions().iter().any(|action| matches!(action,
+            Action::AnnounceLibraryTop { object, face: CastFace::Normal, .. } if *object == top_ref
+        )));
+        choose(&mut game, |action| {
+            matches!(action,
+                Action::AnnounceLibraryTop { object, face: CastFace::Adventure, permission, .. }
+                if *object == top_ref && permission.source == source
+            )
+        });
+        choose_target(&mut game, Target::Player(opponent));
+        reject(&mut game, Action::PayCosts { payment: [0; 6] });
+        assert!(game
+            .observe(player)
+            .used_library_top_cast_permissions
+            .is_empty());
+        pay(&mut game);
+        settle(&mut game);
+        assert_eq!(game.object_view(top).zone, Zone::Exile);
+        assert_eq!(game.state.players[opponent.index()].life, 17);
+        assert_eq!(
+            game.observe(player).used_library_top_cast_permissions.len(),
+            1
+        );
+
+        let next_ref = game.object_ref(next);
+        assert_eq!(
+            game.observe(player).known_library_top[player.index()]
+                .unwrap()
+                .object,
+            next_ref
+        );
+        assert!(!game.legal_actions().iter().any(|action| matches!(action,
+            Action::AnnounceLibraryTop { object, .. } if *object == next_ref
+        )));
+        end_scenario_turn(&mut game);
+        assert_eq!(game.state.active, opponent);
+        act(&mut game, Action::Pass);
+        act(&mut game, Action::TapMana { card: mountain });
+        choose(&mut game, |action| {
+            matches!(action,
+                Action::AnnounceLibraryTop { object, face: CastFace::Normal, permission, .. }
+                if *object == next_ref && permission.source == source
+            )
+        });
+        choose_target(&mut game, Target::Player(opponent));
+        pay(&mut game);
+        settle(&mut game);
+        assert_eq!(game.object_view(next).zone, Zone::Graveyard);
+        assert_eq!(game.state.players[opponent.index()].life, 15);
+    }
+}
+
+#[test]
+fn lich_knights_conquest_reopens_the_graveyard_after_sacrifice_and_returns_exactly_two() {
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let spell = candidate(&mut game, player, "Lich-Knights' Conquest");
+        let automaton = put(&mut game, player, "Adaptive Automaton", Zone::Battlefield);
+        let offering = spawn(&mut game, player, FOOD, Zone::Battlefield);
+        let invalid = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let dragon = put(&mut game, player, "Shivan Dragon", Zone::Graveyard);
+        let spare = put(&mut game, player, "Hill Giant", Zone::Graveyard);
+        let foreign = put(&mut game, opponent, "Hill Giant", Zone::Graveyard);
+        announce(&mut game, spell, &[]);
+        pass_twice(&mut game);
+        let mut zero = game.clone();
+        act(&mut zero, Action::FinishEffectChoice);
+        assert_eq!(zero.object_view(automaton).zone, Zone::Battlefield);
+        assert_eq!(zero.object_view(dragon).zone, Zone::Graveyard);
+
+        let object = game.object_ref(invalid);
+        reject(&mut game, Action::Sacrifice { object });
+        for card in [automaton, offering] {
+            let object = game.object_ref(card);
+            act(&mut game, Action::Sacrifice { object });
+        }
+        assert_eq!(game.object_view(automaton).zone, Zone::Battlefield);
+        act(&mut game, Action::FinishEffectChoice);
+        assert_eq!(game.object_view(automaton).zone, Zone::Graveyard);
+        assert_eq!(game.observe(opponent).effect_choice.unwrap().amount, 2);
+        let object = game.object_ref(foreign);
+        reject(&mut game, Action::SelectGraveyardReturn { object });
+        let object = game.object_ref(dragon);
+        act(&mut game, Action::SelectGraveyardReturn { object });
+        reject(&mut game, Action::FinishGraveyardReturn);
+        let object = game.object_ref(automaton);
+        act(&mut game, Action::SelectGraveyardReturn { object });
+        assert_eq!(game.object_view(dragon).zone, Zone::Graveyard);
+        assert_eq!(game.object_view(automaton).zone, Zone::Graveyard);
+        act(
+            &mut game,
+            Action::ChooseEntryValue {
+                value: EntryChoiceValue::CreatureType(CreatureType::from_name("Dragon").unwrap()),
+            },
+        );
+        settle(&mut game);
+        assert_eq!(game.object_view(spell).zone, Zone::Graveyard);
+        assert_eq!(game.object_view(automaton).zone, Zone::Battlefield);
+        assert_eq!(game.object_view(dragon).zone, Zone::Battlefield);
+        assert_eq!(stats(&game, dragon), (6, 6));
+        assert_eq!(game.object_view(spare).zone, Zone::Graveyard);
+        assert_ne!(game.object_view(offering).zone, Zone::Battlefield);
+    }
+}
