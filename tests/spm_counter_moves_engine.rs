@@ -130,11 +130,11 @@ fn definition(name: &str) -> Card {
 }
 
 fn activate_transfer(game: &mut Game, source: CardId, recipient: CardId) {
-    let target = Some(Target::Card(recipient));
+    let target = Target::Card(recipient);
     let action = Action::Activate {
         card: source,
         ability: 0,
-        target,
+        target: Some(target),
         payment: [0; 6],
         counter_payment: Counters::default(),
     };
@@ -145,12 +145,7 @@ fn activate_transfer(game: &mut Game, source: CardId, recipient: CardId) {
             game,
             |a| matches!(a, Action::AnnounceActivate { card, ability: 0, .. } if *card == source),
         );
-        act(
-            game,
-            Action::ChooseTarget {
-                target: target.unwrap(),
-            },
-        );
+        act(game, Action::ChooseTarget { target });
         if game.legal_actions().contains(&Action::FinishTargets) {
             act(game, Action::FinishTargets);
         }
