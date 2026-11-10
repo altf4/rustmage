@@ -192,28 +192,23 @@ fn charging_hooligan_counts_creatures_attacking_when_its_trigger_resolves() {
     settle(&mut removed);
     assert_eq!(removed.object_view(rat).zone, Zone::Graveyard);
     assert_eq!(stats(&removed, hooligan), (6, 3));
-    assert!(
-        !removed
-            .object_view(hooligan)
-            .keywords
-            .contains(Keywords::TRAMPLE)
-    );
+    assert!(!removed
+        .object_view(hooligan)
+        .keywords
+        .contains(Keywords::TRAMPLE));
 
     settle(&mut game);
     assert_eq!(stats(&game, hooligan), (7, 3));
-    assert!(
-        game.object_view(hooligan)
-            .keywords
-            .contains(Keywords::TRAMPLE)
-    );
+    assert!(game
+        .object_view(hooligan)
+        .keywords
+        .contains(Keywords::TRAMPLE));
     finish_turn(&mut game);
     assert_eq!(stats(&game, hooligan), (3, 3));
-    assert!(
-        !game
-            .object_view(hooligan)
-            .keywords
-            .contains(Keywords::TRAMPLE)
-    );
+    assert!(!game
+        .object_view(hooligan)
+        .keywords
+        .contains(Keywords::TRAMPLE));
 }
 
 #[test]
@@ -369,12 +364,11 @@ fn squeak_by_uses_current_blocker_power_and_exiles_the_adventurer() {
     settle(&mut game);
     assert_eq!(stats(&game, small), (5, 5));
     assert!(game.state.blocks.contains(&(small, attacker)));
-    assert!(
-        game.state
-            .attackers
-            .iter()
-            .any(|row| row.card == attacker && row.blocked)
-    );
+    assert!(game
+        .state
+        .attackers
+        .iter()
+        .any(|row| row.card == attacker && row.blocked));
 }
 
 fn bargain(game: &mut Game, offering: Option<CardId>) {
@@ -399,12 +393,10 @@ fn agathas_champion_fights_only_when_bargained_and_with_both_creatures_present()
     pay(&mut unpaid);
     settle(&mut unpaid);
     assert_eq!(stats(&unpaid, champion), (4, 4));
-    assert!(
-        unpaid
-            .object_view(champion)
-            .keywords
-            .contains(Keywords::TRAMPLE)
-    );
+    assert!(unpaid
+        .object_view(champion)
+        .keywords
+        .contains(Keywords::TRAMPLE));
     assert_eq!(unpaid.object_view(bow).zone, Zone::Battlefield);
     assert_eq!(unpaid.object_view(giant).damage, 0);
 
@@ -569,12 +561,10 @@ fn brave_the_wilds_searches_on_either_route_and_animates_its_paid_target() {
     act(&mut unpaid, Action::ChooseSearch { card: found });
     act(&mut unpaid, Action::FinishSearch);
     assert_eq!(unpaid.object_view(found).zone, Zone::Hand);
-    assert!(
-        unpaid
-            .observe(opponent)
-            .known_hand
-            .contains(&unpaid.object_ref(found))
-    );
+    assert!(unpaid
+        .observe(opponent)
+        .known_hand
+        .contains(&unpaid.object_ref(found)));
     assert_eq!(unpaid.object_view(offering).zone, Zone::Battlefield);
 
     let forest = put(&mut game, player, "Forest", Zone::Hand);
@@ -617,11 +607,10 @@ fn brave_the_wilds_searches_on_either_route_and_animates_its_paid_target() {
     act(&mut game, Action::ChooseSearch { card: found });
     act(&mut game, Action::FinishSearch);
     assert_eq!(game.object_view(found).zone, Zone::Hand);
-    assert!(
-        game.observe(opponent)
-            .known_hand
-            .contains(&game.object_ref(found))
-    );
+    assert!(game
+        .observe(opponent)
+        .known_hand
+        .contains(&game.object_ref(found)));
 
     let mut mana = game.clone();
     let green = mana.state.players[player.index()].mana[4];
@@ -751,11 +740,10 @@ fn blossoming_tortoise_recovers_lands_and_modifies_live_land_activations_and_sta
     settle(&mut game);
     assert_eq!(stats(&game, land), (4, 4));
     assert_eq!(game.object_view(land).kinds & 3, 3);
-    assert!(
-        game.object_view(land)
-            .keywords
-            .contains(Keywords::VIGILANCE)
-    );
+    assert!(game
+        .object_view(land)
+        .keywords
+        .contains(Keywords::VIGILANCE));
 
     let mut removed = game.clone();
     act(&mut removed, Action::Pass);
@@ -970,11 +958,10 @@ fn chancellor_copies_adventures_even_after_the_original_is_countered() {
     cast(&mut game, chancellor, None);
     settle(&mut game);
     assert_eq!(stats(&game, chancellor), (2, 3));
-    assert!(
-        game.object_view(chancellor)
-            .keywords
-            .contains(Keywords::FLYING)
-    );
+    assert!(game
+        .object_view(chancellor)
+        .keywords
+        .contains(Keywords::FLYING));
 
     let mut front = game.clone();
     cast(&mut front, mouse, None);
@@ -997,7 +984,6 @@ fn chancellor_copies_adventures_even_after_the_original_is_countered() {
     target(&mut game, first);
     pay(&mut game);
     assert_eq!(game.state.stack.len(), 2);
-    let original = game.state.stack[0].id;
     let mut declined = game.clone();
     pass_twice(&mut declined);
     act(&mut declined, Action::ChooseOptional { accept: false });
@@ -1007,7 +993,7 @@ fn chancellor_copies_adventures_even_after_the_original_is_countered() {
     assert_eq!(declined.object_view(mouse).zone, Zone::Exile);
 
     act(&mut game, Action::Pass);
-    cast(&mut game, negate, Some(Target::Stack(original)));
+    cast(&mut game, negate, Some(Target::Spell(mouse)));
     pass_twice(&mut game);
     assert_eq!(game.object_view(mouse).zone, Zone::Graveyard);
     pass_twice(&mut game);
@@ -1029,12 +1015,10 @@ fn chancellor_copies_adventures_even_after_the_original_is_countered() {
         1
     );
     assert_eq!(game.object_view(mouse).zone, Zone::Graveyard);
-    assert!(
-        !game
-            .legal_actions()
-            .iter()
-            .any(|action| matches!(action, Action::AnnounceExile { .. }))
-    );
+    assert!(!game
+        .legal_actions()
+        .iter()
+        .any(|action| matches!(action, Action::AnnounceExile { .. })));
 }
 
 #[test]
@@ -1131,13 +1115,11 @@ fn decadent_dragon_steals_private_exact_cards_and_pays_with_attack_treasure() {
         assert!(game.observe(player).objects.iter().any(|object| {
             object.id == card && object.zone == Zone::Exile && object.name == name
         }));
-        assert!(
-            !game
-                .observe(opponent)
-                .objects
-                .iter()
-                .any(|object| object.id == card)
-        );
+        assert!(!game
+            .observe(opponent)
+            .objects
+            .iter()
+            .any(|object| object.id == card));
     }
 
     let mut wrong_color = game.clone();
@@ -1164,11 +1146,10 @@ fn decadent_dragon_steals_private_exact_cards_and_pays_with_attack_treasure() {
     pay(&mut game);
     settle(&mut game);
     assert_eq!(stats(&game, dragon), (4, 4));
-    assert!(
-        game.object_view(dragon)
-            .keywords
-            .contains(Keywords::FLYING.union(Keywords::TRAMPLE))
-    );
+    assert!(game
+        .object_view(dragon)
+        .keywords
+        .contains(Keywords::FLYING.union(Keywords::TRAMPLE)));
     cast(&mut game, recruiter, None);
     settle(&mut game);
     reach_attackers(&mut game);
@@ -1248,11 +1229,9 @@ fn devouring_sugarmaw_creates_both_tokens_and_checks_its_own_upkeep() {
     assert_eq!(humans.len(), 2);
     assert_eq!(food, 2);
     assert_eq!(tokens.len(), 4);
-    assert!(
-        humans
-            .iter()
-            .all(|human| (human.power, human.toughness, human.colors) == (1, 1, 1))
-    );
+    assert!(humans
+        .iter()
+        .all(|human| (human.power, human.toughness, human.colors) == (1, 1, 1)));
     let human = humans[0].reference;
 
     act(&mut game, Action::AnnounceExile { card: horror });
@@ -1262,11 +1241,10 @@ fn devouring_sugarmaw_creates_both_tokens_and_checks_its_own_upkeep() {
     pay(&mut game);
     settle(&mut game);
     assert_eq!(stats(&game, horror), (6, 6));
-    assert!(
-        game.object_view(horror)
-            .keywords
-            .contains(Keywords::MENACE.union(Keywords::TRAMPLE))
-    );
+    assert!(game
+        .object_view(horror)
+        .keywords
+        .contains(Keywords::MENACE.union(Keywords::TRAMPLE)));
 
     finish_turn(&mut game);
     assert_eq!(game.state.step, Step::Upkeep);
@@ -1285,13 +1263,11 @@ fn devouring_sugarmaw_creates_both_tokens_and_checks_its_own_upkeep() {
         act(&mut paid, Action::ChooseAdditionalCost { object });
         act(&mut paid, Action::PayResolutionMana { payment: [0; 6] });
         assert!(!paid.object_view(horror).tapped);
-        assert!(
-            !paid
-                .observe(player)
-                .objects
-                .iter()
-                .any(|view| view.reference == object)
-        );
+        assert!(!paid
+            .observe(player)
+            .objects
+            .iter()
+            .any(|view| view.reference == object));
     }
     act(&mut game, Action::DeclineResolutionMana);
     assert!(game.object_view(horror).tapped);

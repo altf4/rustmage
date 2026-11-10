@@ -1,14 +1,16 @@
 // Direct typed behavior from the pinned Oracle and XMage sources.
+use rustmage_core::engine::replacements::TokenGroupView;
+
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Spell(
         TargetPlan::NONE,
         &[Instruction::CreateTokenBatch(&[
-            engine::replacements::TokenGroupView {
+            TokenGroupView {
                 token: Card(5254),
                 amount: 1,
                 tapped: false,
             },
-            engine::replacements::TokenGroupView {
+            TokenGroupView {
                 token: Card(5246),
                 amount: 1,
                 tapped: false,

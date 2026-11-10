@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "2fbe72f64f6ae60f76155161674f07668a8db38d1bd761bc12f0185d430b5d9f",
+  "catalogue_version": "3145aa6dd20a74e50030e1c665ad001ce77673a76a3a9032f76e8fedbd0d8f91",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4056,
-  "implemented_total": 4066,
+  "implemented_standard_cards": 4060,
+  "implemented_total": 4070,
   "token_definitions": 175,
   "emblem_definitions": 12,
   "adventure_definitions": 73,
@@ -183,8 +183,8 @@
     },
     "woe": {
       "total": 258,
-      "complete": 192,
-      "gated": 66
+      "complete": 196,
+      "gated": 62
     },
     "znr": {
       "total": 1,
@@ -5891,8 +5891,8 @@
     {
       "name": "Chancellor of Tales",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/chancellor_of_tales.rs",
       "set": "woe"
     },
@@ -7419,8 +7419,8 @@
     {
       "name": "Cruel Somnophage // Can't Wake Up",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/cruel_somnophage_can_t_wake_up.rs",
       "set": "woe"
     },
@@ -8283,8 +8283,8 @@
     {
       "name": "Decadent Dragon // Expensive Taste",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/decadent_dragon_expensive_taste.rs",
       "set": "woe"
     },
@@ -8715,8 +8715,8 @@
     {
       "name": "Devouring Sugarmaw // Have for Dinner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/devouring_sugarmaw_have_for_dinner.rs",
       "set": "woe"
     },
