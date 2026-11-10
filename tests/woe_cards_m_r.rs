@@ -344,3 +344,291 @@ fn hare_raising_locks_the_creature_count_and_the_hare_buffs_only_own_creature_to
         assert_eq!(stats(&game, rat), (2, 2));
     }
 }
+
+#[test]
+fn stolen_goodies_can_choose_zero_and_preserves_the_paid_shares_of_legal_targets() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let picnic = spawn(&mut game, player, named("Picnic Ruiner"), Zone::Hand);
+        let first = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let second = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let foreign = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+        let bounce = put(&mut game, player, "Unsummon", Zone::Hand);
+        let target = |card| Action::ChooseTarget {
+            target: Target::Card(card),
+        };
+        let green_payment = Action::PayCosts {
+            payment: [0, 0, 0, 0, 1, 3],
+        };
+
+        act(&mut game, Action::AnnounceAdventure { card: picnic });
+        reject(&mut game, target(foreign));
+        let mut zero = game.clone();
+        act(&mut zero, Action::FinishTargets);
+        act(&mut zero, green_payment.clone());
+        let adventure = zero.state.stack.last().unwrap();
+        assert!(adventure.targets.is_empty());
+        assert_eq!(adventure.cast.unwrap().face, CastFace::Adventure);
+        assert_eq!(adventure.source.unwrap().card.name(), "Stolen Goodies");
+        settle(&mut zero);
+        assert_eq!(zero.object_view(picnic).zone, Zone::Exile);
+        assert_eq!(zero.counter_count(first, CounterKind::PlusOne), 0);
+        assert_eq!(zero.counter_count(second, CounterKind::PlusOne), 0);
+        act(&mut zero, Action::AnnounceExile { card: picnic });
+        act(
+            &mut zero,
+            Action::PayCosts {
+                payment: [0, 0, 0, 1, 0, 1],
+            },
+        );
+        settle(&mut zero);
+        let creature = zero.object_view(picnic);
+        assert_eq!(creature.zone, Zone::Battlefield);
+        assert_eq!((creature.power, creature.toughness), (2, 2));
+        assert!(creature.has_subtype("Goblin") && creature.has_subtype("Rogue"));
+
+        for recipient in [first, second] {
+            act(&mut game, target(recipient));
+        }
+        act(&mut game, Action::FinishTargets);
+        reject(&mut game, Action::AllocateTargetAmount { amount: 0 });
+        act(&mut game, Action::AllocateTargetAmount { amount: 1 });
+        act(&mut game, Action::AllocateTargetAmount { amount: 2 });
+        act(&mut game, green_payment);
+
+        let mut both_legal = game.clone();
+        settle(&mut both_legal);
+        assert_eq!(both_legal.counter_count(first, CounterKind::PlusOne), 1);
+        assert_eq!(both_legal.counter_count(second, CounterKind::PlusOne), 2);
+
+        cast(&mut game, bounce, Some(Target::Card(first)));
+        settle(&mut game);
+        assert_eq!(game.object_view(first).zone, Zone::Hand);
+        assert_eq!(game.object_view(picnic).zone, Zone::Exile);
+        assert_eq!(game.counter_count(second, CounterKind::PlusOne), 2);
+        assert_eq!(game.counter_count(foreign, CounterKind::PlusOne), 0);
+    }
+}
+
+#[test]
+fn picnic_ruiner_checks_its_controllers_power_at_attack_and_hits_twice_that_turn() {
+    for player in [Player::P0, Player::P1] {
+        let other = player.other();
+        let mut game = scenario(player);
+        let picnic = spawn(&mut game, player, named("Picnic Ruiner"), Zone::Battlefield);
+        let witness = put(&mut game, player, "Axebane Ferox", Zone::Battlefield);
+        put(&mut game, other, "Axebane Ferox", Zone::Battlefield);
+        let bounce = put(&mut game, player, "Unsummon", Zone::Hand);
+        let island = put(&mut game, player, "Island", Zone::Battlefield);
+
+        let mut unqualified = game.clone();
+        unqualified.move_object(witness, Zone::Hand);
+        attack(&mut unqualified, picnic);
+        assert!(unqualified.state.stack.is_empty());
+        assert!(
+            !unqualified
+                .object_view(picnic)
+                .keywords
+                .contains(Keywords::DOUBLE_STRIKE)
+        );
+
+        attack(&mut game, picnic);
+        assert_eq!(game.state.stack.len(), 1);
+        act(&mut game, Action::TapMana { card: island });
+        cast(&mut game, bounce, Some(Target::Card(witness)));
+        settle(&mut game);
+        assert_eq!(game.object_view(witness).zone, Zone::Hand);
+        assert!(
+            game.object_view(picnic)
+                .keywords
+                .contains(Keywords::DOUBLE_STRIKE)
+        );
+
+        let before = game.state.players[other.index()].life;
+        pass_pair(&mut game);
+        act(&mut game, Action::FinishBlockers);
+        pass_pair(&mut game);
+        assert_eq!(game.state.step, Step::FirstStrikeDamage);
+        assert_eq!(game.state.players[other.index()].life, before - 2);
+        pass_pair(&mut game);
+        assert_eq!(game.state.step, Step::CombatDamage);
+        assert_eq!(game.state.players[other.index()].life, before - 4);
+        finish_turn(&mut game);
+        assert!(
+            !game
+                .object_view(picnic)
+                .keywords
+                .contains(Keywords::DOUBLE_STRIKE)
+        );
+    }
+}
+
+#[test]
+fn mosswood_dreadknight_dies_into_a_paid_next_turn_adventure_and_returns_from_exile() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let dreadknight = spawn(&mut game, player, named("Mosswood Dreadknight"), Zone::Hand);
+        let shock = put(&mut game, player, "Shock", Zone::Hand);
+        let lands = ["Swamp", "Forest", "Wastes", "Wastes"]
+            .map(|land| put(&mut game, player, land, Zone::Battlefield));
+        let creature_payment = Action::PayCosts {
+            payment: [0, 0, 0, 0, 1, 1],
+        };
+        let adventure = Action::AnnounceAdventure { card: dreadknight };
+
+        act(&mut game, Action::AnnounceCast { card: dreadknight });
+        act(&mut game, creature_payment.clone());
+        settle(&mut game);
+        assert_eq!(stats(&game, dreadknight), (3, 2));
+        assert!(
+            game.object_view(dreadknight)
+                .keywords
+                .contains(Keywords::TRAMPLE)
+        );
+        cast(&mut game, shock, Some(Target::Card(dreadknight)));
+        pass_pair(&mut game);
+        assert_eq!(game.object_view(dreadknight).zone, Zone::Graveyard);
+        assert!(game.observe(player).graveyard_cast_permissions.is_empty());
+        settle(&mut game);
+        let object = game.object_ref(dreadknight);
+        let permissions = game.observe(player).graveyard_cast_permissions;
+        assert_eq!(permissions.len(), 1);
+        assert_eq!(permissions[0].object, object);
+        assert_eq!(permissions[0].kind, GraveyardCastKind::Adventure);
+        assert!(game.legal_actions().contains(&adventure));
+        reject(&mut game, Action::AnnounceCast { card: dreadknight });
+
+        finish_turn(&mut game);
+        assert_eq!(game.state.active, player.other());
+        assert_eq!(game.observe(player).graveyard_cast_permissions, permissions);
+        finish_turn(&mut game);
+        assert_eq!(game.state.active, player);
+        for _ in 0..8 {
+            if game.state.step == Step::Main1 {
+                break;
+            }
+            act(&mut game, Action::Pass);
+        }
+        assert_eq!(game.state.step, Step::Main1);
+        for card in lands {
+            act(&mut game, Action::TapMana { card });
+        }
+
+        let mut expired = game.clone();
+        finish_turn(&mut expired);
+        assert!(
+            expired
+                .observe(player)
+                .graveyard_cast_permissions
+                .is_empty()
+        );
+
+        act(&mut game, adventure.clone());
+        act(
+            &mut game,
+            Action::PayCosts {
+                payment: [0, 0, 1, 0, 0, 1],
+            },
+        );
+        let spell = game.state.stack.last().unwrap();
+        assert_eq!(spell.source.unwrap().card.name(), "Dread Whispers");
+        assert_eq!(spell.cast.unwrap().origin, Zone::Graveyard);
+        let player_state = &game.state.players[player.index()];
+        let life = player_state.life;
+        let drawn = *player_state.library.last().unwrap();
+        settle(&mut game);
+        assert_eq!(game.state.players[player.index()].life, life - 1);
+        assert_eq!(game.object_view(drawn).zone, Zone::Hand);
+        assert!(
+            !game
+                .observe(player.other())
+                .known_hand
+                .contains(&game.object_ref(drawn))
+        );
+        assert_eq!(game.object_view(dreadknight).zone, Zone::Exile);
+        reject(&mut game, adventure);
+        act(&mut game, Action::AnnounceExile { card: dreadknight });
+        act(&mut game, creature_payment);
+        settle(&mut game);
+        assert_eq!(game.object_view(dreadknight).zone, Zone::Battlefield);
+    }
+}
+
+#[test]
+fn redtooth_vanguard_offers_two_mana_for_its_exact_graveyard_card_on_own_enchantment_entry() {
+    for player in [Player::P0, Player::P1] {
+        let other = player.other();
+        let mut game = scenario(player);
+        let card = named("Redtooth Vanguard");
+        let vanguard = spawn(&mut game, player, card, Zone::Graveyard);
+        let battlefield = spawn(&mut game, player, card, Zone::Battlefield);
+        let other_creature = put(&mut game, other, "Bear Cub", Zone::Battlefield);
+        let bow = put(&mut game, player, "Short Bow", Zone::Hand);
+        let opposing_role = put(&mut game, other, "Royal Treatment", Zone::Hand);
+        let role = put(&mut game, player, "Royal Treatment", Zone::Hand);
+
+        cast(&mut game, bow, None);
+        settle(&mut game);
+        act(&mut game, Action::Pass);
+        cast(&mut game, opposing_role, Some(Target::Card(other_creature)));
+        settle(&mut game);
+        assert_eq!(game.object_view(vanguard).zone, Zone::Graveyard);
+
+        cast(&mut game, role, Some(Target::Card(battlefield)));
+        pass_pair(&mut game);
+        assert_eq!(game.state.stack.len(), 1);
+        let exact = game.object_ref(vanguard);
+        assert_eq!(
+            game.state.stack.last().unwrap().source.unwrap().object,
+            exact
+        );
+
+        let payment = Action::PayResolutionMana {
+            payment: [0, 0, 0, 0, 0, 2],
+        };
+        let mut stale = game.clone();
+        stale.move_object(vanguard, Zone::Exile);
+        stale.move_object(vanguard, Zone::Graveyard);
+        assert_ne!(stale.object_ref(vanguard), exact);
+        pass_pair(&mut stale);
+        act(&mut stale, payment.clone());
+        assert_eq!(stale.object_view(vanguard).zone, Zone::Graveyard);
+
+        pass_pair(&mut game);
+        assert_eq!(game.state.pending, Pending::ResolutionMana { player });
+        let mut declined = game.clone();
+        act(&mut declined, Action::DeclineResolutionMana);
+        assert_eq!(declined.object_view(vanguard).zone, Zone::Graveyard);
+        reject(
+            &mut game,
+            Action::PayResolutionMana {
+                payment: [0, 0, 0, 0, 0, 1],
+            },
+        );
+        let mana = game.state.players[player.index()].mana[5];
+        act(&mut game, payment);
+        assert_eq!(game.state.players[player.index()].mana[5], mana - 2);
+        assert_eq!(game.object_view(vanguard).zone, Zone::Hand);
+        assert!(
+            game.observe(other)
+                .known_hand
+                .contains(&game.object_ref(vanguard))
+        );
+
+        act(&mut game, Action::AnnounceCast { card: vanguard });
+        act(
+            &mut game,
+            Action::PayCosts {
+                payment: [0, 0, 0, 0, 1, 1],
+            },
+        );
+        settle(&mut game);
+        assert_eq!(game.object_view(vanguard).zone, Zone::Battlefield);
+        assert_eq!(stats(&game, vanguard), (3, 1));
+        assert!(
+            game.object_view(vanguard)
+                .keywords
+                .contains(Keywords::TRAMPLE)
+        );
+    }
+}
