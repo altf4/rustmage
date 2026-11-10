@@ -914,10 +914,12 @@ fn agathas_soul_cauldron_grants_linked_abilities_and_funds_the_exact_recipient()
     reject(&mut game, borrow(ineligible));
     act(&mut game, borrow(recipient));
     target(&mut game, exile_target);
+    assert_eq!(game.state.pending, Pending::PayCosts { player });
+    assert!(game.mana_payment_domain().is_none());
+    act(&mut game, Action::TapMana { card: mountain });
     let cost = game.mana_payment_domain().unwrap();
     assert_eq!(cost.generic, 1);
     assert_eq!(cost.required, [0; 6]);
-    act(&mut game, Action::TapMana { card: mountain });
     act(
         &mut game,
         Action::PayCosts {
