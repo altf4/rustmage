@@ -1015,6 +1015,7 @@ impl Game {
                     | TriggerCondition::SelfEntersOrAttacksWhileSaddled
                     | TriggerCondition::SelfEntersOrDies => same,
                     TriggerCondition::CreaturesFromGraveyardEnterYou { .. }
+                    | TriggerCondition::NontokenCreaturesEnterFromExile
                     | TriggerCondition::SelfTransforms
                     | TriggerCondition::OtherControlledNonlandReturnedToOwnersHand
                     | TriggerCondition::OpponentTargetsControlledCreatureOrSpell
@@ -8893,10 +8894,18 @@ impl Game {
                     self.exile_targets_for_modified_cast(&item)
                 }
                 Instruction::ExileTargetsPlay { next_turn } => {
-                    self.exile_targets_play(&item, next_turn, false, false)
+                    let expiry = if next_turn {
+                        ExilePlayExpiry::EndOfNextTurn
+                    } else {
+                        ExilePlayExpiry::Turn(self.state.turn)
+                    };
+                    self.exile_targets_play(&item, expiry, false, false)
                 }
                 Instruction::ExileTargetsAndTopPlayForOwners => {
-                    self.exile_targets_play(&item, true, true, true)
+                    self.exile_targets_play(&item, ExilePlayExpiry::EndOfNextTurn, true, true)
+                }
+                Instruction::ExileTargetsPlayForOwnersWhileExiled => {
+                    self.exile_targets_play(&item, ExilePlayExpiry::WhileExiled, true, false)
                 }
                 Instruction::ExileDepartedSource => {
                     self.exile_departed_source(&item);

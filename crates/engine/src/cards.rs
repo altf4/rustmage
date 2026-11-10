@@ -3959,6 +3959,8 @@ pub enum Instruction {
         next_turn: bool,
     },
     ExileTargetsAndTopPlayForOwners,
+    /// Each physical card exiled this way can be played by its owner until it leaves exile.
+    ExileTargetsPlayForOwnersWhileExiled,
     ExileUntilSourceLeaves,
     /// Exile the exact graveyard incarnation captured by this source's death trigger.
     ExileDepartedSource,
@@ -6215,6 +6217,9 @@ pub enum TriggerCondition {
     CreaturesFromGraveyardEnterYou {
         other: bool,
     },
+    /// One event for a simultaneous batch with any nontoken creature that
+    /// enters directly from exile or resolves after being cast from exile.
+    NontokenCreaturesEnterFromExile,
     SelfTransforms,
     SelfOffspring,
     SelfKicked,

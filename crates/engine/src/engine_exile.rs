@@ -444,7 +444,7 @@ impl Game {
         self.grant_exile_play_permission_with_expiry(player, object, None, expiry);
     }
 
-    fn grant_exile_play_permission_with_expiry(
+    pub(super) fn grant_exile_play_permission_with_expiry(
         &mut self,
         player: Player,
         object: ObjectRef,
@@ -967,25 +967,35 @@ impl Game {
         self.batch_graveyard_entry_triggers(events, &sources, entry_suppression);
         // One trigger per observing source for the entire simultaneous entry event.
         let mut token_entered = [Vec::new(), Vec::new()];
+        let mut exile_creatures = Vec::new();
         for event in events {
             if event.moved && event.destination == Zone::Battlefield {
                 let entered = self.object_view(event.after.card);
-                if entered.is_token() && entered.kinds & entry_suppression == 0 {
+                if entered.kinds & entry_suppression != 0 {
+                    continue;
+                }
+                if entered.is_token() {
                     token_entered[entered.controller.index()].push(entered.reference);
+                } else if entered.is_creature()
+                    && (event.before.zone == Zone::Exile || event.cast_origin == Some(Zone::Exile))
+                {
+                    exile_creatures.push(entered.reference);
                 }
             }
         }
         for source in &sources {
-            if source.zone != Zone::Battlefield
-                || token_entered[source.controller.index()].is_empty()
+            let tokens = &token_entered[source.controller.index()];
+            if source.zone != Zone::Battlefield || (tokens.is_empty() && exile_creatures.is_empty())
             {
                 continue;
             }
             for (index, ability) in source.card.triggers().iter().enumerate() {
-                if ability.condition.event() == TriggerCondition::TokensEnterYou
-                    && self.queue_trigger(source, index)
-                {
-                    let entrants = &token_entered[source.controller.index()];
+                let entrants = match ability.condition.event() {
+                    TriggerCondition::TokensEnterYou => tokens,
+                    TriggerCondition::NontokenCreaturesEnterFromExile => &exile_creatures,
+                    _ => continue,
+                };
+                if !entrants.is_empty() && self.queue_trigger(source, index) {
                     self.add_entry_trigger_multiplicity(source, entrants);
                     self.state
                         .pending_triggers
