@@ -105,3 +105,23 @@ Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
 | The Lost Caverns of Ixalan | LCI | 117/291 (40%) | ⏳ Partial |
 | Wilds of Eldraine | WOE | 156/281 (56%) | ⏳ Partial |
 
+## Modern tracker
+
+**13 / 113 sets complete · 12%**
+
+`██░░░░░░░░░░░░░░░░░░`
+
+**4,013 / 22,711 unique Modern-legal cards implemented · 18%**
+
+`████░░░░░░░░░░░░░░░░`
+
+Tabletop snapshot through **2026-10-15**.
+[XMage set rules](https://github.com/magefree/mage/blob/492369c7844b8d76479f0393ff9eb6b0b0cf30d7/Mage.Server.Plugins/Mage.Deck.Constructed/src/mage/deck/Modern.java) ·
+[Scryfall card pool](https://scryfall.com/search?q=game%3Apaper+legal%3Amodern+date%3C%3D2026-10-15+-is%3Ameldresult&unique=cards)
+
+<!-- Count accepted sets among XMage's Modern set codes released by the cutoff.
+     Join implemented rows from data/standard/coverage.json to physical cards in
+     data/catalogue-identities.json. Intersect with the Scryfall pool by Oracle
+     ID, matching legacy cards without IDs by exact English name. Exclude meld
+     results from the pool. Legality was checked against the 2026-11-08 bulk data. -->
+
