@@ -1873,7 +1873,7 @@ fn rowan_freezes_gross_life_loss_for_black_and_red_spell_faces_until_cleanup() {
         game.state.players[player.index()].mana = [0, 0, 1, 0, 0, 0];
         cast(&mut game, drain, Some(Target::Card(victim)));
         settle(&mut game);
-        assert_eq!(game.state.players[player.index()].life, 19);
+        assert_eq!(game.state.players[player.index()].life, 18);
         assert_eq!(game.object_view(victim).zone, Zone::Graveyard);
         act(&mut game, Action::Pass);
         act(&mut game, Action::TapMana { card: island });
