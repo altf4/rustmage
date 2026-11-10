@@ -3636,12 +3636,18 @@ impl<'g> FundingState<'g> {
         use crate::cards::{ManaRestriction, StaticAbilityFragment};
         let purpose = self.payment_purpose(goal);
         let convoke = self.convoke_available();
+        let needs_web_return = self.cast_costs.as_ref().is_some_and(|costs| {
+            costs
+                .clauses
+                .iter()
+                .any(|row| !row.paid && matches!(row.clause, CastCostClause::WebSlingingReturn(_)))
+        });
         if !matches!(
             purpose,
             mana_lots::Purpose::Activation(_) | mana_lots::Purpose::Spell(_)
         ) || goal.reserve.is_some()
             || self.continuation.is_some()
-            || !self.only_mana_and_reveals(goal)
+            || !self.only_mana_reveals_and_web_return(goal)
             || self.entry_projection.is_some()
             || self.cost_group.is_some()
             || !self.sacrifice_group.is_empty()
@@ -3719,8 +3725,13 @@ impl<'g> FundingState<'g> {
             if object.zone != Zone::Battlefield {
                 continue;
             }
+            let web_creature = needs_web_return
+                && object.controller == goal.actor
+                && ability_world::CharacteristicWorld::kinds(self, id) & 1 != 0;
+            if web_creature && object.tapped {
+                return false;
+            }
             if object.card.borrows_activations()
-                || object.card.has_cast_origin_abilities()
                 || object.card.static_ability_groups().iter().any(|group| {
                     group.fragments.iter().any(|fragment| {
                         match fragment {
@@ -3730,6 +3741,9 @@ impl<'g> FundingState<'g> {
                             StaticAbilityFragment::IntrinsicKeywords(_)
                             | StaticAbilityFragment::Changeling
                             | StaticAbilityFragment::AttachmentStats(_)
+                            | StaticAbilityFragment::AttachmentTrigger(_)
+                            | StaticAbilityFragment::OpponentEntryTapped(..)
+                            | StaticAbilityFragment::ColoredLegendaryWebSlinging(_)
                             | StaticAbilityFragment::AttachedChosenColor
                             | StaticAbilityFragment::AttachedAllCreatureTypes
                             | StaticAbilityFragment::AdditionalLandPlays(_)
@@ -3754,18 +3768,20 @@ impl<'g> FundingState<'g> {
                             | StaticAbilityFragment::OtherControlledPermanentTapMana(
                                 ManaProduction::Tagged { quality, .. },
                             ) => {
-                                !matches!(
-                                    quality.restriction,
-                                    ManaRestriction::CastFromExile
-                                        | ManaRestriction::CastFromNonhand
-                                        | ManaRestriction::ArtifactSpell
-                                        | ManaRestriction::InstantSorcery
-                                        | ManaRestriction::NoncreatureSpell
-                                        | ManaRestriction::PlaneswalkerSpell
-                                        | ManaRestriction::SpellSubtype(_)
-                                        | ManaRestriction::ChosenCreatureSpell
-                                ) || mana_lots::Quality::capture(self, id, **quality)
-                                    .eligible(purpose)
+                                needs_web_return
+                                    || !matches!(
+                                        quality.restriction,
+                                        ManaRestriction::CastFromExile
+                                            | ManaRestriction::CastFromNonhand
+                                            | ManaRestriction::ArtifactSpell
+                                            | ManaRestriction::InstantSorcery
+                                            | ManaRestriction::NoncreatureSpell
+                                            | ManaRestriction::PlaneswalkerSpell
+                                            | ManaRestriction::SpellSubtype(_)
+                                            | ManaRestriction::ChosenCreatureSpell
+                                    )
+                                    || mana_lots::Quality::capture(self, id, **quality)
+                                        .eligible(purpose)
                             }
                             _ => true,
                         }
@@ -3794,6 +3810,9 @@ impl<'g> FundingState<'g> {
                         });
                     }
                 }
+            }
+            if web_creature && tap_quantity > 0 {
+                return false;
             }
             for (index, ability) in object.card.activations().iter().enumerate() {
                 let Some(production) = ability.mana_production() else {
@@ -3865,6 +3884,10 @@ impl<'g> FundingState<'g> {
                 {
                     continue;
                 }
+                if needs_web_return && (web_creature || cost.additional.is_some()) {
+                    // Even mana ineligible for this spell can tap a creature.
+                    return false;
+                }
                 if let ManaProduction::Tagged { quality, .. } = production
                     && !mana_lots::Quality::capture(self, id, *quality).eligible(purpose)
                 {
@@ -3896,6 +3919,11 @@ impl<'g> FundingState<'g> {
                 *bound = bound.saturating_add(amount);
             }
             quantity = quantity.saturating_add(tap_quantity);
+        }
+        // These fixed routes can tap only noncreatures, and the pending
+        // return cannot itself make its missing creature tapped.
+        if needs_web_return {
+            return true;
         }
         let mut group_gain = group_quantity;
         let creatures = if convoke || group_minimum != usize::MAX {

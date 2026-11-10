@@ -116,9 +116,9 @@ impl FundingState<'_> {
     pub(super) fn mana_window_open(&self, goal: &FundingGoal) -> bool {
         goal.requires_mana() && self.cast_costs.as_ref().is_none_or(|c| !c.mana_closed)
     }
-    /// An ordered mana row has the same fixed requirement as the funding
-    /// goal when the only other unpaid costs reveal existing witnesses.
-    pub(super) fn only_mana_and_reveals(&self, goal: &FundingGoal) -> bool {
+    /// Keep a fixed mana requirement when other unpaid rows only reveal a
+    /// witness or return a creature after finding a Web-slinging witness.
+    pub(super) fn only_mana_reveals_and_web_return(&self, goal: &FundingGoal) -> bool {
         self.cast_costs.as_ref().is_none_or(|c| {
             c.mana
                 == Some(ManaCost {
@@ -132,7 +132,9 @@ impl FundingState<'_> {
                     .iter()
                     .filter(|row| !row.paid)
                     .all(|row| match row.clause {
-                        CastCostClause::Mana | CastCostClause::Behold(_) => true,
+                        CastCostClause::Mana
+                        | CastCostClause::Behold(_)
+                        | CastCostClause::WebSlingingReturn(_) => true,
                         CastCostClause::Additional => c.additional.is_some_and(|spec| {
                             matches!(
                                 spec.kind.payment_kind(),

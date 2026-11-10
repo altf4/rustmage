@@ -368,3 +368,23 @@ fn hand_activation_reuses_tapped_return_and_does_not_use_a_land_play() {
     assert_eq!(game.state.objects[funder as usize].zone, Zone::Hand);
     assert!(game.state.land_played);
 }
+
+#[test]
+fn ordinary_land_taps_do_not_create_a_web_return_witness() {
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &WEB_CREATURE)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    game.state.players[player.index()].mana = [0; 6];
+    for _ in 0..10 {
+        put(&mut game, player, "Forest", Zone::Battlefield);
+    }
+    put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    let spell = put(&mut game, player, "Grizzly Bears", Zone::Hand);
+    let alternative = web(spell, CastFace::Normal);
+    reject(&mut game, alternative.clone());
+
+    // The same untapped creature can now contribute to the Parents' mana
+    // ability, making the subsequent return possible.
+    put(&mut game, player, "Supportive Parents", Zone::Battlefield);
+    act(&mut game, alternative);
+}
