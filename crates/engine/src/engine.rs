@@ -3790,8 +3790,6 @@ pub struct Observation {
     /// Resolving-controller counts, expiring at each controller's next turn.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub require_all_attack_until_next_turn: Option<[usize; 2]>,
-    #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub cannot_block_this_turn: Vec<ObjectRef>,
     pub combat_damaged_players: Vec<combat_allocations::CombatDamagePlayerView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub player_combat_damage_this_turn: Option<PlayerCombatDamageView>,
@@ -10799,7 +10797,6 @@ impl Game {
         if let Some(rules) = &mut self.state.combat_rules {
             rules.must_be_blocked.clear();
             rules.must_attack_this_combat.clear();
-            rules.cannot_block_this_turn.clear();
             rules.additional_combats = 0;
             rules.after_main = None;
             rules.inserted_phases.clear();
@@ -11703,10 +11700,6 @@ impl Game {
                 (rules.require_all_attack_until_next_turn != [0; 2])
                     .then_some(rules.require_all_attack_until_next_turn)
             }),
-            cannot_block_this_turn: s
-                .combat_rules
-                .as_ref()
-                .map_or_else(Vec::new, |rules| rules.cannot_block_this_turn.clone()),
             must_be_blocked: s
                 .combat_rules
                 .as_ref()

@@ -4088,8 +4088,6 @@ pub enum Instruction {
     /// Every creature must attack if able, preferring a player other than
     /// this effect's controller, until that controller's next turn.
     RequireAllAttacksUntilNextTurn,
-    /// A rule restriction on these exact permanents, not a granted ability.
-    PreventTargetsBlockingThisTurn,
     /// Actual created tokens must attack only the current combat if able.
     CreateTokensAttackThisCombat {
         token: Card,

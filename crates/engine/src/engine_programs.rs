@@ -7060,9 +7060,6 @@ impl Game {
                 Instruction::RequireAllAttacksUntilNextTurn => {
                     self.require_all_attacks_until_next_turn(item.controller);
                 }
-                Instruction::PreventTargetsBlockingThisTurn => {
-                    self.prevent_targets_blocking_this_turn(&item);
-                }
                 Instruction::RequireTargetsBlocked { group } => {
                     self.require_targets_blocked(&item, group);
                 }

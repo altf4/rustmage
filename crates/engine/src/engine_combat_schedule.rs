@@ -43,31 +43,6 @@ impl Game {
             .map_or([0; 2], |rules| rules.require_all_attack_until_next_turn)
     }
 
-    pub(super) fn prevent_targets_blocking_this_turn(&mut self, item: &SpellView) {
-        for target in &item.targets {
-            let Some(object) = target
-                .object
-                .filter(|r| self.on_battlefield(r.card) && self.same_target_object(*target))
-            else {
-                continue;
-            };
-            let rows = &mut self
-                .state
-                .combat_rules
-                .get_or_insert_with(Default::default)
-                .cannot_block_this_turn;
-            if !rows.contains(&object) {
-                rows.push(object);
-            }
-        }
-    }
-
-    pub(super) fn forget_block_restriction(&mut self, object: ObjectRef) {
-        if let Some(rules) = &mut self.state.combat_rules {
-            rules.cannot_block_this_turn.retain(|row| *row != object);
-        }
-    }
-
     pub(super) fn require_created_attacks_this_combat(&mut self, created: &[ObjectRef]) {
         if !matches!(
             self.state.step,

@@ -29,7 +29,10 @@ const ATTACK_TAX: CardRules = CardRules {
 const BLOCK_LOCK: CardRules = CardRules {
     effect: Effect::Spell(
         TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
-        &[Instruction::PreventTargetsBlockingThisTurn],
+        &[Instruction::GrantKeywords {
+            subject: Subject::Targets,
+            keywords: Keywords::CANT_BLOCK,
+        }],
     ),
     ..CardRules::EMPTY
 };
@@ -213,6 +216,15 @@ fn attacking_a_player_with_an_optional_tax_is_never_required() {
     );
 }
 
+fn block_locks(game: &Game, viewer: Player) -> Vec<ObjectRef> {
+    game.observe(viewer)
+        .keyword_effects
+        .into_iter()
+        .filter(|effect| effect.rules.contains(Keywords::CANT_BLOCK))
+        .map(|effect| effect.recipient)
+        .collect()
+}
+
 fn advance_to_blocks(game: &mut Game, attacker: CardId) {
     advance_to(game, Pending::Attackers);
     act(game, Action::Attack { card: attacker });
@@ -228,10 +240,11 @@ fn cannot_block_effect_is_owned_ends_at_cleanup_and_does_not_follow_a_blink() {
     let opponent = player.other();
     let mut parent = scenario(player);
     let attacker = put(&mut parent, player, "Grizzly Bears", Zone::Battlefield);
-    let victim = put(&mut parent, opponent, "Grizzly Bears", Zone::Battlefield);
+    let victim = put(&mut parent, opponent, "Llanowar Elves", Zone::Battlefield);
     let other = put(&mut parent, opponent, "Grizzly Bears", Zone::Battlefield);
     let blink = put(&mut parent, opponent, "Unsummon", Zone::Hand);
     let lock = put(&mut parent, player, "Shock", Zone::Hand);
+    let blank = put(&mut parent, player, "Witness Protection", Zone::Hand);
     act(&mut parent, Action::AnnounceCast { card: lock });
     let saved = parent.snapshot();
     let mut raw = parent.clone();
@@ -262,21 +275,23 @@ fn cannot_block_effect_is_owned_ends_at_cleanup_and_does_not_follow_a_blink() {
     }
     assert_eq!(raw.snapshot(), restored.snapshot());
     let old_victim = raw.object_ref(victim);
+    assert_eq!(block_locks(&raw, opponent), vec![old_victim]);
     assert_eq!(
-        raw.observe(opponent).cannot_block_this_turn,
-        vec![old_victim]
-    );
-    assert_eq!(
-        indexed.observe(player).cannot_block_this_turn,
+        block_locks(&indexed, player),
         vec![indexed.object_ref(other)]
     );
+
+    cast(&mut raw, blank, Some(Target::Card(victim)));
+    settle(&mut raw);
+    assert!(!raw.printed_abilities_available(victim));
+    assert!(raw.keywords(victim).contains(Keywords::CANT_BLOCK));
 
     act(&mut restored, Action::Pass);
     assert_eq!(restored.actor(), Some(opponent));
     cast(&mut restored, blink, Some(Target::Card(victim)));
     settle(&mut restored);
     assert_ne!(restored.object_ref(victim), old_victim);
-    assert!(restored.observe(opponent).cannot_block_this_turn.is_empty());
+    assert!(block_locks(&restored, opponent).is_empty());
 
     for branch in [&mut raw, &mut indexed, &mut restored] {
         advance_to_blocks(branch, attacker);
@@ -296,5 +311,5 @@ fn cannot_block_effect_is_owned_ends_at_cleanup_and_does_not_follow_a_blink() {
     assert!(restored.legal_actions().contains(&block_victim));
     advance_to(&mut raw, Pending::Attackers);
     assert_eq!(raw.state.active, opponent);
-    assert!(raw.observe(opponent).cannot_block_this_turn.is_empty());
+    assert!(block_locks(&raw, opponent).is_empty());
 }
