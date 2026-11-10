@@ -2112,8 +2112,11 @@ fn eriette_restricts_attacks_and_counts_live_controlled_auras_at_the_end_step() 
             Some(recipient),
         );
 
-        game.begin_step(Step::End);
+        game.state.step = Step::Main2;
         game.give_priority();
+        pass_twice(&mut game);
+        assert_eq!(game.state.step, Step::End);
+        assert_eq!(game.state.stack.last().unwrap().source.unwrap().id, eriette);
         let mut reduced = game.clone();
         act(&mut reduced, Action::Pass);
         cast(&mut reduced, remove, Some(Target::Card(spare_aura)));
@@ -2433,6 +2436,9 @@ fn graceful_takedown_uses_distinct_groups_and_live_enchanted_sources() {
             true,
             Some(recipient),
         );
+        assert_eq!(stats(&game, first), (4, 4));
+        assert_eq!(stats(&game, second), (3, 3));
+        assert_eq!(stats(&game, other), (2, 2));
         let target = |card| Action::ChooseTarget {
             target: Target::Card(card),
         };
@@ -2454,7 +2460,7 @@ fn graceful_takedown_uses_distinct_groups_and_live_enchanted_sources() {
         assert_eq!(stripped.object_view(first).zone, Zone::Battlefield);
         assert_eq!(stripped.object_view(enemy).damage, 5);
         settle(&mut game);
-        assert_eq!(game.object_view(enemy).damage, 8);
+        assert_eq!(game.object_view(enemy).damage, 9);
         for card in [first, second, other] {
             assert_eq!(game.object_view(card).damage, 0);
         }
