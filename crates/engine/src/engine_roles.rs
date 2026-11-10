@@ -567,8 +567,8 @@ impl Game {
     ) -> Vec<ObjectRef> {
         self.create_token_groups_attached(controller, groups, None, false, Some(recipient))
     }
-    /// All roles participate even if another SBA would simultaneously remove one.
-    /// Only malformed/illegal attachments are excluded by the enchantment rule.
+    /// CR 704.5z counts Roles that are still attached, even if a concurrent
+    /// state-based action puts one of those Auras into its owner's graveyard.
     pub(super) fn collect_role_choices(&self, deaths: &mut Vec<CardId>) -> Vec<RoleGroupView> {
         let Some(state) = &self.state.roles else {
             return Vec::new();
@@ -580,12 +580,9 @@ impl Game {
             }
             let aura = &self.state.objects[v.aura.card as usize];
             if aura.attached_to != Some(v.recipient)
-                || !self.aura_can_enchant_with_colors(
-                    aura.card,
-                    aura.controller,
-                    ability_world::CharacteristicWorld::colors(self, v.aura.card),
-                    v.recipient,
-                )
+                || !self.on_battlefield(v.recipient.card)
+                || self.object_ref(v.recipient.card) != v.recipient
+                || !self.has_subtype(v.aura.card, "Role")
             {
                 continue;
             }
