@@ -299,6 +299,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ControlledLandColorlessTapManaBonus
                             | crate::cards::StaticAbilityFragment::AttachmentManaBonus(_)
                             | crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(_)
+                            | crate::cards::StaticAbilityFragment::ControlledBasicLandManaMultiplier(_)
                             | crate::cards::StaticAbilityFragment::DoubleDrawExceptFirst
                             | crate::cards::StaticAbilityFragment::ConditionalDoubleDraw(_)
                             | crate::cards::StaticAbilityFragment::AdditionalDrawWithAtMostOneCard

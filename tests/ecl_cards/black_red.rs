@@ -6792,7 +6792,7 @@ fn lavaleaper_mixed_event_choices_are_owned_and_keep_frozen_types_and_multiplici
         let tapped_land = g.object_ref(forest);
         let tap = g.mana_tap_bonuses(p, forest);
         g.state.players[p.index()].mana = [0; 6];
-        let bonus = tap.with_trigger_bonuses(&g, p, Some(tapped_land));
+        let bonus = tap.with_event_effects(&g, p, Some(tapped_land));
         g.finish_mana_tap_bonus(p, bonus, production);
         assert!(g.advance_mana_tap_bonus());
         // Providers are checked at production. Once the bonus choice exists,
@@ -6828,7 +6828,7 @@ fn lavaleaper_mixed_bonus_overflow_is_atomic_and_another_type_remains_payable() 
     let tapped_land = g.object_ref(forest);
     let tap = g.mana_tap_bonuses(p, forest);
     g.state.players[p.index()].mana = [0, 0, 0, u32::MAX, 0, 0];
-    let bonus = tap.with_trigger_bonuses(&g, p, Some(tapped_land));
+    let bonus = tap.with_event_effects(&g, p, Some(tapped_land));
     g.finish_mana_tap_bonus(p, bonus, production);
     assert!(g.advance_mana_tap_bonus());
     reject(
@@ -6865,7 +6865,7 @@ fn lavaleaper_pending_mana_bonus_waits_for_replacements_and_defers_sbas() {
     );
     assert!(g.advance_replacements(false));
     assert!(matches!(g.state.pending, Pending::Replacement { .. }));
-    let bonus = tap.with_trigger_bonuses(&g, p, Some(tapped_land));
+    let bonus = tap.with_event_effects(&g, p, Some(tapped_land));
     g.finish_mana_tap_bonus(p, bonus, production);
     for _ in 0..10 {
         if matches!(g.state.pending, Pending::EffectMana { .. }) {
@@ -6903,7 +6903,7 @@ fn lavaleaper_mixed_mana_choice_resumes_an_existing_cast_payment_window() {
         let production = [1, 0, 0, 0, 0, 1];
         let tapped_land = g.object_ref(forests[0]);
         let tap = g.mana_tap_bonuses(p, forests[0]);
-        let bonus = tap.with_trigger_bonuses(&g, p, Some(tapped_land));
+        let bonus = tap.with_event_effects(&g, p, Some(tapped_land));
         g.finish_mana_tap_bonus(p, bonus, production);
         assert!(g.advance_mana_tap_bonus());
         checked(

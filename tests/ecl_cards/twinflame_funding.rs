@@ -78,7 +78,7 @@ fn ecl_twinflame_triggered_mana_bonus_at_production_and_funding_match_actual() {
         let tapped_land = g.object_ref(land);
         let tap = g.mana_tap_bonuses(p, land);
         let production = [0, 0, 0, 0, 1, 0];
-        let produced_bonus = tap.with_trigger_bonuses(&g, p, Some(tapped_land));
+        let produced_bonus = tap.with_event_effects(&g, p, Some(tapped_land));
         assert_eq!(
             produced_bonus.singleton(production),
             Some([0, 0, 0, 0, 2, 0])
@@ -122,7 +122,7 @@ fn ecl_twinflame_triggered_mana_bonus_at_production_and_funding_match_actual() {
         g.restore(&saved).unwrap();
         g.move_object(provider, Zone::Graveyard);
         assert_eq!(
-            tap.with_trigger_bonuses(&g, p, Some(tapped_land))
+            tap.with_event_effects(&g, p, Some(tapped_land))
                 .singleton(production),
             Some(production)
         );

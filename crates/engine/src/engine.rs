@@ -1662,12 +1662,14 @@ fn serialize_tap_mana_bonus<S: serde::Serializer>(
             amount: 0,
             colorless: 0,
             land_at_tap: None,
+            ..
         }) => serializer.serialize_u32(*red),
         Some(ManaTapBonus {
             fixed,
             amount: 0,
             colorless: 0,
             land_at_tap: None,
+            ..
         }) => fixed.serialize(serializer),
         Some(bonus) => bonus.serialize(serializer),
         None => serializer.serialize_none(),
@@ -1868,7 +1870,7 @@ impl SpellView {
             .as_deref()
             .copied()
             .unwrap_or_default()
-            .with_trigger_bonuses(world, self.controller, source)
+            .with_event_effects(world, self.controller, source)
     }
 
     pub(super) fn remember_source_kinds_at_departure(&mut self, before: &ObjectView) -> bool {
@@ -7655,9 +7657,8 @@ impl Game {
                 if grant.sacrifice {
                     self.sacrifice_batch(&[(actor, card)]);
                 }
-                self.add_quality_mana(actor, production, quality);
-                let bonus = bonus.with_trigger_bonuses(self, actor, Some(activated_object));
-                self.finish_mana_tap_bonus(actor, bonus, production);
+                let bonus = bonus.with_event_effects(self, actor, Some(activated_object));
+                self.add_mana_tap_event(actor, bonus, production, quality);
                 self.creature_ability_activated(actor, creature, activated_object, None);
                 self.state.passes = 0;
             }
@@ -7670,16 +7671,8 @@ impl Game {
                 let bonus = self.mana_tap_bonuses(actor, card);
                 let source = self.object_ref(card);
                 self.tap_objects_as(actor, &[card]);
-                if quality.is_some() {
-                    self.add_quality_mana(actor, production, quality);
-                } else {
-                    let pool = &mut self.state.players[actor.index()].mana[color];
-                    *pool = pool
-                        .checked_add(1)
-                        .capacity("mana representation exhausted");
-                }
-                let bonus = bonus.with_trigger_bonuses(self, actor, Some(source));
-                self.finish_mana_tap_bonus(actor, bonus, production);
+                let bonus = bonus.with_event_effects(self, actor, Some(source));
+                self.add_mana_tap_event(actor, bonus, production, quality);
                 if self.state.activation_observers.is_some() {
                     self.creature_ability_activated(
                         actor,
@@ -8174,8 +8167,7 @@ impl Game {
                         },
                     );
                 } else {
-                    self.add_quality_mana(actor, production, quality);
-                    self.finish_mana_tap_bonus(actor, item.tap_mana_bonus(self), production);
+                    self.add_mana_tap_event(actor, item.tap_mana_bonus(self), production, quality);
                     self.committed_mana_followups(&item);
                     self.reopen_evidence_after_mana_sacrifice(card);
                 }
@@ -8314,8 +8306,7 @@ impl Game {
                         },
                     );
                 } else {
-                    self.add_quality_mana(actor, production, quality);
-                    self.finish_mana_tap_bonus(actor, item.tap_mana_bonus(self), production);
+                    self.add_mana_tap_event(actor, item.tap_mana_bonus(self), production, quality);
                     self.committed_mana_followups(&item);
                     self.reopen_evidence_after_mana_sacrifice(card);
                 }

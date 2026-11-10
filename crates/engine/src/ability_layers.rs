@@ -109,6 +109,8 @@ pub enum StaticAbilityFragment {
     AttachedChosenColor,
     AttachmentManaBonus(ManaProduction),
     BasicLandTapManaBonus(u16),
+    /// Multiply the original output when the controller taps a basic land for mana.
+    ControlledBasicLandManaMultiplier(u16),
     /// Controlled instant and sorcery spells have split second.
     ControlledInstantSorcerySplitSecond,
     /// Permanents controlled by this source's controller cannot be sacrificed.

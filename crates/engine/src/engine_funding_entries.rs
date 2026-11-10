@@ -2649,14 +2649,15 @@ impl<'g> FundingState<'g> {
         {
             let mut next = self.clone();
             let (bonus, tap_source) = next.apply(step, false);
-            let bonus = bonus.with_trigger_bonuses(&next, self.actor, tap_source);
-            if let Some(production) = next.singleton_output(step)
-                && let Some(bonus) = bonus.singleton(production)
+            let receipt = bonus.with_event_effects(&next, self.actor, tap_source);
+            if let Some(production) = next.singleton_output(step, receipt)
+                && let Some(replaced) = next.replaced_mana_output(receipt, production)
+                && let Some(bonus) = receipt.singleton(production)
             {
-                next.add_funding_output(step, bonus, production);
+                next.add_funding_output(step, bonus, replaced);
                 return emit(&next);
             }
-            return next.visit_output(step, bonus, goal, emit);
+            return next.visit_output(step, receipt, goal, emit);
         }
         let external = if let Some(external) = &step.external {
             let source = &self.resources[step.resource];
@@ -2726,7 +2727,7 @@ impl<'g> FundingState<'g> {
                 departed.then_some(destination),
                 external,
                 &mut |world| {
-                    let bonus = bonus.with_trigger_bonuses(world, self.actor, tap_source);
+                    let bonus = bonus.with_event_effects(world, self.actor, tap_source);
                     world.visit_output(step, bonus, goal, emit)
                 },
             )

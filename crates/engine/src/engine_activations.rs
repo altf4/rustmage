@@ -205,8 +205,12 @@ impl Game {
                 production,
                 quality,
             } => {
-                self.add_quality_mana(actor, production, quality);
-                self.finish_mana_tap_bonus(actor, payment.item.tap_mana_bonus(self), production);
+                self.add_mana_tap_event(
+                    actor,
+                    payment.item.tap_mana_bonus(self),
+                    production,
+                    quality,
+                );
                 self.committed_mana_followups(&payment.item);
                 self.reopen_evidence_after_mana_sacrifice(card);
             }
