@@ -301,7 +301,7 @@ const IMPOSTOR: CardRules = CardRules {
         targets: TargetPlan::NONE,
         program: &[Instruction::CreateNonlegendaryCopyTokens {
             subject: Subject::Entering,
-            amount: AmountValue::Fixed(1),
+            amount: 1,
         }],
     }],
     ..CardRules::EMPTY
