@@ -2075,3 +2075,388 @@ fn likeness_looter_draws_and_discards_then_retains_only_its_paid_copy_ability() 
         assert!(game.object_view(looter).keywords.contains(Keywords::FLYING));
     }
 }
+
+#[test]
+fn eriette_restricts_attacks_and_counts_live_controlled_auras_at_the_end_step() {
+    const WICKED_ROLE: Card = Card::from_catalogue_id(5248);
+    use rustmage_core::engine::replacements::TokenGroupView;
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let eriette = candidate(&mut game, player, "Eriette of the Charmed Apple");
+        let constrained = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+        let free = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+        let friend = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let aura = put(&mut game, player, "Bestial Bloodline", Zone::Hand);
+        let spare_aura = put(&mut game, player, "Bestial Bloodline", Zone::Hand);
+        let walker = put(&mut game, player, "Ajani, Caller of the Pride", Zone::Hand);
+        let remove = put(&mut game, opponent, "Disenchant", Zone::Hand);
+        announce(&mut game, eriette, &[]);
+        settle(&mut game);
+        for (spell, target) in [(aura, constrained), (spare_aura, friend)] {
+            announce(&mut game, spell, &[Target::Card(target)]);
+            settle(&mut game);
+        }
+        announce(&mut game, walker, &[]);
+        settle(&mut game);
+        let recipient = game.object_ref(free);
+        let _ = game.create_token_groups_attached(
+            opponent,
+            &[TokenGroupView {
+                token: WICKED_ROLE,
+                amount: 1,
+                tapped: false,
+            }],
+            None,
+            true,
+            Some(recipient),
+        );
+
+        game.begin_step(Step::End);
+        game.give_priority();
+        let mut reduced = game.clone();
+        act(&mut reduced, Action::Pass);
+        cast(&mut reduced, remove, Some(Target::Card(spare_aura)));
+        settle(&mut reduced);
+        assert_eq!(reduced.state.players[player.index()].life, 21);
+        assert_eq!(reduced.state.players[opponent.index()].life, 19);
+
+        settle(&mut game);
+        assert_eq!(game.state.players[player.index()].life, 22);
+        assert_eq!(game.state.players[opponent.index()].life, 18);
+        pass_twice(&mut game);
+        assert_eq!(game.state.active, opponent);
+        for _ in 0..4 {
+            pass_twice(&mut game);
+        }
+        assert_eq!(game.state.pending, Pending::Attackers);
+        reject(&mut game, Action::Attack { card: constrained });
+        let defender = game.object_ref(walker);
+        reject(
+            &mut game,
+            Action::AttackPlaneswalker {
+                card: constrained,
+                defender,
+            },
+        );
+        act(&mut game, Action::Attack { card: free });
+        act(&mut game, Action::FinishAttackers);
+    }
+}
+
+#[test]
+fn expel_the_interlopers_chooses_a_public_bounded_threshold_and_uses_live_power() {
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let expel = candidate(&mut game, player, "Expel the Interlopers");
+        let negative = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let zero = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let nine = put(&mut game, opponent, "Gigantosaurus", Zone::Battlefield);
+        let ten = put(&mut game, opponent, "Gigantosaurus", Zone::Battlefield);
+        let protected = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+        let protection = put(&mut game, player, "Take Up the Shield", Zone::Hand);
+        for (card, modifier) in [(negative, -3), (zero, -2), (nine, -1)] {
+            game.state.objects[card as usize].growth.power = modifier;
+        }
+        cast(&mut game, protection, Some(Target::Card(protected)));
+        settle(&mut game);
+        announce(&mut game, expel, &[]);
+        pass_twice(&mut game);
+        reject(&mut game, Action::ChoosePowerThreshold { value: 11 });
+        let low = Action::ChoosePowerThreshold { value: 0 };
+        let high = Action::ChoosePowerThreshold { value: 10 };
+        assert_eq!(game.apply(opponent, low.clone()), Err(Error::WrongActor));
+        let mut maximum = game.clone();
+        act(&mut maximum, high);
+        settle(&mut maximum);
+        assert_eq!(maximum.object_view(ten).zone, Zone::Graveyard);
+        assert_eq!(maximum.object_view(nine).zone, Zone::Battlefield);
+        assert_eq!(maximum.object_view(zero).zone, Zone::Battlefield);
+
+        act(&mut game, low);
+        settle(&mut game);
+        assert_eq!(game.object_view(negative).zone, Zone::Battlefield);
+        assert_eq!(game.object_view(protected).zone, Zone::Battlefield);
+        for destroyed in [zero, nine, ten] {
+            assert_eq!(game.object_view(destroyed).zone, Zone::Graveyard);
+        }
+    }
+}
+
+#[test]
+fn faunsbane_troll_pays_an_attached_aura_and_exiles_even_when_it_cannot_fight() {
+    const MONSTER_ROLE: Card = Card::from_catalogue_id(5330);
+    const WICKED_ROLE: Card = Card::from_catalogue_id(5248);
+    use rustmage_core::engine::replacements::TokenGroupView;
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let troll = candidate(&mut game, player, "Faunsbane Troll");
+        let wrong = put(&mut game, player, "Bestial Bloodline", Zone::Hand);
+        let friend = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let enemy = put(&mut game, opponent, "Hill Giant", Zone::Battlefield);
+        let bounce = put(&mut game, opponent, "Unsummon", Zone::Hand);
+        let later = put(&mut game, player, "Murder", Zone::Hand);
+        announce(&mut game, troll, &[]);
+        settle(&mut game);
+        assert_eq!(stats(&game, troll), (5, 5));
+        assert!(game.object_view(troll).keywords.contains(Keywords::TRAMPLE));
+        let roles = tokens(&game, player, MONSTER_ROLE);
+        assert_eq!(roles.len(), 1);
+        announce(&mut game, wrong, &[Target::Card(friend)]);
+        settle(&mut game);
+
+        act(
+            &mut game,
+            Action::AnnounceActivate {
+                card: troll,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        reject(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(friend),
+            },
+        );
+        choose_target(&mut game, Target::Card(enemy));
+        let wrong_aura = game.object_ref(wrong);
+        reject(
+            &mut game,
+            Action::ChooseAdditionalCost { object: wrong_aura },
+        );
+
+        let object = game.object_ref(roles[0]);
+        act(&mut game, Action::ChooseAdditionalCost { object });
+        pay(&mut game);
+        assert_eq!(stats(&game, troll), (4, 4));
+        assert!(!game.object_view(troll).keywords.contains(Keywords::TRAMPLE));
+        assert_ne!(game.object_view(roles[0]).zone, Zone::Battlefield);
+
+        let mut no_fight = game.clone();
+        act(&mut no_fight, Action::Pass);
+        cast(&mut no_fight, bounce, Some(Target::Card(troll)));
+        settle(&mut no_fight);
+        assert_eq!(no_fight.object_view(troll).zone, Zone::Hand);
+        assert_eq!(no_fight.object_view(enemy).damage, 0);
+        cast(&mut no_fight, later, Some(Target::Card(enemy)));
+        settle(&mut no_fight);
+        assert_eq!(no_fight.object_view(enemy).zone, Zone::Exile);
+
+        settle(&mut game);
+        assert_eq!(game.object_view(enemy).zone, Zone::Exile);
+        assert_eq!(game.object_view(troll).damage, 3);
+        assert_eq!(game.object_view(wrong).zone, Zone::Battlefield);
+
+        let recipient = game.object_ref(troll);
+        let _ = game.create_token_groups_attached(
+            opponent,
+            &[TokenGroupView {
+                token: WICKED_ROLE,
+                amount: 1,
+                tapped: false,
+            }],
+            None,
+            true,
+            Some(recipient),
+        );
+        put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+        reject(
+            &mut game,
+            Action::AnnounceActivate {
+                card: troll,
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+    }
+}
+
+#[test]
+fn feral_encounter_privately_exiles_a_paid_creature_then_targets_at_combat() {
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let encounter = candidate(&mut game, player, "Feral Encounter");
+        let victim = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+        let original_top = game.top_library_card(player).unwrap();
+        let remainder = [0; 4].map(|_| put(&mut game, player, "Forest", Zone::Library));
+        let giant = put(&mut game, player, "Hill Giant", Zone::Library);
+        announce(&mut game, encounter, &[]);
+        pass_twice(&mut game);
+        assert_eq!(
+            game.observe(player)
+                .library_selection
+                .unwrap()
+                .remaining
+                .len(),
+            5
+        );
+        assert!(game.observe(opponent).library_selection.is_none());
+        reject(&mut game, Action::SelectLibrary { card: remainder[0] });
+        let mut skip = game.clone();
+        act(&mut skip, Action::FinishLibrarySelection);
+        assert_eq!(skip.object_view(giant).zone, Zone::Library);
+        assert_eq!(skip.top_library_card(player), Some(original_top));
+        end_scenario_turn(&mut skip);
+        assert!(skip
+            .observe(player)
+            .delayed_steps
+            .as_ref()
+            .is_none_or(Vec::is_empty));
+
+        act(&mut game, Action::SelectLibrary { card: giant });
+        act(&mut game, Action::FinishLibrarySelection);
+        assert_eq!(game.object_view(giant).zone, Zone::Exile);
+        assert_eq!(game.top_library_card(player), Some(original_top));
+        let mut bottom = game.state.players[player.index()].library[..4].to_vec();
+        bottom.sort_unstable();
+        assert_eq!(bottom, remainder);
+        assert_eq!(
+            game.observe(player).delayed_steps.as_ref().unwrap().len(),
+            1
+        );
+        act(&mut game, Action::AnnounceExile { card: giant });
+        pay(&mut game);
+        settle(&mut game);
+        assert_eq!(game.object_view(giant).zone, Zone::Battlefield);
+        assert_eq!(game.object_view(victim).damage, 0);
+
+        pass_twice(&mut game);
+        reject(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(victim),
+            },
+        );
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(giant),
+            },
+        );
+        let mut no_victim = game.clone();
+        act(&mut no_victim, Action::FinishTargets);
+        settle(&mut no_victim);
+        assert_eq!(no_victim.object_view(victim).zone, Zone::Battlefield);
+
+        choose_target(&mut game, Target::Card(victim));
+        settle(&mut game);
+        assert_eq!(game.object_view(victim).zone, Zone::Graveyard);
+        assert_eq!(game.object_view(giant).damage, 0);
+        assert!(game
+            .observe(player)
+            .delayed_steps
+            .as_ref()
+            .is_none_or(Vec::is_empty));
+    }
+}
+
+#[test]
+fn gnawing_crescendo_boosts_current_creatures_and_remembers_later_nontoken_deaths() {
+    const RAT: Card = Card::from_catalogue_id(5323);
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let crescendo = candidate(&mut game, player, "Gnawing Crescendo");
+        let old = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+        let later = put(&mut game, player, "Bear Cub", Zone::Hand);
+        let foreign = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+        let destroy = put(&mut game, player, "Day of Judgment", Zone::Hand);
+        let kill = put(&mut game, opponent, "Murder", Zone::Hand);
+        let swamps = [0; 3].map(|_| put(&mut game, opponent, "Swamp", Zone::Battlefield));
+        game.create_tokens(player, RAT, 1, false);
+        let original = tokens(&game, player, RAT)[0];
+        announce(&mut game, crescendo, &[]);
+        settle(&mut game);
+        assert_eq!(stats(&game, old), (5, 3));
+        assert_eq!(stats(&game, original), (3, 1));
+        assert_eq!(stats(&game, foreign), (2, 2));
+        announce(&mut game, later, &[]);
+        settle(&mut game);
+        assert_eq!(stats(&game, later), (2, 2));
+
+        announce(&mut game, destroy, &[]);
+        pass_twice(&mut game);
+        choose(&mut game, |action| {
+            matches!(action, Action::PutTrigger { .. })
+        });
+        assert_eq!(game.state.stack.len(), 2);
+        settle(&mut game);
+        let rats = tokens(&game, player, RAT);
+        assert_eq!(rats.len(), 2);
+        for rat in rats {
+            let rat = game.object_view(rat);
+            assert_eq!((rat.power, rat.toughness), (1, 1));
+            assert!(rat.keywords.contains(Keywords::CANT_BLOCK));
+        }
+
+        end_scenario_turn(&mut game);
+        let after = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        for card in swamps {
+            act(&mut game, Action::TapMana { card });
+        }
+        cast(&mut game, kill, Some(Target::Card(after)));
+        settle(&mut game);
+        assert_eq!(game.object_view(after).zone, Zone::Graveyard);
+        assert_eq!(tokens(&game, player, RAT).len(), 2);
+    }
+}
+
+#[test]
+fn graceful_takedown_uses_distinct_groups_and_live_enchanted_sources() {
+    const WICKED_ROLE: Card = Card::from_catalogue_id(5248);
+    use rustmage_core::engine::replacements::TokenGroupView;
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let spell = candidate(&mut game, player, "Graceful Takedown");
+        let first = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let second = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let other = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let enemy = put(&mut game, opponent, "Gigantosaurus", Zone::Battlefield);
+        let aura = put(&mut game, player, "Bestial Bloodline", Zone::Hand);
+        let remove = put(&mut game, opponent, "Disenchant", Zone::Hand);
+        announce(&mut game, aura, &[Target::Card(first)]);
+        settle(&mut game);
+        let recipient = game.object_ref(second);
+        let _ = game.create_token_groups_attached(
+            opponent,
+            &[TokenGroupView {
+                token: WICKED_ROLE,
+                amount: 1,
+                tapped: false,
+            }],
+            None,
+            true,
+            Some(recipient),
+        );
+        let target = |card| Action::ChooseTarget {
+            target: Target::Card(card),
+        };
+        act(&mut game, Action::AnnounceCast { card: spell });
+        reject(&mut game, target(other));
+        act(&mut game, target(first));
+        act(&mut game, target(second));
+        act(&mut game, Action::FinishTargets);
+        reject(&mut game, target(first));
+        act(&mut game, target(other));
+        reject(&mut game, target(other));
+        act(&mut game, target(enemy));
+        pay(&mut game);
+
+        let mut stripped = game.clone();
+        act(&mut stripped, Action::Pass);
+        cast(&mut stripped, remove, Some(Target::Card(aura)));
+        settle(&mut stripped);
+        assert_eq!(stripped.object_view(first).zone, Zone::Battlefield);
+        assert_eq!(stripped.object_view(enemy).damage, 5);
+        settle(&mut game);
+        assert_eq!(game.object_view(enemy).damage, 8);
+        for card in [first, second, other] {
+            assert_eq!(game.object_view(card).damage, 0);
+        }
+    }
+}
