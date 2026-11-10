@@ -1126,6 +1126,7 @@ impl<'g> FundingState<'g> {
                                     fragment,
                                     StaticAbilityFragment::ControlledOtherTappedLegendaryCreatureKeywords { .. }
                                         | StaticAbilityFragment::ControlledActivationReduction { .. }
+                                        | StaticAbilityFragment::ControlledCreatureKindBonus { .. }
                                         | StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)
                                 ))
                             })

@@ -5444,7 +5444,8 @@ impl Game {
                     EffectChoiceKind::LandCards { .. }
                         | EffectChoiceKind::UntapLands { .. }
                         | EffectChoiceKind::DiscardedLand { .. }
-                ) && emit(Action::FinishLandSelection)
+                ) && !self.graveyard_land_return_active()
+                    && emit(Action::FinishLandSelection)
                 {
                     return true;
                 }

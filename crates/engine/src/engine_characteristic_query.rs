@@ -366,6 +366,18 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                     {
                         stats += bonus;
                     }
+                    if let StaticAbilityFragment::ControlledCreatureKindBonus {
+                        kinds,
+                        stats: bonus,
+                    } = *fragment
+                        && object.controller == self.object(id).controller
+                        && self.current_kinds(id) & kinds == kinds
+                        && self.continuous_fragment_available(source, |candidate| {
+                            std::ptr::eq(candidate, fragment)
+                        })
+                    {
+                        stats += bonus;
+                    }
                     if let StaticAbilityFragment::ConditionalCreatureModifier {
                         condition,
                         modifier,

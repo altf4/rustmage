@@ -3091,6 +3091,10 @@ pub enum Instruction {
     ReturnOwnedGraveyardNonlandPermanents,
     /// Simultaneously return every land card in the controller's graveyard tapped.
     ReturnOwnedGraveyardLandsTapped,
+    /// Return exactly one land from the controller's graveyard if possible.
+    ChooseOwnGraveyardLandReturn {
+        tapped: bool,
+    },
     ReturnGraveyardCreatures {
         players: PlayerSet,
         maximum_mana_value: u64,

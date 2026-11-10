@@ -5856,6 +5856,11 @@ impl Game {
                 Instruction::ReturnOwnedGraveyardLandsTapped => {
                     self.return_owned_graveyard_permanents(&item, 2, 0, true);
                 }
+                Instruction::ChooseOwnGraveyardLandReturn { tapped } => {
+                    if self.start_graveyard_land_return(&item, tapped) {
+                        return;
+                    }
+                }
                 Instruction::ReturnGraveyardCreatures {
                     players,
                     maximum_mana_value,

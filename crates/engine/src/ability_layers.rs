@@ -508,6 +508,11 @@ pub enum StaticAbilityFragment {
     },
     /// A layer-7c bonus to the source controller's current legendary creatures.
     ControlledLegendaryCreatureBonus(Stats),
+    /// A layer-7c bonus to controlled creatures with every listed card type.
+    ControlledCreatureKindBonus {
+        kinds: u16,
+        stats: Stats,
+    },
     /// Live earlier-layer predicate gates an ordinary creature-group bonus.
     ConditionalCreatureModifier {
         condition: StatValue,

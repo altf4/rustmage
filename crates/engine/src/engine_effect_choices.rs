@@ -448,7 +448,8 @@ impl Game {
             return o.owner == player
                 && o.is_card()
                 && self.object_ref(object.card) == object
-                && matches!(o.zone, Zone::Hand | Zone::Graveyard)
+                && (o.zone == Zone::Graveyard
+                    || o.zone == Zone::Hand && !self.graveyard_land_return_active())
                 && o.card.is_land()
                 && !choice.selected[player.index()].contains(&object)
                 && choice.selected[player.index()].len() < maximum as usize;
@@ -1029,6 +1030,34 @@ impl Game {
         }
     }
 
+    pub(super) fn graveyard_land_return_active(&self) -> bool {
+        self.state.resolving.as_ref().is_some_and(|resolution| {
+            matches!(
+                resolution.program.get(resolution.pc.saturating_sub(1)),
+                Some(Instruction::ChooseOwnGraveyardLandReturn { .. })
+            )
+        })
+    }
+
+    pub(super) fn start_graveyard_land_return(&mut self, item: &SpellView, tapped: bool) -> bool {
+        if !self.state.objects.iter().any(|object| {
+            object.zone == Zone::Graveyard
+                && object.owner == item.controller
+                && object.is_card()
+                && object.card.is_land()
+        }) {
+            return false;
+        }
+        self.start_effect_choice(
+            item,
+            EffectChoiceKind::LandCards { maximum: 1, tapped },
+            PlayerSet::Controller,
+            evidence::cost(0).filter,
+            1,
+            None,
+        )
+    }
+
     pub(super) fn start_land_selection(
         &mut self,
         item: &SpellView,
@@ -1133,7 +1162,8 @@ impl Game {
                         && self.current_kinds(reference.card) & 2 != 0
                 } else {
                     object.owner == player
-                        && matches!(object.zone, Zone::Hand | Zone::Graveyard)
+                        && (object.zone == Zone::Graveyard
+                            || object.zone == Zone::Hand && !self.graveyard_land_return_active())
                         && object.card.is_land()
                 });
                 let mut movement = self.entry_move(reference.card, Zone::Battlefield, tapped);
