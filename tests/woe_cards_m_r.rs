@@ -10,6 +10,7 @@ const RAT: Card = Card::from_catalogue_id(5323);
 const MONSTER: Card = Card::from_catalogue_id(5330);
 const YOUNG_HERO: Card = Card::from_catalogue_id(5275);
 const FOOD: Card = Card::from_catalogue_id(5246);
+const HUMAN: Card = Card::from_catalogue_id(5254);
 
 fn named(name: &str) -> Card {
     Card::from_name(name).unwrap()
@@ -53,6 +54,16 @@ fn finish_turn(game: &mut Game) {
         act(game, Action::Pass);
     }
     panic!("turn did not reach cleanup");
+}
+
+fn enter_main_phase(game: &mut Game) {
+    for _ in 0..8 {
+        if game.state.step == Step::Main1 {
+            return;
+        }
+        act(game, Action::Pass);
+    }
+    panic!("precombat main phase did not begin");
 }
 
 #[test]
@@ -503,13 +514,7 @@ fn mosswood_dreadknight_dies_into_a_paid_next_turn_adventure_and_returns_from_ex
         assert_eq!(game.observe(player).graveyard_cast_permissions, permissions);
         finish_turn(&mut game);
         assert_eq!(game.state.active, player);
-        for _ in 0..8 {
-            if game.state.step == Step::Main1 {
-                break;
-            }
-            act(&mut game, Action::Pass);
-        }
-        assert_eq!(game.state.step, Step::Main1);
+        enter_main_phase(&mut game);
         for card in lands {
             act(&mut game, Action::TapMana { card });
         }
@@ -980,5 +985,573 @@ fn night_of_the_sweets_revenge_funds_its_paid_boost_then_samples_remaining_foods
         finish_turn(&mut game);
         assert_eq!(stats(&game, ally), (2, 2));
         assert_eq!(stats(&game, cookie), (1, 1));
+    }
+}
+
+#[test]
+fn realm_scorcher_hellkite_bargains_for_four_colored_mana_and_has_paid_damage_and_haste() {
+    for player in [Player::P0, Player::P1] {
+        let other = player.other();
+        let mut setup = scenario(player);
+        let hellkite = spawn(
+            &mut setup,
+            player,
+            named("Realm-Scorcher Hellkite"),
+            Zone::Hand,
+        );
+        let artifact = put(&mut setup, player, "Short Bow", Zone::Battlefield);
+        let enchantment = put(&mut setup, player, "Demonic Pact", Zone::Battlefield);
+        let token = spawn(&mut setup, player, RAT, Zone::Battlefield);
+        let ordinary = put(&mut setup, player, "Bear Cub", Zone::Battlefield);
+        let victim = put(&mut setup, other, "Llanowar Elves", Zone::Battlefield);
+        let counterspell = put(&mut setup, other, "Essence Scatter", Zone::Hand);
+        let exact_payment = [0, 0, 0, 2, 0, 4];
+        setup.state.players[player.index()].mana = exact_payment;
+
+        for offering in [None, Some(artifact), Some(enchantment), Some(token)] {
+            let mut game = setup.clone();
+            act(&mut game, Action::AnnounceCast { card: hellkite });
+            let invalid = Some(game.object_ref(ordinary));
+            reject(&mut game, Action::ChooseBargain { sacrifice: invalid });
+            let sacrifice = offering.map(|id| game.object_ref(id));
+            act(&mut game, Action::ChooseBargain { sacrifice });
+            act(
+                &mut game,
+                Action::PayCosts {
+                    payment: exact_payment,
+                },
+            );
+            assert_eq!(
+                game.state.stack.last().unwrap().cast.unwrap().bargain,
+                Some(offering.is_some())
+            );
+            assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+            if let Some(card) = offering {
+                assert_ne!(game.object_view(card).zone, Zone::Battlefield);
+            }
+
+            if offering == Some(artifact) {
+                let mut countered = game.clone();
+                act(&mut countered, Action::Pass);
+                cast(&mut countered, counterspell, Some(Target::Spell(hellkite)));
+                settle(&mut countered);
+                assert_eq!(countered.object_view(hellkite).zone, Zone::Graveyard);
+                assert_eq!(countered.state.players[player.index()].mana, [0; 6]);
+            }
+
+            pass_pair(&mut game);
+            let view = game.object_view(hellkite);
+            assert_eq!(view.zone, Zone::Battlefield);
+            assert_eq!((view.power, view.toughness), (4, 6));
+            assert!(
+                view.keywords
+                    .contains(Keywords::FLYING.union(Keywords::HASTE))
+            );
+            if offering.is_none() {
+                assert!(game.state.stack.is_empty());
+                assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+                continue;
+            }
+
+            pass_pair(&mut game);
+            reject(
+                &mut game,
+                Action::ChooseMana {
+                    production: [0, 0, 0, 0, 0, 4],
+                },
+            );
+            reject(
+                &mut game,
+                Action::ChooseMana {
+                    production: [0, 0, 0, 3, 0, 0],
+                },
+            );
+            let production = [1, 0, 0, 3, 0, 0];
+            act(&mut game, Action::ChooseMana { production });
+            assert_eq!(game.state.players[player.index()].mana, production);
+
+            if offering == Some(artifact) {
+                for (target, payment) in [
+                    (Target::Card(victim), [1, 0, 0, 1, 0, 0]),
+                    (Target::Player(other), [0, 0, 0, 2, 0, 0]),
+                ] {
+                    act(&mut game, activate(hellkite, 0));
+                    act(&mut game, Action::ChooseTarget { target });
+                    act(&mut game, Action::PayCosts { payment });
+                    settle(&mut game);
+                }
+                assert_eq!(game.object_view(victim).zone, Zone::Graveyard);
+                assert_eq!(game.state.players[other.index()].life, 19);
+                assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+                attack(&mut game, hellkite);
+                assert_eq!(game.state.attackers[0].card, hellkite);
+            }
+        }
+    }
+}
+
+#[test]
+fn return_from_the_wilds_resolves_each_pair_and_shuffles_even_without_a_land() {
+    for player in [Player::P0, Player::P1] {
+        let mut parent = scenario(player);
+        let spell = spawn(
+            &mut parent,
+            player,
+            named("Return from the Wilds"),
+            Zone::Hand,
+        );
+        let basic = put(&mut parent, player, "Island", Zone::Library);
+        let nonbasic = put(&mut parent, player, "Evolving Wilds", Zone::Library);
+        act(&mut parent, Action::AnnounceCast { card: spell });
+        assert_eq!(
+            parent
+                .legal_actions()
+                .iter()
+                .filter(|action| matches!(action, Action::ChooseMode { .. }))
+                .count(),
+            3
+        );
+        reject(&mut parent, Action::ChooseMode { mode: 3 });
+
+        for (mode, search, human, food) in [
+            (0, true, true, false),
+            (1, true, false, true),
+            (2, false, true, true),
+        ] {
+            let mut game = parent.clone();
+            act(&mut game, Action::ChooseMode { mode });
+            act(
+                &mut game,
+                Action::PayCosts {
+                    payment: [0, 0, 0, 0, 1, 2],
+                },
+            );
+            pass_pair(&mut game);
+            if search {
+                assert_eq!(game.state.pending, Pending::EffectSearch { player });
+                assert!(game.observe(player.other()).search_choice.is_none());
+                assert!(tokens(&game, player, HUMAN).is_empty());
+                assert!(tokens(&game, player, FOOD).is_empty());
+                reject(&mut game, Action::ChooseSearch { card: nonbasic });
+                if mode == 0 {
+                    let mut miss = game.clone();
+                    let rng = miss.state.rng;
+                    act(&mut miss, Action::FinishSearch);
+                    settle(&mut miss);
+                    assert_ne!(miss.state.rng, rng);
+                    assert_eq!(miss.object_view(basic).zone, Zone::Library);
+                    assert_eq!(tokens(&miss, player, HUMAN).len(), 1);
+                }
+                act(&mut game, Action::ChooseSearch { card: basic });
+                act(&mut game, Action::FinishSearch);
+                settle(&mut game);
+                assert_eq!(game.object_view(basic).zone, Zone::Battlefield);
+                assert!(game.object_view(basic).tapped);
+            } else {
+                assert_eq!(game.object_view(basic).zone, Zone::Library);
+                assert_eq!(
+                    game.state.players[player.index()].nonland_permanents_entered_this_turn,
+                    2
+                );
+            }
+            let humans = tokens(&game, player, HUMAN);
+            assert_eq!(humans.len(), usize::from(human));
+            if let Some(&id) = humans.first() {
+                let view = game.object_view(id);
+                assert_eq!((view.power, view.toughness, view.colors), (1, 1, 1));
+                assert!(view.has_subtype("Human"));
+            }
+            assert_eq!(tokens(&game, player, FOOD).len(), usize::from(food));
+            assert_eq!(game.object_view(spell).zone, Zone::Graveyard);
+        }
+    }
+}
+
+#[test]
+fn rowans_grim_search_privately_keeps_zero_one_or_two_and_draws_in_the_selected_order() {
+    for player in [Player::P0, Player::P1] {
+        let other = player.other();
+        let mut game = scenario(player);
+        let spell = spawn(&mut game, player, named("Rowan's Grim Search"), Zone::Hand);
+        let offering = spawn(&mut game, player, FOOD, Zone::Battlefield);
+        put(
+            &mut game,
+            player,
+            "Lorehold, the Historian",
+            Zone::Battlefield,
+        );
+        let [fifth, fourth, island, shock, top] =
+            ["Forest", "Swamp", "Island", "Shock", "Mountain"]
+                .map(|card| put(&mut game, player, card, Zone::Library));
+        act(&mut game, Action::AnnounceCast { card: spell });
+
+        let mut unpaid = game.clone();
+        act(&mut unpaid, Action::ChooseBargain { sacrifice: None });
+        pay(&mut unpaid);
+        settle(&mut unpaid);
+        assert_eq!(unpaid.object_view(offering).zone, Zone::Battlefield);
+        assert_eq!(unpaid.object_view(top).zone, Zone::Hand);
+        assert_eq!(unpaid.object_view(shock).zone, Zone::Hand);
+        assert_eq!(unpaid.top_library_card(player), Some(island));
+        assert_eq!(unpaid.state.players[player.index()].life, 18);
+
+        let sacrifice = Some(game.object_ref(offering));
+        act(&mut game, Action::ChooseBargain { sacrifice });
+        act(
+            &mut game,
+            Action::PayCosts {
+                payment: [0, 0, 1, 0, 0, 2],
+            },
+        );
+        pass_pair(&mut game);
+        assert_ne!(game.object_view(offering).zone, Zone::Battlefield);
+        let view = game.observe(player).library_selection.unwrap();
+        assert_eq!((view.minimum, view.maximum), (0, 2));
+        assert_eq!(
+            view.remaining
+                .iter()
+                .map(|object| object.id)
+                .collect::<Vec<_>>(),
+            [top, shock, island, fourth]
+        );
+        assert!(game.observe(other).library_selection.is_none());
+        reject(&mut game, Action::SelectLibrary { card: fifth });
+
+        let mut zero = game.clone();
+        act(&mut zero, Action::FinishLibrarySelection);
+        for card in [top, shock, island, fourth] {
+            assert_eq!(zero.object_view(card).zone, Zone::Graveyard);
+        }
+        assert_eq!(zero.object_view(fifth).zone, Zone::Hand);
+        assert_eq!(zero.state.players[player.index()].cards_drawn_this_turn, 2);
+        assert_eq!(zero.state.players[player.index()].life, 18);
+
+        let mut one = game.clone();
+        act(&mut one, Action::SelectLibrary { card: island });
+        act(&mut one, Action::FinishLibrarySelection);
+        for card in [top, shock, fourth] {
+            assert_eq!(one.object_view(card).zone, Zone::Graveyard);
+        }
+        assert_eq!(one.object_view(island).zone, Zone::Hand);
+        assert_eq!(one.object_view(fifth).zone, Zone::Hand);
+        assert_eq!(one.state.players[player.index()].life, 18);
+
+        let mut reverse = game.clone();
+        act(&mut reverse, Action::SelectLibrary { card: island });
+        act(&mut reverse, Action::SelectLibrary { card: shock });
+        act(&mut reverse, Action::FinishLibrarySelection);
+        assert!(reverse.observe(player).miracle.is_none());
+        assert_eq!(reverse.object_view(shock).zone, Zone::Hand);
+
+        let first = Action::SelectLibrary { card: shock };
+        let saved = game.snapshot();
+        let revision = game.revision();
+        let index = game
+            .legal_actions()
+            .iter()
+            .position(|action| *action == first)
+            .unwrap();
+        let mut indexed = game.clone();
+        indexed.apply_index(player, revision, index).unwrap();
+        act(&mut game, first.clone());
+        assert_eq!(game.snapshot(), indexed.snapshot());
+        indexed.restore(&saved).unwrap();
+        assert!(indexed.observe(other).library_selection.is_none());
+        act(&mut indexed, first);
+        assert_eq!(game.snapshot(), indexed.snapshot());
+        act(&mut game, Action::SelectLibrary { card: island });
+        reject(&mut game, Action::SelectLibrary { card: top });
+        act(&mut game, Action::FinishLibrarySelection);
+        assert_eq!(
+            game.observe(player).miracle.unwrap().object,
+            game.object_ref(shock)
+        );
+        assert_eq!(game.object_view(island).zone, Zone::Library);
+        assert!(game.observe(other).miracle.is_none());
+        act(&mut game, Action::DeclineMiracle);
+        settle(&mut game);
+        assert_eq!(game.object_view(shock).zone, Zone::Hand);
+        assert_eq!(game.object_view(island).zone, Zone::Hand);
+        assert_eq!(game.object_view(top).zone, Zone::Graveyard);
+        assert_eq!(game.object_view(fourth).zone, Zone::Graveyard);
+        assert_eq!(game.top_library_card(player), Some(fifth));
+        assert_eq!(game.state.players[player.index()].life, 18);
+    }
+}
+
+#[test]
+fn questing_druid_counts_each_qualifying_cast_once_and_ignores_spell_copies() {
+    for player in [Player::P0, Player::P1] {
+        let other = player.other();
+        let mut game = scenario(player);
+        let druid = spawn(&mut game, player, named("Questing Druid"), Zone::Hand);
+        cast(&mut game, druid, None);
+        settle(&mut game);
+        assert_eq!(stats(&game, druid), (1, 1));
+        for (name, target, count) in [
+            ("Llanowar Elves", None, 0),
+            ("Short Bow", None, 0),
+            ("Healer's Hawk", None, 1),
+            ("Vampire Gourmand", None, 2),
+            ("Shock", Some(Target::Player(other)), 3),
+            ("Lightning Helix", Some(Target::Player(other)), 4),
+            ("Teach by Example", None, 5),
+        ] {
+            let spell = put(&mut game, player, name, Zone::Hand);
+            cast(&mut game, spell, target);
+            settle(&mut game);
+            assert_eq!(
+                game.counter_count(druid, CounterKind::PlusOne),
+                count,
+                "{name}"
+            );
+        }
+
+        let divination = put(&mut game, player, "Divination", Zone::Hand);
+        let library = game.state.players[player.index()].library.len();
+        cast(&mut game, divination, None);
+        for _ in 0..2 {
+            if matches!(game.state.pending, Pending::OrderTriggers { .. }) {
+                choose(&mut game, |action| {
+                    matches!(action, Action::PutTrigger { .. })
+                });
+            }
+        }
+        settle(&mut game);
+        assert_eq!(
+            game.state.players[player.index()].library.len(),
+            library - 4
+        );
+        assert_eq!(game.counter_count(druid, CounterKind::PlusOne), 6);
+
+        let opposing_shock = put(&mut game, other, "Shock", Zone::Hand);
+        act(&mut game, Action::Pass);
+        cast(&mut game, opposing_shock, Some(Target::Player(player)));
+        settle(&mut game);
+        assert_eq!(game.counter_count(druid, CounterKind::PlusOne), 6);
+    }
+}
+
+#[test]
+fn seek_the_beast_exiles_two_paid_plays_until_the_next_own_end_step() {
+    for player in [Player::P0, Player::P1] {
+        let other = player.other();
+        let mut game = scenario(player);
+        let druid_card = named("Questing Druid");
+        let druid = spawn(&mut game, player, druid_card, Zone::Hand);
+        let adventure = spawn(&mut game, player, druid_card, Zone::Hand);
+        let mountain = put(&mut game, player, "Mountain", Zone::Battlefield);
+        let forest = put(&mut game, player, "Forest", Zone::Battlefield);
+        let untouched = put(&mut game, player, "Swamp", Zone::Library);
+        let land = put(&mut game, player, "Island", Zone::Library);
+        let shock = put(&mut game, player, "Shock", Zone::Library);
+        cast(&mut game, druid, None);
+        settle(&mut game);
+
+        enter_end_step(&mut game);
+        for card in [mountain, forest] {
+            act(&mut game, Action::TapMana { card });
+        }
+        act(&mut game, Action::AnnounceAdventure { card: adventure });
+        act(
+            &mut game,
+            Action::PayCosts {
+                payment: [0, 0, 0, 1, 1, 0],
+            },
+        );
+        assert!(game.state.stack.iter().any(|item| {
+            item.cast
+                .is_some_and(|cast| cast.face == CastFace::Adventure)
+                && item.source.unwrap().card.name() == "Seek the Beast"
+        }));
+        settle(&mut game);
+        assert_eq!(game.counter_count(druid, CounterKind::PlusOne), 1);
+        assert_eq!(game.object_view(adventure).zone, Zone::Exile);
+        assert_eq!(game.top_library_card(player), Some(untouched));
+        let observed = game.observe(other);
+        for card in [land, shock] {
+            assert_eq!(game.object_view(card).zone, Zone::Exile);
+            let exact = game.object_ref(card);
+            assert!(observed.exile_permissions.iter().any(|row| {
+                row.object == exact
+                    && row.player == player
+                    && row.expiry == ExilePlayExpiry::StartOfNextEndStep(player)
+            }));
+        }
+        reject(&mut game, Action::PlayLand { card: land });
+
+        pass_pair(&mut game);
+        assert_eq!(game.state.active, other);
+        finish_turn(&mut game);
+        assert_eq!(game.state.active, player);
+        enter_main_phase(&mut game);
+        let mut expired = game.clone();
+        enter_end_step(&mut expired);
+        assert_eq!(expired.object_view(land).zone, Zone::Exile);
+        assert_eq!(expired.object_view(shock).zone, Zone::Exile);
+        assert!(
+            !expired
+                .observe(player)
+                .exile_permissions
+                .iter()
+                .any(|row| [land, shock].contains(&row.object.card))
+        );
+        act(&mut expired, Action::TapMana { card: mountain });
+        reject(&mut expired, Action::AnnounceExile { card: shock });
+
+        act(&mut game, Action::PlayLand { card: land });
+        assert_eq!(game.object_view(land).zone, Zone::Battlefield);
+        act(&mut game, Action::TapMana { card: mountain });
+        act(&mut game, Action::AnnounceExile { card: shock });
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Player(other),
+            },
+        );
+        act(
+            &mut game,
+            Action::PayCosts {
+                payment: [0, 0, 0, 1, 0, 0],
+            },
+        );
+        settle(&mut game);
+        assert_eq!(game.state.players[other.index()].life, 18);
+        assert_eq!(game.counter_count(druid, CounterKind::PlusOne), 2);
+
+        for card in [forest, land] {
+            act(&mut game, Action::TapMana { card });
+        }
+        act(&mut game, Action::AnnounceExile { card: adventure });
+        act(
+            &mut game,
+            Action::PayCosts {
+                payment: [0, 1, 0, 0, 1, 0],
+            },
+        );
+        settle(&mut game);
+        assert_eq!(game.object_view(adventure).zone, Zone::Battlefield);
+        assert_eq!(stats(&game, adventure), (1, 1));
+    }
+}
+
+fn deal_unblocked_combat_damage(game: &mut Game) {
+    pass_pair(game);
+    act(game, Action::FinishBlockers);
+    pass_pair(game);
+    assert_eq!(game.state.step, Step::CombatDamage);
+}
+
+#[test]
+fn rotisserie_elemental_can_keep_skewers_then_sacrifice_for_exact_temporary_plays() {
+    for player in [Player::P0, Player::P1] {
+        let other = player.other();
+        let mut game = scenario(player);
+        let elemental = spawn(&mut game, player, named("Rotisserie Elemental"), Zone::Hand);
+        let opposing_shock = put(&mut game, other, "Shock", Zone::Hand);
+        let opposing_mountain = put(&mut game, other, "Mountain", Zone::Battlefield);
+        let untouched = put(&mut game, player, "Swamp", Zone::Library);
+        let shock = put(&mut game, player, "Shock", Zone::Library);
+        let land = put(&mut game, player, "Mountain", Zone::Library);
+        cast(&mut game, elemental, None);
+        settle(&mut game);
+        assert_eq!(stats(&game, elemental), (1, 1));
+        assert!(
+            game.object_view(elemental)
+                .keywords
+                .contains(Keywords::MENACE)
+        );
+        finish_turn(&mut game);
+        finish_turn(&mut game);
+
+        let mut attacks_walker = game.clone();
+        let walker = put(
+            &mut attacks_walker,
+            other,
+            "Kaito, Cunning Infiltrator",
+            Zone::Battlefield,
+        );
+        attacks_walker.add_counter(walker, CounterKind::Loyalty, 3);
+        let defender = attacks_walker.object_ref(walker);
+        attacks_walker.begin_step(Step::BeginCombat);
+        pass_pair(&mut attacks_walker);
+        act(
+            &mut attacks_walker,
+            Action::AttackPlaneswalker {
+                card: elemental,
+                defender,
+            },
+        );
+        act(&mut attacks_walker, Action::FinishAttackers);
+        deal_unblocked_combat_damage(&mut attacks_walker);
+        assert_eq!(
+            attacks_walker.counter_count(walker, CounterKind::Loyalty),
+            2
+        );
+        assert!(attacks_walker.state.stack.is_empty());
+        assert_eq!(
+            attacks_walker.counter_count(elemental, CounterKind::Skewer),
+            0
+        );
+
+        attack(&mut game, elemental);
+        deal_unblocked_combat_damage(&mut game);
+        assert_eq!(game.state.stack.len(), 1);
+        let mut departed = game.clone();
+        act(&mut departed, Action::Pass);
+        act(
+            &mut departed,
+            Action::TapMana {
+                card: opposing_mountain,
+            },
+        );
+        cast(&mut departed, opposing_shock, Some(Target::Card(elemental)));
+        settle(&mut departed);
+        assert_eq!(departed.object_view(elemental).zone, Zone::Graveyard);
+        assert_eq!(departed.top_library_card(player), Some(land));
+
+        pass_pair(&mut game);
+        assert_eq!(game.counter_count(elemental, CounterKind::Skewer), 1);
+        act(&mut game, Action::DeclineEffectPayment);
+        assert_eq!(game.object_view(elemental).zone, Zone::Battlefield);
+        assert_eq!(game.top_library_card(player), Some(land));
+        game.add_counter(elemental, CounterKind::PlusOne, 1);
+        pass_pair(&mut game);
+        pass_pair(&mut game);
+        finish_turn(&mut game);
+        finish_turn(&mut game);
+
+        attack(&mut game, elemental);
+        deal_unblocked_combat_damage(&mut game);
+        pass_pair(&mut game);
+        assert_eq!(game.counter_count(elemental, CounterKind::Skewer), 2);
+        let object = game.object_ref(elemental);
+        act(&mut game, Action::Sacrifice { object });
+        settle(&mut game);
+        assert_eq!(game.object_view(elemental).zone, Zone::Graveyard);
+        assert_eq!(game.object_view(land).zone, Zone::Exile);
+        assert_eq!(game.object_view(shock).zone, Zone::Exile);
+        assert_eq!(game.top_library_card(player), Some(untouched));
+        reject(&mut game, Action::PlayLand { card: land });
+
+        pass_pair(&mut game);
+        pass_pair(&mut game);
+        let mut expired = game.clone();
+        finish_turn(&mut expired);
+        assert!(expired.observe(player).exile_permissions.is_empty());
+        assert_eq!(expired.object_view(shock).zone, Zone::Exile);
+        act(&mut game, Action::PlayLand { card: land });
+        act(&mut game, Action::TapMana { card: land });
+        act(&mut game, Action::AnnounceExile { card: shock });
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Player(other),
+            },
+        );
+        pay(&mut game);
+        settle(&mut game);
+        assert_eq!(game.state.players[other.index()].life, 15);
+        assert_eq!(game.object_view(shock).zone, Zone::Graveyard);
     }
 }
