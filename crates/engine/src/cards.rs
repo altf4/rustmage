@@ -184,6 +184,8 @@ pub enum GraveyardCastKind {
     /// Play this exact card normally, including a land, through the deadline.
     Play,
     Cast,
+    /// Cast only this exact physical card's Adventure spell.
+    Adventure,
     Flashback,
     /// This exact card gains harmonize with its printed mana cost until cleanup.
     Harmonize,
@@ -2363,6 +2365,8 @@ pub enum Instruction {
     /// Optionally choose new targets for the exact spell captured by this cast trigger.
     ChangeCastSpellTargets,
     GrantGraveyardCast(GraveyardCastKind),
+    /// Allow the exact departed source card's Adventure through the controller's next turn.
+    GrantDepartedAdventureUntilNextTurn,
     GrantCreatureGraveyardCast,
     SolveSource,
     ReduceArtifactSpellCostsThisTurn(u32),

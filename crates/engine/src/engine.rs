@@ -10666,6 +10666,7 @@ impl Game {
                 permission.expiry = ExilePlayExpiry::Turn(self.state.turn);
             }
         }
+        self.begin_graveyard_cast_permission_turn();
         if let Some(bans) = &mut self.state.hand_play_bans {
             bans.retain(|&owner| owner != self.state.active);
             if bans.is_empty() {

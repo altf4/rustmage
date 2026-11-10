@@ -184,7 +184,7 @@ impl Game {
         };
         let rule_origin = match object.zone {
             Zone::Library => Some(self.can_cast_library_face(actor, id, definition)),
-            Zone::Graveyard => Some(self.has_graveyard_cast(actor, id, GraveyardCastKind::Cast)),
+            Zone::Graveyard => Some(self.has_graveyard_cast_face(actor, id, face)),
             _ => None,
         };
         if let Some(allowed) = rule_origin {

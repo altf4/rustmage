@@ -3365,7 +3365,7 @@ impl Game {
                                 crate::cards::GraveyardCastKind::Flashback
                                     | crate::cards::GraveyardCastKind::Harmonize
                             )
-                            && row.expires_turn >= self.state.turn
+                            && row.available_at(self.state.turn)
                     })
                 })
     }

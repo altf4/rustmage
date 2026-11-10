@@ -5789,6 +5789,9 @@ impl Game {
                     self.start_connive(&item, subject, amount)
                 }
                 Instruction::GrantGraveyardCast(kind) => self.grant_graveyard_cast(&item, kind),
+                Instruction::GrantDepartedAdventureUntilNextTurn => {
+                    self.grant_departed_adventure_until_next_turn(&item)
+                }
                 Instruction::GrantCreatureGraveyardCast => {
                     self.grant_creature_graveyard_cast(item.controller)
                 }

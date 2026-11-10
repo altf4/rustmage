@@ -230,7 +230,7 @@ impl Game {
                 Zone::Exile if face == CastFace::Normal => self.can_play_exiled(player, card),
                 Zone::Exile => self.can_cast_exiled_card(player, card),
                 Zone::Library => self.can_cast_library_face(player, card, definition),
-                Zone::Graveyard => self.has_graveyard_cast(player, card, GraveyardCastKind::Cast),
+                Zone::Graveyard => self.has_graveyard_cast_face(player, card, face),
                 _ => false,
             };
             let counter_cost =

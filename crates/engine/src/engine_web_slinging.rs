@@ -96,7 +96,7 @@ impl Game {
             };
             let ordinary = match object.zone {
                 Zone::Hand => object.owner == actor,
-                Zone::Graveyard => self.has_graveyard_cast(actor, card, GraveyardCastKind::Cast),
+                Zone::Graveyard => self.has_graveyard_cast_face(actor, card, face),
                 Zone::Exile if face == CastFace::Normal => self.can_play_exiled(actor, card),
                 Zone::Exile => self.can_cast_exiled_card(actor, card),
                 Zone::Library => self.can_cast_library_face(actor, card, definition),

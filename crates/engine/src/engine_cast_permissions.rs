@@ -16,7 +16,14 @@ pub struct GraveyardCastPermissionView {
     pub object: ObjectRef,
     pub player: Player,
     pub kind: GraveyardCastKind,
-    pub expires_turn: u32,
+    /// None until the player begins their next actual turn.
+    pub expires_turn: Option<u32>,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl GraveyardCastPermissionView {
+    pub(super) fn available_at(&self, turn: u32) -> bool {
+        self.expires_turn.is_none_or(|expires| expires >= turn)
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) type Rows = Option<SharedVec<GraveyardCastPermissionView>>;
@@ -205,9 +212,19 @@ impl Game {
                                 && (row.kind == kind
                                     || (kind == GraveyardCastKind::Cast
                                         && row.kind == GraveyardCastKind::Play))
-                                && row.expires_turn >= self.state.turn
+                                && row.available_at(self.state.turn)
                         })
                     }))
+    }
+    pub(super) fn has_graveyard_cast_face(
+        &self,
+        player: Player,
+        card: CardId,
+        face: CastFace,
+    ) -> bool {
+        self.has_graveyard_cast(player, card, GraveyardCastKind::Cast)
+            || (face == CastFace::Adventure
+                && self.has_graveyard_cast(player, card, GraveyardCastKind::Adventure))
     }
     pub(super) fn grant_graveyard_cast(&mut self, item: &SpellView, kind: GraveyardCastKind) {
         for bound in &item.targets {
@@ -229,8 +246,22 @@ impl Game {
         object: ObjectRef,
         kind: GraveyardCastKind,
     ) {
+        self.grant_graveyard_permission_until(player, object, kind, Some(self.state.turn));
+    }
+    fn grant_graveyard_permission_until(
+        &mut self,
+        player: Player,
+        object: ObjectRef,
+        kind: GraveyardCastKind,
+        expires_turn: Option<u32>,
+    ) {
         let card = &self.state.objects[object.card as usize];
         if self.object_ref(object.card) != object || card.zone != Zone::Graveyard || !card.is_card()
+        {
+            return;
+        }
+        if kind == GraveyardCastKind::Adventure
+            && (card.owner != player || card.card.adventure_spell().is_none())
         {
             return;
         }
@@ -238,7 +269,7 @@ impl Game {
             object,
             player,
             kind,
-            expires_turn: self.state.turn,
+            expires_turn,
         };
         let rows = self
             .state
@@ -248,6 +279,21 @@ impl Game {
             rows.try_reserve(1)
                 .capacity("graveyard casting permission allocation exhausted");
             rows.push(row);
+        }
+    }
+    pub(super) fn grant_departed_adventure_until_next_turn(&mut self, item: &SpellView) {
+        let Some(movement) = item.source_move.as_ref().filter(|movement| {
+            movement.origin == Zone::Battlefield && movement.destination == Zone::Graveyard
+        }) else {
+            return;
+        };
+        for object in movement.objects_after() {
+            self.grant_graveyard_permission_until(
+                item.controller,
+                object,
+                GraveyardCastKind::Adventure,
+                None,
+            );
         }
     }
     pub(super) fn grant_milled_play(&mut self, player: Player) {
@@ -268,11 +314,30 @@ impl Game {
     pub(super) fn forget_graveyard_cast_permission(&mut self, object: ObjectRef) {
         if let Some(rows) = &mut self.state.graveyard_cast_permissions {
             rows.retain(|row| row.object != object);
+            if rows.is_empty() {
+                self.state.graveyard_cast_permissions = None;
+            }
+        }
+    }
+    pub(super) fn begin_graveyard_cast_permission_turn(&mut self) {
+        if let Some(rows) = &mut self.state.graveyard_cast_permissions {
+            for row in rows
+                .iter_mut()
+                .filter(|row| row.player == self.state.active)
+            {
+                row.expires_turn.get_or_insert(self.state.turn);
+            }
         }
     }
     pub(super) fn expire_graveyard_cast_permissions(&mut self) {
         if let Some(rows) = &mut self.state.graveyard_cast_permissions {
-            rows.retain(|row| row.expires_turn > self.state.turn);
+            rows.retain(|row| {
+                row.expires_turn
+                    .is_none_or(|expires| expires > self.state.turn)
+            });
+            if rows.is_empty() {
+                self.state.graveyard_cast_permissions = None;
+            }
         }
     }
     pub(super) fn set_cast_face(&self, item: &mut SpellView, face: CastFace) {
