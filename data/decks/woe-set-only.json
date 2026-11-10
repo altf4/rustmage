@@ -1,0 +1,131 @@
+{
+  "decks": [
+    {
+      "id": "white_roles",
+      "name": "White Roles and Celebration",
+      "cards": [
+        {"name": "Plains", "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99", "count": 24},
+        {"name": "Armory Mice", "oracle_id": "68f7d1bf-48c7-483e-b17f-a60008854b46", "count": 4},
+        {"name": "Besotted Knight // Betroth the Beast", "oracle_id": "c7b6d2cd-9105-404b-88f0-a67037fb2120", "count": 4},
+        {"name": "Cheeky House-Mouse // Squeak By", "oracle_id": "db70ddae-0ac1-47f2-9158-8448e337a08f", "count": 4},
+        {"name": "Charmed Clothier", "oracle_id": "ad0e6b12-a6bd-4860-9eac-68b2492d9567", "count": 4},
+        {"name": "Hopeful Vigil", "oracle_id": "33fff722-5cc5-4d0e-b788-166b3edb1223", "count": 4},
+        {"name": "Protective Parents", "oracle_id": "d9717522-358b-41ac-9183-8a6b3981f921", "count": 4},
+        {"name": "Return Triumphant", "oracle_id": "a4814615-ffa2-4692-86bc-3a1b7fc2acc8", "count": 4},
+        {"name": "Archon's Glory", "oracle_id": "bc5631ae-494e-4987-8d17-57674bfbdb9f", "count": 4},
+        {"name": "Cooped Up", "oracle_id": "3e8bcb44-b875-4fe4-b96f-97a20cbfec93", "count": 4}
+      ]
+    },
+    {
+      "id": "blue_adventures",
+      "name": "Blue Adventures and spell choices",
+      "cards": [
+        {"name": "Island", "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373", "count": 24},
+        {"name": "Aquatic Alchemist // Bubble Up", "oracle_id": "a78b063a-7f74-465a-9670-34f927f4bfe9", "count": 4},
+        {"name": "Beluna's Gatekeeper // Entry Denied", "oracle_id": "52fd9309-b849-419a-8d19-5882c00a72b4", "count": 4},
+        {"name": "Chancellor of Tales", "oracle_id": "529f259a-df66-4283-bc28-de3933c42e67", "count": 4},
+        {"name": "Ice Out", "oracle_id": "fed3bc35-4269-48f0-9133-a595ce49c2d1", "count": 4},
+        {"name": "Picklock Prankster // Free the Fae", "oracle_id": "22d82f4c-2896-477e-8d20-8fe43acd4ba2", "count": 4},
+        {"name": "Sleight of Hand", "oracle_id": "05a039ad-1689-4d13-b393-6c1219583b5d", "count": 4},
+        {"name": "Tenacious Tomeseeker", "oracle_id": "b07bf08b-d9ec-429f-be6d-a7afa27c60c4", "count": 4},
+        {"name": "Quick Study", "oracle_id": "7bff8d4a-1c7d-48b8-b3e3-737dd6f01823", "count": 4},
+        {"name": "Vantress Transmuter // Croaking Curse", "oracle_id": "89ae3475-9063-4700-a7bd-47d5dcd43a3b", "count": 4}
+      ]
+    },
+    {
+      "id": "black_bargain",
+      "name": "Black Bargain, Food and Roles",
+      "cards": [
+        {"name": "Swamp", "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68", "count": 24},
+        {"name": "Back for Seconds", "oracle_id": "ee3d21b9-58b4-480c-bae3-26de50f1a5c6", "count": 4},
+        {"name": "Candy Grapple", "oracle_id": "9588a7fd-bbe5-4a81-9a7e-d8e8f6c0537d", "count": 4},
+        {"name": "Conceited Witch // Price of Beauty", "oracle_id": "1c751201-24ba-4e5c-bf44-71c3e4693a92", "count": 4},
+        {"name": "Mintstrosity", "oracle_id": "c8c88c33-b8df-4b19-b12c-79c9709af8f1", "count": 4},
+        {"name": "Sweettooth Witch", "oracle_id": "635b854d-de71-4c85-9755-8c97bf3cba36", "count": 4},
+        {"name": "Voracious Vermin", "oracle_id": "8d36d80e-9934-4b56-bf3c-2b18a6da3d2d", "count": 4},
+        {"name": "Beseech the Mirror", "oracle_id": "cbbe535b-12d6-4e6c-8b26-9220f06a1604", "count": 4},
+        {"name": "Ashiok's Reaper", "oracle_id": "6f1e5571-ddda-4cea-84ef-36a571d8fd51", "count": 4},
+        {"name": "Scream Puff", "oracle_id": "b46ddf4b-7ed8-49c4-8828-f0fbbc023c1f", "count": 4}
+      ]
+    },
+    {
+      "id": "red_rats",
+      "name": "Red Celebration, Rats and Treasure",
+      "cards": [
+        {"name": "Mountain", "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685", "count": 24},
+        {"name": "Embereth Veteran", "oracle_id": "2c232056-9dd6-4a78-be08-3bff19daa88d", "count": 4},
+        {"name": "Harried Spearguard", "oracle_id": "e3542d0f-fcee-4df7-aa95-b55138caa2ab", "count": 4},
+        {"name": "Charming Scoundrel", "oracle_id": "9eec304d-ffcb-4287-b877-280ac1e4f496", "count": 4},
+        {"name": "Grand Ball Guest", "oracle_id": "0b0fdb28-f7b1-4c30-9f2c-14a9074da22d", "count": 4},
+        {"name": "Grabby Giant // That's Mine", "oracle_id": "e6f59807-eaf6-4889-8c89-2ac915afefff", "count": 4},
+        {"name": "Ratcatcher Trainee // Pest Problem", "oracle_id": "ecc91e38-90fa-4d89-b262-d5f36dce5be4", "count": 4},
+        {"name": "Redcap Thief", "oracle_id": "e055bc6d-d395-4f85-8e15-3bce65b7fcca", "count": 4},
+        {"name": "Charging Hooligan", "oracle_id": "c808892a-83d5-4b09-b0da-118b0d6fe58e", "count": 4},
+        {"name": "Torch the Tower", "oracle_id": "10d33e95-3e5d-447e-ba4a-acd3c33b4045", "count": 4}
+      ]
+    },
+    {
+      "id": "green_food",
+      "name": "Green Food, Roles and Sagas",
+      "cards": [
+        {"name": "Forest", "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6", "count": 24},
+        {"name": "Agatha's Champion", "oracle_id": "debdfab7-454f-4fec-9ee8-aa5b570ea7fb", "count": 4},
+        {"name": "Beanstalk Wurm // Plant Beans", "oracle_id": "a2192c80-c48f-44e2-807c-2f9ee1aa1152", "count": 4},
+        {"name": "Brave the Wilds", "oracle_id": "49d189dd-9ce7-434f-931b-7110cd5255e7", "count": 4},
+        {"name": "Ferocious Werefox // Guard Change", "oracle_id": "fef67393-9b7b-495d-8b03-865537386d42", "count": 4},
+        {"name": "Hollow Scavenger // Bakery Raid", "oracle_id": "4fad3816-41af-4fa4-85b4-ba37614ec848", "count": 4},
+        {"name": "The Huntsman's Redemption", "oracle_id": "ae63fd5c-46ff-41fb-a1f6-6259336525c1", "count": 4},
+        {"name": "Redtooth Vanguard", "oracle_id": "9e459e48-d2bb-4c4e-9a87-58efb56cddd1", "count": 4},
+        {"name": "Welcome to Sweettooth", "oracle_id": "9760c396-fc7d-41bc-8f03-5ee359eaec00", "count": 4},
+        {"name": "Bestial Bloodline", "oracle_id": "a3ae6694-6314-42e2-bc12-d0e32d49b347", "count": 4}
+      ]
+    }
+  ],
+  "pairings": [
+    {
+      "p0": "white_roles",
+      "p1": "blue_adventures",
+      "runs": [
+        {"seed": 0, "starting_player": 0},
+        {"seed": 7, "starting_player": 1, "prefer_first_adventure": true},
+        {"seed": 41, "starting_player": 0}
+      ]
+    },
+    {
+      "p0": "blue_adventures",
+      "p1": "black_bargain",
+      "runs": [
+        {"seed": 0, "starting_player": 0},
+        {"seed": 7, "starting_player": 1, "prefer_first_adventure": true},
+        {"seed": 41, "starting_player": 1}
+      ]
+    },
+    {
+      "p0": "black_bargain",
+      "p1": "red_rats",
+      "runs": [
+        {"seed": 0, "starting_player": 0},
+        {"seed": 7, "starting_player": 1, "prefer_first_adventure": true},
+        {"seed": 41, "starting_player": 0}
+      ]
+    },
+    {
+      "p0": "red_rats",
+      "p1": "green_food",
+      "runs": [
+        {"seed": 0, "starting_player": 0},
+        {"seed": 7, "starting_player": 1, "prefer_first_adventure": true},
+        {"seed": 41, "starting_player": 1}
+      ]
+    },
+    {
+      "p0": "green_food",
+      "p1": "white_roles",
+      "runs": [
+        {"seed": 0, "starting_player": 0},
+        {"seed": 7, "starting_player": 1, "prefer_first_adventure": true},
+        {"seed": 41, "starting_player": 0}
+      ]
+    }
+  ]
+}
