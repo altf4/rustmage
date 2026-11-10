@@ -66,11 +66,11 @@ python scripts/validate.py --release --python smoke
 
 ## Standard set tracker
 
-**13 / 20 sets complete · 65%**
+**14 / 20 sets complete · 70%**
 
-`█████████████░░░░░░░`
+`██████████████░░░░░░`
 
-**4,005 / 5,163 unique Standard cards supported in this checkout · 78%**
+**4,127 / 5,163 unique Standard cards supported in this checkout · 80%**
 
 `████████████████░░░░`
 
@@ -103,15 +103,15 @@ Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
 | The Big Score | BIG | 30/30 (100%) | ✅ Complete |
 | The Hobbit | HOB | 193/193 (100%) | ✅ Complete |
 | The Lost Caverns of Ixalan | LCI | 117/291 (40%) | ⏳ Partial |
-| Wilds of Eldraine | WOE | 156/281 (56%) | ⏳ Partial |
+| Wilds of Eldraine | WOE | 281/281 (100%) | ✅ Complete |
 
 ## Modern tracker
 
-**13 / 113 sets complete · 12%**
+**14 / 113 sets complete · 12%**
 
 `██░░░░░░░░░░░░░░░░░░`
 
-**4,013 / 22,711 unique Modern-legal cards implemented · 18%**
+**4,137 / 22,711 unique Modern-legal cards implemented · 18%**
 
 `████░░░░░░░░░░░░░░░░`
 
