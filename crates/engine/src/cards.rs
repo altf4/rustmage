@@ -2138,6 +2138,8 @@ pub enum Instruction {
     ExileTargetNamedCards {
         maximum: u16,
     },
+    /// Exile the exact target, then search its controller's zones by its prior rules name.
+    ExileTargetAndSearchItsController,
     Prepare {
         subject: Subject,
     },
@@ -4494,6 +4496,8 @@ pub enum AmountValue {
     )]
     DamageEventAmount,
     DamageReceivedAmount,
+    /// Total actual damage to the exact source incarnation during the current turn.
+    SourceDamageReceivedThisTurn,
     /// Quantity actually placed on the qualifying recipient by the triggering counter event.
     CounterPlacementAmount,
     /// Quantity of this counter kind immediately before the triggering departure.

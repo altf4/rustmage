@@ -3046,7 +3046,7 @@ struct State {
     battle_protectors: Option<SharedVec<(ObjectRef, Player)>>,
     battle_combat_types: Option<SharedVec<(ObjectRef, bool)>>,
     combat_defender_types: Option<SharedVec<(ObjectRef, u16)>>,
-    creature_damage_history: Option<SharedVec<CreatureDamageHistoryView>>,
+    permanent_damage_history: Option<SharedVec<event_counter_core::PermanentDamageRecord>>,
     tap_history: tap_history::Rows,
     counter_placement_history: counter_placement_history::Rows,
     cast_entry_counters: cast_entry_counters::Rows,
@@ -3791,6 +3791,8 @@ pub struct Observation {
     pub inert_mana_copy_sources: Vec<ObjectRef>,
     pub mana_lot_spend: Option<ManaLotSpendRange>,
     pub creature_damage_history: Vec<CreatureDamageHistoryView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub permanent_damage_history: Vec<PermanentDamageHistoryView>,
     pub counter_placement_history: Vec<CounterPlacementHistoryView>,
     pub cast_entry_counters: Vec<CastEntryCounterView>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4327,7 +4329,7 @@ impl Game {
                 combat_defender_types: None,
                 combat_rules: None,
                 attack_payment: None,
-                creature_damage_history: None,
+                permanent_damage_history: None,
                 tap_history: None,
                 counter_placement_history: None,
                 cast_entry_counters: None,
@@ -10683,7 +10685,7 @@ impl Game {
         self.state.triggered_this_turn.clear();
         self.state.ability_resolutions = None;
         self.state.used_free_hand_permissions = None;
-        self.state.creature_damage_history = None;
+        self.state.permanent_damage_history = None;
         self.state.tap_history = None;
         self.state.counter_placement_history = None;
         self.state.cast_entry_counters = None;
@@ -11736,10 +11738,22 @@ impl Game {
                 .counter_placement_history
                 .as_ref()
                 .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
-            creature_damage_history: s
-                .creature_damage_history
+            creature_damage_history: s.permanent_damage_history.as_ref().map_or_else(
+                Vec::new,
+                |rows| {
+                    rows.iter()
+                        .filter(|row| row.was_creature)
+                        .map(|row| CreatureDamageHistoryView {
+                            source: row.view.source,
+                            recipient: row.view.recipient,
+                        })
+                        .collect()
+                },
+            ),
+            permanent_damage_history: s
+                .permanent_damage_history
                 .as_ref()
-                .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
+                .map_or_else(Vec::new, |rows| rows.iter().map(|row| row.view).collect()),
             schema: OBSERVATION_SCHEMA,
             toughness_combat_damage: s.roles.as_ref().and_then(|r| {
                 r.toughness_combat_damage
@@ -12962,9 +12976,9 @@ impl Game {
             + s.selected_attackers.len() * std::mem::size_of::<Attacker>()
             + s.selected_blocks.len() * std::mem::size_of::<(CardId, CardId)>()
             + s.hits.len() * std::mem::size_of::<DamageEvent>()
-            + s.creature_damage_history.as_ref().map_or(0, |rows| {
-                std::mem::size_of::<Vec<CreatureDamageHistoryView>>()
-                    + rows.len() * std::mem::size_of::<CreatureDamageHistoryView>()
+            + s.permanent_damage_history.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<event_counter_core::PermanentDamageRecord>>()
+                    + rows.len() * std::mem::size_of::<event_counter_core::PermanentDamageRecord>()
             })
             + s.first_strikers.len() * std::mem::size_of::<CardId>()
             + s.damage_choices.len() * std::mem::size_of::<DamageChoice>()
@@ -13112,7 +13126,7 @@ pub use search::OptionalSearchSequence;
 #[doc(hidden)]
 #[path = "engine_event_counter_core.rs"]
 pub mod event_counter_core;
-pub use event_counter_core::CreatureDamageHistoryView;
+pub use event_counter_core::{CreatureDamageHistoryView, PermanentDamageHistoryView};
 
 #[doc(hidden)]
 #[path = "engine_continuous_control.rs"]

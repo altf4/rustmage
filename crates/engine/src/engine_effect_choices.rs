@@ -2392,6 +2392,29 @@ impl Game {
         self.run_program();
     }
 
+    pub(super) fn start_exile_same_name_search(&mut self, item: &SpellView) -> bool {
+        let [bound] = item.targets.as_slice() else {
+            return false;
+        };
+        let Target::Card(id) = bound.target else {
+            return false;
+        };
+        if !self.same_target_object(*bound) || !self.on_battlefield(id) {
+            return false;
+        }
+        let owner = self.state.objects[id as usize].controller;
+        let name = self.object_name(id);
+        self.move_target_batch(&item.targets, Zone::Exile);
+        self.start_effect_choice(
+            item,
+            EffectChoiceKind::CoverUpSearch { owner, name },
+            PlayerSet::Controller,
+            evidence::cost(0).filter,
+            0,
+            None,
+        )
+    }
+
     pub(super) fn start_named_card_search(&mut self, item: &SpellView, maximum: u16) -> bool {
         let Some(owner) = self.program_players(PlayerSet::Targeted, item).next() else {
             return false;
@@ -2435,6 +2458,9 @@ impl Game {
             _ => unreachable!(),
         };
         let player = self.state.resolving.as_ref().unwrap().item.controller;
+        if owner == player {
+            self.library_searched(player);
+        }
         let ids: Vec<_> = choice.selected[player.index()]
             .iter()
             .map(|reference| reference.card)

@@ -752,16 +752,15 @@ impl Game {
                         }
                         TriggerCondition::DamagedCreatureDies => {
                             event.before.is_creature()
-                                && self
-                                    .state
-                                    .creature_damage_history
-                                    .as_ref()
-                                    .is_some_and(|rows| {
+                                && self.state.permanent_damage_history.as_ref().is_some_and(
+                                    |rows| {
                                         rows.iter().any(|row| {
-                                            row.source == source.reference
-                                                && row.recipient == event.before.reference
+                                            row.was_creature
+                                                && row.view.source == source.reference
+                                                && row.view.recipient == event.before.reference
                                         })
-                                    })
+                                    },
+                                )
                         }
                         TriggerCondition::ReturnDeath(filter) => {
                             self.return_death_matches(filter, source, event)
@@ -3990,6 +3989,11 @@ impl Game {
                 }
                 Instruction::ExileTargetNamedCards { maximum } => {
                     if self.start_named_card_search(&item, maximum) {
+                        return;
+                    }
+                }
+                Instruction::ExileTargetAndSearchItsController => {
+                    if self.start_exile_same_name_search(&item) {
                         return;
                     }
                 }

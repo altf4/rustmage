@@ -702,6 +702,7 @@ impl Game {
                     .capacity("effect sum exhausted")
             }),
             AmountValue::Fixed(n) => u128::from(n),
+            AmountValue::SourceDamageReceivedThisTurn => self.damage_received_this_turn(source),
             AmountValue::EquippedCreaturesYouControl => self.equipped_creature_count(owner),
             AmountValue::NonbasicLandsYouControl => self.nonbasic_land_count(owner) as u128,
             AmountValue::Devotion(color) => self
